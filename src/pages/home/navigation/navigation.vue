@@ -141,7 +141,6 @@
       }
     },
     created () {
-      console.log(12312)
       this._initNavList()
     },
     methods: {
