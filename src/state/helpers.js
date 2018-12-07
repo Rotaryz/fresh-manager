@@ -8,3 +8,11 @@ export const someComputed = {
 }
 
 export const someMethods = mapActions('some', ['action1', 'action2'])
+
+export const oauthComputed = {
+  ...mapGetters('oauth', ['info'])
+}
+
+export const oauthMethods = {
+  ...mapActions('oauth', ['update'])
+}

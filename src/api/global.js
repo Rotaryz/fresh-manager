@@ -1,4 +1,5 @@
 import request from '@utils/request'
+import {defaultProcess} from './api-utils'
 
 export default {
   /**
@@ -8,5 +9,13 @@ export default {
   jssdkConfig(data, loading = false) {
     let url = '/api/wechat/jssdk'
     return request.get(url, data, loading)
+  },
+  jssdkConfigDemo(data, loading = false, toast = true) {
+    let url = '/api/wechat/jssdk'
+    return defaultProcess('get', url, data, loading, toast, fn)
   }
+}
+
+function fn(res) {
+  return res
 }
