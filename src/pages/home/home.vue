@@ -30,4 +30,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
+  .home
+    layout()
 </style>

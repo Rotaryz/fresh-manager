@@ -25,7 +25,7 @@
   const NAV_LIST = [
     {
       title: '用户管理',
-      url: '/test-page1',
+      url: '/home/test-page1',
       icon: require('./icon-user@2x.png'),
       iconSelected: require('./icon-user_select@2x.png'),
       childrenIndex: 0,
@@ -36,7 +36,7 @@
     },
     {
       title: '商家管理',
-      url: '/test-page',
+      url: '/home/test-page',
       icon: require('./icon-shop@2x.png'),
       iconSelected: require('./icon-shop_select@2x.png'),
       childrenIndex: 0,
@@ -46,7 +46,7 @@
     },
     {
       title: '商品管理',
-      url: '/sample',
+      url: '/home/sample',
       icon: require('./icon-goods@2x.png'),
       iconSelected: require('./icon-goods_select@2x.png'),
       childrenIndex: 0,
@@ -55,13 +55,13 @@
       children: [
         {
           title: '折扣商品',
-          url: '/sample/one',
+          url: '/home/sample/one',
           isRouter: true,
           isLight: false
         },
         {
           title: '播豆商品',
-          url: '/sample/two',
+          url: '/home/sample/two',
           isRouter: true,
           isLight: false
         }
@@ -71,46 +71,46 @@
       title: '订单管理',
       icon: require('./icon-indent@2x.png'),
       iconSelected: require('./icon-indent_select@2x.png'),
-      url: '/other-pages',
+      url: '/home/other-pages',
       childrenIndex: 0,
       children: [
         {
           title: '用户订单',
-          url: '/other-pages/one',
+          url: '/home/other-pages/one',
           isRouter: true,
           isLight: false
         },
         {
           title: '商家订单',
-          url: '/other-pages/two',
+          url: '/home/other-pages/two',
           isRouter: true,
           isLight: false
         }
       ]
-    },
-    // {
-    //   title: '大礼包',
-    //   icon: require('./icon-gifts@2x.png'),
-    //   iconSelected: require('./icon-gifts_select@2x.png'),
-    //   url: '/gifts',
-    //   childrenIndex: 0,
-    //   isRouter: false,
-    //   isLight: false,
-    //   children: [
-    //     {
-    //       title: '用户礼包',
-    //       url: '/gifts/user-gifts',
-    //       isRouter: true,
-    //       isLight: false
-    //     },
-    //     {
-    //       title: '商家礼包',
-    //       url: '/gifts/business-gifts',
-    //       isRouter: true,
-    //       isLight: false
-    //     }
-    //   ]
-    // }
+    }
+  // {
+  //   title: '大礼包',
+  //   icon: require('./icon-gifts@2x.png'),
+  //   iconSelected: require('./icon-gifts_select@2x.png'),
+  //   url: '/home/gifts',
+  //   childrenIndex: 0,
+  //   isRouter: false,
+  //   isLight: false,
+  //   children: [
+  //     {
+  //       title: '用户礼包',
+  //       url: '/gifts/user-gifts',
+  //       isRouter: true,
+  //       isLight: false
+  //     },
+  //     {
+  //       title: '商家礼包',
+  //       url: '/gifts/business-gifts',
+  //       isRouter: true,
+  //       isLight: false
+  //     }
+  //   ]
+  // }
   ]
   export default {
     name: COMPONENT_NAME,
@@ -124,7 +124,7 @@
         return styles
       },
       // 本路由的激活状态过滤
-      isActive (value) {
+      isActive(value) {
         let cname = ''
         if (value.isLight) {
           cname = 'active'
@@ -135,16 +135,16 @@
         return cname
       }
     },
-    data () {
+    data() {
       return {
         navList: NAV_LIST
       }
     },
-    created () {
+    created() {
       this._initNavList()
     },
     methods: {
-      navHandle (item, index, father) {
+      navHandle(item, index, father) {
         // 重置路由器
         this._resetNavStatus(this.navList)
         // 设置父级
@@ -171,10 +171,10 @@
         }
       },
       // 重置路由显示的状态
-      _resetNavStatus (arr) {
-        arr.map(item => {
+      _resetNavStatus(arr) {
+        arr.map((item) => {
           item.isLight = false
-          item.children.map(it => {
+          item.children.map((it) => {
             it.isLight = false
           })
         })
@@ -184,16 +184,16 @@
         }
       },
       // 刷新页面输出路由
-      _initNavList () {
+      _initNavList() {
         let path = this.$route.fullPath
         this._resetNavLight(this.navList, path)
       },
       // 重置路由亮灯的状态
       _resetNavLight(arr, path) {
         // 路由包含的路由关系
-        let index = arr.findIndex(item => path.includes(item.url))
+        let index = arr.findIndex((item) => path.includes(item.url))
         // 路由名称全等的路由关系
-        let fullIdx = arr.findIndex(item => path === item.url)
+        let fullIdx = arr.findIndex((item) => path === item.url)
         let current = {}
         // 全等权重大于包含
         if (fullIdx > -1 || index > -1) {
@@ -232,7 +232,6 @@
     min-height: 100vh
     z-index: 2000
     overflow-y: auto
-    user-select: none
     header
       layout(row)
       height: 80px

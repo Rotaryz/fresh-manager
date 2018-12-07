@@ -1,7 +1,9 @@
 <template>
-  <div class="test-page1">
-    test-page1
-  </div>
+  <base-panel>
+    <div slot="content" class="test-page1">
+      test-page1
+    </div>
+  </base-panel>
 </template>
 
 <script type="text/ecmascript-6">

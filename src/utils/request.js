@@ -78,7 +78,7 @@ function requestException(res) {
 }
 
 export default {
-  post(url, data, loading = true) {
+  post(url, data, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'post',
@@ -92,7 +92,7 @@ export default {
         return checkCode(res)
       })
   },
-  get(url, params, loading = true) {
+  get(url, params, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'get',
@@ -106,7 +106,7 @@ export default {
         return checkCode(res)
       })
   },
-  put(url, data, loading = true) {
+  put(url, data, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'put',
@@ -120,7 +120,7 @@ export default {
         return checkCode(res)
       })
   },
-  delete(url, data, loading = true) {
+  delete(url, data, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'delete',

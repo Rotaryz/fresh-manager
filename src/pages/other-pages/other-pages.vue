@@ -1,8 +1,10 @@
 <template>
-  <div class="other-pages" :style="isTwoPage? 'bottom: 0' : ''">
-    <h1>up code is todo</h1>
-    <h1 @click="showToast">toast</h1>
-  </div>
+  <base-panel>
+    <div slot="content" class="other-pages" :style="isTwoPage? 'bottom: 0' : ''">
+      <h1>up code is todo</h1>
+      <h1 @click="showToast">toast</h1>
+    </div>
+  </base-panel>
 </template>
 
 <script type="text/ecmascript-6">
@@ -34,7 +36,5 @@
   @import "~@design"
 
   .other-pages
-    fill-box()
-    z-index :50
     background: azure
 </style>

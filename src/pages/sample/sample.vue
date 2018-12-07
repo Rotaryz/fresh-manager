@@ -1,24 +1,26 @@
 <template>
-  <div class="sample">
-    <h1>截图上传</h1>
-    <cropper ref="cropper" @confirm="cropperConfirm($event)"></cropper>
-    <input type="file" accept="image/*" @change="_fileChange($event, 'images')">
-    <hr>
-    <h1>直接上传</h1>
-    <input type="file" accept="image/*" @change="_fileChange($event, 'images-only')">
-    <img v-if="testSrc" style="width: 100%" :src="testSrc" alt="">
-    <hr>
-    <h1>点播上传</h1>
-    <input type="file" accept="video/*" @change="_fileChange($event, 'video')">
-    <video v-if="testVideo" :src="testVideo" style="width: 100vw"></video>
-    <hr>
-    <h1>二维码</h1>
-    <button @click="createQrCode">生成二维码</button>
-    <router-link tag="h1" to="/hello-world/other-pages">
-      跳其他页面
-    </router-link>
-    <base-router-view></base-router-view>
-  </div>
+  <base-panel>
+    <div slot="content" class="sample">
+      <h1>截图上传</h1>
+      <cropper ref="cropper" @confirm="cropperConfirm($event)"></cropper>
+      <input type="file" accept="image/*" @change="_fileChange($event, 'images')">
+      <hr>
+      <h1>直接上传</h1>
+      <input type="file" accept="image/*" @change="_fileChange($event, 'images-only')">
+      <img v-if="testSrc" style="width: 100%" :src="testSrc" alt="">
+      <hr>
+      <h1>点播上传</h1>
+      <input type="file" accept="video/*" @change="_fileChange($event, 'video')">
+      <video v-if="testVideo" :src="testVideo" style="width: 100vw"></video>
+      <hr>
+      <h1>二维码</h1>
+      <button @click="createQrCode">生成二维码</button>
+      <router-link tag="h1" to="/hello-world/other-pages">
+        跳其他页面
+      </router-link>
+      <base-router-view></base-router-view>
+    </div>
+  </base-panel>
 </template>
 
 <script>
