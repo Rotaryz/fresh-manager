@@ -1,6 +1,6 @@
 export default {
   beforeRouteLeave(to, from, next) {
-    next(true)
+    next()
   },
   beforeDestroy() {
     this.$loading.hide()
