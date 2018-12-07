@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view :key="$route.fullPath"></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -13,6 +13,9 @@
         title = typeof title === 'function' ? title(this.$store) : title
         return title || appConfig.title
       }
+    },
+    created() {
+      console.log(this.$route)
     }
   }
 </script>

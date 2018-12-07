@@ -5,14 +5,14 @@
       <p>赞播优鲜</p>
     </header>
     <dl v-for="(item, index) in navList" :key="index">
-      <dt @click="navHandle(item, index)" :class="item | isActive">
+      <dt :class="item | isActive" @click="navHandle(item, index)">
         <img :src="item.isLight ? item.iconSelected : item.icon" alt="">
         <p>{{item.title}}</p>
         <i :class="item.children.length ? 'rotate' : ''"></i>
       </dt>
       <dd :style="item | childrenActive">
-        <template v-for="(child, index) in item.children">
-          <p :key="index" :class="child | isActive" @click="navHandle(child, index, item)">{{child.title}}</p>
+        <template v-for="(child, i) in item.children">
+          <p :key="i" :class="child | isActive" @click="navHandle(child, i, item)">{{child.title}}</p>
         </template>
       </dd>
     </dl>
@@ -20,6 +20,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  const COMPONENT_NAME = 'NAVIGATION_BAR'
   const HEIGHT = 60 + 10
   const NAV_LIST = [
     {
@@ -112,7 +113,7 @@
     // }
   ]
   export default {
-    name: 'NAVIGATION_BAR',
+    name: COMPONENT_NAME,
     filters: {
       // 子路有的激活状态过滤
       childrenActive(value) {

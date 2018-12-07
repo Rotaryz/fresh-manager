@@ -2,7 +2,9 @@
   <div class="home" @touchmove.prevent>
     <navigation></navigation>
     <div>
-      <router-view></router-view>
+      <keep-alive>
+        <router-view :key="$route.fullPath"></router-view>
+      </keep-alive>
     </div>
   </div>
 </template>
@@ -21,7 +23,7 @@
       Navigation
     },
     created() {
-      console.log(1111)
+      console.log(this.$route)
     }
   }
 </script>
