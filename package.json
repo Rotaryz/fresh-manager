@@ -1,10 +1,11 @@
 {
-  "name": "fresh-managar",
+  "name": "fresh-manager",
   "version": "1.0.1",
   "description": "赞播优鲜-管理",
   "author": "Ben <xuedengheng@outlook.com>",
   "private": true,
   "scripts": {
+    "start": "npm run dev",
     "dev": "vue-cli-service serve --mode development",
     "release": "vue-cli-service serve --mode release",
     "prod": "vue-cli-service serve --mode production",

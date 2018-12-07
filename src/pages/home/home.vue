@@ -1,13 +1,14 @@
 <template>
   <div class="home" @touchmove.prevent>
-    <router-view style="z-index: 10"></router-view>
-    <tab></tab>
+    <navigation></navigation>
+    <div>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import Tab from '@components/tab/tab'
-
+  import Navigation from './navigation/navigation'
   const PAGE_NAME = 'HOME'
 
   export default {
@@ -17,7 +18,10 @@
       meta: [{name: 'description', content: 'description'}]
     },
     components: {
-      Tab
+      Navigation
+    },
+    created() {
+      console.log(1111)
     }
   }
 </script>

@@ -19,5 +19,5 @@
   @import "~@design"
 
   .test-page
-    width: 100%
+    width: 100%;
 </style>

@@ -39,14 +39,14 @@
         testVideo: ''
       }
     },
-    created() {
-      console.log(process.env)
-      this.$loading.show()
-      setTimeout(() => {
-        this.$loading.hide()
-      }, 1500)
-      this._getWxSdk()
-    },
+    // created() {
+    //   console.log(process.env)
+    //   this.$loading.show()
+    //   setTimeout(() => {
+    //     this.$loading.hide()
+    //   }, 1500)
+    //   this._getWxSdk()
+    // },
     methods: {
       createQrCode() {
         let str = JSON.stringify({code: 8297128291, store_id: 8}) // todo
