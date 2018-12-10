@@ -12,7 +12,6 @@
 
 <script type="text/ecmascript-6">
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {oauthComputed, oauthMethods} from '@state/helpers'
 
   const PAGE_NAME = 'TEST_PAGE'
 
@@ -24,13 +23,10 @@
     data() {
       return {}
     },
-    computed:{
-      ...oauthComputed,
+    computed: {
     },
-    created() {
-    },
+    created() {},
     methods: {
-      ...oauthMethods,
       test() {
         this.$refs.confirm.show('123123')
       },

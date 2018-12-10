@@ -31,7 +31,7 @@ export const actions = {
     if (getters.loggedIn()) {
       return dispatch('validate')
     }
-    //todo return promise and set currentUser state
+    // todo return promise and set currentUser state
   },
   // 退出
   logOut({commit}) {
@@ -42,7 +42,7 @@ export const actions = {
     if (!state.currentUser) {
       return Promise.resolve(null)
     }
-    //todo return promise and set currentUser state
+    // todo return promise and set currentUser state
   }
 }
 
@@ -51,6 +51,5 @@ export const actions = {
  * @param state
  */
 function setDefaultAuthHeaders(state) {
-  axios.defaults.headers.common['Authorization'] = state.currentUser ?
-    state.currentUser.token : ''
+  axios.defaults.headers.common['Authorization'] = state.currentUser ? state.currentUser.token : ''
 }
