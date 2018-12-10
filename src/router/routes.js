@@ -1,8 +1,29 @@
+import store from '@state/store'
+
 export default [
+  // 登录界面
+  {
+    path: '/login',
+    name: 'login',
+    component: () => lazyLoadView(import('@pages/login/login')),
+    meta: {
+      beforeResolve(routeTo, routeFrom, next) {
+        // 判断用户是否已经登录
+        if (store.getters['auth/loggedIn']) {
+          next({name: 'home'})
+        } else {
+          next()
+        }
+      }
+    }
+  },
   {
     path: '/home',
     name: 'home',
     component: () => lazyLoadView(import('@pages/home/home')),
+    meta: {
+      authRequired: true
+    },
     redirect: 'home/test-page1',
     children: [
       {
@@ -47,7 +68,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   },
   {
     path: '*',

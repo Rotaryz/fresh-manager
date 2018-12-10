@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
 import NProgress from 'nprogress/nprogress'
+import store from '@state/store'
 import routes from './routes'
 
 NProgress.configure({showSpinner: false})
@@ -24,10 +25,31 @@ const router = new VueRouter({
 })
 
 router.beforeEach((routeTo, routeFrom, next) => {
+  // 判断不是初始页面开始加载进度条
   if (routeFrom.name !== null) {
     NProgress.start()
   }
-  return next()
+  // 判断该路由是否需要检验用户信息
+  const authRequired = routeTo.matched.some((route) => route.meta.authRequired)
+  if (!authRequired) {
+    return next()
+  }
+  // 判断是否已经登录
+  if (store.getters['auth/loggedIn']) {
+    // 检验登录的有效性，执行相应的操作
+    return store.dispatch('auth/validate').then((validUser) => {
+      validUser ? next() : redirectToLogin()
+    })
+  }
+
+  // 如果需要检验用户信息，但是当前却没登录,
+  // 重定向到登录页面。
+  redirectToLogin()
+
+  function redirectToLogin() {
+    // 跳转到登录页面并且把当前的路由信息传递给登录页面
+    next({name: 'login', query: {redirectFrom: routeTo.fullPath}})
+  }
 })
 
 router.beforeResolve(async (routeTo, routeFrom, next) => {
