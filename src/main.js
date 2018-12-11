@@ -19,6 +19,4 @@ export const app = new Vue({
   render: (h) => h(App)
 }).$mount('#app')
 
-if (window.Cypress) {
-  window.__app__ = app
-}
+window.__app__ = app
