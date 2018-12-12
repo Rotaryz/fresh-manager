@@ -9,9 +9,13 @@ to: "src/pages/<%= h.inflection.dasherize(name) %>/<%= h.inflection.dasherize(na
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = '<%=  h.inflection.dasherize(name).toUpperCase().replace(/-/g, '_')%>'
+  const TITLE = '<%= title %>'
 
   export default {
     name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
     data() {
       return {
 

@@ -22,8 +22,7 @@
   export default {
     name: PAGE_NAME,
     page: {
-      title: 'this.currentTitles.length ? this.currentTitles[this.currentTitles.length - 1] : ',
-      meta: [{name: 'description', content: 'description'}]
+      title: 'home'
     },
     components: {
       Navigation,

@@ -3,7 +3,7 @@ inject: true
 to: src/router/routes.js
 after: "export default"
 ---
-  // <%= note %>
+  // <%= title %>
   {
     path: '/<%= name %>',
     name: '<%= name %>',
