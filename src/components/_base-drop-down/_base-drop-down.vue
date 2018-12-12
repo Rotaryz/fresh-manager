@@ -31,7 +31,7 @@
             show: false,
             content: '全部',
             type: 'default',
-            data: [{title: '55'}, {title: 'title'}]
+            data: [] // 格式：{title: '55'}
           }
         }
       },

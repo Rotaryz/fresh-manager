@@ -1,11 +1,6 @@
 <template>
   <div class="product-list">
     product-list
-    <base-edit-image></base-edit-image>
-    <base-switch></base-switch>
-    <base-search></base-search>
-    <base-date-select></base-date-select>
-    <base-drop-down></base-drop-down>
   </div>
 </template>
 
