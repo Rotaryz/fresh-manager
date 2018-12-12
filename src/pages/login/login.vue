@@ -15,7 +15,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import appConfig from '@src/app.config'
   import {authMethods} from '@state/helpers'
 
   const PAGE_NAME = 'LOGIN'
@@ -51,14 +50,16 @@
         this.logIn({
           username: this.username,
           password: this.password
-        }).then((token) => {
-          console.log(token)
-          this.tryingToLogIn = false
-          this.$router.push(this.$route.query.redirectFrom || { name: 'home' })
-        }).catch(error => {
-          this.tryingToLogIn = false
-          this.$toast.show(error)
         })
+          .then((token) => {
+            console.log(token)
+            this.tryingToLogIn = false
+            this.$router.push(this.$route.query.redirectFrom || {name: 'home'})
+          })
+          .catch((error) => {
+            this.tryingToLogIn = false
+            this.$toast.show(error)
+          })
       }
     }
   }

@@ -33,7 +33,7 @@ export const actions = {
     }
     // todo return promise and set currentUser state
     return new Promise((resolve, reject) => {
-      commit('SET_CURRENT_USER' , username + password)
+      commit('SET_CURRENT_USER', username + password)
       resolve(username + password)
     })
   },

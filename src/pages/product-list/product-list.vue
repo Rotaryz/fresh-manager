@@ -1,12 +1,17 @@
 <template>
   <div class="product-list">
     product-list
+    <base-edit-image></base-edit-image>
+    <base-switch></base-switch>
+    <base-search></base-search>
+    <base-date-select></base-date-select>
+    <base-drop-down></base-drop-down>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'PRODUCT_LIST'
-  const TITLE = '商品管理'
+  const TITLE = '商品列表'
 
   export default {
     name: PAGE_NAME,
@@ -14,9 +19,7 @@
       title: TITLE
     },
     data() {
-      return {
-
-      }
+      return {}
     }
   }
 </script>

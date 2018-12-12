@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "iview": "^3.1.5",
     "lodash": "^4.17.11",
     "nprogress": "^0.2.0",
     "storage-controller": "^1.0.4",

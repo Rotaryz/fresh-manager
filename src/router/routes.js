@@ -146,7 +146,7 @@ export default [
         meta: {
           titles: ['团长管理', '团长配送单']
         }
-      },
+      }
       /**
        * 团长管理
        */
