@@ -6,9 +6,13 @@
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
+  const TITLE = '商品分类'
 
   export default {
     name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
     data() {
       return {
 

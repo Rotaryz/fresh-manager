@@ -6,9 +6,13 @@
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'ORDER_LIST'
+  const TITLE = '订单列表'
 
   export default {
     name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
     data() {
       return {
 

@@ -6,9 +6,13 @@
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'RUSH_PURCHASE'
+  const TITLE = '今日抢购'
 
   export default {
     name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
     data() {
       return {
 

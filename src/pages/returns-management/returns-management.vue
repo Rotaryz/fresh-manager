@@ -6,9 +6,13 @@
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'RETURNS_MANAGEMENT'
+  const TITLE = '退货管理'
 
   export default {
     name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
     data() {
       return {
 

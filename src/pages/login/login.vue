@@ -19,17 +19,12 @@
   import {authMethods} from '@state/helpers'
 
   const PAGE_NAME = 'LOGIN'
+  const TITLE = '登录'
 
   export default {
     name: PAGE_NAME,
     page: {
-      title: '登录',
-      meta: [
-        {
-          name: 'description',
-          content: `${appConfig.title}登录界面`
-        }
-      ]
+      title: TITLE
     },
     data() {
       return {

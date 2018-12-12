@@ -6,9 +6,13 @@
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'AUXILIARY_INFORMATION'
+  const TITLE = '辅助资料'
 
   export default {
     name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
     data() {
       return {
 
