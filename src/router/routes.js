@@ -11,7 +11,6 @@ export default [
         // 判断用户是否已经登录
         if (store.getters['auth/loggedIn']) {
           next({name: 'home'})
-          next()
         } else {
           next()
         }

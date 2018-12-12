@@ -41,7 +41,7 @@
     border-radius: 6px
     transition: all .5s ease-out
     text-align: center
-    background-color: $color-mask-bgc
+    background-color: rgba(0, 0, 0, 0.5)
     .content
       min-width :150px
       max-width :260px

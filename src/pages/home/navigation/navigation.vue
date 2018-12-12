@@ -158,6 +158,15 @@
         navList: NAV_LIST
       }
     },
+    watch: {
+      $route(newVal, oldVal) {
+        if (newVal.fullPath === oldVal.fullPath) {
+          return
+        }
+        this._resetNavStatus(this.navList)
+        this._resetNavLight(this.navList, newVal.fullPath)
+      }
+    },
     created() {
       this._initNavList()
     },
@@ -209,7 +218,10 @@
       // 重置路由亮灯的状态
       _resetNavLight(arr, path) {
         // 路由包含的路由关系
-        let index = arr.findIndex((item) => path.includes(item.url))
+        let index = arr.findIndex((item) => {
+          let childHasPath = item.children && item.children.some((item) => item.url === path)
+          return item.url === path || childHasPath
+        })
         // 路由名称全等的路由关系
         let fullIdx = arr.findIndex((item) => path === item.url)
         let current = {}
@@ -300,7 +312,6 @@
         &:hover
           color: $color-white
         &.active
-          background: $color-menu-bg-active
           &:before
             width: 4px
           &.no-border:before
@@ -355,7 +366,6 @@
           &:hover
             color: $color-white
           &.active
-            background: $color-menu-bg-active
             color: $color-white
             &:before
               width: 4px
