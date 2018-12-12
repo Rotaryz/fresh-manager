@@ -11,6 +11,7 @@ export default [
         // 判断用户是否已经登录
         if (store.getters['auth/loggedIn']) {
           next({name: 'home'})
+          next()
         } else {
           next()
         }
@@ -24,40 +25,131 @@ export default [
     meta: {
       authRequired: true
     },
-    redirect: 'home/test-page1',
+    redirect: 'home/product-list',
     children: [
+      /**
+       * 商品管理
+       */
+      // 商品列表
       {
-        path: 'sample/one',
-        name: 'sample-one',
-        component: () => lazyLoadView(import('@pages/sample/sample'))
+        path: 'product-list',
+        name: 'product-list',
+        component: () => lazyLoadView(import('@pages/product-list/product-list')),
+        meta: {
+          titles: ['商品管理', '商品列表']
+        }
       },
+      // 商品分类
       {
-        path: 'sample/two',
-        name: 'sample-two',
-        component: () => lazyLoadView(import('@pages/sample/sample'))
+        path: 'product-categories',
+        name: 'product-categories',
+        component: () => lazyLoadView(import('@pages/product-categories/product-categories')),
+        meta: {
+          titles: ['商品管理', '商品分类']
+        }
       },
+      // 辅助资料
       {
-        path: 'other-pages/two',
-        name: 'other-pages-two',
-        component: () => lazyLoadView(import('@pages/other-pages/other-pages'))
+        path: 'auxiliary-information',
+        name: 'auxiliary-information',
+        component: () => lazyLoadView(import('@pages/auxiliary-information/auxiliary-information')),
+        meta: {
+          titles: ['商品管理', '辅助资料']
+        }
       },
+      /**
+       * 商品管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 商城管理
+       */
+      // 轮播广告
       {
-        path: 'other-pages/one',
-        name: 'other-pages-one',
-        component: () => lazyLoadView(import('@pages/other-pages/other-pages'))
+        path: 'advertisement',
+        name: 'advertisement',
+        component: () => lazyLoadView(import('@pages/advertisement/advertisement')),
+        meta: {
+          titles: ['商城管理', '轮播广告']
+        }
       },
-      // 测试页面配置
+      // 今日抢购
       {
-        path: 'test-page1',
-        name: 'test-page1',
-        component: () => lazyLoadView(import('@pages/test-page1/test-page1'))
+        path: 'rush-purchase',
+        name: 'rush-purchase',
+        component: () => lazyLoadView(import('@pages/rush-purchase/rush-purchase')),
+        meta: {
+          titles: ['商城管理', '今日抢购']
+        }
       },
-      // 测试页面注释
+      /**
+       * 商城管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 订单管理
+       */
+      // 订单列表
       {
-        path: 'test-page',
-        name: 'test-page',
-        component: () => lazyLoadView(import('@pages/test-page/test-page'))
-      }
+        path: 'order-list',
+        name: 'order-list',
+        component: () => lazyLoadView(import('@pages/order-list/order-list')),
+        meta: {
+          titles: ['订单管理', '订单列表']
+        }
+      },
+      // 退货管理
+      {
+        path: 'returns-management',
+        name: 'returns-management',
+        component: () => lazyLoadView(import('@pages/returns-management/returns-management')),
+        meta: {
+          titles: ['订单管理', '退货管理']
+        }
+      },
+      /**
+       * 订单管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 采购管理
+       */
+      {
+        path: 'purchase-management',
+        name: 'purchase-management',
+        component: () => lazyLoadView(import('@pages/purchase-management/purchase-management')),
+        meta: {
+          titles: ['采购管理']
+        }
+      },
+      /**
+       * 采购管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 团长管理
+       */
+      // 团长列表
+      {
+        path: 'leader-list',
+        name: 'leader-list',
+        component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
+        meta: {
+          titles: ['团长管理', '团长列表']
+        }
+      },
+      // 配送单
+      {
+        path: 'dispatching-list',
+        name: 'dispatching-list',
+        component: () => lazyLoadView(import('@pages/dispatching-list/dispatching-list')),
+        meta: {
+          titles: ['团长管理', '团长配送单']
+        }
+      },
+      /**
+       * 团长管理
+       */
     ]
   },
   {

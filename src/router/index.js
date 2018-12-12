@@ -29,6 +29,11 @@ router.beforeEach((routeTo, routeFrom, next) => {
   if (routeFrom.name !== null) {
     NProgress.start()
   }
+  // 动态添加页面标题
+  const titles = routeTo.meta.titles
+  if (titles) {
+    store.commit('global/SET_CURRENT_TITLES', titles)
+  }
   // 判断该路由是否需要检验用户信息
   const authRequired = routeTo.matched.some((route) => route.meta.authRequired)
   if (!authRequired) {
@@ -37,9 +42,10 @@ router.beforeEach((routeTo, routeFrom, next) => {
   // 判断是否已经登录
   if (store.getters['auth/loggedIn']) {
     // 检验登录的有效性，执行相应的操作
-    return store.dispatch('auth/validate').then((validUser) => {
-      validUser ? next() : redirectToLogin()
-    })
+    // return store.dispatch('auth/validate').then((validUser) => {
+    //   validUser ? next() : redirectToLogin()
+    // })
+    return next() // todo
   }
 
   // 如果需要检验用户信息，但是当前却没登录,

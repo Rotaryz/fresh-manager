@@ -1,5 +1,5 @@
 import request from '@utils/request'
-import {defaultProcess} from './api-utils'
+import {defaultProcess} from '@utils/api-utils'
 
 export default {
   /**

@@ -28,10 +28,14 @@ export const actions = {
   },
   // 登录
   logIn({commit, dispatch, getters}, {username, password}) {
-    if (getters.loggedIn()) {
+    if (getters.loggedIn) {
       return dispatch('validate')
     }
     // todo return promise and set currentUser state
+    return new Promise((resolve, reject) => {
+      commit('SET_CURRENT_USER' , username + password)
+      resolve(username + password)
+    })
   },
   // 退出
   logOut({commit}) {

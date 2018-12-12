@@ -13,7 +13,7 @@ module.exports = [
   {
     type: 'input',
     name: 'note',
-    message: '注释：',
+    message: '注释:',
     validate(value) {
       if (!value.length) {
         return '路由注释不能为空！'

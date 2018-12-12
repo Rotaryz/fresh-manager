@@ -1,10 +1,7 @@
 <template>
   <div class="navigation">
-    <header>
-      <img src="./pic-logo@2x.png" class="icon">
-      <p>赞播优鲜</p>
-    </header>
-    <dl v-for="(item, index) in navList" :key="index">
+    <header></header>
+    <dl v-for="(item, index) in navList" :key="index" :class="item | isActive">
       <dt :class="item | isActive" @click="navHandle(item, index)">
         <img :src="item.isLight ? item.iconSelected : item.icon" alt="">
         <p>{{item.title}}</p>
@@ -21,47 +18,56 @@
 
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'NAVIGATION_BAR'
-  const HEIGHT = 60 + 10
+  const HEIGHT = 40
   const NAV_LIST = [
     {
-      title: '用户管理',
-      url: '/home/test-page1',
-      icon: require('./icon-user@2x.png'),
-      iconSelected: require('./icon-user_select@2x.png'),
+      title: '商品管理',
+      url: '/home/product-list',
+      icon: require('./icon-commodity@2x.png'),
+      iconSelected: require('./icon-commodity_white@2x.png'),
       childrenIndex: 0,
       showHeight: HEIGHT,
-      isRouter: true, // 是否跳转
+      isRouter: false, // 是否跳转
       isLight: false, // 是否亮灯
-      children: []
+      children: [
+        {
+          title: '商品列表',
+          url: '/home/product-list',
+          isRouter: true,
+          isLight: false
+        },
+        {
+          title: '商品分类',
+          url: '/home/product-categories',
+          isRouter: true,
+          isLight: false
+        },
+        {
+          title: '辅助资料',
+          url: '/home/auxiliary-information',
+          isRouter: true,
+          isLight: false
+        }
+      ]
     },
     {
-      title: '商家管理',
-      url: '/home/test-page',
-      icon: require('./icon-shop@2x.png'),
-      iconSelected: require('./icon-shop_select@2x.png'),
-      childrenIndex: 0,
-      isRouter: true,
-      isLight: false,
-      children: []
-    },
-    {
-      title: '商品管理',
-      url: '/home/sample',
-      icon: require('./icon-goods@2x.png'),
-      iconSelected: require('./icon-goods_select@2x.png'),
+      title: '商城管理',
+      url: '/home/advertisement',
+      icon: require('./icon-tmall@2x.png'),
+      iconSelected: require('./icon-tmall_white@2x.png'),
       childrenIndex: 0,
       isRouter: false,
       isLight: false,
       children: [
         {
-          title: '折扣商品',
-          url: '/home/sample/one',
+          title: '轮播广告',
+          url: '/home/advertisement',
           isRouter: true,
           isLight: false
         },
         {
-          title: '播豆商品',
-          url: '/home/sample/two',
+          title: '今日抢购',
+          url: '/home/rush-purchase',
           isRouter: true,
           isLight: false
         }
@@ -69,48 +75,60 @@
     },
     {
       title: '订单管理',
-      icon: require('./icon-indent@2x.png'),
-      iconSelected: require('./icon-indent_select@2x.png'),
-      url: '/home/other-pages',
+      url: '/home/order-list',
+      icon: require('./icon-order@2x.png'),
+      iconSelected: require('./icon-order_white@2x.png'),
       childrenIndex: 0,
+      isRouter: false,
+      isLight: false,
       children: [
         {
-          title: '用户订单',
-          url: '/home/other-pages/one',
+          title: '订单列表',
+          url: '/home/order-list',
           isRouter: true,
           isLight: false
         },
         {
-          title: '商家订单',
-          url: '/home/other-pages/two',
+          title: '退货管理',
+          url: '/home/returns-management',
+          isRouter: true,
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '采购管理',
+      icon: require('./icon-shopping@2x.png'),
+      iconSelected: require('./icon-shopping_white@2x.png'),
+      url: '/home/purchase-management',
+      childrenIndex: 0,
+      isRouter: true,
+      isLight: false,
+      children: []
+    },
+    {
+      title: '团长管理',
+      icon: require('./icon-group@2x.png'),
+      iconSelected: require('./icon-group_white@2x.png'),
+      url: '/home/leader-list',
+      childrenIndex: 0,
+      isRouter: false,
+      isLight: false,
+      children: [
+        {
+          title: '团长列表',
+          url: '/home/leader-list',
+          isRouter: true,
+          isLight: false
+        },
+        {
+          title: '团长配送单',
+          url: '/home/dispatching-list',
           isRouter: true,
           isLight: false
         }
       ]
     }
-  // {
-  //   title: '大礼包',
-  //   icon: require('./icon-gifts@2x.png'),
-  //   iconSelected: require('./icon-gifts_select@2x.png'),
-  //   url: '/home/gifts',
-  //   childrenIndex: 0,
-  //   isRouter: false,
-  //   isLight: false,
-  //   children: [
-  //     {
-  //       title: '用户礼包',
-  //       url: '/gifts/user-gifts',
-  //       isRouter: true,
-  //       isLight: false
-  //     },
-  //     {
-  //       title: '商家礼包',
-  //       url: '/gifts/business-gifts',
-  //       isRouter: true,
-  //       isLight: false
-  //     }
-  //   ]
-  // }
   ]
   export default {
     name: COMPONENT_NAME,
@@ -119,7 +137,7 @@
       childrenActive(value) {
         let styles = ''
         if (value.children.length && value.isLight) {
-          styles = `height:${value.children.length * HEIGHT}px`
+          styles = `height:${value.children.length * (HEIGHT + 4)}px`
         }
         return styles
       },
@@ -210,34 +228,38 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  $tab-height = 60px
-  $color-menu-tag = #FF533C
+  @import "~@design"
+
+  $tab-height = 40px
+  $color-menu-tag = #4dbd73
   $color-menu-text = #6E748B
   $color-menu-text-active = #fff
-  $color-menu-bg-active = rgba(255, 255, 255, 0.1)
-  $color-menu-bg = rgba(255, 255, 255, 0)
+  $color-menu-bg-active = #0F1922
+  $color-menu-bg = #1D2B36
   $color-white = #fff
   $menu-width = 200px
-
-  @import "~@design"
 
   .navigation
     user-select: none
     position: fixed
     top: 0
     left: 0
-    background: #222742
+    background: $color-menu-bg
     box-shadow: 3px 0 4px 0 rgba(0, 8, 39, 0.30)
     width: $menu-width
     min-height: 100vh
     z-index: 2000
     overflow-y: auto
     header
-      layout(row)
+      width: 199px
       height: 80px
-      align-items: center
-      justify-content: center
+      border-top-left-radius: 18px
       border-bottom: 1px solid $color-menu-line
+      background: $color-main
+      bg-image('./pic-logo')
+      background-repeat: no-repeat
+      background-position: center center
+      background-size: 129px
       img
         height: 24px
         width: @height
@@ -248,27 +270,41 @@
         font-family: PingFangSC-Semibold
         letter-spacing: 6px
     dl
+      padding: 12px 0
       font-family: PingFangSC-Regular
       color: $color-menu-text
       font-size: 16px
       cursor: pointer
+      background: $color-menu-bg
+      &.active
+        background: $color-menu-bg-active
       dt
         layout(row, block, nowrap)
         align-items: center
         width: 100%
         height: $tab-height
         overflow: hidden
-        background: $color-menu-bg
         box-sizing: border-box
         border-left: 5px solid transparent
         transition: all .2s
+        font-family: $font-family-medium
+        &:before
+          position: absolute
+          left: 0
+          display: block
+          content: ''
+          width: 0
+          height: 18px
+          transition: width .3s
+          background: $color-menu-tag
         &:hover
-          background: $color-menu-bg-active
+          color: $color-white
         &.active
-          border-left: 5px solid $color-menu-tag
           background: $color-menu-bg-active
-          &.no-border
-            border-color: transparent
+          &:before
+            width: 4px
+          &.no-border:before
+            width: 0
           & > p
             color: $color-white
           & > i
@@ -283,7 +319,7 @@
           border-left: 5px solid transparent
           transition: all .2s
         img
-          height: 19px
+          height: 22px
           width: @height
           margin: 0 10px 0 30px
         i
@@ -302,18 +338,25 @@
         p
           width: 100%
           layout()
-          background: $color-menu-bg
           align-items: center
           justify-content: center
           flex: 1
-          box-sizing :border-box
-          border-left: 5px solid transparent
-          margin: 5px 0
+          box-sizing: border-box
           transition: all .2s
+          &:before
+            position: absolute
+            left: 0
+            display: block
+            content: ''
+            width: 0
+            height: 18px
+            transition: width .3s
+            background: $color-menu-tag
           &:hover
-            background: $color-menu-bg-active
+            color: $color-white
           &.active
-            border-left: 5px solid $color-menu-tag
             background: $color-menu-bg-active
             color: $color-white
+            &:before
+              width: 4px
 </style>

@@ -1,4 +1,4 @@
 module.exports = {
-  title: 'fresh-managar',
-  description: '赞播优鲜-管理'
+  title: '赞播优鲜',
+  description: '赞播优鲜-管理后台'
 }

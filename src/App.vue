@@ -11,22 +11,23 @@
     page: {
       titleTemplate(title) {
         title = typeof title === 'function' ? title(this.$store) : title
-        return title || appConfig.title
+        return title ? `${title} | ${appConfig.title}` : appConfig.title
       }
     },
     created() {
-      console.log(this.$route)
+      // console.log(this.$route)
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import "~@design"
   @import "./design/_globals.styl"
   @import "~nprogress/nprogress.css"
 
   #nprogress .bar
-    background: red !important
+    background: $color-main !important
 
   #nprogress .peg
-    box-shadow: 0 0 10px red, 0 0 5px red !important
+    box-shadow: 0 0 10px $color-main, 0 0 5px $color-main !important
 </style>

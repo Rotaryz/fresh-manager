@@ -1,18 +1,18 @@
 <template>
-  <base-panel>
-    <div slot="content" class="test-page1">
-      test-page1
-    </div>
-  </base-panel>
+  <div class="rush-purchase">
+    rush-purchase
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
-  const PAGE_NAME = 'TEST_PAGE1'
+  const PAGE_NAME = 'RUSH_PURCHASE'
 
   export default {
     name: PAGE_NAME,
     data() {
-      return {}
+      return {
+
+      }
     }
   }
 </script>
@@ -20,6 +20,6 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .test-page1
+  .rush-purchase
     width: 100%
 </style>

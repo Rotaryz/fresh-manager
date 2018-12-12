@@ -1,4 +1,4 @@
-import request from '@utils/request'
+import request from './request'
 const _this = window.__app__
 
 // 通用的api请求方式

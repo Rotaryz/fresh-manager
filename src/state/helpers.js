@@ -8,3 +8,9 @@ export const authComputed = {
 }
 
 export const authMethods = mapActions('auth', ['logIn', 'logOut'])
+
+export const globalComputed = {
+  ...mapState('global', {
+    currentTitles: (state) => state.currentTitles
+  })
+}
