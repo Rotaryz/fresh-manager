@@ -136,7 +136,6 @@
     data() {
       return {
         navList: JSON.parse(JSON.stringify(NAV_LIST)),
-        tempNavList: JSON.parse(JSON.stringify(NAV_LIST)),
         currentIndex: ''
       }
     },
@@ -155,7 +154,7 @@
       _handleNavList() {
         let currentPath = this.$route.fullPath
         let currentIndex = this.navList.findIndex((item) => {
-          return item.url === currentPath || item.children.some((child) => child.url === currentPath)
+          return item.url === currentPath || item.children.some((child) => currentPath.includes(child.url))
         })
         currentIndex = parseInt(currentIndex)
         if (currentIndex < 0) {
@@ -168,7 +167,7 @@
         navList[currentIndex].isLight = true
         if (navList[currentIndex].children) {
           navList[currentIndex].children.forEach((item) => {
-            if (item.url === currentPath) {
+            if (currentPath.includes(item.url)) {
               item.isLight = true
             }
           })
@@ -197,6 +196,9 @@
         this.navList = navList
       },
       clickNav(nav, index) {
+        if (nav.isLight) {
+          return
+        }
         if (index !== undefined) {
           this._resetNavList(index)
           this.navList[index].url = nav.url
@@ -295,12 +297,11 @@
           overflow: hidden
           background: rgba(255, 255, 255, 0)
           box-sizing: border-box
-          border-left: 5px solid transparent
           transition: all .2s
         img
           height: 22px
           width: @height
-          margin: 0 10px 0 30px
+          margin: 0 9px 0 8px
         i
           height: 10px
           width: 10px
@@ -317,7 +318,7 @@
         p
           width: 100%
           layout()
-          align-items: center
+          padding-left: 44px
           justify-content: center
           flex: 1
           box-sizing: border-box

@@ -71,7 +71,7 @@
 
   .list-box
     line-height: 1
-    padding: 0 30px
+    padding-left: 30px
     box-sizing: border-box
     border-bottom: 1px solid $color-line
     display: flex

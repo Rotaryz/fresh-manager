@@ -2,7 +2,7 @@
   <div class="admin-select">
     <div class="select-item" @click.stop="selectType">
       <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
-        <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': select.check, 'admin-big-box-hover': showHover}" :style="{width: width + 'px'}">
+        <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': select.check, 'admin-big-box-hover': showHover}" :style="{width: width + 'px',height: height + 'px', lineHeight: height + 'px'}">
           {{select.content}}
           <img src="./icon-drop_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
           <transition name="fade">
@@ -46,6 +46,10 @@
       width: {
         type: Number,
         default: 102
+      },
+      height: {
+        type: Number,
+        default: 28
       }
     },
     data() {
@@ -70,6 +74,7 @@
       leaveHide() {
         this.setTime = setTimeout(() => {
           this.clickHide()
+          console.log('fdg')
         }, 1500)
       },
       selectType() {
@@ -112,7 +117,6 @@
 
   .admin-big-box
     cursor: pointer
-    margin-left: 10px
     box-sizing: border-box
     border-radius: 4px
     font-size: $font-size-medium
