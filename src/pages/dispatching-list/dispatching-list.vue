@@ -1,8 +1,9 @@
 <template>
   <div class="dispatching-list">
     <div class="tab-header">
+      <base-drop-down :select="dispatchSelect"></base-drop-down>
+      <div class="line"></div>
       <base-search></base-search>
-      <div class="btn-main">导入采购单</div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in dispatchinglist" :key="index" class="list-item">{{item}}</div>
@@ -18,7 +19,7 @@
         <div class="list-item">DDH20188832770043DDH20188832770043</div>
         <div class="list-item">DDH20188832770043DDH20188832770043</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="purchase-detail" append class="list-operation">详情</router-link>
+          <router-link tag="span" to="dispatching-detail" append class="list-operation">详情</router-link>
           <span class="list-operation">导出</span>
         </div>
       </div>
@@ -32,7 +33,7 @@
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'DISPATCHING_LIST'
   const TITLE = '团长配送单'
-  const DISPATCHING_LIST = ['采购单号', '计划交货时间', '总采购项', '已采购项', '收货金额', '操作']
+  const DISPATCHING_LIST = ['配送单号', '社区名称', '团长名称', '配送金额', '配送日期', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -41,7 +42,14 @@
     },
     data() {
       return {
-        dispatchinglist: DISPATCHING_LIST
+        dispatchinglist: DISPATCHING_LIST,
+        dispatchSelect: {
+          check: false,
+          show: false,
+          content: '全部社区',
+          type: 'default',
+          data: [{title: 'sdsd'}, {title: 'sds'}] // 格式：{title: '55'}
+        }
       }
     }
   }
@@ -56,10 +64,12 @@
     display: flex
     flex-direction: column
 
+  .line
+    width: 10px
+
   .tab-header
     height: 80px
     display: flex
-    justify-content: space-between
     align-items: center
     box-sizing: border-box
 
@@ -72,7 +82,7 @@
 
   .list-box
     line-height: 1
-    padding-right: 30px
+    padding-left: 30px
     box-sizing: border-box
     border-bottom: 1px solid $color-line
     display: flex

@@ -16,7 +16,7 @@
         <div class="list-item">DDH20188832770043DDH20188832770043</div>
         <div class="list-item">2018-12-07 15:00</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="" append class="list-operation">编辑</router-link>
+          <router-link tag="span" to="edit-leader" append class="list-operation">编辑</router-link>
           <span class="list-operation">店铺码</span>
         </div>
       </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="purchase-detail">
+  <div class="dispatching-detail">
     <div class="essential-information">
       <div class="content-header">
         <div class="content-title">基本信息</div>
@@ -7,9 +7,12 @@
       </div>
       <div class="essential-information-detail">
         <p class="essential-information-item">采购单号：DDH20188832770043</p>
-        <p class="essential-information-item">生成时间：2018-12-08 15:34:00</p>
-        <p class="essential-information-item">采购商品总数：209</p>
-        <p class="essential-information-item">数据来源：系统生成</p>
+        <p class="essential-information-item essential-information-time">生成时间：2018-12-08 15:34:00</p>
+        <p class="essential-information-item essential-information-total">采购商品总数：209</p>
+        <p class="essential-information-item essential-information-data">数据来源：系统生成</p>
+        <p class="essential-information-item essential-information-data">团长名称：乔布斯</p>
+        <p class="essential-information-item essential-information-data">团长电话：13316241009</p>
+        <p class="essential-information-item essential-information-data">社区地址：广东 广州 白云区 国际单位二期A5四楼</p>
       </div>
     </div>
     <div class="list-of-commodities">
@@ -27,44 +30,8 @@
           <div class="com-list-item">91</div>
           <div class="com-list-item">91</div>
           <div class="com-list-item">91</div>
-          <div class="com-list-item">12</div>
-          <div class="com-list-item">￥45.32</div>
-          <div class="com-list-item">￥45.32</div>
         </div>
-      </div>
-    </div>
-    <div class="history-record">
-      <div class="content-header">
-        <div class="content-title">历史记录</div>
-      </div>
-      <div class="commodities-list">
-        <div class="commodities-list-header com-list-box">
-          <div v-for="(item, index) in historyRecord" :key="index" class="com-list-item">{{item}}</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
+        <div class="total-money">预定总金额：￥73.98</div>
       </div>
     </div>
     <div class="back">
@@ -74,20 +41,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  const PAGE_NAME = 'PURCHASE_DETAIL'
-  const TITLE = '采购详情'
-  const COMMODITIES_LIST = [
-    '序号',
-    '商品名称',
-    '单位',
-    '待采购量',
-    '库存',
-    '收货数量',
-    '未收数量',
-    '收货单价',
-    '收货金额'
-  ]
-  const HISTORY_RECORD = ['序号', '操作人', '时间', '操作记录']
+  const PAGE_NAME = 'DISPATCHING_DETAIL'
+  const TITLE = '团长配送单'
+  const COMMODITIES_LIST = ['序号', '商品名称', '单位', '预定数量', '预定单价', '预定金额']
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -95,8 +52,7 @@
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST,
-        historyRecord: HISTORY_RECORD
+        commodities: COMMODITIES_LIST
       }
     },
     methods: {
@@ -110,7 +66,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .purchase-detail
+  .dispatching-detail
     line-height: 1
     flex: 1
     padding-bottom: 80px
@@ -155,20 +111,6 @@
         white-space: nowrap
         width: 280px
 
-  .list-of-commodities
-    margin-bottom: 85px
-    box-sizing: border-box
-    padding: 0 20px
-    .com-list-box
-      .com-list-item
-        &:nth-child(2)
-          flex: 2
-
-  .history-record
-    box-sizing: border-box
-    padding: 0 20px
-    padding-bottom: 80px
-
   .commodities-list-header
     margin-top: 28px
     height: 50px
@@ -196,6 +138,21 @@
       font-family: $font-family-regular
       &:nth-child(1)
         flex: 0.5
+
+  .commodities-list
+    margin-bottom: 85px
+    box-sizing: border-box
+    padding: 0 20px
+    .com-list-box
+      .com-list-item
+        &:nth-child(2)
+          flex: 1.5
+    .total-money
+      text-align: right
+      margin-top: 21px
+      font-family: $font-family-medium
+      color: $color-text-main
+      font-size: $font-size-14
 
   .back
     position: absolute

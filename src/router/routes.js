@@ -154,6 +154,24 @@ export default [
         meta: {
           titles: ['团长管理', '团长配送单']
         }
+      },
+      // 团长配送单
+      {
+        path: 'dispatching-list/dispatching-detail',
+        name: 'dispatching-detail',
+        component: () => lazyLoadView(import('@pages/dispatching-detail/dispatching-detail')),
+        meta: {
+          titles: ['团长管理', '团长配送单', '配送单详情']
+        }
+      },
+      // 新建团长
+      {
+        path: 'leader-list/edit-leader',
+        name: 'edit-leader',
+        component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
+        meta: {
+          titles: ['团长管理', '团长配送单', '新建团长']
+        }
       }
       /**
        * 团长管理
