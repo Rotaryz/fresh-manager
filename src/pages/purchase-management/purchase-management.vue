@@ -2,6 +2,7 @@
   <div class="purchase-management">
     <div class="pur-header">
       <base-search></base-search>
+      <div class="btn-main hand">导入采购单</div>
     </div>
   </div>
 </template>
@@ -30,5 +31,8 @@
   .pur-header
     height: 80px
     border-bottom: 1px solid $color-line
+    display: flex
+    justify-content: space-between
+    align-items: center
     box-sizing: border-box
 </style>
