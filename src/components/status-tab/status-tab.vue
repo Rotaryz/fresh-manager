@@ -75,14 +75,15 @@
     position: relative
     border-bottom: 1px solid #E1E1E1
     .status-item
-      height: 100%
-      padding-top: 30px
-      padding-bottom: 16px
       margin-right: 60px
+      height: 62px
       box-sizing: border-box
       transition: all 0.3s
       .status-txt
-        height: 100%
+        padding-top: 30px
+        padding-bottom: 16px
+        height: 62px
+        box-sizing: border-box
     .status-item-active
       color: $color-text-main
       font-family: $font-family-medium

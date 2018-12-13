@@ -7,7 +7,6 @@
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
-
   export default {
     name: PAGE_NAME,
     page: {
