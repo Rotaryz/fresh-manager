@@ -218,12 +218,15 @@
       // 重置路由亮灯的状态
       _resetNavLight(arr, path) {
         // 路由包含的路由关系
-        let index = arr.findIndex((item) => {
-          let childHasPath = item.children && item.children.some((item) => item.url === path)
-          return item.url === path || childHasPath
-        })
-        // 路由名称全等的路由关系
-        let fullIdx = arr.findIndex((item) => path === item.url)
+        let index = -1
+        for (let i in arr) {
+          let idx = arr[i].children ? arr[i].children.findIndex((child) => path.includes(child.url)) : -1
+          if (idx !== -1) {
+            index = i
+            break
+          }
+        }
+        let fullIdx = arr.findIndex((item) => path.includes(item.url))
         let current = {}
         // 全等权重大于包含
         if (fullIdx > -1 || index > -1) {
@@ -332,7 +335,7 @@
         img
           height: 22px
           width: @height
-          margin: 0 10px 0 30px
+          margin: 0 9px 0 6px
         i
           height: 10px
           width: 10px
@@ -349,7 +352,7 @@
         p
           width: 100%
           layout()
-          align-items: center
+          padding-left: 45px
           justify-content: center
           flex: 1
           box-sizing: border-box

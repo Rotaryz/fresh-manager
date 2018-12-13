@@ -53,7 +53,19 @@
     min-height: 100vh
     padding-left: 200px
     background: $color-background
+    &::-webkit-scrollbar
+      width: 8px
+      height: 10px
+    &::-webkit-scrollbar-thumb
+      background-color: rgba(0, 0, 0, .15)
+      border-radius: 10px
+    &::-webkit-scrollbar-thumb:hover
+      background-color: rgba(0, 0, 0, .3)
+    &::-webkit-scrollbar-track
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+      border-radius: 10px
     .container
+      display: flex
       flex: 1
       margin: 14px
       padding: 0 20px
