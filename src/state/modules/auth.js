@@ -34,7 +34,7 @@ export const actions = {
       return dispatch('validate')
     }
     return API.Auth.logIn({username, password})
-      .then(res => {
+      .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
           return null
@@ -42,9 +42,11 @@ export const actions = {
         const user = res.data
         commit('SET_CURRENT_USER', user)
         return user
-      }).catch(() => {
+      })
+      .catch(() => {
         return null
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },
@@ -58,7 +60,7 @@ export const actions = {
       return Promise.resolve(null)
     }
     return API.Auth.validate()
-      .then(res => {
+      .then((res) => {
         if (res.error !== app.$ERR_OK) {
           commit('SET_CURRENT_USER', null)
           return null
@@ -66,7 +68,8 @@ export const actions = {
         const user = res.data
         commit('SET_CURRENT_USER', user)
         return user
-      }).catch(() => {
+      })
+      .catch(() => {
         commit('SET_CURRENT_USER', null)
         return null
       })
@@ -80,7 +83,7 @@ export const actions = {
 function setDefaultAuthHeaders(state) {
   let commonHeaders = {
     'Current-Corp': 1,
-    'Authorization': state.currentUser ? state.currentUser.access_token : ''
+    Authorization: state.currentUser ? state.currentUser.access_token : ''
   }
   axios.defaults.headers.common = commonHeaders
 }

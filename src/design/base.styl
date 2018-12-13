@@ -110,4 +110,30 @@ body, html
   cursor: pointer
   &:hover
     background: #44AB67
+  &:active
+    opacity: 0.8
+
+// 列表操作栏样式
+.list-operation
+  display: inline-block
+  line-height: 14px
+  position: relative
+  color: $color-main
+  margin-right: 18px
+  height: 14px
+  white-space: nowrap
+  cursor: pointer
+  font-size: $font-size-14
+  &:after
+    position: absolute
+    top: 0
+    right: -10px
+    content: ''
+    height: 14px
+    width: 1px
+    background: $color-line
+  &:last-child
+    &:after
+      display: none
+
 

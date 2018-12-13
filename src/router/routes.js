@@ -121,6 +121,15 @@ export default [
           titles: ['采购管理']
         }
       },
+      // 采购详情
+      {
+        path: 'purchase-management/purchase-detail',
+        name: 'purchase-detail',
+        component: () => lazyLoadView(import('@pages/purchase-detail/purchase-detail')),
+        meta: {
+          titles: ['采购管理', '采购详情']
+        }
+      },
       /**
        * 采购管理
        *
