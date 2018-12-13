@@ -93,3 +93,48 @@ body, html
 //  鼠标移入时变手
 .hand
   cursor: pointer
+
+// 主颜色功能按钮
+.btn-main
+  color: $color-white
+  font-family: $font-family-regular
+  background: $color-main
+  padding: 8px 12px
+  box-sizing: border-box
+  display: inline-block
+  border-right: 4px
+  transition: all 0.3s
+  font-size: $font-size-12
+  border-radius: 4px
+  line-height: 1
+  cursor: pointer
+  user-select: none
+  &:hover
+    background: #44AB67
+  &:active
+    opacity: 0.8
+
+// 列表操作栏样式
+.list-operation
+  display: inline-block
+  line-height: 14px
+  position: relative
+  color: $color-main
+  margin-right: 18px
+  height: 14px
+  white-space: nowrap
+  cursor: pointer
+  font-size: $font-size-14
+  user-select: none
+  &:after
+    position: absolute
+    top: 0
+    right: -10px
+    content: ''
+    height: 14px
+    width: 1px
+    background: $color-line
+  &:last-child
+    &:after
+      display: none
+

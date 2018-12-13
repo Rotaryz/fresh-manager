@@ -2,10 +2,10 @@ module.exports = [
   {
     type: 'input',
     name: 'name',
-    message: '名称:',
+    message: '文件名:',
     validate(value) {
       if (!value.length) {
-        return '工具类方法名称不能为空！'
+        return '文件名不能为空！'
       }
       return true
     }

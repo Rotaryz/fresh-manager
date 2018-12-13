@@ -50,16 +50,19 @@
         this.logIn({
           username: this.username,
           password: this.password
-        }).then((user) => {
-          if (!user) {
-            return
-          }
-          this.$router.push(this.$route.query.redirectFrom || { name: 'home' })
-        }).catch(error => {
-          this.$toast.show(error)
-        }).finally(() => {
-          this.tryingToLogIn = false
         })
+          .then((user) => {
+            if (!user) {
+              return
+            }
+            this.$router.push(this.$route.query.redirectFrom || {name: 'home'})
+          })
+          .catch((error) => {
+            this.$toast.show(error)
+          })
+          .finally(() => {
+            this.tryingToLogIn = false
+          })
       }
     }
   }

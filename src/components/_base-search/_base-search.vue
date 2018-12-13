@@ -66,7 +66,6 @@
     &::placeholder
       font-family: $font-family-regular
       color: $color-text-assist
-
   .search-focus
     border: 1px solid $color-sub !important
     border-right: none !important
