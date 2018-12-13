@@ -38,6 +38,26 @@
     <div class="pagination-box">
       <base-pagination></base-pagination>
     </div>
+    <default-modal ref="aud">
+      <div slot="content">
+        <div class="Auditing">
+          <div class="top">
+            <div class="title">审核</div>
+            <div class="close" @click.stop="hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
+          </div>
+          <div class="textarea-box">
+            <span class="after"></span>
+            <textarea v-model="noteText" placeholder="备注原因" class="modelarea"></textarea>
+            <span class="before"></span>
+          </div>
+          <div class="btn-group">
+            <div class="btn-item" @click.stop="hideModal">取消</div>
+            <div class="btn-item">驳回</div>
+            <div class="btn-item">批准退款</div>
+          </div>
+        </div>
+      </div>
+    </default-modal>
   </div>
 </template>
 
@@ -45,6 +65,7 @@
   import StatusTab from '@components/status-tab/status-tab'
   import BaseDropDown from '@components/_base-drop-down/_base-drop-down'
   import BaseDataSelect from '@components/_base-date-select/_base-date-select'
+  import DefaultModal from '@components/default-modal/default-modal'
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '退货管理'
   const LIST_TITLE = ['退货单号', '会员名称', '商品', '退货金额', '原订单号', '社区名称', '退货原因', '退货单状态', '操作']
@@ -123,6 +144,7 @@
     components: {
       StatusTab,
       BaseDataSelect,
+      DefaultModal,
       BaseDropDown
       // DefaultConfirm
     },
@@ -140,10 +162,18 @@
         select: SELECT
       }
     },
+    created() {
+      setTimeout(() => {
+        // this.$refs.aud.showModal()
+      }, 100)
+    },
     methods: {
       checkTab() {},
       _getTime() {},
-      goPage() {}
+      goPage() {},
+      hideModal() {
+        this.$refs.aud.hideModal()
+      }
     }
   }
 </script>
@@ -158,6 +188,69 @@
     flex-direction: column
     .tab-list
       wdith: 100%
+
+  textarea::-webkit-input-placeholder
+    font-size: $font-size-14
+    color: #ACACAC
+  .Auditing
+    width: 534px
+    height: 261px
+    background: $color-white
+    border-radius: 3px
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
+    text-align: center
+    .top
+      height: 59.5px
+      border-bottom: 1px solid $color-line
+      align-items: center
+      justify-content: space-between
+      padding: 0 20px
+      layout(row)
+      .title
+        font-family: $font-family-medium
+        font-size: $font-size-16
+        color: $color-text-main
+      .close
+        width: 16px
+        height: 16px
+        cursor: pointer
+        .close-img
+          width: 16px
+          height: 16px
+          display: block
+    .textarea-box
+      .modelarea
+        font-size: $font-size-14
+        width: 494px
+        resize: none
+        height: 80px
+        padding: 12px
+        margin: 30px auto 30px
+        border: 1px solid $color-line
+    .btn-group
+      layout(row)
+      align-items: center
+      justify-content: flex-end
+      padding-right: 20px
+      .btn-item
+        width: 96px
+        line-height: 40px
+        margin-left: 10px
+        cursor: pointer
+        text-align: center
+        border: 1px solid $color-text-assist
+        border-radius: 4px
+        font-family: $font-family-regular
+        font-size: $font-size-16
+        color: $color-text-main
+        height: 40px
+        &:nth-child(2)
+          color: $color-positive
+          border-color: $color-positive
+        &:nth-child(3)
+          background: $color-positive
+          color: $color-white
+          border-color: $color-positive
 
   .search-warp
     layout(row)

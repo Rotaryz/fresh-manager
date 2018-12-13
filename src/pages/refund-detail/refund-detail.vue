@@ -68,7 +68,7 @@
         <div class="Auditing">
           <div class="top">
             <div class="title">审核</div>
-            <div class="close"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
+            <div class="close" @click.stop="hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
           </div>
           <div class="textarea-box">
             <span class="after"></span>
@@ -76,7 +76,7 @@
             <span class="before"></span>
           </div>
           <div class="btn-group">
-            <div class="btn-item">取消</div>
+            <div class="btn-item" @click.stop="hideModal">取消</div>
             <div class="btn-item">驳回</div>
             <div class="btn-item">批准退款</div>
           </div>
@@ -114,6 +114,9 @@
     methods: {
       _cancel() {
         this.$router.back()
+      },
+      hideModal() {
+        this.$refs.aud.hideModal()
       }
     }
   }
