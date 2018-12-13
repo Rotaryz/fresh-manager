@@ -154,7 +154,7 @@
       _handleNavList() {
         let currentPath = this.$route.fullPath
         let currentIndex = this.navList.findIndex((item) => {
-          return item.url === currentPath || item.children.some((child) => child.url === currentPath)
+          return item.url === currentPath || item.children.some((child) => currentPath.includes(child.url))
         })
         currentIndex = parseInt(currentIndex)
         if (currentIndex < 0) {
@@ -167,7 +167,7 @@
         navList[currentIndex].isLight = true
         if (navList[currentIndex].children) {
           navList[currentIndex].children.forEach((item) => {
-            if (item.url === currentPath) {
+            if (currentPath.includes(item.url)) {
               item.isLight = true
             }
           })
