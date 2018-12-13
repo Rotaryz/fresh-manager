@@ -65,13 +65,12 @@
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'ORDER_DETAIL'
   const TITLE = '订单详情'
-  const TITLELIST =['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款状态']
-
+  const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款状态']
 
   export default {
     name: PAGE_NAME,
     components: {
-      // DefaultConfirm
+    // DefaultConfirm
     },
     page: {
       title: TITLE

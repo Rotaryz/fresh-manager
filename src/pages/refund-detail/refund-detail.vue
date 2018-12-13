@@ -90,7 +90,7 @@
   import DefaultModal from '@components/default-modal/default-modal'
   const PAGE_NAME = 'REFUND_DETAIL'
   const TITLE = '退款详情'
-  const TITLELIST =['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款数量', '退款金额']
+  const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款数量', '退款金额']
 
   export default {
     name: PAGE_NAME,
@@ -108,8 +108,8 @@
     },
     created() {
       setTimeout(() => {
-        // this.$refs.aud.showModal()
-      },100)
+      // this.$refs.aud.showModal()
+      }, 100)
     },
     methods: {
       _cancel() {

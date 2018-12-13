@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="main-input">
-        <input type="text" class="main-input-box" v-model="numberTxt" :placeholder="numberPla">
+        <input v-model="numberTxt" type="text" class="main-input-box" :placeholder="numberPla">
         <div class="btn-group">
           <span class="btn cancel" @click="cancel">取消</span>
           <span class="btn confirm" @click="confirm">确定</span>
