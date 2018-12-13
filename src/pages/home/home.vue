@@ -38,6 +38,7 @@
     },
     created() {
       // console.log(this.$route)
+      // console.log(this.$store.dispatch('auth/validate'))
       this.title = this.currentTitles.length ? this.currentTitles[this.currentTitles.length - 1] : ''
     }
   }

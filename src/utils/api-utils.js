@@ -8,6 +8,7 @@ export function defaultProcess(...args) {
   return new Promise((resolve, reject) => {
     request[method](url, data, loading)
       .then((res) => {
+        console.log(loading)
         if (loading) {
           _this.$loading.hide()
         }

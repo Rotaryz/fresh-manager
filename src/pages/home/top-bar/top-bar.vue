@@ -4,8 +4,8 @@
       <div class="avatar-wrapper">
         <img :src="defaultAvatar" alt="" width="40" height="40">
       </div>
-      <p class="name">码器齐全</p>
-      <div class="log-out"></div>
+      <p class="name">{{currentUser && currentUser.manager_info.username}}</p>
+      <div class="log-out" @click="tryToLogOut"></div>
     </section>
     <section class="title-wrapper">
       <span v-for="(item, index) in currentTitles" :key="index" :class="{'active': index === currentTitles.length -1}"> {{item}} <span v-if="index !== currentTitles.length -1"> / </span></span>
@@ -14,7 +14,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {globalComputed} from '@state/helpers'
+  import {globalComputed, authComputed, authMethods} from '@state/helpers'
 
   const COMPONENT_NAME = 'TOP_BAR'
   const DEFAULT_AVATAR = `https://zhidian-img.jkweixin.com/2018%2F11%2F23%2F1542945169074-logo.jpg`
@@ -24,12 +24,19 @@
     data() {
       return {
         showLogout: false,
-        userInfo: this.$storage.get('info', {}),
         defaultAvatar: DEFAULT_AVATAR
       }
     },
     computed: {
-      ...globalComputed
+      ...globalComputed,
+      ...authComputed
+    },
+    methods: {
+      ...authMethods,
+      tryToLogOut() {
+        this.logOut()
+        this.$router.replace({name: 'login', query: {redirectFrom: this.$route.fullPath}})
+      }
     }
   }
 </script>
@@ -42,7 +49,6 @@
   $menu-width = 200px
 
   .top-bar
-
     z-index: 1000
     box-shadow: 0 1px 5px 0 rgba(0,8,39,0.06)
     background: #fff

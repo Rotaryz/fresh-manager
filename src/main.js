@@ -14,10 +14,12 @@ if (window.Cypress) {
   Vue.config.errorHandler = window.Cypress.cy.onUncaughtException
 }
 
-export const app = new Vue({
+const app = new Vue({
   router,
   store,
   render: (h) => h(App)
 }).$mount('#app')
+
+export default app
 
 window.__app__ = app

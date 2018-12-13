@@ -1,5 +1,5 @@
 import storage from 'storage-controller'
-import {app as _this} from '@src/main'
+import app from '@src/main'
 
 // 错误码检查
 export function handleErrorType(code) {
@@ -20,7 +20,7 @@ export function handleErrorType(code) {
 function _toErrorPage(useType) {}
 
 function _handleLoseEfficacy() {
-  const currentRoute = _this.$route.path
+  const currentRoute = app.$route.path
   if (currentRoute !== '/') {
     storage.set('beforeLoginRoute', currentRoute)
   }
@@ -29,6 +29,6 @@ function _handleLoseEfficacy() {
 
 export function showLoading(loading) {
   if (loading) {
-    _this.$loading.show()
+    app.$loading.show()
   }
 }
