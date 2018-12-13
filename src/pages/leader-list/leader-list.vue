@@ -1,12 +1,36 @@
 <template>
   <div class="leader-list">
-    leader-list
+    <div class="tab-header">
+      <div class="btn-main">新建团长 +</div>
+    </div>
+    <div class="list-header list-box">
+      <div v-for="(item,index) in leaderList" :key="index" class="list-item">{{item}}</div>
+    </div>
+    <div class="list">
+      <div class="list-content list-box">
+        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">2018-12-07 15:00</div>
+        <div class="list-item list-operation-box">
+          <router-link tag="span" to="" append class="list-operation">编辑</router-link>
+          <span class="list-operation">店铺码</span>
+        </div>
+      </div>
+    </div>
+    <div class="pagination-box">
+      <base-pagination></base-pagination>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'LEADER_LIST'
   const TITLE = '团长列表'
+  const LEADER_LIST = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -14,7 +38,9 @@
       title: TITLE
     },
     data() {
-      return {}
+      return {
+        leaderList: LEADER_LIST
+      }
     }
   }
 </script>
@@ -23,5 +49,62 @@
   @import "~@design"
 
   .leader-list
-    width: 100%
+    overflow: hidden
+    flex: 1
+    display: flex
+    flex-direction: column
+
+  .tab-header
+    height: 80px
+    display: flex
+    justify-content: space-between
+    align-items: center
+    box-sizing: border-box
+
+  .list-header
+    height: 50px
+    font-size: $font-size-16
+    font-family: $font-family-regular
+    color: $color-text-main
+    background: $color-list-header
+
+  .list-box
+    line-height: 1
+    padding-left: 30px
+    box-sizing: border-box
+    border-bottom: 1px solid $color-line
+    display: flex
+    align-items: center
+    .list-item
+      box-sizing: border-box
+      padding-right: 10px
+      flex: 1
+      &:nth-child(6)
+        flex: 1.5
+      &:last-child
+        flex: 0.8
+
+  .list
+    flex: 1
+    .list-content
+      font-family: $font-family-regular
+      color: $color-text-main
+      height: 70px
+      border-bottom: 1px solid $color-line
+      .list-item
+        no-wrap()
+        font-size: $font-size-14
+      // 双行样式
+      .list-double-row
+        .item-sub
+          margin-top: 8px
+          font-size: $font-size-14
+          color: $color-text-assist
+        .item-dark
+          font-size: $font-size-14
+
+  .pagination-box
+    height: 70px
+    align-items: center
+    display: flex
 </style>

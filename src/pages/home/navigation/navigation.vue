@@ -218,9 +218,12 @@
       // 重置路由亮灯的状态
       _resetNavLight(arr, path) {
         // 路由包含的路由关系
-        let index = arr.findIndex(item => path.includes(item.url))
+        let index = arr.findIndex((item) => {
+          let childHasPath = item.children && item.children.some((item) => item.url.includes(path))
+          return item.url === path || childHasPath
+        })
         // 路由名称全等的路由关系
-        let fullIdx = arr.findIndex(item => path === item.url)
+        let fullIdx = arr.findIndex((item) => path.includes(item.url))
         let current = {}
         // 全等权重大于包含
         if (fullIdx > -1 || index > -1) {
