@@ -136,7 +136,6 @@
     data() {
       return {
         navList: JSON.parse(JSON.stringify(NAV_LIST)),
-        tempNavList: JSON.parse(JSON.stringify(NAV_LIST)),
         currentIndex: ''
       }
     },
@@ -197,6 +196,9 @@
         this.navList = navList
       },
       clickNav(nav, index) {
+        if (nav.isLight) {
+          return
+        }
         if (index !== undefined) {
           this._resetNavList(index)
           this.navList[index].url = nav.url
@@ -295,12 +297,11 @@
           overflow: hidden
           background: rgba(255, 255, 255, 0)
           box-sizing: border-box
-          border-left: 5px solid transparent
           transition: all .2s
         img
           height: 22px
           width: @height
-          margin: 0 9px 0 6px
+          margin: 0 9px 0 8px
         i
           height: 10px
           width: 10px
@@ -317,7 +318,7 @@
         p
           width: 100%
           layout()
-          padding-left: 45px
+          padding-left: 44px
           justify-content: center
           flex: 1
           box-sizing: border-box
