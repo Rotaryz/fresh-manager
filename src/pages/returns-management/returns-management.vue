@@ -1,9 +1,3 @@
-<style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
-
-  .returns-management
-    width: 100%
-</style>
 <template>
   <div class="order-list">
     <div class="tab-list">
@@ -132,9 +126,13 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .container
+    position: relative
   .order-list
-    width: 100%
+    flex: 1
+    display: flex
+    flex-direction: column
+    position: relative
     .search
       padding: 29px 0 30px 0
       width: 100%
@@ -165,8 +163,20 @@
       text-align: center
   .form-list
     position: relative
+    flex: 1
     font-size: $font-size-14
     font-family: $font-family-regular
+    .page
+      width: 100%
+      position: absolute
+      bottom: 0
+      left: 0
+      padding: 0 1.5vw
+      box-sizing: border-box
+      color: $color-white
+      height: 60px
+      layout(row)
+      align-items: center
   .list-header
     width: 100%
     height: 50px

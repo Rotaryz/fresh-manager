@@ -129,6 +129,8 @@
 
   .order-list
     width: 100%
+    height: 100%
+    flex: 1
     .search
       padding: 29px 0 30px 0
       width: 100%
