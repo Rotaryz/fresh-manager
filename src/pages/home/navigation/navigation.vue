@@ -2,14 +2,14 @@
   <div class="navigation">
     <header></header>
     <dl v-for="(item, index) in navList" :key="index" :class="item | isActive">
-      <dt :class="item | isActive" @click="navHandle(item, index)">
+      <dt :class="item | isActive" @click="clickNav(item)">
         <img :src="item.isLight ? item.iconSelected : item.icon" alt="">
         <p>{{item.title}}</p>
         <i :class="item.children.length ? 'rotate' : ''"></i>
       </dt>
       <dd :style="item | childrenActive">
         <template v-for="(child, i) in item.children">
-          <p :key="i" :class="child | isActive" @click="navHandle(child, i, item)">{{child.title}}</p>
+          <p :key="i" :class="child | isActive" @click="clickNav(child, index)">{{child.title}}</p>
         </template>
       </dd>
     </dl>
@@ -25,27 +25,21 @@
       url: '/home/product-list',
       icon: require('./icon-commodity@2x.png'),
       iconSelected: require('./icon-commodity_white@2x.png'),
-      childrenIndex: 0,
-      showHeight: HEIGHT,
-      isRouter: false, // 是否跳转
       isLight: false, // 是否亮灯
       children: [
         {
           title: '商品列表',
           url: '/home/product-list',
-          isRouter: true,
           isLight: false
         },
         {
           title: '商品分类',
           url: '/home/product-categories',
-          isRouter: true,
           isLight: false
         },
         {
           title: '辅助资料',
           url: '/home/auxiliary-information',
-          isRouter: true,
           isLight: false
         }
       ]
@@ -55,20 +49,16 @@
       url: '/home/advertisement',
       icon: require('./icon-tmall@2x.png'),
       iconSelected: require('./icon-tmall_white@2x.png'),
-      childrenIndex: 0,
-      isRouter: false,
       isLight: false,
       children: [
         {
           title: '轮播广告',
           url: '/home/advertisement',
-          isRouter: true,
           isLight: false
         },
         {
           title: '今日抢购',
           url: '/home/rush-purchase',
-          isRouter: true,
           isLight: false
         }
       ]
@@ -78,20 +68,16 @@
       url: '/home/order-list',
       icon: require('./icon-order@2x.png'),
       iconSelected: require('./icon-order_white@2x.png'),
-      childrenIndex: 0,
-      isRouter: false,
       isLight: false,
       children: [
         {
           title: '订单列表',
           url: '/home/order-list',
-          isRouter: true,
           isLight: false
         },
         {
           title: '退货管理',
           url: '/home/returns-management',
-          isRouter: true,
           isLight: false
         }
       ]
@@ -101,8 +87,6 @@
       icon: require('./icon-shopping@2x.png'),
       iconSelected: require('./icon-shopping_white@2x.png'),
       url: '/home/purchase-management',
-      childrenIndex: 0,
-      isRouter: true,
       isLight: false,
       children: []
     },
@@ -111,20 +95,16 @@
       icon: require('./icon-group@2x.png'),
       iconSelected: require('./icon-group_white@2x.png'),
       url: '/home/leader-list',
-      childrenIndex: 0,
-      isRouter: false,
       isLight: false,
       children: [
         {
           title: '团长列表',
           url: '/home/leader-list',
-          isRouter: true,
           isLight: false
         },
         {
           title: '团长配送单',
           url: '/home/dispatching-list',
-          isRouter: true,
           isLight: false
         }
       ]
@@ -155,7 +135,9 @@
     },
     data() {
       return {
-        navList: NAV_LIST
+        navList: JSON.parse(JSON.stringify(NAV_LIST)),
+        tempNavList: JSON.parse(JSON.stringify(NAV_LIST)),
+        currentIndex: ''
       }
     },
     watch: {
@@ -163,74 +145,63 @@
         if (newVal.fullPath === oldVal.fullPath) {
           return
         }
-        this._resetNavStatus(this.navList)
-        this._resetNavLight(this.navList, newVal.fullPath)
+        this._handleNavList()
       }
     },
     created() {
-      this._initNavList()
+      this._handleNavList()
     },
     methods: {
-      navHandle(item, index, father) {
-        // 重置路由器
-        this._resetNavStatus(this.navList)
-        // 设置父级
-        if (father) {
-          father.isLight = true
-          father.childrenIndex = index
-        }
-        // 设置自身
-        if (item.isRouter) {
-          this.$router.push(item.url)
-        }
-        item.isLight = true
-        // 设置子路由
-        if (item.children) {
-          let children = item.children
-          let childrenIndex = item.childrenIndex
-          let currentChildren = children[childrenIndex]
-          if (children.length) {
-            currentChildren.isLight = true
-          }
-          if (currentChildren && currentChildren.isRouter) {
-            this.$router.push(currentChildren.url)
-          }
-        }
-      },
-      // 重置路由显示的状态
-      _resetNavStatus(arr) {
-        arr.map((item) => {
-          item.isLight = false
-          item.children.map((it) => {
-            it.isLight = false
-          })
+      _handleNavList() {
+        let currentPath = this.$route.fullPath
+        let currentIndex = this.navList.findIndex((item) => {
+          return item.url === currentPath || item.children.some((child) => child.url === currentPath)
         })
-        // 没有子路由结束递归
-        if (arr.children && arr.children.length) {
-          this._resetNavStatus(arr.children)
+        currentIndex = parseInt(currentIndex)
+        if (currentIndex < 0) {
+          return
         }
+        if (this.currentIndex.toString()) {
+          this._resetNavList(currentIndex)
+        }
+        let navList = JSON.parse(JSON.stringify(this.navList))
+        navList[currentIndex].isLight = true
+        if (navList[currentIndex].children) {
+          navList[currentIndex].children.forEach((item) => {
+            if (item.url === currentPath) {
+              item.isLight = true
+            }
+          })
+        }
+        this.navList = navList
+        this.currentIndex = currentIndex
       },
-      // 刷新页面输出路由
-      _initNavList() {
-        let path = this.$route.fullPath
-        this._resetNavLight(this.navList, path)
+      _resetNavList(currentIndex) {
+        let beforeIndex = this.currentIndex
+        let navList = JSON.parse(JSON.stringify(this.navList))
+        if (beforeIndex === currentIndex) {
+          navList[currentIndex].children.forEach((nav) => {
+            if (nav.isLight) {
+              nav.isLight = false
+            }
+          })
+        } else {
+          navList[beforeIndex].isLight = false
+          navList[beforeIndex].children.forEach((nav) => {
+            if (nav.isLight) {
+              nav.isLight = false
+            }
+          })
+          navList[currentIndex].isLight = true
+        }
+        this.navList = navList
       },
-      // 重置路由亮灯的状态
-      _resetNavLight(arr, path) {
-        // 路由包含的路由关系
-        let index = arr.findIndex(item => path.includes(item.url))
-        // 路由名称全等的路由关系
-        let fullIdx = arr.findIndex(item => path === item.url)
-        let current = {}
-        // 全等权重大于包含
-        if (fullIdx > -1 || index > -1) {
-          current = fullIdx > -1 ? arr[fullIdx] : arr[Math.max(0, index)]
+      clickNav(nav, index) {
+        if (index !== undefined) {
+          this._resetNavList(index)
+          this.navList[index].url = nav.url
         }
-        current.isLight = true
-        // 没有子路由结束递归
-        if (index !== -1 && current.children && current.children.length) {
-          return this._resetNavLight(current.children, path)
-        }
+        this.$router.push(nav.url)
       }
     }
   }
