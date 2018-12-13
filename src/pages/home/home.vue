@@ -52,11 +52,12 @@
     min-width: 1410px
     min-height: 100vh
     padding-left: 200px
+    background: $color-background
     .container
       flex: 1
       margin: 14px
       padding: 0 22px
       border-radius: 6px
-      box-shadow: 0 1px 5px 0 rgba(0,8,39,0.06)
+      box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
       background: $color-white
 </style>
