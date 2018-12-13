@@ -36,6 +36,7 @@
     <div class="pagination-box">
       <base-pagination></base-pagination>
     </div>
+    <default-confirm ref="msg" :oneBtn="true"></default-confirm>
   </div>
 </template>
 
@@ -43,6 +44,8 @@
   import StatusTab from '@components/status-tab/status-tab'
   import BaseDropDown from '@components/_base-drop-down/_base-drop-down'
   import BaseDataSelect from '@components/_base-date-select/_base-date-select'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
+
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '订单列表'
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
@@ -116,7 +119,8 @@
     components: {
       StatusTab,
       BaseDataSelect,
-      BaseDropDown
+      BaseDropDown,
+      DefaultConfirm
     // DefaultConfirm
     },
     page: {
@@ -132,6 +136,11 @@
         downUrl: '',
         select: SELECT
       }
+    },
+    created() {
+      setTimeout(() =>{
+        // this.$refs.msg.show('一次只能导出一个社区的消费者订单，请先选择社区')
+      },0)
     },
     methods: {
       checkTab() {},
