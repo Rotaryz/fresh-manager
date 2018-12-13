@@ -1,15 +1,17 @@
 <template>
-  <div @touchmove.prevent>
-    <navigation></navigation>
-    <div class="home">
-      <top-bar></top-bar>
-      <div class="container">
-        <keep-alive>
-          <router-view :key="$route.fullPath"></router-view>
-        </keep-alive>
+  <transition name="fade">
+    <div @touchmove.prevent>
+      <navigation></navigation>
+      <div class="home">
+        <top-bar></top-bar>
+        <div class="container">
+          <keep-alive>
+            <router-view :key="$route.fullPath"></router-view>
+          </keep-alive>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script type="text/ecmascript-6">
@@ -46,7 +48,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
   .home
     layout()
     min-width: 1410px
