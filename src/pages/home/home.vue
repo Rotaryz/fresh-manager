@@ -56,7 +56,7 @@
     .container
       flex: 1
       margin: 14px
-      padding: 0 22px
+      padding: 0 20px
       user-select: text
       border-radius: 6px
       box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)

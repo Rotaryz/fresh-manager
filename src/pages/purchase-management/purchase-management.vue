@@ -1,6 +1,8 @@
 <template>
   <div class="purchase-management">
-    purchase-management
+    <div class="pur-header">
+      <base-search></base-search>
+    </div>
   </div>
 </template>
 
@@ -24,4 +26,9 @@
 
   .purchase-management
     width: 100%
+
+  .pur-header
+    height: 80px
+    border-bottom: 1px solid $color-line
+    box-sizing: border-box
 </style>
