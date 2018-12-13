@@ -31,7 +31,7 @@
         <div class="list-item list-text">{{item.status}}</div>
         <div class="list-item list-use">
           <span v-if="item.status_id === 1" class="blue-use hand" @click="_getTime">审核</span>
-          <span class="detail-use hand" @click="_getTime">详情</span>
+          <router-link tag="span" to="/home/refund-detail" append class="detail-use hand">详情</router-link>
         </div>
       </div>
     </div>
@@ -133,7 +133,7 @@
       return {
         tabStatus: ORDERSTATUS,
         listTitle: LIST_TITLE,
-        placeHolder: '订单号/会员名称',
+        placeHolder: '退款单号/会员名称',
         dateINfo: ['2018-12-01'],
         orderList: ORDERLIST,
         downUrl: '',

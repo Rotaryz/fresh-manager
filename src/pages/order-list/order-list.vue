@@ -29,7 +29,7 @@
         <div class="list-item list-text" :title="item.name">{{item.name}}</div>
         <div class="list-item list-text">{{item.status}}</div>
         <div class="list-item list-use">
-          <span class="blue-use hand" @click="_getTime">查看</span>
+          <router-link tag="span" to="/home/refund-detail" append class="blue-use hand">详情</router-link>
         </div>
       </div>
     </div>
