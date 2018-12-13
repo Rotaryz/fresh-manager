@@ -36,16 +36,17 @@ router.beforeEach((routeTo, routeFrom, next) => {
   }
   // 判断该路由是否需要检验用户信息
   const authRequired = routeTo.matched.some((route) => route.meta.authRequired)
+
   if (!authRequired) {
     return next()
   }
+
   // 判断是否已经登录
   if (store.getters['auth/loggedIn']) {
     // 检验登录的有效性，执行相应的操作
-    // return store.dispatch('auth/validate').then((validUser) => {
-    //   validUser ? next() : redirectToLogin()
-    // })
-    return next() // todo
+    return store.dispatch('auth/validate').then((validUser) => {
+      validUser ? next() : redirectToLogin()
+    })
   }
 
   // 如果需要检验用户信息，但是当前却没登录,

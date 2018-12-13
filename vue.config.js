@@ -16,7 +16,7 @@ module.exports = {
       ? // 代理生产地址.
         {
           proxy: {
-            '/api': {
+            '/social-shopping': {
               target: process.env.VUE_APP_API
             }
           }

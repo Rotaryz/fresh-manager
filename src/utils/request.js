@@ -1,7 +1,6 @@
 'use strict'
 
 import axios from 'axios'
-import storage from 'storage-controller'
 import * as Utils from './request-utils'
 
 const TIME_OUT = 10000
@@ -17,7 +16,6 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
-    config.headers['Authorization'] = storage.get('token', '')
     return config
   },
   (error) => {

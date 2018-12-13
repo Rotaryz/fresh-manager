@@ -1,8 +1,10 @@
 import axios from 'axios'
 import storage from 'storage-controller'
+import API from '@api'
+import app from '@src/main'
 
 export const state = {
-  currentUser: storage.get('auth.currentUser', null)
+  currentUser: storage.get('auth.currentUser', 0)
 }
 
 export const getters = {
@@ -13,9 +15,9 @@ export const getters = {
 }
 
 export const mutations = {
-  SET_CURRENT_USER(state, newValue) {
-    state.currentUser = newValue
-    storage.set('auth.currentUser', newValue)
+  SET_CURRENT_USER(state, user) {
+    state.currentUser = user
+    storage.set('auth.currentUser', user)
     setDefaultAuthHeaders(state)
   }
 }
@@ -31,11 +33,20 @@ export const actions = {
     if (getters.loggedIn) {
       return dispatch('validate')
     }
-    // todo return promise and set currentUser state
-    return new Promise((resolve, reject) => {
-      commit('SET_CURRENT_USER', username + password)
-      resolve(username + password)
-    })
+    return API.Auth.logIn({username, password})
+      .then(res => {
+        if (res.error !== app.$ERR_OK) {
+          app.$toast.show(res.message)
+          return null
+        }
+        const user = res.data
+        commit('SET_CURRENT_USER', user)
+        return user
+      }).catch(() => {
+        return null
+      }).finally(() => {
+        app.$loading.hide()
+      })
   },
   // 退出
   logOut({commit}) {
@@ -46,7 +57,19 @@ export const actions = {
     if (!state.currentUser) {
       return Promise.resolve(null)
     }
-    // todo return promise and set currentUser state
+    return API.Auth.validate()
+      .then(res => {
+        if (res.error !== app.$ERR_OK) {
+          commit('SET_CURRENT_USER', null)
+          return null
+        }
+        const user = res.data
+        commit('SET_CURRENT_USER', user)
+        return user
+      }).catch(() => {
+        commit('SET_CURRENT_USER', null)
+        return null
+      })
   }
 }
 
@@ -55,5 +78,9 @@ export const actions = {
  * @param state
  */
 function setDefaultAuthHeaders(state) {
-  axios.defaults.headers.common['Authorization'] = state.currentUser ? state.currentUser.token : ''
+  let commonHeaders = {
+    'Current-Corp': 1,
+    'Authorization': state.currentUser ? state.currentUser.access_token : ''
+  }
+  axios.defaults.headers.common = commonHeaders
 }

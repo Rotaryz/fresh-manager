@@ -7,7 +7,7 @@
         <input v-model="username" type="text" :placeholder="placeHolders.username" @keyup.enter="tryToLogIn">
       </div>
       <div class="input-wrapper">
-        <input v-model="password" type="text" :placeholder="placeHolders.password" @keyup.enter="tryToLogIn">
+        <input v-model="password" type="password" :placeholder="placeHolders.password" @keyup.enter="tryToLogIn">
       </div>
       <button class="login-btn" @click="tryToLogIn">登录</button>
     </div>
@@ -50,16 +50,16 @@
         this.logIn({
           username: this.username,
           password: this.password
+        }).then((user) => {
+          if (!user) {
+            return
+          }
+          this.$router.push(this.$route.query.redirectFrom || { name: 'home' })
+        }).catch(error => {
+          this.$toast.show(error)
+        }).finally(() => {
+          this.tryingToLogIn = false
         })
-          .then((token) => {
-            console.log(token)
-            this.tryingToLogIn = false
-            this.$router.push(this.$route.query.redirectFrom || {name: 'home'})
-          })
-          .catch((error) => {
-            this.tryingToLogIn = false
-            this.$toast.show(error)
-          })
       }
     }
   }
