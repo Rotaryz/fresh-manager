@@ -322,7 +322,6 @@
         flex: 1.1
       &:first-child, &:nth-child(3)
         flex: 1.3
-        padding-right: 10px
       &:nth-child(4), &:nth-child(2) &:nth-child(7) &:nth-child(8)
         flex: 0.8
       &:last-child
