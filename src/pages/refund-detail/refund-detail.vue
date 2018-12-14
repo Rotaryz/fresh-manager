@@ -107,9 +107,9 @@
       }
     },
     created() {
-      setTimeout(() => {
+      // setTimeout(() => {
       // this.$refs.aud.showModal()
-      }, 100)
+      // }, 100)
     },
     methods: {
       _cancel() {
