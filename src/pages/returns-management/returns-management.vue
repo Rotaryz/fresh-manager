@@ -6,7 +6,7 @@
     <div class="search-warp">
       <div class="ac-tab">
         <base-drop-down :select="select"></base-drop-down>
-        <base-data-select :dateINfo="dateINfo" @_getTime="_getTime"></base-data-select>
+        <base-date-select :dateINfo="dateINfo" @_getTime="_getTime"></base-date-select>
         <base-search :placeHolder="placeHolder"></base-search>
       </div>
       <a :href="downUrl" class="excel" target="_blank">导出Excel</a>
@@ -152,6 +152,7 @@
         tabStatus: ORDERSTATUS,
         listTitle: LIST_TITLE,
         placeHolder: '退款单号/会员名称',
+        noteText: '',
         dateINfo: ['2018-12-01'],
         orderList: ORDERLIST,
         downUrl: '',
