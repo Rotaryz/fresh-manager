@@ -56,6 +56,15 @@ export default [
           titles: ['商品管理', '辅助资料']
         }
       },
+      // 编辑商品
+      {
+        path: 'product-list/edit-goods',
+        name: 'edit-goods',
+        component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
+        meta: {
+          titles: ['商品管理', '商品列表', '新建商品']
+        }
+      },
       /**
        * 商品管理
        *
