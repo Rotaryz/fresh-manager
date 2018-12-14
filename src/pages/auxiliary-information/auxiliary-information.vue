@@ -113,6 +113,7 @@
     .auxiliary-add
       min-width: 80px
       text-align: center
+      padding: 10px 16px
   .auxiliary-information
     width: 100%
 </style>
