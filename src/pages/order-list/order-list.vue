@@ -1,7 +1,7 @@
 <template>
   <div class="purchase-management">
     <div class="tab-list">
-      <status-tab :tabStatus="tabStatus" @getStatusTab="checkTab"></status-tab>
+      <status-tab :tabStatus="tabStatus" @getStatusTab="seleIndex"></status-tab>
     </div>
     <div class="search-warp">
       <div class="ac-tab">
@@ -9,7 +9,7 @@
         <base-date-select :dateINfo="dateINfo" @_getTime="_getTime"></base-date-select>
         <base-search :placeHolder="placeHolder"></base-search>
       </div>
-      <a :href="downUrl" class="excel" target="_blank">导出Excel</a>
+      <a :href="downUrl" class="excel" target="_blank" @click="showModal">导出Excel</a>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
@@ -17,16 +17,16 @@
     <div class="list">
       <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
         <div class="list-item list-double-row">
-          <p class="item-dark">{{item.orderId}}</p>
-          <p class="item-sub">{{item.order_time}}</p>
+          <p class="item-dark">{{item.order_sn}}</p>
+          <p class="item-sub">{{item.created_at}}</p>
         </div>
         <div class="list-item list-text">
-          <div class="list-text-name">{{item.member_name}}</div>
+          <div class="list-text-name">{{item.nickname}}</div>
         </div>
+        <div class="list-item list-text">￥{{item.price}}</div>
         <div class="list-item list-text">￥{{item.total}}</div>
-        <div class="list-item list-text">￥{{item.promote_price}}</div>
-        <div class="list-item list-text">{{item.dateTime}}</div>
-        <div class="list-item list-text" :title="item.name">{{item.name}}</div>
+        <div class="list-item list-text">{{item.delivery_at}}</div>
+        <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
         <div class="list-item list-text">{{item.status}}</div>
         <div class="list-item list-use">
           <router-link tag="span" to="/home/refund-detail" append class="blue-use hand">详情</router-link>
@@ -34,15 +34,17 @@
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination></base-pagination>
+      <base-pagination :pageTotal="pageTotal"></base-pagination>
     </div>
-    <default-confirm ref="msg" :oneBtn="true"></default-confirm>
+    <!--<default-confirm ref="modelMsg" :oneBtn="true"></default-confirm>-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import StatusTab from '@components/status-tab/status-tab'
-  import DefaultConfirm from '@components/default-confirm/default-confirm'
+  // import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import Api from '@api'
+  import { ERR_OK } from '@utils/config'
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '订单列表'
@@ -58,53 +60,15 @@
       name: '广海花园社区',
       status: '已完成',
       status_id: 1
-    },
-    {
-      orderId: 'DYXH20188832770013',
-      order_time: '2018-08-21 15:00:32',
-      member_name: 'STJY',
-      total: 3.5,
-      promote_price: 3.5,
-      dateTime: '2018-08-27',
-      name: '广海花园社区',
-      status: '已完成',
-      status_id: 1
-    },
-    {
-      orderId: 'DYXH20188832770033',
-      order_time: '2018-08-22 15:00:32',
-      member_name: '西游小白龙',
-      total: 3.5,
-      promote_price: 3.5,
-      dateTime: '2018-08-27',
-      name: '广苏苏花园社区',
-      status: '已完成',
-      status_id: 3
-    },
-    {
-      orderId: 'DYXH20188832770023',
-      order_time: '2018-08-25 15:00:32',
-      member_name: '期待',
-      total: 3.5,
-      promote_price: 3.5,
-      dateTime: '2018-08-27',
-      name: '广海花园社区',
-      status: '已完成',
-      status_id: 2
-    },
-    {
-      orderId: 'DYXH20188832770063',
-      order_time: '2018-08-27 15:00:32',
-      member_name: '守候',
-      total: 3.5,
-      promote_price: 3.5,
-      dateTime: '2018-08-27',
-      name: '广海花园社区',
-      status: '已完成',
-      status_id: 1
     }
   ]
-  const ORDERSTATUS = [{text: '全部', status: 0}, {text: '待付款', status: 1}, {text: '待提货', status: 2}, {text: '已完成', status: 3}, {text: '已关闭', status: 4}]
+  const ORDERSTATUS = [
+    {text: '全部', status: 0},
+    {text: '待付款', status: 1},
+    {text: '待提货', status: 2},
+    {text: '已完成', status: 3},
+    {text: '已关闭', status: 4}
+  ]
   const SELECT = {
     check: false,
     show: false,
@@ -116,7 +80,7 @@
     name: PAGE_NAME,
     components: {
       StatusTab,
-      DefaultConfirm
+      // DefaultConfirm
     // DefaultConfirm
     },
     page: {
@@ -128,19 +92,62 @@
         listTitle: LIST_TITLE,
         placeHolder: '订单号/会员名称',
         dateINfo: ['2018-12-01'],
+        page: 1,
+        startTime: '',
+        endTime: '',
+        shopId: '',
+        keyWord: '',
+        pageTotal: {
+          total: 1, // 总数量
+          per_page: 10, // 一页条数
+          total_page: 1 // 总页数
+        },
         orderList: ORDERLIST,
         downUrl: '',
         select: SELECT
       }
     },
-    created() {
-      setTimeout(() =>{
-        // this.$refs.msg.show('一次只能导出一个社区的消费者订单，请先选择社区')
-      },0)
+    async created() {
+      console.log(Api)
+      console.log(ERR_OK)
+      await this._getOrderList(false)
     },
     methods: {
       checkTab() {},
       _getTime() {},
+      async _getOrderList(loading) {
+        let data = {
+          limit: 10,
+          page: this.page,
+          start_time: this.startTime,
+          end_time: this.endTime,
+          status: this.status,
+          shop_id: this.shopId,
+          keyword: this.keyWord
+        }
+        let res = await Api.Order.getOrderList(data, loading)
+        if (res.error !== ERR_OK) {
+          // this.$emit('setNull', true)
+          // this.$emit('showToast', res.message)
+          return
+        }
+        // this._getUrl()
+        let pages = res.meta
+        this.pageTotal = Object.assign({}, {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        })
+        this.orderList = res.data
+        this.$emit('setNull', !this.orderList.length)
+      },
+      showModal() {
+        this.$refs.modelMsg.show('一次只能导出一个社区的消费者订单，请先选择社区')
+      },
+      seleIndex(item, index) {
+        this.status = item.status*1 - 1
+        this._getOrderList(false)
+      },
       goPage() {}
     }
   }
