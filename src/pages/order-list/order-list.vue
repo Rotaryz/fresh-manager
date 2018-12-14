@@ -156,8 +156,7 @@
     flex-direction: column
     .tab-list
       wdith: 100%
-  .list-text-name
-    font-size: $font-size-14
+
   .search-warp
     layout(row)
     height: 80px
