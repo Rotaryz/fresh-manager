@@ -3,7 +3,7 @@
     <div slot="content" class="default-input">
       <div class="title-input">
         <div class="title">{{numberTitle}}</div>
-        <div class="close-box">
+        <div class="close-box" @click="cancel">
           <div class="close"></div>
         </div>
       </div>

@@ -1,11 +1,10 @@
 <template>
   <div class="auxiliary-information">
-    <div class="all-title">
-      <div class="name">计量单位</div>
-      <div class="line"></div>
+    <div class="content-header">
+      <div class="content-title">计量单位</div>
     </div>
     <div class="auxiliary-box">
-      <div v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8]" :key="index" class="auxiliary-item" >
+      <div v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8]" :key="index" class="auxiliary-item">
         <div class="text">斤{{item}}</div>
         <div class="auxiliary-model">
           <div class="img-box" @click="changeItem"></div>
@@ -118,4 +117,26 @@
       padding: 10px 16px
   .auxiliary-information
     width: 100%
+  .content-header
+    border-bottom: 1px solid $color-line
+    display: flex
+    align-items: center
+    justify-content: space-between
+    height: 62px
+    position: relative
+    box-sizing: border-box
+    &:after
+      content: ''
+      position: absolute
+      width: 34px
+      height: 2px
+      background: $color-main
+      border-radius: 1px
+      bottom: -1px
+      left: 0
+    .content-title
+      color: $color-text-main
+      font-family: $font-family-medium
+      font-size: $font-size-16
+
 </style>

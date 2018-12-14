@@ -1,25 +1,25 @@
 <template>
   <div class="product-categories">
     <div class="product-top">
-      <div class="btn-main">新建大类 +</div>
+      <div class="btn-main" @click="newBigCate">新建大类 +</div>
     </div>
     <ul class="categories-box">
-      <li class="big-box">
+      <li v-for="(item, index) in cateList" :key="index" class="big-box">
         <div class="big-box-main">
-          <div class="big-main-left hand">
-            <div class="icon"></div>
-            <div class="text">蔬菜</div>
+          <div class="big-main-left hand" @click="openList(index)">
+            <div class="icon" :class="item.select ? 'open' : ''"></div>
+            <div class="text">{{item.title}}</div>
           </div>
           <div class="big-main-right">
             <span class="list-operation">编辑</span>
             <span class="list-operation">删除</span>
           </div>
         </div>
-        <div class="open-list">
-          <div class="open-item">
-            <div class="open-item-left">青瓜</div>
+        <div v-if="item.select" class="open-list">
+          <div v-for="(twoitem, twoindex) in item.children" :key="twoindex" class="open-item">
+            <div class="open-item-left">{{twoitem.title}}</div>
             <div class="big-main-right">
-              <span class="list-operation">编辑</span>
+              <span class="list-operation" @click="openTwoList(index)">编辑</span>
               <span class="list-operation">删除</span>
             </div>
           </div>
@@ -31,6 +31,7 @@
       </li>
     </ul>
     <change-model :showCate="true"></change-model>
+    <change-model ref="bigModel" :showCate="false" numberPla="长度不能超过10位"></change-model>
   </div>
 </template>
 
@@ -49,6 +50,111 @@
     },
     data() {
       return {
+        cateList: [
+          {
+            title: '蔬菜10',
+            select: false,
+            sort: 10,
+            children: [
+              {
+                title: '西洋菜',
+                select: false,
+                sort: 0
+              },
+              {
+                title: '白菜',
+                select: false,
+                sort: 1
+              },
+              {
+                title: '青菜',
+                select: false,
+                sort: 2
+              }
+            ]
+          },
+          {
+            title: '水果2',
+            select: false,
+            sort: 2,
+            children: [
+              {
+                title: '西洋菜',
+                select: false,
+                sort: 0
+              },
+              {
+                title: '白菜',
+                select: false,
+                sort: 1
+              },
+              {
+                title: '青菜',
+                select: false,
+                sort: 2
+              }
+            ]
+          },
+          {
+            title: '水果32',
+            select: false,
+            sort: 32,
+            children: [
+              {
+                title: '西洋菜',
+                select: false,
+                sort: 0
+              },
+              {
+                title: '白菜',
+                select: false,
+                sort: 1
+              },
+              {
+                title: '青菜',
+                select: false,
+                sort: 2
+              }
+            ]
+          },
+          {
+            title: '水果12',
+            select: true,
+            sort: 12,
+            children: [
+              {
+                title: '西洋菜',
+                select: false,
+                sort: 0
+              },
+              {
+                title: '白菜',
+                select: false,
+                sort: 1
+              },
+              {
+                title: '青菜',
+                select: false,
+                sort: 2
+              }
+            ]
+          }
+        ]
+      }
+    },
+    methods: {
+      newBigCate() {
+        this.$refs.bigModel.show('新建商品分类')
+      },
+      _sort(a, b) {
+        return b.sort - a.sort
+      },
+      openList(index) {
+        // this.cateList.sort(this._sort)
+        this.cateList[index].select = !this.cateList[index].select
+      },
+      openTwoList(index) {
+        // this.cateList[index].children.sort(this._sort)
       }
     }
   }
