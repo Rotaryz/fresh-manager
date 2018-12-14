@@ -42,8 +42,6 @@
 
 <script type="text/ecmascript-6">
   import StatusTab from '@components/status-tab/status-tab'
-  import BaseDropDown from '@components/_base-drop-down/_base-drop-down'
-  import BaseDataSelect from '@components/_base-date-select/_base-date-select'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'ORDER_LIST'
@@ -118,8 +116,6 @@
     name: PAGE_NAME,
     components: {
       StatusTab,
-      BaseDataSelect,
-      BaseDropDown,
       DefaultConfirm
     // DefaultConfirm
     },

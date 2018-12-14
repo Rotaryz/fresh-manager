@@ -63,8 +63,6 @@
 
 <script type="text/ecmascript-6">
   import StatusTab from '@components/status-tab/status-tab'
-  import BaseDropDown from '@components/_base-drop-down/_base-drop-down'
-  import BaseDataSelect from '@components/_base-date-select/_base-date-select'
   import DefaultModal from '@components/default-modal/default-modal'
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '退货管理'
@@ -143,9 +141,7 @@
     name: PAGE_NAME,
     components: {
       StatusTab,
-      BaseDataSelect,
-      DefaultModal,
-      BaseDropDown
+      DefaultModal
       // DefaultConfirm
     },
     page: {
