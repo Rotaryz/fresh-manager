@@ -5,8 +5,8 @@
       <div class="line"></div>
     </div>
     <div class="auxiliary-box">
-      <div class="auxiliary-item">
-        <div class="text">斤</div>
+      <div v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8]" :key="index" class="auxiliary-item" >
+        <div class="text">斤{{item}}</div>
         <div class="auxiliary-model">
           <div class="img-box" @click="changeItem"></div>
           <div class="img-box del" @click="delItem"></div>
@@ -79,6 +79,7 @@
       text-align: center
       position: relative
       margin-right: 10px
+      margin-bottom: 20px
       .text
         font-size: $font-size-14
         color: $color-text-main
@@ -112,6 +113,7 @@
           opacity: 1
     .auxiliary-add
       min-width: 80px
+      margin-bottom: 20px
       text-align: center
       padding: 10px 16px
   .auxiliary-information

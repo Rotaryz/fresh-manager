@@ -8,7 +8,20 @@
         </div>
       </div>
       <div class="main-input">
-        <input v-model="numberTxt" type="text" class="main-input-box" :placeholder="numberPla">
+        <div v-if="showCate" class="main-model-box">
+          <div class="text">上级分类</div>
+          <div class="edit-input-box">
+            <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+          </div>
+        </div>
+        <div class="main-model-box">
+          <div class="text">分类名称</div>
+          <input v-model="pointName" type="text" class="main-input-box" :placeholder="numberPla">
+        </div>
+        <div class="main-model-box">
+          <div class="text">排序号</div>
+          <input v-model="pointNumber" type="text" class="main-input-box" placeholder="0">
+        </div>
         <div class="btn-group">
           <span class="btn cancel" @click="cancel">取消</span>
           <span class="btn confirm" @click="confirm">确定</span>
@@ -20,23 +33,40 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
-  const COMPONENT_NAME = 'DEFAULT_INPUT'
+  const COMPONENT_NAME = 'CHANGE_MODEL'
 
   export default {
     name: COMPONENT_NAME,
     components: {DefaultModal},
+    props: {
+      numberPla: {
+        type: String,
+        default: '长度不能超过5位'
+      },
+      showCate: {
+        type: Boolean,
+        default: false
+      }
+    },
     data() {
       return {
-        numberTxt: '',
         numberTitle: '',
-        numberPla: ''
+        pointName: '',
+        pointNumber: '',
+        dispatchSelect: {
+          check: false,
+          show: false,
+          content: '全部社区',
+          type: 'default',
+          data: [{title: 'sdsd'}, {title: 'sds'}] // 格式：{title: '55'}
+        }
       }
     },
     methods: {
-      show(text, title, placeholder) {
-        this.numberTxt = text
+      show(title, text, number) {
         this.numberTitle = title
-        this.numberPla = placeholder
+        this.pointName = text
+        this.pointNumber = number
         this.$refs.modal && this.$refs.modal.showModal()
       },
       hide() {
@@ -44,11 +74,14 @@
       },
       confirm() {
         this.hide()
-        this.$emit('confirm', this.numberTxt)
+        this.$emit('confirm', this.pointName, this.pointNumber)
       },
       cancel() {
         this.hide()
         this.$emit('cancel')
+      },
+      setValue(item) {
+        console.log(item, '111')
       }
     }
   }
@@ -60,7 +93,6 @@
   .default-input
     background: #fff
     width: 534px
-    height: 261px
     border-radius: 3px
     .title-input
       height: 60px
@@ -84,7 +116,7 @@
           bg-image('icon-close')
 
     .main-input
-      padding: 42px 20px 0 40px
+      padding: 42px 20px 30px 20px
       .main-input-box
         width: 310px
         height: 44px
@@ -106,7 +138,7 @@
         &:focus
           border-color: $color-sub !important
   .btn-group
-    margin-top: 55px
+    margin-top: 40px
     text-align: center
     display: flex
     justify-content: flex-end
@@ -126,6 +158,14 @@
       margin-left: 20px
     .one-btn
       margin-left :0
-  .z
-    width: 100%
+  .main-model-box
+    layout(row)
+    align-items: center
+    margin-bottom: 24px
+    .text
+      color: #666
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      width: 60px
+      margin-right: 36px
 </style>

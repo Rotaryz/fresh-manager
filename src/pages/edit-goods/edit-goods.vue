@@ -112,9 +112,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import BaseEditImage from '@components/_base-edit-image/_base-edit-image'
-  import BaseDropDown from '@components/_base-drop-down/_base-drop-down'
-
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
 
@@ -122,10 +119,6 @@
     name: PAGE_NAME,
     page: {
       title: TITLE
-    },
-    components: {
-      BaseEditImage,
-      BaseDropDown
     },
     data() {
       return {

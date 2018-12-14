@@ -30,20 +30,26 @@
         </div>
       </li>
     </ul>
+    <change-model :showCate="true"></change-model>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import ChangeModel from '@components/change-model/change-model'
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
   const TITLE = '商品分类'
 
   export default {
     name: PAGE_NAME,
+    components: {
+      ChangeModel
+    },
     page: {
       title: TITLE
     },
     data() {
-      return {}
+      return {
+      }
     }
   }
 </script>
