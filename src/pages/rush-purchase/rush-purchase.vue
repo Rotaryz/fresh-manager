@@ -19,7 +19,7 @@
         <div class="list-item"><span class="list-status"></span>咖啡机</div>
         <div class="list-item">2018-12-07 15:00</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="purchase-detail" append class="list-operation">编辑</router-link>
+          <router-link tag="span" to="edit-rush" append class="list-operation">编辑</router-link>
           <span class="list-operation">删除</span>
         </div>
       </div>

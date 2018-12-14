@@ -42,7 +42,7 @@
       },
       width: {
         type: Number,
-        default: 127
+        default: 126.5
       },
       height: {
         type: Number,
@@ -108,42 +108,43 @@
           return
         }
         this.city[index].select = !this.city[index].select
+        this.city[index].show = !this.city[index].show
         this.city.forEach((item, idx) => {
           if (idx !== index) {
             item.select = false
+            item.show = false
           }
         })
-        this.city[index].show = true
         this.$emit('selectType', type, this.city)
       },
       setValue(value, index, idx) {
         this.city[index].select = false
         this.city[index].children[idx].content = value.title
         switch (value.type) {
-          case 'pro':
-            let index = regionArr.findIndex((child) => child.name === value.title)
-            if (index !== this.cityIndex || index === 0) {
-              this.content.city = ''
-              this.city[1].children = [{content: '请选择省份', data: []}]
-            }
-            this.cityIndex = index
-            this._infoCity(index)
-            this.content.province = value.title
-            this.city[2].children = [{content: '请选择城市', data: []}]
+        case 'pro':
+          let index = regionArr.findIndex((child) => child.name === value.title)
+          if (index !== this.cityIndex || index === 0) {
+            this.content.city = ''
+            this.city[1].children = [{content: '请选择省份', data: []}]
+          }
+          this.cityIndex = index
+          this._infoCity(index)
+          this.content.province = value.title
+          this.city[2].children = [{content: '请选择城市', data: []}]
+          this.content.area = ''
+          break
+        case 'city':
+          let idx = regionArr[this.cityIndex].sub.findIndex((child) => child.name === value.title)
+          if (value.title !== this.content.city || idx === 0) {
             this.content.area = ''
-            break
-          case 'city':
-            let idx = regionArr[this.cityIndex].sub.findIndex((child) => child.name === value.title)
-            if (value.title !== this.content.city || idx === 0) {
-              this.content.area = ''
-              this.city[2].children = [{content: '请选择区/县', data: []}]
-            }
-            this._infoArea(idx)
-            this.content.city = value.title
-            break
-          case 'area':
-            this.content.area = value.title
-            break
+            this.city[2].children = [{content: '请选择区/县', data: []}]
+          }
+          this._infoArea(idx)
+          this.content.city = value.title
+          break
+        case 'area':
+          this.content.area = value.title
+          break
         }
         this.city[index].show = false
         this.$emit('setValue', this.content)
@@ -257,7 +258,6 @@
             color: $color-sub
     .admin-select-box-active
       border-color: $color-sub !important
-      color: $color-text-main
     .admin-big-box-hover
       border-color: #ACACAC
 </style>

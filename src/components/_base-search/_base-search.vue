@@ -1,8 +1,6 @@
 <template>
   <div class="base-search">
-    <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder" :class="{'search-focus': isFocus}"
-           @focus="_isFocus(true)" @blur="_isFocus(false)"
-    >
+    <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder">
     <div class="search-icon-box">
       <span class="search-icon hand"></span>
     </div>
@@ -66,9 +64,9 @@
     &::placeholder
       font-family: $font-family-regular
       color: $color-text-assist
-  .search-focus
-    border: 1px solid $color-sub !important
-    border-right: none !important
+    &:focus
+      border: 1px solid $color-sub !important
+      border-right: none !important
 
   .search-icon-box
     width: 47px
