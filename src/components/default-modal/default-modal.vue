@@ -21,8 +21,8 @@
     },
     data() {
       return {
-        showActive: true,
-        isShow: true
+        showActive: false,
+        isShow: false
       }
     },
     watch: {

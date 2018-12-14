@@ -5,7 +5,7 @@
       <div class="line"></div>
     </div>
     <div class="auxiliary-box">
-      <div v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8]" :key="index" class="auxiliary-item" >
+      <div v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8]" :key="index" class="auxiliary-item">
         <div class="text">斤{{item}}</div>
         <div class="auxiliary-model">
           <div class="img-box" @click="changeItem"></div>

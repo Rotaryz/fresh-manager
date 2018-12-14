@@ -9,7 +9,7 @@
       <div class="input-wrapper">
         <input v-model="password" type="password" :placeholder="placeHolders.password" @keyup.enter="tryToLogIn">
       </div>
-      <button class="login-btn" @click="tryToLogIn">登录</button>
+      <button class="login-btn hand" @click="tryToLogIn">登录</button>
     </div>
   </div>
 </template>
