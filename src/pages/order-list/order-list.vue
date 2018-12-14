@@ -6,7 +6,7 @@
     <div class="search-warp">
       <div class="ac-tab">
         <base-drop-down :select="select"></base-drop-down>
-        <base-data-select :dateINfo="dateINfo" @_getTime="_getTime"></base-data-select>
+        <base-date-select :dateINfo="dateINfo" @_getTime="_getTime"></base-date-select>
         <base-search :placeHolder="placeHolder"></base-search>
       </div>
       <a :href="downUrl" class="excel" target="_blank">导出Excel</a>
