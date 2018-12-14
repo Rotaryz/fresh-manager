@@ -173,7 +173,6 @@
       .goods-list
         margin: 28px 0px 0px
         width: 100%
-        min-width: 1316px
         padding: 0 15px
         box-sizing: border-box
         .list-footer
