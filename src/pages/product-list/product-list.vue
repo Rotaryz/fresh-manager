@@ -20,7 +20,6 @@
   import BaseSearch from '@components/_base-search/_base-search'
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
-
   export default {
     name: PAGE_NAME,
     page: {
