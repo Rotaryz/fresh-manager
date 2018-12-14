@@ -318,15 +318,15 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
-      &:first-child, &:nth-child(5), &:nth-child(6)
+      &:nth-child(5), &:nth-child(6)
         flex: 1.1
-      &:nth-child(3)
+      &:first-child, &:nth-child(3)
         flex: 1.3
+        padding-right: 10px
       &:nth-child(4), &:nth-child(2) &:nth-child(7) &:nth-child(8)
         flex: 0.8
       &:last-child
-        flex: 0.5
-
+        flex: 0.7
   .list
     flex: 1
     .list-content
