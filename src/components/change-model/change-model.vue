@@ -66,6 +66,7 @@
       show(title, text, number) {
         this.numberTitle = title
         this.pointName = text
+        console.log(this.pointName, '111111')
         this.pointNumber = number
         this.$refs.modal && this.$refs.modal.showModal()
       },
