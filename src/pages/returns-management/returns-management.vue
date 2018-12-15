@@ -64,9 +64,13 @@
 <script type="text/ecmascript-6">
   import StatusTab from '@components/status-tab/status-tab'
   import DefaultModal from '@components/default-modal/default-modal'
+  import Api from '@api'
+  import { ERR_OK } from '@utils/config'
+
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '退货管理'
   const LIST_TITLE = ['退货单号', '会员名称', '商品', '退货金额', '原订单号', '社区名称', '退货原因', '退货单状态', '操作']
+
   const ORDERLIST = [
     {
       refundId: 'TD20188832770043',
@@ -168,6 +172,36 @@
       checkTab() {},
       _getTime() {},
       goPage() {},
+      async _getRefundList(loading) {
+        let data = {
+          limit: 10,
+          page: this.page,
+          start_time: this.startTime,
+          end_time: this.endTime,
+          status: this.status,
+          shop_id: this.shopId,
+          keyword: this.keyWord
+        }
+        let res = await Api.Order.getRefundList(data, loading)
+        if (res.error !== ERR_OK) {
+          // this.$emit('setNull', true)
+          // this.$emit('showToast', res.message)
+          return
+        }
+        // this._getUrl()
+        let pages = res.meta
+        this.pageTotal = Object.assign({}, {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        })
+        this.orderList = res.data
+        this.$emit('setNull', !this.orderList.length)
+      },
+      seleIndex(item, index) {
+        this.status = item.status*1 - 1
+        this._getOrderList(false)
+      },
       hideModal() {
         this.$refs.aud.hideModal()
       }
