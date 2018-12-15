@@ -225,6 +225,9 @@ export default [
         meta: {
           titles: ['团长管理', '团长配送单', '新建团长'],
           beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
             store.dispatch('leader/getLeaderDetail', routeTo.query.id)
               .then(response => {
                 if (!response) {
