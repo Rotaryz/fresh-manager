@@ -7,22 +7,22 @@
       <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div class="list-content list-box">
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">2018-12-07 15:00</div>
+      <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
+        <div class="list-item">{{item.mobile}}</div>
+        <div class="list-item">{{item.nickname}}</div>
+        <div class="list-item">{{item.wx_account}}</div>
+        <div class="list-item">{{item.social_name}}</div>
+        <div class="list-item">{{item.name}}</div>
+        <div class="list-item">{{item.address}}</div>
+        <div class="list-item">{{item.created_at}}</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="edit-leader" append class="list-operation">编辑</router-link>
+          <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
           <span class="list-operation">店铺码</span>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination></base-pagination>
+      <base-pagination :pageDetail="pageTotal"></base-pagination>
     </div>
   </div>
 </template>
@@ -49,7 +49,7 @@
       ...leaderComputed
     },
     created() {
-      console.log(this.leaderList)
+      console.log(this.pageTotal)
     },
     methods: {}
   }
@@ -89,7 +89,7 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
-      &:nth-child(6)
+      &:nth-child(6), &:nth-child(7)
         flex: 1.5
       &:last-child
         flex: 0.8
