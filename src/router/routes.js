@@ -44,7 +44,18 @@ export default [
         name: 'product-categories',
         component: () => lazyLoadView(import('@pages/product-categories/product-categories')),
         meta: {
-          titles: ['商品管理', '商品分类']
+          titles: ['商品管理', '商品分类'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  商品分类
+            store.dispatch('categories/getCategoryList', -1).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            }).catch(() => {
+              return next({name: '404'})
+            })
+          }
         }
       },
       // 辅助资料
@@ -53,7 +64,18 @@ export default [
         name: 'auxiliary-information',
         component: () => lazyLoadView(import('@pages/auxiliary-information/auxiliary-information')),
         meta: {
-          titles: ['商品管理', '辅助资料']
+          titles: ['商品管理', '辅助资料'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  辅助资料
+            store.dispatch('auxiliary/getAuxiliaryList', 1).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            }).catch(() => {
+              return next({name: '404'})
+            })
+          }
         }
       },
       // 编辑商品
@@ -62,7 +84,32 @@ export default [
         name: 'edit-goods',
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
-          titles: ['商品管理', '商品列表', '新建商品']
+          titles: ['商品管理', '商品列表', '新建商品'],
+          beforeResolve(routeTo, routeFrom, next) {
+            console.log(routeTo.query.id)
+            //  编辑商品
+            if (routeTo.query.id) {
+              store.dispatch('categories/getCategoryList', 11).then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+                return next({name: '404'})
+              })
+              console.log(1111111)
+            } else {
+              store.dispatch('categories/getCategoryList', 222).then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+                return next({name: '404'})
+              })
+              console.log(22222)
+            }
+          }
         }
       },
       /**

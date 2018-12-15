@@ -24,3 +24,19 @@ export const leaderComputed = {
 
 export const leaderMethods = mapActions('leader', ['getLeaderList'])
 
+export const auxiliaryComputed = {
+  ...mapState('auxiliary', {
+    unitsList: (state) => state.unitsList
+  })
+}
+
+export const auxiliaryMethods = mapActions('auxiliary', ['getAuxiliaryList', 'setAuxiliary'])
+
+export const categoriesComputed = {
+  ...mapState('categories', {
+    categoryList: (state) => state.categoryList
+  })
+}
+
+export const categoriesMethods = mapActions('categories', ['getCategoryList', 'setCategory', 'addChild'])
+

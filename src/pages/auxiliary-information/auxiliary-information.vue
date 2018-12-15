@@ -19,6 +19,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {auxiliaryComputed, auxiliaryMethods} from '@state/helpers'
   import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import DefaultInput from '@components/default-input/default-input'
@@ -36,17 +37,17 @@
     },
     data() {
       return {
-        unitsList: [],
         newUnits: '',
         unitsType: 0,
         curItem: null,
         delIndex: null
       }
     },
-    created() {
-      this.getUnitsList()
+    computed: {
+      ...auxiliaryComputed
     },
     methods: {
+      ...auxiliaryMethods,
       delItem(item, index) {
         this.curItem = item
         this.delIndex = index
@@ -56,7 +57,7 @@
         API.Product.delUnits(this.curItem.id).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$toast.show('删除成功')
-            this.unitsList.splice(this.delIndex, 1)
+            this.getUnitsList({}, false)
           } else {
             this.$toast.show(res.message)
           }
@@ -64,7 +65,6 @@
       },
       changeItem(item) {
         if (item.id) {
-          console.log(item)
           this.curItem = item
           this.$refs.modalBox.show(item.name, '修改计量单位', '长度不能超过5位')
           this.unitsType = 1
@@ -104,10 +104,10 @@
         }
       },
       getUnitsList(data, loading) {
+        let that = this
         API.Product.getUnitsList(data, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.unitsList = res.data
-            console.log(this.unitsList)
+            that.setAuxiliary(res.data)
           } else {
             this.$toast.show(res.message)
           }

@@ -23,7 +23,7 @@
               <span class="list-operation">删除</span>
             </div>
           </div>
-          <div class="add-box hand" @click="addChilrenCate">
+          <div class="add-box hand" @click="addChilrenCate(item, index)">
             <div class="icon"></div>
             <div class="text">添加</div>
           </div>
@@ -36,6 +36,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {categoriesComputed, categoriesMethods} from '@state/helpers'
   import API from '@api'
   import ChangeModel from '@components/change-model/change-model'
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
@@ -51,27 +52,18 @@
     },
     data() {
       return {
-        categoryList: [],
         categoryType: 0,
-        categoryNewName: ''
+        categoryNewName: '',
+        categoryChild: '',
+        bigItem: '',
+        bigIndex: 0
       }
     },
-    created() {
-      this.getCategoryList({parent_id: -1})
+    computed: {
+      ...categoriesComputed
     },
     methods: {
-      getCategoryList(data, loading) {
-        API.Product.getCategoryList(data, loading).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.categoryList = res.data
-            this.categoryList.forEach(item => { item.select = false })
-            console.log(this.categoryList)
-          } else {
-            this.$toast.show(res.message)
-          }
-          this.$loading.hide()
-        })
-      },
+      ...categoriesMethods,
       newBigCate() {
         this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
         this.categoryType = 0
@@ -80,33 +72,53 @@
         if (name.length === 0 || name.length > 10) {
           if (this.categoryType === 0) {
             this.categoryNewName = name
+          } else if (this.categoryType === 1) {
+            this.categoryChild = name
           }
           this.$toast.show('计量单位的长度不能超过10个')
           return
         }
-        console.log(name, number)
-        if (this.categoryType === 0) {
+        switch (this.categoryType){
+        case 0:
           API.Product.createCategory({name: name, sort: number}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$toast.show('创建成功')
-              this.getCategoryList({parent_id: -1}, false)
-              console.log(res.data)
+              this.categoryNewName = ''
+              this.addChild({name: name, sort: number, id: 0})
             } else {
               this.$toast.show(res.message)
             }
           })
+          break
+        case 1:
+          API.Product.createCategory({name: name, sort: number, parent_id: this.bigItem.id}).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('创建成功')
+              this.categoryNewName = ''
+              this.getCategoryList(-1, false)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+          break
         }
       },
       _sort(a, b) {
         return b.sort - a.sort
       },
       openList(index) {
-        // this.categoryList.sort(this._sort)
         this.categoryList[index].select = !this.categoryList[index].select
+        // this.categoryList.sort(this._sort)
         this.$forceUpdate()
       },
       openTwoList(index) {
         // this.cateList[index].children.sort(this._sort)
+      },
+      addChilrenCate(item, index) {
+        this.$refs.bigModel.show('新建商品子分类', this.categoryChild)
+        this.categoryType = 1
+        this.bigItem = item
+        this.bigIndex = index
       }
     }
   }

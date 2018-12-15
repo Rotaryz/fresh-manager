@@ -37,7 +37,7 @@ export default {
    * 商品系统分类列表
    * @returns {*}
    */
-  getCategoryList(data, loading = true) {
+  getCategory(data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods-category`
     return request.get(url, data, loading)
   },
