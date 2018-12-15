@@ -83,6 +83,7 @@ export const actions = {
 function setDefaultAuthHeaders(state) {
   let commonHeaders = {
     'Current-Corp': 1,
+    'Current-Shop': 1,
     Authorization: state.currentUser ? state.currentUser.access_token : ''
   }
   axios.defaults.headers.common = commonHeaders

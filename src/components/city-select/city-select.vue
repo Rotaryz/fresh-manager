@@ -42,7 +42,7 @@
       },
       width: {
         type: Number,
-        default: 127
+        default: 126.5
       },
       height: {
         type: Number,
@@ -108,12 +108,13 @@
           return
         }
         this.city[index].select = !this.city[index].select
+        this.city[index].show = !this.city[index].show
         this.city.forEach((item, idx) => {
           if (idx !== index) {
             item.select = false
+            item.show = false
           }
         })
-        this.city[index].show = true
         this.$emit('selectType', type, this.city)
       },
       setValue(value, index, idx) {
@@ -257,7 +258,6 @@
             color: $color-sub
     .admin-select-box-active
       border-color: $color-sub !important
-      color: $color-text-main
     .admin-big-box-hover
       border-color: #ACACAC
 </style>

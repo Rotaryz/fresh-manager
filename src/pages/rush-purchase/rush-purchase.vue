@@ -2,7 +2,7 @@
   <div class="rush-purchase">
     <div class="tab-header">
       <!--<div class="btn-main">新建活动 +</div>-->
-      <base-search></base-search>
+      <base-date-select></base-date-select>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in rushTitle" :key="index" class="list-item">{{item}}</div>
@@ -19,7 +19,7 @@
         <div class="list-item"><span class="list-status"></span>咖啡机</div>
         <div class="list-item">2018-12-07 15:00</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="purchase-detail" append class="list-operation">编辑</router-link>
+          <router-link tag="span" to="edit-rush" append class="list-operation">编辑</router-link>
           <span class="list-operation">删除</span>
         </div>
       </div>

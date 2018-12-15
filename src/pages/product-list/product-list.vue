@@ -42,9 +42,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import BaseDropDown from '@components/_base-drop-down/_base-drop-down'
-  import BaseSearch from '@components/_base-search/_base-search'
-  import BaseSwitch from '@components/_base-switch/_base-switch'
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
   const LEADER_LIST = ['商品图片', '商品名称', '售卖单位', '售价', '状态', '库存', '操作']
@@ -53,11 +50,6 @@
     name: PAGE_NAME,
     page: {
       title: TITLE
-    },
-    components: {
-      BaseDropDown,
-      BaseSearch,
-      BaseSwitch
     },
     data() {
       return {

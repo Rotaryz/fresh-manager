@@ -90,6 +90,15 @@ export default [
           titles: ['商城管理', '今日抢购']
         }
       },
+      // 新建编辑今日抢购
+      {
+        path: 'rush-purchase/edit-rush',
+        name: 'edit-rush',
+        component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
+        meta: {
+          titles: ['商城管理', '今日抢购', '新建活动']
+        }
+      },
       /**
        * 商城管理
        *

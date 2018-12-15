@@ -12,6 +12,7 @@
         <div class="edit-input-box">
           <input type="number" class="edit-input" maxlength="11" @mousewheel.native.prevent>
         </div>
+        <div class="edit-msg">团长账号为手机号，绑定微信，不能修改</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -130,6 +131,7 @@
   .leader-box
     padding: 0 20px
     box-sizing: border-box
+    margin-bottom: 35px
     .edit-item
       display: flex
       color: #2A2A2A
@@ -156,6 +158,7 @@
         height: 40px
         border: 1px solid $color-line
         transition: all 0.3s
+        box-sizing: border-box
         &::-webkit-inner-spin-button
           appearance: none
         &:hover
@@ -182,7 +185,11 @@
           color: $color-text-assist
         &:focus
           border-color: $color-sub !important
-
+      .edit-msg
+        line-height: 40px
+        font-size: $font-size-14
+        color: #acacac
+        margin-left: 10px
   .back
     position: absolute
     left: -20px
