@@ -274,8 +274,7 @@
         this.$router.back()
       },
       // 删除分类
-      _delItem() {
-      },
+      _delItem() {},
       _delGoods() {
         this.$refs.confirm.show('确定要删除该商品？')
       },

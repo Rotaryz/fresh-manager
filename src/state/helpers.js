@@ -14,3 +14,13 @@ export const globalComputed = {
     currentTitles: (state) => state.currentTitles
   })
 }
+
+export const leaderComputed = {
+  ...mapState('leader', {
+    leaderList: (state) => state.leaderList,
+    pageTotal: (state) => state.pageTotal
+  })
+}
+
+export const leaderMethods = mapActions('leader', ['getLeaderList'])
+
