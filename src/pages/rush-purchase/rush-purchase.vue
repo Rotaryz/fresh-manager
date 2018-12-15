@@ -1,8 +1,8 @@
 <template>
   <div class="rush-purchase">
     <div class="tab-header">
-      <base-search></base-search>
-      <div class="btn-main">导入采购单</div>
+      <!--<div class="btn-main">新建活动 +</div>-->
+      <base-date-select></base-date-select>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in rushTitle" :key="index" class="list-item">{{item}}</div>
@@ -17,9 +17,9 @@
         <div class="list-item">DDH20188832770043DDH20188832770043</div>
         <div class="list-item">DDH20188832770043DDH20188832770043</div>
         <div class="list-item"><span class="list-status"></span>咖啡机</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">2018-12-07 15:00</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="purchase-detail" append class="list-operation">编辑</router-link>
+          <router-link tag="span" to="edit-rush" append class="list-operation">编辑</router-link>
           <span class="list-operation">删除</span>
         </div>
       </div>
@@ -27,10 +27,13 @@
     <div class="pagination-box">
       <base-pagination></base-pagination>
     </div>
+    <default-confirm></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
+
   const PAGE_NAME = 'RUSH_PURCHASE'
   const TITLE = '今日抢购'
   const RUSH_TITLE = ['活动时间', '活动商品数', '销量', '预计到货时间', '状态', '创建时间', '操作']
@@ -39,6 +42,9 @@
     name: PAGE_NAME,
     page: {
       title: TITLE
+    },
+    components: {
+      DefaultConfirm
     },
     data() {
       return {
@@ -60,7 +66,6 @@
   .tab-header
     height: 80px
     display: flex
-    justify-content: space-between
     align-items: center
     box-sizing: border-box
 

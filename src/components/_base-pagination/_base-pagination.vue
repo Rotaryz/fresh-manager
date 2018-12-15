@@ -57,7 +57,7 @@
         default: () => {
           return {
             total: 1, // 总数量
-            per_page: 1, // 一页条数
+            per_page: 10, // 一页条数
             total_page: 1 // 总页数
           }
         }

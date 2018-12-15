@@ -18,6 +18,7 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+
   const COMPONENT_NAME = 'DEFAULT_CONFIRM'
 
   export default {
@@ -61,8 +62,8 @@
   @import "~@design"
 
   .default-confirm
-    width: 356px
-    height: 210px
+    width: 329.6px
+    height: 200px
     background: #fff
     border-radius: 3px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
@@ -71,23 +72,31 @@
       text-align: center
       display: flex
       justify-content: center
-      user-select :none
+      user-select: none
       .btn
         width: 96px
         height: 40px
         line-height: 40px
         border-radius: 3px
         border: 1px solid $color-text-D9
-        cursor :pointer
+        cursor: pointer
+        transition: all 0.3s
       .cancel
-        border-right: 1px solid $color-line
+        border: 1px solid $color-line
+        &:hover
+          color: $color-text-sub
+          border-color: $color-text-sub
       .confirm
-        border-right: 1px solid $color-main
+        border: 1px solid $color-main
         background: $color-main
         color: $color-white
         margin-left: 20px
+        &:hover
+          background: #44AB67
+        &:active
+          opacity: 0.8
       .one-btn
-        margin-left :0
+        margin-left: 0
     .title
       font-size: $font-size-16
       font-family: $font-family-medium
@@ -97,13 +106,13 @@
     .text
       font-size: $font-size-16
       color: $color-text-main
-      height: 126px
+      height: 120px
       display: flex
       align-items: center
       justify-content: center
       margin: 10px 15px
-      overflow-y :auto
-      text-align :justify
-      word-break :break-all
-      line-height :1.4
+      overflow-y: auto
+      text-align: justify
+      word-break: break-all
+      line-height: 1.4
 </style>
