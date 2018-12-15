@@ -10,7 +10,9 @@
           团长账号
         </div>
         <div class="edit-input-box">
-          <input type="number" class="edit-input" maxlength="11" @mousewheel.native.prevent>
+          <input v-model="leaderData.mobile" type="number" class="edit-input" maxlength="11" :disabled="id"
+                 @mousewheel.native.prevent
+          >
         </div>
         <div class="edit-msg">团长账号为手机号，绑定微信，不能修改</div>
       </div>
@@ -20,7 +22,7 @@
           社区名称
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="20">
+          <input v-model="leaderData.social_name" type="text" class="edit-input" maxlength="20">
         </div>
       </div>
     </div>
@@ -34,7 +36,7 @@
           团长名称
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="10">
+          <input v-model="leaderData.name" type="text" class="edit-input" maxlength="10">
         </div>
       </div>
       <div class="edit-item">
@@ -43,7 +45,7 @@
           微信号
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input">
+          <input v-model="leaderData.wx_account" type="text" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
@@ -52,7 +54,7 @@
           社区地址
         </div>
         <div class="edit-input-box">
-          <city-select></city-select>
+          <city-select @setValue="_getCity"></city-select>
         </div>
       </div>
       <div class="edit-item">
@@ -61,22 +63,24 @@
           详细地址
         </div>
         <div class="edit-input-box">
-          <textarea name="" class="edit-text" maxlength="50"></textarea>
+          <textarea v-model="leaderData.address" class="edit-text" maxlength="50"></textarea>
         </div>
       </div>
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main">保存</div>
+      <div class="back-btn btn-main" @click="_submit">保存</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import CitySelect from '@components/city-select/city-select'
+  import API from '@api'
 
   const PAGE_NAME = 'EDIT_LEADER'
   const TITLE = '新建团长'
+  const KEY = '206ec5511b39a51e02627ffbd8dfc16c' // 高德地图key
 
   export default {
     name: PAGE_NAME,
@@ -87,11 +91,104 @@
       CitySelect
     },
     data() {
-      return {}
+      return {
+        id: null,
+        leaderData: {
+          mobile: '',
+          social_name: '',
+          name: '',
+          wx_account: '',
+          province: '',
+          city: '',
+          district: '',
+          address: '',
+          longitude: '',
+          latitude: ''
+        },
+        isSubmit: true
+      }
+    },
+    created() {
+      this.id = this.$route.query.id || null
+      this._getCoordinate()
+      console.log(API)
     },
     methods: {
       _back() {
         this.$router.back()
+      },
+      _getCity(data) { // 获取地址
+        this.leaderData.province = data.province.includes('请选择') ? '' : data.province
+        this.leaderData.city = data.city.includes('请选择') ? '' : data.city
+        this.leaderData.district = data.area.includes('请选择') ? '' : data.area
+      },
+      async _storeLeader() {
+        if (!this.leaderData.mobile || this.leaderData.mobile.length !== 11) {
+          this.$toast.show('请输入正确的团长账号')
+          return
+        } else if (!this.leaderData.social_name) {
+          this.$toast.show('请输入正确的社区名称')
+          return
+        } else if (!this.leaderData.name) {
+          this.$toast.show('请输入正确的团长名称')
+          return
+        } else if (!this.leaderData.wx_account) {
+          this.$toast.show('请输入正确的微信号')
+          return
+        } else if (!this.leaderData.province) {
+          this.$toast.show('请选择正确的省份')
+          return
+        } else if (!this.leaderData.city) {
+          this.$toast.show('请选择正确的城市')
+          return
+        } else if (!this.leaderData.district) {
+          this.$toast.show('请选择正确的区/县')
+          return
+        } else if (!this.leaderData.address) {
+          this.$toast.show('请输入正确的详情地址')
+          return
+        }
+        let addressDetail = this.leaderData.province + this.leaderData.city + this.leaderData.district + this.leaderData.address
+        this.isSubmit = false
+        if (this.isSubmit) {
+          this._getCoordinate(addressDetail)
+
+        }
+      },
+      _getCoordinate(text) { // 获取坐标
+        text = '广东广州海珠区tit创意园'
+        let oAjax = new XMLHttpRequest()
+        oAjax.open("GET", `https://restapi.amap.com/v3/geocode/geo?address=${text}&key=${KEY}`, true)
+        oAjax.send()
+        oAjax.onreadystatechange = async () => {
+          if (oAjax.readyState === 4 && oAjax.status === 200) {
+            let res = JSON.parse(oAjax.responseText)
+            let location = res.geocodes[0].location.split(',')
+            if (!this.id) {
+              // 新建
+              this.leaderData.longitude = location[0]
+              this.leaderData.latitude = location[1]
+              let res = await API.Leader.storeLeader(this.leaderData)
+              this.$loading.hide()
+              console.log(res)
+              this.$toast.show(res.message)
+              if (res.error === this.$ERR_OK) {
+                setTimeout(() => {
+                  this.isSubmit = true
+                  this._back()
+                }, 1000)
+              }
+              return
+            }
+            console.log(location)
+          }
+        }
+      },
+      _submit() {
+        if (this.id) {
+          return
+        }
+        this._storeLeader()
       }
     }
   }
@@ -190,6 +287,7 @@
         font-size: $font-size-14
         color: #acacac
         margin-left: 10px
+
   .back
     position: absolute
     left: -20px

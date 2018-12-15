@@ -4,7 +4,7 @@
       <div class="btn-main">新建团长 +</div>
     </div>
     <div class="list-header list-box">
-      <div v-for="(item,index) in leaderList" :key="index" class="list-item">{{item}}</div>
+      <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
       <div class="list-content list-box">
@@ -28,9 +28,11 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {leaderComputed} from '@state/helpers'
+
   const PAGE_NAME = 'LEADER_LIST'
   const TITLE = '团长列表'
-  const LEADER_LIST = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '操作']
+  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -39,9 +41,17 @@
     },
     data() {
       return {
-        leaderList: LEADER_LIST
+        leaderTitle: LEADER_TITLE,
+        page: 1
       }
-    }
+    },
+    computed: {
+      ...leaderComputed
+    },
+    created() {
+      console.log(this.leaderList)
+    },
+    methods: {}
   }
 </script>
 
