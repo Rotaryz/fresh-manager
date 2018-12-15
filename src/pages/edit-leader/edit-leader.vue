@@ -68,8 +68,8 @@
       </div>
     </div>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main" @click="_submit">保存</div>
+      <div class="back-cancel back-btn hand" @click="back">返回</div>
+      <div class="back-btn btn-main" @click="submit">保存</div>
     </div>
   </div>
 </template>
@@ -77,10 +77,10 @@
 <script type="text/ecmascript-6">
   import CitySelect from '@components/city-select/city-select'
   import API from '@api'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'EDIT_LEADER'
   const TITLE = '新建团长'
-  const KEY = '206ec5511b39a51e02627ffbd8dfc16c' // 高德地图key
 
   export default {
     name: PAGE_NAME,
@@ -89,6 +89,14 @@
     },
     components: {
       CitySelect
+    },
+    props: {
+      detail: {
+        type: Object,
+        default() {
+          return {}
+        }
+      }
     },
     data() {
       return {
@@ -105,24 +113,66 @@
           longitude: '',
           latitude: ''
         },
-        isSubmit: true
+        isSubmit: false
       }
     },
     created() {
       this.id = this.$route.query.id || null
-      this._getCoordinate()
-      console.log(API)
+      this._setData()
     },
     methods: {
-      _back() {
+      back() {
         this.$router.back()
       },
-      _getCity(data) { // 获取地址
-        this.leaderData.province = data.province.includes('请选择') ? '' : data.province
-        this.leaderData.city = data.city.includes('请选择') ? '' : data.city
-        this.leaderData.district = data.area.includes('请选择') ? '' : data.area
+      submit() {
+        if (this.isSubmit) {
+          return
+        }
+        if (!this._isDataValidate()) {
+          return
+        }
+        this.isSubmit = true
+        let address = this.leaderData.province + this.leaderData.city + this.leaderData.district + this.leaderData.address
+        let oAjax = new XMLHttpRequest()
+        oAjax.open("GET", `https://restapi.amap.com/v3/geocode/geo?address=${address}&key=${process.env.VUE_APP_KEY}`, true)
+        oAjax.send()
+        oAjax.onreadystatechange = async () => {
+          if (oAjax.readyState === 4 && oAjax.status === 200) {
+            let res = JSON.parse(oAjax.responseText)
+            let location = res.geocodes[0].location.split(',')
+            this.leaderData.longitude = location[0]
+            this.leaderData.latitude = location[1]
+
+            if (this.id) {
+              // 编辑团长
+              res = await API.Leader.editLeader(this.id, this.leaderData)
+            } else {
+              // 新建团长
+              res = await API.Leader.storeLeader(this.leaderData)
+            }
+
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              setTimeout(() => {
+                this.isSubmit = false
+                this._back()
+              }, 1000)
+            }
+          }
+        }
       },
-      async _storeLeader() {
+      /**
+       * 设置默认数据 -> 编辑状态
+       * @private
+       */
+      _setData() {
+        if (!_.isEmpty(this.detail)) {
+          this.leaderData = this.detail
+          // TODO 设置默认省市区
+        }
+      },
+      _isDataValidate() {
         if (!this.leaderData.mobile || this.leaderData.mobile.length !== 11) {
           this.$toast.show('请输入正确的团长账号')
           return
@@ -148,47 +198,12 @@
           this.$toast.show('请输入正确的详情地址')
           return
         }
-        let addressDetail = this.leaderData.province + this.leaderData.city + this.leaderData.district + this.leaderData.address
-        this.isSubmit = false
-        if (this.isSubmit) {
-          this._getCoordinate(addressDetail)
-
-        }
+        return true
       },
-      _getCoordinate(text) { // 获取坐标
-        text = '广东广州海珠区tit创意园'
-        let oAjax = new XMLHttpRequest()
-        oAjax.open("GET", `https://restapi.amap.com/v3/geocode/geo?address=${text}&key=${KEY}`, true)
-        oAjax.send()
-        oAjax.onreadystatechange = async () => {
-          if (oAjax.readyState === 4 && oAjax.status === 200) {
-            let res = JSON.parse(oAjax.responseText)
-            let location = res.geocodes[0].location.split(',')
-            if (!this.id) {
-              // 新建
-              this.leaderData.longitude = location[0]
-              this.leaderData.latitude = location[1]
-              let res = await API.Leader.storeLeader(this.leaderData)
-              this.$loading.hide()
-              console.log(res)
-              this.$toast.show(res.message)
-              if (res.error === this.$ERR_OK) {
-                setTimeout(() => {
-                  this.isSubmit = true
-                  this._back()
-                }, 1000)
-              }
-              return
-            }
-            console.log(location)
-          }
-        }
-      },
-      _submit() {
-        if (this.id) {
-          return
-        }
-        this._storeLeader()
+      _getCity(data) { // 获取地址
+        this.leaderData.province = data.province.includes('请选择') ? '' : data.province
+        this.leaderData.city = data.city.includes('请选择') ? '' : data.city
+        this.leaderData.district = data.area.includes('请选择') ? '' : data.area
       }
     }
   }
@@ -196,7 +211,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
   .edit-leader
     padding-bottom: 80px
     position: relative

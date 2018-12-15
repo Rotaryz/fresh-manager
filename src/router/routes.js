@@ -171,6 +171,30 @@ export default [
           titles: ['订单管理', '退货管理']
         }
       },
+      // 退款详情
+      {
+        path: 'refund-detail',
+        name: 'refund-detail',
+        component: () => lazyLoadView(import('@pages/refund-detail/refund-detail')),
+        meta: {
+          titles: ['订单管理', '退货管理', '退款详情']
+        }
+      },
+      /**
+       * 订单管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 订单详情
+       */
+      {
+        path: 'order-detail',
+        name: 'order-detail',
+        component: () => lazyLoadView(import('@pages/order-detail/order-detail')),
+        meta: {
+          titles: ['订单管理', '订单列表', '订单详情']
+        }
+      },
       /**
        * 订单管理
        *
@@ -246,8 +270,24 @@ export default [
         name: 'edit-leader',
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
-          titles: ['团长管理', '团长配送单', '新建团长']
-        }
+          titles: ['团长管理', '团长配送单', '新建团长'],
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store.dispatch('leader/getLeaderDetail', routeTo.query.id)
+              .then(response => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              }).catch(() => {
+              next({name: '404'})
+            })
+          }
+        },
+        props: (route) => ({detail: route.params.detail})
       }
       /**
        * 团长管理

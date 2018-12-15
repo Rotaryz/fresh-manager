@@ -1,7 +1,7 @@
 <template>
   <div class="leader-list">
     <div class="tab-header">
-      <div class="btn-main">新建团长 +</div>
+      <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长 +</router-link>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
