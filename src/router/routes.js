@@ -223,8 +223,21 @@ export default [
         name: 'edit-leader',
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
-          titles: ['团长管理', '团长配送单', '新建团长']
-        }
+          titles: ['团长管理', '团长配送单', '新建团长'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('leader/getLeaderDetail', routeTo.query.id)
+              .then(response => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              }).catch(() => {
+              next({name: '404'})
+            })
+          }
+        },
+        props: (route) => ({detail: route.params.detail})
       }
       /**
        * 团长管理
