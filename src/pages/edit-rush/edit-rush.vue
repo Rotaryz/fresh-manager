@@ -53,8 +53,8 @@
         </div>
         <div class="big-box" :style="{'height': listHeight + 'px'}">
           <div class="com-list-box com-list-content">
-            <div class="com-list-item">1</div>
-            <div class="com-list-item">口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知</div>
+            <div class="com-list-item">2口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知</div>
+            <div class="com-list-item">s</div>
             <div class="com-list-item">斤</div>
             <div class="com-list-item">
               <input type="text" class="com-edit" value="￥5.98">
@@ -462,7 +462,7 @@
           border-radius: 10px
       .com-list-box
         .com-list-item
-          &:nth-child(2)
+          &:nth-child(1)
             flex: 2
 
   .history-record
