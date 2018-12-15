@@ -189,13 +189,14 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store.dispatch('leader/getLeaderList', 1).then((res) => {
-              routeTo.params.leaderList = res
-              next()
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            }).catch(() => {
+              return next({name: '404'})
             })
           }
-        },
-        props: {
-          leaderList: route => ({leaderList: route.params.leaderList})
         }
       },
       // 配送单

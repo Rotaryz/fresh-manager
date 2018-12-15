@@ -17,7 +17,8 @@ export const globalComputed = {
 
 export const leaderComputed = {
   ...mapState('leader', {
-    leaderList: (state) => state.leaderList
+    leaderList: (state) => state.leaderList,
+    pageTotal: (state) => state.pageTotal
   })
 }
 
