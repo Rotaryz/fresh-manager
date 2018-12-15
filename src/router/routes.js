@@ -185,7 +185,17 @@ export default [
         name: 'leader-list',
         component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
         meta: {
-          titles: ['团长管理', '团长列表']
+          titles: ['团长管理', '团长列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store.dispatch('leader/getLeaderList', 1).then((res) => {
+              routeTo.params.leaderList = res
+              next()
+            })
+          }
+        },
+        props: {
+          leaderList: route => ({leaderList: route.params.leaderList})
         }
       },
       // 配送单
