@@ -4,7 +4,7 @@
       <div class="title-input">
         <div class="title">{{numberTitle}}</div>
         <div class="close-box">
-          <div class="close"></div>
+          <div class="close" @click="cancel"></div>
         </div>
       </div>
       <div class="main-input">
@@ -119,11 +119,18 @@
       cursor :pointer
     .cancel
       border: 1px solid $color-line
+      &:hover
+        color: $color-text-sub
+        border-color: $color-text-sub
     .confirm
       border: 1px solid $color-main
       background: $color-main
       color: $color-white
       margin-left: 20px
+      &:hover
+        background: #44AB67
+      &:active
+        opacity: 0.8
     .one-btn
       margin-left :0
   .z

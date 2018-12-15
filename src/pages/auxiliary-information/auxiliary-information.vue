@@ -4,21 +4,22 @@
       <div class="content-title">计量单位</div>
     </div>
     <div class="auxiliary-box">
-      <div v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 8]" :key="index" class="auxiliary-item">
-        <div class="text">斤{{item}}</div>
+      <div v-for="(item, index) in unitsList" :key="index" class="auxiliary-item">
+        <div class="text">{{item.name}}</div>
         <div class="auxiliary-model">
-          <div class="img-box" @click="changeItem"></div>
-          <div class="img-box del" @click="delItem"></div>
+          <div class="img-box" @click="changeItem(item)"></div>
+          <div class="img-box del" @click="delItem(item, index)"></div>
         </div>
       </div>
-      <div class="btn-main auxiliary-add">新增+</div>
+      <div class="btn-main auxiliary-add" @click="changeItem">新增+</div>
     </div>
-    <default-confirm ref="confirm"></default-confirm>
+    <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
     <default-input ref="modalBox" @confirm="confirmInput"></default-input>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import DefaultInput from '@components/default-input/default-input'
   const PAGE_NAME = 'AUXILIARY_INFORMATION'
@@ -34,17 +35,84 @@
       DefaultInput
     },
     data() {
-      return {}
+      return {
+        unitsList: [],
+        newUnits: '',
+        unitsType: 0,
+        curItem: null,
+        delIndex: null
+      }
+    },
+    created() {
+      this.getUnitsList()
     },
     methods: {
-      delItem() {
+      delItem(item, index) {
+        this.curItem = item
+        this.delIndex = index
         this.$refs.confirm.show('确定要删除该单位？')
       },
-      changeItem() {
-        this.$refs.modalBox.show('1221', '新增计量单位', '长度不能超过5位')
+      delConfirm() {
+        API.Product.delUnits(this.curItem.id).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$toast.show('删除成功')
+            this.unitsList.splice(this.delIndex, 1)
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      changeItem(item) {
+        if (item.id) {
+          console.log(item)
+          this.curItem = item
+          this.$refs.modalBox.show(item.name, '修改计量单位', '长度不能超过5位')
+          this.unitsType = 1
+        } else {
+          this.$refs.modalBox.show(this.newUnits, '新增计量单位', '长度不能超过5位')
+          this.unitsType = 0
+        }
       },
       confirmInput(text) {
-        console.log(text)
+        if (text.length === 0 || text.length > 5) {
+          if (this.unitsType === 0) {
+            this.newUnits = text
+          }
+          this.$toast.show('计量单位的长度不能超过5个')
+          return
+        }
+        if (this.unitsType === 0) {
+          API.Product.createUnits({name: text}).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('新增成功')
+              this.newUnits = ''
+              this.getUnitsList({}, false)
+            } else {
+              this.$toast.show(res.message)
+            }
+            this.$loading.hide()
+          })
+        } else {
+          API.Product.editUnits(this.curItem.id, {name: text}, false).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('修改成功')
+              this.getUnitsList({}, false)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+        }
+      },
+      getUnitsList(data, loading) {
+        API.Product.getUnitsList(data, loading).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.unitsList = res.data
+            console.log(this.unitsList)
+          } else {
+            this.$toast.show(res.message)
+          }
+          this.$loading.hide()
+        })
       }
     }
   }

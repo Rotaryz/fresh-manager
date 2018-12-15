@@ -4,11 +4,11 @@
       <div class="btn-main" @click="newBigCate">新建大类 +</div>
     </div>
     <ul class="categories-box">
-      <li v-for="(item, index) in cateList" :key="index" class="big-box">
+      <li v-for="(item, index) in categoryList" :key="index" class="big-box">
         <div class="big-box-main">
           <div class="big-main-left hand" @click="openList(index)">
             <div class="icon" :class="item.select ? 'open' : ''"></div>
-            <div class="text">{{item.title}}</div>
+            <div class="text">{{item.name}}</div>
           </div>
           <div class="big-main-right">
             <span class="list-operation">编辑</span>
@@ -16,14 +16,14 @@
           </div>
         </div>
         <div v-if="item.select" class="open-list">
-          <div v-for="(twoitem, twoindex) in item.children" :key="twoindex" class="open-item">
-            <div class="open-item-left">{{twoitem.title}}</div>
+          <div v-for="(twoitem, twoindex) in item.list" :key="twoindex" class="open-item">
+            <div class="open-item-left">{{twoitem.name}}</div>
             <div class="big-main-right">
               <span class="list-operation" @click="openTwoList(index)">编辑</span>
               <span class="list-operation">删除</span>
             </div>
           </div>
-          <div class="add-box hand">
+          <div class="add-box hand" @click="addChilrenCate">
             <div class="icon"></div>
             <div class="text">添加</div>
           </div>
@@ -31,11 +31,12 @@
       </li>
     </ul>
     <change-model :showCate="true"></change-model>
-    <change-model ref="bigModel" :showCate="false" numberPla="长度不能超过10位"></change-model>
+    <change-model ref="bigModel" :showCate="false" numberPla="长度不能超过10位" @confirm="newConfirm"></change-model>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
   import ChangeModel from '@components/change-model/change-model'
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
   const TITLE = '商品分类'
@@ -50,108 +51,59 @@
     },
     data() {
       return {
-        cateList: [
-          {
-            title: '蔬菜10',
-            select: false,
-            sort: 10,
-            children: [
-              {
-                title: '西洋菜',
-                select: false,
-                sort: 0
-              },
-              {
-                title: '白菜',
-                select: false,
-                sort: 1
-              },
-              {
-                title: '青菜',
-                select: false,
-                sort: 2
-              }
-            ]
-          },
-          {
-            title: '水果2',
-            select: false,
-            sort: 2,
-            children: [
-              {
-                title: '西洋菜',
-                select: false,
-                sort: 0
-              },
-              {
-                title: '白菜',
-                select: false,
-                sort: 1
-              },
-              {
-                title: '青菜',
-                select: false,
-                sort: 2
-              }
-            ]
-          },
-          {
-            title: '水果32',
-            select: false,
-            sort: 32,
-            children: [
-              {
-                title: '西洋菜',
-                select: false,
-                sort: 0
-              },
-              {
-                title: '白菜',
-                select: false,
-                sort: 1
-              },
-              {
-                title: '青菜',
-                select: false,
-                sort: 2
-              }
-            ]
-          },
-          {
-            title: '水果12',
-            select: true,
-            sort: 12,
-            children: [
-              {
-                title: '西洋菜',
-                select: false,
-                sort: 0
-              },
-              {
-                title: '白菜',
-                select: false,
-                sort: 1
-              },
-              {
-                title: '青菜',
-                select: false,
-                sort: 2
-              }
-            ]
-          }
-        ]
+        categoryList: [],
+        categoryType: 0,
+        categoryNewName: ''
       }
     },
+    created() {
+      this.getCategoryList({parent_id: -1})
+    },
     methods: {
+      getCategoryList(data, loading) {
+        API.Product.getCategoryList(data, loading).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.categoryList = res.data
+            this.categoryList.forEach(item => { item.select = false })
+            console.log(this.categoryList)
+          } else {
+            this.$toast.show(res.message)
+          }
+          this.$loading.hide()
+        })
+      },
       newBigCate() {
-        this.$refs.bigModel.show('新建商品分类')
+        this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
+        this.categoryType = 0
+      },
+      newConfirm(name, number) {
+        if (name.length === 0 || name.length > 10) {
+          if (this.categoryType === 0) {
+            this.categoryNewName = name
+          }
+          this.$toast.show('计量单位的长度不能超过10个')
+          return
+        }
+        console.log(name, number)
+        if (this.categoryType === 0) {
+          API.Product.createCategory({name: name, sort: number}).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('创建成功')
+              this.getCategoryList({parent_id: -1}, false)
+              console.log(res.data)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+        }
       },
       _sort(a, b) {
         return b.sort - a.sort
       },
       openList(index) {
-        // this.cateList.sort(this._sort)
-        this.cateList[index].select = !this.cateList[index].select
+        // this.categoryList.sort(this._sort)
+        this.categoryList[index].select = !this.categoryList[index].select
+        this.$forceUpdate()
       },
       openTwoList(index) {
         // this.cateList[index].children.sort(this._sort)
@@ -176,6 +128,7 @@
       .big-box-main
         height: 60px
         padding-left: 22px
+        padding-right: 14px
         box-sizing: border-box
         layout(row)
         align-items: center
@@ -223,6 +176,7 @@
     border-top: 1px solid #e1e1e1
     background: #f9f9f9
     padding-left: 57px
+    padding-right: 14px
     layout(row)
     align-items: center
     justify-content: space-between
