@@ -1,26 +1,25 @@
 const env = process.env
-const version = ``
 
 const LOCAL_URL = {
-  api: 'http://local.com'
+  api: 'https://social-shopping-api.jerryf.cn'
 }
 
 const DEV_URL = {
-  api: 'https://zhidian-api.jerryf.cn'
+  api: 'https://social-shopping-api.jerryf.cn'
 }
 
 const TEST_URL = {
-  api: 'https://zhidian-api.jkweixin.net'
+  api: 'https://social-shopping-api.jerryf.cn'
 }
 
 const PROD_URL = {
-  api: 'https://zhidian-api.jkweixin.com' + version
+  api: 'https://social-shopping-api.jkweixin.com'
 }
 
 export const BASE_URL =
   env.NODE_ENV === 'production'
     ? PROD_URL
-    : env.NODE_ENV === 'test'
+    : env.NODE_ENV === 'development'
       ? TEST_URL
       : env.NODE_ENV === 'development'
         ? DEV_URL

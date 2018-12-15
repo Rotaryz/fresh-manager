@@ -86,31 +86,22 @@ export default [
         meta: {
           titles: ['商品管理', '商品列表', '新建商品'],
           beforeResolve(routeTo, routeFrom, next) {
-            console.log(routeTo.query.id)
-            //  编辑商品
-            if (routeTo.query.id) {
-              store.dispatch('categories/getCategoryList', 11).then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                return next()
-              }).catch(() => {
-                return next({name: '404'})
-              })
-              console.log(1111111)
-            } else {
-              store.dispatch('categories/getCategoryList', 222).then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                return next()
-              }).catch(() => {
-                return next({name: '404'})
-              })
-              console.log(22222)
+            if (!routeTo.query.id) {
+              return next()
             }
+            store.dispatch('editgoods/getGoodsDetailData', routeTo.query.id)
+              .then(response => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              }).catch(() => {
+              next({name: '404'})
+            })
           }
-        }
+        },
+        props: (route) => ({detail: route.params.detail})
       },
       /**
        * 商品管理

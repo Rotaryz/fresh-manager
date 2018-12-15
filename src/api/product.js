@@ -48,5 +48,25 @@ export default {
   createCategory(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods-category`
     return request.post(url, data, loading)
+  },
+  /**
+   * 获取商品详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsDetail(id, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
+    return request.get(url, null, loading)
+  },
+  /**
+   * 获取商品详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  createGoodsDetail(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods`
+    return request.get(data, url, loading)
   }
 }

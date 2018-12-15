@@ -28,13 +28,13 @@
               <li v-for="(item, index) in menuList" :key="index" :class="menuIndex === index ? 'item-active' : ''" class="item"
                   @mouseenter="menuListMouse(item, index)" @click.stop="menuListClick(item, index)"
               >
-                <div class="text">{{item.title}}</div>
-                <div v-if="item.children.length !== 0" class="icon"></div>
+                <div class="text">{{item.name}}</div>
+                <div v-if="item.list.length !== 0" class="icon"></div>
               </li>
             </ul>
             <ul class="child-list">
               <li v-for="(item, index) in goodsChildren" :key="index" class="item" :class="item.select ? 'item-active' : ''" @click.stop="menuChild(item, index)">
-                <div class="text">{{item.title}}</div>
+                <div class="text">{{item.name}}</div>
               </li>
             </ul>
           </div>
@@ -139,6 +139,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import _ from 'lodash'
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
 
@@ -156,6 +158,9 @@
           goods_detail_images: [],
           goods_units: '',
           store_price: '',
+          is_online: 1,
+          is_multi_specs: 0,
+          goods_category_id: 0,
           original_price: '',
           usable_stock: '',
           commission_rate: ''
@@ -163,40 +168,11 @@
         dispatchSelect: {
           check: false,
           show: false,
-          content: '全部社区',
+          content: '选择单位',
           type: 'default',
-          data: [{title: 'sdsd'}, {title: 'sds'}] // 格式：{title: '55'}
+          data: [] // 格式：{title: '55'}
         },
-        menuList: [
-          {
-            title: '我是老大我是老大我是老大',
-            children: [{title: '小弟1'}, {title: '小弟2'}, {title: '小弟3'}, {title: '小弟4'}]
-          },
-          {
-            title: '水果蔬菜',
-            children: [{title: '水果蔬菜'}, {title: '水果蔬菜2'}, {title: '水果蔬菜3'}, {title: '水果蔬菜4'}]
-          },
-          {
-            title: '肉肉肉肉',
-            children: [{title: '肉肉肉肉'}, {title: '肉肉肉肉2'}, {title: '肉肉肉肉3'}, {title: '肉肉肉肉4'}]
-          },
-          {
-            title: '我是老大',
-            children: [{title: '小弟1'}, {title: '小弟2'}, {title: '小弟3'}, {title: '小弟4'}]
-          },
-          {
-            title: '水果蔬菜',
-            children: [{title: '水果蔬菜'}, {title: '水果蔬菜2'}, {title: '水果蔬菜3'}, {title: '水果蔬菜4'}]
-          },
-          {
-            title: '肉肉肉肉',
-            children: [{title: '肉肉肉肉'}, {title: '肉肉肉肉2'}, {title: '肉肉肉肉3'}, {title: '肉肉肉肉4'}]
-          },
-          {
-            title: '无小弟',
-            children: []
-          }
-        ],
+        menuList: [],
         menuIndex: null,
         goodsChildren: [],
         menuName: '请选择',
@@ -220,34 +196,52 @@
       },
       bannerGoodsReg() {
         return this.msg.goods_banner_images.length
+      },
+      detailGoodsReg() {
+        return this.msg.goods_detail_images.length
       }
     },
+    created() {
+      this.id = this.$route.query.id || null
+      this._setData()
+      this.getSelectData()
+      this.getCategoriesData()
+    },
     methods: {
+      /**
+       * 设置默认数据 -> 编辑状态
+       * @private
+       */
+      _setData() {
+        if (!_.isEmpty(this.detail)) {
+          this.msg = this.detail
+        }
+      },
       _back() {
         this.$router.back()
       },
       menuListMouse(item, index) {
-        if (item.children.length === 0) return
+        if (item.list.length === 0) return
         this.menuIndex = index
-        this.goodsChildren = item.children
+        this.goodsChildren = item.list
       },
       menuListClick(item, index) {
-        if (item.children.length !== 0) return
+        if (item.list.length !== 0) return
         this.menuIndex = index
-        this.menuName = item.title
+        this.menuName = item.name
         this.goodsChildren = []
         if (this.preChildIndex) {
-          this.menuList[this.preMenuIndex].children[this.preChildIndex].select = false
-          console.log(this.menuList[this.preMenuIndex].children[this.preChildIndex])
+          this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
+          console.log(this.menuList[this.preMenuIndex].list[this.preChildIndex])
         }
         this.showMenu = false
       },
       menuChild(item, index) {
-        this.menuName = this.menuList[this.menuIndex].title + ' / ' + item.title
-        this.menuList[this.menuIndex].children[index].select = true
+        this.menuName = this.menuList[this.menuIndex].name + ' / ' + item.name
+        this.menuList[this.menuIndex].list[index].select = true
         if (this.preChildIndex) {
-          this.menuList[this.preMenuIndex].children[this.preChildIndex].select = false
-          console.log(this.menuList[this.preMenuIndex].children[this.preChildIndex])
+          this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
+          console.log(this.menuList[this.preMenuIndex].list[this.preChildIndex])
         }
         this.preMenuIndex = this.menuIndex
         this.preChildIndex = index
@@ -292,11 +286,42 @@
         let goods = [
           {value: this.titleReg, txt: '请选择输入商品名称'},
           {value: this.bannerGoodsReg, txt: '请上传商品封面图'},
+          {value: this.detailGoodsReg, txt: '请上传商品详情图'},
           {value: this.titleLengthReg, txt: '商品名称不能大于30个字'},
           {value: this.menuNameReg, txt: '请选择商品分类'},
           {value: this.describeLengthReg, txt: '推荐语不能大于20个字'}
         ]
         this._testPropety(goods)
+        API.Product.createGoodsDetail(this.msg).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$toast.show('创建成功')
+          } else {
+            this.$toast.show(res.message)
+          }
+          this.$loading.hide()
+        })
+      },
+      getSelectData() {
+        API.Product.getUnitsList({}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.dispatchSelect.data = res.data
+            this.dispatchSelect.data.forEach((nav) => {
+              nav.title = nav.name
+            })
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      getCategoriesData() {
+        API.Product.getCategory({parent_id: -1}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.menuList = res.data
+            console.log(res.data)
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
       }
     }
   }
