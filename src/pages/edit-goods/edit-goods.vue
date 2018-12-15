@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-leader">
+  <div class="edit-leader" @click="closeMenu">
     <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
@@ -10,7 +10,34 @@
           商品名称
         </div>
         <div class="edit-input-box">
-          <input type="number" class="edit-input" maxlength="11" @mousewheel.native.prevent>
+          <input v-model="msg.name" type="text" class="edit-input" maxlength="30" @mousewheel.native.prevent>
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          商品分类
+        </div>
+        <div class="edit-input-box hand select-box-input">
+          <div class="edit-input" @click.stop="menutBtn">
+            <div class="select-text" :class="menuName === '请选择' ? 'select-text-assist' : ''">{{menuName}}</div>
+            <div class="select-icon" :class="showMenu ? 'select-icon-active' : ''"></div>
+          </div>
+          <div class="select-main-box" :class="showMenu ? '' : 'menu-leave-to'">
+            <ul class="fater-list">
+              <li v-for="(item, index) in menuList" :key="index" :class="menuIndex === index ? 'item-active' : ''" class="item"
+                  @mouseenter="menuListMouse(item, index)" @click.stop="menuListClick(item, index)"
+              >
+                <div class="text">{{item.title}}</div>
+                <div v-if="item.children.length !== 0" class="icon"></div>
+              </li>
+            </ul>
+            <ul class="child-list">
+              <li v-for="(item, index) in goodsChildren" :key="index" class="item" :class="item.select ? 'item-active' : ''" @click.stop="menuChild(item, index)">
+                <div class="text">{{item.title}}</div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="edit-item">
@@ -19,7 +46,7 @@
           推荐语
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="20">
+          <input v-model="msg.describe" type="text" class="edit-input" maxlength="20">
         </div>
       </div>
       <div class="edit-item  edit-image-box">
@@ -38,7 +65,7 @@
           商品详情
         </div>
         <div class="image-box">
-          <base-edit-image :picList.sync="msg.goods_images" :picNum="15" @failFile="failFile" @getPic="getPic2" @delPic="delPic2"></base-edit-image>
+          <base-edit-image :picList.sync="msg.goods_detail_images" :picNum="15" @failFile="failFile" @getPic="getPic2" @delPic="delPic2"></base-edit-image>
           <div class="tip">上传图片的格式png，jpeg，jpg，最多可上传15张。</div>
         </div>
       </div>
@@ -62,7 +89,7 @@
           划线价
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="10">
+          <input v-model="msg.store_price" type="number" class="edit-input" maxlength="10">
         </div>
       </div>
       <div class="edit-item">
@@ -71,7 +98,7 @@
           售价
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input">
+          <input v-model="msg.original_price" type="number" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
@@ -80,9 +107,9 @@
           团长佣金
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input">
+          <input v-model="msg.commission_rate" type="number" class="edit-input" maxlength="3">
         </div>
-        <div class="edit-pla">实际以成交价为准</div>
+        <div class="edit-pla">实际以成交价为准(%)</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -90,7 +117,7 @@
           库存
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input">
+          <input v-model="msg.usable_stock" type="number" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
@@ -99,14 +126,14 @@
           初始销量
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input">
+          <input v-model="msg.sale_count" type="number" class="edit-input">
         </div>
         <div class="edit-pla">仅展示在小程序，不影响订单</div>
       </div>
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main">保存</div>
+      <div class="back-btn btn-main" @click="_submit">保存</div>
     </div>
   </div>
 </template>
@@ -122,19 +149,154 @@
     },
     data() {
       return {
-        msg: {},
+        msg: {
+          name: '',
+          describe: '',
+          goods_banner_images: [],
+          goods_detail_images: [],
+          goods_units: '',
+          store_price: '',
+          original_price: '',
+          usable_stock: '',
+          commission_rate: ''
+        },
         dispatchSelect: {
           check: false,
           show: false,
           content: '全部社区',
           type: 'default',
           data: [{title: 'sdsd'}, {title: 'sds'}] // 格式：{title: '55'}
-        }
+        },
+        menuList: [
+          {
+            title: '我是老大我是老大我是老大',
+            children: [{title: '小弟1'}, {title: '小弟2'}, {title: '小弟3'}, {title: '小弟4'}]
+          },
+          {
+            title: '水果蔬菜',
+            children: [{title: '水果蔬菜'}, {title: '水果蔬菜2'}, {title: '水果蔬菜3'}, {title: '水果蔬菜4'}]
+          },
+          {
+            title: '肉肉肉肉',
+            children: [{title: '肉肉肉肉'}, {title: '肉肉肉肉2'}, {title: '肉肉肉肉3'}, {title: '肉肉肉肉4'}]
+          },
+          {
+            title: '我是老大',
+            children: [{title: '小弟1'}, {title: '小弟2'}, {title: '小弟3'}, {title: '小弟4'}]
+          },
+          {
+            title: '水果蔬菜',
+            children: [{title: '水果蔬菜'}, {title: '水果蔬菜2'}, {title: '水果蔬菜3'}, {title: '水果蔬菜4'}]
+          },
+          {
+            title: '肉肉肉肉',
+            children: [{title: '肉肉肉肉'}, {title: '肉肉肉肉2'}, {title: '肉肉肉肉3'}, {title: '肉肉肉肉4'}]
+          },
+          {
+            title: '无小弟',
+            children: []
+          }
+        ],
+        menuIndex: null,
+        goodsChildren: [],
+        menuName: '请选择',
+        showMenu: false,
+        preMenuIndex: null,
+        preChildIndex: null
+      }
+    },
+    computed: {
+      titleReg() {
+        return this.msg.name
+      },
+      titleLengthReg() {
+        return this.msg.name.length <= 30
+      },
+      describeLengthReg() {
+        return this.msg.describe.length <= 20
+      },
+      menuNameReg() {
+        return this.menuName !== '请选择'
+      },
+      bannerGoodsReg() {
+        return this.msg.goods_banner_images.length
       }
     },
     methods: {
       _back() {
         this.$router.back()
+      },
+      menuListMouse(item, index) {
+        if (item.children.length === 0) return
+        this.menuIndex = index
+        this.goodsChildren = item.children
+      },
+      menuListClick(item, index) {
+        if (item.children.length !== 0) return
+        this.menuIndex = index
+        this.menuName = item.title
+        this.goodsChildren = []
+        if (this.preChildIndex) {
+          this.menuList[this.preMenuIndex].children[this.preChildIndex].select = false
+          console.log(this.menuList[this.preMenuIndex].children[this.preChildIndex])
+        }
+        this.showMenu = false
+      },
+      menuChild(item, index) {
+        this.menuName = this.menuList[this.menuIndex].title + ' / ' + item.title
+        this.menuList[this.menuIndex].children[index].select = true
+        if (this.preChildIndex) {
+          this.menuList[this.preMenuIndex].children[this.preChildIndex].select = false
+          console.log(this.menuList[this.preMenuIndex].children[this.preChildIndex])
+        }
+        this.preMenuIndex = this.menuIndex
+        this.preChildIndex = index
+        this.goodsChildren[index].select = true
+        this.showMenu = false
+      },
+      menutBtn() {
+        this.showMenu = !this.showMenu
+      },
+      closeMenu() {
+        this.showMenu = false
+      },
+      _testPropety(arr) {
+        for (let i = 0, j = arr.length; i < j; i++) {
+          if (!arr[i].value) {
+            this.$toast.show(arr[i].txt)
+            return false
+          }
+          if (i === j - 1 && arr[i].value) {
+            return true
+          }
+        }
+      },
+      getPic(image) {
+        let item = {id: 0, image_id: image.id, image_url: image.url}
+        this.msg.goods_banner_images.push(item)
+      },
+      delPic(index) {
+        this.msg.goods_banner_images.splice(index, 1)
+      },
+      getPic2(image) {
+        let item = {id: 0, image_id: image.id, image_url: image.url}
+        this.msg.goods_detail_images.push(item)
+      },
+      delPic2(index) {
+        this.msg.goods_detail_images.splice(index, 1)
+      },
+      failFile(msg) {
+        this.$emit('showToast', msg)
+      },
+      _submit() {
+        let goods = [
+          {value: this.titleReg, txt: '请选择输入商品名称'},
+          {value: this.bannerGoodsReg, txt: '请上传商品封面图'},
+          {value: this.titleLengthReg, txt: '商品名称不能大于30个字'},
+          {value: this.menuNameReg, txt: '请选择商品分类'},
+          {value: this.describeLengthReg, txt: '推荐语不能大于20个字'}
+        ]
+        this._testPropety(goods)
       }
     }
   }
@@ -147,7 +309,115 @@
     padding-bottom: 80px
     position: relative
     flex: 1
-
+  .select-box-input
+    position: relative
+    .edit-input
+      line-height: 40px
+      layout(row)
+      align-items: center
+      justify-content: space-between
+      .select-text
+        font-size: $font-size-14
+        font-family: $font-family-medium
+        color: $color-text-main
+      .select-text-assist
+        color: $color-text-assist
+      .select-icon
+        width: 18px
+        height: 18px
+        background-size: 18px
+        bg-image(icon-drop_down)
+        transition: all 0.5s
+      .select-icon-active
+        transform: rotate(180deg)
+    .select-main-box
+      position: absolute
+      min-width: 220px
+      height: 180px
+      z-index: 11
+      top: 45px
+      left: 0
+      background-color: #fff
+      box-sizing: border-box
+      border-radius: 4px
+      box-shadow: 0 2px 6px 0 #f2f0fa
+      transition: all 1s
+      opacity: 1
+      layout(row)
+      .fater-list
+        height: 180px
+        overflow: auto
+        padding: 5px 0!important
+        list-style: none
+        .item
+          min-width: 100px
+          height: 30px
+          layout(row)
+          align-items: center
+          justify-content: space-between
+          padding: 0 5px
+          box-sizing: border-box
+          &:hover
+            background: #eaeaea
+          .text
+            font-size: $font-size-14
+            font-family: $font-family-regular
+            color: $color-text-main
+          .icon
+            width: 10px
+            height: 15px
+            background-size: 10px 15px
+            bg-image(icon-right)
+        .item-active
+          background: #eaeaea
+          .text
+            color: $color-main
+      .child-list
+        min-width: 110px
+        height: 180px
+        overflow: auto
+        padding: 5px 0!important
+        list-style: none
+        .item
+          min-width: 100px
+          height: 30px
+          layout(row)
+          align-items: center
+          justify-content: space-between
+          padding: 0 5px
+          box-sizing: border-box
+          &:hover
+            background: #eaeaea
+          .text
+            font-size: $font-size-14
+            font-family: $font-family-regular
+            color: $color-text-main
+          .icon
+            width: 10px
+            height: 15px
+            background-size: 10px 15px
+            bg-image(icon-right)
+        .item-active
+          background: #eaeaea
+          .text
+            color: $color-main
+    .menu-leave-to
+      opacity: 0
+      z-index: -1
+  ::-webkit-scrollbar {
+    width: 10px
+    height: 10px
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px
+    -webkit-box-shadow: inset 0 0 5px rgba(93,93,93,.2)
+    background: #c3c3c3
+  }
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(78,78,78,.2)
+    border-radius: 10px
+    background: #e3e3e3
+  }
   /*基本信息类头部盒子样式*/
   .content-header
     border-bottom: 1px solid $color-line
@@ -231,7 +501,7 @@
     position: absolute
     left: -20px
     right: -20px
-    bottom: 0
+    bottom: -60px
     z-index: 10
     background: #F9F9F9
     height: 80px
