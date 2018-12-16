@@ -335,9 +335,6 @@
         API.Product.getUnitsList({}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.dispatchSelect.data = res.data
-            this.dispatchSelect.data.forEach((nav) => {
-              nav.title = nav.name
-            })
           } else {
             this.$toast.show(res.message)
           }
