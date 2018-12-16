@@ -119,7 +119,6 @@ export default [
             store
               .dispatch('rush/getRushDetail', {id})
               .then((res) => {
-                console.log(res)
                 if (!res) {
                   return next({name: '404'})
                 }

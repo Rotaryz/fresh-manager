@@ -30,13 +30,13 @@ export default {
   shelfTag(id, loading = true) {
     let url = `/social-shopping/api/backend/shelf-manage/shelf-tag/${id}`
     return request.get(url, {}, loading)
-  }, /**
+  },
+  /**
    * 仓库货架详情
    * @param data
    * @param loading
    * @returns {*}
-   */
-  tagList(data, loading = false) {
+   */ tagList(data, loading = false) {
     let url = `/social-shopping/api/backend/shelf-manage/shelf-tag`
     return request.get(url, data, loading)
   },
@@ -89,5 +89,15 @@ export default {
   goodsCategory(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods-category`
     return request.get(url, data, loading)
+  },
+  /**
+   * 仓库货架编辑
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  updateGoods(data, id, loading = false) {
+    let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
+    return request.put(url, data, loading)
   }
 }

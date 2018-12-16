@@ -19,8 +19,9 @@
         <div class="list-item"><span class="list-status" :class="item.status === 1 ? 'list-status-success' : item.status === 2 ? 'list-status-fail' : ''"></span>{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已关闭' : ''}}</div>
         <div class="list-item">2018-12-07 15:00</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" :to="'edit-rush?id=' + item.id" append class="list-operation">编辑</router-link>
-          <span class="list-operation">删除</span>
+          <router-link tag="span" :to="'/home/rush-purchase/edit-rush?disable='+item.status+'&id=' + item.id" class="list-operation">详情</router-link>
+          <span v-if="item.status === 2" class="list-operation">删除</span>
+          <router-link v-else tag="span" :to="'/home/rush-purchase/edit-rush?id=' + item.id" class="list-operation">编辑</router-link>
         </div>
       </div>
     </div>

@@ -28,6 +28,7 @@
         </div>
         <div class="advertisement-msg">
           <div class="img-box"></div>
+          <!--@click=""-->
           <div v-if="isHaveLink" class="add-advertisement hand" @click="_showCustom">
             <span class="add-icon"></span>
             <span class="add-title">添加广告链接(选填)</span>
@@ -216,7 +217,7 @@
           background-repeat: no-repeat
           background-size: cover
           background-position: center
-          background-color: $color-background
+          icon-image('pic-add_ad')
         .add-advertisement
           position: relative
           margin: 28px 0 0 21px

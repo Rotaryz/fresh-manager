@@ -89,7 +89,7 @@
         this.selectIdx = index
         console.log(this.selectIdx)
         this.showHover = false
-        this.select.content = value.title
+        this.select.content = value.name
         this.$emit('setValue', value)
       }
     }

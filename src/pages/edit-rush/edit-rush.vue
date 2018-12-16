@@ -43,10 +43,10 @@
       <div class="classify">
         <div v-for="(item, index) in classify" :key="index" class="classify-item hand" :class="{'classify-item-active': index === classifyIndex}" @click="_setClassify(index, item)">{{item.name}}</div>
       </div>
-      <div class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>
+      <div :class="{'btn-disable': disable}" class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>
       <div class="activity-list">
         <div class="activity-tab">
-          <div class="btn-main" @click="_showGoods">添加商品 +</div>
+          <div :class="{'btn-disable': disable}" class="btn-main" @click="_showGoods">添加商品 +</div>
         </div>
         <div class="commodities-list-header com-list-box">
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
@@ -58,30 +58,24 @@
             <div class="com-list-item">{{item.original_price}}</div>
             <div class="com-list-item">
               <input v-model="item.trade_price" type="text" class="com-edit">
-              <span class="small-money">￥</span>
+              <span v-if="item.original_price" class="small-money">￥</span>
             </div>
             <div class="com-list-item">
               <input v-model="item.buy_limit" type="text" class="com-edit com-edit-small">
-              <span class="small-money">￥</span>
             </div>
             <div class="com-list-item">
               <input v-model="item.usable_stock" type="text" class="com-edit com-edit-small">
-              <span class="small-money">￥</span>
             </div>
-            <div class="com-list-item">{{item.usable_stock}}</div>
+            <div class="com-list-item">{{item.sale_count}}</div>
             <div class="com-list-item">
               <input v-model="item.sort" type="text" class="com-edit com-edit-small">
             </div>
             <div class="com-list-item">
-              <span class="list-operation" @click="_delGoods()">删除</span>
+              <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main">保存</div>
     </div>
     <!--编辑分类弹窗-->
     <default-modal ref="shadeCustom">
@@ -100,10 +94,10 @@
           </div>
           <div class="btn-main auxiliary-add" @click="_showModal(true)">新增+</div>
         </div>
-        <div class="back">
-          <div class="back-cancel back-btn hand" @click="_hideEditShade">取消</div>
-          <div class="back-btn btn-main">保存</div>
-        </div>
+        <!--<div class="back">-->
+        <!--<div class="back-cancel back-btn hand" @click="_hideEditShade">取消</div>-->
+        <!--<div class="back-btn btn-main">保存</div>-->
+        <!--</div>-->
         <!--小弹窗新增编辑-->
         <transition name="fade">
           <section v-show="isShow" class="default-modal-small">
@@ -157,43 +151,47 @@
       <div slot="content" class="shade-box">
         <div class="shade-header">
           <div class="shade-title">选择商品</div>
-          <span class="close hand" @click="_hideGoods"></span>
+          <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <div class="shade-tab">
           <div class="tab-item">
-            <base-drop-down :width="218" :select="assortment"></base-drop-down>
+            <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-drop-down :width="140"></base-drop-down>
+            <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-search placeHolder="请输入商品名称"></base-search>
+            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
           </div>
         </div>
         <div class="goods-content">
           <div class="goods-list">
             <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
-              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
               <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
                 <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.store_price}}</div>
+                <div class="goods-money">¥{{item.original_price}}</div>
               </div>
-              <div class="add-btn btn-main">添加</div>
+              <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
           </div>
         </div>
         <div class="page-box">
-          <base-pagination></base-pagination>
+          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
-          <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
-          <div class="back-btn btn-main">批量添加</div>
+          <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
+          <div class="back-btn btn-main" @click="_batchAddition">批量添加</div>
         </div>
       </div>
     </default-modal>
     <!--确定取消弹窗-->
-    <default-confirm ref="confirm"></default-confirm>
+    <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
+    <div class="back">
+      <div class="back-cancel back-btn hand" @click="_back">返回</div>
+      <div :class="{'btn-disable': disable}" class="back-btn btn-main" @click="_saveActivity">保存</div>
+    </div>
   </div>
 </template>
 
@@ -202,7 +200,7 @@
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {rushComputed, rushMethods} from '@state/helpers'
   import API from '@api'
-  import {ERR_OK} from "../../utils/config";
+  import {ERR_OK} from '../../utils/config'
   import _ from 'lodash'
 
   const PAGE_NAME = 'EDIT_RUSH'
@@ -225,11 +223,10 @@
         showActive: false,
         isShow: false,
         classifyName: '',
-        classifyNum: '',
+        classifyNum: 0,
         showConfirmActive: false,
         isShowConfirm: false,
         delId: [], // 删除id数组
-        lists: [],
         isStoreClassify: true,
         classifyChangeIdx: 0,
         id: null,
@@ -239,7 +236,7 @@
         tagItem: {},
         page: 1,
         choeesGoods: [],
-        rushMag: [],
+        rushMsg: [],
         assortment: {
           check: false,
           show: false,
@@ -247,36 +244,56 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
-        parentId: 0
+        secondAssortment: {
+          check: false,
+          show: false,
+          content: '选择二级分类',
+          type: 'default',
+          data: [] // 格式：{title: '55'}}
+        },
+        parentId: 0,
+        goodsPage: {
+          total: 1,
+          per_page: 10,
+          total_page: 1
+        },
+        keyword: '',
+        selectGoods: [], // 单次选择的商品
+        selectGoodsId: [], // 所有选择的商品id
+        goodsDelId: 0,
+        goodsDelIndex: 0,
+        selectDelId: [],
+        disable: false
       }
     },
     computed: {
       ...rushComputed,
       // 分类数组
       classify() {
-        if (!this.rushMag.lists) {
+        if (!this.rushMsg.lists) {
           return []
         }
-        let arr = this.rushMag.lists.map((item) => {
-          return item['shelf-tag']
+        let arr = this.rushMsg.lists.map((item) => {
+          return item['shelf_tag']
         })
         return arr
       },
       goodsList() {
-        if (!this.rushMag.lists) {
+        if (!this.rushMsg.lists) {
           return []
         }
-        let arr = this.rushMag.lists.map((item) => {
+        let arr = this.rushMsg.lists.map((item) => {
           return item['shelf_goods']
         })
         return arr
       }
     },
     async created() {
+      // this.classifyIndex = 0
+      this.disable = this.$route.query.disable && +this.$route.query.disable === 2 ? 1 : 0
       this.id = this.$route.query.id || null
       await this._tagList()
-      this.rushMag = _.cloneDeep(this.rushDetail)
-      await this._getGoodsList()
+      this.rushMsg = _.cloneDeep(this.rushDetail)
       await this._getFirstAssortment()
     },
     mounted() {
@@ -286,19 +303,166 @@
       ...rushMethods,
       // 选择商品
       async _getGoodsList() {
-        let res = await API.Rush.getGoodsList({is_online: 1, keyword: '', goods_category_id: '', shelf_id: this.id, limit: 10, page: this.page})
-        this.choeesGoods = res.error === this.$ERR_OK ? res.data : []
+        let res = await API.Rush.getGoodsList({
+          is_online: 1,
+          keyword: this.keyword,
+          goods_category_id: this.parentId,
+          shelf_id: this.id,
+          limit: 10,
+          page: this.page
+        })
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.goodsPage = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        this.choeesGoods = res.data.map((item, index) => {
+          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
+          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
+          if (delIndex !== -1) {
+            item.selected = 0
+          }
+          if (idx !== -1) {
+            item.selected = 1
+          }
+          if (goodsIndex !== -1) {
+            item.selected = 2
+          }
+          return item
+        })
+      },
+      // 获取分页商品列表
+      async _getMoreGoods(page) {
+        this.page = page
+        await this._getGoodsList()
+      },
+      // 选择二级分类
+      async _secondAssortment(item) {
+        this.parentId = item.id
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.secondAssortment.data.unshift({name: '全部', id: ''})
+        this.secondAssortment.content = '选择二级分类'
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
+      // 选择二级分类
+      async _choessSecondAssortment(item) {
+        this.parentId = item.id
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
       },
       // 获取一级分类
       async _getFirstAssortment() {
         let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
-        console.log(res)
+        this.assortment.data.unshift({name: '全部', id: ''})
+      },
+      // 搜索商品
+      async _searchGoods(text) {
+        this.keyword = text
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
+      // 勾选商品
+      _selectGoods(item, index) {
+        /*eslint-disable*/
+        switch (item.selected) {
+          case 1:
+            break
+          case 0:
+            this.choeesGoods[index].selected = 2
+            this.selectGoods.push(item)
+            this.selectGoodsId.push(item.id)
+            break
+          case 2:
+            this.choeesGoods[index].selected = 0
+            let idx = this.selectGoods.findIndex((items) => items.id === item.id)
+            let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+            if (idx !== -1) {
+              this.selectGoods.splice(idx, 1)
+            }
+            if (idIdx !== -1) {
+              this.selectGoodsId.splice(idx, 1)
+            }
+            break
+        }
+      },
+      // 删除商品
+      _showDelGoods(item, index) {
+        if (this.disable) {
+          return
+        }
+        this.goodsDelId = item.goods_id
+        this.goodsDelIndex = index
+        this.$refs.confirm.show('是否确定删除该商品？')
+      },
+      // 删除商品弹窗
+      _delGoods() {
+        let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+        this.selectGoodsId.splice(index, 1)
+        this.rushMsg.lists[this.classifyIndex].shelf_goods.splice(this.goodsDelIndex, 1)
+        this.selectDelId.push(this.goodsDelId)
+      },
+      _cancelGoods() {
+        this.selectGoods.forEach((item) => {
+          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
+          this.selectGoodsId.splice(delIdx, 1)
+        })
+        this.selectGoods = []
+        this._hideGoods()
+      },
+      // 单个添加
+      _additionOne(item, index) {
+        if (item.selected === 1) {
+          return
+        } else if (!this.classify.length) {
+          this.$toast.show('请先添加分类')
+          return
+        }
+        this.choeesGoods[index].selected = 1
+        this.rushMsg.lists[this.classifyIndex].shelf_goods.push(item)
+        this.selectGoodsId.push(item.id)
+      },
+      // 批量添加
+      _batchAddition() {
+        if (!this.classify.length) {
+          this.$toast.show('请先添加分类')
+          return
+        }
+        this.choeesGoods = this.choeesGoods.map((item) => {
+          item.selected = item.selected === 2 ? 1 : item.selected
+          return item
+        })
+        this.rushMsg.lists[this.classifyIndex].shelf_goods = this.rushMsg.lists[this.classifyIndex].shelf_goods.concat(
+          this.selectGoods
+        )
+        this.selectGoods = []
+        this._hideGoods()
+      },
+      async _showGoods() {
+        if (this.disable) {
+          return
+        }
+        await this._getGoodsList()
+        // 展示添加商品弹窗
+        this.$refs.goodsModel.showModal()
+      },
+      _hideGoods() {
+        this.$refs.goodsModel.hideModal()
       },
       async _tagList() {
         let res = await API.Rush.tagList({shelf_id: this.id})
         this.tagList = res.error === this.$ERR_OK ? res.data : []
-        console.log(this.tagList)
       },
       // 切换分类
       _setClassify(index, item) {
@@ -323,12 +487,13 @@
           return
         }
         this._tagList()
-        this.rushMag.lists.splice(this.classifyDelIndex, 1)
+        this.rushMsg.lists.splice(this.classifyDelIndex, 1)
         this._hideConfirm()
       },
-      async _delGoods() {
-      },
       _showEditShade() {
+        if (this.disable) {
+          return
+        }
         // 展示分类编辑弹窗
         this.$refs.shadeCustom.showModal()
       },
@@ -361,14 +526,18 @@
             return
           }
           let obj = {name: this.classifyName, sort: this.classifyNum, id: res.data.id}
-          this.rushMag.lists.push({'shelf-tag': obj, 'shelf_goods': []})
+          this.rushMsg.lists.push({shelf_tag: obj, shelf_goods: []})
         } else {
           res = await API.Rush.updateTag({name: this.classifyName, sort: this.classifyNum}, this.tagItem.id)
           this.$toast.show(res.message)
           if (res.error !== this.$ERR_OK) {
             return
           }
-          this.rushMag.lists[this.classifyChangeIdx]['shelf-tag'] = {name: this.classifyName, sort: this.classifyNum, id: this.tagItem.id}
+          this.rushMsg.lists[this.classifyChangeIdx]['shelf_tag'] = {
+            name: this.classifyName,
+            sort: this.classifyNum,
+            id: this.tagItem.id
+          }
         }
         this._tagList()
         this._hideModal()
@@ -394,12 +563,35 @@
         }, 100)
         this.showConfirmActive = false
       },
-      _showGoods() {
-        // 展示添加商品弹窗
-        this.$refs.goodsModel.showModal()
-      },
-      _hideGoods() {
-        this.$refs.goodsModel.hideModal()
+      //  保存
+      async _saveActivity() {
+        if (this.disable) {
+          return
+        }
+        let list = _.cloneDeep(this.rushMsg.lists)
+        for (let i in list) {
+          for (let index in list[i].shelf_goods) {
+            if (
+              !list[i].shelf_goods[index].trade_price ||
+              !list[i].shelf_goods[index].buy_limit ||
+              !list[i].shelf_goods[index].usable_stock ||
+              list[i].shelf_goods[index].sort === ''
+            ) {
+              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}信息不全`)
+              return
+            } else if(+list[i].shelf_goods[index].trade_price <= 0 || +list[i].shelf_goods[index].buy_limit <= 0 || +list[i].shelf_goods[index].usable_stock < 0 || +list[i].shelf_goods[index].sort < 0) {
+              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}输入数据有误`)
+              return
+            }
+          }
+        }
+        let res = await API.Rush.updateGoods({data: list}, this.id)
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          setTimeout(() => {
+            this._back()
+          }, 1000)
+        }
       }
     }
   }
@@ -531,6 +723,7 @@
       border: 1px solid $color-line
       box-sizing: border-box
       .big-box
+        padding-bottom: 66px
         position: relative
         box-sizing: border-box
         &::-webkit-scrollbar
@@ -950,11 +1143,11 @@
         width: 16px
         transition: all 0.3s
       .select-icon-disable
-        border: none
+        border: 1px solid transparent
         cursor: not-allowed
         icon-image('icon-check_ash')
       .select-icon-active
-        border: none
+        border: 1px solid transparent
         icon-image('icon-check')
       .goods-img
         margin-right: 10px

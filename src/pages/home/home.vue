@@ -5,9 +5,9 @@
       <div class="home">
         <top-bar></top-bar>
         <div class="container">
-          <keep-alive>
-            <router-view :key="$route.fullPath"></router-view>
-          </keep-alive>
+          <!--<keep-alive>-->
+          <router-view :key="$route.fullPath"></router-view>
+          <!--</keep-alive>-->
         </div>
       </div>
     </div>

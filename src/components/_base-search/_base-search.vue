@@ -1,7 +1,7 @@
 <template>
   <div class="base-search">
     <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder">
-    <div class="search-icon-box">
+    <div class="search-icon-box" @click="_search">
       <span class="search-icon hand"></span>
     </div>
   </div>
@@ -24,13 +24,12 @@
     },
     data() {
       return {
-        searchText: this.infoText,
-        isFocus: false
+        searchText: this.infoText
       }
     },
     methods: {
-      _isFocus(status) {
-        this.isFocus = status
+      _search() {
+        this.$emit('search', this.searchText)
       }
     }
   }
