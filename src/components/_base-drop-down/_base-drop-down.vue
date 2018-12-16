@@ -10,7 +10,7 @@
               <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
                   @click.stop="setValue(child, chIdx)"
               >
-                {{child.title}}
+                {{child.name}}
               </li>
             </ul>
           </transition>
@@ -31,7 +31,7 @@
             show: false,
             content: '全部',
             type: 'default',
-            data: [] // 格式：{title: '55'}
+            data: [] // 格式：{name: '55'}
           }
         }
       },

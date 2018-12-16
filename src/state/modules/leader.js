@@ -44,7 +44,6 @@ export const actions = {
           total: res.meta.total,
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
-
         }
         console.log(pageTotal)
         commit('SET_LEADER_LIST', arr)
@@ -53,7 +52,8 @@ export const actions = {
       })
       .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },
@@ -66,9 +66,11 @@ export const actions = {
         let leaderDetail = res.data
         commit('SET_LEADER_DETAIL', leaderDetail)
         return leaderDetail
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   }

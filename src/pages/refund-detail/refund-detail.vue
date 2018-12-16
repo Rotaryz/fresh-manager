@@ -107,9 +107,9 @@
       }
     },
     created() {
-      // setTimeout(() => {
-      // this.$refs.aud.showModal()
-      // }, 100)
+    // setTimeout(() => {
+    // this.$refs.aud.showModal()
+    // }, 100)
     },
     methods: {
       _cancel() {

@@ -15,15 +15,20 @@ export const globalComputed = {
   })
 }
 
+// 团长
 export const leaderComputed = {
-  ...mapState('leader', {
-    leaderList: (state) => state.leaderList,
-    pageTotal: (state) => state.pageTotal
-  })
+  ...mapGetters('leader', ['leaderList', 'pageTotal', 'leaderDetail'])
 }
 
 export const leaderMethods = mapActions('leader', ['getLeaderList'])
 
+// 今日采购
+
+export const rushComputed = {
+  ...mapGetters('rush', ['rushList', 'rushPage', 'rushDetail'])
+}
+
+export const rushMethods = mapActions('rush', ['getRushList', 'getRushDetail', 'setRushList'])
 export const auxiliaryComputed = {
   ...mapState('auxiliary', {
     unitsList: (state) => state.unitsList

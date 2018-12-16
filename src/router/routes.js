@@ -136,7 +136,23 @@ export default [
         name: 'rush-purchase',
         component: () => lazyLoadView(import('@pages/rush-purchase/rush-purchase')),
         meta: {
-          titles: ['商城管理', '今日抢购']
+          titles: ['商城管理', '今日抢购'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store
+              .dispatch('rush/getRushList', {page: 1})
+              .then((res) => {
+                console.log(res)
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                console.log('dsf')
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 新建编辑今日抢购
@@ -145,7 +161,24 @@ export default [
         name: 'edit-rush',
         component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
         meta: {
-          titles: ['商城管理', '今日抢购', '新建活动']
+          titles: ['商城管理', '今日抢购', '新建活动'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            //  团长列表
+            store
+              .dispatch('rush/getRushDetail', {id})
+              .then((res) => {
+                console.log(res)
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                console.log('dsf')
+                return next({name: '404'})
+              })
+          }
         }
       },
       /**
@@ -237,14 +270,17 @@ export default [
           titles: ['团长管理', '团长列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
-            store.dispatch('leader/getLeaderList', 1).then((res) => {
-              if (!res) {
+            store
+              .dispatch('leader/getLeaderList', 1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
                 return next({name: '404'})
-              }
-              return next()
-            }).catch(() => {
-              return next({name: '404'})
-            })
+              })
           }
         }
       },
@@ -277,16 +313,18 @@ export default [
             if (!routeTo.query.id) {
               return next()
             }
-            store.dispatch('leader/getLeaderDetail', routeTo.query.id)
-              .then(response => {
+            store
+              .dispatch('leader/getLeaderDetail', routeTo.query.id)
+              .then((response) => {
                 if (!response) {
                   return next({name: '404'})
                 }
                 routeTo.params.detail = response
                 next()
-              }).catch(() => {
-              next({name: '404'})
-            })
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         },
         props: (route) => ({detail: route.params.detail})
