@@ -2,7 +2,7 @@
   <div class="product-list">
     <div class="product-top">
       <div class="product-left">
-        <div class="btn-main">新建商品 +</div>
+        <router-link tag="span" to="edit-goods" append class="btn-main">新建商品 +</router-link>
         <base-drop-down :select="dispatchSelect"></base-drop-down>
         <div class="search-left">
           <base-search></base-search>

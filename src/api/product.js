@@ -67,6 +67,6 @@ export default {
    */
   createGoodsDetail(data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods`
-    return request.get(data, url, loading)
+    return request.post(url, data, loading)
   }
 }
