@@ -37,7 +37,7 @@ export default {
    * 商品系统分类列表
    * @returns {*}
    */
-  getCategoryList(data, loading = true) {
+  getCategory(data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods-category`
     return request.get(url, data, loading)
   },
@@ -48,5 +48,35 @@ export default {
   createCategory(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods-category`
     return request.post(url, data, loading)
+  },
+  /**
+   * 获取商品详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsDetail(id, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
+    return request.get(url, null, loading)
+  },
+  /**
+   * 获取商品详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  createGoodsDetail(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 获取商品详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsList(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods`
+    return request.get(url, data, loading)
   }
 }

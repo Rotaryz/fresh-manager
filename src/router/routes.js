@@ -35,7 +35,18 @@ export default [
         name: 'product-list',
         component: () => lazyLoadView(import('@pages/product-list/product-list')),
         meta: {
-          titles: ['商品管理', '商品列表']
+          titles: ['商品管理', '商品列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store.dispatch('editgoods/getGoodsData', 1).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            }).catch(() => {
+              return next({name: '404'})
+            })
+          }
         }
       },
       // 商品分类
@@ -44,7 +55,18 @@ export default [
         name: 'product-categories',
         component: () => lazyLoadView(import('@pages/product-categories/product-categories')),
         meta: {
-          titles: ['商品管理', '商品分类']
+          titles: ['商品管理', '商品分类'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  商品分类
+            store.dispatch('categories/getCategoryList', -1).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            }).catch(() => {
+              return next({name: '404'})
+            })
+          }
         }
       },
       // 辅助资料
@@ -53,7 +75,18 @@ export default [
         name: 'auxiliary-information',
         component: () => lazyLoadView(import('@pages/auxiliary-information/auxiliary-information')),
         meta: {
-          titles: ['商品管理', '辅助资料']
+          titles: ['商品管理', '辅助资料'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  辅助资料
+            store.dispatch('auxiliary/getAuxiliaryList', 1).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            }).catch(() => {
+              return next({name: '404'})
+            })
+          }
         }
       },
       // 编辑商品
@@ -62,8 +95,24 @@ export default [
         name: 'edit-goods',
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
-          titles: ['商品管理', '商品列表', '新建商品']
-        }
+          titles: ['商品管理', '商品列表', '新建商品'],
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store.dispatch('editgoods/getGoodsDetailData', routeTo.query.id)
+              .then(response => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              }).catch(() => {
+              next({name: '404'})
+            })
+          }
+        },
+        props: (route) => ({detail: route.params.detail})
       },
       /**
        * 商品管理

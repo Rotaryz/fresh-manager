@@ -27,7 +27,7 @@
 </template>
 
 <script>
-// import {Image} from 'api'
+  import API from '@api'
   const EDIT_IMAGE = 'BASE_EDIT_IMAGE'
   export default {
     name: EDIT_IMAGE,
@@ -79,13 +79,13 @@
         return param
       },
       async _upImage(param) {
-      // let res = await Image.upload(param)
-      // this.showLoading = false
-      // if (res.error !== ERR_OK) {
-      //   this.$emit('failFile', res.message)
-      //   return
-      // }
-      // this.$emit('getPic', res.data)
+        let res = await API.Upload.UploadImg(param)
+        this.showLoading = false
+        if (res.error !== this.$ERR_OK) {
+          this.$emit('failFile', res.message)
+          return
+        }
+        this.$emit('getPic', res.data)
       },
       _addVideo(e) {
       // this.showLoading = true

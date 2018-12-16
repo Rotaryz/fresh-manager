@@ -29,3 +29,27 @@ export const rushComputed = {
 }
 
 export const rushMethods = mapActions('rush', ['getRushList', 'getRushDetail', 'setRushList'])
+export const auxiliaryComputed = {
+  ...mapState('auxiliary', {
+    unitsList: (state) => state.unitsList
+  })
+}
+
+export const auxiliaryMethods = mapActions('auxiliary', ['getAuxiliaryList', 'setAuxiliary'])
+
+export const categoriesComputed = {
+  ...mapState('categories', {
+    categoryList: (state) => state.categoryList
+  })
+}
+
+export const categoriesMethods = mapActions('categories', ['getCategoryList', 'setCategory', 'addChild'])
+
+export const goodsComputed = {
+  ...mapState('editgoods', {
+    productList: (state) => state.productList,
+    pageTotal: (state) => state.pageTotal
+  })
+}
+
+export const goodsMethods = mapActions('editgoods', ['getGoodsData'])

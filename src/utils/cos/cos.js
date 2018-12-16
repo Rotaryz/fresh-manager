@@ -1,13 +1,12 @@
 import request from '@utils/request'
 import storage from 'storage-controller'
-
 /**
  * 数据入库
  * @param data
  * @returns {Promise.<*>}
  */
 function _saveFile(data) {
-  const url = `/api/cos/file`
+  const url = `https://social-shopping-api.jerryf.cn/social-shopping/api/save-file`
   return request.post(url, data)
 }
 
@@ -22,8 +21,9 @@ function _getAuthorization(options, callback) {
   const key = options.Key || ''
   // const pathname = key.indexOf('/') === 0 ? key : '/' + key
   const pathname = key
-  const Authorization = storage.get('token')
-  const url = '/api/cos/temp/signature?method=' + method + '&image=' + encodeURIComponent(pathname)
+  const Authorization = storage.get('auth.currentUser').access_token
+  console.log(storage)
+  const url = '/social-shopping/api/cos/upload-sign?method=' + method + '&image=' + encodeURIComponent(pathname)
   const xhr = new XMLHttpRequest()
   xhr.open('GET', url, true)
   xhr.setRequestHeader('Authorization', Authorization)
