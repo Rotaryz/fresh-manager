@@ -58,7 +58,7 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{title: '上架'}, {title: '下架'}] // 格式：{title: '55'}
+          data: [{name: '上架'}, {name: '下架'}] // 格式：{title: '55'}
         }
       }
     },
