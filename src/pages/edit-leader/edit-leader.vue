@@ -134,7 +134,11 @@
         this.isSubmit = true
         let address = this.leaderData.province + this.leaderData.city + this.leaderData.district + this.leaderData.address
         let oAjax = new XMLHttpRequest()
-        oAjax.open("GET", `https://restapi.amap.com/v3/geocode/geo?address=${address}&key=${process.env.VUE_APP_KEY}`, true)
+        oAjax.open(
+          'GET',
+          `https://restapi.amap.com/v3/geocode/geo?address=${address}&key=${process.env.VUE_APP_KEY}`,
+          true
+        )
         oAjax.send()
         oAjax.onreadystatechange = async () => {
           if (oAjax.readyState === 4 && oAjax.status === 200) {
@@ -169,7 +173,7 @@
       _setData() {
         if (!_.isEmpty(this.detail)) {
           this.leaderData = this.detail
-          // TODO 设置默认省市区
+        // TODO 设置默认省市区
         }
       },
       _isDataValidate() {
@@ -200,7 +204,8 @@
         }
         return true
       },
-      _getCity(data) { // 获取地址
+      _getCity(data) {
+        // 获取地址
         this.leaderData.province = data.province.includes('请选择') ? '' : data.province
         this.leaderData.city = data.city.includes('请选择') ? '' : data.city
         this.leaderData.district = data.area.includes('请选择') ? '' : data.area

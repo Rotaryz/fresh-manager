@@ -44,7 +44,7 @@
   import StatusTab from '@components/status-tab/status-tab'
   // import DefaultConfirm from '@components/default-confirm/default-confirm'
   import Api from '@api'
-  import { ERR_OK } from '@utils/config'
+  import {ERR_OK} from '@utils/config'
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '订单列表'
@@ -79,8 +79,8 @@
   export default {
     name: PAGE_NAME,
     components: {
-      StatusTab,
-      // DefaultConfirm
+      StatusTab
+    // DefaultConfirm
     // DefaultConfirm
     },
     page: {
@@ -133,11 +133,14 @@
         }
         // this._getUrl()
         let pages = res.meta
-        this.pageTotal = Object.assign({}, {
-          total: pages.total,
-          per_page: pages.per_page,
-          total_page: pages.last_page
-        })
+        this.pageTotal = Object.assign(
+          {},
+          {
+            total: pages.total,
+            per_page: pages.per_page,
+            total_page: pages.last_page
+          }
+        )
         this.orderList = res.data
         this.$emit('setNull', !this.orderList.length)
       },
@@ -145,7 +148,7 @@
         this.$refs.modelMsg.show('一次只能导出一个社区的消费者订单，请先选择社区')
       },
       seleIndex(item, index) {
-        this.status = item.status*1 - 1
+        this.status = item.status * 1 - 1
         this._getOrderList(false)
       },
       goPage() {}

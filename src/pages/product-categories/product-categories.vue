@@ -64,7 +64,9 @@
         API.Product.getCategoryList(data, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.categoryList = res.data
-            this.categoryList.forEach(item => { item.select = false })
+            this.categoryList.forEach((item) => {
+              item.select = false
+            })
             console.log(this.categoryList)
           } else {
             this.$toast.show(res.message)
@@ -106,7 +108,7 @@
         this.$forceUpdate()
       },
       openTwoList(index) {
-        // this.cateList[index].children.sort(this._sort)
+      // this.cateList[index].children.sort(this._sort)
       }
     }
   }

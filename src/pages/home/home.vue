@@ -50,9 +50,10 @@
   @import "~@design"
   .home
     layout()
-    min-width: 1410px
+    min-width: 1366px
     min-height: 100vh
     padding-left: 200px
+    box-sizing: border-box
     background: $color-background
     &::-webkit-scrollbar
       width: 8px

@@ -11,14 +11,14 @@
         </div>
         <div class="edit-input-box">
           <div class="edit-input">
-            <div class="edit-time">2018-12-07 23:00</div>
+            <div class="edit-time">{{rushDetail.start_at}}</div>
             <span class="time-icon"></span>
           </div>
         </div>
         <div class="tip">至</div>
         <div class="edit-input-box edit-input-right">
           <div class="edit-input">
-            <div class="edit-time">2018-12-07 23:00</div>
+            <div class="edit-time">{{rushDetail.end_at}}</div>
             <span class="time-icon"></span>
           </div>
         </div>
@@ -30,7 +30,7 @@
         </div>
         <div class="edit-input-box">
           <div class="edit-input">
-            <div class="edit-time">2018-12-07 23:00</div>
+            <div class="edit-time">{{rushDetail.delivery_at}}</div>
             <span class="time-icon"></span>
           </div>
         </div>
@@ -41,7 +41,7 @@
     </div>
     <div class="activity-box">
       <div class="classify">
-        <div v-for="(item, index) in classify" :key="index" class="classify-item hand" :class="{'classify-item-active': index === classifyIndex}" @click="_setClassify(index, item)">{{item.text}}</div>
+        <div v-for="(item, index) in classify" :key="index" class="classify-item hand" :class="{'classify-item-active': index === classifyIndex}" @click="_setClassify(index, item)">{{item.name}}</div>
       </div>
       <div class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>
       <div class="activity-list">
@@ -51,22 +51,27 @@
         <div class="commodities-list-header com-list-box">
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
         </div>
-        <div class="big-box" :style="{'height': listHeight + 'px'}">
-          <div class="com-list-box com-list-content">
-            <div class="com-list-item">2口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知</div>
-            <div class="com-list-item">s</div>
-            <div class="com-list-item">斤</div>
+        <div class="big-box" :style="{'min-height': listHeight + 'px'}">
+          <div v-for="(item, index) in goodsList[classifyIndex]" :key="index" class="com-list-box com-list-content">
+            <div class="com-list-item">{{item.name}}</div>
+            <div class="com-list-item">{{item.goods_units}}</div>
+            <div class="com-list-item">{{item.original_price}}</div>
             <div class="com-list-item">
-              <input type="text" class="com-edit" value="￥5.98">
+              <input v-model="item.trade_price" type="text" class="com-edit">
+              <span class="small-money">￥</span>
             </div>
             <div class="com-list-item">
-              <input type="text" class="com-edit com-edit-small" value="10">
+              <input v-model="item.buy_limit" type="text" class="com-edit com-edit-small">
+              <span class="small-money">￥</span>
             </div>
             <div class="com-list-item">
-              <input type="text" class="com-edit com-edit-small" value="10">
+              <input v-model="item.usable_stock" type="text" class="com-edit com-edit-small">
+              <span class="small-money">￥</span>
             </div>
-            <div class="com-list-item">12</div>
-            <div class="com-list-item">￥45.32</div>
+            <div class="com-list-item">{{item.usable_stock}}</div>
+            <div class="com-list-item">
+              <input v-model="item.sort" type="text" class="com-edit com-edit-small">
+            </div>
             <div class="com-list-item">
               <span class="list-operation" @click="_delGoods()">删除</span>
             </div>
@@ -86,14 +91,14 @@
           <span class="close hand" @click="_hideEditShade"></span>
         </div>
         <div class="auxiliary-box">
-          <div v-for="(item, index) in 12" :key="index" class="auxiliary-item">
-            <div class="text">蔬菜水果</div>
+          <div v-for="(item, index) in tagList" :key="index" class="auxiliary-item">
+            <div class="text">{{item.name}}</div>
             <div class="auxiliary-model">
-              <div class="img-box" @click="_showModal"></div>
-              <div class="img-box del" @click="_showConfirm"></div>
+              <div class="img-box" @click="_showModal(false,item,index)"></div>
+              <div class="img-box del" @click="_showConfirm(item.id, index)"></div>
             </div>
           </div>
-          <div class="btn-main auxiliary-add" @click="_showModal">新增+</div>
+          <div class="btn-main auxiliary-add" @click="_showModal(true)">新增+</div>
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="_hideEditShade">取消</div>
@@ -113,7 +118,7 @@
                 <div class="main-input">
                   <div class="main-model-box">
                     <div class="text">分类名称</div>
-                    <input v-model="classifyName" type="text" class="main-input-box" placeholder="长度不能超过5位">
+                    <input v-model="classifyName" type="text" class="main-input-box" placeholder="长度不能超过5位" maxlength="5">
                   </div>
                   <div class="main-model-box">
                     <div class="text">排序号</div>
@@ -121,7 +126,7 @@
                   </div>
                   <div class="btn-group">
                     <span class="btn cancel" @click="_hideModal">取消</span>
-                    <span class="btn confirm">确定</span>
+                    <span class="btn confirm" @click="_operationClassify">确定</span>
                   </div>
                 </div>
               </div>
@@ -138,7 +143,7 @@
                   <div class="text">确定要删除该分类？</div>
                   <div class="btn-group-confirm">
                     <span class="btn cancel" @click="_hideConfirm">取消</span>
-                    <span class="btn confirm">确定</span>
+                    <span class="btn confirm" @click="_delItem()">确定</span>
                   </div>
                 </div>
               </div>
@@ -156,52 +161,25 @@
         </div>
         <div class="shade-tab">
           <div class="tab-item">
-            <base-drop-down :width="218"></base-drop-down>
+            <base-drop-down :width="218" :select="assortment"></base-drop-down>
           </div>
           <div class="tab-item">
             <base-drop-down :width="140"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-search></base-search>
+            <base-search placeHolder="请输入商品名称"></base-search>
           </div>
         </div>
         <div class="goods-content">
           <div class="goods-list">
-            <div class="goods-item">
-              <span class="select-icon hand"></span>
-              <div class="goods-img"></div>
+            <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
+              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+              <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
-                <div class="goods-name">商品名称商品名称商品名称商品是否</div>
-                <div class="goods-money">¥268.00</div>
+                <div class="goods-name">{{item.name}}</div>
+                <div class="goods-money">¥{{item.store_price}}</div>
               </div>
               <div class="add-btn btn-main">添加</div>
-            </div>
-            <div class="goods-item">
-              <span class="select-icon select-icon-disable hand"></span>
-              <div class="goods-img"></div>
-              <div class="goods-msg">
-                <div class="goods-name">商品名称商品名称商品名称商品是否</div>
-                <div class="goods-money">¥268.00</div>
-              </div>
-              <div class="add-btn add-btn-disable">已添加</div>
-            </div>
-            <div class="goods-item">
-              <span class="select-icon select-icon-active hand"></span>
-              <div class="goods-img"></div>
-              <div class="goods-msg">
-                <div class="goods-name">商品名称商品名称商品名称商品是否</div>
-                <div class="goods-money">¥268.00</div>
-              </div>
-              <div class="add-btn add-btn-disable">已添加</div>
-            </div>
-            <div class="goods-item">
-              <span class="select-icon select-icon-active hand"></span>
-              <div class="goods-img"></div>
-              <div class="goods-msg">
-                <div class="goods-name">商品名称商品名称商品名称商品是否</div>
-                <div class="goods-money">¥268.00</div>
-              </div>
-              <div class="add-btn add-btn-disable">已添加</div>
             </div>
           </div>
         </div>
@@ -222,6 +200,10 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import {rushComputed, rushMethods} from '@state/helpers'
+  import API from '@api'
+  import {ERR_OK} from "../../utils/config";
+  import _ from 'lodash'
 
   const PAGE_NAME = 'EDIT_RUSH'
   const TITLE = '新建编辑今日抢购'
@@ -239,13 +221,6 @@
       return {
         commodities: COMMODITIES_LIST,
         classifyIndex: 0,
-        classify: [
-          {text: '报考', status: 0},
-          {text: '日常百货', status: 'c_common'},
-          {text: '水果', status: 'c_groupon'},
-          {text: '蔬菜', status: 'c_bargain'},
-          {text: '鲜肉', status: 'c_praise'}
-        ],
         listHeight: 417,
         showActive: false,
         isShow: false,
@@ -253,13 +228,78 @@
         classifyNum: '',
         showConfirmActive: false,
         isShowConfirm: false,
-        delId: [] // 删除id数组
+        delId: [], // 删除id数组
+        lists: [],
+        isStoreClassify: true,
+        classifyChangeIdx: 0,
+        id: null,
+        classifyDelId: 0,
+        classifyDelIndex: 0,
+        tagList: [],
+        tagItem: {},
+        page: 1,
+        choeesGoods: [],
+        rushMag: [],
+        assortment: {
+          check: false,
+          show: false,
+          content: '选择分类',
+          type: 'default',
+          data: [] // 格式：{title: '55'}}
+        },
+        parentId: 0
       }
+    },
+    computed: {
+      ...rushComputed,
+      // 分类数组
+      classify() {
+        if (!this.rushMag.lists) {
+          return []
+        }
+        let arr = this.rushMag.lists.map((item) => {
+          return item['shelf-tag']
+        })
+        return arr
+      },
+      goodsList() {
+        if (!this.rushMag.lists) {
+          return []
+        }
+        let arr = this.rushMag.lists.map((item) => {
+          return item['shelf_goods']
+        })
+        return arr
+      }
+    },
+    async created() {
+      this.id = this.$route.query.id || null
+      await this._tagList()
+      this.rushMag = _.cloneDeep(this.rushDetail)
+      await this._getGoodsList()
+      await this._getFirstAssortment()
     },
     mounted() {
       this._getListHeight()
     },
     methods: {
+      ...rushMethods,
+      // 选择商品
+      async _getGoodsList() {
+        let res = await API.Rush.getGoodsList({is_online: 1, keyword: '', goods_category_id: '', shelf_id: this.id, limit: 10, page: this.page})
+        this.choeesGoods = res.error === this.$ERR_OK ? res.data : []
+      },
+      // 获取一级分类
+      async _getFirstAssortment() {
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+        console.log(res)
+      },
+      async _tagList() {
+        let res = await API.Rush.tagList({shelf_id: this.id})
+        this.tagList = res.error === this.$ERR_OK ? res.data : []
+        console.log(this.tagList)
+      },
       // 切换分类
       _setClassify(index, item) {
         this.classifyIndex = index
@@ -268,15 +308,25 @@
       _getListHeight() {
         let ele = document.querySelector('html')
         let height = ele.clientHeight
-        this.listHeight = height - 710
+        this.listHeight = height - 692
       },
       _back() {
         this.$router.back()
       },
       // 删除分类
-      _delItem() {},
-      _delGoods() {
-        this.$refs.confirm.show('确定要删除该商品？')
+      async _delItem() {
+        // this.classifyDelId
+        let res = await API.Rush.deleteTag(this.classifyDelId)
+        this.$toast.show(res.message)
+        if (res.error !== ERR_OK) {
+          // this._hideConfirm()
+          return
+        }
+        this._tagList()
+        this.rushMag.lists.splice(this.classifyDelIndex, 1)
+        this._hideConfirm()
+      },
+      async _delGoods() {
       },
       _showEditShade() {
         // 展示分类编辑弹窗
@@ -286,10 +336,44 @@
         // 隐藏分类编辑弹窗
         this.$refs.shadeCustom.hideModal()
       },
-      _showModal() {
+      _showModal(status, item, index) {
+        if (status && this.classify.length >= 10) {
+          this.$toast.show('分类不能超过10个')
+          return
+        }
         this.isShow = true
         this.showActive = true
+        this.isStoreClassify = status
+        if (!status) {
+          this.classifyName = item.name
+          this.classifyNum = item.sort
+          this.tagItem = item
+          this.classifyChangeIdx = index
+        }
       },
+      // 新建编辑分类
+      async _operationClassify() {
+        let res = null
+        if (this.isStoreClassify) {
+          res = await API.Rush.storeTag({name: this.classifyName, sort: this.classifyNum, shelf_id: this.id})
+          this.$toast.show(res.message)
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          let obj = {name: this.classifyName, sort: this.classifyNum, id: res.data.id}
+          this.rushMag.lists.push({'shelf-tag': obj, 'shelf_goods': []})
+        } else {
+          res = await API.Rush.updateTag({name: this.classifyName, sort: this.classifyNum}, this.tagItem.id)
+          this.$toast.show(res.message)
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.rushMag.lists[this.classifyChangeIdx]['shelf-tag'] = {name: this.classifyName, sort: this.classifyNum, id: this.tagItem.id}
+        }
+        this._tagList()
+        this._hideModal()
+      },
+      // 隐藏分类弹窗
       _hideModal() {
         setTimeout(() => {
           this.isShow = false
@@ -298,9 +382,11 @@
         }, 100)
         this.showActive = false
       },
-      _showConfirm() {
+      _showConfirm(id, index) {
         this.isShowConfirm = true
         this.showConfirmActive = true
+        this.classifyDelId = id
+        this.classifyDelIndex = index
       },
       _hideConfirm() {
         setTimeout(() => {
@@ -417,7 +503,7 @@
         box-sizing: border-box
         margin-right: 4px
         font-size: $font-size-14
-        width: 97px
+        width: 90px
         height: 42px
         text-align: center
         line-height: 42px
@@ -447,7 +533,6 @@
       .big-box
         position: relative
         box-sizing: border-box
-        overflow-y: auto
         &::-webkit-scrollbar
           width: 6px
           height: 10px
@@ -498,6 +583,7 @@
       flex: 1
       padding-right: 10px
       box-sizing: border-box
+      position: relative
       no-wrap()
       color: $color-text-main
       font-family: $font-family-regular
@@ -509,7 +595,7 @@
         border-radius: 4px
         box-sizing: border-box
         border: 1px solid $color-line
-        padding-left: 10px
+        padding-left: 22px
         transition: all 0.3s
         &::-webkit-inner-spin-button
           appearance: none
@@ -520,13 +606,20 @@
           color: $color-text-assist
         &:focus
           border-color: $color-sub !important
+      .small-money
+        col-center()
+        left: 10px
+        line-height: 1.1
+        font-size: $font-size-13
+        font-family: $font-family-regular
+        color: $color-text-main
       .com-edit-small
         width: 60px
 
   .back
-    position: absolute
-    left: -20px
-    right: -20px
+    position: fixed
+    left: 200px
+    right: 0px
     bottom: 0
     z-index: 10
     background: #F9F9F9
@@ -641,6 +734,7 @@
         min-width: 80px
         text-align: center
     .back
+      position: absolute
       justify-content: flex-end
       left: 0
       right: 0
