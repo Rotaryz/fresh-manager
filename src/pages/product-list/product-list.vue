@@ -13,38 +13,37 @@
       </div>
     </div>
     <div class="list-header list-box">
-      <div v-for="(item,index) in leaderList" :key="index" class="list-item">{{item}}</div>
+      <div v-for="(item, index) in productTitleList" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div class="list-content list-box">
+      <div v-for="(item, index) in productList" :key="index" class="list-content list-box">
         <div class="list-item">
-          <!--<div class="pic-box" :style="{'background-image': 'url(' + item.image_url + ')'}">-->
-          <div class="pic-box">
-          </div>
+          <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
         </div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">{{item.name}}</div>
+        <div class="list-item">{{item.goods_units}}</div>
+        <div class="list-item">{{item.store_price}}</div>
         <div class="list-item">
-          <base-switch :status="0"></base-switch>
+          <base-switch :status="item.is_online"></base-switch>
         </div>
-        <div class="list-item">2018-12-07 15:00</div>
+        <div class="list-item">{{item.usable_stock}}</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="edit-goods" append class="list-operation">编辑</router-link>
+          <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
           <span class="list-operation">删除</span>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination></base-pagination>
+      <base-pagination :pageDetail="pageTotal"></base-pagination>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {goodsComputed} from '@state/helpers'
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
-  const LEADER_LIST = ['商品图片', '商品名称', '售卖单位', '售价', '状态', '库存', '操作']
+  const PRODUCT_TITLE_LIST = ['商品图片', '商品名称', '售卖单位', '售价', '状态', '库存', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -53,16 +52,22 @@
     },
     data() {
       return {
-        leaderList: LEADER_LIST,
+        productTitleList: PRODUCT_TITLE_LIST,
         dispatchSelect: {
           check: false,
           show: false,
-          content: '全部社区',
+          content: '全部',
           type: 'default',
-          data: [{title: 'sdsd'}, {title: 'sds'}] // 格式：{title: '55'}
+          data: [{title: '上架'}, {title: '下架'}] // 格式：{title: '55'}
         }
       }
-    }
+    },
+    computed: {
+      ...goodsComputed
+    },
+    created() {
+    },
+    methods: {}
   }
 </script>
 
@@ -147,7 +152,6 @@
   .pic-box
     height: 40px
     width: 40px
-    background: #333
     overflow: hidden
     background-repeat: no-repeat
     background-size: cover

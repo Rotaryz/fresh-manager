@@ -40,3 +40,11 @@ export const categoriesComputed = {
 
 export const categoriesMethods = mapActions('categories', ['getCategoryList', 'setCategory', 'addChild'])
 
+export const goodsComputed = {
+  ...mapState('editgoods', {
+    productList: (state) => state.productList,
+    pageTotal: (state) => state.pageTotal
+  })
+}
+
+export const goodsMethods = mapActions('editgoods', ['getGoodsData'])

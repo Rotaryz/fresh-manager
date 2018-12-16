@@ -1,8 +1,5 @@
 import request from '@utils/request'
 import storage from 'storage-controller'
-import {BASE_URL} from '@utils/config'
-console.log(BASE_URL)
-
 /**
  * 数据入库
  * @param data

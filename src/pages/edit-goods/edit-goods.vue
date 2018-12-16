@@ -149,6 +149,14 @@
     page: {
       title: TITLE
     },
+    props: {
+      detail: {
+        type: Object,
+        default() {
+          return {}
+        }
+      }
+    },
     data() {
       return {
         msg: {
@@ -204,7 +212,10 @@
        */
       _setData() {
         if (!_.isEmpty(this.detail)) {
-          this.msg = this.detail
+          console.log(this.detail)
+          this.msg = _.cloneDeep(this.detail)
+          this.dispatchSelect.content = this.msg.goods_units
+          this.menuName = this.msg.goods_category_name
         }
       },
       _back() {
@@ -380,15 +391,17 @@
       position: absolute
       min-width: 220px
       height: 180px
-      z-index: 11
+      z-index: 111
+      display: block
       top: 45px
       left: 0
       background-color: #fff
       box-sizing: border-box
       border-radius: 4px
       box-shadow: 0 2px 6px 0 #f2f0fa
-      transition: all 1s
+      transition: all .3s
       opacity: 1
+      overflow: hidden
       layout(row)
       .fater-list
         height: 180px
@@ -448,8 +461,7 @@
           .text
             color: $color-main
     .menu-leave-to
-      opacity: 0
-      z-index: -1
+      height: 0
   ::-webkit-scrollbar {
     width: 10px
     height: 10px

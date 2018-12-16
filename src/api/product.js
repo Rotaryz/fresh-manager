@@ -68,5 +68,15 @@ export default {
   createGoodsDetail(data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.post(url, data, loading)
+  },
+  /**
+   * 获取商品详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsList(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods`
+    return request.get(url, data, loading)
   }
 }

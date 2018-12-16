@@ -26,12 +26,16 @@ export const mutations = {
   },
   SET_GOODS_DETAIL(state, detail) {
     state.msg = detail
+  },
+  SET_PAGE_TOTAL(state, pageTotal) {
+    state.pageTotal = pageTotal
   }
 }
 
 export const actions = {
-  getLeaderList({state, commit, dispatch}, {page, loading = true}) {
-    return API.Leader.getLeaderList({page}, loading)
+  getGoodsData({state, commit, dispatch}, {page, loading = true}) {
+    let data = {is_online: '', keyword: '', goods_category_id: '', limit: 10}
+    return API.Product.getGoodsList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -43,8 +47,7 @@ export const actions = {
           total_page: res.meta.last_page
 
         }
-        console.log(pageTotal)
-        commit('SET_LEADER_LIST', arr)
+        commit('SET_PRODUCT_LIST', arr)
         commit('SET_PAGE_TOTAL', pageTotal)
         return true
       })
@@ -55,7 +58,7 @@ export const actions = {
       })
   },
   getGoodsDetailData({commit}, id) {
-    return API.Leader.getGoodsDetail(id)
+    return API.Product.getGoodsDetail(id)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

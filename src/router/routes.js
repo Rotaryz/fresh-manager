@@ -35,7 +35,18 @@ export default [
         name: 'product-list',
         component: () => lazyLoadView(import('@pages/product-list/product-list')),
         meta: {
-          titles: ['商品管理', '商品列表']
+          titles: ['商品管理', '商品列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store.dispatch('editgoods/getGoodsData', 1).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            }).catch(() => {
+              return next({name: '404'})
+            })
+          }
         }
       },
       // 商品分类
