@@ -39,6 +39,7 @@
   import {categoriesComputed, categoriesMethods} from '@state/helpers'
   import API from '@api'
   import ChangeModel from '@components/change-model/change-model'
+  import _ from 'lodash'
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
   const TITLE = '商品分类'
 
@@ -56,11 +57,15 @@
         categoryNewName: '',
         categoryChild: '',
         bigItem: '',
-        bigIndex: 0
+        bigIndex: 0,
+        categoryList: []
       }
     },
     computed: {
       ...categoriesComputed
+    },
+    created() {
+      this.categoryList = _.cloneDeep(this.reqCategoryList)
     },
     methods: {
       ...categoriesMethods,

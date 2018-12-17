@@ -2,24 +2,24 @@ import API from '@api'
 import app from '@src/main'
 
 export const state = {
-  categoryList: []
+  reqCategoryList: []
 }
 
 export const getters = {
-  categoryList(state) {
-    return state.categoryList
+  reqCategoryList(state) {
+    return state.reqCategoryList
   }
 }
 
 export const mutations = {
   SET_CATEGORY_LIST(state, list) {
-    state.categoryList = list
+    state.reqCategoryList = list
   },
   ADD_CHILD_DATA(state, obj) {
-    let arr = state.categoryList
+    let arr = state.reqCategoryList
     arr.push(obj)
     arr.sort((a, b) => b.sort - a.sort)
-    state.categoryList = arr
+    state.reqCategoryList = arr
   }
 }
 
