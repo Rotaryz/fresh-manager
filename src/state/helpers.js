@@ -29,6 +29,7 @@ export const rushComputed = {
 }
 
 export const rushMethods = mapActions('rush', ['getRushList', 'getRushDetail', 'setRushList'])
+
 export const auxiliaryComputed = {
   ...mapState('auxiliary', {
     unitsList: (state) => state.unitsList
@@ -53,3 +54,11 @@ export const goodsComputed = {
 }
 
 export const goodsMethods = mapActions('editgoods', ['getGoodsData'])
+
+// 轮播广告
+
+export const adverComputed = {
+  ...mapGetters('advertisement', ['infoBannerList'])
+}
+
+export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])

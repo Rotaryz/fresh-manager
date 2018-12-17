@@ -78,7 +78,7 @@
           this.$toast.show('计量单位的长度不能超过10个')
           return
         }
-        switch (this.categoryType){
+        switch (this.categoryType) {
         case 0:
           API.Product.createCategory({name: name, sort: number}).then((res) => {
             if (res.error === this.$ERR_OK) {
@@ -112,7 +112,7 @@
         this.$forceUpdate()
       },
       openTwoList(index) {
-        // this.cateList[index].children.sort(this._sort)
+      // this.cateList[index].children.sort(this._sort)
       },
       addChilrenCate(item, index) {
         this.$refs.bigModel.show('新建商品子分类', this.categoryChild)

@@ -4,43 +4,42 @@
       <div class="phone">
         <div class="banner">
           <carousel autoplay :autoplaySpeed="3000" arrow="never" :height="104" :radiusDot="true">
-            <carousel-item width="242.4px">
-              <div class="carousel">1</div>
-            </carousel-item>
-            <carousel-item width="242.4px">
-              <div class="carousel">2</div>
-            </carousel-item>
-            <carousel-item width="242.4px">
-              <div class="carousel">3</div>
-            </carousel-item>
-            <carousel-item width="242.4px">
-              <div class="carousel">4</div>
+            <carousel-item v-for="(item, index) in bannerList" :key="index" width="242.4px">
+              <div class="carousel" :style="{'background-image': 'url(' + item.image_url + ')'}"></div>
             </carousel-item>
           </carousel>
         </div>
       </div>
     </div>
     <div class="advertisement-content">
-      <div class="advertisement-item">
+      <div v-for="(banner, idx) in bannerList" :key="idx" class="advertisement-item">
         <div class="content-header">
-          <div class="content-title">基本信息</div>
-          <div class="list-operation">删除</div>
+          <div class="content-title">广告{{idx + 1}}</div>
+          <div>
+            <div v-if="idx !== 0" class="list-operation">上移</div>
+            <div class="list-operation">删除</div>
+          </div>
         </div>
         <div class="advertisement-msg">
-          <div class="img-box"></div>
+          <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
+            <div v-if="banner.showLoading" class="loading-mask">
+              <img src="./loading.gif" class="loading">
+            </div>
+            <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
+          </div>
           <!--@click=""-->
-          <div v-if="isHaveLink" class="add-advertisement hand" @click="_showCustom">
+          <div v-if="!banner.type" class="add-advertisement hand" @click="_showCustom">
             <span class="add-icon"></span>
             <span class="add-title">添加广告链接(选填)</span>
             <transition name="fade">
               <ul v-if="showType" class="select-type">
-                <li v-for="(item,index) in typeList" :key="index" class="select-item">{{item}}</li>
+                <li v-for="(item, index) in typeList" :key="index" class="select-item">{{item}}</li>
               </ul>
             </transition>
           </div>
-          <div v-else class="advertisement-link">
-            <div class="goods-small-img"></div>
-            <p class="goods-title">口水鸭先鸡不知口水鸭先鸡不方法算得上是</p>
+          <div v-if="banner.type === 'mini_goods'" class="advertisement-link">
+            <div class="goods-small-img" :style="{'background-image': 'url(' + banner.goods_cover_image + ')'}"></div>
+            <p class="goods-title">{{banner.goods_name}}</p>
             <p class="use hand">编辑</p>
           </div>
         </div>
@@ -125,10 +124,15 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import {Carousel, CarouselItem} from 'iview'
+  import API from '@api'
+  import ADD_IMAGE from './pic-add_ad@2x.png'
+  import {adverComputed} from '@state/helpers'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'ADVERTISEMENT'
   const TITLE = '轮播广告'
   const TYPE_LIST = ['商品链接', '自定义链接']
+  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', content: {id: '', url: ''}, image_url: ADD_IMAGE} // 模板对象
   export default {
     name: PAGE_NAME,
     page: {
@@ -144,10 +148,60 @@
         typeList: TYPE_LIST,
         showType: false,
         isHaveLink: true,
-        showSelect: false
+        showSelect: false,
+        showLoading: false,
+        bannerList: [TEMPLATE_OBJ],
+        upIndex: 0,
+        upItem: {}
       }
     },
+    computed: {
+      ...adverComputed
+    },
+    created() {
+      this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
+      console.log(this.infoBannerList)
+    },
     methods: {
+      async _addPic(index, item, e) {
+        this.upIndex = index
+        this.upItem = item
+        this.bannerList[index].showLoading = true
+        let param = this._infoImage(e.target.files[0])
+        e.target.value = ''
+        await this._upImage(param)
+      },
+      // 格式化图片流
+      _infoImage(file) {
+        let param = new FormData() // 创建form对象
+        param.append('file', file, file.name) // 通过append向form对象添加数据
+        return param
+      },
+      async _upImage(param) {
+        let res = await API.Upload.UploadImg(param)
+        this.bannerList[this.upIndex].showLoading = false
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+          return
+        }
+        this.bannerList[this.upIndex].image_url = res.data.url
+        this.bannerList[this.upIndex].image_id = res.data.id
+        let obj = {image_id: res.data.id, type: this.upItem.type, content: this.upItem.content}
+        console.log(this.upItem)
+        if (this.upItem.id) {
+          await this._updateBanner(obj, this.upItem.id)
+          return
+        }
+        await this._storeBanner(obj)
+      },
+      async _storeBanner(obj) {
+        let res = await API.Advertisement.storeBanner(obj)
+        this.$toast.show(res.message)
+      },
+      async _updateBanner(obj, id) {
+        let res = await API.Advertisement.updateBanner(obj, id)
+        this.$toast.show(res.message)
+      },
       _showCustom() {
         this.$refs.custom.showModal()
       },
@@ -201,6 +255,7 @@
     padding: 0 20px 0 40px
     border-left: 1px solid $color-line
     overflow: hidden
+    padding-bottom: 40px
     .new-advertisement
       font-style: $font-size-14
       padding: 8px 40px
@@ -217,10 +272,32 @@
           background-repeat: no-repeat
           background-size: cover
           background-position: center
-          icon-image('pic-add_ad')
+          background-image: url('./pic-add_ad@2x.png')
+          position: relative
+          .sendImage
+            position: absolute
+            width: 100%
+            left: 0
+            height: 100%
+            top: 0
+            opacity: 0
+          .loading-mask
+            width: 100%
+            height: 100%
+            position: absolute
+            top: 0
+            left: 0
+            background: rgba(0, 0, 0, .6)
+          .loading
+            all-center()
+            width: 25px
+            height: 25px
         .add-advertisement
           position: relative
           margin: 28px 0 0 21px
+          display: flex
+          align-items: center
+          height: 14px
           .add-icon
             icon-image('icon-plus_young')
             height: 8px
@@ -232,6 +309,7 @@
             margin-left: 4px
             font-family: $font-family-regular
             font-size: $font-size-14
+            white-space: nowrap
           .select-type
             bottom: -24px
             background: $color-white

@@ -65,8 +65,7 @@
     computed: {
       ...goodsComputed
     },
-    created() {
-    },
+    created() {},
     methods: {}
   }
 </script>

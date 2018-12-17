@@ -38,14 +38,17 @@ export default [
           titles: ['商品管理', '商品列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
-            store.dispatch('editgoods/getGoodsData', 1).then((res) => {
-              if (!res) {
+            store
+              .dispatch('editgoods/getGoodsData', 1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
                 return next({name: '404'})
-              }
-              return next()
-            }).catch(() => {
-              return next({name: '404'})
-            })
+              })
           }
         }
       },
@@ -58,14 +61,17 @@ export default [
           titles: ['商品管理', '商品分类'],
           beforeResolve(routeTo, routeFrom, next) {
             //  商品分类
-            store.dispatch('categories/getCategoryList', -1).then((res) => {
-              if (!res) {
+            store
+              .dispatch('categories/getCategoryList', -1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
                 return next({name: '404'})
-              }
-              return next()
-            }).catch(() => {
-              return next({name: '404'})
-            })
+              })
           }
         }
       },
@@ -78,14 +84,17 @@ export default [
           titles: ['商品管理', '辅助资料'],
           beforeResolve(routeTo, routeFrom, next) {
             //  辅助资料
-            store.dispatch('auxiliary/getAuxiliaryList', 1).then((res) => {
-              if (!res) {
+            store
+              .dispatch('auxiliary/getAuxiliaryList', 1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
                 return next({name: '404'})
-              }
-              return next()
-            }).catch(() => {
-              return next({name: '404'})
-            })
+              })
           }
         }
       },
@@ -100,16 +109,18 @@ export default [
             if (!routeTo.query.id) {
               return next()
             }
-            store.dispatch('editgoods/getGoodsDetailData', routeTo.query.id)
-              .then(response => {
+            store
+              .dispatch('editgoods/getGoodsDetailData', routeTo.query.id)
+              .then((response) => {
                 if (!response) {
                   return next({name: '404'})
                 }
                 routeTo.params.detail = response
                 next()
-              }).catch(() => {
-              next({name: '404'})
-            })
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         },
         props: (route) => ({detail: route.params.detail})
@@ -127,7 +138,22 @@ export default [
         name: 'advertisement',
         component: () => lazyLoadView(import('@pages/advertisement/advertisement')),
         meta: {
-          titles: ['商城管理', '轮播广告']
+          titles: ['商城管理', '轮播广告'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store
+              .dispatch('advertisement/getInfoBannerList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                console.log('dsf')
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 今日抢购

@@ -291,19 +291,19 @@
         } else if (this.msg.goods_detail_images.length === 0) {
           this.$toast.show('请上传商品详情图')
           return
-        } else if (this.msg.describe.length  >= 20) {
+        } else if (this.msg.describe.length >= 20) {
           this.$toast.show('推荐语不能大于20个字')
           return
-        } else if (this.msg.describe.length  >= 20) {
+        } else if (this.msg.describe.length >= 20) {
           this.$toast.show('推荐语不能大于20个字')
           return
-        } else if (this.msg.goods_units.length  === 0) {
+        } else if (this.msg.goods_units.length === 0) {
           this.$toast.show('请选择售卖单位')
           return
-        } else if (this.msg.original_price.length  === 0) {
+        } else if (this.msg.original_price.length === 0) {
           this.$toast.show('请输入划线价')
           return
-        } else if (this.msg.store_price.length  === 0) {
+        } else if (this.msg.store_price.length === 0) {
           this.$toast.show('请输入售价')
           return
         } else if (+this.msg.original_price < +this.msg.store_price) {

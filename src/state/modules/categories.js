@@ -18,7 +18,7 @@ export const mutations = {
   ADD_CHILD_DATA(state, obj) {
     let arr = state.categoryList
     arr.push(obj)
-    arr.sort((a,b) => b.sort - a.sort)
+    arr.sort((a, b) => b.sort - a.sort)
     state.categoryList = arr
   }
 }

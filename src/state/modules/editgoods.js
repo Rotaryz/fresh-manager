@@ -45,7 +45,6 @@ export const actions = {
           total: res.meta.total,
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
-
         }
         commit('SET_PRODUCT_LIST', arr)
         commit('SET_PAGE_TOTAL', pageTotal)
@@ -53,7 +52,8 @@ export const actions = {
       })
       .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },
@@ -66,9 +66,11 @@ export const actions = {
         let goodsDetail = res.data
         commit('SET_GOODS_DETAIL', goodsDetail)
         return goodsDetail
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   }
