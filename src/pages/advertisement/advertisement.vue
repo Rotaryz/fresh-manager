@@ -16,8 +16,8 @@
         <div class="content-header">
           <div class="content-title">广告{{idx + 1}}</div>
           <div>
-            <div v-if="idx !== 0" class="list-operation">上移</div>
-            <div class="list-operation">删除</div>
+            <div v-if="idx !== 0" class="list-operation" @click="_setSort(idx)">上移</div>
+            <div class="list-operation" @click="_showConfirm(banner.id, idx)">删除</div>
           </div>
         </div>
         <div class="advertisement-msg">
@@ -75,7 +75,7 @@
               <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
                 <span class="after"></span>
               </div>
-              <div class="goods-img" style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+              <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
                 <div class="goods-name">{{item.name}}</div>
                 <div class="goods-money">¥{{item.store_price}}</div>
@@ -107,15 +107,17 @@
         </div>
       </div>
     </default-modal>
+    <default-confirm ref="dialog" @confirm="_delBanner"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {Carousel, CarouselItem} from 'iview'
   import API from '@api'
   import ADD_IMAGE from './pic-add_ad@2x.png'
-  import {adverComputed} from '@state/helpers'
+  import {adverComputed, adverMethods} from '@state/helpers'
   import _ from 'lodash'
 
   const PAGE_NAME = 'ADVERTISEMENT'
@@ -130,7 +132,8 @@
     components: {
       DefaultModal,
       Carousel,
-      CarouselItem
+      CarouselItem,
+      DefaultConfirm
     },
     data() {
       return {
@@ -167,7 +170,9 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
-        goodsId: 0
+        goodsId: 0,
+        delId: 0,
+        delIndex: 0
       }
     },
     computed: {
@@ -183,9 +188,38 @@
       await this._getGoodsList()
     },
     methods: {
+      ...adverMethods,
+      _setSort(index) {
+        // console.log
+        let start = this.bannerList[index]
+        let end = this.bannerList[index - 1]
+        this.bannerList.splice(index - 1, 2, start, end)
+        let arr = []
+        this.bannerList.forEach((item) => {
+          arr.push({id: item.id})
+        })
+        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {
+          console.log(res)
+        })
+      },
+      // 展示确认弹窗
+      _showConfirm(id, index) {
+        this.delId = id
+        this.delIndex = index
+        this.$refs.dialog.show('是否确定删除该广告？')
+      },
       // 删除banner
-      _delBanner() {
-
+      async _delBanner() {
+        if (!this.delId) {
+          this.bannerList.splice(this.delIndex, 1,)
+          return
+        }
+        let res = await API.Advertisement.deleteBanner(this.delId)
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.bannerList.splice(this.delIndex, 1)
       },
       // 编辑
       _editBanner(item, index) {
@@ -346,12 +380,18 @@
       async _submitBanner() {
         if (this.bannerList[this.bannerIndex].id) {
           await this._updateBanner(this.bannerList[this.bannerIndex], this.bannerList[this.bannerIndex].id)
-          return
+        } else {
+          await this._storeBanner(this.bannerList[this.bannerIndex])
         }
-        await this._storeBanner(this.bannerList[this.bannerIndex])
+        await this.getInfoBannerList()
+        console.log('ddd')
       },
       // 添加自定义链接
       async addOutHtml() {
+        if (!this.outHtml) {
+          this.$toast.show('输入内容不能为空')
+          return
+        }
         this.bannerList[this.bannerIndex].type = 'out_html'
         this.bannerList[this.bannerIndex].content.url = this.outHtml
         await this._submitBanner()

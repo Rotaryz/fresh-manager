@@ -29,5 +29,25 @@ export default {
   updateBanner(data, id) {
     let url = `/social-shopping/api/backend/ad/wheel-planting/${id}`
     return request.put(url, data, false)
+  },
+  /**
+   * 删除轮播图
+   * @param data
+   * @param id
+   * @returns {*|AxiosPromise<any>|IDBRequest|Promise<void>}
+   */
+  deleteBanner(id) {
+    let url = `/social-shopping/api/backend/ad/wheel-planting/${id}`
+    return request.delete(url, null, false)
+  },
+  /**
+   * 轮播图排序
+   * @param data
+   * @param id
+   * @returns {*|AxiosPromise<any>|IDBRequest|Promise<void>}
+   */
+  wheelPlantingSort(data) {
+    let url = `/social-shopping/api/backend/ad/wheel-planting-sort`
+    return request.post(url, data, false)
   }
 }
