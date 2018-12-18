@@ -85,5 +85,5 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
-  },
+  }
 }

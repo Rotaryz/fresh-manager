@@ -35,7 +35,6 @@
     methods: {
       _getTime(time) {
         this.$emit('getTime', time)
-        console.log(time)
       }
     }
   }

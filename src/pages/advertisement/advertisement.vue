@@ -198,9 +198,7 @@
         this.bannerList.forEach((item) => {
           arr.push({id: item.id})
         })
-        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {
-          console.log(res)
-        })
+        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {})
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -211,7 +209,7 @@
       // 删除banner
       async _delBanner() {
         if (!this.delId) {
-          this.bannerList.splice(this.delIndex, 1,)
+          this.bannerList.splice(this.delIndex, 1)
           return
         }
         let res = await API.Advertisement.deleteBanner(this.delId)
@@ -225,198 +223,197 @@
       _editBanner(item, index) {
         this.bannerIndex = index
         /*eslint-disable*/
-        switch (item.type) {
-          case 'out_html':
-            this.outHtml = item.content.url
-            this._showCustom()
-            break
-          case 'mini_goods':
-            this.goodsId = item.content.id
-            this._showGoods()
-            break
-        }
-      },
-      // 确定选择商品链接
-      async _miniGoods() {
-        await this._submitBanner()
-      },
-      // 选择商品
-      _selectGoods(item, index) {
-        this.showSelectIndex = index
-        this.bannerList[this.bannerIndex].content.id = item.id
-        this.bannerList[this.bannerIndex].type = 'mini_goods'
-      },
-      // 获取商品列表
-      async _getGoodsList() {
-        let res = await API.Rush.getGoodsList({
-          is_online: 1,
-          keyword: this.keyword,
-          goods_category_id: this.parentId,
-          limit: 10,
-          page: this.choicePage
-        })
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.goodsPage = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        this.choiceGoods = res.data
-        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
-      },
-      // 获取分页商品列表
-      async _getMoreGoods(page) {
-        this.choicePage = page
-        await this._getGoodsList()
-      },
-      // 选择二级分类
-      async _secondAssortment(item) {
-        this.parentId = item.id
-        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
-        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.secondAssortment.data.unshift({name: '全部', id: ''})
-        this.secondAssortment.content = '选择二级分类'
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 选择二级分类
-      async _choessSecondAssortment(item) {
-        this.parentId = item.id
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 获取一级分类
-      async _getFirstAssortment() {
-        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
-        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.assortment.data.unshift({name: '全部', id: ''})
-      },
-      // 搜索商品
-      async _searchGoods(text) {
-        this.keyword = text
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 添加更多的广告
-      _addMore() {
-        this.bannerList.push(TEMPLATE_OBJ)
-      },
-      // 选择广告链接类型
-      _showSelectType(item, index) {
-        this.bannerList[index].showType = !this.bannerList[index].showType
-        this.$forceUpdate()
-      },
-      // 隐藏广告链接下拉框
-      _hideSelectType(typeIndex, index) {
-        this.bannerList[index].showType = false
-        this.$forceUpdate()
-        /*eslint-disable*/
-        switch (typeIndex) {
-          case 0:
-            this._showGoods()
-            break
-          case 1:
-            this._showCustom()
-            break
-        }
-        this.bannerIndex = index
-      },
-      // 添加图片
-      async _addPic(index, item, e) {
-        this.upIndex = index
-        this.upItem = item
-        this.bannerList[index].showLoading = true
-        let param = this._infoImage(e.target.files[0])
-        e.target.value = ''
-        await this._upImage(param)
-      },
-      // 格式化图片流
-      _infoImage(file) {
-        let param = new FormData() // 创建form对象
-        param.append('file', file, file.name) // 通过append向form对象添加数据
-        return param
-      },
-      // 上传banner图片
-      async _upImage(param) {
-        let res = await API.Upload.UploadImg(param)
-        this.bannerList[this.upIndex].showLoading = false
-        if (res.error !== this.$ERR_OK) {
-          this.$toast.show(res.message)
-          return
-        }
-        this.bannerList[this.upIndex].image_url = res.data.url
-        this.bannerList[this.upIndex].image_id = res.data.id
-        let obj = {image_id: res.data.id, type: this.upItem.type, content: this.upItem.content}
-        if (this.upItem.id) {
-          await this._updateBanner(obj, this.upItem.id)
-          return
-        }
-        await this._storeBanner(obj)
-      },
-      // 新建banner
-      async _storeBanner(obj) {
-        let res = await API.Advertisement.storeBanner(obj)
-        this.$toast.show(res.message)
-        if (res.error === this.$ERR_OK) {
-          this._hideCustom()
-          this._hideGoods()
-        }
-      },
-      // 编辑banner
-      async _updateBanner(obj, id) {
-        let res = await API.Advertisement.updateBanner(obj, id)
-        this.$toast.show(res.message)
-        if (res.error === this.$ERR_OK) {
-          this._hideCustom()
-          this._hideGoods()
-        }
-      },
-      // 提交修改banner
-      async _submitBanner() {
-        if (this.bannerList[this.bannerIndex].id) {
-          await this._updateBanner(this.bannerList[this.bannerIndex], this.bannerList[this.bannerIndex].id)
-        } else {
-          await this._storeBanner(this.bannerList[this.bannerIndex])
-        }
-        await this.getInfoBannerList()
-        console.log('ddd')
-      },
-      // 添加自定义链接
-      async addOutHtml() {
-        if (!this.outHtml) {
-          this.$toast.show('输入内容不能为空')
-          return
-        }
-        this.bannerList[this.bannerIndex].type = 'out_html'
-        this.bannerList[this.bannerIndex].content.url = this.outHtml
-        await this._submitBanner()
-      },
-      // 展示自定义弹窗
-      _showCustom() {
-        this.$refs.custom.showModal()
-      },
-      // 隐藏自定义弹窗
-      _hideCustom() {
-        this.outHtml = ''
-        this.$refs.custom.hideModal()
-      },
-      // 展示商品弹窗
-      _showGoods() {
-        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
-        this.$refs.goods.showModal()
-      },
-      // 隐藏商品弹窗
-      _hideGoods() {
-        this.showSelectIndex = -1
-        this.$refs.goods.hideModal()
+      switch (item.type) {
+        case 'out_html':
+          this.outHtml = item.content.url
+          this._showCustom()
+          break
+        case 'mini_goods':
+          this.goodsId = item.content.id
+          this._showGoods()
+          break
       }
+    },
+    // 确定选择商品链接
+    async _miniGoods() {
+      await this._submitBanner()
+    },
+    // 选择商品
+    _selectGoods(item, index) {
+      this.showSelectIndex = index
+      this.bannerList[this.bannerIndex].content.id = item.id
+      this.bannerList[this.bannerIndex].type = 'mini_goods'
+    },
+    // 获取商品列表
+    async _getGoodsList() {
+      let res = await API.Rush.getGoodsList({
+        is_online: 1,
+        keyword: this.keyword,
+        goods_category_id: this.parentId,
+        limit: 10,
+        page: this.choicePage
+      })
+      if (res.error !== this.$ERR_OK) {
+        return
+      }
+      this.goodsPage = {
+        total: res.meta.total,
+        per_page: res.meta.per_page,
+        total_page: res.meta.last_page
+      }
+      this.choiceGoods = res.data
+      this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
+    },
+    // 获取分页商品列表
+    async _getMoreGoods(page) {
+      this.choicePage = page
+      await this._getGoodsList()
+    },
+    // 选择二级分类
+    async _secondAssortment(item) {
+      this.parentId = item.id
+      let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+      this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+      this.secondAssortment.data.unshift({name: '全部', id: ''})
+      this.secondAssortment.content = '选择二级分类'
+      this.page = 1
+      this.$refs.pagination.beginPage()
+      await this._getGoodsList()
+    },
+    // 选择二级分类
+    async _choessSecondAssortment(item) {
+      this.parentId = item.id
+      this.page = 1
+      this.$refs.pagination.beginPage()
+      await this._getGoodsList()
+    },
+    // 获取一级分类
+    async _getFirstAssortment() {
+      let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+      this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+      this.assortment.data.unshift({name: '全部', id: ''})
+    },
+    // 搜索商品
+    async _searchGoods(text) {
+      this.keyword = text
+      this.page = 1
+      this.$refs.pagination.beginPage()
+      await this._getGoodsList()
+    },
+    // 添加更多的广告
+    _addMore() {
+      this.bannerList.push(TEMPLATE_OBJ)
+    },
+    // 选择广告链接类型
+    _showSelectType(item, index) {
+      this.bannerList[index].showType = !this.bannerList[index].showType
+      this.$forceUpdate()
+    },
+    // 隐藏广告链接下拉框
+    _hideSelectType(typeIndex, index) {
+      this.bannerList[index].showType = false
+      this.$forceUpdate()
+      /*eslint-disable*/
+      switch (typeIndex) {
+        case 0:
+          this._showGoods()
+          break
+        case 1:
+          this._showCustom()
+          break
+      }
+      this.bannerIndex = index
+    },
+    // 添加图片
+    async _addPic(index, item, e) {
+      this.upIndex = index
+      this.upItem = item
+      this.bannerList[index].showLoading = true
+      let param = this._infoImage(e.target.files[0])
+      e.target.value = ''
+      await this._upImage(param)
+    },
+    // 格式化图片流
+    _infoImage(file) {
+      let param = new FormData() // 创建form对象
+      param.append('file', file, file.name) // 通过append向form对象添加数据
+      return param
+    },
+    // 上传banner图片
+    async _upImage(param) {
+      let res = await API.Upload.UploadImg(param)
+      this.bannerList[this.upIndex].showLoading = false
+      if (res.error !== this.$ERR_OK) {
+        this.$toast.show(res.message)
+        return
+      }
+      this.bannerList[this.upIndex].image_url = res.data.url
+      this.bannerList[this.upIndex].image_id = res.data.id
+      let obj = {image_id: res.data.id, type: this.upItem.type, content: this.upItem.content}
+      if (this.upItem.id) {
+        await this._updateBanner(obj, this.upItem.id)
+        return
+      }
+      await this._storeBanner(obj)
+    },
+    // 新建banner
+    async _storeBanner(obj) {
+      let res = await API.Advertisement.storeBanner(obj)
+      this.$toast.show(res.message)
+      if (res.error === this.$ERR_OK) {
+        this._hideCustom()
+        this._hideGoods()
+      }
+    },
+    // 编辑banner
+    async _updateBanner(obj, id) {
+      let res = await API.Advertisement.updateBanner(obj, id)
+      this.$toast.show(res.message)
+      if (res.error === this.$ERR_OK) {
+        this._hideCustom()
+        this._hideGoods()
+      }
+    },
+    // 提交修改banner
+    async _submitBanner() {
+      if (this.bannerList[this.bannerIndex].id) {
+        await this._updateBanner(this.bannerList[this.bannerIndex], this.bannerList[this.bannerIndex].id)
+      } else {
+        await this._storeBanner(this.bannerList[this.bannerIndex])
+      }
+      await this.getInfoBannerList()
+    },
+    // 添加自定义链接
+    async addOutHtml() {
+      if (!this.outHtml) {
+        this.$toast.show('输入内容不能为空')
+        return
+      }
+      this.bannerList[this.bannerIndex].type = 'out_html'
+      this.bannerList[this.bannerIndex].content.url = this.outHtml
+      await this._submitBanner()
+    },
+    // 展示自定义弹窗
+    _showCustom() {
+      this.$refs.custom.showModal()
+    },
+    // 隐藏自定义弹窗
+    _hideCustom() {
+      this.outHtml = ''
+      this.$refs.custom.hideModal()
+    },
+    // 展示商品弹窗
+    _showGoods() {
+      this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
+      this.$refs.goods.showModal()
+    },
+    // 隐藏商品弹窗
+    _hideGoods() {
+      this.showSelectIndex = -1
+      this.$refs.goods.hideModal()
     }
   }
+}
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">

@@ -74,7 +74,6 @@
       leaveHide() {
         this.setTime = setTimeout(() => {
           this.clickHide()
-          console.log('fdg')
         }, 1500)
       },
       selectType() {
@@ -87,7 +86,6 @@
       setValue(value, index) {
         this.select.check = false
         this.selectIdx = index
-        console.log(this.selectIdx)
         this.showHover = false
         this.select.content = value.name
         this.$emit('setValue', value)

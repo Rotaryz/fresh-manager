@@ -2,7 +2,7 @@
   <div class="rush-purchase">
     <div class="tab-header">
       <!--<div class="btn-main">新建活动 +</div>-->
-      <base-date-select></base-date-select>
+      <base-date-select placeHolder="选择活动时间" @getTime="_setTime"></base-date-select>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in rushTitle" :key="index" class="list-item">{{item}}</div>
@@ -19,22 +19,23 @@
         <div class="list-item"><span class="list-status" :class="item.status === 1 ? 'list-status-success' : item.status === 2 ? 'list-status-fail' : ''"></span>{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已关闭' : ''}}</div>
         <div class="list-item">2018-12-07 15:00</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" :to="'/home/rush-purchase/edit-rush?disable='+item.status+'&id=' + item.id" class="list-operation">详情</router-link>
-          <span v-if="item.status === 2" class="list-operation">删除</span>
+          <router-link tag="span" :to="'/home/rush-purchase/edit-rush?disable=2'+'&id=' + item.id" class="list-operation">详情</router-link>
+          <span v-if="item.status === 2" class="list-operation" @click="_deleteRush(item.id)">删除</span>
           <router-link v-else tag="span" :to="'/home/rush-purchase/edit-rush?id=' + item.id" class="list-operation">编辑</router-link>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination :pageDetail="rushPage"></base-pagination>
+      <base-pagination ref="pages" :pageDetail="rushPage" @addPage="addPage"></base-pagination>
     </div>
-    <default-confirm></default-confirm>
+    <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {rushComputed, rushMethods} from '@state/helpers'
+  import API from '@api'
 
   const PAGE_NAME = 'RUSH_PURCHASE'
   const TITLE = '今日抢购'
@@ -50,17 +51,41 @@
     },
     data() {
       return {
-        rushTitle: RUSH_TITLE
+        rushTitle: RUSH_TITLE,
+        startTime: '',
+        endTime: '',
+        page: 1,
+        delId: 0
       }
     },
     computed: {
       ...rushComputed
     },
-    created() {
-      console.log(this.rushList)
-    },
     methods: {
-      ...rushMethods
+      ...rushMethods,
+      _setTime(arr) {
+        this.$refs.pages.beginPage()
+        this.page = 1
+        this.startTime = arr[0]
+        this.endTime = arr[1]
+        this.getRushList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      },
+      addPage(page) {
+        this.page = page
+        this.getRushList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      },
+      _deleteRush(id) {
+        this.delId = id
+        this.$refs.confirm.show('确定删除该活动？')
+      },
+      async _sureConfirm() {
+        let res = await API.Rush.deleteGoods(this.delId)
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.getRushList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      }
     }
   }
 </script>

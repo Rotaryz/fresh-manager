@@ -61,7 +61,6 @@ export const actions = {
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        console.log(pageTotal)
         commit('SET_LEADER_LIST', arr)
         commit('SET_PAGE_TOTAL', pageTotal)
         return true

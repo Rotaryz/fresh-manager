@@ -53,7 +53,6 @@ export const actions = {
       })
   },
   getRushList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
-    console.log(page)
     return API.Rush.getRushList({page: page, start_time: startTime, end_time: endTime}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -66,7 +65,6 @@ export const actions = {
           total_page: res.meta.last_page
         }
         commit('SET_RUSH_LIST', arr)
-        console.log(rushPage)
         commit('SET_RUSH_PAGE', rushPage)
         return true
       })

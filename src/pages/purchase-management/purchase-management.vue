@@ -1,7 +1,7 @@
 <template>
   <div class="purchase-management">
     <div class="tab-header">
-      <base-search @search="_search"></base-search>
+      <base-search placeHolder="采购单号" @search="_search"></base-search>
       <div class="btn-main">导入采购单</div>
     </div>
     <div class="list-header list-box">
@@ -54,7 +54,6 @@
     created() {
       let token = this.$storage.get('auth.currentUser', '')
       this.excelParams = token ? `?access_token=${token.access_token}&current_corp=1` : ''
-      console.log(this.purchaseList)
     },
     methods: {
       ...purchaseMethods,

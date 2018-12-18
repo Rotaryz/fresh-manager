@@ -74,5 +74,16 @@ export default {
   deliveryDetail(id, loading = false) {
     let url = `/social-shopping/api/backend/store-delivery/${id}`
     return request.get(url, {}, loading)
+  },
+  /**
+   * 生成小程序码
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  createQrcode(data, loading = false) {
+    let url = `/social-shopping/api/create-qrcode`
+    return request.post(url, data, loading)
   }
 }

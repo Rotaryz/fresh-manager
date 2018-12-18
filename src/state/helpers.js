@@ -20,7 +20,12 @@ export const leaderComputed = {
   ...mapGetters('leader', ['leaderList', 'pageTotal', 'leaderDetail', 'deliveryOrder'])
 }
 
-export const leaderMethods = mapActions('leader', ['getLeaderList', 'getDeliveryOrder', 'getDeliveryDetail', 'setDeliveryOrder'])
+export const leaderMethods = mapActions('leader', [
+  'getLeaderList',
+  'getDeliveryOrder',
+  'getDeliveryDetail',
+  'setDeliveryOrder'
+])
 
 // 今日采购
 export const rushComputed = {
@@ -63,7 +68,7 @@ export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])
 
 // 轮播广告
 export const purchaseComputed = {
-  ...mapGetters('purchase', ['pageTotal', 'purchaseList' , 'purchaseDetail'])
+  ...mapGetters('purchase', ['pageTotal', 'purchaseList', 'purchaseDetail'])
 }
 
 export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail'])

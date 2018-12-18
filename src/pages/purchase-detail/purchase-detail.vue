@@ -9,7 +9,7 @@
         <p class="essential-information-item">采购单号：{{detail.order_sn}}</p>
         <p class="essential-information-item">生成时间：{{detail.created_at}}</p>
         <p class="essential-information-item">采购商品总数：{{detail.type_count}}</p>
-        <p class="essential-information-item">数据来源：系统生成</p>
+        <p class="essential-information-item">数据来源：{{detail.source_str}}</p>
       </div>
     </div>
     <div class="list-of-commodities">
@@ -23,9 +23,9 @@
         <div v-for="(item, index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
           <div class="com-list-item">{{index + 1}}</div>
           <div class="com-list-item">{{item.goods_name}}</div>
-          <div class="com-list-item"></div>
-          <div class="com-list-item">{{item.wait_num}}</div>
           <div class="com-list-item">{{item.goods_units}}</div>
+          <div class="com-list-item">{{item.wait_num}}</div>
+          <div class="com-list-item">{{item.total_stock}}</div>
           <div class="com-list-item">{{item.num}}</div>
           <div class="com-list-item">{{item.not_num}}</div>
           <div class="com-list-item">￥{{item.price}}</div>
@@ -43,7 +43,7 @@
         </div>
         <div v-for="(item, index) in detail.operate_list" :key="index" class="com-list-box com-list-content">
           <div class="com-list-item">{{index + 1}}</div>
-          <div class="com-list-item"></div>
+          <div class="com-list-item">{{item.manager_name}}</div>
           <div class="com-list-item">{{item.created_at}}</div>
           <div class="com-list-item">{{item.remark}}</div>
         </div>
@@ -95,7 +95,6 @@
       let excelParams = token ? `?access_token=${token.access_token}&current_corp=1` : ''
       let id = this.$route.query.id || null
       this.excelUrl = `${this.excelUrl}${id}${excelParams}`
-      console.log(this.detail)
     },
     methods: {
       _back() {

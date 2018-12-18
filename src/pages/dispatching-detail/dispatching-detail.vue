@@ -73,9 +73,10 @@
       this.id = this.$route.query.id || null
       let token = this.$storage.get('auth.currentUser', '')
       let excelParams = token ? `?access_token=${token.access_token}&current_corp=1` : ''
-      this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${this.id}${excelParams}`
+      this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${
+        this.id
+      }${excelParams}`
       this.userUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/user-order-export/${this.id}${excelParams}`
-      console.log(this.detail)
     },
     methods: {
       _back() {

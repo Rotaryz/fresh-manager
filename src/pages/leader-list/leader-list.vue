@@ -17,18 +17,33 @@
         <div class="list-item">{{item.created_at}}</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
-          <span class="list-operation">店铺码</span>
+          <span class="list-operation" @click="_getQrCode(item.id)">店铺码</span>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination :pageDetail="pageTotal"></base-pagination>
+      <base-pagination :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
     </div>
+    <default-modal ref="dialog">
+      <div slot="content" class="pop-main code">
+        <div class="shade-header">
+          <div class="shade-title">选择商品</div>
+          <!--@click="_cancelGoods"-->
+          <span class="close hand" @click="_close"></span>
+        </div>
+        <div class="img-box">
+          <img v-if="!loadImg" key="1" :src="codeUrl" alt="" class="xcx-img">
+          <img v-if="loadImg" key="2" src="./loading.gif" alt="" class="load-img">
+        </div>
+      </div>
+    </default-modal>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {leaderComputed} from '@state/helpers'
+  import {leaderComputed, leaderMethods} from '@state/helpers'
+  import DefaultModal from '@components/default-modal/default-modal'
+  import API from '@api'
 
   const PAGE_NAME = 'LEADER_LIST'
   const TITLE = '团长列表'
@@ -39,19 +54,43 @@
     page: {
       title: TITLE
     },
+    components: {
+      DefaultModal
+    },
     data() {
       return {
         leaderTitle: LEADER_TITLE,
-        page: 1
+        page: 1,
+        loadImg: true,
+        codeUrl: ''
       }
     },
     computed: {
       ...leaderComputed
     },
     created() {
-      console.log(this.pageTotal)
     },
-    methods: {}
+    methods: {
+      ...leaderMethods,
+      _getMore(page) {
+        this.page = page
+        this.getLeaderList({page: this.page, loading: false})
+      },
+      _close() {
+        this.$refs.dialog.hideModal()
+      },
+      async _getQrCode(id) {
+        this.loadImg = true
+        let res = await API.Leader.createQrcode({path: '/pages/choiceness?shopId=' + id})
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+          return
+        }
+        this.$refs.dialog.showModal()
+        this.loadImg = false
+        this.codeUrl = res.data.image_url
+      }
+    }
   }
 </script>
 
@@ -117,4 +156,48 @@
     height: 70px
     align-items: center
     display: flex
+
+  .pop-main
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+    border-radius: 3px
+    background: $color-white
+    width: 530px
+    height: 360px
+    box-sizing: border-box
+    text-align: left
+    display: flex
+    flex-direction: column
+    .shade-header
+      display: flex
+      align-items: center
+      justify-content: space-between
+      height: 60.5px
+      box-sizing: border-box
+      padding: 0 20px
+      border-bottom: 1px solid $color-line
+    .shade-title
+      color: $color-text-main
+      font-family: $font-family-medium
+      font-size: $font-size-16
+    .close
+      icon-image('icon-close')
+      width: 16px
+      height: @width
+      transition: all 0.3s
+      &:hover
+        transform: scale(1.3)
+    .img-box
+      flex: 1
+      display: flex
+      align-items: center
+      justify-content: center
+    .xcx-img
+      display: block
+      width: 238px
+      height: @width
+
+    .load-img
+      display: block
+      width: 40px
+      height: 40px
 </style>
