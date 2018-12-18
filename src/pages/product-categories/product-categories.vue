@@ -199,7 +199,7 @@
         })
       },
       delConfirm() {
-        switch (this.deteleType) {
+        switch (this.deteleType * 1) {
         case 0:
           if (this.categoryList[this.bigIndex].list.length > 0) {
             this.oneBtn = true
