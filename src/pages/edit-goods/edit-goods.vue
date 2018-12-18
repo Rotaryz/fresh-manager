@@ -297,7 +297,7 @@
         } else if (this.msg.describe.length >= 20) {
           this.$toast.show('推荐语不能大于20个字')
           return
-        } else if (this.msg.goods_units.length === 0) {
+        } else if (this.msg.goods_units === '') {
           this.$toast.show('请选择售卖单位')
           return
         } else if (this.msg.original_price.length === 0) {
@@ -350,7 +350,7 @@
         })
       },
       setValue(data) {
-        this.msg.goods_units = data.title
+        this.msg.goods_units = data.name
       }
     }
   }
