@@ -30,12 +30,17 @@
           <!--@click=""-->
           <div v-if="!banner.type" class="add-advertisement hand" @click="_showSelectType(banner, idx)">
             <span class="add-icon"></span>
-            <span class="add-title">添加广告链接(选填){{banner.showType}}</span>
+            <span class="add-title">添加广告链接(选填)</span>
             <transition name="fade">
-              <ul v-if="banner.showType" class="select-type">
-                <li v-for="(item, index) in typeList" :key="index" class="select-item">{{item}}</li>
+              <ul v-if="banner.showType" class="select-type" @click.stop="">
+                <li v-for="(item, index) in typeList" :key="index" class="select-item" @click="_hideSelectType(index, idx)">{{item}}</li>
               </ul>
             </transition>
+          </div>
+          <div v-if="banner.type === 'out_html'" class="advertisement-link">
+            <div class="goods-small-img goods-small-icon"></div>
+            <p class="goods-title">{{banner.content.url}}</p>
+            <p class="use hand">编辑</p>
           </div>
           <div v-if="banner.type === 'mini_goods'" class="advertisement-link">
             <div class="goods-small-img" :style="{'background-image': 'url(' + banner.goods_cover_image + ')'}"></div>
@@ -111,10 +116,10 @@
           <div class="shade-title">自定义链接</div>
           <span class="close hand" @click="_hideCustom"></span>
         </div>
-        <textarea class="link-box"></textarea>
+        <textarea v-model="outHtml" class="link-box"></textarea>
         <div class="btn-group">
           <span class="btn cancel" @click="_hideCustom">取消</span>
-          <span class="btn confirm">确定</span>
+          <span class="btn confirm" @click="addOutHtml">确定</span>
         </div>
       </div>
     </default-modal>
@@ -152,7 +157,9 @@
         showLoading: false,
         bannerList: [TEMPLATE_OBJ],
         upIndex: 0,
-        upItem: {}
+        upItem: {},
+        outHtml: '',
+        bannerIndex: 0
       }
     },
     computed: {
@@ -164,9 +171,10 @@
         item.showType = false
         return item
       })
-      console.log(this.infoBannerList)
     },
     methods: {
+      // 获取商品列表
+      _getGoodsList() {},
       // 添加更多的广告
       _addMore() {
         this.bannerList.push(TEMPLATE_OBJ)
@@ -174,7 +182,20 @@
       // 选择广告链接类型
       _showSelectType(item, index) {
         this.bannerList[index].showType = !this.bannerList[index].showType
-        console.log(item)
+        this.$forceUpdate()
+      },
+      _hideSelectType(typeIndex, index) {
+        this.bannerList[index].showType = false
+        this.$forceUpdate()
+        switch (typeIndex) {
+        case 0:
+          this._showGoods()
+          break
+        case 1:
+          this._showCustom()
+          break
+        }
+        this.bannerIndex = index
       },
       async _addPic(index, item, e) {
         this.upIndex = index
@@ -210,15 +231,29 @@
       async _storeBanner(obj) {
         let res = await API.Advertisement.storeBanner(obj)
         this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this._hideCustom()
+          this._hideGoods()
+        }
       },
       async _updateBanner(obj, id) {
         let res = await API.Advertisement.updateBanner(obj, id)
         this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this._hideCustom()
+          this._hideGoods()
+        }
       },
       _showCustom() {
         this.$refs.custom.showModal()
       },
+      async addOutHtml() {
+        this.bannerList[this.bannerIndex].type = 'out_html'
+        this.bannerList[this.bannerIndex].content.url = this.outHtml
+        await this._storeBanner(this.bannerList[this.bannerIndex])
+      },
       _hideCustom() {
+        this.outHtml = ''
         this.$refs.custom.hideModal()
       },
       _showGoods() {
@@ -367,12 +402,14 @@
             background-position: center
             background-color: $color-background
             margin-right: 10px
+          .goods-small-icon
+            icon-image('icon-link')
           .goods-title
             width: 80%
             no-wrap()
             font-size: $font-size-14
             color: #666666
-            line-height: 1
+            line-height: 1.2
             font-family: $font-family-regular
           .use
             white-space: nowrap
