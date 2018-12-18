@@ -153,7 +153,7 @@
         font-family: $font-family-regular
         color: $color-text-main
         white-space: nowrap
-        width: 280px
+        width: 264px
 
   .list-of-commodities
     margin-bottom: 85px

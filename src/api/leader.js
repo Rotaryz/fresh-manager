@@ -62,8 +62,8 @@ export default {
    */
   shopDropdownList(loading = false) {
     let url = `/social-shopping/api/backend/shop-dropdown-list`
-    return request.get(url, {}, loading)
-  }
+    return request.get(url, null, loading)
+  },
   /**
    * 社区下拉列表
    * @param id
@@ -71,8 +71,8 @@ export default {
    * @param loading
    * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
    */
-  // shopDropdownList(loading = false) {
-  //   let url = `/social-shopping/api/backend/store-delivery/t`
-  //   return request.get(url, {}, loading)
-  // }
+  deliveryDetail(id, loading = false) {
+    let url = `/social-shopping/api/backend/store-delivery/${id}`
+    return request.get(url, {}, loading)
+  }
 }

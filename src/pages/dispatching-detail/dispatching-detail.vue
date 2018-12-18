@@ -6,13 +6,13 @@
         <div class="btn-main">导出Excel</div>
       </div>
       <div class="essential-information-detail">
-        <p class="essential-information-item">采购单号：DDH20188832770043</p>
-        <p class="essential-information-item essential-information-time">生成时间：2018-12-08 15:34:00</p>
-        <p class="essential-information-item essential-information-total">采购商品总数：209</p>
-        <p class="essential-information-item essential-information-data">数据来源：系统生成</p>
-        <p class="essential-information-item essential-information-data">团长名称：乔布斯</p>
-        <p class="essential-information-item essential-information-data">团长电话：13316241009</p>
-        <p class="essential-information-item essential-information-data">社区地址：广东 广州 白云区 国际单位二期A5四楼</p>
+        <p class="essential-information-item">配送单号：{{detail.order_sn}}</p>
+        <p class="essential-information-item essential-information-time">生成时间：{{detail.created_at}}</p>
+        <p class="essential-information-item essential-information-total">配送日期：{{detail.delivery_at}}</p>
+        <p class="essential-information-item essential-information-data">社区名称：{{detail.social_name}}</p>
+        <p class="essential-information-item essential-information-data">团长名称：{{detail.name}}</p>
+        <p class="essential-information-item essential-information-data">团长电话：{{detail.mobile}}</p>
+        <p class="essential-information-item essential-information-data">社区地址：{{detail.province}} {{detail.city}} {{detail.district}} {{detail.address}}</p>
       </div>
     </div>
     <div class="list-of-commodities">
@@ -23,13 +23,13 @@
         <div class="commodities-list-header com-list-box">
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
         </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知</div>
+        <div v-for="(item,index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
+          <div class="com-list-item">{{index + 1}}</div>
+          <div class="com-list-item">{{item.goods_name}}</div>
           <div class="com-list-item">斤</div>
-          <div class="com-list-item">91</div>
-          <div class="com-list-item">91</div>
-          <div class="com-list-item">91</div>
+          <div class="com-list-item">{{item.num}}</div>
+          <div class="com-list-item">{{item.price}}</div>
+          <div class="com-list-item">{{item.total}}</div>
         </div>
         <div class="total-money">预定总金额：￥73.98</div>
       </div>
@@ -50,10 +50,21 @@
     page: {
       title: TITLE
     },
+    props: {
+      detail: {
+        type: Object,
+        default() {
+          return {}
+        }
+      }
+    },
     data() {
       return {
         commodities: COMMODITIES_LIST
       }
+    },
+    created() {
+      console.log(this.detail)
     },
     methods: {
       _back() {
@@ -109,7 +120,7 @@
         font-family: $font-family-regular
         color: $color-text-main
         white-space: nowrap
-        width: 280px
+        width: 264px
 
   .commodities-list-header
     margin-top: 28px

@@ -1,6 +1,6 @@
 <template>
   <div class="base-date-select">
-    <date-picker :placeholder="placeHolder" type="daterange" :value="dateINfo" :style="{'height': '28px'}" :clearable="false"
+    <date-picker :placeholder="placeHolder" type="daterange" :value="dateInfo" :style="{'height': '28px'}" :clearable="false"
                  @on-change="_getTime"
     ></date-picker>
   </div>
@@ -21,7 +21,7 @@
         type: String,
         default: '选择申请日期'
       },
-      dateINfo: {
+      dateInfo: {
         // 初始化时间 -> eg: ['2016-01-01', '2016-02-15']
         type: Array,
         default: () => {

@@ -85,9 +85,8 @@
       }
     },
     async created() {
-      this.excelParams = this.$storage.get('auth.currentUser', '')
-        ? `?access_token=${this.$storage.get('auth.currentUser').access_token}&current_corp=1`
-        : ''
+      let token = this.$storage.get('auth.currentUser', '')
+      this.excelParams = token ? `?access_token=${token.access_token}&current_corp=1` : ''
       await this._getdropdownList()
     },
     methods: {
@@ -102,6 +101,7 @@
           return item
         })
         this.dispatchSelect.data.unshift({name: '全部社区', id: ''})
+        this.$forceUpdate()
       },
       _getShop(item) {
         this.$refs.pages.beginPage()

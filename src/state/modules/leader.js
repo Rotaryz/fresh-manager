@@ -117,7 +117,7 @@ export const actions = {
   },
   // 配送订单详情
   getDeliveryDetail({commit}, id) {
-    return API.Leader.getLeaderDetail(id)
+    return API.Leader.deliveryDetail(id)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

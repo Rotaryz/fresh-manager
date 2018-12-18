@@ -331,14 +331,32 @@ export default [
           }
         }
       },
-      // 团长配送单
+      // 团长配送单详情
       {
         path: 'dispatching-list/dispatching-detail',
         name: 'dispatching-detail',
         component: () => lazyLoadView(import('@pages/dispatching-detail/dispatching-detail')),
         meta: {
-          titles: ['团长管理', '团长配送单', '配送单详情']
-        }
+          titles: ['团长管理', '团长配送单', '配送单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('leader/getDeliveryDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        props: (route) => ({detail: route.params.detail})
       },
       // 新建团长
       {
