@@ -28,11 +28,11 @@
             <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
           </div>
           <!--@click=""-->
-          <div v-if="!banner.type" class="add-advertisement hand" @click="_showCustom">
+          <div v-if="!banner.type" class="add-advertisement hand" @click="_showSelectType(banner, idx)">
             <span class="add-icon"></span>
-            <span class="add-title">添加广告链接(选填)</span>
+            <span class="add-title">添加广告链接(选填){{banner.showType}}</span>
             <transition name="fade">
-              <ul v-if="showType" class="select-type">
+              <ul v-if="banner.showType" class="select-type">
                 <li v-for="(item, index) in typeList" :key="index" class="select-item">{{item}}</li>
               </ul>
             </transition>
@@ -44,7 +44,7 @@
           </div>
         </div>
       </div>
-      <div class="btn-main new-advertisement" @click="_showGoods">新建广告 +</div>
+      <div class="btn-main new-advertisement" @click="_addMore">新建广告 +</div>
     </div>
     <!--商品-->
     <default-modal ref="goods">
@@ -64,7 +64,7 @@
         <div class="goods-content">
           <div class="goods-list">
             <div class="goods-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showSelect}" @click="showSelect = true">
+              <div class="select-icon hand" :class="{'select-icon-active': showSelect}">
                 <span class="after"></span>
               </div>
               <div class="goods-img"></div>
@@ -160,9 +160,22 @@
     },
     created() {
       this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
+      this.bannerList = this.bannerList.map((item) => {
+        item.showType = false
+        return item
+      })
       console.log(this.infoBannerList)
     },
     methods: {
+      // 添加更多的广告
+      _addMore() {
+        this.bannerList.push(TEMPLATE_OBJ)
+      },
+      // 选择广告链接类型
+      _showSelectType(item, index) {
+        this.bannerList[index].showType = !this.bannerList[index].showType
+        console.log(item)
+      },
       async _addPic(index, item, e) {
         this.upIndex = index
         this.upItem = item
@@ -311,7 +324,7 @@
             font-size: $font-size-14
             white-space: nowrap
           .select-type
-            bottom: -24px
+            top: 24px
             background: $color-white
             box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
             border-radius: 4px
