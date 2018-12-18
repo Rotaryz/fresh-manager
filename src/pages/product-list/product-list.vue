@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="product-right">
-        <div class="btn-main">导出Excel</div>
+        <a :href="downUrl" class="btn-main" target="_blank">导出Excel</a>
       </div>
     </div>
     <div class="list-header list-box">
@@ -73,6 +73,7 @@
         keyWord: '',
         goodsPage: 1,
         curItem: '',
+        downUrl: '',
         oneBtn: false
       }
     },
@@ -80,10 +81,15 @@
       ...goodsComputed
     },
     created() {
+      this._getUrl()
       this.goodsList = _.cloneDeep(this.productList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
     },
     methods: {
+      _getUrl() {
+        let token = this.$storage.get('auth.currentUser', '')
+        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${this.keyWord}`
+      },
       getGoodsListData() {
         let data = {
           is_online: this.isOnline,
@@ -146,7 +152,6 @@
         API.Product.upDownGoods(data).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsList[index].is_online = item.is_online * 1 === 1 ? 0 : 1
-            console.log(item.is_online * 1 ? '下架成功' : '上架成功')
             this.oneBtn = true
             this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功上架' : '该商品已成功下架')
           } else {

@@ -577,10 +577,10 @@
           border-color: $color-sub !important
 
   .back
-    position: absolute
-    left: -20px
-    right: -20px
-    bottom: -60px
+    position: fixed
+    left: 200px
+    right: 0px
+    bottom: 0
     z-index: 10
     background: #F9F9F9
     height: 80px
