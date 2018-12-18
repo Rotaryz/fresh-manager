@@ -1,5 +1,5 @@
 <template>
-  <div class="dispatching-list">
+  <div class="dispatching-list" @click="_hideAllDownBox">
     <div class="tab-header">
       <base-drop-down :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
       <div class="line"></div>
@@ -22,12 +22,12 @@
           <router-link tag="span" :to="'dispatching-detail?id='+item.id" append class="list-operation">
             详情
           </router-link>
-          <span class="list-operation select-type-box" @click="_selectFileType(index)">
+          <span class="list-operation select-type-box" @click.stop="_selectFileType(index)">
             导出
             <transition name="fade">
-              <ul v-if="selectList[index].select" class="select-type" @click.stop="">
+              <ul v-if="item.select" class="select-type" @click.stop="">
                 <li v-for="(type, idx) in typeList" :key="idx" class="select-item" @click="_hideSelectType(index,type, idx)">
-                  <a class="select-item-text" target="_blank" :href="selectList[index]['url'+ idx] + item.id + excelParams">{{type}}</a>
+                  <a class="select-item-text" target="_blank" :href="item['url'+ idx] + item.id + excelParams">{{type}}</a>
                 </li>
               </ul>
             </transition>
@@ -44,6 +44,7 @@
 <script type="text/ecmascript-6">
   import {leaderComputed, leaderMethods} from '@state/helpers'
   import API from '@api'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'DISPATCHING_LIST'
   const TITLE = '团长配送单'
@@ -73,16 +74,7 @@
       }
     },
     computed: {
-      ...leaderComputed,
-      selectList() {
-        let arr = this.deliveryOrder.map((item) => {
-          item.select = false
-          item.url0 = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/`
-          item.url1 = `${process.env.VUE_APP_API}/social-shopping/api/backend/user-order-export/`
-          return item
-        })
-        return arr
-      }
+      ...leaderComputed
     },
     async created() {
       let token = this.$storage.get('auth.currentUser', '')
@@ -91,6 +83,14 @@
     },
     methods: {
       ...leaderMethods,
+      _hideAllDownBox() {
+        let arr = _.cloneDeep(this.deliveryOrder)
+        arr = arr.map((item) => {
+          item.select = false
+          return item
+        })
+        this.setDeliveryOrder(arr)
+      },
       async _getdropdownList() {
         let res = await API.Leader.shopDropdownList()
         if (res.error !== this.$ERR_OK) {
@@ -110,12 +110,21 @@
         this.getDeliveryOrder({page: this.page, shopId: this.status, loading: false})
       },
       _selectFileType(index) {
-        this.deliveryOrder[index].select = !this.deliveryOrder[index].select
-        this.$forceUpdate()
+        let arr = _.cloneDeep(this.deliveryOrder)
+        arr = arr.map((item, itemIdx) => {
+          if (itemIdx === index) {
+            item.select = !item.select
+          } else {
+            item.select = false
+          }
+          return item
+        })
+        this.setDeliveryOrder(arr)
       },
       _hideSelectType(index, item, idx) {
-        this.deliveryOrder[index].select = false
-        this.$forceUpdate()
+        let arr = _.cloneDeep(this.deliveryOrder)
+        arr[index].select = false
+        this.setDeliveryOrder(arr)
       },
       _addPage(page) {
         this.page = page

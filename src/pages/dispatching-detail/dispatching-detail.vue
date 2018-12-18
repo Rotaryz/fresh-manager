@@ -3,7 +3,10 @@
     <div class="essential-information">
       <div class="content-header">
         <div class="content-title">基本信息</div>
-        <div class="btn-main">导出Excel</div>
+        <div>
+          <a class="btn-main excel" target="_blank" :href="deliveryUrl">导出配送单</a>
+          <a class="btn-main excel" target="_blank" :href="userUrl">导出消费者订单</a>
+        </div>
       </div>
       <div class="essential-information-detail">
         <p class="essential-information-item">配送单号：{{detail.order_sn}}</p>
@@ -26,12 +29,12 @@
         <div v-for="(item,index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
           <div class="com-list-item">{{index + 1}}</div>
           <div class="com-list-item">{{item.goods_name}}</div>
-          <div class="com-list-item">斤</div>
+          <div class="com-list-item">{{item.goods_units}}</div>
           <div class="com-list-item">{{item.num}}</div>
           <div class="com-list-item">{{item.price}}</div>
           <div class="com-list-item">{{item.total}}</div>
         </div>
-        <div class="total-money">预定总金额：￥73.98</div>
+        <div class="total-money">预定总金额：￥{{detail.total}}</div>
       </div>
     </div>
     <div class="back">
@@ -55,15 +58,23 @@
         type: Object,
         default() {
           return {}
-        }
+        },
+        deliveryUrl: '',
+        userUrl: ''
       }
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        id: null
       }
     },
     created() {
+      this.id = this.$route.query.id || null
+      let token = this.$storage.get('auth.currentUser', '')
+      let excelParams = token ? `?access_token=${token.access_token}&current_corp=1` : ''
+      this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${this.id}${excelParams}`
+      this.userUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/user-order-export/${this.id}${excelParams}`
       console.log(this.detail)
     },
     methods: {
@@ -92,6 +103,10 @@
     height: 62px
     position: relative
     box-sizing: border-box
+    .excel
+      margin-left: 20px
+      &:hover
+        color: $color-white
     &:after
       content: ''
       position: absolute
@@ -166,9 +181,9 @@
       font-size: $font-size-14
 
   .back
-    position: absolute
-    left: -20px
-    right: -20px
+    position: fixed
+    left: 200px
+    right: -0px
     bottom: 0
     z-index: 10
     background: #F9F9F9

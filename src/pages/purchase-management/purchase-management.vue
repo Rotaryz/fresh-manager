@@ -1,35 +1,37 @@
 <template>
   <div class="purchase-management">
     <div class="tab-header">
-      <base-search></base-search>
+      <base-search @search="_search"></base-search>
       <div class="btn-main">导入采购单</div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div class="list-content list-box">
+      <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
         <div class="list-item list-double-row">
-          <p class="item-dark">DDH20188832770043</p>
-          <p class="item-sub">2018-12-08 15:00:00</p>
+          <p class="item-dark">{{item.order_sn}}</p>
+          <p class="item-sub">{{item.created_at}}</p>
         </div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
-        <div class="list-item">DDH20188832770043DDH20188832770043</div>
+        <div class="list-item">{{item.delivery_at}}</div>
+        <div class="list-item">{{item.type_count}}</div>
+        <div class="list-item">{{item.type_had_count}}</div>
+        <div class="list-item">{{item.total}}</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" to="purchase-detail" append class="list-operation">详情</router-link>
-          <span class="list-operation">导出</span>
+          <router-link tag="span" :to="'purchase-detail?id=' + item.id" append class="list-operation">详情</router-link>
+          <a class="list-operation list-link" :href="item.url + item.id + excelParams" target="_blank">导出</a>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination></base-pagination>
+      <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {purchaseComputed, purchaseMethods} from '@state/helpers'
+
   const PAGE_NAME = 'PURCHASE_MANAGEMENT'
   const TITLE = '采购管理'
   const LIST_TITLE = ['采购单号', '计划交货时间', '总采购项', '已采购项', '收货金额', '操作']
@@ -40,7 +42,32 @@
     },
     data() {
       return {
-        listTitle: LIST_TITLE
+        listTitle: LIST_TITLE,
+        page: 1,
+        orderSn: '',
+        excelParams: ''
+      }
+    },
+    computed: {
+      ...purchaseComputed
+    },
+    created() {
+      let token = this.$storage.get('auth.currentUser', '')
+      this.excelParams = token ? `?access_token=${token.access_token}&current_corp=1` : ''
+      console.log(this.purchaseList)
+    },
+    methods: {
+      ...purchaseMethods,
+      _search(text) {
+        this.$refs.pages.beginPage()
+        this.page = 1
+        this.orderSn = text
+        this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
+      },
+      _getMoreList(page) {
+        this.$refs.pages.beginPage()
+        this.page = page
+        this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
       }
     }
   }
@@ -93,6 +120,9 @@
       .list-item
         no-wrap()
         font-size: $font-size-14
+        .list-link
+          &:hover
+            color: $color-sub
       // 双行样式
       .list-double-row
         .item-sub

@@ -32,7 +32,6 @@
         this.$emit('search', this.searchText)
       },
       _enter(e) {
-        console.log(e)
         if (e.keyCode === 13) {
           this.$emit('search', this.searchText)
         }
