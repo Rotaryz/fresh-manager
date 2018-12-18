@@ -11,8 +11,8 @@
             <div class="text">{{item.name}}</div>
           </div>
           <div class="big-main-right">
-            <span class="list-operation">编辑</span>
-            <span class="list-operation">删除</span>
+            <span class="list-operation" @click="editBigCatee(item, index)">编辑</span>
+            <span class="list-operation" @click="delBigCatee(item, index)">删除</span>
           </div>
         </div>
         <div v-if="item.select" class="open-list">
@@ -32,6 +32,7 @@
     </ul>
     <change-model :showCate="true"></change-model>
     <change-model ref="bigModel" :showCate="false" numberPla="长度不能超过10位" @confirm="newConfirm"></change-model>
+    <default-confirm ref="bigConfirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
 </template>
 
@@ -39,6 +40,7 @@
   import {categoriesComputed, categoriesMethods} from '@state/helpers'
   import API from '@api'
   import ChangeModel from '@components/change-model/change-model'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
   const TITLE = '商品分类'
@@ -46,7 +48,8 @@
   export default {
     name: PAGE_NAME,
     components: {
-      ChangeModel
+      ChangeModel,
+      DefaultConfirm
     },
     page: {
       title: TITLE
@@ -58,7 +61,9 @@
         categoryChild: '',
         bigItem: '',
         bigIndex: 0,
-        categoryList: []
+        categoryList: [],
+        oneBtn: false,
+        deteleType: 0
       }
     },
     computed: {
@@ -89,7 +94,9 @@
             if (res.error === this.$ERR_OK) {
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.addChild({name: name, sort: number, id: 0})
+              console.log(res.data)
+              this.categoryList.push({name: name, sort: number, id: res.data.id, list: []})
+              this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
             }
@@ -100,7 +107,20 @@
             if (res.error === this.$ERR_OK) {
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.getCategoryList(-1, false)
+              this.categoryList[this.bigIndex].list.push({name: name, sort: number, parent_id: this.bigItem.id, id: res.data.id})
+              this.categoryList[this.bigIndex].list.sort(this._sort)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+          break
+        case 2:
+          API.Product.editCategory(this.bigItem.id, {name: name, sort: number, parent_id: 0}).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('编辑成功')
+              this.categoryList[this.bigIndex].name = name
+              this.categoryList[this.bigIndex].sort = number
+              this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
             }
@@ -124,6 +144,40 @@
         this.categoryType = 1
         this.bigItem = item
         this.bigIndex = index
+      },
+      editBigCatee(item, index) {
+        this.bigItem = item
+        this.bigIndex = index
+        this.categoryType = 2
+        this.$refs.bigModel.show('编辑商品分类', item.name, item.sort)
+      },
+      delBigCatee(item, index) {
+        this.bigItem = item
+        this.bigIndex = index
+        this.oneBtn = false
+        this.deteleType = 0
+        console.log(index, 'index')
+        this.$refs.bigConfirm.show(`确定删除该分类？`)
+      },
+      delConfirm() {
+        if (this.categoryList[this.bigIndex].list.length > 0) {
+          this.oneBtn = true
+          setTimeout(() => {
+            this.$refs.bigConfirm.show(`该分类下有${this.categoryList[this.bigIndex].list.length}个商品，请处理后再删除`)
+          }, 1000)
+        } else {
+          API.Product.delCategory(this.bigItem.id).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              setTimeout(() => {
+                this.categoryList.splice(this.bigIndex, 1)
+                this.oneBtn = true
+                this.$refs.bigConfirm.show(`该分类已成功删除？`)
+              }, 1000)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+        }
       }
     }
   }
