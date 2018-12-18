@@ -86,6 +86,11 @@
       }
     },
     methods: {
+      infoCity(arr) {
+        this.city.map((item, idx) => {
+          item.children[0].content = arr[idx]
+        })
+      },
       clearLocationInfo() {
         this.city.map((item) => {
           item.children[0].content = '请选择'

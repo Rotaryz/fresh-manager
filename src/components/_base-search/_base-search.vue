@@ -1,6 +1,6 @@
 <template>
   <div class="base-search">
-    <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder">
+    <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder" @keydown="_enter">
     <div class="search-icon-box" @click="_search">
       <span class="search-icon hand"></span>
     </div>
@@ -30,6 +30,12 @@
     methods: {
       _search() {
         this.$emit('search', this.searchText)
+      },
+      _enter(e) {
+        console.log(e)
+        if (e.keyCode === 13) {
+          this.$emit('search', this.searchText)
+        }
       }
     }
   }

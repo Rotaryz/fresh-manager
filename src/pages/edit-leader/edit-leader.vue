@@ -54,7 +54,7 @@
           社区地址
         </div>
         <div class="edit-input-box">
-          <city-select @setValue="_getCity"></city-select>
+          <city-select ref="city" @setValue="_getCity"></city-select>
         </div>
       </div>
       <div class="edit-item">
@@ -68,7 +68,7 @@
       </div>
     </div>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="back">返回</div>
+      <div class="back-cancel back-btn hand" @click="_back">返回</div>
       <div class="back-btn btn-main" @click="submit">保存</div>
     </div>
   </div>
@@ -118,10 +118,13 @@
     },
     created() {
       this.id = this.$route.query.id || null
+    },
+    mounted() {
       this._setData()
+      this.leaderData = _.cloneDeep(this.detail)
     },
     methods: {
-      back() {
+      _back() {
         this.$router.back()
       },
       submit() {
@@ -172,8 +175,8 @@
        */
       _setData() {
         if (!_.isEmpty(this.detail)) {
+          this.$refs.city.infoCity([this.detail.address, this.detail.city, this.detail.district])
           this.leaderData = this.detail
-        // TODO 设置默认省市区
         }
       },
       _isDataValidate() {

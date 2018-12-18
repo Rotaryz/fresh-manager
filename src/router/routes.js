@@ -150,7 +150,6 @@ export default [
                 return next()
               })
               .catch(() => {
-                console.log('dsf')
                 return next({name: '404'})
               })
           }
@@ -315,7 +314,21 @@ export default [
         name: 'dispatching-list',
         component: () => lazyLoadView(import('@pages/dispatching-list/dispatching-list')),
         meta: {
-          titles: ['团长管理', '团长配送单']
+          titles: ['团长管理', '团长配送单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store
+              .dispatch('leader/getDeliveryOrder', {page: 1, shopId: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 团长配送单

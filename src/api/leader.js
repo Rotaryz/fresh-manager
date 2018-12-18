@@ -41,5 +41,38 @@ export default {
   editLeader(id, data, loading = true) {
     let url = `/social-shopping/api/backend/shop-manager/${id}`
     return request.put(url, data, loading)
+  },
+  /**
+   * 配送列表
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  getDeliveryOrder(data, loading = true) {
+    let url = `/social-shopping/api/backend/store-delivery`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 社区下拉列表
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  shopDropdownList(loading = false) {
+    let url = `/social-shopping/api/backend/shop-dropdown-list`
+    return request.get(url, {}, loading)
   }
+  /**
+   * 社区下拉列表
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  // shopDropdownList(loading = false) {
+  //   let url = `/social-shopping/api/backend/store-delivery/t`
+  //   return request.get(url, {}, loading)
+  // }
 }

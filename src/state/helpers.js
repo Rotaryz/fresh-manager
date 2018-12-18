@@ -17,10 +17,10 @@ export const globalComputed = {
 
 // 团长
 export const leaderComputed = {
-  ...mapGetters('leader', ['leaderList', 'pageTotal', 'leaderDetail'])
+  ...mapGetters('leader', ['leaderList', 'pageTotal', 'leaderDetail', 'deliveryOrder'])
 }
 
-export const leaderMethods = mapActions('leader', ['getLeaderList'])
+export const leaderMethods = mapActions('leader', ['getLeaderList', 'getDeliveryOrder', 'getDeliveryDetail'])
 
 // 今日采购
 
