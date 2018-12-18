@@ -98,12 +98,18 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = res.data
+        let arr = res.data.map((item) => {
+          item.select = false
+          item.url0 = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/`
+          item.url1 = `${process.env.VUE_APP_API}/social-shopping/api/backend/user-order-export/`
+          return item
+        })
         let pageTotal = {
           total: res.meta.total,
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
+
         commit('SET_DELIVERY_ORDER', arr)
         commit('SET_PAGE_TOTAL', pageTotal)
         return true
@@ -132,5 +138,8 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  setDeliveryOrder({commit}, arr) {
+    commit('SET_DELIVERY_ORDER', arr)
   }
 }

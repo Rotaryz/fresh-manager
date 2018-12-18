@@ -40,12 +40,12 @@
           <div v-if="banner.type === 'out_html'" class="advertisement-link">
             <div class="goods-small-img goods-small-icon"></div>
             <p class="goods-title">{{banner.content.url}}</p>
-            <p class="use hand">编辑</p>
+            <p class="use hand" @click="_editBanner(banner, idx)">编辑</p>
           </div>
           <div v-if="banner.type === 'mini_goods'" class="advertisement-link">
             <div class="goods-small-img" :style="{'background-image': 'url(' + banner.goods_cover_image + ')'}"></div>
             <p class="goods-title">{{banner.goods_name}}</p>
-            <p class="use hand">编辑</p>
+            <p class="use hand" @click="_editBanner(banner, idx)">编辑</p>
           </div>
         </div>
       </div>
@@ -60,52 +60,36 @@
         </div>
         <div class="shade-tab">
           <div class="tab-item">
-            <base-drop-down :width="218"></base-drop-down>
+            <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-search placeHolder="请输入商品名称"></base-search>
+            <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+          </div>
+          <div class="tab-item">
+            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
           </div>
         </div>
         <div class="goods-content">
           <div class="goods-list">
-            <div class="goods-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showSelect}">
+            <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
+              <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
                 <span class="after"></span>
               </div>
-              <div class="goods-img"></div>
+              <div class="goods-img" style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
-                <div class="goods-name">商品名称商品名称商品名称商品是否商品名称商品名称商品名称商品是否</div>
-                <div class="goods-money">¥268.00</div>
+                <div class="goods-name">{{item.name}}</div>
+                <div class="goods-money">¥{{item.store_price}}</div>
               </div>
             </div>
-            <div class="goods-item">
-              <div class="select-icon hand select-icon-active">
-                <span class="after"></span>
-              </div>
-              <div class="goods-img"></div>
-              <div class="goods-msg">
-                <div class="goods-name">商品名称商品名称商品名称商品是否</div>
-                <div class="goods-money">¥268.00</div>
-              </div>
-            </div>
-            <div class="goods-item">
-              <div class="select-icon hand select-icon-active">
-                <span class="after"></span>
-              </div>
-              <div class="goods-img"></div>
-              <div class="goods-msg">
-                <div class="goods-name">商品名称商品名称商品名称商品是否</div>
-                <div class="goods-money">¥268.00</div>
-              </div>
-            </div>
+            <!--select-icon-active-->
           </div>
         </div>
         <div class="page-box">
-          <base-pagination></base-pagination>
+          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
-          <div class="back-btn btn-main">确定</div>
+          <div class="back-btn btn-main" @click="_miniGoods">确定</div>
         </div>
       </div>
     </default-modal>
@@ -153,28 +137,137 @@
         typeList: TYPE_LIST,
         showType: false,
         isHaveLink: true,
-        showSelect: false,
+        showSelectIndex: -1,
         showLoading: false,
         bannerList: [TEMPLATE_OBJ],
         upIndex: 0,
         upItem: {},
         outHtml: '',
-        bannerIndex: 0
+        bannerIndex: 0,
+        choiceGoods: [],
+        goodsPage: {
+          total: 1,
+          per_page: 10,
+          total_page: 1
+        },
+        choicePage: 1,
+        parentId: 0,
+        keyword: '',
+        assortment: {
+          check: false,
+          show: false,
+          content: '选择分类',
+          type: 'default',
+          data: [] // 格式：{title: '55'}}
+        },
+        secondAssortment: {
+          check: false,
+          show: false,
+          content: '选择二级分类',
+          type: 'default',
+          data: [] // 格式：{title: '55'}}
+        },
+        goodsId: 0
       }
     },
     computed: {
       ...adverComputed
     },
-    created() {
+    async created() {
       this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
       this.bannerList = this.bannerList.map((item) => {
         item.showType = false
         return item
       })
+      await this._getFirstAssortment()
+      await this._getGoodsList()
     },
     methods: {
+      // 删除banner
+      _delBanner() {
+
+      },
+      // 编辑
+      _editBanner(item, index) {
+        this.bannerIndex = index
+        /*eslint-disable*/
+        switch (item.type) {
+          case 'out_html':
+            this.outHtml = item.content.url
+            this._showCustom()
+            break
+          case 'mini_goods':
+            this.goodsId = item.content.id
+            this._showGoods()
+            break
+        }
+      },
+      // 确定选择商品链接
+      async _miniGoods() {
+        await this._submitBanner()
+      },
+      // 选择商品
+      _selectGoods(item, index) {
+        this.showSelectIndex = index
+        this.bannerList[this.bannerIndex].content.id = item.id
+        this.bannerList[this.bannerIndex].type = 'mini_goods'
+      },
       // 获取商品列表
-      _getGoodsList() {},
+      async _getGoodsList() {
+        let res = await API.Rush.getGoodsList({
+          is_online: 1,
+          keyword: this.keyword,
+          goods_category_id: this.parentId,
+          limit: 10,
+          page: this.choicePage
+        })
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.goodsPage = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        this.choiceGoods = res.data
+        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
+      },
+      // 获取分页商品列表
+      async _getMoreGoods(page) {
+        this.choicePage = page
+        await this._getGoodsList()
+      },
+      // 选择二级分类
+      async _secondAssortment(item) {
+        this.parentId = item.id
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.secondAssortment.data.unshift({name: '全部', id: ''})
+        this.secondAssortment.content = '选择二级分类'
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
+      // 选择二级分类
+      async _choessSecondAssortment(item) {
+        this.parentId = item.id
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
+      // 获取一级分类
+      async _getFirstAssortment() {
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.assortment.data.unshift({name: '全部', id: ''})
+      },
+      // 搜索商品
+      async _searchGoods(text) {
+        this.keyword = text
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
       // 添加更多的广告
       _addMore() {
         this.bannerList.push(TEMPLATE_OBJ)
@@ -184,19 +277,22 @@
         this.bannerList[index].showType = !this.bannerList[index].showType
         this.$forceUpdate()
       },
+      // 隐藏广告链接下拉框
       _hideSelectType(typeIndex, index) {
         this.bannerList[index].showType = false
         this.$forceUpdate()
+        /*eslint-disable*/
         switch (typeIndex) {
-        case 0:
-          this._showGoods()
-          break
-        case 1:
-          this._showCustom()
-          break
+          case 0:
+            this._showGoods()
+            break
+          case 1:
+            this._showCustom()
+            break
         }
         this.bannerIndex = index
       },
+      // 添加图片
       async _addPic(index, item, e) {
         this.upIndex = index
         this.upItem = item
@@ -211,6 +307,7 @@
         param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
       },
+      // 上传banner图片
       async _upImage(param) {
         let res = await API.Upload.UploadImg(param)
         this.bannerList[this.upIndex].showLoading = false
@@ -221,13 +318,13 @@
         this.bannerList[this.upIndex].image_url = res.data.url
         this.bannerList[this.upIndex].image_id = res.data.id
         let obj = {image_id: res.data.id, type: this.upItem.type, content: this.upItem.content}
-        console.log(this.upItem)
         if (this.upItem.id) {
           await this._updateBanner(obj, this.upItem.id)
           return
         }
         await this._storeBanner(obj)
       },
+      // 新建banner
       async _storeBanner(obj) {
         let res = await API.Advertisement.storeBanner(obj)
         this.$toast.show(res.message)
@@ -236,6 +333,7 @@
           this._hideGoods()
         }
       },
+      // 编辑banner
       async _updateBanner(obj, id) {
         let res = await API.Advertisement.updateBanner(obj, id)
         this.$toast.show(res.message)
@@ -244,22 +342,37 @@
           this._hideGoods()
         }
       },
-      _showCustom() {
-        this.$refs.custom.showModal()
+      // 提交修改banner
+      async _submitBanner() {
+        if (this.bannerList[this.bannerIndex].id) {
+          await this._updateBanner(this.bannerList[this.bannerIndex], this.bannerList[this.bannerIndex].id)
+          return
+        }
+        await this._storeBanner(this.bannerList[this.bannerIndex])
       },
+      // 添加自定义链接
       async addOutHtml() {
         this.bannerList[this.bannerIndex].type = 'out_html'
         this.bannerList[this.bannerIndex].content.url = this.outHtml
-        await this._storeBanner(this.bannerList[this.bannerIndex])
+        await this._submitBanner()
       },
+      // 展示自定义弹窗
+      _showCustom() {
+        this.$refs.custom.showModal()
+      },
+      // 隐藏自定义弹窗
       _hideCustom() {
         this.outHtml = ''
         this.$refs.custom.hideModal()
       },
+      // 展示商品弹窗
       _showGoods() {
+        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
         this.$refs.goods.showModal()
       },
+      // 隐藏商品弹窗
       _hideGoods() {
+        this.showSelectIndex = -1
         this.$refs.goods.hideModal()
       }
     }

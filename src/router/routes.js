@@ -266,7 +266,21 @@ export default [
         name: 'purchase-management',
         component: () => lazyLoadView(import('@pages/purchase-management/purchase-management')),
         meta: {
-          titles: ['采购管理']
+          titles: ['采购管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('purchase/getPurchaseList', {page: 1, orderSn: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       // 采购详情
@@ -275,8 +289,26 @@ export default [
         name: 'purchase-detail',
         component: () => lazyLoadView(import('@pages/purchase-detail/purchase-detail')),
         meta: {
-          titles: ['采购管理', '采购详情']
-        }
+          titles: ['采购管理', '采购详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('purchase/getPurchaseDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        props: (route) => ({detail: route.params.detail})
       },
       /**
        * 采购管理
