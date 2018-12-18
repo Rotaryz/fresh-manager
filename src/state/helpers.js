@@ -62,3 +62,21 @@ export const adverComputed = {
 }
 
 export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])
+
+// 订单
+export const orderComputed = {
+  ...mapGetters('order', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page'])
+}
+
+export const orderMethods = {
+  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage'])
+}
+
+// 退货
+export const returnsComputed = {
+  ...mapGetters('returns', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page'])
+}
+
+export const returnsMethods = {
+  ...mapActions('returns', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage'])
+}
