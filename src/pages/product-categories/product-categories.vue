@@ -134,7 +134,6 @@
       },
       openList(index) {
         this.categoryList[index].select = !this.categoryList[index].select
-        // this.categoryList.sort(this._sort)
         this.$forceUpdate()
       },
       addChilrenCate(item, index) {
@@ -177,7 +176,6 @@
           this.$toast.show('计量单位的长度不能超过10个')
           return
         }
-        console.log(name, sort, id)
         API.Product.editCategory(this.smallItem.id, {name: name, sort: sort, parent_id: id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$toast.show('编辑成功')
@@ -189,7 +187,6 @@
               this.categoryList[this.bigIndex].list.splice(this.smallIndex, 1)
               let that = this
               this.categoryList.forEach((item, index) => {
-                console.log(item, index)
                 if (item.id * 1 === id * 1) {
                   that.categoryList[index].list.push({name: name, sort: sort, parent_id: id, id: this.smallItem.id})
                   that.categoryList[index].list.sort(this._sort)

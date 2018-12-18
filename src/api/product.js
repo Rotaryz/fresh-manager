@@ -104,5 +104,25 @@ export default {
   editGoodsDetail(id, data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
     return request.put(url, data, loading)
+  },
+  /**
+   * 删除商品
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  delGoodsDetail(id, data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
+    return request.delete(url, data, loading)
+  },
+  /**
+   * 商品上下架
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  upDownGoods(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods-toggle-online`
+    return request.post(url, data, loading)
   }
 }
