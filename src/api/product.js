@@ -76,7 +76,7 @@ export default {
     return request.get(url, null, loading)
   },
   /**
-   * 获取商品详情
+   * 创建商品
    * @param id
    * @param loading
    * @returns {*}
@@ -86,7 +86,7 @@ export default {
     return request.post(url, data, loading)
   },
   /**
-   * 获取商品详情
+   * 获取商品列表
    * @param id
    * @param loading
    * @returns {*}
@@ -94,5 +94,15 @@ export default {
   getGoodsList(data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
+  },
+  /**
+   * 编辑商品详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  editGoodsDetail(id, data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
+    return request.put(url, data, loading)
   }
 }
