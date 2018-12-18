@@ -10,7 +10,7 @@
       <div class="main-input">
         <div v-if="showCate" class="main-model-box">
           <div class="text">上级分类</div>
-          <div class="edit-input-box">
+          <div class="categories-input-box">
             <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
           </div>
         </div>
@@ -56,33 +56,40 @@
         dispatchSelect: {
           check: false,
           show: false,
-          content: '全部社区',
+          content: '分类',
           type: 'default',
-          data: [{title: 'sdsd'}, {title: 'sds'}] // 格式：{title: '55'}
-        }
+          data: [{name: ''}]
+        },
+        typeId: 0,
+        selectItem: {id: ''}
       }
     },
     methods: {
       show(title, text, number) {
         this.numberTitle = title
         this.pointName = text
-        console.log(this.pointName, '111111')
         this.pointNumber = number
         this.$refs.modal && this.$refs.modal.showModal()
       },
       hide() {
         this.$refs.modal && this.$refs.modal.hideModal()
       },
+      setData(item, data) {
+        this.typeId = item.id
+        this.dispatchSelect.content = item.name
+        this.dispatchSelect.data = data
+        console.log(this.dispatchSelect.data)
+      },
       confirm() {
         this.hide()
-        this.$emit('confirm', this.pointName, this.pointNumber)
+        this.$emit('confirm', this.pointName, this.pointNumber, this.typeId)
       },
       cancel() {
         this.hide()
         this.$emit('cancel')
       },
       setValue(item) {
-        console.log(item, '111')
+        this.typeId = item.id
       }
     }
   }

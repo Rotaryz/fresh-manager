@@ -11,16 +11,16 @@
             <div class="text">{{item.name}}</div>
           </div>
           <div class="big-main-right">
-            <span class="list-operation">编辑</span>
-            <span class="list-operation">删除</span>
+            <span class="list-operation" @click="editBigCatee(item, index)">编辑</span>
+            <span class="list-operation" @click="delBigCatee(item, index)">删除</span>
           </div>
         </div>
         <div v-if="item.select" class="open-list">
           <div v-for="(twoitem, twoindex) in item.list" :key="twoindex" class="open-item">
             <div class="open-item-left">{{twoitem.name}}</div>
             <div class="big-main-right">
-              <span class="list-operation" @click="openTwoList(index)">编辑</span>
-              <span class="list-operation">删除</span>
+              <span class="list-operation" @click="editSmallCatee(item, index, twoitem, twoindex)">编辑</span>
+              <span class="list-operation" @click="delSmallCatee(item, index, twoitem, twoindex)">删除</span>
             </div>
           </div>
           <div class="add-box hand" @click="addChilrenCate(item, index)">
@@ -30,8 +30,9 @@
         </div>
       </li>
     </ul>
-    <change-model :showCate="true"></change-model>
+    <change-model ref="smallModel" :showCate="true" numberPla="长度不能超过10位" @confirm="eidtConfirm"></change-model>
     <change-model ref="bigModel" :showCate="false" numberPla="长度不能超过10位" @confirm="newConfirm"></change-model>
+    <default-confirm ref="bigConfirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
 </template>
 
@@ -39,6 +40,7 @@
   import {categoriesComputed, categoriesMethods} from '@state/helpers'
   import API from '@api'
   import ChangeModel from '@components/change-model/change-model'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
   const TITLE = '商品分类'
@@ -46,7 +48,8 @@
   export default {
     name: PAGE_NAME,
     components: {
-      ChangeModel
+      ChangeModel,
+      DefaultConfirm
     },
     page: {
       title: TITLE
@@ -58,7 +61,11 @@
         categoryChild: '',
         bigItem: '',
         bigIndex: 0,
-        categoryList: []
+        smallItem: '',
+        smallIndex: '',
+        categoryList: [],
+        oneBtn: false,
+        deteleType: 0
       }
     },
     computed: {
@@ -73,7 +80,7 @@
         this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
         this.categoryType = 0
       },
-      newConfirm(name, number) {
+      newConfirm(name, sort) {
         if (name.length === 0 || name.length > 10) {
           if (this.categoryType === 0) {
             this.categoryNewName = name
@@ -85,22 +92,36 @@
         }
         switch (this.categoryType) {
         case 0:
-          API.Product.createCategory({name: name, sort: number}).then((res) => {
+          API.Product.createCategory({name: name, sort: sort}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.addChild({name: name, sort: number, id: 0})
+              this.categoryList.push({name: name, sort: sort, id: res.data.id, list: []})
+              this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
             }
           })
           break
         case 1:
-          API.Product.createCategory({name: name, sort: number, parent_id: this.bigItem.id}).then((res) => {
+          API.Product.createCategory({name: name, sort: sort, parent_id: this.bigItem.id}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.getCategoryList(-1, false)
+              this.categoryList[this.bigIndex].list.push({name: name, sort: sort, parent_id: this.bigItem.id, id: res.data.id})
+              this.categoryList[this.bigIndex].list.sort(this._sort)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+          break
+        case 2:
+          API.Product.editCategory(this.bigItem.id, {name: name, sort: sort, parent_id: 0}).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('编辑成功')
+              this.categoryList[this.bigIndex].name = name
+              this.categoryList[this.bigIndex].sort = sort
+              this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
             }
@@ -113,17 +134,106 @@
       },
       openList(index) {
         this.categoryList[index].select = !this.categoryList[index].select
-        // this.categoryList.sort(this._sort)
         this.$forceUpdate()
-      },
-      openTwoList(index) {
-      // this.cateList[index].children.sort(this._sort)
       },
       addChilrenCate(item, index) {
         this.$refs.bigModel.show('新建商品子分类', this.categoryChild)
         this.categoryType = 1
         this.bigItem = item
         this.bigIndex = index
+      },
+      editBigCatee(item, index) {
+        this.bigItem = item
+        this.bigIndex = index
+        this.categoryType = 2
+        this.$refs.bigModel.show('编辑商品分类', item.name, item.sort)
+      },
+      delBigCatee(item, index) {
+        this.bigItem = item
+        this.bigIndex = index
+        this.oneBtn = false
+        this.deteleType = 0
+        this.$refs.bigConfirm.show(`确定删除该分类？`)
+      },
+      editSmallCatee(item, index, twoitem, twoindex) {
+        this.bigItem = item
+        this.bigIndex = index
+        this.smallItem = twoitem
+        this.smallIndex = twoindex
+        this.$refs.smallModel.setData(item, this.categoryList)
+        this.$refs.smallModel.show('修改商品分类', this.smallItem.name, this.smallItem.sort)
+      },
+      delSmallCatee(item, index, twoitem, twoindex) {
+        this.bigItem = item
+        this.bigIndex = index
+        this.smallItem = twoitem
+        this.smallIndex = twoindex
+        this.deteleType = 1
+        this.$refs.bigConfirm.show(`确定删除该分类？`)
+      },
+      eidtConfirm(name, sort, id) {
+        if (name.length === 0 || name.length > 10) {
+          this.$toast.show('计量单位的长度不能超过10个')
+          return
+        }
+        API.Product.editCategory(this.smallItem.id, {name: name, sort: sort, parent_id: id}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$toast.show('编辑成功')
+            if (this.bigItem.id * 1 === id * 1) {
+              this.categoryList[this.bigIndex].list[this.smallIndex].name = name
+              this.categoryList[this.bigIndex].list[this.smallIndex].sort = sort
+              this.categoryList[this.bigIndex].list.sort(this._sort)
+            } else {
+              this.categoryList[this.bigIndex].list.splice(this.smallIndex, 1)
+              let that = this
+              this.categoryList.forEach((item, index) => {
+                if (item.id * 1 === id * 1) {
+                  that.categoryList[index].list.push({name: name, sort: sort, parent_id: id, id: this.smallItem.id})
+                  that.categoryList[index].list.sort(this._sort)
+                }
+              })
+            }
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      delConfirm() {
+        switch (this.deteleType * 1) {
+        case 0:
+          if (this.categoryList[this.bigIndex].list.length > 0) {
+            this.oneBtn = true
+            setTimeout(() => {
+              this.$refs.bigConfirm.show(`该分类下有${this.categoryList[this.bigIndex].list.length}个商品，请处理后再删除`)
+            }, 1000)
+          } else {
+            API.Product.delCategory(this.bigItem.id).then((res) => {
+              if (res.error === this.$ERR_OK) {
+                setTimeout(() => {
+                  this.categoryList.splice(this.bigIndex, 1)
+                  this.oneBtn = true
+                  this.$refs.bigConfirm.show(`该分类已成功删除？`)
+                }, 1000)
+              } else {
+                this.$toast.show(res.message)
+              }
+            })
+          }
+          break
+        case 1:
+          API.Product.delCategory(this.smallItem.id).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              setTimeout(() => {
+                this.categoryList[this.bigIndex].list.splice(this.smallIndex, 1)
+                this.oneBtn = true
+                this.$refs.bigConfirm.show(`该分类已成功删除？`)
+              }, 1000)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+          break
+        }
       }
     }
   }

@@ -53,7 +53,7 @@ export const categoriesMethods = mapActions('categories', ['getCategoryList', 's
 export const goodsComputed = {
   ...mapState('editgoods', {
     productList: (state) => state.productList,
-    pageTotal: (state) => state.pageTotal
+    statePageTotal: (state) => state.statePageTotal
   })
 }
 

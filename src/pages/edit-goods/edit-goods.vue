@@ -196,7 +196,8 @@
         menuName: '请选择',
         showMenu: false,
         preMenuIndex: null,
-        preChildIndex: null
+        preChildIndex: null,
+        isSubmit: false
       }
     },
     created() {
@@ -277,6 +278,9 @@
         this.$emit('showToast', msg)
       },
       _submit() {
+        if (this.isSubmit) {
+          return
+        }
         this.msg.usable_stock += ''
         this.msg.sale_count += ''
         if (this.msg.name.length === 0 || this.msg.name.length >= 30) {
@@ -322,9 +326,29 @@
         this.msg.goods_skus[0].store_price = this.msg.store_price
         this.msg.goods_skus[0].original_price = this.msg.original_price
         this.msg.goods_skus[0].usable_stock = this.msg.usable_stock
+        this.isSubmit = true
+        if (this.id) {
+          API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('编辑成功')
+              setTimeout(() => {
+                this.isSubmit = false
+                this._back()
+              }, 1000)
+            } else {
+              this.$toast.show(res.message)
+            }
+            this.$loading.hide()
+          })
+          return
+        }
         API.Product.createGoodsDetail(this.msg).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$toast.show('创建成功')
+            setTimeout(() => {
+              this.isSubmit = false
+              this._back()
+            }, 1000)
           } else {
             this.$toast.show(res.message)
           }
@@ -553,10 +577,10 @@
           border-color: $color-sub !important
 
   .back
-    position: absolute
-    left: -20px
-    right: -20px
-    bottom: -60px
+    position: fixed
+    left: 200px
+    right: 0px
+    bottom: 0
     z-index: 10
     background: #F9F9F9
     height: 80px

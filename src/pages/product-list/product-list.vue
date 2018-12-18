@@ -3,44 +3,48 @@
     <div class="product-top">
       <div class="product-left">
         <router-link tag="span" to="edit-goods" append class="btn-main">新建商品 +</router-link>
-        <base-drop-down :select="dispatchSelect"></base-drop-down>
+        <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
         <div class="search-left">
-          <base-search></base-search>
+          <base-search placeHolder="商品名称" @search="search"></base-search>
         </div>
       </div>
       <div class="product-right">
-        <div class="btn-main">导出Excel</div>
+        <a :href="downUrl" class="btn-main" target="_blank">导出Excel</a>
       </div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item, index) in productTitleList" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div v-for="(item, index) in productList" :key="index" class="list-content list-box">
+      <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
         <div class="list-item">
           <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
         </div>
         <div class="list-item">{{item.name}}</div>
         <div class="list-item">{{item.goods_units}}</div>
         <div class="list-item">{{item.store_price}}</div>
-        <div class="list-item">
+        <div class="list-item" @click="switchBtn(item, index)">
           <base-switch :status="item.is_online"></base-switch>
         </div>
         <div class="list-item">{{item.usable_stock}}</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
-          <span class="list-operation">删除</span>
+          <span class="list-operation" @click.stop="delGoods(item)">删除</span>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination :pageDetail="pageTotal"></base-pagination>
+      <base-pagination :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
     </div>
+    <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {goodsComputed} from '@state/helpers'
+  import API from '@api'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import _ from 'lodash'
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
   const PRODUCT_TITLE_LIST = ['商品图片', '商品名称', '售卖单位', '售价', '状态', '库存', '操作']
@@ -50,6 +54,9 @@
     page: {
       title: TITLE
     },
+    components: {
+      DefaultConfirm
+    },
     data() {
       return {
         productTitleList: PRODUCT_TITLE_LIST,
@@ -58,15 +65,101 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '上架'}, {name: '下架'}] // 格式：{title: '55'}
-        }
+          data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
+        },
+        goodsList: [],
+        pageTotal: {},
+        isOnline: '',
+        keyWord: '',
+        goodsPage: 1,
+        curItem: '',
+        downUrl: '',
+        oneBtn: false
       }
     },
     computed: {
       ...goodsComputed
     },
-    created() {},
-    methods: {}
+    created() {
+      this._getUrl()
+      this.goodsList = _.cloneDeep(this.productList)
+      this.pageTotal = _.cloneDeep(this.statePageTotal)
+    },
+    methods: {
+      _getUrl() {
+        let token = this.$storage.get('auth.currentUser', '')
+        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${this.keyWord}`
+      },
+      getGoodsListData() {
+        let data = {
+          is_online: this.isOnline,
+          page: this.goodsPage,
+          limit: 10,
+          keyword: this.keyWord,
+          goods_category_id: ''
+        }
+        API.Product.getGoodsList(data, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.goodsList = res.data
+            let statePageTotal = {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+            this.pageTotal = statePageTotal
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      setValue(item) {
+        this.isOnline = item.value
+        this.goodsPage = 1
+        this.getGoodsListData()
+      },
+      search(text) {
+        this.keyWord = text
+        this.goodsPage = 1
+        this.getGoodsListData()
+      },
+      addPage(page) {
+        this.goodsPage = page
+        this.getGoodsListData()
+      },
+      delGoods(item) {
+        this.curItem = item
+        this.oneBtn = false
+        this.$refs.confirm.show('确定要删除该商品？')
+      },
+      delConfirm() {
+        API.Product.delGoodsDetail(this.curItem.id).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$toast.show('删除成功')
+            if (this.goodsList.length === 1 && this.goodsPage * 1 !== 1) {
+              this.goodsPage--
+            }
+            this.getGoodsListData()
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      switchBtn(item, index) {
+        let data = {
+          goods_id: item.id,
+          is_online: item.is_online * 1 === 1 ? 0 : 1
+        }
+        API.Product.upDownGoods(data).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.goodsList[index].is_online = item.is_online * 1 === 1 ? 0 : 1
+            this.oneBtn = true
+            this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功上架' : '该商品已成功下架')
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      }
+    }
   }
 </script>
 
