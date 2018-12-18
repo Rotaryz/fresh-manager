@@ -1,21 +1,21 @@
 <template>
   <div class="purchase-management">
     <div class="tab-list">
-      <status-tab :tabStatus="tabStatus" @getStatusTab="seleIndex"></status-tab>
+      <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="setStatus"></status-tab>
     </div>
     <div class="search-warp">
       <div class="ac-tab">
-        <base-drop-down :select="select"></base-drop-down>
-        <base-date-select :dateINfo="dateINfo" @_getTime="_getTime"></base-date-select>
-        <base-search :placeHolder="placeHolder"></base-search>
+        <base-drop-down :select="socialSelect" @setValue="setShopId"></base-drop-down>
+        <base-date-select :dateInfo="time" @getTime="setTime"></base-date-select>
+        <base-search :infoText="keyword" :placeHolder="placeHolder" @search="setKeyword"></base-search>
       </div>
-      <a :href="downUrl" class="excel" target="_blank" @click="showModal">导出Excel</a>
+      <div class="excel hand" @click="exportExcel">导出Excel</div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
+      <div v-for="(item, index) in list" :key="index" class="list-content list-box">
         <div class="list-item list-double-row">
           <p class="item-dark">{{item.order_sn}}</p>
           <p class="item-sub">{{item.created_at}}</p>
@@ -27,41 +27,29 @@
         <div class="list-item list-text">￥{{item.total}}</div>
         <div class="list-item list-text">{{item.delivery_at}}</div>
         <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
-        <div class="list-item list-text">{{item.status}}</div>
+        <div class="list-item list-text">{{item.status_text}}</div>
         <div class="list-item list-use">
-          <router-link tag="span" to="/home/refund-detail" append class="blue-use hand">详情</router-link>
+          <router-link tag="span" :to="{path: `/home/order-detail/${item.order_id}`}" append class="blue-use hand">详情</router-link>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination :pageTotal="pageTotal"></base-pagination>
+      <base-pagination :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
     </div>
-    <!--<default-confirm ref="modelMsg" :oneBtn="true"></default-confirm>-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import StatusTab from '@components/status-tab/status-tab'
-  // import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import Api from '@api'
-  import {ERR_OK} from '@utils/config'
+  import API from '@api'
+  import {authComputed, orderComputed, orderMethods} from '@state/helpers'
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '订单列表'
+  const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员'
+  const EXCEL_URL = '/social-shopping/api/backend/order-excel'
+
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
-  const ORDERLIST = [
-    {
-      orderId: 'DYXH20188832770043',
-      order_time: '2018-08-24 15:00:32',
-      member_name: '小白龙',
-      total: 3.5,
-      promote_price: 3.5,
-      dateTime: '2018-08-27',
-      name: '广海花园社区',
-      status: '已完成',
-      status_id: 1
-    }
-  ]
   const ORDERSTATUS = [
     {text: '全部', status: 0},
     {text: '待付款', status: 1},
@@ -69,19 +57,18 @@
     {text: '已完成', status: 3},
     {text: '已关闭', status: 4}
   ]
-  const SELECT = {
+  const SOCIAL_SELECT = {
     check: false,
     show: false,
-    content: '全部',
+    content: '全部社区',
     type: 'default',
-    data: [{title: '55'}] // 格式：
+    data: []
   }
+
   export default {
     name: PAGE_NAME,
     components: {
       StatusTab
-    // DefaultConfirm
-    // DefaultConfirm
     },
     page: {
       title: TITLE
@@ -90,75 +77,66 @@
       return {
         tabStatus: ORDERSTATUS,
         listTitle: LIST_TITLE,
-        placeHolder: '订单号/会员名称',
-        dateINfo: ['2018-12-01'],
-        page: 1,
-        startTime: '',
-        endTime: '',
-        shopId: '',
-        keyWord: '',
-        pageTotal: {
-          total: 1, // 总数量
-          per_page: 10, // 一页条数
-          total_page: 1 // 总页数
-        },
-        orderList: ORDERLIST,
-        downUrl: '',
-        select: SELECT
+        placeHolder: SEARCH_PLACE_HOLDER,
+        socialSelect: SOCIAL_SELECT,
+        downUrl: ''
       }
     },
-    async created() {
-      console.log(Api)
-      console.log(ERR_OK)
-      await this._getOrderList(false)
-    },
-    methods: {
-      checkTab() {},
-      _getTime() {},
-      async _getOrderList(loading) {
+    computed: {
+      ...authComputed,
+      ...orderComputed,
+      infoTabIndex() {
+        return this.tabStatus.findIndex(item => item.status === this.status)
+      },
+      orderExportUrl() {
         let data = {
-          limit: 10,
-          page: this.page,
-          start_time: this.startTime,
-          end_time: this.endTime,
+          current_corp: process.env.VUE_APP_CURRENT_CORP,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
           status: this.status,
           shop_id: this.shopId,
-          keyword: this.keyWord
+          start_time: this.time.startTime || '',
+          end_time: this.time.endTime || '',
+          keyword: this.keyword
         }
-        let res = await Api.Order.getOrderList(data, loading)
-        if (res.error !== ERR_OK) {
-          // this.$emit('setNull', true)
-          // this.$emit('showToast', res.message)
-          return
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
         }
-        // this._getUrl()
-        let pages = res.meta
-        this.pageTotal = Object.assign(
-          {},
-          {
-            total: pages.total,
-            per_page: pages.per_page,
-            total_page: pages.last_page
-          }
-        )
-        this.orderList = res.data
-        this.$emit('setNull', !this.orderList.length)
+        return process.env.VUE_APP_API + EXCEL_URL + '?' +search.join('&')
+      }
+    },
+    created() {
+      this._getShopList()
+    },
+    methods: {
+      ...orderMethods,
+      _getShopList() {
+        API.Leader.shopDropdownList()
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            let selectData = res.data.map((item) => {
+              item.name = item.social_name
+              return item
+            })
+            selectData.unshift({name: '全部社区', id: ''})
+            this.socialSelect.data = selectData
+          })
       },
-      showModal() {
-        this.$refs.modelMsg.show('一次只能导出一个社区的消费者订单，请先选择社区')
-      },
-      seleIndex(item, index) {
-        this.status = item.status * 1 - 1
-        this._getOrderList(false)
-      },
-      goPage() {}
+      exportExcel() {
+        // if (!this.shopId) {
+        //   this.$toast.show('一次只能导出一个社区的消费者订单，请先选择社区')
+        // }
+        window.open(this.orderExportUrl, '_blank')
+      }
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
   .purchase-management
     overflow: hidden
     flex: 1
@@ -189,6 +167,7 @@
       font-size: $font-size-12
       color: $color-white
       text-align: center
+
   .tab-header
     height: 80px
     display: flex

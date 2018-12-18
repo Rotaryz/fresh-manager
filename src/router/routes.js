@@ -167,14 +167,12 @@ export default [
             store
               .dispatch('rush/getRushList', {page: 1})
               .then((res) => {
-                console.log(res)
                 if (!res) {
                   return next({name: '404'})
                 }
                 return next()
               })
               .catch(() => {
-                console.log('dsf')
                 return next({name: '404'})
               })
           }
@@ -199,7 +197,6 @@ export default [
                 return next()
               })
               .catch(() => {
-                console.log('dsf')
                 return next({name: '404'})
               })
           }
@@ -218,7 +215,21 @@ export default [
         name: 'order-list',
         component: () => lazyLoadView(import('@pages/order-list/order-list')),
         meta: {
-          titles: ['订单管理', '订单列表']
+          titles: ['订单管理', '订单列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('order/getOrderList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 退货管理
@@ -227,31 +238,64 @@ export default [
         name: 'returns-management',
         component: () => lazyLoadView(import('@pages/returns-management/returns-management')),
         meta: {
-          titles: ['订单管理', '退货管理']
+          titles: ['订单管理', '退货管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('returns/getReturnsList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 退款详情
       {
-        path: 'refund-detail',
+        path: 'refund-detail/:id',
         name: 'refund-detail',
         component: () => lazyLoadView(import('@pages/refund-detail/refund-detail')),
         meta: {
-          titles: ['订单管理', '退货管理', '退款详情']
+          titles: ['订单管理', '退货管理', '退款详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('returns/getReturnsDetail', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
-      /**
-       * 订单管理
-       *
-       * ------------------------------------------------------------------------------------------
-       *
-       * 订单详情
-       */
       {
-        path: 'order-detail',
+        path: 'order-detail/:id',
         name: 'order-detail',
         component: () => lazyLoadView(import('@pages/order-detail/order-detail')),
         meta: {
-          titles: ['订单管理', '订单列表', '订单详情']
+          titles: ['订单管理', '订单列表', '订单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('order/getOrderDetail', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       /**

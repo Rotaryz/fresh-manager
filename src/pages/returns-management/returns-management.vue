@@ -1,44 +1,44 @@
 <template>
   <div class="purchase-management">
     <div class="tab-list">
-      <status-tab :tabStatus="tabStatus" @getStatusTab="checkTab"></status-tab>
+      <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="setStatus"></status-tab>
     </div>
     <div class="search-warp">
       <div class="ac-tab">
-        <base-drop-down :select="select"></base-drop-down>
-        <base-date-select :dateINfo="dateINfo" @_getTime="_getTime"></base-date-select>
-        <base-search :placeHolder="placeHolder"></base-search>
+        <base-drop-down :select="socialSelect" @setValue="setShopId"></base-drop-down>
+        <base-date-select :dateInfo="time" @getTime="setTime"></base-date-select>
+        <base-search :infoText="keyword" :placeHolder="placeHolder" @search="setKeyword"></base-search>
       </div>
-      <a :href="downUrl" class="excel" target="_blank">导出Excel</a>
+      <div class="excel hand" @click="exportExcel">导出Excel</div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
+      <div v-for="(item, index) in list" :key="index" class="list-content list-box">
         <div class="list-item list-double-row">
-          <p class="item-dark">{{item.refundId}}</p>
-          <p class="item-sub">{{item.refund_time}}</p>
+          <p class="item-dark">{{item.after_sale_order_sn}}</p>
+          <p class="item-sub">{{item.created_at}}</p>
         </div>
         <div class="list-item list-text">
-          <div class="list-text-name">{{item.member_name}}</div>
+          <div class="list-text-name">{{item.nickname}}</div>
         </div>
-        <div class="list-item list-text">{{item.shop_name}}</div>
-        <div class="list-item list-text">￥{{item.promote_price}}</div>
-        <div class="list-item list-text">{{item.orderId}}</div>
-        <div class="list-item list-text" :title="item.name">{{item.name}}</div>
-        <div class="list-item list-text">{{item.result}}</div>
-        <div class="list-item list-text">{{item.status}}</div>
+        <div class="list-item list-text">{{item.goods_name}}</div>
+        <div class="list-item list-text">￥{{item.total}}</div>
+        <div class="list-item list-text">{{item.order_sn}}</div>
+        <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
+        <div class="list-item list-text">{{item.remark}}</div>
+        <div class="list-item list-text">{{item.status_str}}</div>
         <div class="list-item list-use">
-          <span v-if="item.status_id === 1" class="blue-use hand" @click="_getTime">审核</span>
-          <router-link tag="span" to="/home/refund-detail" append class="detail-use hand">详情</router-link>
+          <span v-if="item.after_sale_status === 0" class="blue-use hand" @click="checkApply(item.id)">审核</span>
+          <router-link tag="span" :to="{path: `/home/refund-detail/${item.id}`}" append class="detail-use hand">详情</router-link>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination></base-pagination>
+      <base-pagination :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
     </div>
-    <default-modal ref="aud">
+    <default-modal ref="modal">
       <div slot="content">
         <div class="Auditing">
           <div class="top">
@@ -47,13 +47,13 @@
           </div>
           <div class="textarea-box">
             <span class="after"></span>
-            <textarea v-model="noteText" placeholder="备注原因" class="modelarea"></textarea>
+            <textarea v-model="remark" placeholder="备注原因" class="modelarea"></textarea>
             <span class="before"></span>
           </div>
           <div class="btn-group">
             <div class="btn-item" @click.stop="hideModal">取消</div>
-            <div class="btn-item">驳回</div>
-            <div class="btn-item">批准退款</div>
+            <div class="btn-item" @click.stop="auditing(0)">驳回</div>
+            <div class="btn-item" @click.stop="auditing(1)">批准退款</div>
           </div>
         </div>
       </div>
@@ -64,11 +64,14 @@
 <script type="text/ecmascript-6">
   import StatusTab from '@components/status-tab/status-tab'
   import DefaultModal from '@components/default-modal/default-modal'
-  import Api from '@api'
-  import {ERR_OK} from '@utils/config'
+  import API from '@api'
+  import {authComputed, returnsMethods, returnsComputed} from '@state/helpers'
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '退货管理'
+  const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员'
+  const EXCEL_URL = '/social-shopping/api/backend/after-sale-excel'
+
   const LIST_TITLE = [
     '退货单号',
     '会员名称',
@@ -80,143 +83,106 @@
     '退货单状态',
     '操作'
   ]
-
-  const ORDERLIST = [
-    {
-      refundId: 'TD20188832770043',
-      refund_time: '2018-08-22 15:00:32',
-      member_name: '小白龙',
-      shop_name: '口水鸡很好鸡很好吃',
-      orderId: 'DYX20188832770043',
-      name: '广海花园社区',
-      promote_price: 3.5,
-      result: '重新拍',
-      status: '已退款',
-      status_id: 2
-    },
-    {
-      refundId: 'TD20188832770043',
-      refund_time: '2018-08-22 15:00:32',
-      member_name: '小白龙',
-      shop_name: '口水鸡很好鸡很好吃',
-      orderId: 'DYX20188832770043',
-      name: '广海花园社区',
-      promote_price: 3.5,
-      result: '重新拍',
-      status: '已退款',
-      status_id: 2
-    },
-    {
-      refundId: 'TD20188832770043',
-      refund_time: '2018-08-22 15:00:32',
-      member_name: '小白龙',
-      shop_name: '口水鸡很好水很好吃',
-      orderId: 'DYX20188832770043',
-      name: '广海花园社区',
-      promote_price: 3.5,
-      result: '重新拍',
-      status: '待处理',
-      status_id: 1
-    },
-    {
-      refundId: 'TD20188832770043',
-      refund_time: '2018-08-22 15:00:32',
-      member_name: '小白龙',
-      shop_name: '口水鸡很好水鸡很',
-      orderId: 'DYX20188832770043',
-      name: '广海花园社区',
-      promote_price: 3.5,
-      result: '重新拍',
-      status: '已取消',
-      status_id: 3
-    },
-    {
-      refundId: 'TD20188832770043',
-      refund_time: '2018-08-22 15:00:32',
-      member_name: '小白龙',
-      shop_name: '口水鸡很好水鸡很',
-      orderId: 'DYX20188832770043',
-      name: '广海花园社区',
-      promote_price: 3.5,
-      result: '重新拍',
-      status: '待处理',
-      status_id: 1
-    }
-  ]
-  const ORDERSTATUS = [{text: '全部', status: 0}, {text: '待处理', status: 1}]
+  const TAB_STATUS = [{text: '全部', status: ''}, {text: '待处理', status: 0}]
   const SELECT = {
     check: false,
     show: false,
-    content: '全部',
+    content: '全部社区',
     type: 'default',
-    data: [{title: '55'}] // 格式：
+    data: []
   }
   export default {
     name: PAGE_NAME,
     components: {
       StatusTab,
       DefaultModal
-    // DefaultConfirm
+      // DefaultConfirm
     },
     page: {
       title: TITLE
     },
     data() {
       return {
-        tabStatus: ORDERSTATUS,
+        tabStatus: TAB_STATUS,
         listTitle: LIST_TITLE,
-        placeHolder: '退款单号/会员名称',
-        noteText: '',
-        dateINfo: ['2018-12-01'],
-        orderList: ORDERLIST,
-        downUrl: '',
-        select: SELECT
+        placeHolder: SEARCH_PLACE_HOLDER,
+        checkId: '',
+        remark: '',
+        socialSelect: SELECT
+      }
+    },
+    computed: {
+      ...authComputed,
+      ...returnsComputed,
+      infoTabIndex() {
+        return this.tabStatus.findIndex(item => item.status === this.status)
+      },
+      returnsExportUrl() {
+        let data = {
+          current_corp: process.env.VUE_APP_CURRENT_CORP,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          status: this.status,
+          shop_id: this.shopId,
+          start_time: this.time.startTime || '',
+          end_time: this.time.endTime || '',
+          keyword: this.keyword
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + EXCEL_URL + '?' +search.join('&')
       }
     },
     created() {
-      setTimeout(() => {
-      // this.$refs.aud.showModal()
-      }, 100)
+      this._getShopList()
     },
     methods: {
-      checkTab() {},
-      _getTime() {},
-      goPage() {},
-      async _getRefundList(loading) {
-        let data = {
-          limit: 10,
-          page: this.page,
-          start_time: this.startTime,
-          end_time: this.endTime,
-          status: this.status,
-          shop_id: this.shopId,
-          keyword: this.keyWord
-        }
-        let res = await Api.Order.getRefundList(data, loading)
-        if (res.error !== ERR_OK) {
-          // this.$emit('setNull', true)
-          // this.$emit('showToast', res.message)
-          return
-        }
-        // this._getUrl()
-        let pages = res.meta
-        this.pageTotal = Object.assign(
-          {},
-          {
-            total: pages.total,
-            per_page: pages.per_page,
-            total_page: pages.last_page
-          }
-        )
-        this.orderList = res.data
-        this.$emit('setNull', !this.orderList.length)
+      ...returnsMethods,
+      _getShopList() {
+        API.Leader.shopDropdownList()
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            let selectData = res.data.map((item) => {
+              item.name = item.social_name
+              return item
+            })
+            selectData.unshift({name: '全部社区', id: ''})
+            this.socialSelect.data = selectData
+          })
       },
-      seleIndex(item, index) {
-        this.status = item.status * 1 - 1
-        this._getOrderList(false)
+      exportExcel() {
+        window.open(this.orderExportUrl, '_blank')
+      },
+      auditing(isAgree) {
+        let data = {
+          id: this.checkId,
+          remark: this.remark,
+          is_agree: isAgree
+        }
+        this.hideModal()
+        API.Order.checkApply(data)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$toast.show(res.message)
+          }).catch(error => {
+            this.$toast.show(error)
+          }).finally(() => {
+            this.$loading.hide()
+          })
+      },
+      checkApply(id) {
+        this.checkId = id
+        this.$refs.modal.showModal()
       },
       hideModal() {
-        this.$refs.aud.hideModal()
+        this.$refs.modal.hideModal()
       }
     }
   }
@@ -224,7 +190,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
   .purchase-management
     overflow: hidden
     flex: 1
@@ -236,6 +201,7 @@
   textarea::-webkit-input-placeholder
     font-size: $font-size-14
     color: #ACACAC
+
   .Auditing
     width: 534px
     height: 261px
@@ -318,20 +284,24 @@
       font-size: $font-size-12
       color: $color-white
       text-align: center
+
   .tab-header
     height: 80px
     display: flex
     justify-content: space-between
     align-items: center
     box-sizing: border-box
+
   .list-use
     font-family: $font-family-regular
     font-size: $font-size-14
     color: $color-text-assist
+
   .detail-use
     font-family: $font-family-regular
     font-size: $font-size-14
     color: $color-sub
+
   .blue-use
     font-family: $font-family-regular
     font-size: $font-size-14
@@ -371,6 +341,7 @@
         flex: 0.8
       &:last-child
         flex: 0.6
+
   .list
     flex: 1
     .list-content

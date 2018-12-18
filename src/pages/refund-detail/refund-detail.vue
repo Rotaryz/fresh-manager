@@ -6,13 +6,13 @@
         <div class="line"></div>
       </div>
       <div class="bot sobot">
-        <div class="info-item">退货单号：DDH20188832043</div>
-        <div class="info-item">申请时间：2018-12-08 15:34:00</div>
-        <div class="info-item">退货原因：无</div>
-        <div class="info-item">原订单号：DDH20188832770043</div>
-        <div class="info-item">会员名称：雷布斯</div>
-        <div class="info-item">会员手机：14316241008</div>
-        <div class="info-item">退款金额：￥4678</div>
+        <div class="info-item">退货单号：{{detail.after_sale_order_sn}}</div>
+        <div class="info-item">申请时间：{{detail.created_at}}</div>
+        <div class="info-item">退货原因：{{detail.remark}}</div>
+        <div class="info-item">原订单号：{{detail.order_sn}}</div>
+        <div class="info-item">会员名称：{{detail.nickname}}</div>
+        <div class="info-item">会员手机：{{detail.mobile}}</div>
+        <div class="info-item">退款金额：{{detail.after_sale_total && `¥ ${detail.after_sale_total}`}}</div>
         <div class="info-item">退货单类型：全额退款</div>
       </div>
     </div>
@@ -22,13 +22,12 @@
         <div class="line"></div>
       </div>
       <div class="bot sobot">
-        <div class="info-item">社区名称：白云乡城</div>
-        <div class="info-item">团长名称：啦啦布斯</div>
-        <div class="info-item">团长手机：13316241009</div>
-        <div class="info-item">审核时间：2018-12-08 15:34:00</div>
-        <div class="info-item">退货单状态：退款成功</div>
-        <div class="info-item">审核类型：同意退款</div>
-        <div class="info-item">提货地址：广东 广州 白云区 国际单位二期A5四楼</div>
+        <div class="info-item">社区名称：{{detail.social_name}}</div>
+        <div class="info-item">团长名称：{{detail.shop_name}}</div>
+        <div class="info-item">团长手机：{{detail.shop_mobile}}</div>
+        <div class="info-item">审核时间：{{detail.updated_at}}</div>
+        <div class="info-item">退货单状态：{{detail.status_str}}</div>
+        <div class="info-item">提货地址：{{detail.shop_address}}</div>
       </div>
     </div>
     <div class="detail-item">
@@ -42,28 +41,28 @@
             {{item}}
           </div>
         </div>
-        <div v-for="(item, index) in [1,2,3,4]" :key="index" class="list">
+        <div class="list">
           <div class="list-box">
-            <div class="list-item list-text">口水鸭先鸡不知口水鸭先鸡不知</div>
-            <div class="list-item list-text">斤</div>
-            <div class="list-item list-text">91</div>
-            <div class="list-item list-text">￥5.98</div>
-            <div class="list-item list-text">￥453.2</div>
-            <div class="list-item list-text">2</div>
-            <div class="list-item list-text">￥238.6</div>
+            <div class="list-item list-text">{{detail.goods_name}}</div>
+            <div class="list-item list-text">{{detail.goods_units}}</div>
+            <div class="list-item list-text">{{detail.num}}</div>
+            <div class="list-item list-text">{{detail.price && `¥ ${detail.price}`}}</div>
+            <div class="list-item list-text">{{detail.total && `¥ ${detail.total}`}}</div>
+            <div class="list-item list-text">{{detail.after_sale_num}}</div>
+            <div class="list-item list-text">{{detail.after_sale_total && `¥ ${detail.after_sale_total}`}}</div>
           </div>
         </div>
         <div class="list-footer">
           <div class="list-foot-box">
-            <div class="foot-item">退款总金额：￥73.98</div>
+            <div class="foot-item">退款总金额：{{detail.after_sale_total && `¥ ${detail.after_sale_total}`}}</div>
           </div>
         </div>
       </div>
     </div>
     <div class="go-btn">
-      <div class="go-back-btn btn-item" @click="_cancel">返回</div>
+      <div class="go-back-btn btn-item" @click="back">返回</div>
     </div>
-    <default-modal ref="aud">
+    <default-modal ref="modal">
       <div slot="content">
         <div class="Auditing">
           <div class="top">
@@ -72,13 +71,13 @@
           </div>
           <div class="textarea-box">
             <span class="after"></span>
-            <textarea v-model="noteText" placeholder="备注原因" class="modelarea"></textarea>
+            <textarea v-model="remark" placeholder="备注原因" class="modelarea"></textarea>
             <span class="before"></span>
           </div>
           <div class="btn-group">
             <div class="btn-item" @click.stop="hideModal">取消</div>
-            <div class="btn-item">驳回</div>
-            <div class="btn-item">批准退款</div>
+            <div class="btn-item" @click.stop="auditing(0)">驳回</div>
+            <div class="btn-item" @click.stop="auditing(1)">批准退款</div>
           </div>
         </div>
       </div>
@@ -87,7 +86,10 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {returnsComputed} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
+  import API from '@api'
+
   const PAGE_NAME = 'REFUND_DETAIL'
   const TITLE = '退款详情'
   const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款数量', '退款金额']
@@ -103,20 +105,42 @@
     data() {
       return {
         titleList: TITLELIST,
-        noteText: ''
+        remark: ''
       }
     },
-    created() {
-    // setTimeout(() => {
-    // this.$refs.aud.showModal()
-    // }, 100)
+    computed: {
+      ...returnsComputed
     },
     methods: {
-      _cancel() {
-        this.$router.back()
+      auditing(isAgree) {
+        let data = {
+          id: this.checkId,
+          remark: this.remark,
+          is_agree: isAgree
+        }
+        this.hideModal()
+        API.Order.checkApply(data)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$toast.show(res.message)
+          }).catch(error => {
+            this.$toast.show(error)
+          }).finally(() => {
+            this.$loading.hide()
+          })
+      },
+      checkApply(id) {
+        this.checkId = id
+        this.$refs.modal.showModal()
       },
       hideModal() {
-        this.$refs.aud.hideModal()
+        this.$refs.modal.hideModal()
+      },
+      back() {
+        this.$router.back()
       }
     }
   }
@@ -240,30 +264,12 @@
       &:last-child
         flex: 0.5
   .go-btn
+    position: fixed
+    bottom: 50px
     height: 80px
-    width: 100%
-    background: #F9F9F9
     layout(row)
-    position: relative
     align-items: center
-    &:before
-      content: ''
-      width: 22px
-      height: 80px
-      background: #F9F9F9
-      position: absolute
-      left: -22px
-      border-bottom-left-radius: 6px
-      top: 0px
-    &:after
-      content: ''
-      width: 22px
-      height: 80px
-      background: #F9F9F9
-      position: absolute
-      right: -22px
-      border-bottom-right-radius: 6px
-      top: 0px
+    padding: 15px
     .btn-item
       background: $color-positive
       border: 1px solid $color-positive
@@ -276,8 +282,6 @@
       line-height: 40px
       text-align: center
       height: 40px
-      &:nth-child(1)
-        margin-left: 15px
   textarea::-webkit-input-placeholder
     font-size: $font-size-14
     color: #ACACAC
