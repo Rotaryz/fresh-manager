@@ -39,7 +39,7 @@ export const auxiliaryMethods = mapActions('auxiliary', ['getAuxiliaryList', 'se
 
 export const categoriesComputed = {
   ...mapState('categories', {
-    categoryList: (state) => state.categoryList
+    reqCategoryList: (state) => state.reqCategoryList
   })
 }
 
