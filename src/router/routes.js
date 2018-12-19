@@ -105,6 +105,7 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
           titles: ['商品管理', '商品列表', '新建商品'],
+          marginBottom: 85,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()

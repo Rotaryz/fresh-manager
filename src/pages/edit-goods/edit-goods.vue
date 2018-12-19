@@ -332,13 +332,13 @@
             if (res.error === this.$ERR_OK) {
               this.$toast.show('编辑成功')
               setTimeout(() => {
-                this.isSubmit = false
                 this._back()
               }, 1000)
             } else {
               this.$toast.show(res.message)
             }
             this.$loading.hide()
+            this.isSubmit = false
           })
           return
         }
@@ -346,13 +346,13 @@
           if (res.error === this.$ERR_OK) {
             this.$toast.show('创建成功')
             setTimeout(() => {
-              this.isSubmit = false
               this._back()
             }, 1000)
           } else {
             this.$toast.show(res.message)
           }
           this.$loading.hide()
+          this.isSubmit = false
         })
       },
       getSelectData() {
