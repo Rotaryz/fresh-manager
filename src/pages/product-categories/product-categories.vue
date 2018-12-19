@@ -173,6 +173,7 @@
         this.bigIndex = index
         this.smallItem = twoitem
         this.smallIndex = twoindex
+        this.oneBtn = false
         this.deteleType = 1
         this.$refs.bigConfirm.show(`确定删除该分类？`)
       },
@@ -206,26 +207,17 @@
       delConfirm() {
         switch (this.deteleType * 1) {
         case 0:
-          if (this.categoryList[this.bigIndex].list.length > 0) {
-            this.oneBtn = true
-            setTimeout(() => {
-              this.$refs.bigConfirm.show(
-                `该分类下有${this.categoryList[this.bigIndex].list.length}个商品，请处理后再删除`
-              )
-            }, 1000)
-          } else {
-            API.Product.delCategory(this.bigItem.id).then((res) => {
-              if (res.error === this.$ERR_OK) {
-                setTimeout(() => {
-                  this.categoryList.splice(this.bigIndex, 1)
-                  this.oneBtn = true
-                  this.$refs.bigConfirm.show(`该分类已成功删除？`)
-                }, 1000)
-              } else {
-                this.$toast.show(res.message)
-              }
-            })
-          }
+          API.Product.delCategory(this.bigItem.id).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              setTimeout(() => {
+                this.categoryList.splice(this.bigIndex, 1)
+                this.oneBtn = true
+                this.$refs.bigConfirm.show(`该分类已成功删除`)
+              }, 1000)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
           break
         case 1:
           API.Product.delCategory(this.smallItem.id).then((res) => {
@@ -233,7 +225,7 @@
               setTimeout(() => {
                 this.categoryList[this.bigIndex].list.splice(this.smallIndex, 1)
                 this.oneBtn = true
-                this.$refs.bigConfirm.show(`该分类已成功删除？`)
+                this.$refs.bigConfirm.show(`该分类已成功删除`)
               }, 1000)
             } else {
               this.$toast.show(res.message)
