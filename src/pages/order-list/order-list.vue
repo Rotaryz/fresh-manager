@@ -6,8 +6,8 @@
     <div class="search-warp">
       <div class="ac-tab">
         <base-drop-down :select="socialSelect" @setValue="setShopId"></base-drop-down>
-        <base-date-select :dateInfo="time" @getTime="setTime"></base-date-select>
-        <base-search :infoText="keyword" :placeHolder="placeHolder" @search="setKeyword"></base-search>
+        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="setTime"></base-date-select>
+        <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="setKeyword"></base-search>
       </div>
       <div class="excel hand" @click="exportExcel">导出Excel</div>
     </div>
@@ -46,16 +46,17 @@
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '订单列表'
-  const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员'
+  const DATE_PLACE_HOLDER = '选择下单日期'
+  const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员手机'
   const EXCEL_URL = '/social-shopping/api/backend/order-excel'
 
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [
-    {text: '全部', status: 0},
-    {text: '待付款', status: 1},
-    {text: '待提货', status: 2},
-    {text: '已完成', status: 3},
-    {text: '已关闭', status: 4}
+    {text: '全部', status: ''},
+    {text: '待付款', status: 0},
+    {text: '待提货', status: 1},
+    {text: '已完成', status: 2},
+    {text: '已关闭', status: 3}
   ]
   const SOCIAL_SELECT = {
     check: false,
@@ -77,7 +78,8 @@
       return {
         tabStatus: ORDERSTATUS,
         listTitle: LIST_TITLE,
-        placeHolder: SEARCH_PLACE_HOLDER,
+        searchPlaceHolder: SEARCH_PLACE_HOLDER,
+        datePlaceHolder: DATE_PLACE_HOLDER,
         socialSelect: SOCIAL_SELECT,
         downUrl: ''
       }
