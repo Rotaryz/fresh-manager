@@ -142,7 +142,7 @@
         isHaveLink: true,
         showSelectIndex: -1,
         showLoading: false,
-        bannerList: [TEMPLATE_OBJ],
+        bannerList: [],
         upIndex: 0,
         upItem: {},
         outHtml: '',
@@ -179,7 +179,9 @@
       ...adverComputed
     },
     async created() {
-      this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
+      this.bannerList = this.infoBannerList.length
+        ? _.cloneDeep(this.infoBannerList)
+        : this.bannerList.push(_.cloneDeep(TEMPLATE_OBJ))
       this.bannerList = this.bannerList.map((item) => {
         item.showType = false
         return item
@@ -302,7 +304,7 @@
     },
     // 添加更多的广告
     _addMore() {
-      this.bannerList.push(TEMPLATE_OBJ)
+      this.bannerList.push(_.cloneDeep(TEMPLATE_OBJ))
     },
     // 选择广告链接类型
     _showSelectType(item, index) {
@@ -382,6 +384,11 @@
         await this._storeBanner(this.bannerList[this.bannerIndex])
       }
       await this.getInfoBannerList()
+      this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
+      this.bannerList = this.bannerList.map((item) => {
+        item.showType = false
+        return item
+      })
     },
     // 添加自定义链接
     async addOutHtml() {

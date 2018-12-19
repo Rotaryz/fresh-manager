@@ -2,7 +2,10 @@
   <div class="purchase-management">
     <div class="tab-header">
       <base-search placeHolder="采购单号" @search="_search"></base-search>
-      <div class="btn-main">导入采购单</div>
+      <div class="btn-main">
+        <input type="file" class="file-box" @change="_importFile">
+        导入采购单
+      </div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
@@ -31,6 +34,7 @@
 
 <script type="text/ecmascript-6">
   import {purchaseComputed, purchaseMethods} from '@state/helpers'
+  import API from '@api'
 
   const PAGE_NAME = 'PURCHASE_MANAGEMENT'
   const TITLE = '采购管理'
@@ -57,6 +61,31 @@
     },
     methods: {
       ...purchaseMethods,
+      // 导入
+      async _importFile(e) {
+        let file = this.infoFile(e.target.files[0])
+        let size = (e.target.files[0].size / 1024).toFixed(2)
+        this.fileMsg = {
+          name: e.target.files[0].name,
+          size: size > 1024 ? size + 'MB' : size + 'KB'
+        }
+        console.log(file)
+        API.Upload.importFile(file).then((res) => {
+          this.$toast.show(res.message)
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.page = 1
+          this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
+        })
+        e.target.value = ''
+      },
+      infoFile(file) {
+        let param = new FormData() // 创建form对象
+        param.append('file', file, file.name) // 通过append向form对象添加数据
+        console.log(file)
+        return param
+      },
       _search(text) {
         this.$refs.pages.beginPage()
         this.page = 1
@@ -135,4 +164,14 @@
     height: 70px
     align-items: center
     display: flex
+
+  .btn-main
+    position: relative
+    .file-box
+      position: absolute
+      top: 0
+      left: 0
+      width: 84px
+      height: 28px
+      opacity: 0
 </style>

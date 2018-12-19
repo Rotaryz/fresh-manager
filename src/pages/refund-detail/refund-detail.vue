@@ -120,15 +120,17 @@
         }
         this.hideModal()
         API.Order.checkApply(data)
-          .then(res => {
+          .then((res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
               return
             }
             this.$toast.show(res.message)
-          }).catch(error => {
+          })
+          .catch((error) => {
             this.$toast.show(error)
-          }).finally(() => {
+          })
+          .finally(() => {
             this.$loading.hide()
           })
       },

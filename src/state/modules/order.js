@@ -98,9 +98,11 @@ export const actions = {
         commit('SET_ORDER_LIST', list)
         commit('SET_ORDER_PAGE', pageDetail)
         return list
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },
@@ -112,9 +114,11 @@ export const actions = {
         }
         commit('SET_ORDER_DETAIL', res.data)
         return res.data
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },

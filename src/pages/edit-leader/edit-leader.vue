@@ -175,7 +175,7 @@
        */
       _setData() {
         if (!_.isEmpty(this.detail)) {
-          this.$refs.city.infoCity([this.detail.address, this.detail.city, this.detail.district])
+          this.$refs.city.infoCity([this.detail.province, this.detail.city, this.detail.district])
           this.leaderData = this.detail
         }
       },
