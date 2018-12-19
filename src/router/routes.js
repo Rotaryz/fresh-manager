@@ -185,6 +185,7 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
         meta: {
           titles: ['商城管理', '今日抢购', '新建活动'],
+          marginBottom: 85,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
             //  团长列表
@@ -334,6 +335,7 @@ export default [
         component: () => lazyLoadView(import('@pages/purchase-detail/purchase-detail')),
         meta: {
           titles: ['采购管理', '采购详情'],
+          marginBottom: 85,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()
@@ -414,6 +416,7 @@ export default [
         component: () => lazyLoadView(import('@pages/dispatching-detail/dispatching-detail')),
         meta: {
           titles: ['团长管理', '团长配送单', '配送单详情'],
+          marginBottom: 85,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()
@@ -441,6 +444,7 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
           titles: ['团长管理', '团长配送单', '新建团长'],
+          marginBottom: 85,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()

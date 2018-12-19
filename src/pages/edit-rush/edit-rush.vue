@@ -51,7 +51,7 @@
         <div class="commodities-list-header com-list-box">
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
         </div>
-        <div class="big-box" :style="{'min-height': listHeight + 'px'}">
+        <div class="big-box">
           <div v-for="(item, index) in goodsList[classifyIndex]" :key="index" class="com-list-box com-list-content">
             <div class="com-list-item">{{item.name}}</div>
             <div class="com-list-item">{{item.goods_units}}</div>
@@ -71,7 +71,7 @@
               <input v-model="item.sort" type="text" class="com-edit com-edit-small">
             </div>
             <div class="com-list-item">
-              <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+              <span :class="{'list-operation-disable': disable}" v-if="!item.no_delete" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
             </div>
           </div>
         </div>
@@ -374,238 +374,239 @@
       // 勾选商品
       _selectGoods(item, index) {
         /*eslint-disable*/
-      switch (item.selected) {
-        case 1:
-          break
-        case 0:
-          this.choeesGoods[index].selected = 2
-          this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
-          break
-        case 2:
-          this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
-          if (idx !== -1) {
-            this.selectGoods.splice(idx, 1)
-          }
-          if (idIdx !== -1) {
-            this.selectGoodsId.splice(idx, 1)
-          }
-          break
-      }
-    },
-    // 删除商品
-    _showDelGoods(item, index) {
-      if (this.disable) {
-        return
-      }
-      this.goodsDelId = item.goods_id
-      this.goodsDelIndex = index
-      this.$refs.confirm.show('是否确定删除该商品？')
-    },
-    // 删除商品弹窗
-    _delGoods() {
-      let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-      this.selectGoodsId.splice(index, 1)
-      this.rushMsg.lists[this.classifyIndex].shelf_goods.splice(this.goodsDelIndex, 1)
-      this.selectDelId.push(this.goodsDelId)
-    },
-    _cancelGoods() {
-      this.selectGoods.forEach((item) => {
-        let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
-        let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-        this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
-        this.selectGoodsId.splice(delIdx, 1)
-      })
-      this.selectGoods = []
-      this._hideGoods()
-    },
-    // 单个添加
-    _additionOne(item, index) {
-      if (item.selected === 1) {
-        return
-      } else if (!this.classify.length) {
-        this.$toast.show('请先添加分类')
-        return
-      }
-      this.choeesGoods[index].selected = 1
-      this.rushMsg.lists[this.classifyIndex].shelf_goods.push(item)
-      this.selectGoodsId.push(item.id)
-    },
-    // 批量添加
-    _batchAddition() {
-      if (!this.classify.length) {
-        this.$toast.show('请先添加分类')
-        return
-      }
-      this.choeesGoods = this.choeesGoods.map((item) => {
-        item.selected = item.selected === 2 ? 1 : item.selected
-        return item
-      })
-      this.rushMsg.lists[this.classifyIndex].shelf_goods = this.rushMsg.lists[this.classifyIndex].shelf_goods.concat(
-        this.selectGoods
-      )
-      this.selectGoods = []
-      this._hideGoods()
-    },
-    async _showGoods() {
-      if (this.disable) {
-        return
-      }
-      await this._getGoodsList()
-      // 展示添加商品弹窗
-      this.$refs.goodsModel.showModal()
-    },
-    _hideGoods() {
-      this.$refs.goodsModel.hideModal()
-    },
-    async _tagList() {
-      let res = await API.Rush.tagList({shelf_id: this.id})
-      this.tagList = res.error === this.$ERR_OK ? res.data : []
-    },
-    // 切换分类
-    _setClassify(index, item) {
-      this.classifyIndex = index
-    },
-    // 获取高度
-    _getListHeight() {
-      let ele = document.querySelector('html')
-      let height = ele.clientHeight
-      this.listHeight = height - 692
-    },
-    _back() {
-      this.$router.back()
-    },
-    // 删除分类
-    async _delItem() {
-      // this.classifyDelId
-      let res = await API.Rush.deleteTag(this.classifyDelId)
-      this.$toast.show(res.message)
-      if (res.error !== ERR_OK) {
-        // this._hideConfirm()
-        return
-      }
-      this._tagList()
-      this.rushMsg.lists.splice(this.classifyDelIndex, 1)
-      this._hideConfirm()
-    },
-    _showEditShade() {
-      if (this.disable) {
-        return
-      }
-      // 展示分类编辑弹窗
-      this.$refs.shadeCustom.showModal()
-    },
-    _hideEditShade() {
-      // 隐藏分类编辑弹窗
-      this.$refs.shadeCustom.hideModal()
-    },
-    _showModal(status, item, index) {
-      if (status && this.classify.length >= 10) {
-        this.$toast.show('分类不能超过10个')
-        return
-      }
-      this.isShow = true
-      this.showActive = true
-      this.isStoreClassify = status
-      if (!status) {
-        this.classifyName = item.name
-        this.classifyNum = item.sort
-        this.tagItem = item
-        this.classifyChangeIdx = index
-      }
-    },
-    // 新建编辑分类
-    async _operationClassify() {
-      let res = null
-      if (this.isStoreClassify) {
-        res = await API.Rush.storeTag({name: this.classifyName, sort: this.classifyNum, shelf_id: this.id})
-        this.$toast.show(res.message)
-        if (res.error !== this.$ERR_OK) {
+        switch (item.selected) {
+          case 1:
+            break
+          case 0:
+            this.choeesGoods[index].selected = 2
+            this.selectGoods.push(item)
+            this.selectGoodsId.push(item.id)
+            break
+          case 2:
+            this.choeesGoods[index].selected = 0
+            let idx = this.selectGoods.findIndex((items) => items.id === item.id)
+            let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+            if (idx !== -1) {
+              this.selectGoods.splice(idx, 1)
+            }
+            if (idIdx !== -1) {
+              this.selectGoodsId.splice(idx, 1)
+            }
+            break
+        }
+      },
+      // 删除商品
+      _showDelGoods(item, index) {
+        if (this.disable) {
           return
         }
-        let obj = {name: this.classifyName, sort: this.classifyNum, id: res.data.id}
-        this.rushMsg.lists.push({shelf_tag: obj, shelf_goods: []})
-      } else {
-        res = await API.Rush.updateTag({name: this.classifyName, sort: this.classifyNum}, this.tagItem.id)
-        this.$toast.show(res.message)
-        if (res.error !== this.$ERR_OK) {
+        this.goodsDelId = item.goods_id
+        this.goodsDelIndex = index
+        this.$refs.confirm.show('是否确定删除该商品？')
+      },
+      // 删除商品弹窗
+      _delGoods() {
+        let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+        this.selectGoodsId.splice(index, 1)
+        this.rushMsg.lists[this.classifyIndex].shelf_goods.splice(this.goodsDelIndex, 1)
+        this.selectDelId.push(this.goodsDelId)
+      },
+      _cancelGoods() {
+        this.selectGoods.forEach((item) => {
+          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
+          this.selectGoodsId.splice(delIdx, 1)
+        })
+        this.selectGoods = []
+        this._hideGoods()
+      },
+      // 单个添加
+      _additionOne(item, index) {
+        if (item.selected === 1) {
+          return
+        } else if (!this.classify.length) {
+          this.$toast.show('请先添加分类')
           return
         }
-        this.rushMsg.lists[this.classifyChangeIdx]['shelf_tag'] = {
-          name: this.classifyName,
-          sort: this.classifyNum,
-          id: this.tagItem.id
+        this.choeesGoods[index].selected = 1
+        this.rushMsg.lists[this.classifyIndex].shelf_goods.push(item)
+        this.selectGoodsId.push(item.id)
+      },
+      // 批量添加
+      _batchAddition() {
+        if (!this.classify.length) {
+          this.$toast.show('请先添加分类')
+          return
         }
-      }
-      this._tagList()
-      this._hideModal()
-    },
-    // 隐藏分类弹窗
-    _hideModal() {
-      setTimeout(() => {
-        this.isShow = false
-        this.classifyName = ''
-        this.classifyNum = ''
-      }, 100)
-      this.showActive = false
-    },
-    _showConfirm(id, index) {
-      this.isShowConfirm = true
-      this.showConfirmActive = true
-      this.classifyDelId = id
-      this.classifyDelIndex = index
-    },
-    _hideConfirm() {
-      setTimeout(() => {
-        this.isShowConfirm = false
-      }, 100)
-      this.showConfirmActive = false
-    },
-    //  保存
-    async _saveActivity() {
-      if (this.disable) {
-        return
-      }
-      let list = _.cloneDeep(this.rushMsg.lists)
-      for (let i in list) {
-        for (let index in list[i].shelf_goods) {
-          if (
-            !list[i].shelf_goods[index].trade_price ||
-            !list[i].shelf_goods[index].buy_limit ||
-            !list[i].shelf_goods[index].usable_stock ||
-            list[i].shelf_goods[index].sort === ''
-          ) {
-            this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}信息不全`)
-            return
-          } else if (
-            +list[i].shelf_goods[index].trade_price <= 0 ||
-            +list[i].shelf_goods[index].buy_limit <= 0 ||
-            +list[i].shelf_goods[index].usable_stock < 0 ||
-            +list[i].shelf_goods[index].sort < 0
-          ) {
-            this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}输入数据有误`)
+        this.choeesGoods = this.choeesGoods.map((item) => {
+          item.selected = item.selected === 2 ? 1 : item.selected
+          return item
+        })
+        this.rushMsg.lists[this.classifyIndex].shelf_goods = this.rushMsg.lists[this.classifyIndex].shelf_goods.concat(
+          this.selectGoods
+        )
+        this.selectGoods = []
+        this._hideGoods()
+      },
+      async _showGoods() {
+        if (this.disable) {
+          return
+        }
+        await this._getGoodsList()
+        // 展示添加商品弹窗
+        this.$refs.goodsModel.showModal()
+      },
+      _hideGoods() {
+        this.$refs.goodsModel.hideModal()
+      },
+      async _tagList() {
+        let res = await API.Rush.tagList({shelf_id: this.id})
+        this.tagList = res.error === this.$ERR_OK ? res.data : []
+      },
+      // 切换分类
+      _setClassify(index, item) {
+        this.classifyIndex = index
+      },
+      // 获取高度
+      _getListHeight() {
+        let ele = document.querySelector('html')
+        let height = ele.clientHeight
+        this.listHeight = height - 700
+      },
+      _back() {
+        this.$router.back()
+      },
+      // 删除分类
+      async _delItem() {
+        // this.classifyDelId
+        let res = await API.Rush.deleteTag(this.classifyDelId)
+        this.$toast.show(res.message)
+        if (res.error !== ERR_OK) {
+          // this._hideConfirm()
+          return
+        }
+        this._tagList()
+        this.rushMsg.lists.splice(this.classifyDelIndex, 1)
+        this._hideConfirm()
+      },
+      _showEditShade() {
+        if (this.disable) {
+          return
+        }
+        // 展示分类编辑弹窗
+        this.$refs.shadeCustom.showModal()
+      },
+      _hideEditShade() {
+        // 隐藏分类编辑弹窗
+        this.$refs.shadeCustom.hideModal()
+      },
+      _showModal(status, item, index) {
+        if (status && this.classify.length >= 10) {
+          this.$toast.show('分类不能超过10个')
+          return
+        }
+        this.isShow = true
+        this.showActive = true
+        this.isStoreClassify = status
+        if (!status) {
+          this.classifyName = item.name
+          this.classifyNum = item.sort
+          this.tagItem = item
+          this.classifyChangeIdx = index
+        }
+      },
+      // 新建编辑分类
+      async _operationClassify() {
+        let res = null
+        if (this.isStoreClassify) {
+          res = await API.Rush.storeTag({name: this.classifyName, sort: this.classifyNum, shelf_id: this.id})
+          this.$toast.show(res.message)
+          if (res.error !== this.$ERR_OK) {
             return
           }
+          let obj = {name: this.classifyName, sort: this.classifyNum, id: res.data.id}
+          this.rushMsg.lists.push({shelf_tag: obj, shelf_goods: []})
+        } else {
+          res = await API.Rush.updateTag({name: this.classifyName, sort: this.classifyNum}, this.tagItem.id)
+          this.$toast.show(res.message)
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.rushMsg.lists[this.classifyChangeIdx]['shelf_tag'] = {
+            name: this.classifyName,
+            sort: this.classifyNum,
+            id: this.tagItem.id
+          }
         }
-      }
-      let res = await API.Rush.updateGoods({data: list}, this.id)
-      this.$toast.show(res.message)
-      if (res.error === this.$ERR_OK) {
+        this._tagList()
+        this._hideModal()
+      },
+      // 隐藏分类弹窗
+      _hideModal() {
         setTimeout(() => {
-          this._back()
-        }, 1000)
+          this.isShow = false
+          this.classifyName = ''
+          this.classifyNum = ''
+        }, 100)
+        this.showActive = false
+      },
+      _showConfirm(id, index) {
+        this.isShowConfirm = true
+        this.showConfirmActive = true
+        this.classifyDelId = id
+        this.classifyDelIndex = index
+      },
+      _hideConfirm() {
+        setTimeout(() => {
+          this.isShowConfirm = false
+        }, 100)
+        this.showConfirmActive = false
+      },
+      //  保存
+      async _saveActivity() {
+        if (this.disable) {
+          return
+        }
+        let list = _.cloneDeep(this.rushMsg.lists)
+        for (let i in list) {
+          for (let index in list[i].shelf_goods) {
+            if (
+              !list[i].shelf_goods[index].trade_price ||
+              !list[i].shelf_goods[index].buy_limit ||
+              !list[i].shelf_goods[index].usable_stock ||
+              list[i].shelf_goods[index].sort === ''
+            ) {
+              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}信息不全`)
+              return
+            } else if (
+              +list[i].shelf_goods[index].trade_price <= 0 ||
+              +list[i].shelf_goods[index].buy_limit <= 0 ||
+              +list[i].shelf_goods[index].usable_stock < 0 ||
+              +list[i].shelf_goods[index].sort < 0
+            ) {
+              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}输入数据有误`)
+              return
+            }
+          }
+        }
+        let res = await API.Rush.updateGoods({data: list}, this.id)
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          setTimeout(() => {
+            this._back()
+          }, 1000)
+        }
       }
     }
   }
-}
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
   .edit-rush
+    padding-bottom: 20px
     position: relative
     flex: 1
 
@@ -727,8 +728,9 @@
     .activity-list
       border: 1px solid $color-line
       box-sizing: border-box
+      border-bottom: none
       .big-box
-        padding-bottom: 66px
+        flex: 1
         position: relative
         box-sizing: border-box
         &::-webkit-scrollbar
