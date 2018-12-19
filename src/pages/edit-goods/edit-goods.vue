@@ -295,7 +295,7 @@
         } else if (this.msg.goods_detail_images.length === 0) {
           this.$toast.show('请上传商品详情图')
           return
-        } else if (this.msg.describe.length >= 20) {
+        } else if (this.msg.describe.length > 20) {
           this.$toast.show('推荐语不能大于20个字')
           return
         } else if (this.msg.describe.length >= 20) {
