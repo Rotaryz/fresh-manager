@@ -345,7 +345,7 @@
         this.parentId = item.id
         let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.secondAssortment.data.unshift({name: '全部', id: ''})
+        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         this.secondAssortment.content = '选择二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
