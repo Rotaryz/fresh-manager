@@ -7,7 +7,7 @@
       <div class="ac-tab">
         <base-drop-down :select="socialSelect" @setValue="setShopId"></base-drop-down>
         <base-date-select :dateInfo="time" @getTime="setTime"></base-date-select>
-        <base-search :infoText="keyword" :placeHolder="placeHolder" @search="setKeyword"></base-search>
+        <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="setKeyword"></base-search>
       </div>
       <div class="excel hand" @click="exportExcel">导出Excel</div>
     </div>
@@ -69,7 +69,7 @@
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '退货管理'
-  const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员'
+  const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员手机'
   const EXCEL_URL = '/social-shopping/api/backend/after-sale-excel'
 
   const LIST_TITLE = [
@@ -105,7 +105,7 @@
       return {
         tabStatus: TAB_STATUS,
         listTitle: LIST_TITLE,
-        placeHolder: SEARCH_PLACE_HOLDER,
+        searchPlaceHolder: SEARCH_PLACE_HOLDER,
         checkId: '',
         remark: '',
         socialSelect: SELECT
@@ -155,7 +155,7 @@
           })
       },
       exportExcel() {
-        window.open(this.orderExportUrl, '_blank')
+        window.open(this.returnsExportUrl, '_blank')
       },
       auditing(isAgree) {
         let data = {

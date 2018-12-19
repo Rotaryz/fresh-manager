@@ -14,7 +14,7 @@ export const state = {
   startTime: '',
   endTime: '',
   keyword: '',
-  status: 0
+  status: ''
 }
 
 export const getters = {
