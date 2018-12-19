@@ -134,7 +134,7 @@
         if (!this._isDataValidate()) {
           return
         }
-        this.isSubmit = true
+        this.isSubmit = false
         let address = this.leaderData.province + this.leaderData.city + this.leaderData.district + this.leaderData.address
         let oAjax = new XMLHttpRequest()
         oAjax.open(
@@ -160,12 +160,13 @@
 
             this.$loading.hide()
             this.$toast.show(res.message)
-            if (res.error === this.$ERR_OK) {
-              setTimeout(() => {
-                this.isSubmit = false
-                this._back()
-              }, 1000)
+            if (res.error !== this.$ERR_OK) {
+              this.isSubmit = true
+              return
             }
+            setTimeout(() => {
+              this._back()
+            }, 1000)
           }
         }
       },

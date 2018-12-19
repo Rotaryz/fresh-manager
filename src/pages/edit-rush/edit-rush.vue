@@ -592,11 +592,13 @@
       }
       let res = await API.Rush.updateGoods({data: list}, this.id)
       this.$toast.show(res.message)
-      if (res.error === this.$ERR_OK) {
-        setTimeout(() => {
-          this._back()
-        }, 1000)
+      if (res.error !== this.$ERR_OK) {
+        this.disable = true
+        return
       }
+      setTimeout(() => {
+        this._back()
+      }, 1000)
     }
   }
 }
