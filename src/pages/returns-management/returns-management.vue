@@ -341,7 +341,7 @@
       &:nth-child(4)
         flex: 0.8
       &:last-child
-        flex: 0.6
+        flex: 0.7
 
   .list
     flex: 1

@@ -23,7 +23,7 @@
         <div class="info-item">团长名称：{{detail.address && detail.address.shop_name}}</div>
         <div class="info-item">团长手机：{{detail.address && detail.address.shop_mobile}}</div>
         <div class="info-item">取货时间：{{detail.address && detail.address.delivery_at}}</div>
-        <div class="info-item">提货单号：{{detail.address && detail.address.code}}</div>
+        <div class="info-item">提货单号：{{detail.address && detail.code}}</div>
         <div class="info-item">提货地址：{{detail.address && detail.address.shop_address}}</div>
       </div>
     </div>
@@ -146,6 +146,7 @@
         padding-top: 20px
         .list-foot-box
           layout(row)
+          justify-content: flex-end
         .foot-item
           font-family: $font-family-medium
           font-size: $font-size-14

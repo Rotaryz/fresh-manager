@@ -54,7 +54,7 @@
         </div>
         <div class="list-footer">
           <div class="list-foot-box">
-            <div class="foot-item">退款总金额：{{detail.after_sale_total && `¥ ${detail.after_sale_total}`}}</div>
+            <div v-if="false" class="foot-item">退款总金额：{{detail.after_sale_total && `¥ ${detail.after_sale_total}`}}</div>
           </div>
         </div>
       </div>
