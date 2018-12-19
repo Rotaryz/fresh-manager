@@ -88,7 +88,7 @@
       ...authComputed,
       ...orderComputed,
       infoTabIndex() {
-        return this.tabStatus.findIndex(item => item.status === this.status)
+        return this.tabStatus.findIndex((item) => item.status === this.status)
       },
       orderExportUrl() {
         let data = {
@@ -105,7 +105,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + EXCEL_URL + '?' +search.join('&')
+        return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
       }
     },
     created() {
@@ -114,18 +114,17 @@
     methods: {
       ...orderMethods,
       _getShopList() {
-        API.Leader.shopDropdownList()
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            let selectData = res.data.map((item) => {
-              item.name = item.social_name
-              return item
-            })
-            selectData.unshift({name: '全部社区', id: ''})
-            this.socialSelect.data = selectData
+        API.Leader.shopDropdownList().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          let selectData = res.data.map((item) => {
+            item.name = item.social_name
+            return item
           })
+          selectData.unshift({name: '全部社区', id: ''})
+          this.socialSelect.data = selectData
+        })
       },
       exportExcel() {
         // if (!this.shopId) {

@@ -108,7 +108,12 @@
             if (res.error === this.$ERR_OK) {
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.categoryList[this.bigIndex].list.push({name: name, sort: sort, parent_id: this.bigItem.id, id: res.data.id})
+              this.categoryList[this.bigIndex].list.push({
+                name: name,
+                sort: sort,
+                parent_id: this.bigItem.id,
+                id: res.data.id
+              })
               this.categoryList[this.bigIndex].list.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -204,7 +209,9 @@
           if (this.categoryList[this.bigIndex].list.length > 0) {
             this.oneBtn = true
             setTimeout(() => {
-              this.$refs.bigConfirm.show(`该分类下有${this.categoryList[this.bigIndex].list.length}个商品，请处理后再删除`)
+              this.$refs.bigConfirm.show(
+                `该分类下有${this.categoryList[this.bigIndex].list.length}个商品，请处理后再删除`
+              )
             }, 1000)
           } else {
             API.Product.delCategory(this.bigItem.id).then((res) => {

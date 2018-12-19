@@ -11,7 +11,8 @@ export const authMethods = mapActions('auth', ['logIn', 'logOut'])
 
 export const globalComputed = {
   ...mapState('global', {
-    currentTitles: (state) => state.currentTitles
+    currentTitles: (state) => state.currentTitles,
+    marginBottom: (state) => state.marginBottom
   })
 }
 

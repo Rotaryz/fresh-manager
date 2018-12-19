@@ -4,7 +4,7 @@
       <navigation></navigation>
       <div class="home">
         <top-bar></top-bar>
-        <div class="container">
+        <div class="container" :style="{'margin-bottom': marginBottom + 'px'}">
           <!--<keep-alive>-->
           <router-view :key="$route.fullPath"></router-view>
           <!--</keep-alive>-->

@@ -51,7 +51,7 @@ export default {
     return request.post(url, data, loading)
   },
   /**
-   * 仓库货架详情
+   * 仓库货架标签编辑
    * @param data
    * @param loading
    * @returns {*}
@@ -61,7 +61,7 @@ export default {
     return request.put(url, data, loading)
   },
   /**
-   * 仓库货架详情
+   * 仓库货架标签详情
    * @param data
    * @param loading
    * @returns {*}
@@ -98,7 +98,7 @@ export default {
    */
   updateGoods(data, id, loading = false) {
     let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
-    return request.put(url, data, loading)
+    return request.post(url, data, loading)
   },
   /**
    * 仓库货架删除

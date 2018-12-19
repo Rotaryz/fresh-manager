@@ -68,8 +68,7 @@
     computed: {
       ...leaderComputed
     },
-    created() {
-    },
+    created() {},
     methods: {
       ...leaderMethods,
       _getMore(page) {

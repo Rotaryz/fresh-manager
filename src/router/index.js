@@ -85,9 +85,11 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
 router.afterEach((routeTo, routeFrom) => {
   // 动态添加页面标题
   const titles = routeTo.meta.titles
+  const marginBottom = routeTo.meta.marginBottom || 0
   if (titles) {
     store.commit('global/SET_CURRENT_TITLES', titles)
   }
+  store.commit('global/SET_MARGIN_BOTTOM', marginBottom)
   NProgress.done()
 })
 

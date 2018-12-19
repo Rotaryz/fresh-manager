@@ -175,7 +175,7 @@
        */
       _setData() {
         if (!_.isEmpty(this.detail)) {
-          this.$refs.city.infoCity([this.detail.address, this.detail.city, this.detail.district])
+          this.$refs.city.infoCity([this.detail.province, this.detail.city, this.detail.district])
           this.leaderData = this.detail
         }
       },
@@ -311,9 +311,9 @@
         margin-left: 10px
 
   .back
-    position: absolute
-    left: -20px
-    right: -20px
+    position: fixed
+    left: 200px
+    right: 0px
     bottom: 0
     z-index: 10
     background: #F9F9F9

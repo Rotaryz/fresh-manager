@@ -98,9 +98,11 @@ export const actions = {
         commit('SET_LIST', list)
         commit('SET_PAGE_DETAIL', pageDetail)
         return list
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },
@@ -112,9 +114,11 @@ export const actions = {
         }
         commit('SET_DETAIL', res.data)
         return res.data
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },

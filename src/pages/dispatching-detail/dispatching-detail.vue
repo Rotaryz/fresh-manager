@@ -172,6 +172,7 @@
     padding: 0 20px
     .com-list-box
       .com-list-item
+        line-height: 1.2
         &:nth-child(2)
           flex: 1.5
     .total-money
