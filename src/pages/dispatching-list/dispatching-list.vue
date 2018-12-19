@@ -78,7 +78,9 @@
     },
     async created() {
       let token = this.$storage.get('auth.currentUser', '')
-      this.excelParams = token ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}` : ''
+      this.excelParams = token
+        ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        : ''
       await this._getdropdownList()
     },
     methods: {

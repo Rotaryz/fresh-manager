@@ -92,7 +92,9 @@
     },
     created() {
       let token = this.$storage.get('auth.currentUser', '')
-      let excelParams = token ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}` : ''
+      let excelParams = token
+        ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        : ''
       let id = this.$route.query.id || null
       this.excelUrl = `${this.excelUrl}${id}${excelParams}`
     },
