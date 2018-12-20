@@ -57,18 +57,18 @@
             <div class="com-list-item">{{item.goods_units}}</div>
             <div class="com-list-item">{{item.original_price}}</div>
             <div class="com-list-item">
-              <input v-model="item.trade_price" type="text" class="com-edit">
+              <input v-model="item.trade_price" type="number" class="com-edit">
               <span v-if="item.original_price" class="small-money">￥</span>
             </div>
             <div class="com-list-item">
-              <input v-model="item.buy_limit" type="text" class="com-edit com-edit-small">
+              <input v-model="item.buy_limit" type="number" class="com-edit com-edit-small">
             </div>
             <div class="com-list-item">
-              <input v-model="item.usable_stock" type="text" class="com-edit com-edit-small">
+              <input v-model="item.usable_stock" type="number" class="com-edit com-edit-small">
             </div>
             <div class="com-list-item">{{item.sale_count}}</div>
             <div class="com-list-item">
-              <input v-model="item.sort" type="text" class="com-edit com-edit-small">
+              <input v-model="item.sort" type="number" class="com-edit com-edit-small">
             </div>
             <div class="com-list-item">
               <span v-if="!item.no_delete" :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
