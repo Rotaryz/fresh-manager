@@ -33,22 +33,22 @@
         </div>
       </div>
     </div>
-    <div class="history-record">
-      <div class="content-header">
-        <div class="content-title">历史记录</div>
-      </div>
-      <div class="commodities-list">
-        <div class="commodities-list-header com-list-box">
-          <div v-for="(item, index) in historyRecord" :key="index" class="com-list-item">{{item}}</div>
-        </div>
-        <div v-for="(item, index) in detail.operate_list" :key="index" class="com-list-box com-list-content">
-          <div class="com-list-item">{{index + 1}}</div>
-          <div class="com-list-item">{{item.manager_name}}</div>
-          <div class="com-list-item">{{item.created_at}}</div>
-          <div class="com-list-item">{{item.remark}}</div>
-        </div>
-      </div>
-    </div>
+    <!--<div class="history-record">-->
+    <!--<div class="content-header">-->
+    <!--<div class="content-title">历史记录</div>-->
+    <!--</div>-->
+    <!--<div class="commodities-list">-->
+    <!--<div class="commodities-list-header com-list-box">-->
+    <!--<div v-for="(item, index) in historyRecord" :key="index" class="com-list-item">{{item}}</div>-->
+    <!--</div>-->
+    <!--<div v-for="(item, index) in detail.operate_list" :key="index" class="com-list-box com-list-content">-->
+    <!--<div class="com-list-item">{{index + 1}}</div>-->
+    <!--<div class="com-list-item">{{item.manager_name}}</div>-->
+    <!--<div class="com-list-item">{{item.created_at}}</div>-->
+    <!--<div class="com-list-item">{{item.remark}}</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
     <div class="back">
       <div class="back-btn btn-main" @click="_back">返回</div>
     </div>
