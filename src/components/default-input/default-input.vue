@@ -43,7 +43,6 @@
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
-        this.hide()
         this.$emit('confirm', this.numberTxt)
       },
       cancel() {

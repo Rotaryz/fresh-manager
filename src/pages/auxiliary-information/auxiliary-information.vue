@@ -78,7 +78,7 @@
           if (this.unitsType === 0) {
             this.newUnits = text
           }
-          this.$toast.show('计量单位的长度不能超过5个')
+          this.$toast.show('计量单位的长度不能超过5个字')
           return
         }
         if (this.unitsType === 0) {
@@ -87,6 +87,7 @@
               this.$toast.show('新增成功')
               this.newUnits = ''
               this.getUnitsList({}, false)
+              this.$refs.modalBox.hide()
             } else {
               this.$toast.show(res.message)
             }
@@ -97,6 +98,7 @@
             if (res.error === this.$ERR_OK) {
               this.$toast.show('修改成功')
               this.getUnitsList({}, false)
+              this.$refs.modalBox.hide()
             } else {
               this.$toast.show(res.message)
             }

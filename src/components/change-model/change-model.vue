@@ -81,7 +81,6 @@
         console.log(this.dispatchSelect.data)
       },
       confirm() {
-        this.hide()
         this.$emit('confirm', this.pointName, this.pointNumber, this.typeId)
       },
       cancel() {
