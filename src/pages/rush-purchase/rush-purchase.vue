@@ -17,7 +17,7 @@
         <div class="list-item">{{item.sale_count}}</div>
         <div class="list-item">{{item.delivery_at}}</div>
         <div class="list-item"><span class="list-status" :class="item.status === 1 ? 'list-status-success' : item.status === 2 ? 'list-status-fail' : ''"></span>{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已关闭' : ''}}</div>
-        <div class="list-item">2018-12-07 15:00</div>
+        <div class="list-item">{{item.created_at}}</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'/home/rush-purchase/edit-rush?disable=2'+'&id=' + item.id" class="list-operation">详情</router-link>
           <span v-if="item.status === 2" class="list-operation" @click="_deleteRush(item.id)">删除</span>
