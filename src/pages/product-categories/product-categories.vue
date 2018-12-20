@@ -82,18 +82,19 @@
       },
       newConfirm(name, sort) {
         if (name.length === 0 || name.length > 10) {
-          if (this.categoryType === 0) {
-            this.categoryNewName = name
-          } else if (this.categoryType === 1) {
-            this.categoryChild = name
-          }
-          this.$toast.show('计量单位的长度不能超过10个')
+          // if (this.categoryType === 0) {
+          //   this.categoryNewName = name
+          // } else if (this.categoryType === 1) {
+          //   this.categoryChild = name
+          // }
+          this.$toast.show('分类名称的长度不能超过10个字')
           return
         }
         switch (this.categoryType) {
         case 0:
           API.Product.createCategory({name: name, sort: sort}).then((res) => {
             if (res.error === this.$ERR_OK) {
+              this.$refs.bigModel.hide()
               this.$toast.show('创建成功')
               this.categoryNewName = ''
               this.categoryList.push({name: name, sort: sort, id: res.data.id, list: []})
@@ -106,6 +107,7 @@
         case 1:
           API.Product.createCategory({name: name, sort: sort, parent_id: this.bigItem.id}).then((res) => {
             if (res.error === this.$ERR_OK) {
+              this.$refs.bigModel.hide()
               this.$toast.show('创建成功')
               this.categoryNewName = ''
               this.categoryList[this.bigIndex].list.push({
@@ -123,6 +125,7 @@
         case 2:
           API.Product.editCategory(this.bigItem.id, {name: name, sort: sort, parent_id: 0}).then((res) => {
             if (res.error === this.$ERR_OK) {
+              this.$refs.bigModel.hide()
               this.$toast.show('编辑成功')
               this.categoryList[this.bigIndex].name = name
               this.categoryList[this.bigIndex].sort = sort
@@ -179,11 +182,12 @@
       },
       eidtConfirm(name, sort, id) {
         if (name.length === 0 || name.length > 10) {
-          this.$toast.show('计量单位的长度不能超过10个')
+          this.$toast.show('分类名称的长度不能超过10个字')
           return
         }
         API.Product.editCategory(this.smallItem.id, {name: name, sort: sort, parent_id: id}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            this.$refs.smallModel.hide()
             this.$toast.show('编辑成功')
             if (this.bigItem.id * 1 === id * 1) {
               this.categoryList[this.bigIndex].list[this.smallIndex].name = name
