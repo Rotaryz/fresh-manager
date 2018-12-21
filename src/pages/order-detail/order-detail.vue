@@ -59,8 +59,8 @@
         </div>
       </div>
     </div>
-    <div class="go-btn">
-      <div class="go-back-btn btn-item" @click="back">返回</div>
+    <div class="back">
+      <div class="back-btn btn-main" @click="_back">返回</div>
     </div>
   </div>
 </template>
@@ -86,7 +86,7 @@
       ...orderComputed
     },
     methods: {
-      back() {
+      _back() {
         this.$router.back()
       }
     }
@@ -98,6 +98,7 @@
 
   .order-detail
     width: 100%
+    padding-bottom: 80px
   .detail-item
     layout()
     .top
@@ -208,25 +209,19 @@
     &:last-child
       flex: 0.5
 
-  .txts
-    height:10px
-  .go-btn
+  .back
     position: fixed
-    bottom: 50px
+    left: 200px
+    right: 0px
+    bottom: 0
+    z-index: 10
+    background: #F9F9F9
     height: 80px
-    layout(row)
+    border-radius: 0 0 6px 6px
+    display: flex
     align-items: center
-    padding: 15px
-    .btn-item
-      background: $color-positive
-      border: 1px solid $color-positive
-      border-radius: 4px
-      width: 90px
-      cursor: pointer
-      color: $color-white
-      font-family: $font-family-regular
+    .back-btn
       font-size: $font-size-16
-      line-height: 40px
-      text-align: center
-      height: 40px
+      margin-left: 40px
+      padding: 12px 32px
 </style>

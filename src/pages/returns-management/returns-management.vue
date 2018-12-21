@@ -1,13 +1,13 @@
 <template>
   <div class="purchase-management">
     <div class="tab-list">
-      <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="setStatus"></status-tab>
+      <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></status-tab>
     </div>
     <div class="search-warp">
       <div class="ac-tab">
-        <base-drop-down :select="socialSelect" @setValue="setShopId"></base-drop-down>
-        <base-date-select :dateInfo="time" @getTime="setTime"></base-date-select>
-        <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="setKeyword"></base-search>
+        <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+        <base-date-select :dateInfo="time" @getTime="changeTime"></base-date-select>
+        <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
       </div>
       <div class="excel hand" @click="exportExcel">导出Excel</div>
     </div>
@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+      <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
     </div>
     <default-modal ref="modal">
       <div slot="content">
@@ -169,6 +169,7 @@
               this.$toast.show(res.message)
               return
             }
+            this.getReturnsList()
             this.$toast.show(res.message)
           })
           .catch((error) => {
@@ -184,6 +185,22 @@
       },
       hideModal() {
         this.$refs.modal.hideModal()
+      },
+      changeStatus(selectStatus) {
+        this.setStatus(selectStatus)
+        this.$refs.pagination.beginPage()
+      },
+      changeShopId(shop) {
+        this.setShopId(shop)
+        this.$refs.pagination.beginPage()
+      },
+      changeTime(time) {
+        this.setTime(time)
+        this.$refs.pagination.beginPage()
+      },
+      changeKeyword(keyword) {
+        this.setKeyword(keyword)
+        this.$refs.pagination.beginPage()
       }
     }
   }

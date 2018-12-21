@@ -82,7 +82,7 @@ export const returnsComputed = {
 }
 
 export const returnsMethods = {
-  ...mapActions('returns', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage'])
+  ...mapActions('returns', ['getReturnsList', 'setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage'])
 }
 
 // 轮播广告
