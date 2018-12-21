@@ -125,6 +125,7 @@ export const actions = {
   setShopId({commit, dispatch}, shop) {
     let shopId = shop.id
     commit('SET_SHOP_ID', shopId)
+    commit('SET_PAGE', 1)
     dispatch('getOrderList')
   },
   setTime({commit, dispatch}, time) {
@@ -133,14 +134,17 @@ export const actions = {
       endTime: time[1]
     }
     commit('SET_TIME', time)
+    commit('SET_PAGE', 1)
     dispatch('getOrderList')
   },
   setKeyword({commit, dispatch}, keyword) {
     commit('SET_KEYWORD', keyword)
+    commit('SET_PAGE', 1)
     dispatch('getOrderList')
   },
   setStatus({commit, dispatch}, selectStatus) {
     commit('SET_STATUS', selectStatus.status)
+    commit('SET_PAGE', 1)
     dispatch('getOrderList')
   },
   setPage({commit, dispatch}, page) {
