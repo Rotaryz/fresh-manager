@@ -15,15 +15,15 @@ module.exports = {
     port: 9001,
     ...(process.env.VUE_APP_API
       ? // 代理生产地址.
-      {
-        proxy: {
-          '/social-shopping': {
-            target: process.env.VUE_APP_API
+        {
+          proxy: {
+            '/social-shopping': {
+              target: process.env.VUE_APP_API
+            }
           }
         }
-      }
       : // 代理本地地址.
-      {})
+        {})
     // { before: require('./tests/mock-api') }),
   }
 }

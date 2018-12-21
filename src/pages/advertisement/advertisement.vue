@@ -198,8 +198,7 @@
         this.bannerList.forEach((item) => {
           arr.push({id: item.id})
         })
-        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {
-        })
+        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {})
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -314,12 +313,12 @@
         this.bannerList[index].showType = false
         this.$forceUpdate()
         switch (typeIndex) {
-          case 0:
-            this._showGoods()
-            break
-          case 1:
-            this._showCustom()
-            break
+        case 0:
+          this._showGoods()
+          break
+        case 1:
+          this._showCustom()
+          break
         }
         this.bannerIndex = index
       },
