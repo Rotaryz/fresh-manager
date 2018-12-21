@@ -117,7 +117,6 @@
     background: $color-list-header
 
   .list-box
-    line-height: 1
     padding-left: 30px
     box-sizing: border-box
     border-bottom: 1px solid $color-line
@@ -150,6 +149,7 @@
           color: $color-text-assist
         .item-dark
           font-size: $font-size-14
+          line-height: 1
 
   .pagination-box
     height: 70px
