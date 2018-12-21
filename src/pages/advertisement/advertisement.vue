@@ -179,9 +179,7 @@
       ...adverComputed
     },
     async created() {
-      this.bannerList = this.infoBannerList.length
-        ? _.cloneDeep(this.infoBannerList)
-        : this.bannerList.push(_.cloneDeep(TEMPLATE_OBJ))
+      this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : [_.cloneDeep(TEMPLATE_OBJ)]
       this.bannerList = this.bannerList.map((item) => {
         item.showType = false
         return item
@@ -200,7 +198,8 @@
         this.bannerList.forEach((item) => {
           arr.push({id: item.id})
         })
-        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {})
+        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {
+        })
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -315,12 +314,12 @@
         this.bannerList[index].showType = false
         this.$forceUpdate()
         switch (typeIndex) {
-        case 0:
-          this._showGoods()
-          break
-        case 1:
-          this._showCustom()
-          break
+          case 0:
+            this._showGoods()
+            break
+          case 1:
+            this._showCustom()
+            break
         }
         this.bannerIndex = index
       },
@@ -357,6 +356,7 @@
         }
         await this.getInfoBannerList()
         this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
+        console.log(this.bannerList)
         this.bannerList = this.bannerList.map((item) => {
           item.showType = false
           return item
