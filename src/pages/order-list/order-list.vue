@@ -127,9 +127,6 @@
         })
       },
       exportExcel() {
-        // if (!this.shopId) {
-        //   this.$toast.show('一次只能导出一个社区的消费者订单，请先选择社区')
-        // }
         window.open(this.orderExportUrl, '_blank')
       },
       changeStatus(selectStatus) {
