@@ -59,8 +59,8 @@
         </div>
       </div>
     </div>
-    <div class="go-btn">
-      <div class="go-back-btn btn-item" @click="back">返回</div>
+    <div class="back">
+      <div class="back-btn btn-main" @click="_back">返回</div>
     </div>
     <default-modal ref="modal">
       <div slot="content">
@@ -141,7 +141,7 @@
       hideModal() {
         this.$refs.modal.hideModal()
       },
-      back() {
+      _back() {
         this.$router.back()
       }
     }
@@ -345,4 +345,19 @@
           background: $color-positive
           color: $color-white
           border-color: $color-positive
+  .back
+    position: fixed
+    left: 200px
+    right: 0px
+    bottom: 0
+    z-index: 10
+    background: #F9F9F9
+    height: 80px
+    border-radius: 0 0 6px 6px
+    display: flex
+    align-items: center
+    .back-btn
+      font-size: $font-size-16
+      margin-left: 40px
+      padding: 12px 32px
 </style>
