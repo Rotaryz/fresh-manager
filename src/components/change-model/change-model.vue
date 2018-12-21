@@ -20,7 +20,7 @@
         </div>
         <div class="main-model-box">
           <div class="text">排序号</div>
-          <input v-model="pointNumber" type="text" class="main-input-box" placeholder="0">
+          <input v-model="pointNumber" type="number" class="main-input-box" placeholder="0">
         </div>
         <div class="btn-group">
           <span class="btn cancel" @click="cancel">取消</span>
