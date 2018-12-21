@@ -10,7 +10,7 @@ module.exports = {
   css: {
     sourceMap: true
   },
-  productionSourceMap: true,
+  productionSourceMap: false,
   devServer: {
     port: 9001,
     ...(process.env.VUE_APP_API
