@@ -153,6 +153,7 @@
 
   .refund-detail
     width: 100%
+    padding-bottom: 80px
     .detail-item
       layout()
       .top

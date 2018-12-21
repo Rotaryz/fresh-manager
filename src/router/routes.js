@@ -264,6 +264,7 @@ export default [
         component: () => lazyLoadView(import('@pages/refund-detail/refund-detail')),
         meta: {
           titles: ['订单管理', '退货管理', '退款详情'],
+          marginBottom: 85,
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('returns/getReturnsDetail', routeTo.params.id)
@@ -285,6 +286,7 @@ export default [
         component: () => lazyLoadView(import('@pages/order-detail/order-detail')),
         meta: {
           titles: ['订单管理', '订单列表', '订单详情'],
+          marginBottom: 85,
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('order/getOrderDetail', routeTo.params.id)
