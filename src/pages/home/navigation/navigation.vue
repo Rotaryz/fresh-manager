@@ -196,7 +196,7 @@
         this.navList = navList
       },
       clickNav(nav, index) {
-        if (nav.isLight) {
+        if (nav.url === this.$route.fullPath) {
           return
         }
         if (index !== undefined) {

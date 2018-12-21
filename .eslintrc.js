@@ -107,6 +107,12 @@ module.exports = {
         createComponentMocks: false,
         createModuleStore: false
       }
+    },
+    {
+      'files': ['*.vue'],
+      'rules': {
+        'indent': 'off'
+      }
     }
   ]
 }
