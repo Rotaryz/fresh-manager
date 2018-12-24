@@ -580,6 +580,7 @@
               +list[i].shelf_goods[index].trade_price < 0 ||
               +list[i].shelf_goods[index].buy_limit <= 0 ||
               +list[i].shelf_goods[index].usable_stock < 0 ||
+              (list[i].shelf_goods[index].usable_stock + '').includes('.') ||
               +list[i].shelf_goods[index].sort < 0
             ) {
               this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}输入数据有误`)
