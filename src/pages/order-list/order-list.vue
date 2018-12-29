@@ -229,12 +229,15 @@
       // 双行样式
       .list-double-row
         .item-sub
+          no-wrap()
+          line-height: 1
           margin-top: 8px
           font-size: $font-size-14
           color: $color-text-assist
         .item-dark
-          line-height: 1
+          no-wrap()
           font-size: $font-size-14
+          line-height: 1
 
   .pagination-box
     height: 70px

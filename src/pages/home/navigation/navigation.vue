@@ -91,6 +91,14 @@
       children: []
     },
     {
+      title: '客户管理',
+      icon: require('./icon-vip@2x.png'),
+      iconSelected: require('./icon-vip_white@2x.png'),
+      url: '/home/customer-management',
+      isLight: false,
+      children: []
+    },
+    {
       title: '团长管理',
       icon: require('./icon-group@2x.png'),
       iconSelected: require('./icon-group_white@2x.png'),
@@ -106,8 +114,44 @@
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false
+        },
+        {
+          title: '团长结算',
+          url: '/home/head-settlement',
+          isLight: false
+        },
+        {
+          title: '团长提现',
+          url: '/home/leader-withdrawal',
+          isLight: false
         }
       ]
+    },
+    {
+      title: '财务管理',
+      icon: require('./icon-moeny@2x.png'),
+      iconSelected: require('./icon-moeny_white@2x.png'),
+      url: '/home/business-overview',
+      isLight: false,
+      children: [
+        {
+          title: '营业概览',
+          url: '/home/business-overview',
+          isLight: false
+        }, {
+          title: '交易记录',
+          url: '/home/transaction-record',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '数据统计',
+      icon: require('./icon-date@2x.png'),
+      iconSelected: require('./icon-date_white@2x.png'),
+      url: '/home/customer-management',
+      isLight: false,
+      children: []
     }
   ]
   export default {
@@ -117,7 +161,7 @@
       childrenActive(value) {
         let styles = ''
         if (value.children.length && value.isLight) {
-          styles = `height:${value.children.length * (HEIGHT + 4)}px`
+          styles = `height:${value.children.length * (HEIGHT + 4) + 28}px`
         }
         return styles
       },
@@ -126,6 +170,9 @@
         let cname = ''
         if (value.isLight) {
           cname = 'active'
+        }
+        if (value.isLight && value.children && !value.children.length) {
+          cname = 'active active-only'
         }
         if (value.isLight && value.children && value.children.length) {
           cname += ' no-border'
@@ -212,7 +259,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  $tab-height = 40px
+  $tab-height = 56px
   $color-menu-tag = #4dbd73
   $color-menu-text = #6E748B
   $color-menu-text-active = #fff
@@ -235,7 +282,6 @@
     header
       width: 199px
       height: 80px
-      border-top-left-radius: 18px
       border-bottom: 1px solid $color-menu-line
       background: $color-main
       bg-image('./pic-logo')
@@ -252,14 +298,11 @@
         font-family: PingFangSC-Semibold
         letter-spacing: 6px
     dl
-      padding: 12px 0
       font-family: PingFangSC-Regular
       color: $color-menu-text
       font-size: 16px
       cursor: pointer
       background: $color-menu-bg
-      &.active
-        background: $color-menu-bg-active
       dt
         layout(row, block, nowrap)
         align-items: center
@@ -276,7 +319,7 @@
           display: block
           content: ''
           width: 0
-          height: 18px
+          height: 56px
           transition: width .3s
           background: $color-menu-tag
         &:hover
@@ -292,6 +335,8 @@
             icon-image('icon-pressed_select')
             &.rotate
               transform: rotate(90deg)
+        &.active-only
+          background: $color-menu-bg-active
         p
           flex: 1
           overflow: hidden
@@ -315,6 +360,7 @@
         transition: height 0.3s
         layout()
         overflow: hidden
+        background: $color-menu-bg-active
         p
           width: 100%
           layout()
@@ -323,6 +369,10 @@
           flex: 1
           box-sizing: border-box
           transition: all .2s
+          &:last-child
+            padding-bottom: 14px
+          &:first-child
+            padding-top: 14px
           &:before
             position: absolute
             left: 0

@@ -15,9 +15,11 @@
         <div class="list-item">{{item.name}}</div>
         <div class="list-item">{{item.address}}</div>
         <div class="list-item">{{item.created_at}}</div>
+        <div class="list-item">冻结功能未对接</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
           <span class="list-operation" @click="_getQrCode(item.id)">店铺码</span>
+          <span class="list-operation">冻结</span>
         </div>
       </div>
     </div>
@@ -47,7 +49,7 @@
 
   const PAGE_NAME = 'LEADER_LIST'
   const TITLE = '团长列表'
-  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '操作']
+  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '状态', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -129,7 +131,7 @@
       &:nth-child(6), &:nth-child(7)
         flex: 1.5
       &:last-child
-        flex: 0.8
+        flex: 1.4
 
   .list
     flex: 1
@@ -144,10 +146,13 @@
       // 双行样式
       .list-double-row
         .item-sub
+          no-wrap()
+          line-height: 1
           margin-top: 8px
           font-size: $font-size-14
           color: $color-text-assist
         .item-dark
+          no-wrap()
           font-size: $font-size-14
           line-height: 1
 

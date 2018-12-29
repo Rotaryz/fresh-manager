@@ -364,6 +364,19 @@ export default [
        *
        * ------------------------------------------------------------------------------------------
        *
+       * 客户管理
+       */
+      // 客户管理
+      {
+        path: 'customer-management',
+        name: 'customer-management',
+        component: () => lazyLoadView(import('@pages/customer-management/customer-management'))
+      },
+      /**
+       * 客户管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
        * 团长管理
        */
       // 团长列表
@@ -467,10 +480,77 @@ export default [
           }
         },
         props: (route) => ({detail: route.params.detail})
-      }
+      },
+      // 团长结算
+      {
+        path: 'head-settlement',
+        name: 'head-settlement',
+        component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
+        meta: {
+          titles: ['团长管理', '团长结算']
+        }
+      },
+      // 团长结算详情
+      {
+        path: 'head-settlement/settlement-detail',
+        name: 'settlement-detail',
+        component: () => lazyLoadView(import('@pages/settlement-detail/settlement-detail')),
+        meta: {
+          titles: ['团长管理', '团长结算', '团长结算详情']
+        }
+      },
+      // 团长提现
+      {
+        path: 'leader-withdrawal',
+        name: 'leader-withdrawal',
+        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
+        meta: {
+          titles: ['团长管理', '团长提现']
+        }
+      },
+      // 收支明细
+      {
+        path: 'leader-withdrawal/budget-detail',
+        name: 'budget-detail',
+        component: () => lazyLoadView(import('@pages/budget-detail/budget-detail')),
+        meta: {
+          titles: ['团长管理', '团长提现', '收支明细']
+        }
+      },
       /**
-       * 团长管理
+       * 客户管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 财务管理
        */
+      // 交易记录
+      {
+        path: 'transaction-record',
+        name: 'transaction-record',
+        component: () => lazyLoadView(import('@pages/transaction-record/transaction-record')),
+        meta: {
+          titles: ['财务管理', '交易记录']
+        }
+      },
+      // 营业概况
+      {
+        path: 'business-overview',
+        name: 'business-overview',
+        component: () => lazyLoadView(import('@pages/business-overview/business-overview')),
+        meta: {
+          titles: ['财务管理', '营收概况']
+        }
+      },
+      // 营业成本
+      {
+        path: 'business-overview/operating-cost',
+        name: 'operating-cost',
+        component: () => lazyLoadView(import('@pages/operating-cost/operating-cost')),
+        meta: {
+          titles: ['财务管理', '营收概况', '营业成本']
+        }
+      }
     ]
   },
   {
