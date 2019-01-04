@@ -370,7 +370,24 @@ export default [
       {
         path: 'customer-management',
         name: 'customer-management',
-        component: () => lazyLoadView(import('@pages/customer-management/customer-management'))
+        component: () => lazyLoadView(import('@pages/customer-management/customer-management')),
+        meta: {
+          titles: ['客户管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('customer/getCustomerList', {page: 1, startTime: '', endTime: '', keyword: '', sortType: 0})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
       },
       /**
        * 客户管理
@@ -487,16 +504,45 @@ export default [
         name: 'head-settlement',
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
-          titles: ['团长管理', '团长结算']
+          titles: ['团长管理', '团长结算'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
+              .then((response) => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       // 团长结算详情
       {
-        path: 'head-settlement/settlement-detail',
+        path: 'head-settlement/settlement-detail/:id/:name',
         name: 'settlement-detail',
         component: () => lazyLoadView(import('@pages/settlement-detail/settlement-detail')),
         meta: {
-          titles: ['团长管理', '团长结算', '团长结算详情']
+          titles: ['团长管理', '团长结算', '团长结算详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
+            store
+              .dispatch('leader/getSettlementDetail', data)
+              .then((response) => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       // 团长提现
@@ -549,6 +595,37 @@ export default [
         component: () => lazyLoadView(import('@pages/operating-cost/operating-cost')),
         meta: {
           titles: ['财务管理', '营收概况', '营业成本']
+        }
+      },
+      /**
+       * 财务管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 数据管理
+       */
+      // 数据统计
+      {
+        path: 'data-survey',
+        name: 'data-survey',
+        component: () => lazyLoadView(import('@pages/data-survey/data-survey')),
+        meta: {
+          titles: ['数据管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('data/getOrderDetail', {startTime: '', endTime: '', time: 'today', loading: true})
+              .then((res) => {
+                console.log(res)
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       }
     ]

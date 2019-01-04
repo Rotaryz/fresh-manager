@@ -82,6 +82,7 @@
       box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
       background: $color-white
     .container-routine
+      padding: 0
       box-shadow: 0 0 0 0 transparent
       background: transparent
 </style>

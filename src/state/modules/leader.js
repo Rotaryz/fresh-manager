@@ -11,7 +11,9 @@ export const state = {
   },
   leaderDetail: {}, // 团长详情
   deliveryOrder: {}, // 配送订单列表
-  deliveryDetail: {} // 团长配送订单详情
+  deliveryDetail: {}, // 团长配送订单详情
+  settlementList: {}, // 团长结算列表
+  settlementDetail: {} // 团长结算详情列表
 }
 
 export const getters = {
@@ -26,6 +28,12 @@ export const getters = {
   },
   deliveryDetail(state) {
     return state.deliveryDetail
+  },
+  settlementList(state) {
+    return state.settlementList
+  },
+  settlementDetail(state) {
+    return state.settlementDetail
   }
 }
 
@@ -44,6 +52,12 @@ export const mutations = {
   },
   SET_DELIVERY_DETAIL(state, detail) {
     state.deliveryDetail = detail
+  },
+  SET_SETTLEMENT_LIST(state, list) {
+    state.settlementList = list
+  },
+  SET_SETTLEMENT_DETAIL(state, list) {
+    state.settlementDetail = list
   }
 }
 
@@ -140,5 +154,57 @@ export const actions = {
   },
   setDeliveryOrder({commit}, arr) {
     commit('SET_DELIVERY_ORDER', arr)
+  },
+  //  团长结算列表
+  // 团长列表
+  getSettlementList({state, commit, dispatch}, {page, keyword, loading = true}) {
+    return API.Leader.settlementList({page, keyword}, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        let pageTotal = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        commit('SET_SETTLEMENT_LIST', arr)
+        commit('SET_PAGE_TOTAL', pageTotal)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  // 团长结算详情列表
+  getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
+    return API.Leader.settlementDetail(
+      {page, shop_id: shopId, order_sn: orderSn, status, settlement_type: settlementType},
+      loading
+    )
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        let pageTotal = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        commit('SET_SETTLEMENT_DETAIL', arr)
+        commit('SET_PAGE_TOTAL', pageTotal)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
   }
 }

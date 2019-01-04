@@ -7,26 +7,25 @@
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div class="list-content list-box">
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
+      <div v-for="(item, index) in settlementList" :key="index" class="list-content list-box">
+        <div class="list-item">{{item.mobile}}</div>
+        <div class="list-item">{{item.name}}</div>
+        <div class="list-item">{{item.social_name}}</div>
+        <div class="list-item">{{item.settled_total}}</div>
+        <div class="list-item">{{item.settle_total}}</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" :to="'settlement-detail?id='" append class="list-operation">详情</router-link>
+          <router-link tag="span" :to="`settlement-detail/${item.shop_id}/${item.name}-${item.mobile}`" append class="list-operation">详情</router-link>
         </div>
       </div>
     </div>
     <div class="pagination-box">
-      <!--:pageDetail="pageTotal"-->
-      <base-pagination ref="pages" @addPage="_getMoreList"></base-pagination>
+      <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-// import API from '@api'
+  import {leaderComputed, leaderMethods} from '@state/helpers'
 
   const PAGE_NAME = 'PURCHASE_MANAGEMENT'
   const TITLE = '团长结算'
@@ -40,18 +39,26 @@
       return {
         listTitle: LIST_TITLE,
         page: 1,
-        orderSn: '',
+        keyword: '',
         excelParams: ''
       }
     },
-    computed: {},
+    computed: {
+      ...leaderComputed
+    },
     created() {},
     methods: {
+      ...leaderMethods,
       _search(text) {
         this.$refs.pages.beginPage()
         this.page = 1
+        this.keyword = text
+        this.getSettlementList({page: this.page, keyword: this.keyword, loading: false})
       },
-      _getMoreList(page) {}
+      _getMoreList(page) {
+        this.page = page
+        this.getSettlementList({page: this.page, keyword: this.keyword, loading: false})
+      }
     }
   }
 </script>

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import storage from 'storage-controller'
 // import AwesomePicker from 'vue-awesome-picker'
-// import echarts from 'echarts'
+import echarts from 'echarts'
 import base from '@mixins/base'
 import * as handle from './cos/handle'
 import {fileType} from './cos/file-config'
@@ -23,6 +23,7 @@ export const Plugins = {
     Vue.prototype.$vod = vod
     Vue.prototype.$createQrCode = createQrCode
     Vue.prototype.$storage = storage
+    Vue.prototype.$echarts = echarts
   }
 }
 // 使用插件

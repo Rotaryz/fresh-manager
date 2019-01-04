@@ -18,14 +18,23 @@ export const globalComputed = {
 
 // 团长
 export const leaderComputed = {
-  ...mapGetters('leader', ['leaderList', 'pageTotal', 'leaderDetail', 'deliveryOrder'])
+  ...mapGetters('leader', [
+    'leaderList',
+    'pageTotal',
+    'leaderDetail',
+    'deliveryOrder',
+    'settlementList',
+    'settlementDetail'
+  ])
 }
 
 export const leaderMethods = mapActions('leader', [
   'getLeaderList',
   'getDeliveryOrder',
   'getDeliveryDetail',
-  'setDeliveryOrder'
+  'setDeliveryOrder',
+  'getSettlementList',
+  'getSettlementDetail'
 ])
 
 // 今日采购
@@ -91,3 +100,15 @@ export const purchaseComputed = {
 }
 
 export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail'])
+// 成员管理
+export const customerComputed = {
+  ...mapGetters('customer', ['customerList', 'pageTotal'])
+}
+
+export const customerMethods = mapActions('customer', ['getCustomerList'])
+// 数据管理
+export const dataComputed = {
+  ...mapGetters('data', ['orderDetail', 'leaderDetail', 'shopDetail'])
+}
+
+export const dataMethods = mapActions('data', ['getOrderDetail', 'getLeaderDetail', 'getShopDetail'])

@@ -15,11 +15,11 @@
         <div class="list-item">{{item.name}}</div>
         <div class="list-item">{{item.address}}</div>
         <div class="list-item">{{item.created_at}}</div>
-        <div class="list-item">冻结功能未对接</div>
+        <div class="list-item">{{item.is_freeze_str}}</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
           <span class="list-operation" @click="_getQrCode(item.id)">店铺码</span>
-          <span class="list-operation">冻结</span>
+          <span class="list-operation" @click="_showFreeze(item.is_freeze, item.id)">{{item.is_freeze ? '解冻' : '冻结'}}</span>
         </div>
       </div>
     </div>
@@ -39,12 +39,14 @@
         </div>
       </div>
     </default-modal>
+    <default-confirm ref="confirm" @confirm="_freeze"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {leaderComputed, leaderMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
   const PAGE_NAME = 'LEADER_LIST'
@@ -57,14 +59,16 @@
       title: TITLE
     },
     components: {
-      DefaultModal
+      DefaultModal,
+      DefaultConfirm
     },
     data() {
       return {
         leaderTitle: LEADER_TITLE,
         page: 1,
         loadImg: true,
-        codeUrl: ''
+        codeUrl: '',
+        freezeId: 0
       }
     },
     computed: {
@@ -90,6 +94,20 @@
         this.$refs.dialog.showModal()
         this.loadImg = false
         this.codeUrl = res.data.image_url
+      },
+      _showFreeze(status, id) {
+        this.freezeId = id
+        let title = status ? '确定解冻该团长？' : '确定冻结该团长？'
+        this.$refs.confirm.show(title)
+      },
+      async _freeze() {
+        let res = await API.Leader.shopToggleFrozen({shop_id: this.freezeId})
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.getLeaderList({page: this.page, loading: false})
+        this.$refs.confirm.hide()
       }
     }
   }

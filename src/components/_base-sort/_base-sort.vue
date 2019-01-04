@@ -1,5 +1,5 @@
 <template>
-  <div class="base-sort hand" @click="_setSort">
+  <div class="base-sort hand">
     <span :class="{'sort-down-active': sortIndex === 0}" class="sort-down"></span>
     <span :class="{'sort-up-active': sortIndex === 1}" class="sort-up"></span>
   </div>
@@ -25,9 +25,13 @@
       }
     },
     methods: {
-      _setSort() {
+      setSort() {
         this.sortIndex = this.sortIndex === -1 ? 1 : this.sortIndex === 1 ? 0 : 1
-        this.$emit('getSortStatus', this.sortStatus[this.sortIndex])
+        // this.$emit('getSortStatus', this.sortStatus[this.sortIndex])
+        return this.sortStatus[this.sortIndex]
+      },
+      infoSort() {
+        this.sortIndex = -1
       }
     }
   }
@@ -47,7 +51,7 @@
     border-top: 4px solid #ACACAC
     position: absolute
     left: 5px
-    transition :all 0.3s
+    transition: all 0.3s
     bottom: -2px
 
   .sort-down
@@ -56,7 +60,7 @@
     position: absolute
     left: 5px
     top: 3px
-    transition :all 0.3s
+    transition: all 0.3s
 
   .sort-up-active
     border: 4px solid transparent

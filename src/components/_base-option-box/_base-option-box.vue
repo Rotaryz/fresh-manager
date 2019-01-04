@@ -30,7 +30,8 @@
         type: Array,
         default: () => NAV
       },
-      tabActive: { // 自定义时间的tabIndex值
+      tabActive: {
+        // 自定义时间的tabIndex值
         type: Number,
         default: 4
       },
@@ -59,6 +60,9 @@
       checkTab(index) {
         this.tabIndex = index
         let status = this.arrTitle[index].status
+        if (status === 'custom') {
+          return
+        }
         this.$emit('checkTime', status)
       },
       _getCustomTime(time) {
@@ -143,6 +147,7 @@
 
   .block
     row-center()
+    left: -80%
     z-index: 10
     &.fade-enter, &.fade-leave-to
       opacity: 0

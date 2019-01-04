@@ -26,6 +26,9 @@
     <div class="content-header">
       <div class="content-title">营收趋势</div>
     </div>
+    <div class="customer-box">
+      <div id="customer"></div>
+    </div>
   </div>
 </template>
 
@@ -40,13 +43,215 @@
     },
     data() {
       return {}
+    },
+    mounted() {
+      console.log(this.$echarts)
+      this.drawTotalLine()
+    },
+    methods: {
+      drawTotalLine(data, arr, between) {
+        data = data || ['2:00', '4:00', '06:00', '8:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '24:00']
+        arr = arr || {refund_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], pay_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], submit_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+        let myChart = this.$echarts.init(document.getElementById('customer'))
+        myChart.setOption({
+          legend: {
+            itemWidth: 14,
+            itemHeight: 14,
+            borderRadius: 0,
+            bottom: 10,
+            align: 'auto',
+            data: [
+              {name: '净利润', icon: 'rect'},
+              {name: '商品销售收入', icon: 'rect'},
+              {name: '营业成本', icon: 'rect'}
+            ]
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '63',
+            containLabel: true
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: data,
+            splitLine: {
+              show: false,
+              lineStyle: {
+                color: '#E6E6E6',
+                width: 0.5
+              }
+            },
+            axisLabel: {
+              color: '#666',
+              fontSize: 12,
+              align: 'center'
+            },
+            axisTick: {
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            }
+          },
+          tooltip: {
+            trigger: 'axis',
+            textStyle: {
+              align: 'left'
+            },
+            axisPointer: {
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            },
+            padding: [10, 50, 10, 20]
+          },
+          yAxis: {
+            minInterval: 1,
+            type: 'value',
+            splitLine: {
+              show: true,
+              lineStyle: {
+                color: '#EFEFEF',
+                width: 0.5,
+                type: 'dotted'
+              }
+            },
+            axisTick: {
+              show: false,
+              lineStyle: {
+                color: '#c4c4c4',
+                width: 0.5
+              }
+            },
+            axisLabel: {
+              formatter: '{value}',
+              color: '#666'
+            },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: '#c4c4c4',
+                width: 0.5
+              }
+            }
+          },
+          series: [{
+            name: '净利润',
+            data: arr.refund_num,
+            type: 'line',
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0,
+                x2: 0,
+                y: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0, color: 'rgba(104,212,165,0.28)'
+                }, {
+                  offset: 1, color: 'rgba(104,212,165,0.28)'
+                }],
+                globalCoord: false
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: 'rgba(79,209,102,1)',
+                borderWidth: 1,
+                // borderColor: '#fff',
+                // shadowColor: 'rgba(73,133,252,1)',
+                // shadowOffsetY: 0,
+                // shadowOffsetX: 0,
+                // shadowBlur: 10,
+                lineStyle: {
+                  color: 'rgba(79,209,102,1)',
+                  width: 3
+                }
+              }
+            }
+          }, {
+            name: '商品销售收入',
+            data: arr.submit_num,
+            type: 'line',
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0,
+                x2: 0,
+                y: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0, color: 'rgba(169,129,255,0.3)'
+                }, {
+                  offset: 1, color: 'rgba(169,129,255,0.3)'
+                }],
+                globalCoord: false
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: 'rgba(169,129,255,1)',
+                borderWidth: 1,
+                // borderColor: '#fff',
+                // shadowColor: 'rgba(73,133,252,1)',
+                // shadowOffsetY: 0,
+                // shadowOffsetX: 0,
+                // shadowBlur: 10,
+                lineStyle: {
+                  color: 'rgba(169,129,255,1)',
+                  width: 3
+                }
+              }
+            }
+          }, {
+            name: '营业成本',
+            data: arr.pay_num,
+            type: 'line',
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0,
+                x2: 0,
+                y: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0, color: 'rgba(73,133,252, 0.55)'
+                }, {
+                  offset: 1, color: 'rgba(73,133,252, 0.05)'
+                }],
+                globalCoord: false
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: 'rgba(73,133,252,1)',
+                borderWidth: 1,
+                // borderColor: '#fff',
+                // shadowColor: 'rgba(73,133,252,1)',
+                // shadowOffsetY: 0,
+                // shadowOffsetX: 0,
+                // shadowBlur: 10,
+                lineStyle: {
+                  color: 'rgba(73,133,252,1)',
+                  width: 3
+                }
+              }
+            }
+          }]
+        })
+        myChart.resize()
+      },
+
     }
-    // mounted() {
-    //   this.$emit('setRoutine', true)
-    // },
-    // destroyed() {
-    //   this.$emit('setRoutine', false)
-    // }
   }
 </script>
 
@@ -113,4 +318,9 @@
           text-decoration: underline
           font-family: $font-family-regular
           font-size: $font-size-14
+
+  .customer-box
+    #customer
+      height: 480px
+      width: 100%
 </style>

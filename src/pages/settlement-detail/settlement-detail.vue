@@ -2,10 +2,10 @@
   <div class="settlement-detail">
     <div class="tab-header">
       <div class="tab-box">
-        <base-drop-down></base-drop-down>
+        <base-drop-down :select="statusObj" @setValue="_setStatus"></base-drop-down>
       </div>
       <div class="tab-box">
-        <base-drop-down></base-drop-down>
+        <base-drop-down :select="settlementObj" @setValue="_settlementType"></base-drop-down>
       </div>
       <base-search placeHolder="订单号" @search="_search"></base-search>
     </div>
@@ -13,17 +13,16 @@
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div class="list-content list-box">
-        <div class="list-item">的</div>
-        <div class="list-item">发</div>
-        <div class="list-item">的</div>
-        <div class="list-item">的</div>
-        <div class="list-item">的</div>
-        <div class="list-item">是</div>
-        <div class="list-item">是</div>
-        <div class="list-item">是</div>
+      <div v-for="(item, index) in settlementDetail" :key="index" class="list-content list-box">
+        <div class="list-item">{{item.order_sn}}</div>
+        <div class="list-item">{{item.total}}</div>
+        <div class="list-item">{{item.refuse_total}}</div>
+        <div class="list-item">{{item.money}}</div>
+        <div class="list-item">{{item.settlement_type_str}}</div>
+        <div class="list-item">{{item.status_str}}</div>
+        <div class="list-item">{{item.created_at}}</div>
         <div class="list-item list-operation-box">
-          <router-link tag="span" :to="'settlement-detail?id='" append class="list-operation">详情</router-link>
+          <span class="list-operation" @click="_goDetail(item)">详情</span>
         </div>
       </div>
     </div>
@@ -34,21 +33,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {purchaseComputed, purchaseMethods} from '@state/helpers'
+  import {leaderComputed, leaderMethods} from '@state/helpers'
 
   const PAGE_NAME = 'SETTLEMENT_DETAIL'
   const TITLE = '团长结算详情'
-  const LIST_TITLE = [
-    '订单号',
-    '订单实付',
-    '退款金额',
-    '应结算金额',
-    '已结算金额',
-    '结算类型',
-    '结算状态',
-    '结算时间',
-    '操作'
-  ]
+  const LIST_TITLE = ['订单号', '订单实付', '退款金额', '应结算金额', '结算类型', '结算状态', '结算时间', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -60,25 +49,74 @@
         listTitle: LIST_TITLE,
         page: 1,
         orderSn: '',
-        excelParams: ''
+        excelParams: '',
+        statusObj: {
+          check: false,
+          show: false,
+          content: '全部状态',
+          type: 'default',
+          data: [
+            {name: '全部', status: ''},
+            {name: '未结算', status: 0},
+            {name: '已结算', status: 1},
+            {name: '已退款', status: 2}
+          ]
+        },
+        settlementObj: {
+          check: false,
+          show: false,
+          content: '结算状态',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '佣金收益', status: 1}, {name: '退款补偿', status: 2}]
+        },
+        id: 0,
+        settlementType: '',
+        status: ''
       }
     },
     computed: {
-      ...purchaseComputed
+      ...leaderComputed
     },
-    created() {},
+    created() {
+      this.id = this.$route.params.id
+    },
     methods: {
-      ...purchaseMethods,
+      ...leaderMethods,
+      _goDetail(item) {
+        // 退货详情id未对 todo
+        let url = item.settlement_type === 1 ? '/home/order-detail/' + item.order_id : '/home/refund-detail/' + item.id
+        this.$router.push(url)
+      },
+      _getSettlementDetail() {
+        this.getSettlementDetail({
+          page: 1,
+          shopId: this.id,
+          orderSn: this.orderSn,
+          status: this.status,
+          settlementType: this.settlementType,
+          loading: false
+        })
+      },
       _search(text) {
         this.$refs.pages.beginPage()
         this.page = 1
         this.orderSn = text
-        this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
+        this._getSettlementDetail()
+      },
+      _setStatus(item) {
+        this.status = item.status
+        this.$refs.pages.beginPage()
+        this._getSettlementDetail()
+      },
+      _settlementType(item) {
+        this.settlementType = item.status
+        this.$refs.pages.beginPage()
+        this._getSettlementDetail()
       },
       _getMoreList(page) {
         this.$refs.pages.beginPage()
         this.page = page
-        this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
+        this._getSettlementDetail()
       }
     }
   }
@@ -118,7 +156,7 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
-      &:first-child,&:nth-child(8)
+      &:first-child, &:nth-child(8)
         flex: 1.5
       &:last-child
         flex: 0.6

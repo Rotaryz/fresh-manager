@@ -138,7 +138,8 @@
           title: '营业概览',
           url: '/home/business-overview',
           isLight: false
-        }, {
+        },
+        {
           title: '交易记录',
           url: '/home/transaction-record',
           isLight: false
@@ -149,7 +150,7 @@
       title: '数据统计',
       icon: require('./icon-date@2x.png'),
       iconSelected: require('./icon-date_white@2x.png'),
-      url: '/home/customer-management',
+      url: '/home/data-survey',
       isLight: false,
       children: []
     }
