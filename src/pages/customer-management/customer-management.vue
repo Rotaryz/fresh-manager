@@ -43,7 +43,7 @@
     {title: '客户手机', showSort: false, sort: []},
     {title: '交易单数', showSort: true, sort: [1, 2]},
     {title: '交易数', showSort: true, sort: [3, 4]},
-    {title: '客单价', showSort: true, sort: [5, 6]},
+    {title: '笔单价', showSort: true, sort: [5, 6]},
     {title: '注册时间', showSort: false, sort: []}
   ]
 

@@ -24,7 +24,20 @@ export const leaderComputed = {
     'leaderDetail',
     'deliveryOrder',
     'settlementList',
-    'settlementDetail'
+    'settlementDetail',
+    'withdrawalList',
+    'withdrawalPageDetail',
+    'withdrawalPage',
+    'withdrawalSn',
+    'withdrawalType',
+    'withdrawalKeyword',
+    'withdrawalStatus',
+    'billList',
+    'billType',
+    'billAcceptType',
+    'billAcceptId',
+    'billPageDetail',
+    'billPage'
   ])
 }
 
@@ -34,7 +47,14 @@ export const leaderMethods = mapActions('leader', [
   'getDeliveryDetail',
   'setDeliveryOrder',
   'getSettlementList',
-  'getSettlementDetail'
+  'getSettlementDetail',
+  'getWithdrawalList',
+  'setWithdrawalPage',
+  'setWithdrawalType',
+  'setWithdrawalStatus',
+  'setWithdrawalSearch',
+  'setBillPage',
+  'setBillType'
 ])
 
 // 今日采购

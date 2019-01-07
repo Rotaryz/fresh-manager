@@ -1,47 +1,45 @@
 <template>
   <div class="leader-withdrawal">
     <div class="tab-header">
-      <base-drop-down :width="152"></base-drop-down>
+      <base-drop-down :width="152" :select="statusSelect" @setValue="changeWithdrawalStatus"></base-drop-down>
       <input v-model="orderSn" type="text" class="with-search" placeholder="提现单号">
-      <input v-model="keywords" type="text" class="with-search" placeholder="社区名称/团长名称/团长账号">
-      <div class="search-icon-box" @click="_search">
+      <input v-model="keyword" type="text" class="with-search" placeholder="社区名称/团长名称/团长账号">
+      <div class="search-icon-box" @click="search">
         <span class="search-icon hand"></span>
       </div>
-      <div class="btn-main btn-main-end">导出Excel</div>
+      <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div class="list-content list-box">
+      <div v-for="(item, index) in withdrawalList" :key="index" class="list-content list-box">
         <div class="list-item list-double-row">
-          <p class="item-dark">DDH20188832770043</p>
-          <p class="item-sub">是的</p>
+          <p class="item-dark">{{item.withdraw_sn}}</p>
+          <p class="item-sub">{{item.created_at}}</p>
         </div>
-        <div class="list-item">发</div>
-        <div class="list-item">的</div>
-        <div class="list-item">的</div>
-        <div class="list-item">的</div>
-        <div class="list-item">是</div>
-        <div class="list-item">是</div>
+        <div class="list-item">{{item.mobile}}</div>
+        <div class="list-item">{{item.name}}</div>
+        <div class="list-item">{{item.social_name}}</div>
+        <div class="list-item">{{item.total}}</div>
+        <div class="list-item">{{item.poundage}}</div>
+        <div class="list-item">{{item.realy_total}}</div>
         <div class="list-item list-help">
-          微信受理失败
-          <div class="help-box">
+          {{item.status_str}}
+          <div v-if="item.status === 2 || item.status === 4" class="help-box">
             <img src="./icon-help@2x.png" class="help hand">
-            <transition name="fade">
-              <div class="help-tip">失败原因：账户余额不足,账户余额不足</div>
-            </transition>
+            <div v-if="item.note" class="help-tip">{{item.note}}</div>
           </div>
         </div>
         <div class="list-item list-operation-box">
-          <span :to="'settlement-detail?id='" append class="list-operation" @click="checkApply">审核</span>
-          <router-link tag="span" :to="'budget-detail?id='" append class="list-operation">收支明细</router-link>
+          <span v-if="item.status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
+          <router-link tag="span" :to="'budget-detail?id=' + item.id" append class="list-operation">收支明细</router-link>
         </div>
       </div>
     </div>
     <div class="pagination-box">
       <!--:pageDetail="pageTotal"-->
-      <base-pagination ref="pages" @addPage="_getMoreList"></base-pagination>
+      <base-pagination ref="pagination" :pageDetail="withdrawalPageDetail" :pagination="page" @addPage="setWithdrawalPage"></base-pagination>
     </div>
     <default-modal ref="modal">
       <div slot="content">
@@ -52,23 +50,24 @@
           </div>
           <div class="text-area-box">
             <span class="after"></span>
-            <textarea v-model="remark" placeholder="请输入审核意见" class="model-area"></textarea>
+            <textarea v-model="note" placeholder="请输入审核意见" class="model-area"></textarea>
             <span class="before"></span>
           </div>
           <div class="btn-group">
             <div class="btn-item" @click.stop="hideModal">取消</div>
-            <div class="btn-item" @click.stop="auditing(0)">驳回</div>
-            <div class="btn-item" @click.stop="auditing(1)">批准退款</div>
+            <div class="btn-item" @click.stop="auditing(2)">驳回</div>
+            <div class="btn-item" @click.stop="auditing(1)">批准提现</div>
           </div>
         </div>
       </div>
     </default-modal>
-
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+  import {authComputed, leaderComputed, leaderMethods} from '@state/helpers'
+  import API from '@api'
 
   const PAGE_NAME = 'LEADER_WITHDRAWAL'
   const TITLE = '团长提现'
@@ -83,6 +82,15 @@
     '提现状态',
     '操作'
   ]
+  const STATUS_SELECT = {
+    check: false,
+    show: false,
+    content: '全部状态',
+    type: 'default',
+    data: []
+  }
+  const EXCEL_URL = '/social-shopping/api/backend/backend-shop-manager/withdrawal-excel'
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -97,35 +105,84 @@
         page: 1,
         orderSn: '',
         excelParams: '',
-        keywords: '',
-        remark: '',
-        checkId: 0
+        keyword: '',
+        note: '',
+        checkId: 0,
+        statusSelect: STATUS_SELECT
       }
     },
-    computed: {},
-    created() {},
+    computed: {
+      ...authComputed,
+      ...leaderComputed,
+      withdrawalExportUrl() {
+        let data = {
+          current_corp: process.env.VUE_APP_CURRENT_CORP,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          withdraw_sn: this.withdrawalSn,
+          type: this.withdrawalType,
+          keyword: this.withdrawalKeyword,
+          status: this.withdrawalStatus
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
+      }
+    },
+    created() {
+      this._getWithdrawalStatus()
+    },
     methods: {
+      ...leaderMethods,
+      async _getWithdrawalStatus() {
+        let res = await API.Leader.getWithdrawalStatus()
+        if (res.error !== this.$ERR_OK) {
+          console.warn('获取不到提现状态列表')
+          return
+        }
+        let selectData = res.data
+        selectData.unshift({name: '全部状态', id: ''})
+        this.statusSelect.data = selectData
+      },
+      exportExcel() {
+        window.open(this.withdrawalExportUrl, '_blank')
+      },
       checkApply(id) {
+        console.log(id)
         this.checkId = id
         this.$refs.modal.showModal()
       },
       hideModal() {
         this.$refs.modal.hideModal()
       },
-      auditing(isAgree) {
+      async auditing(status) {
         let data = {
           id: this.checkId,
-          remark: this.remark,
-          is_agree: isAgree
+          note: this.note,
+          status
         }
-        console.log(data)
+        let res = await API.Leader.applyWithdrawal(data)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this.hideModal()
+          this.getWithdrawalList()
+        }
       },
-      _search() {
-        this.$refs.pages.beginPage()
-        this.page = 1
-        console.log(this.orderSn, this.keywords)
+      search() {
+        let searchValue = {
+          orderSn: this.orderSn,
+          keyword: this.keyword
+        }
+        this.setWithdrawalSearch(searchValue)
+        this.$refs.pagination.beginPage()
       },
-      _getMoreList(page) {}
+      changeWithdrawalStatus(status) {
+        this.setWithdrawalStatus(status)
+        this.$refs.pagination.beginPage()
+      }
     }
   }
 </script>
@@ -208,12 +265,15 @@
       .help-box
         margin-left: 5px
         position: relative
+        &:hover .help-tip
+          opacity: .8
+          visibility: initial
       .help
         width: 14px
         height: 14px
       .help-tip
         background: #32323A
-        opacity: .8
+        opacity: 0
         color: $color-white
         padding: 8px 18px
         border-radius: 4px
@@ -225,19 +285,8 @@
         position: absolute
         left: -75px
         top: 24.5px
-        &.fade-enter, &.fade-leave-to
-          opacity: 0
-        &.fade-enter-to, &.fade-leave-to
-          transition: opacity .3s ease-in-out
-        &:after
-          content: ''
-          position: absolute
-          z-index: 10
-          left: 74px
-          top: -12px
-          border: 8px solid transparent
-          border-bottom: 8px solid #32323A
-
+        transition: opacity .3s
+        visibility: hidden
   .list
     flex: 1
     .list-content

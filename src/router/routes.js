@@ -113,6 +113,7 @@ export default [
             store
               .dispatch('editgoods/getGoodsDetailData', routeTo.query.id)
               .then((response) => {
+                console.log(response)
                 if (!response) {
                   return next({name: '404'})
                 }
@@ -551,7 +552,21 @@ export default [
         name: 'leader-withdrawal',
         component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
         meta: {
-          titles: ['团长管理', '团长提现']
+          titles: ['团长管理', '团长提现'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('leader/getWithdrawalList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 收支明细
@@ -560,7 +575,21 @@ export default [
         name: 'budget-detail',
         component: () => lazyLoadView(import('@pages/budget-detail/budget-detail')),
         meta: {
-          titles: ['团长管理', '团长提现', '收支明细']
+          titles: ['团长管理', '团长提现', '收支明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('leader/getBillList', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       /**
