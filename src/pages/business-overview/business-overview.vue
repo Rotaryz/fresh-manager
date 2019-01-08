@@ -65,9 +65,11 @@
       changeTab(value) {
         this.date = value.toString()
         this._getRevenueTrend()
+        this._getRevenueDetail()
       },
       async _getRevenueDetail() {
-        let res = await API.Revenue.getRevenueDetail()
+        let data = {date: this.date}
+        let res = await API.Revenue.getRevenueDetail(data)
         if (res.error !== this.$ERR_OK) {
           console.warn('获取营收概况数据失败')
           return
