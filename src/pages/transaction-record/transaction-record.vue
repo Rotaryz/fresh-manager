@@ -2,53 +2,64 @@
   <div class="transaction-record">
     <div class="tab-header">
       <div class="tab-box">
-        <base-drop-down :width="152"></base-drop-down>
+        <base-drop-down :width="152" :select="tradeSelect" @setValue="changeTradeType"></base-drop-down>
       </div>
       <div class="tab-box">
-        <base-date-select placeHolder="选择支付日期"></base-date-select>
+        <base-date-select placeHolder="选择支付日期" :dateInfo="date" @getTime="changeDate"></base-date-select>
       </div>
       <div class="tab-box">
-        <base-search placeHolder="订单号/交易号" @search="_search"></base-search>
+        <base-search placeHolder="订单号/交易号" :infoText="keyword" @search="changeKeyword"></base-search>
       </div>
-      <div class="btn-main btn-main-end">导出Excel</div>
+      <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
     </div>
     <div class="order-detail">
       <div class="order-item">
         <p class="order-text order-title">订单总额：</p>
-        <p class="order-text order-money">￥22019.00</p>
+        <p class="order-text order-money">￥{{tradeDetail.total}}</p>
       </div>
       <div class="order-item">
         <p class="order-text order-title">退款总额：</p>
-        <p class="order-text order-money">￥22019.00</p>
+        <p class="order-text order-money">￥{{tradeDetail.refund}}</p>
       </div>
       <div class="order-item">
         <p class="order-text order-title">实收总额：</p>
-        <p class="order-text order-money">￥22019.00</p>
+        <p class="order-text order-money">￥{{tradeDetail.amount}}</p>
       </div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
     </div>
     <div class="list">
-      <div class="list-content list-box">
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
-        <div class="list-item">d</div>
+      <div v-for="(item, index) in trades" :key="index" class="list-content list-box">
+        <div class="list-item">{{item.trade_sn}}</div>
+        <div class="list-item">{{item.total}}</div>
+        <div class="list-item">{{item.business_type}}</div>
+        <div class="list-item">{{item.trade_type}}</div>
+        <div class="list-item">{{item.created_at}}</div>
       </div>
     </div>
     <div class="pagination-box">
       <!--:pageDetail="pageTotal"-->
-      <base-pagination ref="pages" @addPage="_getMoreList"></base-pagination>
+      <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import {authComputed, tradeComputed, tradeMethods} from '@state/helpers'
+
   const PAGE_NAME = 'TRANSACTION_RECORD'
   const TITLE = '交易记录'
   const LIST_TITLE = ['订单号/订单号', '交易金额', '业务类型', '交易类型', '支付时间']
+  const TRADE_SELECT = {
+    check: false,
+    show: false,
+    content: '全部类型',
+    type: 'default',
+    data: []
+  }
+  const EXCEL_URL = '/social-shopping/api/backend/finance/trade-excel'
 
   export default {
     name: PAGE_NAME,
@@ -58,19 +69,68 @@
     data() {
       return {
         listTitle: LIST_TITLE,
-        page: 1,
-        orderSn: '',
-        excelParams: ''
+        tradeSelect: TRADE_SELECT,
+        tradeDetail: {}
       }
     },
-    computed: {},
-    created() {},
+    computed: {
+      ...authComputed,
+      ...tradeComputed,
+      tradeExportUrl() {
+        let data = {
+          current_corp: process.env.VUE_APP_CURRENT_CORP,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          type: this.type,
+          keyword: this.keyword,
+          date: this.date[0] && this.date[1] ? `${this.date[0]},${this.date[1]}` : ''
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
+      }
+    },
+    created() {
+      this._getTradeOrderType()
+      this._getTradeDetail()
+    },
     methods: {
-      _search(text) {
-        this.$refs.pages.beginPage()
-        this.page = 1
+      ...tradeMethods,
+      async _getTradeOrderType() {
+        let res = await API.Trade.getTradeOrderType()
+        if (res.error !== this.$ERR_OK) {
+          console.warn('获取交易状态类型失败')
+          return
+        }
+        let selectData = res.data
+        selectData.unshift({name: '全部类型', id: ''})
+        this.tradeSelect.data = selectData
       },
-      _getMoreList(page) {}
+      async _getTradeDetail() {
+        let res = await API.Trade.getTradeDetail()
+        if (res.error !== this.$ERR_OK) {
+          console.warn('获取交易概况失败')
+          return
+        }
+        this.tradeDetail = res.data
+      },
+      changeTradeType(select) {
+        this.setTradeType(select)
+        this.$refs.pagination.beginPage()
+      },
+      changeDate(date) {
+        this.setDate(date)
+        this.$refs.pagination.beginPage()
+      },
+      changeKeyword(keyword) {
+        this.setKeyword(keyword)
+        this.$refs.pagination.beginPage()
+      },
+      exportExcel() {
+        window.open(this.tradeExportUrl, '_blank')
+      },
     }
   }
 </script>

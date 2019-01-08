@@ -40,12 +40,12 @@
     },
     watch: {
       disabledDate(news) {
-        console.log(news)
+        // console.log(news)
       }
     },
     methods: {
       _getTime(time) {
-        console.log(this.disabledDate)
+        // console.log(this.disabledDate)
         this.$emit('getTime', time)
       }
     }

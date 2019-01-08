@@ -132,3 +132,24 @@ export const dataComputed = {
 }
 
 export const dataMethods = mapActions('data', ['getOrderDetail', 'getLeaderDetail', 'getShopDetail'])
+
+// 交易记录
+export const tradeComputed = {
+  ...mapGetters('trade', [
+    'trades',
+    'pageDetail',
+    'page',
+    'date',
+    'keyword',
+    'type'
+  ])
+}
+
+export const tradeMethods = {
+  ...mapActions('trade', [
+    'setPage',
+    'setTradeType',
+    'setDate',
+    'setKeyword'
+  ])
+}

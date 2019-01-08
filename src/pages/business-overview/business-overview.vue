@@ -50,7 +50,7 @@
     },
     methods: {
       drawTotalLine(data, arr, between) {
-        data = data || ['2:00', '4:00', '06:00', '8:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '24:00']
+        data = data || ['2:00', '4:00', '6:00', '8:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '24:00']
         arr = arr || {refund_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], pay_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], submit_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
         let myChart = this.$echarts.init(document.getElementById('customer'))
         myChart.setOption({

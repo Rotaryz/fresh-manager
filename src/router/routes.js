@@ -577,7 +577,6 @@ export default [
         meta: {
           titles: ['团长管理', '团长提现', '收支明细'],
           beforeResolve(routeTo, routeFrom, next) {
-            //  订单列表
             store
               .dispatch('leader/getBillList', routeTo.query.id)
               .then((res) => {
@@ -605,7 +604,20 @@ export default [
         name: 'transaction-record',
         component: () => lazyLoadView(import('@pages/transaction-record/transaction-record')),
         meta: {
-          titles: ['财务管理', '交易记录']
+          titles: ['财务管理', '交易记录'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('trade/getTradeList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 营业概况
