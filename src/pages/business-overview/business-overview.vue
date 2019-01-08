@@ -1,25 +1,25 @@
 <template>
   <div class="business-overview">
     <div class="tab-header">
-      <base-option-box></base-option-box>
+      <base-option-box :arrTitle="tabOptions" :tabActive="3" @checkTime="changeTab"></base-option-box>
     </div>
     <div class="content-header">
       <div class="content-title">营收概况</div>
     </div>
     <div class="survey">
       <div class="survey-item">
-        <div class="survey-money">3255</div>
+        <div class="survey-money">{{detail.get_total}}</div>
         <div class="survey-title">净利润(元)</div>
       </div>
       <div class="survey-item">
-        <div class="survey-money">3255</div>
+        <div class="survey-money">{{detail.sale_total}}</div>
         <div class="survey-title">
           商品销售收入(元)
-          <router-link tag="span" to="operating-cost" append class="detail hand">明细</router-link>
+          <router-link tag="span" to="/home/transaction-record" append class="detail hand">明细</router-link>
         </div>
       </div>
       <div class="survey-item">
-        <div class="survey-money">3255</div>
+        <div class="survey-money">{{detail.cost_total}}</div>
         <div class="survey-title">营业成本(元)</div>
       </div>
     </div>
@@ -33,8 +33,17 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+
   const PAGE_NAME = 'BUSINESS_OVERVIEW'
   const TITLE = '营业概况'
+
+  const TAB_OPTIONS = [
+    {title: '昨天', status: '1'},
+    {title: '7天', status: '7'},
+    {title: '30天', status: '30'},
+    {title: '自定义', status: 'custom'}
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -42,16 +51,41 @@
       title: TITLE
     },
     data() {
-      return {}
+      return {
+        detail: {},
+        tabOptions: TAB_OPTIONS,
+        date: 1
+      }
     },
     mounted() {
-      console.log(this.$echarts)
-      this.drawTotalLine()
+      this._getRevenueDetail()
+      this._getRevenueTrend()
     },
     methods: {
-      drawTotalLine(data, arr, between) {
-        data = data || ['2:00', '4:00', '6:00', '8:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '24:00']
-        arr = arr || {refund_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], pay_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], submit_num: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+      changeTab(value) {
+        this.date = value.toString()
+        this._getRevenueTrend()
+      },
+      async _getRevenueDetail() {
+        let res = await API.Revenue.getRevenueDetail()
+        if (res.error !== this.$ERR_OK) {
+          console.warn('获取营收概况数据失败')
+          return
+        }
+        this.detail = res.data
+      },
+      async _getRevenueTrend() {
+        let data = {date: this.date}
+        let res = await API.Revenue.getRevenueTrend(data)
+        if (res.error !== this.$ERR_OK) {
+          console.warn('获取营收趋势数据失败')
+          return
+        }
+        this.drawTotalLine(res.data)
+      },
+      drawTotalLine(data) {
+        let xAxis = data.x
+        let series = data.series
         let myChart = this.$echarts.init(document.getElementById('customer'))
         myChart.setOption({
           legend: {
@@ -75,7 +109,7 @@
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: data,
+            data: xAxis,
             splitLine: {
               show: false,
               lineStyle: {
@@ -146,7 +180,7 @@
           },
           series: [{
             name: '净利润',
-            data: arr.refund_num,
+            data: series.get_total,
             type: 'line',
             areaStyle: {
               color: {
@@ -180,7 +214,7 @@
             }
           }, {
             name: '商品销售收入',
-            data: arr.submit_num,
+            data: series.sale_total,
             type: 'line',
             areaStyle: {
               color: {
@@ -214,7 +248,7 @@
             }
           }, {
             name: '营业成本',
-            data: arr.pay_num,
+            data: series.cost_total,
             type: 'line',
             areaStyle: {
               color: {
@@ -249,8 +283,7 @@
           }]
         })
         myChart.resize()
-      },
-
+      }
     }
   }
 </script>

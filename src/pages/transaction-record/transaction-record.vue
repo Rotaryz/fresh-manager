@@ -15,15 +15,15 @@
     <div class="order-detail">
       <div class="order-item">
         <p class="order-text order-title">订单总额：</p>
-        <p class="order-text order-money">￥{{tradeDetail.total}}</p>
+        <p class="order-text order-money">{{tradeDetail.total && `￥${tradeDetail.total}`}}</p>
       </div>
       <div class="order-item">
         <p class="order-text order-title">退款总额：</p>
-        <p class="order-text order-money">￥{{tradeDetail.refund}}</p>
+        <p class="order-text order-money">{{tradeDetail.refund && `￥${tradeDetail.refund}`}}</p>
       </div>
       <div class="order-item">
         <p class="order-text order-title">实收总额：</p>
-        <p class="order-text order-money">￥{{tradeDetail.amount}}</p>
+        <p class="order-text order-money">{{tradeDetail.amount && `￥${tradeDetail.amount}`}}</p>
       </div>
     </div>
     <div class="list-header list-box">
