@@ -31,7 +31,10 @@
     </div>
     <div class="list">
       <div v-for="(item, index) in trades" :key="index" class="list-content list-box">
-        <div class="list-item">{{item.trade_sn}}</div>
+        <div class="list-item list-double-row">
+          <p class="item-dark">{{item.trade_sn}}</p>
+          <p class="item-dark">{{item.out_trade_sn}}</p>
+        </div>
         <div class="list-item">{{item.total}}</div>
         <div class="list-item">{{item.business_type}}</div>
         <div class="list-item">{{item.trade_type}}</div>
@@ -214,6 +217,8 @@
           no-wrap()
           font-size: $font-size-14
           line-height: 1
+          &:last-child
+            margin-top: 8px
 
   .pagination-box
     height: 70px
