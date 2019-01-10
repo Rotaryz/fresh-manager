@@ -34,6 +34,7 @@ export const actions = {
     return API.Customer.customerList({page, start_time: startTime, end_time: endTime, keyword: keyword, sort_type: sortType}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
+          commit('SET_CUSTOMER_LIST', [])
           return false
         }
         let arr = res.data

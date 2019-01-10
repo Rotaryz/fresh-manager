@@ -46,7 +46,6 @@
     computed: {
       ...leaderComputed
     },
-    created() {},
     methods: {
       ...leaderMethods,
       _search(text) {
