@@ -287,6 +287,7 @@
         top: 24.5px
         transition: opacity .3s
         visibility: hidden
+
   .list
     flex: 1
     .list-content
