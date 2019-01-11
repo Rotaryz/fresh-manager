@@ -54,7 +54,7 @@
 
   const PAGE_NAME = 'TRANSACTION_RECORD'
   const TITLE = '交易记录'
-  const LIST_TITLE = ['订单号/订单号', '交易金额', '业务类型', '交易类型', '支付时间']
+  const LIST_TITLE = ['订单号/交易号', '交易金额', '业务类型', '交易类型', '支付时间']
   const TRADE_SELECT = {
     check: false,
     show: false,

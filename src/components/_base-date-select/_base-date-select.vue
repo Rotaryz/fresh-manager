@@ -1,7 +1,7 @@
 <template>
   <div class="base-date-select">
     <date-picker :placeholder="placeHolder" :option="disabledDate" type="daterange" :value="dateInfo" :style="{'height': '28px'}"
-                 :clearable="false" @on-change="_getTime"
+                 :clearable="clearable" @on-change="_getTime"
     ></date-picker>
   </div>
 </template>
@@ -33,6 +33,10 @@
         default: () => {
           return {}
         }
+      },
+      clearable: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -58,7 +62,7 @@
     .ivu-date-picker
       height: 100%
       width: 244px
-      .ivu-date-picker-cells-cell
+      .ivu-date-picker-cells-cell,.ivu-date-picker-header-label
         color: $color-text-main
       .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
         height: 100%

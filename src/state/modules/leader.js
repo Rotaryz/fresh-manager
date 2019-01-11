@@ -279,7 +279,7 @@ export const actions = {
   // 团长结算详情列表
   getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
     return API.Leader.settlementDetail(
-      {page, shop_id: shopId, order_sn: orderSn, status, settlement_type: settlementType},
+      {page, shop_id: shopId, order_sn: orderSn, status, type: settlementType},
       loading
     )
       .then((res) => {

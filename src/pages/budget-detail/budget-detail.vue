@@ -80,7 +80,7 @@
           return
         }
         let selectData = res.data
-        selectData.unshift({name: '全部类型', id: '0'})
+        selectData.unshift({name: '全部类型', id: ''})
         this.billSelect.data = selectData
       },
       changeBillType(type) {

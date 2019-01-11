@@ -46,7 +46,7 @@
           推荐语
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.describe" type="text" class="edit-input" maxlength="20">
+          <input v-model="msg.describe" type="text" class="edit-input" maxlength="100">
         </div>
       </div>
       <div class="edit-item  edit-image-box">

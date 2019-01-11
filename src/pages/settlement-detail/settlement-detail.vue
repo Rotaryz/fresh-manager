@@ -18,7 +18,7 @@
         <div class="list-item">{{item.total}}</div>
         <div class="list-item">{{item.refuse_total}}</div>
         <div class="list-item">{{item.money}}</div>
-        <div class="list-item">{{item.settlement_type_str}}</div>
+        <div class="list-item">{{item.type_str}}</div>
         <div class="list-item">{{item.status_str}}</div>
         <div class="list-item">{{item.created_at}}</div>
         <div class="list-item list-operation-box">
@@ -65,9 +65,9 @@
         settlementObj: {
           check: false,
           show: false,
-          content: '结算状态',
+          content: '结算类型',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '佣金收益', status: 1}, {name: '退款补偿', status: 2}]
+          data: [{name: '全部', status: ''}, {name: '佣金收益', status: 0}, {name: '退款补偿', status: 1}]
         },
         id: 0,
         settlementType: '',
@@ -84,12 +84,12 @@
       ...leaderMethods,
       _goDetail(item) {
         // 退货详情id未对 todo
-        let url = item.settlement_type === 1 ? '/home/order-detail/' + item.order_id : '/home/refund-detail/' + item.id
+        let url = '/home/order-detail/' + item.order_id
         this.$router.push(url)
       },
       _getSettlementDetail() {
         this.getSettlementDetail({
-          page: 1,
+          page: this.page,
           shopId: this.id,
           orderSn: this.orderSn,
           status: this.status,
@@ -114,7 +114,6 @@
         this._getSettlementDetail()
       },
       _getMoreList(page) {
-        this.$refs.pages.beginPage()
         this.page = page
         this._getSettlementDetail()
       }

@@ -29,7 +29,7 @@
 
   const PAGE_NAME = 'PURCHASE_MANAGEMENT'
   const TITLE = '团长结算'
-  const LIST_TITLE = ['团长账号', '团长名称', '社区名称', '已结算金额', '已结算佣金', '操作']
+  const LIST_TITLE = ['团长账号', '团长名称', '社区名称', '已结算佣金', '待结算佣金', '操作']
   export default {
     name: PAGE_NAME,
     page: {

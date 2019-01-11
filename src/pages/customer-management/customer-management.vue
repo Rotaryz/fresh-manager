@@ -4,7 +4,7 @@
       <div class="tab-box">
         <base-date-select placeHolder="选择注册日期" @getTime="_selectTime"></base-date-select>
       </div>
-      <base-search placeHolder="会员昵称/手机号" @search="_search"></base-search>
+      <base-search placeHolder="客户昵称/手机号" @search="_search"></base-search>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item" :class="{'hand': item.showSort}" @click="_setSort(index)">
