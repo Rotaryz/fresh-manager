@@ -22,7 +22,6 @@ function _getAuthorization(options, callback) {
   // const pathname = key.indexOf('/') === 0 ? key : '/' + key
   const pathname = key
   const Authorization = storage.get('auth.currentUser').access_token
-  console.log(storage)
   const url = '/social-shopping/api/cos/upload-sign?method=' + method + '&image=' + encodeURIComponent(pathname)
   const xhr = new XMLHttpRequest()
   xhr.open('GET', url, true)

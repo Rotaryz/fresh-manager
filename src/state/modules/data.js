@@ -39,7 +39,6 @@ export const actions = {
           return false
         }
         let arr = res.data
-        console.log(arr)
         commit('SET_ORDER_DETAIL', arr)
         return true
       })

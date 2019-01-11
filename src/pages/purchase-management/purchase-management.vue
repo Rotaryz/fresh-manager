@@ -71,7 +71,6 @@
           name: e.target.files[0].name,
           size: size > 1024 ? size + 'MB' : size + 'KB'
         }
-        console.log(file)
         API.Upload.importFile(file).then((res) => {
           this.$toast.show(res.message)
           if (res.error !== this.$ERR_OK) {
@@ -85,7 +84,6 @@
       infoFile(file) {
         let param = new FormData() // 创建form对象
         param.append('file', file, file.name) // 通过append向form对象添加数据
-        console.log(file)
         return param
       },
       _search(text) {

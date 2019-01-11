@@ -135,7 +135,7 @@
       isLight: false,
       children: [
         {
-          title: '营业概览',
+          title: '营业概况',
           url: '/home/business-overview',
           isLight: false
         },

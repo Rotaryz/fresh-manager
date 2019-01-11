@@ -69,13 +69,11 @@
     },
     created() {
       this._getShopBillType()
-      console.log(this.billPage)
     },
     methods: {
       ...leaderMethods,
       async _getShopBillType() {
         let res = await API.Leader.getShopBillType()
-        console.log(res)
         if (res.error !== this.$ERR_OK) {
           console.warn('获取不到收支类型')
           return

@@ -213,7 +213,6 @@
        */
       _setData() {
         if (!_.isEmpty(this.detail)) {
-          console.log(this.detail)
           this.msg = _.cloneDeep(this.detail)
           this.dispatchSelect.content = this.msg.goods_units
           this.menuName = this.msg.goods_category_name
@@ -228,25 +227,21 @@
         this.goodsChildren = item.list
       },
       menuListClick(item, index) {
-        console.log(item, 'menuList')
         if (item.list.length !== 0) return
         this.menuIndex = index
         this.menuName = item.name
         this.goodsChildren = []
         if (this.preChildIndex) {
           this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
-          console.log(this.menuList[this.preMenuIndex].list[this.preChildIndex])
         }
         this.showMenu = false
         this.msg.goods_category_id = item.id
       },
       menuChild(item, index) {
-        console.log(item, 'child')
         this.menuName = this.menuList[this.menuIndex].name + ' / ' + item.name
         this.menuList[this.menuIndex].list[index].select = true
         if (this.preChildIndex) {
           this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
-          console.log(this.menuList[this.preMenuIndex].list[this.preChildIndex])
         }
         this.preMenuIndex = this.menuIndex
         this.preChildIndex = index

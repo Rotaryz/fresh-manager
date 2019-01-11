@@ -35,7 +35,6 @@ export const actions = {
       })
   },
   setAuxiliary({commit}, data) {
-    console.log(data)
     commit('SET_UNITS_LIST', data)
   }
 }

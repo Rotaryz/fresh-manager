@@ -33,7 +33,7 @@
         </div>
         <div class="list-item list-operation-box">
           <span v-if="item.status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
-          <router-link tag="span" :to="'budget-detail?id=' + item.payee_id" append class="list-operation">收支明细</router-link>
+          <router-link tag="span" :to="`budget-detail/${item.payee_id}/${item.name}`" append class="list-operation">收支明细</router-link>
         </div>
       </div>
     </div>
@@ -150,7 +150,6 @@
         window.open(this.withdrawalExportUrl, '_blank')
       },
       checkApply(id) {
-        console.log(id)
         this.checkId = id
         this.$refs.modal.showModal()
       },

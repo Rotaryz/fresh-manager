@@ -362,7 +362,6 @@ export const actions = {
   },
   getBillList({commit, state}, id) {
     let {billPage, billType, billAcceptType, billAcceptId} = state
-    console.log(billPage)
     if (id) {
       commit('SET_BILL_ACCEPT_ID', id)
       billAcceptId = id

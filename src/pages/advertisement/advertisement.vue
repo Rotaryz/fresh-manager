@@ -355,7 +355,6 @@
         }
         await this.getInfoBannerList()
         this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
-        console.log(this.bannerList)
         this.bannerList = this.bannerList.map((item) => {
           item.showType = false
           return item

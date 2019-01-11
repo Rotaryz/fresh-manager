@@ -113,7 +113,6 @@ export default [
             store
               .dispatch('editgoods/getGoodsDetailData', routeTo.query.id)
               .then((response) => {
-                console.log(response)
                 if (!response) {
                   return next({name: '404'})
                 }
@@ -571,14 +570,14 @@ export default [
       },
       // 收支明细
       {
-        path: 'leader-withdrawal/budget-detail',
+        path: 'leader-withdrawal/budget-detail/:id/:name',
         name: 'budget-detail',
         component: () => lazyLoadView(import('@pages/budget-detail/budget-detail')),
         meta: {
-          titles: ['团长管理', '团长提现', '收支明细'],
+          titles: ['团长管理', '团长提现', '收支明细', ''],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('leader/getBillList', routeTo.query.id)
+              .dispatch('leader/getBillList', routeTo.params.id)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -626,7 +625,7 @@ export default [
         name: 'business-overview',
         component: () => lazyLoadView(import('@pages/business-overview/business-overview')),
         meta: {
-          titles: ['财务管理', '营收概况']
+          titles: ['财务管理', '营业概况']
         }
       },
       // 营业成本
@@ -651,12 +650,11 @@ export default [
         name: 'data-survey',
         component: () => lazyLoadView(import('@pages/data-survey/data-survey')),
         meta: {
-          titles: ['数据管理'],
+          titles: ['数据统计'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('data/getOrderDetail', {startTime: '', endTime: '', time: 'today', loading: true})
               .then((res) => {
-                console.log(res)
                 if (!res) {
                   return next({name: '404'})
                 }

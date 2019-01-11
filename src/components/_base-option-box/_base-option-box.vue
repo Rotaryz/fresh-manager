@@ -5,7 +5,7 @@
       <transition name="fade">
         <!-- v-show=""-->
         <div v-if="item.status === 'custom' && tabIndex === tabActive" class="block">
-          <base-date-select :clearable="false" @getTime="_getCustomTime"></base-date-select>
+          <base-date-select :clearable="false" @getTime="_getCustomTime" :placeHolder="text"></base-date-select>
         </div>
       </transition>
     </li>
@@ -42,6 +42,10 @@
       infoTab: {
         type: Number,
         default: 0
+      },
+      text: {
+        type: String,
+        default: '请选择时间'
       }
     },
     data() {
