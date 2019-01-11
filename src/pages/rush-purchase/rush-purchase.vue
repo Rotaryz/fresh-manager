@@ -1,5 +1,5 @@
 <template>
-  <div class="rush-purchase">
+  <div class="rush-purchase table">
     <div class="tab-header">
       <!--<div class="btn-main">新建活动 +</div>-->
       <base-date-select placeHolder="选择活动时间" @getTime="_setTime"></base-date-select>
@@ -93,74 +93,20 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .rush-purchase
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-
-  .tab-header
-    height: 80px
-    display: flex
-    align-items: center
-    box-sizing: border-box
-
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
-  .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:last-child
-        flex: 0.6
-
   .list
     flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-        .list-status
-          display: inline-block
-          width: 9px
-          height: 9px
-          border-radius: 50%
-          background: #E1E1E1
-          margin-right: 6px
-        .list-status-fail
-          background: $color-negative
-        .list-status-success
-          background: $color-positive
-      // 双行样式
-      .list-double-row
-        .item-sub
-          no-wrap()
-          line-height: 1
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          no-wrap()
-          font-size: $font-size-14
-          line-height: 1
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
+    .list-item
+      no-wrap()
+      font-size: $font-size-14
+      .list-status
+        display: inline-block
+        width: 9px
+        height: 9px
+        border-radius: 50%
+        background: #E1E1E1
+        margin-right: 6px
+      .list-status-fail
+        background: $color-negative
+      .list-status-success
+        background: $color-positive
 </style>

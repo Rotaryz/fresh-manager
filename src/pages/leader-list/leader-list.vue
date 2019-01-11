@@ -1,5 +1,5 @@
 <template>
-  <div class="leader-list">
+  <div class="leader-list table">
     <div class="tab-header">
       <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长 +</router-link>
     </div>
@@ -74,7 +74,8 @@
     computed: {
       ...leaderComputed
     },
-    created() {},
+    created() {
+    },
     methods: {
       ...leaderMethods,
       _getMore(page) {
@@ -116,12 +117,6 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .leader-list
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-
   .tab-header
     height: 80px
     display: flex
@@ -129,19 +124,7 @@
     align-items: center
     box-sizing: border-box
 
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
   .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
     .list-item
       box-sizing: border-box
       padding-right: 10px
@@ -150,34 +133,6 @@
         flex: 1.5
       &:last-child
         flex: 1.4
-
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-      // 双行样式
-      .list-double-row
-        .item-sub
-          no-wrap()
-          line-height: 1
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          no-wrap()
-          font-size: $font-size-14
-          line-height: 1
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
 
   .pop-main
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)

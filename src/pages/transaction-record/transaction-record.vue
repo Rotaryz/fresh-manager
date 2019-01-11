@@ -1,5 +1,5 @@
 <template>
-  <div class="transaction-record">
+  <div class="transaction-record table">
     <div class="tab-header">
       <div class="tab-box">
         <base-drop-down :width="152" :select="tradeSelect" @setValue="changeTradeType"></base-drop-down>
@@ -141,12 +141,6 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .transaction-record
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-
   .tab-header
     height: 80px
     display: flex
@@ -174,56 +168,11 @@
         font-family: $font-family-medium
         color: $color-negative
 
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
   .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
     .list-item
       box-sizing: border-box
       padding-right: 10px
       flex: 1
-
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-        .list-link
-          &:hover
-            color: $color-sub
-      // 双行样式
-      .list-double-row
-        .item-sub
-          no-wrap()
-          line-height: 1
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          no-wrap()
-          font-size: $font-size-14
-          line-height: 1
-          &:last-child
-            margin-top: 8px
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
 
   .btn-main
     position: relative

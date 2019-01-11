@@ -1,5 +1,5 @@
 <template>
-  <div class="purchase-management">
+  <div class="purchase-management table">
     <div class="tab-list">
       <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></status-tab>
     </div>
@@ -30,8 +30,8 @@
         <div class="list-item list-text">{{item.remark}}</div>
         <div class="list-item list-text">{{item.status_str}}</div>
         <div class="list-item list-use">
-          <span v-if="item.after_sale_status === 0" class="blue-use hand" @click="checkApply(item.id)">审核</span>
-          <router-link tag="span" :to="{path: `/home/refund-detail/${item.id}`}" append class="detail-use hand">详情</router-link>
+          <span v-if="item.after_sale_status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
+          <router-link tag="span" :to="{path: `/home/refund-detail/${item.id}`}" append class="list-operation">详情</router-link>
         </div>
       </div>
     </div>
@@ -96,7 +96,7 @@
     components: {
       StatusTab,
       DefaultModal
-    // DefaultConfirm
+      // DefaultConfirm
     },
     page: {
       title: TITLE
@@ -208,13 +208,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  .purchase-management
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-    .tab-list
-      wdith: 100%
 
   textarea::-webkit-input-placeholder
     font-size: $font-size-14
@@ -302,88 +295,4 @@
       font-size: $font-size-12
       color: $color-white
       text-align: center
-
-  .tab-header
-    height: 80px
-    display: flex
-    justify-content: space-between
-    align-items: center
-    box-sizing: border-box
-
-  .list-use
-    font-family: $font-family-regular
-    font-size: $font-size-14
-    color: $color-text-assist
-
-  .detail-use
-    font-family: $font-family-regular
-    font-size: $font-size-14
-    color: $color-sub
-
-  .blue-use
-    font-family: $font-family-regular
-    font-size: $font-size-14
-    color: $color-sub
-    margin-right: 12px
-    position: relative
-    &:after
-      position: absolute
-      top: 2px
-      right: -6px
-      content: ''
-      height: 14px
-      width: 1px
-      background: #ccc
-
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
-  .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:first-child, &:nth-child(3), &:nth-child(5)
-        flex: 1.2
-      &:nth-child(4)
-        flex: 0.8
-      &:last-child
-        flex: 0.7
-
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-      // 双行样式
-      .list-double-row
-        .item-sub
-          no-wrap()
-          line-height: 1
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          no-wrap()
-          font-size: $font-size-14
-          line-height: 1
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
 </style>

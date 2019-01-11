@@ -1,5 +1,5 @@
 <template>
-  <div class="purchase-management">
+  <div class="purchase-management table">
     <div class="tab-list">
       <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></status-tab>
     </div>
@@ -151,13 +151,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  .purchase-management
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-    .tab-list
-      wdith: 100%
 
   .search-warp
     layout(row)
@@ -182,65 +175,4 @@
       color: $color-white
       text-align: center
 
-  .tab-header
-    height: 80px
-    display: flex
-    justify-content: space-between
-    align-items: center
-    box-sizing: border-box
-
-  .blue-use
-    font-family: $font-family-regular
-    font-size: $font-size-14
-    color: $color-sub
-
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
-  .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:first-child, &:nth-child(6)
-        flex: 1.2
-      &:last-child
-        flex: 0.5
-
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-      // 双行样式
-      .list-double-row
-        .item-sub
-          no-wrap()
-          line-height: 1
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          no-wrap()
-          font-size: $font-size-14
-          line-height: 1
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
 </style>

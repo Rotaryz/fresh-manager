@@ -218,13 +218,6 @@
   .date-shop
     margin-left: 20px
 
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
   .list-box
     padding-left: 20px
     box-sizing: border-box
@@ -238,29 +231,6 @@
 
   .list
     height: 350px
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-        .list-link
-          &:hover
-            color: $color-sub
-      // 双行样式
-      .list-double-row
-        .item-sub
-          no-wrap()
-          line-height: 1
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          no-wrap()
-          font-size: $font-size-14
-          line-height: 1
 
   .date-shop .list-box .list-item
     &:nth-child(1)
