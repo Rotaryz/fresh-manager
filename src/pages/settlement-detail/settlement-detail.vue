@@ -106,11 +106,13 @@
       _setStatus(item) {
         this.status = item.status
         this.$refs.pages.beginPage()
+        this.page = 1
         this._getSettlementDetail()
       },
       _settlementType(item) {
         this.settlementType = item.status
         this.$refs.pages.beginPage()
+        this.page = 1
         this._getSettlementDetail()
       },
       _getMoreList(page) {

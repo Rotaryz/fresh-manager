@@ -210,9 +210,9 @@
       },
       _getCity(data) {
         // 获取地址
-        this.leaderData.province = data.province.includes('请选择') ? '' : data.province
-        this.leaderData.city = data.city.includes('请选择') ? '' : data.city
-        this.leaderData.district = data.area.includes('请选择') ? '' : data.area
+        this.leaderData.province = data.province.includes('请选择') ? '' : data[0]
+        this.leaderData.city = data.city.includes('请选择') ? '' : data[1]
+        this.leaderData.district = data.area.includes('请选择') ? '' : data[2]
       }
     }
   }

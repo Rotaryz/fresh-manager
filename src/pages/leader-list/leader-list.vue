@@ -18,7 +18,7 @@
         <div class="list-item">{{item.is_freeze_str}}</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
-          <span class="list-operation" @click="_getQrCode(item.id)">店铺码</span>
+          <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
           <span class="list-operation" @click="_showFreeze(item.is_freeze, item.id)">{{item.is_freeze ? '解冻' : '冻结'}}</span>
         </div>
       </div>
@@ -29,7 +29,7 @@
     <default-modal ref="dialog">
       <div slot="content" class="pop-main code">
         <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+          <div class="shade-title">{{leaderList[imgIndex].social_name}}</div>
           <!--@click="_cancelGoods"-->
           <span class="close hand" @click="_close"></span>
         </div>
@@ -68,7 +68,8 @@
         page: 1,
         loadImg: true,
         codeUrl: '',
-        freezeId: 0
+        freezeId: 0,
+        imgIndex: 0
       }
     },
     computed: {
@@ -85,7 +86,8 @@
       _close() {
         this.$refs.dialog.hideModal()
       },
-      async _getQrCode(id) {
+      async _getQrCode(id, index) {
+        this.imgIndex = index
         this.loadImg = true
         let res = await API.Leader.createQrcode({path: 'pages/choiceness?shopId=' + id})
         if (res.error !== this.$ERR_OK) {

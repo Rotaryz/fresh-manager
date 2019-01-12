@@ -128,10 +128,11 @@
       align-items: center
       flex-wrap: warp
       .info-item
+        word-break: break-all
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-text-main
-        line-height: 14px
+        line-height: 18px
         width: 209px
         padding-bottom: 20px
         margin-right: 80px

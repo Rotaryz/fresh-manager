@@ -112,7 +112,6 @@
   .purchase-detail
     line-height: 1
     flex: 1
-    padding-bottom: 80px
     position: relative
 
   .btn-a

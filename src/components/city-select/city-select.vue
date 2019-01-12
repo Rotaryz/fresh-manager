@@ -126,11 +126,12 @@
         })
         this.$emit('selectType', type, this.city)
       },
-      setValue(value, index, idx) {
-        this.city[index].select = false
-        this.city[index].children[idx].content = value.name
-        switch (value.type) {
-        case 'pro':
+      setValue(value, bigIndex, idx) {
+        this.city[bigIndex].select = false
+        this.city[bigIndex].children[idx].content = value.name
+        console.log(bigIndex === 2)
+        switch (bigIndex) {
+        case 0:
           let index = regionArr.findIndex((child) => child.name === value.name)
           if (index !== this.cityIndex || index === 0) {
             this.content.city = ''
@@ -142,7 +143,7 @@
           this.city[2].children = [{content: '请选择区/县', data: []}]
           this.content.area = ''
           break
-        case 'city':
+        case 1:
           let idx = regionArr[this.cityIndex].sub.findIndex((child) => child.name === value.name)
           if (value.name !== this.content.city || idx === 0) {
             this.content.area = ''
@@ -151,11 +152,20 @@
           this._infoArea(idx)
           this.content.city = value.name
           break
-        case 'area':
+        case 2:
           this.content.area = value.name
           break
         }
-        this.city[index].show = false
+        this.city.forEach((item,itemIndex) => {
+          item.children.map((items) => {
+            if (items.content.includes('请选择')) {
+              this.content[itemIndex] = ''
+            } else {
+              this.content[itemIndex] = items.content
+            }
+          })
+        })
+        this.city[bigIndex].show = false
         this.$emit('setValue', this.content)
       },
       _infoPro() {

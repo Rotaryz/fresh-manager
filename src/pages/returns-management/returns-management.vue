@@ -295,4 +295,9 @@
       font-size: $font-size-12
       color: $color-white
       text-align: center
+
+  .list-text-name
+    no-wrap()
+    font-family: $font-family-regular
+    font-size: $font-size-14
 </style>
