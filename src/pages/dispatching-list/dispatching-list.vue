@@ -1,7 +1,7 @@
 <template>
   <div class="dispatching-list table" @click="_hideAllDownBox">
     <div class="tab-header">
-      <base-drop-down :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
+      <base-drop-down :select="dispatchSelect" :width="158" @setValue="_getShop"></base-drop-down>
       <div class="line"></div>
       <!--<base-search placeHolder="社区名称/团长名称" @search="_search"></base-search>-->
     </div>
