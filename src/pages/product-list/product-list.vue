@@ -24,7 +24,7 @@
         <div class="list-item">{{item.goods_units}}</div>
         <div class="list-item">{{item.store_price}}</div>
         <div class="list-item">
-          <div class="list-item-btn"  @click="switchBtn(item, index)">
+          <div class="list-item-btn" @click="switchBtn(item, index)">
             <base-switch :status="item.is_online"></base-switch>
           </div>
         </div>

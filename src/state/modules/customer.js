@@ -31,7 +31,10 @@ export const mutations = {
 
 export const actions = {
   getCustomerList({state, commit, dispatch}, {page, startTime, endTime, keyword, sortType, loading = true}) {
-    return API.Customer.customerList({page, start_time: startTime, end_time: endTime, keyword: keyword, sort_type: sortType}, loading)
+    return API.Customer.customerList(
+      {page, start_time: startTime, end_time: endTime, keyword: keyword, sort_type: sortType},
+      loading
+    )
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           commit('SET_CUSTOMER_LIST', [])

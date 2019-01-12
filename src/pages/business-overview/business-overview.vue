@@ -96,11 +96,7 @@
             borderRadius: 0,
             bottom: 10,
             align: 'auto',
-            data: [
-              {name: '净利润', icon: 'rect'},
-              {name: '商品销售收入', icon: 'rect'},
-              {name: '营业成本', icon: 'rect'}
-            ]
+            data: [{name: '净利润', icon: 'rect'}, {name: '商品销售收入', icon: 'rect'}, {name: '营业成本', icon: 'rect'}]
           },
           grid: {
             left: '3%',
@@ -180,109 +176,128 @@
               }
             }
           },
-          series: [{
-            name: '净利润',
-            data: series.get_total,
-            type: 'line',
-            areaStyle: {
-              color: {
-                type: 'linear',
-                x: 0,
-                x2: 0,
-                y: 0,
-                y2: 1,
-                colorStops: [{
-                  offset: 0, color: 'rgba(104,212,165,0.28)'
-                }, {
-                  offset: 1, color: 'rgba(104,212,165,0.28)'
-                }],
-                globalCoord: false
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: 'rgba(79,209,102,1)',
-                borderWidth: 1,
-                // borderColor: '#fff',
-                // shadowColor: 'rgba(73,133,252,1)',
-                // shadowOffsetY: 0,
-                // shadowOffsetX: 0,
-                // shadowBlur: 10,
-                lineStyle: {
+          series: [
+            {
+              name: '净利润',
+              data: series.get_total,
+              type: 'line',
+              areaStyle: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  x2: 0,
+                  y: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: 'rgba(104,212,165,0.28)'
+                    },
+                    {
+                      offset: 1,
+                      color: 'rgba(104,212,165,0.28)'
+                    }
+                  ],
+                  globalCoord: false
+                }
+              },
+              itemStyle: {
+                normal: {
                   color: 'rgba(79,209,102,1)',
-                  width: 3
+                  borderWidth: 1,
+                  // borderColor: '#fff',
+                  // shadowColor: 'rgba(73,133,252,1)',
+                  // shadowOffsetY: 0,
+                  // shadowOffsetX: 0,
+                  // shadowBlur: 10,
+                  lineStyle: {
+                    color: 'rgba(79,209,102,1)',
+                    width: 3
+                  }
                 }
               }
-            }
-          }, {
-            name: '商品销售收入',
-            data: series.sale_total,
-            type: 'line',
-            areaStyle: {
-              color: {
-                type: 'linear',
-                x: 0,
-                x2: 0,
-                y: 0,
-                y2: 1,
-                colorStops: [{
-                  offset: 0, color: 'rgba(169,129,255,0.3)'
-                }, {
-                  offset: 1, color: 'rgba(169,129,255,0.3)'
-                }],
-                globalCoord: false
-              }
             },
-            itemStyle: {
-              normal: {
-                color: 'rgba(169,129,255,1)',
-                borderWidth: 1,
-                // borderColor: '#fff',
-                // shadowColor: 'rgba(73,133,252,1)',
-                // shadowOffsetY: 0,
-                // shadowOffsetX: 0,
-                // shadowBlur: 10,
-                lineStyle: {
+            {
+              name: '商品销售收入',
+              data: series.sale_total,
+              type: 'line',
+              areaStyle: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  x2: 0,
+                  y: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: 'rgba(169,129,255,0.3)'
+                    },
+                    {
+                      offset: 1,
+                      color: 'rgba(169,129,255,0.3)'
+                    }
+                  ],
+                  globalCoord: false
+                }
+              },
+              itemStyle: {
+                normal: {
                   color: 'rgba(169,129,255,1)',
-                  width: 3
+                  borderWidth: 1,
+                  // borderColor: '#fff',
+                  // shadowColor: 'rgba(73,133,252,1)',
+                  // shadowOffsetY: 0,
+                  // shadowOffsetX: 0,
+                  // shadowBlur: 10,
+                  lineStyle: {
+                    color: 'rgba(169,129,255,1)',
+                    width: 3
+                  }
                 }
-              }
-            }
-          }, {
-            name: '营业成本',
-            data: series.cost_total,
-            type: 'line',
-            areaStyle: {
-              color: {
-                type: 'linear',
-                x: 0,
-                x2: 0,
-                y: 0,
-                y2: 1,
-                colorStops: [{
-                  offset: 0, color: 'rgba(73,133,252, 0.55)'
-                }, {
-                  offset: 1, color: 'rgba(73,133,252, 0.05)'
-                }],
-                globalCoord: false
               }
             },
-            itemStyle: {
-              normal: {
-                color: 'rgba(73,133,252,1)',
-                borderWidth: 1,
-                // borderColor: '#fff',
-                // shadowColor: 'rgba(73,133,252,1)',
-                // shadowOffsetY: 0,
-                // shadowOffsetX: 0,
-                // shadowBlur: 10,
-                lineStyle: {
+            {
+              name: '营业成本',
+              data: series.cost_total,
+              type: 'line',
+              areaStyle: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  x2: 0,
+                  y: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: 'rgba(73,133,252, 0.55)'
+                    },
+                    {
+                      offset: 1,
+                      color: 'rgba(73,133,252, 0.05)'
+                    }
+                  ],
+                  globalCoord: false
+                }
+              },
+              itemStyle: {
+                normal: {
                   color: 'rgba(73,133,252,1)',
-                  width: 3
+                  borderWidth: 1,
+                  // borderColor: '#fff',
+                  // shadowColor: 'rgba(73,133,252,1)',
+                  // shadowOffsetY: 0,
+                  // shadowOffsetX: 0,
+                  // shadowBlur: 10,
+                  lineStyle: {
+                    color: 'rgba(73,133,252,1)',
+                    width: 3
+                  }
                 }
               }
             }
-          }]
+          ]
         })
         myChart.resize()
       }

@@ -96,7 +96,7 @@
     components: {
       StatusTab,
       DefaultModal
-      // DefaultConfirm
+    // DefaultConfirm
     },
     page: {
       title: TITLE

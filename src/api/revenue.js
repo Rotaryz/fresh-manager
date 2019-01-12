@@ -17,7 +17,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getRevenueTrend(data = {}, loading= false) {
+  getRevenueTrend(data = {}, loading = false) {
     let url = '/social-shopping/api/backend/finance/revenue-trend'
     return request.get(url, data, loading)
   }

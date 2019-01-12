@@ -133,7 +133,7 @@
       },
       exportExcel() {
         window.open(this.tradeExportUrl, '_blank')
-      },
+      }
     }
   }
 </script>

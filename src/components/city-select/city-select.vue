@@ -156,7 +156,7 @@
           this.content.area = value.name
           break
         }
-        this.city.forEach((item,itemIndex) => {
+        this.city.forEach((item, itemIndex) => {
           item.children.map((items) => {
             if (items.content.includes('请选择')) {
               this.content[itemIndex] = ''

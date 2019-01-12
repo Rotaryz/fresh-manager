@@ -135,21 +135,9 @@ export const dataMethods = mapActions('data', ['getOrderDetail', 'getLeaderDetai
 
 // 交易记录
 export const tradeComputed = {
-  ...mapGetters('trade', [
-    'trades',
-    'pageDetail',
-    'page',
-    'date',
-    'keyword',
-    'type'
-  ])
+  ...mapGetters('trade', ['trades', 'pageDetail', 'page', 'date', 'keyword', 'type'])
 }
 
 export const tradeMethods = {
-  ...mapActions('trade', [
-    'setPage',
-    'setTradeType',
-    'setDate',
-    'setKeyword'
-  ])
+  ...mapActions('trade', ['setPage', 'setTradeType', 'setDate', 'setKeyword'])
 }

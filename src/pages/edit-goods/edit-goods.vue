@@ -290,7 +290,7 @@
         } else if (this.msg.goods_detail_images.length === 0) {
           this.$toast.show('请上传商品详情图')
           return
-        }else if (this.msg.goods_units === '') {
+        } else if (this.msg.goods_units === '') {
           this.$toast.show('请选择售卖单位')
           return
         } else if (this.msg.original_price.length === 0) {

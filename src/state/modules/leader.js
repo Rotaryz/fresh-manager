@@ -304,12 +304,7 @@ export const actions = {
       })
   },
   getWithdrawalList({commit, state}) {
-    const {
-      withdrawalPage,
-      withdrawalSn,
-      withdrawalType,
-      withdrawalKeyword,
-      withdrawalStatus} = state
+    const {withdrawalPage, withdrawalSn, withdrawalType, withdrawalKeyword, withdrawalStatus} = state
     let data = {
       withdraw_sn: withdrawalSn,
       type: withdrawalType,
@@ -387,9 +382,11 @@ export const actions = {
         commit('SET_BILL_LIST', list)
         commit('SET_BILL_PAGE_DETAIL', pageDetail)
         return list
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },
@@ -403,4 +400,3 @@ export const actions = {
     dispatch('getBillList')
   }
 }
-

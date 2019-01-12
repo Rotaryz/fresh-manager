@@ -82,9 +82,11 @@ export const actions = {
         commit('SET_TRADES', trades)
         commit('SET_PAGE_DETAIL', pageDetail)
         return trades
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },

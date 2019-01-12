@@ -5,7 +5,7 @@
       <transition name="fade">
         <!-- v-show=""-->
         <div v-if="item.status === 'custom' && tabIndex === tabActive" class="block">
-          <base-date-select :clearable="false" @getTime="_getCustomTime" :placeHolder="text"></base-date-select>
+          <base-date-select :clearable="false" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>
         </div>
       </transition>
     </li>

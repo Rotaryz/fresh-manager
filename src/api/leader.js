@@ -155,7 +155,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getShopBill(data ={}, loading = true) {
+  getShopBill(data = {}, loading = true) {
     let url = '/social-shopping/api/backend/backend-shop-manager/shop-bill'
     return request.get(url, data, loading)
   },
