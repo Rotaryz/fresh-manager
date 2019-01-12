@@ -29,7 +29,7 @@
         <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
         <div class="list-item list-text">{{item.status_text}}</div>
         <div class="list-item list-use">
-          <router-link tag="span" :to="{path: `/home/order-detail/${item.order_id}`}" append class="blue-use hand">详情</router-link>
+          <router-link tag="span" :to="{path: `/home/order-detail/${item.order_id}`}" append class="list-operation">详情</router-link>
         </div>
       </div>
     </div>
