@@ -33,23 +33,23 @@
         <div class="line"></div>
       </div>
       <div v-if="detail.goods" class="bot goods-list">
-        <div class="list-header">
-          <div v-for="(item, index) in titleList" :key="index" class="list-item">
+        <div class="ro-order-list-header">
+          <div v-for="(item, index) in titleList" :key="index" class="ro-order-list-item">
             {{item}}
           </div>
         </div>
-        <div v-for="(item, index) in detail.goods" :key="index" class="list">
-          <div class="list-box">
-            <div class="list-item list-text">{{item.goods_name}}</div>
-            <div class="list-item list-text">{{item.goods_units}}</div>
-            <div class="list-item list-text">{{item.num}}</div>
-            <div class="list-item list-text">{{item.price && `¥ ${item.price}`}}</div>
-            <div class="list-item list-text">{{item.price && `¥ ${item.price}`}}</div>
-            <div class="list-item list-text">{{item.after_sale_status_text}}</div>
+        <div v-for="(item, index) in detail.goods" :key="index" class="ro-order-list">
+          <div class="ro-order-list-box">
+            <div class="ro-order-list-item ro-order-list-text">{{item.goods_name}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.after_sale_status_text}}</div>
           </div>
         </div>
-        <div class="list-footer">
-          <div class="list-foot-box">
+        <div class="ro-order-list-footer">
+          <div class="ro-order-list-foot-box">
             <div class="foot-item">订单总价：{{detail.price && `¥ ${detail.price}`}}</div>
             <div class="foot-item">优惠金额：{{detail.promote_price && `¥ ${detail.promote_price}`}}</div>
             <div class="foot-item">应付金额：{{detail.total && `¥ ${detail.total}`}}</div>
@@ -99,11 +99,12 @@
   .order-detail
     width: 100%
     padding-bottom: 80px
+
   .detail-item
     layout()
     .top
       height: 62px
-      border-bottom:1px solid $color-line
+      border-bottom: 1px solid $color-line
       layout(row)
       position: relative
       .title
@@ -146,14 +147,14 @@
       width: 100%
       padding: 0 15px
       box-sizing: border-box
-      .list-footer
+      .ro-order-list-footer
         background: $color-white
         layout(row)
         align-items: center
         justify-content: flex-end
         width: 100%
         padding-top: 20px
-        .list-foot-box
+        .ro-order-list-foot-box
           layout(row)
           justify-content: flex-end
         .foot-item
@@ -163,10 +164,10 @@
           margin-left: 48px
           &:first-child
             margin-left: 0
-      .list
+      .ro-order-list
         width: 100%
         background: $color-white
-        .list-box
+        .ro-order-list-box
           width: 100%
           padding-left: 30px
           layout(row)
@@ -176,11 +177,11 @@
           align-items: center
           background: $color-white
           border-bottom: 1px solid $color-line
-          .list-item
+          .ro-order-list-item
             font-family: $font-family-regular
             font-size: $font-size-14
             color: $color-text-main
-      .list-header
+      .ro-order-list-header
         width: 100%
         layout(row)
         padding-left: 30px
@@ -190,12 +191,13 @@
         height: 50px
         background: #F9F9F9
         border-bottom: 1px solid $color-line
-        .list-item
+        .ro-order-list-item
           font-family: $font-family-regular
           font-size: $font-size-16
           color: $color-text-main
           line-height: 16px
-  .list-item
+
+  .ro-order-list-item
     &:nth-child(1)
       flex: 1.5
       no-wrap()
