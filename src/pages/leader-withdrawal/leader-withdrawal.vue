@@ -72,7 +72,7 @@
   const PAGE_NAME = 'LEADER_WITHDRAWAL'
   const TITLE = '团长提现'
   const LIST_TITLE = [
-    '订单号',
+    '提现单号',
     '团长账号',
     '团长名称',
     '社区名称',
