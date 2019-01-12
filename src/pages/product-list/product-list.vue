@@ -23,8 +23,10 @@
         <div class="list-item">{{item.name}}</div>
         <div class="list-item">{{item.goods_units}}</div>
         <div class="list-item">{{item.store_price}}</div>
-        <div class="list-item" @click="switchBtn(item, index)">
-          <base-switch :status="item.is_online"></base-switch>
+        <div class="list-item">
+          <div class="list-item-btn"  @click="switchBtn(item, index)">
+            <base-switch :status="item.is_online"></base-switch>
+          </div>
         </div>
         <div class="list-item">{{item.usable_stock}}</div>
         <div class="list-item list-operation-box">
@@ -91,9 +93,8 @@
         let token = this.$storage.get('auth.currentUser', '')
         this.downUrl =
           process.env.VUE_APP_API +
-          `/social-shopping/api/backend/goods-manage/goods-excel?access_token=${token.access_token}&is_online=${
-            this.isOnline
-            }&keyword=${this.keyWord}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+          `/social-shopping/api/backend/goods-manage/goods-excel?access_token=${token.access_token}&is_online=
+          ${this.isOnline}&keyword=${this.keyWord}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
       },
       getGoodsListData() {
         let data = {
@@ -198,7 +199,8 @@
   .list-operation-box
     .list-operation
       color: $color-sub
-
+  .list-item-btn
+    display: inline-block
   .pic-box
     height: 40px
     width: 40px

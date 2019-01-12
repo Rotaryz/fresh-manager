@@ -124,8 +124,8 @@
           access_token: this.currentUser.access_token,
           status: this.status,
           shop_id: this.shopId,
-          start_time: this.time.startTime || '',
-          end_time: this.time.endTime || '',
+          start_time: this.time[0] || '',
+          end_time: this.time[1] || '',
           keyword: this.keyword
         }
         let search = []
