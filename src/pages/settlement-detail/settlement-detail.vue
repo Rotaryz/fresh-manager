@@ -20,7 +20,7 @@
         <div class="list-item">{{item.money}}</div>
         <div class="list-item">{{item.type_str}}</div>
         <div class="list-item">{{item.status_str}}</div>
-        <div class="list-item">{{item.created_at}}</div>
+        <div class="list-item">{{item.updated_at}}</div>
         <div class="list-item list-operation-box">
           <span class="list-operation" @click="_goDetail(item)">详情</span>
         </div>
