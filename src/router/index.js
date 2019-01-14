@@ -84,7 +84,7 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
 
 router.afterEach((routeTo, routeFrom) => {
   // 动态添加页面标题
-  const titles = routeTo.meta.titles
+  const titles = routeTo.meta.titles || []
   const name = routeTo.params.name
   const marginBottom = routeTo.meta.marginBottom || 14
   titles[titles.length - 1] = name || titles[titles.length - 1]
