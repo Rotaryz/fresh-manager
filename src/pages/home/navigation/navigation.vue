@@ -21,6 +21,14 @@
   const HEIGHT = 40
   const NAV_LIST = [
     {
+      title: '数据统计',
+      icon: require('./icon-date@2x.png'),
+      iconSelected: require('./icon-date_white@2x.png'),
+      url: '/home/data-survey',
+      isLight: false,
+      children: []
+    },
+    {
       title: '商品管理',
       url: '/home/product-list',
       icon: require('./icon-commodity@2x.png'),
@@ -145,14 +153,6 @@
           isLight: false
         }
       ]
-    },
-    {
-      title: '数据统计',
-      icon: require('./icon-date@2x.png'),
-      iconSelected: require('./icon-date_white@2x.png'),
-      url: '/home/data-survey',
-      isLight: false,
-      children: []
     }
   ]
   export default {
@@ -244,8 +244,20 @@
         this.navList = navList
       },
       clickNav(nav, index) {
-        if (nav.url === this.$route.fullPath) {
+        if (nav.url === this.$route.fullPath && !nav.icon) {
           return
+        }
+        if (nav.icon && nav.url === this.$route.fullPath) {
+          let idx = this.navList.findIndex((big) => big.icon === nav.icon)
+          this.navList[idx].isLight = !this.navList[idx].isLight
+          this.navList[idx].children = this.navList[idx].children.map((item) => {
+            if (item.url === this.$route.fullPath) {
+              item.isLight = !item.isLight
+            } else {
+              item.isLight = false
+            }
+            return item
+          })
         }
         if (index !== undefined) {
           this._resetNavList(index)

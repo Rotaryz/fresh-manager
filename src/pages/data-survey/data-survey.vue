@@ -145,7 +145,7 @@
     flex: 1
     display: flex
     box-sizing: border-box
-    padding-top: 16px
+    padding-top: 8px
     flex-direction: column
 
   .data-header
