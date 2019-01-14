@@ -93,7 +93,6 @@
         this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
       },
       _getMoreList(page) {
-        this.$refs.pages.beginPage()
         this.page = page
         this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
       }
