@@ -1,7 +1,7 @@
 <template>
   <div class="budget-detail table">
     <div class="tab-header">
-      <base-drop-down :width="152" :select="billSelect" @setValue="changeBillType"></base-drop-down>
+      <base-drop-down :select="billSelect" @setValue="changeBillType"></base-drop-down>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>

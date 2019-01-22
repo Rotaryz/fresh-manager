@@ -2,7 +2,7 @@
   <div class="operating-cost">
     <div class="tab-header">
       <div class="tab-box">
-        <base-drop-down :width="152"></base-drop-down>
+        <base-drop-down></base-drop-down>
       </div>
       <div class="tab-box">
         <base-date-select placeHolder="选择支付日期"></base-date-select>
