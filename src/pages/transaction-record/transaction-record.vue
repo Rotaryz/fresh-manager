@@ -2,7 +2,7 @@
   <div class="transaction-record table">
     <div class="tab-header">
       <div class="tab-box">
-        <base-drop-down :width="152" :select="tradeSelect" @setValue="changeTradeType"></base-drop-down>
+        <base-drop-down :select="tradeSelect" @setValue="changeTradeType"></base-drop-down>
       </div>
       <div class="tab-box">
         <base-date-select placeHolder="选择支付日期" :dateInfo="date" @getTime="changeDate"></base-date-select>
