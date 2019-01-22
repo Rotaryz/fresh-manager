@@ -1,7 +1,7 @@
 <template>
   <div class="leader-withdrawal table">
     <div class="tab-header">
-      <base-drop-down :width="152" :select="statusSelect" @setValue="changeWithdrawalStatus"></base-drop-down>
+      <base-drop-down :select="statusSelect" @setValue="changeWithdrawalStatus"></base-drop-down>
       <input v-model="orderSn" type="text" class="with-search" placeholder="提现单号">
       <input v-model="keyword" type="text" class="with-search" placeholder="社区名称/团长名称/团长账号">
       <div class="search-icon-box" @click="search">
