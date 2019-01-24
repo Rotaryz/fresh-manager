@@ -1,7 +1,7 @@
 <template>
   <div class="rush-purchase table">
     <div class="tab-header">
-      <!--<div class="btn-main">新建活动 +</div>-->
+      <router-link tag="div" to="edit-rush" append class="btn-main">新建活动 +</router-link>
       <base-date-select placeHolder="选择活动时间" @getTime="_setTime"></base-date-select>
     </div>
     <div class="list-header list-box">
@@ -103,10 +103,13 @@
         width: 9px
         height: 9px
         border-radius: 50%
-        background: #E1E1E1
         margin-right: 6px
-      .list-status-fail
         background: $color-negative
+      .list-status-fail
+        background: #E1E1E1
       .list-status-success
         background: $color-positive
+
+  .btn-main
+    margin-right: 10px
 </style>

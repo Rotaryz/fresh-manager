@@ -190,17 +190,20 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
             //  团长列表
-            store
-              .dispatch('rush/getRushDetail', {id})
-              .then((res) => {
-                if (!res) {
+            if (id) {
+              store
+                .dispatch('rush/getRushDetail', {id})
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
                   return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
+                })
+            }
+            return next()
           }
         }
       },

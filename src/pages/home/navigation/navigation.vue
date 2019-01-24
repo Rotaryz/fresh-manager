@@ -53,17 +53,20 @@
       ]
     },
     {
-      title: '商城管理',
+      title: '内容管理',
       url: '/home/advertisement',
-      icon: require('./icon-tmall@2x.png'),
-      iconSelected: require('./icon-tmall_white@2x.png'),
+      icon: require('./icon-text@2x.png'),
+      iconSelected: require('./icon-text_select@2x.png'),
+      isLight: false,
+      children: []
+    },
+    {
+      title: '活动管理',
+      url: '/home/rush-purchase',
+      icon: require('./icon-activity@2x.png'),
+      iconSelected: require('./icon-activity_select@2x.png'),
       isLight: false,
       children: [
-        {
-          title: '轮播广告',
-          url: '/home/advertisement',
-          isLight: false
-        },
         {
           title: '今日抢购',
           url: '/home/rush-purchase',

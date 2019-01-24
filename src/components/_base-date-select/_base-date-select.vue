@@ -78,4 +78,5 @@
           border-color: $color-sub !important
         &:hover
           border: 1px solid #ACACAC
+
 </style>

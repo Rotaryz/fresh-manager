@@ -68,10 +68,10 @@
   .tab-header
     height: 80px
     display: flex
-    justify-content: space-between
     align-items: center
     box-sizing: border-box
-
+    .tab-item
+      margin-right: 10px
   .list-box
     .list-item
       box-sizing: border-box

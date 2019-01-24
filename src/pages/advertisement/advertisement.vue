@@ -724,41 +724,6 @@
         align-items: center
         display: flex
 
-    .back
-      left: 0
-      right: 0
-      bottom: 0
-      position: absolute
-      z-index: 10
-      background: #F9F9F9
-      height: 80px
-      border-radius: 0 0 6px 6px
-      display: flex
-      align-items: center
-      padding-left: 40px
-      box-sizing: border-box
-      justify-content: flex-end
-      border-top: 1px solid $color-line
-      .back-btn
-        box-sizing: border-box
-        font-size: $font-size-16
-        margin-right: 20px
-        padding: 12px 0
-        width: 96px
-        text-align: center
-        white-space: nowrap
-        transition: all 0.3s
-      .back-cancel
-        padding: 11px 0
-        box-sizing: border-box
-        line-height: 1
-        color: $color-text-main
-        border: 1px solid #ACACAC
-        border-radius: 4px
-        &:hover
-          color: $color-text-sub
-          border-color: $color-text-sub
-
   .shade-header
     display: flex
     align-items: center

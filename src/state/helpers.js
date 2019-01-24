@@ -37,7 +37,9 @@ export const leaderComputed = {
     'billAcceptType',
     'billAcceptId',
     'billPageDetail',
-    'billPage'
+    'billPage',
+    'startAt',
+    'endAt'
   ])
 }
 
@@ -54,7 +56,8 @@ export const leaderMethods = mapActions('leader', [
   'setWithdrawalStatus',
   'setWithdrawalSearch',
   'setBillPage',
-  'setBillType'
+  'setBillType',
+  'setWidthTiem'
 ])
 
 // 今日采购

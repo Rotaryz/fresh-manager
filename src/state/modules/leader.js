@@ -25,6 +25,8 @@ export const state = {
   withdrawalStatus: '',
   withdrawalType: 2,
   withdrawalKeyword: '',
+  startAt: '',
+  endAt: '',
   billList: [],
   billType: '',
   billAcceptType: 2,
@@ -154,6 +156,12 @@ export const mutations = {
   },
   SET_BILL_TYPE(state, billType) {
     state.billType = billType
+  },
+  SET_START_AT(state, billType) {
+    state.startAt = billType
+  },
+  SET_END_AT(state, billType) {
+    state.endAt = billType
   }
 }
 
@@ -304,13 +312,15 @@ export const actions = {
       })
   },
   getWithdrawalList({commit, state}) {
-    const {withdrawalPage, withdrawalSn, withdrawalType, withdrawalKeyword, withdrawalStatus} = state
+    const {withdrawalPage, withdrawalSn, withdrawalType, withdrawalKeyword, withdrawalStatus, startAt, endAt} = state
     let data = {
       withdraw_sn: withdrawalSn,
       type: withdrawalType,
       keyword: withdrawalKeyword,
       page: withdrawalPage,
-      status: withdrawalStatus
+      status: withdrawalStatus,
+      start_at: startAt,
+      end_at: endAt
     }
     return API.Leader.getWithdrawalList(data)
       .then((res) => {
@@ -352,6 +362,12 @@ export const actions = {
   },
   setWithdrawalStatus({commit, dispatch}, withdrawalStatus) {
     commit('SET_WITHDRAWAL_STATUS', withdrawalStatus.id)
+    commit('SET_WITHDRAWAL_PAGE', 1)
+    dispatch('getWithdrawalList')
+  },
+  setWidthTiem({commit, dispatch}, time) {
+    commit('SET_START_AT', time[0])
+    commit('SET_END_AT', time[1])
     commit('SET_WITHDRAWAL_PAGE', 1)
     dispatch('getWithdrawalList')
   },

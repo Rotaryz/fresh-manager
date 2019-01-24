@@ -347,6 +347,7 @@
           color: $color-white
           border-color: $color-positive
   .back
+    justify-content:center
     position: fixed
     left: 200px
     right: 0px

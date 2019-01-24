@@ -36,14 +36,15 @@ export const mutations = {
 }
 
 export const actions = {
-  getRushDetail({state, commit, dispatch}, {id, loading = false}) {
+  getRushDetail({state, commit, dispatch}, {id, loading = true}) {
+    commit('SET_RUSH_DETAIL', [])
     return API.Rush.rushDetail(id, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
         commit('SET_RUSH_DETAIL', res.data)
-        return true
+        return res.data
       })
       .catch(() => {
         return false
