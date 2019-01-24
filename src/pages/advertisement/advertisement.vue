@@ -1,25 +1,12 @@
 <template>
   <div class="advertisement">
-    <div class="phone-box">
-      <div class="phone">
-        <div class="banner">
-          <carousel autoplay :autoplaySpeed="3000" arrow="never" :height="104" :radiusDot="true">
-            <carousel-item v-for="(item, index) in bannerList" :key="index" width="242.4px">
-              <div class="carousel" :style="{'background-image': 'url(' + item.image_url + ')'}"></div>
-            </carousel-item>
-          </carousel>
-        </div>
-      </div>
-    </div>
+    <phone-box></phone-box>
     <div class="advertisement-content">
+      <div class="content-header">
+        <div class="content-title">轮播图设置</div>
+        <div class="content-sub">(最多添加5个广告，鼠标拖拽调整广告顺序)</div>
+      </div>
       <div v-for="(banner, idx) in bannerList" :key="idx" class="advertisement-item">
-        <div class="content-header">
-          <div class="content-title">广告{{idx + 1}}</div>
-          <div>
-            <div v-if="idx !== 0" class="list-operation" @click="_setSort(idx)">上移</div>
-            <div class="list-operation" @click="_showConfirm(banner.id, idx)">删除</div>
-          </div>
-        </div>
         <div class="advertisement-msg">
           <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
             <div v-if="banner.showLoading" class="loading-mask">
@@ -29,8 +16,7 @@
           </div>
           <!--@click=""-->
           <div v-if="!banner.type" class="add-advertisement hand" @click="_showSelectType(banner, idx)">
-            <span class="add-icon"></span>
-            <span class="add-title">添加广告链接(选填)</span>
+            <div class="add-link hand">添加链接</div>
             <transition name="fade">
               <ul v-if="banner.showType" class="select-type" @click.stop="">
                 <li v-for="(item, index) in typeList" :key="index" class="select-item" @click="_hideSelectType(index, idx)">{{item}}</li>
@@ -38,15 +24,13 @@
             </transition>
           </div>
           <div v-if="banner.type === 'out_html'" class="advertisement-link">
-            <div class="goods-small-img goods-small-icon"></div>
-            <p class="goods-title">{{banner.content.url}}</p>
-            <p class="use hand" @click="_editBanner(banner, idx)">编辑</p>
+            <p class="goods-title">{{banner.goods_name}}</p>
           </div>
           <div v-if="banner.type === 'mini_goods'" class="advertisement-link">
-            <div class="goods-small-img" :style="{'background-image': 'url(' + banner.goods_cover_image + ')'}"></div>
+            <!--<div class="goods-small-img" :style="{'background-image': 'url(' + banner.goods_cover_image + ')'}"></div>-->
             <p class="goods-title">{{banner.goods_name}}</p>
-            <p class="use hand" @click="_editBanner(banner, idx)">编辑</p>
           </div>
+          <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
         </div>
       </div>
       <div class="btn-main new-advertisement" @click="_addMore">新建广告 +</div>
@@ -108,35 +92,37 @@
       </div>
     </default-modal>
     <default-confirm ref="dialog" @confirm="_delBanner"></default-confirm>
+    <div class="back">
+      <div class="back-btn btn-main">保存并发布</div>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {Carousel, CarouselItem} from 'iview'
+  import PhoneBox from '@components/phone-box/phone-box'
   import API from '@api'
   import ADD_IMAGE from './pic-add_ad@2x.png'
   import {adverComputed, adverMethods} from '@state/helpers'
   import _ from 'lodash'
-
   const PAGE_NAME = 'ADVERTISEMENT'
   const TITLE = '轮播广告'
   const TYPE_LIST = ['商品链接', '自定义链接']
   const TEMPLATE_OBJ = {id: '', image_id: '', type: '', content: {id: '', url: ''}, image_url: ADD_IMAGE} // 模板对象
   export default {
     name: PAGE_NAME,
+    components: {
+      DefaultModal,
+      DefaultConfirm,
+      PhoneBox,
+    },
     page: {
       title: TITLE
     },
-    components: {
-      DefaultModal,
-      Carousel,
-      CarouselItem,
-      DefaultConfirm
-    },
     data() {
       return {
+        items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8'],
         typeList: TYPE_LIST,
         showType: false,
         isHaveLink: true,
@@ -198,12 +184,17 @@
         this.bannerList.forEach((item) => {
           arr.push({id: item.id})
         })
-        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {})
+        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {
+        })
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
         this.delId = id
         this.delIndex = index
+        if (!id) {
+          this._delBanner()
+          return
+        }
         this.$refs.dialog.show('是否确定删除该广告？')
       },
       // 删除banner
@@ -431,35 +422,11 @@
   .advertisement
     flex: 1
     display: flex
-
-  .phone-box
-    width: 60%
-    box-sizing: border-box
-    .phone
-      icon-image('pic-preview_bg')
-      margin: 60px 0 60px 28%
-      width: 300px
-      height: 612px
-      position: relative
-    .banner
-      position: absolute
-      left: 28.8px
-      top: 198.4px
-      width: 242.4px
-      height: 104px
-      background-color: $color-white
-      .carousel
-        height: 100%
-        width: 100%
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-image: url('./icon-plus_young@3x.png')
+    border-bottom: 1 xp solid $color-line
 
   .advertisement-content
     box-sizing: border-box
-    width: 40%
-    padding: 0 20px 0 40px
+    flex: 1
     border-left: 1px solid $color-line
     overflow: hidden
     padding-bottom: 40px
@@ -467,15 +434,22 @@
       font-style: $font-size-14
       padding: 8px 40px
     .advertisement-item
-      margin-bottom: 50px
+      margin: 40px 40px 50px
+      border: 1px dashed #D9D9D9
+      border-radius: 2px
+      background: #FCFCFC
+      height: 140px
+      padding: 20px
+      box-sizing: border-box
       .advertisement-msg
         display: flex
+        align-items: center
+        position: relative
         .img-box
-          margin-top: 20px
           height: 100px
-          width: 230px
+          width: 100px
           min-height: 100px
-          min-width: 230px
+          min-width: 100px
           background-repeat: no-repeat
           background-size: cover
           background-position: center
@@ -501,7 +475,7 @@
             height: 25px
         .add-advertisement
           position: relative
-          margin: 28px 0 0 21px
+          margin-left: 20px
           display: flex
           align-items: center
           height: 14px
@@ -544,38 +518,58 @@
               color: $color-sub
 
         .advertisement-link
-          margin-top: 28px
-          margin-left: 14px
+          margin-left: 20px
           display: flex
-          height: 30px
           align-items: center
           flex: 1
           overflow: hidden
-          .goods-small-img
-            width: 30px
-            height: @width
-            min-width: @width
-            min-height: @width
-            background-repeat: no-repeat
-            background-size: cover
-            background-position: center
-            background-color: $color-background
-            margin-right: 10px
           .goods-small-icon
             icon-image('icon-link')
           .goods-title
-            width: 80%
+            width: 98%
             no-wrap()
+            margin-left: 12px
             font-size: $font-size-14
             color: #666666
             line-height: 1.2
             font-family: $font-family-regular
-          .use
-            white-space: nowrap
-            font-size: $font-size-14
-            color: $color-sub
-            margin-left: 21px
-            line-height: 1
+        .use
+          position: absolute
+          top: -4px
+          right: -4px
+          white-space: nowrap
+          font-size: $font-size-14
+          color: $color-sub
+          margin-left: 21px
+          line-height: 1
+          user-select: none
+        .add-link
+          width: 108px
+          height: 32px
+          line-height: 32px
+          border: 1px solid $color-main
+          border-radius: 4px
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          color: $color-main
+          box-sizing: border-box
+          text-indent: 33px
+          position: relative
+          user-select: none
+          &:after
+            content: ''
+            width: 2px
+            height: 10px
+            background: $color-main
+            col-center()
+            left: 23px
+          &:before
+            content: ''
+            width: 10px
+            height: 2px
+            background: $color-main
+            col-center()
+            left: 19px
 
   /*background-image: url('./')*/
 
@@ -584,23 +578,29 @@
     border-bottom: 1px solid $color-line
     display: flex
     align-items: center
-    justify-content: space-between
-    height: 62px
+    height: 60px
     position: relative
     box-sizing: border-box
+    padding: 0 26px
+    text-indent: 13px
     &:after
       content: ''
       position: absolute
-      width: 34px
-      height: 2px
+      width: 3px
+      height: 14px
       background: $color-main
       border-radius: 1px
-      bottom: -1px
-      left: 0
+      col-center()
+      left: 26px
     .content-title
       color: $color-text-main
       font-family: $font-family-medium
       font-size: $font-size-16
+    .content-sub
+      color: $color-text-assist
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      text-indent: 10px
     .del
       font-size: $font-size-14
       font-family: $font-family-regular
@@ -802,5 +802,8 @@
           opacity: 0.8
       .one-btn
         margin-left: 0
+
+  .back
+    justify-content: center
 
 </style>

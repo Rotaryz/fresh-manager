@@ -247,7 +247,7 @@
         this.navList = navList
       },
       clickNav(nav, index) {
-        if (nav.url === this.$route.fullPath && !nav.icon) {
+        if (nav.url === this.$route.fullPath && !nav.children.length) {
           return
         }
         if (nav.icon && nav.url === this.$route.fullPath) {
