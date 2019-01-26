@@ -2,103 +2,112 @@
   <div class="phone-box">
     <div class="phone">
       <div class="content-box">
-        <!-- 轮播图-->
-        <div class="banner-box">
-          <div class="big-box hand" :class="{'touch': comType === 2}" @click="_setType(2)">
-            <div class="banner">
-              <carousel :autoplaySpeed="3000"
-                        arrow="never"
-                        :height="104"
-                        autoplay
-                        :radiusDot="true"
-                        dots="none"
-                        @on-change="_getBanner"
-              >
-                <carousel-item v-for="(item, index) in bannerList" :key="index">
-                  <div class="carousel" :class="{'carousel-active' :bannerIndex === index, 'carousel-none': !item.image_url}" :style="{'background-image': 'url(' + item.image_url + ')'}">
-                    <img v-if="!item.image_url" src="./icon-picmr@2x.png" class="none-img">
-                  </div>
-                </carousel-item>
-              </carousel>
-            </div>
-          </div>
-        </div>
-        <!--分类-->
-        <div class="nav-list" :class="{'touch': comType === 4}">
-          <div v-for="(item, index) in [0, 1, 2, 3, 4, 5 , 6, 7, 8, 9]" :key="index" class="nav-item">
-            <div class="nav-top-box">{{item}}</div>
-            <div class="nav-top-text"></div>
-          </div>
-        </div>
-        <!--进日抢购-->
-        <div class="goods-big-box">
-          <div class="line"></div>
-          <div class="goods-title-box">
-            <div class="goods-title-main">
-              <div class="goods-title-img"></div>
-              <div class="goods-title-text">今日抢购</div>
-              <div class="goods-title-icon"></div>
-              <div class="goods-title-sub">今日下单 次日提货</div>
-            </div>
-          </div>
-          <div class="goods-box hand" :class="{'touch': comType === 3}">
-            <div v-for="(item, index) in goodsList" :key="index" class="goods-list" @click="jumpGoodsDetail(item)">
-              <div class="goods-left">
-                <div class="goods-left-img">
-                  <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
-                </div>
-                <div class="goods-left-icon">
-                  <img class="item-img" src="./icon-label@2x.png">
-                </div>
+        <div v-for="(cms, cmsIdx) in cmsMsg" :key="cmsIdx">
+          <!-- 轮播图-->
+          <div v-if="cms.module_name === 'bannar'" class="banner-box" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
+            <div class="big-box hand">
+              <div class="banner">
+                <carousel :autoplaySpeed="3000"
+                          arrow="never"
+                          :height="104"
+                          autoplay
+                          :radiusDot="true"
+                          dots="none"
+                          @on-change="_getBanner"
+                >
+                  <carousel-item v-for="(item, index) in bannerList" :key="index">
+                    <div class="carousel" :class="{'carousel-active' :bannerIndex === index, 'carousel-none': !item.image_url}" :style="{'background-image': 'url(' + item.image_url + ')'}">
+                      <img v-if="!item.image_url" src="./icon-picmr@2x.png" class="none-img">
+                    </div>
+                  </carousel-item>
+                </carousel>
               </div>
-              <div class="goods-right">
-                <div class="goods-right-top">
-                  <div class="title">{{item.name}}</div>
-                  <div v-if="item.describe" class="text-sub">{{item.describe}}</div>
-                  <div class="text-sales-box">
-                    <div class="text-sales">已售{{item.sale_count}}件</div>
+            </div>
+          </div>
+          <!--分类-->
+          <div v-if="cms.module_name === 'navigation'" class="hand" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
+            <div v-if="navList.length" class="nav-list">
+              <div v-for="(item, index) in navList" :key="index" class="nav-item">
+                <div :style="{'background-image': 'url(' + item.image_url + ')'}" class="nav-top-box"></div>
+                <div class="nav-top-text">{{item.title}}</div>
+              </div>
+            </div>
+            <div v-if="!navList.length" class="nav-list">
+              <div v-for="(item) in [0, 1, 2, 3, 4, 5 , 6, 7, 8, 9]" :key="item" class="nav-item">
+                <div class="nav-top-box"></div>
+              </div>
+            </div>
+          </div>
+          <!--进日抢购-->
+          <div v-if="cms.module_name === 'activity'" class="goods-big-box">
+            <div class="line"></div>
+            <div class="goods-title-box">
+              <div class="goods-title-main">
+                <div class="goods-title-img"></div>
+                <div class="goods-title-text">今日抢购</div>
+                <div class="goods-title-icon"></div>
+                <div class="goods-title-sub">今日下单 次日提货</div>
+              </div>
+            </div>
+            <div class="goods-box hand" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
+              <div v-for="(item, index) in goodsList" :key="index" class="goods-list">
+                <div class="goods-left">
+                  <div class="goods-left-img">
+                    <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
+                  </div>
+                  <div class="goods-left-icon">
+                    <img class="item-img" src="./icon-label@2x.png">
                   </div>
                 </div>
-                <div class="add-box">
-                  <div class="add-box-left">
-                    <section class="left">
-                      <div class="text-group">团购价</div>
-                    </section>
-                    <div class="price-box">
-                      <div class="money">{{item.shop_price}}</div>
-                      <div class="unit">元</div>
-                      <div class="lineation">{{item.original_price}}元</div>
+                <div class="goods-right">
+                  <div class="goods-right-top">
+                    <div class="title">{{item.name}}</div>
+                    <div v-if="item.describe" class="text-sub">{{item.describe}}</div>
+                    <div class="text-sales-box">
+                      <div class="text-sales">已售{{item.sale_count}}件</div>
                     </div>
                   </div>
-                  <button v-if="item.usable_stock * 1 > 0" class="add-box-right" formType="submit">
-                    <div class="add-goods-btn">
-                      <div class="add-icon">
-                        <div class="add1"></div>
-                        <div class="add2"></div>
+                  <div class="add-box">
+                    <div class="add-box-left">
+                      <section class="left">
+                        <div class="text-group">团购价</div>
+                      </section>
+                      <div class="price-box">
+                        <div class="money">{{item.shop_price}}</div>
+                        <div class="unit">元</div>
+                        <div class="lineation">{{item.original_price}}元</div>
                       </div>
-                      <div class="add-text">购物车</div>
                     </div>
-                  </button>
-                  <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
-                    <div class="add-goods-btn add-goods-btn-active">
-                      <div class="add-text">已抢完</div>
+                    <button v-if="item.usable_stock * 1 > 0" class="add-box-right" formType="submit">
+                      <div class="add-goods-btn">
+                        <div class="add-icon">
+                          <div class="add1"></div>
+                          <div class="add2"></div>
+                        </div>
+                        <div class="add-text">购物车</div>
+                      </div>
+                    </button>
+                    <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
+                      <div class="add-goods-btn add-goods-btn-active">
+                        <div class="add-text">已抢完</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div v-if="!goodsList.length" class="goods-none">
-              <div class="none-box">
-                <img src="./icon-picmr@2x.png" class="none-img">
+              <div v-if="!goodsList.length" class="goods-none">
+                <div class="none-box">
+                  <img src="./icon-picmr@2x.png" class="none-img">
+                </div>
               </div>
+              <!--<div v-if="!goodsList.length" class="goods-none">-->
+              <!--<div class="none-box">-->
+              <!--<img src="./icon-picmr@2x.png" class="none-img">-->
+              <!--</div>-->
+              <!--</div>-->
             </div>
-            <!--<div v-if="!goodsList.length" class="goods-none">-->
-            <!--<div class="none-box">-->
-            <!--<img src="./icon-picmr@2x.png" class="none-img">-->
-            <!--</div>-->
-            <!--</div>-->
-          </div>
 
+          </div>
         </div>
       </div>
     </div>
@@ -116,118 +125,60 @@
       CarouselItem
     },
     props: {
+      infoType: {
+        type: String,
+        default: 'bannar'
+      },
+      cmsMsg: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
       bannerList: {
         type: Array,
         default: () => {
           return [
-            // {
-            //   content: {id: '', url: ''},
-            //   goods_cover_image:
-            //     '',
-            //   goods_name: '',
-            //   id: '',
-            //   image_id: '',
-            //   image_url: '',
-            //   type: 'mini_goods'
-            // },
             {
-              content: {id: 15, url: ''},
-              goods_cover_image:
-                'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/16/154492815148239.png',
-              goods_name: '马某某0222',
-              id: 25,
-              image_id: 177,
-              image_url: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/28/154599333710387.png',
-              type: 'mini_goods'
-            },
-            {
-              content: {id: 15, url: ''},
-              goods_cover_image:
-                'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/20/154528943392936.png',
-              goods_name: '马某某0222',
-              id: 25,
-              image_id: 177,
-              image_url: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/20/154528943392936.png',
-              type: 'mini_goods'
-            },
-            {
-              content: {id: 15, url: ''},
-              goods_cover_image:
-                'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/20/154528896495722.png',
-              goods_name: '马某某0222',
-              id: 25,
-              image_id: 177,
-              image_url: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/20/154528896495722.png',
+              content: {id: '', url: ''},
+              image_id: '',
+              image_url: '',
               type: 'mini_goods'
             }
           ]
         }
       },
+      navList: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
       goodsList: {
         type: Array,
         default: () => {
-          return [
-          // {
-          //   describe: 'dsf',
-          //   goods_cover_image:
-          //     'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/19/154520881660614.png?imageView2/3/w/200/h/200/q/85',
-          //   goods_id: 34,
-          //   goods_units: '斤',
-          //   id: 2393,
-          //   name: '测试编号002',
-          //   original_price: '3.21',
-          //   sale_count: 51,
-          //   shop_price: '1',
-          //   shop_sku_id: 2393,
-          //   thumb_image: '',
-          //   usable_stock: 1
-          // },
-          // {
-          //   describe: 'dsf',
-          //   goods_cover_image:
-          //     'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/19/154520881660614.png?imageView2/3/w/200/h/200/q/85',
-          //   goods_id: 34,
-          //   goods_units: '斤',
-          //   id: 2393,
-          //   name: '测试编号002',
-          //   original_price: '3.21',
-          //   sale_count: 51,
-          //   shop_price: '1',
-          //   shop_sku_id: 2393,
-          //   thumb_image: '',
-          //   usable_stock: 1
-          // },
-          // {
-          //   describe: 'dsf',
-          //   goods_cover_image:
-          //     'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/19/154520881660614.png?imageView2/3/w/200/h/200/q/85',
-          //   goods_id: 34,
-          //   goods_units: '斤',
-          //   id: 2393,
-          //   name: '测试编号002',
-          //   original_price: '3.21',
-          //   sale_count: 51,
-          //   shop_price: '1',
-          //   shop_sku_id: 2393,
-          //   thumb_image: '',
-          //   usable_stock: 1
-          // }
-          ]
+          return []
         }
       }
     },
     data() {
       return {
         bannerIndex: 0,
-        comType: 4
+        comType: this.infoType
+      }
+    },
+    watch: {
+      infoType(news) {
+        this.comType = news
       }
     },
     methods: {
       _getBanner(oldValue, value) {
         this.bannerIndex = value
       },
-      _setType(type) {
-        this.comType = type
+      _setType(cms) {
+        this.comType = cms.module_name
+        this.$emit('setType', cms)
       }
     }
   }
@@ -240,14 +191,13 @@
     width: 48%
     box-sizing: border-box
     display: flex
-    align-items: center
     justify-content: center
     .phone
       icon-image('pic-iphone')
       width: 375px
       height: 764.6px
       position: relative
-      margin: 40px 0
+      margin: 50px 0 40px
       .content-box
         top: 94px
         left: 35px
@@ -260,13 +210,13 @@
           width: 0px
 
   .banner-box
+    margin-top: 3px
     background: $color-white
     width: 100%
     overflow: hidden
     display: flex
     align-items: center
     justify-content: center
-    padding-top: 3px
     box-sizing: border-box
     .big-box
       width: 299px
@@ -298,15 +248,26 @@
 
   .touch
     overflow: hidden
+    position: relative
     transition: all 0.2s
-    box-sizing: border-box
-    border: 2px solid $color-main
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      transition: all 0.2s
+      box-sizing: border-box
+      border: 2px solid $color-main
 
   .nav-list
+    box-sizing: border-box
     background: $color-white
     layout(row)
     align-items: center
-    padding: 4.7px 5px 23px
+    margin: 4.7px 5px 10px
+    padding-bottom: 10px
     .nav-item
       width: 20%
       margin-top: 10px

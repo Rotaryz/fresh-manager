@@ -1,100 +1,171 @@
 <template>
   <div class="advertisement">
-    <phone-box></phone-box>
-    <div class="advertisement-content">
+    <phone-box :bannerList="bannerList" :goodsList="goodsList" :navList="navList" :cmsMsg="infoBannerList.modules" @setType="_changeType"></phone-box>
+    <!--广告-->
+    <div v-if="cmsType === 'bannar'" class="advertisement-content">
       <div class="content-header">
         <div class="content-title">轮播图设置</div>
         <div class="content-sub">(最多添加5个广告，鼠标拖拽调整广告顺序)</div>
       </div>
-      <div v-for="(banner, idx) in bannerList" :key="idx" class="advertisement-item">
-        <div class="advertisement-msg">
-          <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
-            <div v-if="banner.showLoading" class="loading-mask">
-              <img src="./loading.gif" class="loading">
+      <draggable v-model="temporaryBannar" @update="_setSort()">
+        <transition-group>
+          <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
+            <div class="advertisement-msg">
+              <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
+                <div v-if="banner.showLoading" class="loading-mask">
+                  <img src="./loading.gif" class="loading">
+                </div>
+                <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
+                <div v-if="banner.image_id" class="img-change-tip">更换图片</div>
+              </div>
+              <!--@click=""-->
+              <div class="advertisement-link">
+                <div class="add-link hand" @click="_showGoods(idx, banner.other_id)">添加链接</div>
+                <p class="goods-title">{{banner.type === 'out_html' || banner.type === 'mini_link' ? banner.url : banner.name}}</p>
+              </div>
+              <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
             </div>
-            <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
           </div>
-          <!--@click=""-->
-          <div v-if="!banner.type" class="add-advertisement hand" @click="_showSelectType(banner, idx)">
-            <div class="add-link hand">添加链接</div>
-            <transition name="fade">
-              <ul v-if="banner.showType" class="select-type" @click.stop="">
-                <li v-for="(item, index) in typeList" :key="index" class="select-item" @click="_hideSelectType(index, idx)">{{item}}</li>
-              </ul>
-            </transition>
+
+        </transition-group>
+      </draggable>
+      <div class="advertisement-btn">
+        <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
+        <div class="btn-main new-advertisement" @click="_addMore">新建广告</div>
+      </div>
+    </div>
+    <!--导航-->
+    <div v-if="cmsType === 'navigation'" class="advertisement-content">
+      <div class="content-header">
+        <div class="content-title">导航栏设置</div>
+        <div class="content-sub">(最多添加10个导航栏，鼠标拖拽调整广告顺序)</div>
+      </div>
+      <draggable v-model="temporaryNavigation" @update="_setSort()">
+        <transition-group>
+          <div v-for="(item, idx) in temporaryNavigation" :key="idx" class="advertisement-item">
+            <div class="advertisement-msg nav-msg">
+              <div class="img-box hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+                <div v-if="item.showLoading" class="loading-mask">
+                  <img src="./loading.gif" class="loading">
+                </div>
+                <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, item, $event)">
+                <div v-if="item.image_id" class="img-change-tip">更换图片</div>
+              </div>
+              <div>
+                <input v-model="item.title" type="text" class="nav-name" placeholder="请输入标题名称" maxlength="4">
+                <div class="advertisement-link">
+                  <div class="add-link hand" @click="_showGoods(idx, item.other_id)">添加链接</div>
+                  <p class="goods-title">{{item.type === 'out_html' || item.type === 'mini_link' ? item.url : item.name}}</p>
+                </div>
+              </div>
+              <p class="use hand" @click="_showConfirm(item.id, idx)">删除</p>
+            </div>
           </div>
-          <div v-if="banner.type === 'out_html'" class="advertisement-link">
-            <p class="goods-title">{{banner.goods_name}}</p>
+        </transition-group>
+      </draggable>
+      <div class="advertisement-btn">
+        <div class="submit-activity-btn hand" @click="_editNav()">提交</div>
+        <div class="btn-main new-advertisement" @click="_navMore">新建导航</div>
+      </div>
+    </div>
+    <!--活动-->
+    <div v-if="cmsType === 'activity'" class="advertisement-content">
+      <div class="content-header">
+        <div class="content-title">活动列表</div>
+      </div>
+      <div class="edit-activity">
+        <div class="edit-item">
+          <div class="edit-title">
+            <span class="start">*</span>
+            营销活动
           </div>
-          <div v-if="banner.type === 'mini_goods'" class="advertisement-link">
-            <!--<div class="goods-small-img" :style="{'background-image': 'url(' + banner.goods_cover_image + ')'}"></div>-->
-            <p class="goods-title">{{banner.goods_name}}</p>
+          <div class="edit-box">
+            <base-drop-down :width="400" :height="44" :select="activityType"></base-drop-down>
           </div>
-          <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
+        </div>
+        <div class="edit-item">
+          <div class="edit-title">
+            <span class="start">*</span>
+            选择活动
+          </div>
+          <div class="edit-box">
+            <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
+          </div>
+        </div>
+        <div class="submit-activity">
+          <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
         </div>
       </div>
-      <div class="btn-main new-advertisement" @click="_addMore">新建广告 +</div>
     </div>
-    <!--商品-->
+    <!--商品弹窗-->
     <default-modal ref="goods">
       <div slot="content" class="shade-box">
         <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+          <div class="shade-tab-type">
+            <div v-for="(items, index) in typeList" :key="index" :class="{'shade-tab-item-active': tabIndex === index}" class="shade-tab-item hand" @click="_setLinkType(index, $event)">{{items.title}}</div>
+            <div class="line" :style="{left: left + 'px'}"></div>
+          </div>
+          <!--<div class="shade-title">选择商品</div>-->
           <span class="close hand" @click="_hideGoods"></span>
         </div>
-        <div class="shade-tab">
-          <div class="tab-item">
-            <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
-          </div>
-        </div>
-        <div class="goods-content">
-          <div class="goods-list">
-            <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
-                <span class="after"></span>
-              </div>
-              <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
-              <div class="goods-msg">
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.store_price}}</div>
-              </div>
+        <!--商品详情-->
+        <div v-if="tabIndex === 0">
+          <div class="shade-tab">
+            <div class="tab-item">
+              <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
             </div>
-            <!--select-icon-active-->
+            <div class="tab-item">
+              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+            </div>
+            <div class="tab-item">
+              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            </div>
+          </div>
+          <div class="goods-content">
+            <div class="goods-list">
+              <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
+                <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                  <span class="after"></span>
+                </div>
+                <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+                <div class="goods-msg">
+                  <div class="goods-name">{{item.name}}</div>
+                  <div class="goods-money">¥{{item.store_price}}</div>
+                </div>
+              </div>
+              <!--select-icon-active-->
+            </div>
+          </div>
+          <div class="page-box">
+            <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
           </div>
         </div>
-        <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+        <!--商品分类-->
+        <div v-if="tabIndex === 1" class="goods-cate">
+          <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
+            <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+              <span class="after"></span>
+            </div>
+            <div class="shade-goods-name">{{goods.name}}</div>
+            <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+          </div>
         </div>
-        <div class="back">
+        <div v-if="tabIndex === 2" class="link-text">
+          <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+        </div>
+        <div v-if="tabIndex === 3" class="link-text">
+          <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
+        </div>
+        <div class="back back-box">
           <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
           <div class="back-btn btn-main" @click="_miniGoods">确定</div>
         </div>
       </div>
     </default-modal>
-    <!--自定义链接-->
-    <default-modal ref="custom">
-      <div slot="content" class="custom">
-        <div class="shade-header">
-          <div class="shade-title">自定义链接</div>
-          <span class="close hand" @click="_hideCustom"></span>
-        </div>
-        <textarea v-model="outHtml" class="link-box"></textarea>
-        <div class="btn-group">
-          <span class="btn cancel" @click="_hideCustom">取消</span>
-          <span class="btn confirm" @click="addOutHtml">确定</span>
-        </div>
-      </div>
-    </default-modal>
     <default-confirm ref="dialog" @confirm="_delBanner"></default-confirm>
-    <div class="back">
-      <div class="back-btn btn-main">保存并发布</div>
-    </div>
+    <!--<div class="back">-->
+    <!--<div class="back-btn btn-main">保存并发布</div>-->
+    <!--</div>-->
   </div>
 </template>
 
@@ -106,133 +177,196 @@
   import ADD_IMAGE from './pic-add_ad@2x.png'
   import {adverComputed, adverMethods} from '@state/helpers'
   import _ from 'lodash'
+  import Draggable from 'vuedraggable'
+
   const PAGE_NAME = 'ADVERTISEMENT'
   const TITLE = '轮播广告'
-  const TYPE_LIST = ['商品链接', '自定义链接']
-  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', content: {id: '', url: ''}, image_url: ADD_IMAGE} // 模板对象
+  const TYPE_LIST = [
+    {title: '商品详情', status: 'mini_goods'},
+    {title: '商品分类', status: 'goods_cate'},
+    {title: '小程序链接', status: 'mini_link'},
+    {title: 'H5链接', status: 'out_html'}
+  ]
+  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: ADD_IMAGE} // 模板对象
   export default {
     name: PAGE_NAME,
     components: {
       DefaultModal,
       DefaultConfirm,
       PhoneBox,
+      Draggable
     },
     page: {
       title: TITLE
     },
     data() {
       return {
-        items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8'],
         typeList: TYPE_LIST,
         showType: false,
-        isHaveLink: true,
         showSelectIndex: -1,
         showLoading: false,
-        bannerList: [],
+        bannerList: [TEMPLATE_OBJ],
+        navList: [],
+        goodsList: [],
+        temporaryBannar: [],
+        temporaryNavigation: [],
         upIndex: 0,
         upItem: {},
         outHtml: '',
+        miniLink: '',
         bannerIndex: 0,
         choiceGoods: [],
-        goodsPage: {
-          total: 1,
-          per_page: 10,
-          total_page: 1
-        },
+        goodsPage: {total: 1, per_page: 10, total_page: 1},
         choicePage: 1,
         parentId: 0,
         keyword: '',
-        assortment: {
-          check: false,
-          show: false,
-          content: '选择分类',
-          type: 'default',
-          data: [] // 格式：{title: '55'}}
-        },
-        secondAssortment: {
-          check: false,
-          show: false,
-          content: '选择二级分类',
-          type: 'default',
-          data: [] // 格式：{title: '55'}}
-        },
+        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsId: 0,
         delId: 0,
-        delIndex: 0
+        delIndex: 0,
+        cmsType: 'bannar',
+        tabIndex: 0,
+        left: 55,
+        outLink: 'mini_goods',
+        cmsId: 0,
+        activityType: {
+          check: false,
+          show: false,
+          content: '今日抢购',
+          type: 'default',
+          data: [{name: '今日抢购'}]
+        },
+        activityList: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: []
+        },
+        goodsCate: [],
+        showCateIndex: 0,
+        activityItem: {}
       }
     },
     computed: {
-      ...adverComputed
+      ...adverComputed,
+      dataName() {
+        let lastName = this.cmsType[0].toUpperCase() + this.cmsType.slice(1, this.cmsType.length)
+        let useName = `temporary${lastName}`
+        return useName
+      }
+
     },
     async created() {
-      this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : [_.cloneDeep(TEMPLATE_OBJ)]
-      this.bannerList = this.bannerList.map((item) => {
-        item.showType = false
-        return item
+      this.cmsId = this.infoBannerList.modules[0].id
+      this.infoBannerList.modules.forEach(async (item) => {
+        await this._getModuleMsg(item.module_name, item.id)
       })
       await this._getFirstAssortment()
       await this._getGoodsList()
     },
     methods: {
       ...adverMethods,
-      _setSort(index) {
-        // console.log
-        let start = this.bannerList[index]
-        let end = this.bannerList[index - 1]
-        this.bannerList.splice(index - 1, 2, start, end)
-        let arr = []
-        this.bannerList.forEach((item) => {
-          arr.push({id: item.id})
-        })
-        API.Advertisement.wheelPlantingSort({data: arr}).then((res) => {
-        })
+      // 获取今日抢购活动列表
+      async _activityList() {
+        let res = await API.Advertisement.activiList()
+        this.activityList.data = res.error === this.$ERR_OK ? res.data : []
+      },
+      _getActivityId(item) {
+        this.activityItem.activityId = item.id
+      },
+      async _getModuleMsg(type, id) {
+        let res = await API.Advertisement.getModuleMsg({id: id})
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        switch (type) {
+        case 'bannar':
+          this.bannerList = res.data.length ? res.data : this.bannerList
+          this.temporaryBannar = _.cloneDeep(res.data)
+          break
+        case 'navigation':
+          this.navList = res.data
+          this.temporaryNavigation = _.cloneDeep(res.data)
+          break
+        case 'activity':
+          this.goodsList = res.data.list
+          this.activityItem = {name: res.data.name, activityId: res.data.other_id, id: res.data.id}
+          this.activityList.content = res.data.name || ''
+          break
+        }
+      },
+      _setSort() {
+      },
+      _setLinkType(index, e) {
+        this.tabIndex = index
+        this.left = e.target.offsetLeft + (e.target.offsetWidth - 34) / 2
+        this.outLink = this.typeList[index].status
+      },
+      // cms的类型
+      async _changeType(cms) {
+        this.cmsType = cms.module_name
+        this.cmsId = cms.id
+        if (this.cmsType === 'activity') {
+          await this._activityList()
+        }
+        await this._getModuleMsg(this.cmsType, this.cmsId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
         this.delId = id
         this.delIndex = index
         if (!id) {
-          this._delBanner()
+          this[this.dataName].splice(index, 1)
           return
         }
         this.$refs.dialog.show('是否确定删除该广告？')
       },
       // 删除banner
       async _delBanner() {
-        if (!this.delId) {
-          this.bannerList.splice(this.delIndex, 1)
-          return
-        }
         let res = await API.Advertisement.deleteBanner(this.delId)
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
           return
         }
-        this.bannerList.splice(this.delIndex, 1)
+        await this._getModuleMsg(this.cmsType, this.cmsId)
+        // this.temporaryBannar.splice(this.delIndex, 1)
       },
-      // 编辑
-      _editBanner(item, index) {
-        this.bannerIndex = index
-        switch (item.type) {
+      // 弹窗确定选择链接
+      async _miniGoods() {
+        let index = this.bannerIndex
+        console.log(this[this.dataName], this.dataName)
+        this[this.dataName][index].type = this.outLink
+        switch (this.outLink) {
         case 'out_html':
-          this.outHtml = item.content.url
-          this._showCustom()
+          this[this.dataName][index].url = this.outHtml
+          this[this.dataName][index].name = ''
+          break
+        case 'mini_link':
+          this[this.dataName][index].url = this.miniLink
+          this[this.dataName][index].name = ''
           break
         case 'mini_goods':
-          this.goodsId = item.content.id
-          this._showGoods()
+          this[this.dataName][index].other_id = this.choiceGoods[this.showSelectIndex].id
+          this[this.dataName][index].url = ''
+          this[this.dataName][index].name = this.choiceGoods[this.showSelectIndex].name
+          break
+        case 'goods_cate':
+          this[this.dataName][index].other_id = this.goodsCate[this.showCateIndex].id
+          this[this.dataName][index].url = ''
+          this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
           break
         }
-      },
-      // 确定选择商品链接
-      async _miniGoods() {
-        await this._submitBanner()
+        this._hideGoods()
       },
       // 选择商品
       _selectGoods(item, index) {
         this.showSelectIndex = index
-        this.bannerList[this.bannerIndex].content.id = item.id
-        this.bannerList[this.bannerIndex].type = 'mini_goods'
+      },
+      //
+      _selectCate(item, index) {
+        this.showCateIndex = index
       },
       // 获取商品列表
       async _getGoodsList() {
@@ -280,6 +414,7 @@
       // 获取一级分类
       async _getFirstAssortment() {
         let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
       },
@@ -292,32 +427,26 @@
       },
       // 添加更多的广告
       _addMore() {
-        this.bannerList.push(_.cloneDeep(TEMPLATE_OBJ))
-      },
-      // 选择广告链接类型
-      _showSelectType(item, index) {
-        this.bannerList[index].showType = !this.bannerList[index].showType
-        this.$forceUpdate()
-      },
-      // 隐藏广告链接下拉框
-      _hideSelectType(typeIndex, index) {
-        this.bannerList[index].showType = false
-        this.$forceUpdate()
-        switch (typeIndex) {
-        case 0:
-          this._showGoods()
-          break
-        case 1:
-          this._showCustom()
-          break
+        if (this.temporaryBannar.length >= 5) {
+          this.$toast.show('最多添加五个广告')
+          return
         }
-        this.bannerIndex = index
+        this.temporaryBannar.push(_.cloneDeep(TEMPLATE_OBJ))
+      },
+      // 添加更多的广告
+      _navMore() {
+        if (this.temporaryNavigation.length >= 10) {
+          this.$toast.show('最多添加十个导航')
+          return
+        }
+        this.temporaryNavigation.push(_.cloneDeep(TEMPLATE_OBJ))
       },
       // 添加图片
       async _addPic(index, item, e) {
         this.upIndex = index
         this.upItem = item
-        this.bannerList[index].showLoading = true
+        console.log(this.dataName, this[this.dataName], index)
+        this[this.dataName][index].showLoading = true
         let param = this._infoImage(e.target.files[0])
         e.target.value = ''
         await this._upImage(param)
@@ -331,85 +460,87 @@
       // 上传banner图片
       async _upImage(param) {
         let res = await API.Upload.UploadImg(param)
-        this.bannerList[this.upIndex].showLoading = false
+        this[this.dataName][this.upIndex].showLoading = false
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return
         }
-        this.bannerList[this.upIndex].image_url = res.data.url
-        this.bannerList[this.upIndex].image_id = res.data.id
-        let obj = {image_id: res.data.id, type: this.upItem.type, content: this.upItem.content}
-        if (this.upItem.id) {
-          await this._updateBanner(obj, this.upItem.id)
-        } else {
-          await this._storeBanner(obj)
-        }
-        await this.getInfoBannerList()
-        this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
-        this.bannerList = this.bannerList.map((item) => {
-          item.showType = false
-          return item
-        })
+        this[this.dataName][this.upIndex].image_url = res.data.url
+        this[this.dataName][this.upIndex].image_id = res.data.id
       },
       // 新建banner
-      async _storeBanner(obj) {
-        let res = await API.Advertisement.storeBanner(obj)
-        this.$toast.show(res.message)
-        if (res.error === this.$ERR_OK) {
-          this._hideCustom()
-          this._hideGoods()
-        }
-      },
-      // 编辑banner
-      async _updateBanner(obj, id) {
-        let res = await API.Advertisement.updateBanner(obj, id)
-        this.$toast.show(res.message)
-        if (res.error === this.$ERR_OK) {
-          this._hideCustom()
-          this._hideGoods()
-        }
-      },
-      // 提交修改banner
-      async _submitBanner() {
-        if (this.bannerList[this.bannerIndex].id) {
-          await this._updateBanner(this.bannerList[this.bannerIndex], this.bannerList[this.bannerIndex].id)
+      async _editBanner() {
+        if (!this.temporaryBannar.length) {
+          this.$toast.show('轮播图不能为空', 1500)
+          return
         } else {
-          await this._storeBanner(this.bannerList[this.bannerIndex])
+          for (let i = 0; i < this.temporaryBannar.length; i++) {
+            if (!this.temporaryBannar[i].image_id) {
+              this.$toast.show(`第${i + 1}轮播图广告图片不能为空`, 1500)
+              return
+            }
+          }
         }
-        await this.getInfoBannerList()
-        this.bannerList = this.infoBannerList.length ? _.cloneDeep(this.infoBannerList) : this.bannerList
-        this.bannerList = this.bannerList.map((item) => {
-          item.showType = false
-          return item
+        let data = this.temporaryBannar.map((item) => {
+          return {page_module_id: this.cmsId, ext_json: item}
         })
+        await this._editCms(data)
       },
-      // 添加自定义链接
-      async addOutHtml() {
-        if (!this.outHtml) {
-          this.$toast.show('输入内容不能为空')
+      // 新建nav
+      async _editNav() {
+        if (!this.temporaryNavigation.length) {
+          this.$toast.show('导航不能为空', 1500)
+          return
+        } else {
+          for (let i = 0; i < this.temporaryNavigation.length; i++) {
+            if (!this.temporaryNavigation[i].title) {
+              this.$toast.show(`导航${i + 1}标题不能为空`, 1500)
+              return
+            } else if (!this.temporaryNavigation[i].image_id) {
+              this.$toast.show(`导航${i + 1}图片不能为空`, 1500)
+              return
+            }
+          }
+        }
+        let data = this.temporaryNavigation.map((item) => {
+          return {page_module_id: this.cmsId, ext_json: item}
+        })
+        await this._editCms(data)
+      },
+      // 新建活动
+      async _editActivity() {
+        if (!this.activityItem.activityId) {
+          this.$toast.show(`请选择活动`, 1500)
           return
         }
-        this.bannerList[this.bannerIndex].type = 'out_html'
-        this.bannerList[this.bannerIndex].content.url = this.outHtml
-        await this._submitBanner()
+        let data = [{page_module_id: this.cmsId, ext_json: {id: this.activityItem.id, other_id: this.activityItem.activityId, type: 'activity'}}]
+        await this._editCms(data)
       },
-      // 展示自定义弹窗
-      _showCustom() {
-        this.$refs.custom.showModal()
-      },
-      // 隐藏自定义弹窗
-      _hideCustom() {
-        this.outHtml = ''
-        this.$refs.custom.hideModal()
+      // 保存模块数据
+      async _editCms(data) {
+        let res = await API.Advertisement.saveModuleMsg({data})
+        if (res.error === this.$ERR_OK) {
+          await this._getModuleMsg(this.cmsType, this.cmsId)
+        }
+        this.$loading.hide()
+        this.$toast.show(res.message)
       },
       // 展示商品弹窗
-      _showGoods() {
-        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
+      _showGoods(index, id) {
+        this.bannerIndex = index
+        this.goodsId = id
+        this.showSelectIndex =
+          this.outLink === 'mini_goods' ? this.choiceGoods.findIndex((item) => item.id === this.goodsId) : -1
+        this.showCateIndex =
+          this.outLink === 'goods_cate' ? this.goodsCate.findIndex((item) => item.id === this.goodsId) : -1
         this.$refs.goods.showModal()
       },
       // 隐藏商品弹窗
       _hideGoods() {
         this.showSelectIndex = -1
+        this.outHtml = ''
+        this.miniLink = ''
+        this.showCateIndex = -1
         this.$refs.goods.hideModal()
       }
     }
@@ -418,6 +549,37 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .goods-cate
+    flex: 1
+    width: 960px
+    height: 480px
+    margin: 30px auto 0
+    border: 1px solid $color-line
+    border-radius: 4px
+    overflow-x: hidden
+    .goods_cate-item
+      display: flex
+      align-items: center
+      border-bottom: 1px solid $color-line
+      padding-left: 20px
+      height: 80px
+      .shade-goods-name
+        width: 176px
+      .shade-goods-name, .shade-goods-num
+        font-size: $font-size-14
+        color: $color-text-main
+
+  .link-text-box
+    width: 960px
+    height: 220px
+    margin: 30px auto 0
+    border: 1px solid $color-line
+    border-radius: 4px
+    outline: none
+    display: block
+    resize: none
+    padding: 14px
+    box-sizing: border-box
 
   .advertisement
     flex: 1
@@ -430,17 +592,38 @@
     border-left: 1px solid $color-line
     overflow: hidden
     padding-bottom: 40px
+    .advertisement-btn
+      margin: 50px 0 0px 40px
+      display: flex
+    .advertisement-sure
     .new-advertisement
       font-style: $font-size-14
-      padding: 8px 40px
+      padding: 8px 19px 8px 33px
+      position: relative
+      &:after
+        content: ''
+        width: 2px
+        height: 10px
+        background: $color-white
+        col-center()
+        left: 21px
+      &:before
+        content: ''
+        width: 10px
+        height: 2px
+        background: $color-white
+        col-center()
+        left: 17px
     .advertisement-item
-      margin: 40px 40px 50px
+      margin: 24px 40px 0px
       border: 1px dashed #D9D9D9
       border-radius: 2px
       background: #FCFCFC
       height: 140px
       padding: 20px
       box-sizing: border-box
+      &:first-child
+        margin-top: 40px
       .advertisement-msg
         display: flex
         align-items: center
@@ -455,6 +638,20 @@
           background-position: center
           background-image: url('./pic-add_ad@2x.png')
           position: relative
+          border: 1px solid #F2F2F2
+          border-radius: 1px
+          box-sizing: border-box
+          .img-change-tip
+            position: absolute
+            bottom: 0
+            left: 0
+            width: 100%
+            height: 22px
+            background: rgba(0, 0, 0, .5)
+            color: rgba(255, 255, 255, .7)
+            font-size: $font-size-14
+            text-align: center
+            line-height: 22px
           .sendImage
             position: absolute
             width: 100%
@@ -462,6 +659,7 @@
             height: 100%
             top: 0
             opacity: 0
+            z-index: 1
           .loading-mask
             width: 100%
             height: 100%
@@ -478,7 +676,6 @@
           margin-left: 20px
           display: flex
           align-items: center
-          height: 14px
           .add-icon
             icon-image('icon-plus_young')
             height: 8px
@@ -526,7 +723,7 @@
           .goods-small-icon
             icon-image('icon-link')
           .goods-title
-            width: 98%
+            width: 63%
             no-wrap()
             margin-left: 12px
             font-size: $font-size-14
@@ -570,6 +767,21 @@
             background: $color-main
             col-center()
             left: 19px
+
+      .nav-msg
+        align-items: flex-start
+        .advertisement-link, .add-advertisement
+          margin-top: 16px
+        .nav-name
+          padding-left: 15px
+          box-sizing: border-box
+          font-size: $font-size-14
+          width: 280px
+          height: 44px
+          margin-left: 20px
+          border-radius: 4px
+          background: $color-white
+          border: 1px solid #D9D9D9
 
   /*background-image: url('./')*/
 
@@ -653,30 +865,6 @@
           border-right: 1px solid $color-line
         &:nth-child(9), &:nth-child(10)
           border-bottom: none
-        .select-icon
-          width: 16px
-          height: 16px
-          border-radius: 50%
-          background: $color-white
-          border: 1px solid $color-line
-          transition: all, 0.3s
-          position: relative
-          transform-origin: 50%
-          margin-right: 20px
-          .after
-            all-center()
-            transform-origin: 50%
-            transition: all, 0.3s
-            width: 0
-            height: 0
-            border-radius: 50%
-        .select-icon-active
-          border: 1px solid $color-main
-          .after
-            width: 8px
-            height: 8px
-            border-radius: 50%
-            background: $color-main
         .goods-img
           margin-right: 10px
           width: 40px
@@ -730,8 +918,31 @@
     justify-content: space-between
     height: 60.5px
     box-sizing: border-box
-    padding: 0 20px
+    padding: 0 20px 0 0
     border-bottom: 1px solid $color-line
+    .shade-tab-type
+      height: 100%
+      display: flex
+      position: relative
+      .shade-tab-item
+        display: flex
+        transition: all 0.3s
+        color: $color-text-main
+        font-family: $font-family-regular
+        align-items: center
+        margin-left: 40px
+      .shade-tab-item-active
+        font-weight: bold
+        font-family: $font-family-medium
+      .line
+        transition: all 0.3s
+        left: 55px
+        position: absolute
+        bottom: -1px
+        height: 2px
+        width: 34px
+        background: $color-main
+        border-radius: 1px
     .shade-title
       color: $color-text-main
       font-family: $font-family-medium
@@ -744,66 +955,114 @@
       &:hover
         transform: scale(1.3)
 
-  /*选择商品样式*/
-  .custom
-    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 3px
-    background: $color-white
-    width: 534px
-    height: 261px
-    position: relative
-    .link-box
-      outline: none
-      resize: none
-      display: block
-      margin: 30px auto
-      border: 1px solid $color-line
-      border-radius: 4px
-      padding: 10px
-      box-sizing: border-box
-      hieght: 80px
-      width: 494px
-      transition: all 0.3s
-      &:hover
-        border: 1px solid #ACACAC
-      &::placeholder
-        font-family: $font-family-regular
-        color: $color-text-assist
-      &:focus
-        border-color: $color-sub !important
-    .btn-group
-      padding: 0 20px
-      box-sizing: border-box
-      margin-top: 40px
-      text-align: center
-      display: flex
-      justify-content: flex-end
-      user-select: none
-      .btn
-        width: 96px
-        height: 40px
-        line-height: 40px
-        border-radius: 3px
-        cursor: pointer
-        transition: all 0.3s
-      .cancel
-        border: 1px solid $color-line
-        &:hover
-          color: $color-text-sub
-          border-color: $color-text-sub
-      .confirm
-        border: 1px solid $color-main
-        background: $color-main
-        color: $color-white
-        margin-left: 20px
-        &:hover
-          background: #44AB67
-        &:active
-          opacity: 0.8
-      .one-btn
-        margin-left: 0
-
   .back
     justify-content: center
 
+  .back-box
+    position: absolute
+
+  .edit-item
+    display: flex
+    color: #2A2A2A
+    min-height: 40px
+    margin-top: 24px
+    .edit-title
+      margin-top: 7.5px
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      white-space: nowrap
+      text-align: left
+      min-width: 64px
+    .start
+      display: inline-block
+      margin-right: -2px
+      color: #F52424
+    .edit-box
+      margin-left: 40px
+      .edit-input
+        font-size: $font-size-14
+        padding: 0 14px
+        border-radius: 4px
+        width: 240px
+        height: 44px
+        display: flex
+        align-items: center
+        justify-content: space-between
+        border: 1px solid $color-line
+        transition: all 0.3s
+        &:hover
+          border-color: #ACACAC
+        .edit-time
+          color: $color-text-assist
+          font-family: $font-family-regular
+          font-size: $font-size-12
+        .time-icon
+          icon-image('icon-date_icon')
+          width: 12px
+          height: @width
+    .edit-input-right
+      margin-left: 14px
+    .tip
+      line-height: 44px
+      font-size: $font-size-12
+      font-family: $font-family-regular
+      color: $color-text-main
+    .tip-text
+      margin-left: 2px
+      line-height: 44px
+      font-size: $font-size-12
+      font-family: $font-family-regular
+      color: $color-text-assist
+
+  .edit-activity
+    padding-left: 40px
+
+  .submit-activity
+    border-top: 1px solid #E1E1E1
+    padding-top: 40px
+    margin-top: 40px
+
+  .submit-activity-btn
+    margin-right: 20px
+    font-family: $font-family-regular
+    font-size: $font-size-14
+    color: $color-text-main
+    letter-spacing: 0
+    width: 108px
+    height: 32px
+    border: 1px solid #D9D9D9
+    border-radius: 4px
+    line-height: 32px
+    text-align: center
+    transition: 0.3s all
+    &:hover
+      color: $color-text-sub
+      border-color: $color-text-sub
+
+  //  单选框
+  .select-icon
+    width: 16px
+    height: 16px
+    border-radius: 50%
+    background: $color-white
+    border: 1px solid $color-line
+    transition: all, 0.3s
+    position: relative
+    transform-origin: 50%
+    margin-right: 20px
+    .after
+      all-center()
+      transform-origin: 50%
+      transition: all, 0.3s
+      width: 0
+      height: 0
+      border-radius: 50%
+
+  .select-icon-active
+    border: 1px solid $color-main
+    .after
+      width: 8px
+      height: 8px
+      border-radius: 50%
+      background: $color-main
 </style>

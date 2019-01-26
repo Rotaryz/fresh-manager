@@ -119,5 +119,15 @@ export default {
   deleteGoods(id, loading = false) {
     let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
     return request.delete(url, null, loading)
+  },
+  /**
+   * 仓库货架删除
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  downGoods(data, loading = false) {
+    let url = `/social-shopping/api/backend/shelf-manage/shelf-toggle-online`
+    return request.post(url, data, loading)
   }
 }

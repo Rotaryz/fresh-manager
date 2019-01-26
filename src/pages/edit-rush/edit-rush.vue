@@ -36,7 +36,7 @@
           style="width: 240px;height: 44px"
           @on-change="_getEndTime"
         ></date-picker>
-        <div class="tip-text">每日23点刷新活动，单人每日限购和活动可售数量重置</div>
+        <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
       </div>
     </div>
     <div class="content-header">
@@ -563,6 +563,8 @@
         if (this.disable) {
           return
         }
+        let date = Date.parse(new Date())
+        let endTime = this.essInformation.end_at + ' 23:00'
         if (!this.essInformation.name) {
           this.$toast.show('活动名称不能为空')
           return
@@ -571,6 +573,9 @@
           return
         } else if (!this.essInformation.end_at) {
           this.$toast.show('活动结束时间不能为空')
+          return
+        } else if (Date.parse(endTime) < date) {
+          this.$toast.show('活动结束时间不能小于当天')
           return
         }
         let list = this.goodsList
