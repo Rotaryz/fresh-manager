@@ -129,7 +129,6 @@
       setValue(value, bigIndex, idx) {
         this.city[bigIndex].select = false
         this.city[bigIndex].children[idx].content = value.name
-        console.log(bigIndex === 2)
         switch (bigIndex) {
         case 0:
           let index = regionArr.findIndex((child) => child.name === value.name)

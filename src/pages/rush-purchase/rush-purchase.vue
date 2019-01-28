@@ -68,7 +68,6 @@
     methods: {
       ...rushMethods,
       _downRush(id, status) {
-        console.log(status)
         this.$refs.downConfirm.show('是否确定关闭该活动？')
         this.downId = id
         this.status = status === 2 ? 1 : 0

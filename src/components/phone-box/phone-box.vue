@@ -29,12 +29,11 @@
             <div v-if="navList.length" class="nav-list">
               <div v-for="(item, index) in navList" :key="index" class="nav-item">
                 <div :style="{'background-image': 'url(' + item.image_url + ')'}" class="nav-top-box"></div>
-                <div class="nav-top-text">{{item.title}}</div>
+                <div v-if="item.title" class="nav-top-text">{{item.title}}</div>
               </div>
             </div>
             <div v-if="!navList.length" class="nav-list">
               <div v-for="(item) in [0, 1, 2, 3, 4, 5 , 6, 7, 8, 9]" :key="item" class="nav-item">
-                <div class="nav-top-box"></div>
               </div>
             </div>
           </div>
@@ -281,6 +280,7 @@
         background-size: cover
         background-position: center
       .nav-top-text
+        height: 12px
         font-size: $font-size-12
         font-family: $font-family-regular
         color: #333

@@ -337,7 +337,6 @@
       // 弹窗确定选择链接
       async _miniGoods() {
         let index = this.bannerIndex
-        console.log(this[this.dataName], this.dataName)
         this[this.dataName][index].type = this.outLink
         switch (this.outLink) {
         case 'out_html':
@@ -446,7 +445,6 @@
       async _addPic(index, item, e) {
         this.upIndex = index
         this.upItem = item
-        console.log(this.dataName, this[this.dataName], index)
         this[this.dataName][index].showLoading = true
         let param = this._infoImage(e.target.files[0])
         e.target.value = ''
