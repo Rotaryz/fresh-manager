@@ -259,9 +259,11 @@
     },
     async created() {
       this.cmsId = this.infoBannerList.modules[0].id
+      this.$loading.show()
       this.infoBannerList.modules.forEach(async (item) => {
         await this._getModuleMsg(item.module_name, item.id)
       })
+      this.$loading.hide()
       await this._getFirstAssortment()
       await this._getGoodsList()
     },
@@ -296,7 +298,8 @@
           break
         }
       },
-      _setSort() {},
+      _setSort() {
+      },
       _setLinkType(index, e) {
         this.tabIndex = index
         this.left = e.target.offsetLeft + (e.target.offsetWidth - 34) / 2
@@ -329,7 +332,7 @@
           return
         }
         await this._getModuleMsg(this.cmsType, this.cmsId)
-      // this.temporaryBannar.splice(this.delIndex, 1)
+        // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
       async _miniGoods() {
