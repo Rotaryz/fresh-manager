@@ -256,7 +256,6 @@
         let useName = `temporary${lastName}`
         return useName
       }
-
     },
     async created() {
       this.cmsId = this.infoBannerList.modules[0].id
@@ -292,13 +291,12 @@
           break
         case 'activity':
           this.goodsList = res.data.list
-          this.activityItem = {name: res.data.name, activityId: res.data.other_id, id: res.data.id}
-          this.activityList.content = res.data.name || ''
+          this.activityItem = {name: res.data.name, activityId: res.data.other_id, id: res.data.id || ''}
+          this.activityList.content = res.data.name || '请选择'
           break
         }
       },
-      _setSort() {
-      },
+      _setSort() {},
       _setLinkType(index, e) {
         this.tabIndex = index
         this.left = e.target.offsetLeft + (e.target.offsetWidth - 34) / 2
@@ -331,7 +329,7 @@
           return
         }
         await this._getModuleMsg(this.cmsType, this.cmsId)
-        // this.temporaryBannar.splice(this.delIndex, 1)
+      // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -513,7 +511,12 @@
           this.$toast.show(`请选择活动`, 1500)
           return
         }
-        let data = [{page_module_id: this.cmsId, ext_json: {id: this.activityItem.id, other_id: this.activityItem.activityId, type: 'activity'}}]
+        let data = [
+          {
+            page_module_id: this.cmsId,
+            ext_json: {id: this.activityItem.id, other_id: this.activityItem.activityId, type: 'activity'}
+          }
+        ]
         await this._editCms(data)
       },
       // 保存模块数据
