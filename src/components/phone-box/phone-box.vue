@@ -342,11 +342,12 @@
           width: 100%
           height: 100%
           border-radius: 3px
-          img
+          .item-img
             width: 100%
             height: 100%
             border-radius: 3px
             display: block
+            object-fit: cover
         .goods-left-icon
           width: 28px
           position: absolute
@@ -355,6 +356,7 @@
           img
             display: block
             width: 28px
+            object-fit: cover
       .goods-right
         flex: 1
         overflow: hidden
@@ -366,7 +368,6 @@
           font-size: $font-size-13
           font-family: $font-family-medium
           color: $color-text-main
-          line-height: 1
           min-height: $font-size-13
           margin-bottom: 4px
           no-wrap()
@@ -374,7 +375,6 @@
           font-size: $font-size-13
           font-family: $font-family-regular
           color: $color-text-sub
-          line-height: 1
           margin-bottom: 4px
           no-wrap()
           padding-right: 10px
