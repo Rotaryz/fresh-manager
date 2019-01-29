@@ -418,7 +418,7 @@
       _delGoods() {
         let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
         this.selectGoodsId.splice(index, 1)
-        this.rushMsg.lists[this.classifyIndex].shelf_goods.splice(this.goodsDelIndex, 1)
+        this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
       },
       _cancelGoods() {
