@@ -340,10 +340,18 @@
         this[this.dataName][index].type = this.outLink
         switch (this.outLink) {
         case 'out_html':
+          if (!this.outHtml) {
+            this.$toast.show('H5链接不能为空')
+            return
+          }
           this[this.dataName][index].url = this.outHtml
           this[this.dataName][index].name = ''
           break
         case 'mini_link':
+          if (!this.miniLink) {
+            this.$toast.show('小程序链接不能为空')
+            return
+          }
           this[this.dataName][index].url = this.miniLink
           this[this.dataName][index].name = ''
           break
