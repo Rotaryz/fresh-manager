@@ -126,8 +126,8 @@
           type: this.withdrawalType,
           keyword: this.withdrawalKeyword,
           status: this.withdrawalStatus,
-          start_at: this.startAt,
-          end_at: this.endAt
+          start_at: this.startAt || '',
+          end_at: this.endAt || ''
         }
         let search = []
         for (let key in data) {
