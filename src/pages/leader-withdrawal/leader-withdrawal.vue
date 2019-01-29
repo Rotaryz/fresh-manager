@@ -3,7 +3,7 @@
     <div class="tab-header">
       <base-drop-down :select="statusSelect" @setValue="changeWithdrawalStatus"></base-drop-down>
       <div class="tab-item">
-        <base-date-select @getTime="_setTiem"></base-date-select>
+        <base-date-select @getTime="_setTime"></base-date-select>
       </div>
       <input v-model="orderSn" type="text" class="with-search" placeholder="提现单号">
       <input v-model="keyword" type="text" class="with-search" placeholder="社区名称/团长名称/团长账号">
@@ -111,7 +111,9 @@
         keyword: '',
         note: '',
         checkId: 0,
-        statusSelect: STATUS_SELECT
+        statusSelect: STATUS_SELECT,
+        start: '',
+        end: ''
       }
     },
     computed: {
@@ -126,8 +128,8 @@
           type: this.withdrawalType,
           keyword: this.withdrawalKeyword,
           status: this.withdrawalStatus,
-          start_at: this.startAt || '',
-          end_at: this.endAt || ''
+          start_at: this.start || '',
+          end_at: this.end || ''
         }
         let search = []
         for (let key in data) {
@@ -187,8 +189,10 @@
         this.setWithdrawalStatus(status)
         this.$refs.pagination.beginPage()
       },
-      _setTiem(time) {
-        this.setWidthTiem(time)
+      _setTime(time) {
+        this.setWidthTime(time)
+        this.start = time[0]
+        this.end = time[1]
         this.$refs.pagination.beginPage()
       }
     }

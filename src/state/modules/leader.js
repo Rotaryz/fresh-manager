@@ -157,11 +157,9 @@ export const mutations = {
   SET_BILL_TYPE(state, billType) {
     state.billType = billType
   },
-  SET_START_AT(state, billType) {
-    state.startAt = billType
-  },
-  SET_END_AT(state, billType) {
-    state.endAt = billType
+  SET_TIME_AT(state, value) {
+    state.startAt = value[0]
+    state.endAt = value[1]
   }
 }
 
@@ -365,9 +363,8 @@ export const actions = {
     commit('SET_WITHDRAWAL_PAGE', 1)
     dispatch('getWithdrawalList')
   },
-  setWidthTiem({commit, dispatch}, time) {
-    commit('SET_START_AT', time[0])
-    commit('SET_END_AT', time[1])
+  setWidthTime({commit, dispatch}, time) {
+    commit('SET_TIME_AT', time)
     commit('SET_WITHDRAWAL_PAGE', 1)
     dispatch('getWithdrawalList')
   },

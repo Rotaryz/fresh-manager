@@ -57,7 +57,7 @@ export const leaderMethods = mapActions('leader', [
   'setWithdrawalSearch',
   'setBillPage',
   'setBillType',
-  'setWidthTiem'
+  'setWidthTime'
 ])
 
 // 今日采购
