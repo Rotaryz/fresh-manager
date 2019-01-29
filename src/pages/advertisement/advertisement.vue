@@ -485,6 +485,9 @@
             if (!this.temporaryBannar[i].image_id) {
               this.$toast.show(`第${i + 1}轮播图广告图片不能为空`, 1500)
               return
+            } else if (!this.temporaryBannar[i].name && !this.temporaryBannar[i].url) {
+              this.$toast.show(`第${i + 1}轮播图链接不能为空`, 1500)
+              return
             }
           }
         }
@@ -505,6 +508,9 @@
               return
             } else if (!this.temporaryNavigation[i].image_id) {
               this.$toast.show(`导航${i + 1}图片不能为空`, 1500)
+              return
+            } else if (!this.temporaryNavigation[i].name && !this.temporaryNavigation[i].url) {
+              this.$toast.show(`导航${i + 1}链接不能为空`, 1500)
               return
             }
           }
