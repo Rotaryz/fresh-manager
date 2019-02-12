@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+      <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
     </div>
     <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
@@ -119,12 +119,14 @@
         })
       },
       setValue(item) {
+        this.$refs.pagination.beginPage()
         this.isOnline = item.value
         this.goodsPage = 1
         this._getUrl()
         this.getGoodsListData()
       },
       search(text) {
+        this.$refs.pagination.beginPage()
         this.keyWord = text
         this.goodsPage = 1
         this._getUrl()
