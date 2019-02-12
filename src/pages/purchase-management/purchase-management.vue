@@ -3,7 +3,7 @@
     <div class="tab-header">
       <base-search placeHolder="采购单号" @search="_search"></base-search>
       <div class="btn-main">
-        <input type="file" class="file-box" @change="_importFile">
+        <input type="file" class="file-box hand" @change="_importFile" title="导入采购单">
         导入采购单
       </div>
     </div>

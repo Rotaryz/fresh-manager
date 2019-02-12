@@ -9,7 +9,7 @@
         <base-date-select :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>
         <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
       </div>
-      <div class="excel hand" @click="exportExcel">导出Excel</div>
+      <div class="btn-main hand" @click="exportExcel">导出Excel</div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
