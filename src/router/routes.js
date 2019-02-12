@@ -10,7 +10,7 @@ export default [
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
         if (store.getters['auth/loggedIn']) {
-          next({name: 'home'})
+          next({name: 'data-survey'})
         } else {
           next()
         }
