@@ -305,7 +305,7 @@
         } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || !this.msg.commission_rate) {
           this.$toast.show('成员佣金比率区间在0与100之间')
           return
-        } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock <= 0) {
+        } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
           this.$toast.show('请输入正确商品库存')
           return
         } else if (!this.msg.sale_count || this.msg.sale_count.includes('.') || +this.msg.sale_count <= 0) {
