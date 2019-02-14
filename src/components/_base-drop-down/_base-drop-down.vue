@@ -6,7 +6,7 @@
           {{select.content}}
           <img src="./icon-drop_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
           <transition name="fade">
-            <ul v-show="select.check" class="select-child" @mouseleave="leaveHide()" @mouseenter="endShow">
+            <ul v-show="select.check" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
               <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
                   @click.stop="setValue(child, chIdx)"
               >
@@ -45,7 +45,7 @@
       },
       width: {
         type: Number,
-        default: 102
+        default: 192
       },
       height: {
         type: Number,
@@ -153,6 +153,7 @@
         border-radius: 3px
         box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
         margin-top: 10px
+        max-height: 350px
         overflow-y: auto
         &.fade-enter, &.fade-leave-to
           opacity: 0

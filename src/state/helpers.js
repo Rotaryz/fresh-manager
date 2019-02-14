@@ -18,14 +18,46 @@ export const globalComputed = {
 
 // 团长
 export const leaderComputed = {
-  ...mapGetters('leader', ['leaderList', 'pageTotal', 'leaderDetail', 'deliveryOrder'])
+  ...mapGetters('leader', [
+    'leaderList',
+    'pageTotal',
+    'leaderDetail',
+    'deliveryOrder',
+    'settlementList',
+    'settlementDetail',
+    'withdrawalList',
+    'withdrawalPageDetail',
+    'withdrawalPage',
+    'withdrawalSn',
+    'withdrawalType',
+    'withdrawalKeyword',
+    'withdrawalStatus',
+    'billList',
+    'billType',
+    'billAcceptType',
+    'billAcceptId',
+    'billPageDetail',
+    'billPage',
+    'startAt',
+    'endAt'
+  ])
 }
 
 export const leaderMethods = mapActions('leader', [
   'getLeaderList',
   'getDeliveryOrder',
   'getDeliveryDetail',
-  'setDeliveryOrder'
+  'setDeliveryOrder',
+  'getSettlementList',
+  'getSettlementDetail',
+  'getWithdrawalList',
+  'setWithdrawalPage',
+  'setWithdrawalType',
+  'setWithdrawalStatus',
+  'setWithdrawalSearch',
+  'setBillPage',
+  'setBillType',
+  'setWidthTime'
 ])
 
 // 今日采购
@@ -91,3 +123,24 @@ export const purchaseComputed = {
 }
 
 export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail'])
+// 成员管理
+export const customerComputed = {
+  ...mapGetters('customer', ['customerList', 'pageTotal'])
+}
+
+export const customerMethods = mapActions('customer', ['getCustomerList'])
+// 数据管理
+export const dataComputed = {
+  ...mapGetters('data', ['orderDetail', 'leaderDetail', 'shopDetail'])
+}
+
+export const dataMethods = mapActions('data', ['getOrderDetail', 'getLeaderDetail', 'getShopDetail'])
+
+// 交易记录
+export const tradeComputed = {
+  ...mapGetters('trade', ['trades', 'pageDetail', 'page', 'date', 'keyword', 'type'])
+}
+
+export const tradeMethods = {
+  ...mapActions('trade', ['setPage', 'setTradeType', 'setDate', 'setKeyword'])
+}

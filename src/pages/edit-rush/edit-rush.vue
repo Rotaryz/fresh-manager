@@ -4,46 +4,49 @@
       <div class="content-title">基本信息</div>
     </div>
     <div class="rush-time">
-      <div class="edit-item edit-activity">
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          活动名称
+        </div>
+        <div class="edit-input-box">
+          <input v-model="essInformation.name" type="text" placeholder="请输入" class="edit-input">
+        </div>
+      </div>
+      <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           活动时间
         </div>
-        <div class="edit-input-box">
-          <div class="edit-input">
-            <div class="edit-time">{{rushDetail.start_at}}</div>
-            <span class="time-icon"></span>
-          </div>
-        </div>
+        <date-picker
+          :value="essInformation.start_at"
+          class="edit-input-box" type="date"
+          placement="bottom-end"
+          placeholder="开始时间"
+          style="width: 240px;height: 44px"
+          @on-change="_getStartTime"
+        ></date-picker>
         <div class="tip">至</div>
-        <div class="edit-input-box edit-input-right">
-          <div class="edit-input">
-            <div class="edit-time">{{rushDetail.end_at}}</div>
-            <span class="time-icon"></span>
-          </div>
-        </div>
-      </div>
-      <div class="edit-item edit-arrive">
-        <div class="edit-title">
-          <span class="start">*</span>
-          预计到货时间
-        </div>
-        <div class="edit-input-box">
-          <div class="edit-input">
-            <div class="edit-time">{{rushDetail.delivery_at}}</div>
-            <span class="time-icon"></span>
-          </div>
-        </div>
+        <date-picker
+          :value="essInformation.end_at"
+          class="edit-input-box edit-input-right"
+          type="date"
+          placement="bottom-end"
+          placeholder="结束时间"
+          style="width: 240px;height: 44px"
+          @on-change="_getEndTime"
+        ></date-picker>
+        <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
       </div>
     </div>
     <div class="content-header">
       <div class="content-title">活动商品</div>
     </div>
     <div class="activity-box">
-      <div class="classify">
-        <div v-for="(item, index) in classify" :key="index" class="classify-item hand" :class="{'classify-item-active': index === classifyIndex}" @click="_setClassify(index, item)">{{item.name}}</div>
-      </div>
-      <div :class="{'btn-disable': disable}" class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>
+      <!--<div class="classify">-->
+      <!--<div v-for="(item, index) in classify" :key="index" class="classify-item hand" :class="{'classify-item-active': index === classifyIndex}" @click="_setClassify(index, item)">{{item.name}}</div>-->
+      <!--</div>-->
+      <!--<div :class="{'btn-disable': disable}" class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>-->
       <div class="activity-list">
         <div class="activity-tab">
           <div :class="{'btn-disable': disable}" class="btn-main" @click="_showGoods">添加商品 +</div>
@@ -52,7 +55,7 @@
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
         </div>
         <div class="big-box">
-          <div v-for="(item, index) in goodsList[classifyIndex]" :key="index" class="com-list-box com-list-content">
+          <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
             <div class="com-list-item">{{item.name}}</div>
             <div class="com-list-item">{{item.goods_units}}</div>
             <div class="com-list-item">{{item.original_price}}</div>
@@ -61,7 +64,7 @@
               <span v-if="item.original_price" class="small-money">￥</span>
             </div>
             <div class="com-list-item">
-              <input v-model="item.buy_limit" type="number" class="com-edit com-edit-small">
+              <input v-model="item.person_day_buy_limit" type="number" class="com-edit com-edit-small">
             </div>
             <div class="com-list-item">
               <input v-model="item.usable_stock" type="number" class="com-edit com-edit-small">
@@ -71,7 +74,7 @@
               <input v-model="item.sort" type="number" class="com-edit com-edit-small">
             </div>
             <div class="com-list-item">
-              <span v-if="!item.no_delete" :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+              <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
             </div>
           </div>
         </div>
@@ -189,7 +192,7 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
+      <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div :class="{'btn-disable': disable}" class="back-btn btn-main" @click="_saveActivity">保存</div>
     </div>
   </div>
@@ -202,10 +205,21 @@
   import API from '@api'
   import {ERR_OK} from '../../utils/config'
   import _ from 'lodash'
+  import {DatePicker} from 'iview'
 
   const PAGE_NAME = 'EDIT_RUSH'
   const TITLE = '新建编辑今日抢购'
-  const COMMODITIES_LIST = ['商品名称', '单位', '划线价', '活动价格', '单人限购', '活动库存', '销量', '排序', '操作']
+  const COMMODITIES_LIST = [
+    '商品名称',
+    '单位',
+    '划线价',
+    '活动价格',
+    '单人每日限购',
+    '活动可售数量',
+    '销量',
+    '排序',
+    '操作'
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -213,7 +227,8 @@
     },
     components: {
       DefaultModal,
-      DefaultConfirm
+      DefaultConfirm,
+      DatePicker
     },
     data() {
       return {
@@ -263,44 +278,42 @@
         goodsDelId: 0,
         goodsDelIndex: 0,
         selectDelId: [],
-        disable: false
+        disable: false,
+        goodsList: [],
+        essInformation: {}
       }
     },
     computed: {
-      ...rushComputed,
-      // 分类数组
-      classify() {
-        if (!this.rushMsg.lists) {
-          return []
-        }
-        let arr = this.rushMsg.lists.map((item) => {
-          return item['shelf_tag']
-        })
-        return arr
-      },
-      goodsList() {
-        if (!this.rushMsg.lists) {
-          return []
-        }
-        let arr = this.rushMsg.lists.map((item) => {
-          return item['shelf_goods']
-        })
-        return arr
+      ...rushComputed
+    },
+    watch: {
+      rushDetail: {
+        handler(news) {
+          let id = this.$route.query.id || null
+          if (id) {
+            let obj = _.cloneDeep(news)
+            this.goodsList = obj.shelf_goods
+            this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, name: obj.name}
+          }
+        },
+        immediate: true
       }
     },
-    async created() {
+    async mounted() {
       // this.classifyIndex = 0
       this.disable = this.$route.query.disable && +this.$route.query.disable === 2 ? 1 : 0
       this.id = this.$route.query.id || null
-      await this._tagList()
-      this.rushMsg = _.cloneDeep(this.rushDetail)
       await this._getFirstAssortment()
-    },
-    mounted() {
       this._getListHeight()
     },
     methods: {
       ...rushMethods,
+      _getStartTime(time) {
+        this.essInformation.start_at = time
+      },
+      _getEndTime(time) {
+        this.essInformation.end_at = time
+      },
       // 选择商品
       async _getGoodsList() {
         let res = await API.Rush.getGoodsList({
@@ -405,7 +418,7 @@
       _delGoods() {
         let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
         this.selectGoodsId.splice(index, 1)
-        this.rushMsg.lists[this.classifyIndex].shelf_goods.splice(this.goodsDelIndex, 1)
+        this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
       },
       _cancelGoods() {
@@ -422,27 +435,18 @@
       _additionOne(item, index) {
         if (item.selected === 1) {
           return
-        } else if (!this.classify.length) {
-          this.$toast.show('请先添加分类')
-          return
         }
         this.choeesGoods[index].selected = 1
-        this.rushMsg.lists[this.classifyIndex].shelf_goods.push(item)
+        this.goodsList.push(item)
         this.selectGoodsId.push(item.id)
       },
       // 批量添加
       _batchAddition() {
-        if (!this.classify.length) {
-          this.$toast.show('请先添加分类')
-          return
-        }
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.rushMsg.lists[this.classifyIndex].shelf_goods = this.rushMsg.lists[this.classifyIndex].shelf_goods.concat(
-          this.selectGoods
-        )
+        this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
         this._hideGoods()
       },
@@ -456,10 +460,6 @@
       },
       _hideGoods() {
         this.$refs.goodsModel.hideModal()
-      },
-      async _tagList() {
-        let res = await API.Rush.tagList({shelf_id: this.id})
-        this.tagList = res.error === this.$ERR_OK ? res.data : []
       },
       // 切换分类
       _setClassify(index, item) {
@@ -483,7 +483,6 @@
           // this._hideConfirm()
           return
         }
-        this._tagList()
         this.rushMsg.lists.splice(this.classifyDelIndex, 1)
         this._hideConfirm()
       },
@@ -536,7 +535,6 @@
             id: this.tagItem.id
           }
         }
-        this._tagList()
         this._hideModal()
       },
       // 隐藏分类弹窗
@@ -565,7 +563,22 @@
         if (this.disable) {
           return
         }
-        let list = _.cloneDeep(this.rushMsg.lists)
+        let date = Date.parse(new Date())
+        let endTime = this.essInformation.end_at + ' 23:00'
+        if (!this.essInformation.name) {
+          this.$toast.show('活动名称不能为空')
+          return
+        } else if (!this.essInformation.start_at) {
+          this.$toast.show('活动开始时间不能为空')
+          return
+        } else if (!this.essInformation.end_at) {
+          this.$toast.show('活动结束时间不能为空')
+          return
+        } else if (Date.parse(endTime) < date) {
+          this.$toast.show('活动结束时间不能小于当天')
+          return
+        }
+        let list = this.goodsList
         for (let i in list) {
           for (let index in list[i].shelf_goods) {
             if (
@@ -580,6 +593,7 @@
               +list[i].shelf_goods[index].trade_price < 0 ||
               +list[i].shelf_goods[index].buy_limit <= 0 ||
               +list[i].shelf_goods[index].usable_stock < 0 ||
+              (list[i].shelf_goods[index].usable_stock + '').includes('.') ||
               +list[i].shelf_goods[index].sort < 0
             ) {
               this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}输入数据有误`)
@@ -587,10 +601,16 @@
             }
           }
         }
-        let res = await API.Rush.updateGoods({data: list}, this.id)
+        let data = Object.assign({}, this.essInformation, {shelf_goods: list})
+        let res = null
+        if (this.id) {
+          res = await API.Rush.updateGoods(data, this.id)
+        } else {
+          res = await API.Rush.storeGoods(data, this.id)
+        }
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
-          this.disable = true
+          // this.disable = true
           return
         }
         setTimeout(() => {
@@ -653,6 +673,8 @@
       color: #F52424
     .edit-input-box
       margin: 0 14px 0 40px
+      .ivu-date-picker-rel
+        height: 100%
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
@@ -677,10 +699,16 @@
     .edit-input-right
       margin-left: 14px
     .tip
-      line-height: 40px
+      line-height: 44px
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-main
+    .tip-text
+      margin-left: 2px
+      line-height: 44px
+      font-size: $font-size-12
+      font-family: $font-family-regular
+      color: $color-text-assist
 
   .edit-activity
     box-sizing: border-box
@@ -691,7 +719,7 @@
       margin: 0 14px 0 32px
 
   .activity-box
-    margin-top: 24px
+    margin-top: 25px
     position: relative
     .classify
       display: flex
@@ -725,7 +753,6 @@
       top: 0
       right: 0
     .activity-list
-      border: 1px solid $color-line
       box-sizing: border-box
       border-bottom: none
       .big-box
@@ -814,39 +841,6 @@
         color: $color-text-main
       .com-edit-small
         width: 60px
-
-  .back
-    position: fixed
-    left: 200px
-    right: 0px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    padding-left: 40px
-    box-sizing: border-box
-    .back-btn
-      box-sizing: border-box
-      font-size: $font-size-16
-      margin-right: 20px
-      padding: 12px 0
-      width: 96px
-      text-align: center
-      white-space: nowrap
-      transition: all 0.3s
-    .back-cancel
-      padding: 11px 0
-      box-sizing: border-box
-      line-height: 1
-      color: $color-text-main
-      border: 1px solid #ACACAC
-      border-radius: 4px
-      &:hover
-        color: $color-text-sub
-        border-color: $color-text-sub
 
   //  弹窗
   .shade-box

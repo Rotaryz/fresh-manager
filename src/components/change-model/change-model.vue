@@ -78,7 +78,6 @@
         this.typeId = item.id
         this.dispatchSelect.content = item.name
         this.dispatchSelect.data = data
-        console.log(this.dispatchSelect.data)
       },
       confirm() {
         this.$emit('confirm', this.pointName, this.pointNumber, this.typeId)

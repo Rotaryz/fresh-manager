@@ -1,7 +1,7 @@
 <template>
   <div class="base-date-select">
-    <date-picker :placeholder="placeHolder" type="daterange" :value="dateInfo" :style="{'height': '28px'}" :clearable="false"
-                 @on-change="_getTime"
+    <date-picker :placeholder="placeHolder" :option="disabledDate" type="daterange" :value="dateInfo" :style="{'height': '28px'}"
+                 :clearable="clearable" @on-change="_getTime"
     ></date-picker>
   </div>
 </template>
@@ -27,13 +27,29 @@
         default: () => {
           return []
         }
+      },
+      disabledDate: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
+      clearable: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
       return {}
     },
+    watch: {
+      disabledDate(news) {
+      // console.log(news)
+      }
+    },
     methods: {
       _getTime(time) {
+        // console.log(this.disabledDate)
         this.$emit('getTime', time)
       }
     }
@@ -46,6 +62,8 @@
     .ivu-date-picker
       height: 100%
       width: 244px
+      .ivu-date-picker-cells-cell,.ivu-date-picker-header-label
+        color: $color-text-main
       .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
         height: 100%
       .ivu-input-icon
@@ -60,4 +78,5 @@
           border-color: $color-sub !important
         &:hover
           border: 1px solid #ACACAC
+
 </style>

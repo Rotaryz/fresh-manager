@@ -77,7 +77,7 @@ export default {
    * @returns {*}
    */
   getGoodsList(data, loading = false) {
-    let url = `/social-shopping/api/backend/goods-manage/goods`
+    let url = `/social-shopping/api/backend/shelf-manage/shelf-goods`
     return request.get(url, data, loading)
   },
   /**
@@ -98,6 +98,16 @@ export default {
    */
   updateGoods(data, id, loading = false) {
     let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
+    return request.put(url, data, loading)
+  },
+  /**
+   * 仓库货架编辑
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  storeGoods(data, loading = false) {
+    let url = `/social-shopping/api/backend/shelf-manage/shelf`
     return request.post(url, data, loading)
   },
   /**
@@ -109,5 +119,15 @@ export default {
   deleteGoods(id, loading = false) {
     let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
     return request.delete(url, null, loading)
+  },
+  /**
+   * 仓库货架删除
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  downGoods(data, loading = false) {
+    let url = `/social-shopping/api/backend/shelf-manage/shelf-toggle-online`
+    return request.post(url, data, loading)
   }
 }

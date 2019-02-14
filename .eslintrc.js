@@ -109,9 +109,9 @@ module.exports = {
       }
     },
     {
-      'files': ['*.vue'],
-      'rules': {
-        'indent': 'off'
+      files: ['*.vue'],
+      rules: {
+        indent: 'off'
       }
     }
   ]

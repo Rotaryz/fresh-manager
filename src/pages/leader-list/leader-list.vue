@@ -1,5 +1,5 @@
 <template>
-  <div class="leader-list">
+  <div class="leader-list table">
     <div class="tab-header">
       <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长 +</router-link>
     </div>
@@ -15,9 +15,11 @@
         <div class="list-item">{{item.name}}</div>
         <div class="list-item">{{item.address}}</div>
         <div class="list-item">{{item.created_at}}</div>
+        <div class="list-item">{{item.is_freeze_str}}</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
-          <span class="list-operation" @click="_getQrCode(item.id)">店铺码</span>
+          <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
+          <span class="list-operation" @click="_showFreeze(item.is_freeze, item.id)">{{item.is_freeze ? '解冻' : '冻结'}}</span>
         </div>
       </div>
     </div>
@@ -27,7 +29,7 @@
     <default-modal ref="dialog">
       <div slot="content" class="pop-main code">
         <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+          <div class="shade-title">{{leaderList[imgIndex].social_name}}</div>
           <!--@click="_cancelGoods"-->
           <span class="close hand" @click="_close"></span>
         </div>
@@ -37,17 +39,19 @@
         </div>
       </div>
     </default-modal>
+    <default-confirm ref="confirm" @confirm="_freeze"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {leaderComputed, leaderMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
   const PAGE_NAME = 'LEADER_LIST'
   const TITLE = '团长列表'
-  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '操作']
+  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '状态', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -55,14 +59,17 @@
       title: TITLE
     },
     components: {
-      DefaultModal
+      DefaultModal,
+      DefaultConfirm
     },
     data() {
       return {
         leaderTitle: LEADER_TITLE,
         page: 1,
         loadImg: true,
-        codeUrl: ''
+        codeUrl: '',
+        freezeId: 0,
+        imgIndex: 0
       }
     },
     computed: {
@@ -78,7 +85,8 @@
       _close() {
         this.$refs.dialog.hideModal()
       },
-      async _getQrCode(id) {
+      async _getQrCode(id, index) {
+        this.imgIndex = index
         this.loadImg = true
         let res = await API.Leader.createQrcode({path: 'pages/choiceness?shopId=' + id})
         if (res.error !== this.$ERR_OK) {
@@ -88,6 +96,20 @@
         this.$refs.dialog.showModal()
         this.loadImg = false
         this.codeUrl = res.data.image_url
+      },
+      _showFreeze(status, id) {
+        this.freezeId = id
+        let title = status ? '确定解冻该团长？' : '确定冻结该团长？'
+        this.$refs.confirm.show(title)
+      },
+      async _freeze() {
+        let res = await API.Leader.shopToggleFrozen({shop_id: this.freezeId})
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.getLeaderList({page: this.page, loading: false})
+        this.$refs.confirm.hide()
       }
     }
   }
@@ -96,12 +118,6 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .leader-list
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-
   .tab-header
     height: 80px
     display: flex
@@ -109,19 +125,7 @@
     align-items: center
     box-sizing: border-box
 
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
   .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
     .list-item
       box-sizing: border-box
       padding-right: 10px
@@ -129,32 +133,7 @@
       &:nth-child(6), &:nth-child(7)
         flex: 1.5
       &:last-child
-        flex: 0.8
-
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-      // 双行样式
-      .list-double-row
-        .item-sub
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          font-size: $font-size-14
-          line-height: 1
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
+        flex: 1.4
 
   .pop-main
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)

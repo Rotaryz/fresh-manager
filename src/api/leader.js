@@ -85,5 +85,88 @@ export default {
   createQrcode(data, loading = false) {
     let url = `/social-shopping/api/create-qrcode`
     return request.post(url, data, loading)
+  },
+  /**
+   * 冻结/解冻团长
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  shopToggleFrozen(data, loading = false) {
+    let url = `/social-shopping/api/backend/shop-toggle-frozen`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 团长结算列表
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  settlementList(data, loading = false) {
+    let url = `/social-shopping/api/backend/settlement-index`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 指定团长结算明细
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  settlementDetail(data, loading = false) {
+    let url = `/social-shopping/api/backend/settlement-detail`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 获取团长提现列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getWithdrawalList(data = {}, loading = true) {
+    let url = '/social-shopping/api/backend/backend-shop-manager/withdrawal'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 提现审核
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  applyWithdrawal(data, loading = true) {
+    let url = '/social-shopping/api/backend/backend-shop-manager/withdrawal-apply'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 获取提现状态列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getWithdrawalStatus(data = {}, loading = false) {
+    let url = '/social-shopping/api/backend/backend-shop-manager/withdrawal-status'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 获取收支明细
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getShopBill(data = {}, loading = true) {
+    let url = '/social-shopping/api/backend/backend-shop-manager/shop-bill'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 获取收支明细类型
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getShopBillType(data = {}, loading = false) {
+    let url = '/social-shopping/api/backend/backend-shop-manager/shop-order-type'
+    return request.get(url, data, loading)
   }
 }

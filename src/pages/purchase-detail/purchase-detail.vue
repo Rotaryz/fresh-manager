@@ -112,7 +112,6 @@
   .purchase-detail
     line-height: 1
     flex: 1
-    padding-bottom: 80px
     position: relative
 
   .btn-a
@@ -156,7 +155,7 @@
         font-family: $font-family-regular
         color: $color-text-main
         white-space: nowrap
-        width: 264px
+        min-width: 264px
 
   .list-of-commodities
     margin-bottom: 85px
@@ -199,20 +198,4 @@
       font-family: $font-family-regular
       &:nth-child(1)
         flex: 0.5
-
-  .back
-    position: fixed
-    left: 200px
-    right: 0px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    .back-btn
-      font-size: $font-size-16
-      margin-left: 40px
-      padding: 12px 32px
 </style>

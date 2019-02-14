@@ -1,9 +1,9 @@
 <template>
-  <div class="purchase-management">
+  <div class="purchase-management table">
     <div class="tab-header">
       <base-search placeHolder="采购单号" @search="_search"></base-search>
       <div class="btn-main">
-        <input type="file" class="file-box" @change="_importFile">
+        <input type="file" title="导入采购单" class="file-box hand" @change="_importFile">
         导入采购单
       </div>
     </div>
@@ -71,7 +71,6 @@
           name: e.target.files[0].name,
           size: size > 1024 ? size + 'MB' : size + 'KB'
         }
-        console.log(file)
         API.Upload.importFile(file).then((res) => {
           this.$toast.show(res.message)
           if (res.error !== this.$ERR_OK) {
@@ -85,7 +84,6 @@
       infoFile(file) {
         let param = new FormData() // 创建form对象
         param.append('file', file, file.name) // 通过append向form对象添加数据
-        console.log(file)
         return param
       },
       _search(text) {
@@ -95,7 +93,6 @@
         this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
       },
       _getMoreList(page) {
-        this.$refs.pages.beginPage()
         this.page = page
         this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
       }
@@ -106,25 +103,12 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .purchase-management
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-
   .tab-header
     height: 80px
     display: flex
     justify-content: space-between
     align-items: center
     box-sizing: border-box
-
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
 
   .list-box
     padding-left: 30px
@@ -139,41 +123,4 @@
       &:last-child
         flex: 0.6
 
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-        .list-link
-          &:hover
-            color: $color-sub
-      // 双行样式
-      .list-double-row
-        .item-sub
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          font-size: $font-size-14
-          line-height: 1
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
-
-  .btn-main
-    position: relative
-    .file-box
-      position: absolute
-      top: 0
-      left: 0
-      width: 84px
-      height: 28px
-      opacity: 0
 </style>

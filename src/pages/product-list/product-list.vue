@@ -1,5 +1,5 @@
 <template>
-  <div class="product-list">
+  <div class="product-list table">
     <div class="product-top">
       <div class="product-left">
         <router-link tag="span" to="edit-goods" append class="btn-main">新建商品 +</router-link>
@@ -23,8 +23,10 @@
         <div class="list-item">{{item.name}}</div>
         <div class="list-item">{{item.goods_units}}</div>
         <div class="list-item">{{item.store_price}}</div>
-        <div class="list-item" @click="switchBtn(item, index)">
-          <base-switch :status="item.is_online"></base-switch>
+        <div class="list-item">
+          <div class="list-item-btn" @click="switchBtn(item, index)">
+            <base-switch :status="item.is_online"></base-switch>
+          </div>
         </div>
         <div class="list-item">{{item.usable_stock}}</div>
         <div class="list-item list-operation-box">
@@ -34,7 +36,7 @@
       </div>
     </div>
     <div class="pagination-box">
-      <base-pagination :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+      <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
     </div>
     <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
@@ -45,6 +47,7 @@
   import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
+
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
   const PRODUCT_TITLE_LIST = ['商品图片', '商品名称', '售卖单位', '售价', '状态', '库存', '操作']
@@ -88,11 +91,9 @@
     methods: {
       _getUrl() {
         let token = this.$storage.get('auth.currentUser', '')
-        this.downUrl =
-          process.env.VUE_APP_API +
-          `/social-shopping/api/backend/goods-manage/goods-excel?access_token=${token.access_token}&is_online=${
-            this.isOnline
-          }&keyword=${this.keyWord}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
+          this.keyWord}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsListData() {
         let data = {
@@ -117,13 +118,17 @@
         })
       },
       setValue(item) {
+        this.$refs.pagination.beginPage()
         this.isOnline = item.value
         this.goodsPage = 1
+        this._getUrl()
         this.getGoodsListData()
       },
       search(text) {
+        this.$refs.pagination.beginPage()
         this.keyWord = text
         this.goodsPage = 1
+        this._getUrl()
         this.getGoodsListData()
       },
       addPage(page) {
@@ -169,11 +174,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  .product-list
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
   .product-top
     layout(row)
     align-items: center
@@ -184,29 +184,12 @@
       align-items: center
     .btn-main
       margin-right: 10px
+      &:hover
+        color: $color-white
     .search-left
       margin-left: 10px
 
-  .tab-header
-    height: 80px
-    display: flex
-    justify-content: space-between
-    align-items: center
-    box-sizing: border-box
-
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
   .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
     .list-item
       box-sizing: border-box
       padding-right: 10px
@@ -218,33 +201,13 @@
       &:last-child
         flex: 0.8
 
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-      // 双行样式
-      .list-double-row
-        .item-sub
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          line-height: 1
-          font-size: $font-size-14
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
   .list-operation-box
     .list-operation
       color: $color-sub
+
+  .list-item-btn
+    display: inline-block
+
   .pic-box
     height: 40px
     width: 40px

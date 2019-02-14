@@ -19,7 +19,7 @@ export const mutations = {
 
 export const actions = {
   getInfoBannerList({state, commit, dispatch}) {
-    return API.Advertisement.bannerList()
+    return API.Advertisement.cmsMsg({page_name: 'index'})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

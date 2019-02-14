@@ -46,7 +46,7 @@
           推荐语
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.describe" type="text" class="edit-input" maxlength="20">
+          <input v-model="msg.describe" type="text" class="edit-input" maxlength="100">
         </div>
       </div>
       <div class="edit-item  edit-image-box">
@@ -213,7 +213,6 @@
        */
       _setData() {
         if (!_.isEmpty(this.detail)) {
-          console.log(this.detail)
           this.msg = _.cloneDeep(this.detail)
           this.dispatchSelect.content = this.msg.goods_units
           this.menuName = this.msg.goods_category_name
@@ -228,25 +227,21 @@
         this.goodsChildren = item.list
       },
       menuListClick(item, index) {
-        console.log(item, 'menuList')
         if (item.list.length !== 0) return
         this.menuIndex = index
         this.menuName = item.name
         this.goodsChildren = []
         if (this.preChildIndex) {
           this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
-          console.log(this.menuList[this.preMenuIndex].list[this.preChildIndex])
         }
         this.showMenu = false
         this.msg.goods_category_id = item.id
       },
       menuChild(item, index) {
-        console.log(item, 'child')
         this.menuName = this.menuList[this.menuIndex].name + ' / ' + item.name
         this.menuList[this.menuIndex].list[index].select = true
         if (this.preChildIndex) {
           this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
-          console.log(this.menuList[this.preMenuIndex].list[this.preChildIndex])
         }
         this.preMenuIndex = this.menuIndex
         this.preChildIndex = index
@@ -295,12 +290,6 @@
         } else if (this.msg.goods_detail_images.length === 0) {
           this.$toast.show('请上传商品详情图')
           return
-        } else if (this.msg.describe.length > 20) {
-          this.$toast.show('推荐语不能大于20个字')
-          return
-        } else if (this.msg.describe.length >= 20) {
-          this.$toast.show('推荐语不能大于20个字')
-          return
         } else if (this.msg.goods_units === '') {
           this.$toast.show('请选择售卖单位')
           return
@@ -316,7 +305,7 @@
         } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || !this.msg.commission_rate) {
           this.$toast.show('成员佣金比率区间在0与100之间')
           return
-        } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock <= 0) {
+        } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
           this.$toast.show('请输入正确商品库存')
           return
         } else if (!this.msg.sale_count || this.msg.sale_count.includes('.') || +this.msg.sale_count <= 0) {
@@ -575,36 +564,6 @@
           color: $color-text-assist
         &:focus
           border-color: $color-sub !important
-
-  .back
-    position: fixed
-    left: 200px
-    right: 0px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    padding-left: 40px
-    box-sizing: border-box
-    .back-btn
-      box-sizing: border-box
-      font-size: $font-size-16
-      margin-right: 20px
-      padding: 12px 32px
-      transition: all 0.3s
-    .back-cancel
-      padding: 11px 32px
-      box-sizing: border-box
-      line-height: 1
-      color: $color-text-main
-      border: 1px solid #ACACAC
-      border-radius: 4px
-      &:hover
-        color: $color-text-sub
-        border-color: $color-text-sub
   .edit-pla
     font-size: $font-size-14
     color: $color-text-assist

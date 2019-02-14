@@ -21,6 +21,14 @@
   const HEIGHT = 40
   const NAV_LIST = [
     {
+      title: '数据统计',
+      icon: require('./icon-date@2x.png'),
+      iconSelected: require('./icon-date_white@2x.png'),
+      url: '/home/data-survey',
+      isLight: false,
+      children: []
+    },
+    {
       title: '商品管理',
       url: '/home/product-list',
       icon: require('./icon-commodity@2x.png'),
@@ -45,17 +53,20 @@
       ]
     },
     {
-      title: '商城管理',
+      title: '内容管理',
       url: '/home/advertisement',
-      icon: require('./icon-tmall@2x.png'),
-      iconSelected: require('./icon-tmall_white@2x.png'),
+      icon: require('./icon-text@2x.png'),
+      iconSelected: require('./icon-text_select@2x.png'),
+      isLight: false,
+      children: []
+    },
+    {
+      title: '活动管理',
+      url: '/home/rush-purchase',
+      icon: require('./icon-activity@2x.png'),
+      iconSelected: require('./icon-activity_select@2x.png'),
       isLight: false,
       children: [
-        {
-          title: '轮播广告',
-          url: '/home/advertisement',
-          isLight: false
-        },
         {
           title: '今日抢购',
           url: '/home/rush-purchase',
@@ -91,6 +102,14 @@
       children: []
     },
     {
+      title: '客户管理',
+      icon: require('./icon-vip@2x.png'),
+      iconSelected: require('./icon-vip_white@2x.png'),
+      url: '/home/customer-management',
+      isLight: false,
+      children: []
+    },
+    {
       title: '团长管理',
       icon: require('./icon-group@2x.png'),
       iconSelected: require('./icon-group_white@2x.png'),
@@ -106,6 +125,35 @@
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false
+        },
+        {
+          title: '团长结算',
+          url: '/home/head-settlement',
+          isLight: false
+        },
+        {
+          title: '团长提现',
+          url: '/home/leader-withdrawal',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '财务管理',
+      icon: require('./icon-moeny@2x.png'),
+      iconSelected: require('./icon-moeny_white@2x.png'),
+      url: '/home/business-overview',
+      isLight: false,
+      children: [
+        {
+          title: '营业概况',
+          url: '/home/business-overview',
+          isLight: false
+        },
+        {
+          title: '交易记录',
+          url: '/home/transaction-record',
+          isLight: false
         }
       ]
     }
@@ -117,7 +165,7 @@
       childrenActive(value) {
         let styles = ''
         if (value.children.length && value.isLight) {
-          styles = `height:${value.children.length * (HEIGHT + 4)}px`
+          styles = `height:${value.children.length * (HEIGHT + 4) + 28}px`
         }
         return styles
       },
@@ -126,6 +174,9 @@
         let cname = ''
         if (value.isLight) {
           cname = 'active'
+        }
+        if (value.isLight && value.children && !value.children.length) {
+          cname = 'active active-only'
         }
         if (value.isLight && value.children && value.children.length) {
           cname += ' no-border'
@@ -196,8 +247,20 @@
         this.navList = navList
       },
       clickNav(nav, index) {
-        if (nav.url === this.$route.fullPath) {
+        if (nav.url === this.$route.fullPath && !nav.children.length) {
           return
+        }
+        if (nav.icon && nav.url === this.$route.fullPath) {
+          let idx = this.navList.findIndex((big) => big.icon === nav.icon)
+          this.navList[idx].isLight = !this.navList[idx].isLight
+          this.navList[idx].children = this.navList[idx].children.map((item) => {
+            if (item.url === this.$route.fullPath) {
+              item.isLight = !item.isLight
+            } else {
+              item.isLight = false
+            }
+            return item
+          })
         }
         if (index !== undefined) {
           this._resetNavList(index)
@@ -212,7 +275,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  $tab-height = 40px
+  $tab-height = 56px
   $color-menu-tag = #4dbd73
   $color-menu-text = #6E748B
   $color-menu-text-active = #fff
@@ -235,7 +298,6 @@
     header
       width: 199px
       height: 80px
-      border-top-left-radius: 18px
       border-bottom: 1px solid $color-menu-line
       background: $color-main
       bg-image('./pic-logo')
@@ -252,14 +314,11 @@
         font-family: PingFangSC-Semibold
         letter-spacing: 6px
     dl
-      padding: 12px 0
       font-family: PingFangSC-Regular
       color: $color-menu-text
       font-size: 16px
       cursor: pointer
       background: $color-menu-bg
-      &.active
-        background: $color-menu-bg-active
       dt
         layout(row, block, nowrap)
         align-items: center
@@ -276,7 +335,7 @@
           display: block
           content: ''
           width: 0
-          height: 18px
+          height: 56px
           transition: width .3s
           background: $color-menu-tag
         &:hover
@@ -292,6 +351,8 @@
             icon-image('icon-pressed_select')
             &.rotate
               transform: rotate(90deg)
+        &.active-only
+          background: $color-menu-bg-active
         p
           flex: 1
           overflow: hidden
@@ -315,6 +376,7 @@
         transition: height 0.3s
         layout()
         overflow: hidden
+        background: $color-menu-bg-active
         p
           width: 100%
           layout()
@@ -323,6 +385,10 @@
           flex: 1
           box-sizing: border-box
           transition: all .2s
+          &:last-child
+            padding-bottom: 14px
+          &:first-child
+            padding-top: 14px
           &:before
             position: absolute
             left: 0

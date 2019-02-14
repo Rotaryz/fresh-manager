@@ -1,7 +1,7 @@
 <template>
-  <div class="rush-purchase">
+  <div class="rush-purchase table">
     <div class="tab-header">
-      <!--<div class="btn-main">新建活动 +</div>-->
+      <router-link tag="div" to="edit-rush" append class="btn-main">新建活动 +</router-link>
       <base-date-select placeHolder="选择活动时间" @getTime="_setTime"></base-date-select>
     </div>
     <div class="list-header list-box">
@@ -9,19 +9,20 @@
     </div>
     <div class="list">
       <div v-for="(item,index) in rushList" :key="index" class="list-content list-box">
+        <div class="list-item">{{item.name || '---'}}</div>
         <div class="list-item list-double-row">
           <p class="item-dark">{{item.start_at}}</p>
           <p class="item-sub">{{item.end_at}}</p>
         </div>
         <div class="list-item">{{item.shelf_goods_count}}</div>
         <div class="list-item">{{item.sale_count}}</div>
-        <div class="list-item">{{item.delivery_at}}</div>
         <div class="list-item"><span class="list-status" :class="item.status === 1 ? 'list-status-success' : item.status === 2 ? 'list-status-fail' : ''"></span>{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已关闭' : ''}}</div>
         <div class="list-item">{{item.created_at}}</div>
         <div class="list-item list-operation-box">
           <router-link tag="span" :to="'/home/rush-purchase/edit-rush?disable=2'+'&id=' + item.id" class="list-operation">详情</router-link>
           <span v-if="item.status === 2" class="list-operation" @click="_deleteRush(item.id)">删除</span>
           <router-link v-else tag="span" :to="'/home/rush-purchase/edit-rush?id=' + item.id" class="list-operation">编辑</router-link>
+          <span v-if="item.status !== 2" class="list-operation" @click="_downRush(item.id, item.status)">关闭</span>
         </div>
       </div>
     </div>
@@ -29,6 +30,7 @@
       <base-pagination ref="pages" :pageDetail="rushPage" @addPage="addPage"></base-pagination>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
+    <default-confirm ref="downConfirm" @confirm="_sureDown"></default-confirm>
   </div>
 </template>
 
@@ -39,7 +41,7 @@
 
   const PAGE_NAME = 'RUSH_PURCHASE'
   const TITLE = '今日抢购'
-  const RUSH_TITLE = ['活动时间', '活动商品数', '销量', '预计到货时间', '状态', '创建时间', '操作']
+  const RUSH_TITLE = ['活动名称', '活动时间', '活动商品数', '销量', '状态', '创建时间', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -55,7 +57,9 @@
         startTime: '',
         endTime: '',
         page: 1,
-        delId: 0
+        delId: 0,
+        downId: 0,
+        status: 0
       }
     },
     computed: {
@@ -63,6 +67,19 @@
     },
     methods: {
       ...rushMethods,
+      _downRush(id, status) {
+        this.$refs.downConfirm.show('是否确定关闭该活动？')
+        this.downId = id
+        this.status = status === 2 ? 1 : 0
+      },
+      async _sureDown() {
+        let res = await API.Rush.downGoods({is_online: this.status, shelf_id: this.downId})
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.getRushList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      },
       _setTime(arr) {
         this.$refs.pages.beginPage()
         this.page = 1
@@ -93,70 +110,23 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .rush-purchase
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-
-  .tab-header
-    height: 80px
-    display: flex
-    align-items: center
-    box-sizing: border-box
-
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
-  .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:last-child
-        flex: 0.6
-
   .list
     flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-        .list-status
-          display: inline-block
-          width: 9px
-          height: 9px
-          border-radius: 50%
-          background: #E1E1E1
-          margin-right: 6px
-        .list-status-fail
-          background: $color-negative
-        .list-status-success
-          background: $color-positive
-      // 双行样式
-      .list-double-row
-        .item-sub
-          margin-top: 8px
-          font-size: $font-size-14
-        .item-dark
-          font-size: $font-size-14
-          line-height: 1
+    .list-item
+      no-wrap()
+      font-size: $font-size-14
+      .list-status
+        display: inline-block
+        width: 9px
+        height: 9px
+        border-radius: 50%
+        margin-right: 6px
+        background: $color-negative
+      .list-status-fail
+        background: #E1E1E1
+      .list-status-success
+        background: $color-positive
 
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
+  .btn-main
+    margin-right: 10px
 </style>

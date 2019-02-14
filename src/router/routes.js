@@ -10,7 +10,7 @@ export default [
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
         if (store.getters['auth/loggedIn']) {
-          next({name: 'home'})
+          next({name: 'data-survey'})
         } else {
           next()
         }
@@ -190,17 +190,20 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
             //  团长列表
-            store
-              .dispatch('rush/getRushDetail', {id})
-              .then((res) => {
-                if (!res) {
+            if (id) {
+              store
+                .dispatch('rush/getRushDetail', {id})
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
                   return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
+                })
+            }
+            return next()
           }
         }
       },
@@ -364,6 +367,36 @@ export default [
        *
        * ------------------------------------------------------------------------------------------
        *
+       * 客户管理
+       */
+      // 客户管理
+      {
+        path: 'customer-management',
+        name: 'customer-management',
+        component: () => lazyLoadView(import('@pages/customer-management/customer-management')),
+        meta: {
+          titles: ['客户管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('customer/getCustomerList', {page: 1, startTime: '', endTime: '', keyword: '', sortType: 0})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      /**
+       * 客户管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
        * 团长管理
        */
       // 团长列表
@@ -467,10 +500,176 @@ export default [
           }
         },
         props: (route) => ({detail: route.params.detail})
-      }
+      },
+      // 团长结算
+      {
+        path: 'head-settlement',
+        name: 'head-settlement',
+        component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
+        meta: {
+          titles: ['团长管理', '团长结算'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
+              .then((response) => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 团长结算详情
+      {
+        path: 'head-settlement/settlement-detail/:id/:name',
+        name: 'settlement-detail',
+        component: () => lazyLoadView(import('@pages/settlement-detail/settlement-detail')),
+        meta: {
+          titles: ['团长管理', '团长结算', '团长结算详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
+            store
+              .dispatch('leader/getSettlementDetail', data)
+              .then((response) => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = response
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 团长提现
+      {
+        path: 'leader-withdrawal',
+        name: 'leader-withdrawal',
+        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
+        meta: {
+          titles: ['团长管理', '团长提现'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('leader/getWithdrawalList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 收支明细
+      {
+        path: 'leader-withdrawal/budget-detail/:id/:name',
+        name: 'budget-detail',
+        component: () => lazyLoadView(import('@pages/budget-detail/budget-detail')),
+        meta: {
+          titles: ['团长管理', '团长提现', '收支明细', ''],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('leader/getBillList', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
       /**
-       * 团长管理
+       * 客户管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 财务管理
        */
+      // 交易记录
+      {
+        path: 'transaction-record',
+        name: 'transaction-record',
+        component: () => lazyLoadView(import('@pages/transaction-record/transaction-record')),
+        meta: {
+          titles: ['财务管理', '交易记录'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('trade/getTradeList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 营业概况
+      {
+        path: 'business-overview',
+        name: 'business-overview',
+        component: () => lazyLoadView(import('@pages/business-overview/business-overview')),
+        meta: {
+          titles: ['财务管理', '营业概况']
+        }
+      },
+      // 营业成本
+      {
+        path: 'business-overview/operating-cost',
+        name: 'operating-cost',
+        component: () => lazyLoadView(import('@pages/operating-cost/operating-cost')),
+        meta: {
+          titles: ['财务管理', '营收概况', '营业成本']
+        }
+      },
+      /**
+       * 财务管理
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 数据管理
+       */
+      // 数据统计
+      {
+        path: 'data-survey',
+        name: 'data-survey',
+        component: () => lazyLoadView(import('@pages/data-survey/data-survey')),
+        meta: {
+          titles: ['数据统计'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('data/getOrderDetail', {startTime: '', endTime: '', time: 'today', loading: true})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      }
     ]
   },
   {

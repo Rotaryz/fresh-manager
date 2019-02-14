@@ -1,5 +1,5 @@
 <template>
-  <div class="purchase-management">
+  <div class="purchase-management table">
     <div class="tab-list">
       <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></status-tab>
     </div>
@@ -9,7 +9,7 @@
         <base-date-select :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>
         <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
       </div>
-      <div class="excel hand" @click="exportExcel">导出Excel</div>
+      <div class="btn-main hand" @click="exportExcel">导出Excel</div>
     </div>
     <div class="list-header list-box">
       <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
@@ -29,7 +29,7 @@
         <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
         <div class="list-item list-text">{{item.status_text}}</div>
         <div class="list-item list-use">
-          <router-link tag="span" :to="{path: `/home/order-detail/${item.order_id}`}" append class="blue-use hand">详情</router-link>
+          <router-link tag="span" :to="{path: `/home/order-detail/${item.order_id}`}" append class="list-operation">详情</router-link>
         </div>
       </div>
     </div>
@@ -97,8 +97,8 @@
           access_token: this.currentUser.access_token,
           status: this.status,
           shop_id: this.shopId,
-          start_time: this.time.startTime || '',
-          end_time: this.time.endTime || '',
+          start_time: this.time[0] || '',
+          end_time: this.time[1] || '',
           keyword: this.keyword
         }
         let search = []
@@ -151,13 +151,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  .purchase-management
-    overflow: hidden
-    flex: 1
-    display: flex
-    flex-direction: column
-    .tab-list
-      wdith: 100%
 
   .search-warp
     layout(row)
@@ -182,62 +175,9 @@
       color: $color-white
       text-align: center
 
-  .tab-header
-    height: 80px
-    display: flex
-    justify-content: space-between
-    align-items: center
-    box-sizing: border-box
-
-  .blue-use
+  .list-text-name
+    no-wrap()
     font-family: $font-family-regular
     font-size: $font-size-14
-    color: $color-sub
 
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
-  .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:first-child, &:nth-child(6)
-        flex: 1.2
-      &:last-child
-        flex: 0.5
-
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-      // 双行样式
-      .list-double-row
-        .item-sub
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          line-height: 1
-          font-size: $font-size-14
-
-  .pagination-box
-    height: 70px
-    align-items: center
-    display: flex
 </style>

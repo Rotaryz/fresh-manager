@@ -210,9 +210,9 @@
       },
       _getCity(data) {
         // 获取地址
-        this.leaderData.province = data.province.includes('请选择') ? '' : data.province
-        this.leaderData.city = data.city.includes('请选择') ? '' : data.city
-        this.leaderData.district = data.area.includes('请选择') ? '' : data.area
+        this.leaderData.province = data[0].includes('请选择') ? '' : data[0]
+        this.leaderData.city = data[1].includes('请选择') ? '' : data[1]
+        this.leaderData.district = data[2].includes('请选择') ? '' : data[2]
       }
     }
   }
@@ -310,34 +310,4 @@
         font-size: $font-size-14
         color: #acacac
         margin-left: 10px
-
-  .back
-    position: fixed
-    left: 200px
-    right: 0px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    padding-left: 40px
-    box-sizing: border-box
-    .back-btn
-      box-sizing: border-box
-      font-size: $font-size-16
-      margin-right: 20px
-      padding: 12px 32px
-      transition: all 0.3s
-    .back-cancel
-      padding: 11px 32px
-      box-sizing: border-box
-      line-height: 1
-      color: $color-text-main
-      border: 1px solid #ACACAC
-      border-radius: 4px
-      &:hover
-        color: $color-text-sub
-        border-color: $color-text-sub
 </style>
