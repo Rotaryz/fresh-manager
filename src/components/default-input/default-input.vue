@@ -4,7 +4,7 @@
       <div class="title-input">
         <div class="title">{{numberTitle}}</div>
         <div class="close-box">
-          <div class="close"></div>
+          <div class="close" @click="cancel"></div>
         </div>
       </div>
       <div class="main-input">
@@ -43,7 +43,6 @@
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
-        this.hide()
         this.$emit('confirm', this.numberTxt)
       },
       cancel() {
@@ -94,6 +93,17 @@
         color: $color-text-main
         font-size: $font-size-14
         padding-left: 14px
+        border: 1px solid $color-line
+        transition: all 0.3s
+        &::-webkit-inner-spin-button
+          appearance: none
+        &:hover
+          border: 1px solid #ACACAC
+        &::placeholder
+          font-family: $font-family-regular
+          color: $color-text-assist
+        &:focus
+          border-color: $color-sub !important
   .btn-group
     margin-top: 55px
     text-align: center
@@ -108,11 +118,18 @@
       cursor :pointer
     .cancel
       border: 1px solid $color-line
+      &:hover
+        color: $color-text-sub
+        border-color: $color-text-sub
     .confirm
       border: 1px solid $color-main
       background: $color-main
       color: $color-white
       margin-left: 20px
+      &:hover
+        background: #44AB67
+      &:active
+        opacity: 0.8
     .one-btn
       margin-left :0
   .z

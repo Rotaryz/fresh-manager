@@ -29,11 +29,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
   if (routeFrom.name !== null) {
     NProgress.start()
   }
-  // 动态添加页面标题
-  const titles = routeTo.meta.titles
-  if (titles) {
-    store.commit('global/SET_CURRENT_TITLES', titles)
-  }
+
   // 判断该路由是否需要检验用户信息
   const authRequired = routeTo.matched.some((route) => route.meta.authRequired)
 
@@ -87,6 +83,15 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
 })
 
 router.afterEach((routeTo, routeFrom) => {
+  // 动态添加页面标题
+  const titles = routeTo.meta.titles || []
+  const name = routeTo.params.name
+  const marginBottom = routeTo.meta.marginBottom || 14
+  titles[titles.length - 1] = name || titles[titles.length - 1]
+  if (titles) {
+    store.commit('global/SET_CURRENT_TITLES', titles)
+  }
+  store.commit('global/SET_MARGIN_BOTTOM', marginBottom)
   NProgress.done()
 })
 

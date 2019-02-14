@@ -4,10 +4,10 @@
       <navigation></navigation>
       <div class="home">
         <top-bar></top-bar>
-        <div class="container">
-          <keep-alive>
-            <router-view :key="$route.fullPath"></router-view>
-          </keep-alive>
+        <div :class="{'container-routine': isRoutine}" class="container" :style="{'margin-bottom': marginBottom + 'px'}">
+          <!--<keep-alive>-->
+          <router-view :key="$route.fullPath" @setRoutine="setRoutine"></router-view>
+          <!--</keep-alive>-->
         </div>
       </div>
     </div>
@@ -32,7 +32,8 @@
     },
     data() {
       return {
-        title: ''
+        title: '',
+        isRoutine: false
       }
     },
     computed: {
@@ -42,6 +43,11 @@
       // console.log(this.$route)
       // console.log(this.$store.dispatch('auth/validate'))
       this.title = this.currentTitles.length ? this.currentTitles[this.currentTitles.length - 1] : ''
+    },
+    methods: {
+      setRoutine(status) {
+        this.isRoutine = status
+      }
     }
   }
 </script>
@@ -50,9 +56,10 @@
   @import "~@design"
   .home
     layout()
-    min-width: 1410px
+    min-width: 1366px
     min-height: 100vh
     padding-left: 200px
+    box-sizing: border-box
     background: $color-background
     &::-webkit-scrollbar
       width: 8px
@@ -74,4 +81,8 @@
       border-radius: 6px
       box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
       background: $color-white
+    .container-routine
+      padding: 0
+      box-shadow: 0 0 0 0 transparent
+      background: transparent
 </style>

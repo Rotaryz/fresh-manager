@@ -2,15 +2,15 @@
   <div class="admin-select">
     <div class="select-item" @click.stop="selectType">
       <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
-        <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': select.check, 'admin-big-box-hover': showHover}" :style="{width: width + 'px',height: height + 'px', lineHeight: height + 'px'}">
+        <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': select.check, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
           {{select.content}}
           <img src="./icon-drop_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
           <transition name="fade">
-            <ul v-show="select.check" class="select-child" @mouseleave="leaveHide()" @mouseenter="endShow">
+            <ul v-show="select.check" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
               <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
                   @click.stop="setValue(child, chIdx)"
               >
-                {{child.title}}
+                {{child.name}}
               </li>
             </ul>
           </transition>
@@ -31,7 +31,7 @@
             show: false,
             content: '全部',
             type: 'default',
-            data: [] // 格式：{title: '55'}
+            data: [] // 格式：{name: '55'}
           }
         }
       },
@@ -45,7 +45,7 @@
       },
       width: {
         type: Number,
-        default: 102
+        default: 192
       },
       height: {
         type: Number,
@@ -74,7 +74,6 @@
       leaveHide() {
         this.setTime = setTimeout(() => {
           this.clickHide()
-          console.log('fdg')
         }, 1500)
       },
       selectType() {
@@ -87,9 +86,8 @@
       setValue(value, index) {
         this.select.check = false
         this.selectIdx = index
-        console.log(this.selectIdx)
         this.showHover = false
-        this.select.content = value.title
+        this.select.content = value.name
         this.$emit('setValue', value)
       }
     }
@@ -155,6 +153,7 @@
         border-radius: 3px
         box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
         margin-top: 10px
+        max-height: 350px
         overflow-y: auto
         &.fade-enter, &.fade-leave-to
           opacity: 0
@@ -185,6 +184,16 @@
       .admin-select-box
         font-size: $font-size-14 !important
         min-width: 140px !important
+        margin-left: 0
+        line-height: 44px !important
+        height: 44px !important
+
+  .categories-input-box
+    .admin-big-box
+      margin-left: 0 !important
+      .admin-select-box
+        font-size: $font-size-14 !important
+        min-width: 310px !important
         margin-left: 0
         line-height: 44px !important
         height: 44px !important

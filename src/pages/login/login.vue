@@ -9,7 +9,7 @@
       <div class="input-wrapper">
         <input v-model="password" type="password" :placeholder="placeHolders.password" @keyup.enter="tryToLogIn">
       </div>
-      <button class="login-btn" @click="tryToLogIn">登录</button>
+      <button class="login-btn hand" @click="tryToLogIn">登录</button>
     </div>
   </div>
 </template>
@@ -55,7 +55,7 @@
             if (!user) {
               return
             }
-            this.$router.push(this.$route.query.redirectFrom || {name: 'home'})
+            this.$router.push(this.$route.query.redirectFrom || '/home/data-survey')
           })
           .catch((error) => {
             this.$toast.show(error)

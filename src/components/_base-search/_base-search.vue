@@ -1,9 +1,7 @@
 <template>
   <div class="base-search">
-    <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder" :class="{'search-focus': isFocus}"
-           @focus="_isFocus(true)" @blur="_isFocus(false)"
-    >
-    <div class="search-icon-box">
+    <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder" @keydown="_enter">
+    <div class="search-icon-box" @click="_search">
       <span class="search-icon hand"></span>
     </div>
   </div>
@@ -26,13 +24,17 @@
     },
     data() {
       return {
-        searchText: this.infoText,
-        isFocus: false
+        searchText: this.infoText
       }
     },
     methods: {
-      _isFocus(status) {
-        this.isFocus = status
+      _search() {
+        this.$emit('search', this.searchText)
+      },
+      _enter(e) {
+        if (e.keyCode === 13) {
+          this.$emit('search', this.searchText)
+        }
       }
     }
   }
@@ -66,9 +68,9 @@
     &::placeholder
       font-family: $font-family-regular
       color: $color-text-assist
-  .search-focus
-    border: 1px solid $color-sub !important
-    border-right: none !important
+    &:focus
+      border: 1px solid $color-sub !important
+      border-right: none !important
 
   .search-icon-box
     width: 47px

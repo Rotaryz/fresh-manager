@@ -1,11 +1,11 @@
 export default [
-  {name: '请选择', sub: [{name: '请选择', sub: [{name: '请选择'}]}], type: 1},
+  {name: '请选择省', sub: [{name: '请选择市', sub: [{name: '请选择'}]}], type: 1},
   {
-    name: '北京',
+    name: '北京市',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '北京',
+        name: '北京市',
         sub: [
           {name: '请选择'},
           {name: '东城区'},
@@ -33,11 +33,11 @@ export default [
     type: 0
   },
   {
-    name: '广东',
+    name: '广东省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '广州',
+        name: '广州市',
         sub: [
           {name: '请选择'},
           {name: '越秀区'},
@@ -57,7 +57,7 @@ export default [
         type: 0
       },
       {
-        name: '深圳',
+        name: '深圳市',
         sub: [
           {name: '请选择'},
           {name: '福田区'},
@@ -71,12 +71,12 @@ export default [
         type: 0
       },
       {
-        name: '珠海',
+        name: '珠海市',
         sub: [{name: '请选择'}, {name: '香洲区'}, {name: '斗门区'}, {name: '金湾区'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '汕头',
+        name: '汕头市',
         sub: [
           {name: '请选择'},
           {name: '金平区'},
@@ -91,7 +91,7 @@ export default [
         type: 0
       },
       {
-        name: '韶关',
+        name: '韶关市',
         sub: [
           {name: '请选择'},
           {name: '浈江区'},
@@ -109,7 +109,7 @@ export default [
         type: 0
       },
       {
-        name: '佛山',
+        name: '佛山市',
         sub: [
           {name: '请选择'},
           {name: '禅城区'},
@@ -122,7 +122,7 @@ export default [
         type: 0
       },
       {
-        name: '江门',
+        name: '江门市',
         sub: [
           {name: '请选择'},
           {name: '蓬江区'},
@@ -137,7 +137,7 @@ export default [
         type: 0
       },
       {
-        name: '湛江',
+        name: '湛江市',
         sub: [
           {name: '请选择'},
           {name: '赤坎区'},
@@ -154,7 +154,7 @@ export default [
         type: 0
       },
       {
-        name: '茂名',
+        name: '茂名市',
         sub: [
           {name: '请选择'},
           {name: '茂南区'},
@@ -168,7 +168,7 @@ export default [
         type: 0
       },
       {
-        name: '肇庆',
+        name: '肇庆市',
         sub: [
           {name: '请选择'},
           {name: '端州区'},
@@ -184,7 +184,7 @@ export default [
         type: 0
       },
       {
-        name: '惠州',
+        name: '惠州市',
         sub: [
           {name: '请选择'},
           {name: '惠城区'},
@@ -197,7 +197,7 @@ export default [
         type: 0
       },
       {
-        name: '梅州',
+        name: '梅州市',
         sub: [
           {name: '请选择'},
           {name: '梅江区'},
@@ -213,12 +213,12 @@ export default [
         type: 0
       },
       {
-        name: '汕尾',
+        name: '汕尾市',
         sub: [{name: '请选择'}, {name: '城区'}, {name: '陆丰市'}, {name: '海丰县'}, {name: '陆河县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '河源',
+        name: '河源市',
         sub: [
           {name: '请选择'},
           {name: '源城区'},
@@ -232,12 +232,12 @@ export default [
         type: 0
       },
       {
-        name: '阳江',
+        name: '阳江市',
         sub: [{name: '请选择'}, {name: '江城区'}, {name: '阳春市'}, {name: '阳西县'}, {name: '阳东县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '清远',
+        name: '清远市',
         sub: [
           {name: '请选择'},
           {name: '清城区'},
@@ -252,23 +252,15 @@ export default [
         ],
         type: 0
       },
+      {name: '东莞市', sub: [], type: 0},
+      {name: '中山市', sub: [], type: 0},
       {
-        name: '东莞',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '中山',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '潮州',
+        name: '潮州市',
         sub: [{name: '请选择'}, {name: '湘桥区'}, {name: '潮安县'}, {name: '饶平县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '揭阳',
+        name: '揭阳市',
         sub: [
           {name: '请选择'},
           {name: '榕城区'},
@@ -281,7 +273,7 @@ export default [
         type: 0
       },
       {
-        name: '云浮',
+        name: '云浮市',
         sub: [
           {name: '请选择'},
           {name: '云城区'},
@@ -293,16 +285,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '上海',
+    name: '上海市',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '上海',
+        name: '上海市',
         sub: [
           {name: '请选择'},
           {name: '黄浦区'},
@@ -331,11 +323,11 @@ export default [
     type: 0
   },
   {
-    name: '天津',
+    name: '天津市',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '天津',
+        name: '天津市',
         sub: [
           {name: '请选择'},
           {name: '和平区'},
@@ -363,11 +355,11 @@ export default [
     type: 0
   },
   {
-    name: '重庆',
+    name: '重庆市',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '重庆',
+        name: '重庆市',
         sub: [
           {name: '请选择'},
           {name: '渝中区'},
@@ -417,11 +409,11 @@ export default [
     type: 0
   },
   {
-    name: '辽宁',
+    name: '辽宁省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '沈阳',
+        name: '沈阳市',
         sub: [
           {name: '请选择'},
           {name: '沈河区'},
@@ -442,7 +434,7 @@ export default [
         type: 0
       },
       {
-        name: '大连',
+        name: '大连市',
         sub: [
           {name: '请选择'},
           {name: '西岗区'},
@@ -460,7 +452,7 @@ export default [
         type: 0
       },
       {
-        name: '鞍山',
+        name: '鞍山市',
         sub: [
           {name: '请选择'},
           {name: '铁东区'},
@@ -475,7 +467,7 @@ export default [
         type: 0
       },
       {
-        name: '抚顺',
+        name: '抚顺市',
         sub: [
           {name: '请选择'},
           {name: '顺城区'},
@@ -490,7 +482,7 @@ export default [
         type: 0
       },
       {
-        name: '本溪',
+        name: '本溪市',
         sub: [
           {name: '请选择'},
           {name: '平山区'},
@@ -504,7 +496,7 @@ export default [
         type: 0
       },
       {
-        name: '丹东',
+        name: '丹东市',
         sub: [
           {name: '请选择'},
           {name: '振兴区'},
@@ -518,7 +510,7 @@ export default [
         type: 0
       },
       {
-        name: '锦州',
+        name: '锦州市',
         sub: [
           {name: '请选择'},
           {name: '太和区'},
@@ -533,7 +525,7 @@ export default [
         type: 0
       },
       {
-        name: '营口',
+        name: '营口市',
         sub: [
           {name: '请选择'},
           {name: '站前区'},
@@ -547,7 +539,7 @@ export default [
         type: 0
       },
       {
-        name: '阜新',
+        name: '阜新市',
         sub: [
           {name: '请选择'},
           {name: '海州区'},
@@ -562,7 +554,7 @@ export default [
         type: 0
       },
       {
-        name: '辽阳',
+        name: '辽阳市',
         sub: [
           {name: '请选择'},
           {name: '白塔区'},
@@ -577,7 +569,7 @@ export default [
         type: 0
       },
       {
-        name: '盘锦',
+        name: '盘锦市',
         sub: [
           {name: '请选择'},
           {name: '双台子区'},
@@ -589,7 +581,7 @@ export default [
         type: 0
       },
       {
-        name: '铁岭',
+        name: '铁岭市',
         sub: [
           {name: '请选择'},
           {name: '银州区'},
@@ -604,7 +596,7 @@ export default [
         type: 0
       },
       {
-        name: '朝阳',
+        name: '朝阳市',
         sub: [
           {name: '请选择'},
           {name: '双塔区'},
@@ -619,7 +611,7 @@ export default [
         type: 0
       },
       {
-        name: '葫芦岛',
+        name: '葫芦岛市',
         sub: [
           {name: '请选择'},
           {name: '龙港区'},
@@ -632,16 +624,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '江苏',
+    name: '江苏省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '南京',
+        name: '南京市',
         sub: [
           {name: '请选择'},
           {name: '玄武区'},
@@ -662,7 +654,7 @@ export default [
         type: 0
       },
       {
-        name: '苏州',
+        name: '苏州市',
         sub: [
           {name: '请选择'},
           {name: '金阊区'},
@@ -681,7 +673,7 @@ export default [
         type: 0
       },
       {
-        name: '无锡',
+        name: '无锡市',
         sub: [
           {name: '请选择'},
           {name: '崇安区'},
@@ -697,7 +689,7 @@ export default [
         type: 0
       },
       {
-        name: '常州',
+        name: '常州市',
         sub: [
           {name: '请选择'},
           {name: '钟楼区'},
@@ -712,7 +704,7 @@ export default [
         type: 0
       },
       {
-        name: '镇江',
+        name: '镇江市',
         sub: [
           {name: '请选择'},
           {name: '京口区'},
@@ -726,7 +718,7 @@ export default [
         type: 0
       },
       {
-        name: '南通',
+        name: '南通市',
         sub: [
           {name: '请选择'},
           {name: '崇川区'},
@@ -742,7 +734,7 @@ export default [
         type: 0
       },
       {
-        name: '泰州',
+        name: '泰州市',
         sub: [
           {name: '请选择'},
           {name: '海陵区'},
@@ -756,7 +748,7 @@ export default [
         type: 0
       },
       {
-        name: '扬州',
+        name: '扬州市',
         sub: [
           {name: '请选择'},
           {name: '广陵区'},
@@ -771,7 +763,7 @@ export default [
         type: 0
       },
       {
-        name: '盐城',
+        name: '盐城市',
         sub: [
           {name: '请选择'},
           {name: '亭湖区'},
@@ -788,7 +780,7 @@ export default [
         type: 0
       },
       {
-        name: '连云港',
+        name: '连云港市',
         sub: [
           {name: '请选择'},
           {name: '新浦区'},
@@ -803,7 +795,7 @@ export default [
         type: 0
       },
       {
-        name: '徐州',
+        name: '徐州市',
         sub: [
           {name: '请选择'},
           {name: '云龙区'},
@@ -822,7 +814,7 @@ export default [
         type: 0
       },
       {
-        name: '淮安',
+        name: '淮安市',
         sub: [
           {name: '请选择'},
           {name: '清河区'},
@@ -838,7 +830,7 @@ export default [
         type: 0
       },
       {
-        name: '宿迁',
+        name: '宿迁市',
         sub: [
           {name: '请选择'},
           {name: '宿城区'},
@@ -850,16 +842,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '湖北',
+    name: '湖北省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '武汉',
+        name: '武汉市',
         sub: [
           {name: '请选择'},
           {name: '江岸区'},
@@ -880,7 +872,7 @@ export default [
         type: 0
       },
       {
-        name: '黄石',
+        name: '黄石市',
         sub: [
           {name: '请选择'},
           {name: '黄石港区'},
@@ -894,7 +886,7 @@ export default [
         type: 0
       },
       {
-        name: '十堰',
+        name: '十堰市',
         sub: [
           {name: '请选择'},
           {name: '张湾区'},
@@ -910,7 +902,7 @@ export default [
         type: 0
       },
       {
-        name: '荆州',
+        name: '荆州市',
         sub: [
           {name: '请选择'},
           {name: '沙市区'},
@@ -926,7 +918,7 @@ export default [
         type: 0
       },
       {
-        name: '宜昌',
+        name: '宜昌市',
         sub: [
           {name: '请选择'},
           {name: '西陵区'},
@@ -947,7 +939,7 @@ export default [
         type: 0
       },
       {
-        name: '襄樊',
+        name: '襄樊市',
         sub: [
           {name: '请选择'},
           {name: '襄城区'},
@@ -964,12 +956,12 @@ export default [
         type: 0
       },
       {
-        name: '鄂州',
+        name: '鄂州市',
         sub: [{name: '请选择'}, {name: '鄂城区'}, {name: '华容区'}, {name: '梁子湖区'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '荆门',
+        name: '荆门市',
         sub: [
           {name: '请选择'},
           {name: '东宝区'},
@@ -982,7 +974,7 @@ export default [
         type: 0
       },
       {
-        name: '孝感',
+        name: '孝感市',
         sub: [
           {name: '请选择'},
           {name: '孝南区'},
@@ -997,7 +989,7 @@ export default [
         type: 0
       },
       {
-        name: '黄冈',
+        name: '黄冈市',
         sub: [
           {name: '请选择'},
           {name: '黄州区'},
@@ -1015,7 +1007,7 @@ export default [
         type: 0
       },
       {
-        name: '咸宁',
+        name: '咸宁市',
         sub: [
           {name: '请选择'},
           {name: '咸安区'},
@@ -1028,11 +1020,7 @@ export default [
         ],
         type: 0
       },
-      {
-        name: '随州',
-        sub: [{name: '请选择'}, {name: '曾都区'}, {name: '广水市'}, {name: '其他'}],
-        type: 0
-      },
+      {name: '随州市', sub: [{name: '请选择'}, {name: '曾都区'}, {name: '广水市'}, {name: '其他'}], type: 0},
       {
         name: '恩施土家族苗族自治州',
         sub: [
@@ -1049,36 +1037,20 @@ export default [
         ],
         type: 0
       },
-      {
-        name: '仙桃',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '天门',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '潜江',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '神农架林区',
-        sub: [],
-        type: 0
-      },
-      {name: '其他'}
+      {name: '仙桃市', sub: [], type: 0},
+      {name: '天门市', sub: [], type: 0},
+      {name: '潜江市', sub: [], type: 0},
+      {name: '神农架林区市', sub: [], type: 0},
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '四川',
+    name: '四川省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '成都',
+        name: '成都市',
         sub: [
           {name: '请选择'},
           {name: '青羊区'},
@@ -1105,7 +1077,7 @@ export default [
         type: 0
       },
       {
-        name: '自贡',
+        name: '自贡市',
         sub: [
           {name: '请选择'},
           {name: '大安区'},
@@ -1119,7 +1091,7 @@ export default [
         type: 0
       },
       {
-        name: '攀枝花',
+        name: '攀枝花市',
         sub: [
           {name: '请选择'},
           {name: '仁和区'},
@@ -1132,7 +1104,7 @@ export default [
         type: 0
       },
       {
-        name: '泸州',
+        name: '泸州市',
         sub: [
           {name: '请选择'},
           {name: '江阳区'},
@@ -1147,7 +1119,7 @@ export default [
         type: 0
       },
       {
-        name: '德阳',
+        name: '德阳市',
         sub: [
           {name: '请选择'},
           {name: '旌阳区'},
@@ -1161,7 +1133,7 @@ export default [
         type: 0
       },
       {
-        name: '绵阳',
+        name: '绵阳市',
         sub: [
           {name: '请选择'},
           {name: '涪城区'},
@@ -1178,7 +1150,7 @@ export default [
         type: 0
       },
       {
-        name: '广元',
+        name: '广元市',
         sub: [
           {name: '请选择'},
           {name: '元坝区'},
@@ -1193,7 +1165,7 @@ export default [
         type: 0
       },
       {
-        name: '遂宁',
+        name: '遂宁市',
         sub: [
           {name: '请选择'},
           {name: '船山区'},
@@ -1206,7 +1178,7 @@ export default [
         type: 0
       },
       {
-        name: '内江',
+        name: '内江市',
         sub: [
           {name: '请选择'},
           {name: '市中区'},
@@ -1219,7 +1191,7 @@ export default [
         type: 0
       },
       {
-        name: '乐山',
+        name: '乐山市',
         sub: [
           {name: '请选择'},
           {name: '市中区'},
@@ -1238,7 +1210,7 @@ export default [
         type: 0
       },
       {
-        name: '南充',
+        name: '南充市',
         sub: [
           {name: '请选择'},
           {name: '顺庆区'},
@@ -1255,7 +1227,7 @@ export default [
         type: 0
       },
       {
-        name: '眉山',
+        name: '眉山市',
         sub: [
           {name: '请选择'},
           {name: '东坡区'},
@@ -1269,7 +1241,7 @@ export default [
         type: 0
       },
       {
-        name: '宜宾',
+        name: '宜宾市',
         sub: [
           {name: '请选择'},
           {name: '翠屏区'},
@@ -1287,7 +1259,7 @@ export default [
         type: 0
       },
       {
-        name: '广安',
+        name: '广安市',
         sub: [
           {name: '请选择'},
           {name: '广安区'},
@@ -1300,7 +1272,7 @@ export default [
         type: 0
       },
       {
-        name: '达州',
+        name: '达州市',
         sub: [
           {name: '请选择'},
           {name: '通川区'},
@@ -1315,7 +1287,7 @@ export default [
         type: 0
       },
       {
-        name: '雅安',
+        name: '雅安市',
         sub: [
           {name: '请选择'},
           {name: '雨城区'},
@@ -1331,12 +1303,12 @@ export default [
         type: 0
       },
       {
-        name: '巴中',
+        name: '巴中市',
         sub: [{name: '请选择'}, {name: '巴州区'}, {name: '南江县'}, {name: '平昌县'}, {name: '通江县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '资阳',
+        name: '资阳市',
         sub: [{name: '请选择'}, {name: '雁江区'}, {name: '简阳市'}, {name: '安岳县'}, {name: '乐至县'}, {name: '其他'}],
         type: 0
       },
@@ -1412,16 +1384,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '陕西',
+    name: '陕西省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '西安',
+        name: '西安市',
         sub: [
           {name: '请选择'},
           {name: '莲湖区'},
@@ -1442,12 +1414,12 @@ export default [
         type: 0
       },
       {
-        name: '铜川',
+        name: '铜川市',
         sub: [{name: '请选择'}, {name: '耀州区'}, {name: '王益区'}, {name: '印台区'}, {name: '宜君县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '宝鸡',
+        name: '宝鸡市',
         sub: [
           {name: '请选择'},
           {name: '渭滨区'},
@@ -1467,7 +1439,7 @@ export default [
         type: 0
       },
       {
-        name: '咸阳',
+        name: '咸阳市',
         sub: [
           {name: '请选择'},
           {name: '秦都区'},
@@ -1489,7 +1461,7 @@ export default [
         type: 0
       },
       {
-        name: '渭南',
+        name: '渭南市',
         sub: [
           {name: '请选择'},
           {name: '临渭区'},
@@ -1508,7 +1480,7 @@ export default [
         type: 0
       },
       {
-        name: '延安',
+        name: '延安市',
         sub: [
           {name: '请选择'},
           {name: '宝塔区'},
@@ -1529,7 +1501,7 @@ export default [
         type: 0
       },
       {
-        name: '汉中',
+        name: '汉中市',
         sub: [
           {name: '请选择'},
           {name: '汉台区'},
@@ -1548,7 +1520,7 @@ export default [
         type: 0
       },
       {
-        name: '榆林',
+        name: '榆林市',
         sub: [
           {name: '请选择'},
           {name: '榆阳区'},
@@ -1568,7 +1540,7 @@ export default [
         type: 0
       },
       {
-        name: '安康',
+        name: '安康市',
         sub: [
           {name: '请选择'},
           {name: '汉滨区'},
@@ -1586,7 +1558,7 @@ export default [
         type: 0
       },
       {
-        name: '商洛',
+        name: '商洛市',
         sub: [
           {name: '请选择'},
           {name: '商州区'},
@@ -1600,16 +1572,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '河北',
+    name: '河北省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '石家庄',
+        name: '石家庄市',
         sub: [
           {name: '请选择'},
           {name: '长安区'},
@@ -1640,7 +1612,7 @@ export default [
         type: 0
       },
       {
-        name: '唐山',
+        name: '唐山市',
         sub: [
           {name: '请选择'},
           {name: '路北区'},
@@ -1662,7 +1634,7 @@ export default [
         type: 0
       },
       {
-        name: '秦皇岛',
+        name: '秦皇岛市',
         sub: [
           {name: '请选择'},
           {name: '海港区'},
@@ -1677,7 +1649,7 @@ export default [
         type: 0
       },
       {
-        name: '邯郸',
+        name: '邯郸市',
         sub: [
           {name: '请选择'},
           {name: '邯山区'},
@@ -1704,7 +1676,7 @@ export default [
         type: 0
       },
       {
-        name: '邢台',
+        name: '邢台市',
         sub: [
           {name: '请选择'},
           {name: '桥东区'},
@@ -1731,7 +1703,7 @@ export default [
         type: 0
       },
       {
-        name: '保定',
+        name: '保定市',
         sub: [
           {name: '请选择'},
           {name: '新市区'},
@@ -1764,7 +1736,7 @@ export default [
         type: 0
       },
       {
-        name: '张家口',
+        name: '张家口市',
         sub: [
           {name: '请选择'},
           {name: '桥东区'},
@@ -1789,7 +1761,7 @@ export default [
         type: 0
       },
       {
-        name: '承德',
+        name: '承德市',
         sub: [
           {name: '请选择'},
           {name: '双桥区'},
@@ -1808,7 +1780,7 @@ export default [
         type: 0
       },
       {
-        name: '沧州',
+        name: '沧州市',
         sub: [
           {name: '请选择'},
           {name: '新华区'},
@@ -1832,7 +1804,7 @@ export default [
         type: 0
       },
       {
-        name: '廊坊',
+        name: '廊坊市',
         sub: [
           {name: '请选择'},
           {name: '安次区'},
@@ -1850,7 +1822,7 @@ export default [
         type: 0
       },
       {
-        name: '衡水',
+        name: '衡水市',
         sub: [
           {name: '请选择'},
           {name: '桃城区'},
@@ -1868,16 +1840,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '山西',
+    name: '山西省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '太原',
+        name: '太原市',
         sub: [
           {name: '请选择'},
           {name: '杏花岭区'},
@@ -1895,7 +1867,7 @@ export default [
         type: 0
       },
       {
-        name: '大同',
+        name: '大同市',
         sub: [
           {name: '请选择'},
           {name: '城区'},
@@ -1914,7 +1886,7 @@ export default [
         type: 0
       },
       {
-        name: '阳泉',
+        name: '阳泉市',
         sub: [
           {name: '请选择'},
           {name: '城区'},
@@ -1927,7 +1899,7 @@ export default [
         type: 0
       },
       {
-        name: '长治',
+        name: '长治市',
         sub: [
           {name: '请选择'},
           {name: '城区'},
@@ -1948,7 +1920,7 @@ export default [
         type: 0
       },
       {
-        name: '晋城',
+        name: '晋城市',
         sub: [
           {name: '请选择'},
           {name: '城区'},
@@ -1962,7 +1934,7 @@ export default [
         type: 0
       },
       {
-        name: '朔州',
+        name: '朔州市',
         sub: [
           {name: '请选择'},
           {name: '朔城区'},
@@ -1976,7 +1948,7 @@ export default [
         type: 0
       },
       {
-        name: '晋中',
+        name: '晋中市',
         sub: [
           {name: '请选择'},
           {name: '榆次区'},
@@ -1995,7 +1967,7 @@ export default [
         type: 0
       },
       {
-        name: '运城',
+        name: '运城市',
         sub: [
           {name: '请选择'},
           {name: '盐湖区'},
@@ -2016,7 +1988,7 @@ export default [
         type: 0
       },
       {
-        name: '忻州',
+        name: '忻州市',
         sub: [
           {name: '请选择'},
           {name: '忻府区'},
@@ -2038,7 +2010,7 @@ export default [
         type: 0
       },
       {
-        name: '临汾',
+        name: '临汾市',
         sub: [
           {name: '请选择'},
           {name: '尧都区'},
@@ -2063,7 +2035,7 @@ export default [
         type: 0
       },
       {
-        name: '吕梁',
+        name: '吕梁市',
         sub: [
           {name: '请选择'},
           {name: '离石区'},
@@ -2083,16 +2055,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '河南',
+    name: '河南省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '郑州',
+        name: '郑州市',
         sub: [
           {name: '请选择'},
           {name: '中原区'},
@@ -2112,7 +2084,7 @@ export default [
         type: 0
       },
       {
-        name: '开封',
+        name: '开封市',
         sub: [
           {name: '请选择'},
           {name: '鼓楼区'},
@@ -2130,7 +2102,7 @@ export default [
         type: 0
       },
       {
-        name: '洛阳',
+        name: '洛阳市',
         sub: [
           {name: '请选择'},
           {name: '西工区'},
@@ -2153,7 +2125,7 @@ export default [
         type: 0
       },
       {
-        name: '平顶山',
+        name: '平顶山市',
         sub: [
           {name: '请选择'},
           {name: '新华区'},
@@ -2171,7 +2143,7 @@ export default [
         type: 0
       },
       {
-        name: '安阳',
+        name: '安阳市',
         sub: [
           {name: '请选择'},
           {name: '北关区'},
@@ -2188,7 +2160,7 @@ export default [
         type: 0
       },
       {
-        name: '鹤壁',
+        name: '鹤壁市',
         sub: [
           {name: '请选择'},
           {name: '淇滨区'},
@@ -2201,7 +2173,7 @@ export default [
         type: 0
       },
       {
-        name: '新乡',
+        name: '新乡市',
         sub: [
           {name: '请选择'},
           {name: '卫滨区'},
@@ -2221,7 +2193,7 @@ export default [
         type: 0
       },
       {
-        name: '焦作',
+        name: '焦作市',
         sub: [
           {name: '请选择'},
           {name: '解放区'},
@@ -2239,7 +2211,7 @@ export default [
         type: 0
       },
       {
-        name: '濮阳',
+        name: '濮阳市',
         sub: [
           {name: '请选择'},
           {name: '华龙区'},
@@ -2253,7 +2225,7 @@ export default [
         type: 0
       },
       {
-        name: '许昌',
+        name: '许昌市',
         sub: [
           {name: '请选择'},
           {name: '魏都区'},
@@ -2267,7 +2239,7 @@ export default [
         type: 0
       },
       {
-        name: '漯河',
+        name: '漯河市',
         sub: [
           {name: '请选择'},
           {name: '源汇区'},
@@ -2280,7 +2252,7 @@ export default [
         type: 0
       },
       {
-        name: '三门峡',
+        name: '三门峡市',
         sub: [
           {name: '请选择'},
           {name: '湖滨区'},
@@ -2294,7 +2266,7 @@ export default [
         type: 0
       },
       {
-        name: '南阳',
+        name: '南阳市',
         sub: [
           {name: '请选择'},
           {name: '卧龙区'},
@@ -2315,7 +2287,7 @@ export default [
         type: 0
       },
       {
-        name: '商丘',
+        name: '商丘市',
         sub: [
           {name: '请选择'},
           {name: '梁园区'},
@@ -2332,7 +2304,7 @@ export default [
         type: 0
       },
       {
-        name: '信阳',
+        name: '信阳市',
         sub: [
           {name: '请选择'},
           {name: '浉河区'},
@@ -2350,7 +2322,7 @@ export default [
         type: 0
       },
       {
-        name: '周口',
+        name: '周口市',
         sub: [
           {name: '请选择'},
           {name: '川汇区'},
@@ -2368,7 +2340,7 @@ export default [
         type: 0
       },
       {
-        name: '驻马店',
+        name: '驻马店市',
         sub: [
           {name: '请选择'},
           {name: '驿城区'},
@@ -2385,21 +2357,17 @@ export default [
         ],
         type: 0
       },
-      {
-        name: '焦作',
-        sub: [{name: '请选择'}, {name: '济源市'}, {name: '其他'}],
-        type: 0
-      },
-      {name: '其他'}
+      {name: '焦作市', sub: [{name: '请选择'}, {name: '济源市'}, {name: '其他'}], type: 0},
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '吉林',
+    name: '吉林省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '长春',
+        name: '长春市',
         sub: [
           {name: '请选择'},
           {name: '朝阳区'},
@@ -2417,7 +2385,7 @@ export default [
         type: 0
       },
       {
-        name: '吉林',
+        name: '吉林市',
         sub: [
           {name: '请选择'},
           {name: '船营区'},
@@ -2434,7 +2402,7 @@ export default [
         type: 0
       },
       {
-        name: '四平',
+        name: '四平市',
         sub: [
           {name: '请选择'},
           {name: '铁西区'},
@@ -2448,12 +2416,12 @@ export default [
         type: 0
       },
       {
-        name: '辽源',
+        name: '辽源市',
         sub: [{name: '请选择'}, {name: '龙山区'}, {name: '西安区'}, {name: '东辽县'}, {name: '东丰县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '通化',
+        name: '通化市',
         sub: [
           {name: '请选择'},
           {name: '东昌区'},
@@ -2468,7 +2436,7 @@ export default [
         type: 0
       },
       {
-        name: '白山',
+        name: '白山市',
         sub: [
           {name: '请选择'},
           {name: '八道江区'},
@@ -2482,7 +2450,7 @@ export default [
         type: 0
       },
       {
-        name: '松原',
+        name: '松原市',
         sub: [
           {name: '请选择'},
           {name: '宁江区'},
@@ -2495,7 +2463,7 @@ export default [
         type: 0
       },
       {
-        name: '白城',
+        name: '白城市',
         sub: [
           {name: '请选择'},
           {name: '洮北区'},
@@ -2523,16 +2491,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '黑龙江',
+    name: '黑龙江省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '哈尔滨',
+        name: '哈尔滨市',
         sub: [
           {name: '请选择'},
           {name: '松北区'},
@@ -2558,7 +2526,7 @@ export default [
         type: 0
       },
       {
-        name: '齐齐哈尔',
+        name: '齐齐哈尔市',
         sub: [
           {name: '请选择'},
           {name: '龙沙区'},
@@ -2582,7 +2550,7 @@ export default [
         type: 0
       },
       {
-        name: '鹤岗',
+        name: '鹤岗市',
         sub: [
           {name: '请选择'},
           {name: '兴山区'},
@@ -2598,7 +2566,7 @@ export default [
         type: 0
       },
       {
-        name: '双鸭山',
+        name: '双鸭山市',
         sub: [
           {name: '请选择'},
           {name: '尖山区'},
@@ -2614,7 +2582,7 @@ export default [
         type: 0
       },
       {
-        name: '鸡西',
+        name: '鸡西市',
         sub: [
           {name: '请选择'},
           {name: '鸡冠区'},
@@ -2631,7 +2599,7 @@ export default [
         type: 0
       },
       {
-        name: '大庆',
+        name: '大庆市',
         sub: [
           {name: '请选择'},
           {name: '萨尔图区'},
@@ -2648,7 +2616,7 @@ export default [
         type: 0
       },
       {
-        name: '伊春',
+        name: '伊春市',
         sub: [
           {name: '请选择'},
           {name: '伊春区'},
@@ -2673,7 +2641,7 @@ export default [
         type: 0
       },
       {
-        name: '牡丹江',
+        name: '牡丹江市',
         sub: [
           {name: '请选择'},
           {name: '爱民区'},
@@ -2691,7 +2659,7 @@ export default [
         type: 0
       },
       {
-        name: '佳木斯',
+        name: '佳木斯市',
         sub: [
           {name: '请选择'},
           {name: '向阳区'},
@@ -2709,7 +2677,7 @@ export default [
         type: 0
       },
       {
-        name: '七台河',
+        name: '七台河市',
         sub: [
           {name: '请选择'},
           {name: '桃山区'},
@@ -2721,7 +2689,7 @@ export default [
         type: 0
       },
       {
-        name: '黑河',
+        name: '黑河市',
         sub: [
           {name: '请选择'},
           {name: '爱辉区'},
@@ -2735,7 +2703,7 @@ export default [
         type: 0
       },
       {
-        name: '绥化',
+        name: '绥化市',
         sub: [
           {name: '请选择'},
           {name: '北林区'},
@@ -2753,7 +2721,7 @@ export default [
         type: 0
       },
       {
-        name: '大兴安岭地区',
+        name: '大兴安岭地区市',
         sub: [
           {name: '请选择'},
           {name: '呼玛县'},
@@ -2764,16 +2732,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '内蒙古',
+    name: '内蒙古省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '呼和浩特',
+        name: '呼和浩特市',
         sub: [
           {name: '请选择'},
           {name: '回民区'},
@@ -2790,7 +2758,7 @@ export default [
         type: 0
       },
       {
-        name: '包头',
+        name: '包头市',
         sub: [
           {name: '请选择'},
           {name: '昆都仑区'},
@@ -2807,12 +2775,12 @@ export default [
         type: 0
       },
       {
-        name: '乌海',
+        name: '乌海市',
         sub: [{name: '请选择'}, {name: '海勃湾区'}, {name: '乌达区'}, {name: '海南区'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '赤峰',
+        name: '赤峰市',
         sub: [
           {name: '请选择'},
           {name: '红山区'},
@@ -2832,7 +2800,7 @@ export default [
         type: 0
       },
       {
-        name: '通辽',
+        name: '通辽市',
         sub: [
           {name: '请选择'},
           {name: '科尔沁区'},
@@ -2848,7 +2816,7 @@ export default [
         type: 0
       },
       {
-        name: '鄂尔多斯',
+        name: '鄂尔多斯市',
         sub: [
           {name: '请选择'},
           {name: '东胜区'},
@@ -2864,7 +2832,7 @@ export default [
         type: 0
       },
       {
-        name: '呼伦贝尔',
+        name: '呼伦贝尔市',
         sub: [
           {name: '请选择'},
           {name: '海拉尔区'},
@@ -2885,7 +2853,7 @@ export default [
         type: 0
       },
       {
-        name: '巴彦淖尔',
+        name: '巴彦淖尔市',
         sub: [
           {name: '请选择'},
           {name: '临河区'},
@@ -2900,7 +2868,7 @@ export default [
         type: 0
       },
       {
-        name: '乌兰察布',
+        name: '乌兰察布市',
         sub: [
           {name: '请选择'},
           {name: '集宁区'},
@@ -2919,7 +2887,7 @@ export default [
         type: 0
       },
       {
-        name: '锡林郭勒盟',
+        name: '锡林郭勒盟市',
         sub: [
           {name: '请选择'},
           {name: '锡林浩特市'},
@@ -2939,7 +2907,7 @@ export default [
         type: 0
       },
       {
-        name: '兴安盟',
+        name: '兴安盟市',
         sub: [
           {name: '请选择'},
           {name: '乌兰浩特市'},
@@ -2953,20 +2921,20 @@ export default [
         type: 0
       },
       {
-        name: '阿拉善盟',
+        name: '阿拉善盟市',
         sub: [{name: '请选择'}, {name: '阿拉善左旗'}, {name: '阿拉善右旗'}, {name: '额济纳旗'}, {name: '其他'}],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '山东',
+    name: '山东省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '济南',
+        name: '济南市',
         sub: [
           {name: '请选择'},
           {name: '市中区'},
@@ -2984,7 +2952,7 @@ export default [
         type: 0
       },
       {
-        name: '青岛',
+        name: '青岛市',
         sub: [
           {name: '请选择'},
           {name: '市南区'},
@@ -3004,7 +2972,7 @@ export default [
         type: 0
       },
       {
-        name: '淄博',
+        name: '淄博市',
         sub: [
           {name: '请选择'},
           {name: '张店区'},
@@ -3020,7 +2988,7 @@ export default [
         type: 0
       },
       {
-        name: '枣庄',
+        name: '枣庄市',
         sub: [
           {name: '请选择'},
           {name: '市中区'},
@@ -3034,7 +3002,7 @@ export default [
         type: 0
       },
       {
-        name: '东营',
+        name: '东营市',
         sub: [
           {name: '请选择'},
           {name: '东营区'},
@@ -3047,7 +3015,7 @@ export default [
         type: 0
       },
       {
-        name: '烟台',
+        name: '烟台市',
         sub: [
           {name: '请选择'},
           {name: '芝罘区'},
@@ -3067,7 +3035,7 @@ export default [
         type: 0
       },
       {
-        name: '潍坊',
+        name: '潍坊市',
         sub: [
           {name: '请选择'},
           {name: '潍城区'},
@@ -3087,7 +3055,7 @@ export default [
         type: 0
       },
       {
-        name: '济宁',
+        name: '济宁市',
         sub: [
           {name: '请选择'},
           {name: '市中区'},
@@ -3107,7 +3075,7 @@ export default [
         type: 0
       },
       {
-        name: '泰安',
+        name: '泰安市',
         sub: [
           {name: '请选择'},
           {name: '泰山区'},
@@ -3121,22 +3089,18 @@ export default [
         type: 0
       },
       {
-        name: '威海',
+        name: '威海市',
         sub: [{name: '请选择'}, {name: '环翠区'}, {name: '乳山市'}, {name: '文登市'}, {name: '荣成市'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '日照',
+        name: '日照市',
         sub: [{name: '请选择'}, {name: '东港区'}, {name: '岚山区'}, {name: '五莲县'}, {name: '莒县'}, {name: '其他'}],
         type: 0
       },
+      {name: '莱芜市', sub: [{name: '请选择'}, {name: '莱城区'}, {name: '钢城区'}, {name: '其他'}], type: 0},
       {
-        name: '莱芜',
-        sub: [{name: '请选择'}, {name: '莱城区'}, {name: '钢城区'}, {name: '其他'}],
-        type: 0
-      },
-      {
-        name: '临沂',
+        name: '临沂市',
         sub: [
           {name: '请选择'},
           {name: '兰山区'},
@@ -3156,7 +3120,7 @@ export default [
         type: 0
       },
       {
-        name: '德州',
+        name: '德州市',
         sub: [
           {name: '请选择'},
           {name: '德城区'},
@@ -3175,7 +3139,7 @@ export default [
         type: 0
       },
       {
-        name: '聊城',
+        name: '聊城市',
         sub: [
           {name: '请选择'},
           {name: '东昌府区'},
@@ -3191,7 +3155,7 @@ export default [
         type: 0
       },
       {
-        name: '滨州',
+        name: '滨州市',
         sub: [
           {name: '请选择'},
           {name: '滨城区'},
@@ -3206,7 +3170,7 @@ export default [
         type: 0
       },
       {
-        name: '菏泽',
+        name: '菏泽市',
         sub: [
           {name: '请选择'},
           {name: '牡丹区'},
@@ -3222,16 +3186,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '安徽',
+    name: '安徽省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '合肥',
+        name: '合肥市',
         sub: [
           {name: '请选择'},
           {name: '庐阳区'},
@@ -3246,7 +3210,7 @@ export default [
         type: 0
       },
       {
-        name: '芜湖',
+        name: '芜湖市',
         sub: [
           {name: '请选择'},
           {name: '镜湖区'},
@@ -3261,7 +3225,7 @@ export default [
         type: 0
       },
       {
-        name: '蚌埠',
+        name: '蚌埠市',
         sub: [
           {name: '请选择'},
           {name: '蚌山区'},
@@ -3276,7 +3240,7 @@ export default [
         type: 0
       },
       {
-        name: '淮南',
+        name: '淮南市',
         sub: [
           {name: '请选择'},
           {name: '田家庵区'},
@@ -3290,7 +3254,7 @@ export default [
         type: 0
       },
       {
-        name: '马鞍山',
+        name: '马鞍山市',
         sub: [
           {name: '请选择'},
           {name: '雨山区'},
@@ -3302,12 +3266,12 @@ export default [
         type: 0
       },
       {
-        name: '淮北',
+        name: '淮北市',
         sub: [{name: '请选择'}, {name: '相山区'}, {name: '杜集区'}, {name: '烈山区'}, {name: '濉溪县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '铜陵',
+        name: '铜陵市',
         sub: [
           {name: '请选择'},
           {name: '铜官山区'},
@@ -3319,7 +3283,7 @@ export default [
         type: 0
       },
       {
-        name: '安庆',
+        name: '安庆市',
         sub: [
           {name: '请选择'},
           {name: '迎江区'},
@@ -3338,7 +3302,7 @@ export default [
         type: 0
       },
       {
-        name: '黄山',
+        name: '黄山市',
         sub: [
           {name: '请选择'},
           {name: '屯溪区'},
@@ -3353,7 +3317,7 @@ export default [
         type: 0
       },
       {
-        name: '滁州',
+        name: '滁州市',
         sub: [
           {name: '请选择'},
           {name: '琅琊区'},
@@ -3369,7 +3333,7 @@ export default [
         type: 0
       },
       {
-        name: '阜阳',
+        name: '阜阳市',
         sub: [
           {name: '请选择'},
           {name: '颍州区'},
@@ -3385,7 +3349,7 @@ export default [
         type: 0
       },
       {
-        name: '宿州',
+        name: '宿州市',
         sub: [
           {name: '请选择'},
           {name: '埇桥区'},
@@ -3398,7 +3362,7 @@ export default [
         type: 0
       },
       {
-        name: '巢湖',
+        name: '巢湖市',
         sub: [
           {name: '请选择'},
           {name: '居巢区'},
@@ -3411,7 +3375,7 @@ export default [
         type: 0
       },
       {
-        name: '六安',
+        name: '六安市',
         sub: [
           {name: '请选择'},
           {name: '金安区'},
@@ -3426,17 +3390,17 @@ export default [
         type: 0
       },
       {
-        name: '亳州',
+        name: '亳州市',
         sub: [{name: '请选择'}, {name: '谯城区'}, {name: '利辛县'}, {name: '涡阳县'}, {name: '蒙城县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '池州',
+        name: '池州市',
         sub: [{name: '请选择'}, {name: '贵池区'}, {name: '东至县'}, {name: '石台县'}, {name: '青阳县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '宣城',
+        name: '宣城市',
         sub: [
           {name: '请选择'},
           {name: '宣州区'},
@@ -3450,16 +3414,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '浙江',
+    name: '浙江省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '杭州',
+        name: '杭州市',
         sub: [
           {name: '请选择'},
           {name: '拱墅区'},
@@ -3480,7 +3444,7 @@ export default [
         type: 0
       },
       {
-        name: '宁波',
+        name: '宁波市',
         sub: [
           {name: '请选择'},
           {name: '海曙区'},
@@ -3499,7 +3463,7 @@ export default [
         type: 0
       },
       {
-        name: '温州',
+        name: '温州市',
         sub: [
           {name: '请选择'},
           {name: '鹿城区'},
@@ -3518,7 +3482,7 @@ export default [
         type: 0
       },
       {
-        name: '嘉兴',
+        name: '嘉兴市',
         sub: [
           {name: '请选择'},
           {name: '秀城区'},
@@ -3533,7 +3497,7 @@ export default [
         type: 0
       },
       {
-        name: '湖州',
+        name: '湖州市',
         sub: [
           {name: '请选择'},
           {name: '吴兴区'},
@@ -3546,7 +3510,7 @@ export default [
         type: 0
       },
       {
-        name: '绍兴',
+        name: '绍兴市',
         sub: [
           {name: '请选择'},
           {name: '越城区'},
@@ -3560,7 +3524,7 @@ export default [
         type: 0
       },
       {
-        name: '金华',
+        name: '金华市',
         sub: [
           {name: '请选择'},
           {name: '婺城区'},
@@ -3577,7 +3541,7 @@ export default [
         type: 0
       },
       {
-        name: '衢州',
+        name: '衢州市',
         sub: [
           {name: '请选择'},
           {name: '柯城区'},
@@ -3591,12 +3555,12 @@ export default [
         type: 0
       },
       {
-        name: '舟山',
+        name: '舟山市',
         sub: [{name: '请选择'}, {name: '定海区'}, {name: '普陀区'}, {name: '岱山县'}, {name: '嵊泗县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '台州',
+        name: '台州市',
         sub: [
           {name: '请选择'},
           {name: '椒江区'},
@@ -3613,7 +3577,7 @@ export default [
         type: 0
       },
       {
-        name: '丽水',
+        name: '丽水市',
         sub: [
           {name: '请选择'},
           {name: '莲都区'},
@@ -3629,16 +3593,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '福建',
+    name: '福建省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '福州',
+        name: '福州市',
         sub: [
           {name: '请选择'},
           {name: '鼓楼区'},
@@ -3659,7 +3623,7 @@ export default [
         type: 0
       },
       {
-        name: '厦门',
+        name: '厦门市',
         sub: [
           {name: '请选择'},
           {name: '思明区'},
@@ -3673,7 +3637,7 @@ export default [
         type: 0
       },
       {
-        name: '莆田',
+        name: '莆田市',
         sub: [
           {name: '请选择'},
           {name: '城厢区'},
@@ -3686,7 +3650,7 @@ export default [
         type: 0
       },
       {
-        name: '三明',
+        name: '三明市',
         sub: [
           {name: '请选择'},
           {name: '梅列区'},
@@ -3706,7 +3670,7 @@ export default [
         type: 0
       },
       {
-        name: '泉州',
+        name: '泉州市',
         sub: [
           {name: '请选择'},
           {name: '鲤城区'},
@@ -3726,7 +3690,7 @@ export default [
         type: 0
       },
       {
-        name: '漳州',
+        name: '漳州市',
         sub: [
           {name: '请选择'},
           {name: '芗城区'},
@@ -3745,7 +3709,7 @@ export default [
         type: 0
       },
       {
-        name: '南平',
+        name: '南平市',
         sub: [
           {name: '请选择'},
           {name: '延平区'},
@@ -3763,7 +3727,7 @@ export default [
         type: 0
       },
       {
-        name: '龙岩',
+        name: '龙岩市',
         sub: [
           {name: '请选择'},
           {name: '新罗区'},
@@ -3778,7 +3742,7 @@ export default [
         type: 0
       },
       {
-        name: '宁德',
+        name: '宁德市',
         sub: [
           {name: '请选择'},
           {name: '蕉城区'},
@@ -3794,16 +3758,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '湖南',
+    name: '湖南省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '长沙',
+        name: '长沙市',
         sub: [
           {name: '请选择'},
           {name: '岳麓区'},
@@ -3820,7 +3784,7 @@ export default [
         type: 0
       },
       {
-        name: '株洲',
+        name: '株洲市',
         sub: [
           {name: '请选择'},
           {name: '天元区'},
@@ -3837,7 +3801,7 @@ export default [
         type: 0
       },
       {
-        name: '湘潭',
+        name: '湘潭市',
         sub: [
           {name: '请选择'},
           {name: '岳塘区'},
@@ -3850,7 +3814,7 @@ export default [
         type: 0
       },
       {
-        name: '衡阳',
+        name: '衡阳市',
         sub: [
           {name: '请选择'},
           {name: '雁峰区'},
@@ -3870,7 +3834,7 @@ export default [
         type: 0
       },
       {
-        name: '邵阳',
+        name: '邵阳市',
         sub: [
           {name: '请选择'},
           {name: '双清区'},
@@ -3890,7 +3854,7 @@ export default [
         type: 0
       },
       {
-        name: '岳阳',
+        name: '岳阳市',
         sub: [
           {name: '请选择'},
           {name: '岳阳楼区'},
@@ -3907,7 +3871,7 @@ export default [
         type: 0
       },
       {
-        name: '常德',
+        name: '常德市',
         sub: [
           {name: '请选择'},
           {name: '武陵区'},
@@ -3924,7 +3888,7 @@ export default [
         type: 0
       },
       {
-        name: '张家界',
+        name: '张家界市',
         sub: [
           {name: '请选择'},
           {name: '永定区'},
@@ -3936,7 +3900,7 @@ export default [
         type: 0
       },
       {
-        name: '益阳',
+        name: '益阳市',
         sub: [
           {name: '请选择'},
           {name: '赫山区'},
@@ -3950,7 +3914,7 @@ export default [
         type: 0
       },
       {
-        name: '郴州',
+        name: '郴州市',
         sub: [
           {name: '请选择'},
           {name: '北湖区'},
@@ -3969,7 +3933,7 @@ export default [
         type: 0
       },
       {
-        name: '永州',
+        name: '永州市',
         sub: [
           {name: '请选择'},
           {name: '冷水滩区'},
@@ -3988,7 +3952,7 @@ export default [
         type: 0
       },
       {
-        name: '怀化',
+        name: '怀化市',
         sub: [
           {name: '请选择'},
           {name: '鹤城区'},
@@ -4008,7 +3972,7 @@ export default [
         type: 0
       },
       {
-        name: '娄底',
+        name: '娄底市',
         sub: [
           {name: '请选择'},
           {name: '娄星区'},
@@ -4036,16 +4000,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '广西',
+    name: '广西省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '南宁',
+        name: '南宁市',
         sub: [
           {name: '请选择'},
           {name: '青秀区'},
@@ -4065,7 +4029,7 @@ export default [
         type: 0
       },
       {
-        name: '柳州',
+        name: '柳州市',
         sub: [
           {name: '请选择'},
           {name: '城中区'},
@@ -4083,7 +4047,7 @@ export default [
         type: 0
       },
       {
-        name: '桂林',
+        name: '桂林市',
         sub: [
           {name: '请选择'},
           {name: '象山区'},
@@ -4108,7 +4072,7 @@ export default [
         type: 0
       },
       {
-        name: '梧州',
+        name: '梧州市',
         sub: [
           {name: '请选择'},
           {name: '万秀区'},
@@ -4123,7 +4087,7 @@ export default [
         type: 0
       },
       {
-        name: '北海',
+        name: '北海市',
         sub: [
           {name: '请选择'},
           {name: '海城区'},
@@ -4135,17 +4099,17 @@ export default [
         type: 0
       },
       {
-        name: '防城港',
+        name: '防城港市',
         sub: [{name: '请选择'}, {name: '港口区'}, {name: '防城区'}, {name: '东兴市'}, {name: '上思县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '钦州',
+        name: '钦州市',
         sub: [{name: '请选择'}, {name: '钦南区'}, {name: '钦北区'}, {name: '灵山县'}, {name: '浦北县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '贵港',
+        name: '贵港市',
         sub: [
           {name: '请选择'},
           {name: '港北区'},
@@ -4158,7 +4122,7 @@ export default [
         type: 0
       },
       {
-        name: '玉林',
+        name: '玉林市',
         sub: [
           {name: '请选择'},
           {name: '玉州区'},
@@ -4172,7 +4136,7 @@ export default [
         type: 0
       },
       {
-        name: '百色',
+        name: '百色市',
         sub: [
           {name: '请选择'},
           {name: '右江区'},
@@ -4192,7 +4156,7 @@ export default [
         type: 0
       },
       {
-        name: '贺州',
+        name: '贺州市',
         sub: [
           {name: '请选择'},
           {name: '八步区'},
@@ -4204,7 +4168,7 @@ export default [
         type: 0
       },
       {
-        name: '河池',
+        name: '河池市',
         sub: [
           {name: '请选择'},
           {name: '金城江区'},
@@ -4223,7 +4187,7 @@ export default [
         type: 0
       },
       {
-        name: '来宾',
+        name: '来宾市',
         sub: [
           {name: '请选择'},
           {name: '兴宾区'},
@@ -4237,7 +4201,7 @@ export default [
         type: 0
       },
       {
-        name: '崇左',
+        name: '崇左市',
         sub: [
           {name: '请选择'},
           {name: '江州区'},
@@ -4251,16 +4215,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '江西',
+    name: '江西省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '南昌',
+        name: '南昌市',
         sub: [
           {name: '请选择'},
           {name: '东湖区'},
@@ -4277,12 +4241,12 @@ export default [
         type: 0
       },
       {
-        name: '景德镇',
+        name: '景德镇市',
         sub: [{name: '请选择'}, {name: '珠山区'}, {name: '昌江区'}, {name: '乐平市'}, {name: '浮梁县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '萍乡',
+        name: '萍乡市',
         sub: [
           {name: '请选择'},
           {name: '安源区'},
@@ -4295,7 +4259,7 @@ export default [
         type: 0
       },
       {
-        name: '九江',
+        name: '九江市',
         sub: [
           {name: '请选择'},
           {name: '浔阳区'},
@@ -4314,18 +4278,14 @@ export default [
         ],
         type: 0
       },
+      {name: '新余市', sub: [{name: '请选择'}, {name: '渝水区'}, {name: '分宜县'}, {name: '其他'}], type: 0},
       {
-        name: '新余',
-        sub: [{name: '请选择'}, {name: '渝水区'}, {name: '分宜县'}, {name: '其他'}],
-        type: 0
-      },
-      {
-        name: '鹰潭',
+        name: '鹰潭市',
         sub: [{name: '请选择'}, {name: '月湖区'}, {name: '贵溪市'}, {name: '余江县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '赣州',
+        name: '赣州市',
         sub: [
           {name: '请选择'},
           {name: '章贡区'},
@@ -4351,7 +4311,7 @@ export default [
         type: 0
       },
       {
-        name: '吉安',
+        name: '吉安市',
         sub: [
           {name: '请选择'},
           {name: '吉州区'},
@@ -4372,7 +4332,7 @@ export default [
         type: 0
       },
       {
-        name: '宜春',
+        name: '宜春市',
         sub: [
           {name: '请选择'},
           {name: '袁州区'},
@@ -4390,7 +4350,7 @@ export default [
         type: 0
       },
       {
-        name: '抚州',
+        name: '抚州市',
         sub: [
           {name: '请选择'},
           {name: '临川区'},
@@ -4409,7 +4369,7 @@ export default [
         type: 0
       },
       {
-        name: '上饶',
+        name: '上饶市',
         sub: [
           {name: '请选择'},
           {name: '信州区'},
@@ -4428,16 +4388,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '贵州',
+    name: '贵州省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '贵阳',
+        name: '贵阳市',
         sub: [
           {name: '请选择'},
           {name: '南明区'},
@@ -4455,12 +4415,12 @@ export default [
         type: 0
       },
       {
-        name: '六盘水',
+        name: '六盘水市',
         sub: [{name: '请选择'}, {name: '钟山区'}, {name: '水城县'}, {name: '盘县'}, {name: '六枝特区'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '遵义',
+        name: '遵义市',
         sub: [
           {name: '请选择'},
           {name: '红花岗区'},
@@ -4482,7 +4442,7 @@ export default [
         type: 0
       },
       {
-        name: '安顺',
+        name: '安顺市',
         sub: [
           {name: '请选择'},
           {name: '西秀区'},
@@ -4496,7 +4456,7 @@ export default [
         type: 0
       },
       {
-        name: '铜仁地区',
+        name: '铜仁地区市',
         sub: [
           {name: '请选择'},
           {name: '铜仁市'},
@@ -4514,7 +4474,7 @@ export default [
         type: 0
       },
       {
-        name: '毕节地区',
+        name: '毕节地区市',
         sub: [
           {name: '请选择'},
           {name: '毕节市'},
@@ -4589,16 +4549,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '云南',
+    name: '云南省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '昆明',
+        name: '昆明市',
         sub: [
           {name: '请选择'},
           {name: '盘龙区'},
@@ -4620,7 +4580,7 @@ export default [
         type: 0
       },
       {
-        name: '曲靖',
+        name: '曲靖市',
         sub: [
           {name: '请选择'},
           {name: '麒麟区'},
@@ -4637,7 +4597,7 @@ export default [
         type: 0
       },
       {
-        name: '玉溪',
+        name: '玉溪市',
         sub: [
           {name: '请选择'},
           {name: '红塔区'},
@@ -4654,7 +4614,7 @@ export default [
         type: 0
       },
       {
-        name: '保山',
+        name: '保山市',
         sub: [
           {name: '请选择'},
           {name: '隆阳区'},
@@ -4667,7 +4627,7 @@ export default [
         type: 0
       },
       {
-        name: '昭通',
+        name: '昭通市',
         sub: [
           {name: '请选择'},
           {name: '昭阳区'},
@@ -4686,7 +4646,7 @@ export default [
         type: 0
       },
       {
-        name: '丽江',
+        name: '丽江市',
         sub: [
           {name: '请选择'},
           {name: '古城区'},
@@ -4699,7 +4659,7 @@ export default [
         type: 0
       },
       {
-        name: '普洱',
+        name: '普洱市',
         sub: [
           {name: '请选择'},
           {name: '思茅区'},
@@ -4717,7 +4677,7 @@ export default [
         type: 0
       },
       {
-        name: '临沧',
+        name: '临沧市',
         sub: [
           {name: '请选择'},
           {name: '临翔区'},
@@ -4842,16 +4802,16 @@ export default [
         sub: [{name: '请选择'}, {name: '景洪市'}, {name: '勐海县'}, {name: '勐腊县'}, {name: '其他'}],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '西藏',
+    name: '西藏省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '拉萨',
+        name: '拉萨市',
         sub: [
           {name: '请选择'},
           {name: '城关区'},
@@ -4867,7 +4827,7 @@ export default [
         type: 0
       },
       {
-        name: '那曲地区',
+        name: '那曲地区市',
         sub: [
           {name: '请选择'},
           {name: '那曲县'},
@@ -4885,7 +4845,7 @@ export default [
         type: 0
       },
       {
-        name: '昌都地区',
+        name: '昌都地区市',
         sub: [
           {name: '请选择'},
           {name: '昌都县'},
@@ -4904,7 +4864,7 @@ export default [
         type: 0
       },
       {
-        name: '林芝地区',
+        name: '林芝地区市',
         sub: [
           {name: '请选择'},
           {name: '林芝县'},
@@ -4919,7 +4879,7 @@ export default [
         type: 0
       },
       {
-        name: '山南地区',
+        name: '山南地区市',
         sub: [
           {name: '请选择'},
           {name: '乃东县'},
@@ -4939,7 +4899,7 @@ export default [
         type: 0
       },
       {
-        name: '日喀则地区',
+        name: '日喀则地区市',
         sub: [
           {name: '请选择'},
           {name: '日喀则市'},
@@ -4965,7 +4925,7 @@ export default [
         type: 0
       },
       {
-        name: '阿里地区',
+        name: '阿里地区市',
         sub: [
           {name: '请选择'},
           {name: '噶尔县'},
@@ -4979,114 +4939,46 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '海南',
+    name: '海南省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '海口',
+        name: '海口市',
         sub: [{name: '请选择'}, {name: '龙华区'}, {name: '秀英区'}, {name: '琼山区'}, {name: '美兰区'}, {name: '其他'}],
         type: 0
       },
-      {
-        name: '三亚',
-        sub: [{name: '请选择'}, {name: '三亚市'}, {name: '其他'}],
-        type: 0
-      },
-      {
-        name: '五指山',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '琼海',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '儋州',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '文昌',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '万宁',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '东方',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '澄迈县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '定安县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '屯昌县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '临高县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '白沙黎族自治县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '昌江黎族自治县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '乐东黎族自治县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '陵水黎族自治县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '保亭黎族苗族自治县',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '琼中黎族苗族自治县',
-        sub: [],
-        type: 0
-      },
-      {name: '其他'}
+      {name: '三亚市', sub: [{name: '请选择'}, {name: '三亚市'}, {name: '其他'}], type: 0},
+      {name: '五指山市', sub: [], type: 0},
+      {name: '琼海市', sub: [], type: 0},
+      {name: '儋州市', sub: [], type: 0},
+      {name: '文昌市', sub: [], type: 0},
+      {name: '万宁市', sub: [], type: 0},
+      {name: '东方市', sub: [], type: 0},
+      {name: '澄迈县市', sub: [], type: 0},
+      {name: '定安县市', sub: [], type: 0},
+      {name: '屯昌县市', sub: [], type: 0},
+      {name: '临高县市', sub: [], type: 0},
+      {name: '白沙黎族自治县市', sub: [], type: 0},
+      {name: '昌江黎族自治县市', sub: [], type: 0},
+      {name: '乐东黎族自治县市', sub: [], type: 0},
+      {name: '陵水黎族自治县市', sub: [], type: 0},
+      {name: '保亭黎族苗族自治县市', sub: [], type: 0},
+      {name: '琼中黎族苗族自治县市', sub: [], type: 0},
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '甘肃',
+    name: '甘肃省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '兰州',
+        name: '兰州市',
         sub: [
           {name: '请选择'},
           {name: '城关区'},
@@ -5101,18 +4993,10 @@ export default [
         ],
         type: 0
       },
+      {name: '嘉峪关市', sub: [{name: '请选择'}, {name: '嘉峪关市'}, {name: '其他'}], type: 0},
+      {name: '金昌市', sub: [{name: '请选择'}, {name: '金川区'}, {name: '永昌县'}, {name: '其他'}], type: 0},
       {
-        name: '嘉峪关',
-        sub: [{name: '请选择'}, {name: '嘉峪关市'}, {name: '其他'}],
-        type: 0
-      },
-      {
-        name: '金昌',
-        sub: [{name: '请选择'}, {name: '金川区'}, {name: '永昌县'}, {name: '其他'}],
-        type: 0
-      },
-      {
-        name: '白银',
+        name: '白银市',
         sub: [
           {name: '请选择'},
           {name: '白银区'},
@@ -5125,7 +5009,7 @@ export default [
         type: 0
       },
       {
-        name: '天水',
+        name: '天水市',
         sub: [
           {name: '请选择'},
           {name: '清水县'},
@@ -5140,7 +5024,7 @@ export default [
         type: 0
       },
       {
-        name: '武威',
+        name: '武威市',
         sub: [
           {name: '请选择'},
           {name: '凉州区'},
@@ -5152,7 +5036,7 @@ export default [
         type: 0
       },
       {
-        name: '酒泉',
+        name: '酒泉市',
         sub: [
           {name: '请选择'},
           {name: '肃州区'},
@@ -5167,7 +5051,7 @@ export default [
         type: 0
       },
       {
-        name: '张掖',
+        name: '张掖市',
         sub: [
           {name: '请选择'},
           {name: '甘州区'},
@@ -5181,7 +5065,7 @@ export default [
         type: 0
       },
       {
-        name: '庆阳',
+        name: '庆阳市',
         sub: [
           {name: '请选择'},
           {name: '西峰区'},
@@ -5197,7 +5081,7 @@ export default [
         type: 0
       },
       {
-        name: '平凉',
+        name: '平凉市',
         sub: [
           {name: '请选择'},
           {name: '崆峒区'},
@@ -5212,7 +5096,7 @@ export default [
         type: 0
       },
       {
-        name: '定西',
+        name: '定西市',
         sub: [
           {name: '请选择'},
           {name: '安定区'},
@@ -5227,7 +5111,7 @@ export default [
         type: 0
       },
       {
-        name: '陇南',
+        name: '陇南市',
         sub: [
           {name: '请选择'},
           {name: '武都区'},
@@ -5275,16 +5159,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '宁夏',
+    name: '宁夏省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '银川',
+        name: '银川市',
         sub: [
           {name: '请选择'},
           {name: '兴庆区'},
@@ -5298,12 +5182,12 @@ export default [
         type: 0
       },
       {
-        name: '石嘴山',
+        name: '石嘴山市',
         sub: [{name: '请选择'}, {name: '大武口区'}, {name: '惠农区'}, {name: '平罗县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '吴忠',
+        name: '吴忠市',
         sub: [
           {name: '请选择'},
           {name: '利通区'},
@@ -5315,7 +5199,7 @@ export default [
         type: 0
       },
       {
-        name: '固原',
+        name: '固原市',
         sub: [
           {name: '请选择'},
           {name: '原州区'},
@@ -5328,20 +5212,20 @@ export default [
         type: 0
       },
       {
-        name: '中卫',
+        name: '中卫市',
         sub: [{name: '请选择'}, {name: '沙坡头区'}, {name: '中宁县'}, {name: '海原县'}, {name: '其他'}],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '青海',
+    name: '青海省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '西宁',
+        name: '西宁市',
         sub: [
           {name: '请选择'},
           {name: '城中区'},
@@ -5356,7 +5240,7 @@ export default [
         type: 0
       },
       {
-        name: '海东地区',
+        name: '海东地区市',
         sub: [
           {name: '请选择'},
           {name: '平安县'},
@@ -5447,16 +5331,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '新疆',
+    name: '新疆省',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '乌鲁木齐',
+        name: '乌鲁木齐市',
         sub: [
           {name: '请选择'},
           {name: '天山区'},
@@ -5472,7 +5356,7 @@ export default [
         type: 0
       },
       {
-        name: '克拉玛依',
+        name: '克拉玛依市',
         sub: [
           {name: '请选择'},
           {name: '克拉玛依区'},
@@ -5484,17 +5368,17 @@ export default [
         type: 0
       },
       {
-        name: '吐鲁番地区',
+        name: '吐鲁番地区市',
         sub: [{name: '请选择'}, {name: '吐鲁番市'}, {name: '托克逊县'}, {name: '鄯善县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '哈密地区',
+        name: '哈密地区市',
         sub: [{name: '请选择'}, {name: '哈密市'}, {name: '伊吾县'}, {name: '巴里坤哈萨克自治县'}, {name: '其他'}],
         type: 0
       },
       {
-        name: '和田地区',
+        name: '和田地区市',
         sub: [
           {name: '请选择'},
           {name: '和田市'},
@@ -5510,7 +5394,7 @@ export default [
         type: 0
       },
       {
-        name: '阿克苏地区',
+        name: '阿克苏地区市',
         sub: [
           {name: '请选择'},
           {name: '阿克苏市'},
@@ -5527,7 +5411,7 @@ export default [
         type: 0
       },
       {
-        name: '喀什地区',
+        name: '喀什地区市',
         sub: [
           {name: '请选择'},
           {name: '喀什市'},
@@ -5596,26 +5480,10 @@ export default [
         sub: [{name: '请选择'}, {name: '博乐市'}, {name: '精河县'}, {name: '温泉县'}, {name: '其他'}],
         type: 0
       },
-      {
-        name: '石河子',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '阿拉尔',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '图木舒克',
-        sub: [],
-        type: 0
-      },
-      {
-        name: '五家渠',
-        sub: [],
-        type: 0
-      },
+      {name: '石河子市', sub: [], type: 0},
+      {name: '阿拉尔市', sub: [], type: 0},
+      {name: '图木舒克市', sub: [], type: 0},
+      {name: '五家渠市', sub: [], type: 0},
       {
         name: '伊犁哈萨克自治州',
         sub: [
@@ -5636,16 +5504,16 @@ export default [
         ],
         type: 0
       },
-      {name: '其他'}
+      {name: '其他市'}
     ],
     type: 1
   },
   {
-    name: '香港',
+    name: '香港市',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '香港',
+        name: '香港市',
         sub: [
           {name: '请选择'},
           {name: '中西区'},
@@ -5673,11 +5541,11 @@ export default [
     type: 0
   },
   {
-    name: '澳门',
+    name: '澳门市',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '澳门',
+        name: '澳门市',
         sub: [
           {name: '请选择'},
           {name: '花地玛堂区'},
@@ -5695,11 +5563,11 @@ export default [
     type: 0
   },
   {
-    name: '台湾',
+    name: '台湾市',
     sub: [
-      {name: '请选择', sub: []},
+      {name: '请选择市', sub: []},
       {
-        name: '台湾',
+        name: '台湾市',
         sub: [
           {name: '请选择'},
           {name: '台北市'},

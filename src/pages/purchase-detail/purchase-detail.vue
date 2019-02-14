@@ -3,13 +3,13 @@
     <div class="essential-information">
       <div class="content-header">
         <div class="content-title">基本信息</div>
-        <div class="btn-main">导出Excel</div>
+        <a class="btn-main btn-a" target="_blank" :href="excelUrl">导出Excel</a>
       </div>
       <div class="essential-information-detail">
-        <p class="essential-information-item">采购单号：DDH20188832770043</p>
-        <p class="essential-information-item">生成时间：2018-12-08 15:34:00</p>
-        <p class="essential-information-item">采购商品总数：209</p>
-        <p class="essential-information-item">数据来源：系统生成</p>
+        <p class="essential-information-item">采购单号：{{detail.order_sn}}</p>
+        <p class="essential-information-item">生成时间：{{detail.created_at}}</p>
+        <p class="essential-information-item">采购商品总数：{{detail.type_count}}</p>
+        <p class="essential-information-item">数据来源：{{detail.source_str}}</p>
       </div>
     </div>
     <div class="list-of-commodities">
@@ -20,53 +20,35 @@
         <div class="commodities-list-header com-list-box">
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
         </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知</div>
-          <div class="com-list-item">斤</div>
-          <div class="com-list-item">91</div>
-          <div class="com-list-item">91</div>
-          <div class="com-list-item">91</div>
-          <div class="com-list-item">12</div>
-          <div class="com-list-item">￥45.32</div>
-          <div class="com-list-item">￥45.32</div>
+        <div v-for="(item, index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
+          <div class="com-list-item">{{index + 1}}</div>
+          <div class="com-list-item">{{item.goods_name}}</div>
+          <div class="com-list-item">{{item.goods_units}}</div>
+          <div class="com-list-item">{{item.wait_num}}</div>
+          <div class="com-list-item">{{item.total_stock}}</div>
+          <div class="com-list-item">{{item.num}}</div>
+          <div class="com-list-item">{{item.not_num}}</div>
+          <div class="com-list-item">￥{{item.price}}</div>
+          <div class="com-list-item">￥{{item.sub_total}}</div>
         </div>
       </div>
     </div>
-    <div class="history-record">
-      <div class="content-header">
-        <div class="content-title">历史记录</div>
-      </div>
-      <div class="commodities-list">
-        <div class="commodities-list-header com-list-box">
-          <div v-for="(item, index) in historyRecord" :key="index" class="com-list-item">{{item}}</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">乔布斯</div>
-          <div class="com-list-item">2018-12-08 15:34:00</div>
-          <div class="com-list-item">生成采购单</div>
-        </div>
-      </div>
-    </div>
+    <!--<div class="history-record">-->
+    <!--<div class="content-header">-->
+    <!--<div class="content-title">历史记录</div>-->
+    <!--</div>-->
+    <!--<div class="commodities-list">-->
+    <!--<div class="commodities-list-header com-list-box">-->
+    <!--<div v-for="(item, index) in historyRecord" :key="index" class="com-list-item">{{item}}</div>-->
+    <!--</div>-->
+    <!--<div v-for="(item, index) in detail.operate_list" :key="index" class="com-list-box com-list-content">-->
+    <!--<div class="com-list-item">{{index + 1}}</div>-->
+    <!--<div class="com-list-item">{{item.manager_name}}</div>-->
+    <!--<div class="com-list-item">{{item.created_at}}</div>-->
+    <!--<div class="com-list-item">{{item.remark}}</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
     <div class="back">
       <div class="back-btn btn-main" @click="_back">返回</div>
     </div>
@@ -93,11 +75,28 @@
     page: {
       title: TITLE
     },
+    props: {
+      detail: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      }
+    },
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        historyRecord: HISTORY_RECORD
+        historyRecord: HISTORY_RECORD,
+        excelUrl: `${process.env.VUE_APP_API}/social-shopping/api/backend/store-purchase-export/`
       }
+    },
+    created() {
+      let token = this.$storage.get('auth.currentUser', '')
+      let excelParams = token
+        ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        : ''
+      let id = this.$route.query.id || null
+      this.excelUrl = `${this.excelUrl}${id}${excelParams}`
     },
     methods: {
       _back() {
@@ -113,8 +112,11 @@
   .purchase-detail
     line-height: 1
     flex: 1
-    padding-bottom: 80px
     position: relative
+
+  .btn-a
+    &:hover
+      color: $color-white
 
   /*基本信息类头部盒子样式*/
   .content-header
@@ -153,7 +155,7 @@
         font-family: $font-family-regular
         color: $color-text-main
         white-space: nowrap
-        width: 280px
+        min-width: 264px
 
   .list-of-commodities
     margin-bottom: 85px
@@ -196,20 +198,4 @@
       font-family: $font-family-regular
       &:nth-child(1)
         flex: 0.5
-
-  .back
-    position: absolute
-    left: -20px
-    right: -20px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    .back-btn
-      font-size: $font-size-16
-      margin-left: 40px
-      padding: 12px 32px
 </style>

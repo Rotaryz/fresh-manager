@@ -1,0 +1,129 @@
+.table
+  overflow: hidden
+  flex: 1
+  display: flex
+  flex-direction: column
+
+.tab-header
+  height: 80px
+  display: flex
+  align-items: center
+  box-sizing: border-box
+  .tab-box
+    margin-right: 10px
+
+.list-header
+  height: 50px
+  font-size: $font-size-16
+  font-family: $font-family-regular
+  color: $color-text-main
+  background: $color-list-header
+  .list-item
+    display: flex
+    align-items: center
+
+.list-box
+  padding-left: 30px
+  box-sizing: border-box
+  border-bottom: 1px solid $color-line
+  display: flex
+  align-items: center
+  .list-item
+    box-sizing: border-box
+    padding-right: 10px
+    flex: 1
+    .list-img
+      width: 50px
+      height: @width
+      object-fit: cover
+      overflow: hidden
+      border-radius: 50%
+
+.list
+  flex: 1
+  .list-content
+    font-family: $font-family-regular
+    color: $color-text-main
+    height: 70px
+    border-bottom: 1px solid $color-line
+    .list-item
+      no-wrap()
+      font-size: $font-size-14
+      .list-link
+        &:hover
+          color: $color-sub
+    // 双行样式
+    .list-double-row
+      .item-sub
+        no-wrap()
+        line-height: 1
+        margin-top: 8px
+        font-size: $font-size-14
+        color: $color-text-assist
+      .item-dark
+        no-wrap()
+        font-size: $font-size-14
+        line-height: 1
+
+.pagination-box
+  height: 70px
+  align-items: center
+  display: flex
+
+.btn-main
+  position: relative
+  .file-box
+    position: absolute
+    top: 0
+    left: 0
+    width: 84px
+    height: 28px
+    opacity: 0
+
+.edit-input-box
+  .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
+    height: 100%
+  .ivu-input
+    color: $color-text-assist
+    font-family: $font-family-regular
+  .ivu-input-icon
+    height: 100%
+    line-height: 44px
+  .ivu-select-dropdown
+    width: 240px !important
+    left: 105 !important
+
+.back
+  left: 0
+  right: 0
+  bottom: 0
+  position: fixed
+  z-index: 10
+  background: #F9F9F9
+  height: 80px
+  border-radius: 0 0 6px 6px
+  display: flex
+  align-items: center
+  padding-left: 40px
+  box-sizing: border-box
+  justify-content: flex-end
+  border-top: 1px solid $color-line
+  .back-btn
+    box-sizing: border-box
+    font-size: $font-size-16
+    margin-right: 20px
+    padding: 12px 0
+    width: 96px
+    text-align: center
+    white-space: nowrap
+    transition: all 0.3s
+  .back-cancel
+    padding: 11px 0
+    box-sizing: border-box
+    line-height: 1
+    color: $color-text-main
+    border: 1px solid #ACACAC
+    border-radius: 4px
+    &:hover
+      color: $color-text-sub
+      border-color: $color-text-sub

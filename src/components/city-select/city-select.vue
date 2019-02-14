@@ -11,7 +11,7 @@
           <transition name="fade">
             <ul v-show="item.select" class="select-child" @mouseleave="leaveHide(index)" @mouseenter="endShow">
               <li v-for="(child, chIdx) in items.data" :key="chIdx" class="select-child-item" @click.stop="setValue(child,index,idx)">
-                {{child.title}}
+                {{child.name}}
               </li>
             </ul>
           </transition>
@@ -42,7 +42,7 @@
       },
       width: {
         type: Number,
-        default: 127
+        default: 126.5
       },
       height: {
         type: Number,
@@ -86,6 +86,15 @@
       }
     },
     methods: {
+      infoCity(arr) {
+        this.city.map((item, idx) => {
+          item.children[0].content = arr[idx]
+        })
+        let index = this.city[0].children[0].data.findIndex((item) => item.name.includes(arr[0]))
+        this.city[1].children[0].data = regionArr[index].sub
+        let idx = this.city[1].children[0].data.findIndex((item) => item.name.includes(arr[1]))
+        this.city[2].children[0].data = regionArr[index].sub[idx].sub
+      },
       clearLocationInfo() {
         this.city.map((item) => {
           item.children[0].content = '请选择'
@@ -108,50 +117,60 @@
           return
         }
         this.city[index].select = !this.city[index].select
+        this.city[index].show = !this.city[index].show
         this.city.forEach((item, idx) => {
           if (idx !== index) {
             item.select = false
+            item.show = false
           }
         })
-        this.city[index].show = true
         this.$emit('selectType', type, this.city)
       },
-      setValue(value, index, idx) {
-        this.city[index].select = false
-        this.city[index].children[idx].content = value.title
-        switch (value.type) {
-        case 'pro':
-          let index = regionArr.findIndex((child) => child.name === value.title)
+      setValue(value, bigIndex, idx) {
+        this.city[bigIndex].select = false
+        this.city[bigIndex].children[idx].content = value.name
+        switch (bigIndex) {
+        case 0:
+          let index = regionArr.findIndex((child) => child.name === value.name)
           if (index !== this.cityIndex || index === 0) {
             this.content.city = ''
-            this.city[1].children = [{content: '请选择省份', data: []}]
+            this.city[1].children = [{content: '请选择城市', data: []}]
           }
           this.cityIndex = index
           this._infoCity(index)
-          this.content.province = value.title
-          this.city[2].children = [{content: '请选择城市', data: []}]
+          this.content.province = value.name
+          this.city[2].children = [{content: '请选择区/县', data: []}]
           this.content.area = ''
           break
-        case 'city':
-          let idx = regionArr[this.cityIndex].sub.findIndex((child) => child.name === value.title)
-          if (value.title !== this.content.city || idx === 0) {
+        case 1:
+          let idx = regionArr[this.cityIndex].sub.findIndex((child) => child.name === value.name)
+          if (value.name !== this.content.city || idx === 0) {
             this.content.area = ''
             this.city[2].children = [{content: '请选择区/县', data: []}]
           }
           this._infoArea(idx)
-          this.content.city = value.title
+          this.content.city = value.name
           break
-        case 'area':
-          this.content.area = value.title
+        case 2:
+          this.content.area = value.name
           break
         }
-        this.city[index].show = false
+        this.city.forEach((item, itemIndex) => {
+          item.children.map((items) => {
+            if (items.content.includes('请选择')) {
+              this.content[itemIndex] = ''
+            } else {
+              this.content[itemIndex] = items.content
+            }
+          })
+        })
+        this.city[bigIndex].show = false
         this.$emit('setValue', this.content)
       },
       _infoPro() {
         let arr = []
         for (let value in regionArr) {
-          arr.push({title: regionArr[value].name, type: 'pro'})
+          arr.push({name: regionArr[value].name, type: 'pro'})
         }
         this.city[0].children[0].data = arr
       },
@@ -159,7 +178,7 @@
         let cityArr = regionArr[index].sub
         let arr = []
         for (let value in cityArr) {
-          arr.push({title: cityArr[value].name, type: 'city'})
+          arr.push({name: cityArr[value].name, type: 'city'})
         }
         this.city[1].children[0].data = arr
       },
@@ -167,7 +186,7 @@
         let areaArr = regionArr[this.cityIndex].sub[index].sub
         let arr = []
         for (let value in areaArr) {
-          arr.push({title: areaArr[value].name, type: 'area'})
+          arr.push({name: areaArr[value].name, type: 'area'})
         }
         this.city[2].children[0].data = arr
       }
@@ -257,7 +276,6 @@
             color: $color-sub
     .admin-select-box-active
       border-color: $color-sub !important
-      color: $color-text-main
     .admin-big-box-hover
       border-color: #ACACAC
 </style>

@@ -3,16 +3,19 @@
     <div class="essential-information">
       <div class="content-header">
         <div class="content-title">基本信息</div>
-        <div class="btn-main">导出Excel</div>
+        <div>
+          <a class="btn-main excel" target="_blank" :href="deliveryUrl">导出配送单</a>
+          <a class="btn-main excel" target="_blank" :href="userUrl">导出消费者订单</a>
+        </div>
       </div>
       <div class="essential-information-detail">
-        <p class="essential-information-item">采购单号：DDH20188832770043</p>
-        <p class="essential-information-item essential-information-time">生成时间：2018-12-08 15:34:00</p>
-        <p class="essential-information-item essential-information-total">采购商品总数：209</p>
-        <p class="essential-information-item essential-information-data">数据来源：系统生成</p>
-        <p class="essential-information-item essential-information-data">团长名称：乔布斯</p>
-        <p class="essential-information-item essential-information-data">团长电话：13316241009</p>
-        <p class="essential-information-item essential-information-data">社区地址：广东 广州 白云区 国际单位二期A5四楼</p>
+        <p class="essential-information-item">配送单号：{{detail.order_sn}}</p>
+        <p class="essential-information-item essential-information-time">生成时间：{{detail.created_at}}</p>
+        <p class="essential-information-item essential-information-total">配送日期：{{detail.delivery_at}}</p>
+        <p class="essential-information-item essential-information-data">社区名称：{{detail.social_name}}</p>
+        <p class="essential-information-item essential-information-data">团长名称：{{detail.name}}</p>
+        <p class="essential-information-item essential-information-data">团长电话：{{detail.mobile}}</p>
+        <p class="essential-information-item essential-information-data">社区地址：{{detail.province}} {{detail.city}} {{detail.district}} {{detail.address}}</p>
       </div>
     </div>
     <div class="list-of-commodities">
@@ -23,15 +26,15 @@
         <div class="commodities-list-header com-list-box">
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
         </div>
-        <div class="com-list-box com-list-content">
-          <div class="com-list-item">1</div>
-          <div class="com-list-item">口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知口水鸭先鸡不知</div>
-          <div class="com-list-item">斤</div>
-          <div class="com-list-item">91</div>
-          <div class="com-list-item">91</div>
-          <div class="com-list-item">91</div>
+        <div v-for="(item,index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
+          <div class="com-list-item">{{index + 1}}</div>
+          <div class="com-list-item">{{item.goods_name}}</div>
+          <div class="com-list-item">{{item.goods_units}}</div>
+          <div class="com-list-item">{{item.num}}</div>
+          <div class="com-list-item">{{item.price}}</div>
+          <div class="com-list-item">{{item.total}}</div>
         </div>
-        <div class="total-money">预定总金额：￥73.98</div>
+        <div class="total-money">预定总金额：￥{{detail.total}}</div>
       </div>
     </div>
     <div class="back">
@@ -50,10 +53,32 @@
     page: {
       title: TITLE
     },
+    props: {
+      detail: {
+        type: Object,
+        default() {
+          return {}
+        },
+        deliveryUrl: '',
+        userUrl: ''
+      }
+    },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        id: null
       }
+    },
+    created() {
+      this.id = this.$route.query.id || null
+      let token = this.$storage.get('auth.currentUser', '')
+      let excelParams = token
+        ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        : ''
+      this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${
+        this.id
+      }${excelParams}`
+      this.userUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/user-order-export/${this.id}${excelParams}`
     },
     methods: {
       _back() {
@@ -81,6 +106,10 @@
     height: 62px
     position: relative
     box-sizing: border-box
+    .excel
+      margin-left: 20px
+      &:hover
+        color: $color-white
     &:after
       content: ''
       position: absolute
@@ -109,7 +138,7 @@
         font-family: $font-family-regular
         color: $color-text-main
         white-space: nowrap
-        width: 280px
+        min-width: 264px
 
   .commodities-list-header
     margin-top: 28px
@@ -145,6 +174,7 @@
     padding: 0 20px
     .com-list-box
       .com-list-item
+        line-height: 1.2
         &:nth-child(2)
           flex: 1.5
     .total-money
@@ -155,9 +185,9 @@
       font-size: $font-size-14
 
   .back
-    position: absolute
-    left: -20px
-    right: -20px
+    position: fixed
+    left: 200px
+    right: -0px
     bottom: 0
     z-index: 10
     background: #F9F9F9

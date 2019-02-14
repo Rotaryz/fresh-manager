@@ -10,8 +10,11 @@
           团长账号
         </div>
         <div class="edit-input-box">
-          <input type="number" class="edit-input" maxlength="11" @mousewheel.native.prevent>
+          <input v-model="leaderData.mobile" type="number" class="edit-input" maxlength="11" :disabled="id"
+                 @mousewheel.native.prevent
+          >
         </div>
+        <div class="edit-msg">团长账号为手机号，绑定微信，不能修改</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -19,7 +22,7 @@
           社区名称
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="20">
+          <input v-model="leaderData.social_name" type="text" class="edit-input" maxlength="20">
         </div>
       </div>
     </div>
@@ -33,7 +36,7 @@
           团长名称
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="10">
+          <input v-model="leaderData.name" type="text" class="edit-input" maxlength="10">
         </div>
       </div>
       <div class="edit-item">
@@ -42,7 +45,7 @@
           微信号
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input">
+          <input v-model="leaderData.wx_account" type="text" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
@@ -51,7 +54,7 @@
           社区地址
         </div>
         <div class="edit-input-box">
-          <city-select></city-select>
+          <city-select ref="city" @setValue="_getCity"></city-select>
         </div>
       </div>
       <div class="edit-item">
@@ -60,19 +63,21 @@
           详细地址
         </div>
         <div class="edit-input-box">
-          <textarea name="" class="edit-text" maxlength="50"></textarea>
+          <textarea v-model="leaderData.address" class="edit-text" maxlength="50"></textarea>
         </div>
       </div>
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main">保存</div>
+      <div class="back-btn btn-main" @click="submit">保存</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import CitySelect from '@components/city-select/city-select'
+  import API from '@api'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'EDIT_LEADER'
   const TITLE = '新建团长'
@@ -85,12 +90,129 @@
     components: {
       CitySelect
     },
+    props: {
+      detail: {
+        type: Object,
+        default() {
+          return {}
+        }
+      }
+    },
     data() {
-      return {}
+      return {
+        id: null,
+        leaderData: {
+          mobile: '',
+          social_name: '',
+          name: '',
+          wx_account: '',
+          province: '',
+          city: '',
+          district: '',
+          address: '',
+          longitude: '',
+          latitude: ''
+        },
+        isSubmit: false
+      }
+    },
+    created() {
+      this.id = this.$route.query.id || null
+    },
+    mounted() {
+      this._setData()
+      this.leaderData = _.cloneDeep(this.detail)
     },
     methods: {
       _back() {
         this.$router.back()
+      },
+      submit() {
+        if (this.isSubmit) {
+          return
+        }
+        if (!this._isDataValidate()) {
+          return
+        }
+        this.isSubmit = false
+        let address = this.leaderData.province + this.leaderData.city + this.leaderData.district + this.leaderData.address
+        let oAjax = new XMLHttpRequest()
+        oAjax.open(
+          'GET',
+          `https://restapi.amap.com/v3/geocode/geo?address=${address}&key=${process.env.VUE_APP_KEY}`,
+          true
+        )
+        oAjax.send()
+        oAjax.onreadystatechange = async () => {
+          if (oAjax.readyState === 4 && oAjax.status === 200) {
+            let res = JSON.parse(oAjax.responseText)
+            let location = res.geocodes[0].location.split(',')
+            this.leaderData.longitude = location[0]
+            this.leaderData.latitude = location[1]
+
+            if (this.id) {
+              // 编辑团长
+              res = await API.Leader.editLeader(this.id, this.leaderData)
+            } else {
+              // 新建团长
+              res = await API.Leader.storeLeader(this.leaderData)
+            }
+
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              this.isSubmit = true
+              return
+            }
+            setTimeout(() => {
+              this._back()
+            }, 1000)
+          }
+        }
+      },
+      /**
+       * 设置默认数据 -> 编辑状态
+       * @private
+       */
+      _setData() {
+        if (!_.isEmpty(this.detail)) {
+          this.$refs.city.infoCity([this.detail.province, this.detail.city, this.detail.district])
+          this.leaderData = this.detail
+        }
+      },
+      _isDataValidate() {
+        if (!this.leaderData.mobile || this.leaderData.mobile.length !== 11) {
+          this.$toast.show('请输入正确的团长账号')
+          return
+        } else if (!this.leaderData.social_name) {
+          this.$toast.show('请输入正确的社区名称')
+          return
+        } else if (!this.leaderData.name) {
+          this.$toast.show('请输入正确的团长名称')
+          return
+        } else if (!this.leaderData.wx_account) {
+          this.$toast.show('请输入正确的微信号')
+          return
+        } else if (!this.leaderData.province) {
+          this.$toast.show('请选择正确的省份')
+          return
+        } else if (!this.leaderData.city) {
+          this.$toast.show('请选择正确的城市')
+          return
+        } else if (!this.leaderData.district) {
+          this.$toast.show('请选择正确的区/县')
+          return
+        } else if (!this.leaderData.address) {
+          this.$toast.show('请输入正确的详情地址')
+          return
+        }
+        return true
+      },
+      _getCity(data) {
+        // 获取地址
+        this.leaderData.province = data[0].includes('请选择') ? '' : data[0]
+        this.leaderData.city = data[1].includes('请选择') ? '' : data[1]
+        this.leaderData.district = data[2].includes('请选择') ? '' : data[2]
       }
     }
   }
@@ -98,7 +220,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
   .edit-leader
     padding-bottom: 80px
     position: relative
@@ -130,6 +251,7 @@
   .leader-box
     padding: 0 20px
     box-sizing: border-box
+    margin-bottom: 35px
     .edit-item
       display: flex
       color: #2A2A2A
@@ -156,6 +278,7 @@
         height: 40px
         border: 1px solid $color-line
         transition: all 0.3s
+        box-sizing: border-box
         &::-webkit-inner-spin-button
           appearance: none
         &:hover
@@ -182,34 +305,9 @@
           color: $color-text-assist
         &:focus
           border-color: $color-sub !important
-
-  .back
-    position: absolute
-    left: -20px
-    right: -20px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    padding-left: 40px
-    box-sizing: border-box
-    .back-btn
-      box-sizing: border-box
-      font-size: $font-size-16
-      margin-right: 20px
-      padding: 12px 32px
-      transition: all 0.3s
-    .back-cancel
-      padding: 11px 32px
-      box-sizing: border-box
-      line-height: 1
-      color: $color-text-main
-      border: 1px solid #ACACAC
-      border-radius: 4px
-      &:hover
-        color: $color-text-sub
-        border-color: $color-text-sub
+      .edit-msg
+        line-height: 40px
+        font-size: $font-size-14
+        color: #acacac
+        margin-left: 10px
 </style>

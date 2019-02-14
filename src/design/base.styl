@@ -1,7 +1,7 @@
 @import "variable.styl"
 
 body, html
-  line-height: 1
+  line-height: 1.2
   font-family: 'PingFangSC-Regular', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif, 'Droid Sans Fallback'
   user-select: none
   -webkit-tap-highlight-color: transparent
@@ -114,12 +114,21 @@ body, html
   &:active
     opacity: 0.8
 
+.btn-disable
+  cursor: not-allowed
+  color: #ACACAC
+  background: #E1E1E1
+  &:hover
+    background: #E1E1E1
+  &:active
+    opacity: 1
+
 // 列表操作栏样式
 .list-operation
   display: inline-block
   line-height: 14px
   position: relative
-  color: $color-main
+  color: $color-sub
   margin-right: 18px
   height: 14px
   white-space: nowrap
@@ -135,7 +144,20 @@ body, html
     width: 1px
     background: $color-line
   &:last-child
+    margin-right: 0
     &:after
       display: none
+
+.list-operation-disable
+  cursor: not-allowed
+  color: #ACACAC
+
+.banner
+  .ivu-carousel-list
+    overflow: visible
+    height: 104px
+  .ivu-carousel-item
+    box-sizing :border-box
+    padding-left: 6px
 
 

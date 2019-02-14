@@ -36,25 +36,27 @@
         this.tabIndex = newVal
       }
     },
-    created() {
-      console.log(this.$props.tabStatus)
-    },
     mounted() {
-      this.tabArr = document.querySelectorAll('.status-item')
-      this.left = (this.tabArr[this.tabIndex].offsetWidth - 34) / 2
+      setTimeout(() => {
+        this.tabArr = document.querySelectorAll('.status-item')
+        this._setLeft()
+      }, 20)
     },
     methods: {
-      _setTab(index, item) {
-        this.tabIndex = index
+      _setLeft() {
         let left = 0
         this.tabArr.forEach((item, idx) => {
-          if (index > idx) {
+          if (this.tabIndex > idx) {
             left += item.offsetWidth + this.marginRight
-          } else if (index === idx) {
+          } else if (this.tabIndex === idx) {
             left += (item.offsetWidth - 34) / 2
           }
         })
         this.left = left
+      },
+      _setTab(index, item) {
+        this.tabIndex = index
+        this._setLeft()
         this.$emit('getStatusTab', item, index)
       }
     }

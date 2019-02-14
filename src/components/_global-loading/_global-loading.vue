@@ -48,7 +48,7 @@
 
   .weui_mask_transparent
     position: fixed
-    z-index: 1001
+    z-index: 1900
     width: 100%
     height: 100%
     top: 0
@@ -60,7 +60,7 @@
 
   .weui_toast
     position: fixed
-    z-index: 1003
+    z-index: 1900
     top: 180px
     left: 50%
     -webkit-transform: translateX(-50%)

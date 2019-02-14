@@ -82,7 +82,8 @@ export const actions = {
  */
 function setDefaultAuthHeaders(state) {
   let commonHeaders = {
-    'Current-Corp': 1,
+    'Current-Corp': process.env.VUE_APP_CURRENT_CORP,
+    'Current-Shop': process.env.VUE_APP_CURRENT_SHOP,
     Authorization: state.currentUser ? state.currentUser.access_token : ''
   }
   axios.defaults.headers.common = commonHeaders

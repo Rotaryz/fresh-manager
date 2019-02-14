@@ -49,16 +49,16 @@
   $menu-width = 200px
   @import "~@design"
   .default-modal
-    position :fixed
-    background: rgba(50, 50, 58, 0.60)
+    position: fixed
+    background: rgba(0, 0, 0, 0.50)
     top: 0
     bottom: 0
     right: 0
     left: $menu-width
     z-index: 1500
     layout()
-    justify-content :center
-    align-items :center
+    justify-content: center
+    align-items: center
 
   .model-active
     animation: layerFadeIn .3s

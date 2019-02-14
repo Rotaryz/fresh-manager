@@ -5,7 +5,6 @@ import store from '@state/store'
 import '@components/_globals'
 import {Plugins} from '@utils/plugins'
 import 'iview/dist/styles/iview.css'
-
 Vue.use(Plugins)
 
 Vue.config.productionTip = process.env.NODE_ENV === 'production'

@@ -6,10 +6,10 @@
         <div class="line"></div>
       </div>
       <div class="bot sobot">
-        <div class="info-item">订单号：DDH20188832770043</div>
-        <div class="info-item">下单时间：2018-12-08 15:34:00</div>
-        <div class="info-item">支付时间：2018-12-08 15:34:00</div>
-        <div class="info-item">订单状态：已完成</div>
+        <div class="info-item">订单号：{{detail.order_sn}}</div>
+        <div class="info-item">下单时间：{{detail.created_at}}</div>
+        <div class="info-item">支付时间：{{detail.pay_at}}</div>
+        <div class="info-item">订单状态：{{detail.status_text}}</div>
       </div>
     </div>
     <div class="detail-item">
@@ -18,13 +18,13 @@
         <div class="line"></div>
       </div>
       <div class="bot sobot">
-        <div class="info-item">会员名称：雷布斯</div>
-        <div class="info-item">会员手机：13316241009</div>
-        <div class="info-item">团长名称：乔布斯</div>
-        <div class="info-item">团长手机：13316241009</div>
-        <div class="info-item">取货时间：2018-12-08 15:34:00</div>
-        <div class="info-item">提货单号：38</div>
-        <div class="info-item">提货地址：广东 广州 白云区 国际单位二期A5四楼</div>
+        <div class="info-item">会员名称：{{detail.address && detail.address.nickname}}</div>
+        <div class="info-item">会员手机：{{detail.address && detail.address.mobile}}</div>
+        <div class="info-item">团长名称：{{detail.address && detail.address.shop_name}}</div>
+        <div class="info-item">团长手机：{{detail.address && detail.address.shop_mobile}}</div>
+        <div class="info-item">取货时间：{{detail.address && detail.address.delivery_at}}</div>
+        <div class="info-item">提货单号：{{detail.address && detail.code}}</div>
+        <div class="info-item">提货地址：{{detail.address && detail.address.shop_address}}</div>
       </div>
     </div>
     <div class="detail-item">
@@ -32,52 +32,62 @@
         <div class="title">商品清单</div>
         <div class="line"></div>
       </div>
-      <div class="bot goods-list">
-        <div class="list-header">
-          <div v-for="(item, index) in titleList" :key="index" class="list-item">
+      <div v-if="detail.goods" class="bot goods-list">
+        <div class="ro-order-list-header">
+          <div v-for="(item, index) in titleList" :key="index" class="ro-order-list-item">
             {{item}}
           </div>
         </div>
-        <div v-for="(item, index) in [1,2,3,4]" :key="index" class="list">
-          <div class="list-box">
-            <div class="list-item list-text">口水鸭先鸡不知口水鸭先鸡不知</div>
-            <div class="list-item list-text">斤</div>
-            <div class="list-item list-text">91</div>
-            <div class="list-item list-text">￥5.98</div>
-            <div class="list-item list-text">453.2 </div>
-            <div class="list-item list-text">未退款</div>
+        <div v-for="(item, index) in detail.goods" :key="index" class="ro-order-list">
+          <div class="ro-order-list-box">
+            <div class="ro-order-list-item ro-order-list-text">{{item.goods_name}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.after_sale_status_text}}</div>
           </div>
         </div>
-        <div class="list-footer">
-          <div class="list-foot-box">
-            <div class="foot-item">订单总价：￥79.28</div>
-            <div class="foot-item">优惠金额：￥6.37</div>
-            <div class="foot-item">应付金额：￥73.98</div>
-            <div class="foot-item">实付金额：￥73.98</div>
-            <div class="foot-item">退款金额：￥73.98</div>
+        <div class="ro-order-list-footer">
+          <div class="ro-order-list-foot-box">
+            <div class="foot-item">订单总价：{{detail.price && `¥ ${detail.price}`}}</div>
+            <div class="foot-item">优惠金额：{{detail.promote_price && `¥ ${detail.promote_price}`}}</div>
+            <div class="foot-item">应付金额：{{detail.total && `¥ ${detail.total}`}}</div>
+            <div class="foot-item">实付金额：{{detail.total && `¥ ${detail.actual_total}`}}</div>
+            <div class="foot-item">退款金额：{{detail.refund_price && `¥ ${detail.refund_price}`}}</div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="back">
+      <div class="back-btn btn-main" @click="_back">返回</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {orderComputed} from '@state/helpers'
+
   const PAGE_NAME = 'ORDER_DETAIL'
   const TITLE = '订单详情'
   const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款状态']
 
   export default {
     name: PAGE_NAME,
-    components: {
-    // DefaultConfirm
-    },
     page: {
       title: TITLE
     },
     data() {
       return {
         titleList: TITLELIST
+      }
+    },
+    computed: {
+      ...orderComputed
+    },
+    methods: {
+      _back() {
+        this.$router.back()
       }
     }
   }
@@ -88,11 +98,13 @@
 
   .order-detail
     width: 100%
+    padding-bottom: 80px
+
   .detail-item
     layout()
     .top
       height: 62px
-      border-bottom:1px solid $color-line
+      border-bottom: 1px solid $color-line
       layout(row)
       position: relative
       .title
@@ -116,10 +128,11 @@
       align-items: center
       flex-wrap: warp
       .info-item
+        word-break: break-all
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-text-main
-        line-height: 14px
+        line-height: 18px
         width: 209px
         padding-bottom: 20px
         margin-right: 80px
@@ -133,30 +146,29 @@
     .goods-list
       margin: 28px 0px 0px
       width: 100%
-      min-width: 1316px
       padding: 0 15px
       box-sizing: border-box
-      .list-footer
+      .ro-order-list-footer
         background: $color-white
         layout(row)
         align-items: center
         justify-content: flex-end
         width: 100%
-        padding: 20px 0 102px
-        .list-foot-box
-          width: 786px
+        padding-top: 20px
+        .ro-order-list-foot-box
           layout(row)
+          justify-content: flex-end
         .foot-item
-          font-family: $font-family-regular
+          font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-text-main
           margin-left: 48px
           &:first-child
             margin-left: 0
-      .list
+      .ro-order-list
         width: 100%
         background: $color-white
-        .list-box
+        .ro-order-list-box
           width: 100%
           padding-left: 30px
           layout(row)
@@ -166,11 +178,11 @@
           align-items: center
           background: $color-white
           border-bottom: 1px solid $color-line
-          .list-item
+          .ro-order-list-item
             font-family: $font-family-regular
             font-size: $font-size-14
             color: $color-text-main
-      .list-header
+      .ro-order-list-header
         width: 100%
         layout(row)
         padding-left: 30px
@@ -180,12 +192,13 @@
         height: 50px
         background: #F9F9F9
         border-bottom: 1px solid $color-line
-        .list-item
+        .ro-order-list-item
           font-family: $font-family-regular
           font-size: $font-size-16
           color: $color-text-main
           line-height: 16px
-  .list-item
+
+  .ro-order-list-item
     &:nth-child(1)
       flex: 1.5
       no-wrap()
@@ -199,6 +212,19 @@
     &:last-child
       flex: 0.5
 
-  .txts
-    height:10px
+  .back
+    position: fixed
+    left: 200px
+    right: 0px
+    bottom: 0
+    z-index: 10
+    background: #F9F9F9
+    height: 80px
+    border-radius: 0 0 6px 6px
+    display: flex
+    align-items: center
+    .back-btn
+      font-size: $font-size-16
+      margin-left: 40px
+      padding: 12px 32px
 </style>
