@@ -364,6 +364,8 @@
         layout()
         justify-content: space-between
         min-height: 94.6px
+        .goods-right-top
+          width: 100%
         .title
           padding-top: 3px
           font-size: $font-size-13
