@@ -82,9 +82,25 @@ export const actions = {
  */
 function setDefaultAuthHeaders(state) {
   let commonHeaders = {
-    'Current-Corp': process.env.VUE_APP_CURRENT_CORP,
+    'Current-Corp': getCorpId(),
     'Current-Shop': process.env.VUE_APP_CURRENT_SHOP,
     Authorization: state.currentUser ? state.currentUser.access_token : ''
   }
   axios.defaults.headers.common = commonHeaders
+}
+
+function getCorpId() {
+  const SPLIT_DOMAIN = `-fresh-manager.jkweixin.${process.env.NODE_ENV === 'production' ? 'com' : 'net'}`
+  const host = window.location.host
+  let corp = ''
+  if (host.includes('.jkweixin.')) {
+    let splitHost = host.split(SPLIT_DOMAIN)
+    corp = splitHost[0]
+  }
+  switch (corp) {
+    case 'retuan':
+      return process.env.VUE_APP_RETUAN_CORP
+    default:
+      return process.env.VUE_APP_CURRENT_CORP
+  }
 }
