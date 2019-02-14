@@ -26,7 +26,7 @@
     <div class="pagination-box">
       <base-pagination :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
     </div>
-    <default-modal ref="dialog">
+    <default-modal ref="dialog" v-if="leaderList.length">
       <div slot="content" class="pop-main code">
         <div class="shade-header">
           <div class="shade-title">{{leaderList[imgIndex].social_name}}</div>
