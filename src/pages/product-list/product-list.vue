@@ -92,7 +92,8 @@
       _getUrl() {
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
-          this.keyWord}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+          this.keyWord
+        }&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsListData() {
