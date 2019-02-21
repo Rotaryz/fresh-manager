@@ -90,6 +90,7 @@
     },
     methods: {
       _getUrl() {
+        console.log(process.env.VUE_APP_CURRENT_CORP)
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
           this.keyWord
