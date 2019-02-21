@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="list-item list-operation-box">
-          <span v-if="item.status === 0 || item.status === 4" class="list-operation" @click="checkApply(item.id)">审核</span>
+          <span v-if="item.status === 0 || item.status === 4 || item.status === 5" class="list-operation" @click="checkApply(item.id)">审核</span>
           <router-link tag="span" :to="`budget-detail/${item.payee_id}/${item.name}`" append class="list-operation">收支明细</router-link>
         </div>
       </div>

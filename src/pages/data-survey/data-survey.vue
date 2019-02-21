@@ -64,7 +64,7 @@
           <div v-for="(item, index) in shopDetail" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.browse_count_sum}}</div>
-            <div class="list-item">{{item.order_count_sum}}</div>
+            <!--<div class="list-item">{{item.order_count_sum}}</div>-->
             <div class="list-item">{{item.sale_count_sum}}</div>
             <div class="list-item">{{item.sale_total_sum}}</div>
           </div>
@@ -80,7 +80,7 @@
   const PAGE_NAME = 'DATA_SURVEY'
   const TITLE = '数据概况'
   const LEADER_TITLE = ['团长名称', '社区名称', '销售额', '支付订单数', '佣金收益']
-  const SHOP_TITLE = ['商品名称', '被浏览次数', '下单件数', '销售件数', '销售额']
+  const SHOP_TITLE = ['商品名称', '被浏览次数', '销售件数', '销售额']
   const TIME = [
     {title: '昨天', status: 'yesterday'},
     {title: '7天', status: 'week'},
@@ -234,7 +234,7 @@
 
   .date-shop .list-box .list-item
     &:nth-child(1)
-      flex: 2
+      flex: 1.5
 
   .date-leader .list-box .list-item
     &:nth-child(2)
