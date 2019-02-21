@@ -2,6 +2,7 @@ import axios from 'axios'
 import storage from 'storage-controller'
 import API from '@api'
 import app from '@src/main'
+import {getCorpId} from '@utils/tool'
 
 export const state = {
   currentUser: storage.get('auth.currentUser', 0)
@@ -87,27 +88,4 @@ function setDefaultAuthHeaders(state) {
     Authorization: state.currentUser ? state.currentUser.access_token : ''
   }
   axios.defaults.headers.common = commonHeaders
-}
-
-/**
- * 获取当前的corpId
- * @returns {string}
- */
-function getCorpId() {
-  // 设置固定切割的字符串
-  const SPLIT_DOMAIN = `-fresh-manager.jkweixin.${process.env.NODE_ENV === 'production' ? 'com' : 'net'}`
-  const host = window.location.host
-  let corp = ''
-  // 判断是否在.jkweixin的域名下
-  if (host.includes('.jkweixin.')) {
-    let splitHost = host.split(SPLIT_DOMAIN)
-    corp = splitHost[0]
-  }
-  // 根据corp返回不同环境下的corpId
-  switch (corp) {
-    case 'retuan':
-      return process.env.VUE_APP_RETUAN_CORP
-    default:
-      return process.env.VUE_APP_CURRENT_CORP
-  }
 }

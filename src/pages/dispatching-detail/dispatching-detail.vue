@@ -70,10 +70,11 @@
       }
     },
     created() {
+      let currentId = this.getCurrentId()
       this.id = this.$route.query.id || null
       let token = this.$storage.get('auth.currentUser', '')
       let excelParams = token
-        ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        ? `?access_token=${token.access_token}&current_corp=${currentId}`
         : ''
       this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${
         this.id

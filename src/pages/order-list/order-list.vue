@@ -91,8 +91,9 @@
         return this.tabStatus.findIndex((item) => item.status === this.status)
       },
       orderExportUrl() {
+        let currentId = this.getCurrentId()
         let data = {
-          current_corp: process.env.VUE_APP_CURRENT_CORP,
+          current_corp: currentId,
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: this.currentUser.access_token,
           status: this.status,

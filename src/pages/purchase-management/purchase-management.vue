@@ -56,9 +56,10 @@
       ...purchaseComputed
     },
     created() {
+      let currentId = this.getCurrentId()
       let token = this.$storage.get('auth.currentUser', '')
       this.excelParams = token
-        ? `?access_token=${token.access_token}&current_corp=${process.env.VUE_APP_CURRENT_CORP}`
+        ? `?access_token=${token.access_token}&current_corp=${currentId}`
         : ''
     },
     methods: {
