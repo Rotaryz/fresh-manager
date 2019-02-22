@@ -158,7 +158,7 @@
       layout()
       .top
         height: 62px
-        border-bottom:1px solid $color-line
+        border-bottom: 1px solid $color-line
         layout(row)
         position: relative
         .title
@@ -187,7 +187,6 @@
           color: $color-text-main
           line-height: 14px
           width: 209px
-          no-wrap()
           padding-bottom: 20px
           margin-right: 80px
           &:last-child
@@ -266,6 +265,7 @@
         word-break: break-all
       &:last-child
         flex: 0.5
+
   .go-btn
     position: fixed
     bottom: 50px
@@ -285,9 +285,11 @@
       line-height: 40px
       text-align: center
       height: 40px
+
   textarea::-webkit-input-placeholder
     font-size: $font-size-14
     color: #ACACAC
+
   .Auditing
     width: 534px
     height: 261px
@@ -346,8 +348,9 @@
           background: $color-positive
           color: $color-white
           border-color: $color-positive
+
   .back
-    justify-content:center
+    justify-content: center
     position: fixed
     left: 200px
     right: 0px

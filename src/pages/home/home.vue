@@ -6,7 +6,9 @@
         <top-bar></top-bar>
         <div :class="{'container-routine': isRoutine}" class="container" :style="{'margin-bottom': marginBottom + 'px'}">
           <!--<keep-alive>-->
-          <router-view :key="$route.fullPath" @setRoutine="setRoutine"></router-view>
+          <div class="container-small">
+            <router-view :key="$route.fullPath" @setRoutine="setRoutine"></router-view>
+          </div>
           <!--</keep-alive>-->
         </div>
       </div>
@@ -75,12 +77,16 @@
     .container
       display: flex
       flex: 1
-      margin: 14px
-      padding: 0 20px
       user-select: text
-      border-radius: 6px
-      box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
-      background: $color-white
+      box-sizing: border-box
+      padding: 14px
+      .container-small
+        padding: 0 20px
+        border-radius: 6px
+        box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
+        background: $color-white
+        flex: 1
+        display: flex
     .container-routine
       padding: 0
       box-shadow: 0 0 0 0 transparent

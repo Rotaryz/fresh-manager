@@ -105,7 +105,7 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
           titles: ['商品管理', '商品列表', '新建商品'],
-          marginBottom: 85,
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()
@@ -186,7 +186,7 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
         meta: {
           titles: ['商城管理', '今日抢购', '新建活动'],
-          marginBottom: 85,
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
             //  团长列表
@@ -267,7 +267,7 @@ export default [
         component: () => lazyLoadView(import('@pages/refund-detail/refund-detail')),
         meta: {
           titles: ['订单管理', '退货管理', '退款详情'],
-          marginBottom: 85,
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('returns/getReturnsDetail', routeTo.params.id)
@@ -289,7 +289,7 @@ export default [
         component: () => lazyLoadView(import('@pages/order-detail/order-detail')),
         meta: {
           titles: ['订单管理', '订单列表', '订单详情'],
-          marginBottom: 85,
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('order/getOrderDetail', routeTo.params.id)
@@ -341,7 +341,7 @@ export default [
         component: () => lazyLoadView(import('@pages/purchase-detail/purchase-detail')),
         meta: {
           titles: ['采购管理', '采购详情'],
-          marginBottom: 85,
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()
@@ -452,7 +452,7 @@ export default [
         component: () => lazyLoadView(import('@pages/dispatching-detail/dispatching-detail')),
         meta: {
           titles: ['团长管理', '团长配送单', '配送单详情'],
-          marginBottom: 85,
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()
@@ -480,7 +480,7 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
           titles: ['团长管理', '团长配送单', '新建团长'],
-          marginBottom: 85,
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()
