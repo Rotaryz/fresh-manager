@@ -179,16 +179,16 @@
           bottom: 0
       .bot
         layout(row)
-        align-items: center
         flex-wrap: warp
         .info-item
           font-family: $font-family-regular
           font-size: $font-size-14
           color: $color-text-main
-          line-height: 14px
-          width: 209px
+          line-height: 18px
+          width: 220px
           padding-bottom: 20px
           margin-right: 80px
+          word-break: break-all
           &:last-child
             width: 320px
             margin-right: 0
