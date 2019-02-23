@@ -16,7 +16,7 @@ export function getCorpId() {
   switch (corp) {
     case 'retuan':
       return process.env.VUE_APP_RETUAN_CORP
-    case 'guojidanwei':
+    case 'gjdw':
       return process.env.VUE_APP_GUOJIDANWEI_CORP
     default:
       return process.env.VUE_APP_CURRENT_CORP
