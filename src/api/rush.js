@@ -98,7 +98,7 @@ export default {
    */
   updateGoods(data, id, loading = false) {
     let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
-    return request.put(url, data, loading)
+    return request.post(url, data, loading)
   },
   /**
    * 仓库货架编辑
