@@ -1,15 +1,14 @@
 <template>
   <div class="top-bar">
-    <section class="userInfo-wrapper">
-      <div class="avatar-wrapper">
-        <img :src="defaultAvatar" alt="" width="40" height="40">
-      </div>
-      <p class="name">{{currentUser && currentUser.manager_info.username}}</p>
-      <div class="log-out" @click="tryToLogOut"></div>
-    </section>
-    <section class="title-wrapper">
-      <span v-for="(item, index) in currentTitles" :key="index" :class="{'active': index === currentTitles.length -1}"> {{item}} <span v-if="index !== currentTitles.length -1"> / </span></span>
-    </section>
+    <div class="userInfo-content">
+      <section class="title-wrapper">
+        <span v-for="(item, index) in currentTitles" :key="index" :class="{'active': index === currentTitles.length -1}" class="title-wrapper-item"> {{item}} <span v-if="index !== currentTitles.length -1"> / </span></span>
+      </section>
+      <section class="userInfo-wrapper">
+        <p class="name">你好: {{currentUser && currentUser.manager_info.username}}</p>
+        <div class="log-out" @click="tryToLogOut"></div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -44,53 +43,50 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  $common-height = 80px
+  $common-height = 40px
   $width-triangle = 4px
   $menu-width = 200px
 
   .top-bar
     z-index: 1000
-    box-shadow: 0 1px 5px 0 rgba(0,8,39,0.06)
     background: #fff
-    .userInfo-wrapper
+    .userInfo-content
       layout(row)
       align-items: center
-      justify-content: flex-end
       height: $common-height
-      padding-right: 12px
-      border-bottom: 1px solid $color-line
+      padding: 0 20px
+      justify-content: space-between
+    .userInfo-wrapper
+      display: flex
+      align-items: center
       .name
         margin-left: 10px
-        font-size: $font-size-16
-        color: $color-text-sub
+        font-size: $font-size-14
+        color: $color-text-main
       .log-out
         cursor: pointer
-        width: 44px
-        height: 44px
+        width: 10px
+        height: 10px
         margin-left: 8px
-        bg-image('./icon-quit')
-        background-repeat: no-repeat
-        background-size: 20px 20px
-        background-position: center
+        icon-image('./icon-sign_out')
         &:hover
           animation: rotate .75s linear infinite
     .title-wrapper
-      height: 60px
-      padding-left: 16px
-      line-height: 60px
-      color: $color-text-sub
+      color: $color-text-main
       .active
-        color: $color-text-main
+        color: $color-main
+    .title-wrapper-item
+      font-size: $font-size-12
 
   @keyframes rotate
     0%
       transform: translateX(0)
     25%
-      transform: translateX(5px)
+      transform: translateX(3px)
     50%
-      transform: translateX(-5px)
+      transform: translateX(-3px)
     75%
-      ransform: translateX(5px)
+      ransform: translateX(3px)
     100%
       transform: translateX(0)
 </style>

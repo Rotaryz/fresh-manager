@@ -1,29 +1,44 @@
 <template>
   <div class="navigation">
-    <header></header>
-    <dl v-for="(item, index) in navList" :key="index" :class="item | isActive">
-      <dt :class="item | isActive" @click="clickNav(item)">
-        <img :src="item.isLight ? item.iconSelected : item.icon" alt="">
-        <p>{{item.title}}</p>
-        <i :class="item.children.length ? 'rotate' : ''"></i>
-      </dt>
-      <dd :style="item | childrenActive">
-        <template v-for="(child, i) in item.children">
-          <p :key="i" :class="child | isActive" @click="clickNav(child, index)">{{child.title}}</p>
-        </template>
-      </dd>
-    </dl>
+    <div class="first">
+      <header class="logo">
+        <img class="logo-img" src="./pic-logo@2x.png">
+      </header>
+      <ul v-for="(item, index) in firstMenu" :key="index" class="menu">
+        <li class="nav-item" :class="item | isActive" @click="clickNav(item)">
+          <img :src="item.icon" class="nav-item-icon">
+          <p class="nav-item-name">{{item.name}}</p>
+        </li>
+      </ul>
+    </div>
+    <div class="second">
+      <div class="second-item">
+        <p class="second-title">dsf</p>
+        <div class="second-link hand">sdf</div>
+        <div class="second-link hand">sdf</div>
+      </div>
+    </div>
+    <!--<dl v-for="(item, index) in navList" :key="index" :class="item | isActive" class="nav-item">-->
+    <!--<dt :class="item | isActive" @click="clickNav(item)">-->
+    <!--<img :src="item.isLight ? item.iconSelected : item.icon" alt="">-->
+    <!--<p>{{item.title}}</p>-->
+    <!--<i :class="item.children.length ? 'rotate' : ''"></i>-->
+    <!--</dt>-->
+    <!--<dd :style="item | childrenActive">-->
+    <!--<template v-for="(child, i) in item.children">-->
+    <!--<p :key="i" :class="child | isActive" @click="clickNav(child, index)">{{child.title}}</p>-->
+    <!--</template>-->
+    <!--</dd>-->
+    <!--</dl>-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'NAVIGATION_BAR'
-  const HEIGHT = 40
+  // const HEIGHT = 40
   const NAV_LIST = [
     {
       title: '数据统计',
-      icon: require('./icon-date@2x.png'),
-      iconSelected: require('./icon-date_white@2x.png'),
       url: '/home/data-survey',
       isLight: false,
       children: []
@@ -31,8 +46,6 @@
     {
       title: '商品管理',
       url: '/home/product-list',
-      icon: require('./icon-commodity@2x.png'),
-      iconSelected: require('./icon-commodity_white@2x.png'),
       isLight: false, // 是否亮灯
       children: [
         {
@@ -55,16 +68,12 @@
     {
       title: '内容管理',
       url: '/home/advertisement',
-      icon: require('./icon-text@2x.png'),
-      iconSelected: require('./icon-text_select@2x.png'),
       isLight: false,
       children: []
     },
     {
       title: '活动管理',
       url: '/home/rush-purchase',
-      icon: require('./icon-activity@2x.png'),
-      iconSelected: require('./icon-activity_select@2x.png'),
       isLight: false,
       children: [
         {
@@ -77,8 +86,6 @@
     {
       title: '订单管理',
       url: '/home/order-list',
-      icon: require('./icon-order@2x.png'),
-      iconSelected: require('./icon-order_white@2x.png'),
       isLight: false,
       children: [
         {
@@ -95,24 +102,18 @@
     },
     {
       title: '采购管理',
-      icon: require('./icon-shopping@2x.png'),
-      iconSelected: require('./icon-shopping_white@2x.png'),
       url: '/home/purchase-management',
       isLight: false,
       children: []
     },
     {
       title: '客户管理',
-      icon: require('./icon-vip@2x.png'),
-      iconSelected: require('./icon-vip_white@2x.png'),
       url: '/home/customer-management',
       isLight: false,
       children: []
     },
     {
       title: '团长管理',
-      icon: require('./icon-group@2x.png'),
-      iconSelected: require('./icon-group_white@2x.png'),
       url: '/home/leader-list',
       isLight: false,
       children: [
@@ -140,8 +141,6 @@
     },
     {
       title: '财务管理',
-      icon: require('./icon-moeny@2x.png'),
-      iconSelected: require('./icon-moeny_white@2x.png'),
       url: '/home/business-overview',
       isLight: false,
       children: [
@@ -158,36 +157,32 @@
       ]
     }
   ]
+  const FIRST_MENU = [
+    {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: []},
+    {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: []},
+    {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: []},
+    {name: '统计', icon: require('./icon-statistics@2x.png'), isLight: false, second: []},
+    {name: '财务', icon: require('./icon-finance@2x.png'), isLight: false, second: []},
+    {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: []}]
   export default {
     name: COMPONENT_NAME,
     filters: {
       // 子路有的激活状态过滤
       childrenActive(value) {
-        let styles = ''
-        if (value.children.length && value.isLight) {
-          styles = `height:${value.children.length * (HEIGHT + 4) + 28}px`
-        }
-        return styles
       },
       // 本路由的激活状态过滤
       isActive(value) {
-        let cname = ''
         if (value.isLight) {
-          cname = 'active'
+          return 'nav-item-active'
         }
-        if (value.isLight && value.children && !value.children.length) {
-          cname = 'active active-only'
-        }
-        if (value.isLight && value.children && value.children.length) {
-          cname += ' no-border'
-        }
-        return cname
+        return ''
       }
     },
     data() {
       return {
         navList: JSON.parse(JSON.stringify(NAV_LIST)),
-        currentIndex: ''
+        currentIndex: '',
+        firstMenu: FIRST_MENU,
       }
     },
     watch: {
@@ -203,70 +198,10 @@
     },
     methods: {
       _handleNavList() {
-        let currentPath = this.$route.fullPath
-        let currentIndex = this.navList.findIndex((item) => {
-          return item.url === currentPath || item.children.some((child) => currentPath.includes(child.url))
-        })
-        currentIndex = parseInt(currentIndex)
-        if (currentIndex < 0) {
-          return
-        }
-        if (this.currentIndex.toString()) {
-          this._resetNavList(currentIndex)
-        }
-        let navList = JSON.parse(JSON.stringify(this.navList))
-        navList[currentIndex].isLight = true
-        if (navList[currentIndex].children) {
-          navList[currentIndex].children.forEach((item) => {
-            if (currentPath.includes(item.url)) {
-              item.isLight = true
-            }
-          })
-        }
-        this.navList = navList
-        this.currentIndex = currentIndex
       },
       _resetNavList(currentIndex) {
-        let beforeIndex = this.currentIndex
-        let navList = JSON.parse(JSON.stringify(this.navList))
-        if (beforeIndex === currentIndex) {
-          navList[currentIndex].children.forEach((nav) => {
-            if (nav.isLight) {
-              nav.isLight = false
-            }
-          })
-        } else {
-          navList[beforeIndex].isLight = false
-          navList[beforeIndex].children.forEach((nav) => {
-            if (nav.isLight) {
-              nav.isLight = false
-            }
-          })
-          navList[currentIndex].isLight = true
-        }
-        this.navList = navList
       },
       clickNav(nav, index) {
-        if (nav.url === this.$route.fullPath && !nav.children.length) {
-          return
-        }
-        if (nav.icon && nav.url === this.$route.fullPath) {
-          let idx = this.navList.findIndex((big) => big.icon === nav.icon)
-          this.navList[idx].isLight = !this.navList[idx].isLight
-          this.navList[idx].children = this.navList[idx].children.map((item) => {
-            if (item.url === this.$route.fullPath) {
-              item.isLight = !item.isLight
-            } else {
-              item.isLight = false
-            }
-            return item
-          })
-        }
-        if (index !== undefined) {
-          this._resetNavList(index)
-          this.navList[index].url = nav.url
-        }
-        this.$router.push(nav.url)
       }
     }
   }
@@ -282,126 +217,75 @@
   $color-menu-bg-active = #0F1922
   $color-menu-bg = #1D2B36
   $color-white = #fff
-  $menu-width = 200px
+  $menu-width = 100px
 
   .navigation
     user-select: none
     position: fixed
     top: 0
     left: 0
-    background: $color-menu-bg
-    box-shadow: 3px 0 4px 0 rgba(0, 8, 39, 0.30)
-    width: $menu-width
-    min-height: 100vh
     z-index: 2000
-    overflow-y: auto
-    header
-      width: 199px
-      height: 80px
-      border-bottom: 1px solid $color-menu-line
-      background: $color-main
-      bg-image('./pic-logo')
-      background-repeat: no-repeat
-      background-position: center center
-      background-size: 129px
-      img
-        height: 24px
-        width: @height
-        margin-right: 12.6px
-      p
-        font-size: 20px
-        color: #fff
-        font-family: PingFangSC-Semibold
-        letter-spacing: 6px
-    dl
-      font-family: PingFangSC-Regular
-      color: $color-menu-text
-      font-size: 16px
-      cursor: pointer
-      background: $color-menu-bg
-      dt
-        layout(row, block, nowrap)
-        align-items: center
-        width: 100%
-        height: $tab-height
-        overflow: hidden
-        box-sizing: border-box
-        border-left: 5px solid transparent
-        transition: all .2s
-        font-family: $font-family-medium
-        &:before
-          position: absolute
-          left: 0
-          display: block
-          content: ''
-          width: 0
-          height: 56px
-          transition: width .3s
-          background: $color-menu-tag
-        &:hover
-          color: $color-white
-        &.active
-          &:before
-            width: 4px
-          &.no-border:before
-            width: 0
-          & > p
-            color: $color-white
-          & > i
-            icon-image('icon-pressed_select')
-            &.rotate
-              transform: rotate(90deg)
-        &.active-only
-          background: $color-menu-bg-active
-        p
-          flex: 1
-          overflow: hidden
-          background: rgba(255, 255, 255, 0)
-          box-sizing: border-box
-          transition: all .2s
-        img
-          height: 22px
-          width: @height
-          margin: 0 9px 0 8px
-        i
-          height: 10px
-          width: 10px
-          icon-image('icon-pressed')
-          justify-self: flex-end
-          margin-right: 30px
-          transform rotate(0deg)
-          transition: transform 0.2s
-      dd
-        height: 0
-        transition: height 0.3s
-        layout()
-        overflow: hidden
-        background: $color-menu-bg-active
-        p
-          width: 100%
-          layout()
-          padding-left: 44px
-          justify-content: center
-          flex: 1
-          box-sizing: border-box
-          transition: all .2s
-          &:last-child
-            padding-bottom: 14px
-          &:first-child
-            padding-top: 14px
-          &:before
-            position: absolute
-            left: 0
-            display: block
-            content: ''
-            width: 0
-            height: 18px
-            transition: width .3s
-            background: $color-menu-tag
-          &:hover
-            color: $color-white
-          &.active
-            color: $color-white
-            &:before
-              width: 4px
+    width: 200px
+    display: flex
+    .first
+      overflow: hidden
+      min-height: 100vh
+      width: $menu-width
+      position: relative
+      &:after
+        content: ''
+        position: absolute
+        top: 0
+        left: 0
+        width: 1200px
+        height: 1200px
+        background-image: radial-gradient(#32292F 50%, #292A30 100%)
+    .menu
+      position: relative
+      z-index: 1
+      width: 100px
+    .nav-item
+      height: 54px
+      display: flex
+      align-items: center
+      color: #EFD8E1
+      padding: 0 10px
+      box-sizing: border-box
+      .nav-item-icon
+        width: 14px
+        height: 14px
+        margin-right: 5px
+      .nav-item-name
+        font-size: $font-size-14
+    .nav-item-active
+      color: $color-text-main
+      background: $color-white
+
+  .logo
+    position: relative
+    z-index: 1
+    height: 57px
+    display: flex
+    align-items: center
+    justify-content: center
+    .logo-img
+      overflow: hidden
+      width: 32px
+
+  .second
+    padding: 0 16px
+    box-sizing: border-box
+    overflow: hidden
+    min-height: 100vh
+    width: $menu-width
+    background: $color-white
+    .second-title
+      margin: 40px 0 10px
+      color: #888888
+      font-size: $font-size-14
+    .second-link
+      height: 34px
+      line-height: 34px
+      color: $color-text-main
+      font-size: $font-size-14
 </style>

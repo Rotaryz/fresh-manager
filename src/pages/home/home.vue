@@ -63,27 +63,26 @@
     padding-left: 200px
     box-sizing: border-box
     background: $color-background
-    &::-webkit-scrollbar
-      width: 8px
-      height: 10px
-    &::-webkit-scrollbar-thumb
-      background-color: rgba(0, 0, 0, .15)
-      border-radius: 10px
-    &::-webkit-scrollbar-thumb:hover
-      background-color: rgba(0, 0, 0, .3)
-    &::-webkit-scrollbar-track
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
-      border-radius: 10px
     .container
       display: flex
       flex: 1
       user-select: text
       box-sizing: border-box
-      padding: 14px
+      padding: 20px
+      &::-webkit-scrollbar
+        width: 8px
+        height: 10px
+      &::-webkit-scrollbar-thumb
+        background-color: rgba(0, 0, 0, .15)
+        border-radius: 10px
+      &::-webkit-scrollbar-thumb:hover
+        background-color: rgba(0, 0, 0, .3)
+      &::-webkit-scrollbar-track
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+        border-radius: 10px
       .container-small
         padding: 0 20px
-        border-radius: 6px
-        box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
+        border-radius: 1px
         background: $color-white
         flex: 1
         display: flex
