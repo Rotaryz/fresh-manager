@@ -1,5 +1,13 @@
 <template>
-  <div class="purchase-detail">
+  <div class="purchase-detail detail-content">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-purchase_list@2x.png" class="identification-icon">
+        <p class="identification-name">采购详情</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="essential-information">
       <div class="content-header">
         <div class="content-title">基本信息</div>
@@ -20,16 +28,18 @@
         <div class="commodities-list-header com-list-box">
           <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
         </div>
-        <div v-for="(item, index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
-          <div class="com-list-item">{{index + 1}}</div>
-          <div class="com-list-item">{{item.goods_name}}</div>
-          <div class="com-list-item">{{item.goods_units}}</div>
-          <div class="com-list-item">{{item.wait_num}}</div>
-          <div class="com-list-item">{{item.total_stock}}</div>
-          <div class="com-list-item">{{item.num}}</div>
-          <div class="com-list-item">{{item.not_num}}</div>
-          <div class="com-list-item">￥{{item.price}}</div>
-          <div class="com-list-item">￥{{item.sub_total}}</div>
+        <div class="big-box">
+          <div v-for="(item, index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
+            <div class="com-list-item">{{index + 1}}</div>
+            <div class="com-list-item">{{item.goods_name}}</div>
+            <div class="com-list-item">{{item.goods_units}}</div>
+            <div class="com-list-item">{{item.wait_num}}</div>
+            <div class="com-list-item">{{item.total_stock}}</div>
+            <div class="com-list-item">{{item.num}}</div>
+            <div class="com-list-item">{{item.not_num}}</div>
+            <div class="com-list-item">￥{{item.price}}</div>
+            <div class="com-list-item">￥{{item.sub_total}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -93,9 +103,7 @@
     created() {
       let currentId = this.getCurrentId()
       let token = this.$storage.get('auth.currentUser', '')
-      let excelParams = token
-        ? `?access_token=${token.access_token}&current_corp=${currentId}`
-        : ''
+      let excelParams = token ? `?access_token=${token.access_token}&current_corp=${currentId}` : ''
       let id = this.$route.query.id || null
       this.excelUrl = `${this.excelUrl}${id}${excelParams}`
     },
@@ -109,6 +117,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  @import "~@style/detail"
 
   .purchase-detail
     line-height: 1
@@ -119,86 +128,8 @@
     &:hover
       color: $color-white
 
-  /*基本信息类头部盒子样式*/
-  .content-header
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    justify-content: space-between
-    height: 62px
-    position: relative
-    box-sizing: border-box
-    &:after
-      content: ''
-      position: absolute
-      width: 34px
-      height: 2px
-      background: $color-main
-      border-radius: 1px
-      bottom: -1px
-      left: 0
-    .content-title
-      color: $color-text-main
-      font-family: $font-family-medium
-      font-size: $font-size-16
-
-  .essential-information
-    margin-bottom: 26px
-    .essential-information-detail
-      display: flex
-      margin-top: 30px
-      padding: 0 20px
-      box-sizing: border-box
-      flex-wrap: wrap
-      .essential-information-item
-        margin-bottom: 24px
-        font-size: $font-size-14
-        font-family: $font-family-regular
-        color: $color-text-main
-        word-break :break-all
-        margin-right: 80px
-        line-height: 18px
-        width: 209px
-
-  .list-of-commodities
-    margin-bottom: 85px
-    box-sizing: border-box
-    padding: 0 20px
-    .com-list-box
-      .com-list-item
-        &:nth-child(2)
-          flex: 2
-
-  .history-record
-    box-sizing: border-box
-    padding: 0 20px
-    padding-bottom: 80px
-
-  .commodities-list-header
-    margin-top: 28px
-    height: 50px
-    background: $color-list-header
-    .com-list-item
-      font-size: $font-size-16
-
-  .com-list-content
-    height: 58.5px
-    .com-list-item
-      font-size: $font-size-14
-
   .com-list-box
-    padding-left: 30px
-    box-sizing: border-box
-    display: flex
-    align-items: center
-    border-bottom: 1px solid $color-line
     .com-list-item
-      flex: 1
-      padding-right: 10px
-      box-sizing: border-box
-      no-wrap()
-      color: $color-text-main
-      font-family: $font-family-regular
       &:nth-child(1)
         flex: 0.5
 </style>

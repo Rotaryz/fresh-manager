@@ -1,0 +1,204 @@
+@import "./variable.styl"
+@import "./private.styl"
+@import "./mixin.styl"
+.detail-content
+  background: $color-white
+  padding: 0 20px
+  box-sizing: border-box
+
+.detail-item
+  layout()
+  .top
+    border-bottom: 1px solid $color-line
+    layout(row)
+    position: relative
+    .title
+      padding-bottom: 15px
+      box-sizing: border-box
+      font-family: $font-family-medium
+      font-size: $font-size-16
+      color: $color-text-main
+    .line
+      transition: all .3s
+      background: $color-positive
+      height: 2px
+      width: 34px
+      position: absolute
+      left: 0
+      bottom: 0
+  .bot
+    layout(row)
+    flex-wrap: warp
+    margin-bottom: 50px
+    .info-item
+      word-break: break-all
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-main
+      line-height: 18px
+      width: 209px
+      padding-bottom: 20px
+      margin-right: 80px
+      &:last-child
+        width: 320px
+        margin-right: 0
+  .sobot
+    padding: 30px 0 0px 15px
+    width: 1280px
+    box-sizing: border-box
+  .goods-list
+    margin: 28px 0px 0px
+    width: 100%
+    padding: 0 15px
+    box-sizing: border-box
+    .ro-order-list-footer
+      background: $color-white
+      layout(row)
+      align-items: center
+      justify-content: flex-end
+      width: 100%
+      padding-top: 20px
+      .ro-order-list-foot-box
+        layout(row)
+        justify-content: flex-end
+      .foot-item
+        font-family: $font-family-medium
+        font-size: $font-size-14
+        color: $color-text-main
+        margin-left: 48px
+        &:first-child
+          margin-left: 0
+    .ro-order-list
+      width: 100%
+      background: $color-white
+      &:nth-child(2n)
+        background: #F5F7FA
+      &:hover
+        background: #F7FAF5
+      .ro-order-list-box
+        width: 100%
+        padding-left: 30px
+        layout(row)
+        white-space: nowrap
+        height: 60px
+        box-sizing: border-box
+        align-items: center
+        background: $color-white
+        border-bottom: 1px solid $color-line
+        .ro-order-list-item
+          font-family: $font-family-regular
+          font-size: $font-size-14
+          color: $color-text-main
+    .ro-order-list-header
+      width: 100%
+      layout(row)
+      padding-left: 30px
+      white-space: nowrap
+      box-sizing: border-box
+      align-items: center
+      height: 50px
+      background: #F5F7FA
+      font-size: $font-size-14
+      border-bottom-1px(#E9ECEE)
+      .ro-order-list-item
+        font-family: $font-family-regular
+        font-size: $font-size-16
+        color: $color-text-main
+        line-height: 16px
+
+.essential-information
+  margin-bottom: 26px
+  .essential-information-detail
+    display: flex
+    margin-top: 30px
+    padding: 0 20px
+    box-sizing: border-box
+    flex-wrap: wrap
+    .essential-information-item
+      margin-bottom: 24px
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: $color-text-main
+      word-break: break-all
+      margin-right: 80px
+      line-height: 18px
+      width: 209px
+
+.list-of-commodities
+  margin-bottom: 85px
+  box-sizing: border-box
+  .com-list-box
+    .com-list-item
+      &:nth-child(2)
+        flex: 2
+
+.history-record
+  box-sizing: border-box
+  padding: 0 20px
+  padding-bottom: 80px
+
+.commodities-list-header
+  margin-top: 28px
+  height: 50px
+  background: #F5F7FA
+  border-bottom-1px(#E9ECEE)
+  .com-list-item
+    font-size: $font-size-16
+
+.com-list-content
+  height: 58.5px
+  &:nth-child(2n)
+    background: #F5F7FA
+  &:hover
+    background: #F7FAF5
+  .com-list-item
+    font-size: $font-size-14
+
+.com-list-box
+  padding-left: 30px
+  box-sizing: border-box
+  display: flex
+  align-items: center
+  border-bottom-1px(#E9ECEE)
+  .com-list-item
+    flex: 1
+    padding-right: 10px
+    box-sizing: border-box
+    no-wrap()
+    color: $color-text-main
+    font-family: $font-family-regular
+    &:nth-child(1)
+      flex: 0.5
+.total-money
+  text-align: right
+  margin-top: 21px
+  font-family: $font-family-medium
+  color: $color-text-main
+  font-size: $font-size-14
+
+/*基本信息类头部盒子样式*/
+.content-header
+  border-bottom-1px($color-line)
+  display: flex
+  align-items: center
+  justify-content: space-between
+  height: 62px
+  position: relative
+  box-sizing: border-box
+  .excel
+    margin-left: 20px
+    &:hover
+      color: $color-white
+  &:before
+    content: ''
+    position: absolute
+    width: 34px
+    height: 2px
+    background: $color-main
+    border-radius: 1px
+    bottom: 0px
+    left: 0
+  .content-title
+    color: $color-text-main
+    font-family: $font-family-medium
+    font-size: $font-size-16

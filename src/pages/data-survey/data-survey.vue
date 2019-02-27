@@ -43,7 +43,7 @@
           <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in leaderDetail" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in leaderDetail" :key="index" class="list-content list-box list-content-data">
             <div class="list-item">{{item.name}}</div>
             <div class="list-item">{{item.social_name}}</div>
             <div class="list-item">{{item.sale_total_sum}}</div>
@@ -61,7 +61,7 @@
           <div v-for="(item,index) in shopTitle" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in shopDetail" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in shopDetail" :key="index" class="list-content list-box list-content-data">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.browse_count_sum}}</div>
             <!--<div class="list-item">{{item.order_count_sum}}</div>-->
@@ -145,15 +145,14 @@
     flex: 1
     display: flex
     box-sizing: border-box
-    padding-top: 8px
+    padding: 20px 20px
     flex-direction: column
 
   .data-header
     height: 220px
-    border-radius: 6px
+    border-radius: 1px
     background: $color-white
     box-sizing: border-box
-    box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
 
   .data-caption
     height: 60px
@@ -162,7 +161,7 @@
     align-items: center
     padding: 0 20px
     box-sizing: border-box
-    border-bottom: 1px solid $color-line
+    border-bottom-1px($color-line)
     .data-title
       font-family: $font-family-medium
       color: $color-text-main
@@ -188,7 +187,7 @@
           position: absolute
           left: 0
           top: 0
-          background: $color-negative
+          background: #3E77C3
           height: 16px
           width: 4px
       .order-money
@@ -212,8 +211,7 @@
     background: $color-white
     width: 50%
     box-sizing: border-box
-    border-radius: 6px
-    box-shadow: 0 1px 5px 0 rgba(0, 8, 39, 0.06)
+    border-radius: 1px
 
   .date-shop
     margin-left: 20px
@@ -221,7 +219,7 @@
   .list-box
     padding-left: 20px
     box-sizing: border-box
-    border-bottom: 1px solid $color-line
+    border-bottom-1px($color-line)
     display: flex
     align-items: center
     .list-item
@@ -230,7 +228,7 @@
       flex: 1
 
   .list
-    height: 350px
+    height: 375px
 
   .date-shop .list-box .list-item
     &:nth-child(1)
@@ -239,4 +237,8 @@
   .date-leader .list-box .list-item
     &:nth-child(2)
       flex: 1.5
+
+  .date-shop, .date-leader
+    .list-content-data
+      height: 75px
 </style>

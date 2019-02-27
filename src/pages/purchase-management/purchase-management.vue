@@ -1,33 +1,48 @@
 <template>
   <div class="purchase-management table">
-    <div class="tab-header">
-      <base-search placeHolder="采购单号" @search="_search"></base-search>
-      <div class="btn-main">
-        <input type="file" title="导入采购单" class="file-box hand" @change="_importFile">
-        导入采购单
+    <div class="down-content">
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <base-search placeHolder="采购单号" @search="_search"></base-search>
       </div>
     </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
-        <div class="list-item list-double-row">
-          <p class="item-dark">{{item.order_sn}}</p>
-          <p class="item-sub">{{item.created_at}}</p>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-purchase_list@2x.png" class="identification-icon">
+          <p class="identification-name">采购管理</p>
         </div>
-        <div class="list-item">{{item.delivery_at}}</div>
-        <div class="list-item">{{item.type_count}}</div>
-        <div class="list-item">{{item.type_had_count}}</div>
-        <div class="list-item">{{item.total}}</div>
-        <div class="list-item list-operation-box">
-          <router-link tag="span" :to="'purchase-detail?id=' + item.id" append class="list-operation">详情</router-link>
-          <a class="list-operation list-link" :href="item.url + item.id + excelParams" target="_blank">导出</a>
+        <div class="function-btn">
+          <div class="btn-main">
+            导入采购单
+            <input type="file" title="导入采购单" class="file-box hand" @change="_importFile">
+          </div>
         </div>
       </div>
-    </div>
-    <div class="pagination-box">
-      <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.order_sn}}</p>
+              <p class="item-sub">{{item.created_at}}</p>
+            </div>
+            <div class="list-item">{{item.delivery_at}}</div>
+            <div class="list-item">{{item.type_count}}</div>
+            <div class="list-item">{{item.type_had_count}}</div>
+            <div class="list-item">{{item.total}}</div>
+            <div class="list-item list-operation-box">
+              <router-link tag="span" :to="'purchase-detail?id=' + item.id" append class="list-operation">详情</router-link>
+              <a class="list-operation list-link" :href="item.url + item.id + excelParams" target="_blank">导出</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -58,9 +73,7 @@
     created() {
       let currentId = this.getCurrentId()
       let token = this.$storage.get('auth.currentUser', '')
-      this.excelParams = token
-        ? `?access_token=${token.access_token}&current_corp=${currentId}`
-        : ''
+      this.excelParams = token ? `?access_token=${token.access_token}&current_corp=${currentId}` : ''
     },
     methods: {
       ...purchaseMethods,
@@ -114,7 +127,6 @@
   .list-box
     padding-left: 30px
     box-sizing: border-box
-    border-bottom: 1px solid $color-line
     display: flex
     align-items: center
     .list-item

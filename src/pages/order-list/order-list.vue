@@ -1,46 +1,62 @@
 <template>
   <div class="purchase-management table">
-    <div class="tab-list">
-      <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></status-tab>
-    </div>
-    <div class="search-warp">
-      <div class="ac-tab">
+    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
+    <div class="down-content">
+      <span class="down-tip">筛选</span>
+      <div class="down-item-small">
         <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+      </div>
+      <div class="down-item">
         <base-date-select :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>
+      </div>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
         <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
-      </div>
-      <div class="btn-main hand" @click="exportExcel">导出Excel</div>
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in list" :key="index" class="list-content list-box">
-        <div class="list-item list-double-row">
-          <p class="item-dark">{{item.order_sn}}</p>
-          <p class="item-sub">{{item.created_at}}</p>
-        </div>
-        <div class="list-item list-text">
-          <div class="list-text-name">{{item.nickname}}</div>
-        </div>
-        <div class="list-item list-text">￥{{item.price}}</div>
-        <div class="list-item list-text">￥{{item.total}}</div>
-        <div class="list-item list-text">{{item.delivery_at}}</div>
-        <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
-        <div class="list-item list-text">{{item.status_text}}</div>
-        <div class="list-item list-use">
-          <router-link tag="span" :to="{path: `/home/order-detail/${item.order_id}`}" append class="list-operation">详情</router-link>
-        </div>
+
       </div>
     </div>
-    <div class="pagination-box">
-      <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-order_list@2x.png" class="identification-icon">
+          <p class="identification-name">订单列表</p>
+        </div>
+        <div class="function-btn">
+          <div class="btn-main" @click="exportExcel">导出Excel</div>
+        </div>
+      </div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in list" :key="index" class="list-content list-box">
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.order_sn}}</p>
+              <p class="item-sub">{{item.created_at}}</p>
+            </div>
+            <div class="list-item list-text">
+              <div class="list-text-name">{{item.nickname}}</div>
+            </div>
+            <div class="list-item list-text">￥{{item.price}}</div>
+            <div class="list-item list-text">￥{{item.total}}</div>
+            <div class="list-item list-text">{{item.delivery_at}}</div>
+            <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
+            <div class="list-item list-text">{{item.status_text}}</div>
+            <div class="list-item list-use">
+              <router-link tag="span" :to="{path: `order-detail/${item.order_id}`}" append class="list-operation">详情</router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import StatusTab from '@components/status-tab/status-tab'
   import API from '@api'
   import {authComputed, orderComputed, orderMethods} from '@state/helpers'
 
@@ -68,9 +84,6 @@
 
   export default {
     name: PAGE_NAME,
-    components: {
-      StatusTab
-    },
     page: {
       title: TITLE
     },

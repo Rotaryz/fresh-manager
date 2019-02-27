@@ -45,7 +45,7 @@
       },
       width: {
         type: Number,
-        default: 192
+        default: 102
       },
       height: {
         type: Number,

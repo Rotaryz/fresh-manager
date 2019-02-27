@@ -1,5 +1,5 @@
 <template>
-  <div class="advertisement">
+  <div class="advertisement normal-box">
     <phone-box :bannerList="bannerList" :goodsList="goodsList" :navList="navList" :cmsMsg="infoBannerList.modules" @setType="_changeType"></phone-box>
     <!--广告-->
     <div v-if="cmsType === 'bannar'" class="advertisement-content">
@@ -31,7 +31,7 @@
       </draggable>
       <div class="advertisement-btn">
         <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
-        <div class="btn-main new-advertisement" @click="_addMore">新建广告</div>
+        <div class="new-advertisement" @click="_addMore">新建广告</div>
       </div>
     </div>
     <!--导航-->
@@ -65,7 +65,7 @@
       </draggable>
       <div class="advertisement-btn">
         <div class="submit-activity-btn hand" @click="_editNav()">提交</div>
-        <div class="btn-main new-advertisement" @click="_navMore">新建导航</div>
+        <div class="new-advertisement" @click="_navMore">新建导航</div>
       </div>
     </div>
     <!--活动-->
@@ -298,7 +298,8 @@
           break
         }
       },
-      _setSort() {},
+      _setSort() {
+      },
       _setLinkType(index, e) {
         this.tabIndex = index
         this.left = e.target.offsetLeft + (e.target.offsetWidth - 34) / 2
@@ -331,7 +332,7 @@
           return
         }
         await this._getModuleMsg(this.cmsType, this.cmsId)
-      // this.temporaryBannar.splice(this.delIndex, 1)
+        // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -612,25 +613,6 @@
     .advertisement-btn
       margin: 50px 0 0px 40px
       display: flex
-    .advertisement-sure
-    .new-advertisement
-      font-style: $font-size-14
-      padding: 8px 19px 8px 33px
-      position: relative
-      &:after
-        content: ''
-        width: 2px
-        height: 10px
-        background: $color-white
-        col-center()
-        left: 21px
-      &:before
-        content: ''
-        width: 10px
-        height: 2px
-        background: $color-white
-        col-center()
-        left: 17px
     .advertisement-item
       margin: 24px 40px 0px
       border: 1px dashed #D9D9D9
@@ -753,7 +735,7 @@
           right: -4px
           white-space: nowrap
           font-size: $font-size-14
-          color: $color-sub
+          color: #3E77C3
           margin-left: 21px
           line-height: 1
           user-select: none
@@ -762,7 +744,7 @@
           height: 32px
           line-height: 32px
           border: 1px solid $color-main
-          border-radius: 4px
+          border-radius: 1px
           font-size: $font-size-14
           font-family: $font-family-regular
           color: $color-main
@@ -1043,18 +1025,41 @@
     margin-right: 20px
     font-family: $font-family-regular
     font-size: $font-size-14
-    color: $color-text-main
+    color: $color-white
     letter-spacing: 0
     width: 108px
     height: 32px
-    border: 1px solid #D9D9D9
-    border-radius: 4px
+    background :$color-main
+    border-radius: 1px
     line-height: 32px
     text-align: center
     transition: 0.3s all
+    user-select: none
     &:hover
       color: $color-text-sub
       border-color: $color-text-sub
+
+  .new-advertisement
+    font-size: $font-size-14
+    padding: 7px 19px 8px 33px
+    line-height: 1
+    position: relative
+    color: $color-main
+    border:0.5px solid $color-main
+    &:after
+      content: ''
+      width: 2px
+      height: 10px
+      background: $color-main
+      col-center()
+      left: 21px
+    &:before
+      content: ''
+      width: 10px
+      height: 2px
+      background: $color-main
+      col-center()
+      left: 17px
 
   //  单选框
   .select-icon

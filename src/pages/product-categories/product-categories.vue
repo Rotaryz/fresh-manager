@@ -1,7 +1,13 @@
 <template>
-  <div class="product-categories">
-    <div class="product-top">
-      <div class="btn-main" @click="newBigCate">新建大类 +</div>
+  <div class="product-categories normal-box">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-goods_classify@2x.png" class="identification-icon">
+        <p class="identification-name">商品分类</p>
+      </div>
+      <div class="function-btn">
+        <div class="btn-main" @click="newBigCate">新建大类<span class="add-icon"></span></div>
+      </div>
     </div>
     <ul class="categories-box">
       <li v-for="(item, index) in categoryList" :key="index" class="big-box">
@@ -11,7 +17,7 @@
             <div class="text">{{item.name}}</div>
           </div>
           <div class="big-main-right">
-            <span class="list-operation" @click="editBigCatee(item, index)">编辑</span>
+            <span class="list-operation" @click="editBigCatee(item, index)">修改</span>
             <span class="list-operation" @click="delBigCatee(item, index)">删除</span>
           </div>
         </div>
@@ -19,7 +25,7 @@
           <div v-for="(twoitem, twoindex) in item.list" :key="twoindex" class="open-item">
             <div class="open-item-left">{{twoitem.name}}</div>
             <div class="big-main-right">
-              <span class="list-operation" @click="editSmallCatee(item, index, twoitem, twoindex)">编辑</span>
+              <span class="list-operation" @click="editSmallCatee(item, index, twoitem, twoindex)">修改</span>
               <span class="list-operation" @click="delSmallCatee(item, index, twoitem, twoindex)">删除</span>
             </div>
           </div>
@@ -42,6 +48,7 @@
   import ChangeModel from '@components/change-model/change-model'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
+
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
   const TITLE = '商品分类'
 
@@ -126,7 +133,7 @@
           API.Product.editCategory(this.bigItem.id, {name: name, sort: sort, parent_id: 0}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$refs.bigModel.hide()
-              this.$toast.show('编辑成功')
+              this.$toast.show('修改成功')
               this.categoryList[this.bigIndex].name = name
               this.categoryList[this.bigIndex].sort = sort
               this.categoryList.sort(this._sort)
@@ -154,7 +161,7 @@
         this.bigItem = item
         this.bigIndex = index
         this.categoryType = 2
-        this.$refs.bigModel.show('编辑商品分类', item.name, item.sort)
+        this.$refs.bigModel.show('修改商品分类', item.name, item.sort)
       },
       delBigCatee(item, index) {
         this.bigItem = item
@@ -188,7 +195,7 @@
         API.Product.editCategory(this.smallItem.id, {name: name, sort: sort, parent_id: id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$refs.smallModel.hide()
-            this.$toast.show('编辑成功')
+            this.$toast.show('修改成功')
             if (this.bigItem.id * 1 === id * 1) {
               this.categoryList[this.bigIndex].list[this.smallIndex].name = name
               this.categoryList[this.bigIndex].list[this.smallIndex].sort = sort
@@ -249,12 +256,12 @@
     align-items: center
     justify-content: space-between
     height: 80px
+
   .categories-box
-    border: 1px solid #e1e1e1
-    border-bottom: 0px solid #e1e1e1
+    border-1px(#e1e1e1, 1px)
     .big-box
       width: 100%
-      border-bottom: 1px solid #e1e1e1
+      border-bottom-1px(#e1e1e1)
       .big-box-main
         height: 60px
         padding-left: 22px
@@ -282,10 +289,10 @@
             line-height: 1
             color: $color-text-main
             font-family: $font-family-medium
+
   .add-box
     height: 60px
-    border-top: 1px solid #e1e1e1
-    background: #f9f9f9
+    border-top-1px(#e1e1e1)
     padding-left: 57px
     layout(row)
     align-items: center
@@ -294,29 +301,33 @@
       height: 12px
       border-radius: 50%
       background-size: 12px
-      bg-image('icon-plus_young')
-      margin-right: 5px
+      bg-image('icon-add')
+      margin-right: 6px
     .text
       font-size: $font-size-14
       line-height: 1
-      color: $color-sub
+      color: $color-main
       font-family: $font-family-medium
+
   .open-item
     height: 60px
-    border-top: 1px solid #e1e1e1
-    background: #f9f9f9
+    border-top-1px(#e1e1e1)
+    background: $color-white
     padding-left: 57px
     padding-right: 14px
     layout(row)
     align-items: center
     justify-content: space-between
+    font-size: $font-size-14
+    &:nth-child(2n -1)
+      background: #F5F7FA
+    &:hover
+      background: #F7FAF5
     .open-item-left
       font-size: $font-size-14
       color: $color-text-main
       font-family: $font-family-regular
-  .big-main-right
-    .list-operation
-      color: $color-sub
+
   .product-categories
     width: 100%
 </style>

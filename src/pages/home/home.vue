@@ -81,9 +81,7 @@
         box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
         border-radius: 10px
       .container-small
-        padding: 0 20px
         border-radius: 1px
-        background: $color-white
         flex: 1
         display: flex
     .container-routine

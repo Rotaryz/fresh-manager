@@ -1,42 +1,54 @@
 <template>
   <div class="product-list table">
-    <div class="product-top">
-      <div class="product-left">
-        <router-link tag="span" to="edit-goods" append class="btn-main">新建商品 +</router-link>
+    <div class="down-content">
+      <span class="down-tip">筛选</span>
+      <div class="down-item">
         <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
-        <div class="search-left">
-          <base-search placeHolder="商品名称" @search="search"></base-search>
-        </div>
       </div>
-      <div class="product-right">
-        <a :href="downUrl" class="btn-main" target="_blank">导出Excel</a>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <base-search placeHolder="商品名称" @search="search"></base-search>
       </div>
     </div>
-    <div class="list-header list-box">
-      <div v-for="(item, index) in productTitleList" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
-        <div class="list-item">
-          <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-product_list@2x.png" class="identification-icon">
+          <p class="identification-name">商品列表</p>
         </div>
-        <div class="list-item">{{item.name}}</div>
-        <div class="list-item">{{item.goods_units}}</div>
-        <div class="list-item">{{item.store_price}}</div>
-        <div class="list-item">
-          <div class="list-item-btn" @click="switchBtn(item, index)">
-            <base-switch :status="item.is_online"></base-switch>
+        <div class="function-btn">
+          <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
+          <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>
+        </div>
+      </div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item, index) in productTitleList" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
+            <div class="list-item">
+              <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+            </div>
+            <div class="list-item">{{item.name}}</div>
+            <div class="list-item">{{item.goods_units}}</div>
+            <div class="list-item">{{item.store_price}}</div>
+            <div class="list-item">
+              <div class="list-item-btn" @click="switchBtn(item, index)">
+                <base-switch :status="item.is_online"></base-switch>
+              </div>
+            </div>
+            <div class="list-item">{{item.usable_stock}}</div>
+            <div class="list-item list-operation-box">
+              <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
+              <span class="list-operation" @click.stop="delGoods(item)">删除</span>
+            </div>
           </div>
         </div>
-        <div class="list-item">{{item.usable_stock}}</div>
-        <div class="list-item list-operation-box">
-          <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
-          <span class="list-operation" @click.stop="delGoods(item)">删除</span>
-        </div>
       </div>
-    </div>
-    <div class="pagination-box">
-      <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+      <div class="pagination-box">
+        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+      </div>
     </div>
     <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
@@ -66,7 +78,7 @@
         dispatchSelect: {
           check: false,
           show: false,
-          content: '全部',
+          content: '全部状态',
           type: 'default',
           data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
         },
@@ -92,7 +104,8 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${this.keyWord}&current_corp=${currentId}`
+        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
+          this.keyWord}&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsListData() {
@@ -200,10 +213,6 @@
         flex: 1.5
       &:last-child
         flex: 0.8
-
-  .list-operation-box
-    .list-operation
-      color: $color-sub
 
   .list-item-btn
     display: inline-block

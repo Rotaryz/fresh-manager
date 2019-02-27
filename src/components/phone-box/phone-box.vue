@@ -25,7 +25,7 @@
             </div>
           </div>
           <!--分类-->
-          <div v-if="cms.module_name === 'navigation'" class="hand" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
+          <div v-if="cms.module_name === 'navigation'" class="hand nav-box" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
             <div v-if="navList.length" class="nav-list">
               <div v-for="(item, index) in navList" :key="index" class="nav-item">
                 <div :style="{'background-image': 'url(' + item.image_url + ')'}" class="nav-top-box"></div>
@@ -188,7 +188,7 @@
   @import "~@design"
 
   .phone-box
-    width: 48%
+    width: 588px
     box-sizing: border-box
     display: flex
     justify-content: center
@@ -218,6 +218,17 @@
     align-items: center
     justify-content: center
     box-sizing: border-box
+    position: relative
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      transition: all 0.2s
+      box-sizing: border-box
+      border: 2px dashed #D9D9D9
     .big-box
       width: 299px
       height: 100%
@@ -259,7 +270,7 @@
       height: 100%
       transition: all 0.2s
       box-sizing: border-box
-      border: 2px solid $color-main
+      border: 2px solid $color-main !important
 
   .nav-list
     box-sizing: border-box
@@ -323,9 +334,34 @@
         color: #808080
         font-family: $font-family-regular
 
+  .nav-box
+    margin-top: 7px
+    position: relative
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      transition: all 0.2s
+      box-sizing: border-box
+      border: 2px dashed #D9D9D9
+
   .goods-box
     padding: 0 10.08px
     box-sizing: border-box
+    position: relative
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      transition: all 0.2s
+      box-sizing: border-box
+      border: 2px dashed #D9D9D9
     .goods-list
       height: 121px
       layout(row)

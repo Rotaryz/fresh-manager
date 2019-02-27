@@ -1,33 +1,49 @@
 <template>
   <div class="customer-management table">
-    <div class="tab-header">
-      <div class="tab-box">
+    <div class="down-content">
+      <span class="down-tip">筛选</span>
+      <div class="down-item">
         <base-date-select placeHolder="选择注册日期" @getTime="_selectTime"></base-date-select>
       </div>
-      <base-search placeHolder="客户昵称/手机号" @search="_search"></base-search>
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item" :class="{'hand': item.showSort}" @click="_setSort(index)">
-        {{item.title}}
-        <base-sort v-show="item.showSort" ref="sort" :sortStatus="item.sort"></base-sort>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <base-search placeHolder="客户昵称/手机号" @search="_search"></base-search>
       </div>
     </div>
-    <div class="list">
-      <div v-for="(item, index) in customerList" :key="index" class="list-content list-box">
-        <div class="list-item">
-          <img :src="item.head_image_url" class="list-img">
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-customer_list@2x.png" class="identification-icon">
+          <p class="identification-name">采购管理</p>
         </div>
-        <div class="list-item">{{item.nickname}}</div>
-        <div class="list-item">{{item.mobile}}</div>
-        <div class="list-item">{{item.order_count}}</div>
-        <div class="list-item">{{item.order_total}}</div>
-        <div class="list-item">{{item.unit_price}}</div>
-        <div class="list-item">{{item.created_at}}</div>
+        <div class="function-btn">
+        </div>
       </div>
-    </div>
-    <div class="pagination-box">
-      <!---->
-      <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item" :class="{'hand': item.showSort}" @click="_setSort(index)">
+            {{item.title}}
+            <base-sort v-show="item.showSort" ref="sort" :sortStatus="item.sort"></base-sort>
+          </div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in customerList" :key="index" class="list-content list-box">
+            <div class="list-item">
+              <img :src="item.head_image_url" class="list-img">
+            </div>
+            <div class="list-item">{{item.nickname}}</div>
+            <div class="list-item">{{item.mobile}}</div>
+            <div class="list-item">{{item.order_count}}</div>
+            <div class="list-item">{{item.order_total}}</div>
+            <div class="list-item">{{item.unit_price}}</div>
+            <div class="list-item">{{item.created_at}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <!---->
+        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +82,8 @@
     computed: {
       ...customerComputed
     },
-    created() {},
+    created() {
+    },
     methods: {
       ...customerMethods,
       _selectTime(value) {

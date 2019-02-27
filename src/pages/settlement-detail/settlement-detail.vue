@@ -1,33 +1,49 @@
 <template>
   <div class="settlement-detail table">
-    <div class="tab-header">
-      <div class="tab-box">
+    <div class="down-content">
+      <span class="down-tip">筛选</span>
+      <div class="down-item-small">
         <base-drop-down :select="statusObj" @setValue="_setStatus"></base-drop-down>
       </div>
-      <div class="tab-box">
+      <div class="down-item">
         <base-drop-down :select="settlementObj" @setValue="_settlementType"></base-drop-down>
       </div>
-      <base-search placeHolder="订单号" @search="_search"></base-search>
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in settlementDetail" :key="index" class="list-content list-box">
-        <div class="list-item">{{item.order_sn}}</div>
-        <div class="list-item">{{item.total}}</div>
-        <div class="list-item">{{item.refuse_total}}</div>
-        <div class="list-item">{{item.money}}</div>
-        <div class="list-item">{{item.type_str}}</div>
-        <div class="list-item">{{item.status_str}}</div>
-        <div class="list-item">{{item.updated_at}}</div>
-        <div class="list-item list-operation-box">
-          <span class="list-operation" @click="_goDetail(item)">详情</span>
-        </div>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <base-search placeHolder="订单号" @search="_search"></base-search>
       </div>
     </div>
-    <div class="pagination-box">
-      <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-bandit_list@2x.png" class="identification-icon">
+          <p class="identification-name">团长结算详情</p>
+        </div>
+        <div class="function-btn">
+        </div>
+      </div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in settlementDetail" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.order_sn}}</div>
+            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">{{item.refuse_total}}</div>
+            <div class="list-item">{{item.money}}</div>
+            <div class="list-item">{{item.type_str}}</div>
+            <div class="list-item">{{item.status_str}}</div>
+            <div class="list-item">{{item.updated_at}}</div>
+            <div class="list-item list-operation-box">
+              <span class="list-operation" @click="_goDetail(item)">详情</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -84,7 +100,7 @@
       ...leaderMethods,
       _goDetail(item) {
         // 退货详情id未对 todo
-        let url = '/home/order-detail/' + item.order_id
+        let url = '/home/order-list/order-detail/' + item.order_id
         this.$router.push(url)
       },
       _getSettlementDetail() {

@@ -13,7 +13,8 @@ const aliases = {
   '@mixins': 'src/mixins',
   '@router': 'src/router',
   '@utils': 'src/utils',
-  '@state': 'src/state'
+  '@state': 'src/state',
+  '@style': 'src/design'
 }
 
 module.exports = {

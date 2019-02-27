@@ -1,24 +1,37 @@
 <template>
   <div class="budget-detail table">
-    <div class="tab-header">
-      <base-drop-down :select="billSelect" @setValue="changeBillType"></base-drop-down>
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in billList" :key="index" class="list-content list-box">
-        <div class="list-item">{{item.created_at}}</div>
-        <div class="list-item">{{item.type_str}}</div>
-        <div class="list-item">{{item | adjustType(1)}}</div>
-        <div class="list-item">{{item | adjustType(2)}}</div>
-        <div class="list-item">{{item.after_remaining}}</div>
-        <div class="list-item">{{item.order_sn}}</div>
+    <div class="down-content">
+      <span class="down-tip">筛选</span>
+      <div class="down-item">
+        <base-drop-down :select="billSelect" @setValue="changeBillType"></base-drop-down>
       </div>
     </div>
-    <div class="pagination-box">
-      <!--:pageDetail="pageTotal"-->
-      <base-pagination ref="pagination" :pageDetail="billPageDetail" :pagination="billPage" @addPage="setBillPage"></base-pagination>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-bandit_list@2x.png" class="identification-icon">
+          <p class="identification-name">{{name}}-收支明细</p>
+        </div>
+        <div class="function-btn">
+        </div>
+      </div>
+      <div class="list-header list-box">
+        <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+      </div>
+      <div class="list">
+        <div v-for="(item, index) in billList" :key="index" class="list-content list-box">
+          <div class="list-item">{{item.created_at}}</div>
+          <div class="list-item">{{item.type_str}}</div>
+          <div class="list-item">{{item | adjustType(1)}}</div>
+          <div class="list-item">{{item | adjustType(2)}}</div>
+          <div class="list-item">{{item.after_remaining}}</div>
+          <div class="list-item">{{item.order_sn}}</div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <!--:pageDetail="pageTotal"-->
+        <base-pagination ref="pagination" :pageDetail="billPageDetail" :pagination="billPage" @addPage="setBillPage"></base-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -61,7 +74,8 @@
     data() {
       return {
         listTitle: LIST_TITLE,
-        billSelect: BILL_SELECT
+        billSelect: BILL_SELECT,
+        name: ''
       }
     },
     computed: {
@@ -69,6 +83,7 @@
     },
     created() {
       this._getShopBillType()
+      this.name = this.$route.params.name
     },
     methods: {
       ...leaderMethods,

@@ -1,5 +1,13 @@
 <template>
-  <div class="order-detail">
+  <div class="order-detail detail-content">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-order_list@2x.png" class="identification-icon">
+        <p class="identification-name">订单详情</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="detail-item">
       <div class="top">
         <div class="title">基本信息</div>
@@ -59,9 +67,6 @@
         </div>
       </div>
     </div>
-    <div class="back">
-      <div class="back-btn btn-main" @click="_back">返回</div>
-    </div>
   </div>
 </template>
 
@@ -95,109 +100,10 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  @import "~@style/detail"
   .order-detail
     width: 100%
     padding-bottom: 80px
-
-  .detail-item
-    layout()
-    .top
-      height: 62px
-      border-bottom: 1px solid $color-line
-      layout(row)
-      position: relative
-      .title
-        padding-top: 30px
-        padding-bottom: 16px
-        height: 62px
-        box-sizing: border-box
-        font-family: $font-family-medium
-        font-size: $font-size-16
-        color: $color-text-main
-      .line
-        transition: all .3s
-        background: $color-positive
-        height: 2px
-        width: 34px
-        position: absolute
-        left: 0
-        bottom: 0
-    .bot
-      layout(row)
-      align-items: center
-      flex-wrap: warp
-      .info-item
-        word-break: break-all
-        font-family: $font-family-regular
-        font-size: $font-size-14
-        color: $color-text-main
-        line-height: 18px
-        width: 209px
-        padding-bottom: 20px
-        margin-right: 80px
-        &:last-child
-          width: 320px
-          margin-right: 0
-    .sobot
-      padding: 30px 0 0px 15px
-      width: 1280px
-      box-sizing: border-box
-    .goods-list
-      margin: 28px 0px 0px
-      width: 100%
-      padding: 0 15px
-      box-sizing: border-box
-      .ro-order-list-footer
-        background: $color-white
-        layout(row)
-        align-items: center
-        justify-content: flex-end
-        width: 100%
-        padding-top: 20px
-        .ro-order-list-foot-box
-          layout(row)
-          justify-content: flex-end
-        .foot-item
-          font-family: $font-family-medium
-          font-size: $font-size-14
-          color: $color-text-main
-          margin-left: 48px
-          &:first-child
-            margin-left: 0
-      .ro-order-list
-        width: 100%
-        background: $color-white
-        .ro-order-list-box
-          width: 100%
-          padding-left: 30px
-          layout(row)
-          white-space: nowrap
-          height: 60px
-          box-sizing: border-box
-          align-items: center
-          background: $color-white
-          border-bottom: 1px solid $color-line
-          .ro-order-list-item
-            font-family: $font-family-regular
-            font-size: $font-size-14
-            color: $color-text-main
-      .ro-order-list-header
-        width: 100%
-        layout(row)
-        padding-left: 30px
-        white-space: nowrap
-        box-sizing: border-box
-        align-items: center
-        height: 50px
-        background: #F9F9F9
-        border-bottom: 1px solid $color-line
-        .ro-order-list-item
-          font-family: $font-family-regular
-          font-size: $font-size-16
-          color: $color-text-main
-          line-height: 16px
-
   .ro-order-list-item
     &:nth-child(1)
       flex: 1.5
@@ -211,20 +117,4 @@
       flex: 1
     &:last-child
       flex: 0.5
-
-  .back
-    position: fixed
-    left: 200px
-    right: 0px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    .back-btn
-      font-size: $font-size-16
-      margin-left: 40px
-      padding: 12px 32px
 </style>

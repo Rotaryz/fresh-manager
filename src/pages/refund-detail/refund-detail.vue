@@ -1,5 +1,5 @@
 <template>
-  <div class="refund-detail">
+  <div class="refund-detail detail-content">
     <div class="detail-item">
       <div class="top">
         <div class="title">基本信息</div>
@@ -36,20 +36,20 @@
         <div class="line"></div>
       </div>
       <div class="bot goods-list">
-        <div class="list-header">
-          <div v-for="(item, index) in titleList" :key="index" class="list-item">
+        <div class="ro-order-list-header">
+          <div v-for="(item, index) in titleList" :key="index" class="ro-order-list-item">
             {{item}}
           </div>
         </div>
-        <div class="list">
-          <div class="list-box">
-            <div class="list-item list-text">{{detail.goods_name}}</div>
-            <div class="list-item list-text">{{detail.goods_units}}</div>
-            <div class="list-item list-text">{{detail.num}}</div>
-            <div class="list-item list-text">{{detail.price && `¥ ${detail.price}`}}</div>
-            <div class="list-item list-text">{{detail.total && `¥ ${detail.total}`}}</div>
-            <div class="list-item list-text">{{detail.after_sale_num}}</div>
-            <div class="list-item list-text">{{detail.after_sale_total && `¥ ${detail.after_sale_total}`}}</div>
+        <div class="ro-order-list">
+          <div class="ro-order-list-box">
+            <div class="ro-order-list-item ro-order-list-text">{{detail.goods_name}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{detail.goods_units}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{detail.num}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{detail.price && `¥ ${detail.price}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{detail.total && `¥ ${detail.total}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{detail.after_sale_num}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{detail.after_sale_total && `¥ ${detail.after_sale_total}`}}</div>
           </div>
         </div>
         <div class="list-footer">
@@ -59,9 +59,9 @@
         </div>
       </div>
     </div>
-    <div class="back">
-      <div class="back-btn btn-main" @click="_back">返回</div>
-    </div>
+    <!--<div class="back">-->
+    <!--<div class="back-btn" @click="_back">返回</div>-->
+    <!--</div>-->
     <default-modal ref="modal">
       <div slot="content">
         <div class="Auditing">
@@ -150,6 +150,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  @import "~@style/detail"
 
   .refund-detail
     width: 100%
@@ -221,7 +222,7 @@
         .list
           width: 100%
           background: $color-white
-          .list-box
+          .ro-order-list-box
             width: 100%
             padding-left: 30px
             layout(row)
@@ -231,7 +232,7 @@
             align-items: center
             background: $color-white
             border-bottom: 1px solid $color-line
-            .list-item
+            .ro-order-list-item
               font-family: $font-family-regular
               font-size: $font-size-14
               color: $color-text-main
@@ -245,15 +246,15 @@
           height: 50px
           background: #F9F9F9
           border-bottom: 1px solid $color-line
-          .list-item
+          .ro-order-list-item
             font-family: $font-family-regular
             font-size: $font-size-16
             color: $color-text-main
             line-height: 16px
-    .list-text
+    .ro-order-list-text
       no-wrap()
       width: 90%
-    .list-item
+    .ro-order-list-item
       &:nth-child(1)
         flex: 1.5
         no-wrap()

@@ -1,42 +1,55 @@
 <template>
-  <div class="dispatching-list" @click="_hideAllDownBox">
-    <div class="tab-header">
-      <base-drop-down :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
-      <div class="line"></div>
-      <!--<base-search placeHolder="社区名称/团长名称" @search="_search"></base-search>-->
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in dispatTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in deliveryOrder" :key="index" class="list-content list-box">
-        <div class="list-item list-double-row">
-          <p class="item-dark">{{item.order_sn}}</p>
-          <p class="item-sub">{{item.created_at}}</p>
-        </div>
-        <div class="list-item">{{item.social_name}}</div>
-        <div class="list-item">{{item.name}}</div>
-        <div class="list-item">{{item.total}}</div>
-        <div class="list-item">{{item.delivery_at}}</div>
-        <div class="list-item list-operation-box">
-          <router-link tag="span" :to="'dispatching-detail?id='+item.id" append class="list-operation">
-            详情
-          </router-link>
-          <span class="list-operation select-type-box" @click.stop="_selectFileType(index)">
-            导出
-            <transition name="fade">
-              <ul v-if="item.select" class="select-type" @click.stop="">
-                <li v-for="(type, idx) in typeList" :key="idx" class="select-item" @click="_hideSelectType(index,type, idx)">
-                  <a class="select-item-text" target="_blank" :href="item['url'+ idx] + item.id + excelParams">{{type}}</a>
-                </li>
-              </ul>
-            </transition>
-          </span>
-        </div>
+  <div class="dispatching-list table" @click="_hideAllDownBox">
+    <div class="down-content">
+      <span class="down-tip">配送单筛选</span>
+      <div class="down-item">
+        <base-drop-down :width="152" :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
       </div>
     </div>
-    <div class="pagination-box">
-      <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_addPage"></base-pagination>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-bandit_list@2x.png" class="identification-icon">
+          <p class="identification-name">团长配送单</p>
+        </div>
+        <div class="function-btn">
+        </div>
+      </div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in dispatTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in deliveryOrder" :key="index" class="list-content list-box">
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.order_sn}}</p>
+              <p class="item-sub">{{item.created_at}}</p>
+            </div>
+            <div class="list-item">{{item.social_name}}</div>
+            <div class="list-item">{{item.name}}</div>
+            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">{{item.delivery_at}}</div>
+            <div class="list-item list-operation-box">
+              <router-link tag="span" :to="'dispatching-detail?id='+item.id" append class="list-operation">
+                详情
+              </router-link>
+              <div class="list-operation select-type-box" @click.stop="_selectFileType(index)">
+                导出
+                <transition name="fade">
+                  <ul v-if="item.select" class="select-type" @click.stop="">
+                    <li v-for="(type, idx) in typeList" :key="idx" class="select-item" @click="_hideSelectType(index,type, idx)">
+                      <a class="select-item-text" target="_blank" :href="item['url'+ idx] + item.id + excelParams">{{type}}</a>
+                    </li>
+                  </ul>
+                </transition>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_addPage"></base-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -79,9 +92,7 @@
     async created() {
       let currentId = this.getCurrentId()
       let token = this.$storage.get('auth.currentUser', '')
-      this.excelParams = token
-        ? `?access_token=${token.access_token}&current_corp=${currentId}`
-        : ''
+      this.excelParams = token ? `?access_token=${token.access_token}&current_corp=${currentId}` : ''
       await this._getdropdownList()
     },
     methods: {
@@ -155,17 +166,9 @@
     align-items: center
     box-sizing: border-box
 
-  .list-header
-    height: 50px
-    font-size: $font-size-16
-    font-family: $font-family-regular
-    color: $color-text-main
-    background: $color-list-header
-
   .list-box
     padding-left: 30px
     box-sizing: border-box
-    border-bottom: 1px solid $color-line
     display: flex
     align-items: center
     .list-item
@@ -174,31 +177,6 @@
       flex: 1
       &:last-child
         flex: 0.6
-
-  .list
-    flex: 1
-    .list-content
-      font-family: $font-family-regular
-      color: $color-text-main
-      height: 70px
-      border-bottom: 1px solid $color-line
-      .list-item
-        no-wrap()
-        font-size: $font-size-14
-      .list-operation-box
-        overflow: visible
-      // 双行样式
-      .list-double-row
-        .item-sub
-          no-wrap()
-          line-height: 1
-          margin-top: 8px
-          font-size: $font-size-14
-          color: $color-text-assist
-        .item-dark
-          no-wrap()
-          font-size: $font-size-14
-          line-height: 1
 
   .pagination-box
     height: 70px

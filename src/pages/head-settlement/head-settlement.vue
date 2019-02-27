@@ -1,25 +1,40 @@
 <template>
   <div class="head-settlement table">
-    <div class="tab-header">
-      <base-search placeHolder="社区名称/团长名称/团长账号" @search="_search"></base-search>
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in settlementList" :key="index" class="list-content list-box">
-        <div class="list-item">{{item.mobile}}</div>
-        <div class="list-item">{{item.name}}</div>
-        <div class="list-item">{{item.social_name}}</div>
-        <div class="list-item">{{item.settled_total}}</div>
-        <div class="list-item">{{item.settle_total}}</div>
-        <div class="list-item list-operation-box">
-          <router-link tag="span" :to="`settlement-detail/${item.shop_id}/${item.name}-${item.mobile}`" append class="list-operation">详情</router-link>
-        </div>
+    <div class="down-content">
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <base-search placeHolder="社区名称/团长名称/团长账号" @search="_search"></base-search>
       </div>
     </div>
-    <div class="pagination-box">
-      <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-bandit_list@2x.png" class="identification-icon">
+          <p class="identification-name">团长结算列表</p>
+        </div>
+        <div class="function-btn">
+        </div>
+      </div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in settlementList" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.mobile}}</div>
+            <div class="list-item">{{item.name}}</div>
+            <div class="list-item">{{item.social_name}}</div>
+            <div class="list-item">{{item.settled_total}}</div>
+            <div class="list-item">{{item.settle_total}}</div>
+            <div class="list-item list-operation-box">
+              <router-link tag="span" :to="`settlement-detail/${item.shop_id}/${item.name}-${item.mobile}`" append class="list-operation">详情</router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+      </div>
     </div>
   </div>
 </template>

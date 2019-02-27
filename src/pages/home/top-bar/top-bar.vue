@@ -50,6 +50,7 @@
   .top-bar
     z-index: 1000
     background: #fff
+    border-left-1px($color-line)
     .userInfo-content
       layout(row)
       align-items: center

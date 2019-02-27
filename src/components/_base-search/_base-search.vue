@@ -1,8 +1,11 @@
 <template>
   <div class="base-search">
-    <input v-model="searchText" type="text" class="search-input" :placeholder="placeHolder" @keydown="_enter">
-    <div class="search-icon-box" @click="_search">
-      <span class="search-icon hand"></span>
+    <input v-model="searchText" :style="{'width': width + 'px'}" type="text" class="search-input"
+           :placeholder="placeHolder" @keydown="_enter"
+    >
+    <div class="search-icon-box hand" @click="_search">
+      搜索
+      <!--<span class="search-icon hand"></span>-->
     </div>
   </div>
 </template>
@@ -20,6 +23,10 @@
       infoText: {
         type: String,
         default: ''
+      },
+      width: {
+        type: Number,
+        default: 187
       }
     },
     data() {
@@ -46,7 +53,6 @@
   .base-search
     display: flex
     height: 28px
-    width: 244px
     overflow: hidden
 
   .search-input
@@ -57,31 +63,27 @@
     height: 100%
     width: 100%
     box-sizing: border-box
-    border: 1px solid $color-line
-    border-right: none
-    border-radius: 4px 0px 0px 4px
-    padding-left: 14px
+    border: 0.5px solid $color-line
+    border-radius: 1px
+    padding-left: 10px
     transition: all 0.2s
     &:hover
-      border: 1px solid #ACACAC
-      border-right: none
+      border: 0.5px solid #ACACAC
     &::placeholder
       font-family: $font-family-regular
       color: $color-text-assist
     &:focus
       border: 1px solid $color-sub !important
-      border-right: none !important
 
   .search-icon-box
     width: 47px
-    height: 100%
+    margin-left: 10px
     overflow: hidden
-    border-radius: 0px 4px 4px 0px
-    .search-icon
-      width: 47px
-      height: 100%
-      transition: all 0.3s
-      icon-image('icon-search')
-      &:active
-        transform: scale(1.1)
+    height: 28px
+    border-radius: 1px
+    background: $color-main
+    text-align: center
+    line-height: 28px
+    font-size: $font-size-12
+    color: $color-white
 </style>

@@ -1,42 +1,58 @@
 <template>
   <div class="purchase-management table">
-    <div class="tab-list">
-      <status-tab :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></status-tab>
-    </div>
-    <div class="search-warp">
-      <div class="ac-tab">
-        <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
+    <div class="down-content">
+      <span class="down-tip">订单筛选</span>
+      <div class="down-item-small">
+        <base-drop-down :width="152" :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+      </div>
+      <div class="down-item">
         <base-date-select :dateInfo="time" @getTime="changeTime"></base-date-select>
+      </div>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
         <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
       </div>
-      <div class="btn-main hand" @click="exportExcel">导出Excel</div>
     </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in list" :key="index" class="list-content list-box">
-        <div class="list-item list-double-row">
-          <p class="item-dark">{{item.after_sale_order_sn}}</p>
-          <p class="item-sub">{{item.created_at}}</p>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-return_goods@2x.png" class="identification-icon">
+          <p class="identification-name">退货管理</p>
         </div>
-        <div class="list-item list-text">
-          <div class="list-text-name">{{item.nickname}}</div>
-        </div>
-        <div class="list-item list-text">{{item.goods_name}}</div>
-        <div class="list-item list-text">￥{{item.total}}</div>
-        <div class="list-item list-text">{{item.order_sn}}</div>
-        <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
-        <div class="list-item list-text">{{item.remark}}</div>
-        <div class="list-item list-text">{{item.status_str}}</div>
-        <div class="list-item list-use">
-          <span v-if="item.after_sale_status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
-          <router-link tag="span" :to="{path: `/home/refund-detail/${item.id}`}" append class="list-operation">详情</router-link>
+        <div class="function-btn">
+          <div class="btn-main hand" @click="exportExcel">导出Excel</div>
         </div>
       </div>
-    </div>
-    <div class="pagination-box">
-      <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in list" :key="index" class="list-content list-box">
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.after_sale_order_sn}}</p>
+              <p class="item-sub">{{item.created_at}}</p>
+            </div>
+            <div class="list-item list-text">
+              <div class="list-text-name">{{item.nickname}}</div>
+            </div>
+            <div class="list-item list-text">{{item.goods_name}}</div>
+            <div class="list-item list-text">￥{{item.total}}</div>
+            <div class="list-item list-text">{{item.order_sn}}</div>
+            <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
+            <div class="list-item list-text">{{item.remark}}</div>
+            <div class="list-item list-text">{{item.status_str}}</div>
+            <div class="list-item list-use">
+              <span v-if="item.after_sale_status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
+              <router-link tag="span" :to="`refund-detail/${item.id}`" append class="list-operation">详情</router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+      </div>
     </div>
     <default-modal ref="modal">
       <div slot="content">
@@ -62,7 +78,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import StatusTab from '@components/status-tab/status-tab'
   import DefaultModal from '@components/default-modal/default-modal'
   import API from '@api'
   import {authComputed, returnsMethods, returnsComputed} from '@state/helpers'
@@ -94,9 +109,8 @@
   export default {
     name: PAGE_NAME,
     components: {
-      StatusTab,
       DefaultModal
-    // DefaultConfirm
+      // DefaultConfirm
     },
     page: {
       title: TITLE

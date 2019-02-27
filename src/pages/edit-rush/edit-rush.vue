@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-rush">
+  <div class="edit-rush detail-content">
     <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
@@ -49,35 +49,38 @@
       <!--<div :class="{'btn-disable': disable}" class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>-->
       <div class="activity-list">
         <div class="activity-tab">
-          <div :class="{'btn-disable': disable}" class="btn-main" @click="_showGoods">添加商品 +</div>
+          <div :class="{'btn-disable': disable}" class="add-goods-btn" @click="_showGoods">添加商品 +</div>
         </div>
-        <div class="commodities-list-header com-list-box">
-          <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
-        </div>
-        <div class="big-box">
-          <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-            <div class="com-list-item">{{item.name}}</div>
-            <div class="com-list-item">{{item.goods_units}}</div>
-            <div class="com-list-item">{{item.original_price}}</div>
-            <div class="com-list-item">
-              <input v-model="item.trade_price" type="number" class="com-edit">
-              <span v-if="item.original_price" class="small-money">￥</span>
-            </div>
-            <div class="com-list-item">
-              <input v-model="item.person_day_buy_limit" type="number" class="com-edit com-edit-small">
-            </div>
-            <div class="com-list-item">
-              <input v-model="item.usable_stock" type="number" class="com-edit com-edit-small">
-            </div>
-            <div class="com-list-item">{{item.sale_count}}</div>
-            <div class="com-list-item">
-              <input v-model="item.sort" type="number" class="com-edit com-edit-small">
-            </div>
-            <div class="com-list-item">
-              <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+        <div class="big-list">
+          <div class="commodities-list-header com-list-box commodities-list-top">
+            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+          </div>
+          <div class="big-box">
+            <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
+              <div class="com-list-item">{{item.name}}</div>
+              <div class="com-list-item">{{item.goods_units}}</div>
+              <div class="com-list-item">{{item.original_price}}</div>
+              <div class="com-list-item">
+                <input v-model="item.trade_price" type="number" class="com-edit">
+                <span v-if="item.original_price" class="small-money">￥</span>
+              </div>
+              <div class="com-list-item">
+                <input v-model="item.person_day_buy_limit" type="number" class="com-edit com-edit-small">
+              </div>
+              <div class="com-list-item">
+                <input v-model="item.usable_stock" type="number" class="com-edit com-edit-small">
+              </div>
+              <div class="com-list-item">{{item.sale_count}}</div>
+              <div class="com-list-item">
+                <input v-model="item.sort" type="number" class="com-edit com-edit-small">
+              </div>
+              <div class="com-list-item">
+                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
     <!--编辑分类弹窗-->
@@ -192,8 +195,8 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
-      <div :class="{'btn-disable': disable}" class="back-btn btn-main" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -623,6 +626,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  @import "~@style/detail"
 
   .edit-rush
     padding-bottom: 20px
@@ -631,29 +635,6 @@
 
   .rush-time
     margin-bottom: 27px
-
-  /*基本信息类头部盒子样式*/
-  .content-header
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    justify-content: space-between
-    height: 62px
-    position: relative
-    box-sizing: border-box
-    &:after
-      content: ''
-      position: absolute
-      width: 34px
-      height: 2px
-      background: $color-main
-      border-radius: 1px
-      bottom: -1px
-      left: 0
-    .content-title
-      color: $color-text-main
-      font-family: $font-family-medium
-      font-size: $font-size-16
 
   .edit-item
     display: flex
@@ -770,6 +751,8 @@
         &::-webkit-scrollbar-track
           box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
           border-radius: 10px
+      .commodities-list-top
+        margin-top: 0
       .com-list-box
         .com-list-item
           &:nth-child(1)
@@ -784,63 +767,19 @@
     height: 58px
     display: flex
     align-items: center
-    padding-left: 21px
     box-sizing: border-box
-
-  .commodities-list-header
-    height: 50px
-    background: $color-list-header
-    .com-list-item
-      font-size: $font-size-16
-
-  .com-list-content
-    height: 58.5px
-    .com-list-item
-      font-size: $font-size-14
-
-  // 列表
-  .com-list-box
-    padding-left: 30px
-    box-sizing: border-box
-    display: flex
-    align-items: center
-    border-bottom: 1px solid $color-line
-    .com-list-item
-      flex: 1
-      padding-right: 10px
+    .add-goods-btn
       box-sizing: border-box
-      position: relative
-      no-wrap()
-      color: $color-text-main
-      font-family: $font-family-regular
-      &:last-child
-        flex: 0.5
-      .com-edit
-        height: 34px
-        width: 93px
-        border-radius: 4px
-        box-sizing: border-box
-        border: 1px solid $color-line
-        padding-left: 22px
-        transition: all 0.3s
-        &::-webkit-inner-spin-button
-          appearance: none
-        &:hover
-          border: 1px solid #ACACAC
-        &::placeholder
-          font-family: $font-family-regular
-          color: $color-text-assist
-        &:focus
-          border-color: $color-sub !important
-      .small-money
-        col-center()
-        left: 10px
-        line-height: 1.1
-        font-size: $font-size-13
-        font-family: $font-family-regular
-        color: $color-text-main
-      .com-edit-small
-        width: 60px
+      height: 28px
+      line-height: 28px
+      width: 92px
+      background: $color-main
+      color: $color-white
+      font-size: $font-size-12
+      white-space: nowrap
+      transition: all 0.3s
+      text-align: center
+      border-radius: 1px
 
   //  弹窗
   .shade-box
@@ -1212,5 +1151,32 @@
       opacity: 0
     }
   }
+  .com-edit
+    height: 34px
+    width: 93px
+    border-radius: 4px
+    box-sizing: border-box
+    border: 1px solid $color-line
+    padding-left: 22px
+    transition: all 0.3s
+    &::-webkit-inner-spin-button
+      appearance: none
+    &:hover
+      border: 0.5px solid #ACACAC
+    &::placeholder
+      font-family: $font-family-regular
+      color: $color-text-assist
+    &:focus
+      border-color: $color-sub !important
+  .small-money
+    col-center()
+    left: 10px
+    line-height: 1.1
+    font-size: $font-size-13
+    font-family: $font-family-regular
+    color: $color-text-main
+  .com-edit-small
+    width: 60px
+
 
 </style>

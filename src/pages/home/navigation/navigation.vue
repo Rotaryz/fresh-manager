@@ -5,48 +5,29 @@
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
       <ul v-for="(item, index) in firstMenu" :key="index" class="menu">
-        <li class="nav-item" :class="item | isActive" @click="clickNav(item)">
+        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index)">
           <img :src="item.icon" class="nav-item-icon">
           <p class="nav-item-name">{{item.name}}</p>
         </li>
       </ul>
     </div>
     <div class="second">
-      <div class="second-item">
-        <p class="second-title">dsf</p>
-        <div class="second-link hand">sdf</div>
-        <div class="second-link hand">sdf</div>
+      <div v-for="(item, index) in navList" :key="index" class="second-item">
+        <p class="second-title">{{item.title}}</p>
+        <div v-for="(child, i) in item.children" :key="i" :class="child | childrenActive" class="second-link hand" @click="_setChildActive(child)">{{child.title}}</div>
       </div>
     </div>
-    <!--<dl v-for="(item, index) in navList" :key="index" :class="item | isActive" class="nav-item">-->
-    <!--<dt :class="item | isActive" @click="clickNav(item)">-->
-    <!--<img :src="item.isLight ? item.iconSelected : item.icon" alt="">-->
-    <!--<p>{{item.title}}</p>-->
-    <!--<i :class="item.children.length ? 'rotate' : ''"></i>-->
-    <!--</dt>-->
-    <!--<dd :style="item | childrenActive">-->
-    <!--<template v-for="(child, i) in item.children">-->
-    <!--<p :key="i" :class="child | isActive" @click="clickNav(child, index)">{{child.title}}</p>-->
-    <!--</template>-->
-    <!--</dd>-->
-    <!--</dl>-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+
   const COMPONENT_NAME = 'NAVIGATION_BAR'
+  const INFO_INDEX = 1
   // const HEIGHT = 40
-  const NAV_LIST = [
+  const SHOP = [
     {
-      title: '数据统计',
-      url: '/home/data-survey',
-      isLight: false,
-      children: []
-    },
-    {
-      title: '商品管理',
-      url: '/home/product-list',
-      isLight: false, // 是否亮灯
+      title: '商品',
       children: [
         {
           title: '商品列表',
@@ -66,15 +47,17 @@
       ]
     },
     {
-      title: '内容管理',
-      url: '/home/advertisement',
-      isLight: false,
-      children: []
+      title: '内容',
+      children: [
+        {
+          title: '内容管理',
+          url: '/home/advertisement',
+          isLight: false
+        }
+      ]
     },
     {
-      title: '活动管理',
-      url: '/home/rush-purchase',
-      isLight: false,
+      title: '活动',
       children: [
         {
           title: '今日抢购',
@@ -84,9 +67,7 @@
       ]
     },
     {
-      title: '订单管理',
-      url: '/home/order-list',
-      isLight: false,
+      title: '订单',
       children: [
         {
           title: '订单列表',
@@ -101,21 +82,27 @@
       ]
     },
     {
-      title: '采购管理',
-      url: '/home/purchase-management',
-      isLight: false,
-      children: []
+      title: '采购',
+      children: [
+        {
+          title: '采购管理',
+          url: '/home/purchase-management',
+          isLight: false
+        }
+      ]
     },
     {
-      title: '客户管理',
-      url: '/home/customer-management',
-      isLight: false,
-      children: []
+      title: '客户',
+      children: [
+        {
+          title: '客户管理',
+          url: '/home/customer-management',
+          isLight: false
+        }
+      ]
     },
     {
-      title: '团长管理',
-      url: '/home/leader-list',
-      isLight: false,
+      title: '团长',
       children: [
         {
           title: '团长列表',
@@ -138,11 +125,11 @@
           isLight: false
         }
       ]
-    },
+    }
+  ]
+  const FINANCE = [
     {
-      title: '财务管理',
-      url: '/home/business-overview',
-      isLight: false,
+      title: '财务',
       children: [
         {
           title: '营业概况',
@@ -157,18 +144,47 @@
       ]
     }
   ]
+  const STATISTICS = [
+    {
+      title: '统计',
+      children: [
+        {
+          title: '数据统计',
+          url: '/home/data-survey',
+          isLight: false
+        }
+      ]
+    }
+  ]
   const FIRST_MENU = [
-    {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: []},
-    {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: []},
-    {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: []},
-    {name: '统计', icon: require('./icon-statistics@2x.png'), isLight: false, second: []},
-    {name: '财务', icon: require('./icon-finance@2x.png'), isLight: false, second: []},
-    {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: []}]
+    {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
+    {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
+    {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: [], url: ''},
+    {
+      name: '统计',
+      icon: require('./icon-statistics@2x.png'),
+      isLight: false,
+      second: STATISTICS,
+      url: '/home/data-survey'
+    },
+    {
+      name: '财务',
+      icon: require('./icon-finance@2x.png'),
+      isLight: false,
+      second: FINANCE,
+      url: '/home/business-overview'
+    },
+    {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
+  ]
   export default {
     name: COMPONENT_NAME,
     filters: {
       // 子路有的激活状态过滤
       childrenActive(value) {
+        if (value.isLight) {
+          return 'second-link-active'
+        }
+        return ''
       },
       // 本路由的激活状态过滤
       isActive(value) {
@@ -180,9 +196,10 @@
     },
     data() {
       return {
-        navList: JSON.parse(JSON.stringify(NAV_LIST)),
         currentIndex: '',
         firstMenu: FIRST_MENU,
+        firstIndex: INFO_INDEX,
+        navList: []
       }
     },
     watch: {
@@ -194,14 +211,74 @@
       }
     },
     created() {
+      this._getMenuIndex()
       this._handleNavList()
     },
     methods: {
+      // 初始化一级菜单的高亮
+      _getMenuIndex() {
+        let currentPath = this.$route.fullPath
+        let index = ''
+        let smallIndex = -1
+        this.firstMenu = this.firstMenu.map((item, idx) => {
+          if (item.second.length) {
+            item.second.forEach((end) => {
+              if (smallIndex === -1 && index === '') {
+                smallIndex = end.children.findIndex((child) => {
+                  return currentPath.includes(child.url)
+                })
+                index = smallIndex !== -1 ? idx : ''
+                this.firstIndex = index
+                this.navList = index ? JSON.parse(JSON.stringify(item.second)) : this.navList
+              }
+            })
+          }
+          item.isLight = idx === index
+          return item
+        })
+      },
+      // 点击一级导航
+      _setFirstMenu(i) {
+        if (this.firstMenu[i].isLight) {
+          return
+        } else if (!this.firstMenu[i].second.length) {
+          this.$toast.show('该功能暂正在开发')
+          return
+        }
+        this.firstMenu = this.firstMenu.map((item, index) => {
+          item.isLight = index === i
+          return item
+        })
+        this.firstIndex = i
+        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].second))
+        this.$router.push(this.firstMenu[i].url)
+      },
+      // 跳转二级菜单页面
+      _setChildActive(child) {
+        this.$router.push(child.url)
+      },
+      // 监听页面变化
       _handleNavList() {
-      },
-      _resetNavList(currentIndex) {
-      },
-      clickNav(nav, index) {
+        let currentPath = this.$route.fullPath
+        let currentIndex = this.navList.findIndex((item) => {
+          return item.children.some((child) => currentPath.includes(child.url))
+        })
+        this.navList.map((item) => {
+          item.children = item.children.map((child) => {
+            child.isLight = false
+            return child
+          })
+          return item
+        })
+        let urlIndex = -1
+        this.navList[currentIndex].children.map((item, index) => {
+          if (urlIndex === -1) {
+            urlIndex = currentPath.includes(item.url) ? index : -1
+          }
+          item.isLight = currentPath.includes(item.url)
+          return item
+        })
+        this.firstMenu[this.firstIndex].url = this.navList[currentIndex].children[urlIndex].url
       }
     }
   }
@@ -279,13 +356,23 @@
     min-height: 100vh
     width: $menu-width
     background: $color-white
+    overflow-y: scroll
+    padding-top: 10px
+    white-space: nowrap
+    transition: all 0.2s
+    &::-webkit-scrollbar
+      width: 0px
     .second-title
-      margin: 40px 0 10px
+      transition: all 0.2s
+      margin: 30px 0 10px
       color: #888888
       font-size: $font-size-14
     .second-link
+      transition: all 0.2s
       height: 34px
       line-height: 34px
       color: $color-text-main
       font-size: $font-size-14
+    .second-link-active
+      color: $color-main
 </style>

@@ -1,69 +1,88 @@
 <template>
   <div class="leader-withdrawal table">
-    <div class="tab-header">
-      <base-drop-down :select="statusSelect" @setValue="changeWithdrawalStatus"></base-drop-down>
-      <div class="tab-item">
+    <div class="down-content">
+      <span class="down-tip">筛选</span>
+      <div class="down-item-small">
+        <base-drop-down :select="statusSelect" @setValue="changeWithdrawalStatus"></base-drop-down>
+      </div>
+      <div class="down-item">
         <base-date-select @getTime="_setTime"></base-date-select>
       </div>
-      <input v-model="orderSn" type="text" class="with-search" placeholder="提现单号">
-      <input v-model="keyword" type="text" class="with-search" placeholder="社区名称/团长名称/团长账号">
-      <div class="search-icon-box" @click="search">
-        <span class="search-icon hand"></span>
-      </div>
-      <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in withdrawalList" :key="index" class="list-content list-box">
-        <div class="list-item list-double-row">
-          <p class="item-dark">{{item.withdraw_sn}}</p>
-          <p class="item-sub">{{item.created_at}}</p>
-        </div>
-        <div class="list-item">{{item.mobile}}</div>
-        <div class="list-item">{{item.name}}</div>
-        <div class="list-item">{{item.social_name}}</div>
-        <div class="list-item">{{item.total}}</div>
-        <div class="list-item">{{item.poundage}}</div>
-        <div class="list-item">{{item.realy_total}}</div>
-        <div class="list-item list-help">
-          {{item.status_str}}
-          <div v-if="item.status === 2 || item.status === 4" class="help-box">
-            <img src="./icon-help@2x.png" class="help hand">
-            <div v-if="item.note" class="help-tip">{{item.note}}</div>
-          </div>
-        </div>
-        <div class="list-item list-operation-box">
-          <span v-if="item.status === 0 || item.status === 4 || item.status === 5" class="list-operation" @click="checkApply(item.id)">审核</span>
-          <router-link tag="span" :to="`budget-detail/${item.payee_id}/${item.name}`" append class="list-operation">收支明细</router-link>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <input v-model="orderSn" type="text" class="with-search" placeholder="提现单号">
+        <input v-model="keyword" type="text" class="with-search" placeholder="社区名称/团长名称/团长账号">
+        <div class="search-icon-box" @click="search">
+          搜索
         </div>
       </div>
+
     </div>
-    <div class="pagination-box">
-      <!--:pageDetail="pageTotal"-->
-      <base-pagination ref="pagination" :pageDetail="withdrawalPageDetail" :pagination="page" @addPage="setWithdrawalPage"></base-pagination>
-    </div>
-    <default-modal ref="modal">
-      <div slot="content">
-        <div class="Auditing">
-          <div class="top">
-            <div class="title">审核</div>
-            <div class="close" @click.stop="hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
-          </div>
-          <div class="text-area-box">
-            <span class="after"></span>
-            <textarea v-model="note" placeholder="请输入审核意见" class="model-area"></textarea>
-            <span class="before"></span>
-          </div>
-          <div class="btn-group">
-            <div class="btn-item" @click.stop="hideModal">取消</div>
-            <div class="btn-item" @click.stop="auditing(2)">驳回</div>
-            <div class="btn-item" @click.stop="auditing(1)">批准提现</div>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-bandit_list@2x.png" class="identification-icon">
+          <p class="identification-name">团长提现列表</p>
+        </div>
+        <div class="function-btn">
+          <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
+        </div>
+      </div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in withdrawalList" :key="index" class="list-content list-box">
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.withdraw_sn}}</p>
+              <p class="item-sub">{{item.created_at}}</p>
+            </div>
+            <div class="list-item">{{item.mobile}}</div>
+            <div class="list-item">{{item.name}}</div>
+            <div class="list-item">{{item.social_name}}</div>
+            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">{{item.poundage}}</div>
+            <div class="list-item">{{item.realy_total}}</div>
+            <div class="list-item list-help">
+              {{item.status_str}}
+              <div v-if="item.status === 2 || item.status === 4" class="help-box">
+                <img src="./icon-help@2x.png" class="help hand">
+                <div v-if="item.note" class="help-tip">{{item.note}}</div>
+              </div>
+            </div>
+            <div class="list-item list-operation-box">
+              <span v-if="item.status === 0 || item.status === 4 || item.status === 5" class="list-operation" @click="checkApply(item.id)">审核</span>
+              <router-link tag="span" :to="`budget-detail/${item.payee_id}/${item.name}`" append class="list-operation">收支明细</router-link>
+            </div>
           </div>
         </div>
       </div>
-    </default-modal>
+      <div class="pagination-box">
+        <!--:pageDetail="pageTotal"-->
+        <base-pagination ref="pagination" :pageDetail="withdrawalPageDetail" :pagination="page" @addPage="setWithdrawalPage"></base-pagination>
+      </div>
+      <default-modal ref="modal">
+        <div slot="content">
+          <div class="Auditing">
+            <div class="top">
+              <div class="title">审核</div>
+              <div class="close" @click.stop="hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
+            </div>
+            <div class="text-area-box">
+              <span class="after"></span>
+              <textarea v-model="note" placeholder="请输入审核意见" class="model-area"></textarea>
+              <span class="before"></span>
+            </div>
+            <div class="btn-group">
+              <div class="btn-item" @click.stop="hideModal">取消</div>
+              <div class="btn-item" @click.stop="auditing(2)">驳回</div>
+              <div class="btn-item" @click.stop="auditing(1)">批准提现</div>
+            </div>
+          </div>
+        </div>
+      </default-modal>
+    </div>
   </div>
 </template>
 
@@ -211,42 +230,6 @@
     position: relative
     .tab-item
       margin-left: 10px
-    .with-search
-      height: 28px
-      width: 244px
-      margin-left: 10px
-      color: $color-text-main
-      font-family: $font-family-regular
-      font-size: $font-size-12
-      box-sizing: border-box
-      border: 1px solid $color-line
-      border-radius: 4px
-      padding-left: 14px
-      transition: all 0.2s
-      &:hover
-        border: 1px solid #ACACAC
-      &::placeholder
-        font-family: $font-family-regular
-        color: $color-text-assist
-      &:focus
-        border: 1px solid $color-sub !important
-    .search-icon-box
-      overflow: hidden
-      height: 28px
-      width: 47px
-      border-radius: 4px
-      margin-left: 10px
-    .search-icon
-      box-sizing: border-box
-      height: 28px
-      width: 47px
-      transition: all 0.3s
-      icon-image('icon-search_button')
-      &:active
-        transform: scale(1.1)
-    .btn-main-end
-      col-center()
-      right: 0
 
   .list-box
     .list-item
@@ -264,6 +247,7 @@
         position: relative
         &:hover .help-tip
           opacity: .8
+          z-index :111
           visibility: initial
       .help
         width: 14px
@@ -345,7 +329,7 @@
         cursor: pointer
         text-align: center
         border: 1px solid $color-text-assist
-        border-radius: 4px
+        border-radius: 1px
         font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main
@@ -358,4 +342,34 @@
           color: $color-white
           border-color: $color-positive
 
+  .with-search
+    height: 28px
+    width: 187px
+    margin-right: 10px
+    color: $color-text-main
+    font-family: $font-family-regular
+    font-size: $font-size-12
+    box-sizing: border-box
+    border: 1px solid $color-line
+    border-radius: 1px
+    padding-left: 14px
+    transition: all 0.2s
+    &:hover
+      border: 1px solid #ACACAC
+    &::placeholder
+      font-family: $font-family-regular
+      color: $color-text-assist
+    &:focus
+      border: 1px solid $color-sub !important
+
+  .search-icon-box
+    overflow: hidden
+    height: 28px
+    width: 47px
+    border-radius: 1px
+    background: $color-main
+    text-align: center
+    line-height: 28px
+    font-size: $font-size-12
+    color: $color-white
 </style>

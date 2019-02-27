@@ -141,6 +141,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import _ from 'lodash'
+
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
 
@@ -373,9 +374,12 @@
   @import "~@design"
 
   .edit-leader
-    padding-bottom: 80px
     position: relative
     flex: 1
+    background: $color-white
+    padding: 0 20px 80px
+    box-sizing: border-box
+
   .select-box-input
     position: relative
     .edit-input
@@ -416,7 +420,7 @@
       .fater-list
         height: 180px
         overflow: auto
-        padding: 5px 0!important
+        padding: 5px 0 !important
         list-style: none
         .item
           min-width: 100px
@@ -445,7 +449,7 @@
         min-width: 110px
         height: 180px
         overflow: auto
-        padding: 5px 0!important
+        padding: 5px 0 !important
         list-style: none
         .item
           min-width: 100px
@@ -472,20 +476,24 @@
             color: $color-main
     .menu-leave-to
       height: 0
+
   ::-webkit-scrollbar {
     width: 10px
     height: 10px
   }
+
   ::-webkit-scrollbar-thumb {
     border-radius: 10px
-    -webkit-box-shadow: inset 0 0 5px rgba(93,93,93,.2)
+    -webkit-box-shadow: inset 0 0 5px rgba(93, 93, 93, .2)
     background: #c3c3c3
   }
+
   ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 5px rgba(78,78,78,.2)
+    -webkit-box-shadow: inset 0 0 5px rgba(78, 78, 78, .2)
     border-radius: 10px
     background: #e3e3e3
   }
+
   /*基本信息类头部盒子样式*/
   .content-header
     border-bottom: 1px solid $color-line
@@ -564,6 +572,7 @@
           color: $color-text-assist
         &:focus
           border-color: $color-sub !important
+
   .edit-pla
     font-size: $font-size-14
     color: $color-text-assist
@@ -571,8 +580,10 @@
     display: flex
     align-items: center
     margin-left: 10px
+
   .image-box
     margin-left: 40.9px
+
   .edit-image-box
     align-items: flex-start
     min-height: 116px

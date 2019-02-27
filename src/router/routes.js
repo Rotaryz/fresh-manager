@@ -27,7 +27,7 @@ export default [
     redirect: 'home/product-list',
     children: [
       /**
-       * 商品管理
+       * 商品
        */
       // 商品列表
       {
@@ -35,7 +35,7 @@ export default [
         name: 'product-list',
         component: () => lazyLoadView(import('@pages/product-list/product-list')),
         meta: {
-          titles: ['商品管理', '商品列表'],
+          titles: ['商品', '商品列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -58,7 +58,7 @@ export default [
         name: 'product-categories',
         component: () => lazyLoadView(import('@pages/product-categories/product-categories')),
         meta: {
-          titles: ['商品管理', '商品分类'],
+          titles: ['商品', '商品分类'],
           beforeResolve(routeTo, routeFrom, next) {
             //  商品分类
             store
@@ -81,7 +81,7 @@ export default [
         name: 'auxiliary-information',
         component: () => lazyLoadView(import('@pages/auxiliary-information/auxiliary-information')),
         meta: {
-          titles: ['商品管理', '辅助资料'],
+          titles: ['商品', '辅助资料'],
           beforeResolve(routeTo, routeFrom, next) {
             //  辅助资料
             store
@@ -104,7 +104,7 @@ export default [
         name: 'edit-goods',
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
-          titles: ['商品管理', '商品列表', '新建商品'],
+          titles: ['商品', '商品列表', '新建商品'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -127,11 +127,11 @@ export default [
         props: (route) => ({detail: route.params.detail})
       },
       /**
-       * 商品管理
+       * 商品
        *
        * ------------------------------------------------------------------------------------------
        *
-       * 商城管理
+       * 商城
        */
       // 轮播广告
       {
@@ -139,7 +139,7 @@ export default [
         name: 'advertisement',
         component: () => lazyLoadView(import('@pages/advertisement/advertisement')),
         meta: {
-          titles: ['商城管理', '轮播广告'],
+          titles: ['内容', '内容管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -162,7 +162,7 @@ export default [
         name: 'rush-purchase',
         component: () => lazyLoadView(import('@pages/rush-purchase/rush-purchase')),
         meta: {
-          titles: ['商城管理', '今日抢购'],
+          titles: ['商城', '今日抢购'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -185,7 +185,7 @@ export default [
         name: 'edit-rush',
         component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
         meta: {
-          titles: ['商城管理', '今日抢购', '新建活动'],
+          titles: ['商城', '今日抢购', '新建活动'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -208,11 +208,11 @@ export default [
         }
       },
       /**
-       * 商城管理
+       * 商城
        *
        * ------------------------------------------------------------------------------------------
        *
-       * 订单管理
+       * 订单
        */
       // 订单列表
       {
@@ -220,7 +220,7 @@ export default [
         name: 'order-list',
         component: () => lazyLoadView(import('@pages/order-list/order-list')),
         meta: {
-          titles: ['订单管理', '订单列表'],
+          titles: ['商城', '订单', '订单列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store
@@ -237,13 +237,13 @@ export default [
           }
         }
       },
-      // 退货管理
+      // 退货
       {
         path: 'returns-management',
         name: 'returns-management',
         component: () => lazyLoadView(import('@pages/returns-management/returns-management')),
         meta: {
-          titles: ['订单管理', '退货管理'],
+          titles: ['商城', '订单', '退货管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store
@@ -262,12 +262,11 @@ export default [
       },
       // 退款详情
       {
-        path: 'refund-detail/:id',
+        path: 'returns-management/refund-detail/:id',
         name: 'refund-detail',
         component: () => lazyLoadView(import('@pages/refund-detail/refund-detail')),
         meta: {
-          titles: ['订单管理', '退货管理', '退款详情'],
-          marginBottom: 80,
+          titles: ['商城', '订单', '退货管理', '退款详情'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('returns/getReturnsDetail', routeTo.params.id)
@@ -284,12 +283,11 @@ export default [
         }
       },
       {
-        path: 'order-detail/:id',
+        path: 'order-list/order-detail/:id',
         name: 'order-detail',
         component: () => lazyLoadView(import('@pages/order-detail/order-detail')),
         meta: {
-          titles: ['订单管理', '订单列表', '订单详情'],
-          marginBottom: 80,
+          titles: ['商城', '订单', '订单列表', '订单详情'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('order/getOrderDetail', routeTo.params.id)
@@ -306,18 +304,18 @@ export default [
         }
       },
       /**
-       * 订单管理
+       * 订单
        *
        * ------------------------------------------------------------------------------------------
        *
-       * 采购管理
+       * 采购
        */
       {
         path: 'purchase-management',
         name: 'purchase-management',
         component: () => lazyLoadView(import('@pages/purchase-management/purchase-management')),
         meta: {
-          titles: ['采购管理'],
+          titles: ['商城', '采购', '采购管理'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('purchase/getPurchaseList', {page: 1, orderSn: ''})
@@ -340,7 +338,7 @@ export default [
         name: 'purchase-detail',
         component: () => lazyLoadView(import('@pages/purchase-detail/purchase-detail')),
         meta: {
-          titles: ['采购管理', '采购详情'],
+          titles: ['商城', '采购', '采购详情'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -363,19 +361,19 @@ export default [
         props: (route) => ({detail: route.params.detail})
       },
       /**
-       * 采购管理
+       * 采购
        *
        * ------------------------------------------------------------------------------------------
        *
-       * 客户管理
+       * 客户
        */
-      // 客户管理
+      // 客户
       {
         path: 'customer-management',
         name: 'customer-management',
         component: () => lazyLoadView(import('@pages/customer-management/customer-management')),
         meta: {
-          titles: ['客户管理'],
+          titles: ['商城', '客户', '客户管理'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('customer/getCustomerList', {page: 1, startTime: '', endTime: '', keyword: '', sortType: 0})
@@ -393,11 +391,11 @@ export default [
         }
       },
       /**
-       * 客户管理
+       * 客户
        *
        * ------------------------------------------------------------------------------------------
        *
-       * 团长管理
+       * 团长
        */
       // 团长列表
       {
@@ -405,7 +403,7 @@ export default [
         name: 'leader-list',
         component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
         meta: {
-          titles: ['团长管理', '团长列表'],
+          titles: ['团长', '团长列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -428,7 +426,7 @@ export default [
         name: 'dispatching-list',
         component: () => lazyLoadView(import('@pages/dispatching-list/dispatching-list')),
         meta: {
-          titles: ['团长管理', '团长配送单'],
+          titles: ['团长', '团长配送单'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -451,7 +449,7 @@ export default [
         name: 'dispatching-detail',
         component: () => lazyLoadView(import('@pages/dispatching-detail/dispatching-detail')),
         meta: {
-          titles: ['团长管理', '团长配送单', '配送单详情'],
+          titles: ['团长', '团长配送单', '配送单详情'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -479,7 +477,7 @@ export default [
         name: 'edit-leader',
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
-          titles: ['团长管理', '团长配送单', '新建团长'],
+          titles: ['团长', '团长配送单', '新建团长'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -507,7 +505,7 @@ export default [
         name: 'head-settlement',
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
-          titles: ['团长管理', '团长结算'],
+          titles: ['团长', '团长结算'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
@@ -530,7 +528,7 @@ export default [
         name: 'settlement-detail',
         component: () => lazyLoadView(import('@pages/settlement-detail/settlement-detail')),
         meta: {
-          titles: ['团长管理', '团长结算', '团长结算详情'],
+          titles: ['团长', '团长结算', '团长结算详情'],
           beforeResolve(routeTo, routeFrom, next) {
             let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
             store
@@ -554,7 +552,7 @@ export default [
         name: 'leader-withdrawal',
         component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
         meta: {
-          titles: ['团长管理', '团长提现'],
+          titles: ['团长', '团长提现'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store
@@ -577,7 +575,7 @@ export default [
         name: 'budget-detail',
         component: () => lazyLoadView(import('@pages/budget-detail/budget-detail')),
         meta: {
-          titles: ['团长管理', '团长提现', '收支明细', ''],
+          titles: ['团长', '团长提现', '收支明细', ''],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('leader/getBillList', routeTo.params.id)
@@ -594,11 +592,11 @@ export default [
         }
       },
       /**
-       * 客户管理
+       * 客户
        *
        * ------------------------------------------------------------------------------------------
        *
-       * 财务管理
+       * 财务
        */
       // 交易记录
       {
@@ -606,7 +604,7 @@ export default [
         name: 'transaction-record',
         component: () => lazyLoadView(import('@pages/transaction-record/transaction-record')),
         meta: {
-          titles: ['财务管理', '交易记录'],
+          titles: ['财务', '交易记录'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('trade/getTradeList')
@@ -628,7 +626,7 @@ export default [
         name: 'business-overview',
         component: () => lazyLoadView(import('@pages/business-overview/business-overview')),
         meta: {
-          titles: ['财务管理', '营业概况']
+          titles: ['财务', '营业概况']
         }
       },
       // 营业成本
@@ -637,15 +635,15 @@ export default [
         name: 'operating-cost',
         component: () => lazyLoadView(import('@pages/operating-cost/operating-cost')),
         meta: {
-          titles: ['财务管理', '营收概况', '营业成本']
+          titles: ['财务', '营收概况', '营业成本']
         }
       },
       /**
-       * 财务管理
+       * 财务
        *
        * ------------------------------------------------------------------------------------------
        *
-       * 数据管理
+       * 数据
        */
       // 数据统计
       {

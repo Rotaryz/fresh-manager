@@ -61,7 +61,7 @@
   .base-date-select
     .ivu-date-picker
       height: 100%
-      width: 244px
+      width: 187px
       .ivu-date-picker-cells-cell,.ivu-date-picker-header-label
         color: $color-text-main
       .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
