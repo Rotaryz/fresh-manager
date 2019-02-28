@@ -15,17 +15,19 @@
         <div class="function-btn">
         </div>
       </div>
-      <div class="list-header list-box">
-        <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-      </div>
-      <div class="list">
-        <div v-for="(item, index) in billList" :key="index" class="list-content list-box">
-          <div class="list-item">{{item.created_at}}</div>
-          <div class="list-item">{{item.type_str}}</div>
-          <div class="list-item">{{item | adjustType(1)}}</div>
-          <div class="list-item">{{item | adjustType(2)}}</div>
-          <div class="list-item">{{item.after_remaining}}</div>
-          <div class="list-item">{{item.order_sn}}</div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in billList" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.created_at}}</div>
+            <div class="list-item">{{item.type_str}}</div>
+            <div class="list-item">{{item | adjustType(1)}}</div>
+            <div class="list-item">{{item | adjustType(2)}}</div>
+            <div class="list-item">{{item.after_remaining}}</div>
+            <div class="list-item">{{item.order_sn}}</div>
+          </div>
         </div>
       </div>
       <div class="pagination-box">

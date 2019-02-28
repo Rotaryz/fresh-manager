@@ -94,23 +94,23 @@
       &:nth-child(1)
         border-left: 0.5px solid $color-line
       &:last-child
-        border-top-right-radius: 4px
-        border-bottom-right-radius: 4px
+        border-top-right-radius: 1px
+        border-bottom-right-radius: 1px
         &:after
-          border-top-right-radius: 4px
-          border-bottom-right-radius: 4px
+          border-top-right-radius: 1px
+          border-bottom-right-radius: 1px
         &:before
-          border-top-right-radius: 4px
-          border-bottom-right-radius: 4px
+          border-top-right-radius: 1px
+          border-bottom-right-radius: 1px
       &:first-child
-        border-top-left-radius: 4px
-        border-bottom-left-radius: 4px
+        border-top-left-radius: 1px
+        border-bottom-left-radius: 1px
         &:after
-          border-top-left-radius: 4px
-          border-bottom-left-radius: 4px
+          border-top-left-radius: 1px
+          border-bottom-left-radius: 1px
         &:before
-          border-top-left-radius: 4px
-          border-bottom-left-radius: 4px
+          border-top-left-radius: 1px
+          border-bottom-left-radius: 1px
       &:after
         content: ''
         border-top: 0.5px solid transparent
@@ -139,7 +139,7 @@
     .date-item-active
       transition: all 0.3s ease-out
       color: $color-white
-      background: $color-sub
+      background: $color-main
       &:after
         border-color: transparent
         transition: all 0.3s ease-out

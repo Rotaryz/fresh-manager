@@ -31,17 +31,19 @@
         <div class="content-title">商品清单</div>
       </div>
       <div class="commodities-list">
-        <div class="commodities-list-header com-list-box">
-          <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
-        </div>
-        <div class="big-box">
-          <div v-for="(item,index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
-            <div class="com-list-item">{{index + 1}}</div>
-            <div class="com-list-item">{{item.goods_name}}</div>
-            <div class="com-list-item">{{item.goods_units}}</div>
-            <div class="com-list-item">{{item.num}}</div>
-            <div class="com-list-item">{{item.price}}</div>
-            <div class="com-list-item">{{item.total}}</div>
+        <div class="goods-list">
+          <div class="commodities-list-header com-list-box">
+            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+          </div>
+          <div class="big-box">
+            <div v-for="(item,index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
+              <div class="com-list-item">{{index + 1}}</div>
+              <div class="com-list-item">{{item.goods_name}}</div>
+              <div class="com-list-item">{{item.goods_units}}</div>
+              <div class="com-list-item">{{item.num}}</div>
+              <div class="com-list-item">{{item.price}}</div>
+              <div class="com-list-item">{{item.total}}</div>
+            </div>
           </div>
         </div>
         <div class="total-money">预定总金额：￥{{detail.total}}</div>
@@ -105,20 +107,4 @@
     flex: 1
     padding-bottom: 80px
     position: relative
-
-  .back
-    position: fixed
-    left: 200px
-    right: -0px
-    bottom: 0
-    z-index: 10
-    background: #F9F9F9
-    height: 80px
-    border-radius: 0 0 6px 6px
-    display: flex
-    align-items: center
-    .back-btn
-      font-size: $font-size-16
-      margin-left: 40px
-      padding: 12px 32px
 </style>

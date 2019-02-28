@@ -411,7 +411,7 @@
       left: 0
       background-color: #fff
       box-sizing: border-box
-      border-radius: 4px
+      border-radius: 1px
       box-shadow: 0 2px 6px 0 #f2f0fa
       transition: all .3s
       opacity: 1
@@ -541,7 +541,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 4px
+        border-radius: 1px
         width: 400px
         height: 40px
         border: 1px solid $color-line
@@ -558,7 +558,7 @@
       .edit-text
         font-size: $font-size-14
         padding: 10px 14px
-        border-radius: 4px
+        border-radius:1px
         width: 400px
         height: 70px
         border: 1px solid $color-line

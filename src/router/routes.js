@@ -35,7 +35,7 @@ export default [
         name: 'product-list',
         component: () => lazyLoadView(import('@pages/product-list/product-list')),
         meta: {
-          titles: ['商品', '商品列表'],
+          titles: ['商城', '商品', '商品列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -58,7 +58,7 @@ export default [
         name: 'product-categories',
         component: () => lazyLoadView(import('@pages/product-categories/product-categories')),
         meta: {
-          titles: ['商品', '商品分类'],
+          titles: ['商城', '商品', '商品分类'],
           beforeResolve(routeTo, routeFrom, next) {
             //  商品分类
             store
@@ -81,7 +81,7 @@ export default [
         name: 'auxiliary-information',
         component: () => lazyLoadView(import('@pages/auxiliary-information/auxiliary-information')),
         meta: {
-          titles: ['商品', '辅助资料'],
+          titles: ['商城', '商品', '辅助资料'],
           beforeResolve(routeTo, routeFrom, next) {
             //  辅助资料
             store
@@ -104,7 +104,7 @@ export default [
         name: 'edit-goods',
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
-          titles: ['商品', '商品列表', '新建商品'],
+          titles: ['商城', '商品', '商品列表', '新建商品'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -139,7 +139,7 @@ export default [
         name: 'advertisement',
         component: () => lazyLoadView(import('@pages/advertisement/advertisement')),
         meta: {
-          titles: ['内容', '内容管理'],
+          titles: ['商城', '内容', '内容管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -162,7 +162,7 @@ export default [
         name: 'rush-purchase',
         component: () => lazyLoadView(import('@pages/rush-purchase/rush-purchase')),
         meta: {
-          titles: ['商城', '今日抢购'],
+          titles: ['商城', '活动', '今日抢购'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -185,7 +185,7 @@ export default [
         name: 'edit-rush',
         component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
         meta: {
-          titles: ['商城', '今日抢购', '新建活动'],
+          titles: ['商城', '活动', '今日抢购', '新建活动'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -338,7 +338,7 @@ export default [
         name: 'purchase-detail',
         component: () => lazyLoadView(import('@pages/purchase-detail/purchase-detail')),
         meta: {
-          titles: ['商城', '采购', '采购详情'],
+          titles: ['商城', '采购', '采购管理', '采购详情'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -403,7 +403,7 @@ export default [
         name: 'leader-list',
         component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
         meta: {
-          titles: ['团长', '团长列表'],
+          titles: ['商城', '团长', '团长列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -426,7 +426,7 @@ export default [
         name: 'dispatching-list',
         component: () => lazyLoadView(import('@pages/dispatching-list/dispatching-list')),
         meta: {
-          titles: ['团长', '团长配送单'],
+          titles: ['商城', '团长', '团长配送单'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
@@ -449,7 +449,7 @@ export default [
         name: 'dispatching-detail',
         component: () => lazyLoadView(import('@pages/dispatching-detail/dispatching-detail')),
         meta: {
-          titles: ['团长', '团长配送单', '配送单详情'],
+          titles: ['商城', '团长', '团长配送单', '配送单详情'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -477,7 +477,7 @@ export default [
         name: 'edit-leader',
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
-          titles: ['团长', '团长配送单', '新建团长'],
+          titles: ['商城', '团长', '团长配送单', '新建团长'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -505,7 +505,7 @@ export default [
         name: 'head-settlement',
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
-          titles: ['团长', '团长结算'],
+          titles: ['商城', '团长', '团长结算'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
@@ -528,7 +528,7 @@ export default [
         name: 'settlement-detail',
         component: () => lazyLoadView(import('@pages/settlement-detail/settlement-detail')),
         meta: {
-          titles: ['团长', '团长结算', '团长结算详情'],
+          titles: ['商城', '团长', '团长结算', '团长结算详情'],
           beforeResolve(routeTo, routeFrom, next) {
             let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
             store
@@ -552,7 +552,7 @@ export default [
         name: 'leader-withdrawal',
         component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
         meta: {
-          titles: ['团长', '团长提现'],
+          titles: ['商城', '团长', '团长提现'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store
@@ -575,7 +575,7 @@ export default [
         name: 'budget-detail',
         component: () => lazyLoadView(import('@pages/budget-detail/budget-detail')),
         meta: {
-          titles: ['团长', '团长提现', '收支明细', ''],
+          titles: ['商城', '团长', '团长提现', '收支明细', ''],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('leader/getBillList', routeTo.params.id)
@@ -651,7 +651,7 @@ export default [
         name: 'data-survey',
         component: () => lazyLoadView(import('@pages/data-survey/data-survey')),
         meta: {
-          titles: ['数据统计'],
+          titles: ['统计', '数据统计'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('data/getOrderDetail', {startTime: '', endTime: '', time: 'today', loading: true})

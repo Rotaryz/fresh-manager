@@ -275,7 +275,7 @@
         cursor: pointer
         text-align: center
         border: 1px solid $color-text-assist
-        border-radius: 4px
+        border-radius: 1px
         font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main
@@ -305,7 +305,7 @@
       line-height: 28px
       background: $color-positive
       border: 1px solid $color-positive
-      border-radius: 4px
+      border-radius: 1px
       font-family: $font-family-regular
       font-size: $font-size-12
       color: $color-white

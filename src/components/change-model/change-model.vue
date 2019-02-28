@@ -127,7 +127,7 @@
         width: 310px
         height: 44px
         border: 1px solid #e1e1e1
-        border-radius: 4px
+        border-radius: 1px
         font-family: $font-family-medium
         color: $color-text-main
         font-size: $font-size-14

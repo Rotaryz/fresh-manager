@@ -197,63 +197,7 @@
         padding: 30px 0 0px 15px
         width: 1280px
         box-sizing: border-box
-      .goods-list
-        margin: 28px 0px 0px
-        width: 100%
-        padding: 0 15px
-        box-sizing: border-box
-        .list-footer
-          background: $color-white
-          layout(row)
-          align-items: center
-          justify-content: flex-end
-          width: 100%
-          padding: 20px 0 102px
-          .list-foot-box
-            width: 136px
-            layout(row)
-          .foot-item
-            font-family: $font-family-regular
-            font-size: $font-size-14
-            color: $color-text-main
-            margin-left: 48px
-            &:first-child
-              margin-left: 0
-        .list
-          width: 100%
-          background: $color-white
-          .ro-order-list-box
-            width: 100%
-            padding-left: 30px
-            layout(row)
-            white-space: nowrap
-            height: 60px
-            box-sizing: border-box
-            align-items: center
-            background: $color-white
-            border-bottom: 1px solid $color-line
-            .ro-order-list-item
-              font-family: $font-family-regular
-              font-size: $font-size-14
-              color: $color-text-main
-        .list-header
-          width: 100%
-          layout(row)
-          padding-left: 30px
-          white-space: nowrap
-          box-sizing: border-box
-          align-items: center
-          height: 50px
-          background: #F9F9F9
-          border-bottom: 1px solid $color-line
-          .ro-order-list-item
-            font-family: $font-family-regular
-            font-size: $font-size-16
-            color: $color-text-main
-            line-height: 16px
-    .ro-order-list-text
-      no-wrap()
-      width: 90%
+
     .ro-order-list-item
       &:nth-child(1)
         flex: 1.5
@@ -277,7 +221,7 @@
     .btn-item
       background: $color-positive
       border: 1px solid $color-positive
-      border-radius: 4px
+      border-radius: 1px
       width: 90px
       cursor: pointer
       color: $color-white
@@ -337,7 +281,7 @@
         cursor: pointer
         text-align: center
         border: 1px solid $color-text-assist
-        border-radius: 4px
+        border-radius: 1px
         font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main

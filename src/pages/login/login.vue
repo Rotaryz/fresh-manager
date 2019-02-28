@@ -105,7 +105,7 @@
         box-sizing: border-box
         margin-bottom: 24px
         padding: 0 14px
-        border-radius: 4px
+        border-radius: 1px
         background: $color-white
 
         input
@@ -117,7 +117,7 @@
         width: 360px
         height: 43px
         margin-top: 16px
-        border-radius: 4px
+        border-radius: 1px
         line-height: 43px
         font-size: $font-size-14
         color: $color-white

@@ -257,7 +257,7 @@
         opacity: 0
         color: $color-white
         padding: 8px 18px
-        border-radius: 4px
+        border-radius: 1px
         line-height: 16px
         font-family: $font-family-regular
         font-size: $font-size-14

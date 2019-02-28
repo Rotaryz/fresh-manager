@@ -23,7 +23,7 @@
           class="edit-input-box" type="date"
           placement="bottom-end"
           placeholder="开始时间"
-          style="width: 240px;height: 44px"
+          style="width: 240px;height: 44px;border-radius: 1px"
           @on-change="_getStartTime"
         ></date-picker>
         <div class="tip">至</div>
@@ -654,12 +654,10 @@
       color: #F52424
     .edit-input-box
       margin: 0 14px 0 40px
-      .ivu-date-picker-rel
-        height: 100%
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 4px
+        border-radius: 1px
         width: 240px
         height: 44px
         display: flex
@@ -837,7 +835,7 @@
           position: absolute
           width: 100%
           height: 100%
-          border-radius: 4px
+          border-radius: 1px
           background: rgba(51, 51, 51, 0.9)
           left: 0
           top: 0
@@ -923,7 +921,7 @@
         .main-input-box
           width: 310px
           height: 44px
-          border-radius: 4px
+          border-radius: 1px
           font-family: $font-family-medium
           color: $color-text-main
           font-size: $font-size-14
@@ -1055,7 +1053,7 @@
     display: flex
 
   .goods-content
-    border-radius: 4px
+    border-radius: 1px
     border: 1px solid $color-line
     margin: 0 20px
     height: 400px
@@ -1111,13 +1109,13 @@
           line-height: 1
           font-size: $font-size-14
       .add-btn
-        border-radius: 2px
+        border-radius: 1px
         margin-left: 88px
         padding: 5px 0
         width: 56px
         text-align: center
       .add-btn-disable
-        border-radius: 2px
+        border-radius: 1px
         margin-left: 88px
         padding: 5px 0
         width: 56px
@@ -1151,10 +1149,11 @@
       opacity: 0
     }
   }
+
   .com-edit
     height: 34px
     width: 93px
-    border-radius: 4px
+    border-radius: 1px
     box-sizing: border-box
     border: 1px solid $color-line
     padding-left: 22px
@@ -1168,6 +1167,7 @@
       color: $color-text-assist
     &:focus
       border-color: $color-sub !important
+
   .small-money
     col-center()
     left: 10px
@@ -1175,6 +1175,7 @@
     font-size: $font-size-13
     font-family: $font-family-regular
     color: $color-text-main
+
   .com-edit-small
     width: 60px
 

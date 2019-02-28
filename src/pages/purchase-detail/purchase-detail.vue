@@ -24,21 +24,23 @@
       <div class="content-header">
         <div class="content-title">商品清单</div>
       </div>
-      <div class="commodities-list">
-        <div class="commodities-list-header com-list-box">
-          <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
-        </div>
-        <div class="big-box">
-          <div v-for="(item, index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
-            <div class="com-list-item">{{index + 1}}</div>
-            <div class="com-list-item">{{item.goods_name}}</div>
-            <div class="com-list-item">{{item.goods_units}}</div>
-            <div class="com-list-item">{{item.wait_num}}</div>
-            <div class="com-list-item">{{item.total_stock}}</div>
-            <div class="com-list-item">{{item.num}}</div>
-            <div class="com-list-item">{{item.not_num}}</div>
-            <div class="com-list-item">￥{{item.price}}</div>
-            <div class="com-list-item">￥{{item.sub_total}}</div>
+      <div class="goods-list">
+        <div class="commodities-list">
+          <div class="commodities-list-header com-list-box">
+            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+          </div>
+          <div class="big-box">
+            <div v-for="(item, index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
+              <div class="com-list-item">{{index + 1}}</div>
+              <div class="com-list-item">{{item.goods_name}}</div>
+              <div class="com-list-item">{{item.goods_units}}</div>
+              <div class="com-list-item">{{item.wait_num}}</div>
+              <div class="com-list-item">{{item.total_stock}}</div>
+              <div class="com-list-item">{{item.num}}</div>
+              <div class="com-list-item">{{item.not_num}}</div>
+              <div class="com-list-item">￥{{item.price}}</div>
+              <div class="com-list-item">￥{{item.sub_total}}</div>
+            </div>
           </div>
         </div>
       </div>

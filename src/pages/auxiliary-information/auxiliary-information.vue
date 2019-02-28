@@ -162,7 +162,7 @@
         position: absolute
         width: 100%
         height: 100%
-        border-radius: 4px
+        border-radius: 1px
         background: rgba(51, 51, 51, 0.9)
         left: 0
         top: 0

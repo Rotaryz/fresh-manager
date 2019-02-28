@@ -1,49 +1,71 @@
 <template>
   <div class="transaction-record table">
-    <div class="tab-header">
-      <div class="tab-box">
+    <div class="down-content">
+      <span class="down-tip">筛选</span>
+      <div class="down-item-small">
         <base-drop-down :select="tradeSelect" @setValue="changeTradeType"></base-drop-down>
       </div>
-      <div class="tab-box">
+      <div class="down-item">
         <base-date-select placeHolder="选择支付日期" :dateInfo="date" @getTime="changeDate"></base-date-select>
       </div>
-      <div class="tab-box">
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
         <base-search placeHolder="订单号/交易号" :infoText="keyword" @search="changeKeyword"></base-search>
       </div>
-      <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
     </div>
-    <div class="order-detail">
-      <div class="order-item">
-        <p class="order-text order-title">订单总额：</p>
-        <p class="order-text order-money">{{tradeDetail.total && `￥${tradeDetail.total}`}}</p>
-      </div>
-      <div class="order-item">
-        <p class="order-text order-title">退款总额：</p>
-        <p class="order-text order-money">{{tradeDetail.refund && `￥${tradeDetail.refund}`}}</p>
-      </div>
-      <div class="order-item">
-        <p class="order-text order-title">实收总额：</p>
-        <p class="order-text order-money">{{tradeDetail.amount && `￥${tradeDetail.amount}`}}</p>
-      </div>
-    </div>
-    <div class="list-header list-box">
-      <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-    </div>
-    <div class="list">
-      <div v-for="(item, index) in trades" :key="index" class="list-content list-box">
-        <div class="list-item list-double-row">
-          <p class="item-dark">{{item.order_sn}}</p>
-          <p class="item-dark">{{item.out_trade_sn}}</p>
+    <!--<div class="tab-header">-->
+    <!--<div class="tab-box">-->
+    <!--</div>-->
+    <!--<div class="tab-box">-->
+    <!--</div>-->
+    <!--<div class="tab-box">-->
+    <!---->
+    <!--</div>-->
+    <!---->
+    <!--</div>-->
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-do_business@2x.png" class="identification-icon">
+          <p class="identification-name">交易记录</p>
         </div>
-        <div class="list-item">{{item.total}}</div>
-        <div class="list-item">{{item.business_type}}</div>
-        <div class="list-item">{{item.trade_type}}</div>
-        <div class="list-item">{{item.created_at}}</div>
+        <div class="function-btn">
+          <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
+        </div>
       </div>
-    </div>
-    <div class="pagination-box">
-      <!--:pageDetail="pageTotal"-->
-      <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+      <div class="order-detail">
+        <div class="order-item">
+          <p class="order-text order-title">订单总额：</p>
+          <p class="order-text order-money">{{tradeDetail.total && `￥${tradeDetail.total}`}}</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">退款总额：</p>
+          <p class="order-text order-money">{{tradeDetail.refund && `￥${tradeDetail.refund}`}}</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">实收总额：</p>
+          <p class="order-text order-money">{{tradeDetail.amount && `￥${tradeDetail.amount}`}}</p>
+        </div>
+      </div>
+      <div class="list-header list-box">
+        <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+      </div>
+      <div class="list">
+        <div v-for="(item, index) in trades" :key="index" class="list-content list-box">
+          <div class="list-item list-double-row">
+            <p class="item-dark">{{item.order_sn}}</p>
+            <p class="item-dark">{{item.out_trade_sn}}</p>
+          </div>
+          <div class="list-item">{{item.total}}</div>
+          <div class="list-item">{{item.business_type}}</div>
+          <div class="list-item">{{item.trade_type}}</div>
+          <div class="list-item">{{item.created_at}}</div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <!--:pageDetail="pageTotal"-->
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+      </div>
     </div>
   </div>
 </template>

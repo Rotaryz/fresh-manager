@@ -26,85 +26,89 @@
       position: absolute
       left: 0
       bottom: 0
-  .bot
-    layout(row)
-    flex-wrap: warp
-    margin-bottom: 50px
-    .info-item
-      word-break: break-all
-      font-family: $font-family-regular
-      font-size: $font-size-14
-      color: $color-text-main
-      line-height: 18px
-      width: 209px
-      padding-bottom: 20px
-      margin-right: 80px
-      &:last-child
-        width: 320px
-        margin-right: 0
-  .sobot
-    padding: 30px 0 0px 15px
-    width: 1280px
-    box-sizing: border-box
-  .goods-list
-    margin: 28px 0px 0px
+
+.bot
+  layout(row)
+  flex-wrap: warp
+  margin-bottom: 50px
+  .info-item
+    word-break: break-all
+    font-family: $font-family-regular
+    font-size: $font-size-14
+    color: $color-text-main
+    line-height: 18px
+    width: 209px
+    padding-bottom: 20px
+    margin-right: 80px
+    &:last-child
+      width: 320px
+      margin-right: 0
+
+.sobot
+  padding: 30px 0 0px 15px
+  width: 1280px
+  box-sizing: border-box
+
+.goods-list
+  margin: 28px 0px 0px
+  width: 100%
+  box-sizing: border-box
+  border-1px(#E9ECEE, 1px)
+  .ro-order-list
     width: 100%
-    padding: 0 15px
-    box-sizing: border-box
-    .ro-order-list-footer
-      background: $color-white
-      layout(row)
-      align-items: center
-      justify-content: flex-end
+    background: $color-white
+    &:nth-child(2n)
+      background: #F5F7FA
+    &:hover
+      background: #F7FAF5
+    .ro-order-list-box
       width: 100%
-      padding-top: 20px
-      .ro-order-list-foot-box
-        layout(row)
-        justify-content: flex-end
-      .foot-item
-        font-family: $font-family-medium
-        font-size: $font-size-14
-        color: $color-text-main
-        margin-left: 48px
-        &:first-child
-          margin-left: 0
-    .ro-order-list
-      width: 100%
-      background: $color-white
-      &:nth-child(2n)
-        background: #F5F7FA
-      &:hover
-        background: #F7FAF5
-      .ro-order-list-box
-        width: 100%
-        padding-left: 30px
-        layout(row)
-        white-space: nowrap
-        height: 60px
-        box-sizing: border-box
-        align-items: center
-        background: $color-white
-        border-bottom: 1px solid $color-line
-        .ro-order-list-item
-          font-family: $font-family-regular
-          font-size: $font-size-14
-          color: $color-text-main
-    .ro-order-list-header
-      width: 100%
-      layout(row)
       padding-left: 30px
+      layout(row)
       white-space: nowrap
+      height: 60px
       box-sizing: border-box
       align-items: center
-      height: 50px
-      background: #F5F7FA
-      font-size: $font-size-14
+      background: $color-white
       border-bottom-1px(#E9ECEE)
       .ro-order-list-item
         font-family: $font-family-regular
-        font-size: $font-size-16
+        font-size: $font-size-14
         color: $color-text-main
-        line-height: 16px
+  .ro-order-list-header
+    width: 100%
+    layout(row)
+    padding-left: 30px
+    white-space: nowrap
+    box-sizing: border-box
+    align-items: center
+    height: 50px
+    background: #F5F7FA
+    font-size: $font-size-14
+    border-bottom-1px(#E9ECEE)
+    .ro-order-list-item
+      font-family: $font-family-regular
+      font-size: $font-size-16
+      color: $color-text-main
+      line-height: 16px
+
+.ro-order-list-footer
+  background: $color-white
+  layout(row)
+  align-items: center
+  justify-content: flex-end
+  width: 100%
+  padding-top: 20px
+  .ro-order-list-foot-box
+    layout(row)
+    justify-content: flex-end
+  .foot-item
+    font-family: $font-family-medium
+    font-size: $font-size-14
+    color: $color-text-main
+    margin-left: 48px
+    &:first-child
+      margin-left: 0
 
 .essential-information
   margin-bottom: 26px
@@ -169,6 +173,7 @@
     font-family: $font-family-regular
     &:nth-child(1)
       flex: 0.5
+
 .total-money
   text-align: right
   margin-top: 21px

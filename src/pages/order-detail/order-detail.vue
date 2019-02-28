@@ -56,14 +56,14 @@
             <div class="ro-order-list-item ro-order-list-text">{{item.after_sale_status_text}}</div>
           </div>
         </div>
-        <div class="ro-order-list-footer">
-          <div class="ro-order-list-foot-box">
-            <div class="foot-item">订单总价：{{detail.price && `¥ ${detail.price}`}}</div>
-            <div class="foot-item">优惠金额：{{detail.promote_price && `¥ ${detail.promote_price}`}}</div>
-            <div class="foot-item">应付金额：{{detail.total && `¥ ${detail.total}`}}</div>
-            <div class="foot-item">实付金额：{{detail.total && `¥ ${detail.actual_total}`}}</div>
-            <div class="foot-item">退款金额：{{detail.refund_price && `¥ ${detail.refund_price}`}}</div>
-          </div>
+      </div>
+      <div class="ro-order-list-footer">
+        <div class="ro-order-list-foot-box">
+          <div class="foot-item">订单总价：{{detail.price && `¥ ${detail.price}`}}</div>
+          <div class="foot-item">优惠金额：{{detail.promote_price && `¥ ${detail.promote_price}`}}</div>
+          <div class="foot-item">应付金额：{{detail.total && `¥ ${detail.total}`}}</div>
+          <div class="foot-item">实付金额：{{detail.total && `¥ ${detail.actual_total}`}}</div>
+          <div class="foot-item">退款金额：{{detail.refund_price && `¥ ${detail.refund_price}`}}</div>
         </div>
       </div>
     </div>

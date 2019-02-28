@@ -165,7 +165,7 @@
     .data-title
       font-family: $font-family-medium
       color: $color-text-main
-      font-size: $font-size-20
+      font-size: $font-size-16
 
   .data-order
     height: 159px

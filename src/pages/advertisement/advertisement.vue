@@ -1,168 +1,178 @@
 <template>
   <div class="advertisement normal-box">
-    <phone-box :bannerList="bannerList" :goodsList="goodsList" :navList="navList" :cmsMsg="infoBannerList.modules" @setType="_changeType"></phone-box>
-    <!--广告-->
-    <div v-if="cmsType === 'bannar'" class="advertisement-content">
-      <div class="content-header">
-        <div class="content-title">轮播图设置</div>
-        <div class="content-sub">(最多添加5个广告，鼠标拖拽调整广告顺序)</div>
+    <div class="identification">
+      <div class="identification-page">
+        <img :src="actName[cmsType + 'Icon']" class="identification-icon">
+        <p class="identification-name">{{actName[cmsType]}}</p>
       </div>
-      <draggable v-model="temporaryBannar" @update="_setSort()">
-        <transition-group>
-          <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
-            <div class="advertisement-msg">
-              <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
-                <div v-if="banner.showLoading" class="loading-mask">
-                  <img src="./loading.gif" class="loading">
-                </div>
-                <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
-                <div v-if="banner.image_id" class="img-change-tip">更换图片</div>
-              </div>
-              <!--@click=""-->
-              <div class="advertisement-link">
-                <div class="add-link hand" @click="_showGoods(idx, banner.other_id)">添加链接</div>
-                <p class="goods-title">{{banner.type === 'out_html' || banner.type === 'mini_link' ? banner.url : banner.name}}</p>
-              </div>
-              <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
-            </div>
-          </div>
-
-        </transition-group>
-      </draggable>
-      <div class="advertisement-btn">
-        <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
-        <div class="new-advertisement" @click="_addMore">新建广告</div>
+      <div class="function-btn">
       </div>
     </div>
-    <!--导航-->
-    <div v-if="cmsType === 'navigation'" class="advertisement-content">
-      <div class="content-header">
-        <div class="content-title">导航栏设置</div>
-        <div class="content-sub">(最多添加10个导航栏，鼠标拖拽调整广告顺序)</div>
-      </div>
-      <draggable v-model="temporaryNavigation" @update="_setSort()">
-        <transition-group>
-          <div v-for="(item, idx) in temporaryNavigation" :key="idx" class="advertisement-item">
-            <div class="advertisement-msg nav-msg">
-              <div class="img-box hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
-                <div v-if="item.showLoading" class="loading-mask">
-                  <img src="./loading.gif" class="loading">
+    <div class="advertisement-small">
+      <phone-box :bannerList="bannerList" :goodsList="goodsList" :navList="navList" :cmsMsg="infoBannerList.modules" @setType="_changeType"></phone-box>
+      <!--广告-->
+      <div v-if="cmsType === 'bannar'" class="advertisement-content">
+        <div class="content-header">
+          <div class="content-title">轮播图设置</div>
+          <div class="content-sub">(最多添加5个广告，鼠标拖拽调整广告顺序)</div>
+        </div>
+        <draggable v-model="temporaryBannar" @update="_setSort()">
+          <transition-group>
+            <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
+              <div class="advertisement-msg">
+                <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
+                  <div v-if="banner.showLoading" class="loading-mask">
+                    <img src="./loading.gif" class="loading">
+                  </div>
+                  <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
+                  <div v-if="banner.image_id" class="img-change-tip">更换图片</div>
                 </div>
-                <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, item, $event)">
-                <div v-if="item.image_id" class="img-change-tip">更换图片</div>
-              </div>
-              <div>
-                <input v-model="item.title" type="text" class="nav-name" placeholder="请输入标题名称" maxlength="4">
+                <!--@click=""-->
                 <div class="advertisement-link">
-                  <div class="add-link hand" @click="_showGoods(idx, item.other_id)">添加链接</div>
-                  <p class="goods-title">{{item.type === 'out_html' || item.type === 'mini_link' ? item.url : item.name}}</p>
+                  <div class="add-link hand" @click="_showGoods(idx, banner.other_id)">添加链接</div>
+                  <p class="goods-title">{{banner.type === 'out_html' || banner.type === 'mini_link' ? banner.url : banner.name}}</p>
                 </div>
+                <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
               </div>
-              <p class="use hand" @click="_showConfirm(item.id, idx)">删除</p>
             </div>
-          </div>
-        </transition-group>
-      </draggable>
-      <div class="advertisement-btn">
-        <div class="submit-activity-btn hand" @click="_editNav()">提交</div>
-        <div class="new-advertisement" @click="_navMore">新建导航</div>
-      </div>
-    </div>
-    <!--活动-->
-    <div v-if="cmsType === 'activity'" class="advertisement-content">
-      <div class="content-header">
-        <div class="content-title">活动列表</div>
-      </div>
-      <div class="edit-activity">
-        <div class="edit-item">
-          <div class="edit-title">
-            <span class="start">*</span>
-            营销活动
-          </div>
-          <div class="edit-box">
-            <base-drop-down :width="400" :height="44" :select="activityType"></base-drop-down>
-          </div>
-        </div>
-        <div class="edit-item">
-          <div class="edit-title">
-            <span class="start">*</span>
-            选择活动
-          </div>
-          <div class="edit-box">
-            <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
-          </div>
-        </div>
-        <div class="submit-activity">
-          <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
+
+          </transition-group>
+        </draggable>
+        <div class="advertisement-btn">
+          <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
+          <div class="new-advertisement hand" @click="_addMore">新建广告</div>
         </div>
       </div>
-    </div>
-    <!--商品弹窗-->
-    <default-modal ref="goods">
-      <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-tab-type">
-            <div v-for="(items, index) in typeList" :key="index" :class="{'shade-tab-item-active': tabIndex === index}" class="shade-tab-item hand" @click="_setLinkType(index, $event)">{{items.title}}</div>
-            <div class="line" :style="{left: left + 'px'}"></div>
-          </div>
-          <!--<div class="shade-title">选择商品</div>-->
-          <span class="close hand" @click="_hideGoods"></span>
+      <!--导航-->
+      <div v-if="cmsType === 'navigation'" class="advertisement-content">
+        <div class="content-header">
+          <div class="content-title">导航栏设置</div>
+          <div class="content-sub">(最多添加10个导航栏，鼠标拖拽调整广告顺序)</div>
         </div>
-        <!--商品详情-->
-        <div v-if="tabIndex === 0">
-          <div class="shade-tab">
-            <div class="tab-item">
-              <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
-            </div>
-            <div class="tab-item">
-              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
-            </div>
-            <div class="tab-item">
-              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
-            </div>
-          </div>
-          <div class="goods-content">
-            <div class="goods-list">
-              <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-                <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
-                  <span class="after"></span>
+        <draggable v-model="temporaryNavigation" @update="_setSort()">
+          <transition-group>
+            <div v-for="(item, idx) in temporaryNavigation" :key="idx" class="advertisement-item">
+              <div class="advertisement-msg nav-msg">
+                <div class="img-box hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+                  <div v-if="item.showLoading" class="loading-mask">
+                    <img src="./loading.gif" class="loading">
+                  </div>
+                  <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, item, $event)">
+                  <div v-if="item.image_id" class="img-change-tip">更换图片</div>
                 </div>
-                <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
-                <div class="goods-msg">
-                  <div class="goods-name">{{item.name}}</div>
-                  <div class="goods-money">¥{{item.store_price}}</div>
+                <div>
+                  <input v-model="item.title" type="text" class="nav-name" placeholder="请输入标题名称" maxlength="4">
+                  <div class="advertisement-link">
+                    <div class="add-link hand" @click="_showGoods(idx, item.other_id)">添加链接</div>
+                    <p class="goods-title">{{item.type === 'out_html' || item.type === 'mini_link' ? item.url : item.name}}</p>
+                  </div>
                 </div>
+                <p class="use hand" @click="_showConfirm(item.id, idx)">删除</p>
               </div>
-              <!--select-icon-active-->
             </div>
-          </div>
-          <div class="page-box">
-            <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
-          </div>
-        </div>
-        <!--商品分类-->
-        <div v-if="tabIndex === 1" class="goods-cate">
-          <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
-            <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
-              <span class="after"></span>
-            </div>
-            <div class="shade-goods-name">{{goods.name}}</div>
-            <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
-          </div>
-        </div>
-        <div v-if="tabIndex === 2" class="link-text">
-          <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
-        </div>
-        <div v-if="tabIndex === 3" class="link-text">
-          <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
-        </div>
-        <div class="back back-box">
-          <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
-          <div class="back-btn btn-main" @click="_miniGoods">确定</div>
+          </transition-group>
+        </draggable>
+        <div class="advertisement-btn">
+          <div class="submit-activity-btn hand" @click="_editNav()">提交</div>
+          <div class="new-advertisement hand" @click="_navMore">新建导航</div>
         </div>
       </div>
-    </default-modal>
-    <default-confirm ref="dialog" @confirm="_delBanner"></default-confirm>
+      <!--活动-->
+      <div v-if="cmsType === 'activity'" class="advertisement-content">
+        <div class="content-header">
+          <div class="content-title">活动列表</div>
+        </div>
+        <div class="edit-activity">
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              营销活动
+            </div>
+            <div class="edit-box">
+              <base-drop-down :width="400" :height="44" :select="activityType"></base-drop-down>
+            </div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              选择活动
+            </div>
+            <div class="edit-box">
+              <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
+            </div>
+          </div>
+          <div class="submit-activity">
+            <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
+          </div>
+        </div>
+      </div>
+      <!--商品弹窗-->
+      <default-modal ref="goods">
+        <div slot="content" class="shade-box">
+          <div class="shade-header">
+            <div class="shade-tab-type">
+              <div v-for="(items, index) in typeList" :key="index" :class="{'shade-tab-item-active': tabIndex === index}" class="shade-tab-item hand" @click="_setLinkType(index, $event)">{{items.title}}</div>
+              <div class="line" :style="{left: left + 'px'}"></div>
+            </div>
+            <!--<div class="shade-title">选择商品</div>-->
+            <span class="close hand" @click="_hideGoods"></span>
+          </div>
+          <!--商品详情-->
+          <div v-if="tabIndex === 0">
+            <div class="shade-tab">
+              <div class="tab-item">
+                <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
+              </div>
+              <div class="tab-item">
+                <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+              </div>
+              <div class="tab-item">
+                <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+              </div>
+            </div>
+            <div class="goods-content">
+              <div class="goods-list">
+                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
+                  <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                    <span class="after"></span>
+                  </div>
+                  <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+                  <div class="goods-msg">
+                    <div class="goods-name">{{item.name}}</div>
+                    <div class="goods-money">¥{{item.store_price}}</div>
+                  </div>
+                </div>
+                <!--select-icon-active-->
+              </div>
+            </div>
+            <div class="page-box">
+              <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+            </div>
+          </div>
+          <!--商品分类-->
+          <div v-if="tabIndex === 1" class="goods-cate">
+            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
+              <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+                <span class="after"></span>
+              </div>
+              <div class="shade-goods-name">{{goods.name}}</div>
+              <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+            </div>
+          </div>
+          <div v-if="tabIndex === 2" class="link-text">
+            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+          </div>
+          <div v-if="tabIndex === 3" class="link-text">
+            <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
+          </div>
+          <div class="back back-box">
+            <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
+            <div class="back-btn back-submit hand" @click="_miniGoods">确定</div>
+          </div>
+        </div>
+      </default-modal>
+      <default-confirm ref="dialog" @confirm="_delBanner"></default-confirm>
+    </div>
     <!--<div class="back">-->
     <!--<div class="back-btn btn-main">保存并发布</div>-->
     <!--</div>-->
@@ -187,6 +197,11 @@
     {title: '小程序链接', status: 'mini_link'},
     {title: 'H5链接', status: 'out_html'}
   ]
+  const ACT_NAME = {
+    bannar: '轮播广告', bannarIcon: require('./icon-carousel@2x.png'),
+    navigation: '导航栏设置', navigationIcon: require('./icon-nav_settings@2x.png'),
+    activity: '活动列表', activityIcon: require('./icon-activity_settings@2x.png')
+  }
   const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: ADD_IMAGE} // 模板对象
   export default {
     name: PAGE_NAME,
@@ -201,6 +216,7 @@
     },
     data() {
       return {
+        actName: ACT_NAME,
         typeList: TYPE_LIST,
         showType: false,
         showSelectIndex: -1,
@@ -567,13 +583,16 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .advertisement-small
+    display: flex
+
   .goods-cate
     flex: 1
     width: 960px
     height: 480px
     margin: 30px auto 0
     border: 1px solid $color-line
-    border-radius: 4px
+    border-radius: 1px
     overflow-x: hidden
     .goods_cate-item
       display: flex
@@ -592,7 +611,7 @@
     height: 220px
     margin: 30px auto 0
     border: 1px solid $color-line
-    border-radius: 4px
+    border-radius: 1px
     outline: none
     display: block
     resize: none
@@ -601,28 +620,25 @@
 
   .advertisement
     flex: 1
-    display: flex
-    border-bottom: 1 xp solid $color-line
 
   .advertisement-content
     box-sizing: border-box
     flex: 1
-    border-left: 1px solid $color-line
     overflow: hidden
     padding-bottom: 40px
     .advertisement-btn
       margin: 50px 0 0px 40px
       display: flex
     .advertisement-item
-      margin: 24px 40px 0px
+      margin-top: 24px
       border: 1px dashed #D9D9D9
-      border-radius: 2px
-      background: #FCFCFC
+      border-radius: 1px
+      background: #F5F7FA
       height: 140px
       padding: 20px
       box-sizing: border-box
       &:first-child
-        margin-top: 40px
+        margin-top: 30px
       .advertisement-msg
         display: flex
         align-items: center
@@ -691,7 +707,7 @@
             top: 24px
             background: $color-white
             box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
-            border-radius: 4px
+            border-radius: 1px
             position: absolute
             &.fade-enter, &.fade-leave-to
               opacity: 0
@@ -778,7 +794,7 @@
           width: 280px
           height: 44px
           margin-left: 20px
-          border-radius: 4px
+          border-radius: 1px
           background: $color-white
           border: 1px solid #D9D9D9
 
@@ -786,15 +802,14 @@
 
   /*基本信息类头部盒子样式*/
   .content-header
-    border-bottom: 1px solid $color-line
+    border-bottom-1px($color-line)
     display: flex
     align-items: center
     height: 60px
     position: relative
     box-sizing: border-box
-    padding: 0 26px
     text-indent: 13px
-    &:after
+    &:before
       content: ''
       position: absolute
       width: 3px
@@ -802,7 +817,7 @@
       background: $color-main
       border-radius: 1px
       col-center()
-      left: 26px
+      left: 0px
     .content-title
       color: $color-text-main
       font-family: $font-family-medium
@@ -820,7 +835,7 @@
   //  商品弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 3px
+    border-radius: 1px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -845,7 +860,7 @@
       display: flex
 
     .goods-content
-      border-radius: 4px
+      border-radius: 1px
       border: 1px solid $color-line
       margin: 0 20px
       height: 400px
@@ -887,13 +902,13 @@
             line-height: 1
             font-size: $font-size-14
         .add-btn
-          border-radius: 2px
+          border-radius: 1px
           margin-left: 88px
           padding: 5px 0
           width: 56px
           text-align: center
         .add-btn-disable
-          border-radius: 2px
+          border-radius: 1px
           margin-left: 88px
           padding: 5px 0
           width: 56px
@@ -958,6 +973,7 @@
     justify-content: center
 
   .back-box
+    border-top-1px($color-line)
     position: absolute
 
   .edit-item
@@ -981,7 +997,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 4px
+        border-radius: 1px
         width: 240px
         height: 44px
         display: flex
@@ -1029,15 +1045,14 @@
     letter-spacing: 0
     width: 108px
     height: 32px
-    background :$color-main
+    background: $color-main
     border-radius: 1px
     line-height: 32px
     text-align: center
     transition: 0.3s all
     user-select: none
     &:hover
-      color: $color-text-sub
-      border-color: $color-text-sub
+      opacity: 0.8
 
   .new-advertisement
     font-size: $font-size-14
@@ -1045,7 +1060,10 @@
     line-height: 1
     position: relative
     color: $color-main
-    border:0.5px solid $color-main
+    border: 0.5px solid $color-main
+    transition: 0.3s all
+    &:hover
+      opacity: 0.8
     &:after
       content: ''
       width: 2px

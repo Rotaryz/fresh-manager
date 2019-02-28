@@ -4,7 +4,7 @@
       <div class="content-box">
         <div v-for="(cms, cmsIdx) in cmsMsg" :key="cmsIdx">
           <!-- 轮播图-->
-          <div v-if="cms.module_name === 'bannar'" class="banner-box" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
+          <div v-if="cms.module_name === 'bannar'" class="banner-box hand" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
             <div class="big-box hand">
               <div class="banner">
                 <carousel :autoplaySpeed="3000"
@@ -41,72 +41,72 @@
           <!--进日抢购-->
           <div v-if="cms.module_name === 'activity'" class="goods-big-box">
             <div class="line"></div>
-            <div class="goods-title-box">
-              <div class="goods-title-main">
-                <div class="goods-title-img"></div>
-                <div class="goods-title-text">今日抢购</div>
-                <div class="goods-title-icon"></div>
-                <div class="goods-title-sub">今日下单 次日提货</div>
-              </div>
-            </div>
-            <div class="goods-box hand" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
-              <div v-for="(item, index) in goodsList" :key="index" class="goods-list">
-                <div class="goods-left">
-                  <div class="goods-left-img">
-                    <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
-                  </div>
-                  <div class="goods-left-icon">
-                    <img class="item-img" src="./icon-label@2x.png">
-                  </div>
+            <div :class="{'touch': comType === cms.module_name}" class="goods-small-box hand" @click="_setType(cms)">
+              <div class="goods-title-box">
+                <div class="goods-title-main">
+                  <div class="goods-title-text">今日抢购</div>
+                  <!--<div class="goods-title-icon"></div>-->
+                  <div class="goods-title-sub">今日下单 次日提货</div>
                 </div>
-                <div class="goods-right">
-                  <div class="goods-right-top">
-                    <div class="title">{{item.name}}</div>
-                    <div v-if="item.describe" class="text-sub">{{item.describe}}</div>
-                    <div class="text-sales-box">
-                      <div class="text-sales">已售{{item.sale_count}}件</div>
+              </div>
+              <div class="goods-box hand">
+                <div v-for="(item, index) in goodsList" :key="index" class="goods-list">
+                  <div class="goods-left">
+                    <div class="goods-left-img">
+                      <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
+                    </div>
+                    <div class="goods-left-icon">
+                      <img class="item-img" src="./icon-label@2x.png">
                     </div>
                   </div>
-                  <div class="add-box">
-                    <div class="add-box-left">
-                      <section class="left">
-                        <div class="text-group">团购价</div>
-                      </section>
-                      <div class="price-box">
-                        <div class="money">{{item.shop_price}}</div>
-                        <div class="unit">元</div>
-                        <div class="lineation">{{item.original_price}}元</div>
+                  <div class="goods-right">
+                    <div class="goods-right-top">
+                      <div class="title">{{item.name}}</div>
+                      <div v-if="item.describe" class="text-sub">{{item.describe}}</div>
+                      <div class="text-sales-box">
+                        <div class="text-sales">已售{{item.sale_count}}件</div>
                       </div>
                     </div>
-                    <button v-if="item.usable_stock * 1 > 0" class="add-box-right" formType="submit">
-                      <div class="add-goods-btn">
-                        <div class="add-icon">
-                          <div class="add1"></div>
-                          <div class="add2"></div>
+                    <div class="add-box">
+                      <div class="add-box-left">
+                        <section class="left">
+                          <div class="text-group">团购价</div>
+                        </section>
+                        <div class="price-box">
+                          <div class="money">{{item.shop_price}}</div>
+                          <div class="unit">元</div>
+                          <div class="lineation">{{item.original_price}}元</div>
                         </div>
-                        <div class="add-text">购物车</div>
                       </div>
-                    </button>
-                    <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
-                      <div class="add-goods-btn add-goods-btn-active">
-                        <div class="add-text">已抢完</div>
+                      <button v-if="item.usable_stock * 1 > 0" class="add-box-right" formType="submit">
+                        <div class="add-goods-btn">
+                          <div class="phone-add-icon">
+                            <div class="add1"></div>
+                            <div class="add2"></div>
+                          </div>
+                          <div class="add-text">购物车</div>
+                        </div>
+                      </button>
+                      <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
+                        <div class="add-goods-btn add-goods-btn-active">
+                          <div class="add-text">已抢完</div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div v-if="!goodsList.length" class="goods-none">
-                <div class="none-box">
-                  <img src="./icon-picmr@2x.png" class="none-img">
+                <div v-if="!goodsList.length" class="goods-none">
+                  <div class="none-box">
+                    <img src="./icon-picmr@2x.png" class="none-img">
+                  </div>
                 </div>
+                <!--<div v-if="!goodsList.length" class="goods-none">-->
+                <!--<div class="none-box">-->
+                <!--<img src="./icon-picmr@2x.png" class="none-img">-->
+                <!--</div>-->
+                <!--</div>-->
               </div>
-              <!--<div v-if="!goodsList.length" class="goods-none">-->
-              <!--<div class="none-box">-->
-              <!--<img src="./icon-picmr@2x.png" class="none-img">-->
-              <!--</div>-->
-              <!--</div>-->
             </div>
-
           </div>
         </div>
       </div>
@@ -188,23 +188,24 @@
   @import "~@design"
 
   .phone-box
-    width: 588px
+    margin: 0 76px 0 71px
     box-sizing: border-box
     display: flex
     justify-content: center
     .phone
-      icon-image('pic-iphone')
+      icon-image('pic-tel')
       width: 375px
       height: 764.6px
       position: relative
-      margin: 50px 0 40px
       .content-box
-        top: 94px
-        left: 35px
+        padding: 0 2px
+        box-sizing: border-box
+        top: 111px
+        left: 26px
         position: absolute
-        width: 315px
-        height: 550px
-        max-height: 550px
+        width: 323px
+        height: 532px
+        max-height: 532px
         overflow-x: hidden
         &::-webkit-scrollbar
           width: 0px
@@ -238,7 +239,7 @@
       height: 104px
       .carousel
         margin-top: 5px
-        border-radius: 4px
+        border-radius: 1px
         width: 287px
         height: 94.6px
         background-repeat: no-repeat
@@ -271,6 +272,37 @@
       transition: all 0.2s
       box-sizing: border-box
       border: 2px solid $color-main !important
+
+  .nav-box
+    margin-top: 7px
+    overflow: hidden
+    position: relative
+    transition: all 0.2s
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      transition: all 0.2s
+      box-sizing: border-box
+      border: 2px dashed #D9D9D9
+
+  .goods-small-box
+    overflow: hidden
+    position: relative
+    transition: all 0.2s
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      transition: all 0.2s
+      box-sizing: border-box
+      border: 2px dashed #D9D9D9
 
   .nav-list
     box-sizing: border-box
@@ -320,9 +352,18 @@
         margin-right: 5px
         icon-image('icon-clock')
       .goods-title-text
-        font-size: $font-size-16
+        font-size: 15px
         color: $color-text-main
         font-family: $font-family-medium
+        text-indent: 9.5px
+        position: relative
+        &:after
+          content: ''
+          col-center()
+          left: 0
+          width: 3.5px
+          height: 14px
+          background: #FC4D1A
       .goods-title-icon
         width: 3px
         height: 3px
@@ -331,37 +372,14 @@
         border-radius: 50%
       .goods-title-sub
         font-size: $font-size-12
+        margin-left: 5.5px
         color: #808080
         font-family: $font-family-regular
-
-  .nav-box
-    margin-top: 7px
-    position: relative
-    &:after
-      content: ''
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      transition: all 0.2s
-      box-sizing: border-box
-      border: 2px dashed #D9D9D9
 
   .goods-box
     padding: 0 10.08px
     box-sizing: border-box
     position: relative
-    &:after
-      content: ''
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      transition: all 0.2s
-      box-sizing: border-box
-      border: 2px dashed #D9D9D9
     .goods-list
       height: 121px
       layout(row)
@@ -481,7 +499,7 @@
               font-size: $font-size-12
               font-family: $font-family-regular
               color: #fff
-            .add-icon
+            .phone-add-icon
               width: 11px
               height: 11px
               position: relative

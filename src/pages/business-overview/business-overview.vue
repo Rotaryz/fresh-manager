@@ -1,7 +1,13 @@
 <template>
-  <div class="business-overview">
-    <div class="tab-header">
-      <base-option-box :arrTitle="tabOptions" :tabActive="3" @checkTime="changeTab"></base-option-box>
+  <div class="business-overview normal-box">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-revenue@2x.png" class="identification-icon">
+        <p class="identification-name">营收概况</p>
+      </div>
+      <div class="function-btn">
+        <base-option-box :arrTitle="tabOptions" :tabActive="3" @checkTime="changeTab"></base-option-box>
+      </div>
     </div>
     <div class="content-header">
       <div class="content-title">营收概况</div>
@@ -362,7 +368,7 @@
         font-family: $font-family-regular
         font-size: $font-size-14
         .detail
-          color: $color-sub
+          color: $color-main
           display: inline-block
           margin-left: 10px
           text-decoration: underline
