@@ -104,6 +104,4 @@
       position: absolute
       left: 8px
       bottom: 0
-
-
 </style>

@@ -49,7 +49,7 @@
       <!--<div :class="{'btn-disable': disable}" class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>-->
       <div class="activity-list">
         <div class="activity-tab">
-          <div :class="{'btn-disable': disable}" class="add-goods-btn" @click="_showGoods">添加商品 +</div>
+          <div :class="{'btn-disable': disable}" class="add-goods-btn hand" @click="_showGoods">添加商品 +</div>
         </div>
         <div class="big-list">
           <div class="commodities-list-header com-list-box commodities-list-top">
@@ -171,7 +171,7 @@
           </div>
         </div>
         <div class="goods-content">
-          <div class="goods-list">
+          <div class="rush-goods-list">
             <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
               <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
@@ -188,7 +188,7 @@
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
-          <div class="back-btn btn-main" @click="_batchAddition">批量添加</div>
+          <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
         </div>
       </div>
     </default-modal>
@@ -865,7 +865,6 @@
         text-align: center
     .back
       position: absolute
-      justify-content: flex-end
       left: 0
       right: 0
       bottom: 0
@@ -1057,7 +1056,7 @@
     border: 1px solid $color-line
     margin: 0 20px
     height: 400px
-    .goods-list
+    .rush-goods-list
       flex-wrap: wrap
       display: flex
     .goods-item

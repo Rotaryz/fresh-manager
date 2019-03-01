@@ -328,6 +328,7 @@
       color: #EFD8E1
       padding: 0 10px
       box-sizing: border-box
+      transition: all 0.3s
       .nav-item-icon
         width: 14px
         height: 14px
