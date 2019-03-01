@@ -1,5 +1,13 @@
 <template>
-  <div class="edit-leader">
+  <div class="edit-leader detail-content">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-bandit_list@2x.png" class="identification-icon">
+        <p class="identification-name">{{id ? '编辑团长' : '新建团长'}}</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
@@ -69,7 +77,7 @@
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main" @click="submit">保存</div>
+      <div class="back-btn back-submit" @click="submit">保存</div>
     </div>
   </div>
 </template>
@@ -220,33 +228,12 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  @import "~@style/detail"
+
   .edit-leader
     padding-bottom: 80px
     position: relative
     flex: 1
-
-  /*基本信息类头部盒子样式*/
-  .content-header
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    justify-content: space-between
-    height: 62px
-    position: relative
-    box-sizing: border-box
-    &:after
-      content: ''
-      position: absolute
-      width: 34px
-      height: 2px
-      background: $color-main
-      border-radius: 1px
-      bottom: -1px
-      left: 0
-    .content-title
-      color: $color-text-main
-      font-family: $font-family-medium
-      font-size: $font-size-16
 
   .leader-box
     padding: 0 20px
@@ -276,13 +263,13 @@
         border-radius: 1px
         width: 400px
         height: 40px
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
         transition: all 0.3s
         box-sizing: border-box
         &::-webkit-inner-spin-button
           appearance: none
         &:hover
-          border: 1px solid #ACACAC
+          border: 0.5px solid #ACACAC
         &::placeholder
           font-family: $font-family-regular
           color: $color-text-assist
@@ -294,7 +281,7 @@
         border-radius: 1px
         width: 400px
         height: 70px
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
         transition: all 0.3s
         resize: none
         outline: none

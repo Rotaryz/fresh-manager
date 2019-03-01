@@ -74,12 +74,16 @@
           animation: rotate .75s linear infinite
     .title-wrapper
       color: $color-text-main
+      line-height: 12px
       .active
         color: $color-main
     .title-wrapper-item
       font-size: $font-size-12
       line-height: 1
       .title-line
+        transform: translateY(2px)
+        display: inline-block
+        margin: 0 8px
         line-height: 1
         color: #E6EAED
 

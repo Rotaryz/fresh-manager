@@ -137,6 +137,7 @@
         transition: all 0.3s ease-out
 
     .date-item-active
+      border: 0.5px solid $color-main !important
       transition: all 0.3s ease-out
       color: $color-white
       background: $color-main

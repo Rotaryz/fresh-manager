@@ -133,7 +133,7 @@
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main" @click="_submit">保存</div>
+      <div class="back-btn back-submit hand" @click="_submit">保存</div>
     </div>
   </div>
 </template>
@@ -313,7 +313,7 @@
           this.$toast.show('请输入正确初始销量')
           return
         }
-        this.msg.goods_skus[0].store_price = this.msg.trade_price
+        this.msg.goods_skus[0].trade_price = this.msg.trade_price
         this.msg.goods_skus[0].original_price = this.msg.original_price
         this.msg.goods_skus[0].usable_stock = this.msg.usable_stock
         this.isSubmit = true
@@ -558,7 +558,7 @@
       .edit-text
         font-size: $font-size-14
         padding: 10px 14px
-        border-radius:1px
+        border-radius: 1px
         width: 400px
         height: 70px
         border: 1px solid $color-line

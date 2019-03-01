@@ -16,8 +16,8 @@
       </div>
       <div class="page-icon page-icon-two" :style="{'cursor': isHand.handRight}" @click="addPage" @mouseenter="notAllowed">
       </div>
-      <div class="page-box" :class="{'input-height': showMorePage}">
-        <div class="border-page page-total" @click.stop="showPageDetail">
+      <div class="page-box">
+        <div class="border-page page-total" :class="{'page-total-active': showMorePage}" @click.stop="showPageDetail">
           {{page}}/{{pageDetail.total_page}}
           <span class="page-tap">
             <i class="page-top" :class="{'page-bottom':showMorePage}"></i>
@@ -83,139 +83,139 @@
     computed: {
       indexArr() {
         /* eslint-disable */ // todo
-      let ret = []
-      if (this.pageDetail.total_page <= 9 && this.pageDetail.total_page > 0) {
-        for (let i = 1; i <= this.pageDetail.total_page; i++) {
+        let ret = []
+        if (this.pageDetail.total_page <= 9 && this.pageDetail.total_page > 0) {
+          for (let i = 1; i <= this.pageDetail.total_page; i++) {
+            this.showEnd = false
+            this.backClipped = false
+            ret.push(i)
+          }
+          return ret
+        } else if (this.pageDetail.total_page === 0) {
           this.showEnd = false
           this.backClipped = false
-          ret.push(i)
+          return [1]
+        }
+        if (this.page < 4) {
+          this.backClipped = true
+          this.showFirst = false
+          this.preClipped = false
+          this.showEnd = true
+          for (let i = 1; i <= 4; i++) {
+            ret.push(i)
+          }
+        } else if (this.page === 4) {
+          this.backClipped = true
+          this.showFirst = false
+          this.preClipped = false
+          for (let i = 1; i <= 6; i++) {
+            ret.push(i)
+          }
+        } else if (this.page > 4 && this.page < this.pageDetail.total_page - 2) {
+          this.showFirst = true
+          this.preClipped = true
+          this.showEnd = true
+          this.backClipped = true
+          for (let i = this.page - 2; i <= this.page + 2; i++) {
+            ret.push(i)
+          }
+        } else if (this.page === this.pageDetail.total_page - 3) {
+          this.showFirst = true
+          this.showEnd = false
+          this.backClipped = false
+          this.preClipped = true
+          for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
+            ret.push(i)
+          }
+        } else if (this.page > this.pageDetail.total_page - 3) {
+          this.showFirst = true
+          this.showEnd = false
+          this.backClipped = false
+          this.preClipped = true
+          for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
+            ret.push(i)
+          }
         }
         return ret
-      } else if (this.pageDetail.total_page === 0) {
-        this.showEnd = false
-        this.backClipped = false
-        return [1]
       }
-      if (this.page < 4) {
-        this.backClipped = true
-        this.showFirst = false
-        this.preClipped = false
-        this.showEnd = true
-        for (let i = 1; i <= 4; i++) {
-          ret.push(i)
-        }
-      } else if (this.page === 4) {
-        this.backClipped = true
-        this.showFirst = false
-        this.preClipped = false
-        for (let i = 1; i <= 6; i++) {
-          ret.push(i)
-        }
-      } else if (this.page > 4 && this.page < this.pageDetail.total_page - 2) {
-        this.showFirst = true
-        this.preClipped = true
-        this.showEnd = true
-        this.backClipped = true
-        for (let i = this.page - 2; i <= this.page + 2; i++) {
-          ret.push(i)
-        }
-      } else if (this.page === this.pageDetail.total_page - 3) {
-        this.showFirst = true
-        this.showEnd = false
-        this.backClipped = false
-        this.preClipped = true
-        for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
-          ret.push(i)
-        }
-      } else if (this.page > this.pageDetail.total_page - 3) {
-        this.showFirst = true
-        this.showEnd = false
-        this.backClipped = false
-        this.preClipped = true
-        for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
-          ret.push(i)
-        }
+    },
+    created() {
+      window.onclick = () => {
+        this.hidePageDetail()
       }
-      return ret
-    }
-  },
-  created() {
-    window.onclick = () => {
-      this.hidePageDetail()
-    }
-  },
-  methods: {
-    _runPage(e) {
-      if (e.keyCode === 13) {
+    },
+    methods: {
+      _runPage(e) {
+        if (e.keyCode === 13) {
+          if (this.pageInput !== '') {
+            if (this.pageInput > this.pageDetail.total_page) {
+              this.pageInput = this.pageDetail.total_page
+            } else if (this.pageInput * 1 <= 0) {
+              this.pageInput = 1
+            }
+            this.pageInput = Math.floor(this.pageInput * 1)
+            this.page = this.pageInput
+            this.$emit('addPage', this.page)
+          }
+        }
+      },
+      getPage(page) {
+        this.page = page
+        this.$emit('addPage', this.page)
+      },
+      subtract() {
+        if (this.page > 1) {
+          this.page--
+          this.$emit('addPage', this.page)
+        }
+        this.notAllowed()
+      },
+      notAllowed() {
+        this.page === 1 ? (this.isHand.handLeft = 'not-allowed') : (this.isHand.handLeft = 'pointer')
+        this.page === this.pageDetail.total_page
+          ? (this.isHand.handRight = 'not-allowed')
+          : (this.isHand.handRight = 'pointer')
+        this.pageInput === '' ? (this.isHand.handGo = 'not-allowed') : (this.isHand.handGo = 'pointer')
+      },
+      addPage() {
+        if (this.page < this.pageDetail.total_page) {
+          this.page++
+          this.$emit('addPage', this.page)
+        }
+      },
+      showPageDetail() {
+        this.showMorePage = !this.showMorePage
+      },
+      detailPage(page) {
+        this.page = page
+        this.pageIndex = page
+        setTimeout(() => {
+          this.hidePageDetail()
+        }, 100)
+        this.$emit('addPage', this.page)
+      },
+      hidePageDetail() {
+        this.showMorePage = false
+        this.focus = false
+      },
+      goPage() {
         if (this.pageInput !== '') {
+          this.pageInput = Math.floor(this.pageInput * 1)
           if (this.pageInput > this.pageDetail.total_page) {
             this.pageInput = this.pageDetail.total_page
           } else if (this.pageInput * 1 <= 0) {
             this.pageInput = 1
           }
-          this.pageInput = Math.floor(this.pageInput * 1)
           this.page = this.pageInput
           this.$emit('addPage', this.page)
         }
+      },
+      beginPage(page = 1) {
+        this.pageInput = ''
+        this.page = page
       }
-    },
-    getPage(page) {
-      this.page = page
-      this.$emit('addPage', this.page)
-    },
-    subtract() {
-      if (this.page > 1) {
-        this.page--
-        this.$emit('addPage', this.page)
-      }
-      this.notAllowed()
-    },
-    notAllowed() {
-      this.page === 1 ? (this.isHand.handLeft = 'not-allowed') : (this.isHand.handLeft = 'pointer')
-      this.page === this.pageDetail.total_page
-        ? (this.isHand.handRight = 'not-allowed')
-        : (this.isHand.handRight = 'pointer')
-      this.pageInput === '' ? (this.isHand.handGo = 'not-allowed') : (this.isHand.handGo = 'pointer')
-    },
-    addPage() {
-      if (this.page < this.pageDetail.total_page) {
-        this.page++
-        this.$emit('addPage', this.page)
-      }
-    },
-    showPageDetail() {
-      this.showMorePage = !this.showMorePage
-    },
-    detailPage(page) {
-      this.page = page
-      this.pageIndex = page
-      setTimeout(() => {
-        this.hidePageDetail()
-      }, 100)
-      this.$emit('addPage', this.page)
-    },
-    hidePageDetail() {
-      this.showMorePage = false
-      this.focus = false
-    },
-    goPage() {
-      if (this.pageInput !== '') {
-        this.pageInput = Math.floor(this.pageInput * 1)
-        if (this.pageInput > this.pageDetail.total_page) {
-          this.pageInput = this.pageDetail.total_page
-        } else if (this.pageInput * 1 <= 0) {
-          this.pageInput = 1
-        }
-        this.page = this.pageInput
-        this.$emit('addPage', this.page)
-      }
-    },
-    beginPage(page = 1) {
-      this.pageInput = ''
-      this.page = page
     }
   }
-}
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
@@ -243,7 +243,7 @@
           height: 26px
           box-sizing: border-box
           border-radius: 1px
-          border: 0.5px solid #ccc
+          border: 0.5px solid $color-line
           font-size: $font-size-12
           color: $color-text-main
           line-height: 26px
@@ -272,7 +272,7 @@
             height: 0
             width: 100%
             bottom: 0
-            left: 0
+            left: -0.5px
             box-sizing: content-box
             transition: all 0.3s ease-out
             border-radius: 1px
@@ -306,18 +306,24 @@
         &:hover
           transition: all 0.3s
           icon-image('icon-before_hover')
+        &:active
+          transition: all 0.3s
+          icon-image('pic-paging_left2')
       .page-icon-two
         transition: all 0.3s
         icon-image('icon-later')
         &:hover
           transition: all 0.3s
           icon-image('icon-later_hover')
+        &:active
+          transition: all 0.3s
+          icon-image('pic-paging_right2')
       .border-page
         display: flex
         line-height: 26px
         border-radius: 1px
         margin: 0 10px
-        border: 0.5px solid #ccc
+        border: 0.5px solid $color-line
         font-size: $font-size-12
       div.border-page
         margin-right: 0
@@ -379,6 +385,8 @@
               background: #FAFAFA
           .page-item-active
             background: #FAFAFA
+      .page-total-active
+        border: 0.5px solid $color-main !important
       .input-box-big
         position: relative
         margin: 0 8px
@@ -392,7 +400,9 @@
           text-align: center
           transition: all 0.4s ease-out
           &:hover
-            border: 1px solid #ACACAC
+            border: 0.5px solid #ACACAC
+          &:focus
+            border: 0.5px solid $color-main
           &::-webkit-inner-spin-button
             appearance: none
 

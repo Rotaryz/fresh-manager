@@ -62,7 +62,7 @@
     <!--</div>-->
     <!--</div>-->
     <div class="back">
-      <div class="back-btn btn-main" @click="_back">返回</div>
+      <div class="back-btn back-submit hand" @click="_back">返回</div>
     </div>
   </div>
 </template>

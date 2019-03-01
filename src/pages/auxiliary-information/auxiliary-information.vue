@@ -195,7 +195,12 @@
       font-size: $font-size-14
       color: $color-main
       box-sizing: border-box
-      border-1px(#333, 1px)
+      border-1px(#D6D6D6, 1px)
+      transition: all 0.3s
+      &:hover
+        border-1px(#333, 1px)
+      &:after
+          transition: all 0.3s
 
   .auxiliary-information
     width: 100%

@@ -631,7 +631,7 @@
     overflow: hidden
     padding-bottom: 40px
     .advertisement-btn
-      margin: 50px 0 0px 40px
+      margin: 50px 0 0 0
       display: flex
     .advertisement-item
       margin-top: 24px
@@ -878,9 +878,9 @@
         height: 79.5px
         display: flex
         align-items: center
-        border-bottom: 1px solid $color-line
+        border-bottom: 0.5px solid $color-line
         &:nth-child(2n+1)
-          border-right: 1px solid $color-line
+          border-right: 0.5px solid $color-line
         &:nth-child(9), &:nth-child(10)
           border-bottom: none
         .goods-img
@@ -937,7 +937,7 @@
     height: 60.5px
     box-sizing: border-box
     padding: 0 20px 0 0
-    border-bottom: 1px solid $color-line
+    border-bottom-1px($color-line)
     .shade-tab-type
       height: 100%
       display: flex
@@ -956,7 +956,7 @@
         transition: all 0.3s
         left: 55px
         position: absolute
-        bottom: -1px
+        bottom: 0px
         height: 2px
         width: 34px
         background: $color-main
@@ -1007,7 +1007,7 @@
         display: flex
         align-items: center
         justify-content: space-between
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
         transition: all 0.3s
         &:hover
           border-color: #ACACAC
@@ -1037,7 +1037,7 @@
     padding-left: 40px
 
   .submit-activity
-    border-top: 1px solid #E1E1E1
+    border-top: 0.5px solid #E1E1E1
     padding-top: 40px
     margin-top: 40px
 
