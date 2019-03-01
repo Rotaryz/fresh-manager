@@ -195,7 +195,7 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit" @click="_saveActivity">保存</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
     </div>
   </div>
@@ -283,7 +283,8 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        essInformation: {activity_type: 'fixed'}
+        essInformation: {activity_type: 'fixed'},
+        isSubmit: false
       }
     },
     computed: {
@@ -296,10 +297,11 @@
           if (id) {
             let obj = _.cloneDeep(news)
             this.goodsList = obj.activity_goods
-            this.selectGoodsId = this.goodsList.map((item) => {
-              return item.goods_id
-            })
-
+            if (this.goodsList) {
+              this.selectGoodsId = obj.activity_goods.map((item) => {
+                return item.goods_id
+              })
+            }
             this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
           }
         },
@@ -578,7 +580,10 @@
       async _saveActivity() {
         if (this.disable) {
           return
+        } else if (this.isSubmit) {
+          return
         }
+        this.isSubmit = true
         let date = Date.parse(new Date())
         let endTime = this.essInformation.end_at + ' 23:00'
         if (!this.essInformation.activity_name) {
@@ -609,13 +614,14 @@
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
         if (this.id) {
-          res = await API.Rush.updateGoods(data, this.id)
+          res = await API.Rush.updateGoods(data, this.id, true)
         } else {
-          res = await API.Rush.storeGoods(data, this.id)
+          res = await API.Rush.storeGoods(data, this.id, true)
         }
+        this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
-          // this.disable = true
+          this.isSubmit = false
           return
         }
         setTimeout(() => {
