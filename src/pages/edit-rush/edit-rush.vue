@@ -583,7 +583,6 @@
         } else if (this.isSubmit) {
           return
         }
-        this.isSubmit = true
         let date = Date.parse(new Date())
         let endTime = this.essInformation.end_at + ' 23:00'
         if (!this.essInformation.activity_name) {
@@ -613,6 +612,7 @@
         }
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
+        this.isSubmit = true
         if (this.id) {
           res = await API.Rush.updateGoods(data, this.id, true)
         } else {
