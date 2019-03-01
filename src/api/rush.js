@@ -8,17 +8,17 @@ export default {
    * @returns {*}
    */
   getRushList(data, loading = true) {
-    let url = '/social-shopping/api/backend/shelf-manage/shelf'
+    let url = '/social-shopping/api/backend/activity-manage/activity'
     return request.get(url, data, loading)
   },
   /**
-   * 今日抢购列表
+   * 今日抢购详情
    * @param data
    * @param loading
    * @returns {*}
    */
   rushDetail(id, loading = true) {
-    let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed/${id}`
     return request.get(url, {}, loading)
   },
   /**
@@ -77,7 +77,7 @@ export default {
    * @returns {*}
    */
   getGoodsList(data, loading = false) {
-    let url = `/social-shopping/api/backend/shelf-manage/shelf-goods`
+    let url = `/social-shopping/api/backend/activity-manage/activity-goods`
     return request.get(url, data, loading)
   },
   /**
@@ -97,17 +97,17 @@ export default {
    * @returns {*}
    */
   updateGoods(data, id, loading = false) {
-    let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed/${id}`
     return request.post(url, data, loading)
   },
   /**
-   * 仓库货架编辑
+   * 新增仓库货架
    * @param data
    * @param loading
    * @returns {*}
    */
   storeGoods(data, loading = false) {
-    let url = `/social-shopping/api/backend/shelf-manage/shelf`
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed`
     return request.post(url, data, loading)
   },
   /**
@@ -117,7 +117,7 @@ export default {
    * @returns {*}
    */
   deleteGoods(id, loading = false) {
-    let url = `/social-shopping/api/backend/shelf-manage/shelf/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
     return request.delete(url, null, loading)
   },
   /**
@@ -127,7 +127,7 @@ export default {
    * @returns {*}
    */
   downGoods(data, loading = false) {
-    let url = `/social-shopping/api/backend/shelf-manage/shelf-toggle-online`
+    let url = `/social-shopping/api/backend/activity-manage/activity-toggle-online`
     return request.post(url, data, loading)
   }
 }

@@ -10,7 +10,7 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="essInformation.name" type="text" placeholder="请输入" class="edit-input">
+          <input v-model="essInformation.activity_name" type="text" placeholder="请输入" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
@@ -283,7 +283,7 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        essInformation: {}
+        essInformation: {activity_type: 'fixed'}
       }
     },
     computed: {
@@ -295,8 +295,12 @@
           let id = this.$route.query.id || null
           if (id) {
             let obj = _.cloneDeep(news)
-            this.goodsList = obj.shelf_goods
-            this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, name: obj.name}
+            this.goodsList = obj.activity_goods
+            this.selectGoodsId = this.goodsList.map((item) => {
+              return item.goods_id
+            })
+
+            this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
           }
         },
         immediate: true
@@ -308,6 +312,7 @@
       this.id = this.$route.query.id || null
       await this._getFirstAssortment()
       this._getListHeight()
+      this._getGoodsList()
     },
     methods: {
       ...rushMethods,
@@ -442,6 +447,14 @@
         this.choeesGoods[index].selected = 1
         this.goodsList.push(item)
         this.selectGoodsId.push(item.id)
+        this.choeesGoods.forEach((item) => {
+          if (item.selected === 1) {
+            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+            if (idx !== -1) {
+              this.selectGoods.splice(idx, 1)
+            }
+          }
+        })
       },
       // 批量添加
       _batchAddition() {
@@ -525,7 +538,7 @@
             return
           }
           let obj = {name: this.classifyName, sort: this.classifyNum, id: res.data.id}
-          this.rushMsg.lists.push({shelf_tag: obj, shelf_goods: []})
+          this.rushMsg.lists.push({shelf_tag: obj, activity_goods: []})
         } else {
           res = await API.Rush.updateTag({name: this.classifyName, sort: this.classifyNum}, this.tagItem.id)
           this.$toast.show(res.message)
@@ -568,7 +581,7 @@
         }
         let date = Date.parse(new Date())
         let endTime = this.essInformation.end_at + ' 23:00'
-        if (!this.essInformation.name) {
+        if (!this.essInformation.activity_name) {
           this.$toast.show('活动名称不能为空')
           return
         } else if (!this.essInformation.start_at) {
@@ -583,28 +596,17 @@
         }
         let list = this.goodsList
         for (let i in list) {
-          for (let index in list[i].shelf_goods) {
-            if (
-              !list[i].shelf_goods[index].trade_price ||
-              !list[i].shelf_goods[index].buy_limit ||
-              !list[i].shelf_goods[index].usable_stock ||
-              list[i].shelf_goods[index].sort === ''
-            ) {
-              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}信息不全`)
-              return
-            } else if (
-              +list[i].shelf_goods[index].trade_price < 0 ||
-              +list[i].shelf_goods[index].buy_limit <= 0 ||
-              +list[i].shelf_goods[index].usable_stock < 0 ||
-              (list[i].shelf_goods[index].usable_stock + '').includes('.') ||
-              +list[i].shelf_goods[index].sort < 0
-            ) {
-              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}输入数据有误`)
-              return
-            }
+          // for (let index in list[i].shelf_goods) {
+          if (!list[i].trade_price || !list[i].person_day_buy_limit || !list[i].usable_stock || list[i].sort === '') {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return
+          } else if (+list[i].trade_price < 0 || +list[i].person_day_buy_limit <= 0 || +list[i].usable_stock < 0 || (list[i].usable_stock + '').includes('.') || +list[i].sort < 0) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
+            return
           }
+          // }
         }
-        let data = Object.assign({}, this.essInformation, {shelf_goods: list})
+        let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
         if (this.id) {
           res = await API.Rush.updateGoods(data, this.id)
@@ -1125,6 +1127,7 @@
         cursor: not-allowed
         background: $color-line
         color: $color-text-assist
+        border-none()
 
   /*弹窗动画*/
   @keyframes layerFadeIn {
@@ -1148,6 +1151,9 @@
       opacity: 0
     }
   }
+
+  .com-list-item
+    position: relative
 
   .com-edit
     height: 34px

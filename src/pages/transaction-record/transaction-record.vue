@@ -54,7 +54,7 @@
         <div v-for="(item, index) in trades" :key="index" class="list-content list-box">
           <div class="list-item list-double-row">
             <p class="item-dark">{{item.order_sn}}</p>
-            <p class="item-dark">{{item.out_trade_sn}}</p>
+            <p class="item-sub">{{item.out_trade_sn}}</p>
           </div>
           <div class="list-item">{{item.total}}</div>
           <div class="list-item">{{item.business_type}}</div>
