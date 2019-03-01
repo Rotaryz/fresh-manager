@@ -8,8 +8,10 @@
 </template>
 
 <script>
+  const COMPONENT_NAME = 'BASE_TAB_SELECT'
+
   export default {
-    name: 'StatusTab',
+    name: COMPONENT_NAME,
     props: {
       tabStatus: {
         type: Array,

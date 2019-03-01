@@ -110,7 +110,6 @@
     name: PAGE_NAME,
     components: {
       DefaultModal
-      // DefaultConfirm
     },
     page: {
       title: TITLE

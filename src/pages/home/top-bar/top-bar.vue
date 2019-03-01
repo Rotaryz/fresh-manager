@@ -2,7 +2,7 @@
   <div class="top-bar">
     <div class="userInfo-content">
       <section class="title-wrapper">
-        <span v-for="(item, index) in currentTitles" :key="index" :class="{'active': index === currentTitles.length -1}" class="title-wrapper-item"> {{item}} <span v-if="index !== currentTitles.length -1"> / </span></span>
+        <span v-for="(item, index) in currentTitles" :key="index" :class="{'active': index === currentTitles.length -1}" class="title-wrapper-item"> {{item}} <span v-if="index !== currentTitles.length -1" class="title-line"> / </span></span>
       </section>
       <section class="userInfo-wrapper">
         <p class="name">你好: {{currentUser && currentUser.manager_info.username}}</p>
@@ -78,6 +78,10 @@
         color: $color-main
     .title-wrapper-item
       font-size: $font-size-12
+      line-height: 1
+      .title-line
+        line-height: 1
+        color: #E6EAED
 
   @keyframes rotate
     0%
