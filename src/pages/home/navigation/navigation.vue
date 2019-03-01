@@ -314,8 +314,8 @@
         position: absolute
         top: 0
         left: 0
-        width: 1200px
-        height: 1200px
+        width: 100vh
+        height: 100vh
         background-image: radial-gradient(#32292F 50%, #292A30 100%)
     .menu
       position: relative
