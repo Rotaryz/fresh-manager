@@ -246,7 +246,6 @@
         background-size: cover
         background-position: center
         background-image: url('./icon-picmr@2x.png')
-        transition: all 0.3s
       .carousel-active
         margin-top: 0
         height: 104px
