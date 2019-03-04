@@ -139,7 +139,7 @@
                   <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
                   <div class="goods-msg">
                     <div class="goods-name">{{item.name}}</div>
-                    <div class="goods-money">¥{{item.trade_price}}</div>
+                    <div class="goods-money">¥{{item.original_price}}</div>
                   </div>
                 </div>
                 <!--select-icon-active-->
@@ -824,7 +824,7 @@
       left: 0px
     .content-title
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-16
     .content-sub
       color: $color-text-assist

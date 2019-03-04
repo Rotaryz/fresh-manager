@@ -99,7 +99,7 @@
         margin-left: 0
     .title
       font-size: $font-size-16
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       height: 44px
       line-height: 44px
       padding: 0 15px

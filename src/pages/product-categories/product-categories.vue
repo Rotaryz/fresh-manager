@@ -288,7 +288,7 @@
             font-size: $font-size-14
             line-height: 1
             color: $color-text-main
-            font-family: $font-family-medium
+            font-family: $font-family-regular
 
   .add-box
     height: 60px
@@ -307,7 +307,7 @@
       font-size: $font-size-14
       line-height: 1
       color: $color-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
 
   .open-item
     height: 60px

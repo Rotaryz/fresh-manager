@@ -389,7 +389,7 @@
       justify-content: space-between
       .select-text
         font-size: $font-size-14
-        font-family: $font-family-medium
+        font-family: $font-family-regular
         color: $color-text-main
       .select-text-assist
         color: $color-text-assist
@@ -493,29 +493,6 @@
     border-radius: 10px
     background: #e3e3e3
   }
-
-  /*基本信息类头部盒子样式*/
-  .content-header
-    border-bottom: 1px solid $color-line
-    display: flex
-    align-items: center
-    justify-content: space-between
-    height: 62px
-    position: relative
-    box-sizing: border-box
-    &:after
-      content: ''
-      position: absolute
-      width: 34px
-      height: 2px
-      background: $color-main
-      border-radius: 1px
-      bottom: -1px
-      left: 0
-    .content-title
-      color: $color-text-main
-      font-family: $font-family-medium
-      font-size: $font-size-16
 
   .leader-box
     padding: 0 20px

@@ -71,7 +71,7 @@
       .title
         color: $color-text-main
         font-size: $font-size-16
-        font-family: $font-family-medium
+        font-family: $font-family-regular
       .close-box
         padding: 17px
         cursor: pointer
@@ -87,13 +87,12 @@
       .main-input-box
         width: 310px
         height: 44px
-        border: 1px solid #e1e1e1
+        border: 0.5x solid #e1e1e1
         border-radius: 1px
-        font-family: $font-family-medium
+        font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14
         padding-left: 14px
-        border: 1px solid $color-line
         transition: all 0.3s
         &::-webkit-inner-spin-button
           appearance: none

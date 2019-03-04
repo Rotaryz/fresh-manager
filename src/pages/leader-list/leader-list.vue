@@ -166,7 +166,7 @@
       border-bottom: 1px solid $color-line
     .shade-title
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-16
     .close
       icon-image('icon-close')

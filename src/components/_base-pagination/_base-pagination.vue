@@ -2,7 +2,7 @@
   <div class="total">
     <div class="page-title">{{pageDetail.per_page}}条/页，共{{pageDetail.total}}条数据</div>
     <div class="page">
-      <div class="page-icon" :style="{'cursor': isHand.handLeft}" @click="subtract" @mouseenter="notAllowed">
+      <div class="page-icon" :class="{'page-icon-disable': isHand.handLeft !== 'pointer'}" :style="{'cursor': isHand.handLeft}" @click="subtract" @mouseenter="notAllowed">
       </div>
       <!--{{page}}/{{pageDetail.total_page}}-->
       <div class="pade-detail">
@@ -14,7 +14,7 @@
         <span v-show="backClipped" class="page-hide-more"></span>
         <span v-show="showEnd" class="page-child hand" :class="{'page-child-active': page === pageDetail.total_page}" @click="getPage(pageDetail.total_page)">{{pageDetail.total_page}}</span>
       </div>
-      <div class="page-icon page-icon-two" :style="{'cursor': isHand.handRight}" @click="addPage" @mouseenter="notAllowed">
+      <div class="page-icon page-icon-two" :class="{'page-icon-two-disable':isHand.handRight !== 'pointer'}" :style="{'cursor': isHand.handRight}" @click="addPage" @mouseenter="notAllowed">
       </div>
       <div class="page-box">
         <div class="border-page page-total" :class="{'page-total-active': showMorePage}" @click.stop="showPageDetail">
@@ -305,19 +305,21 @@
         transition: all 0.3s
         &:hover
           transition: all 0.3s
-          icon-image('icon-before_hover')
-        &:active
-          transition: all 0.3s
           icon-image('pic-paging_left2')
+      .page-icon-disable
+        &:hover
+          transition: all 0.3s
+          icon-image('icon-before_hover')
       .page-icon-two
         transition: all 0.3s
         icon-image('icon-later')
         &:hover
           transition: all 0.3s
-          icon-image('icon-later_hover')
-        &:active
-          transition: all 0.3s
           icon-image('pic-paging_right2')
+      .page-icon-two-disable
+        &:hover
+          transition: all 0.3s
+          icon-image('icon-later_hover')
       .border-page
         display: flex
         line-height: 26px

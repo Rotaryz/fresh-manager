@@ -353,7 +353,7 @@
       .goods-title-text
         font-size: 15px
         color: $color-text-main
-        font-family: $font-family-medium
+        font-family: $font-family-regular
         text-indent: 9.5px
         position: relative
         &:after
@@ -422,7 +422,7 @@
         .title
           padding-top: 3px
           font-size: $font-size-13
-          font-family: $font-family-medium
+          font-family: $font-family-regular
           color: $color-text-main
           min-height: $font-size-13
           margin-bottom: 4px
@@ -467,12 +467,12 @@
             layout(row)
             align-items: flex-end
             .money
-              font-family: $font-family-medium
+              font-family: $font-family-regular
               color: #FF8300
               font-size: $font-size-20
               line-height: 1
             .unit
-              font-family: $font-family-medium
+              font-family: $font-family-regular
               color: #FF8300
               font-size: $font-size-12
               line-height: 1

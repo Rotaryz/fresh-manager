@@ -51,7 +51,7 @@
         <div class="activity-tab">
           <div :class="{'btn-disable': disable}" class="add-goods-btn hand" @click="_showGoods">添加商品 +</div>
         </div>
-        <div class="big-list">
+        <div class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>
@@ -929,7 +929,7 @@
           width: 310px
           height: 44px
           border-radius: 1px
-          font-family: $font-family-medium
+          font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
           padding-left: 14px
@@ -1190,5 +1190,10 @@
   .com-edit-small
     width: 60px
 
-
+  .rush-list-box
+    background: $color-white
+    overflow: visible
+    display: flex
+    flex-direction: column
+    flex: 1
 </style>

@@ -134,7 +134,7 @@
       font-size: $font-size-16
       line-height: 1
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
     .line
       position: absolute
       width: 34px
@@ -224,7 +224,7 @@
       left: 0
     .content-title
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-16
 
 </style>

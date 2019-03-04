@@ -167,7 +167,7 @@
           padding-bottom: 16px
           height: 62px
           box-sizing: border-box
-          font-family: $font-family-medium
+          font-family: $font-family-regular
           font-size: $font-size-16
           color: $color-text-main
         .line
@@ -250,7 +250,7 @@
       padding: 0 20px
       layout(row)
       .title
-        font-family: $font-family-medium
+        font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main
       .close
