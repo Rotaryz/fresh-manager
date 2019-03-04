@@ -19,6 +19,7 @@
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
           <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>
+          <div class="btn-main g-btn-item" @click="_syncGoods">同步</div>
         </div>
       </div>
       <div class="big-list">
@@ -101,6 +102,19 @@
       this.pageTotal = _.cloneDeep(this.statePageTotal)
     },
     methods: {
+      async _syncGoods() {
+        let res = await API.Product.syncGoodsInfo()
+        this.$loading.hide()
+        if(res.error === this.$ERR_OK) {
+          this.$toast.show('同步成功')
+          this.isOnline = ''
+          this.dispatchSelect.content = '全部状态'
+          this.goodsPage = 1
+          this.keyWord = ''
+          this.$refs.pagination.beginPage()
+          this.getGoodsListData()
+        }
+      },
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
