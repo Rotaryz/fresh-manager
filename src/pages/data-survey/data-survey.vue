@@ -37,7 +37,7 @@
       <div class="date-leader">
         <div class="data-caption">
           <div class="data-title">团长销售排行榜TOP5</div>
-          <base-option-box :arrTitle="leaderDate" :tabActive="3" @checkTime="_leaderMore"></base-option-box>
+          <base-option-box :tabActive="3" @checkTime="_leaderMore"></base-option-box>
         </div>
         <div class="list-header list-box">
           <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
@@ -55,7 +55,7 @@
       <div class="date-shop">
         <div class="data-caption">
           <div class="data-title">商品销售排行榜TOP5</div>
-          <base-option-box :arrTitle="leaderDate" :tabActive="3" @checkTime="_shopMore"></base-option-box>
+          <base-option-box :tabActive="3" @checkTime="_shopMore"></base-option-box>
         </div>
         <div class="list-header list-box">
           <div v-for="(item,index) in shopTitle" :key="index" class="list-item">{{item}}</div>
@@ -81,12 +81,6 @@
   const TITLE = '数据概况'
   const LEADER_TITLE = ['团长名称', '社区名称', '销售额', '支付订单数', '佣金收益']
   const SHOP_TITLE = ['商品名称', '被浏览次数', '销售件数', '销售额']
-  const TIME = [
-    {title: '昨天', status: 'yesterday'},
-    {title: '7天', status: 'week'},
-    {title: '30天', status: 'month'},
-    {title: '自定义', status: 'custom'}
-  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -95,8 +89,7 @@
     data() {
       return {
         leaderTitle: LEADER_TITLE,
-        shopTitle: SHOP_TITLE,
-        leaderDate: TIME
+        shopTitle: SHOP_TITLE
       }
     },
     computed: {
@@ -104,8 +97,8 @@
     },
     created() {
       this.$emit('setRoutine', true)
-      this.getLeaderDetail({startTime: '', endTime: '', time: 'yesterday', loading: false})
-      this.getShopDetail({startTime: '', endTime: '', time: 'yesterday', loading: false})
+      this.getLeaderDetail({startTime: '', endTime: '', time: 'today', loading: false})
+      this.getShopDetail({startTime: '', endTime: '', time: 'today', loading: false})
     },
     destroyed() {
       this.$emit('setRoutine', false)
@@ -145,6 +138,7 @@
     flex: 1
     display: flex
     box-sizing: border-box
+    padding: 20px
     flex-direction: column
 
   .data-header
