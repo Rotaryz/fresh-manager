@@ -87,7 +87,7 @@
       .main-input-box
         width: 310px
         height: 44px
-        border: 0.5x solid #e1e1e1
+        border: 0.5px solid #e1e1e1
         border-radius: 1px
         font-family: $font-family-regular
         color: $color-text-main
