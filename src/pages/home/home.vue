@@ -69,17 +69,6 @@
       user-select: text
       box-sizing: border-box
       padding: 20px
-      &::-webkit-scrollbar
-        width: 8px
-        height: 10px
-      &::-webkit-scrollbar-thumb
-        background-color: rgba(0, 0, 0, .15)
-        border-radius: 10px
-      &::-webkit-scrollbar-thumb:hover
-        background-color: rgba(0, 0, 0, .3)
-      &::-webkit-scrollbar-track
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
-        border-radius: 10px
       .container-small
         border-radius: 1px
         flex: 1

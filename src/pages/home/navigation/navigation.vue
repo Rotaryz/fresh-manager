@@ -242,7 +242,7 @@
         if (this.firstMenu[i].isLight) {
           return
         } else if (!this.firstMenu[i].second.length) {
-          this.$toast.show('该功能暂正在开发')
+          this.$toast.show('该功能正在开发')
           return
         }
         this.firstMenu = this.firstMenu.map((item, index) => {
@@ -351,18 +351,25 @@
       width: 32px
 
   .second
-    padding: 0 16px
+    padding: 10px 16px 20px
     box-sizing: border-box
-    overflow: hidden
-    min-height: 100vh
+    height: 100vh
     width: $menu-width
     background: $color-white
-    overflow-y: scroll
-    padding-top: 10px
+    overflow: auto
     white-space: nowrap
     transition: all 0.2s
     &::-webkit-scrollbar
-      width: 0px
+      width: 8px
+      height: 10px
+    &::-webkit-scrollbar-thumb
+      background-color: rgba(0, 0, 0, .15)
+      border-radius: 10px
+    &::-webkit-scrollbar-thumb:hover
+      background-color: rgba(0, 0, 0, .3)
+    &::-webkit-scrollbar-track
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+      border-radius: 10px
     .second-title
       transition: all 0.2s
       margin: 30px 0 10px
