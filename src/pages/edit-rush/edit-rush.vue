@@ -1,5 +1,13 @@
 <template>
   <div class="edit-rush detail-content">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-new_commodity@2x.png" class="identification-icon">
+        <p class="identification-name">{{id ? '编辑活动' : '新建活动'}}</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
