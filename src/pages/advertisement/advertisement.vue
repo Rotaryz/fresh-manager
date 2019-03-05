@@ -659,7 +659,7 @@
       justify-content: center
     .advertisement-item
       margin-top: 24px
-      border:0.5pxdashed #D9D9D9
+      border: 0.5 pxdashed #D9D9D9
       border-radius: 1px
       background: #F5F7FA
       height: 140px
@@ -681,7 +681,7 @@
           background-position: center
           background-image: url('./pic-add_img@2x.png')
           position: relative
-          border:0.5pxsolid #F2F2F2
+          border: 0.5 pxsolid #F2F2F2
           border-radius: 1px
           box-sizing: border-box
           .img-change-tip
@@ -787,7 +787,7 @@
           width: 108px
           height: 32px
           line-height: 32px
-          border:0.5pxsolid $color-main
+          border: 1px solid $color-main
           border-radius: 1px
           font-size: $font-size-14
           font-family: $font-family-regular
@@ -830,7 +830,7 @@
           margin-left: 20px
           border-radius: 1px
           background: $color-white
-          border:0.5px solid #D9D9D9
+          border: 0.5px solid #D9D9D9
 
   /*background-image: url('./')*/
 
@@ -900,7 +900,7 @@
     .goods-list
       flex-wrap: wrap
       display: flex
-      border:0.5px solid $color-line
+      border: 0.5px solid $color-line
     .goods-item
       box-sizing: border-box
       padding: 0 20px
@@ -908,9 +908,9 @@
       height: 79.5px
       display: flex
       align-items: center
-      border-bottom:0.5px solid $color-line
+      border-bottom: 0.5px solid $color-line
       &:nth-child(2n+1)
-        border-right:0.5px solid $color-line
+        border-right: 0.5px solid $color-line
       &:nth-child(9), &:nth-child(10)
         border-bottom: none
       .goods-img

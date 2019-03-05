@@ -66,7 +66,7 @@
       box-sizing: border-box
       align-items: center
       background: $color-white
-      position :relative
+      position: relative
       &:nth-child(2n)
         background: #F5F7FA
       &:hover
@@ -101,7 +101,7 @@
     white-space: nowrap
     box-sizing: border-box
     align-items: center
-    height: 50px
+    height: 45px
     background: #F5F7FA
     font-size: $font-size-14
     border-bottom-1px(#E9ECEE)
@@ -181,8 +181,9 @@
 
 .commodities-list-header
   margin-top: 28px
-  min-height: 50px
+  min-height: 45px
   background: #F5F7FA
+  position: relative
   &:before
     content: ""
     pointer-events: none // 解决iphone上的点击无效Bug
@@ -191,17 +192,15 @@
     left: 0
     top: 0
     transform-origin: 0 0
-    border-right: 1px solid #E9ECEE
-    border-left: 1px solid #E9ECEE
-    border-top: 1px solid #E9ECEE
+    border: 1px solid #E9ECEE
     box-sizing border-box
     width: 200%
-    height: 100%
-    transform: scaleX(.5) translateZ(0)
+    height: 200%
+    transform: scale(.5) translateZ(0)
   @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
-    width: 100%
+    width: 300%
     height: 300%
-    transform: scaleX(1 / 3) translateZ(0)
+    transform: scale(1 / 3) translateZ(0)
   .com-list-item
     font-size: $font-size-14
 
@@ -217,12 +216,13 @@
     transform-origin: 0 0
     border-right: 1px solid #E9ECEE
     border-left: 1px solid #E9ECEE
+    border-bottom: 1px solid #E9ECEE
     box-sizing border-box
     width: 200%
-    height: 100%
-    transform: scaleX(.5) translateZ(0)
+    height: 200%
+    transform: scale(.5) translateZ(0)
   @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
-    width: 100%
+    width: 300%
     height: 300%
     transform: scaleX(1 / 3) translateZ(0)
   &:nth-child(2n)
@@ -239,7 +239,7 @@
   box-sizing: border-box
   display: flex
   align-items: center
-  border-bottom-1px(#E9ECEE)
+  position: relative
   .com-list-item
     flex: 1
     padding-right: 10px
@@ -263,9 +263,10 @@
   display: flex
   align-items: center
   justify-content: space-between
-  height: 62px
   position: relative
   box-sizing: border-box
+  padding-bottom: 16px
+  line-height: 1
   .excel
     margin-left: 20px
     &:hover

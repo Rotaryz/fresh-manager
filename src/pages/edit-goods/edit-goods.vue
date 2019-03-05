@@ -88,7 +88,7 @@
           售卖单位
         </div>
         <div class="edit-input-box">
-          <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+          <base-drop-down :height="44" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">

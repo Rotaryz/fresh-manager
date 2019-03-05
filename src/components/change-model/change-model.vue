@@ -148,19 +148,18 @@
     display: flex
     justify-content: flex-end
     user-select :none
-    .btn
-      width: 96px
-      height: 40px
-      line-height: 40px
-      border-radius: 1px
-      cursor :pointer
     .cancel
       border: 1px solid $color-line
+      &:hover
+        color: $color-text-sub
+        border-color: $color-text-sub
     .confirm
       border: 1px solid $color-main
       background: $color-main
       color: $color-white
       margin-left: 20px
+      &:hover
+        opacity: 0.8
     .one-btn
       margin-left :0
   .main-model-box

@@ -92,8 +92,6 @@
         color: $color-white
         margin-left: 20px
         &:hover
-          background: #44AB67
-        &:active
           opacity: 0.8
       .one-btn
         margin-left: 0

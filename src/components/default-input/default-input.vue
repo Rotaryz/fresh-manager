@@ -20,6 +20,7 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+
   const COMPONENT_NAME = 'DEFAULT_INPUT'
 
   export default {
@@ -104,18 +105,20 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
+
   .btn-group
     margin-top: 55px
     text-align: center
     display: flex
     justify-content: flex-end
-    user-select :none
+    user-select: none
     .btn
       width: 96px
       height: 40px
       line-height: 40px
       border-radius: 1px
-      cursor :pointer
+      cursor: pointer
+      transition: all 0.3s
     .cancel
       border: 1px solid $color-line
       &:hover
@@ -127,11 +130,10 @@
       color: $color-white
       margin-left: 20px
       &:hover
-        background: #44AB67
-      &:active
         opacity: 0.8
     .one-btn
-      margin-left :0
+      margin-left: 0
+
   .z
     width: 100%
 </style>
