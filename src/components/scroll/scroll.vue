@@ -328,7 +328,7 @@
         line-height: 60px
         font-size: 18px
         padding-left: 20px
-        border-bottom: 1px solid #e5e5e5
+        border-bottom: 0.5px solid #e5e5e5
 
   .pulldown-wrapper
     position: absolute

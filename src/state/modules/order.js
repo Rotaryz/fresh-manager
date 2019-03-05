@@ -95,8 +95,8 @@ export const actions = {
           per_page: pages.per_page,
           total_page: pages.last_page
         }
-        commit('SET_ORDER_LIST', list)
         commit('SET_ORDER_PAGE', pageDetail)
+        commit('SET_ORDER_LIST', list)
         return list
       })
       .catch(() => {

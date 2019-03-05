@@ -73,7 +73,7 @@
       font-family: $font-family-regular
       color: $color-text-assist
     &:focus
-      border: 1px solid $color-sub !important
+      border: 1px solid $color-main !important
 
   .search-icon-box
     width: 47px
@@ -86,4 +86,7 @@
     line-height: 28px
     font-size: $font-size-12
     color: $color-white
+    transition: 0.3s all
+    &:hover
+      opacity: 0.8
 </style>

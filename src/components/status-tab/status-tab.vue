@@ -75,7 +75,7 @@
     font-family: $font-family-regular
     color: $color-text-main
     position: relative
-    border-bottom: 1px solid #E1E1E1
+    border-bottom: 0.5px solid $color-line
     .status-item
       margin-right: 60px
       height: 62px

@@ -4,7 +4,7 @@
       <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
         <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': select.check, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
           {{select.content}}
-          <img src="./icon-drop_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
+          <img src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
           <transition name="fade">
             <ul v-show="select.check" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
               <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
@@ -133,15 +133,15 @@
       box-sizing: border-box
       transition: all 0.2s
       .city-tap-top
-        width: 12px
+        width: 8px
         height: @width
         col-center()
-        right: 14px
-        transform-origin: 50% 0%
+        right: 10px
+        transform-origin: 50% 0
         transform: rotate(0deg) translateY(-50%)
         transition: transform 0.3s
       .city-tap-top-active
-        transform-origin: 50% 0%
+        transform-origin: 50% 0
         transform: rotate(180deg) translateY(-50%)
         transition: transform 0.3s
       .select-child
@@ -171,9 +171,9 @@
           border-bottom: 0.5px solid $color-line
           box-sizing: border-box
           &:hover
-            color: $color-sub
+            color: $color-main
     .admin-select-box-active
-      border-color: $color-sub !important
+      border-color: $color-main !important
       color: $color-text-main
     .admin-big-box-hover
       border-color: #ACACAC

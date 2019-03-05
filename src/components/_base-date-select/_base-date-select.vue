@@ -75,7 +75,7 @@
         box-shadow: none
         &:focus
           outline: none
-          border-color: $color-sub !important
+          border-color: $color-main !important
         &:hover
           border: 1px solid #ACACAC
 

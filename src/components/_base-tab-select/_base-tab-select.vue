@@ -29,7 +29,7 @@
     data() {
       return {
         tabIndex: this.infoTabIndex,
-        left: 8,
+        left: 20,
         tabArr: null,
         width: 0
       }
@@ -56,7 +56,7 @@
           if (this.tabIndex > idx) {
             left += item.offsetWidth + this.marginRight
           } else if (this.tabIndex === idx) {
-            left += (item.offsetWidth - 40) / 2 + 14
+            left += (item.offsetWidth - 40) / 2 + 26
           }
         })
         this.left = left
@@ -83,7 +83,7 @@
     font-family: $font-family-regular
     color: $color-text-main
     position: relative
-    padding: 0 14px
+    padding: 0 26px
     box-sizing: border-box
     border-left-1px($color-line)
     .status-item

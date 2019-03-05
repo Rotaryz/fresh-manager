@@ -65,7 +65,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 3px
+    border-radius: 1px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group
@@ -77,7 +77,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 3px
+        border-radius: 1px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -99,7 +99,7 @@
         margin-left: 0
     .title
       font-size: $font-size-16
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       height: 44px
       line-height: 44px
       padding: 0 15px

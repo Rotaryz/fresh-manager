@@ -34,7 +34,7 @@ body, html
 
 .border-bottom-1px
   &:after
-    border-bottom: 1px solid $color-line
+    border-bottom: 0.5px solid $color-line
     left: 0
     bottom: 0
     width: 100%
@@ -112,6 +112,12 @@ body, html
   line-height: 1
   cursor: pointer
   user-select: none
+  &:hover
+    background: $color-main
+    color: $color-white
+    .add-icon
+      &:before, &:after
+        background: $color-white
   &:active
     opacity: 0.8
 
@@ -136,8 +142,9 @@ body, html
   cursor: pointer
   font-size: $font-size-14
   user-select: none
+  transition: all 0.2s
   &:hover
-    color: #4D77BD
+    color: #06397E
   &:after
     position: absolute
     top: 0
@@ -168,6 +175,7 @@ body, html
   position: relative
   width: 8px
   height: 8px
+  transition: all 0.3s
   &:after
     content: ''
     position: absolute
@@ -176,6 +184,7 @@ body, html
     width: 2px
     height: 8px
     background: $color-main
+    transition: all 0.3s
   &:before
     content: ''
     position: absolute
@@ -184,11 +193,10 @@ body, html
     width: 8px
     height: 2px
     background: $color-main
+    transition: all 0.3s
 
-.edit-input-box
-  margin: 0 14px 0 40px
-  .ivu-date-picker-rel
-    height: 100%
+.ivu-date-picker-rel
+  height: 100%
+  border-radius: 1px
+  .ivu-input-default
     border-radius: 1px
-    .ivu-input-default
-      border-radius: 1px

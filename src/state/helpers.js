@@ -131,7 +131,7 @@ export const customerComputed = {
 export const customerMethods = mapActions('customer', ['getCustomerList'])
 // 数据管理
 export const dataComputed = {
-  ...mapGetters('data', ['orderDetail', 'leaderDetail', 'shopDetail'])
+  ...mapGetters('data', ['orderDetail', 'leaderDetail', 'shopDetail', 'pageDetail', 'goodsPageDetail'])
 }
 
 export const dataMethods = mapActions('data', ['getOrderDetail', 'getLeaderDetail', 'getShopDetail'])

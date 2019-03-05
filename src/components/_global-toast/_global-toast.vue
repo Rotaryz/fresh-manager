@@ -46,7 +46,7 @@
       min-width :150px
       max-width :260px
       text-align: center
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       line-height: 16px
       font-size: 14px
       color: #FFFFFF
