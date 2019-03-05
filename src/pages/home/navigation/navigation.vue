@@ -358,6 +358,7 @@
     overflow: auto
     white-space: nowrap
     transition: all 0.2s
+    border-right-1px($color-line)
     &::-webkit-scrollbar
       width: 8px
       height: 10px
