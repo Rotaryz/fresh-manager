@@ -139,7 +139,7 @@
                   <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
                   <div class="goods-msg">
                     <div class="goods-name">{{item.name}}</div>
-                    <div class="goods-money">¥{{item.store_price}}</div>
+                    <div class="goods-money">¥{{item.original_price}}</div>
                   </div>
                 </div>
                 <!--select-icon-active-->
@@ -289,6 +289,10 @@
       async _activityList() {
         let res = await API.Advertisement.activiList()
         this.activityList.data = res.error === this.$ERR_OK ? res.data : []
+        this.activityList.data = this.activityList.data.map((item) => {
+          item.name = item.activity_name
+          return item
+        })
       },
       _getActivityId(item) {
         this.activityItem.activityId = item.id
@@ -592,7 +596,6 @@
     height: 480px
     margin: 30px auto 0
     border-1px($color-line)
-    border: 1px solid $color-line
     border-radius: 1px
     overflow-x: hidden
     .goods_cate-item

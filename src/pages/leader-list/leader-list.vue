@@ -8,6 +8,7 @@
         </div>
         <div class="function-btn">
           <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
+          <!--<div class="btn-main g-btn-item" @click="_syncLeader">关联</div>-->
         </div>
       </div>
       <div class="big-list">
@@ -24,6 +25,7 @@
             <div class="list-item">{{item.address}}</div>
             <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.is_freeze_str}}</div>
+            <div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
               <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
@@ -33,7 +35,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
       </div>
       <default-modal v-if="leaderList.length" ref="dialog">
         <div slot="content" class="pop-main code">
@@ -61,7 +63,7 @@
 
   const PAGE_NAME = 'LEADER_LIST'
   const TITLE = '团长列表'
-  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '状态', '操作']
+  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '状态', '是否关联', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -89,6 +91,16 @@
     },
     methods: {
       ...leaderMethods,
+      async _syncLeader() {
+        let res = await API.Leader.syncShop()
+        this.$loading.hide()
+        if (res.error === this.$ERR_OK) {
+          this.$toast.show('关联成功')
+          this.page = 1
+          this.$refs.pagination.beginPage()
+          this.getLeaderList({page: this.page, loading: false})
+        }
+      },
       _getMore(page) {
         this.page = page
         this.getLeaderList({page: this.page, loading: false})

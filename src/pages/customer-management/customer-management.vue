@@ -14,7 +14,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-customer_list@2x.png" class="identification-icon">
-          <p class="identification-name">采购管理</p>
+          <p class="identification-name">客户管理</p>
         </div>
         <div class="function-btn">
         </div>

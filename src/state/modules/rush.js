@@ -54,7 +54,7 @@ export const actions = {
       })
   },
   getRushList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
-    return API.Rush.getRushList({page: page, start_time: startTime, end_time: endTime}, loading)
+    return API.Rush.getRushList({page: page, start_at: startTime, end_at: endTime,activity_type: 'fixed'}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
