@@ -194,17 +194,17 @@
     justify-content: center
     .phone
       icon-image('pic-tel')
-      width: 375px
-      height: 764.6px
+      width: 340px
+      height: 726.24px
       position: relative
       .content-box
         padding: 0 2px
         box-sizing: border-box
         top: 111px
-        left: 26px
+        left: 23px
         position: absolute
-        width: 323px
-        height: 532px
+        width: 294px
+        height: 499px
         max-height: 532px
         overflow-x: hidden
         &::-webkit-scrollbar

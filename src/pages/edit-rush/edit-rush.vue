@@ -796,7 +796,7 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 3px
+    border-radius: 1px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -905,7 +905,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 3px
+      border-radius: 1px
       .title-input
         height: 60px
         layout(row)
@@ -961,7 +961,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 3px
+        border-radius: 1px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -997,7 +997,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 3px
+    border-radius: 1px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -1009,7 +1009,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 3px
+        border-radius: 1px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s

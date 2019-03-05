@@ -99,7 +99,7 @@
   .default-input
     background: #fff
     width: 534px
-    border-radius: 3px
+    border-radius: 1px
     .title-input
       height: 60px
       layout(row)
@@ -152,7 +152,7 @@
       width: 96px
       height: 40px
       line-height: 40px
-      border-radius: 3px
+      border-radius: 1px
       cursor :pointer
     .cancel
       border: 1px solid $color-line

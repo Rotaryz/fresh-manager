@@ -238,6 +238,7 @@
     justify-content: space-between
     align-items: center
     box-sizing: border-box
+    border-bottom-1px($color-line)
     .data-title
       font-family: $font-family-regular
       color: $color-text-main

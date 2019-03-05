@@ -46,7 +46,7 @@
             </div>
           </div>
         </div>
-        <div class="total-money">预定总金额：￥{{detail.total}}</div>
+        <div class="total-money">预定总金额：<span class="block">￥{{detail.total}}</span></div>
       </div>
     </div>
     <div class="back">
