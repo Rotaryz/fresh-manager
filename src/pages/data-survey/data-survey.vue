@@ -1,7 +1,7 @@
 <template>
   <div class="data-survey">
     <div class="data-header">
-      <div class="data-caption">
+      <div class="data-caption data-caption-line">
         <div class="data-title">交易数据</div>
         <base-option-box @checkTime="_orderMore"></base-option-box>
       </div>
@@ -238,11 +238,12 @@
     justify-content: space-between
     align-items: center
     box-sizing: border-box
-    border-bottom-1px($color-line)
     .data-title
       font-family: $font-family-regular
       color: $color-text-main
       font-size: $font-size-16
+  .data-caption-line
+    border-bottom-1px($color-line)
 
   .data-down
     display: flex
