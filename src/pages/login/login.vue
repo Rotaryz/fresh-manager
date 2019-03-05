@@ -55,7 +55,7 @@
             if (!user) {
               return
             }
-            this.$router.push(this.$route.query.redirectFrom || '/home/data-survey')
+            this.$router.push(this.$route.query.redirectFrom || '/home/product-list')
           })
           .catch((error) => {
             this.$toast.show(error)
@@ -104,11 +104,11 @@
         height: 44px
         box-sizing: border-box
         margin-bottom: 24px
-        padding: 0 14px
         border-radius: 1px
         background: $color-white
 
         input
+          padding: 0 14px
           width: 100%
           height: 100%
           font-size: $font-size-14

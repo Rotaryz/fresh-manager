@@ -591,13 +591,14 @@
     width: 960px
     height: 480px
     margin: 30px auto 0
+    border-1px($color-line)
     border: 1px solid $color-line
     border-radius: 1px
     overflow-x: hidden
     .goods_cate-item
       display: flex
       align-items: center
-      border-bottom: 1px solid $color-line
+      border-bottom-1px($color-line)
       padding-left: 20px
       height: 80px
       .shade-goods-name
@@ -610,13 +611,14 @@
     width: 960px
     height: 220px
     margin: 30px auto 0
-    border: 1px solid $color-line
+    border: 0.5px solid $color-line
     border-radius: 1px
     outline: none
     display: block
     resize: none
     padding: 14px
     box-sizing: border-box
+    position :relative
 
   .advertisement
     flex: 1
@@ -627,7 +629,7 @@
     overflow: hidden
     padding-bottom: 40px
     .advertisement-btn
-      margin: 50px 0 0px 40px
+      margin: 50px 0 0 0
       display: flex
     .advertisement-item
       margin-top: 24px
@@ -717,7 +719,7 @@
               width: 140px
               line-height: 42px
               height: 42px
-              border-bottom: 1px solid $color-line
+              border-bottom: 0.5px solid $color-line
               box-sizing: border-box
               text-indent: 11px
               font-size: $font-size-14
@@ -768,6 +770,7 @@
           text-indent: 33px
           position: relative
           user-select: none
+          transition: all 0.3s
           &:after
             content: ''
             width: 2px
@@ -782,6 +785,11 @@
             background: $color-main
             col-center()
             left: 19px
+          &:hover
+            background: $color-main
+            color: $color-white
+            &:before, &:after
+              background: $color-white
 
       .nav-msg
         align-items: flex-start
@@ -820,7 +828,7 @@
       left: 0px
     .content-title
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-16
     .content-sub
       color: $color-text-assist
@@ -861,12 +869,12 @@
 
     .goods-content
       border-radius: 1px
-      border: 1px solid $color-line
       margin: 0 20px
       height: 400px
       .goods-list
         flex-wrap: wrap
         display: flex
+        border-bottom-1px($color-line)
       .goods-item
         box-sizing: border-box
         padding: 0 20px
@@ -874,11 +882,28 @@
         height: 79.5px
         display: flex
         align-items: center
-        border-bottom: 1px solid $color-line
-        &:nth-child(2n+1)
-          border-right: 1px solid $color-line
-        &:nth-child(9), &:nth-child(10)
-          border-bottom: none
+        position: relative
+        &:after
+          z-index: 10
+          content: ""
+          pointer-events: none // 解决iphone上的点击无效Bug
+          display: block
+          position: absolute
+          left: 0
+          top: 0
+          transform-origin: 0 0
+          border-left: 1px solid $color-line
+          border-top: 1px solid $color-line
+          box-sizing border-box
+          width: 200%
+          height: 100%
+          transform: scaleX(.5) translateZ(0)
+          @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+            width: 300%
+            height: 100%
+            transform: scaleX(1 / 3) translateZ(0)
+        &:nth-child(2n)
+          border-right-1px($color-line)
         .goods-img
           margin-right: 10px
           width: 40px
@@ -933,7 +958,7 @@
     height: 60.5px
     box-sizing: border-box
     padding: 0 20px 0 0
-    border-bottom: 1px solid $color-line
+    border-bottom-1px($color-line)
     .shade-tab-type
       height: 100%
       display: flex
@@ -952,7 +977,7 @@
         transition: all 0.3s
         left: 55px
         position: absolute
-        bottom: -1px
+        bottom: 0px
         height: 2px
         width: 34px
         background: $color-main
@@ -1003,7 +1028,7 @@
         display: flex
         align-items: center
         justify-content: space-between
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
         transition: all 0.3s
         &:hover
           border-color: #ACACAC
@@ -1033,7 +1058,7 @@
     padding-left: 40px
 
   .submit-activity
-    border-top: 1px solid #E1E1E1
+    border-top: 0.5px solid $color-line
     padding-top: 40px
     margin-top: 40px
 

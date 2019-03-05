@@ -798,7 +798,7 @@
       height: 60.5px
       box-sizing: border-box
       padding: 0 20px
-      border-bottom: 1px solid $color-line
+      border-bottom: 0.5px solid $color-line
       .shade-title
         color: $color-text-main
         font-family: $font-family-medium
@@ -897,7 +897,7 @@
         layout(row)
         align-items: center
         justify-content: space-between
-        border-bottom: 1px solid #e1e1e1
+        border-bottom: 0.5px solid $color-line
         padding-left: 20px
         .title
           color: $color-text-main
@@ -921,7 +921,7 @@
           width: 310px
           height: 44px
           border-radius: 1px
-          font-family: $font-family-medium
+          font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
           padding-left: 14px
@@ -1066,7 +1066,7 @@
       height: 79.5px
       display: flex
       align-items: center
-      border-bottom: 1px solid $color-line
+      border-bottom: 0.5px solid $color-line
       &:nth-child(2n+1)
         border-right: 1px solid $color-line
       &:nth-child(9), &:nth-child(10)
@@ -1125,6 +1125,7 @@
         cursor: not-allowed
         background: $color-line
         color: $color-text-assist
+        border-none()
 
   /*弹窗动画*/
   @keyframes layerFadeIn {
@@ -1148,6 +1149,9 @@
       opacity: 0
     }
   }
+
+  .com-list-item
+    position: relative
 
   .com-edit
     height: 34px
@@ -1178,5 +1182,10 @@
   .com-edit-small
     width: 60px
 
-
+  .rush-list-box
+    background: $color-white
+    overflow: visible
+    display: flex
+    flex-direction: column
+    flex: 1
 </style>

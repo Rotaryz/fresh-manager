@@ -128,7 +128,7 @@
   .list-box
     padding-left: 30px
     box-sizing: border-box
-    border-bottom: 1px solid $color-line
+    border-bottom: 0.5px solid $color-line
     display: flex
     align-items: center
     .list-item
@@ -142,7 +142,7 @@
       font-family: $font-family-regular
       color: $color-text-main
       height: 70px
-      border-bottom: 1px solid $color-line
+      border-bottom: 0.5px solid $color-line
       .list-item
         no-wrap()
         font-size: $font-size-14

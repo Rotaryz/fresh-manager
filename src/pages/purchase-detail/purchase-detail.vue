@@ -135,3 +135,4 @@
       &:nth-child(1)
         flex: 0.5
 </style>
+

@@ -236,13 +236,13 @@
     text-align: center
     .top
       height: 59.5px
-      border-bottom: 1px solid $color-line
+      border-bottom: 0.5px solid $color-line
       align-items: center
       justify-content: space-between
       padding: 0 20px
       layout(row)
       .title
-        font-family: $font-family-medium
+        font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main
       .close

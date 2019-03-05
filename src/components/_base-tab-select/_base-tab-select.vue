@@ -29,7 +29,7 @@
     data() {
       return {
         tabIndex: this.infoTabIndex,
-        left: 20,
+        left: 22,
         tabArr: null,
         width: 0
       }
@@ -92,7 +92,7 @@
       box-sizing: border-box
       transition: all 0.3s
       .status-txt
-        font-size: $font-size-14
+        font-size: $font-size-16
         padding: 12px 0
         box-sizing: border-box
     .status-item-active

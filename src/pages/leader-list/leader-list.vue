@@ -7,7 +7,7 @@
           <p class="identification-name">团长列表</p>
         </div>
         <div class="function-btn">
-          <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长 +</router-link>
+          <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
@@ -163,10 +163,10 @@
       height: 60.5px
       box-sizing: border-box
       padding: 0 20px
-      border-bottom: 1px solid $color-line
+      border-bottom: 0.5px solid $color-line
     .shade-title
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-16
     .close
       icon-image('icon-close')

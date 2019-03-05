@@ -188,7 +188,7 @@
       .order-title
         color: $color-text-main
       .order-money
-        font-family: $font-family-medium
+        font-family: $font-family-regular
         color: $color-negative
 
   .list-box

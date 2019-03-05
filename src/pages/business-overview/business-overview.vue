@@ -331,7 +331,7 @@
 
   /*基本信息类头部盒子样式*/
   .content-header
-    border-bottom: 1px solid $color-line
+    border-bottom: 0.5px solid $color-line
     display: flex
     align-items: center
     justify-content: space-between
@@ -349,7 +349,7 @@
       left: 0
     .content-title
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-16
 
   .survey

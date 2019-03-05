@@ -372,7 +372,7 @@
       border-radius: 10px
     .second-title
       transition: all 0.2s
-      margin: 30px 0 10px
+      margin: 30px 0 8px
       color: #888888
       font-size: $font-size-14
     .second-link

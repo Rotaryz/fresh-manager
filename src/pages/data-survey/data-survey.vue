@@ -145,36 +145,39 @@
     flex: 1
     display: flex
     box-sizing: border-box
-    padding: 20px 20px
+    padding: 20px
     flex-direction: column
+    padding: 20px
 
   .data-header
-    height: 220px
+    height: 260px
     border-radius: 1px
     background: $color-white
     box-sizing: border-box
 
   .data-caption
-    height: 60px
+    padding: 20px
     display: flex
     justify-content: space-between
     align-items: center
-    padding: 0 20px
     box-sizing: border-box
-    border-bottom-1px($color-line)
     .data-title
       font-family: $font-family-regular
       color: $color-text-main
       font-size: $font-size-16
 
+  .data-down
+    display: flex
+    padding: 0 20px 20px
+    justify-content: space-between
+
   .data-order
-    height: 159px
     display: flex
     padding: 0 20px
     box-sizing: border-box
     .order-item
       flex: 1
-      margin-top: 29.5px
+      margin-top: 39.5px
       .order-title
         color: $color-text-main
         font-family: $font-family-regular
@@ -192,13 +195,13 @@
           width: 4px
       .order-money
         line-height: 1
-        margin-top: 10px
+        margin-top: 24px
         font-family: $font-family-bold
         color: $color-text-main
         font-size: 36px
       .order-total
         line-height: 1
-        margin-top: 18px
+        margin-top: 24px
         font-family: $font-family-regular
         color: $color-text-assist
         font-size: $font-size-16
@@ -228,7 +231,7 @@
       flex: 1
 
   .list
-    height: 375px
+    min-height: 750px
 
   .date-shop .list-box .list-item
     &:nth-child(1)
@@ -241,4 +244,8 @@
   .date-shop, .date-leader
     .list-content-data
       height: 75px
+
+  .data-page
+    height: 60px
+    padding: 0 20px
 </style>

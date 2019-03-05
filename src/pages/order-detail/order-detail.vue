@@ -46,8 +46,8 @@
             {{item}}
           </div>
         </div>
-        <div v-for="(item, index) in detail.goods" :key="index" class="ro-order-list">
-          <div class="ro-order-list-box">
+        <div  class="ro-order-list">
+          <div class="ro-order-list-box" v-for="(item, index) in detail.goods" :key="index">
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_name}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
@@ -59,11 +59,11 @@
       </div>
       <div class="ro-order-list-footer">
         <div class="ro-order-list-foot-box">
-          <div class="foot-item">订单总价：{{detail.price && `¥ ${detail.price}`}}</div>
-          <div class="foot-item">优惠金额：{{detail.promote_price && `¥ ${detail.promote_price}`}}</div>
-          <div class="foot-item">应付金额：{{detail.total && `¥ ${detail.total}`}}</div>
-          <div class="foot-item">实付金额：{{detail.total && `¥ ${detail.actual_total}`}}</div>
-          <div class="foot-item">退款金额：{{detail.refund_price && `¥ ${detail.refund_price}`}}</div>
+          <div class="foot-item">订单总价：<span class="block">{{detail.price && `¥ ${detail.price}`}}</span></div>
+          <div class="foot-item">优惠金额：<span class="block">{{detail.promote_price && `¥ ${detail.promote_price}`}}</span></div>
+          <div class="foot-item">应付金额：<span class="block">{{detail.total && `¥ ${detail.total}`}}</span></div>
+          <div class="foot-item">实付金额：<span class="block">{{detail.total && `¥ ${detail.actual_total}`}}</span></div>
+          <div class="foot-item">退款金额：<span class="block">{{detail.refund_price && `¥ ${detail.refund_price}`}}</span></div>
         </div>
       </div>
     </div>
@@ -104,6 +104,7 @@
   .order-detail
     width: 100%
     padding-bottom: 80px
+
   .ro-order-list-item
     &:nth-child(1)
       flex: 1.5
@@ -117,4 +118,7 @@
       flex: 1
     &:last-child
       flex: 0.5
+
+  .block
+    font-family: $font-family-medium
 </style>

@@ -159,7 +159,7 @@
       layout()
       .top
         height: 62px
-        border-bottom: 1px solid $color-line
+        border-bottom: 0.5px solid $color-line
         layout(row)
         position: relative
         .title
@@ -167,7 +167,7 @@
           padding-bottom: 16px
           height: 62px
           box-sizing: border-box
-          font-family: $font-family-medium
+          font-family: $font-family-regular
           font-size: $font-size-16
           color: $color-text-main
         .line
@@ -186,7 +186,7 @@
           font-size: $font-size-14
           color: $color-text-main
           line-height: 18px
-          width: 220px
+          width: 230px
           padding-bottom: 20px
           margin-right: 80px
           word-break: break-all
@@ -244,13 +244,13 @@
     text-align: center
     .top
       height: 59.5px
-      border-bottom: 1px solid $color-line
+      border-bottom: 0.5px solid $color-line
       align-items: center
       justify-content: space-between
       padding: 0 20px
       layout(row)
       .title
-        font-family: $font-family-medium
+        font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main
       .close

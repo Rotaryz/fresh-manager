@@ -202,7 +202,7 @@
         width: 140px
         line-height: 42px
         height: 42px
-        border-bottom: 1px solid $color-line
+        border-bottom: 0.5px solid $color-line
         box-sizing: border-box
         text-indent: 11px
         transition: all 0.3s

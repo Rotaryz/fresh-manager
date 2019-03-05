@@ -258,10 +258,10 @@
     height: 80px
 
   .categories-box
-    border-1px(#e1e1e1, 1px)
+    border-1px($color-line, 1px)
     .big-box
       width: 100%
-      border-bottom-1px(#e1e1e1)
+      border-bottom-1px($color-line)
       .big-box-main
         height: 60px
         padding-left: 22px
@@ -288,11 +288,11 @@
             font-size: $font-size-14
             line-height: 1
             color: $color-text-main
-            font-family: $font-family-medium
+            font-family: $font-family-regular
 
   .add-box
     height: 60px
-    border-top-1px(#e1e1e1)
+    border-top-1px($color-line)
     padding-left: 57px
     layout(row)
     align-items: center
@@ -307,11 +307,11 @@
       font-size: $font-size-14
       line-height: 1
       color: $color-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
 
   .open-item
     height: 60px
-    border-top-1px(#e1e1e1)
+    border-top-1px($color-line)
     background: $color-white
     padding-left: 57px
     padding-right: 14px

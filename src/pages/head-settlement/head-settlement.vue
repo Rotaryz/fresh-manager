@@ -94,5 +94,5 @@
       flex: 1
       &:last-child
         flex: 0.6
-
 </style>
+

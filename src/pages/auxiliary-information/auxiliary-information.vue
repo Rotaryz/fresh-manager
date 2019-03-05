@@ -128,13 +128,13 @@
   @import "~@design"
   .all-title
     padding: 29px 0 16px
-    border-bottom: 1px solid #e1e1e1
+    border-bottom: 0.5px solid $color-line
     position: relative
     .name
       font-size: $font-size-16
       line-height: 1
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
     .line
       position: absolute
       width: 34px
@@ -195,13 +195,18 @@
       font-size: $font-size-14
       color: $color-main
       box-sizing: border-box
-      border-1px(#333, 1px)
+      border-1px(#D6D6D6, 1px)
+      transition: all 0.3s
+      &:hover
+        border-1px(#333, 1px)
+      &:after
+        transition: all 0.3s
 
   .auxiliary-information
     width: 100%
 
   .content-header
-    border-bottom: 1px solid $color-line
+    border-bottom: 0.5px solid $color-line
     display: flex
     align-items: center
     justify-content: space-between
@@ -219,7 +224,7 @@
       left: 0
     .content-title
       color: $color-text-main
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-16
 
 </style>
