@@ -465,7 +465,7 @@
         this.temporaryBannar.push(_.cloneDeep(TEMPLATE_OBJ))
         let el = document.querySelector('html')
         setTimeout(() => {
-          el.scrollTop = el.scrollHeight - 980
+          el.scrollTop = el.scrollHeight
         }, 100)
       },
       // 添加更多的广告
@@ -477,7 +477,7 @@
         this.temporaryNavigation.push(_.cloneDeep(TEMPLATE_OBJ))
         let el = document.querySelector('html')
         setTimeout(() => {
-          el.scrollTop = el.scrollHeight - 980
+          el.scrollTop = el.scrollHeight
         }, 100)
       },
       // 添加图片
