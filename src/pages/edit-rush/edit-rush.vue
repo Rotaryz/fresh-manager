@@ -1149,7 +1149,7 @@
         cursor: not-allowed
         background: $color-line
         color: $color-text-assist
-        border-none()
+        border: none
 
   /*弹窗动画*/
   @keyframes layerFadeIn {
