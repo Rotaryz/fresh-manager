@@ -141,7 +141,7 @@
           font-family: $font-family-regular
           color: $color-text-assist
         &:focus
-          border-color: $color-sub !important
+          border-color: $color-main !important
   .btn-group
     margin-top: 40px
     text-align: center

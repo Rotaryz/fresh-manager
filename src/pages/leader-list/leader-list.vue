@@ -63,7 +63,18 @@
 
   const PAGE_NAME = 'LEADER_LIST'
   const TITLE = '团长列表'
-  const LEADER_TITLE = ['团长账号', '微信昵称', '微信号', '社区名称', '团长名称', '详细地址', '创建时间', '状态', '是否关联', '操作']
+  const LEADER_TITLE = [
+    '团长账号',
+    '微信昵称',
+    '微信号',
+    '社区名称',
+    '团长名称',
+    '详细地址',
+    '创建时间',
+    '状态',
+    '是否关联',
+    '操作'
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -87,8 +98,7 @@
     computed: {
       ...leaderComputed
     },
-    created() {
-    },
+    created() {},
     methods: {
       ...leaderMethods,
       async _syncLeader() {

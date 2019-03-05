@@ -46,8 +46,8 @@
             {{item}}
           </div>
         </div>
-        <div  class="ro-order-list">
-          <div class="ro-order-list-box" v-for="(item, index) in detail.goods" :key="index">
+        <div class="ro-order-list">
+          <div v-for="(item, index) in detail.goods" :key="index" class="ro-order-list-box">
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_name}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>

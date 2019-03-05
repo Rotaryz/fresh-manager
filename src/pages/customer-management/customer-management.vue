@@ -82,8 +82,7 @@
     computed: {
       ...customerComputed
     },
-    created() {
-    },
+    created() {},
     methods: {
       ...customerMethods,
       _selectTime(value) {

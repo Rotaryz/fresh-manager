@@ -21,7 +21,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-
   const COMPONENT_NAME = 'NAVIGATION_BAR'
   const INFO_INDEX = 1
   // const HEIGHT = 40

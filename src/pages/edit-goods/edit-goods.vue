@@ -1,5 +1,13 @@
 <template>
   <div class="edit-leader" @click="closeMenu">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-new_commodity@2x.png" class="identification-icon">
+        <p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
@@ -309,7 +317,11 @@
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
           this.$toast.show('请输入正确商品库存')
           return
-        } else if (!this.msg.init_sale_count || this.msg.init_sale_count.includes('.') || +this.msg.init_sale_count <= 0) {
+        } else if (
+          !this.msg.init_sale_count ||
+          this.msg.init_sale_count.includes('.') ||
+          +this.msg.init_sale_count <= 0
+        ) {
           this.$toast.show('请输入正确初始销量')
           return
         }
@@ -372,6 +384,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  @import "~@style/detail"
 
   .edit-leader
     position: relative
@@ -531,7 +544,7 @@
           font-family: $font-family-regular
           color: $color-text-assist
         &:focus
-          border-color: $color-sub !important
+          border-color: $color-main !important
       .edit-text
         font-size: $font-size-14
         padding: 10px 14px
@@ -548,7 +561,7 @@
           font-family: $font-family-regular
           color: $color-text-assist
         &:focus
-          border-color: $color-sub !important
+          border-color: $color-main !important
 
   .edit-pla
     font-size: $font-size-14

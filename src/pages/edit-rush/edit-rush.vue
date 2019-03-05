@@ -604,11 +604,17 @@
           if (!list[i].trade_price || !list[i].person_day_buy_limit || !list[i].usable_stock || list[i].sort === '') {
             this.$toast.show(`${list[i].name}信息不全`)
             return
-          } else if (+list[i].trade_price < 0 || +list[i].person_day_buy_limit <= 0 || +list[i].usable_stock < 0 || (list[i].usable_stock + '').includes('.') || +list[i].sort < 0) {
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].person_day_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.') ||
+            +list[i].sort < 0
+          ) {
             this.$toast.show(`${list[i].name}输入数据有误`)
             return
           }
-          // }
+        // }
         }
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
@@ -943,7 +949,7 @@
             font-family: $font-family-regular
             color: $color-text-assist
           &:focus
-            border-color: $color-sub !important
+            border-color: $color-main !important
 
     .btn-group
       margin-top: 40px
@@ -1177,7 +1183,7 @@
       font-family: $font-family-regular
       color: $color-text-assist
     &:focus
-      border-color: $color-sub !important
+      border-color: $color-main !important
 
   .small-money
     col-center()

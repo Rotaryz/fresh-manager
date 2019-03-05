@@ -105,7 +105,7 @@
       async _syncGoods() {
         let res = await API.Product.syncGoodsInfo()
         this.$loading.hide()
-        if(res.error === this.$ERR_OK) {
+        if (res.error === this.$ERR_OK) {
           this.$toast.show('同步成功')
           this.isOnline = ''
           this.dispatchSelect.content = '全部状态'
@@ -119,7 +119,8 @@
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
-          this.keyWord}&current_corp=${currentId}`
+          this.keyWord
+        }&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsListData() {

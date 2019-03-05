@@ -128,16 +128,28 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = typeof this.time === 'string' ? `access_token=${token.access_token}&start_time=&end_time=&time=${this.time}&page=${this.LeaderPage}`
-          : `access_token=${token.access_token}&startTime=${this.time[0]}&endTime=${this.time[1]}&time=&page=${this.LeaderPage}`
-        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
+        let params =
+          typeof this.time === 'string'
+            ? `access_token=${token.access_token}&start_time=&end_time=&time=${this.time}&page=${this.LeaderPage}`
+            : `access_token=${token.access_token}&startTime=${this.time[0]}&endTime=${this.time[1]}&time=&page=${
+              this.LeaderPage
+            }`
+        this.downUrl =
+          process.env.VUE_APP_API +
+          `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
       },
       _getShopUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = typeof this.shopTime === 'string' ? `access_token=${token.access_token}&start_time=&end_time=&time=${this.shopTime}&page=${this.LeaderPage}`
-          : `access_token=${token.access_token}&startTime=${this.shopTime[0]}&endTime=${this.shopTime[1]}&time=&page=${this.LeaderPage}`
-        this.shopDownUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
+        let params =
+          typeof this.shopTime === 'string'
+            ? `access_token=${token.access_token}&start_time=&end_time=&time=${this.shopTime}&page=${this.LeaderPage}`
+            : `access_token=${token.access_token}&startTime=${this.shopTime[0]}&endTime=${this.shopTime[1]}&time=&page=${
+              this.LeaderPage
+            }`
+        this.shopDownUrl =
+          process.env.VUE_APP_API +
+          `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
       },
       _orderMore(value) {
         if (typeof value === 'string') {
@@ -164,7 +176,13 @@
           this.getLeaderDetail({startTime: '', endTime: '', time: this.time, page: this.LeaderPage, loading: true})
           return
         }
-        this.getLeaderDetail({startTime: this.time[0], endTime: this.time[1], time: '', page: this.LeaderPage, loading: true})
+        this.getLeaderDetail({
+          startTime: this.time[0],
+          endTime: this.time[1],
+          time: '',
+          page: this.LeaderPage,
+          loading: true
+        })
       },
       _shopPage(page) {
         this.shopPage = page
@@ -173,7 +191,13 @@
           this.getShopDetail({startTime: '', endTime: '', time: this.shopTime, page: this.shopPage, loading: true})
           return
         }
-        this.getShopDetail({startTime: this.shopTime[0], endTime: this.shopTime[1], time: '', page: this.shopPage, loading: true})
+        this.getShopDetail({
+          startTime: this.shopTime[0],
+          endTime: this.shopTime[1],
+          time: '',
+          page: this.shopPage,
+          loading: true
+        })
       },
       _shopMore(value) {
         this.shopTime = value

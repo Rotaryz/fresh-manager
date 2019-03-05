@@ -64,9 +64,9 @@
 
   .sort-up-active
     border: 4px solid transparent
-    border-top: 4px solid $color-sub
+    border-top: 4px solid $color-main
 
   .sort-down-active
     border: 4px solid transparent
-    border-bottom: 4px solid $color-sub
+    border-bottom: 4px solid $color-main
 </style>

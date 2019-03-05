@@ -273,9 +273,9 @@
           border-bottom: 0.5px solid $color-line
           box-sizing: border-box
           &:hover
-            color: $color-sub
+            color: $color-main
     .admin-select-box-active
-      border-color: $color-sub !important
+      border-color: $color-main !important
     .admin-big-box-hover
       border-color: #ACACAC
 </style>

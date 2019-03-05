@@ -195,4 +195,3 @@
     font-size: $font-size-14
 
 </style>
-

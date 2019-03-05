@@ -12,7 +12,7 @@
       <div class="down-item">
         <input v-model="orderSn" type="text" class="with-search" placeholder="提现单号">
         <input v-model="keyword" type="text" class="with-search" placeholder="社区名称/团长名称/团长账号">
-        <div class="search-icon-box" @click="search">
+        <div class="search-icon-box hand" @click="search">
           搜索
         </div>
       </div>
@@ -247,7 +247,7 @@
         position: relative
         &:hover .help-tip
           opacity: .8
-          z-index :111
+          z-index: 111
           visibility: initial
       .help
         width: 14px
@@ -350,7 +350,7 @@
     font-family: $font-family-regular
     font-size: $font-size-12
     box-sizing: border-box
-    border: 1px solid $color-line
+    border: 0.5px solid $color-line
     border-radius: 1px
     padding-left: 14px
     transition: all 0.2s
@@ -360,7 +360,7 @@
       font-family: $font-family-regular
       color: $color-text-assist
     &:focus
-      border: 1px solid $color-sub !important
+      border: 0.5px solid $color-main !important
 
   .search-icon-box
     overflow: hidden
@@ -372,4 +372,6 @@
     line-height: 28px
     font-size: $font-size-12
     color: $color-white
+    &:hover
+      opacity: 0.8
 </style>
