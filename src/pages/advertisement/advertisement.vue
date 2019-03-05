@@ -101,7 +101,7 @@
               <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
             </div>
           </div>
-          <div class="submit-activity">
+          <div class="submit-activity advertisement-btn">
             <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
           </div>
         </div>
@@ -139,7 +139,7 @@
                   <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
                   <div class="goods-msg">
                     <div class="goods-name">{{item.name}}</div>
-                    <div class="goods-money">¥{{item.store_price}}</div>
+                    <div class="goods-money">¥{{item.original_price}}</div>
                   </div>
                 </div>
                 <!--select-icon-active-->
@@ -184,7 +184,7 @@
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import PhoneBox from '@components/phone-box/phone-box'
   import API from '@api'
-  import ADD_IMAGE from './pic-add_ad@2x.png'
+  import ADD_IMAGE from './pic-add_img@2x.png'
   import {adverComputed, adverMethods} from '@state/helpers'
   import _ from 'lodash'
   import Draggable from 'vuedraggable'
@@ -198,9 +198,12 @@
     {title: 'H5链接', status: 'out_html'}
   ]
   const ACT_NAME = {
-    bannar: '轮播广告', bannarIcon: require('./icon-carousel@2x.png'),
-    navigation: '导航栏设置', navigationIcon: require('./icon-nav_settings@2x.png'),
-    activity: '活动列表', activityIcon: require('./icon-activity_settings@2x.png')
+    bannar: '轮播广告',
+    bannarIcon: require('./icon-carousel@2x.png'),
+    navigation: '导航栏设置',
+    navigationIcon: require('./icon-nav_settings@2x.png'),
+    activity: '活动列表',
+    activityIcon: require('./icon-activity_settings@2x.png')
   }
   const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: ADD_IMAGE} // 模板对象
   export default {
@@ -289,6 +292,10 @@
       async _activityList() {
         let res = await API.Advertisement.activiList()
         this.activityList.data = res.error === this.$ERR_OK ? res.data : []
+        this.activityList.data = this.activityList.data.map((item) => {
+          item.name = item.activity_name
+          return item
+        })
       },
       _getActivityId(item) {
         this.activityItem.activityId = item.id
@@ -456,6 +463,10 @@
           return
         }
         this.temporaryBannar.push(_.cloneDeep(TEMPLATE_OBJ))
+        let el = document.querySelector('html')
+        setTimeout(() => {
+          el.scrollTop = el.scrollHeight - 980
+        }, 100)
       },
       // 添加更多的广告
       _navMore() {
@@ -464,6 +475,10 @@
           return
         }
         this.temporaryNavigation.push(_.cloneDeep(TEMPLATE_OBJ))
+        let el = document.querySelector('html')
+        setTimeout(() => {
+          el.scrollTop = el.scrollHeight - 980
+        }, 100)
       },
       // 添加图片
       async _addPic(index, item, e) {
@@ -592,7 +607,6 @@
     height: 480px
     margin: 30px auto 0
     border-1px($color-line)
-    border: 1px solid $color-line
     border-radius: 1px
     overflow-x: hidden
     .goods_cate-item
@@ -618,7 +632,7 @@
     resize: none
     padding: 14px
     box-sizing: border-box
-    position :relative
+    position: relative
 
   .advertisement
     flex: 1
@@ -631,6 +645,18 @@
     .advertisement-btn
       margin: 50px 0 0 0
       display: flex
+      position: fixed
+      left: 0
+      right: 0
+      bottom: 0
+      z-index: 10
+      background: #F9F9F9
+      height: 80px
+      border-radius: 0 0 6px 6px
+      align-items: center
+      padding-left: 40px
+      box-sizing: border-box
+      justify-content: center
     .advertisement-item
       margin-top: 24px
       border: 1px dashed #D9D9D9
@@ -653,7 +679,7 @@
           background-repeat: no-repeat
           background-size: cover
           background-position: center
-          background-image: url('./pic-add_ad@2x.png')
+          background-image: url('./pic-add_img@2x.png')
           position: relative
           border: 1px solid #F2F2F2
           border-radius: 1px
@@ -1059,8 +1085,6 @@
 
   .submit-activity
     border-top: 0.5px solid $color-line
-    padding-top: 40px
-    margin-top: 40px
 
   .submit-activity-btn
     margin-right: 20px

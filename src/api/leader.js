@@ -168,5 +168,15 @@ export default {
   getShopBillType(data = {}, loading = false) {
     let url = '/social-shopping/api/backend/backend-shop-manager/shop-order-type'
     return request.get(url, data, loading)
+  },
+  /**
+   * 同步店铺数据
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  syncShop(data = {}, loading = true) {
+    let url = '/social-shopping/api/backend/guanmai/sync-shop'
+    return request.get(url, data, loading)
   }
 }

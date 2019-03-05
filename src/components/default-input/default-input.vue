@@ -93,6 +93,7 @@
         color: $color-text-main
         font-size: $font-size-14
         padding-left: 14px
+        border: 1px solid $color-line
         transition: all 0.3s
         &::-webkit-inner-spin-button
           appearance: none
@@ -102,7 +103,7 @@
           font-family: $font-family-regular
           color: $color-text-assist
         &:focus
-          border-color: $color-sub !important
+          border-color: $color-main !important
   .btn-group
     margin-top: 55px
     text-align: center

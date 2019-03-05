@@ -10,7 +10,7 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="essInformation.name" type="text" placeholder="请输入" class="edit-input">
+          <input v-model="essInformation.activity_name" type="text" placeholder="请输入" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
@@ -51,7 +51,7 @@
         <div class="activity-tab">
           <div :class="{'btn-disable': disable}" class="add-goods-btn hand" @click="_showGoods">添加商品 +</div>
         </div>
-        <div class="big-list">
+        <div class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>
@@ -195,7 +195,7 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit" @click="_saveActivity">保存</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
     </div>
   </div>
@@ -283,7 +283,8 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        essInformation: {}
+        essInformation: {activity_type: 'fixed'},
+        isSubmit: false
       }
     },
     computed: {
@@ -295,8 +296,13 @@
           let id = this.$route.query.id || null
           if (id) {
             let obj = _.cloneDeep(news)
-            this.goodsList = obj.shelf_goods
-            this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, name: obj.name}
+            this.goodsList = obj.activity_goods
+            if (this.goodsList) {
+              this.selectGoodsId = obj.activity_goods.map((item) => {
+                return item.goods_id
+              })
+            }
+            this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
           }
         },
         immediate: true
@@ -308,6 +314,7 @@
       this.id = this.$route.query.id || null
       await this._getFirstAssortment()
       this._getListHeight()
+      this._getGoodsList()
     },
     methods: {
       ...rushMethods,
@@ -442,6 +449,14 @@
         this.choeesGoods[index].selected = 1
         this.goodsList.push(item)
         this.selectGoodsId.push(item.id)
+        this.choeesGoods.forEach((item) => {
+          if (item.selected === 1) {
+            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+            if (idx !== -1) {
+              this.selectGoods.splice(idx, 1)
+            }
+          }
+        })
       },
       // 批量添加
       _batchAddition() {
@@ -525,7 +540,7 @@
             return
           }
           let obj = {name: this.classifyName, sort: this.classifyNum, id: res.data.id}
-          this.rushMsg.lists.push({shelf_tag: obj, shelf_goods: []})
+          this.rushMsg.lists.push({shelf_tag: obj, activity_goods: []})
         } else {
           res = await API.Rush.updateTag({name: this.classifyName, sort: this.classifyNum}, this.tagItem.id)
           this.$toast.show(res.message)
@@ -565,10 +580,12 @@
       async _saveActivity() {
         if (this.disable) {
           return
+        } else if (this.isSubmit) {
+          return
         }
         let date = Date.parse(new Date())
         let endTime = this.essInformation.end_at + ' 23:00'
-        if (!this.essInformation.name) {
+        if (!this.essInformation.activity_name) {
           this.$toast.show('活动名称不能为空')
           return
         } else if (!this.essInformation.start_at) {
@@ -583,37 +600,34 @@
         }
         let list = this.goodsList
         for (let i in list) {
-          for (let index in list[i].shelf_goods) {
-            if (
-              !list[i].shelf_goods[index].trade_price ||
-              !list[i].shelf_goods[index].buy_limit ||
-              !list[i].shelf_goods[index].usable_stock ||
-              list[i].shelf_goods[index].sort === ''
-            ) {
-              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}信息不全`)
-              return
-            } else if (
-              +list[i].shelf_goods[index].trade_price < 0 ||
-              +list[i].shelf_goods[index].buy_limit <= 0 ||
-              +list[i].shelf_goods[index].usable_stock < 0 ||
-              (list[i].shelf_goods[index].usable_stock + '').includes('.') ||
-              +list[i].shelf_goods[index].sort < 0
-            ) {
-              this.$toast.show(`${list[i]['shelf_tag'].name}-${list[i].shelf_goods[index].name}输入数据有误`)
-              return
-            }
+          // for (let index in list[i].shelf_goods) {
+          if (!list[i].trade_price || !list[i].person_day_buy_limit || !list[i].usable_stock || list[i].sort === '') {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].person_day_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.') ||
+            +list[i].sort < 0
+          ) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
+            return
           }
+        // }
         }
-        let data = Object.assign({}, this.essInformation, {shelf_goods: list})
+        let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
+        this.isSubmit = true
         if (this.id) {
-          res = await API.Rush.updateGoods(data, this.id)
+          res = await API.Rush.updateGoods(data, this.id, true)
         } else {
-          res = await API.Rush.storeGoods(data, this.id)
+          res = await API.Rush.storeGoods(data, this.id, true)
         }
+        this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
-          // this.disable = true
+          this.isSubmit = false
           return
         }
         setTimeout(() => {
@@ -935,7 +949,7 @@
             font-family: $font-family-regular
             color: $color-text-assist
           &:focus
-            border-color: $color-sub !important
+            border-color: $color-main !important
 
     .btn-group
       margin-top: 40px
@@ -1169,7 +1183,7 @@
       font-family: $font-family-regular
       color: $color-text-assist
     &:focus
-      border-color: $color-sub !important
+      border-color: $color-main !important
 
   .small-money
     col-center()

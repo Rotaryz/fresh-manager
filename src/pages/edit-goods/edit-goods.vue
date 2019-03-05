@@ -1,5 +1,13 @@
 <template>
   <div class="edit-leader" @click="closeMenu">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-new_commodity@2x.png" class="identification-icon">
+        <p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
@@ -98,7 +106,7 @@
           售价
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.store_price" type="number" class="edit-input">
+          <input v-model="msg.trade_price" type="number" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
@@ -126,14 +134,14 @@
           初始销量
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.sale_count" type="number" class="edit-input">
+          <input v-model="msg.init_sale_count" type="number" class="edit-input">
         </div>
         <div class="edit-pla">仅展示在小程序，不影响订单</div>
       </div>
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn btn-main" @click="_submit">保存</div>
+      <div class="back-btn back-submit hand" @click="_submit">保存</div>
     </div>
   </div>
 </template>
@@ -166,7 +174,7 @@
           goods_banner_images: [],
           goods_detail_images: [],
           goods_units: '',
-          store_price: '',
+          trade_price: '',
           is_online: 1,
           is_multi_specs: 0,
           goods_category_id: 0,
@@ -176,7 +184,7 @@
           goods_skus: [
             {
               id: 0,
-              store_price: 0,
+              trade_price: 0,
               original_price: 0,
               usable_stock: 0,
               image_id: '',
@@ -278,7 +286,7 @@
           return
         }
         this.msg.usable_stock += ''
-        this.msg.sale_count += ''
+        this.msg.init_sale_count += ''
         if (this.msg.name.length === 0 || this.msg.name.length >= 30) {
           this.$toast.show('请选择输入商品名称且小于30字')
           return
@@ -297,10 +305,10 @@
         } else if (this.msg.original_price.length === 0) {
           this.$toast.show('请输入划线价')
           return
-        } else if (this.msg.store_price.length === 0) {
+        } else if (this.msg.trade_price.length === 0) {
           this.$toast.show('请输入售价')
           return
-        } else if (+this.msg.original_price < +this.msg.store_price) {
+        } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
           return
         } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || !this.msg.commission_rate) {
@@ -309,11 +317,15 @@
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
           this.$toast.show('请输入正确商品库存')
           return
-        } else if (!this.msg.sale_count || this.msg.sale_count.includes('.') || +this.msg.sale_count <= 0) {
+        } else if (
+          !this.msg.init_sale_count ||
+          this.msg.init_sale_count.includes('.') ||
+          +this.msg.init_sale_count <= 0
+        ) {
           this.$toast.show('请输入正确初始销量')
           return
         }
-        this.msg.goods_skus[0].store_price = this.msg.store_price
+        this.msg.goods_skus[0].trade_price = this.msg.trade_price
         this.msg.goods_skus[0].original_price = this.msg.original_price
         this.msg.goods_skus[0].usable_stock = this.msg.usable_stock
         this.isSubmit = true
@@ -372,6 +384,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  @import "~@style/detail"
 
   .edit-leader
     position: relative
@@ -531,7 +544,7 @@
           font-family: $font-family-regular
           color: $color-text-assist
         &:focus
-          border-color: $color-sub !important
+          border-color: $color-main !important
       .edit-text
         font-size: $font-size-14
         padding: 10px 14px
@@ -548,7 +561,7 @@
           font-family: $font-family-regular
           color: $color-text-assist
         &:focus
-          border-color: $color-sub !important
+          border-color: $color-main !important
 
   .edit-pla
     font-size: $font-size-14

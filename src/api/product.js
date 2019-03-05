@@ -124,5 +124,15 @@ export default {
   upDownGoods(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods-toggle-online`
     return request.post(url, data, loading)
+  },
+  /**
+   * 同步商品相关数据
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  syncGoodsInfo(data = null, loading = true) {
+    let url = `/social-shopping/api/backend/guanmai/sync-goods-info`
+    return request.get(url, data, loading)
   }
 }

@@ -47,19 +47,21 @@
           <p class="order-text order-money">{{tradeDetail.amount && `￥${tradeDetail.amount}`}}</p>
         </div>
       </div>
-      <div class="list-header list-box">
-        <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-      </div>
-      <div class="list">
-        <div v-for="(item, index) in trades" :key="index" class="list-content list-box">
-          <div class="list-item list-double-row">
-            <p class="item-dark">{{item.order_sn}}</p>
-            <p class="item-dark">{{item.out_trade_sn}}</p>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in trades" :key="index" class="list-content list-box">
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.order_sn}}</p>
+              <p class="item-sub">{{item.out_trade_sn}}</p>
+            </div>
+            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">{{item.business_type}}</div>
+            <div class="list-item">{{item.trade_type}}</div>
+            <div class="list-item">{{item.created_at}}</div>
           </div>
-          <div class="list-item">{{item.total}}</div>
-          <div class="list-item">{{item.business_type}}</div>
-          <div class="list-item">{{item.trade_type}}</div>
-          <div class="list-item">{{item.created_at}}</div>
         </div>
       </div>
       <div class="pagination-box">

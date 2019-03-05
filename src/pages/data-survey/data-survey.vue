@@ -36,8 +36,11 @@
     <div class="data-content">
       <div class="date-leader">
         <div class="data-caption">
-          <div class="data-title">团长销售排行榜TOP5</div>
-          <base-option-box :arrTitle="leaderDate" :tabActive="3" @checkTime="_leaderMore"></base-option-box>
+          <div class="data-title">团长销售排行榜</div>
+        </div>
+        <div class="data-down">
+          <base-option-box :infoTab="1" @checkTime="_leaderMore"></base-option-box>
+          <a class="btn-main" :href="downUrl" target="_blank">导出excel</a>
         </div>
         <div class="list-header list-box">
           <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
@@ -51,11 +54,17 @@
             <div class="list-item">{{item.commission_total_sum}}</div>
           </div>
         </div>
+        <div class="pagination-box data-page">
+          <base-pagination ref="pagination" :pageDetail="pageDetail" @addPage="_leaderPage"></base-pagination>
+        </div>
       </div>
       <div class="date-shop">
         <div class="data-caption">
-          <div class="data-title">商品销售排行榜TOP5</div>
-          <base-option-box :arrTitle="leaderDate" :tabActive="3" @checkTime="_shopMore"></base-option-box>
+          <div class="data-title">商品销售排行榜</div>
+        </div>
+        <div class="data-down">
+          <base-option-box :infoTab="1" @checkTime="_shopMore"></base-option-box>
+          <a class="btn-main" :href="shopDownUrl" target="_blank">导出excel</a>
         </div>
         <div class="list-header list-box">
           <div v-for="(item,index) in shopTitle" :key="index" class="list-item">{{item}}</div>
@@ -69,6 +78,9 @@
             <div class="list-item">{{item.sale_total_sum}}</div>
           </div>
         </div>
+        <div class="pagination-box data-page">
+          <base-pagination ref="shopPage" :pageDetail="goodsPageDetail" @addPage="_shopPage"></base-pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -81,12 +93,6 @@
   const TITLE = '数据概况'
   const LEADER_TITLE = ['团长名称', '社区名称', '销售额', '支付订单数', '佣金收益']
   const SHOP_TITLE = ['商品名称', '被浏览次数', '销售件数', '销售额']
-  const TIME = [
-    {title: '昨天', status: 'yesterday'},
-    {title: '7天', status: 'week'},
-    {title: '30天', status: 'month'},
-    {title: '自定义', status: 'custom'}
-  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -96,7 +102,12 @@
       return {
         leaderTitle: LEADER_TITLE,
         shopTitle: SHOP_TITLE,
-        leaderDate: TIME
+        LeaderPage: 1,
+        shopPage: 1,
+        time: 'yesterday',
+        shopTime: 'yesterday',
+        downUrl: '',
+        shopDownUrl: ''
       }
     },
     computed: {
@@ -104,14 +115,42 @@
     },
     created() {
       this.$emit('setRoutine', true)
-      this.getLeaderDetail({startTime: '', endTime: '', time: 'yesterday', loading: false})
-      this.getShopDetail({startTime: '', endTime: '', time: 'yesterday', loading: false})
+      this.getLeaderDetail({startTime: '', endTime: '', time: 'yesterday', page: this.LeaderPage, loading: false})
+      this.getShopDetail({startTime: '', endTime: '', time: 'yesterday', page: this.shopPage, loading: false})
+      this._getUrl()
+      this._getShopUrl()
     },
     destroyed() {
       this.$emit('setRoutine', false)
     },
     methods: {
       ...dataMethods,
+      _getUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let params =
+          typeof this.time === 'string'
+            ? `access_token=${token.access_token}&start_time=&end_time=&time=${this.time}&page=${this.LeaderPage}`
+            : `access_token=${token.access_token}&startTime=${this.time[0]}&endTime=${this.time[1]}&time=&page=${
+              this.LeaderPage
+            }`
+        this.downUrl =
+          process.env.VUE_APP_API +
+          `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
+      },
+      _getShopUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let params =
+          typeof this.shopTime === 'string'
+            ? `access_token=${token.access_token}&start_time=&end_time=&time=${this.shopTime}&page=${this.LeaderPage}`
+            : `access_token=${token.access_token}&startTime=${this.shopTime[0]}&endTime=${this.shopTime[1]}&time=&page=${
+              this.LeaderPage
+            }`
+        this.shopDownUrl =
+          process.env.VUE_APP_API +
+          `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
+      },
       _orderMore(value) {
         if (typeof value === 'string') {
           this.getOrderDetail({startTime: '', endTime: '', time: value, loading: true})
@@ -120,18 +159,56 @@
         this.getOrderDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
       },
       _leaderMore(value) {
+        this.$refs.pagination.beginPage()
+        this.LeaderPage = 1
+        this.time = value
+        this._getUrl()
         if (typeof value === 'string') {
-          this.getLeaderDetail({startTime: '', endTime: '', time: value, loading: true})
+          this.getLeaderDetail({startTime: '', endTime: '', time: value, page: this.LeaderPage, loading: true})
           return
         }
-        this.getLeaderDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
+        this.getLeaderDetail({startTime: value[0], endTime: value[1], time: '', page: this.LeaderPage, loading: true})
+      },
+      _leaderPage(page) {
+        this.LeaderPage = page
+        this._getUrl()
+        if (typeof this.time === 'string') {
+          this.getLeaderDetail({startTime: '', endTime: '', time: this.time, page: this.LeaderPage, loading: true})
+          return
+        }
+        this.getLeaderDetail({
+          startTime: this.time[0],
+          endTime: this.time[1],
+          time: '',
+          page: this.LeaderPage,
+          loading: true
+        })
+      },
+      _shopPage(page) {
+        this.shopPage = page
+        this._getShopUrl()
+        if (typeof this.shopTime === 'string') {
+          this.getShopDetail({startTime: '', endTime: '', time: this.shopTime, page: this.shopPage, loading: true})
+          return
+        }
+        this.getShopDetail({
+          startTime: this.shopTime[0],
+          endTime: this.shopTime[1],
+          time: '',
+          page: this.shopPage,
+          loading: true
+        })
       },
       _shopMore(value) {
+        this.shopTime = value
+        this.$refs.shopPage.beginPage()
+        this.shopPage = 1
+        this._getShopUrl()
         if (typeof value === 'string') {
-          this.getShopDetail({startTime: '', endTime: '', time: value, loading: true})
+          this.getShopDetail({startTime: '', endTime: '', time: value, page: this.shopPage, loading: true})
           return
         }
-        this.getShopDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
+        this.getShopDetail({startTime: value[0], endTime: value[1], time: '', page: this.shopPage, loading: true})
       }
     }
   }

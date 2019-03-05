@@ -19,6 +19,7 @@
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
           <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>
+          <!--<div class="btn-main g-btn-item" @click="_syncGoods">同步</div>-->
         </div>
       </div>
       <div class="big-list">
@@ -32,7 +33,7 @@
             </div>
             <div class="list-item">{{item.name}}</div>
             <div class="list-item">{{item.goods_units}}</div>
-            <div class="list-item">{{item.store_price}}</div>
+            <div class="list-item">{{item.trade_price}}</div>
             <div class="list-item">
               <div class="list-item-btn" @click="switchBtn(item, index)">
                 <base-switch :status="item.is_online"></base-switch>
@@ -101,11 +102,25 @@
       this.pageTotal = _.cloneDeep(this.statePageTotal)
     },
     methods: {
+      async _syncGoods() {
+        let res = await API.Product.syncGoodsInfo()
+        this.$loading.hide()
+        if (res.error === this.$ERR_OK) {
+          this.$toast.show('同步成功')
+          this.isOnline = ''
+          this.dispatchSelect.content = '全部状态'
+          this.goodsPage = 1
+          this.keyWord = ''
+          this.$refs.pagination.beginPage()
+          this.getGoodsListData()
+        }
+      },
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
-          this.keyWord}&current_corp=${currentId}`
+          this.keyWord
+        }&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsListData() {
