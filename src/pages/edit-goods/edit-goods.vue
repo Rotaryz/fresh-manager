@@ -545,23 +545,6 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
-      .edit-text
-        font-size: $font-size-14
-        padding: 10px 14px
-        border-radius: 1px
-        width: 400px
-        height: 70px
-        border: 1px solid $color-line
-        transition: all 0.3s
-        resize: none
-        outline: none
-        &:hover
-          border: 1px solid #ACACAC
-        &::placeholder
-          font-family: $font-family-regular
-          color: $color-text-assist
-        &:focus
-          border-color: $color-main !important
 
   .edit-pla
     font-size: $font-size-14

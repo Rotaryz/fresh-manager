@@ -783,6 +783,9 @@
           margin-left: 21px
           line-height: 1
           user-select: none
+          transition: all 0.2s
+          &:hover
+            color: #06397E
         .add-link
           width: 108px
           height: 32px

@@ -179,7 +179,7 @@
         flex: 0.6
 
   .pagination-box
-    height: 70px
+    height: 60px
     align-items: center
     display: flex
 

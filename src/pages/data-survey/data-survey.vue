@@ -310,7 +310,7 @@
       flex: 1
 
   .list
-    min-height: 750px
+    min-height: 600px
 
   .date-shop .list-box .list-item
     &:nth-child(1)
@@ -322,7 +322,7 @@
 
   .date-shop, .date-leader
     .list-content-data
-      height: 75px
+      height: 60px
 
   .data-page
     height: 60px

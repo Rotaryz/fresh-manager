@@ -23,8 +23,8 @@
           <input v-model="pointNumber" type="number" class="main-input-box" placeholder="0">
         </div>
         <div class="btn-group">
-          <span class="btn cancel" @click="cancel">取消</span>
-          <span class="btn confirm" @click="confirm">确定</span>
+          <div class="btn cancel" @click="cancel">取消</div>
+          <div class="btn confirm" @click="confirm">确定</div>
         </div>
       </div>
     </div>
@@ -148,6 +148,14 @@
     display: flex
     justify-content: flex-end
     user-select :none
+    .btn
+      width: 96px
+      height: 40px
+      line-height: 40px
+      border-radius: 1px
+      border: 1px solid $color-text-D9
+      cursor: pointer
+      transition: all 0.3s
     .cancel
       border: 1px solid $color-line
       &:hover
