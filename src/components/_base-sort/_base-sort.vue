@@ -44,6 +44,7 @@
     position: relative
     width: 13px
     height: 20px
+    transform :translateY(-2px)
     padding-left: 5px
 
   .sort-up
