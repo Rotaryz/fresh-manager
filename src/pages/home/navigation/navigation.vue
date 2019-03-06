@@ -158,7 +158,7 @@
   const FIRST_MENU = [
     {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
     {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
-    // {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: [], url: ''},
+    {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: [], url: ''},
     {
       name: '统计',
       icon: require('./icon-statistics@2x.png'),
