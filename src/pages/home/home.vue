@@ -69,6 +69,7 @@
       user-select: text
       box-sizing: border-box
       padding: 20px
+      margin-top: 40px
       .container-small
         border-radius: 1px
         flex: 1

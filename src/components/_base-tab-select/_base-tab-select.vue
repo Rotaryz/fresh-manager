@@ -1,9 +1,12 @@
 <template>
-  <div class="status-tab" :style="{'width': width}">
-    <div v-for="(item, index) in tabStatus" :key="index" :style="{'margin-right': marginRight + 'px'}" :class="{'status-item-active': tabIndex === index}" class="status-item hand">
-      <div class="status-txt" @click="_setTab(index, item)">{{item.text}}</div>
+  <div :style="{'width': width}">
+    <div class="status-tab">
+      <div v-for="(item, index) in tabStatus" :key="index" :style="{'margin-right': marginRight + 'px'}" :class="{'status-item-active': tabIndex === index}" class="status-item hand">
+        <div class="status-txt" @click="_setTab(index, item)">{{item.text}}</div>
+      </div>
+      <span class="line" :style="{'left': left + 'px'}"></span>
     </div>
-    <span class="line" :style="{'left': left + 'px'}"></span>
+    <div class="status-top"></div>
   </div>
 </template>
 
@@ -72,20 +75,26 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .status-top
+    height: 40px
+    width: 100%
+
   .status-tab
+    border-bottom-1px($color-line)
+    position: fixed
+    top: 39px
+    left: 210px
+    z-index: 501
     width: 100%
     user-select: none
-    margin: -20px -20px 20px -20px
     background: $color-white
     display: flex
     font-size: $font-size-16
     line-height: 16px
     font-family: $font-family-regular
     color: $color-text-main
-    position: relative
     padding: 0 26px
     box-sizing: border-box
-    border-left-1px($color-line)
     .status-item
       margin-right: 40px
       height: 38px
@@ -106,4 +115,6 @@
       position: absolute
       left: 8px
       bottom: 0
+      border-radius: 2px
+      z-index: 10
 </style>

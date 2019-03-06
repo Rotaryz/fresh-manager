@@ -29,7 +29,7 @@
             <div class="list-item">{{item.name}}</div>
             <div class="list-item">{{item.total}}</div>
             <div class="list-item">{{item.delivery_at}}</div>
-            <div class="list-item list-operation-box">
+            <div class="list-operation-box">
               <router-link tag="span" :to="'dispatching-detail?id='+item.id" append class="list-operation">
                 详情
               </router-link>
@@ -175,8 +175,13 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
+      position: relative
+      z-index: 1
       &:last-child
         flex: 0.6
+    .list-operation-box
+      padding-right: 10px
+      flex: 0.6
 
   .pagination-box
     height: 60px
@@ -188,7 +193,7 @@
     overflow: visible
     .select-type
       top: 19px
-      z-index: 10
+      z-index: 1000
       right: 0
       background: $color-white
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
@@ -213,6 +218,8 @@
           font-family: $font-family-regular
           color: $color-text-main
           transition: all 0.3s
+          &:hover
+            color: $color-main
         .select-item-active
           color: $color-sub
 
