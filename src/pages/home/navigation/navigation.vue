@@ -241,7 +241,7 @@
         if (this.firstMenu[i].isLight) {
           return
         } else if (!this.firstMenu[i].second.length) {
-          this.$toast.show('该功能正在开发')
+          this.$toast.show('该功能正在开发中')
           return
         }
         this.firstMenu = this.firstMenu.map((item, index) => {
