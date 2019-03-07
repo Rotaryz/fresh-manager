@@ -46,7 +46,7 @@
             </div>
           </div>
         </div>
-        <div class="total-money">预定总金额：￥{{detail.total}}</div>
+        <div class="total-money">预定总金额：<span class="block">￥{{detail.total}}</span></div>
       </div>
     </div>
     <div class="back">
@@ -86,9 +86,7 @@
       this.id = this.$route.query.id || null
       let token = this.$storage.get('auth.currentUser', '')
       let excelParams = token ? `?access_token=${token.access_token}&current_corp=${currentId}` : ''
-      this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${
-        this.id
-      }${excelParams}`
+      this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${this.id}${excelParams}`
       this.userUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/user-order-export/${this.id}${excelParams}`
     },
     methods: {
@@ -108,4 +106,7 @@
     flex: 1
     padding-bottom: 80px
     position: relative
+
+  .excel
+    margin-left: 10px !important
 </style>

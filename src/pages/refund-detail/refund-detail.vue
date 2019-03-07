@@ -239,7 +239,7 @@
     width: 534px
     height: 261px
     background: $color-white
-    border-radius: 3px
+    border-radius: 1px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .top

@@ -88,7 +88,7 @@
           售卖单位
         </div>
         <div class="edit-input-box">
-          <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+          <base-drop-down :height="44" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -538,23 +538,6 @@
         transition: all 0.3s
         &::-webkit-inner-spin-button
           appearance: none
-        &:hover
-          border: 1px solid #ACACAC
-        &::placeholder
-          font-family: $font-family-regular
-          color: $color-text-assist
-        &:focus
-          border-color: $color-main !important
-      .edit-text
-        font-size: $font-size-14
-        padding: 10px 14px
-        border-radius: 1px
-        width: 400px
-        height: 70px
-        border: 1px solid $color-line
-        transition: all 0.3s
-        resize: none
-        outline: none
         &:hover
           border: 1px solid #ACACAC
         &::placeholder

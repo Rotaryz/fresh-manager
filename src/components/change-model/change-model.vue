@@ -23,8 +23,8 @@
           <input v-model="pointNumber" type="number" class="main-input-box" placeholder="0">
         </div>
         <div class="btn-group">
-          <span class="btn cancel" @click="cancel">取消</span>
-          <span class="btn confirm" @click="confirm">确定</span>
+          <div class="btn cancel" @click="cancel">取消</div>
+          <div class="btn confirm" @click="confirm">确定</div>
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@
   .default-input
     background: #fff
     width: 534px
-    border-radius: 3px
+    border-radius: 1px
     .title-input
       height: 60px
       layout(row)
@@ -152,15 +152,22 @@
       width: 96px
       height: 40px
       line-height: 40px
-      border-radius: 3px
-      cursor :pointer
+      border-radius: 1px
+      border: 1px solid $color-text-D9
+      cursor: pointer
+      transition: all 0.3s
     .cancel
       border: 1px solid $color-line
+      &:hover
+        color: $color-text-sub
+        border-color: $color-text-sub
     .confirm
       border: 1px solid $color-main
       background: $color-main
       color: $color-white
       margin-left: 20px
+      &:hover
+        opacity: 0.8
     .one-btn
       margin-left :0
   .main-model-box

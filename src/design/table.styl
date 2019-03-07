@@ -25,7 +25,7 @@
     margin-right: 10px
 
 .big-list
-  max-height: 640px
+  max-height: 645px
   background: $color-white
   overflow: visible
   display: flex
@@ -33,7 +33,7 @@
   flex: 1
 
 .list-header
-  height: 45px
+  min-height: 45px
   font-family: $font-family-regular
   color: $color-text-main
   background: #F5F7FA
@@ -150,10 +150,9 @@
     left: 105 !important
 
 .back
-  left: 0
+  left: 210px
   right: 0
   bottom: 0
-  position: fixed
   z-index: 10
   background: #F9F9F9
   height: 80px
@@ -163,6 +162,8 @@
   padding-left: 40px
   box-sizing: border-box
   justify-content: center
+  border-top-1px($color-line)
+  position: fixed
   .back-btn
     box-sizing: border-box
     font-size: $font-size-16
@@ -183,7 +184,7 @@
     box-sizing: border-box
     color: $color-text-main
     background: $color-white
-    border-1px(#ACACAC, 1px)
+    border: 1px solid $color-line
     &:hover
       color: $color-text-sub
       border-color: $color-text-sub

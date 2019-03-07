@@ -158,7 +158,7 @@
   const FIRST_MENU = [
     {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
     {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
-    {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: [], url: ''},
+    // {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: [], url: ''},
     {
       name: '统计',
       icon: require('./icon-statistics@2x.png'),
@@ -241,7 +241,7 @@
         if (this.firstMenu[i].isLight) {
           return
         } else if (!this.firstMenu[i].second.length) {
-          this.$toast.show('该功能正在开发')
+          this.$toast.show('该功能正在开发中')
           return
         }
         this.firstMenu = this.firstMenu.map((item, index) => {
@@ -358,6 +358,7 @@
     overflow: auto
     white-space: nowrap
     transition: all 0.2s
+    border-right-1px($color-line)
     &::-webkit-scrollbar
       width: 8px
       height: 10px

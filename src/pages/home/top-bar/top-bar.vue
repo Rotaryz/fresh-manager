@@ -48,9 +48,13 @@
   $menu-width = 200px
 
   .top-bar
-    z-index: 1000
+    z-index: 500
     background: #fff
-    border-left-1px($color-line)
+    border-bottom-1px($color-line)
+    position: fixed
+    top: 0
+    left: 210px
+    right: 0
     .userInfo-content
       layout(row)
       align-items: center

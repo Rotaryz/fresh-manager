@@ -1,7 +1,7 @@
 <template>
   <div class="data-survey">
     <div class="data-header">
-      <div class="data-caption">
+      <div class="data-caption data-caption-line">
         <div class="data-title">交易数据</div>
         <base-option-box @checkTime="_orderMore"></base-option-box>
       </div>
@@ -242,6 +242,8 @@
       font-family: $font-family-regular
       color: $color-text-main
       font-size: $font-size-16
+  .data-caption-line
+    border-bottom-1px($color-line)
 
   .data-down
     display: flex
@@ -308,7 +310,7 @@
       flex: 1
 
   .list
-    min-height: 750px
+    min-height: 600px
 
   .date-shop .list-box .list-item
     &:nth-child(1)
@@ -320,7 +322,7 @@
 
   .date-shop, .date-leader
     .list-content-data
-      height: 75px
+      height: 60px
 
   .data-page
     height: 60px

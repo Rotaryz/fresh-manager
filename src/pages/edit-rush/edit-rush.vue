@@ -1,5 +1,13 @@
 <template>
   <div class="edit-rush detail-content">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-new_commodity@2x.png" class="identification-icon">
+        <p class="identification-name">{{id ? '编辑活动' : '新建活动'}}</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
@@ -614,7 +622,7 @@
             this.$toast.show(`${list[i].name}输入数据有误`)
             return
           }
-        // }
+          // }
         }
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
@@ -681,6 +689,8 @@
         transition: all 0.3s
         &:hover
           border-color: #ACACAC
+        &:focus
+          border-color: $color-main
         .edit-time
           color: $color-text-assist
           font-family: $font-family-regular
@@ -796,7 +806,7 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 3px
+    border-radius: 1px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -905,7 +915,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 3px
+      border-radius: 1px
       .title-input
         height: 60px
         layout(row)
@@ -961,7 +971,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 3px
+        border-radius: 1px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -997,7 +1007,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 3px
+    border-radius: 1px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -1009,7 +1019,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 3px
+        border-radius: 1px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -1139,7 +1149,7 @@
         cursor: not-allowed
         background: $color-line
         color: $color-text-assist
-        border-none()
+        border: none
 
   /*弹窗动画*/
   @keyframes layerFadeIn {
