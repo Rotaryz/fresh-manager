@@ -4,7 +4,7 @@
     <div class="down-content">
       <span class="down-tip">订单筛选</span>
       <div class="down-item-small">
-        <base-drop-down :width="152" :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+        <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
       </div>
       <div class="down-item">
         <base-date-select :dateInfo="time" @getTime="changeTime"></base-date-select>

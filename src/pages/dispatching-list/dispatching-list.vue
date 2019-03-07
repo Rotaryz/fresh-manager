@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">配送单筛选</span>
       <div class="down-item">
-        <base-drop-down :width="152" :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
+        <base-drop-down :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
       </div>
     </div>
     <div class="table-content">
