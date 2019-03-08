@@ -327,7 +327,7 @@ export const actions = {
         }
         let list = res.data
         let pages = res.meta
-        let pageDetail = {
+        let pageDetail = res.meta && {
           total: pages.total,
           per_page: pages.per_page,
           total_page: pages.last_page
