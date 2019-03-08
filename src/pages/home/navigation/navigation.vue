@@ -228,7 +228,6 @@
                 })
                 index = smallIndex !== -1 ? idx : ''
                 this.firstIndex = index
-                console.log(index, item)
                 this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.second)) : this.navList
               }
             })
