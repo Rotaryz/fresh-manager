@@ -22,7 +22,7 @@
 
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'NAVIGATION_BAR'
-  const INFO_INDEX = 1
+  const INFO_INDEX = 0
   // const HEIGHT = 40
   const SHOP = [
     {
@@ -228,13 +228,15 @@
                 })
                 index = smallIndex !== -1 ? idx : ''
                 this.firstIndex = index
-                this.navList = index ? JSON.parse(JSON.stringify(item.second)) : this.navList
+                console.log(index, item)
+                this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.second)) : this.navList
               }
             })
           }
           item.isLight = idx === index
           return item
         })
+
       },
       // 点击一级导航
       _setFirstMenu(i) {
@@ -263,6 +265,7 @@
           return item.children.some((child) => currentPath.includes(child.url))
         })
         this.navList.map((item) => {
+          console.log(item)
           item.children = item.children.map((child) => {
             child.isLight = false
             return child
