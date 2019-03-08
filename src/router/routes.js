@@ -668,7 +668,25 @@ export default [
               })
           }
         }
-      }
+      },
+      /**
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 供应链
+       */
+      // 采购任务
+      {
+        path: 'procurement-task',
+        name: 'procurement-task',
+        component: () => lazyLoadView(import('@pages/procurement-task/procurement-task')),
+        meta: {
+          titles: ['供应链', '采购', '采购任务'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
     ]
   },
   {
