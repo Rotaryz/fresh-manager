@@ -1,7 +1,7 @@
 <template>
   <div class="demo">
     demo
-    <add-goods @batchAddition="_batchAddition"></add-goods>
+    <add-goods ref="addg" @batchAddition="_batchAddition"></add-goods>
     <span @click="deleteGoods()">sahNGV</span>
   </div>
 </template>
@@ -27,7 +27,7 @@
         console.log(list)
       },
       deleteGoods() {
-
+        this.$refs.addg._delGoods(160)
       }
     }
   }

@@ -90,12 +90,14 @@
 
     },
     methods: {
-      // 删除商品弹窗
+      // 删除商品传入商品id
       _delGoods(id) {
         let index = this.selectGoodsId.findIndex((item) => item === id)
         this.selectGoodsId.splice(index, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(id)
+        this._getGoodsList()
+        this.$refs.goodsModel.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModel.hideModal()
