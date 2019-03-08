@@ -693,6 +693,18 @@ export default [
           }
         }
       },
+      // 新建采购员
+      {
+        path: 'procurement-task/edit-procurement',
+        name: 'edit-procurement',
+        component: () => lazyLoadView(import('@pages/edit-procurement/edit-procurement')),
+        meta: {
+          titles: ['供应链', '采购', '采购员', '新建采购员'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      }
     ]
   },
   {

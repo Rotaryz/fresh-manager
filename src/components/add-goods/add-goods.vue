@@ -535,7 +535,9 @@
         margin-right: 20px
         border-radius: 1px
         border: 1px solid $color-line
+        min-height: 16px
         height: 16px
+        min-width: 16px
         width: 16px
         transition: all 0.3s
       .select-icon-disable
@@ -548,7 +550,9 @@
       .goods-img
         margin-right: 10px
         width: 40px
+        min-width: 40px
         height: @width
+        min-height: @width
         overflow: hidden
         background-repeat: no-repeat
         background-size: cover
@@ -571,7 +575,7 @@
         border-radius: 1px
         margin-left: 88px
         padding: 5px 0
-        width: 56px
+        min-width: 56px
         text-align: center
       .add-btn-disable
         border-radius: 1px
