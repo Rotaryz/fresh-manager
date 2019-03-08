@@ -1,6 +1,12 @@
 import store from '@state/store'
 
 export default [
+  // 模板
+  {
+    path: '/demo',
+    name: 'demo',
+    component: () => lazyLoadView(import('@pages/demo/demo'))
+  },
   // 登录界面
   {
     path: '/login',
