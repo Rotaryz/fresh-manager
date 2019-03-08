@@ -800,6 +800,7 @@
           position: relative
           user-select: none
           transition: all 0.3s
+          z-index: 2
           &:after
             content: ''
             width: 2px
@@ -1012,6 +1013,8 @@
   .back-box
     border-top-1px($color-line)
     position: absolute
+    left: 0
+    bottom: 0
 
   .edit-item
     display: flex

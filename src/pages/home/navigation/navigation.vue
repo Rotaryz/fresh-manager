@@ -264,7 +264,6 @@
           return item.children.some((child) => currentPath.includes(child.url))
         })
         this.navList.map((item) => {
-          console.log(item)
           item.children = item.children.map((child) => {
             child.isLight = false
             return child
