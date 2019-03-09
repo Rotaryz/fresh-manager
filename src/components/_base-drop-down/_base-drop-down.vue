@@ -154,6 +154,7 @@
         margin-top: 10px
         max-height: 350px
         overflow-y: auto
+        min-width: 100%
         &::-webkit-scrollbar
           width: 8px
           height: 10px
