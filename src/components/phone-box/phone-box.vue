@@ -73,7 +73,7 @@
                           <div class="text-group">团购价</div>
                         </section>
                         <div class="price-box">
-                          <div class="money">{{item.shop_price}}</div>
+                          <div class="money">{{item.trade_price}}</div>
                           <div class="unit">元</div>
                           <div class="lineation">{{item.original_price}}元</div>
                         </div>
