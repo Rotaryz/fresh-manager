@@ -85,6 +85,7 @@
     },
     methods: {
       _back() {
+        this.$router.back()
       },
       submit() {
       }

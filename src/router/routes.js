@@ -693,13 +693,38 @@ export default [
           }
         }
       },
+      // 采购员
+      {
+        path: 'buyer',
+        name: 'buyer',
+        component: () => lazyLoadView(import('@pages/buyer/buyer')),
+        meta: {
+          titles: ['供应链', '采购', '采购员列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
       // 新建采购员
       {
-        path: 'procurement-task/edit-procurement',
+        path: 'buyer/edit-procurement',
         name: 'edit-procurement',
         component: () => lazyLoadView(import('@pages/edit-procurement/edit-procurement')),
         meta: {
+          marginBottom: 80,
           titles: ['供应链', '采购', '采购员', '新建采购员'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 采购单列表
+      {
+        path: 'purchase-order',
+        name: 'purchase-order',
+        component: () => lazyLoadView(import('@pages/purchase-order/purchase-order')),
+        meta: {
+          titles: ['供应链', '采购', '采购单'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }

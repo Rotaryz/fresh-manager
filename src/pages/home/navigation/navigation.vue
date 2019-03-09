@@ -163,6 +163,16 @@
           title: '采购任务',
           url: '/home/procurement-task',
           isLight: false
+        },
+        {
+          title: '采购单',
+          url: '/home/purchase-order',
+          isLight: false
+        },
+        {
+          title: '采购员',
+          url: '/home/buyer',
+          isLight: false
         }
       ]
     }
