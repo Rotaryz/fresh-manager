@@ -173,6 +173,11 @@
           title: '采购员',
           url: '/home/buyer',
           isLight: false
+        },
+        {
+          title: '供应商',
+          url: '/home/supplier',
+          isLight: false
         }
       ]
     }

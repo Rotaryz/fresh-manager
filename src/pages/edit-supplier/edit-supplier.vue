@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-procurement detail-content">
+  <div class="edit-supplier detail-content">
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-buyer_new@2x.png" class="identification-icon">
@@ -15,41 +15,10 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          账号
+          供应商名称
         </div>
         <div class="edit-input-box">
-          <div v-if="id" class="edit-change">账号名称</div>
-          <input v-else type="number" class="edit-input" placeholder="请输入密码" maxlength="10">
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          密码
-        </div>
-        <div class="edit-input-box">
-          <div v-if="id" class="list-operation edit-change">修改密码</div>
-          <input v-else type="text" class="edit-input" placeholder="请输入密码" minlength="4">
-        </div>
-      </div>
-    </div>
-    <div class="leader-box">
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          确认密码
-        </div>
-        <div class="edit-input-box">
-          <input type="text" class="edit-input" placeholder="请确认密码" maxlength="10">
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          姓名
-        </div>
-        <div class="edit-input-box">
-          <input type="text" class="edit-input" placeholder="请输入姓名">
+          <input type="number" class="edit-input" placeholder="请输入供应商名称" maxlength="20">
         </div>
       </div>
       <div class="edit-item">
@@ -58,7 +27,26 @@
           手机号
         </div>
         <div class="edit-input-box">
-          <input type="number" class="edit-input" maxlength="11" placeholder="请输入手机号">
+          <input type="number" class="edit-input" placeholder="请输入手机号码" maxlength="11">
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          地址
+        </div>
+        <div class="edit-input-box">
+          <textarea class="edit-text" maxlength="50"></textarea>
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          地址
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :width="400" :height="44"></base-drop-down>
+          <!--<textarea class="edit-text" maxlength="50"></textarea>-->
         </div>
       </div>
     </div>
@@ -70,8 +58,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-  const PAGE_NAME = 'EDIT_PROCUREMENT'
-  const TITLE = '新建采购员'
+  const PAGE_NAME = 'EDIT_SUPPLIER'
+  const TITLE = '新建供应商'
 
   export default {
     name: PAGE_NAME,
@@ -168,4 +156,3 @@
   .edit-change
     line-height: 40px
 </style>
-

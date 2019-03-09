@@ -47,7 +47,7 @@
             <div class="list-item">item</div>
             <div class="list-item">item</div>
             <div class="list-item">
-              <div class="list-operation">详情</div>
+              <router-link tag="div" to="purchase-order-detail" append class="list-operation">详情</router-link>
             </div>
           </div>
         </div>
@@ -94,23 +94,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
-  .pro-select-icon
-    border-radius: 1px
-    border: 1px solid $color-line
-    height: 14px
-    width: 14px
-    margin-right: 18px
-    transition: all 0.3s
-
-  .pro-select-icon-disable
-    border: 1px solid transparent
-    cursor: not-allowed
-    icon-image('icon-check_ash')
-
-  .pro-select-icon-active
-    border: 1px solid transparent
-    icon-image('icon-check')
 
   .purchase-order
     .list-box

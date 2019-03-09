@@ -729,6 +729,42 @@ export default [
             next()
           }
         }
+      },
+      // 采购单详情
+      {
+        path: 'purchase-order/purchase-order-detail',
+        name: 'purchase-order-detail',
+        component: () => lazyLoadView(import('@pages/purchase-order-detail/purchase-order-detail')),
+        meta: {
+          titles: ['供应链', '采购', '采购单', '采购单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 供应商
+      {
+        path: 'supplier',
+        name: 'supplier',
+        component: () => lazyLoadView(import('@pages/supplier/supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 新建供应商
+      {
+        path: 'supplier/edit-supplier',
+        name: 'edit-supplier',
+        component: () => lazyLoadView(import('@pages/edit-supplier/edit-supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商', '新建供应商'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
       }
     ]
   },
