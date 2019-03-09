@@ -166,7 +166,7 @@
       &:nth-child(6), &:nth-child(7)
         flex: 1.5
       &:last-child
-        flex: 1.4
+        flex: 1.8
 
   .pop-main
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
