@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-buyer_new@2x.png" class="identification-icon">
-        <p class="identification-name">{{id ? '编辑采购员' : '新建采购员'}}</p>
+        <p class="identification-name">{{id ? '编辑供应商' : '新建供应商'}}</p>
       </div>
       <div class="function-btn">
       </div>
@@ -36,13 +36,13 @@
           地址
         </div>
         <div class="edit-input-box">
-          <textarea class="edit-text" maxlength="50"></textarea>
+          <textarea class="edit-text" maxlength="50" placeholder="请输入供应商地址"></textarea>
         </div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          地址
+          所属采购员
         </div>
         <div class="edit-input-box">
           <base-drop-down :width="400" :height="44"></base-drop-down>
@@ -135,7 +135,7 @@
         padding: 10px 14px
         border-radius: 1px
         width: 400px
-        height: 70px
+        height: 84px
         border: 0.5px solid $color-line
         transition: all 0.3s
         resize: none
