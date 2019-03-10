@@ -165,6 +165,16 @@
           isLight: false
         }
       ]
+    },
+    {
+      title: '仓库',
+      children: [
+        {
+          title: '成品入库',
+          url: '/home/product-enter',
+          isLight: false
+        }
+      ]
     }
   ]
   const FIRST_MENU = [

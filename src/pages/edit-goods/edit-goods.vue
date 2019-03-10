@@ -139,6 +139,39 @@
         <div class="edit-pla">仅展示在小程序，不影响订单</div>
       </div>
     </div>
+    <div class="content-header procurement-top">
+      <div class="content-title">采购信息</div>
+    </div>
+    <div class="leader-box">
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          供应商
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :height="44" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          采购规格
+        </div>
+        <div class="edit-input-box">
+          <input v-model="msg.usable_stock" type="number" class="edit-input">
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          损耗比
+        </div>
+        <div class="edit-input-box">
+          <input v-model="msg.init_sale_count" type="number" class="edit-input">
+        </div>
+        <div class="edit-pla">根据耗损的百分比额外增加采购数量（%）</div>
+      </div>
+    </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
       <div class="back-btn back-submit hand" @click="_submit">保存</div>
@@ -569,7 +602,8 @@
       font-size: $font-size-14
       color: $color-text-assist
       font-family: $font-family-regular
-
+  .procurement-top
+    margin-top: 24px
   .edit-msg
     font-size: $font-size-medium14
     color: #acacac

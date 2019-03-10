@@ -1,6 +1,12 @@
 import store from '@state/store'
 
 export default [
+  // 成品入库
+  {
+    path: '/product-enter',
+    name: 'product-enter',
+    component: () => lazyLoadView(import('@pages/product-enter/product-enter'))
+  },
   // 模板
   {
     path: '/demo',
@@ -700,6 +706,18 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-procurement/edit-procurement')),
         meta: {
           titles: ['供应链', '采购', '采购员', '新建采购员'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库
+      {
+        path: 'product-enter',
+        name: 'product-enter',
+        component: () => lazyLoadView(import('@pages/product-enter/product-enter')),
+        meta: {
+          titles: ['供应链', '仓库', '成品入库'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }

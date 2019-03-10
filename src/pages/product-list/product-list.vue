@@ -1,13 +1,20 @@
 <template>
   <div class="product-list table">
     <div class="down-content">
-      <span class="down-tip">筛选</span>
+      <span class="down-tip">分类筛选</span>
+      <div class="down-item-small">
+        <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+      </div>
+      <div class="down-item">
+        <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+      </div>
+      <span class="down-tip">状态</span>
       <div class="down-item">
         <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="商品名称" @search="search"></base-search>
+        <base-search placeHolder="商品名称或编码" @search="search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -32,6 +39,8 @@
               <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
             </div>
             <div class="list-item">{{item.name}}</div>
+            <div class="list-item">{{item.goods_units}}</div>
+            <div class="list-item">{{item.goods_units}}</div>
             <div class="list-item">{{item.goods_units}}</div>
             <div class="list-item">{{item.trade_price}}</div>
             <div class="list-item">
@@ -63,7 +72,7 @@
 
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
-  const PRODUCT_TITLE_LIST = ['商品图片', '商品名称', '售卖单位', '售价', '状态', '库存', '操作']
+  const PRODUCT_TITLE_LIST = ['商品图片', '商品名称', '商品编码', '分类', '销售单位', '销售价', '状态', '库存', '操作']
 
   export default {
     name: PAGE_NAME,
