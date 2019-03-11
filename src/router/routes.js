@@ -208,6 +208,57 @@ export default [
           }
         }
       },
+      // 拓展活动
+      {
+        path: 'outreach-activity',
+        name: 'outreach-activity',
+        component: () => lazyLoadView(import('@pages/outreach-activity/outreach-activity')),
+        meta: {
+          titles: ['商城', '活动', '拓展活动'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 活动列表
+            store
+              .dispatch('outreach/getOutreachList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 新建查看拓展活动
+      {
+        path: 'outreach-activity/edit-outreach',
+        name: 'edit-outreach',
+        component: () => lazyLoadView(import('@pages/edit-outreach/edit-outreach')),
+        meta: {
+          titles: ['商城', '活动', '拓展活动', '新建活动'],
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('outreach/getOutreachDetail', {id})
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            }
+            return next()
+          }
+        }
+      },
       /**
        * 商城
        *

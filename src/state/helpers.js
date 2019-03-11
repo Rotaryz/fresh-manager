@@ -67,6 +67,13 @@ export const rushComputed = {
 
 export const rushMethods = mapActions('rush', ['getRushList', 'getRushDetail', 'setRushList'])
 
+// 拓展活动
+export const outreachComputed = {
+  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail'])
+}
+
+export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
+
 export const auxiliaryComputed = {
   ...mapState('auxiliary', {
     unitsList: (state) => state.unitsList

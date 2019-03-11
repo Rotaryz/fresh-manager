@@ -62,6 +62,11 @@
           title: '今日抢购',
           url: '/home/rush-purchase',
           isLight: false
+        },
+        {
+          title: '拓展活动',
+          url: '/home/outreach-activity',
+          isLight: false
         }
       ]
     },
