@@ -173,6 +173,16 @@
           title: '成品入库',
           url: '/home/product-enter',
           isLight: false
+        },
+        {
+          title: '成品出库',
+          url: '/home/product-out',
+          isLight: false
+        },
+        {
+          title: '库位管理',
+          url: '/home/store-manage',
+          isLight: false
         }
       ]
     }

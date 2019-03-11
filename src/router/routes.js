@@ -1,6 +1,36 @@
 import store from '@state/store'
 
 export default [
+  // x新建出库单
+  {
+    path: '/edit-store',
+    name: 'edit-store',
+    component: () => lazyLoadView(import('@pages/edit-store/edit-store'))
+  },
+  // 库位管理
+  {
+    path: '/store-manage',
+    name: 'store-manage',
+    component: () => lazyLoadView(import('@pages/store-manage/store-manage'))
+  },
+  // 商品明细
+  {
+    path: '/out-detail',
+    name: 'out-detail',
+    component: () => lazyLoadView(import('@pages/out-detail/out-detail'))
+  },
+  // 成品出库
+  {
+    path: '/product-out',
+    name: 'product-out',
+    component: () => lazyLoadView(import('@pages/product-out/product-out'))
+  },
+  // 成详情情
+  {
+    path: '/enter-detail',
+    name: 'enter-detail',
+    component: () => lazyLoadView(import('@pages/enter-detail/enter-detail'))
+  },
   // 成品入库
   {
     path: '/product-enter',
@@ -718,6 +748,66 @@ export default [
         component: () => lazyLoadView(import('@pages/product-enter/product-enter')),
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-enter/enter-detail',
+        name: 'enter-detail',
+        component: () => lazyLoadView(import('@pages/enter-detail/enter-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '成品入库', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out',
+        name: 'product-out',
+        component: () => lazyLoadView(import('@pages/product-out/product-out')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out/out-detail',
+        name: 'out-detail',
+        component: () => lazyLoadView(import('@pages/out-detail/out-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out/edit-store',
+        name: 'edit-store',
+        component: () => lazyLoadView(import('@pages/edit-store/edit-store')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库', '新建出库单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 库位管理
+      {
+        path: 'store-manage',
+        name: 'store-manage',
+        component: () => lazyLoadView(import('@pages/store-manage/store-manage')),
+        meta: {
+          titles: ['供应链', '仓库', '库位管理'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }
