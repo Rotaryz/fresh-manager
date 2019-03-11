@@ -481,7 +481,6 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        console.log(this.selectGoodsId, item.selected, 'selectGoods')
         switch (item.selected) {
         case 0:
           if (this.selectGoodsId.length === 3) {
@@ -540,15 +539,14 @@
         if (item.selected === 1) {
           return
         }
-        console.log(this.selectGoodsId, item.selected, 'additionone')
         if(this.selectGoodsId.length === 3) {
           this.$toast.show('选择商品数量不能超过三个')
           return
         }
 
+        if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
-        if (item.selected === 2) this.selectGoodsId.push(item.id)
         this.chooseGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)
@@ -577,12 +575,14 @@
         this.$refs.goodsModel.showModal()
       },
       _hideGoods() {
+        this._initData()
         this.$refs.goodsModel.hideModal()
       },
 
       _initData() {
         this.page = 1
         this.keyword = ''
+        this.$refs.pagination.beginPage()
       },
 
       // 获取团长列表
@@ -606,6 +606,7 @@
       // 关闭选择团长弹窗
       _hideGroup() {
         this.groupShow = false
+        this._init()
         this.$refs.groupModal.hideModal()
       },
       // 选择团长
