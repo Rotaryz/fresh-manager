@@ -73,12 +73,12 @@
                           <div class="text-group">团购价</div>
                         </section>
                         <div class="price-box">
-                          <div class="money">{{item.shop_price}}</div>
+                          <div class="money">{{item.trade_price}}</div>
                           <div class="unit">元</div>
                           <div class="lineation">{{item.original_price}}元</div>
                         </div>
                       </div>
-                      <button v-if="item.usable_stock * 1 > 0" class="add-box-right" formType="submit">
+                      <section v-if="item.usable_stock * 1 > 0" class="add-box-right">
                         <div class="add-goods-btn">
                           <div class="phone-add-icon">
                             <div class="add1"></div>
@@ -86,7 +86,7 @@
                           </div>
                           <div class="add-text">购物车</div>
                         </div>
-                      </button>
+                      </section>
                       <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
                         <div class="add-goods-btn add-goods-btn-active">
                           <div class="add-text">已抢完</div>
@@ -186,6 +186,9 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .add-box-right
+    col-center()
+    right :0
 
   .phone-box
     margin: 0 76px 0 71px
@@ -452,6 +455,7 @@
           layout(row)
           justify-content: space-between
           align-items: center
+          position :relative
           .left
             layout(row)
             .text-group

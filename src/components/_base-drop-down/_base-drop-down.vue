@@ -149,12 +149,23 @@
         background: $color-white
         z-index: 300
         position: absolute
-        width: 100%
         border-radius: 3px
         box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
         margin-top: 10px
         max-height: 350px
         overflow-y: auto
+        min-width: 100%
+        &::-webkit-scrollbar
+          width: 8px
+          height: 10px
+        &::-webkit-scrollbar-thumb
+          background-color: rgba(0, 0, 0, .15)
+          border-radius: 10px
+        &::-webkit-scrollbar-thumb:hover
+          background-color: rgba(0, 0, 0, .3)
+        &::-webkit-scrollbar-track
+          box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+          border-radius: 10px
         &.fade-enter, &.fade-leave-to
           opacity: 0
         &.fade-enter-to, &.fade-leave-to
