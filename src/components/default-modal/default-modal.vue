@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <section v-show="isShow" :style="styles" class="default-modal">
+    <section v-show="!isShow" :style="styles" class="default-modal">
       <div :class="showActive ? 'model-active' : 'model-un-active'">
         <slot name="content"></slot>
       </div>
