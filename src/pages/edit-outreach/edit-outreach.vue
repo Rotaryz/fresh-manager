@@ -26,6 +26,7 @@
                  :class="{'disable-input':disable}"
           >
         </div>
+        <div :class="{'text-no-change':disable}"></div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -50,6 +51,7 @@
           placement="bottom-end"
           placeholder="选择开始时间"
           style="width: 240px;height: 44px;border-radius: 1px"
+          readonly
           @on-change="_getStartTime"
         ></date-picker>
         <div class="tip-text">至</div>
@@ -81,6 +83,7 @@
           >
           <span class="icon"></span>
         </div>
+        <div :class="{'text-no-change':disable}"></div>
       </div>
     </div>
     <div class="content-header">
@@ -351,6 +354,9 @@
         immediate: true
       }
     },
+    created() {
+      this.essInformation.start_at = new Date().toLocaleDateString().replace(/^(\d)$/,"0$1").replace(/\//g, '-')
+    },
     async mounted() {
       this.disable = this.$route.query.id
       this.id = this.$route.query.id || null
@@ -475,6 +481,7 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
+        console.log(this.selectGoodsId, item.selected, 'selectGoods')
         switch (item.selected) {
         case 0:
           if (this.selectGoodsId.length === 3) {
@@ -533,6 +540,7 @@
         if (item.selected === 1) {
           return
         }
+        console.log(this.selectGoodsId, item.selected, 'additionone')
         if(this.selectGoodsId.length === 3) {
           this.$toast.show('选择商品数量不能超过三个')
           return
@@ -540,7 +548,7 @@
 
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
-        this.selectGoodsId.push(item.id)
+        if (item.selected === 2) this.selectGoodsId.push(item.id)
         this.chooseGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)
@@ -773,13 +781,15 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
-    .time-no-change
+    .time-no-change,.text-no-change
       position: absolute
       left: 100px
       top: 0
       width: 550px
       height: 50px
       z-index: 100
+    .text-no-change
+      cursor: not-allowed
   .edit-activity
     box-sizing: border-box
     padding-left: 20px

@@ -33,13 +33,17 @@
               <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
               <!--二维码-->
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="code-box">
-                <img src="./icon-qr@2x.png" class="small-code" @mouseenter="showCode(index)">
-                <transition name="fade">
-                  <div v-if="codeShow === index" class="code-content" @mouseleave="hideCode">
-                    <img src="./icon-qr@2x.png" alt="" class="code">
-                    <span class="text" @click="download">下载</span>
-                  </div>
-                </transition>
+                <div class="code-main" @mouseenter="showCode(index)" @mouseleave="hideCode">
+                  <img src="./icon-qr@2x.png" class="small-code">
+                  <transition name="fade">
+                    <div class="code-bg">
+                      <div v-if="codeShow === index" class="code-content">
+                        <img src="./icon-qr@2x.png" alt="" class="code">
+                        <span class="text" @click="download">下载</span>
+                      </div>
+                    </div>
+                  </transition>
+                </div>
               </div>
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
@@ -96,7 +100,8 @@
         delId: 0,
         downId: 0,
         status: 0,
-        codeShow: ''
+        codeShow: '',
+        timer: ''
       }
     },
     computed: {
@@ -117,10 +122,13 @@
         console.log('download')
       },
       showCode(index) {
+        clearTimeout(this.timer)
         this.codeShow = index
       },
       hideCode() {
-        this.codeShow = ''
+        this.timer = setTimeout(() => {
+          this.codeShow = ''
+        }, 500)
       },
       addPage(page) {
         this.page = page
@@ -158,15 +166,21 @@
         position: relative
         display: flex
         align-items: center
+        .code-main
+          margin-left: -15px
+          padding-left: 15px
+          height: 16px
       .small-code
         width: 16px
         height: 16px
         object-fit: cover
         cursor: pointer
+      .code-bg
+        padding-right: 10px
       .code-content
         position: absolute
-        left: -67px
-        top: -66px
+        left: -170px
+        top: -88px
         width: 160px
         height: 200px
         border-radius: 1px
@@ -189,7 +203,7 @@
           height: 40px
           background: #F5F7FA
           display: block
-          border: 1px solid #E9ECEE
+          border-top: 1px solid #E9ECEE
           cursor: pointer
     .list-content .list-about
       overflow: inherit
