@@ -783,6 +783,30 @@ export default [
             next()
           }
         }
+      },
+      // 配送任务
+      {
+        path: 'distribution-task',
+        name: 'distribution-task',
+        component: () => lazyLoadView(import('@pages/distribution-task/distribution-task')),
+        meta: {
+          titles: ['供应链', '配送', '配送任务'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'dispatching-management',
+        name: 'dispatching-management',
+        component: () => lazyLoadView(import('@pages/dispatching-management/dispatching-management')),
+        meta: {
+          titles: ['供应链', '配送', '调度管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
       }
     ]
   },
