@@ -68,9 +68,17 @@ export default {
    * @returns {*}
    */
   storeActivity(data, loading = false) {
-    console.log(123)
     let url = `/social-shopping/api/backend/activity-manage/activity-offline`
     return request.post(url, data, loading)
   },
-
+  /**
+   * 生成二维码
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getQrCode(data, loading = false) {
+    let url = `/social-shopping/api/create-qrcode`
+    return request.post(url, data, loading)
+  }
 }

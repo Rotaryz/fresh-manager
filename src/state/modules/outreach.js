@@ -61,7 +61,6 @@ export const actions = {
   },
   getOutreachDetail({state, commit, dispatch}, {id, loading = true}) {
     commit('SET_OUTREACH_DETAIL', [])
-    console.log(API.Outreach, 123)
     return API.Outreach.getOutreachDetail(id, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {

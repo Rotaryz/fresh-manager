@@ -18,7 +18,13 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="essInformation.activity_name" type="text" placeholder="请输入" class="edit-input" :class="{'disableInput':disable}">
+          <input v-model="essInformation.activity_name"
+                 type="text"
+                 :placeholder="disable ? '' : '请输入'"
+                 class="edit-input"
+                 :readonly="disable"
+                 :class="{'disable-input':disable}"
+          >
         </div>
       </div>
       <div class="edit-item">
@@ -29,6 +35,7 @@
         <div class="image-box">
           <base-edit-image :picList.sync="banner_image" :picNum="1" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>
           <div class="tip">上传图片的最佳尺寸：750*480，其他尺寸会影响页面效果，格式png，jpeg，jpg</div>
+          <div :class="{'img-no-change':disable}"></div>
         </div>
       </div>
 
@@ -55,6 +62,7 @@
           style="width: 240px;height: 44px"
           @on-change="_getEndTime"
         ></date-picker>
+        <div :class="{'time-no-change':disable}"></div>
       </div>
 
       <div class="edit-item">
@@ -67,6 +75,7 @@
                  type="text"
                  placeholder="选择团长"
                  class="edit-input"
+                 :class="{'disable-input':disable}"
                  readonly
                  @click="_showGroup"
           >
@@ -80,7 +89,7 @@
     <div class="activity-box">
       <div class="activity-list">
         <div class="activity-tab">
-          <div :class="{'btn-disable': disable}" class="add-goods-btn hand" @click="_showGoods">
+          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加商品
           </div>
@@ -95,11 +104,11 @@
               <div class="com-list-item">{{item.goods_units}}</div>
               <div class="com-list-item">¥{{item.original_price || 0}}</div>
               <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
-                <input v-model="item.trade_price" type="number" class="com-edit" @focus="changePrice(index)" @blur="inputBlur">
+                <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
                 <span v-if="item.original_price" class="small-money">¥</span>
               </div>
               <div class="com-list-item" :class="{'sort-focus':sortFocus === index}">
-                <input v-model="item.sort" type="number" class="com-edit com-edit-small" @focus="changeSort(index)" @blur="inputBlur">
+                <input v-model="item.sort" type="number" class="com-edit com-edit-small" :class="{'no-border': disable}" :readonly="disable">
               </div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -323,7 +332,8 @@
           if (id) {
             let obj = _.cloneDeep(news)
             this.goodsList = obj.activity_goods
-            this.banner_image[0] = obj.activity_cover_image
+            let imgArr = [{id: 0, image_id: 0, image_url: obj.activity_cover_image}]
+            this.banner_image = imgArr
             this.groupSelectItem.social_name = obj.social_name
             if (this.goodsList) {
               this.selectGoodsId = obj.activity_goods.map((item) => {
@@ -353,7 +363,6 @@
         this.$emit('showToast', msg)
       },
       getPic(image) {
-        console.log(image, 123)
         let item = {id: 0, image_id: image.id, image_url: image.url}
         this.essInformation.activity_cover_image = image.url
         this.essInformation.image_id = image.id
@@ -370,6 +379,7 @@
         this.essInformation.end_at = time
       },
       async _showGroup() {
+        if (this.disable) return
         this.groupShow = true
         this.$refs.groupModal.showModal()
         this._getGroupList(false)
@@ -688,6 +698,7 @@
     color: #2A2A2A
     min-height: 40px
     margin-top: 24px
+    position: relative
     .edit-title
       margin-top: 7.5px
       font-size: $font-size-14
@@ -697,6 +708,15 @@
       min-width: 64px
     .image-box
       margin-left: 40px
+      position: relative
+      .img-no-change
+        position: absolute
+        left: 0
+        top: 0
+        width: 90px
+        height: 90px
+        z-index: 100
+        cursor: not-allowed
     .start
       display: inline-block
       margin-right: -2px
@@ -753,7 +773,13 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
-
+    .time-no-change
+      position: absolute
+      left: 100px
+      top: 0
+      width: 550px
+      height: 50px
+      z-index: 100
   .edit-activity
     box-sizing: border-box
     padding-left: 20px
@@ -846,6 +872,8 @@
       display: flex
       align-items: center
       justify-content: center
+    .disable
+      cursor: not-allowed
     .icon
       width: 10px
       height: 10px
@@ -1237,44 +1265,36 @@
   .com-list-item
     position: relative
 
-    .com-edit
-      height: 34px
-      width: 93px
-      border-radius: 1px
-      box-sizing: border-box
-      border-width: 1px
-      border-style: solid
-      border-color: transparent
-      padding-left: 12px
-      background: transparent
-      transition: all 0.3s
-      &::-webkit-inner-spin-button
-        appearance: none
-      &::placeholder
-        font-family: $font-family-regular
-        color: $color-text-assist
-      &:focus
-        border-color: $color-main !important
-    .small-money
-      col-center()
-      left: 0
-      line-height: 1.1
-      font-size: $font-size-13
+  .com-edit
+    height: 34px
+    width: 93px
+    border-radius: 1px
+    box-sizing: border-box
+    border: 1px solid $color-line
+    padding-left: 22px
+    transition: all 0.3s
+    &::-webkit-inner-spin-button
+      appearance: none
+    &:hover
+      border-color: #ACACAC
+    &::placeholder
       font-family: $font-family-regular
-      color: $color-text-main
-      transition: all 0.4s
+      color: $color-text-assist
+    &:focus
+      border-color: $color-main !important
+  .no-border
+    border-width: 0
+    background: rgba(255,255,255,0)
+  .small-money
+    col-center()
+    left: 10px
+    line-height: 1.1
+    font-size: $font-size-13
+    font-family: $font-family-regular
+    color: $color-text-main
 
-    .com-edit-small
-      width: 60px
-  .price-focus,.sort-focus
-    .com-edit
-      padding-left: 22px
-      background: #FFF
-    .small-money
-      left: 10px
-  .sort-focus
-    .com-edit
-      padding-left: 12px
+  .com-edit-small
+    width: 60px
   .outreach-list-box
     background: $color-white
     overflow: visible

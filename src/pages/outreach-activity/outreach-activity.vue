@@ -33,10 +33,10 @@
               <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
               <!--二维码-->
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="code-box">
-                <img src="./icon-new_commodity@2x.png" class="small-code" @mouseenter="showCode">
+                <img src="./icon-qr@2x.png" class="small-code" @mouseenter="showCode(index)">
                 <transition name="fade">
-                  <div v-if="codeShow" class="code-content" @mouseleave="hideCode">
-                    <img src="./icon-new_commodity@2x.png" alt="" class="code">
+                  <div v-if="codeShow === index" class="code-content" @mouseleave="hideCode">
+                    <img src="./icon-qr@2x.png" alt="" class="code">
                     <span class="text" @click="download">下载</span>
                   </div>
                 </transition>
@@ -66,11 +66,11 @@
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
   const TITLE = '拓展活动'
   const ACTIVITI_TITLE = [
-    {name: '活动名称', flex: 0.7, value: 'activity_name', type: 1},
+    {name: '活动名称', flex: 1.2, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.2, value: 'start_at', type: 2},
     {name: '社区', flex: 1.2, value: 'group', type: 1},
     {name: '成交订单', flex: 1, value: 'sale_count', type: 1},
-    {name: '交易金额', flex: 1.2, value: 'total', type: 1},
+    {name: '交易金额', flex: 1, value: 'total', type: 1},
     {name: '团长订单', flex: 1, value: 'order_count', type: 1},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '二维码', flex: 1, value: '', type: 4},
@@ -96,7 +96,7 @@
         delId: 0,
         downId: 0,
         status: 0,
-        codeShow: false
+        codeShow: ''
       }
     },
     computed: {
@@ -116,11 +116,11 @@
       download() {
         console.log('download')
       },
-      showCode() {
-        this.codeShow = true
+      showCode(index) {
+        this.codeShow = index
       },
       hideCode() {
-        this.codeShow = false
+        this.codeShow = ''
       },
       addPage(page) {
         this.page = page
@@ -156,9 +156,11 @@
         font-size: 14px
       .code-box
         position: relative
+        display: flex
+        align-items: center
       .small-code
-        width: 20px
-        height: 20px
+        width: 16px
+        height: 16px
         object-fit: cover
         cursor: pointer
       .code-content
