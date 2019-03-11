@@ -132,7 +132,7 @@
         <!--搜索-->
         <div class="shade-tab">
           <div class="tab-item">
-            <base-search placeHolder="请输入团长名称或账号" @search="_searchGoods"></base-search>
+            <base-search ref="groupSearch" placeHolder="请输入团长名称或账号" @search="_searchGoods"></base-search>
           </div>
         </div>
         <!--列表-->
@@ -161,7 +161,7 @@
     </default-modal>
 
     <!-- 选择商品弹窗-->
-    <default-modal ref="goodsModel">
+    <default-modal ref="goodsModal">
       <div slot="content" class="shade-box">
         <div class="shade-header">
           <div class="shade-title">选择商品</div>
@@ -175,7 +175,7 @@
             <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
           </div>
         </div>
         <div class="goods-content">
@@ -322,7 +322,7 @@
         return this.essInformation.end_at
       },
       testEndDate() { // 结束时间规则判断
-        return this.essInformation.end_at > this.essInformation.start_at
+        return Date.parse(this.essInformation.end_at + ' 00:00') > Date.parse('' + this.essInformation.start_at + ' 00:00')
       },
       testGroup() { // 社区
         return this.essInformation.shop_id !== ''
@@ -355,7 +355,8 @@
       }
     },
     created() {
-      this.essInformation.start_at = new Date().toLocaleDateString().replace(/^(\d)$/,"0$1").replace(/\//g, '-')
+      let time = new Date().toLocaleDateString().replace(/^(\d)$/,"0$1")
+      this.essInformation.start_at = time.replace(/\//g, '-')
     },
     async mounted() {
       this.disable = this.$route.query.id
@@ -387,6 +388,8 @@
       async _showGroup() {
         if (this.disable) return
         this.groupShow = true
+        this._initData()
+        this.$refs.groupSearch._setText('')
         this.$refs.groupModal.showModal()
         this._getGroupList(false)
       },
@@ -570,13 +573,14 @@
         if (this.disable) {
           return
         }
+        this._initData()
+        this.$refs.goodsSearch._setText('')
         await this._getGoodsList()
         // 展示添加商品弹窗
-        this.$refs.goodsModel.showModal()
+        this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
-        this._initData()
-        this.$refs.goodsModel.hideModal()
+        this.$refs.goodsModal.hideModal()
       },
 
       _initData() {
@@ -606,7 +610,6 @@
       // 关闭选择团长弹窗
       _hideGroup() {
         this.groupShow = false
-        this._init()
         this.$refs.groupModal.hideModal()
       },
       // 选择团长
@@ -667,7 +670,7 @@
           {value: this.testName, txt: '请输入活动名称'},
           {value: this.testImg, txt: '请选择活动图片'},
           {value: this.testStart, txt: '请选择活动开始时间'},
-          {value: this.testStartDate, txt: '活动开始时间只能为今天'},
+          // {value: this.testStartDate, txt: '活动开始时间只能为今天'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '活动结束时间必须大于今天'},
           {value: this.testGroup, txt: '请选择拓展社区'}
