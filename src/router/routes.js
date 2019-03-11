@@ -729,13 +729,74 @@ export default [
           }
         }
       },
+      // 采购员
+      {
+        path: 'buyer',
+        name: 'buyer',
+        component: () => lazyLoadView(import('@pages/buyer/buyer')),
+        meta: {
+          titles: ['供应链', '采购', '采购员列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
       // 新建采购员
       {
-        path: 'procurement-task/edit-procurement',
+        path: 'buyer/edit-procurement',
         name: 'edit-procurement',
         component: () => lazyLoadView(import('@pages/edit-procurement/edit-procurement')),
         meta: {
+          marginBottom: 80,
           titles: ['供应链', '采购', '采购员', '新建采购员'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 采购单列表
+      {
+        path: 'purchase-order',
+        name: 'purchase-order',
+        component: () => lazyLoadView(import('@pages/purchase-order/purchase-order')),
+        meta: {
+          titles: ['供应链', '采购', '采购单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 采购单详情
+      {
+        path: 'purchase-order/purchase-order-detail',
+        name: 'purchase-order-detail',
+        component: () => lazyLoadView(import('@pages/purchase-order-detail/purchase-order-detail')),
+        meta: {
+          titles: ['供应链', '采购', '采购单', '采购单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 供应商
+      {
+        path: 'supplier',
+        name: 'supplier',
+        component: () => lazyLoadView(import('@pages/supplier/supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 新建供应商
+      {
+        path: 'supplier/edit-supplier',
+        name: 'edit-supplier',
+        component: () => lazyLoadView(import('@pages/edit-supplier/edit-supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商', '新建供应商'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }
@@ -808,6 +869,30 @@ export default [
         component: () => lazyLoadView(import('@pages/store-manage/store-manage')),
         meta: {
           titles: ['供应链', '仓库', '库位管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 配送任务
+      {
+        path: 'distribution-task',
+        name: 'distribution-task',
+        component: () => lazyLoadView(import('@pages/distribution-task/distribution-task')),
+        meta: {
+          titles: ['供应链', '配送', '配送任务'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'dispatching-management',
+        name: 'dispatching-management',
+        component: () => lazyLoadView(import('@pages/dispatching-management/dispatching-management')),
+        meta: {
+          titles: ['供应链', '配送', '调度管理'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }

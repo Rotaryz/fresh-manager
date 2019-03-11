@@ -163,6 +163,21 @@
           title: '采购任务',
           url: '/home/procurement-task',
           isLight: false
+        },
+        {
+          title: '采购单',
+          url: '/home/purchase-order',
+          isLight: false
+        },
+        {
+          title: '采购员',
+          url: '/home/buyer',
+          isLight: false
+        },
+        {
+          title: '供应商',
+          url: '/home/supplier',
+          isLight: false
         }
       ]
     },
@@ -182,6 +197,21 @@
         {
           title: '库位管理',
           url: '/home/store-manage',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '配送',
+      children: [
+        {
+          title: '配送任务',
+          url: '/home/distribution-task',
+          isLight: false
+        },
+        {
+          title: '调度任务',
+          url: '/home/dispatching-management',
           isLight: false
         }
       ]
@@ -408,6 +438,7 @@
       margin: 30px 0 8px
       color: #888888
       font-size: $font-size-14
+      line-height: 1
     .second-link
       transition: all 0.2s
       height: 30px
