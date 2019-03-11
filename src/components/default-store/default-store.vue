@@ -14,7 +14,7 @@
               <span class="start">*</span>
               初始销量
             </div>
-            <base-drop-down :select="dispatchSelect" @setValue="setValue" width="333" height="44"></base-drop-down>
+            <base-drop-down :select="dispatchSelect" @setValue="setValue" :width="333" :height="44"></base-drop-down>
           </div>
           <div class="btn-group">
             <span class="btn cancel" @click="cancel">取消</span>
@@ -49,6 +49,7 @@
     },
     methods: {
       cancel() {},
+      setValue() {},
       confirm() {}
     }
   }
@@ -60,7 +61,6 @@
   .default-input
     background: #fff
     width: 534px
-    height: 261px
     border-radius: 1px
     .title-input
       height: 60px
@@ -88,7 +88,6 @@
     color: #2A2A2A
     min-height: 40px
     margin-top: 20px
-    padding-left: 54px
     .edit-title
       margin-top: 7.5px
       font-size: $font-size-14
@@ -122,7 +121,10 @@
         border-color: $color-main !important
 
   .main-input
-    padding: 42px 10px 0 40px
+    padding: 10px 10px 30px 40px
+    min-height: 180px
+    layout()
+    justify-content: space-between
   .btn-group
     margin-top: 36px
     text-align: center
