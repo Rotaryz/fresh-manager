@@ -542,7 +542,7 @@
         if (item.selected === 1) {
           return
         }
-        if(this.selectGoodsId.length === 3) {
+        if(this.selectGoodsId.length === 3 && item.selected !== 2) {
           this.$toast.show('选择商品数量不能超过三个')
           return
         }
@@ -643,10 +643,10 @@
         }
         for (let i in list) {
           if (!list[i].trade_price || list[i].sort === '') {
-            this.$toast.show(`${list[i].name}信息不全`)
+            this.$toast.show(`请输入商品“${list[i].name}”的活动售价`)
             return
           } else if (+list[i].trade_price < 0 || +list[i].sort < 0) {
-            this.$toast.show(`${list[i].name}输入数据有误`)
+            this.$toast.show(`“${list[i].name}”输入数据有误`)
             return
           }
         }
@@ -1165,8 +1165,9 @@
             width: 210px
             no-wrap()
           .goods-name, .goods-money
-            line-height: 1
+            line-height: 1.2
             font-size: $font-size-14
+
         .add-btn
           border-radius: 1px
           margin-left: 88px

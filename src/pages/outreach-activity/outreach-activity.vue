@@ -119,9 +119,6 @@
         this.endTime = arr[1]
         await this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
       },
-      download() {
-        console.log('download')
-      },
       showCode(index) {
         clearTimeout(this.timer)
         this.codeShow = index
@@ -141,7 +138,7 @@
       },
       async _sureConfirm() {
         let res = await API.Outreach.deleteActivity(this.delId)
-        this.$toast.show(res.message)
+        this.$toast.show('删除成功')
         if (res.error !== this.$ERR_OK) {
           return
         }
