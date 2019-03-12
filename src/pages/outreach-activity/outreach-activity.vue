@@ -40,7 +40,8 @@
                   <transition name="fade">
                     <div v-if="codeShow === index" class="code-content">
                       <img :src="item.qrcode_url" alt="" class="code">
-                      <a class="text" :src="qrUrl + `/social-shopping/api/backend/activity-manage/qrcode-download?u=${item.qrcode_url}`" target="_blank">下载</a>
+                      <a v-if="item.qrcode_url" class="text" :href="qrUrl + `/social-shopping/api/backend/activity-manage/qrcode-download?u=${item.qrcode_url}`" target="_blank">下载</a>
+                      <span v-else class="text">下载</span>
                     </div>
                   </transition>
                 </div>
@@ -100,7 +101,7 @@
         delId: 0,
         downId: 0,
         status: 0,
-        codeShow: '',
+        codeShow: 0,
         timer: '',
         qrUrl: process.env.VUE_APP_API
       }
@@ -109,6 +110,7 @@
       ...outreachComputed
     },
     mounted() {
+      console.log(this.qrUrl)
     },
     methods: {
       ...outreachMethods,
@@ -124,9 +126,9 @@
         this.codeShow = index
       },
       hideCode() {
-        this.timer = setTimeout(() => {
-          this.codeShow = ''
-        }, 500)
+        // this.timer = setTimeout(() => {
+        //   this.codeShow = ''
+        // }, 500)
       },
       addPage(page) {
         this.page = page
