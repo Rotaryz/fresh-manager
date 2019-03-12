@@ -23,7 +23,9 @@
         <div class="list">
           <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">
-              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">{{item[val.value] || '---'}}</div>
+              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
+                {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+              </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
                 <p class="item-dark">{{item.start_at}}</p>
                 <p class="item-sub">{{item.end_at}}</p>
@@ -36,11 +38,9 @@
                 <div class="code-main" @mouseenter="showCode(index)" @mouseleave="hideCode">
                   <img src="./icon-qr@2x.png" class="small-code">
                   <transition name="fade">
-                    <div class="code-bg">
-                      <div v-if="codeShow === index" class="code-content">
-                        <img src="./icon-qr@2x.png" alt="" class="code">
-                        <span class="text" @click="download">下载</span>
-                      </div>
+                    <div v-if="codeShow === index" class="code-content">
+                      <img :src="item.qrcode_url" alt="" class="code">
+                      <a class="text" :src="qrUrl + `/social-shopping/api/backend/activity-manage/qrcode-download?qrcode_url=${item.qrcode_url}`" target="_blank">下载</a>
                     </div>
                   </transition>
                 </div>
@@ -70,12 +70,12 @@
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
   const TITLE = '拓展活动'
   const ACTIVITI_TITLE = [
-    {name: '活动名称', flex: 1.2, value: 'activity_name', type: 1},
+    {name: '活动名称', flex: 1.4, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.2, value: 'start_at', type: 2},
-    {name: '社区', flex: 1.2, value: 'group', type: 1},
-    {name: '成交订单', flex: 1, value: 'sale_count', type: 1},
-    {name: '交易金额', flex: 1, value: 'total', type: 1},
-    {name: '团长订单', flex: 1, value: 'order_count', type: 1},
+    {name: '社区', flex: 1.4, value: 'social_name', type: 1},
+    {name: '成交订单', flex: 1, value: 'pay_num', type: 1},
+    {name: '交易金额', flex: 1, value: 'pay_amount', type: 1},
+    {name: '复购率', flex: 1, value: 'repeat_rate', type: 1},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '二维码', flex: 1, value: '', type: 4},
     {name: '操作', flex: 1, value: '', type: 5},
@@ -101,7 +101,8 @@
         downId: 0,
         status: 0,
         codeShow: '',
-        timer: ''
+        timer: '',
+        qrUrl: process.env.VUE_APP_API
       }
     },
     computed: {
