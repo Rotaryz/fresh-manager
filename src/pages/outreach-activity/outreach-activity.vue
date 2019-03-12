@@ -40,8 +40,8 @@
                   <transition name="fade">
                     <div v-if="codeShow === index" class="code-content">
                       <img :src="item.qrcode_url" alt="" class="code">
-                      <a v-if="item.qrcode_url" class="text" :href="qrUrl + `/social-shopping/api/image-download?u=${item.qrcode_url}&current_corp=${corpId}`" target="_blank">下载</a>
-                      <span v-else class="text">下载</span>
+                      <!--<a v-if="item.qrcode_url" class="text" :href="qrUrl + `/social-shopping/api/image-download?u=${item.qrcode_url}&current_corp=${corpId}`" target="_blank">下载</a>-->
+                      <!--<span v-else class="text">下载</span>-->
                     </div>
                   </transition>
                 </div>
@@ -184,9 +184,9 @@
       .code-content
         position: absolute
         left: -170px
-        top: -88px
+        top: -68px
         width: 160px
-        height: 200px
+        height: 160px
         border-radius: 1px
         overflow: hidden
         box-shadow: 0 0 8px 0 #E9ECEE
