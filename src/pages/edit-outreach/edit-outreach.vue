@@ -151,7 +151,7 @@
         </div>
         <!--翻页器-->
         <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+          <base-pagination ref="paginationGroup" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
           <div class="back-btn back-submit hand" @click="_addition">确定</div>
@@ -475,10 +475,12 @@
       async _searchGoods(text) {
         this.keyword = text
         this.page = 1
-        this.$refs.pagination.beginPage()
+
         if (this.groupShow) {
+          this.$refs.paginationGroup.beginPage()
           await this._getGroupList()
         } else {
+          this.$refs.pagination.beginPage()
           await this._getGoodsList()
         }
       },
@@ -587,6 +589,7 @@
         this.page = 1
         this.keyword = ''
         this.$refs.pagination.beginPage()
+        this.$refs.paginationGroup.beginPage()
       },
 
       // 获取团长列表
@@ -600,12 +603,12 @@
           return
         }
         this.$loading.hide()
-        this.groupList = res.data
         this.goodsPage = {
           total: res.meta.total,
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
+        this.groupList = res.data
       },
       // 关闭选择团长弹窗
       _hideGroup() {
