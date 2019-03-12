@@ -391,7 +391,7 @@
         this._initData()
         this.$refs.groupSearch._setText('')
         this.$refs.groupModal.showModal()
-        this._getGroupList(false)
+        this._getGroupList()
       },
       // 选择商品
       async _getGoodsList() {
@@ -442,7 +442,7 @@
       async _getMoreGoods(page) {
         this.page = page
         if (this.groupShow) {
-          await this._getGroupList(true)
+          await this._getGroupList()
         } else {
           await this._getGoodsList()
         }
@@ -477,7 +477,7 @@
         this.page = 1
         this.$refs.pagination.beginPage()
         if (this.groupShow) {
-          await this._getGroupList(true)
+          await this._getGroupList()
         } else {
           await this._getGoodsList()
         }
@@ -590,12 +590,12 @@
       },
 
       // 获取团长列表
-      async _getGroupList(loading = false) {
+      async _getGroupList() {
         let res = await API.Outreach.getGroupList({
           keyword: this.keyword,
           limit: 6,
           page: this.page
-        }, loading)
+        })
         if (res.error !== this.$ERR_OK) {
           return
         }
