@@ -101,7 +101,7 @@
         delId: 0,
         downId: 0,
         status: 0,
-        codeShow: 0,
+        codeShow: '',
         timer: '',
         qrUrl: process.env.VUE_APP_API
       }
@@ -126,9 +126,9 @@
         this.codeShow = index
       },
       hideCode() {
-        // this.timer = setTimeout(() => {
-        //   this.codeShow = ''
-        // }, 500)
+        this.timer = setTimeout(() => {
+          this.codeShow = ''
+        }, 500)
       },
       addPage(page) {
         this.page = page
