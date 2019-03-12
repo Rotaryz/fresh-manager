@@ -40,7 +40,7 @@
                   <transition name="fade">
                     <div v-if="codeShow === index" class="code-content">
                       <img :src="item.qrcode_url" alt="" class="code">
-                      <a v-if="item.qrcode_url" class="text" :href="qrUrl + `/social-shopping/api/backend/activity-manage/qrcode-download?u=${item.qrcode_url}`" target="_blank">下载</a>
+                      <a v-if="item.qrcode_url" class="text" :href="qrUrl + `/social-shopping/api/image-download?u=${item.qrcode_url}&current_corp=${corpId}`" target="_blank">下载</a>
                       <span v-else class="text">下载</span>
                     </div>
                   </transition>
@@ -66,6 +66,7 @@
 <script type="text/ecmascript-6">
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {outreachComputed, outreachMethods} from '@state/helpers'
+  import {getCorpId} from '@utils/tool'
   import API from '@api'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
@@ -103,14 +104,17 @@
         status: 0,
         codeShow: '',
         timer: '',
-        qrUrl: process.env.VUE_APP_API
+        qrUrl: process.env.VUE_APP_API,
+        corpId: ''
       }
     },
     computed: {
       ...outreachComputed
     },
+    created() {
+      this.corpId = getCorpId()
+    },
     mounted() {
-      console.log(this.qrUrl)
     },
     methods: {
       ...outreachMethods,

@@ -1,14 +1,14 @@
 <template>
   <div class="edit-outreach detail-content">
-    <div class="identification">
+    <div v-if="!disable" class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{id ? '编辑活动' : '新建活动'}}</p>
+        <p class="identification-name">新建活动</p>
       </div>
       <div class="function-btn">
       </div>
     </div>
-    <div class="content-header">
+    <div class="content-header" :class="{'margin-top': disable}">
       <div class="content-title">基本信息</div>
     </div>
     <div class="outreach-time">
@@ -357,6 +357,11 @@
     created() {
       let time = new Date().toLocaleDateString().replace(/^(\d)$/,"0$1")
       this.essInformation.start_at = time.replace(/\//g, '-')
+      if(this.$route.query.id) {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '查看活动'])
+      } else {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '新建活动'])
+      }
     },
     async mounted() {
       this.disable = this.$route.query.id
@@ -704,7 +709,8 @@
     padding-bottom: 20px
     position: relative
     flex: 1
-
+  .margin-top
+    margin-top: 24px
   .outreach-time
     margin-bottom: 27px
 
