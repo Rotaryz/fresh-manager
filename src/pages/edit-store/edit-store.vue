@@ -26,7 +26,7 @@
       <div class="content-title">商品信息</div>
     </div>
     <div class="function-btn btn-box">
-      <div class="btn-main"><span class="add-icon"></span>添加商品</div>
+      <div class="btn-main" @click="deleteGoods()"><span class="add-icon"></span>添加商品</div>
     </div>
     <div class="big-list">
       <div class="list-header list-box">
@@ -51,10 +51,14 @@
       <div class="back-cancel back-btn hand">返回</div>
       <div class="back-btn back-submit hand">保存</div>
     </div>
+    <!--<add-goods ref="addg"></add-goods>-->
+    <select-store ref="addg"></select-store>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  // import AddGoods from '@components/add-goods/add-goods'
+  import SelectStore from '@components/select-store/select-store'
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
   const COMMODITIES_LIST = [
@@ -76,6 +80,18 @@
     data() {
       return {
         commodities: COMMODITIES_LIST
+      }
+    },
+    components: {
+      // AddGoods,
+      SelectStore
+    },
+    methods:{
+      _batchAddition(list) {
+        console.log(list)
+      },
+      deleteGoods() {
+        this.$refs.addg._delGoods(160)
       }
     }
   }

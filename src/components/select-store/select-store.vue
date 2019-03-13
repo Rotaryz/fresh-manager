@@ -209,22 +209,22 @@
       // 勾选商品
       _selectGoods(item, index) {
         switch (item.selected) {
-        case 0:
-          this.choeesGoods[index].selected = 2
-          this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
-          break
-        case 2:
-          this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
-          if (idx !== -1) {
-            this.selectGoods.splice(idx, 1)
-          }
-          if (idIdx !== -1) {
-            this.selectGoodsId.splice(idx, 1)
-          }
-          break
+          case 0:
+            this.choeesGoods[index].selected = 2
+            this.selectGoods.push(item)
+            this.selectGoodsId.push(item.id)
+            break
+          case 2:
+            this.choeesGoods[index].selected = 0
+            let idx = this.selectGoods.findIndex((items) => items.id === item.id)
+            let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+            if (idx !== -1) {
+              this.selectGoods.splice(idx, 1)
+            }
+            if (idIdx !== -1) {
+              this.selectGoodsId.splice(idx, 1)
+            }
+            break
         }
       },
       // 获取分页商品列表
