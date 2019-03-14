@@ -157,6 +157,16 @@
   ]
   const SUPPLY = [
     {
+      title: '订单',
+      children: [
+        {
+          title: '订单列表',
+          url: '/home/supply-list',
+          isLight: false
+        }
+      ]
+    },
+    {
       title: '采购',
       children: [
         {

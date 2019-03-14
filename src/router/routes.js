@@ -1,6 +1,18 @@
 import store from '@state/store'
 
 export default [
+  // 订单详情
+  {
+    path: '/supply-detail',
+    name: 'supply-detail',
+    component: () => lazyLoadView(import('@pages/supply-detail/supply-detail'))
+  },
+  // 订单详情
+  {
+    path: '/supply-list',
+    name: 'supply-list',
+    component: () => lazyLoadView(import('@pages/supply-list/supply-list'))
+  },
   // x新建出库单
   {
     path: '/edit-store',
@@ -893,6 +905,30 @@ export default [
         component: () => lazyLoadView(import('@pages/dispatching-management/dispatching-management')),
         meta: {
           titles: ['供应链', '配送', '调度管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'supply-list',
+        name: 'supply-list',
+        component: () => lazyLoadView(import('@pages/supply-list/supply-list')),
+        meta: {
+          titles: ['供应链', '订单', '订单列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'supply-list/supply-detail',
+        name: 'supply-detail',
+        component: () => lazyLoadView(import('@pages/supply-detail/supply-detail')),
+        meta: {
+          titles: ['供应链', '订单', '订单列表', '订单详情'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }
