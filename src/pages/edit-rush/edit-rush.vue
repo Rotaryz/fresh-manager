@@ -892,7 +892,6 @@
       left: 0
       right: 0
       bottom: 0
-      border-top: 1px solid $color-line
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -1135,7 +1134,7 @@
         border-radius: 1px
         margin-left: 88px
         padding: 5px 0
-        width: 56px
+        min-width: 56px
         text-align: center
       .add-btn-disable
         border-radius: 1px
