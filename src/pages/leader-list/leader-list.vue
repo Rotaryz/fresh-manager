@@ -8,7 +8,7 @@
         </div>
         <div class="function-btn">
           <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
-          <div class="btn-main g-btn-item" @click="_syncLeader">关联</div>
+          <!--<div class="btn-main g-btn-item" @click="_syncLeader">关联</div>-->
         </div>
       </div>
       <div class="big-list">
