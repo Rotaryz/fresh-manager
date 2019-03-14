@@ -1,6 +1,60 @@
 import store from '@state/store'
 
 export default [
+  // 订单详情
+  {
+    path: '/supply-detail',
+    name: 'supply-detail',
+    component: () => lazyLoadView(import('@pages/supply-detail/supply-detail'))
+  },
+  // 订单详情
+  {
+    path: '/supply-list',
+    name: 'supply-list',
+    component: () => lazyLoadView(import('@pages/supply-list/supply-list'))
+  },
+  // x新建出库单
+  {
+    path: '/edit-store',
+    name: 'edit-store',
+    component: () => lazyLoadView(import('@pages/edit-store/edit-store'))
+  },
+  // 库位管理
+  {
+    path: '/store-manage',
+    name: 'store-manage',
+    component: () => lazyLoadView(import('@pages/store-manage/store-manage'))
+  },
+  // 商品明细
+  {
+    path: '/out-detail',
+    name: 'out-detail',
+    component: () => lazyLoadView(import('@pages/out-detail/out-detail'))
+  },
+  // 成品出库
+  {
+    path: '/product-out',
+    name: 'product-out',
+    component: () => lazyLoadView(import('@pages/product-out/product-out'))
+  },
+  // 成详情情
+  {
+    path: '/enter-detail',
+    name: 'enter-detail',
+    component: () => lazyLoadView(import('@pages/enter-detail/enter-detail'))
+  },
+  // 成品入库
+  {
+    path: '/product-enter',
+    name: 'product-enter',
+    component: () => lazyLoadView(import('@pages/product-enter/product-enter'))
+  },
+  // 模板
+  {
+    path: '/demo',
+    name: 'demo',
+    component: () => lazyLoadView(import('@pages/demo/demo'))
+  },
   // 登录界面
   {
     path: '/login',
@@ -738,6 +792,199 @@ export default [
           }
         }
       },
+      // 采购员
+      {
+        path: 'buyer',
+        name: 'buyer',
+        component: () => lazyLoadView(import('@pages/buyer/buyer')),
+        meta: {
+          titles: ['供应链', '采购', '采购员列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 新建采购员
+      {
+        path: 'buyer/edit-procurement',
+        name: 'edit-procurement',
+        component: () => lazyLoadView(import('@pages/edit-procurement/edit-procurement')),
+        meta: {
+          marginBottom: 80,
+          titles: ['供应链', '采购', '采购员', '新建采购员'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 采购单列表
+      {
+        path: 'purchase-order',
+        name: 'purchase-order',
+        component: () => lazyLoadView(import('@pages/purchase-order/purchase-order')),
+        meta: {
+          titles: ['供应链', '采购', '采购单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 采购单详情
+      {
+        path: 'purchase-order/purchase-order-detail',
+        name: 'purchase-order-detail',
+        component: () => lazyLoadView(import('@pages/purchase-order-detail/purchase-order-detail')),
+        meta: {
+          titles: ['供应链', '采购', '采购单', '采购单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 供应商
+      {
+        path: 'supplier',
+        name: 'supplier',
+        component: () => lazyLoadView(import('@pages/supplier/supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 新建供应商
+      {
+        path: 'supplier/edit-supplier',
+        name: 'edit-supplier',
+        component: () => lazyLoadView(import('@pages/edit-supplier/edit-supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商', '新建供应商'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库
+      {
+        path: 'product-enter',
+        name: 'product-enter',
+        component: () => lazyLoadView(import('@pages/product-enter/product-enter')),
+        meta: {
+          titles: ['供应链', '仓库', '成品入库'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-enter/enter-detail',
+        name: 'enter-detail',
+        component: () => lazyLoadView(import('@pages/enter-detail/enter-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '成品入库', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out',
+        name: 'product-out',
+        component: () => lazyLoadView(import('@pages/product-out/product-out')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out/out-detail',
+        name: 'out-detail',
+        component: () => lazyLoadView(import('@pages/out-detail/out-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out/edit-store',
+        name: 'edit-store',
+        component: () => lazyLoadView(import('@pages/edit-store/edit-store')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库', '新建出库单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 库位管理
+      {
+        path: 'store-manage',
+        name: 'store-manage',
+        component: () => lazyLoadView(import('@pages/store-manage/store-manage')),
+        meta: {
+          titles: ['供应链', '仓库', '库位管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 配送任务
+      {
+        path: 'distribution-task',
+        name: 'distribution-task',
+        component: () => lazyLoadView(import('@pages/distribution-task/distribution-task')),
+        meta: {
+          titles: ['供应链', '配送', '配送任务'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'dispatching-management',
+        name: 'dispatching-management',
+        component: () => lazyLoadView(import('@pages/dispatching-management/dispatching-management')),
+        meta: {
+          titles: ['供应链', '配送', '调度管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'supply-list',
+        name: 'supply-list',
+        component: () => lazyLoadView(import('@pages/supply-list/supply-list')),
+        meta: {
+          titles: ['供应链', '订单', '订单列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'supply-list/supply-detail',
+        name: 'supply-detail',
+        component: () => lazyLoadView(import('@pages/supply-detail/supply-detail')),
+        meta: {
+          titles: ['供应链', '订单', '订单列表', '订单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      }
     ]
   },
   {

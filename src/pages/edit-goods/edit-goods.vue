@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-leader" @click="closeMenu">
+  <div class="edit-leader">
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
@@ -26,26 +26,20 @@
           <span class="start">*</span>
           商品分类
         </div>
-        <div class="edit-input-box hand select-box-input">
-          <div class="edit-input" @click.stop="menutBtn">
-            <div class="select-text" :class="menuName === '请选择' ? 'select-text-assist' : ''">{{menuName}}</div>
-            <div class="select-icon" :class="showMenu ? 'select-icon-active' : ''"></div>
+        <div class="edit-input-box mini-edit-input-box">
+          <div class="mini-mr20">
+            <base-drop-down :height="44" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
           </div>
-          <div class="select-main-box" :class="showMenu ? '' : 'menu-leave-to'">
-            <ul class="fater-list">
-              <li v-for="(item, index) in menuList" :key="index" :class="menuIndex === index ? 'item-active' : ''" class="item"
-                  @mouseenter="menuListMouse(item, index)" @click.stop="menuListClick(item, index)"
-              >
-                <div class="text">{{item.name}}</div>
-                <div v-if="item.list.length !== 0" class="icon"></div>
-              </li>
-            </ul>
-            <ul class="child-list">
-              <li v-for="(item, index) in goodsChildren" :key="index" class="item" :class="item.select ? 'item-active' : ''" @click.stop="menuChild(item, index)">
-                <div class="text">{{item.name}}</div>
-              </li>
-            </ul>
-          </div>
+          <base-drop-down :height="44" :width="190" :select="secondSelect" @setValue="setValue"></base-drop-down>
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          基本单位
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :height="44" :width="400" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -79,17 +73,20 @@
       </div>
     </div>
     <div class="content-header">
-      <div class="content-title">价格库存</div>
+      <div class="content-title">销售信息</div>
     </div>
     <div class="leader-box">
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          售卖单位
+          销售规格
         </div>
-        <div class="edit-input-box">
-          <base-drop-down :height="44" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+        <div class="edit-input-box mini-edit-input-box">
+          <input v-model="msg.original_price" type="number" class="edit-input mini-edit-input" maxlength="10">
+          <div class="edit-input-unit">/</div>
+          <base-drop-down :height="40" :width="133" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
         </div>
+        <div class="edit-pla">请先选择基本单位</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -103,7 +100,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          售价
+          销售售价
         </div>
         <div class="edit-input-box">
           <input v-model="msg.trade_price" type="number" class="edit-input">
@@ -122,7 +119,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          库存
+          销售库存
         </div>
         <div class="edit-input-box">
           <input v-model="msg.usable_stock" type="number" class="edit-input">
@@ -137,6 +134,42 @@
           <input v-model="msg.init_sale_count" type="number" class="edit-input">
         </div>
         <div class="edit-pla">仅展示在小程序，不影响订单</div>
+      </div>
+    </div>
+    <div class="content-header procurement-top">
+      <div class="content-title">采购信息</div>
+    </div>
+    <div class="leader-box">
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          供应商
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :height="44" :width="400" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          采购规格
+        </div>
+        <div class="edit-input-box mini-edit-input-box">
+          <input v-model="msg.original_price" type="number" class="edit-input mini-edit-input" maxlength="10">
+          <div class="edit-input-unit">/</div>
+          <base-drop-down :height="40" :width="133" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+        </div>
+        <div class="edit-pla">请先选择基本单位</div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          损耗比
+        </div>
+        <div class="edit-input-box">
+          <input v-model="msg.init_sale_count" type="number" class="edit-input">
+        </div>
+        <div class="edit-pla">根据耗损的百分比额外增加采购数量（%）</div>
       </div>
     </div>
     <div class="back">
@@ -199,9 +232,20 @@
           type: 'default',
           data: []
         },
-        menuList: [],
-        menuIndex: null,
-        goodsChildren: [],
+        stairSelect: {
+          check: false,
+          show: false,
+          content: '一级分类',
+          type: 'default',
+          data: []
+        },
+        secondSelect: {
+          check: false,
+          show: false,
+          content: '二级分类',
+          type: 'default',
+          data: []
+        },
         menuName: '请选择',
         showMenu: false,
         preMenuIndex: null,
@@ -229,40 +273,6 @@
       },
       _back() {
         this.$router.back()
-      },
-      menuListMouse(item, index) {
-        if (item.list.length === 0) return
-        this.menuIndex = index
-        this.goodsChildren = item.list
-      },
-      menuListClick(item, index) {
-        if (item.list.length !== 0) return
-        this.menuIndex = index
-        this.menuName = item.name
-        this.goodsChildren = []
-        if (this.preChildIndex) {
-          this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
-        }
-        this.showMenu = false
-        this.msg.goods_category_id = item.id
-      },
-      menuChild(item, index) {
-        this.menuName = this.menuList[this.menuIndex].name + ' / ' + item.name
-        this.menuList[this.menuIndex].list[index].select = true
-        if (this.preChildIndex) {
-          this.menuList[this.preMenuIndex].list[this.preChildIndex].select = false
-        }
-        this.preMenuIndex = this.menuIndex
-        this.preChildIndex = index
-        this.goodsChildren[index].select = true
-        this.showMenu = false
-        this.msg.goods_category_id = item.id
-      },
-      menutBtn() {
-        this.showMenu = !this.showMenu
-      },
-      closeMenu() {
-        this.showMenu = false
       },
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
@@ -369,7 +379,7 @@
       getCategoriesData() {
         API.Product.getCategory({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.menuList = res.data
+            this.stairSelect.data = res.data
           } else {
             this.$toast.show(res.message)
           }
@@ -377,6 +387,10 @@
       },
       setValue(data) {
         this.msg.goods_units = data.name
+      },
+      setStairValue(data) {
+        this.secondSelect.content = '二级分类'
+        this.secondSelect.data = data.list
       }
     }
   }
@@ -545,7 +559,23 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
-
+      .mini-edit-input
+        width: 133px
+      .edit-input-unit
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+        border-radius: 1px
+        width: 134px
+        height: 40px
+        line-height: 40px
+        text-align: center
+        background: #F9F9F9
+        border: 1px solid #D6D6D6
+  .mini-edit-input-box
+    layout(row)
+    .mini-mr20
+      margin-right: 20px
   .edit-pla
     font-size: $font-size-14
     color: $color-text-assist
@@ -569,7 +599,8 @@
       font-size: $font-size-14
       color: $color-text-assist
       font-family: $font-family-regular
-
+  .procurement-top
+    margin-top: 24px
   .edit-msg
     font-size: $font-size-medium14
     color: #acacac

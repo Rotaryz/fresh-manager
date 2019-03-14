@@ -160,10 +160,82 @@
       ]
     }
   ]
+  const SUPPLY = [
+    {
+      title: '订单',
+      children: [
+        {
+          title: '订单列表',
+          url: '/home/supply-list',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '采购',
+      children: [
+        {
+          title: '采购任务',
+          url: '/home/procurement-task',
+          isLight: false
+        },
+        {
+          title: '采购单',
+          url: '/home/purchase-order',
+          isLight: false
+        },
+        {
+          title: '采购员',
+          url: '/home/buyer',
+          isLight: false
+        },
+        {
+          title: '供应商',
+          url: '/home/supplier',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '仓库',
+      children: [
+        {
+          title: '成品入库',
+          url: '/home/product-enter',
+          isLight: false
+        },
+        {
+          title: '成品出库',
+          url: '/home/product-out',
+          isLight: false
+        },
+        {
+          title: '库位管理',
+          url: '/home/store-manage',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '配送',
+      children: [
+        {
+          title: '配送任务',
+          url: '/home/distribution-task',
+          isLight: false
+        },
+        {
+          title: '调度任务',
+          url: '/home/dispatching-management',
+          isLight: false
+        }
+      ]
+    }
+  ]
   const FIRST_MENU = [
     // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
     {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
-    // {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: SUPPLY, url: '/home/procurement-task'},
+    {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: SUPPLY, url: '/home/procurement-task'},
     {
       name: '统计',
       icon: require('./icon-statistics@2x.png'),
@@ -381,6 +453,7 @@
       margin: 30px 0 8px
       color: #888888
       font-size: $font-size-14
+      line-height: 1
     .second-link
       transition: all 0.2s
       height: 30px
