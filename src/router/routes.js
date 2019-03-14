@@ -1,54 +1,6 @@
 import store from '@state/store'
 
 export default [
-  // 订单详情
-  {
-    path: '/supply-detail',
-    name: 'supply-detail',
-    component: () => lazyLoadView(import('@pages/supply-detail/supply-detail'))
-  },
-  // 订单详情
-  {
-    path: '/supply-list',
-    name: 'supply-list',
-    component: () => lazyLoadView(import('@pages/supply-list/supply-list'))
-  },
-  // x新建出库单
-  {
-    path: '/edit-store',
-    name: 'edit-store',
-    component: () => lazyLoadView(import('@pages/edit-store/edit-store'))
-  },
-  // 库位管理
-  {
-    path: '/store-manage',
-    name: 'store-manage',
-    component: () => lazyLoadView(import('@pages/store-manage/store-manage'))
-  },
-  // 商品明细
-  {
-    path: '/out-detail',
-    name: 'out-detail',
-    component: () => lazyLoadView(import('@pages/out-detail/out-detail'))
-  },
-  // 成品出库
-  {
-    path: '/product-out',
-    name: 'product-out',
-    component: () => lazyLoadView(import('@pages/product-out/product-out'))
-  },
-  // 成详情情
-  {
-    path: '/enter-detail',
-    name: 'enter-detail',
-    component: () => lazyLoadView(import('@pages/enter-detail/enter-detail'))
-  },
-  // 成品入库
-  {
-    path: '/product-enter',
-    name: 'product-enter',
-    component: () => lazyLoadView(import('@pages/product-enter/product-enter'))
-  },
   // 模板
   {
     path: '/demo',
