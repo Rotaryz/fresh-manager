@@ -30,7 +30,7 @@
           <div class="mini-mr20">
             <base-drop-down :height="44" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
           </div>
-          <base-drop-down :height="44" :width="190" :select="secondSelect" @setValue="setValue"></base-drop-down>
+          <base-drop-down :height="44" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -82,9 +82,9 @@
           销售规格
         </div>
         <div class="edit-input-box mini-edit-input-box">
-          <input v-model="msg.original_price" type="number" class="edit-input mini-edit-input" maxlength="10">
-          <div class="edit-input-unit">/</div>
-          <base-drop-down :height="40" :width="133" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+          <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10">
+          <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
+          <base-drop-down :height="40" :width="133" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
         </div>
         <div class="edit-pla">请先选择基本单位</div>
       </div>
@@ -146,7 +146,7 @@
           供应商
         </div>
         <div class="edit-input-box">
-          <base-drop-down :height="44" :width="400" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+          <base-drop-down :height="44" :width="400" :select="supplierSelect" @setValue="supplierSelectValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -155,9 +155,9 @@
           采购规格
         </div>
         <div class="edit-input-box mini-edit-input-box">
-          <input v-model="msg.original_price" type="number" class="edit-input mini-edit-input" maxlength="10">
-          <div class="edit-input-unit">/</div>
-          <base-drop-down :height="40" :width="133" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+          <input v-model="goods_skus.base_purchase_rate" type="number" class="edit-input mini-edit-input" maxlength="10">
+          <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
+          <base-drop-down :height="40" :width="133" :select="purchaseSelect" @setValue="purchaseSelectValue"></base-drop-down>
         </div>
         <div class="edit-pla">请先选择基本单位</div>
       </div>
@@ -167,7 +167,7 @@
           损耗比
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.init_sale_count" type="number" class="edit-input">
+          <input v-model="goods_skus.damage_rate" type="number" class="edit-input">
         </div>
         <div class="edit-pla">根据耗损的百分比额外增加采购数量（%）</div>
       </div>
@@ -228,7 +228,28 @@
         dispatchSelect: {
           check: false,
           show: false,
-          content: '售卖单位',
+          content: '基本单位',
+          type: 'default',
+          data: []
+        },
+        saleSelect: {
+          check: false,
+          show: false,
+          content: '销售单位',
+          type: 'default',
+          data: []
+        },
+        supplierSelect: {
+          check: false,
+          show: false,
+          content: '选择供应商',
+          type: 'default',
+          data: []
+        },
+        purchaseSelect: {
+          check: false,
+          show: false,
+          content: '采购单位',
           type: 'default',
           data: []
         },
@@ -250,13 +271,23 @@
         showMenu: false,
         preMenuIndex: null,
         preChildIndex: null,
-        isSubmit: false
+        isSubmit: false,
+        goods_skus: {
+          base_sale_rate: '',
+          base_purchase_rate: '',
+          base_unit: '',
+          sale_unit: '',
+          purchase_unit: '',
+          damage_rate: '',
+          supplier_id: 0
+        }
       }
     },
     created() {
       this.id = this.$route.query.id || null
       this._setData()
       this.getSelectData()
+      this.getSupplierData()
       this.getCategoriesData()
     },
     methods: {
@@ -268,6 +299,10 @@
         if (!_.isEmpty(this.detail)) {
           this.msg = _.cloneDeep(this.detail)
           this.dispatchSelect.content = this.msg.goods_units
+          this.goods_skus = this.msg.goods_skus[0]
+          this.saleSelect.content = this.goods_skus.sale_unit
+          this.supplierSelect.content = this.msg.supplier_name
+          this.purchaseSelect.content = this.goods_skus.purchase_unit
           this.menuName = this.msg.goods_category_name
         }
       },
@@ -303,14 +338,23 @@
         } else if (this.msg.goods_category_id <= 0) {
           this.$toast.show('请选择商品分类')
           return
+        } else if (this.goods_skus.base_unit === '') {
+          this.$toast.show('请选择基本单位')
+          return
         } else if (this.msg.goods_banner_images.length === 0) {
           this.$toast.show('请上传商品封面图')
           return
         } else if (this.msg.goods_detail_images.length === 0) {
           this.$toast.show('请上传商品详情图')
           return
-        } else if (this.msg.goods_units === '') {
-          this.$toast.show('请选择售卖单位')
+        } else if (this.goods_skus.base_sale_rate.length === 0) {
+          this.$toast.show('请输入销售规格')
+          return
+        } else if (this.goods_skus.base_sale_rate <= 0) {
+          this.$toast.show('请输入销售规格大于零')
+          return
+        } else if (this.goods_skus.sale_unit === '') {
+          this.$toast.show('请选择销售单位')
           return
         } else if (this.msg.original_price.length === 0) {
           this.$toast.show('请输入划线价')
@@ -327,6 +371,21 @@
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
           this.$toast.show('请输入正确商品库存')
           return
+        } else if (this.goods_skus.base_purchase_rate.length === 0) {
+          this.$toast.show('请输入采购规格')
+          return
+        } else if (this.goods_skus.base_purchase_rate <= 0) {
+          this.$toast.show('请输入采购规格大于零')
+          return
+        } else if (this.goods_skus.supplier_id <= 0) {
+          this.$toast.show('请选择供应商')
+          return
+        } else if (this.goods_skus.purchase_unit === '') {
+          this.$toast.show('请选择采购单位')
+          return
+        } else if (+this.goods_skus.damage_rate < 0 || +this.goods_skus.damage_rate > 100 || !this.goods_skus.damage_rate) {
+          this.$toast.show('损耗比区间在0与100之间')
+          return
         } else if (
           !this.msg.init_sale_count ||
           this.msg.init_sale_count.includes('.') ||
@@ -335,6 +394,7 @@
           this.$toast.show('请输入正确初始销量')
           return
         }
+        this.msg.goods_skus[0] = this.goods_skus
         this.msg.goods_skus[0].trade_price = this.msg.trade_price
         this.msg.goods_skus[0].original_price = this.msg.original_price
         this.msg.goods_skus[0].usable_stock = this.msg.usable_stock
@@ -371,26 +431,64 @@
         API.Product.getUnitsList({}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.dispatchSelect.data = res.data
+            this.saleSelect.data = res.data
+            this.purchaseSelect.data = res.data
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      getSupplierData() {
+        API.Product.getSupplier({page: 1, limit: 10}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            res.data.forEach((item) => {
+              item.name = item.supplier_name
+            })
+            this.supplierSelect.data = res.data
           } else {
             this.$toast.show(res.message)
           }
         })
       },
       getCategoriesData() {
-        API.Product.getCategory({parent_id: -1}, false).then((res) => {
+        API.Product.getCategory({parent_id: -1, goods_id: this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
+            res.data.forEach((item) => {
+              if (item.is_selected) {
+                this.stairSelect.content = item.name
+                this.secondSelect.data = item.list
+                this.secondSelect.data.forEach((twomitem) => {
+                  if (twomitem.is_selected) {
+                    this.secondSelect.content = twomitem.name
+                  }
+                })
+              }
+            })
           } else {
             this.$toast.show(res.message)
           }
         })
       },
       setValue(data) {
-        this.msg.goods_units = data.name
+        this.goods_skus.base_unit = data.name
+      },
+      saleSelectValue(data) {
+        this.goods_skus.sale_unit = data.name
+      },
+      purchaseSelectValue(data) {
+        this.goods_skus.purchase_unit = data.name
+      },
+      supplierSelectValue(data) {
+        this.goods_skus.supplier_id = data.id
       },
       setStairValue(data) {
         this.secondSelect.content = '二级分类'
         this.secondSelect.data = data.list
+        this.msg.goods_category_id = data.id
+      },
+      setSecondValue(data) {
+        this.msg.goods_category_id = data.id
       }
     }
   }

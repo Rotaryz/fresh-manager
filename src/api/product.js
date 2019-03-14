@@ -134,5 +134,15 @@ export default {
   syncGoodsInfo(data = null, loading = true) {
     let url = `/social-shopping/api/backend/guanmai/sync-goods-info`
     return request.get(url, data, loading)
+  },
+  /**
+   * 供应商列表
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getSupplier(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/supplier`
+    return request.get(url, data, loading)
   }
 }
