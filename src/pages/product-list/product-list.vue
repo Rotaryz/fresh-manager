@@ -19,7 +19,7 @@
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
           <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>
-          <div class="btn-main g-btn-item" @click="_syncGoods">同步</div>
+          <div v-if="$VUE_APP_ENV !== 'production'" class="btn-main g-btn-item" @click="_syncGoods">同步</div>
         </div>
       </div>
       <div class="big-list">
