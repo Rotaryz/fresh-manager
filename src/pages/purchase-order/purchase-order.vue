@@ -38,7 +38,7 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
+          <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
             <div class="list-item">2018-12-07 15:00</div>
             <div class="list-item">阿克苏苹果克苏苹果克(肉脆汁多)阿克苏苹果克苏苹果克(肉脆汁多)…</div>
             <div class="list-item">item</div>
@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
   </div>
@@ -61,6 +61,7 @@
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'iview'
+  import {supplyComputed, supplyMethods} from '@state/helpers'
 
   const PAGE_NAME = 'PURCHASE_ORDER'
   const TITLE = '采购单列表'
@@ -87,7 +88,14 @@
         commodities: COMMODITIES_LIST
       }
     },
+    computed: {
+      ...supplyComputed
+    },
     methods: {
+      ...supplyMethods,
+      _getMoreList() {
+
+      }
     }
   }
 </script>

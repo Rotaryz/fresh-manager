@@ -38,8 +38,8 @@ export const mutations = {
 
 export const actions = {
   // 采购列表
-  getPurchaseList({state, commit, dispatch}, {page, orderSn, loading = true}) {
-    return API.Purchase.purchaseList({page, order_sn: orderSn}, loading)
+  getPurchaseList({state, commit, dispatch}, {time, startTime, endTime, keyword, page, loading = true}) {
+    return API.Supply.purchaseOrder({time, start_time: startTime, end_time: endTime, keyword, page}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -49,11 +49,7 @@ export const actions = {
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        let arr = res.data.map((item) => {
-          item.select = false
-          item.url = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-purchase-export/`
-          return item
-        })
+        let arr = res.data
         commit('SET_PURCHASE_LIST', arr)
         commit('SET_PAGE_TOTAL', pageTotal)
         return true

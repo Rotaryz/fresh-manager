@@ -160,3 +160,9 @@ export const omsComputed = {
 export const omsMethods = {
   ...mapActions('oms', ['getOmsOrders', 'getOmsOrderDetail', 'setStartTime', 'setEndTime', 'setKeyword', 'setStatus', 'setPage'])
 }
+// 轮播广告
+export const supplyComputed = {
+  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail'])
+}
+
+export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail'])
