@@ -18,7 +18,7 @@
           供应商名称
         </div>
         <div class="edit-input-box">
-          <input type="number" class="edit-input" placeholder="请输入供应商名称" maxlength="20">
+          <input v-model="supplierName" type="text" class="edit-input" placeholder="请输入供应商名称" maxlength="20">
         </div>
       </div>
       <div class="edit-item">
@@ -27,7 +27,7 @@
           手机号
         </div>
         <div class="edit-input-box">
-          <input type="number" class="edit-input" placeholder="请输入手机号码" maxlength="11">
+          <input v-model="mobile" type="number" class="edit-input" placeholder="请输入手机号码" maxlength="11">
         </div>
       </div>
       <div class="edit-item">
@@ -36,7 +36,7 @@
           地址
         </div>
         <div class="edit-input-box">
-          <textarea class="edit-text" maxlength="50" placeholder="请输入供应商地址"></textarea>
+          <textarea v-model="address" class="edit-text" maxlength="50" placeholder="请输入供应商地址"></textarea>
         </div>
       </div>
       <div class="edit-item">
@@ -45,22 +45,31 @@
           所属采购员
         </div>
         <div class="edit-input-box">
-          <base-drop-down :width="400" :height="44"></base-drop-down>
+          <base-drop-down :width="400" :height="44" :select="buyerSelect" @setValue="changeBuyer"></base-drop-down>
           <!--<textarea class="edit-text" maxlength="50"></textarea>-->
         </div>
       </div>
     </div>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
+      <div class="back-cancel back-btn hand" @click="back">返回</div>
       <div class="back-btn back-submit" @click="submit">保存</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import {supplierComputed} from '@state/helpers'
+
   const PAGE_NAME = 'EDIT_SUPPLIER'
   const TITLE = '新建供应商'
-
+  const SELECT = {
+    check: false,
+    show: false,
+    content: '请选择',
+    type: 'default',
+    data: []
+  }
   export default {
     name: PAGE_NAME,
     page: {
@@ -68,14 +77,76 @@
     },
     data() {
       return {
-        id: ''
+        id: this.$route.query.id,
+        supplierName: '',
+        mobile: '',
+        address: '',
+        purchaseUserId: '',
+        buyerSelect: SELECT
       }
     },
+    computed: {
+      ...supplierComputed
+    },
+    created() {
+      this.supplierName = this.id && (this.detail.supplier_name || '')
+      this.mobile = this.id && (this.detail.mobile || '')
+      this.address = this.id && (this.detail.address || '')
+      this.purchaseUserId = this.id && (this.detail.purchase_user_id || '')
+      this._setBuyerSelect()
+    },
     methods: {
-      _back() {
+      _setBuyerSelect() {
+        API.Supply.getAllBuyer().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          let selectData = res.data.map((item) => {
+            item.name = item.true_name
+            return item
+          })
+          selectData.unshift({name: '请选择', id: ''})
+          this.buyerSelect.data = selectData
+          if (this.id) {
+            this.buyerSelect.content = this.detail.purchase_user_name
+          } else {
+            this.buyerSelect.content = '请选择'
+          }
+        })
+      },
+      changeBuyer(select) {
+        this.purchaseUserId = select.id
+      },
+      back() {
         this.$router.back()
       },
-      submit() {}
+      submit() {
+        let data = {
+          supplier_name: this.supplierName,
+          mobile: this.mobile,
+          address: this.address,
+          purchase_user_id: this.purchaseUserId
+        }
+        if (this.id) {
+          API.Supply.editSupplier(this.id, data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.back()
+          })
+        } else {
+          API.Supply.addSupplier(data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.back()
+          })
+        }
+      }
     }
   }
 </script>

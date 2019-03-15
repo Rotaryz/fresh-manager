@@ -19,7 +19,9 @@
         </div>
         <div class="edit-input-box">
           <div v-if="id" class="edit-change">{{detail.user_name}}</div>
-          <input v-else v-model="username" type="number" class="edit-input" placeholder="请输入账号" maxlength="10">
+          <input v-else v-model="username" type="number" class="edit-input" placeholder="请输入账号"
+                 maxlength="10"
+          >
         </div>
       </div>
       <div class="edit-item">
@@ -29,7 +31,9 @@
         </div>
         <div class="edit-input-box">
           <div v-if="!isChangePassword" class="list-operation edit-change" @click="changeType">修改密码</div>
-          <input v-else v-model="password" type="password" class="edit-input" placeholder="请输入密码" maxlength="20">
+          <input v-else v-model="password" type="password" class="edit-input" placeholder="请输入密码"
+                 maxlength="20"
+          >
         </div>
       </div>
     </div>
@@ -115,25 +119,23 @@
           password: this.password
         }
         if (this.id) {
-          API.Supply.editPurchaseUser(this.id, data)
-            .then((res) => {
-              this.$loading.hide()
-              this.$toast.show(res.message)
-              if (res.error !== this.$ERR_OK) {
-                return
-              }
-              this.back()
-            })
+          API.Supply.editPurchaseUser(this.id, data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.back()
+          })
         } else {
-          API.Supply.addPurchaseUser(data)
-            .then((res) => {
-              this.$loading.hide()
-              this.$toast.show(res.message)
-              if (res.error !== this.$ERR_OK) {
-                return
-              }
-              this.back()
-            })
+          API.Supply.addPurchaseUser(data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.back()
+          })
         }
       }
     }

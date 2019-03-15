@@ -3,7 +3,8 @@ import app from '@src/main'
 
 export const state = {
   orders: [], // OMS订单
-  pageTotal: { // OMS订单列表页码
+  pageTotal: {
+    // OMS订单列表页码
     total: 1,
     per_page: 10,
     total_page: 1

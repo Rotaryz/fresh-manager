@@ -111,5 +111,56 @@ export default {
   editPurchaseUser(id, data, loading = true) {
     let url = `/scm/api/backend/purchase/purchase-user/${id}`
     return request.put(url, data, loading)
+  },
+  /**
+   * 获取供应商列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getSupplier(data, loading = true) {
+    let url = '/scm/api/backend/purchase/supplier'
+    return request.get(url, data)
+  },
+  /**
+   * 获取供应商详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getSupplierDetail(id, loading = true) {
+    let url = `/scm/api/backend/purchase/supplier/${id}`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 新增供应商
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  addSupplier(data, loading = true) {
+    let url = `/scm/api/backend/purchase/supplier`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 编辑供应商
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {*|AxiosPromise<any>|IDBRequest<IDBValidKey>|Promise<void>}
+   */
+  editSupplier(id, data, loading = true) {
+    let url = `/scm/api/backend/purchase/supplier/${id}`
+    return request.put(url, data, loading)
+  },
+  /**
+   * 获取所有采购员
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getAllBuyer(data = {}, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-user-list'
+    return request.get(url, data, loading)
   }
 }

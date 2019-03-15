@@ -4,7 +4,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="供应商名称"></base-search>
+        <base-search :infoText="keyword" placeHolder="供应商名称" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -22,26 +22,28 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">中国广东省佛山市禅城区大高路290号省佛山市禅城区大高路290号</div>
-            <div class="list-item">item</div>
+          <div v-for="(item, index) in list" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.id}}</div>
+            <div class="list-item">{{item.supplier_name}}</div>
+            <div class="list-item">{{item.mobile}}</div>
+            <div class="list-item">{{item.province + item.city + item.area + item.address}}</div>
+            <div class="list-item">{{item.purchase_user_name}}</div>
             <div class="list-item">
-              <div class="list-operation">编辑</div>
+              <router-link tag="div" :to="`edit-supplier?id=${item.id}`" append class="list-operation">编辑</router-link>
             </div>
           </div>
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {supplierComputed, supplierMethods} from '@state/helpers'
+
   const PAGE_NAME = 'SUPPLIER'
   const TITLE = '供应商'
   const COMMODITIES_LIST = ['编号', '供应商名称', '手机', '地址', '采购员', '操作']
@@ -53,6 +55,16 @@
     data() {
       return {
         commodities: COMMODITIES_LIST
+      }
+    },
+    computed: {
+      ...supplierComputed
+    },
+    methods: {
+      ...supplierMethods,
+      changeKeyword(keyword) {
+        this.setKeyword(keyword)
+        this.$refs.pagination.beginPage()
       }
     }
   }

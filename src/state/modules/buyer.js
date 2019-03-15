@@ -10,7 +10,7 @@ export const state = {
   },
   detail: {},
   page: 1,
-  keyword: '',
+  keyword: ''
 }
 
 export const getters = {
@@ -71,9 +71,11 @@ export const actions = {
         commit('SET_LIST', list)
         commit('SET_PAGE_DETAIL', pageDetail)
         return list
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },

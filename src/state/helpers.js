@@ -182,7 +182,6 @@ export const proTaskComputed = {
 
 export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase'])
 
-
 // 调度任务
 export const deliveryComputed = {
   ...mapGetters('delivery', ['tabIndex', 'driverList', 'driverPageDetail', 'driverPage', 'roads'])
@@ -201,3 +200,11 @@ export const buyerMethods = {
   ...mapActions('buyer', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage'])
 }
 
+// 供应商
+export const supplierComputed = {
+  ...mapGetters('supplier', ['list', 'pageDetail', 'detail', 'keyword', 'page'])
+}
+
+export const supplierMethods = {
+  ...mapActions('supplier', ['getSupplier', 'getSupplierDetail', 'setKeyword', 'setPage'])
+}

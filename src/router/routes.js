@@ -878,7 +878,17 @@ export default [
         meta: {
           titles: ['供应链', '采购', '供应商'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('supplier/getSupplier')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -890,7 +900,21 @@ export default [
         meta: {
           titles: ['供应链', '采购', '供应商', '新建供应商'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('supplier/getSupplierDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -993,9 +1017,10 @@ export default [
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
+              })
+              .catch(() => {
                 return next({name: '404'})
-            })
+              })
           }
         }
       },
