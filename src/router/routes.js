@@ -773,7 +773,17 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购员列表'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('buyer/getPurchaseUser')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -786,7 +796,21 @@ export default [
           marginBottom: 80,
           titles: ['供应链', '采购', '采购员', '新建采购员'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('buyer/getPurchaseUserDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },

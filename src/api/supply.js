@@ -70,5 +70,46 @@ export default {
   purchaseTaskGoodsList(data, loading = false) {
     let url = `/scm/api/backend/purchase/purchase-task-goods-list`
     return request.get(url, data, loading)
+  },
+  /**
+   * 获取采购员列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getPurchaseUser(data, loading = true) {
+    let url = '/scm/api/backend/purchase/purchase-user'
+    return request.get(url, data)
+  },
+  /**
+   * 获取采购员详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getPurchaseUserDetail(id, loading = true) {
+    let url = `/scm/api/backend/purchase/purchase-user/${id}`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 新增采购员
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  addPurchaseUser(data, loading = true) {
+    let url = `/scm/api/backend/purchase/purchase-user`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 编辑采购员
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {*|AxiosPromise<any>|IDBRequest<IDBValidKey>|Promise<void>}
+   */
+  editPurchaseUser(id, data, loading = true) {
+    let url = `/scm/api/backend/purchase/purchase-user/${id}`
+    return request.put(url, data, loading)
   }
 }

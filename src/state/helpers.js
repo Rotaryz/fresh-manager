@@ -192,3 +192,12 @@ export const deliveryMethods = {
   ...mapActions('delivery', ['getRouteData', 'setTabIndex', 'getDriverList', 'getRoads'])
 }
 
+// 采购员
+export const buyerComputed = {
+  ...mapGetters('buyer', ['list', 'pageDetail', 'detail', 'keyword', 'page'])
+}
+
+export const buyerMethods = {
+  ...mapActions('buyer', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage'])
+}
+
