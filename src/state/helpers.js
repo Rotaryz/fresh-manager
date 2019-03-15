@@ -166,3 +166,12 @@ export const supplyComputed = {
 }
 
 export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail'])
+
+// 调度任务
+export const deliveryComputed = {
+  ...mapGetters('delivery', ['tabIndex', 'driverList', 'driverPageDetail', 'driverPage', 'roads'])
+}
+
+export const deliveryMethods = {
+  ...mapActions('delivery', ['getRouteData', 'setTabIndex', 'getDriverList', 'getRoads'])
+}

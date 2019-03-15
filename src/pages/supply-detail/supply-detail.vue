@@ -19,25 +19,20 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box" v-for="(item, index) in detail.details">
+          <div v-for="(item, index) in detail.details" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_sku_code}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}</div>
-            <!--<div class="list-item">{{item.base_price}}</div>-->
-            <!--<div class="list-item">{{item.base_price}}</div>-->
           </div>
         </div>
       </div>
-      <!--<div class="pagination-box">-->
-        <!--<base-pagination ref="pages"></base-pagination>-->
-      <!--</div>-->
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {omsComputed, omsMethods} from '@state/helpers'
+  import {omsComputed} from '@state/helpers'
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [

@@ -1,14 +1,14 @@
 <template>
   <div class="dispatching-management table">
-    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
+    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img :src="infoTabIndex === 0 ? require('./icon-purchase_list@2x.png') : require('./icon-driver@2x.png')" class="identification-icon">
-          <p class="identification-name">{{tabStatus[infoTabIndex].text}}</p>
+          <img :src="tabIndex === 0 ? require('./icon-purchase_list@2x.png') : require('./icon-driver@2x.png')" class="identification-icon">
+          <p class="identification-name">{{tabStatus[tabIndex].text}}</p>
         </div>
-        <div class="function-btn">
-          <div class="btn-main">新建{{tabStatus[infoTabIndex].text}}</div>
+        <div class="function-btn" @click="handleAdd">
+          <div class="btn-main">新建{{tabStatus[tabIndex].text}}</div>
         </div>
       </div>
       <div class="big-list">
@@ -16,10 +16,21 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
-              {{item.operation ? '' : 'item'}}
-              <div v-if="item.operation" class="list-operation" @click="_deal(item)">{{item.operation}}</div>
+          <div v-if="tabIndex === 0">
+            <div v-for="(road, key) in roads" :key="key" class="list-content list-box">
+              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
+                {{item.operation ? '' : road[item.key]}}
+                <div v-if="item.operation === '删除'" class="list-operation" @click="handleOperation(item.operation, road)">{{item.operation}}</div>
+                <div v-if="item.operation === '商户配置'" class="list-operation" @click="handleOperation(item.operation, road)">{{`${item.operation}(${road[item.key]})`}}</div>
+              </div>
+            </div>
+          </div>
+          <div v-if="tabIndex === 1">
+            <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
+              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
+                {{item.operation ? '' : driver[item.key]}}
+                <div v-if="item.operation" class="list-operation" @click="handleOperation(item.operation, driver)">{{item.operation}}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -28,7 +39,7 @@
         <base-pagination ref="pages"></base-pagination>
       </div>
     </div>
-    <default-confirm ref="confirm" @confirm="_del"></default-confirm>
+    <default-confirm ref="confirm" @confirm="handleRoad"></default-confirm>
     <default-modal ref="line">
       <div slot="content" class="default-input">
         <div class="title-input">
@@ -43,20 +54,20 @@
           </div>
           <div class="main-right">
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入线路名称" maxlength="10">
+              <input v-model="roadName" type="text" class="main-input-box" placeholder="请输入线路名称" maxlength="10">
             </div>
           </div>
         </div>
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
-          <div class="btn confirm" @click="confirm">确定</div>
+          <div class="btn confirm" @click="handleRoad">确定</div>
         </div>
       </div>
     </default-modal>
     <default-modal ref="driver">
       <div slot="content" class="default-input">
         <div class="title-input">
-          <div class="title">新建司机</div>
+          <div class="title">{{handleDriverType === 0 ? '新建' : '编辑'}}司机</div>
           <div class="close-box" @click="cancel">
             <div class="close"></div>
           </div>
@@ -70,30 +81,30 @@
           </div>
           <div class="main-right">
             <div class="main-input-big">
-              <input type="text" class="main-input-box" placeholder="请输入司机名字" maxlength="6">
+              <input v-model="driverForm.true_name" type="text" class="main-input-box" placeholder="请输入司机名字" maxlength="6">
             </div>
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入手机号" maxlength="11">
+              <input v-model="driverForm.mobile" type="text" class="main-input-box" placeholder="请输入手机号" maxlength="11">
             </div>
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入车牌号" maxlength="10">
+              <input v-model="driverForm.plate_number" type="text" class="main-input-box" placeholder="请输入车牌号" maxlength="10">
             </div>
             <div class="main-input-big">
-              <base-drop-down :width="333" :height="44"></base-drop-down>
+              <base-drop-down :width="333" :height="44" :select="roadSelect" @setValue="setRoadSelect"></base-drop-down>
             </div>
           </div>
         </div>
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
-          <div class="btn confirm" @click="confirm">确定</div>
+          <div class="btn confirm" @click="handleDriver">确定</div>
         </div>
       </div>
     </default-modal>
-    <default-modal ref="goodsModel">
+    <default-modal ref="addressModal">
       <div slot="content" class="shade-box">
         <div class="shade-header">
           <div class="shade-title">选择商品</div>
-          <span class="close hand"></span>
+          <span class="close hand" @click="cancel"></span>
         </div>
         <div class="shade-tab">
           <div class="tab-item">
@@ -107,23 +118,22 @@
               <div v-for="(item,index) in merchant" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
             </div>
             <div class="list">
-              <div class="list-content list-box">
-                <div class="pro-select pro-select-icon hand"></div>
+              <div v-for="(delivery, key) in deliveryAddress" :key="key" class="list-content list-box">
+                <div :class="{'pro-select-icon-active': delivery.checked === 1}" class="pro-select pro-select-icon hand" @click="selectDeliveryAddress(delivery)"></div>
                 <!--list-item-disable-->
-                <div v-for="(item,index) in merchant" :key="index" class="list-item" :style="{flex: item.flex}">
-                  {{item.operation ? '' : 'item'}}
-                  <div v-if="item.operation" class="list-operation" @click="_deal(item)">{{item.operation}}</div>
+                <div v-for="(item, index) in merchant" :key="index" class="list-item" :style="{flex: item.flex}">
+                  {{item.operation ? '' : delivery[item.key]}}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="page-box">
-          <base-pagination ref="shopPage"></base-pagination>
-        </div>
+        <!--<div class="page-box">-->
+        <!--<base-pagination ref="shopPage"></base-pagination>-->
+        <!--</div>-->
         <div class="back">
-          <div class="back-btn back-submit hand">确定</div>
-          <div class="back-cancel back-btn hand">取消</div>
+          <div class="back-btn back-submit hand" @click="handleRoad">确定</div>
+          <div class="back-cancel back-btn hand" @click="cancel">取消</div>
         </div>
       </div>
     </default-modal>
@@ -132,30 +142,44 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import {deliveryComputed, deliveryMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import DefaultModal from '@components/default-modal/default-modal'
 
   const PAGE_NAME = 'DISPATCHING_MANAGEMENT'
   const TITLE = '调度管理'
-  const ORDERSTATUS = [{text: '线路', status: ''}, {text: '司机', status: 0}]
+  const ORDERSTATUS = [{text: '线路', status: 0}, {text: '司机', status: 1}]
   const COMMODITIES_LIST = [
-    {title: '创建时间', key: '', flex: 1},
-    {title: '线路名称', key: '', flex: 1},
-    {title: '商户配置', key: '', flex: 1},
+    {title: '创建时间', key: 'created_at', flex: 1},
+    {title: '线路名称', key: 'road_name', flex: 1},
+    {title: '商户配置', key: 'addresses_count', operation: '商户配置', flex: 1},
     {title: '操作', key: '', operation: '删除', flex: 0.145}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '编号', key: '', flex: 1},
-    {title: '司机', key: '', flex: 1},
-    {title: '线路名称', key: '', flex: 1},
-    {title: '车牌号码', key: '', flex: 1},
-    {title: '手机号', key: '', flex: 1},
+    {title: '编号', key: 'driver_id', flex: 1},
+    {title: '司机', key: 'true_name', flex: 1},
+    {title: '线路名称', key: 'road_name', flex: 1},
+    {title: '车牌号码', key: 'plate_number', flex: 1},
+    {title: '手机号', key: 'mobile', flex: 1},
     {title: '操作', key: '', operation: '编辑', flex: 0.245}
   ]
   const MERCHANT = [
-    {title: '商户名称', key: '', flex: 3},
-    {title: '线路', key: '', flex: 1},
+    {title: '商户名称', key: 'name', flex: 3},
+    {title: '线路', key: 'road_name', flex: 1},
   ]
+  const ROAD_SELECT = {
+    check: false,
+    show: false,
+    content: '请选择',
+    type: 'default',
+    data: []
+  }
+  const ADD_DRIVER = 0
+  const EDIT_DRIVER = 1
+  const ADD_ROAD = 0
+  const DELETE_ROAD = 1
+  const EDIT_ROAD = 2
   export default {
     name: PAGE_NAME,
     page: {
@@ -168,34 +192,199 @@
     data() {
       return {
         tabStatus: ORDERSTATUS,
-        commodities: COMMODITIES_LIST,
-        infoTabIndex: 0,
-        merchant: MERCHANT
+        commodities: [],
+        merchant: MERCHANT,
+        handleRoadId: '',
+        roadName: '',
+        driverForm: {
+          driver_id: '',
+          true_name: '',
+          mobile: '',
+          plate_number: '',
+          road_id: ''
+        },
+        roadSelect: ROAD_SELECT,
+        handleDriverType: ADD_DRIVER,
+        handleRoadType: ADD_ROAD,
+        deliveryAddress: []
       }
     },
-    mounted() {
-      // this.$refs.goodsModel.showModal()
+    computed: {
+      ...deliveryComputed
+    },
+    watch: {
+      roads() {
+        this._setRoadsSelect()
+      }
+    },
+    created() {
+      this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+      this._setRoadsSelect()
     },
     methods: {
-      _deal(item) {
-        if (item.operation === '删除') {
-          this.$refs.confirm.show(`确定删除该线路？`)
-          return
-        }
-        console.log('fd')
+      ...deliveryMethods,
+      _setRoadsSelect() {
+        let selectData = this.roads.map((item) => {
+          item.name = item.road_name
+          return item
+        })
+        selectData.unshift({name: '请选择', road_id: ''})
+        this.roadSelect.data = selectData
       },
-      _del() {
-
+      handleAdd() {
+        if (this.tabIndex === 0) {
+          this.handleRoadType = ADD_ROAD
+          this.handleRoadId = ''
+          this.roadName = ''
+          this.$refs.line.showModal()
+        } else if (this.tabIndex === 1) {
+          this.handleDriverType = ADD_DRIVER
+          this.driverForm = {
+            driver_id: '',
+            true_name: '',
+            mobile: '',
+            plate_number: '',
+            road_id: ''
+          }
+          this.roadSelect.content = '请选择'
+          this.$refs.driver.showModal()
+        }
+      },
+      handleOperation(operation, detail) {
+        if (this.tabIndex === 0) {
+          if (operation === '删除') {
+            this.handleRoadId = detail.road_id
+            this.handleRoadType = DELETE_ROAD
+            this.$refs.confirm.show(`确定删除该线路？`)
+          } if (operation === '商户配置') {
+            this.handleRoadId = detail.road_id
+            this.handleRoadType = EDIT_ROAD
+            API.Delivery.getDeliveryAddress({road_id: detail.road_id})
+              .then((res) => {
+                this.$loading.hide()
+                if (res.error !== this.$ERR_OK) {
+                  this.$toast.show(res.message)
+                  return
+                }
+                this.deliveryAddress = res.data
+                this.$refs.addressModal.showModal()
+              })
+          }
+        } else if (this.tabIndex === 1) {
+          this.handleDriverType = EDIT_DRIVER
+          const {driver_id: driverId, true_name: trueName, mobile, plate_number: plateNumber, road_id: roadId, road_name: roadName} = detail
+          this.driverForm = {
+            driver_id: driverId,
+            true_name: trueName,
+            mobile,
+            plate_number: plateNumber,
+            road_id: roadId
+          }
+          this.roadSelect.content = roadName
+          this.$refs.driver.showModal()
+        }
       },
       changeStatus(item, index) {
-        this.infoTabIndex = index
-        this.commodities = this.infoTabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+        this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+        this.setTabIndex(index)
       },
       cancel() {
-        this.$refs.modal.hideModal()
+        if (this.tabIndex === 0) {
+          if (this.handleRoadType === ADD_ROAD) {
+            this.$refs.line.hideModal()
+          } else if (this.handleRoadType === EDIT_ROAD) {
+            this.$refs.addressModal.hideModal()
+          }
+        } else if (this.tabIndex === 1) {
+          this.$refs.driver.hideModal()
+        }
       },
-      confirm() {
-
+      handleRoad() {
+        if (this.handleRoadType === ADD_ROAD) {
+          API.Delivery.addRoad({road_name: this.roadName})
+            .then((res) => {
+              const LOADING = false
+              this.$loading.hide()
+              this.cancel()
+              this.$toast.show(res.message)
+              if (res.error === this.$ERR_OK) {
+                this.getRoads(LOADING)
+              }
+            })
+        } else if (this.handleRoadType === DELETE_ROAD) {
+          API.Delivery.deleteRoad(this.handleRoadId)
+            .then((res) => {
+              const LOADING = false
+              this.$loading.hide()
+              this.cancel()
+              this.$toast.show(res.message)
+              if (res.error === this.$ERR_OK) {
+                this.getRoads(LOADING)
+              }
+            })
+        } else if (this.handleRoadType === EDIT_ROAD) {
+          let selectAddress = this.deliveryAddress.filter((res) => {
+            return res.checked
+          })
+          let data = {
+            delivery_address_ids: selectAddress.map((item) => item.id),
+            road_id: this.handleRoadId,
+            road_name: this.roadName
+          }
+          API.Delivery.setAddress(data)
+            .then((res) => {
+              const LOADING = false
+              this.$loading.hide()
+              this.cancel()
+              this.$toast.show(res.message)
+              if (res.error === this.$ERR_OK) {
+                this.getRoads(LOADING)
+              }
+            })
+        }
+      },
+      handleDriver() {
+        if (this.handleDriverType === ADD_DRIVER) {
+          API.Delivery.addDriver(this.driverForm)
+            .then((res) => {
+              const LOADING = false
+              this.$loading.hide()
+              this.cancel()
+              this.$toast.show(res.message)
+              if (res.error === this.$ERR_OK) {
+                this.getDriverList(LOADING)
+              }
+            })
+        } else if (this.handleDriverType === EDIT_DRIVER) {
+          API.Delivery.editDriver(this.driverForm.driver_id, this.driverForm)
+            .then((res) => {
+              const LOADING = false
+              this.$loading.hide()
+              this.cancel()
+              this.$toast.show(res.message)
+              if (res.error === this.$ERR_OK) {
+                this.getDriverList(LOADING)
+              }
+            })
+        }
+      },
+      setRoadSelect(select) {
+        this.driverForm = {
+          ...this.driverForm,
+          road_id: select.road_id,
+          road: select
+        }
+      },
+      selectDeliveryAddress(delivery) {
+        this.deliveryAddress.forEach((item) => {
+          if (item.id === delivery.id) {
+            if (item.checked) {
+              item.checked = 0
+            } else {
+              item.checked = 1
+            }
+          }
+        })
       }
     }
   }

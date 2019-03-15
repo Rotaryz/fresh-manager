@@ -8,7 +8,7 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  page: '',
+  page: 1,
   startTime: '',
   endTime: '',
   status: '',

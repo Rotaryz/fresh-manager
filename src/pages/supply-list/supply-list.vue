@@ -45,7 +45,7 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box" v-for="(item, index) in orders" :key="index">
+          <div v-for="(item, index) in orders" :key="index" class="list-content list-box">
             <div class="list-item">{{item.merge_at}}</div>
             <div class="list-item">{{item.order_sn}}</div>
             <div class="list-item">{{item.buyer_name}}</div>
@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
     </div>
   </div>

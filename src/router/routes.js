@@ -920,7 +920,16 @@ export default [
         meta: {
           titles: ['供应链', '配送', '调度管理'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('delivery/getDriverList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+                return next({name: '404'})
+            })
           }
         }
       },
