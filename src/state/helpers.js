@@ -151,3 +151,12 @@ export const tradeComputed = {
 export const tradeMethods = {
   ...mapActions('trade', ['setPage', 'setTradeType', 'setDate', 'setKeyword'])
 }
+
+// OMS
+export const omsComputed = {
+  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail'])
+}
+
+export const omsMethods = {
+  ...mapActions('oms', ['getOmsOrders', 'getOmsOrderDetail', 'setStartTime', 'setEndTime', 'setKeyword', 'setStatus', 'setPage'])
+}

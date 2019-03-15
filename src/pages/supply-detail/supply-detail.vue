@@ -1,11 +1,11 @@
 <template>
   <div class="procurement-task table">
     <div class="down-content">
-      <div class="enter-title">商户名称：广海花园社区</div>
-      <div class="enter-title">订单号：BL343543444</div>
-      <div class="enter-title">下单时间：——</div>
-      <div class="enter-title">状态：待提交</div>
-      <div class="enter-title">销售金额：<span class="enter-title-money">￥209.00</span></div>
+      <div class="enter-title">商户名称：{{detail.buyer_name}}</div>
+      <div class="enter-title">订单号：{{detail.order_sn}}</div>
+      <div class="enter-title">下单时间：{{detail.merge_at}}</div>
+      <div class="enter-title">状态：{{detail.status_str}}</div>
+      <div class="enter-title">销售金额：<span class="enter-title-money">{{detail.total && `￥${detail.total}`}}</span></div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -19,34 +19,34 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
+          <div class="list-content list-box" v-for="(item, index) in detail.details">
+            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item">{{item.goods_sku_code}}</div>
+            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.sale_num}}</div>
+            <!--<div class="list-item">{{item.base_price}}</div>-->
+            <!--<div class="list-item">{{item.base_price}}</div>-->
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
-      </div>
+      <!--<div class="pagination-box">-->
+        <!--<base-pagination ref="pages"></base-pagination>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-
+  import {omsComputed, omsMethods} from '@state/helpers'
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
     '商品',
     '商品编码',
     '分类',
-    '销售数量',
-    '销售单价',
-    '销售金额'
+    '销售数量'
+    // '销售单价',
+    // '销售金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -57,6 +57,9 @@
       return {
         commodities: COMMODITIES_LIST
       }
+    },
+    computed: {
+      ...omsComputed
     }
   }
 </script>

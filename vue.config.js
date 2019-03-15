@@ -19,6 +19,9 @@ module.exports = {
           proxy: {
             '/social-shopping': {
               target: process.env.VUE_APP_API
+            },
+            '/scm': {
+              target: process.env.VUE_APP_SCM_API
             }
           }
         }

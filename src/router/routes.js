@@ -969,19 +969,42 @@ export default [
         meta: {
           titles: ['供应链', '订单', '订单列表'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('oms/getOmsOrders')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
       // 调度管理
       {
-        path: 'supply-list/supply-detail',
+        path: 'supply-list/supply-detail/:id',
         name: 'supply-detail',
         component: () => lazyLoadView(import('@pages/supply-detail/supply-detail')),
         meta: {
           titles: ['供应链', '订单', '订单列表', '订单详情'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            if (!routeTo.params.id) {
+              return next()
+            }
+            store
+              .dispatch('oms/getOmsOrderDetail', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       }
