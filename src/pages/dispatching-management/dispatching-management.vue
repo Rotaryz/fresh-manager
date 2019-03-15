@@ -43,7 +43,7 @@
           </div>
           <div class="main-right">
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入线路名称">
+              <input type="number" class="main-input-box" placeholder="请输入线路名称" maxlength="10">
             </div>
           </div>
         </div>
@@ -70,13 +70,13 @@
           </div>
           <div class="main-right">
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入司机名字">
+              <input type="text" class="main-input-box" placeholder="请输入司机名字" maxlength="6">
             </div>
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入手机号">
+              <input type="number" class="main-input-box" placeholder="请输入手机号" maxlength="11">
             </div>
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入车牌号">
+              <input type="number" class="main-input-box" placeholder="请输入车牌号" maxlength="10">
             </div>
             <div class="main-input-big">
               <base-drop-down :width="333" :height="44"></base-drop-down>

@@ -301,7 +301,7 @@
           this.dispatchSelect.content = this.msg.goods_units
           this.goods_skus = this.msg.goods_skus[0]
           this.saleSelect.content = this.goods_skus.sale_unit
-          this.supplierSelect.content = this.msg.supplier_name
+          this.supplierSelect.content = this.goods_skus.supplier_name
           this.purchaseSelect.content = this.goods_skus.purchase_unit
           this.menuName = this.msg.goods_category_name
         }
@@ -484,7 +484,7 @@
         this.goods_skus.purchase_unit = data.name
       },
       supplierSelectValue(data) {
-        this.goods_skus.supplier_id = data.id
+        this.goods_skus.supplier_id = data.supplier_id
       },
       setStairValue(data) {
         this.secondSelect.content = '二级分类'
