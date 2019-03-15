@@ -173,7 +173,7 @@
       }
     },
     mounted() {
-      this.$refs.goodsModel.showModal()
+      // this.$refs.goodsModel.showModal()
     },
     methods: {
       _deal(item) {

@@ -777,7 +777,18 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购单'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('supply/getPurchaseList', {time: '', startTime: '', endTime: '', keyword: '', page: 1, loading: true})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
