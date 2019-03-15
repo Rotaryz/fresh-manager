@@ -39,9 +39,9 @@
         </div>
         <div class="list">
           <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
-            <div class="list-item">2018-12-07 15:00</div>
-            <div class="list-item">阿克苏苹果克苏苹果克(肉脆汁多)阿克苏苹果克苏苹果克(肉脆汁多)…</div>
-            <div class="list-item">item</div>
+            <div class="list-item">{{item.create_day}}</div>
+            <div class="list-item">{{item.order_sn}}</div>
+            <div class="list-item">{{item}}</div>
             <div class="list-item">item</div>
             <div class="list-item">item</div>
             <div class="list-item">item</div>

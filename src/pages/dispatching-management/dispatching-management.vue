@@ -8,6 +8,7 @@
           <p class="identification-name">{{tabStatus[infoTabIndex].text}}</p>
         </div>
         <div class="function-btn">
+          <div class="btn-main">新建{{tabStatus[infoTabIndex].text}}</div>
         </div>
       </div>
       <div class="big-list">
