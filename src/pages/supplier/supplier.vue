@@ -44,14 +44,7 @@
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'SUPPLIER'
   const TITLE = '供应商'
-  const COMMODITIES_LIST = [
-    '编号',
-    '供应商名称',
-    '手机',
-    '地址',
-    '采购员',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['编号', '供应商名称', '手机', '地址', '采购员', '操作']
   export default {
     name: PAGE_NAME,
     page: {

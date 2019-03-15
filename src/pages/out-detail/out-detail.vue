@@ -46,7 +46,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
@@ -58,7 +57,7 @@
     '入库金额',
     '保质期',
     '存放库位',
-    '操作',
+    '操作'
   ]
   export default {
     name: PAGE_NAME,

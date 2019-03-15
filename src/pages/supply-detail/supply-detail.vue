@@ -19,7 +19,7 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box" v-for="(item, index) in detail.details">
+          <div v-for="(item, index) in detail.details" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_sku_code}}</div>
             <div class="list-item">{{item.goods_category}}</div>
@@ -30,7 +30,7 @@
         </div>
       </div>
       <!--<div class="pagination-box">-->
-        <!--<base-pagination ref="pages"></base-pagination>-->
+      <!--<base-pagination ref="pages"></base-pagination>-->
       <!--</div>-->
     </div>
   </div>
@@ -38,6 +38,7 @@
 
 <script type="text/ecmascript-6">
   import {omsComputed, omsMethods} from '@state/helpers'
+
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
@@ -60,6 +61,9 @@
     },
     computed: {
       ...omsComputed
+    },
+    methods: {
+      ...omsMethods
     }
   }
 </script>
@@ -75,6 +79,7 @@
           flex: 0.4
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
           flex: 1.5
+
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
@@ -82,7 +87,8 @@
     margin-right: 130px
     .enter-title-money
       color: #F84E3C
+
   .tip
-    margin :0 2px
+    margin: 0 2px
     font-size: $font-size-14
 </style>

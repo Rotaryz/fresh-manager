@@ -69,15 +69,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品入库'
-  const COMMODITIES_LIST = [
-    '建单时间',
-    '入库单号',
-    '供应商',
-    '采购单号',
-    '入库金额',
-    '状态',
-    '操作',
-  ]
+  const COMMODITIES_LIST = ['建单时间', '入库单号', '供应商', '采购单号', '入库金额', '状态', '操作']
   export default {
     name: PAGE_NAME,
     page: {

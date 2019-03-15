@@ -152,10 +152,7 @@
     {title: '手机号', key: '', flex: 1},
     {title: '操作', key: '', operation: '编辑', flex: 0.245}
   ]
-  const MERCHANT = [
-    {title: '商户名称', key: '', flex: 3},
-    {title: '线路', key: '', flex: 1},
-  ]
+  const MERCHANT = [{title: '商户名称', key: '', flex: 3}, {title: '线路', key: '', flex: 1}]
   export default {
     name: PAGE_NAME,
     page: {
@@ -174,7 +171,7 @@
       }
     },
     mounted() {
-      // this.$refs.goodsModel.showModal()
+    // this.$refs.goodsModel.showModal()
     },
     methods: {
       _deal(item) {
@@ -184,9 +181,7 @@
         }
         console.log('fd')
       },
-      _del() {
-
-      },
+      _del() {},
       changeStatus(item, index) {
         this.infoTabIndex = index
         this.commodities = this.infoTabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
@@ -194,9 +189,7 @@
       cancel() {
         this.$refs.modal.hideModal()
       },
-      confirm() {
-
-      }
+      confirm() {}
     }
   }
 </script>

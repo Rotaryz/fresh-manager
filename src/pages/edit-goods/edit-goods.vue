@@ -383,7 +383,11 @@
         } else if (this.goods_skus.purchase_unit === '') {
           this.$toast.show('请选择采购单位')
           return
-        } else if (+this.goods_skus.damage_rate < 0 || +this.goods_skus.damage_rate > 100 || !this.goods_skus.damage_rate) {
+        } else if (
+          +this.goods_skus.damage_rate < 0 ||
+          +this.goods_skus.damage_rate > 100 ||
+          !this.goods_skus.damage_rate
+        ) {
           this.$toast.show('损耗比区间在0与100之间')
           return
         } else if (

@@ -22,7 +22,7 @@
     data() {
       return {}
     },
-    methods:{
+    methods: {
       _batchAddition(list) {
         console.log(list)
       },

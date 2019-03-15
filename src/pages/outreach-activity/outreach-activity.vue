@@ -80,7 +80,7 @@
     {name: '复购率', flex: 1, value: 'repeat_rate', type: 1},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '二维码', flex: 1, value: '', type: 4},
-    {name: '操作', flex: 1, value: '', type: 5},
+    {name: '操作', flex: 1, value: '', type: 5}
   ]
   // const OUTREACH_LIST = [
   //   {activity_name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', group: '白云花园社区', sale_count: 20, total: 100, order_count: '30', status: 1}
@@ -114,8 +114,7 @@
     created() {
       this.corpId = getCorpId()
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
       ...outreachMethods,
       async _setTime(arr) {

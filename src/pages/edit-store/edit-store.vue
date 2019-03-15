@@ -57,36 +57,27 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import AddGoods from '@components/add-goods/add-goods'
+// import AddGoods from '@components/add-goods/add-goods'
   import SelectStore from '@components/select-store/select-store'
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
-  const COMMODITIES_LIST = [
-    '序号',
-    '商品名称',
-    '分类',
-    '出库数(销售单位)',
-    '出库批次',
-    '出库单价',
-    '出库金额',
-    '操作',
-  ]
+  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '出库数(销售单位)', '出库批次', '出库单价', '出库金额', '操作']
 
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
+    components: {
+      // AddGoods,
+      SelectStore
+    },
     data() {
       return {
         commodities: COMMODITIES_LIST
       }
     },
-    components: {
-      // AddGoods,
-      SelectStore
-    },
-    methods:{
+    methods: {
       _batchAddition(list) {
         console.log(list)
       },

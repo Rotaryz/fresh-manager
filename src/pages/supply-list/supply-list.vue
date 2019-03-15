@@ -45,7 +45,7 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box" v-for="(item, index) in orders" :key="index">
+          <div v-for="(item, index) in orders" :key="index" class="list-content list-box">
             <div class="list-item">{{item.merge_at}}</div>
             <div class="list-item">{{item.order_sn}}</div>
             <div class="list-item">{{item.buyer_name}}</div>
@@ -71,14 +71,7 @@
 
   const PAGE_NAME = 'SUPPLIER'
   const TITLE = '订单列表'
-  const COMMODITIES_LIST = [
-    '下单时间',
-    '订单号',
-    '商户名称',
-    '销售金额',
-    '状态',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['下单时间', '订单号', '商户名称', '销售金额', '状态', '操作']
   const SELECT = {
     check: false,
     show: false,

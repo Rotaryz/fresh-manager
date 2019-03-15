@@ -4,24 +4,28 @@
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
       <date-picker
+        :value="startTime"
         class="edit-input-box" type="date"
         placeholder="开始时间"
         style="width: 187px;height: 28px;border-radius: 1px"
+        @on-change="_getStartTime"
       ></date-picker>
-      <!--@on-change="_getStartTime"-->
+      <!---->
       <div class="tip">~</div>
       <div class="down-item">
         <date-picker
+          :value="endTime"
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
           style="width: 187px;height: 28px;border-radius: 1px"
+          @on-change="_getEndTime"
         ></date-picker>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="采购单号"></base-search>
+        <base-search placeHolder="采购单号" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -41,13 +45,13 @@
           <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
             <div class="list-item">{{item.create_day}}</div>
             <div class="list-item">{{item.order_sn}}</div>
-            <div class="list-item">{{item}}</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
+            <div class="list-item">{{item.task_num}}</div>
+            <div class="list-item">{{item.per_amount}}</div>
+            <div class="list-item">{{item.supply_name}}</div>
+            <div class="list-item">{{item.purchase_user_name}}</div>
+            <div class="list-item">{{item.status_str}}</div>
             <div class="list-item">
-              <router-link tag="div" to="purchase-order-detail" append class="list-operation">详情</router-link>
+              <router-link tag="div" :to="'purchase-order-detail/'+ item.id" append class="list-operation">详情</router-link>
             </div>
           </div>
         </div>
@@ -65,16 +69,7 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER'
   const TITLE = '采购单列表'
-  const COMMODITIES_LIST = [
-    '生成时间',
-    '采购订单',
-    '商品采购数',
-    '预采购金额',
-    '供应商',
-    '采购员',
-    '状态',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['生成时间', '采购订单', '商品采购数', '预采购金额', '供应商', '采购员', '状态', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -85,16 +80,82 @@
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        page: 1,
+        startTime: '',
+        endTime: '',
+        keyword: '',
+        time: ''
       }
     },
     computed: {
       ...supplyComputed
     },
+    created() {
+      let time = new Date()
+      time = time.toLocaleDateString().replace(/\//g, '-')
+      this.startTime = time
+      this.endTime = time
+    },
     methods: {
       ...supplyMethods,
-      _getMoreList() {
-
+      _getStartTime(time) {
+        this.startTime = time
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          page: this.page,
+          loading: false
+        })
+      },
+      _search(word) {
+        this.keyword = word
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          page: this.page,
+          loading: false
+        })
+      },
+      _getEndTime(time) {
+        this.endTime = time
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('结束时间不能小于开始时间')
+          return
+        }
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          page: this.page,
+          loading: false
+        })
+      },
+      _getMoreList(page) {
+        this.page = page
+        this.getPurchaseList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          page: this.page,
+          loading: false
+        })
       }
     }
   }
@@ -114,4 +175,3 @@
         &:nth-child(1)
           flex: 1.5
 </style>
-

@@ -740,7 +740,28 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            let time = new Date()
+            time = time.toLocaleDateString().replace(/\//g, '-')
+            store
+              .dispatch('proTask/getPurchaseTaskList', {
+                time: '',
+                startTime: time,
+                endTime: time,
+                keyword: '',
+                page: 1,
+                status: '',
+                loading: true
+              })
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -777,8 +798,17 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购单'],
           beforeResolve(routeTo, routeFrom, next) {
+            let time = new Date()
+            time = time.toLocaleDateString().replace(/\//g, '-')
             store
-              .dispatch('supply/getPurchaseList', {time: '', startTime: '', endTime: '', keyword: '', page: 1, loading: true})
+              .dispatch('supply/getPurchaseList', {
+                time: '',
+                startTime: time,
+                endTime: time,
+                keyword: '',
+                page: 1,
+                loading: true
+              })
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -794,12 +824,24 @@ export default [
       },
       // 采购单详情
       {
-        path: 'purchase-order/purchase-order-detail',
+        path: 'purchase-order/purchase-order-detail/:id',
         name: 'purchase-order-detail',
         component: () => lazyLoadView(import('@pages/purchase-order-detail/purchase-order-detail')),
         meta: {
           titles: ['供应链', '采购', '采购单', '采购单详情'],
           beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('supply/getPurchaseDetail', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
             next()
           }
         }
