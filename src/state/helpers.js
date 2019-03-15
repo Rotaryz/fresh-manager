@@ -67,6 +67,13 @@ export const rushComputed = {
 
 export const rushMethods = mapActions('rush', ['getRushList', 'getRushDetail', 'setRushList'])
 
+// 拓展活动
+export const outreachComputed = {
+  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail'])
+}
+
+export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
+
 export const auxiliaryComputed = {
   ...mapState('auxiliary', {
     unitsList: (state) => state.unitsList
@@ -143,4 +150,13 @@ export const tradeComputed = {
 
 export const tradeMethods = {
   ...mapActions('trade', ['setPage', 'setTradeType', 'setDate', 'setKeyword'])
+}
+
+// OMS
+export const omsComputed = {
+  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail'])
+}
+
+export const omsMethods = {
+  ...mapActions('oms', ['getOmsOrders', 'getOmsOrderDetail', 'setStartTime', 'setEndTime', 'setKeyword', 'setStatus', 'setPage'])
 }
