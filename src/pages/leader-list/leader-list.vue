@@ -25,7 +25,7 @@
             <div class="list-item">{{item.address}}</div>
             <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.is_freeze_str}}</div>
-            <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
+            <div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
               <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
@@ -72,6 +72,7 @@
     '详细地址',
     '创建时间',
     '状态',
+    '是否关联',
     '操作'
   ]
 
@@ -165,7 +166,7 @@
       &:nth-child(6), &:nth-child(7)
         flex: 1.5
       &:last-child
-        flex: 1.4
+        flex: 1.8
 
   .pop-main
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)

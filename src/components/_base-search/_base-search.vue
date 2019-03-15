@@ -42,6 +42,9 @@
         if (e.keyCode === 13) {
           this.$emit('search', this.searchText)
         }
+      },
+      _setText(text) {
+        this.searchText = text
       }
     }
   }
