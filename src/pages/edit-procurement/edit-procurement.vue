@@ -87,8 +87,7 @@
       _back() {
         this.$router.back()
       },
-      submit() {
-      }
+      submit() {}
     }
   }
 </script>
@@ -168,4 +167,3 @@
   .edit-change
     line-height: 40px
 </style>
-

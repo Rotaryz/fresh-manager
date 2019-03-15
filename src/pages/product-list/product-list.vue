@@ -57,9 +57,9 @@
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
-      </div>
+      <!--<div class="pagination-box">-->
+      <!--<base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>-->
+      <!--</div>-->
     </div>
     <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
@@ -73,7 +73,18 @@
 
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
-  const PRODUCT_TITLE_LIST = ['商品图片', '商品名称', '商品编码', '分类', '基本单位', '销售规格', '销售单价', '销售库存', '状态', '操作']
+  const PRODUCT_TITLE_LIST = [
+    '商品图片',
+    '商品名称',
+    '商品编码',
+    '分类',
+    '基本单位',
+    '销售规格',
+    '销售单价',
+    '销售库存',
+    '状态',
+    '操作'
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -145,8 +156,7 @@
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
-          this.keyWord
-        }&current_corp=${currentId}`
+          this.keyWord}&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsListData() {

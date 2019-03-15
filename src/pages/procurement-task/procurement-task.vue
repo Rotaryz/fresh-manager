@@ -4,29 +4,33 @@
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
       <date-picker
+        :value="startTime"
         class="edit-input-box" type="date"
         placeholder="开始时间"
         style="width: 187px;height: 28px;border-radius: 1px"
+        @on-change="_getStartTime"
       ></date-picker>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item">
         <date-picker
+          :value="endTime"
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
           style="width: 187px;height: 28px;border-radius: 1px"
+          @on-change="_getEndTime"
         ></date-picker>
       </div>
       <!--下拉选择-->
       <span class="down-tip">状态</span>
       <div class="down-item">
-        <base-drop-down></base-drop-down>
+        <base-drop-down :select="purchaseTask" @setValue="_setValue"></base-drop-down>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="订单号或商品名称"></base-search>
+        <base-search placeHolder="订单号或商品名称" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -36,40 +40,40 @@
           <p class="identification-name">采购任务列表</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main">发布给采购员</div>
-          <div class="btn-main g-btn-item">新建采购任务<span class="add-icon"></span></div>
+          <div class="btn-main" @click="_sendPublish">发布给采购员</div>
+          <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
         </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div class="pro-select-icon hand"></div>
+          <div class="pro-select-icon hand" :class="{'pro-select-icon-active': select}" @click="selectPurchase('all')"></div>
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="pro-select-icon hand"></div>
-            <div class="list-item">阿克苏苹果克苏苹果克(肉脆汁多)阿克苏苹果克苏苹果克(肉脆汁多)…</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
+          <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box">
+            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select}" @click="selectPurchase(index)"></div>
+            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.supplier}}</div>
+            <div class="list-item">{{item.purchase_user}}</div>
+            <div class="list-item">{{item.finish_num}}({{item.purchase_unit}})</div>
+            <div class="list-item">{{item.plan_num}}({{item.purchase_unit}})</div>
             <div class="list-item list-item-progress">
               <div class="progress-content">
-                <div class="progress-num">5件/10sd件</div>
+                <div class="progress-num">{{item.finish_num}}{{item.purchase_unit}}/{{item.plan_num}}{{item.purchase_unit}}</div>
                 <div class="progress-bar">
-                  <span class="progress-bar-active"></span>
+                  <span class="progress-bar-active" :style="{width: item.finish_percent}"></span>
                 </div>
               </div>
-              <div class="progress-percentage">50%</div>
+              <div class="progress-percentage">{{item.finish_percent}}</div>
             </div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
+            <div class="list-item">{{item.publish_at}}</div>
+            <div class="list-item">{{item.status_str}}</div>
           </div>
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
     <default-modal ref="modal">
@@ -87,10 +91,11 @@
           </div>
           <div class="main-right">
             <div class="main-input-box">
-              <span class="main-input-box-add hand">点击添加</span>
+              <span v-if="goodsItem.goods_sku_code">{{goodsItem.goods_name}}</span>
+              <span v-else class="main-input-box-add hand" @click="_showGoods">点击添加</span>
             </div>
             <div class="main-input-big">
-              <input type="number" class="main-input-box" placeholder="请输入采购数量">
+              <input v-model="taskNum" type="number" class="main-input-box" placeholder="请输入采购数量">
               <span class="main-input-tip">件</span>
             </div>
           </div>
@@ -101,26 +106,64 @@
         </div>
       </div>
     </default-modal>
+    <!--商品弹窗-->
+    <default-modal ref="goods">
+      <div slot="content" class="shade-box">
+        <div class="shade-header">
+          <div class="shade-title">选择商品</div>
+          <span class="close hand" @click="_hideGoods"></span>
+        </div>
+        <!--商品详情-->
+        <div>
+          <div class="shade-tab">
+            <div class="tab-item">
+              <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
+            </div>
+            <div class="tab-item">
+              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+            </div>
+            <div class="tab-item">
+              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            </div>
+          </div>
+          <div class="goods-content">
+            <div class="goods-list" :class="{'goods-list-border':choiceGoods.length}">
+              <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
+                <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                  <span class="after"></span>
+                </div>
+                <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+                <div class="goods-msg">
+                  <div class="goods-name">{{item.goods_name}}</div>
+                  <div class="goods-money">{{item.goods_sku_code}}</div>
+                </div>
+              </div>
+              <!--select-icon-active-->
+            </div>
+          </div>
+          <div class="page-box">
+            <base-pagination ref="goodsPage" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+          </div>
+        </div>
+        <div class="back back-box">
+          <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
+          <div class="back-btn back-submit hand" @click="_miniGoods">确定</div>
+        </div>
+      </div>
+    </default-modal>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'iview'
   import DefaultModal from '@components/default-modal/default-modal'
+  import {proTaskComputed, proTaskMethods} from '@state/helpers'
+  import API from '@api'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '采购任务'
-  const COMMODITIES_LIST = [
-    '商品',
-    '分类',
-    '供应商',
-    '采购员',
-    '计划采购',
-    '已采购',
-    '采购进度',
-    '发布时间',
-    '状态'
-  ]
+  const COMMODITIES_LIST = ['商品', '分类', '供应商', '采购员', '计划采购', '已采购', '采购进度', '发布时间', '状态']
   export default {
     name: PAGE_NAME,
     page: {
@@ -132,18 +175,263 @@
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        page: 1,
+        startTime: '',
+        endTime: '',
+        keyword: '',
+        time: '',
+        status: '',
+        selectList: [],
+        purchaseTask: {
+          check: false,
+          show: false,
+          content: '全部状态',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '待发布', value: 1}, {name: '待采购', value: 2}, {name: '已完成', value: 3}]
+        },
+        parentId: '',
+        taskNum: '',
+        showSelectIndex: -1,
+        choiceGoods: [],
+        goodsPage: {total: 1, per_page: 10, total_page: 1},
+        text: '',
+        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        goodsItem: {},
+        choicePage: 1
       }
     },
-    mounted() {
-      this.$refs.modal.showModal()
+    computed: {
+      ...proTaskComputed
+    },
+    async created() {
+      let time = new Date()
+      time = time.toLocaleDateString().replace(/\//g, '-')
+      this.startTime = time
+      this.endTime = time
+      await this._getFirstAssortment()
+      await this._getGoodsList()
     },
     methods: {
+      ...proTaskMethods,
+      // 选择商品
+      _selectGoods(item, index) {
+        this.showSelectIndex = index
+      },
+      // 获取商品列表
+      async _getGoodsList() {
+        let res = await API.Supply.purchaseTaskGoodsList({
+          keyword: this.text,
+          goods_category_id: this.parentId,
+          page: this.choicePage
+        })
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.goodsPage = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        this.choiceGoods = res.data
+        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
+      },
+      // 搜索商品
+      async _searchGoods(text) {
+        this.text = text
+        this.page = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
+      // 获取分页商品列表
+      async _getMoreGoods(page) {
+        this.choicePage = page
+        await this._getGoodsList()
+      },
+      // 弹窗确定选择链接
+      async _miniGoods() {
+        this.goodsItem = this.choiceGoods[this.showSelectIndex]
+        this._hideGoods()
+      },
+      // 选择二级分类
+      async _secondAssortment(item) {
+        this.parentId = item.id
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        this.secondAssortment.content = '选择二级分类'
+        this.page = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
+      // 选择二级分类
+      async _choessSecondAssortment(item) {
+        this.parentId = item.id
+        this.page = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
+      // 获取一级分类
+      async _getFirstAssortment() {
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
+        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.assortment.data.unshift({name: '全部', id: ''})
+      },
+      // 隐藏商品弹窗
+      _hideGoods() {
+        this.showSelectIndex = -1
+        this.text = ''
+        this.choicePage = 1
+        this.$refs.goods.hideModal()
+      },
+      _showGoods() {
+        this.$refs.goods.showModal()
+      },
       cancel() {
+        this.goodsItem = {}
+        this.taskNum = ''
         this.$refs.modal.hideModal()
       },
-      confirm() {
-
+      async confirm() {
+        if (!this.goodsItem.goods_sku_code) {
+          this.$toast.show('请添加商品')
+          return
+        } else if (!this.taskNum || +this.taskNum <= 0) {
+          this.$toast.show('请输入正确的采购数量')
+          return
+        }
+        let res = await API.Supply.storePurchaseTask({goods_sku_code: this.goodsItem.goods_sku_code, plan_num: this.taskNum})
+        this.$toast.show(res.message)
+        if(res.error !== this.$ERR_OK){
+          return
+        }
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          loading: false
+        })
+        this.cancel()
+      },
+      _addTask() {
+        this.taskNum = ''
+        this.$refs.modal.showModal()
+      },
+      _setValue(item) {
+        this.status = item.value
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          loading: false
+        })
+      },
+      _getStartTime(time) {
+        this.startTime = time
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          loading: false
+        })
+      },
+      _search(word) {
+        this.keyword = word
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          loading: false
+        })
+      },
+      _getEndTime(time) {
+        this.endTime = time
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('结束时间不能小于开始时间')
+          return
+        }
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          loading: false
+        })
+      },
+      async _sendPublish() {
+        let selectArr = []
+        this.purchaseTaskList.forEach((item) => {
+          if (item.select) {
+            selectArr.push(item.id)
+          }
+        })
+        selectArr = selectArr.concat(this.selectList)
+        if (!selectArr.length) {
+          this.$toast.show('请选择采购任务')
+          return
+        }
+        let res = await API.Supply.purchaseTaskPublish({ids: selectArr})
+        this.$toast.show(res.message)
+        this.$loading.hide()
+        if (res.error === this.$ERR_OK) {
+          this.getPurchaseTaskList({
+            time: this.time,
+            startTime: this.startTime,
+            endTime: this.endTime,
+            keyword: this.keyword,
+            status: this.status,
+            page: this.page,
+            loading: false
+          })
+        }
+      },
+      _getMoreList(page) {
+        if (this.page === page) {
+          return
+        }
+        this.page = page
+        this.purchaseTaskList.forEach((item) => {
+          if (item.select) {
+            this.selectList.push(item.id)
+          }
+        })
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          loading: false
+        })
       }
     }
   }
@@ -174,7 +462,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.4
+          flex: 0.5
         &:nth-child(8), &:nth-child(2)
           flex: 1.5
 
@@ -202,7 +490,7 @@
           left: 0
           border-radius: 3px
           background: $color-main
-          width: 50%
+          max-width: 100%
     .progress-percentage
       margin-left: 8px
       line-height: 1
@@ -308,7 +596,7 @@
       align-items: flex-end
       .text
         line-height: 44px
-        color: #666
+        color: #151515
         font-size: $font-size-14
         font-family: $font-family-regular
         position: relative
@@ -353,4 +641,179 @@
           opacity: 0.8
       .one-btn
         margin-left: 0
+
+  .shade-box
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+    border-radius: 1px
+    background: $color-white
+    height: 675px
+    max-width: 1000px
+    width: 1000px
+    position: relative
+    overflow-x: hidden
+    overflow-y: auto
+    flex-wrap: wrap
+
+  .shade-tab
+    height: 67.5px
+    align-items: center
+    padding: 0 20px
+    box-sizing: border-box
+    display: flex
+    .tab-item
+      margin-right: 10px
+
+  .page-box
+    padding: 0 20px
+    box-sizing: border-box
+    height: 66px
+    align-items: center
+    display: flex
+
+  .goods-content
+    border-radius: 4px
+    margin: 0 20px
+    height: 400px
+    .goods-list
+      flex-wrap: wrap
+      display: flex
+    .goods-list-border
+      border: 0.5px solid $color-line
+    .goods-item
+      box-sizing: border-box
+      padding: 0 20px
+      width: 50%
+      height: 79.5px
+      display: flex
+      align-items: center
+      border-bottom: 0.5px solid $color-line
+      &:nth-child(2n+1)
+        border-right: 0.5px solid $color-line
+      &:nth-child(9), &:nth-child(10)
+        border-bottom: none
+      .goods-img
+        margin-right: 10px
+        width: 40px
+        height: @width
+        overflow: hidden
+        background-repeat: no-repeat
+        background-size: cover
+        background-position: center
+        background-color: $color-background
+      .goods-msg
+        display: flex
+        flex-direction: column
+        color: $color-text-main
+        font-family: $font-family-regular
+        justify-content: space-between
+        height: 40px
+        .goods-name
+          width: 350px
+          no-wrap()
+        .goods-name, .goods-money
+          line-height: 1
+          font-size: $font-size-14
+      .add-btn
+        border-radius: 2px
+        margin-left: 88px
+        padding: 5px 0
+        width: 56px
+        text-align: center
+      .add-btn-disable
+        border-radius: 2px
+        margin-left: 88px
+        padding: 5px 0
+        width: 56px
+        box-sizing: border-box
+        text-align: center
+        font-size: $font-size-14
+        line-height: 1
+        cursor: not-allowed
+        background: $color-line
+        color: $color-text-assist
+    .page-box
+      padding: 0 20px
+      box-sizing: border-box
+      height: 66px
+      align-items: center
+      display: flex
+
+  .shade-header
+    display: flex
+    align-items: center
+    justify-content: space-between
+    height: 60.5px
+    box-sizing: border-box
+    padding: 0 20px
+    border-bottom-1px($color-line)
+    .shade-tab-type
+      height: 100%
+      display: flex
+      position: relative
+      .shade-tab-item
+        display: flex
+        transition: all 0.3s
+        color: $color-text-main
+        font-family: $font-family-regular
+        align-items: center
+        margin-left: 40px
+      .shade-tab-item-active
+        font-weight: bold
+        font-family: $font-family-medium
+      .line
+        transition: all 0.3s
+        left: 55px
+        position: absolute
+        bottom: 0px
+        height: 2px
+        width: 34px
+        background: $color-main
+        border-radius: 1px
+    .shade-title
+      color: $color-text-main
+      font-family: $font-family-medium
+      font-size: $font-size-16
+    .close
+      icon-image('icon-close')
+      width: 16px
+      height: @width
+      transition: all 0.3s
+      &:hover
+        transform: scale(1.3)
+
+  .back
+    justify-content: center
+
+  .back-box
+    border-top-1px($color-line)
+    position: absolute
+    left: 0
+    bottom: 0
+
+  //  单选框
+  .select-icon
+    width: 16px
+    height: 16px
+    border-radius: 50%
+    background: $color-white
+    border: 1px solid $color-line
+    transition: all, 0.3s
+    position: relative
+    transform-origin: 50%
+    margin-right: 20px
+    .after
+      all-center()
+      transform-origin: 50%
+      transition: all, 0.3s
+      width: 0
+      height: 0
+      border-radius: 50%
+
+  .select-icon-active
+    border: 1px solid $color-main
+    .after
+      width: 8px
+      height: 8px
+      border-radius: 50%
+      background: $color-main
 </style>

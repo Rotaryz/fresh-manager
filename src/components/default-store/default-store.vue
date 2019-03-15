@@ -14,7 +14,7 @@
               <span class="start">*</span>
               初始销量
             </div>
-            <base-drop-down :select="dispatchSelect" @setValue="setValue" :width="333" :height="44"></base-drop-down>
+            <base-drop-down :select="dispatchSelect" :width="333" :height="44" @setValue="setValue"></base-drop-down>
           </div>
           <div class="btn-group">
             <span class="btn cancel" @click="cancel">取消</span>

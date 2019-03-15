@@ -75,8 +75,7 @@
       _back() {
         this.$router.back()
       },
-      submit() {
-      }
+      submit() {}
     }
   }
 </script>

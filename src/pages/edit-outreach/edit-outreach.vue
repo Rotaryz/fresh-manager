@@ -219,20 +219,13 @@
 
   const PAGE_NAME = 'EDIT_OUTREACH'
   const TITLE = '新建查看拓展活动'
-  const COMMODITIES_LIST = [
-    '商品名称',
-    '单位',
-    '原售价(元)',
-    '活动售价(元)',
-    '排序',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['商品名称', '单位', '原售价(元)', '活动售价(元)', '排序', '操作']
   const GROUP_TITLE = [
     {name: '选择', class: 'title-item', flex: 0.7, value: ''},
     {name: '团长帐号', class: 'title-item', flex: 1, value: 'mobile'},
     {name: '团长名称', class: 'title-item', flex: 1, value: 'name'},
     {name: '社区名称', class: 'title-item', flex: 1.2, value: 'social_name'},
-    {name: '社区地址', class: 'title-item', flex: 2, value: 'address'},
+    {name: '社区地址', class: 'title-item', flex: 2, value: 'address'}
   ]
 
   export default {
@@ -306,25 +299,34 @@
     },
     computed: {
       ...outreachComputed,
-      testName() { // 活动名称
+      testName() {
+        // 活动名称
         return this.essInformation.activity_name
       },
-      testImg() { // 活动图片
+      testImg() {
+        // 活动图片
         return this.essInformation.image_id !== ''
       },
-      testStart() { // 开始时间
+      testStart() {
+        // 开始时间
         return this.essInformation.start_at
       },
-      testStartDate() { // 开始时间规则判断
+      testStartDate() {
+        // 开始时间规则判断
         return Date.parse(this.essInformation.start_at) < new Date()
       },
-      testEnd() { // 结束时间
+      testEnd() {
+        // 结束时间
         return this.essInformation.end_at
       },
-      testEndDate() { // 结束时间规则判断
-        return Date.parse(this.essInformation.end_at + ' 00:00') > Date.parse('' + this.essInformation.start_at + ' 00:00')
+      testEndDate() {
+        // 结束时间规则判断
+        return (
+          Date.parse(this.essInformation.end_at + ' 00:00') > Date.parse('' + this.essInformation.start_at + ' 00:00')
+        )
       },
-      testGroup() { // 社区
+      testGroup() {
+        // 社区
         return this.essInformation.shop_id !== ''
       }
     },
@@ -347,7 +349,7 @@
               start_at: obj.start_at,
               end_at: obj.end_at,
               activity_name: obj.activity_name,
-              activity_cover_image: obj.activity_cover_image,
+              activity_cover_image: obj.activity_cover_image
             }
           }
         },
@@ -355,9 +357,9 @@
       }
     },
     created() {
-      let time = new Date().toLocaleDateString().replace(/^(\d)$/,"0$1")
+      let time = new Date().toLocaleDateString().replace(/^(\d)$/, '0$1')
       this.essInformation.start_at = time.replace(/\//g, '-')
-      if(this.$route.query.id) {
+      if (this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '查看活动'])
       } else {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '新建活动'])
@@ -549,7 +551,7 @@
         if (item.selected === 1) {
           return
         }
-        if(this.selectGoodsId.length === 3 && item.selected !== 2) {
+        if (this.selectGoodsId.length === 3 && item.selected !== 2) {
           this.$toast.show('选择商品数量不能超过三个')
           return
         }

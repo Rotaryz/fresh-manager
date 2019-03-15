@@ -2,19 +2,19 @@
   <div class="purchase-order-detail table">
     <div class="down-content">
       <div class="down-item-text">
-        <span class="down-text">采购单号：T27218-CGD-2019-03-04-00001</span>
+        <span class="down-text">采购单号：{{purchaseDetail.order_sn}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">采购商品数：2018</span>
+        <span class="down-text">采购商品数：{{purchaseDetail.task_num}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">预采购金额：￥209.00</span>
+        <span class="down-text">预采购金额：￥{{purchaseDetail.per_amount}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">供应商：水果供应商B</span>
+        <span class="down-text">供应商：{{purchaseDetail.supply_name}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">状态：待入库</span>
+        <span class="down-text">状态：{{purchaseDetail.status_str}}</span>
       </div>
     </div>
     <div class="table-content">
@@ -24,7 +24,7 @@
           <p class="identification-name">采购单详情</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main">导入采购单</div>
+          <a :href="downUrl" target="_blank" class="btn-main">导出采购单</a>
         </div>
       </div>
       <div class="big-list">
@@ -32,13 +32,13 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">阿克苏苹果克苏苹果克(肉脆汁多)阿克苏苹果克苏苹果克(肉脆汁多)…</div>
-            <div class="list-item">2018-12-07 15:00</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">￥100.00</div>
+          <div v-for="(item, index) in purchaseDetail.detail_list" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.purchase_unit}}</div>
+            <div class="list-item">{{item.base_unit}}</div>
+            <div class="list-item">{{item.purchase_price}}</div>
+            <div class="list-item">{{item.purchase_amount ? '￥' : ''}}{{item.purchase_amount}}</div>
           </div>
         </div>
       </div>
@@ -50,16 +50,11 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {supplyComputed, supplyMethods} from '@state/helpers'
+
   const PAGE_NAME = 'PURCHASE_ORDER_DETAIL'
   const TITLE = '采购单详情'
-  const COMMODITIES_LIST = [
-    '商品',
-    '分类',
-    '采购数量(采购单位)',
-    '采购数量(销售单位)',
-    '采购单价',
-    '采购金额'
-  ]
+  const COMMODITIES_LIST = ['商品', '分类', '采购数量(采购单位)', '采购数量(销售单位)', '采购单价', '采购金额']
   export default {
     name: PAGE_NAME,
     page: {
@@ -67,7 +62,23 @@
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        downUrl: ''
+      }
+    },
+    computed: {
+      ...supplyComputed
+    },
+    created() {
+      let currentId = this.getCurrentId()
+      let token = this.$storage.get('auth.currentUser', '')
+      let params = `${this.$route.params.id}?access_token=${token.access_token}&current_corp=${currentId}`
+      this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-order-export/${params}`
+      console.log(this.downUrl)
+    },
+    methods: {
+      ...supplyMethods,
+      _importFile(e) {
       }
     }
   }

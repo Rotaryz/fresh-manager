@@ -235,7 +235,13 @@
   const FIRST_MENU = [
     // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
     {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
-    {name: '供应链', icon: require('./icon-supply_chain@2x.png'), isLight: false, second: SUPPLY, url: '/home/supply-list'},
+    {
+      name: '供应链',
+      icon: require('./icon-supply_chain@2x.png'),
+      isLight: false,
+      second: SUPPLY,
+      url: '/home/supply-list'
+    },
     {
       name: '统计',
       icon: require('./icon-statistics@2x.png'),
@@ -250,7 +256,7 @@
       second: FINANCE,
       url: '/home/business-overview'
     }
-    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
+  // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
   ]
   export default {
     name: COMPONENT_NAME,
@@ -312,7 +318,6 @@
           item.isLight = idx === index
           return item
         })
-
       },
       // 点击一级导航
       _setFirstMenu(i) {

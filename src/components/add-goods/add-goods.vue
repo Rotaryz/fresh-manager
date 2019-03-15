@@ -86,8 +86,7 @@
     },
     async created() {
       await this._getGoodsList()
-      // this.$refs.goodsModel.showModal()
-
+    // this.$refs.goodsModel.showModal()
     },
     methods: {
       // 删除商品传入商品id

@@ -158,14 +158,30 @@ export const omsComputed = {
 }
 
 export const omsMethods = {
-  ...mapActions('oms', ['getOmsOrders', 'getOmsOrderDetail', 'setStartTime', 'setEndTime', 'setKeyword', 'setStatus', 'setPage'])
+  ...mapActions('oms', [
+    'getOmsOrders',
+    'getOmsOrderDetail',
+    'setStartTime',
+    'setEndTime',
+    'setKeyword',
+    'setStatus',
+    'setPage'
+  ])
 }
-// 轮播广告
+// 采购单
 export const supplyComputed = {
   ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail'])
 }
 
 export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail'])
+
+// 采购任务
+export const proTaskComputed = {
+  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select'])
+}
+
+export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase'])
+
 
 // 调度任务
 export const deliveryComputed = {
@@ -175,3 +191,4 @@ export const deliveryComputed = {
 export const deliveryMethods = {
   ...mapActions('delivery', ['getRouteData', 'setTabIndex', 'getDriverList', 'getRoads'])
 }
+

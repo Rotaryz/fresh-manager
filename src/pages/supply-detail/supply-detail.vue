@@ -78,6 +78,6 @@
     .enter-title-money
       color: #F84E3C
   .tip
-    margin :0 2px
+    margin: 0 2px
     font-size: $font-size-14
 </style>

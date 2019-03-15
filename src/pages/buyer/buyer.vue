@@ -43,13 +43,7 @@
 <script type="text/ecmascript-6">
   const PAGE_NAME = 'BUYER'
   const TITLE = '采购员'
-  const COMMODITIES_LIST = [
-    '编号',
-    '账号',
-    '姓名',
-    '手机',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['编号', '账号', '姓名', '手机', '操作']
   export default {
     name: PAGE_NAME,
     page: {

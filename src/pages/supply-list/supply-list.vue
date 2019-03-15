@@ -71,14 +71,7 @@
 
   const PAGE_NAME = 'SUPPLIER'
   const TITLE = '订单列表'
-  const COMMODITIES_LIST = [
-    '下单时间',
-    '订单号',
-    '商户名称',
-    '销售金额',
-    '状态',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['下单时间', '订单号', '商户名称', '销售金额', '状态', '操作']
   const SELECT = {
     check: false,
     show: false,

@@ -622,7 +622,7 @@
             this.$toast.show(`${list[i].name}输入数据有误`)
             return
           }
-          // }
+        // }
         }
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null

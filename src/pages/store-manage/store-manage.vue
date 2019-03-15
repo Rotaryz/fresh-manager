@@ -59,9 +59,7 @@
       DefaultInput
     },
     data() {
-      return {
-
-      }
+      return {}
     },
     methods: {
       creatNewList() {

@@ -63,7 +63,7 @@ export const actions = {
   },
   // 团长详情
   getPurchaseDetail({commit}, id) {
-    return API.Purchase.purchaseDetail(id, true)
+    return API.Supply.purchaseDetail(id, true)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
