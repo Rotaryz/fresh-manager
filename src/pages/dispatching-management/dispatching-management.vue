@@ -28,31 +28,31 @@
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_del"></default-confirm>
-    <!--<default-modal ref="line">-->
-    <!--<div slot="content" class="default-input">-->
-    <!--<div class="title-input">-->
-    <!--<div class="title">新建线路</div>-->
-    <!--<div class="close-box" @click="cancel">-->
-    <!--<div class="close"></div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="main-input">-->
-    <!--<div class="main-left">-->
-    <!--<div class="text">线路名称</div>-->
-    <!--</div>-->
-    <!--<div class="main-right">-->
-    <!--<div class="main-input-big">-->
-    <!--<input type="number" class="main-input-box" placeholder="请输入线路名称">-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="btn-group">-->
-    <!--<div class="btn cancel" @click="cancel">取消</div>-->
-    <!--<div class="btn confirm" @click="confirm">确定</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</default-modal>-->
-    <default-modal ref="modal">
+    <default-modal ref="line">
+      <div slot="content" class="default-input">
+        <div class="title-input">
+          <div class="title">新建线路</div>
+          <div class="close-box" @click="cancel">
+            <div class="close"></div>
+          </div>
+        </div>
+        <div class="main-input">
+          <div class="main-left">
+            <div class="text">线路名称</div>
+          </div>
+          <div class="main-right">
+            <div class="main-input-big">
+              <input type="number" class="main-input-box" placeholder="请输入线路名称">
+            </div>
+          </div>
+        </div>
+        <div class="btn-group">
+          <div class="btn cancel" @click="cancel">取消</div>
+          <div class="btn confirm" @click="confirm">确定</div>
+        </div>
+      </div>
+    </default-modal>
+    <default-modal ref="driver">
       <div slot="content" class="default-input">
         <div class="title-input">
           <div class="title">新建司机</div>
