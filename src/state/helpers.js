@@ -192,3 +192,12 @@ export const deliveryMethods = {
   ...mapActions('delivery', ['getRouteData', 'setTabIndex', 'getDriverList', 'getRoads'])
 }
 
+// 库位管理
+export const productComputed = {
+  ...mapGetters('product', ['storeList'])
+}
+
+export const productMethods = {
+  ...mapActions('product', ['getStore'])
+}
+

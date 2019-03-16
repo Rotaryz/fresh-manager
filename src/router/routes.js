@@ -938,7 +938,16 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '库位管理'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('product/getStore')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+              return next({name: '404'})
+            })
           }
         }
       },
@@ -950,7 +959,16 @@ export default [
         meta: {
           titles: ['供应链', '配送', '配送任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('delivery/getDriverList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+              return next({name: '404'})
+            })
           }
         }
       },
