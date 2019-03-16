@@ -220,10 +220,10 @@ export const supplierMethods = {
 
 // 库位管理
 export const productComputed = {
-  ...mapGetters('product', ['storeList'])
+  ...mapGetters('product', ['storeList', 'enterList', 'statePageTotal', 'outList', 'outPageTotal', 'enterDetail', 'outDetail'])
 }
 
 export const productMethods = {
-  ...mapActions('product', ['getStore'])
+  ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
 }
 

@@ -7,6 +7,7 @@
         class="edit-input-box" type="date"
         placeholder="开始时间"
         style="width: 187px;height: 28px;border-radius: 1px"
+        @on-change="changeStartTime"
       ></date-picker>
       <!--@on-change="_getStartTime"-->
       <div class="tip">~</div>
@@ -16,17 +17,18 @@
           type="date"
           placeholder="结束时间"
           style="width: 187px;height: 28px;border-radius: 1px"
+          @on-change="changeEndTime"
         ></date-picker>
       </div>
       <!--下拉选择-->
       <span class="down-tip">状态</span>
       <div class="down-item">
-        <base-drop-down></base-drop-down>
+        <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="出库单号或商户名称 "></base-search>
+        <base-search placeHolder="出库单号或商户名称" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -44,15 +46,15 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">2018-12-07 15:00</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
+          <div v-for="(item, index) in productOutList" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.build_time}}</div>
+            <div class="list-item">{{item.order_sn}}</div>
+            <div class="list-item">{{item.out_order_sn}}</div>
+            <div class="list-item">{{item.merchant_name}}</div>
+            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">{{item.status_str}}</div>
             <div class="list-item list-operation-box">
-              <span class="list-operation">出库</span>
+              <router-link tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">出库</router-link>
             </div>
           </div>
         </div>
@@ -66,6 +68,9 @@
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'iview'
+  import _ from 'lodash'
+  import API from '@api'
+  import {productComputed} from '@state/helpers'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品出库'
@@ -80,7 +85,81 @@
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        productOutList: [],
+        pageTotal: {},
+        status: '',
+        startTime: '',
+        endTime: '',
+        keyWord: '',
+        goodsPage: 1,
+        dispatchSelect: {
+          check: false,
+          show: false,
+          content: '全部状态',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '待提交', value: 0}, {name: '已完成', value: 1}]
+        }
+      }
+    },
+    computed: {
+      ...productComputed
+    },
+    created() {
+      this.productOutList = _.cloneDeep(this.outList)
+      this.pageTotal = _.cloneDeep(this.outPageTotal)
+    },
+    methods: {
+      getProductListData() {
+        let data = {
+          status: this.status,
+          page: this.goodsPage,
+          limit: 10,
+          start_time: this.startTime,
+          end_time: this.endTime,
+          keyword: this.keyWord
+        }
+        API.Store.getOutList(data, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.productOutList = res.data
+            let statePageTotal = {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+            this.pageTotal = statePageTotal
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      changeKeyword(keyword) {
+        this.keyWord = keyword
+        this.goodsPage = 1
+        this.getProductListData()
+        this.$refs.pagination.beginPage()
+      },
+      changeStartTime(value) {
+        this.startTime = value
+        this.goodsPage = 1
+        this.getProductListData()
+        this.$refs.pagination.beginPage()
+      },
+      changeEndTime(value) {
+        this.endTime = value
+        this.goodsPage = 1
+        this.getProductListData()
+        this.$refs.pagination.beginPage()
+      },
+      setValue(item) {
+        this.$refs.pagination.beginPage()
+        this.status = item.value
+        this.goodsPage = 1
+        this.getProductListData()
+      },
+      addPage(page) {
+        this.goodsPage = page
+        this.getProductListData()
       }
     }
   }

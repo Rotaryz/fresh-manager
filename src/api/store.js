@@ -80,5 +80,45 @@ export default {
   findChild(id, data, loading = false) {
     let url = `/scm/api/backend/warehouse/son-position/${id}`
     return request.get(url, data, loading)
+  },
+  /**
+   * 入库单列表
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  getEnterList(data, loading = true) {
+    let url = `/scm/api/backend/warehouse/entry-orders`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 入库单列表
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  getOutList(data, loading = true) {
+    let url = `/scm/api/backend/warehouse/out-orders`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 入库单明细
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  getEnterDetail(id, data, loading = true) {
+    let url = `/scm/api/backend/warehouse/entry-details/${id}`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 出库单明细
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  getOutDetail(id, data, loading = true) {
+    let url = `/scm/api/backend/warehouse/out-details/${id}`
+    return request.get(url, data, loading)
   }
 }
