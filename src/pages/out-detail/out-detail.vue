@@ -1,12 +1,12 @@
 <template>
   <div class="procurement-task table">
     <div class="down-content">
-      <div class="enter-title">出库单号：T27218-CGD-2019-03-04-00001</div>
-      <div class="enter-title">关联订单号：BL343543444</div>
-      <div class="enter-title">商户名称：广海花园社区</div>
-      <div class="enter-title">出库时间：——</div>
-      <div class="enter-title">状态：待提交</div>
-      <div class="enter-title">入库金额：<span class="enter-title-money">￥209.00</span></div>
+      <div class="enter-title">出库单号：{{outMsg.order_sn}}</div>
+      <div class="enter-title">关联订单号：{{outMsg.out_order_sn}}</div>
+      <div class="enter-title">商户名称：{{outMsg.merchant_name}}</div>
+      <div class="enter-title">出库时间：{{outMsg.out_time}}</div>
+      <div class="enter-title">状态：{{outMsg.status === 0 ? '待出库' : '已完成'}}</div>
+      <div class="enter-title">入库金额：<span class="enter-title-money">￥{{outMsg.total}}</span></div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -14,8 +14,8 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div class="function-btn">
-          <div class="btn-main">提交入库单<span class="add-icon"></span></div>
+        <div v-if="outMsg.status === 0" class="function-btn" @click="outFn">
+          <div class="btn-main">确定出库<span class="add-icon"></span></div>
         </div>
       </div>
       <div class="big-list">
@@ -23,25 +23,20 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">2018-12-07 15:00</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item list-operation-box">
-              <span class="list-operation">入库</span>
-            </div>
+          <div v-for="(item, index) in outDetailList" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.sale_num}}</div>
+            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
+            <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
+            <div class="list-item hand" @click="outFn(item, index)">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</div>
+            <div class="list-item">{{item.out_cost_price}}</div>
+            <div class="list-item">{{item.cost_total}}</div>
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
-      </div>
     </div>
+    <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
   </div>
 </template>
 
@@ -49,27 +44,27 @@
   import _ from 'lodash'
   import API from '@api'
   import {productComputed} from '@state/helpers'
+  import DefaultBatch from '@components/default-batch/default-batch'
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
-  const COMMODITIES_LIST = [
-    '批次号',
-    '商品',
-    '分类',
-    '入库数量(采购单位)',
-    '入库单价(销售单位) ',
-    '入库金额',
-    '保质期',
-    '存放库位',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['批次号', '商品', '分类', '出库数量(销售单位)', '出库数量(基本单位)', '出库批次', '出库单价', '出库金额']
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
+    components: {
+      DefaultBatch
+    },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        outDetailList: [],
+        outMsg: {},
+        id: '',
+        batchList: [],
+        curIndex: 0,
+        curItem: {}
       }
     },
     computed: {
@@ -77,6 +72,42 @@
     },
     created() {
       console.log(_, API)
+      this.id = this.$route.params.id || null
+      this.outDetailList = _.cloneDeep(this.outDetail.data)
+      this.outMsg = _.cloneDeep(this.outDetail.out_order)
+    },
+    methods: {
+      getOutBatchList(index) {
+        API.Store.outBatchList({goods_sku_code: this.outDetailList[index].goods_sku_code}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            console.log(res.data)
+            this.batchList = res.data
+            if (this.outDetailList[index].out_batches.length) {
+              this.outDetailList[index].out_batches.forEach(item => {
+                this.batchList.forEach(item1 => {
+                  if(item1.batch_num === item.batch_num) {
+                    item1.out_count = item.select_out_num
+                  }
+                })
+              })
+            }
+            this.$refs.modalBox.show()
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      outFn(item, index) {
+        this.curItem = item
+        this.curIndex = index
+        this.getOutBatchList(index)
+      },
+      confirm(arr) {
+        console.log(arr)
+        this.outDetailList[this.curIndex].out_batches = arr
+        console.log(this.outDetailList)
+        this.$refs.modalBox.cancel()
+      }
     }
   }
 </script>

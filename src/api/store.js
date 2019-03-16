@@ -120,5 +120,25 @@ export default {
   getOutDetail(id, data, loading = true) {
     let url = `/scm/api/backend/warehouse/out-details/${id}`
     return request.get(url, data, loading)
+  },
+  /**
+   * 入库单提交
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  putEnterSubmit(id, data, loading = true) {
+    let url = `/scm/api/backend/warehouse/entry-details/${id}`
+    return request.put(url, data, loading)
+  },
+  /**
+   * 出库批次列表
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  outBatchList(data, loading = false) {
+    let url = `/scm/api/backend/warehouse/out-batch`
+    return request.get(url, data, loading)
   }
 }

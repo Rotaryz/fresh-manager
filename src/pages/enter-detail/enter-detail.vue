@@ -4,7 +4,7 @@
       <div class="enter-title">入库单号：{{enterMsg.order_sn}}</div>
       <div class="enter-title">供应商：{{enterMsg.supplier}}</div>
       <div class="enter-title">入库时间：{{enterMsg.build_time}}</div>
-      <div class="enter-title">状态：{{enterMsg.status_str}}</div>
+      <div class="enter-title">状态：{{enterMsg.status === 0 ? '待入库' : '已完成'}}</div>
       <div class="enter-title">入库金额：<span class="enter-title-money">￥{{enterMsg.total}}</span></div>
     </div>
     <div class="table-content">
@@ -48,10 +48,10 @@
               <div v-if="enterMsg.status === 1">{{item.shelf_life}}</div>
             </div>
             <div class="list-item">
-              <div v-if="enterMsg.status === 0" class="select-time">
+              <div v-if="enterMsg.status === 0" class="select-time" @click="setStoreFn(index)">
                 <div v-if="item.warehouse_position" class="select-time-name">{{item.warehouse_position}}</div>
                 <div v-if="!item.warehouse_position" class="select-time-name">请选择</div>
-                <div class="select-time-icon"></div>
+                <!--<div class="select-time-icon"></div>-->
               </div>
               <div v-if="enterMsg.status === 1">
                 {{item.warehouse_position}}
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-      <default-store ref="modalBox"></default-store>
+      <default-store ref="modalBox" @confirm="confirm"></default-store>
     </div>
   </div>
 </template>
@@ -91,53 +91,51 @@
         commodities: COMMODITIES_LIST,
         enterDetailList: [],
         enterMsg: {},
-        storeList: []
+        curIndex: 0,
+        id: null
       }
     },
     computed: {
       ...productComputed
     },
     created() {
-      console.log(_, API)
       this.id = this.$route.params.id || null
       this.enterDetailList = _.cloneDeep(this.enterDetail.data)
       this.enterMsg = _.cloneDeep(this.enterDetail.entry_order)
-      this.getStoreList()
     },
     methods: {
       submitFn() {
-        console.log(this.enterDetailList)
-        this.$refs.modalBox.show()
-      },
-      changeStartTime(e, index) {
-        this.enterDetailList[index].shelf_life = e
-      },
-      getStoreList() {
-        API.Store.getStoreList().then((res) => {
+        let arr = []
+        this.enterDetailList.forEach(item => {
+          let obj = {}
+          obj.id = item.id
+          obj.base_num = item.base_num
+          obj.purchase_num = item.purchase_num
+          obj.shelf_life = item.shelf_life
+          obj.warehouse_position_id = item.warehouse_position_id
+          arr.push(obj)
+        })
+        API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {
           if (res.error === this.$ERR_OK) {
             console.log(res.data)
-            for (let i = 0; i < res.data.length; i++) {
-              if (i === 0) {
-                let obj = {}
-                let selectObj = {
-                  check: false,
-                  show: false,
-                  content: '请选择',
-                  type: 'default',
-                  data: [{name: '全部', value: ''}, {name: '待提交', value: 0}, {name: '已完成', value: 1}]
-                }
-                obj.name = res.data[0].name
-                obj.id = res.data[0].id
-                obj.level_id = res.data[0].level_id
-                selectObj.data = res.data[0].warehouse_positions
-                obj.selectItem = selectObj
-                console.log(obj)
-              } else {}
-            }
+            this.enterMsg.status = 1
+            this.$loading.hide()
           } else {
             this.$toast.show(res.message)
           }
         })
+      },
+      changeStartTime(e, index) {
+        this.enterDetailList[index].shelf_life = e
+      },
+      setStoreFn(idnex) {
+        this.curIndex = idnex
+        this.$refs.modalBox.show()
+      },
+      confirm(id, text) {
+        this.enterDetailList[this.curIndex].warehouse_position_id = id
+        this.enterDetailList[this.curIndex].warehouse_position = text
+        this.$refs.modalBox.cancel()
       }
     }
   }

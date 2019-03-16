@@ -9,12 +9,12 @@
           </div>
         </div>
         <div class="main-input">
-          <div class="edit-item">
+          <div v-for="(item,index) in storeList" :key="index" class="edit-item">
             <div class="edit-title">
-              <span class="start">*</span>
-              初始销量
+              <span class="start"></span>
+              {{item.name}}
             </div>
-            <base-drop-down :select="dispatchSelect" :width="333" :height="44" @setValue="setValue"></base-drop-down>
+            <base-drop-down :select="item.selectItem" :width="333" :height="44" @setValue="setValue($event, item, index)"></base-drop-down>
           </div>
           <div class="btn-group">
             <span class="btn cancel" @click="cancel">取消</span>
@@ -28,6 +28,7 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+  import API from '@api'
   const COMPONENT_NAME = 'DEFAULT_STORE'
 
   export default {
@@ -35,17 +36,17 @@
     components: {DefaultModal},
     data() {
       return {
-        numberTxt: '',
-        numberTitle: '',
-        numberPla: '',
-        dispatchSelect: {
-          check: false,
-          show: false,
-          content: '全部状态',
-          type: 'default',
-          data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
-        }
+        storeList: [],
+        storeText: '',
+        storeId: '',
+        firstName: '',
+        secondName: '',
+        thrName: '',
+        fourName: ''
       }
+    },
+    created() {
+      this.getStoreList()
     },
     methods: {
       show() {
@@ -54,8 +55,84 @@
       cancel() {
         this.$refs.modal && this.$refs.modal.hideModal()
       },
-      setValue() {},
-      confirm() {}
+      setValue(value, item, index) {
+        switch (index) {
+        case 0:
+          this.firstName = value.name
+          this.storeText = this.firstName
+          break
+        case 1:
+          this.secondName = value.name
+          this.storeText = this.firstName + this.secondName
+          break
+        case 2:
+          this.thrName = value.name
+          this.storeText = this.firstName + this.secondName + this.thrName
+          break
+        case 3:
+          this.fourName = value.name
+          this.storeText = this.firstName + this.secondName + this.thrName + this.fourName
+          break
+        }
+        this.storeId = value.id
+        API.Store.findChild(value.id).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            for (let number = index + 1; number < this.storeList.length; number++) {
+              this.storeList[number].selectItem.data = []
+              this.storeList[number].selectItem.content = '请选择'
+            }
+            if (index + 1 === this.storeList.length) return
+            this.storeList[index + 1].selectItem.data = res.data
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      confirm() {
+        this.$emit('confirm', this.storeId, this.storeText)
+      },
+      getStoreList() {
+        API.Store.getStoreList(null, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            let arr = []
+            for (let i = 0; i < res.data.length; i++) {
+              if (i === 0) {
+                let obj = {}
+                let selectObj = {
+                  check: false,
+                  show: false,
+                  content: '请选择',
+                  type: 'default',
+                  data: [{name: '全部', value: ''}, {name: '待提交', value: 0}, {name: '已完成', value: 1}]
+                }
+                obj.name = res.data[i].name
+                obj.id = res.data[i].id
+                obj.level_id = res.data[i].level_id
+                selectObj.data = res.data[i].warehouse_positions
+                obj.selectItem = selectObj
+                arr.push(obj)
+              } else {
+                let obj = {}
+                let selectObj = {
+                  check: false,
+                  show: false,
+                  content: '请选择',
+                  type: 'default',
+                  data: []
+                }
+                obj.name = res.data[i].name
+                obj.id = res.data[i].id
+                obj.level_id = res.data[i].level_id
+                obj.selectItem = selectObj
+                arr.push(obj)
+              }
+            }
+            this.storeList = arr
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      }
     }
   }
 </script>
@@ -157,7 +234,4 @@
         opacity: 0.8
     .one-btn
       margin-left: 0
-
-  .z
-    width: 100%
 </style>
