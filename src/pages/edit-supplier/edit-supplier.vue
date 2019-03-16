@@ -120,7 +120,26 @@
       back() {
         this.$router.back()
       },
+      checkDataValidate() {
+        if (!this.supplierName) {
+          this.$toast.show('请输入供应商名称')
+          return
+        } else if (!this.mobile) {
+          this.$toast.show('请输入手机号')
+          return
+        } else if (!this.address) {
+          this.$toast.show('请输入供应商地址')
+          return
+        } else if (!this.purchaseUserId) {
+          this.$toast.show('请选择所属采购员')
+          return
+        }
+        return true
+      },
       submit() {
+        if (!this.checkDataValidate()) {
+          return
+        }
         let data = {
           supplier_name: this.supplierName,
           mobile: this.mobile,

@@ -111,7 +111,32 @@
       back() {
         this.$router.back()
       },
+      checkDataValidate() {
+        if (!this.username) {
+          this.$toast.show('请输入账号')
+          return
+        } else if (this.isChangePassword && !this.password) {
+          this.$toast.show('请输入密码')
+          return
+        } else if (this.isChangePassword && !this.comfirmPassword) {
+          this.$toast.show('请输入确认密码')
+          return
+        } else if (this.isChangePassword && this.password !== this.comfirmPassword) {
+          this.$toast.show('密码和确认密码不一致')
+          return
+        } else if (!this.name) {
+          this.$toast.show('请输入姓名')
+          return
+        } else if (!this.mobile) {
+          this.$toast.show('请输入手机号')
+          return
+        }
+        return true
+      },
       submit() {
+        if (!this.checkDataValidate()) {
+          return
+        }
         let data = {
           user_name: this.username,
           true_name: this.name,
