@@ -48,7 +48,12 @@
       }
     },
     methods: {
-      cancel() {},
+      show() {
+        this.$refs.modal && this.$refs.modal.showModal()
+      },
+      cancel() {
+        this.$refs.modal && this.$refs.modal.hideModal()
+      },
       setValue() {},
       confirm() {}
     }

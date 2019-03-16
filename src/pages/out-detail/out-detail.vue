@@ -46,6 +46,9 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import _ from 'lodash'
+  import API from '@api'
+  import {productComputed} from '@state/helpers'
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
@@ -68,6 +71,12 @@
       return {
         commodities: COMMODITIES_LIST
       }
+    },
+    computed: {
+      ...productComputed
+    },
+    created() {
+      console.log(_, API)
     }
   }
 </script>

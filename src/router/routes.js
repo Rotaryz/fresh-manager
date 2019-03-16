@@ -878,19 +878,38 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('product/getEnterData', 1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+              return next({name: '404'})
+            })
           }
         }
       },
       // 成品入库明细
       {
-        path: 'product-enter/enter-detail',
+        path: 'product-enter/enter-detail/:id',
         name: 'enter-detail',
         component: () => lazyLoadView(import('@pages/enter-detail/enter-detail')),
         meta: {
           titles: ['供应链', '仓库', '成品入库', '商品明细'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('product/getEnterDetailData', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
@@ -902,19 +921,38 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('product/getOutData', 1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+              return next({name: '404'})
+            })
           }
         }
       },
       // 成品入库明细
       {
-        path: 'product-out/out-detail',
+        path: 'product-out/out-detail/:id',
         name: 'out-detail',
         component: () => lazyLoadView(import('@pages/out-detail/out-detail')),
         meta: {
           titles: ['供应链', '仓库', '成品出库', '商品明细'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('product/getOutDetailData', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
