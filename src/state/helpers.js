@@ -217,3 +217,13 @@ export const supplierComputed = {
 export const supplierMethods = {
   ...mapActions('supplier', ['getSupplier', 'getSupplierDetail', 'setKeyword', 'setPage'])
 }
+
+// 库位管理
+export const productComputed = {
+  ...mapGetters('product', ['storeList'])
+}
+
+export const productMethods = {
+  ...mapActions('product', ['getStore'])
+}
+
