@@ -191,6 +191,15 @@ export const deliveryMethods = {
   ...mapActions('delivery', ['getRouteData', 'setTabIndex', 'getDriverList', 'getRoads'])
 }
 
+// 调度任务
+export const distributionComputed = {
+  ...mapGetters('distribution', ['tabIndex', 'orderList', 'orderPageDetail', 'orderPage', 'orderStartTime', 'orderEndTime', 'orderKeyword', 'driverList', 'driverPageDetail', 'driverPage', 'driverStartTime', 'driverEndTime'])
+}
+
+export const distributionMethods = {
+  ...mapActions('distribution', ['setTabIndex', 'getOrderList', 'setOrderStartTime', 'setOrderEndTime', 'setOrderKeyword', 'setOrderPage', 'getDriverList', 'setDriverStartTime', 'setDriverEndTime', 'setDriverPage'])
+}
+
 // 采购员
 export const buyerComputed = {
   ...mapGetters('buyer', ['list', 'pageDetail', 'detail', 'keyword', 'page'])

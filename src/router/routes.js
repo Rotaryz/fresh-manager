@@ -998,7 +998,33 @@ export default [
         meta: {
           titles: ['供应链', '配送', '配送任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            console.log(store)
+            let tabIndex = store.state.distribution.tabIndex
+            if (tabIndex === 0) {
+              store
+                .dispatch('distribution/getOrderList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            } else {
+              store
+                .dispatch('distribution/getDriverList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            }
           }
         }
       },
