@@ -1045,7 +1045,6 @@ export default [
         meta: {
           titles: ['供应链', '配送', '配送任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            console.log(store)
             let tabIndex = store.state.distribution.tabIndex
             if (tabIndex === 0) {
               store
