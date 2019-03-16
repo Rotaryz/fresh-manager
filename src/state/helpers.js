@@ -151,3 +151,79 @@ export const tradeComputed = {
 export const tradeMethods = {
   ...mapActions('trade', ['setPage', 'setTradeType', 'setDate', 'setKeyword'])
 }
+
+// OMS
+export const omsComputed = {
+  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail'])
+}
+
+export const omsMethods = {
+  ...mapActions('oms', [
+    'getOmsOrders',
+    'getOmsOrderDetail',
+    'setStartTime',
+    'setEndTime',
+    'setKeyword',
+    'setStatus',
+    'setPage'
+  ])
+}
+// 采购单
+export const supplyComputed = {
+  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail'])
+}
+
+export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail'])
+
+// 采购任务
+export const proTaskComputed = {
+  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select'])
+}
+
+export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase'])
+
+// 调度任务
+export const deliveryComputed = {
+  ...mapGetters('delivery', ['tabIndex', 'driverList', 'driverPageDetail', 'driverPage', 'roads'])
+}
+
+export const deliveryMethods = {
+  ...mapActions('delivery', ['getRouteData', 'setTabIndex', 'getDriverList', 'getRoads'])
+}
+
+// 调度任务
+export const distributionComputed = {
+  ...mapGetters('distribution', ['tabIndex', 'orderList', 'orderPageDetail', 'orderPage', 'orderStartTime', 'orderEndTime', 'orderKeyword', 'driverList', 'driverPageDetail', 'driverPage', 'driverStartTime', 'driverEndTime'])
+}
+
+export const distributionMethods = {
+  ...mapActions('distribution', ['setTabIndex', 'getOrderList', 'setOrderStartTime', 'setOrderEndTime', 'setOrderKeyword', 'setOrderPage', 'getDriverList', 'setDriverStartTime', 'setDriverEndTime', 'setDriverPage'])
+}
+
+// 采购员
+export const buyerComputed = {
+  ...mapGetters('buyer', ['list', 'pageDetail', 'detail', 'keyword', 'page'])
+}
+
+export const buyerMethods = {
+  ...mapActions('buyer', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage'])
+}
+
+// 供应商
+export const supplierComputed = {
+  ...mapGetters('supplier', ['list', 'pageDetail', 'detail', 'keyword', 'page'])
+}
+
+export const supplierMethods = {
+  ...mapActions('supplier', ['getSupplier', 'getSupplierDetail', 'setKeyword', 'setPage'])
+}
+
+// 库位管理
+export const productComputed = {
+  ...mapGetters('product', ['storeList', 'enterList', 'statePageTotal', 'outList', 'outPageTotal', 'enterDetail', 'outDetail'])
+}
+
+export const productMethods = {
+  ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
+}
+

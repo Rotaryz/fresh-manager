@@ -297,7 +297,7 @@
   .back
     justify-content: center
     position: fixed
-    left: 200px
+    left: 210px
     right: 0px
     bottom: 0
     z-index: 10

@@ -1,13 +1,20 @@
 <template>
   <div class="product-list table">
     <div class="down-content">
-      <span class="down-tip">筛选</span>
+      <span class="down-tip">分类筛选</span>
+      <div class="down-item-small">
+        <base-drop-down :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+      </div>
+      <div class="down-item">
+        <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
+      </div>
+      <span class="down-tip">状态</span>
       <div class="down-item">
         <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="商品名称" @search="search"></base-search>
+        <base-search placeHolder="商品名称或编码" @search="search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -19,7 +26,7 @@
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
           <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>
-          <div v-if="$VUE_APP_ENV !== 'production'" class="btn-main g-btn-item" @click="_syncGoods">同步</div>
+          <!--<div class="btn-main g-btn-item" @click="_syncGoods">同步</div>-->
         </div>
       </div>
       <div class="big-list">
@@ -32,14 +39,17 @@
               <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
             </div>
             <div class="list-item">{{item.name}}</div>
-            <div class="list-item">{{item.goods_units}}</div>
+            <div class="list-item">{{item.goods_sku_code}}</div>
+            <div class="list-item">{{item.goods_category_name}}</div>
+            <div class="list-item">{{item.base_unit}}</div>
+            <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.trade_price}}</div>
+            <div class="list-item">{{item.usable_stock}}</div>
             <div class="list-item">
               <div class="list-item-btn" @click="switchBtn(item, index)">
                 <base-switch :status="item.is_online"></base-switch>
               </div>
             </div>
-            <div class="list-item">{{item.usable_stock}}</div>
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
               <span class="list-operation" @click.stop="delGoods(item)">删除</span>
@@ -47,9 +57,9 @@
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
-      </div>
+      <!--<div class="pagination-box">-->
+      <!--<base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>-->
+      <!--</div>-->
     </div>
     <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
@@ -63,7 +73,18 @@
 
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
-  const PRODUCT_TITLE_LIST = ['商品图片', '商品名称', '售卖单位', '售价', '状态', '库存', '操作']
+  const PRODUCT_TITLE_LIST = [
+    '商品图片',
+    '商品名称',
+    '商品编码',
+    '分类',
+    '基本单位',
+    '销售规格',
+    '销售单价',
+    '销售库存',
+    '状态',
+    '操作'
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -83,6 +104,20 @@
           type: 'default',
           data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
         },
+        stairSelect: {
+          check: false,
+          show: false,
+          content: '一级分类',
+          type: 'default',
+          data: []
+        },
+        secondSelect: {
+          check: false,
+          show: false,
+          content: '二级分类',
+          type: 'default',
+          data: []
+        },
         goodsList: [],
         pageTotal: {},
         isOnline: '',
@@ -90,7 +125,8 @@
         goodsPage: 1,
         curItem: '',
         downUrl: '',
-        oneBtn: false
+        oneBtn: false,
+        categoryId: ''
       }
     },
     computed: {
@@ -100,6 +136,7 @@
       this._getUrl()
       this.goodsList = _.cloneDeep(this.productList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
+      this.getCategoriesData()
     },
     methods: {
       async _syncGoods() {
@@ -129,7 +166,7 @@
           page: this.goodsPage,
           limit: 10,
           keyword: this.keyWord,
-          goods_category_id: ''
+          goods_category_id: this.categoryId
         }
         API.Product.getGoodsList(data, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -195,6 +232,34 @@
             this.$toast.show(res.message)
           }
         })
+      },
+      getCategoriesData() {
+        API.Product.getCategory({parent_id: -1}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.stairSelect.data = res.data
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      setStairValue(data) {
+        this.secondSelect.content = '二级分类'
+        this.secondSelect.data = data.list
+        this.$refs.pagination.beginPage()
+        this.categoryId = data.id
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        console.log(data.id)
+      },
+      secondValue(data) {
+        this.secondSelect.content = data.name
+        this.$refs.pagination.beginPage()
+        this.categoryId = data.id
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        console.log(data)
       }
     }
   }
@@ -226,6 +291,10 @@
         flex: 0.6
       &:nth-child(2)
         flex: 1.5
+      &:nth-child(4)
+        flex: 1.2
+      &:nth-child(5)
+        flex: 0.6
       &:last-child
         flex: 0.8
 

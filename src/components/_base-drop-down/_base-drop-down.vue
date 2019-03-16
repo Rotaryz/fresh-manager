@@ -189,16 +189,6 @@
     .admin-big-box-hover
       border-color: #ACACAC
 
-  .edit-input-box
-    .admin-big-box
-      margin-left: 0 !important
-      .admin-select-box
-        font-size: $font-size-14 !important
-        min-width: 140px !important
-        margin-left: 0
-        line-height: 44px !important
-        height: 44px !important
-
   .categories-input-box
     .admin-big-box
       margin-left: 0 !important

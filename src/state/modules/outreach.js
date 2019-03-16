@@ -37,7 +37,10 @@ export const mutations = {
 
 export const actions = {
   getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
-    return API.Outreach.getOutreachList({page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'}, loading)
+    return API.Outreach.getOutreachList(
+      {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
+      loading
+    )
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

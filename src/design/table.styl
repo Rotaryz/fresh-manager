@@ -61,7 +61,7 @@
     align-items: center
 
 .list-box
-  padding-left: 30px
+  padding-left: 20px
   box-sizing: border-box
   border-bottom-1px(#E9ECEE)
   display: flex
@@ -229,10 +229,41 @@
     margin-right: 30px
   .down-item-small
     margin-right: 10px
+  .down-item-text
+    margin-right: 120px
+    &:last-child
+      margin-right: 0
+    .down-text
+      font-size: $font-size-12
+      color: $color-text-main
+      white-space: nowrap
   .down-tip
     font-size: $font-size-12
     color: $color-text-main
     margin-right: 10px
+  .time-tip
+    margin: 0 2px
+    font-size: $font-size-14
 
 .g-btn-item
   margin-left: 10px
+
+.down-content
+  .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
+    height: 100%
+  .ivu-input
+    color: $color-text-assist
+    font-family: $font-family-regular
+  .ivu-input-icon
+    height: 100%
+    line-height: 28px
+
+.time-content
+  .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
+    height: 100%
+  .ivu-input
+    color: $color-text-assist
+    font-family: $font-family-regular
+  .ivu-input-icon
+    height: 100%
+    line-height: 34px

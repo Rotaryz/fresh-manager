@@ -13,9 +13,6 @@ export const state = {
 }
 
 export const getters = {
-  SET_PAGE_TOTAL(state, pageTotal) {
-    state.pageTotal = pageTotal
-  },
   purchaseList(state) {
     return state.purchaseList
   },

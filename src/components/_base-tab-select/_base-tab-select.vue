@@ -1,10 +1,10 @@
 <template>
-  <div :style="{'width': width}">
+  <div>
     <div class="status-tab">
       <div v-for="(item, index) in tabStatus" :key="index" :style="{'margin-right': marginRight + 'px'}" :class="{'status-item-active': tabIndex === index}" class="status-item hand">
         <div class="status-txt" @click="_setTab(index, item)">{{item.text}}</div>
       </div>
-      <span class="line" :style="{'left': left + 'px'}"></span>
+      <span class="line" :style="{'left': left + 'px', width: lineWidth + 'px'}"></span>
     </div>
     <div class="status-top"></div>
   </div>
@@ -25,6 +25,10 @@
         default: 14
       },
       marginRight: {
+        type: Number,
+        default: 40
+      },
+      lineWidth: {
         type: Number,
         default: 40
       }
@@ -59,7 +63,7 @@
           if (this.tabIndex > idx) {
             left += item.offsetWidth + this.marginRight
           } else if (this.tabIndex === idx) {
-            left += (item.offsetWidth - 40) / 2 + 26
+            left += (item.offsetWidth - this.lineWidth) / 2 + 26
           }
         })
         this.left = left

@@ -321,8 +321,7 @@
           break
         }
       },
-      _setSort() {
-      },
+      _setSort() {},
       _setLinkType(index, e) {
         this.tabIndex = index
         this.left = e.target.offsetLeft + (e.target.offsetWidth - 34) / 2
@@ -355,7 +354,7 @@
           return
         }
         await this._getModuleMsg(this.cmsType, this.cmsId)
-        // this.temporaryBannar.splice(this.delIndex, 1)
+      // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
       async _miniGoods() {
