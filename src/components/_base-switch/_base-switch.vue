@@ -35,8 +35,14 @@
         type: String,
         default: '40px'
       },
-      confirmText: String,
-      cancelText: String
+      confirmText: {
+        type: String,
+        default: ''
+      },
+      cancelText: {
+        type: String,
+        default: ''
+      }
     },
     methods: {
       _changeSwitch() {
