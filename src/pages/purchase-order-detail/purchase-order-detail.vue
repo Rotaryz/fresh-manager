@@ -21,7 +21,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-inventory@2x.png" class="identification-icon">
-          <p class="identification-name">采购单详情</p>
+          <p class="identification-name">商品明细</p>
         </div>
         <div class="function-btn">
           <a :href="downUrl" target="_blank" class="btn-main">导出采购单</a>
@@ -35,8 +35,8 @@
           <div v-for="(item, index) in purchaseDetail.details" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.purchase_unit}}</div>
             <div class="list-item">{{item.base_unit}}</div>
+            <div class="list-item">{{item.purchase_unit}}</div>
             <div class="list-item">{{item.purchase_price}}</div>
             <div class="list-item">{{item.purchase_amount ? '￥' : ''}}{{item.purchase_amount}}</div>
           </div>
