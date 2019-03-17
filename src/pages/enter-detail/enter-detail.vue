@@ -5,7 +5,7 @@
       <div class="enter-title">供应商：{{enterMsg.supplier}}</div>
       <div class="enter-title">入库时间：{{enterMsg.build_time}}</div>
       <div class="enter-title">状态：{{enterMsg.status === 0 ? '待入库' : '已完成'}}</div>
-      <div class="enter-title">入库金额：<span class="enter-title-money">￥{{enterMsg.total}}</span></div>
+      <div class="enter-title">入库金额：<span v-if="enterMsg.status === 1" class="enter-title-money">￥{{enterMsg.total}}</span></div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -27,7 +27,7 @@
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">
-              <input v-if="enterMsg.status === 0" v-model="item.base_num" type="number" class="edit-input">
+              <input v-if="enterMsg.status === 0" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
               <div v-if="enterMsg.status === 1">{{item.base_num}}</div>
               <div>{{item.base_unit}}</div>
             </div>
@@ -35,6 +35,10 @@
               <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input">
               <div v-if="enterMsg.status === 1">{{item.purchase_num}}</div>
               <div>{{item.purchase_unit}}</div>
+            </div>
+            <div class="list-item">
+              <div>{{item.price}}</div>
+              <div>/{{item.base_unit}}</div>
             </div>
             <div class="list-item">{{item.total}}</div>
             <div class="list-item time-content">
@@ -75,7 +79,7 @@
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
-    '批次号', '商品', '分类', '入库数量(采购单位)', '入库单价(销售单位) ', '入库金额', '保质期', '存放库位'
+    '批次号', '商品', '分类', '入库数量(基本单位)', '入库数量(采购单位) ', '入库单价(基本单位) ', '入库金额', '保质期', '存放库位'
   ]
   export default {
     name: PAGE_NAME,
@@ -112,7 +116,7 @@
           obj.base_num = item.base_num
           obj.purchase_num = item.purchase_num
           obj.shelf_life = item.shelf_life
-          obj.warehouse_position_id = item.warehouse_position_id
+          obj.warehouse_position_id = item.warehouse_position_id || ''
           arr.push(obj)
         })
         API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {
@@ -137,6 +141,11 @@
         this.enterDetailList[this.curIndex].warehouse_position_id = id
         this.enterDetailList[this.curIndex].warehouse_position = text
         this.$refs.modalBox.cancel()
+      },
+      echangInput(item, index) {
+        if (item.base_num) {
+          this.enterDetailList[index].total = (item.base_num * item.price).toFixed()
+        }
       }
     }
   }
@@ -152,9 +161,9 @@
         layout(row)
         align-items: center
         &:last-child
-          flex: 0.8
+          flex: 1
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
-          flex: 1.5
+          flex: 1.3
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
@@ -195,6 +204,9 @@
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-text-main
+      width: 100%
+      padding-right: 10px
+      no-wrap()
     .select-time-icon
       width: 14px
       height: 14px

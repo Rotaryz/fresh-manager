@@ -176,8 +176,8 @@
       },
       changeInput(item, index) {
         this.storeList[index].select_batch = []
-        this.storeList[this.curIndex].price = ''
-        this.storeList[this.curIndex].all_price = ''
+        this.storeList[index].price = ''
+        this.storeList[index].all_price = ''
         this.$forceUpdate()
       },
       submitEdit() {

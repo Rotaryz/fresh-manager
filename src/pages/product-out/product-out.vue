@@ -55,7 +55,7 @@
             <div class="list-item">{{item.total}}</div>
             <div class="list-item">{{item.status_str}}</div>
             <div class="list-item list-operation-box">
-              <router-link tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">出库</router-link>
+              <router-link tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">{{item.status === 0 ? '出库' : '详情'}}</router-link>
             </div>
           </div>
         </div>
