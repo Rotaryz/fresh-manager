@@ -18,8 +18,10 @@
           账号
         </div>
         <div class="edit-input-box">
-          <div v-if="id" class="edit-change">账号名称</div>
-          <input v-else type="number" class="edit-input" placeholder="请输入密码" maxlength="10">
+          <div v-if="id" class="edit-change">{{detail.user_name}}</div>
+          <input v-else v-model="username" type="number" class="edit-input" placeholder="请输入账号"
+                 maxlength="10"
+          >
         </div>
       </div>
       <div class="edit-item">
@@ -28,19 +30,21 @@
           密码
         </div>
         <div class="edit-input-box">
-          <div v-if="id" class="list-operation edit-change">修改密码</div>
-          <input v-else type="text" class="edit-input" placeholder="请输入密码" minlength="4">
+          <div v-if="!isChangePassword" class="list-operation edit-change" @click="changeType">修改密码</div>
+          <input v-else v-model="password" type="password" class="edit-input" placeholder="请输入密码"
+                 maxlength="20"
+          >
         </div>
       </div>
     </div>
     <div class="leader-box">
-      <div class="edit-item">
+      <div v-if="isChangePassword" class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           确认密码
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" placeholder="请确认密码" maxlength="10">
+          <input v-model="comfirmPassword" type="password" class="edit-input" placeholder="请确认密码" maxlength="20">
         </div>
       </div>
       <div class="edit-item">
@@ -49,7 +53,7 @@
           姓名
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" placeholder="请输入姓名">
+          <input v-model="name" type="text" class="edit-input" placeholder="请输入姓名">
         </div>
       </div>
       <div class="edit-item">
@@ -58,18 +62,21 @@
           手机号
         </div>
         <div class="edit-input-box">
-          <input type="number" class="edit-input" maxlength="11" placeholder="请输入手机号">
+          <input v-model="mobile" type="number" class="edit-input" maxlength="11" placeholder="请输入手机号">
         </div>
       </div>
     </div>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
+      <div class="back-cancel back-btn hand" @click="back">返回</div>
       <div class="back-btn back-submit" @click="submit">保存</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import {buyerComputed} from '@state/helpers'
+
   const PAGE_NAME = 'EDIT_PROCUREMENT'
   const TITLE = '新建采购员'
 
@@ -80,14 +87,82 @@
     },
     data() {
       return {
-        id: ''
+        id: this.$route.query.id,
+        isChangePassword: !this.$route.query.id,
+        username: '',
+        password: '',
+        comfirmPassword: '',
+        name: '',
+        mobile: ''
       }
     },
+    computed: {
+      ...buyerComputed
+    },
+    created() {
+      this.username = this.id && (this.detail.user_name || '')
+      this.name = this.id && (this.detail.true_name || '')
+      this.mobile = this.id && (this.detail.mobile || '')
+    },
     methods: {
-      _back() {
+      changeType() {
+        this.isChangePassword = true
+      },
+      back() {
         this.$router.back()
       },
-      submit() {}
+      checkDataValidate() {
+        if (!this.username) {
+          this.$toast.show('请输入账号')
+          return
+        } else if (this.isChangePassword && !this.password) {
+          this.$toast.show('请输入密码')
+          return
+        } else if (this.isChangePassword && !this.comfirmPassword) {
+          this.$toast.show('请输入确认密码')
+          return
+        } else if (this.isChangePassword && this.password !== this.comfirmPassword) {
+          this.$toast.show('密码和确认密码不一致')
+          return
+        } else if (!this.name) {
+          this.$toast.show('请输入姓名')
+          return
+        } else if (!this.mobile) {
+          this.$toast.show('请输入手机号')
+          return
+        }
+        return true
+      },
+      submit() {
+        if (!this.checkDataValidate()) {
+          return
+        }
+        let data = {
+          user_name: this.username,
+          true_name: this.name,
+          mobile: this.mobile,
+          password: this.password
+        }
+        if (this.id) {
+          API.Supply.editPurchaseUser(this.id, data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.back()
+          })
+        } else {
+          API.Supply.addPurchaseUser(data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.back()
+          })
+        }
+      }
     }
   }
 </script>

@@ -78,8 +78,7 @@
     },
     methods: {
       ...supplyMethods,
-      _importFile(e) {
-      }
+      _importFile(e) {}
     }
   }
 </script>

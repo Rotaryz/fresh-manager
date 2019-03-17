@@ -164,10 +164,7 @@
     {title: '手机号', key: 'mobile', flex: 1},
     {title: '操作', key: '', operation: '编辑', flex: 0.245}
   ]
-  const MERCHANT = [
-    {title: '商户名称', key: 'name', flex: 3},
-    {title: '线路', key: 'road_name', flex: 1},
-  ]
+  const MERCHANT = [{title: '商户名称', key: 'name', flex: 3}, {title: '线路', key: 'road_name', flex: 1}]
   const ROAD_SELECT = {
     check: false,
     show: false,
@@ -256,23 +253,30 @@
             this.handleRoadId = detail.road_id
             this.handleRoadType = DELETE_ROAD
             this.$refs.confirm.show(`确定删除该线路？`)
-          } if (operation === '商户配置') {
+          }
+          if (operation === '商户配置') {
             this.handleRoadId = detail.road_id
             this.handleRoadType = EDIT_ROAD
-            API.Delivery.getDeliveryAddress({road_id: detail.road_id})
-              .then((res) => {
-                this.$loading.hide()
-                if (res.error !== this.$ERR_OK) {
-                  this.$toast.show(res.message)
-                  return
-                }
-                this.deliveryAddress = res.data
-                this.$refs.addressModal.showModal()
-              })
+            API.Delivery.getDeliveryAddress({road_id: detail.road_id}).then((res) => {
+              this.$loading.hide()
+              if (res.error !== this.$ERR_OK) {
+                this.$toast.show(res.message)
+                return
+              }
+              this.deliveryAddress = res.data
+              this.$refs.addressModal.showModal()
+            })
           }
         } else if (this.tabIndex === 1) {
           this.handleDriverType = EDIT_DRIVER
-          const {driver_id: driverId, true_name: trueName, mobile, plate_number: plateNumber, road_id: roadId, road_name: roadName} = detail
+          const {
+            driver_id: driverId,
+            true_name: trueName,
+            mobile,
+            plate_number: plateNumber,
+            road_id: roadId,
+            road_name: roadName
+          } = detail
           this.driverForm = {
             driver_id: driverId,
             true_name: trueName,
@@ -301,27 +305,25 @@
       },
       handleRoad() {
         if (this.handleRoadType === ADD_ROAD) {
-          API.Delivery.addRoad({road_name: this.roadName})
-            .then((res) => {
-              const LOADING = false
-              this.$loading.hide()
-              this.cancel()
-              this.$toast.show(res.message)
-              if (res.error === this.$ERR_OK) {
-                this.getRoads(LOADING)
-              }
-            })
+          API.Delivery.addRoad({road_name: this.roadName}).then((res) => {
+            const LOADING = false
+            this.$loading.hide()
+            this.cancel()
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              this.getRoads(LOADING)
+            }
+          })
         } else if (this.handleRoadType === DELETE_ROAD) {
-          API.Delivery.deleteRoad(this.handleRoadId)
-            .then((res) => {
-              const LOADING = false
-              this.$loading.hide()
-              this.cancel()
-              this.$toast.show(res.message)
-              if (res.error === this.$ERR_OK) {
-                this.getRoads(LOADING)
-              }
-            })
+          API.Delivery.deleteRoad(this.handleRoadId).then((res) => {
+            const LOADING = false
+            this.$loading.hide()
+            this.cancel()
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              this.getRoads(LOADING)
+            }
+          })
         } else if (this.handleRoadType === EDIT_ROAD) {
           let selectAddress = this.deliveryAddress.filter((res) => {
             return res.checked
@@ -331,41 +333,38 @@
             road_id: this.handleRoadId,
             road_name: this.roadName
           }
-          API.Delivery.setAddress(data)
-            .then((res) => {
-              const LOADING = false
-              this.$loading.hide()
-              this.cancel()
-              this.$toast.show(res.message)
-              if (res.error === this.$ERR_OK) {
-                this.getRoads(LOADING)
-              }
-            })
+          API.Delivery.setAddress(data).then((res) => {
+            const LOADING = false
+            this.$loading.hide()
+            this.cancel()
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              this.getRoads(LOADING)
+            }
+          })
         }
       },
       handleDriver() {
         if (this.handleDriverType === ADD_DRIVER) {
-          API.Delivery.addDriver(this.driverForm)
-            .then((res) => {
-              const LOADING = false
-              this.$loading.hide()
-              this.cancel()
-              this.$toast.show(res.message)
-              if (res.error === this.$ERR_OK) {
-                this.getDriverList(LOADING)
-              }
-            })
+          API.Delivery.addDriver(this.driverForm).then((res) => {
+            const LOADING = false
+            this.$loading.hide()
+            this.cancel()
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              this.getDriverList(LOADING)
+            }
+          })
         } else if (this.handleDriverType === EDIT_DRIVER) {
-          API.Delivery.editDriver(this.driverForm.driver_id, this.driverForm)
-            .then((res) => {
-              const LOADING = false
-              this.$loading.hide()
-              this.cancel()
-              this.$toast.show(res.message)
-              if (res.error === this.$ERR_OK) {
-                this.getDriverList(LOADING)
-              }
-            })
+          API.Delivery.editDriver(this.driverForm.driver_id, this.driverForm).then((res) => {
+            const LOADING = false
+            this.$loading.hide()
+            this.cancel()
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              this.getDriverList(LOADING)
+            }
+          })
         }
       },
       setRoadSelect(select) {

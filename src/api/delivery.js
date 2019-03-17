@@ -79,5 +79,25 @@ export default {
   getDeliveryAddress(data, loading = true) {
     let url = '/scm/api/backend/delivery/delivery-address'
     return request.get(url, data, loading)
+  },
+  /**
+   * 获取配送订单任务列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getDeliveryOrder(data, loading = true) {
+    let url = '/scm/api/backend/delivery/delivery'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 获取配送司机任务列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getDeliveryDriver(data, loading = true) {
+    let url = '/scm/api/backend/delivery/delivery-driver-tasks'
+    return request.get(url, data, loading)
   }
 }

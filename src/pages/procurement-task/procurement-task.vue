@@ -188,7 +188,12 @@
           show: false,
           content: '全部状态',
           type: 'default',
-          data: [{name: '全部', value: ''}, {name: '待发布', value: 1}, {name: '待采购', value: 2}, {name: '已完成', value: 3}]
+          data: [
+            {name: '全部', value: ''},
+            {name: '待发布', value: 1},
+            {name: '待采购', value: 2},
+            {name: '已完成', value: 3}
+          ]
         },
         parentId: '',
         taskNum: '',
@@ -235,7 +240,7 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
+      // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
       },
       // 搜索商品
       async _searchGoods(text) {
@@ -302,9 +307,12 @@
           this.$toast.show('请输入正确的采购数量')
           return
         }
-        let res = await API.Supply.storePurchaseTask({goods_sku_code: this.goodsItem.goods_sku_code, plan_num: this.taskNum})
+        let res = await API.Supply.storePurchaseTask({
+          goods_sku_code: this.goodsItem.goods_sku_code,
+          plan_num: this.taskNum
+        })
         this.$toast.show(res.message)
-        if(res.error !== this.$ERR_OK){
+        if (res.error !== this.$ERR_OK) {
           return
         }
         this.getPurchaseTaskList({

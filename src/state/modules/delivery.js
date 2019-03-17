@@ -78,9 +78,11 @@ export const actions = {
         commit('SET_DRIVER_LIST', list)
         commit('SET_DRIVER_PAGE_DETAIL', pageDetail)
         return list
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }). finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },
@@ -90,12 +92,14 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return
         }
-        let list = res. data
+        let list = res.data
         commit('SET_ROADS', list)
         return list
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
-      }).finally(() => {
+      })
+      .finally(() => {
         app.$loading.hide()
       })
   },

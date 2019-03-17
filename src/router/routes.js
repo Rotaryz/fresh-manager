@@ -773,7 +773,17 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购员列表'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('buyer/getPurchaseUser')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -786,7 +796,21 @@ export default [
           marginBottom: 80,
           titles: ['供应链', '采购', '采购员', '新建采购员'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('buyer/getPurchaseUserDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -854,7 +878,17 @@ export default [
         meta: {
           titles: ['供应链', '采购', '供应商'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            store
+              .dispatch('supplier/getSupplier')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -866,7 +900,21 @@ export default [
         meta: {
           titles: ['供应链', '采购', '供应商', '新建供应商'],
           beforeResolve(routeTo, routeFrom, next) {
-            next()
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('supplier/getSupplierDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -997,16 +1045,32 @@ export default [
         meta: {
           titles: ['供应链', '配送', '配送任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            store
-              .dispatch('delivery/getDriverList')
-              .then((res) => {
-                if (!res) {
+            let tabIndex = store.state.distribution.tabIndex
+            if (tabIndex === 0) {
+              store
+                .dispatch('distribution/getOrderList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
                   return next({name: '404'})
-                }
-                return next()
-              }).catch(() => {
-              return next({name: '404'})
-            })
+                })
+            } else {
+              store
+                .dispatch('distribution/getDriverList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            }
           }
         }
       },
@@ -1025,9 +1089,10 @@ export default [
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
+              })
+              .catch(() => {
                 return next({name: '404'})
-            })
+              })
           }
         }
       },

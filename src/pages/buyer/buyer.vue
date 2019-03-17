@@ -4,7 +4,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="采购员姓名或账号搜索"></base-search>
+        <base-search :infoText="keyword" placeHolder="采购员姓名或账号搜索" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -22,25 +22,27 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
-            <div class="list-item">item</div>
+          <div v-for="(item, index) in list" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.id}}</div>
+            <div class="list-item">{{item.user_name}}</div>
+            <div class="list-item">{{item.true_name}}</div>
+            <div class="list-item">{{item.mobile}}</div>
             <div class="list-item">
-              <div class="list-operation">编辑</div>
+              <router-link tag="div" :to="`edit-procurement?id=${item.id}`" append class="list-operation">编辑</router-link>
             </div>
           </div>
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {buyerComputed, buyerMethods} from '@state/helpers'
+
   const PAGE_NAME = 'BUYER'
   const TITLE = '采购员'
   const COMMODITIES_LIST = ['编号', '账号', '姓名', '手机', '操作']
@@ -52,6 +54,16 @@
     data() {
       return {
         commodities: COMMODITIES_LIST
+      }
+    },
+    computed: {
+      ...buyerComputed
+    },
+    methods: {
+      ...buyerMethods,
+      changeKeyword(keyword) {
+        this.setKeyword(keyword)
+        this.$refs.pagination.beginPage()
       }
     }
   }
