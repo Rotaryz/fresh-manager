@@ -52,7 +52,7 @@
             <div class="list-item">{{item.total}}</div>
             <div class="list-item">{{item.status_str}}</div>
             <div class="list-item">
-              <router-link tag="div" :to="`supply-detail/${item.id}`" append class="list-operation">编辑</router-link>
+              <router-link tag="div" :to="`supply-detail/${item.id}`" append class="list-operation">详情</router-link>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
   const SELECT = {
     check: false,
     show: false,
-    content: '全部社区',
+    content: '全部',
     type: 'default',
     data: []
   }
