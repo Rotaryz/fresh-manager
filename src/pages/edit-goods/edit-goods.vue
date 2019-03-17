@@ -137,7 +137,7 @@
       </div>
     </div>
     <div class="content-header procurement-top">
-      <div class="content-title">采购信息</div>
+      <div class="content-title">供应链信息</div>
     </div>
     <div class="leader-box">
       <div class="edit-item">
@@ -170,6 +170,17 @@
           <input v-model="goods_skus.damage_rate" type="number" class="edit-input">
         </div>
         <div class="edit-pla">根据耗损的百分比额外增加采购数量（%）</div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          是否称重
+        </div>
+        <div class="edit-input-box">
+          <div class="list-item-btn" @click="switchBtn">
+            <base-switch width="80px" transform="50px" confirmText="称重" cancelText="不称重" :status="msg.goods_skus[0].is_weight"></base-switch>
+          </div>
+        </div>
       </div>
     </div>
     <div class="back">
@@ -221,9 +232,10 @@
               original_price: 0,
               usable_stock: 0,
               image_id: '',
-              specs: ''
+              specs: '',
+              is_weight: 1
             }
-          ]
+          ],
         },
         dispatchSelect: {
           check: false,
@@ -280,7 +292,8 @@
           purchase_unit: '',
           damage_rate: '',
           supplier_id: 0
-        }
+        },
+        isWeight: 1
       }
     },
     created() {
@@ -493,6 +506,9 @@
       },
       setSecondValue(data) {
         this.msg.goods_category_id = data.id
+      },
+      switchBtn() {
+        this.msg.goods_skus[0].is_weight = !this.msg.goods_skus[0].is_weight ? 1 : 0
       }
     }
   }

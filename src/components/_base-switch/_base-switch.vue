@@ -1,7 +1,7 @@
 <template>
-  <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor}" @click="_changeSwitch">
-    <span class="circular" :class="{'move': status}"></span>
-    <span class="status" :class="status ? 'status-right' : 'status-left'">{{status ? '上架': '下架'}}</span>
+  <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor, 'width': width, 'height': height}" @click="_changeSwitch">
+    <span class="circular" :class="{'move': status}" :style="{'transform': `translateX(${transform})`}"></span>
+    <span class="status" :class="status ? 'status-right' : 'status-left'">{{status ? confirmText || '上架': cancelText || '下架'}}</span>
   </div>
 </template>
 
@@ -17,11 +17,11 @@
       },
       width: {
         type: String,
-        default: '44px'
+        default: '69px'
       },
       height: {
         type: String,
-        default: '22px'
+        default: '28px'
       },
       switchColor: {
         type: String,
@@ -30,7 +30,13 @@
       closeColor: {
         type: String,
         default: '#E1E1E1'
-      }
+      },
+      transform: {
+        type: String,
+        default: '40px'
+      },
+      confirmText: String,
+      cancelText: String
     },
     methods: {
       _changeSwitch() {
@@ -60,9 +66,8 @@
       border-radius: 50%
       background: $color-white
       transition: transform .5s
-      transform: translateX(40px)
     .move
-      transform: translateX(0px)
+      transform: translateX(0px) !important
     .status
       font-size: 14px
       col-center()
