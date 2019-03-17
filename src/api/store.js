@@ -122,6 +122,16 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 出库单提交
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  putOutSubmit(id, data, loading = true) {
+    let url = `/scm/api/backend/warehouse/out-details/${id}`
+    return request.post(url, data, loading)
+  },
+  /**
    * 入库单提交
    * @param orderId
    * @param loading
@@ -139,6 +149,16 @@ export default {
    */
   outBatchList(data, loading = false) {
     let url = `/scm/api/backend/warehouse/out-batch`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 出库商品列表
+   * @param orderId
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsList(data, loading = false) {
+    let url = `/scm/api/backend/goods/goods`
     return request.get(url, data, loading)
   }
 }

@@ -14,7 +14,7 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div v-if="outMsg.status === 0" class="function-btn" @click="outFn">
+        <div v-if="outMsg.status === 0" class="function-btn" @click="submitOutFn">
           <div class="btn-main">确定出库<span class="add-icon"></span></div>
         </div>
       </div>
@@ -29,7 +29,7 @@
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
-            <div class="list-item hand" @click="outFn(item, index)">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</div>
+            <div class="list-item hand" @click="outFn(item, index)"><span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span></div>
             <div class="list-item">{{item.out_cost_price}}</div>
             <div class="list-item">{{item.cost_total}}</div>
           </div>
@@ -71,7 +71,6 @@
       ...productComputed
     },
     created() {
-      console.log(_, API)
       this.id = this.$route.params.id || null
       this.outDetailList = _.cloneDeep(this.outDetail.data)
       this.outMsg = _.cloneDeep(this.outDetail.out_order)
@@ -97,7 +96,28 @@
           }
         })
       },
+      submitOutFn() {
+        let arr = []
+        this.outDetailList.forEach(item => {
+          let obj = {
+            id: item.id,
+            select_batch: item.out_batches,
+            type: 5
+          }
+          arr.push(obj)
+        })
+        console.log(arr)
+        API.Store.putOutSubmit(this.id, {details: arr}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.outMsg.status = 1
+            this.$loading.hide()
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
       outFn(item, index) {
+        if (this.outMsg.status * 1 === 1) return
         this.curItem = item
         this.curIndex = index
         this.getOutBatchList(index)

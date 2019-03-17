@@ -18,7 +18,7 @@
           出库对象
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="30" @mousewheel.native.prevent>
+          <input type="text" class="edit-input" maxlength="20" @mousewheel.native.prevent>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@
           <div class="list-item">item</div>
           <div class="list-item">item</div>
           <div class="list-item list-operation-box">
-            <span class="list-operation">出库</span>
+            <span class="list-operation">删除</span>
           </div>
         </div>
       </div>

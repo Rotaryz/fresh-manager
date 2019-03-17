@@ -23,8 +23,8 @@
             <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
             <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
             <div class="goods-msg">
-              <div class="goods-name">{{item.name}}</div>
-              <div class="goods-money">¥{{item.original_price}}</div>
+              <div class="goods-name">{{item.goods_name}}</div>
+              <div class="goods-money">{{item.goods_sku_code}}</div>
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
@@ -86,6 +86,7 @@
     },
     async created() {
       await this._getGoodsList()
+      await this._getFirstAssortment()
     // this.$refs.goodsModel.showModal()
     },
     methods: {
@@ -142,8 +143,7 @@
       },
       // 选择商品
       async _getGoodsList() {
-        let res = await API.Rush.getGoodsList({
-          is_online: 1,
+        let res = await API.Store.getGoodsList({
           keyword: this.keyword,
           goods_category_id: this.parentId,
           shelf_id: this.id,
@@ -196,12 +196,14 @@
       async _getFirstAssortment() {
         let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+        console.log(this.assortment)
         this.assortment.data.unshift({name: '全部', id: ''})
       },
       // 搜索商品
       async _searchGoods(text) {
         this.keyword = text
         this.page = 1
+        console.log(this.keyword)
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },

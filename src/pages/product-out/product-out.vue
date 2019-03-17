@@ -38,7 +38,8 @@
           <p class="identification-name">出库列表</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main">新建出库单<span class="add-icon"></span></div>
+          <!--<div class="btn-main">新建出库单<span class="add-icon"></span></div>-->
+          <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main">新建出库单<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
