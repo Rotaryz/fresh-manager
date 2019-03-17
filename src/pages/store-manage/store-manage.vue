@@ -4,7 +4,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-storehouse@2x.png" class="identification-icon">
-          <p class="identification-name">入库列表</p>
+          <p class="identification-name">库位管理</p>
         </div>
         <div class="function-btn">
           <div v-if="storeListData.length < 4" class="btn-main" @click="creatNewList">新建入库单<span class="add-icon"></span></div>
@@ -87,7 +87,6 @@
         this.$refs.modalBox.show('', '新建货位层级', '长度不能超过6位')
       },
       async confirmInput(text) {
-        console.log(text)
         if (text.length === 0) {
           this.$toast.show('输入长度单位不能为零')
           return
@@ -143,7 +142,6 @@
           })
           break
         case 4:
-          console.log(this.smallTtem.id)
           API.Store.editSmallStore(this.smallTtem.id, {name: text}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$toast.show('更改成功')
@@ -163,7 +161,6 @@
           if (res.error === this.$ERR_OK) {
             this.storeListData.splice(this.bigIndex, 1)
             this.$toast.show('删除货柜成功')
-            console.log(this.storeListData)
           } else {
             this.$toast.show(res.message)
           }
@@ -208,7 +205,6 @@
           this.curItem = item
           this.curType = 3
           this.bigIndex = index
-          console.log(this.curItem = item, this.curType = 3, this.bigIndex = index)
           this.$refs.modalBox.show('', '新建层位层级', '长度不能超过6位')
         } else {
           let isChecked = false
@@ -237,13 +233,10 @@
         })
         item.checked = true
         this.curItem = item
-        console.log(item)
         API.Store.findChild(item.id).then((res) => {
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
             this.storeListData[index + 1].warehouse_positions = res.data
             for (let number = index + 2; number < this.storeListData.length; number++) {
-              console.log(number, this.storeListData.length)
               this.storeListData[number].warehouse_positions = []
             }
           } else {
@@ -259,7 +252,6 @@
         this.bigIndex = index
         this.curType = 4
         this.$refs.modalBox.show('', '编辑层位名称', '长度不能超过6位')
-        console.log(childItem, childIndex, index)
       },
       // 删除子类名称
       delSmallData(childItem, childIndex, index) {
@@ -268,7 +260,6 @@
         this.bigIndex = index
         this.delType = 2
         this.$refs.confirm.show('删除当前层级后，下挂在它下面所有货位将会被删除？')
-        console.log(childItem, childIndex, index)
       }
     }
   }

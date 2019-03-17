@@ -158,19 +158,14 @@
       },
       confirm(arr) {
         this.storeList[this.curIndex].select_batch = arr
-        console.log(arr)
-        let price = 0
         let allprice = 0
         let number = 0
         arr.forEach(item => {
-          console.log(item)
           if (item.select_out_num > 0) {
             number += (item.select_out_num * 1)
-            price += (item.price * 1)
             allprice += (item.select_out_num * item.price)
           }
         })
-        console.log(number, price, allprice)
         this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
         this.storeList[this.curIndex].all_price = allprice.toFixed(2)
         this.$forceUpdate()

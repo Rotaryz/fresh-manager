@@ -57,9 +57,9 @@
           </div>
         </div>
       </div>
-      <!--<div class="pagination-box">-->
-      <!--<base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>-->
-      <!--</div>-->
+      <div class="pagination-box">
+        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+      </div>
     </div>
     <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
   </div>
