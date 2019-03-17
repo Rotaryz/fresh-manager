@@ -32,7 +32,7 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in purchaseDetail.detail_list" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in purchaseDetail.details" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.purchase_unit}}</div>

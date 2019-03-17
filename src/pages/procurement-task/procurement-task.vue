@@ -56,8 +56,8 @@
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.supplier}}</div>
             <div class="list-item">{{item.purchase_user}}</div>
-            <div class="list-item">{{item.finish_num}}({{item.purchase_unit}})</div>
             <div class="list-item">{{item.plan_num}}({{item.purchase_unit}})</div>
+            <div class="list-item">{{item.finish_num}}({{item.purchase_unit}})</div>
             <div class="list-item list-item-progress">
               <div class="progress-content">
                 <div class="progress-num">{{item.finish_num}}{{item.purchase_unit}}/{{item.plan_num}}{{item.purchase_unit}}</div>
