@@ -28,6 +28,7 @@
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
+          <div v-if="choeesGoods.length === 0" class="rush-null-text">暂无出库商品</div>
         </div>
       </div>
       <div class="page-box">
@@ -605,7 +606,13 @@
         background: $color-line
         color: $color-text-assist
         border: none
-
+  .rush-null-text
+    width: 100%
+    text-align: center
+    padding-top: 150px
+    font-size: $font-size-16
+    color: $color-text-main
+    font-family: $font-family-regular
   /*弹窗动画*/
   @keyframes layerFadeIn {
     0% {
