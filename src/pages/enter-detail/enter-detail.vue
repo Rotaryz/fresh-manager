@@ -120,6 +120,7 @@
             console.log(res.data)
             this.enterMsg.status = 1
             this.$loading.hide()
+            this.$router.back()
           } else {
             this.$toast.show(res.message)
           }

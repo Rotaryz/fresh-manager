@@ -79,7 +79,6 @@
       getOutBatchList(index) {
         API.Store.outBatchList({goods_sku_code: this.outDetailList[index].goods_sku_code}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
             this.batchList = res.data
             if (this.outDetailList[index].out_batches.length) {
               this.outDetailList[index].out_batches.forEach(item => {
@@ -106,10 +105,10 @@
           }
           arr.push(obj)
         })
-        console.log(arr)
         API.Store.putOutSubmit(this.id, {details: arr}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.outMsg.status = 1
+            this.$router.back()
             this.$loading.hide()
           } else {
             this.$toast.show(res.message)
@@ -123,9 +122,7 @@
         this.getOutBatchList(index)
       },
       confirm(arr) {
-        console.log(arr)
         this.outDetailList[this.curIndex].out_batches = arr
-        console.log(this.outDetailList)
         this.$refs.modalBox.cancel()
       }
     }

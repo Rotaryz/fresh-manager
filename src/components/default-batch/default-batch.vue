@@ -81,16 +81,21 @@
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
-        if (this.curItem.base_num - this.numberBatch !== 0) return
+        if (this.curItem.base_num - this.numberBatch !== 0){
+          this.$toast.show('请分配完出库数')
+          return
+        }
         let arr = []
         this.batchList.forEach(item1 => {
-          let obj = {
-            batch_num: item1.batch_num,
-            select_out_num: item1.out_count
+          if (item1.out_count) {
+            let obj = {
+              batch_num: item1.batch_num,
+              select_out_num: item1.out_count,
+              price: item1.price
+            }
+            arr.push(obj)
           }
-          arr.push(obj)
         })
-        console.log(arr)
         this.$emit('confirm', arr)
       },
       changeInput(item, index) {

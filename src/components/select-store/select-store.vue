@@ -79,9 +79,10 @@
           per_page: 10,
           total_page: 1
         },
-        parentId: 0,
+        parentId: '',
         keyword: '',
-        goodsList: []
+        goodsList: [],
+        selectStoreList: []
       }
     },
     async created() {
@@ -91,11 +92,8 @@
     },
     methods: {
       // 删除商品传入商品id
-      _delGoods(id) {
-        let index = this.selectGoodsId.findIndex((item) => item === id)
-        this.selectGoodsId.splice(index, 1)
-        this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(id)
+      _delGoods(list) {
+        this.selectStoreList = list
         this._getGoodsList()
         this.$refs.goodsModel.showModal()
       },
@@ -118,6 +116,7 @@
             }
           }
         })
+        this.$forceUpdate()
         this.$emit('additionOne', item)
       },
       // 批量添加
@@ -146,9 +145,9 @@
         let res = await API.Store.getGoodsList({
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          shelf_id: this.id,
+          is_entry_goods: 1,
           limit: 10,
-          page: this.page
+          page: this.page || 1
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -158,6 +157,8 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
+        this.choeesGoods = []
+        this.goodsList = []
         this.choeesGoods = res.data.map((item, index) => {
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
@@ -173,6 +174,20 @@
           }
           return item
         })
+        this.choeesGoods.forEach(item => {
+          let ischecked = false
+          this.selectStoreList.forEach(item1 => {
+            if (item1.goods_id * 1 === item.goods_id * 1) {
+              ischecked = true
+            }
+          })
+          if (ischecked) {
+            item.selected = 1
+          } else {
+            item.selected = 0
+          }
+        })
+        this.$forceUpdate()
       },
       // 选择二级分类
       async _secondAssortment(item) {
@@ -194,16 +209,14 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        let res = await API.Store.goodsCategory({parent_id: this.parentId})
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
-        console.log(this.assortment)
         this.assortment.data.unshift({name: '全部', id: ''})
       },
       // 搜索商品
       async _searchGoods(text) {
         this.keyword = text
         this.page = 1
-        console.log(this.keyword)
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
@@ -227,6 +240,7 @@
           }
           break
         }
+        this.$forceUpdate()
       },
       // 获取分页商品列表
       async _getMoreGoods(page) {

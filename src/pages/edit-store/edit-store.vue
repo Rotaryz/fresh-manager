@@ -18,7 +18,7 @@
           出库对象
         </div>
         <div class="edit-input-box">
-          <input type="text" class="edit-input" maxlength="20" @mousewheel.native.prevent>
+          <input v-model="storeData" type="text" class="edit-input" maxlength="20" @mousewheel.native.prevent>
         </div>
       </div>
     </div>
@@ -33,35 +33,43 @@
         <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
       </div>
       <div class="list">
-        <div class="list-content list-box">
-          <div class="list-item">1</div>
-          <div class="list-item">item</div>
-          <div class="list-item">item</div>
-          <div class="list-item">item</div>
-          <div class="list-item">item</div>
-          <div class="list-item">item</div>
-          <div class="list-item">item</div>
+        <div v-for="(item, index) in storeList" :key="index" class="list-content list-box">
+          <div class="list-item">{{index + 1}}</div>
+          <div class="list-item">{{item.goods_name}}</div>
+          <div class="list-item">{{item.goods_category}}</div>
+          <div class="list-item">
+            <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
+            <div v-if="item.base_unit">{{item.base_unit}}</div>
+          </div>
+          <div class="list-item">
+            <span class="list-operation" @click="outFn(item, index)">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
+          </div>
+          <div class="list-item">{{item.price || '---'}}</div>
+          <div class="list-item">{{item.all_price || '----'}}</div>
           <div class="list-item list-operation-box">
-            <span class="list-operation">删除</span>
+            <span class="list-operation" @click="delGoodsBtn(item, index)">删除</span>
           </div>
         </div>
       </div>
     </div>
     <div class="back">
-      <div class="back-cancel back-btn hand">返回</div>
-      <div class="back-btn back-submit hand">保存</div>
+      <div class="back-cancel back-btn hand" @click="_back">返回</div>
+      <div class="back-btn back-submit hand" @click="submitEdit">保存</div>
     </div>
     <!--<add-goods ref="addg"></add-goods>-->
-    <select-store ref="addg"></select-store>
+    <select-store ref="addg" @additionOne="additionOne" @batchAddition="batchAddition"></select-store>
+    <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 // import AddGoods from '@components/add-goods/add-goods'
+  import API from '@api'
   import SelectStore from '@components/select-store/select-store'
+  import DefaultBatch from '@components/default-batch/default-batch'
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
-  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '出库数(销售单位)', '出库批次', '出库单价', '出库金额', '操作']
+  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -70,19 +78,147 @@
     },
     components: {
       // AddGoods,
-      SelectStore
+      SelectStore,
+      DefaultBatch
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        batchList: [],
+        storeList: [],
+        curIndex: 0,
+        curItem: {},
+        storeData: ''
       }
     },
     methods: {
-      _batchAddition(list) {
-        console.log(list)
-      },
       deleteGoods() {
-        this.$refs.addg._delGoods(160)
+        this.$refs.addg._delGoods(this.storeList)
+      },
+      _back() {
+        this.$router.back()
+      },
+      additionOne(item) {
+        let isExist = false
+        let obj = item
+        obj.base_num = ''
+        obj.select_batch = []
+        this.storeList.forEach(item => {
+          if (item.goods_id === obj.goods_id) {
+            isExist = true
+          }
+        })
+        if (!isExist) {
+          this.storeList.push(obj)
+        }
+      },
+      batchAddition(list) {
+        list.forEach(item => {
+          let isExist = false
+          this.storeList.forEach(item1 => {
+            if (item.goods_id * 1 === item1.goods_id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = item
+            obj.base_num = ''
+            obj.select_batch = []
+            this.storeList.push(obj)
+          }
+        })
+      },
+      outFn(item, index) {
+        if (item.base_num.length === 0) {
+          this.$toast.show('请输出出库数')
+          return
+        }
+        this.curItem = item
+        this.curIndex = index
+        this.getOutBatchList(index)
+      },
+      getOutBatchList(index) {
+        API.Store.outBatchList({goods_sku_code: this.storeList[index].goods_sku_code}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.batchList = res.data
+            if (this.storeList[index].select_batch.length) {
+              this.storeList[index].select_batch.forEach(item => {
+                this.batchList.forEach(item1 => {
+                  if(item1.batch_num === item.batch_num) {
+                    item1.out_count = item.select_out_num
+                  }
+                })
+              })
+            }
+            this.$refs.modalBox.show()
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      confirm(arr) {
+        this.storeList[this.curIndex].select_batch = arr
+        console.log(arr)
+        let price = 0
+        let allprice = 0
+        let number = 0
+        arr.forEach(item => {
+          console.log(item)
+          if (item.select_out_num > 0) {
+            number += (item.select_out_num * 1)
+            price += (item.price * 1)
+            allprice += (item.select_out_num * item.price)
+          }
+        })
+        console.log(number, price, allprice)
+        this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
+        this.storeList[this.curIndex].all_price = allprice.toFixed(2)
+        this.$forceUpdate()
+        this.$refs.modalBox.cancel()
+      },
+      delGoodsBtn(item, index) {
+        this.storeList.splice(index, 1)
+      },
+      changeInput(item, index) {
+        this.storeList[index].select_batch = []
+        this.storeList[this.curIndex].price = ''
+        this.storeList[this.curIndex].all_price = ''
+        this.$forceUpdate()
+      },
+      submitEdit() {
+        if (this.storeData.length === 0 || this.storeData.length > 20) {
+          this.$toast.show('出库对象字数不能为空或者大于20')
+          return
+        }
+        if (this.storeList.length === 0) {
+          this.$toast.show('请选择商品')
+          return
+        }
+        let isInputNull = false
+        let isStoreNull = false
+        this.storeList.forEach(item => {
+          if (item.base_num.length === 0) {
+            isInputNull = true
+          }
+          if (item.select_batch.length === 0) {
+            isStoreNull = true
+          }
+        })
+        if (isInputNull) {
+          this.$toast.show('请输入商品列表的出库数')
+          return
+        }
+        if (isStoreNull) {
+          this.$toast.show('请选择商品的批次')
+          return
+        }
+        API.Store.editOutOrder({type: 8, details: this.storeList, out_object: this.storeData}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$router.back()
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
       }
     }
   }
@@ -92,6 +228,15 @@
   @import "~@design"
   @import "~@style/detail"
 
+  .list-box
+    .list-item
+      box-sizing: border-box
+      padding-right: 10px
+      flex: 1
+      &:nth-child(3)
+        flex: 1.5
+      &:last-child
+        flex: 0.6
   .edit-store
     position: relative
     flex: 1
@@ -140,5 +285,25 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
-
+  .list-item
+    layout(row)
+    align-items: center
+  .edit-input
+    font-size: $font-size-14
+    padding: 0 14px
+    border-radius: 1px
+    width: 60px
+    height: 34px
+    border: 1px solid $color-line
+    margin-right: 10px
+    transition: all 0.3s
+    &::-webkit-inner-spin-button
+      appearance: none
+    &:hover
+      border: 1px solid #ACACAC
+    &::placeholder
+      font-family: $font-family-regular
+      color: $color-text-assist
+    &:focus
+      border-color: $color-main !important
 </style>

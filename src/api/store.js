@@ -160,5 +160,25 @@ export default {
   getGoodsList(data, loading = false) {
     let url = `/scm/api/backend/goods/goods`
     return request.get(url, data, loading)
+  },
+  /**
+   * 仓库货架详情
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  goodsCategory(data, loading = false) {
+    let url = `/scm/api/backend/goods/goods-category`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 出库单创建（自建的）
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  editOutOrder(data, loading = false) {
+    let url = `/scm/api/backend/warehouse/self-out-orders`
+    return request.post(url, data, loading)
   }
 }
