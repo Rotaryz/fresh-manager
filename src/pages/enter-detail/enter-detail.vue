@@ -112,7 +112,7 @@
           obj.base_num = item.base_num
           obj.purchase_num = item.purchase_num
           obj.shelf_life = item.shelf_life
-          obj.warehouse_position_id = item.warehouse_position_id
+          obj.warehouse_position_id = item.warehouse_position_id || ''
           arr.push(obj)
         })
         API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {
