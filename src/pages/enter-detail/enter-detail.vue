@@ -32,7 +32,7 @@
               <div>{{item.base_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
-              <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input">
+              <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
               <div v-if="enterMsg.status === 1">{{item.purchase_num}}</div>
               <div>{{item.purchase_unit}}</div>
             </div>
@@ -120,9 +120,9 @@
           arr.push(obj)
         })
         API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {
+          this.$loading.hide()
           if (res.error === this.$ERR_OK) {
             this.enterMsg.status = 1
-            this.$loading.hide()
             this.$router.back()
           } else {
             this.$toast.show(res.message)
@@ -142,8 +142,17 @@
         this.$refs.modalBox.cancel()
       },
       echangInput(item, index) {
+        console.log(item)
+        if (item.base_num < 0) {
+          item.base_num = item.base_num * -1
+        }
         if (item.base_num) {
           this.enterDetailList[index].total = (item.base_num * item.price).toFixed()
+        }
+      },
+      echangPurchase(item, index) {
+        if (item.purchase_num < 0) {
+          item.purchase_num = item.purchase_num * -1
         }
       }
     }
