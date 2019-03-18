@@ -41,8 +41,15 @@
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
             <div v-if="item.base_unit">{{item.base_unit}}</div>
           </div>
-          <div class="list-item">
-            <span class="list-operation" @click="outFn(item, index)">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
+          <div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
+            <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
+            <transition name="fade">
+              <div v-show="showIndex === index && item.select_batch.length !== 0" class="batches-box">
+                <div v-for="(item1, index1) in item.select_batch" :key="index1">
+                  {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                </div>
+              </div>
+            </transition>
           </div>
           <div class="list-item">{{item.price || '---'}}</div>
           <div class="list-item">{{item.all_price || '----'}}</div>
@@ -88,10 +95,17 @@
         storeList: [],
         curIndex: 0,
         curItem: {},
-        storeData: ''
+        storeData: '',
+        showIndex: null
       }
     },
     methods: {
+      _showTip(index) {
+        this.showIndex = index
+      },
+      _hideTip() {
+        this.showIndex = null
+      },
       deleteGoods() {
         this.$refs.addg._delGoods(this.storeList)
       },
@@ -301,4 +315,25 @@
       color: $color-text-assist
     &:focus
       border-color: $color-main !important
+  .list-item-batches
+    position: relative
+    overflow: inherit !important
+    .batches-box
+      position: absolute
+      top: 21px
+      left: 0
+      box-sizing: border-box
+      padding: 12px 37px 12px 12px
+      background: rgba(51,51,51,9)
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: $color-white
+      z-index: 99
+      margin-bottom: 8px
+      &.fade-enter, &.fade-leave-to
+        opacity: 0
+      &.fade-enter-to, &.fade-leave-to
+        transition: all .3s ease-in-out
+      &:last-child
+        margin-bottom: 0
 </style>

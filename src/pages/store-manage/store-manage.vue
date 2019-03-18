@@ -7,8 +7,8 @@
           <p class="identification-name">库位管理</p>
         </div>
         <div class="function-btn">
-          <div v-if="storeListData.length < 4" class="btn-main" @click="creatNewList">新建入库单<span class="add-icon"></span></div>
-          <div v-if="storeListData.length >= 4" class="btn-main btn-disable-store">新建入库单<span class="add-icon add-icon-disable"></span></div>
+          <div v-if="storeListData.length < 4" class="btn-main" @click="creatNewList">新建库位<span class="add-icon"></span></div>
+          <div v-if="storeListData.length >= 4" class="btn-main btn-disable-store">新建库位<span class="add-icon add-icon-disable"></span></div>
         </div>
       </div>
       <div class="store-box">
@@ -29,7 +29,7 @@
             </div>
           </div>
           <div v-if="index === 0 && item.warehouse_positions.length === 0" class="store-son-box">
-            请创建子仓库
+            请添加库位
           </div>
           <div v-if="index !== 0 && item.warehouse_positions.length === 0" class="store-son-box">
             请选择{{storeListData[index - 1].name}}
@@ -84,11 +84,15 @@
     methods: {
       creatNewList() {
         this.curType = 1
-        this.$refs.modalBox.show('', '新建货位层级', '长度不能超过6位')
+        this.$refs.modalBox.show('', '新建库位层级', '长度不能超过6位')
       },
       async confirmInput(text) {
         if (text.length === 0) {
           this.$toast.show('输入长度单位不能为零')
+          return
+        }
+        if (text.length > 6) {
+          this.$toast.show('输入长度单位不能超过6个字')
           return
         }
         switch (this.curType) {
@@ -160,7 +164,7 @@
           let res = await API.Store.delStore(this.curItem.level_id)
           if (res.error === this.$ERR_OK) {
             this.storeListData.splice(this.bigIndex, 1)
-            this.$toast.show('删除货柜成功')
+            this.$toast.show('删除库位成功')
           } else {
             this.$toast.show(res.message)
           }
@@ -168,12 +172,15 @@
         case 2:
           let twores = await API.Store.delSmallStore(this.smallTtem.id)
           if (twores.error === this.$ERR_OK) {
+            this.$toast.show('删除成功')
             if (this.smallTtem.checked) {
               for (let i = this.bigIndex + 1; i < this.storeListData.length; i++) {
                 this.storeListData[i].warehouse_positions = []
               }
-              this.storeListData[this.bigIndex].warehouse_positions.splice(this.smallIndex, 1)
             }
+            console.log(this.storeListData)
+            this.storeListData[this.bigIndex].warehouse_positions.splice(this.smallIndex, 1)
+            this.$forceUpdate()
           } else {
             this.$toast.show(res.message)
           }
@@ -198,14 +205,14 @@
         this.curItem = item
         this.curType = 2
         this.bigIndex = index
-        this.$refs.modalBox.show('', '更改货位层级名称', '长度不能超过6位')
+        this.$refs.modalBox.show(item.name, '编辑库位层级名称', '长度不能超过6位')
       },
       addSmallFn(item, index) {
         if (index === 0) {
           this.curItem = item
           this.curType = 3
           this.bigIndex = index
-          this.$refs.modalBox.show('', '新建层位层级', '长度不能超过6位')
+          this.$refs.modalBox.show('', `添加${item.name}`, '长度不能超过6位')
         } else {
           let isChecked = false
           this.storeListData[index - 1].warehouse_positions.forEach(item1 => {
@@ -217,7 +224,7 @@
           if (isChecked) {
             this.curType = 3
             this.bigIndex = index
-            this.$refs.modalBox.show('', '新建层位层级', '长度不能超过6位')
+            this.$refs.modalBox.show('', `添加${item.name}`, '长度不能超过6位')
           } else {
             this.$toast.show('请先选择上级层级再进行添加')
           }
@@ -251,7 +258,7 @@
         this.smallIndex = childIndex
         this.bigIndex = index
         this.curType = 4
-        this.$refs.modalBox.show('', '编辑层位名称', '长度不能超过6位')
+        this.$refs.modalBox.show(childItem.name, '编辑库位名称', '长度不能超过6位')
       },
       // 删除子类名称
       delSmallData(childItem, childIndex, index) {
@@ -259,7 +266,7 @@
         this.smallIndex = childIndex
         this.bigIndex = index
         this.delType = 2
-        this.$refs.confirm.show('删除当前层级后，下挂在它下面所有货位将会被删除？')
+        this.$refs.confirm.show('删除当前层级后，下挂在它下面所有库位将会被删除？')
       }
     }
   }

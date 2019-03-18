@@ -168,9 +168,11 @@
     font-size: $font-size-14
     font-family: $font-family-regular
     color: $color-text-main
-    margin-right: 130px
+    flex: 1
     .enter-title-money
       color: #F84E3C
+    &:nth-child(4), &:nth-child(5)
+      flex: 0.7
 
   .edit-input
     font-size: $font-size-14

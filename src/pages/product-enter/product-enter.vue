@@ -37,9 +37,6 @@
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">入库列表</p>
         </div>
-        <div class="function-btn">
-          <div class="btn-main btn-disable-store">新建入库单<span class="add-icon add-icon-disable"></span></div>
-        </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">

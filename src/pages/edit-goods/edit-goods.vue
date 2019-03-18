@@ -18,7 +18,7 @@
           商品名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.name" type="text" class="edit-input" maxlength="30" @mousewheel.native.prevent>
+          <input v-model="msg.name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
         </div>
       </div>
       <div class="edit-item">
@@ -311,7 +311,7 @@
       _setData() {
         if (!_.isEmpty(this.detail)) {
           this.msg = _.cloneDeep(this.detail)
-          this.dispatchSelect.content = this.msg.bese_unit
+          this.dispatchSelect.content = this.msg.goods_skus[0].base_unit
           this.goods_skus = this.msg.goods_skus[0]
           this.saleSelect.content = this.goods_skus.sale_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
