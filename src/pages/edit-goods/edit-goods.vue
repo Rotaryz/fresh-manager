@@ -378,7 +378,7 @@
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
           return
-        } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || !this.msg.commission_rate) {
+        } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || this.msg.commission_rate.length === 0) {
           this.$toast.show('成员佣金比率区间在0与100之间')
           return
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
@@ -399,7 +399,7 @@
         } else if (
           +this.goods_skus.damage_rate < 0 ||
           +this.goods_skus.damage_rate > 100 ||
-          !this.goods_skus.damage_rate
+          this.goods_skus.damage_rate.length === 0
         ) {
           this.$toast.show('损耗比区间在0与100之间')
           return
