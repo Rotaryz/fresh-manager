@@ -61,6 +61,8 @@
   import API from '@api'
   import {supplierComputed} from '@state/helpers'
 
+  const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
+
   const PAGE_NAME = 'EDIT_SUPPLIER'
   const TITLE = '新建供应商'
   const SELECT = {
@@ -126,6 +128,9 @@
           return
         } else if (!this.mobile) {
           this.$toast.show('请输入手机号')
+          return
+        } else if (!TELREG.test(this.mobile)) {
+          this.$toast.show('请输入正确的手机号')
           return
         } else if (!this.address) {
           this.$toast.show('请输入供应商地址')
