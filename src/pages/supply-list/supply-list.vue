@@ -145,6 +145,4 @@
         padding-right: 14px
         &:last-child
           flex: 0.3
-        &:nth-child(4)
-          flex: 3
 </style>
