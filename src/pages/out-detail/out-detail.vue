@@ -4,7 +4,7 @@
       <div class="enter-title">出库单号：{{outMsg.order_sn}}</div>
       <div class="enter-title">关联订单号：{{outMsg.out_order_sn}}</div>
       <div class="enter-title">商户名称：{{outMsg.merchant_name}}</div>
-      <div class="enter-title">出库时间：{{outMsg.out_time}}</div>
+      <div class="enter-title">出库时间：{{outMsg.out_time || '--------'}}</div>
       <div class="enter-title">状态：{{outMsg.status === 0 ? '待出库' : '已完成'}}</div>
       <div class="enter-title">入库金额：<span class="enter-title-money">￥{{outMsg.total}}</span></div>
     </div>
@@ -39,8 +39,8 @@
                 </div>
               </transition>
             </div>
-            <div class="list-item">{{item.out_cost_price}}</div>
-            <div class="list-item">{{item.cost_total}}</div>
+            <div class="list-item">{{item.out_cost_price || '0.00'}}</div>
+            <div class="list-item">{{item.cost_total || '0.00'}}</div>
           </div>
         </div>
       </div>
@@ -95,9 +95,11 @@
       getOutBatchList(index) {
         API.Store.outBatchList({goods_sku_code: this.outDetailList[index].goods_sku_code}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            let number = 0
             this.batchList = res.data
             if (this.outDetailList[index].out_batches.length) {
               this.outDetailList[index].out_batches.forEach(item => {
+                number += (item.select_out_num * 1)
                 this.batchList.forEach(item1 => {
                   if(item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
@@ -105,7 +107,7 @@
                 })
               })
             }
-            this.$refs.modalBox.show()
+            this.$refs.modalBox.show(number)
           } else {
             this.$toast.show(res.message)
           }
@@ -134,6 +136,7 @@
         API.Store.putOutSubmit(this.id, {details: arr}).then((res) => {
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
+            this.$toast.show('出库成功')
             this.outMsg.status = 1
             this.$router.back()
           } else {
@@ -148,6 +151,16 @@
         this.getOutBatchList(index)
       },
       confirm(arr) {
+        let allprice = 0
+        let number = 0
+        arr.forEach(item => {
+          if (item.select_out_num > 0) {
+            number += (item.select_out_num * 1)
+            allprice += (item.select_out_num * item.price)
+          }
+        })
+        this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
         this.outDetailList[this.curIndex].out_batches = arr
         this.$refs.modalBox.cancel()
       }

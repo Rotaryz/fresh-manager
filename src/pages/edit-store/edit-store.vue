@@ -37,7 +37,7 @@
           <div class="list-item">{{index + 1}}</div>
           <div class="list-item">{{item.goods_name}}</div>
           <div class="list-item">{{item.goods_category}}</div>
-          <div class="list-item">
+          <div class="list-item list-item-layout">
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
             <div v-if="item.base_unit">{{item.base_unit}}</div>
           </div>
@@ -154,9 +154,11 @@
       getOutBatchList(index) {
         API.Store.outBatchList({goods_sku_code: this.storeList[index].goods_sku_code}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            let number = 0
             this.batchList = res.data
             if (this.storeList[index].select_batch.length) {
               this.storeList[index].select_batch.forEach(item => {
+                number += (item.select_out_num * 1)
                 this.batchList.forEach(item1 => {
                   if(item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
@@ -164,7 +166,7 @@
                 })
               })
             }
-            this.$refs.modalBox.show()
+            this.$refs.modalBox.show(number)
           } else {
             this.$toast.show(res.message)
           }
@@ -294,7 +296,7 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
-  .list-item
+  .list-item-layout
     layout(row)
     align-items: center
   .edit-input
