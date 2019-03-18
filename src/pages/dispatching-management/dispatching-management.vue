@@ -157,7 +157,7 @@
     {title: '操作', key: '', operation: '删除', flex: 0.145}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '编号', key: 'driver_id', flex: 1},
+    {title: '创建时间', key: 'created_at', flex: 1},
     {title: '司机', key: 'true_name', flex: 1},
     {title: '线路名称', key: 'road_name', flex: 1},
     {title: '车牌号码', key: 'plate_number', flex: 1},
