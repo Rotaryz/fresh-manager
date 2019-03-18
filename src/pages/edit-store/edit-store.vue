@@ -37,6 +37,7 @@
           <div class="list-item">{{index + 1}}</div>
           <div class="list-item">{{item.goods_name}}</div>
           <div class="list-item">{{item.goods_category}}</div>
+          <div class="list-item">{{item.usable_stock}}</div>
           <div class="list-item list-item-layout">
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
             <div v-if="item.base_unit">{{item.base_unit}}</div>
@@ -76,7 +77,7 @@
   import DefaultBatch from '@components/default-batch/default-batch'
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
-  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
+  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '现有库存', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -244,6 +245,8 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
+      &:nth-child(1)
+        flex: 0.4
       &:nth-child(3)
         flex: 1.5
       &:last-child

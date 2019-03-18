@@ -3,7 +3,7 @@
     <div class="down-content">
       <div class="enter-title">入库单号：{{enterMsg.order_sn}}</div>
       <div class="enter-title">供应商：{{enterMsg.supplier}}</div>
-      <div class="enter-title">入库时间：{{enterMsg.build_time || '--------'}}</div>
+      <div class="enter-title">入库时间：{{enterMsg.entry_time || '--------'}}</div>
       <div class="enter-title">状态：{{enterMsg.status === 0 ? '待入库' : '已完成'}}</div>
       <div class="enter-title">入库金额：<span v-if="enterMsg.status === 1" class="enter-title-money">￥{{enterMsg.total}}</span></div>
     </div>

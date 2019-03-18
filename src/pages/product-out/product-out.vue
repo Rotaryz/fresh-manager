@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
+        <base-pagination ref="pagination"></base-pagination>
       </div>
     </div>
   </div>
@@ -153,10 +153,10 @@
         this.$refs.pagination.beginPage()
       },
       setValue(item) {
-        this.$refs.pagination.beginPage()
         this.status = item.value
         this.goodsPage = 1
         this.getProductListData()
+        this.$refs.pagination.beginPage()
       },
       addPage(page) {
         this.goodsPage = page
