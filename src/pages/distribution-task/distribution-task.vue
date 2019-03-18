@@ -25,7 +25,7 @@
       <div v-if="tabIndex === 0" class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
-          <base-search :infoText="orderKeyword" placeHolder="订单号或商品名称" @search="changeKeyword"></base-search>
+          <base-search :infoText="orderKeyword" placeHolder="订单号或商户名称" @search="changeKeyword"></base-search>
         </div>
       </div>
     </div>

@@ -103,7 +103,7 @@
     <default-modal ref="addressModal">
       <div slot="content" class="shade-box">
         <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+          <div class="shade-title">选择商户</div>
           <span class="close hand" @click="cancel"></span>
         </div>
         <div class="shade-tab">
