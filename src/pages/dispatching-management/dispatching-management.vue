@@ -177,6 +177,7 @@
   const ADD_ROAD = 0
   const DELETE_ROAD = 1
   const EDIT_ROAD = 2
+  const TEL_REG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
   export default {
     name: PAGE_NAME,
     page: {
@@ -344,7 +345,30 @@
           })
         }
       },
+      checkDriverValidate() {
+        let data = this.driverForm
+        if (!data.true_name) {
+          this.$toast.show('请输入司机名称')
+          return
+        } else if (!data.mobile) {
+          this.$toast.show('请输入手机号')
+          return
+        } else if (!TEL_REG.test(data.mobile)) {
+          this.$toast.show('请输入正确的手机号')
+          return
+        } else if (!data.plate_number) {
+          this.$toast.show('请输入车牌号')
+          return
+        } else if (!data.road_id) {
+          this.$toast.show('请选择线路名称')
+          return
+        }
+        return true
+      },
       handleDriver() {
+        if (!this.checkDriverValidate()) {
+          return
+        }
         if (this.handleDriverType === ADD_DRIVER) {
           API.Delivery.addDriver(this.driverForm).then((res) => {
             const LOADING = false

@@ -64,7 +64,7 @@
   const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
 
   const PAGE_NAME = 'EDIT_SUPPLIER'
-  const TITLE = '新建供应商'
+  const TITLE = '供应商'
   const SELECT = {
     check: false,
     show: false,
