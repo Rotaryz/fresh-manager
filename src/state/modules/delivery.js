@@ -53,7 +53,7 @@ export const actions = {
   setTabIndex({commit, dispatch, state}, index) {
     commit('SET_TAB_INDEX', index)
     if (state.tabIndex === 1) {
-      dispatch('getDriverList')
+      dispatch('getDriverList', false)
     }
   },
   getDriverList({commit, state, dispatch}, loading = true) {

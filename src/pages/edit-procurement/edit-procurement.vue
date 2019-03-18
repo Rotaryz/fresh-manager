@@ -19,7 +19,7 @@
         </div>
         <div class="edit-input-box">
           <div v-if="id" class="edit-change">{{detail.user_name}}</div>
-          <input v-else v-model="username" type="number" class="edit-input" placeholder="请输入账号"
+          <input v-else v-model="username" type="text" class="edit-input" placeholder="请输入账号"
                  maxlength="10"
           >
         </div>
@@ -79,6 +79,7 @@
 
   const PAGE_NAME = 'EDIT_PROCUREMENT'
   const TITLE = '新建采购员'
+  const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
 
   export default {
     name: PAGE_NAME,
@@ -118,6 +119,9 @@
         } else if (this.isChangePassword && !this.password) {
           this.$toast.show('请输入密码')
           return
+        } else if (this.isChangePassword && this.password.length <= 4) {
+          this.$toast.show('密码必须大于4位')
+          return
         } else if (this.isChangePassword && !this.comfirmPassword) {
           this.$toast.show('请输入确认密码')
           return
@@ -129,6 +133,9 @@
           return
         } else if (!this.mobile) {
           this.$toast.show('请输入手机号')
+          return
+        } else if (!TELREG.test(this.mobile)) {
+          this.$toast.show('请输入正确的手机号')
           return
         }
         return true

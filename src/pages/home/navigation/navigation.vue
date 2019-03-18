@@ -225,7 +225,7 @@
           isLight: false
         },
         {
-          title: '调度任务',
+          title: '调度管理',
           url: '/home/dispatching-management',
           isLight: false
         }

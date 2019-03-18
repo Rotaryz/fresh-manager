@@ -25,7 +25,7 @@
       <div v-if="tabIndex === 0" class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
-          <base-search :infoText="orderKeyword" placeHolder="订单号或商品名称" @search="changeKeyword"></base-search>
+          <base-search :infoText="orderKeyword" placeHolder="订单号或商户名称" @search="changeKeyword"></base-search>
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + ORDER_EXCEL_URL + this.exportOrderId + '?' + search.join('&')
+        return process.env.VUE_APP_SCM_API + ORDER_EXCEL_URL + this.exportOrderId + '?' + search.join('&')
       },
       driverExportUrl() {
         let currentId = this.getCurrentId()
@@ -143,7 +143,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + DRIVER_EXCEL_URL + this.exportDriverId + '?' + search.join('&')
+        return process.env.VUE_APP_SCM_API + DRIVER_EXCEL_URL + this.exportDriverId + '?' + search.join('&')
       }
     },
     created() {
