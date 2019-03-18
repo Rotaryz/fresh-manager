@@ -35,8 +35,8 @@
           <div v-for="(item, index) in purchaseDetail.details" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.purchase_unit}}</div>
-            <div class="list-item">{{item.sale_unit}}</div>
+            <div class="list-item">{{item.purchase_num}}({{item.purchase_unit}})</div>
+            <div class="list-item">{{item.sale_num}}({{item.sale_unit}})</div>
             <div class="list-item">{{item.purchase_price}}</div>
             <div class="list-item">{{item.purchase_amount ? '￥' : ''}}{{item.purchase_amount}}</div>
           </div>

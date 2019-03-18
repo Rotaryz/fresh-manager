@@ -44,7 +44,7 @@
           确认密码
         </div>
         <div class="edit-input-box">
-          <input v-model="comfirmPassword" type="password" class="edit-input" placeholder="请确认密码" maxlength="20">
+          <input v-model="confirmPassword" type="password" class="edit-input" placeholder="请确认密码" maxlength="20">
         </div>
       </div>
       <div class="edit-item">
@@ -92,7 +92,7 @@
         isChangePassword: !this.$route.query.id,
         username: '',
         password: '',
-        comfirmPassword: '',
+        confirmPassword: '',
         name: '',
         mobile: ''
       }
@@ -122,10 +122,10 @@
         } else if (this.isChangePassword && this.password.length <= 4) {
           this.$toast.show('密码必须大于4位')
           return
-        } else if (this.isChangePassword && !this.comfirmPassword) {
+        } else if (this.isChangePassword && !this.confirmPassword) {
           this.$toast.show('请输入确认密码')
           return
-        } else if (this.isChangePassword && this.password !== this.comfirmPassword) {
+        } else if (this.isChangePassword && this.password !== this.confirmPassword) {
           this.$toast.show('密码和确认密码不一致')
           return
         } else if (!this.name) {
