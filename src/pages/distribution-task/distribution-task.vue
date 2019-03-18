@@ -128,7 +128,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + ORDER_EXCEL_URL + this.exportOrderId + '?' + search.join('&')
+        return process.env.VUE_APP_SCM_API + ORDER_EXCEL_URL + this.exportOrderId + '?' + search.join('&')
       },
       driverExportUrl() {
         let currentId = this.getCurrentId()
@@ -143,7 +143,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + DRIVER_EXCEL_URL + this.exportDriverId + '?' + search.join('&')
+        return process.env.VUE_APP_SCM_API + DRIVER_EXCEL_URL + this.exportDriverId + '?' + search.join('&')
       }
     },
     created() {
