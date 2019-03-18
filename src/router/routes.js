@@ -898,7 +898,8 @@ export default [
         name: 'edit-supplier',
         component: () => lazyLoadView(import('@pages/edit-supplier/edit-supplier')),
         meta: {
-          titles: ['供应链', '采购', '供应商', '新建供应商'],
+          titles: ['供应链', '采购', '供应商', '供应商'],
+          variableIndex: 3,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
               return next()
