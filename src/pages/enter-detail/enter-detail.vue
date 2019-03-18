@@ -146,13 +146,27 @@
         if (item.base_num < 0) {
           item.base_num = item.base_num * -1
         }
+        let number = item.base_num / item.base_purchase_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.purchase_num = number.toFixed(2)
+        console.log(number)
         if (item.base_num) {
-          this.enterDetailList[index].total = (item.base_num * item.price).toFixed()
+          this.enterDetailList[index].total = (item.base_num * item.price).toFixed(2)
         }
       },
       echangPurchase(item, index) {
         if (item.purchase_num < 0) {
           item.purchase_num = item.purchase_num * -1
+        }
+        let number = item.purchase_num / item.base_sale_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.base_num = number.toFixed(2)
+        if (item.purchase_num) {
+          this.enterDetailList[index].total = (item.base_num * item.price).toFixed(2)
         }
       }
     }
