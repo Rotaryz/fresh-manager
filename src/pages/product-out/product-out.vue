@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination":pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
   </div>
