@@ -122,13 +122,19 @@
       },
       // 批量添加
       _batchAddition() {
+        let arr = []
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
+        this.choeesGoods.forEach(item => {
+          if (item.selected * 1 === 1) {
+            arr.push(item)
+          }
+        })
         this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
-        this.$emit('batchAddition', this.goodsList)
+        this.$emit('batchAddition', arr)
         this._hideGoods()
       },
       _cancelGoods() {
