@@ -49,9 +49,9 @@
             <div class="list-item">{{item.supplier}}</div>
             <div class="list-item">{{item.out_order_sn}}</div>
             <div class="list-item">{{item.total}}</div>
-            <div class="list-item">{{item.status_str}}</div>
+            <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
             <div class="list-item list-operation-box">
-              <router-link tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">{{item.status === 0 ? '入库' : '详情'}}</router-link>
+              <router-link tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
             </div>
           </div>
         </div>

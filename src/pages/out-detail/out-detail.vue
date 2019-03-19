@@ -30,7 +30,6 @@
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
             <div class="list-item list-item-batches hand" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
-              <span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span>
               <transition name="fade">
                 <div v-show="showIndex === index && item.out_batches.length !== 0" class="batches-box">
                   <div v-for="(item1, index1) in item.out_batches" :key="index1">
@@ -38,6 +37,7 @@
                   </div>
                 </div>
               </transition>
+              <span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span>
             </div>
             <div class="list-item">{{item.out_cost_price || '0.00'}}</div>
             <div class="list-item">{{item.cost_total || '0.00'}}</div>
