@@ -89,7 +89,7 @@
     {title: '司机', key: 'driver_name', flex: 1},
     {title: '线路名称', key: 'road_name', flex: 1},
     {title: '配送商户数', key: 'buyer_count', flex: 1},
-    {title: '订单数', key: 'buyer_count', flex: 1},
+    {title: '订单数', key: 'order_count', flex: 1},
     {title: '操作', key: '', operation: '导出', flex: 0.145}
   ]
   const ORDERSTATUS = [{text: '订单任务列表', status: ''}, {text: '司机任务列表', status: 0}]
