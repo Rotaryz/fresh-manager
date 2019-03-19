@@ -309,7 +309,7 @@
     font-size: $font-size-14
     padding: 0 14px
     border-radius: 1px
-    width: 60px
+    width: 100px
     height: 34px
     border: 1px solid $color-line
     margin-right: 10px
