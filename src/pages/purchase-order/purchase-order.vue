@@ -46,7 +46,7 @@
             <div class="list-item">{{item.create_day}}</div>
             <div class="list-item">{{item.order_sn}}</div>
             <div class="list-item">{{item.task_num}}</div>
-            <div class="list-item">{{item.per_amount}}</div>
+            <div class="list-item">{{item.per_amount ? '￥' : ''}}{{item.per_amount}}</div>
             <div class="list-item">{{item.supply_name}}</div>
             <div class="list-item">{{item.purchase_user_name}}</div>
             <div class="list-item">{{item.status_str}}</div>
@@ -69,7 +69,7 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER'
   const TITLE = '采购单列表'
-  const COMMODITIES_LIST = ['生成时间', '采购订单号', '采购商品数', '预采购金额', '供应商', '采购员', '状态', '操作']
+  const COMMODITIES_LIST = ['生成时间', '采购订单号', '采购品类数', '预采购金额', '供应商', '采购员', '状态', '操作']
   export default {
     name: PAGE_NAME,
     page: {

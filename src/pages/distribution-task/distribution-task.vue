@@ -80,9 +80,9 @@
     {title: '关联订单号', key: 'sale_order_sn', flex: 1},
     {title: '路线', key: 'road_name', flex: 1},
     {title: '商户名称', key: 'receiver', flex: 1},
-    {title: '配送地址', key: 'receive_address', flex: 1},
-    {title: '收货时间', key: 'delivery_date', flex: 1},
-    {title: '司机', key: 'driver_name', flex: 1},
+    {title: '配送地址', key: 'receive_address', flex: 1.5},
+    {title: '收货时间', key: 'delivery_date', flex: 0.6},
+    {title: '司机', key: 'driver_name', flex: 0.6},
     {title: '操作', key: '', operation: '导出', flex: 0.3}
   ]
   const COMMODITIES_LIST2 = [

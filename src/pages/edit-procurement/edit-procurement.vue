@@ -20,7 +20,7 @@
         <div class="edit-input-box">
           <div v-if="id" class="edit-change">{{detail.user_name}}</div>
           <input v-else v-model="username" type="text" class="edit-input" placeholder="请输入账号"
-                 maxlength="10"
+                 maxlength="11"
           >
         </div>
       </div>

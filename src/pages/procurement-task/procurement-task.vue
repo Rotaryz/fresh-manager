@@ -51,13 +51,13 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box">
-            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select}" @click="selectPurchase(index)"></div>
+            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1}" @click="selectPurchase(index)"></div>
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.supplier}}</div>
             <div class="list-item">{{item.purchase_user}}</div>
-            <div class="list-item">{{item.plan_num}}({{item.purchase_unit}})</div>
-            <div class="list-item">{{item.finish_num}}({{item.purchase_unit}})</div>
+            <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
+            <div class="list-item">{{item.finish_num}}{{item.purchase_unit}}({{item.finish_base_num}}{{item.base_unit}})</div>
             <div class="list-item list-item-progress">
               <div class="progress-content">
                 <div class="progress-num">{{item.finish_num}}{{item.purchase_unit}}/{{item.plan_num}}{{item.purchase_unit}}</div>
@@ -68,7 +68,7 @@
               <div class="progress-percentage">{{item.finish_percent}}</div>
             </div>
             <div class="list-item">{{item.publish_at}}</div>
-            <div class="list-item">{{item.status_str}}</div>
+            <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}</div>
           </div>
         </div>
       </div>
@@ -240,7 +240,7 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-      // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
+        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
       },
       // 搜索商品
       async _searchGoods(text) {
@@ -401,7 +401,7 @@
             selectArr.push(item.id)
           }
         })
-        selectArr = selectArr.concat(this.selectList)
+        // selectArr = selectArr.concat(this.selectList)
         if (!selectArr.length) {
           this.$toast.show('请选择采购任务')
           return
@@ -421,17 +421,17 @@
           })
         }
       },
-      _getMoreList(page) {
+      async _getMoreList(page) {
         if (this.page === page) {
           return
         }
         this.page = page
-        this.purchaseTaskList.forEach((item) => {
-          if (item.select) {
-            this.selectList.push(item.id)
-          }
-        })
-        this.getPurchaseTaskList({
+        // this.purchaseTaskList.forEach((item) => {
+        //   if (item.select) {
+        //     this.selectList.push(item.id)
+        //   }
+        // })
+        await this.getPurchaseTaskList({
           time: this.time,
           startTime: this.startTime,
           endTime: this.endTime,
@@ -440,6 +440,7 @@
           page: this.page,
           loading: false
         })
+        // this.selectPurchase(this.selectList)
       }
     }
   }
@@ -454,6 +455,7 @@
     height: 14px
     width: 14px
     margin-right: 18px
+    background: $color-white
     transition: all 0.3s
 
   .pro-select-icon-disable
@@ -470,7 +472,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.5
+          flex: 0.7
         &:nth-child(8), &:nth-child(2)
           flex: 1.5
 

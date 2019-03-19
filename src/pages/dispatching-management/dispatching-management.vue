@@ -11,7 +11,7 @@
           <div class="btn-main">新建{{tabStatus[tabIndex].text}}</div>
         </div>
       </div>
-      <div class="big-list">
+      <div class="dispatching-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
         </div>
@@ -35,9 +35,9 @@
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
-      </div>
+      <!--<div class="pagination-box">-->
+      <!--<base-pagination ref="pages"></base-pagination>-->
+      <!--</div>-->
     </div>
     <default-confirm ref="confirm" @confirm="handleRoad"></default-confirm>
     <default-modal ref="line">
@@ -121,7 +121,7 @@
               <div v-for="(delivery, key) in deliveryAddress" :key="key" class="list-content list-box">
                 <div :class="{'pro-select-icon-active': delivery.checked === 1}" class="pro-select pro-select-icon hand" @click="selectDeliveryAddress(delivery)"></div>
                 <!--list-item-disable-->
-                <div v-for="(item, index) in merchant" :key="index" class="list-item" :style="{flex: item.flex}">
+                <div v-for="(item, index) in merchant" :key="index" :class="{'none': delivery[item.key] === '未分配'}" class="list-item" :style="{flex: item.flex}">
                   {{item.operation ? '' : delivery[item.key]}}
                 </div>
               </div>
@@ -617,6 +617,8 @@
     .shade-list
       height: 420px
       overflow-y: auto
+      .none
+        color: $color-text-assist
       &::-webkit-scrollbar
         width: 4px
         height: 10px
@@ -808,4 +810,7 @@
 
   .list-item-disable
     color: #ACACAC
+
+  .dispatching-list
+    padding-bottom: 20px
 </style>

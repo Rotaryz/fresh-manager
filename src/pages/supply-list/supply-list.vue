@@ -36,7 +36,7 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <!--<img src="./icon-buyer@2x.png" class="identification-icon">-->
+          <img src="./icon-order_list2@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
         </div>
       </div>
@@ -49,7 +49,7 @@
             <div class="list-item">{{item.merge_at}}</div>
             <div class="list-item">{{item.order_sn}}</div>
             <div class="list-item">{{item.buyer_name}}</div>
-            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">{{item.total ? '￥' : ''}}{{item.total}}</div>
             <div class="list-item">{{item.status_str}}</div>
             <div class="list-item">
               <router-link tag="div" :to="`supply-detail/${item.id}`" append class="list-operation">详情</router-link>

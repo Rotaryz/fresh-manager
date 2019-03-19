@@ -55,6 +55,7 @@ export const actions = {
         })
         commit('SET_PURCHASE_TASK_LIST', arr)
         commit('SET_PAGE_TOTAL', pageTotal)
+        commit('SET_SELECT', false)
         return true
       })
       .catch(() => {
@@ -66,19 +67,32 @@ export const actions = {
   },
   selectPurchase({state, commit, dispatch}, index) {
     let arr = JSON.parse(JSON.stringify(state.purchaseTaskList))
-    if (index === 'all') {
+    let type = typeof index
+    switch (type) {
+    case 'string':
       let select = state.select
       select = !select
       arr = arr.map((item) => {
-        item.select = select
+        item.select = item.status === 1 ? select : false
         return item
       })
       commit('SET_SELECT', select)
-    } else {
-      arr[index].select = !arr[index].select
+      break
+    case 'number':
+      arr[index].select = arr[index].status === 1 ? !arr[index].select : false
       let idx = arr.findIndex((item) => !item.select)
-      let select = idx === -1
-      commit('SET_SELECT', select)
+      let select2 = idx === -1
+      commit('SET_SELECT', select2)
+      break
+    case 'object':
+      // index.forEach((item) => {
+      //   arr.forEach((arrItem) => {
+      //     if (arrItem.id === item) {
+      //       console.log(arrItem)
+      //     }
+      //   })
+      // })
+      break
     }
     commit('SET_PURCHASE_TASK_LIST', arr)
   }
