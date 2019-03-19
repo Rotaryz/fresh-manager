@@ -18,7 +18,7 @@
           商品名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.name" type="text" class="edit-input" maxlength="30" @mousewheel.native.prevent>
+          <input v-model="msg.name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
         </div>
       </div>
       <div class="edit-item">
@@ -86,7 +86,7 @@
           <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
           <base-drop-down :height="40" :width="133" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
         </div>
-        <div class="edit-pla">请先选择基本单位</div>
+        <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -96,6 +96,7 @@
         <div class="edit-input-box">
           <input v-model="msg.original_price" type="number" class="edit-input" maxlength="10">
         </div>
+        <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -105,6 +106,7 @@
         <div class="edit-input-box">
           <input v-model="msg.trade_price" type="number" class="edit-input">
         </div>
+        <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -159,7 +161,7 @@
           <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
           <base-drop-down :height="40" :width="133" :select="purchaseSelect" @setValue="purchaseSelectValue"></base-drop-down>
         </div>
-        <div class="edit-pla">请先选择基本单位</div>
+        <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -311,7 +313,7 @@
       _setData() {
         if (!_.isEmpty(this.detail)) {
           this.msg = _.cloneDeep(this.detail)
-          this.dispatchSelect.content = this.msg.bese_unit
+          this.dispatchSelect.content = this.msg.goods_skus[0].base_unit
           this.goods_skus = this.msg.goods_skus[0]
           this.saleSelect.content = this.goods_skus.sale_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
@@ -378,7 +380,7 @@
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
           return
-        } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || !this.msg.commission_rate) {
+        } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || this.msg.commission_rate.length === 0) {
           this.$toast.show('成员佣金比率区间在0与100之间')
           return
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
@@ -399,7 +401,7 @@
         } else if (
           +this.goods_skus.damage_rate < 0 ||
           +this.goods_skus.damage_rate > 100 ||
-          !this.goods_skus.damage_rate
+          this.goods_skus.damage_rate.length === 0
         ) {
           this.$toast.show('损耗比区间在0与100之间')
           return

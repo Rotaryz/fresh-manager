@@ -103,7 +103,7 @@
     <default-modal ref="addressModal">
       <div slot="content" class="shade-box">
         <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+          <div class="shade-title">选择商户</div>
           <span class="close hand" @click="cancel"></span>
         </div>
         <div class="shade-tab">
@@ -157,7 +157,7 @@
     {title: '操作', key: '', operation: '删除', flex: 0.145}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '编号', key: 'driver_id', flex: 1},
+    {title: '创建时间', key: 'created_at', flex: 1},
     {title: '司机', key: 'true_name', flex: 1},
     {title: '线路名称', key: 'road_name', flex: 1},
     {title: '车牌号码', key: 'plate_number', flex: 1},
@@ -177,6 +177,7 @@
   const ADD_ROAD = 0
   const DELETE_ROAD = 1
   const EDIT_ROAD = 2
+  const TEL_REG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
   export default {
     name: PAGE_NAME,
     page: {
@@ -344,7 +345,30 @@
           })
         }
       },
+      checkDriverValidate() {
+        let data = this.driverForm
+        if (!data.true_name) {
+          this.$toast.show('请输入司机名称')
+          return
+        } else if (!data.mobile) {
+          this.$toast.show('请输入手机号')
+          return
+        } else if (!TEL_REG.test(data.mobile)) {
+          this.$toast.show('请输入正确的手机号')
+          return
+        } else if (!data.plate_number) {
+          this.$toast.show('请输入车牌号')
+          return
+        } else if (!data.road_id) {
+          this.$toast.show('请选择线路名称')
+          return
+        }
+        return true
+      },
       handleDriver() {
+        if (!this.checkDriverValidate()) {
+          return
+        }
         if (this.handleDriverType === ADD_DRIVER) {
           API.Delivery.addDriver(this.driverForm).then((res) => {
             const LOADING = false

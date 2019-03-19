@@ -44,7 +44,7 @@
           确认密码
         </div>
         <div class="edit-input-box">
-          <input v-model="comfirmPassword" type="password" class="edit-input" placeholder="请确认密码" maxlength="20">
+          <input v-model="confirmPassword" type="password" class="edit-input" placeholder="请确认密码" maxlength="20">
         </div>
       </div>
       <div class="edit-item">
@@ -78,7 +78,7 @@
   import {buyerComputed} from '@state/helpers'
 
   const PAGE_NAME = 'EDIT_PROCUREMENT'
-  const TITLE = '新建采购员'
+  const TITLE = '采购员'
   const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
 
   export default {
@@ -92,7 +92,7 @@
         isChangePassword: !this.$route.query.id,
         username: '',
         password: '',
-        comfirmPassword: '',
+        confirmPassword: '',
         name: '',
         mobile: ''
       }
@@ -122,10 +122,10 @@
         } else if (this.isChangePassword && this.password.length <= 4) {
           this.$toast.show('密码必须大于4位')
           return
-        } else if (this.isChangePassword && !this.comfirmPassword) {
+        } else if (this.isChangePassword && !this.confirmPassword) {
           this.$toast.show('请输入确认密码')
           return
-        } else if (this.isChangePassword && this.password !== this.comfirmPassword) {
+        } else if (this.isChangePassword && this.password !== this.confirmPassword) {
           this.$toast.show('密码和确认密码不一致')
           return
         } else if (!this.name) {

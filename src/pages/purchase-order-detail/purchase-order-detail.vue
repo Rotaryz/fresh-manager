@@ -2,19 +2,19 @@
   <div class="purchase-order-detail table">
     <div class="down-content">
       <div class="down-item-text">
-        <span class="down-text">采购单号：{{purchaseDetail.order_sn}}</span>
+        <span class="header-text">采购单号：{{purchaseDetail.order_sn}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">采购商品数：{{purchaseDetail.task_num}}</span>
+        <span class="header-text">采购商品数：{{purchaseDetail.task_num}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">预采购金额：￥{{purchaseDetail.per_amount}}</span>
+        <span class="header-text">预采购金额：￥{{purchaseDetail.per_amount}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">供应商：{{purchaseDetail.supply_name}}</span>
+        <span class="header-text">供应商：{{purchaseDetail.supply_name}}</span>
       </div>
       <div class="down-item-text">
-        <span class="down-text">状态：{{purchaseDetail.status_str}}</span>
+        <span class="header-text">状态：{{purchaseDetail.status_str}}</span>
       </div>
     </div>
     <div class="table-content">
@@ -35,8 +35,8 @@
           <div v-for="(item, index) in purchaseDetail.details" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.base_unit}}</div>
-            <div class="list-item">{{item.purchase_unit}}</div>
+            <div class="list-item">{{item.purchase_num}}({{item.purchase_unit}})</div>
+            <div class="list-item">{{item.sale_num}}({{item.sale_unit}})</div>
             <div class="list-item">{{item.purchase_price}}</div>
             <div class="list-item">{{item.purchase_amount ? '￥' : ''}}{{item.purchase_amount}}</div>
           </div>
@@ -86,6 +86,8 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .purchase-order-detail
+    .header-text
+      font-size: 14px
     .list-box
       .list-item
         padding-right: 14px

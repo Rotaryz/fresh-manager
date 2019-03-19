@@ -23,7 +23,7 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in list" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.id}}</div>
+            <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.user_name}}</div>
             <div class="list-item">{{item.true_name}}</div>
             <div class="list-item">{{item.mobile}}</div>
@@ -45,7 +45,7 @@
 
   const PAGE_NAME = 'BUYER'
   const TITLE = '采购员'
-  const COMMODITIES_LIST = ['编号', '账号', '姓名', '手机', '操作']
+  const COMMODITIES_LIST = ['创建时间', '账号', '姓名', '手机', '操作']
   export default {
     name: PAGE_NAME,
     page: {

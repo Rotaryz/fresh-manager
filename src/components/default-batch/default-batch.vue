@@ -20,9 +20,9 @@
             <div class="list">
               <div v-for="(item, index) in batchList" :key="index" class="list-content list-box">
                 <div class="list-item">{{item.entry_time}}</div>
-                <div class="list-item">{{item.shelf_life}}</div>
+                <div class="list-item">{{item.shelf_life || '--------'}}</div>
                 <div class="list-item">{{item.batch_num}}</div>
-                <div class="list-item">{{item.warehouse_position}}</div>
+                <div class="list-item">{{item.warehouse_position || '--------'}}</div>
                 <div class="list-item">{{item.usable_stock}}</div>
                 <div class="list-item list-item-input-box">
                   <input v-model="item.out_count" type="number" class="edit-input" @input="changeInput(item, index)">
@@ -74,7 +74,8 @@
     created() {
     },
     methods: {
-      show() {
+      show(index) {
+        this.numberBatch = index
         this.$refs.modal && this.$refs.modal.showModal()
       },
       cancel() {

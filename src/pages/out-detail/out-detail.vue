@@ -4,7 +4,7 @@
       <div class="enter-title">出库单号：{{outMsg.order_sn}}</div>
       <div class="enter-title">关联订单号：{{outMsg.out_order_sn}}</div>
       <div class="enter-title">商户名称：{{outMsg.merchant_name}}</div>
-      <div class="enter-title">出库时间：{{outMsg.out_time}}</div>
+      <div class="enter-title">出库时间：{{outMsg.out_time || '--------'}}</div>
       <div class="enter-title">状态：{{outMsg.status === 0 ? '待出库' : '已完成'}}</div>
       <div class="enter-title">入库金额：<span class="enter-title-money">￥{{outMsg.total}}</span></div>
     </div>
@@ -24,14 +24,23 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in outDetailList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.sale_num}}</div>
+            <div class="list-item">{{index + 1}}</div>
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
-            <div class="list-item hand" @click="outFn(item, index)"><span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span></div>
-            <div class="list-item">{{item.out_cost_price}}</div>
-            <div class="list-item">{{item.cost_total}}</div>
+            <div class="list-item list-item-batches hand" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
+              <span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span>
+              <transition name="fade">
+                <div v-show="showIndex === index && item.out_batches.length !== 0" class="batches-box">
+                  <div v-for="(item1, index1) in item.out_batches" :key="index1">
+                    {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                  </div>
+                </div>
+              </transition>
+            </div>
+            <div class="list-item">{{item.out_cost_price || '0.00'}}</div>
+            <div class="list-item">{{item.cost_total || '0.00'}}</div>
           </div>
         </div>
       </div>
@@ -47,7 +56,7 @@
   import DefaultBatch from '@components/default-batch/default-batch'
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
-  const COMMODITIES_LIST = ['批次号', '商品', '分类', '出库数量(销售单位)', '出库数量(基本单位)', '出库批次', '出库单价', '出库金额']
+  const COMMODITIES_LIST = ['序号', '商品', '分类', '出库数量(销售单位)', '出库数量(基本单位)', '出库批次', '出库单价', '出库金额']
   export default {
     name: PAGE_NAME,
     page: {
@@ -64,7 +73,8 @@
         id: '',
         batchList: [],
         curIndex: 0,
-        curItem: {}
+        curItem: {},
+        showIndex: null
       }
     },
     computed: {
@@ -76,12 +86,20 @@
       this.outMsg = _.cloneDeep(this.outDetail.out_order)
     },
     methods: {
+      _showTip(index) {
+        this.showIndex = index
+      },
+      _hideTip() {
+        this.showIndex = null
+      },
       getOutBatchList(index) {
         API.Store.outBatchList({goods_sku_code: this.outDetailList[index].goods_sku_code}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            let number = 0
             this.batchList = res.data
             if (this.outDetailList[index].out_batches.length) {
               this.outDetailList[index].out_batches.forEach(item => {
+                number += (item.select_out_num * 1)
                 this.batchList.forEach(item1 => {
                   if(item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
@@ -89,7 +107,7 @@
                 })
               })
             }
-            this.$refs.modalBox.show()
+            this.$refs.modalBox.show(number)
           } else {
             this.$toast.show(res.message)
           }
@@ -97,19 +115,30 @@
       },
       submitOutFn() {
         let arr = []
-        this.outDetailList.forEach(item => {
+        let isTure = false
+        let number = 1
+        this.outDetailList.forEach((item, index) => {
           let obj = {
             id: item.id,
             select_batch: item.out_batches,
             type: 5
           }
+          if (item.out_batches.length === 0) {
+            isTure = true
+            number = index + 1
+          }
           arr.push(obj)
         })
+        if (isTure) {
+          this.$toast.show(`序号${number}请选择批次`)
+          return false
+        }
         API.Store.putOutSubmit(this.id, {details: arr}).then((res) => {
+          this.$loading.hide()
           if (res.error === this.$ERR_OK) {
+            this.$toast.show('出库成功')
             this.outMsg.status = 1
             this.$router.back()
-            this.$loading.hide()
           } else {
             this.$toast.show(res.message)
           }
@@ -122,6 +151,16 @@
         this.getOutBatchList(index)
       },
       confirm(arr) {
+        let allprice = 0
+        let number = 0
+        arr.forEach(item => {
+          if (item.select_out_num > 0) {
+            number += (item.select_out_num * 1)
+            allprice += (item.select_out_num * item.price)
+          }
+        })
+        this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
         this.outDetailList[this.curIndex].out_batches = arr
         this.$refs.modalBox.cancel()
       }
@@ -136,17 +175,44 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:last-child
-          flex: 0.4
+        &:last-child, &:nth-child(1)
+          flex: 0.5
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
           flex: 1.5
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
     color: $color-text-main
-    margin-right: 130px
+    flex: 1
     .enter-title-money
       color: #F84E3C
+    &:nth-child(1), &:nth-child(2), &:nth-child(4)
+      flex: 1.2
+    &:nth-child(5)
+      flex: 0.5
+    &:nth-child(6)
+      flex: 0.6
+  .list-item-batches
+    position: relative
+    overflow: inherit !important
+    .batches-box
+      position: absolute
+      top: 21px
+      left: 0
+      box-sizing: border-box
+      padding: 12px 37px 12px 12px
+      background: rgba(51,51,51,9)
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: $color-white
+      z-index: 99
+      margin-bottom: 8px
+      &.fade-enter, &.fade-leave-to
+        opacity: 0
+      &.fade-enter-to, &.fade-leave-to
+        transition: all .3s ease-in-out
+      &:last-child
+        margin-bottom: 0
   .tip
     margin :0 2px
     font-size: $font-size-14

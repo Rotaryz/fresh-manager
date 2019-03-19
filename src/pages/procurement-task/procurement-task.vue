@@ -226,7 +226,7 @@
       },
       // 获取商品列表
       async _getGoodsList() {
-        let res = await API.Supply.purchaseTaskGoodsList({
+        let res = await API.Store.getGoodsList({
           keyword: this.text,
           goods_category_id: this.parentId,
           page: this.choicePage
@@ -240,6 +240,7 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
+        console.log(this.choiceGoods)
       // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
       },
       // 搜索商品
@@ -262,7 +263,7 @@
       // 选择二级分类
       async _secondAssortment(item) {
         this.parentId = item.id
-        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        let res = await API.Store.goodsCategory({parent_id: this.parentId})
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
         this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         this.secondAssortment.content = '选择二级分类'
@@ -279,7 +280,7 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        let res = await API.Store.goodsCategory({parent_id: this.parentId})
         this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})

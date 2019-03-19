@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageTotal" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
     </div>
   </div>
@@ -145,6 +145,4 @@
         padding-right: 14px
         &:last-child
           flex: 0.3
-        &:nth-child(4)
-          flex: 3
 </style>

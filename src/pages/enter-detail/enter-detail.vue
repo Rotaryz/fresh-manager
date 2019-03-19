@@ -3,7 +3,7 @@
     <div class="down-content">
       <div class="enter-title">入库单号：{{enterMsg.order_sn}}</div>
       <div class="enter-title">供应商：{{enterMsg.supplier}}</div>
-      <div class="enter-title">入库时间：{{enterMsg.build_time}}</div>
+      <div class="enter-title">入库时间：{{enterMsg.entry_time || '--------'}}</div>
       <div class="enter-title">状态：{{enterMsg.status === 0 ? '待入库' : '已完成'}}</div>
       <div class="enter-title">入库金额：<span v-if="enterMsg.status === 1" class="enter-title-money">￥{{enterMsg.total}}</span></div>
     </div>
@@ -26,17 +26,17 @@
             <div class="list-item">{{item.batch_num}}</div>
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">
+            <div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
               <div v-if="enterMsg.status === 1">{{item.base_num}}</div>
               <div>{{item.base_unit}}</div>
             </div>
-            <div class="list-item">
-              <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input">
+            <div class="list-item list-item-layout">
+              <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
               <div v-if="enterMsg.status === 1">{{item.purchase_num}}</div>
               <div>{{item.purchase_unit}}</div>
             </div>
-            <div class="list-item">
+            <div class="list-item list-item-layout">
               <div>{{item.price}}</div>
               <div>/{{item.base_unit}}</div>
             </div>
@@ -49,7 +49,7 @@
                 style="width: 110px;height: 34px;border-radius: 1px"
                 @on-change="changeStartTime($event, index)"
               ></date-picker>
-              <div v-if="enterMsg.status === 1">{{item.shelf_life}}</div>
+              <div v-if="enterMsg.status === 1">{{item.shelf_life || '--------'}}</div>
             </div>
             <div class="list-item">
               <div v-if="enterMsg.status === 0" class="select-time" @click="setStoreFn(index)">
@@ -58,7 +58,7 @@
                 <!--<div class="select-time-icon"></div>-->
               </div>
               <div v-if="enterMsg.status === 1">
-                {{item.warehouse_position}}
+                {{item.warehouse_position|| '--------'}}
               </div>
             </div>
           </div>
@@ -120,10 +120,9 @@
           arr.push(obj)
         })
         API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {
+          this.$loading.hide()
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
             this.enterMsg.status = 1
-            this.$loading.hide()
             this.$router.back()
           } else {
             this.$toast.show(res.message)
@@ -143,8 +142,31 @@
         this.$refs.modalBox.cancel()
       },
       echangInput(item, index) {
+        console.log(item)
+        if (item.base_num < 0) {
+          item.base_num = item.base_num * -1
+        }
+        let number = item.base_num / item.base_purchase_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.purchase_num = number.toFixed(2)
+        console.log(number)
         if (item.base_num) {
-          this.enterDetailList[index].total = (item.base_num * item.price).toFixed()
+          this.enterDetailList[index].total = (item.base_num * item.price).toFixed(2)
+        }
+      },
+      echangPurchase(item, index) {
+        if (item.purchase_num < 0) {
+          item.purchase_num = item.purchase_num * -1
+        }
+        let number = item.purchase_num / item.base_sale_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.base_num = number.toFixed(2)
+        if (item.purchase_num) {
+          this.enterDetailList[index].total = (item.base_num * item.price).toFixed(2)
         }
       }
     }
@@ -158,19 +180,22 @@
     .list-box
       .list-item
         padding-right: 14px
-        layout(row)
         align-items: center
         &:last-child
           flex: 1
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
           flex: 1.3
+  .list-item-layout
+    layout(row)
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
     color: $color-text-main
-    margin-right: 130px
+    flex: 1
     .enter-title-money
       color: #F84E3C
+    &:nth-child(4), &:nth-child(5)
+      flex: 0.7
 
   .edit-input
     font-size: $font-size-14
