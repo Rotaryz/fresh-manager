@@ -110,7 +110,8 @@ export default [
         name: 'edit-goods',
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
-          titles: ['商城', '商品', '商品列表', '新建商品'],
+          titles: ['商城', '商品', '商品列表', '商品'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -192,7 +193,8 @@ export default [
         name: 'edit-rush',
         component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
         meta: {
-          titles: ['商城', '活动', '今日抢购', '新建活动'],
+          titles: ['商城', '活动', '今日抢购', '活动'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -535,7 +537,8 @@ export default [
         name: 'edit-leader',
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
-          titles: ['商城', '团长', '团长配送单', '新建团长'],
+          titles: ['商城', '团长', '团长配送单', '团长'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
