@@ -180,7 +180,7 @@
         </div>
         <div class="edit-input-box">
           <div class="list-item-btn" @click="switchBtn">
-            <base-switch width="80px" transform="50px" confirmText="称重" cancelText="不称重" :status="msg.goods_skus[0].is_weight"></base-switch>
+            <base-switch width="80px" transform="50px" confirmText="称重" cancelText="不称重" :status="goods_skus.is_weight"></base-switch>
           </div>
         </div>
       </div>
@@ -293,7 +293,8 @@
           sale_unit: '',
           purchase_unit: '',
           damage_rate: '',
-          supplier_id: 0
+          supplier_id: 0,
+          is_weight: 1
         },
         isWeight: 1
       }
@@ -510,7 +511,7 @@
         this.msg.goods_category_id = data.id
       },
       switchBtn() {
-        this.msg.goods_skus[0].is_weight = !this.msg.goods_skus[0].is_weight ? 1 : 0
+        this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
       }
     }
   }

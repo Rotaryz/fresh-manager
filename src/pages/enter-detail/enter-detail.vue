@@ -160,7 +160,7 @@
         if (item.purchase_num < 0) {
           item.purchase_num = item.purchase_num * -1
         }
-        let number = item.purchase_num / item.base_sale_rate
+        let number = item.purchase_num * item.base_purchase_rate
         if (number < 0) {
           number = 0
         }
