@@ -99,7 +99,7 @@
           show: false,
           content: '全部状态',
           type: 'default',
-          data: [{name: '全部', value: ''}, {name: '待提交', value: 0}, {name: '已完成', value: 1}]
+          data: [{name: '全部', value: ''}, {name: '待出库', value: 0}, {name: '已完成', value: 1}]
         }
       }
     },
