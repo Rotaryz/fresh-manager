@@ -66,10 +66,6 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:last-child
-          flex: 0.4
-        &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
-          flex: 1.5
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
