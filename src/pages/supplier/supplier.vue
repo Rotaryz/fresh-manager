@@ -80,5 +80,5 @@
         &:last-child
           flex: 0.3
         &:nth-child(4)
-          flex: 3
+          flex: 1.5
 </style>

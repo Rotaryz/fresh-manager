@@ -39,8 +39,8 @@
               </transition>
               <span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span>
             </div>
-            <div class="list-item">{{item.out_cost_price || '0.00'}}</div>
-            <div class="list-item">{{item.cost_total || '0.00'}}</div>
+            <div class="list-item">{{item.out_cost_price ? '￥' + item.out_cost_price : '￥0.00'}}/{{item.base_unit}}</div>
+            <div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>
           </div>
         </div>
       </div>

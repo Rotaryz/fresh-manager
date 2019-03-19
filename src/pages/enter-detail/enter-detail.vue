@@ -40,7 +40,7 @@
               <div>{{item.price}}</div>
               <div>/{{item.base_unit}}</div>
             </div>
-            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">￥{{item.total}}</div>
             <div class="list-item time-content">
               <date-picker
                 v-if="enterMsg.status === 0"

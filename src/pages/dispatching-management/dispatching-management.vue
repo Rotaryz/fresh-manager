@@ -11,7 +11,7 @@
           <div class="btn-main">新建{{tabStatus[tabIndex].text}}</div>
         </div>
       </div>
-      <div class="big-list">
+      <div class="dispatching-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
         </div>
@@ -35,9 +35,9 @@
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
-      </div>
+      <!--<div class="pagination-box">-->
+      <!--<base-pagination ref="pages"></base-pagination>-->
+      <!--</div>-->
     </div>
     <default-confirm ref="confirm" @confirm="handleRoad"></default-confirm>
     <default-modal ref="line">
@@ -810,4 +810,7 @@
 
   .list-item-disable
     color: #ACACAC
+
+  .dispatching-list
+    padding-bottom: 20px
 </style>

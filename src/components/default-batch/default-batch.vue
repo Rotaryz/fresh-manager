@@ -11,7 +11,7 @@
         <div class="main-input">
           <div class="batch-title">
             <div class="batch-box">出库数：{{curItem.base_num}}{{curItem.base_unit}}</div>
-            <div class="batch-box">待分配出库数：<span class="color-active">{{curItem.base_num - numberBatch}}</span>{{curItem.base_unit}}</div>
+            <div class="batch-box">待分配出库数：<span class="color-active">{{changeNumber}}</span>{{curItem.base_unit}}</div>
           </div>
           <div class="big-list">
             <div class="list-header list-box">
@@ -68,7 +68,8 @@
       return {
         commodities: COMMODITIES_LIST,
         storeList: [],
-        numberBatch: 0
+        numberBatch: 0,
+        changeNumber: 0
       }
     },
     created() {
@@ -76,6 +77,7 @@
     methods: {
       show(index) {
         this.numberBatch = index
+        this.changeNumber = (this.curItem.base_num - this.numberBatch).toFixed(2)
         this.$refs.modal && this.$refs.modal.showModal()
       },
       cancel() {
@@ -88,7 +90,7 @@
         }
         let arr = []
         this.batchList.forEach(item1 => {
-          if (item1.out_count) {
+          if (item1.out_count && item1.out_count > 0) {
             let obj = {
               batch_num: item1.batch_num,
               select_out_num: item1.out_count,
@@ -107,9 +109,19 @@
             bigNumber += (item1.out_count * 1)
           }
         })
-        console.log(bigNumber)
         if (item.out_count > (this.curItem.base_num - bigNumber)){
-          item.out_count = this.curItem.base_num - bigNumber
+          item.out_count = (this.curItem.base_num - bigNumber)
+          let arr = []
+          arr = (item.out_count + '').split('.')
+          if (arr.length === 2) {
+            if(arr[1].length > 3) {
+              item.out_count = (this.curItem.base_num - bigNumber).toFixed(2)
+              let storeCount = item.out_count.substr(item.out_count.length - 1,1)
+              if (storeCount * 1 === 0) {
+                item.out_count = (this.curItem.base_num - bigNumber).toFixed(1)
+              }
+            }
+          }
         }
         this.batchList.forEach(item1 => {
           if (item1.out_count) {
@@ -126,6 +138,7 @@
           })
         }
         this.numberBatch = number
+        this.changeNumber = (this.curItem.base_num - this.numberBatch).toFixed(2)
       }
     }
   }

@@ -27,7 +27,7 @@
           <a :href="downUrl" target="_blank" class="btn-main">导出采购单</a>
         </div>
       </div>
-      <div class="big-list">
+      <div class="purchase-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
@@ -35,16 +35,16 @@
           <div v-for="(item, index) in purchaseDetail.details" :key="index" class="list-content list-box">
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.purchase_num}}({{item.purchase_unit}})</div>
-            <div class="list-item">{{item.sale_num}}({{item.sale_unit}})</div>
-            <div class="list-item">{{item.purchase_price}}</div>
+            <div class="list-item">{{item.purchase_num}}{{item.purchase_unit}}</div>
+            <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
+            <div class="list-item">{{item.purchase_price ? '￥' : ''}}{{item.purchase_price}}/{{item.purchase_unit}}</div>
             <div class="list-item">{{item.purchase_amount ? '￥' : ''}}{{item.purchase_amount}}</div>
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pages"></base-pagination>
-      </div>
+      <!--<div class="pagination-box">-->
+      <!--<base-pagination ref="pages"></base-pagination>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
@@ -78,7 +78,8 @@
     },
     methods: {
       ...supplyMethods,
-      _importFile(e) {}
+      _importFile(e) {
+      }
     }
   }
 </script>
@@ -93,4 +94,6 @@
         padding-right: 14px
         &:nth-child(1)
           flex: 2
+  .purchase-list
+    padding-bottom: 20px
 </style>
