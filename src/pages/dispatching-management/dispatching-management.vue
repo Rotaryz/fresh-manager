@@ -117,7 +117,7 @@
               <div class="pro-select pro-text">选择</div>
               <div v-for="(item,index) in merchant" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
             </div>
-            <div class="list">
+            <div class="list shade-list">
               <div v-for="(delivery, key) in deliveryAddress" :key="key" class="list-content list-box">
                 <div :class="{'pro-select-icon-active': delivery.checked === 1}" class="pro-select pro-select-icon hand" @click="selectDeliveryAddress(delivery)"></div>
                 <!--list-item-disable-->
@@ -594,7 +594,6 @@
     width: 1000px
     position: relative
     overflow-x: hidden
-    overflow-y: auto
     flex-wrap: wrap
     .shade-header
       display: flex
@@ -615,59 +614,20 @@
         transition: all 0.3s
         &:hover
           transform: scale(1.3)
-    // 分类编辑新建
-    .auxiliary-box
-      padding: 0 20px
-      box-sizing: border-box
-      margin-top: 32px
-      layout(row)
-      flex-wrap: wrap
-      .auxiliary-item
-        min-width: 80px
-        height: 32px
-        border-1px(#333, 4px)
-        text-align: center
-        position: relative
-        margin-right: 10px
-        margin-bottom: 20px
-        .text
-          font-size: $font-size-14
-          color: $color-text-main
-          line-height: 32px
-          font-family: $font-family-regular
-        .auxiliary-model
-          opacity: 0
-          position: absolute
-          width: 100%
-          height: 100%
-          border-radius: 1px
-          background: rgba(51, 51, 51, 0.9)
-          left: 0
-          top: 0
-          padding: 0 11px
-          box-sizing: border-box
-          layout(row)
-          align-items: center
-          justify-content: space-between
-          transition: all 0.4s
-          .img-box
-            width: 22px
-            height: 22px
-            border-radius: 50%
-            background: #fff
-            cursor: pointer
-            background-size: 22px
-            bg-image('icon-quit_round')
-          .del
-            bg-image('icon-delete_round')
-          &:hover
-            opacity: 1
-      .auxiliary-add
-        font-size: $font-size-14
-        padding: 9px 12px
-        margin-bottom: 20px
-        min-width: 80px
-        text-align: center
+    .shade-list
+      height: 420px
+      overflow-y: auto
+      &::-webkit-scrollbar
+        width: 4px
+        height: 10px
+      &::-webkit-scrollbar-thumb
+        background-color: rgba(0, 0, 0, .15)
+        border-radius: 10px
+      &::-webkit-scrollbar-thumb:hover
+        background-color: rgba(0, 0, 0, .3)
+      &::-webkit-scrollbar-track
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+        border-radius: 10px
     .back
       position: absolute
       left: 0

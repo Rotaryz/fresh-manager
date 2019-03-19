@@ -240,7 +240,6 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-        console.log(this.choiceGoods)
       // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
       },
       // 搜索商品
