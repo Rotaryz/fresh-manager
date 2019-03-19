@@ -1,0 +1,175 @@
+<template>
+  <div class="coupon-market table">
+    <div class="down-content">
+      <span class="down-tip">平台发放 </span>
+      <div class="down-item">
+        <div v-for="(item, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">{{item}}<span class="icon"></span></div>
+      </div>
+      <span class="down-tip">团长发放</span>
+      <div class="down-item">
+        <div class="top-btn" @click="newMarket(3)">发送优惠券<span class="icon"></span></div>
+      </div>
+    </div>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-marketing_list@2x.png" class="identification-icon">
+          <p class="identification-name">营销列表</p>
+        </div>
+      </div>
+      <div class="big-list">
+        <div class="list-header list-box">
+          <div v-for="(item,index) in marketTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+        </div>
+        <div class="list">
+          <div v-for="(item, index) in marketList2" :key="index" class="list-content list-box">
+            <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
+                {{item[val.value] || '---'}}
+              </div>
+              <!--状态-->
+              <div v-if="+val.type === 2" class="list-item-btn" @click="switchBtn(item, index)">
+                <base-switch :status="item.status"></base-switch>
+              </div>
+              <div v-if="+val.type === 3" :style="{flex: val.flex}" class="list-operation-box item">
+                <router-link tag="span" :to="'edit-market?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
+                <span class="list-operation" @click="_deleteMarket(item.id)">删除</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pages" :pageDetail="pageDetail" @addPage="addPage"></base-pagination>
+      </div>
+    </div>
+    <market-confirm ref="confirm" @confirm="_sureConfirm"></market-confirm>
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+  import MarketConfirm from './market-confirm/market-confirm'
+  import {marketComputed, marketMethods} from '@state/helpers'
+  import API from '@api'
+
+  const PAGE_NAME = 'COUPON_MARKET'
+  const TITLE = '优惠券营销'
+  const MARKET_TITLE = [
+    {name: '营销名称', flex: 1.4, value: 'market_name', type: 1},
+    {name: '类型', flex: 1, value: 'type', type: 1},
+    {name: '状态', flex: 1, value: 'status', type: 2},
+    {name: '触达数', flex: 1, value: 'get_num', type: 1},
+    {name: '领取数', flex: 1, value: 'receive_num', type: 1},
+    {name: '操作', flex: 1, value: '', type: 3}
+  ]
+  const MARKET_LIST = [
+    {market_name: '名称', type: '新客户', get_num: 20, receive_num: 100, status: 1},
+    {market_name: '名称', type: '新客户', get_num: 20, receive_num: 100, status: 1}
+  ]
+  export default {
+    name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
+    components: {
+      MarketConfirm
+    },
+    data() {
+      return {
+        marketTitle: MARKET_TITLE,
+        marketList2: MARKET_LIST,
+        topBtn: ['新客户', '活跃客户', '沉睡客户'],
+        page: 1,
+        delId: 0
+      }
+    },
+    computed: {
+      ...marketComputed
+    },
+    created() {
+    },
+    mounted() {
+    },
+    methods: {
+      ...marketMethods,
+      newMarket(index) {
+        this.$router.push(`/home/coupon-market/edit-market?index=${index}`)
+      },
+      addPage(page) {
+        this.page = page
+        this.getMarketList({page: this.page})
+      },
+      switchBtn(item, index) {
+        this.marketList[index].status = item.status * 1 === 1 ? 0 : 1
+      },
+      _deleteMarket(id) {
+        this.delId = id
+        this.$refs.confirm.show('删除后商家将无法查看优惠券的信息，且无法恢复，谨慎操作!', '删除优惠券')
+      },
+      async _sureConfirm() {
+        let res = await API.Outreach.deleteActivity(this.delId)
+        this.$toast.show('删除成功')
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.getMarketList({page: this.page})
+      }
+    }
+  }
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "~@design"
+
+  .list
+    flex: 1
+    .list-item
+      font-size: $font-size-14
+      .item
+        text-overflow: ellipsis
+        overflow: hidden
+        white-space: nowrap
+        font-size: 14px
+  .btn-main
+    margin-right: 10px
+  .list-item
+    font-size: $font-size-14
+    .item
+      text-overflow: ellipsis
+      overflow: hidden
+      white-space: nowrap
+      font-size: 14px
+  .down-tip
+    font-family: $font-family-regular
+  .down-item
+    .top-btn
+      height: 30px
+      line-height: 30px
+      padding: 0 10px
+      border-radius: 1px
+      display: flex
+      justify-content: center
+      align-items: center
+      border: 1px solid #E6EAED
+      margin-right: 10px
+      font-family: $font-family-regular
+      cursor: pointer
+      transition: all 0.3s
+      &:last-child
+        margin-right: 0
+      &:hover
+        color: $color-text-sub
+        border-color: $color-text-sub
+      .icon
+        width: 16px
+        height: 16px
+        margin-left: 5px
+        icon-image(icon-new_built)
+        transition: all 0.3s
+    .select-btn
+      border: 1px solid $color-main
+      background: $color-main
+      color: $color-white
+      .icon
+        icon-image(icon-new_built2)
+</style>

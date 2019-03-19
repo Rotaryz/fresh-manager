@@ -259,6 +259,108 @@ export default [
           }
         }
       },
+      // 优惠券管理
+      {
+        path: 'coupon-manage',
+        name: 'coupon-manage',
+        component: () => lazyLoadView(import('@pages/coupon-manage/coupon-manage')),
+        meta: {
+          titles: ['商城', '营销', '优惠券管理']
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   // 活动列表
+          //   store
+          //     .dispatch('outreach/getOutreachList', {page: 1})
+          //     .then((res) => {
+          //       if (!res) {
+          //         return next({name: '404'})
+          //       }
+          //       return next()
+          //     })
+          //     .catch(() => {
+          //       return next({name: '404'})
+          //     })
+          // }
+        }
+      },
+      // 新建查看优惠券
+      {
+        path: 'coupon-manage/new-coupon',
+        name: 'new-coupon',
+        component: () => lazyLoadView(import('@pages/new-coupon/new-coupon')),
+        meta: {
+          titles: ['商城', '营销', '优惠券管理', '新建优惠券'],
+          marginBottom: 80
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   let id = routeTo.query.id
+          //   // 活动详情
+          //   if (id) {
+          //     store
+          //       .dispatch('coupon/getCouponDetail', {id})
+          //       .then((res) => {
+          //         if (!res) {
+          //           return next({name: '404'})
+          //         }
+          //         return next()
+          //       })
+          //       .catch(() => {
+          //         return next({name: '404'})
+          //       })
+          //   }
+          //   return next()
+          // }
+        }
+      },
+      // 优惠券营销
+      {
+        path: 'coupon-market',
+        name: 'coupon-market',
+        component: () => lazyLoadView(import('@pages/coupon-market/coupon-market')),
+        meta: {
+          titles: ['商城', '营销', '优惠券营销'],
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   // 活动列表
+          //   store
+          //     .dispatch('outreach/getOutreachList', {page: 1})
+          //     .then((res) => {
+          //       if (!res) {
+          //         return next({name: '404'})
+          //       }
+          //       return next()
+          //     })
+          //     .catch(() => {
+          //       return next({name: '404'})
+          //     })
+          // }
+        }
+      },
+      // 新建编辑营销
+      {
+        path: 'coupon-market/edit-market',
+        name: 'edit-market',
+        component: () => lazyLoadView(import('@pages/edit-market/edit-market')),
+        meta: {
+          titles: ['商城', '营销', '优惠券营销', '新建优惠券营销'],
+          marginBottom: 80
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   let id = routeTo.query.id
+          //   // 活动详情
+          //   if (id) {
+          //     store
+          //       .dispatch('coupon/getCouponDetail', {id})
+          //       .then((res) => {
+          //         if (!res) {
+          //           return next({name: '404'})
+          //         }
+          //         return next()
+          //       })
+          //       .catch(() => {
+          //         return next({name: '404'})
+          //       })
+          //   }
+          //   return next()
+          // }
+        }
+      },
       /**
        * 商城
        *

@@ -1,5 +1,6 @@
 <template>
-  <div :style="{'width': width}">
+  <!--<div :style="{'width': width}">-->
+  <div style="width: 100%">
     <div class="status-tab">
       <div v-for="(item, index) in tabStatus" :key="index" :style="{'margin-right': marginRight + 'px'}" :class="{'status-item-active': tabIndex === index}" class="status-item hand">
         <div class="status-txt" @click="_setTab(index, item)">{{item.text}}</div>
