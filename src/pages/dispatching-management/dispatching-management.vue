@@ -571,7 +571,6 @@
     position: relative
     overflow-x: hidden
     flex-wrap: wrap
-    padding-bottom: 80px
     .shade-header
       display: flex
       align-items: center
