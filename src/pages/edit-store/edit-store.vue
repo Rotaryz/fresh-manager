@@ -37,7 +37,7 @@
           <div class="list-item">{{index + 1}}</div>
           <div class="list-item">{{item.goods_name}}</div>
           <div class="list-item">{{item.goods_category}}</div>
-          <div class="list-item">{{item.usable_stock}}</div>
+          <div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>
           <div class="list-item list-item-layout">
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
             <div v-if="item.base_unit">{{item.base_unit}}</div>
@@ -52,8 +52,8 @@
               </div>
             </transition>
           </div>
-          <div class="list-item"><span v-if="item.price">￥</span>{{item.price || '---'}}</div>
-          <div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '----'}}</div>
+          <div class="list-item"><span v-if="item.price">￥</span>{{item.price || '￥0.00'}}/{{item.base_unit}}</div>
+          <div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '￥0.00'}}</div>
           <div class="list-item list-operation-box">
             <span class="list-operation" @click="delGoodsBtn(item, index)">删除</span>
           </div>
@@ -77,7 +77,7 @@
   import DefaultBatch from '@components/default-batch/default-batch'
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
-  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '现有库存', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
+  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '可用库存/总库存', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -195,7 +195,6 @@
         if (item.base_num * 1 > item.usable_stock * 1) {
           item.base_num = item.usable_stock
         }
-        console.log(item.base_num, item.base_num * 1 > item.usable_stock * 1)
         this.storeList[index].select_batch = []
         this.storeList[index].price = ''
         this.storeList[index].all_price = ''
