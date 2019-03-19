@@ -86,7 +86,7 @@
           <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
           <base-drop-down :height="40" :width="133" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
         </div>
-        <div class="edit-pla">基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
+        <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -161,7 +161,7 @@
           <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
           <base-drop-down :height="40" :width="133" :select="purchaseSelect" @setValue="purchaseSelectValue"></base-drop-down>
         </div>
-        <div class="edit-pla">基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
+        <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
