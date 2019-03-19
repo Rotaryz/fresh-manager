@@ -52,7 +52,7 @@
             <div class="list-item">{{item.order_sn}}</div>
             <div class="list-item">{{item.out_order_sn}}</div>
             <div class="list-item">{{item.merchant_name}}</div>
-            <div class="list-item">{{item.total}}</div>
+            <div class="list-item">￥{{item.total}}</div>
             <div class="list-item">{{item.status_str}}</div>
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">{{item.status === 0 ? '出库' : '详情'}}</router-link>

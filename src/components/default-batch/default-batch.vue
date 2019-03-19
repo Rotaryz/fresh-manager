@@ -99,8 +99,18 @@
         })
         this.$emit('confirm', arr)
       },
-      changeInput(item, index) {
+      changeInput(item) {
         let number = 0
+        let bigNumber = 0
+        this.batchList.forEach(item1 => {
+          if (item1.id !== item.id && item1.out_count) {
+            bigNumber += (item1.out_count * 1)
+          }
+        })
+        console.log(bigNumber)
+        if (item.out_count > (this.curItem.base_num - bigNumber)){
+          item.out_count = this.curItem.base_num - bigNumber
+        }
         this.batchList.forEach(item1 => {
           if (item1.out_count) {
             number += (item1.out_count * 1)
