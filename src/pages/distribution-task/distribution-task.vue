@@ -94,7 +94,7 @@
   ]
   const ORDERSTATUS = [{text: '订单任务列表', status: ''}, {text: '司机任务列表', status: 0}]
   const ORDER_EXCEL_URL = '/scm/api/backend/delivery/delivery-export/'
-  const USER_ORDER_EXCEL_URL = '/social-shopping/api/backend/user-order-export/'
+  // const USER_ORDER_EXCEL_URL = '/social-shopping/api/backend/user-order-export/'
   const DRIVER_EXCEL_URL = '/scm/api/backend/delivery/delivery-driver-tasks-export/'
   export default {
     name: PAGE_NAME,
@@ -132,19 +132,19 @@
         }
         return process.env.VUE_APP_SCM_API + ORDER_EXCEL_URL + this.exportOrderId + '?' + search.join('&')
       },
-      userOrderExportUrl() {
-        let currentId = this.getCurrentId()
-        let data = {
-          current_corp: currentId,
-          current_shop: process.env.VUE_APP_CURRENT_SHOP,
-          access_token: this.currentUser.access_token
-        }
-        let search = []
-        for (let key in data) {
-          search.push(`${key}=${data[key]}`)
-        }
-        return process.env.VUE_APP_API + USER_ORDER_EXCEL_URL + this.exportShopId + '?' + search.join('&')
-      },
+      // userOrderExportUrl() {
+      //   let currentId = this.getCurrentId()
+      //   let data = {
+      //     current_corp: currentId,
+      //     current_shop: process.env.VUE_APP_CURRENT_SHOP,
+      //     access_token: this.currentUser.access_token
+      //   }
+      //   let search = []
+      //   for (let key in data) {
+      //     search.push(`${key}=${data[key]}`)
+      //   }
+      //   return process.env.VUE_APP_API + USER_ORDER_EXCEL_URL + this.exportShopId + '?' + search.join('&')
+      // },
       driverExportUrl() {
         let currentId = this.getCurrentId()
         let data = {
@@ -195,7 +195,7 @@
           this.exportOrderId = data.id
           this.exportShopId = data.shop_id
           window.open(this.orderExportUrl, '_blank')
-          window.open(this.userOrderExportUrl, '_blank')
+          // window.open(this.userOrderExportUrl, '_blank')
         } else if (this.tabIndex === 1) {
           this.exportDriverId = data.id
           window.open(this.driverExportUrl, '_blank')
