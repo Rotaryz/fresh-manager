@@ -121,7 +121,7 @@
               <div v-for="(delivery, key) in deliveryAddress" :key="key" class="list-content list-box">
                 <div :class="{'pro-select-icon-active': delivery.checked === 1}" class="pro-select pro-select-icon hand" @click="selectDeliveryAddress(delivery)"></div>
                 <!--list-item-disable-->
-                <div v-for="(item, index) in merchant" :key="index" class="list-item" :style="{flex: item.flex}">
+                <div v-for="(item, index) in merchant" :key="index" :class="{'none': delivery[item.key] === '未分配'}" class="list-item" :style="{flex: item.flex}">
                   {{item.operation ? '' : delivery[item.key]}}
                 </div>
               </div>
@@ -617,6 +617,8 @@
     .shade-list
       height: 420px
       overflow-y: auto
+      .none
+        color: $color-text-assist
       &::-webkit-scrollbar
         width: 4px
         height: 10px
