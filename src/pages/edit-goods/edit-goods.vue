@@ -39,7 +39,7 @@
           基本单位
         </div>
         <div class="edit-input-box">
-          <base-drop-down :height="44" :width="400" :select="dispatchSelect" @setValue="setValue"></base-drop-down>
+          <base-drop-down :height="44" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -84,7 +84,7 @@
         <div class="edit-input-box mini-edit-input-box">
           <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10">
           <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-          <base-drop-down :height="40" :width="133" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
+          <base-drop-down :height="40" :width="133" :select="saleSelect" :isUse="!id" @setValue="saleSelectValue"></base-drop-down>
         </div>
         <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
       </div>

@@ -52,8 +52,8 @@
               </div>
             </transition>
           </div>
-          <div class="list-item">{{item.price || '---'}}</div>
-          <div class="list-item">{{item.all_price || '----'}}</div>
+          <div class="list-item"><span v-if="item.price">￥</span>{{item.price || '---'}}</div>
+          <div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '----'}}</div>
           <div class="list-item list-operation-box">
             <span class="list-operation" @click="delGoodsBtn(item, index)">删除</span>
           </div>
@@ -192,6 +192,10 @@
         this.storeList.splice(index, 1)
       },
       changeInput(item, index) {
+        if (item.base_num * 1 > item.usable_stock * 1) {
+          item.base_num = item.usable_stock
+        }
+        console.log(item.base_num, item.base_num * 1 > item.usable_stock * 1)
         this.storeList[index].select_batch = []
         this.storeList[index].price = ''
         this.storeList[index].all_price = ''

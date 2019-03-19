@@ -42,9 +42,9 @@
             <div class="list-item">{{item.goods_sku_code}}</div>
             <div class="list-item">{{item.goods_category_name}}</div>
             <div class="list-item">{{item.base_unit}}</div>
-            <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}{{item.sale_unit}}</div>
-            <div class="list-item">{{item.trade_price}}</div>
-            <div class="list-item">{{item.usable_stock}}</div>
+            <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
+            <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
+            <div class="list-item">{{item.usable_stock}}{{item.sale_unit}}</div>
             <div class="list-item">
               <div class="list-item-btn" @click="switchBtn(item, index)">
                 <base-switch :status="item.is_online"></base-switch>
