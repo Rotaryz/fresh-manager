@@ -28,7 +28,7 @@
     <div class="function-btn btn-box">
       <div class="btn-main" @click="deleteGoods()"><span class="add-icon"></span>添加商品</div>
     </div>
-    <div class="big-list">
+    <div class="big-list" :class="storeList.length > 10 ? 'big-list-max' : ''">
       <div class="list-header list-box">
         <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
       </div>
@@ -202,7 +202,7 @@
       },
       submitEdit() {
         if (this.storeData.length === 0 || this.storeData.length > 20) {
-          this.$toast.show('出库对象字数不能为空或者大于20')
+          this.$toast.show('请输入出库对象')
           return
         }
         if (this.storeList.length === 0) {

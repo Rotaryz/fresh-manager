@@ -6,7 +6,7 @@
       <div class="enter-title">商户名称：{{outMsg.merchant_name}}</div>
       <div class="enter-title">出库时间：{{outMsg.out_time || '--------'}}</div>
       <div class="enter-title">状态：{{outMsg.status === 0 ? '待出库' : '已完成'}}</div>
-      <div class="enter-title">入库金额：<span class="enter-title-money">￥{{outMsg.total}}</span></div>
+      <div class="enter-title">出库金额：<span class="enter-title-money">￥{{outMsg.total}}</span></div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -18,7 +18,7 @@
           <div class="btn-main">确定出库<span class="add-icon"></span></div>
         </div>
       </div>
-      <div class="big-list">
+      <div class="big-list" :class="outDetailList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>

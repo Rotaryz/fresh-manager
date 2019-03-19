@@ -96,7 +96,7 @@
             </div>
             <div class="main-input-big">
               <input v-model="taskNum" type="number" class="main-input-box" placeholder="请输入采购数量">
-              <span class="main-input-tip">件</span>
+              <span v-if="goodsItem.purchase_unit" class="main-input-tip">{{goodsItem.purchase_unit}}</span>
             </div>
           </div>
         </div>

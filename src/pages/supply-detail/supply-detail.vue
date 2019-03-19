@@ -14,7 +14,7 @@
           <p class="identification-name">商品明细</p>
         </div>
       </div>
-      <div class="big-list">
+      <div class="big-list" :class="detail.details.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>

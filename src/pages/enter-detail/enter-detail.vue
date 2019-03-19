@@ -17,7 +17,7 @@
           <div class="btn-main">提交入库单<span class="add-icon"></span></div>
         </div>
       </div>
-      <div class="big-list">
+      <div class="big-list" :class="enterDetailList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
