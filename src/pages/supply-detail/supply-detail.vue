@@ -33,6 +33,7 @@
 
 <script type="text/ecmascript-6">
   import {omsComputed} from '@state/helpers'
+
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
@@ -40,8 +41,8 @@
     '商品编码',
     '分类',
     '销售数量'
-  // '销售单价',
-  // '销售金额'
+    // '销售单价',
+    // '销售金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -66,13 +67,20 @@
     .list-box
       .list-item
         padding-right: 14px
+
+  .down-content
+    align-items: flex-start
+    padding:9px 0 29px
+    box-sizing: border-box
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
     color: $color-text-main
-    margin-right: 130px
+    white-space: nowrap
+    margin: 20px 80px 0 0
     .enter-title-money
       color: #F84E3C
+
   .tip
     margin: 0 2px
     font-size: $font-size-14

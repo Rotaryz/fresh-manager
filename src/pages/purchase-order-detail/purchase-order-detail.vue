@@ -1,6 +1,6 @@
 <template>
   <div class="purchase-order-detail table">
-    <div class="down-content">
+    <div class="down-content purchase-down">
       <div class="down-item-text">
         <span class="header-text">采购单号：{{purchaseDetail.order_sn}}</span>
       </div>
@@ -94,6 +94,12 @@
         padding-right: 14px
         &:nth-child(1)
           flex: 2
+
   .purchase-list
     padding-bottom: 20px
+
+  .purchase-down
+    padding-bottom: 29px
+    box-sizing: border-box
+    align-items: flex-start
 </style>

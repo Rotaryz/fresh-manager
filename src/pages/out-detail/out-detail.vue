@@ -54,6 +54,7 @@
   import API from '@api'
   import {productComputed} from '@state/helpers'
   import DefaultBatch from '@components/default-batch/default-batch'
+
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = ['序号', '商品', '分类', '出库数量(销售单位)', '出库数量(基本单位)', '出库批次', '出库单价', '出库金额']
@@ -101,7 +102,7 @@
               this.outDetailList[index].out_batches.forEach(item => {
                 number += (item.select_out_num * 1)
                 this.batchList.forEach(item1 => {
-                  if(item1.batch_num === item.batch_num) {
+                  if (item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
                   }
                 })
@@ -179,19 +180,21 @@
           flex: 0.5
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
           flex: 1.5
+
+  .down-content
+    align-items: flex-start
+    padding: 9px 0 29px
+    box-sizing: border-box
+
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
     color: $color-text-main
-    flex: 1
+    white-space: nowrap
+    margin: 20px 80px 0 0
     .enter-title-money
       color: #F84E3C
-    &:nth-child(1), &:nth-child(2), &:nth-child(4)
-      flex: 1.2
-    &:nth-child(5)
-      flex: 0.5
-    &:nth-child(6)
-      flex: 0.6
+
   .list-item-batches
     position: relative
     overflow: inherit !important
@@ -201,7 +204,7 @@
       left: 0
       box-sizing: border-box
       padding: 12px 37px 12px 12px
-      background: rgba(51,51,51,9)
+      background: rgba(51, 51, 51, 9)
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-white
@@ -213,7 +216,8 @@
         transition: all .3s ease-in-out
       &:last-child
         margin-bottom: 0
+
   .tip
-    margin :0 2px
+    margin: 0 2px
     font-size: $font-size-14
 </style>

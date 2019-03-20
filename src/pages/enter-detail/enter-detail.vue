@@ -187,15 +187,18 @@
           flex: 1.3
   .list-item-layout
     layout(row)
+  .down-content
+    align-items: flex-start
+    padding:9px 0 29px
+    box-sizing: border-box
   .enter-title
     font-size: $font-size-14
     font-family: $font-family-regular
     color: $color-text-main
-    flex: 1
+    white-space: nowrap
+    margin: 20px 80px 0 0
     .enter-title-money
       color: #F84E3C
-    &:nth-child(4), &:nth-child(5)
-      flex: 0.7
 
   .edit-input
     font-size: $font-size-14

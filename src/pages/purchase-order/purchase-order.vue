@@ -11,7 +11,7 @@
         @on-change="_getStartTime"
       ></date-picker>
       <!---->
-      <div class="tip">~</div>
+      <div class="time-tip">~</div>
       <div class="down-item">
         <date-picker
           :value="endTime"
