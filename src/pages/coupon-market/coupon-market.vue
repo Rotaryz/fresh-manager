@@ -27,11 +27,14 @@
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || '---'}}
               </div>
-              <!--状态-->
-              <div v-if="+val.type === 2" class="list-item-btn" @click="switchBtn(item, index)">
-                <base-switch :status="item.status"></base-switch>
+              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
+                {{type[item[val.value]] || '---'}}
               </div>
-              <div v-if="+val.type === 3" :style="{flex: val.flex}" class="list-operation-box item">
+              <!--状态-->
+              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
+                <base-switch :status="item.status" :type="1"></base-switch>
+              </div>
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'edit-market?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteMarket(item.id)">删除</span>
               </div>
@@ -55,16 +58,16 @@
   const PAGE_NAME = 'COUPON_MARKET'
   const TITLE = '优惠券营销'
   const MARKET_TITLE = [
-    {name: '营销名称', flex: 1.4, value: 'market_name', type: 1},
-    {name: '类型', flex: 1, value: 'type', type: 1},
-    {name: '状态', flex: 1, value: 'status', type: 2},
+    {name: '营销名称', flex: 1.6, value: 'market_name', type: 1},
+    {name: '类型', flex: 1, value: 'type', type: 2},
+    {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '触达数', flex: 1, value: 'get_num', type: 1},
     {name: '领取数', flex: 1, value: 'receive_num', type: 1},
-    {name: '操作', flex: 1, value: '', type: 3}
+    {name: '操作', flex: 1, value: '', type: 4}
   ]
   const MARKET_LIST = [
-    {market_name: '名称', type: '新客户', get_num: 20, receive_num: 100, status: 1},
-    {market_name: '名称', type: '新客户', get_num: 20, receive_num: 100, status: 1}
+    {market_name: '名称', type: 1, get_num: 20, receive_num: 100, status: 1},
+    {market_name: '名称', type: 1, get_num: 20, receive_num: 100, status: 1}
   ]
   export default {
     name: PAGE_NAME,
@@ -79,6 +82,7 @@
         marketTitle: MARKET_TITLE,
         marketList2: MARKET_LIST,
         topBtn: ['新客户', '活跃客户', '沉睡客户'],
+        type: ['新客户', '活跃客户', '沉睡客户', '发优惠券'],
         page: 1,
         delId: 0
       }
@@ -100,7 +104,7 @@
         this.getMarketList({page: this.page})
       },
       switchBtn(item, index) {
-        this.marketList[index].status = item.status * 1 === 1 ? 0 : 1
+        this.marketList2[index].status = item.status * 1 === 1 ? 0 : 1
       },
       _deleteMarket(id) {
         this.delId = id
@@ -150,7 +154,10 @@
       display: flex
       justify-content: center
       align-items: center
-      border: 1px solid #E6EAED
+      border-width: 1px
+      border-style: solid
+      border-color: #E6EAED
+      background: #FFF
       margin-right: 10px
       font-family: $font-family-regular
       cursor: pointer
@@ -158,8 +165,11 @@
       &:last-child
         margin-right: 0
       &:hover
-        color: $color-text-sub
-        border-color: $color-text-sub
+        color: #FFF
+        border-color: $color-main
+        background: $color-main
+        .icon
+          icon-image(icon-new_built2)
       .icon
         width: 16px
         height: 16px

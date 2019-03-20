@@ -33,7 +33,7 @@
               </div>
               <div v-if="+val.type === 4" class="list-item list-use">
                 <router-link tag="span" :to="'new-coupon?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
-                <span class="list-operation" @click="_deleteCoupon(item.id)">删除</span>
+                <span class="list-operation" @click="_deleteCoupon(item, item.id)">删除</span>
               </div>
             </div>
           </div>
@@ -86,7 +86,8 @@
       total_num: 100,
       remain: 50,
       receive: 50,
-      used: 50
+      used: 50,
+      activity: 1
     },
     {
       name: '优惠券名称',
@@ -99,7 +100,8 @@
       total_num: 100,
       remain: 50,
       receive: 50,
-      used: 50
+      used: 50,
+      activity: 0
     }
   ]
   export default {
@@ -115,7 +117,9 @@
         tabStatus: ORDERSTATUS,
         datePlaceHolder: DATE_PLACE_HOLDER,
         couponTitle: COUPON_TITLE,
-        couponList2: COUPON_LIST
+        couponList2: COUPON_LIST,
+        delId: '',
+        delItem: {}
       }
     },
     computed: {
@@ -136,11 +140,16 @@
         this.setTime(time)
         this.$refs.pagination.beginPage()
       },
-      _deleteCoupon(id) {
+      _deleteCoupon(item, id) {
         this.delId = id
+        this.delItem = item
         this.$refs.confirm.show('删除后商家将无法查看优惠券的信息，且无法恢复，谨慎操作！', '删除优惠券')
       },
       async _sureConfirm() {
+        if (+this.delItem.activity === 1) {
+          this.$toast.show('此优惠券关联了营销活动，无法删除')
+          return
+        }
         let res = await API.Coupon.deleteActivity(this.delId)
 
         if (res.error !== this.$ERR_OK) {

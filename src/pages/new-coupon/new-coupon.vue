@@ -36,12 +36,12 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          优惠方式
+          优惠券类型
         </div>
         <div class="edit-input-box">
           <div class="checkbox">
-            <p class="check-item" @click="changeCheck('red')"><span :class="['item-icon', {'checked':checked === 'red'}]"></span>满减券</p>
-            <p class="check-item" @click="changeCheck('dis')"><span :class="['item-icon', {'checked':checked === 'dis'}]"></span>折扣券</p>
+            <p class="check-item" @click="changeCheck('red')"><span :class="['item-icon', {'checked':msg.checked === 'red'}]"></span>满减券</p>
+            <p class="check-item" @click="changeCheck('dis')"><span :class="['item-icon', {'checked':msg.checked === 'dis'}]"></span>折扣券</p>
           </div>
           <div class="no-wrap">
             <input v-model="msg.money"
@@ -55,7 +55,7 @@
             <span>元</span>
           </div>
         </div>
-        <div :class="{'text-no-change':disable}"></div>
+        <div :class="{'check-no-change':disable}"></div>
       </div>
 
       <!--数量-->
@@ -85,7 +85,7 @@
         <div class="edit-title">订单满减</div>
         <div class="edit-input-box">
           <div class="no-wrap">
-            <input v-model="msg.count"
+            <input v-model="msg.price"
                    type="text"
                    :placeholder="disable ? '' : '不填则默认为“0”'"
                    class="edit-input"
@@ -97,11 +97,11 @@
           </div>
           <div class="description" @click="changeFull()">
             <span :class="['item-icon', {'checked': checkFull}]"></span>
-            <span>满减券</span>
+            <span>支持活动商品使用</span>
             <span class="tip">(不勾选此项时，活动商品不能叠加使用该优惠券)</span>
           </div>
         </div>
-        <div :class="{'text-no-change':disable}"></div>
+        <div :class="{'check-no-change':disable}"></div>
       </div>
 
       <!--时间-->
@@ -164,25 +164,17 @@
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加
           </div>
+          <div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>
         </div>
         <div class="goods-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
-            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+            <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">{{item.name}}</div>
           </div>
           <div class="big-box">
-            <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.original_price || 0}}</div>
-              <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
-                <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
-                <span v-if="item.original_price" class="small-money">¥</span>
-              </div>
-              <div class="com-list-item" :class="{'sort-focus':sortFocus === index}">
-                <input v-model="item.sort" type="number" class="com-edit com-edit-small" :class="{'no-border': disable}" :readonly="disable">
-              </div>
-              <div class="com-list-item">
-                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+            <div class="com-list-box com-list-content">
+              <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">
+                <span v-if="item.value !== ''">{{categorySelectItem[item.value]}}</span>
+                <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
               </div>
             </div>
           </div>
@@ -205,6 +197,7 @@
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加
           </div>
+          <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用，最多10个商品)</div>
         </div>
         <div class="goods-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
@@ -218,9 +211,6 @@
               <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
                 <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
                 <span v-if="item.original_price" class="small-money">¥</span>
-              </div>
-              <div class="com-list-item" :class="{'sort-focus':sortFocus === index}">
-                <input v-model="item.sort" type="number" class="com-edit com-edit-small" :class="{'no-border': disable}" :readonly="disable">
               </div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -236,25 +226,17 @@
       <div slot="content" class="shade-box">
         <div class="shade-header">
           <div class="shade-title">选择品类</div>
-          <span class="close hand" @click="_cancelGoods"></span>
-        </div>
-        <!--搜索-->
-        <div class="shade-tab">
-          <div class="tab-item">
-            <base-search ref="categorySearch" placeHolder="请输入品类名称" @search="_searchGoods"></base-search>
-          </div>
+          <span class="close hand" @click="_cancelModal"></span>
         </div>
         <!--列表-->
         <div class="category-content">
-          <div class="title">
-            <span v-for="(item, index) in categoryTitle" :key="index" :class="item.class" :style="{flex: item.flex}">{{item.name}}</span>
-          </div>
           <div class="coupon-category-list">
             <div v-for="(item, index) in categoryList" :key="index" class="category-item" @click="selectCategory(item, index)">
-              <span v-for="(val, ind) in categoryTitle" :key="ind" :class="val.class" :style="{flex: val.flex}">
-                <span v-if="ind === 0" class="check" :class="{'checked': (categoryCheckItem.id ? (item.id === categoryCheckItem.id) : (item.id === categorySelectItem.id))}"></span>
-                <span v-else>{{item[val.value]}}</span>
-              </span>
+              <div class="left">
+                <span class="check" :class="{'checked': (categoryCheckItem.id ? (item.id === categoryCheckItem.id) : (item.id === categorySelectItem.id))}"></span>
+                <span class="name">{{item.name}}</span>
+              </div>
+              <span class="count">{{item.count || 0}}个商品</span>
             </div>
           </div>
         </div>
@@ -264,7 +246,7 @@
         </div>
         <div class="back">
           <div class="back-btn back-submit hand" @click="_addition">确定</div>
-          <div class="back-cancel back-btn hand" @click="_cancelCategory">取消</div>
+          <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
         </div>
       </div>
     </default-modal>
@@ -274,7 +256,7 @@
       <div slot="content" class="shade-box">
         <div class="shade-header">
           <div class="shade-title">选择商品</div>
-          <span class="close hand" @click="_cancelGoods"></span>
+          <span class="close hand" @click="_cancelModal"></span>
         </div>
         <div class="shade-tab">
           <div class="tab-item">
@@ -304,7 +286,7 @@
           <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
-          <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
+          <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
           <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
         </div>
       </div>
@@ -321,13 +303,15 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {marketComputed, marketMethods} from '@state/helpers'
+  import {couponComputed, couponMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
   import {DatePicker} from 'iview'
 
   const PAGE_NAME = 'MEW_COUPON'
   const TITLE = '新建查看优惠券'
+  const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+  const COUNTREG = /^[1-9]\d*$/
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
@@ -336,11 +320,20 @@
     '操作'
   ]
   const CATEGORY_TITLE = [
-    {name: '选择', class: 'title-item', flex: 0.7, value: ''},
-    {name: '团长帐号', class: 'title-item', flex: 1, value: 'mobile'},
-    {name: '团长名称', class: 'title-item', flex: 1, value: 'name'},
-    {name: '社区名称', class: 'title-item', flex: 1.2, value: 'social_name'},
-    {name: '社区地址', class: 'title-item', flex: 2, value: 'address'},
+    {name: '品类名称', class: 'title-item', flex: 2, value: 'name'},
+    {name: '商品数量', class: 'title-item', flex: 2, value: 'count'},
+    {name: '操作', class: 'title-item', flex: 0.2, value: ''}
+  ]
+  const CATEGORY_SELECT = {name: '水果', count: 100, id: 1}
+
+  const CATAGORY_LIST = [
+    {name: '时令水果', count: 8, id: 1},
+    {name: '时令水果', count: 8, id: 2},
+    {name: '时令水果', count: 8, id: 3},
+    {name: '时令水果', count: 8, id: 4},
+    {name: '时令水果', count: 8, id: 5},
+    {name: '时令水果', count: 8, id: 6},
+    {name: '时令水果', count: 8, id: 7}
   ]
 
   export default {
@@ -357,7 +350,7 @@
       return {
         commodities: COMMODITIES_LIST,
         id: null,
-        page: 1,
+        couponPage: 1,
         chooseGoods: [],
         assortment: {
           check: false,
@@ -397,6 +390,7 @@
         msg: {
           coupon_name: '',
           money: '',
+          checked: 'red',
           count: '',
           start_at: '',
           end_at: '',
@@ -405,30 +399,51 @@
           activity_goods: []
         },
         isSubmit: false, // 在提交
-        categoryShow: false, // 选择团长弹窗
-        categoryList: [],
+        categoryShow: false, // 选择品类弹窗
+        categoryList: CATAGORY_LIST,
         categoryTitle: CATEGORY_TITLE,
-        categoryCheckItem: {}, // 选中的团长
-        categorySelectItem: {}, // 确定选择的团长
+        categoryCheckItem: {}, // 选中的品类
+        categorySelectItem: CATEGORY_SELECT, // 确定选择的品类
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
-        checked: '',
         checkFull: false
       }
     },
     computed: {
-      ...marketComputed,
-      testName() { // 活动名称
-        return this.msg.activity_name
+      ...couponComputed,
+      testName() { // 优惠名称
+        return this.msg.coupon_name
+      },
+      testMoney() { // 优惠价格
+        return this.msg.money && MONEYREG.test(this.msg.money)
+      },
+      testCount() { // 发放数量
+        return this.msg.count && COUNTREG.test(this.msg.count)
       },
       testStart() { // 开始时间
         return this.msg.start_at
       },
-      testStartDate() { // 开始时间规则判断
-        return Date.parse(this.msg.start_at) < new Date()
-      },
       testEnd() { // 结束时间
         return this.msg.end_at
+      },
+      testEndDate() { // 结束时间规则判断
+        return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
+      },
+      testGoods() {
+        return this.msg.use_range === '指定商品' ? (this.goodsList && this.goodsList.length) : true
+      },
+      testGoodsCount() {
+        if (this.msg.use_range === '指定商品') {
+          let result = this.goodsList.every(item => {
+            return item.count > 0 && COUNTREG.test(item.count)
+          })
+          return result
+        } else {
+          return true
+        }
+      },
+      testCategory() {
+        return this.msg.use_range === '指定品类' ? this.categorySelectItem.name : true
       }
     },
     watch: {
@@ -445,6 +460,7 @@
               })
             }
             this.msg = {
+              coupon_name: '',
               start_at: obj.start_at,
               end_at: obj.end_at,
               activity_name: obj.activity_name,
@@ -466,12 +482,11 @@
       this.disable = this.$route.query.id
       this.id = this.$route.query.id || null
       await this._getFirstAssortment()
-      this._getGoodsList()
     },
     methods: {
-      ...marketMethods,
+      ...couponMethods,
       changeCheck(type) {
-        this.checked = type
+        this.msg.checked = type
       },
       changeFull() {
         this.checkFull = !this.checkFull
@@ -490,7 +505,7 @@
           goods_category_id: this.parentId,
           shelf_id: this.id,
           limit: 10,
-          page: this.page
+          page: this.couponPage
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -529,7 +544,7 @@
       },
       // 获取分页商品列表
       async _getMoreGoods(page) {
-        this.page = page
+        this.couponPage = page
         if (this.categoryShow) {
           await this._getCategoryList()
         } else {
@@ -543,14 +558,14 @@
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
         this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         this.secondAssortment.content = '选择二级分类'
-        this.page = 1
+        this.couponPage = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
       // 选择二级分类
       async _choessSecondAssortment(item) {
         this.parentId = item.id
-        this.page = 1
+        this.couponPage = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
@@ -563,22 +578,16 @@
       // 搜索商品/搜索品类
       async _searchGoods(text) {
         this.keyword = text
-        this.page = 1
-
-        if (this.categoryShow) {
-          this.$refs.paginationCategory.beginPage()
-          await this._getCategoryList()
-        } else {
-          this.$refs.pagination.beginPage()
-          await this._getGoodsList()
-        }
+        this.couponPage = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
       },
       // 勾选商品
       _selectGoods(item, index) {
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 3) {
-            this.$toast.show('选择商品数量不能超过三个')
+          if (this.selectGoodsId.length === 10) {
+            this.$toast.show('选择商品数量不能超过十个')
             return
           }
           this.chooseGoods[index].selected = 2
@@ -614,9 +623,11 @@
         this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
       },
-      _cancelGoods() {
+      _cancelModal() {
         if (this.categoryShow) {
-          this._hideCategory()
+          this.categoryShow = false
+          this.categoryCheckItem = {}
+          this.$refs.categoryModal.hideModal()
         } else {
           this.selectGoods.forEach((item) => {
             let idx = this.chooseGoods.findIndex((items) => items.goods_id === item.goods_id)
@@ -633,8 +644,8 @@
         if (item.selected === 1) {
           return
         }
-        if(this.selectGoodsId.length === 3 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过三个')
+        if(this.selectGoodsId.length === 10 && item.selected !== 2) {
+          this.$toast.show('选择商品数量不能超过十个')
           return
         }
 
@@ -678,25 +689,24 @@
           return
         }
         this._initData()
-        this.$refs.goodsSearch._setText('')
         // await this._getGoodsList()
         // 展示添加商品弹窗
-        this.$refs.cateGoryModal.showModal()
+        this.$refs.categoryModal.showModal()
+        this.categoryShow = true
       },
 
       _initData() {
-        this.page = 1
+        this.couponPage = 1
         this.keyword = ''
-        this.$refs.pagination.beginPage()
-        this.$refs.paginationCategory.beginPage()
+        this.$refs.pagination && this.$refs.pagination.beginPage()
+        this.$refs.paginationCategory && this.$refs.paginationCategory.beginPage()
       },
 
       // 获取品类列表
       async _getCategoryList() {
         let res = await API.Outreach.getCategoryList({
           keyword: this.keyword,
-          limit: 6,
-          page: this.page
+          page: this.couponPage
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -709,11 +719,6 @@
         }
         this.categoryList = res.data
       },
-      // 关闭选择品类弹窗
-      _hideCategory() {
-        this.categoryShow = false
-        this.$refs.categoryModal.hideModal()
-      },
       // 选择品类
       selectCategory(item, index) {
         this.categoryCheckItem = item
@@ -721,13 +726,10 @@
       // 确定选择品类
       _addition() {
         this.categorySelectItem = this.categoryCheckItem
-        this.msg.shop_id = this.categorySelectItem.shop_id
-        this._hideCategory()
-      },
-      // 取消选择品类
-      _cancelCategory() {
+        this.msg.shop_id = this.categorySelectItem.id
+        this.categoryShow = false
         this.categoryCheckItem = {}
-        this._hideCategory()
+        this.$refs.categoryModal.hideModal()
       },
       _back() {
         this.$router.back()
@@ -741,21 +743,20 @@
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
-        let list = this.goodsList
-        if (!list.length) {
-          this.$toast.show('请添加商品')
-          return
-        }
-        for (let i in list) {
-          if (!list[i].trade_price || list[i].sort === '') {
-            this.$toast.show(`请输入商品“${list[i].name}”的活动售价`)
-            return
-          } else if (+list[i].trade_price < 0 || +list[i].sort < 0) {
-            this.$toast.show(`“${list[i].name}”输入数据有误`)
-            return
+        let data = []
+        if (this.msg.use_range === '指定商品') {
+          let list = this.goodsList
+          for (let i in list) {
+            if (!list[i].count) {
+              this.$toast.show(`请输入商品“${list[i].name}”的库存`)
+              return
+            } else if (+list[i].count < 0) {
+              this.$toast.show(`“${list[i].name}”输入数据有误`)
+              return
+            }
           }
+          data = Object.assign({}, this.msg, {activity_goods: list})
         }
-        let data = Object.assign({}, this.msg, {activity_goods: list})
         let res = null
         this.isSubmit = true
         // 调用保存活动接口
@@ -773,8 +774,14 @@
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
+          {value: this.testMoney, txt: '请输入优惠金额'},
+          {value: this.testCount, txt: '请输入发放数量'},
           {value: this.testStart, txt: '请选择活动开始时间'},
-          {value: this.testEnd, txt: '请选择活动结束时间'}
+          {value: this.testEnd, txt: '请选择活动结束时间'},
+          {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
+          {value: this.testGoods, txt: '请选择商品'},
+          {value: this.testGoodsCount, txt: '请填写每个商品的库存数'},
+          {value: this.testCategory, txt: '请选择品类'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -917,15 +924,18 @@
     .tip-text
       line-height: 44px
       color: #333
-    .time-no-change,.text-no-change
+    .time-no-change,.text-no-change,.check-no-change
       position: absolute
-      left: 100px
+      left: 127px
       top: 0
       width: 550px
       height: 50px
       z-index: 100
     .text-no-change
       cursor: not-allowed
+    .check-no-change
+      cursor: not-allowed
+      height: 100px
   .edit-activity
     box-sizing: border-box
     padding-left: 20px
@@ -992,6 +1002,8 @@
         .com-list-item
           &:nth-child(1)
             flex: 2
+          &:last-child
+            flex: 0.2
 
   .history-record
     box-sizing: border-box
@@ -1012,6 +1024,11 @@
         display: inline-block
         margin-right: -2px
         color: #F52424
+    .remind
+      margin-left: 10px
+      color: $color-text-assist
+      .selected
+        color: #333
     .add-goods-btn
       box-sizing: border-box
       height: 32px
@@ -1257,6 +1274,7 @@
     border-radius: 1px
     border: 1px solid $color-line
     margin: 0 20px
+    height: 400px
     .category-list
       flex-wrap: wrap
       display: flex
@@ -1331,8 +1349,8 @@
 
   .category-content
     border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
+    margin: 20px 20px 0
+    height: 420px
     .title
       display: flex
       height: 45px
@@ -1357,12 +1375,13 @@
         line-height: 18px
         display: flex
         align-items: center
-        border-bottom: 1px solid #E9ECEE
+        justify-content: space-between
         padding: 0 20px
-        &:nth-child(2n)
+        &:nth-child(2n-1)
           background: #F5F7FA
-        &:last-child
-          border-bottom: 0
+        .left
+          display: flex
+          align-items: center
         .check
           width: 16px
           height: 16px
@@ -1372,6 +1391,7 @@
           display: flex
           justify-content: center
           align-items: center
+          margin-right: 20px
           &:before
             content: ""
             display: block
