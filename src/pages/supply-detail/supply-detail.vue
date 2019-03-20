@@ -70,7 +70,7 @@
 
   .down-content
     align-items: flex-start
-    padding:9px 0 29px
+    padding:5px 20px 25px
     box-sizing: border-box
   .enter-title
     font-size: $font-size-14

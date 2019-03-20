@@ -11,7 +11,7 @@
         @on-change="changeStartTime"
       ></date-picker>
       <!--@on-change="_getStartTime"-->
-      <div class="tip">~</div>
+      <div class="time-tip">~</div>
       <div class="down-item">
         <date-picker
           class="edit-input-box edit-input-right"

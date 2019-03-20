@@ -99,7 +99,7 @@
     padding-bottom: 20px
 
   .purchase-down
-    padding-bottom: 29px
+    padding:5px 20px 25px
     box-sizing: border-box
     align-items: flex-start
 </style>
