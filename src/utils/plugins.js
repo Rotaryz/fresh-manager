@@ -24,6 +24,7 @@ export const Plugins = {
     Vue.prototype.$createQrCode = createQrCode
     Vue.prototype.$storage = storage
     Vue.prototype.$echarts = echarts
+    Vue.prototype.$VUE_APP_ENV = process.env.VUE_APP_ENV
   }
 }
 // 使用插件
