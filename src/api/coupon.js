@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   getCouponList(data, loading = true) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/coupon-manage/coupon'
     return request.get(url, data, loading)
   },
   /**
@@ -18,7 +18,7 @@ export default {
    * @returns {*}
    */
   getCouponDetail(id, loading = true) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    let url = `/social-shopping/api/backend/coupon-manage/coupon/${id}`
     return request.get(url, {}, loading)
   },
   /**
@@ -28,7 +28,7 @@ export default {
    * @returns {*}
    */
   deleteCoupon(id, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    let url = `/social-shopping/api/backend/coupon-manage/coupon/${id}`
     return request.delete(url, null, loading)
   },
   /**
@@ -68,7 +68,7 @@ export default {
    * @returns {*}
    */
   storeCoupon(data, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline`
+    let url = `/social-shopping/api/backend/coupon-manage/coupon`
     return request.post(url, data, loading)
   }
 }

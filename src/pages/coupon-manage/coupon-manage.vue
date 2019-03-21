@@ -57,9 +57,9 @@
   const DATE_PLACE_HOLDER = '选择时间'
 
   const ORDERSTATUS = [
-    {text: '进行中', status: ''},
+    {text: '进行中', status: 1},
     {text: '未开始', status: 0},
-    {text: '已过期', status: 1}
+    {text: '已过期', status: 2}
   ]
   const COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'name', type: 1},
@@ -193,5 +193,7 @@
       overflow: hidden
       white-space: nowrap
       font-size: 14px
+    .item-sub
+      color: $color-text-main
 
 </style>

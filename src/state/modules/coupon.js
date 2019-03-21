@@ -11,7 +11,7 @@ export const state = {
   couponDetail: {},
   startTime: '',
   endTime: '',
-  status: '',
+  status: 1,
   page: 1
 }
 
@@ -64,8 +64,9 @@ export const actions = {
     let data = {
       status,
       page,
-      start_time: startTime,
-      end_time: endTime
+      limit: 10,
+      created_start_at: startTime,
+      created_end_at: endTime
     }
     return API.Coupon.getCouponList(data)
       .then((res) => {

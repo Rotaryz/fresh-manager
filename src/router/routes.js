@@ -265,11 +265,11 @@ export default [
         name: 'coupon-manage',
         component: () => lazyLoadView(import('@pages/coupon-manage/coupon-manage')),
         meta: {
-          titles: ['商城', '营销', '优惠券管理']
+          titles: ['商城', '营销', '优惠券管理'],
           // beforeResolve(routeTo, routeFrom, next) {
           //   // 活动列表
           //   store
-          //     .dispatch('outreach/getOutreachList', {page: 1})
+          //     .dispatch('coupon/getCouponList', {page: 1})
           //     .then((res) => {
           //       if (!res) {
           //         return next({name: '404'})
