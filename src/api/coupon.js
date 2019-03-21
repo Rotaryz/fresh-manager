@@ -38,7 +38,7 @@ export default {
    * @returns {*}
    */
   getCategoryList(data, loading = false) {
-    let url = `/social-shopping/api/backend/shop-manager`
+    let url = `/api/backend/goods-manage/goods-category`
     return request.get(url, data, loading)
   },
   /**

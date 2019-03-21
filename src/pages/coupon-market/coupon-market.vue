@@ -22,20 +22,23 @@
           <div v-for="(item,index) in marketTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in marketList2" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || '---'}}
               </div>
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="item">
+                {{item[val.value] || 0}}
+              </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
-                {{type[item[val.value]] || '---'}}
+                {{type[item[val.value]]}}
               </div>
               <!--状态-->
               <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
                 <base-switch :status="item.status" :type="1"></base-switch>
               </div>
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'edit-market?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
+              <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
+                <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteMarket(item.id)">删除</span>
               </div>
             </div>
@@ -58,16 +61,11 @@
   const PAGE_NAME = 'COUPON_MARKET'
   const TITLE = '优惠券营销'
   const MARKET_TITLE = [
-    {name: '营销名称', flex: 1.6, value: 'market_name', type: 1},
+    {name: '营销名称', flex: 1.6, value: 'title', type: 1},
     {name: '类型', flex: 1, value: 'type', type: 2},
     {name: '状态', flex: 1, value: 'status', type: 3},
-    {name: '触达数', flex: 1, value: 'get_num', type: 1},
-    {name: '领取数', flex: 1, value: 'receive_num', type: 1},
-    {name: '操作', flex: 1, value: '', type: 4}
-  ]
-  const MARKET_LIST = [
-    {market_name: '名称', type: 1, get_num: 20, receive_num: 100, status: 1},
-    {market_name: '名称', type: 1, get_num: 20, receive_num: 100, status: 1}
+    {name: '领取数', flex: 1, value: 'take_count', type: 4},
+    {name: '操作', flex: 1, value: '', type: 5}
   ]
   export default {
     name: PAGE_NAME,
@@ -80,9 +78,8 @@
     data() {
       return {
         marketTitle: MARKET_TITLE,
-        marketList2: MARKET_LIST,
         topBtn: ['新客户', '活跃客户', '沉睡客户'],
-        type: ['新客户', '活跃客户', '沉睡客户', '发优惠券'],
+        type: ['未知', '新客户', '活跃客户', '沉睡客户', '发放优惠券'],
         page: 1,
         delId: 0
       }
@@ -97,25 +94,37 @@
     methods: {
       ...marketMethods,
       newMarket(index) {
-        this.$router.push(`/home/coupon-market/edit-market?index=${index}`)
+        this.$router.push(`/home/coupon-market/new-market?index=${index}`)
       },
       addPage(page) {
         this.page = page
         this.getMarketList({page: this.page})
       },
       switchBtn(item, index) {
-        this.marketList2[index].status = item.status * 1 === 1 ? 0 : 1
+        let data = {
+          status: item.status ? 0 : 1,
+          id: item.id
+        }
+        API.Market.switchMarket(data)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.getMarketList({page: this.page})
+          })
       },
       _deleteMarket(id) {
         this.delId = id
         this.$refs.confirm.show('删除后商家将无法查看优惠券的信息，且无法恢复，谨慎操作!', '删除优惠券')
       },
       async _sureConfirm() {
-        let res = await API.Outreach.deleteActivity(this.delId)
-        this.$toast.show('删除成功')
+        let res = await API.Market.deleteMarket(this.delId)
         if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
           return
         }
+        this.$toast.show('删除成功')
         this.getMarketList({page: this.page})
       }
     }

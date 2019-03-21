@@ -7,8 +7,8 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getMarketList(data, loading = true) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+  getMarketList(data, loading = false) {
+    let url = '/social-shopping/api/backend/coupon-activity-manage/coupon-activity'
     return request.get(url, data, loading)
   },
   /**
@@ -18,7 +18,7 @@ export default {
    * @returns {*}
    */
   getMarketDetail(id, loading = true) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${id}`
     return request.get(url, {}, loading)
   },
   /**
@@ -28,7 +28,7 @@ export default {
    * @returns {*}
    */
   deleteMarket(id, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${id}`
     return request.delete(url, null, loading)
   },
 
@@ -39,7 +39,18 @@ export default {
    * @returns {*}
    */
   storeMarket(data, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline`
+    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 营销开启关闭
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  switchMarket(data, loading = false) {
+    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${data.id}/status/${data.status}`
     return request.post(url, data, loading)
   }
+
 }

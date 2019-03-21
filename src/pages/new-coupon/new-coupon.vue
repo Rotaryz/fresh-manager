@@ -40,11 +40,11 @@
         </div>
         <div class="edit-input-box">
           <div class="checkbox">
-            <p class="check-item" @click="changeCheck('red')"><span :class="['item-icon', {'checked':msg.checked === 'red'}]"></span>满减券</p>
-            <p class="check-item" @click="changeCheck('dis')"><span :class="['item-icon', {'checked':msg.checked === 'dis'}]"></span>折扣券</p>
+            <p class="check-item" @click="changeCheck(2)"><span :class="['item-icon', {'checked': +msg.preferential_type === 2}]"></span>满减券</p>
+            <p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>折扣券</p>
           </div>
           <div class="no-wrap">
-            <input v-model="msg.money"
+            <input v-model="msg.denomination"
                    type="text"
                    :placeholder="disable ? '' : '优惠券面值应设为1~999之间的整数'"
                    class="edit-input"
@@ -52,7 +52,7 @@
                    maxlength="12"
                    :class="{'disable-input':disable}"
             >
-            <span>元</span>
+            <span>{{+msg.preferential_type === 1 ? '折' : '元'}}</span>
           </div>
         </div>
         <div :class="{'check-no-change':disable}"></div>
@@ -66,7 +66,7 @@
         </div>
         <div class="edit-input-box">
           <div class="no-wrap">
-            <input v-model="msg.count"
+            <input v-model="msg.usable_stock"
                    type="text"
                    :placeholder="disable ? '' : '发放数量应设为1~99999之间的整数'"
                    class="edit-input"
@@ -85,7 +85,7 @@
         <div class="edit-title">订单满减</div>
         <div class="edit-input-box">
           <div class="no-wrap">
-            <input v-model="msg.price"
+            <input v-model="msg.condition"
                    type="text"
                    :placeholder="disable ? '' : '不填则默认为“0”'"
                    class="edit-input"
@@ -96,7 +96,7 @@
             <span>元可使用</span>
           </div>
           <div class="description" @click="changeFull()">
-            <span :class="['item-icon', {'checked': checkFull}]"></span>
+            <span :class="['item-icon', {'checked': +msg.support_activity === 1}]"></span>
             <span>支持活动商品使用</span>
             <span class="tip">(不勾选此项时，活动商品不能叠加使用该优惠券)</span>
           </div>
@@ -113,7 +113,7 @@
         <date-picker
           :value="msg.start_at"
           class="edit-input-box"
-          type="datetime"
+          type="date"
           :confirm="false"
           :editable="false"
           placement="bottom-end"
@@ -125,7 +125,7 @@
         <date-picker
           :value="msg.end_at"
           class="edit-input-box edit-input-right"
-          type="datetime"
+          type="date"
           :confirm="false"
           :editable="false"
           placement="bottom-end"
@@ -150,10 +150,10 @@
     </div>
 
     <!--添加品类列表-->
-    <div v-if="msg.use_range === '指定品类'" class="content-header">
+    <div v-if="+msg.range_type === 2" class="content-header">
       <div class="content-title">品类信息</div>
     </div>
-    <div v-if="msg.use_range === '指定品类'" class="activity-box">
+    <div v-if="+msg.range_type === 2" class="activity-box">
       <div class="activity-list">
         <div class="activity-tab">
           <div class="edit-title">
@@ -183,10 +183,10 @@
     </div>
 
     <!--添加商品列表-->
-    <div v-if="msg.use_range === '指定单品'" class="content-header">
+    <div v-if="+msg.range_type === 3" class="content-header">
       <div class="content-title">活动商品</div>
     </div>
-    <div v-if="msg.use_range === '指定单品'" class="activity-box">
+    <div v-if="+msg.range_type === 3" class="activity-box">
       <div class="activity-list">
         <div class="activity-tab">
           <div class="edit-title">
@@ -208,10 +208,7 @@
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
               <div class="com-list-item">¥{{item.original_price || 0}}</div>
-              <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
-                <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
-                <span v-if="item.original_price" class="small-money">¥</span>
-              </div>
+              <div class="com-list-item">{{item.usable_stock || 0}}</div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
               </div>
@@ -231,12 +228,12 @@
         <!--列表-->
         <div class="category-content">
           <div class="coupon-category-list">
-            <div v-for="(item, index) in categoryList" :key="index" class="category-item" @click="selectCategory(item, index)">
+            <div v-for="(item, index) in assortment.data" :key="index" class="category-item" @click="selectCategory(item, index)">
               <div class="left">
                 <span class="check" :class="{'checked': (categoryCheckItem.id ? (item.id === categoryCheckItem.id) : (item.id === categorySelectItem.id))}"></span>
                 <span class="name">{{item.name}}</span>
               </div>
-              <span class="count">{{item.count || 0}}个商品</span>
+              <span class="count">{{item.goods_count || 0}}个商品</span>
             </div>
           </div>
         </div>
@@ -312,28 +309,11 @@
   const TITLE = '新建查看优惠券'
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
-  const COMMODITIES_LIST = [
-    '商品名称',
-    '单位',
-    '售价(元)',
-    '库存',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['商品名称', '单位', '售价(元)', '库存', '操作']
   const CATEGORY_TITLE = [
     {name: '品类名称', class: 'title-item', flex: 2, value: 'name'},
-    {name: '商品数量', class: 'title-item', flex: 2, value: 'count'},
+    {name: '商品数量', class: 'title-item', flex: 2, value: 'goods_count'},
     {name: '操作', class: 'title-item', flex: 0.2, value: ''}
-  ]
-  const CATEGORY_SELECT = {name: '水果', count: 100, id: 1}
-
-  const CATAGORY_LIST = [
-    {name: '时令水果', count: 8, id: 1},
-    {name: '时令水果', count: 8, id: 2},
-    {name: '时令水果', count: 8, id: 3},
-    {name: '时令水果', count: 8, id: 4},
-    {name: '时令水果', count: 8, id: 5},
-    {name: '时令水果', count: 8, id: 6},
-    {name: '时令水果', count: 8, id: 7}
   ]
 
   export default {
@@ -371,7 +351,7 @@
           show: false,
           content: '通用',
           type: 'default',
-          data: [{name: '通用'}, {name: '指定品类'}, {name: '指定单品'}] // 格式：{title: '55'}}
+          data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定单品', id: 3}] // 格式：{title: '55'}}
         },
         parentId: 0,
         goodsPage: {
@@ -389,21 +369,21 @@
         goodsList: [],
         msg: {
           coupon_name: '',
-          money: '',
-          checked: 'red',
-          count: '',
+          preferential_type: 2,
+          denomination: '', // 优惠券面额
+          condition: '', // 满多少可用
+          support_activity: 0, // 是否支持活动商品使用0 1
           start_at: '',
           end_at: '',
-          shop_id: '',
-          use_range: '通用',
-          activity_goods: []
+          range_type: 1, // 适用范围0未知1通用券2品类券3单品券
+          ranges: []
         },
         isSubmit: false, // 在提交
         categoryShow: false, // 选择品类弹窗
-        categoryList: CATAGORY_LIST,
+        categoryList: [],
         categoryTitle: CATEGORY_TITLE,
         categoryCheckItem: {}, // 选中的品类
-        categorySelectItem: CATEGORY_SELECT, // 确定选择的品类
+        categorySelectItem: {}, // 确定选择的品类
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
         checkFull: false
@@ -415,10 +395,20 @@
         return this.msg.coupon_name
       },
       testMoney() { // 优惠价格
-        return this.msg.money && MONEYREG.test(this.msg.money)
+        return this.msg.denomination && MONEYREG.test(this.msg.denomination)
+      },
+      testDiscount() {
+        return this.msg.denomination && MONEYREG.test(this.msg.denomination)
+      },
+      testDiscountNum() {
+        if (this.msg.preferential_type === 1) {
+          return this.msg.denomination > 0 && this.msg.denomination < 9.9
+        } else {
+          return true
+        }
       },
       testCount() { // 发放数量
-        return this.msg.count && COUNTREG.test(this.msg.count)
+        return this.msg.range_type && COUNTREG.test(this.msg.range_type)
       },
       testStart() { // 开始时间
         return this.msg.start_at
@@ -430,20 +420,10 @@
         return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
       },
       testGoods() {
-        return this.msg.use_range === '指定商品' ? (this.goodsList && this.goodsList.length) : true
-      },
-      testGoodsCount() {
-        if (this.msg.use_range === '指定商品') {
-          let result = this.goodsList.every(item => {
-            return item.count > 0 && COUNTREG.test(item.count)
-          })
-          return result
-        } else {
-          return true
-        }
+        return +this.msg.range_type === 3 ? (this.goodsList && this.goodsList.length) : true
       },
       testCategory() {
-        return this.msg.use_range === '指定品类' ? this.categorySelectItem.name : true
+        return +this.msg.range_type === 2 ? this.categorySelectItem.name : true
       }
     },
     watch: {
@@ -452,7 +432,8 @@
           let id = this.$route.query.id || null
           if (id) {
             let obj = _.cloneDeep(news)
-            this.goodsList = obj.activity_goods
+            obj.range_type === 2 && (this.selectCategory = obj.ranges)
+            obj.range_type === 3 && (this.goodsList = obj.ranges)
             this.categorySelectItem.social_name = obj.social_name
             if (this.goodsList) {
               this.selectGoodsId = obj.activity_goods.map((item) => {
@@ -485,11 +466,11 @@
     },
     methods: {
       ...couponMethods,
-      changeCheck(type) {
-        this.msg.checked = type
+      changeCheck(num) {
+        this.msg.preferential_type = num
       },
       changeFull() {
-        this.checkFull = !this.checkFull
+        this.msg.support_activity = (+this.msg.support_activity === 1 ? 0 : 1)
       },
       _getStartTime(time) {
         this.msg.start_at = time
@@ -689,8 +670,7 @@
           return
         }
         this._initData()
-        // await this._getGoodsList()
-        // 展示添加商品弹窗
+        // 展示品类弹窗
         this.$refs.categoryModal.showModal()
         this.categoryShow = true
       },
@@ -726,7 +706,6 @@
       // 确定选择品类
       _addition() {
         this.categorySelectItem = this.categoryCheckItem
-        this.msg.shop_id = this.categorySelectItem.id
         this.categoryShow = false
         this.categoryCheckItem = {}
         this.$refs.categoryModal.hideModal()
@@ -735,7 +714,7 @@
         this.$router.back()
       },
       _selectRange(item) {
-        this.msg.use_range = item.name
+        this.msg.range_type = item.id
       },
       //  保存
       async _saveActivity() {
@@ -743,27 +722,29 @@
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
-        let data = []
-        if (this.msg.use_range === '指定商品') {
+        let data = {}
+        data = Object.assign({}, this.msg)
+        // 添加coupon_range_id
+        if (+this.msg.range_type === 2) {
+          this.categorySelectItem.coupon_range_id = this.categorySelectItem.coupon_range_id || 0
+          this.categorySelectItem.range_id = this.categorySelectItem.id || 0
+          this.msg.ranges[0] = this.categorySelectItem
+        } else if (+this.msg.range_type === 3) {
+          this.goodsList.forEach(item => {
+            item.range_id = item.id || 0
+            item.coupon_range_id = item.coupon_range_id || 0
+          })
           let list = this.goodsList
-          for (let i in list) {
-            if (!list[i].count) {
-              this.$toast.show(`请输入商品“${list[i].name}”的库存`)
-              return
-            } else if (+list[i].count < 0) {
-              this.$toast.show(`“${list[i].name}”输入数据有误`)
-              return
-            }
-          }
-          data = Object.assign({}, this.msg, {activity_goods: list})
+          data = Object.assign({}, this.msg, {ranges: list})
         }
         let res = null
         this.isSubmit = true
         // 调用保存活动接口
-        res = await API.Outreach.storeActivity(data, this.id, true)
+        res = await API.Coupon.storeCoupon(data, true)
         this.$loading.hide()
-        this.$toast.show(res.message)
+        this.$toast.show('保存成功')
         if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
           this.isSubmit = false
           return
         }
@@ -775,12 +756,13 @@
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
           {value: this.testMoney, txt: '请输入优惠金额'},
+          {value: this.testDiscount, txt: '请输入折扣数'},
+          {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testCount, txt: '请输入发放数量'},
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
           {value: this.testGoods, txt: '请选择商品'},
-          {value: this.testGoodsCount, txt: '请填写每个商品的库存数'},
           {value: this.testCategory, txt: '请选择品类'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
@@ -1377,6 +1359,10 @@
         align-items: center
         justify-content: space-between
         padding: 0 20px
+        border: 0.5px solid $color-line
+        border-top: 0
+        &:first-child
+          border-top: 0.5px solid $color-line
         &:nth-child(2n-1)
           background: #F5F7FA
         .left
