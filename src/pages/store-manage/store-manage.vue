@@ -291,7 +291,7 @@
         align-items: center
         justify-content: space-between
         background: #F5F7FA
-        border: 1px solid #E6E7EB
+        border: 0.5px solid #E6E7EB
         border-bottom: 0
         .store-title-name
           font-size: $font-size-14
@@ -313,7 +313,7 @@
         align-items: center
         justify-content: space-between
         background: #fff
-        border: 1px solid #E9ECEE
+        border: 0.5px solid #E9ECEE
         border-top: 0
         .son-box-name
           font-size: $font-size-14
