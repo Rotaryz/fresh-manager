@@ -108,7 +108,7 @@
         </div>
         <div class="shade-tab">
           <div class="tab-item">
-            <base-search placeHolder="商户名称" @search="search"></base-search>
+            <base-search ref="search" placeHolder="商户名称" @search="search"></base-search>
           </div>
         </div>
         <div class="goods-content">
@@ -298,6 +298,7 @@
           if (this.handleRoadType === ADD_ROAD) {
             this.$refs.line.hideModal()
           } else if (this.handleRoadType === EDIT_ROAD) {
+            this.$refs.search.infoTextMethods()
             this.$refs.addressModal.hideModal()
           }
         } else if (this.tabIndex === 1) {
