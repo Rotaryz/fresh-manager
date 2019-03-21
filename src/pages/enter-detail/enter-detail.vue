@@ -199,11 +199,6 @@
     margin: 20px 80px 0 0
     .enter-title-money
       color: #F84E3C
-      flex: 1
-    .enter-title-money
-      color: #F84E3C
-    &:nth-child(4), &:nth-child(5)
-      flex: 0.7
 
   .edit-input
     font-size: $font-size-14
