@@ -108,7 +108,7 @@
         </div>
         <div class="shade-tab">
           <div class="tab-item">
-            <base-search placeHolder="商户名称"></base-search>
+            <base-search placeHolder="商户名称" @search="search"></base-search>
           </div>
         </div>
         <div class="goods-content">
@@ -407,6 +407,17 @@
               item.checked = 1
             }
           }
+        })
+      },
+      search(text) {
+        API.Delivery.getDeliveryAddress({road_id: this.handleRoadId, keyword: text}).then((res) => {
+          this.$loading.hide()
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.deliveryAddress = res.data
+          this.$refs.addressModal.showModal()
         })
       }
     }
