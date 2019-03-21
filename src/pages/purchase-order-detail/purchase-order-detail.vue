@@ -5,7 +5,7 @@
         <span class="header-text">采购单号：{{purchaseDetail.order_sn}}</span>
       </div>
       <div class="down-item-text">
-        <span class="header-text">采购商品数：{{purchaseDetail.task_num}}</span>
+        <span class="header-text">采购品类数：{{purchaseDetail.task_num}}</span>
       </div>
       <div class="down-item-text">
         <span class="header-text">预采购金额：￥{{purchaseDetail.per_amount}}</span>
