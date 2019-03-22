@@ -88,7 +88,7 @@
               <base-drop-down :width="120" :height="44" :select="dayDataNew" @setValue="_selectDayNew"></base-drop-down>
               <span style="margin: 0 10px">内注册的客户</span>
             </div>
-            <div :class="{'time-no-change':disable}"></div>
+            <div v-if="disable" :class="{'time-no-change':disable}"></div>
           </div>
         </div>
 
@@ -117,7 +117,7 @@
               <input v-model="msg.config_json.order_toal" type="text" :readonly="activityItem === 'order_count'" placeholder="输入金额" class="count-input">
               <span style="margin-left: 10px">元的客户</span>
             </div>
-            <div :class="{'day-no-change':disable}"></div>
+            <div v-if="disable" :class="{'day-no-change':disable}"></div>
           </div>
         </div>
 
@@ -143,7 +143,7 @@
           <div class="edit-content flex">
             <div class="add-btn hand" :class="{'disable': disable}" @click="_showCouponModal">选择<img class="icon" src="./icon-add@2x.png" alt=""></div>
 
-            <div class="edit-list-box">
+            <div v-if="selectCouponList.length" class="edit-list-box">
               <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
                 <div v-for="(item, index) in selectCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
 
@@ -155,7 +155,7 @@
                       <p>{{item.start_at}}</p>
                       <p>{{item.end_at}}</p>
                     </div>
-                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index)">删除</p>
+                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
                     <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
@@ -174,7 +174,7 @@
           <div class="edit-content flex">
             <div class="add-btn hand" :class="{'disable': disable}" @click="_showGroupModal">添加<img class="icon" src="./icon-add@2x.png" alt=""></div>
 
-            <div class="edit-list-box">
+            <div v-if="selectGroupList.length" class="edit-list-box">
               <div class="list-title" :class="{'no-line': selectGroupList.length === 0}">
                 <div v-for="(item, index) in selectGroupTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
 
@@ -265,32 +265,19 @@
           </div>
         </div>
         <!--列表-->
-        <!--<div class="group-content">-->
-          <!--<div class="title">-->
-            <!--<span v-for="(item, index) in groupTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>-->
-          <!--</div>-->
-          <!--<div class="outreach-group-list">-->
-            <!--<div v-for="(item, index) in groupList" :key="item.id" class="group-item" @click="_selectGroup(item, index)">-->
-              <!--<span v-for="(val, ind) in groupTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">-->
-                <!--<span v-if="ind === 0" class="check" :class="{'checked': item.isCheck}"></span>-->
-                <!--<span v-else class="title-item">{{item[val.value]}}</span>-->
-              <!--</span>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
-        <dl class="group-content">
-          <dt class="title">
+        <div class="group-content">
+          <div class="title">
             <span v-for="(item, index) in groupTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
-          </dt>
-          <dd class="outreach-group-list" v-for="(item, index) in groupList" :key="item.id" @click="_selectGroup(item, index)">
-            <div class="group-item">
+          </div>
+          <div class="outreach-group-list">
+            <div v-for="(item, index) in groupList" :key="item.id" class="group-item" @click="_selectGroup(item, index)">
               <span v-for="(val, ind) in groupTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">
-                <span v-if="ind === 0" class="check" :class="{'checked': item.isCheck}"></span>
+                <span v-if="ind === 0" :class="['check',{'checked': item.checked}, {'right': item.right}]"></span>
                 <span v-else class="title-item">{{item[val.value]}}</span>
               </span>
             </div>
-          </dd>
-        </dl>
+          </div>
+        </div>
         <!--翻页器-->
         <div class="page-box">
           <base-pagination ref="paginationGroup" :pageDetail="groupPage" @addPage="_getMoreGroup"></base-pagination>
@@ -335,14 +322,14 @@
     {name: '操作', flex: 0.4, value: ''}
   ]
   const GROUP_TITLE = [
-    {name: '选择', flex: 0.7, value: ''},
+    {name: '选择', flex: 0.4, value: ''},
     {name: '团长帐号', flex: 1, value: 'mobile'},
     {name: '团长名称', flex: 1, value: 'name'},
     {name: '社区名称', flex: 1.2, value: 'social_name'},
     {name: '社区地址', flex: 2, value: 'address'},
   ]
   const COUPON_TITLE = [
-    {name: '选择', flex: 0.7, value: ''},
+    {name: '选择', flex: 0.4, value: ''},
     {name: '优惠券名称', flex: 1.8, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
@@ -429,7 +416,7 @@
         modalType: '',
         type: '',
         disable: false,
-        currentItem: {}
+        currentItem: ''
       }
     },
     computed: {
@@ -443,11 +430,17 @@
         } else {
           return true
         }
-
       },
       testNewEndTime() {
         if (+this.marketIndex === 0) {
           return (this.msg.config_json.way === 'between_days') ? this.msg.config_json.end_day : true
+        } else {
+          return true
+        }
+      },
+      testNewEndTimeReg() { // 结束时间规则判断
+        if (+this.marketIndex === 0  && this.msg.config_json.way === 'between_days') {
+          return Date.parse(this.msg.config_json.end_day + ' 00:00') > Date.parse('' + this.msg.config_json.start_day + ' 00:00')
         } else {
           return true
         }
@@ -636,10 +629,17 @@
       _delItem() {
         if (this.confirmType === 'coupon') {
           this.selectCouponList.splice(this.willDelItem, 1)
+          this.couponSelectItem = {}
+          this.couponCheckItem = {}
         } else {
           this.selectGroupList.splice(this.willDelItem, 1)
-          let index = this.groupList.findIndex(val => val.id === this.currentItem.id)
-          index > -1 && (this.groupList[index].isCheck = false)
+          this.groupSelectItem.splice(this.willDelItem, 1)
+          this.groupList.map(item => {
+            if (item.id === this.currentItem.id) {
+              item.right = false
+              item.checked = false
+            }
+          })
         }
       },
       _back() {
@@ -662,13 +662,21 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.groupList = res.data.map((item) => {
-          item.isCheck = false
-          return item
+        this.groupList = res.data.map(item => {
+          item.checked = this.selectGroupList.some(val => {
+            return val.id === item.id
+          })
         })
+        this.groupList = res.data
       },
       _getCouponList() {
-        API.Coupon.getCouponList({page: this.page, limit: 6, status: 1}, false)
+        let data = {
+          coupon_name: this.keyword,
+          page: this.page,
+          limit: 6,
+          status: 1
+        }
+        API.Coupon.getCouponList(data, false)
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -705,10 +713,10 @@
         this.page = 1
         if (this.modalType === 'coupon') {
           this.$refs.paginationCoupon.beginPage()
-          await this._getGroupList()
+          await this._getCouponList()
         } else {
           this.$refs.paginationGroup.beginPage()
-          await this._getCouponList()
+          await this._getGroupList()
         }
       },
       // 初始化数据
@@ -728,31 +736,32 @@
       },
       // 选中列表某一项
       _selectGroup(item, index) {
-        // console.log(this.groupList)
-        // this.groupList = this.groupList.map((child, idx) => {
-        //   child.isCheck = index === idx
-        //   console.log(child.isCheck)
-        //   return child
-        // })
-        item.isCheck = !item.isCheck
-        // this.groupList.splice(index, item)
-        // if (item.checked) {
-        //   item.checked = false
-        //   this.groupList[index].checked = false
-        //   let idx = this.groupSelectItem.findIndex((items) => items.id === item.id)
-        //   idx > -1 && this.groupSelectItem.splice(idx, 1)
-        // } else {
-        //   this.groupList[index].checked = true
-        //   this.groupSelectItem.push(item)
-        // }
+        if (item.right) return
+        if (item.checked) {
+          this.groupList = this.groupList.map((item, ind) => {
+            index === ind && (item.checked = false)
+            return item
+          })
+          let idx = this.groupSelectItem.findIndex((items) => items.id === item.id)
+          idx > -1 && this.groupSelectItem.splice(idx, 1)
+        } else {
+          this.groupList = this.groupList.map((item, ind) => {
+            index === ind && (item.checked = true)
+            return item
+          })
+          this.groupSelectItem.push(item)
+        }
       },
       _selectCoupon(item, index) {
         this.couponCheckItem = item
       },
       // 弹窗保存
       _additionGroup() {
-        this.selectGroupList = this.groupList.filter(item => item.isCheck)
-        // this.selectGroupList = [...this.groupSelectItem]
+        this.selectGroupList = [...this.groupSelectItem]
+        this.groupList = this.groupList.map(item => {
+          item.checked && (item.right = true)
+          return item
+        })
         this._cancelModal()
       },
       _additionCoupon() {
@@ -834,6 +843,7 @@
           {value: this.testName, txt: '请输入营销名称'},
           {value: this.testNewStartTime, txt: '请选择开始时间'},
           {value: this.testNewEndTime, txt: '请选择结束时间'},
+          {value: this.testNewEndTimeReg, txt: '结束时间必须大于开始时间'},
           {value: this.testActivityCount, txt: '请输入满足下单次数'},
           {value: this.testActivityCountReg, txt: '请输入正确的满足下单次数'},
           {value: this.testActivityMoney, txt: '请输入满足订单金额'},
@@ -1210,12 +1220,6 @@
       font-size: $font-size-14
       color: #333
       font-family: $font-family-regular
-      &:nth-child(2n-1)
-        background: #F5F7FA
-      &:last-child
-        border-bottom: 0
-      &:first-child
-        border-bottom: 1px solid #E9ECEE
       .group-item
         height: 60px
         line-height: 18px
@@ -1224,6 +1228,12 @@
         border-bottom: 1px solid #E9ECEE
         padding: 0 20px
         cursor: pointer
+        &:nth-child(2n)
+          background: #F5F7FA
+        &:last-child
+          border-bottom: 0
+        &:first-child
+          border-bottom: 1px solid #E9ECEE
         .radio
           width: 16px
           height: 16px
@@ -1266,6 +1276,10 @@
           border-color: #4DBD65
           &:before
             opacity: 1
+        .right
+          border-color: #E1E1E1
+          &:before
+            icon-image(icon-check_ash)
         .title-item
           padding-right: 20px
           display: block

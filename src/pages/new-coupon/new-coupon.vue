@@ -166,7 +166,7 @@
           </div>
           <div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>
         </div>
-        <div class="goods-list-box">
+        <div v-if="categorySelectItem.name" class="goods-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">{{item.name}}</div>
           </div>
@@ -199,7 +199,7 @@
           </div>
           <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用，最多10个商品)</div>
         </div>
-        <div class="goods-list-box">
+        <div v-if="goodsList.length" class="goods-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>
