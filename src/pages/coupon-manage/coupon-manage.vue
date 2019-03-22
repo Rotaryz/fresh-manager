@@ -27,6 +27,9 @@
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || 0}}
               </div>
+              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
+                {{item[val.value] || 0}}{{+item.preferential_type === 1 ? '折' : '元'}}
+              </div>
               <div v-if="+val.type === 3" :style="{flex: val.flex}" class="list-double-row item">
                 <p class="item-dark">{{item.start_at}}</p>
                 <p class="item-sub">{{item.end_at}}</p>
@@ -64,7 +67,7 @@
   const COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name', type: 1},
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},
-    {name: '面值', flex: 1, value: 'denomination', type: 1},
+    {name: '面值', flex: 1, value: 'denomination', type: 2},
     {name: '使用范围', flex: 1, value: 'range_type_str', type: 1},
     {name: '有效时间', flex: 1, value: '', type: 3},
     {name: '创建时间', flex: 1, value: 'created_at', type: 1},

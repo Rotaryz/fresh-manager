@@ -156,7 +156,7 @@
                       <p>{{item.end_at}}</p>
                     </div>
                     <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index)">删除</p>
-                    <p v-else-if="val.value === 'money'">¥{{item[val.value]}}</p>
+                    <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
                 </div>
@@ -234,6 +234,7 @@
                   <p>{{item.start_at}}</p>
                   <p>{{item.end_at}}</p>
                 </div>
+                <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                 <span v-else class="title-item">{{item[val.value]}}</span>
               </div>
             </div>
@@ -483,7 +484,7 @@
       marketDetail: {
         handler(news) {
           let id = this.$route.query.id || null
-          if (id) {
+          if (id && news.config_json) {
             let obj = _.cloneDeep(news)
             console.log(obj, 'market')
             this.selectCouponList[0] = obj.coupon

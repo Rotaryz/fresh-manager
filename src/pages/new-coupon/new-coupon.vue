@@ -27,7 +27,7 @@
                  maxlength="12"
                  :class="{'disable-input':disable}"
           >
-          <div class="num">{{msg.coupon_name.length}}/12</div>
+          <div class="num">{{msg.coupon_name ? msg.coupon_name.length : 0}}/12</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -238,9 +238,9 @@
           </div>
         </div>
         <!--翻页器-->
-        <div class="page-box">
+        <!--<div class="page-box">
           <base-pagination ref="paginationCategory" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
-        </div>
+        </div>-->
         <div class="back">
           <div class="back-btn back-submit hand" @click="_addition">确定</div>
           <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
@@ -528,11 +528,7 @@
       // 获取分页商品列表
       async _getMoreGoods(page) {
         this.couponPage = page
-        if (this.categoryShow) {
-          await this._getCategoryList()
-        } else {
-          await this._getGoodsList()
-        }
+        await this._getGoodsList()
       },
       // 选择二级分类
       async _secondAssortment(item) {
@@ -684,23 +680,6 @@
         this.$refs.paginationCategory && this.$refs.paginationCategory.beginPage()
       },
 
-      // 获取品类列表
-      async _getCategoryList() {
-        let res = await API.Coupon.getCategoryList({
-          keyword: this.keyword,
-          page: this.couponPage
-        })
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.$loading.hide()
-        this.goodsPage = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        this.categoryList = res.data
-      },
       // 选择品类
       selectCategory(item, index) {
         this.categoryCheckItem = item
@@ -1334,7 +1313,8 @@
   .category-content
     border-radius: 1px
     margin: 20px 20px 0
-    height: 420px
+    height: 480px
+    overflow-y: auto
     .title
       display: flex
       height: 45px
