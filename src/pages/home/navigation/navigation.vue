@@ -256,7 +256,7 @@
       second: FINANCE,
       url: '/home/business-overview'
     }
-  // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
+    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
   ]
   export default {
     name: COMPONENT_NAME,
@@ -391,14 +391,7 @@
       min-height: 100vh
       width: $menu-width
       position: relative
-      &:after
-        content: ''
-        position: absolute
-        top: 0
-        left: 0
-        width: 100vh
-        height: 100vh
-        background-image: radial-gradient(#32292F 50%, #292A30 100%)
+      background: #363B4B
     .menu
       position: relative
       z-index: 1
@@ -455,14 +448,14 @@
       border-radius: 10px
     .second-title
       transition: all 0.2s
-      margin: 30px 0 8px
+      margin: 30px 0 10px
       color: #888888
       font-size: $font-size-14
       line-height: 1
     .second-link
       transition: all 0.2s
-      height: 30px
-      line-height: 30px
+      height: 34px
+      line-height: 34px
       color: $color-text-main
       font-size: $font-size-14
       &:hover
