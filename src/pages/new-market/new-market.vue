@@ -40,8 +40,10 @@
                    placeholder="请输入营销名称"
                    class="edit-input"
                    maxlength="12"
+                   :class="{'disable-input':disable}"
             >
             <span class="count">{{(msg.title && msg.title.length) || 0}}/12</span>
+            <div :class="{'text-no-change':disable}"></div>
           </div>
         </div>
 
@@ -54,10 +56,10 @@
           </div>
           <div class="edit-content">
             <div class="check-item">
-              <span class="check-icon" :class="{'checked': +newItem === 1}" @click="checkNew(1)"></span>
-              <span style="margin-right: 10px; cursor: pointer" @click="checkNew(1)">满足注册时间 从</span>
+              <span class="check-icon" :class="{'checked': newItem === 'between_days'}" @click="checkNew('between_days')"></span>
+              <span style="margin-right: 10px; cursor: pointer" @click="checkNew('between_days')">满足注册时间 从</span>
               <date-picker
-                :value="msg.start_at"
+                :value="msg.config_json.start_day"
                 class="edit-input-box"
                 type="date"
                 :editable="false"
@@ -69,7 +71,7 @@
               ></date-picker>
               <span style="margin: 0 10px">至</span>
               <date-picker
-                :value="msg.end_at"
+                :value="msg.config_json.end_day"
                 class="edit-input-box edit-input-right"
                 type="date"
                 :editable="false"
@@ -81,12 +83,12 @@
               <span style="margin: 0 10px">的客户</span>
             </div>
             <div class="check-item">
-              <span class="check-icon" :class="{'checked': +newItem === 2}" @click="checkNew(2)"></span>
-              <span style="margin-right: 10px; cursor: pointer" @click="checkNew(2)">满足注册时间 前</span>
+              <span class="check-icon" :class="{'checked': newItem === 'days'}" @click="checkNew('days')"></span>
+              <span style="margin-right: 10px; cursor: pointer" @click="checkNew('days')">满足注册时间 前</span>
               <base-drop-down :width="120" :height="44" :select="dayDataNew" @setValue="_selectDayNew"></base-drop-down>
               <span style="margin: 0 10px">内注册的客户</span>
             </div>
-
+            <div :class="{'time-no-change':disable}"></div>
           </div>
         </div>
 
@@ -100,22 +102,22 @@
           <div class="edit-content">
             <p class="text">如果设置的数字为空或为“0”，则视为没有设置，设置条件后，系统自动按照条件筛选出匹配的客户</p>
             <div class="check-item">
-              <span class="check-icon" :class="{'checked': +activityItem === 1}" @click="checkActivity(1)"></span>
-              <span style="margin-right: 10px" @click="checkActivity(1)">满足下单次数 前</span>
+              <span class="check-icon" :class="{'checked': activityItem === 'order_count'}" @click="checkActivity('order_count')"></span>
+              <span style="margin-right: 10px" @click="checkActivity('order_count')">满足下单次数 前</span>
               <base-drop-down :width="120" :height="44" :select="dayData" @setValue="_selectDay"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
-              <input v-model="msg.config_json.order_count" type="text" :readonly="+activityItem === 2" placeholder="输入次数" class="count-input">
+              <input v-model="msg.config_json.order_count" type="text" :readonly="activityItem === 'order_toal'" placeholder="输入次数" class="count-input">
               <span style="margin-left: 10px">次的客户</span>
             </div>
             <div class="check-item">
-              <span class="check-icon" :class="{'checked': +activityItem === 2}" @click="checkActivity(2)"></span>
-              <span style="margin-right: 10px" @click="checkActivity(2)">满足订单金额 前</span>
+              <span class="check-icon" :class="{'checked': activityItem === 'order_toal'}" @click="checkActivity('order_toal')"></span>
+              <span style="margin-right: 10px" @click="checkActivity('order_toal')">满足订单金额 前</span>
               <base-drop-down :width="120" :height="44" :select="dayData2" @setValue="_selectDay2"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
-              <input v-model="msg.config_json.order_toal" type="text" :readonly="+activityItem === 1" placeholder="输入金额" class="count-input">
+              <input v-model="msg.config_json.order_toal" type="text" :readonly="activityItem === 'order_count'" placeholder="输入金额" class="count-input">
               <span style="margin-left: 10px">元的客户</span>
             </div>
-
+            <div :class="{'day-no-change':disable}"></div>
           </div>
         </div>
 
@@ -139,7 +141,7 @@
             <span>选择优惠券</span>
           </div>
           <div class="edit-content flex">
-            <div class="add-btn hand" @click="_showCouponModal">选择<img class="icon" src="./icon-add@2x.png" alt=""></div>
+            <div class="add-btn hand" :class="{'disable': disable}" @click="_showCouponModal">选择<img class="icon" src="./icon-add@2x.png" alt=""></div>
 
             <div class="edit-list-box">
               <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
@@ -153,7 +155,7 @@
                       <p>{{item.start_at}}</p>
                       <p>{{item.end_at}}</p>
                     </div>
-                    <p v-else-if="val.value === ''" class="handle" @click="showConfirm('coupon', index)">删除</p>
+                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index)">删除</p>
                     <p v-else-if="val.value === 'money'">¥{{item[val.value]}}</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
@@ -170,7 +172,7 @@
             <span>添加团长</span>
           </div>
           <div class="edit-content flex">
-            <div class="add-btn hand" @click="_showGroupModal">添加<img class="icon" src="./icon-add@2x.png" alt=""></div>
+            <div class="add-btn hand" :class="{'disable': disable}" @click="_showGroupModal">添加<img class="icon" src="./icon-add@2x.png" alt=""></div>
 
             <div class="edit-list-box">
               <div class="list-title" :class="{'no-line': selectGroupList.length === 0}">
@@ -185,9 +187,10 @@
                       <p>{{item.end_at}}</p>
                     </div>
                     <p v-else-if="val.value === 'number'">
-                      <input v-model="item[val.value]" type="text" class="input-count">
+                      <input v-if="!disable" v-model="item[val.value]" type="text" class="input-count">
+                      <span v-else>{{item.total_stock}}</span>
                     </p>
-                    <p v-else-if="val.value === ''" class="handle" @click="showConfirm('group', index)">删除</p>
+                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('group', index)">删除</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
 
@@ -238,7 +241,7 @@
         </div>
         <!--翻页器-->
         <div class="page-box">
-          <base-pagination ref="paginationCoupon" :pageDetail="goodsPage" @addPage="_getMoreCoupon"></base-pagination>
+          <base-pagination ref="paginationCoupon" :pageDetail="couponPage" @addPage="_getMoreCoupon"></base-pagination>
         </div>
         <div class="back">
           <div class="back-btn back-submit hand" @click="_additionCoupon">确定</div>
@@ -266,8 +269,8 @@
             <span v-for="(item, index) in groupTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
           </div>
           <div class="outreach-group-list">
-            <div v-for="(item, index) in groupList" :key="index" class="group-item" @click="_selectGroup(item, index)">
-              <span v-for="(val, ind) in groupTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
+            <div v-for="(item, index) in groupList" :key="item.id" class="group-item" @click="_selectGroup(item, index)">
+              <span v-for="(val, ind) in groupTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="check" :class="{'checked': item.checked}"></span>
                 <span v-else class="title-item">{{item[val.value]}}</span>
               </span>
@@ -276,7 +279,7 @@
         </div>
         <!--翻页器-->
         <div class="page-box">
-          <base-pagination ref="paginationGroup" :pageDetail="goodsPage" @addPage="_getMoreGroup"></base-pagination>
+          <base-pagination ref="paginationGroup" :pageDetail="groupPage" @addPage="_getMoreGroup"></base-pagination>
         </div>
         <div class="back">
           <div class="back-btn back-submit hand" @click="_additionGroup">确定</div>
@@ -294,13 +297,14 @@
   import {marketComputed, marketMethods} from '@state/helpers'
   import {DatePicker} from 'iview'
   import API from '@api'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'NEW_MARKET'
   const TITLE = '新建查看优惠券营销'
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
   const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'share_coupon']
-  // const WAY = ['between_days', 'days', 'order_count', 'order_total']
+  // const WAY = ['between_days', 'days', 'order_count', 'order_toal']
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
@@ -360,7 +364,12 @@
         couponList: [], // 弹窗优惠券列表
         page: 1,
         marketIndex: 0,
-        goodsPage: {
+        groupPage: {
+          total: 1,
+          per_page: 10,
+          total_page: 1
+        },
+        couponPage: {
           total: 1,
           per_page: 10,
           total_page: 1
@@ -399,11 +408,13 @@
           data:  [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
         },
         count: '',
-        activityItem: 1, // 活跃客户配置
-        newItem: 1, // 新客户配置
+        activityItem: 'order_count', // 活跃客户配置
+        newItem: 'between_days', // 新客户配置
         willDelItem: {},
         confirmType: '',
-        modalType: ''
+        modalType: '',
+        type: '',
+        disable: false
       }
     },
     computed: {
@@ -413,7 +424,7 @@
       },
       testNewStartTime() {
         if (+this.marketIndex === 0) {
-          return (+this.newItem === 1) ? this.msg.config_json.start_at : true
+          return (this.msg.config_json.way === 'between_days') ? this.msg.config_json.start_day : true
         } else {
           return true
         }
@@ -421,35 +432,35 @@
       },
       testNewEndTime() {
         if (+this.marketIndex === 0) {
-          return (+this.newItem === 1) ? this.msg.config_json.end_at : true
+          return (this.msg.config_json.way === 'between_days') ? this.msg.config_json.end_day : true
         } else {
           return true
         }
       },
       testActivityCount() {
         if (+this.marketIndex === 1) {
-          return (+this.activityItem === 1) ? this.msg.config_json.order_count : true
+          return (this.msg.config_json.way === 'order_count') ? this.msg.config_json.order_count : true
         } else {
           return true
         }
       },
       testActivityCountReg() {
         if (+this.marketIndex === 1) {
-          return (+this.activityItem === 1) ? COUNTREG.test(this.msg.config_json.order_count) : true
+          return (this.msg.config_json.way === 'order_count') ? COUNTREG.test(this.msg.config_json.order_count) : true
         } else {
           return true
         }
       },
       testActivityMoney() {
         if (+this.marketIndex === 1) {
-          return (+this.activityItem === 2) ? this.msg.config_json.order_toal : true
+          return (this.msg.config_json.way === 'order_toal') ? this.msg.config_json.order_toal : true
         } else {
           return true
         }
       },
       testActivityMoneyReg() {
         if (+this.marketIndex === 1) {
-          return (+this.activityItem === 2) ? MONEYREG.test(this.msg.config_json.order_toal) : true
+          return (this.msg.config_json.way === 'order_toal') ? MONEYREG.test(this.msg.config_json.order_toal) : true
         } else {
           return true
         }
@@ -469,43 +480,91 @@
       }
     },
     watch: {
-    },
-    created() {
-      this.marketIndex = +this.$route.query.index || 0
-      switch(this.marketIndex) {
-      case 0:
-        this.msg.type = 1
-        this.arrowArr = new Array(3).fill(1)
-        this.title = '新客户规则设置'
-        this.type || this._getCouponList(); break
-      case 1:
-        this.msg.type = 2
-        this.msg.config_json.way = 'days'
-        this.msg.config_json.days = 3
-        this._getCouponList()
-        this.arrowArr = new Array(4).fill(1)
-        this.title = '活跃客户规则设置'; break
-      case 2:
-        this.msg.type = 3
-        this.msg.config_json.way = 'days'
-        this.msg.config_json.days = 6
-        this._getCouponList()
-        this.arrowArr = new Array(3).fill(1)
-        this.title = '沉睡客户规则设置'; break
-      case 3:
-        this.msg.type = 4
-        this._getCouponList()
-        this._getGroupList()
-        this.arrowArr = new Array(6).fill(1)
-        this.title = '发券规则设置'
+      marketDetail: {
+        handler(news) {
+          let id = this.$route.query.id || null
+          if (id) {
+            let obj = _.cloneDeep(news)
+            console.log(obj, 'market')
+            this.selectCouponList[0] = obj.coupon
+            this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
+            this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
+            this.selectGroupList = obj.shop_coupon.map(item => {
+              return {
+                total_stock: item.total_stock,
+                mobile: item.shop && item.shop.mobile,
+                name: item.shop && item.shop.name,
+                social_name: item.shop && item.shop.social_name
+              }
+            })
+            this.msg = obj
+            this.msg.config_json = JSON.parse(obj.config_json)
+            switch (obj.config_json.way) {
+            case 'days':
+              this.newItem = obj.config_json.way
+              this.dayDataNew.content = obj.config_json.days + '天'
+              break
+            case 'order_count':
+              this.activityItem = obj.config_json.way
+              this.dayData.content = obj.config_json.days + '天'
+              this.dayData2.content = 3 + '天'
+              break
+            case 'order_toal':
+              this.activityItem = obj.config_json.way
+              this.dayData2.content = obj.config_json.days + '天'
+              this.dayData.content = 3 + '天'
+              break
+            default:
+              this.newItem = obj.config_json.way
+            }
+          }
+        },
+        immediate: true
       }
-      this.disable = this.$route.query.id
+    },
+    beforeCreate() {
       this.id = this.$route.query.id || null
       if(this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券营销', '查看优惠券营销'])
       } else {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券营销', '新建优惠券营销'])
       }
+    },
+    created() {
+      this.marketIndex = +this.$route.query.index || 0
+      this.type = this.$route.query.id || ''
+      switch(this.marketIndex) {
+      case 0:
+        this.msg.type = 1
+        this.type || (this.msg.config_json.way = 'between_days')
+        this.arrowArr = new Array(3).fill(1)
+        this.title = '新客户规则设置'
+        this.type || this._getCouponList()
+        break
+      case 1:
+        this.msg.type = 2
+        this.msg.config_json.way = 'order_count'
+        this.msg.config_json.days = 3
+        this.arrowArr = new Array(4).fill(1)
+        this.title = '活跃客户规则设置'
+        this.type || this._getCouponList()
+        break
+      case 2:
+        this.msg.type = 3
+        this.msg.config_json.way = 'days'
+        this.msg.config_json.days = 6
+        this.arrowArr = new Array(3).fill(1)
+        this.title = '沉睡客户规则设置'
+        this.type || this._getCouponList()
+        break
+      case 3:
+        this.msg.type = 4
+        this.arrowArr = new Array(6).fill(1)
+        this.title = '发券规则设置'
+        this.type || this._getCouponList()
+        this.type || this._getGroupList()
+      }
+      this.disable = this.$route.query.id
     },
     async mounted() {
     },
@@ -530,26 +589,29 @@
       },
       // 开始结束时间
       _getStartTime(time) {
-        this.msg.config_json.start_at = time
+        this.msg.config_json.start_day = time
         this.msg = JSON.parse(JSON.stringify(this.msg))
       },
       _getEndTime(time) {
-        this.msg.config_json.end_at = time
+        this.msg.config_json.end_day = time
         this.msg = JSON.parse(JSON.stringify(this.msg))
       },
       // 选择配置
-      checkNew(num) {
-        this.msg.config_json.type_str = +num === 1 ? 'between_days' : 'days'
-        this.newItem = num
-        if (+num === 2) {
+      checkNew(str) {
+        if (this.disable) return
+        this.$set(this.msg.config_json, 'way', str)
+        this.newItem = str
+        if (str === 'days') {
           this.msg.config_json.days = 3
         }
       },
-      checkActivity(num) {
-        this.activityItem = num
+      checkActivity(str) {
+        this.$set(this.msg.config_json, 'way', str)
+        this.activityItem = str
       },
       // 删除列表时弹窗
       showConfirm(type, index) {
+        if (this.disable) return
         this.$refs.confirm.show(`确定删除此${type === 'coupon' ? '优惠券' : '团长'}吗？`)
         this.confirmType = type
         this.willDelItem = index
@@ -577,7 +639,7 @@
           return
         }
         this.$loading.hide()
-        this.goodsPage = {
+        this.groupPage = {
           total: res.meta.total,
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
@@ -591,7 +653,7 @@
               this.$toast.show(res.message)
               return
             }
-            this.goodsPage = {
+            this.couponPage = {
               total: res.meta.total,
               per_page: res.meta.per_page,
               total_page: res.meta.last_page
@@ -601,10 +663,12 @@
       },
       // 弹窗
       _showCouponModal() {
+        if (this.disable) return
         this.modalType = 'coupon'
         this.$refs.couponModal.showModal()
       },
       _showGroupModal() {
+        if (this.disable) return
         this.groupList = this.groupList.map(item => {
           let index = this.selectGroupList.findIndex(val => item.id === val.id)
           if (index > -1) {
@@ -650,7 +714,6 @@
           idx > -1 && this.groupSelectItem.splice(idx, 1)
         } else {
           this.groupList[index].checked = true
-          // item.checked = true
           this.groupSelectItem.push(item)
         }
       },
@@ -694,22 +757,21 @@
         this.msg.coupon_id = this.couponSelectItem.id
         switch (+this.marketIndex) {
         case 0:
-          if (+this.newItem === 1) {
+          if (this.msg.config_json.way === 'between_days') {
             delete this.msg.config_json.days
           } else {
-            delete this.msg.config_json.start_at
-            delete this.msg.config_json.end_at
+            delete this.msg.config_json.start_day
+            delete this.msg.config_json.end_day
           }
           break
         case 1:
-          if (+this.activityItem === 1) {
+          if (this.msg.config_json.way === 'order_count') {
             delete this.msg.config_json.order_toal
           } else {
             delete this.msg.config_json.order_count
           }
           break
         case 3:
-          this.msg.config_json.type_str = TYPE[this.marketIndex]
           this.msg.shop_coupons = this.selectGroupList.map(item => {
             return {
               shop_id: item.id,
@@ -718,7 +780,7 @@
           })
           break
         }
-
+        this.msg.config_json.type_str = TYPE[this.marketIndex]
         API.Market.storeMarket(this.msg, true)
           .then(res => {
             this.$loading.hide()
@@ -883,11 +945,30 @@
             border-color: #ACACAC
           &:focus
             border-color: $color-main
+        .disable-input
+          background: #F5F5F5
+          color: #ACACAC
         .count
           color: $color-text-assist
           position: absolute
           right: 10px
           col-center()
+        .time-no-change,.text-no-change,.day-no-change
+          position: absolute
+          left: 0
+          top: 0
+          width: 400px
+          height: 44px
+          z-index: 100
+        .text-no-change
+          cursor: not-allowed
+        .time-no-change
+          height: 110px
+          width: 660px
+        .day-no-change
+          top: 40px
+          height: 110px
+          width: 518px
         .add-btn
           box-sizing: border-box
           height: 32px
@@ -899,13 +980,13 @@
           display: flex
           align-items: center
           justify-content: center
-          .disable
-            cursor: not-allowed
           .icon
             width: 10px
             height: 10px
             margin-left: 5px
             object-fit: cover
+        .disable
+          cursor: not-allowed
         .edit-list-box
           margin-top: 20px
           border: 1px solid $color-line
@@ -953,7 +1034,8 @@
                 cursor: pointer
                 &:hover
                   color: #06397e
-
+              .list-operation-disable
+                cursor: not-allowed
         .text
           color: $color-text-assist
           margin-bottom: 20px

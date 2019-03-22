@@ -124,10 +124,6 @@
 
         this.$toast.show('删除成功')
         this.getCouponList()
-      },
-      setPage(page) {
-        this.setPage(page)
-        this.getCouponList()
       }
     }
   }

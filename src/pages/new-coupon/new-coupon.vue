@@ -309,6 +309,7 @@
   const TITLE = '新建查看优惠券'
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
+  const RATE = /^[0-9]\d*$/
   const COMMODITIES_LIST = ['商品名称', '单位', '售价(元)', '库存', '操作']
   const CATEGORY_TITLE = [
     {name: '品类名称', class: 'title-item', flex: 2, value: 'name'},
@@ -395,7 +396,7 @@
         return this.msg.coupon_name
       },
       testMoney() { // 优惠价格
-        return this.msg.denomination && MONEYREG.test(this.msg.denomination)
+        return this.msg.denomination && RATE.test(this.msg.denomination)
       },
       testDiscount() {
         return this.msg.denomination && MONEYREG.test(this.msg.denomination)
@@ -406,6 +407,9 @@
         } else {
           return true
         }
+      },
+      testCondition () {
+        return (this.msg.condition && +this.msg.preferential_type === 2) ? RATE.test(this.msg.condition) : true
       },
       testCount() { // 发放数量
         return this.msg.range_type && COUNTREG.test(this.msg.range_type)
@@ -432,27 +436,25 @@
           let id = this.$route.query.id || null
           if (id) {
             let obj = _.cloneDeep(news)
-            obj.range_type === 2 && (this.selectCategory = obj.ranges)
-            obj.range_type === 3 && (this.goodsList = obj.ranges)
+            console.log(obj, 'coupon')
             this.categorySelectItem.social_name = obj.social_name
-            if (this.goodsList) {
-              this.selectGoodsId = obj.activity_goods.map((item) => {
-                return item.goods_id
+            if (obj.range_type === 2) {
+              this.useRange.content = '指定品类'
+              this.categorySelectItem = obj.ranges[0]
+            } else if (obj.range_type === 3) {
+              this.useRange.content = '指定单品'
+              this.goodsList = obj.ranges
+              this.selectGoodsId = obj.ranges.map((item) => {
+                return item.range_id
               })
             }
-            this.msg = {
-              coupon_name: '',
-              start_at: obj.start_at,
-              end_at: obj.end_at,
-              activity_name: obj.activity_name,
-              activity_cover_image: obj.activity_cover_image,
-            }
+            this.msg = obj
           }
         },
         immediate: true
       }
     },
-    created() {
+    beforeCreate() {
       if(this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券管理', '查看优惠券'])
       } else {
@@ -684,7 +686,7 @@
 
       // 获取品类列表
       async _getCategoryList() {
-        let res = await API.Outreach.getCategoryList({
+        let res = await API.Coupon.getCategoryList({
           keyword: this.keyword,
           page: this.couponPage
         })
@@ -707,7 +709,6 @@
       _addition() {
         this.categorySelectItem = this.categoryCheckItem
         this.categoryShow = false
-        this.categoryCheckItem = {}
         this.$refs.categoryModal.hideModal()
       },
       _back() {
@@ -759,6 +760,7 @@
           {value: this.testDiscount, txt: '请输入折扣数'},
           {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testCount, txt: '请输入发放数量'},
+          {value: this.testCondition, txt: '满减金额数必须为整数'},
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
