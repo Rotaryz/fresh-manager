@@ -190,7 +190,7 @@
                       <input v-if="!disable" v-model="item[val.value]" type="text" class="input-count">
                       <span v-else>{{item.total_stock}}</span>
                     </p>
-                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('group', index)">删除</p>
+                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('group', index, item)">删除</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
 
@@ -265,19 +265,32 @@
           </div>
         </div>
         <!--列表-->
-        <div class="group-content">
-          <div class="title">
+        <!--<div class="group-content">-->
+          <!--<div class="title">-->
+            <!--<span v-for="(item, index) in groupTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>-->
+          <!--</div>-->
+          <!--<div class="outreach-group-list">-->
+            <!--<div v-for="(item, index) in groupList" :key="item.id" class="group-item" @click="_selectGroup(item, index)">-->
+              <!--<span v-for="(val, ind) in groupTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">-->
+                <!--<span v-if="ind === 0" class="check" :class="{'checked': item.isCheck}"></span>-->
+                <!--<span v-else class="title-item">{{item[val.value]}}</span>-->
+              <!--</span>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+        <dl class="group-content">
+          <dt class="title">
             <span v-for="(item, index) in groupTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
-          </div>
-          <div class="outreach-group-list">
-            <div v-for="(item, index) in groupList" :key="item.id" class="group-item" @click="_selectGroup(item, index)">
+          </dt>
+          <dd class="outreach-group-list" v-for="(item, index) in groupList" :key="item.id" @click="_selectGroup(item, index)">
+            <div class="group-item">
               <span v-for="(val, ind) in groupTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">
-                <span v-if="ind === 0" class="check" :class="{'checked': item.checked}"></span>
+                <span v-if="ind === 0" class="check" :class="{'checked': item.isCheck}"></span>
                 <span v-else class="title-item">{{item[val.value]}}</span>
               </span>
             </div>
-          </div>
-        </div>
+          </dd>
+        </dl>
         <!--翻页器-->
         <div class="page-box">
           <base-pagination ref="paginationGroup" :pageDetail="groupPage" @addPage="_getMoreGroup"></base-pagination>
@@ -415,7 +428,8 @@
         confirmType: '',
         modalType: '',
         type: '',
-        disable: false
+        disable: false,
+        currentItem: {}
       }
     },
     computed: {
@@ -611,11 +625,12 @@
         this.activityItem = str
       },
       // 删除列表时弹窗
-      showConfirm(type, index) {
+      showConfirm(type, index, item) {
         if (this.disable) return
         this.$refs.confirm.show(`确定删除此${type === 'coupon' ? '优惠券' : '团长'}吗？`)
         this.confirmType = type
         this.willDelItem = index
+        this.currentItem = item
       },
       // 确定删除
       _delItem() {
@@ -623,6 +638,8 @@
           this.selectCouponList.splice(this.willDelItem, 1)
         } else {
           this.selectGroupList.splice(this.willDelItem, 1)
+          let index = this.groupList.findIndex(val => val.id === this.currentItem.id)
+          index > -1 && (this.groupList[index].isCheck = false)
         }
       },
       _back() {
@@ -645,7 +662,10 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.groupList = res.data
+        this.groupList = res.data.map((item) => {
+          item.isCheck = false
+          return item
+        })
       },
       _getCouponList() {
         API.Coupon.getCouponList({page: this.page, limit: 6, status: 1}, false)
@@ -708,22 +728,31 @@
       },
       // 选中列表某一项
       _selectGroup(item, index) {
-        if (item.checked) {
-          item.checked = false
-          this.groupList[index].checked = false
-          let idx = this.groupSelectItem.findIndex((items) => items.id === item.id)
-          idx > -1 && this.groupSelectItem.splice(idx, 1)
-        } else {
-          this.groupList[index].checked = true
-          this.groupSelectItem.push(item)
-        }
+        // console.log(this.groupList)
+        // this.groupList = this.groupList.map((child, idx) => {
+        //   child.isCheck = index === idx
+        //   console.log(child.isCheck)
+        //   return child
+        // })
+        item.isCheck = !item.isCheck
+        // this.groupList.splice(index, item)
+        // if (item.checked) {
+        //   item.checked = false
+        //   this.groupList[index].checked = false
+        //   let idx = this.groupSelectItem.findIndex((items) => items.id === item.id)
+        //   idx > -1 && this.groupSelectItem.splice(idx, 1)
+        // } else {
+        //   this.groupList[index].checked = true
+        //   this.groupSelectItem.push(item)
+        // }
       },
       _selectCoupon(item, index) {
         this.couponCheckItem = item
       },
       // 弹窗保存
       _additionGroup() {
-        this.selectGroupList = [...this.groupSelectItem]
+        this.selectGroupList = this.groupList.filter(item => item.isCheck)
+        // this.selectGroupList = [...this.groupSelectItem]
         this._cancelModal()
       },
       _additionCoupon() {
@@ -1181,6 +1210,12 @@
       font-size: $font-size-14
       color: #333
       font-family: $font-family-regular
+      &:nth-child(2n-1)
+        background: #F5F7FA
+      &:last-child
+        border-bottom: 0
+      &:first-child
+        border-bottom: 1px solid #E9ECEE
       .group-item
         height: 60px
         line-height: 18px
@@ -1189,12 +1224,6 @@
         border-bottom: 1px solid #E9ECEE
         padding: 0 20px
         cursor: pointer
-        &:nth-child(2n)
-          background: #F5F7FA
-        &:last-child
-          border-bottom: 0
-        &:first-child
-          border-bottom: 1px solid #E9ECEE
         .radio
           width: 16px
           height: 16px
