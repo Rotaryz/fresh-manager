@@ -15,13 +15,10 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          账号
+          手机号
         </div>
         <div class="edit-input-box">
-          <div v-if="id" class="edit-change">{{detail.user_name}}</div>
-          <input v-else v-model="username" type="text" class="edit-input" placeholder="请输入账号"
-                 maxlength="11"
-          >
+          <input v-model="mobile" type="number" class="edit-input" maxlength="11" placeholder="请输入手机号">
         </div>
       </div>
       <div class="edit-item">
@@ -54,15 +51,6 @@
         </div>
         <div class="edit-input-box">
           <input v-model="name" type="text" class="edit-input" placeholder="请输入姓名">
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          手机号
-        </div>
-        <div class="edit-input-box">
-          <input v-model="mobile" type="number" class="edit-input" maxlength="11" placeholder="请输入手机号">
         </div>
       </div>
     </div>
@@ -113,8 +101,11 @@
         this.$router.back()
       },
       checkDataValidate() {
-        if (!this.username) {
-          this.$toast.show('请输入账号')
+        if (!this.mobile) {
+          this.$toast.show('请输入手机号')
+          return
+        } else if (!TELREG.test(this.mobile)) {
+          this.$toast.show('请输入正确的手机号')
           return
         } else if (this.isChangePassword && !this.password) {
           this.$toast.show('请输入密码')
@@ -131,12 +122,6 @@
         } else if (!this.name) {
           this.$toast.show('请输入姓名')
           return
-        } else if (!this.mobile) {
-          this.$toast.show('请输入手机号')
-          return
-        } else if (!TELREG.test(this.mobile)) {
-          this.$toast.show('请输入正确的手机号')
-          return
         }
         return true
       },
@@ -145,7 +130,6 @@
           return
         }
         let data = {
-          user_name: this.username,
           true_name: this.name,
           mobile: this.mobile,
           password: this.password
