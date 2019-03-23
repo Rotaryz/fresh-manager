@@ -1173,6 +1173,8 @@
           color: $color-text-main
           font-family: $font-family-regular
           justify-content: space-between
+          flex: 1
+          overflow: hidden
           height: 40px
           .goods-name
             width: 210px
@@ -1185,7 +1187,7 @@
           border-radius: 1px
           margin-left: 88px
           padding: 5px 0
-          min-width: 56px
+          width: 56px
           text-align: center
         .add-btn-disable
           border-radius: 1px

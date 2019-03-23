@@ -306,7 +306,6 @@
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
   const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'share_coupon']
-  // const WAY = ['between_days', 'days', 'order_count', 'order_toal']
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},

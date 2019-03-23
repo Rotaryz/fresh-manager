@@ -206,8 +206,8 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.original_price || 0}}</div>
+              <div class="com-list-item">{{item.sale_unit}}</div>
+              <div class="com-list-item">¥{{item.trade_price || 0}}</div>
               <div class="com-list-item">{{item.usable_stock || 0}}</div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -273,7 +273,7 @@
               <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
                 <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.original_price}}</div>
+                <div class="goods-money">¥{{item.trade_price}}</div>
               </div>
               <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
@@ -396,7 +396,6 @@
         return this.msg.coupon_name
       },
       testMoney() { // 优惠价格
-        console.log(this.msg.preferential_type)
         if (this.msg.preferential_type === 2) {
           return this.msg.denomination && RATE.test(this.msg.denomination)
         } else {
@@ -509,6 +508,7 @@
           total_page: res.meta.last_page
         }
         this.chooseGoods = res.data.map((item, index) => {
+          item.selected = 0
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
@@ -1293,6 +1293,8 @@
           color: $color-text-main
           font-family: $font-family-regular
           justify-content: space-between
+          flex: 1
+          overflow: hidden
           height: 40px
           .goods-name
             width: 210px
@@ -1305,7 +1307,7 @@
           border-radius: 1px
           margin-left: 88px
           padding: 5px 0
-          min-width: 56px
+          width: 56px
           text-align: center
         .add-btn-disable
           border-radius: 1px
