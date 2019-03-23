@@ -206,7 +206,7 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.sale_unit}}</div>
+              <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
               <div class="com-list-item">¥{{item.trade_price || 0}}</div>
               <div class="com-list-item">{{item.usable_stock || 0}}</div>
               <div class="com-list-item">
