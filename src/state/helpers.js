@@ -74,6 +74,22 @@ export const outreachComputed = {
 
 export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
 
+// 优惠券管理
+export const couponComputed = {
+  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'time', 'status', 'page'])
+}
+
+export const couponMethods = mapActions('coupon', ['setTime', 'setStatus', 'setPage', 'getCouponList', 'getCouponDetail'])
+
+// 优惠券营销
+export const marketComputed = {
+  ...mapGetters('market', ['marketList', 'pageDetail', 'marketDetail'])
+}
+
+export const marketMethods = {
+  ...mapActions('market', ['getMarketList', 'getMarketDetail'])
+}
+
 export const auxiliaryComputed = {
   ...mapState('auxiliary', {
     unitsList: (state) => state.unitsList

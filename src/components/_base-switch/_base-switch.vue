@@ -1,7 +1,8 @@
 <template>
-  <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor, 'width': width, 'height': height}" @click="_changeSwitch">
-    <span class="circular" :class="{'move': status}" :style="{'transform': `translateX(${transform})`}"></span>
-    <span class="status" :class="status ? 'status-right' : 'status-left'">{{status ? confirmText || '上架': cancelText || '下架'}}</span>
+  <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor}" @click="_changeSwitch">
+    <span class="circular" :class="{'move': status}"></span>
+    <span v-if="type === 0" class="status" :class="status ? 'status-right' : 'status-left'">{{status ? '上架': '下架'}}</span>
+    <span v-if="type === 1" class="status" :class="status ? 'status-right' : 'status-left'">{{status ? '开启': '关闭'}}</span>
   </div>
 </template>
 
@@ -14,6 +15,10 @@
       status: {
         type: Number,
         default: 1
+      },
+      type: {
+        type: Number,
+        default: 0
       },
       width: {
         type: String,

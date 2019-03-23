@@ -143,9 +143,12 @@
       },
       async _sureConfirm() {
         let res = await API.Outreach.deleteActivity(this.delId)
-        this.$toast.show('删除成功')
+
         if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
           return
+        } else {
+          this.$toast.show('删除成功')
         }
         this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
       }
