@@ -39,7 +39,6 @@
     },
     methods: {
       _changeSwitch() {
-        console.log(123)
         this.$emit('changeSwitch')
       // this.switchStatus = status
       }
