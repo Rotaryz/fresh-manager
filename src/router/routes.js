@@ -211,8 +211,9 @@ export default [
                 .catch(() => {
                   return next({name: '404'})
                 })
+            } else {
+              next()
             }
-            return next()
           }
         }
       },
@@ -262,8 +263,9 @@ export default [
                 .catch(() => {
                   return next({name: '404'})
                 })
+            } else {
+              next()
             }
-            return next()
           }
         }
       },
@@ -306,15 +308,16 @@ export default [
                 .dispatch('coupon/getCouponDetail', id)
                 .then((res) => {
                   if (!res) {
-                    return next({name: '404'})
+                    next({name: '404'})
                   }
-                  return next()
+                  next()
                 })
                 .catch(() => {
-                  return next({name: '404'})
+                  next({name: '404'})
                 })
+            } else {
+              next()
             }
-            return next()
           }
         }
       },
@@ -357,15 +360,16 @@ export default [
                 .dispatch('market/getMarketDetail', id)
                 .then((res) => {
                   if (!res) {
-                    return next({name: '404'})
+                    next({name: '404'})
                   }
-                  return next()
+                  next()
                 })
                 .catch(() => {
-                  return next({name: '404'})
+                  next({name: '404'})
                 })
+            } else {
+              next()
             }
-            return next()
           }
         }
       },

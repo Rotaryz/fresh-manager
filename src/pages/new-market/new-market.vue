@@ -488,46 +488,6 @@
       }
     },
     watch: {
-      marketDetail: {
-        handler(news) {
-          let id = this.$route.query.id || null
-          if (id && news.config_json) {
-            let obj = _.cloneDeep(news)
-            this.selectCouponList[0] = obj.coupon
-            this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
-            this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
-            this.selectGroupList = obj.shop_coupon.map(item => {
-              return {
-                total_stock: item.total_stock,
-                mobile: item.shop && item.shop.mobile,
-                name: item.shop && item.shop.name,
-                social_name: item.shop && item.shop.social_name
-              }
-            })
-            this.msg = obj
-            this.msg.config_json = JSON.parse(obj.config_json)
-            switch (obj.config_json.way) {
-            case 'days':
-              this.newItem = obj.config_json.way
-              this.dayDataNew.content = obj.config_json.days + '天'
-              break
-            case 'order_count':
-              this.activityItem = obj.config_json.way
-              this.dayData.content = obj.config_json.days + '天'
-              this.dayData2.content = 3 + '天'
-              break
-            case 'order_toal':
-              this.activityItem = obj.config_json.way
-              this.dayData2.content = obj.config_json.days + '天'
-              this.dayData.content = 3 + '天'
-              break
-            default:
-              this.newItem = obj.config_json.way
-            }
-          }
-        },
-        immediate: true
-      }
     },
     beforeCreate() {
       this.id = this.$route.query.id || null
@@ -538,6 +498,7 @@
       }
     },
     created() {
+      this.disable = this.$route.query.id
       this.marketIndex = +this.$route.query.index || 0
       this.type = this.$route.query.id || ''
       switch(this.marketIndex) {
@@ -571,7 +532,7 @@
         this.type || this._getCouponList()
         this.type || this._getGroupList()
       }
-      this.disable = this.$route.query.id
+      this._initMsg(this.marketDetail)
     },
     async mounted() {
     },
@@ -872,6 +833,44 @@
           }
           if (i === j - 1 && arr[i].value) {
             return true
+          }
+        }
+      },
+      // 详情信息
+      _initMsg(news) {
+        let id = this.$route.query.id || null
+        if (id) {
+          let obj = _.cloneDeep(news)
+          this.selectCouponList[0] = obj.coupon
+          this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
+          this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
+          this.selectGroupList = obj.shop_coupon.map(item => {
+            return {
+              total_stock: item.total_stock,
+              mobile: item.shop && item.shop.mobile,
+              name: item.shop && item.shop.name,
+              social_name: item.shop && item.shop.social_name
+            }
+          })
+          this.msg = obj
+          this.msg.config_json = JSON.parse(obj.config_json)
+          switch (obj.config_json.way) {
+          case 'days':
+            this.newItem = obj.config_json.way
+            this.dayDataNew.content = obj.config_json.days + '天'
+            break
+          case 'order_count':
+            this.activityItem = obj.config_json.way
+            this.dayData.content = obj.config_json.days + '天'
+            this.dayData2.content = 3 + '天'
+            break
+          case 'order_toal':
+            this.activityItem = obj.config_json.way
+            this.dayData2.content = obj.config_json.days + '天'
+            this.dayData.content = 3 + '天'
+            break
+          default:
+            this.newItem = obj.config_json.way
           }
         }
       }

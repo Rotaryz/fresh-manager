@@ -442,29 +442,13 @@
       }
     },
     watch: {
-      couponDetail: {
-        handler(news) {
-          let id = this.$route.query.id || null
-          if (id) {
-            let obj = _.cloneDeep(news)
-            this.categorySelectItem.social_name = obj.social_name
-            if (+obj.range_type === 1) {
-              this.$set(this.useRange, 'content', '通用')
-            } else if (+obj.range_type === 2) {
-              this.$set(this.useRange, 'content', '指定品类')
-              this.categorySelectItem = obj.ranges[0]
-            } else if (+obj.range_type === 3) {
-              this.$set(this.useRange, 'content', '指定商品')
-              this.goodsList = obj.ranges
-              this.selectGoodsId = obj.ranges.map((item) => {
-                return item.range_id
-              })
-            }
-            this.msg = obj
-          }
-        },
-        immediate: true
-      }
+      // couponDetail: {
+      //   handler(news) {
+      //     let id = this.$route.query.id || null
+      //
+      //   },
+      //   immediate: true
+      // }
     },
     beforeCreate() {
       if(this.$route.query.id) {
@@ -473,9 +457,29 @@
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券管理', '新建优惠券'])
       }
     },
-    async mounted() {
+    created() {
       this.disable = this.$route.query.id
       this.id = this.$route.query.id || null
+      // 详情信息
+      if (this.id) {
+        let obj = _.cloneDeep(this.couponDetail)
+        this.categorySelectItem.social_name = obj.social_name
+        if (+obj.range_type === 1) {
+          this.$set(this.useRange, 'content', '通用')
+        } else if (+obj.range_type === 2) {
+          this.$set(this.useRange, 'content', '指定品类')
+          this.categorySelectItem = obj.ranges[0]
+        } else if (+obj.range_type === 3) {
+          this.$set(this.useRange, 'content', '指定商品')
+          this.goodsList = obj.ranges
+          this.selectGoodsId = obj.ranges.map((item) => {
+            return item.range_id
+          })
+        }
+        this.msg = obj
+      }
+    },
+    async mounted() {
       await this._getFirstAssortment()
     },
     methods: {
