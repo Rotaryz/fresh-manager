@@ -46,7 +46,7 @@
           <div class="no-wrap">
             <input v-model="msg.denomination"
                    type="text"
-                   :placeholder="disable ? '' : '优惠券面值应设为1~999之间的整数'"
+                   :placeholder="+msg.preferential_type === 1 ? '优惠券面值应设为0.1~9.9之间' : '优惠券面值应设为1~999之间的整数'"
                    class="edit-input"
                    :readonly="disable"
                    maxlength="12"
