@@ -106,7 +106,7 @@
               <span style="margin-right: 10px" @click="checkActivity('order_count')">满足下单次数 前</span>
               <base-drop-down :width="120" :height="44" :select="dayData" @setValue="_selectDay"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
-              <input v-model="msg.config_json.order_count" type="text" :readonly="activityItem === 'order_toal'" placeholder="输入次数" class="count-input">
+              <input v-model="msg.config_json.order_count" type="number" :readonly="activityItem === 'order_toal'" placeholder="输入次数" class="count-input">
               <span style="margin-left: 10px">次的客户</span>
             </div>
             <div class="check-item">
@@ -114,7 +114,7 @@
               <span style="margin-right: 10px" @click="checkActivity('order_toal')">满足订单金额 前</span>
               <base-drop-down :width="120" :height="44" :select="dayData2" @setValue="_selectDay2"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
-              <input v-model="msg.config_json.order_toal" type="text" :readonly="activityItem === 'order_count'" placeholder="输入金额" class="count-input">
+              <input v-model="msg.config_json.order_toal" type="number" :readonly="activityItem === 'order_count'" placeholder="输入金额" class="count-input">
               <span style="margin-left: 10px">元的客户</span>
             </div>
             <div v-if="disable" :class="{'day-no-change':disable}"></div>
@@ -188,7 +188,7 @@
                       <p>{{item.end_at}}</p>
                     </div>
                     <p v-else-if="val.value === 'number'">
-                      <input v-if="!disable" v-model="item[val.value]" type="text" class="input-count">
+                      <input v-if="!disable" v-model="item[val.value]" type="number" class="input-count">
                       <span v-else>{{item.total_stock}}</span>
                     </p>
                     <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('group', index, item)">删除</p>
@@ -1085,7 +1085,7 @@
                 padding-left: 15px
                 box-sizing: border-box
                 border: 1px solid $color-line
-                line-height: 34px
+                line-height: 20px
               .handle
                 color: #4d77bd
                 cursor: pointer
@@ -1127,7 +1127,7 @@
           .count-input
             width: 120px
             height: 43px
-            line-height: 43px
+            line-height: 20px
             padding: 0 10px
             border: 1px solid $color-line
             box-sizing: border-box

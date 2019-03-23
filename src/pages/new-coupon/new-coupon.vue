@@ -45,7 +45,7 @@
           </div>
           <div class="no-wrap">
             <input v-model="msg.denomination"
-                   type="text"
+                   type="number"
                    :placeholder="+msg.preferential_type === 1 ? '优惠券面值应设为0.1~9.9之间' : '优惠券面值应设为1~999之间的整数'"
                    class="edit-input"
                    :readonly="disable"
@@ -67,7 +67,7 @@
         <div class="edit-input-box">
           <div class="no-wrap">
             <input v-model="msg.usable_stock"
-                   type="text"
+                   type="number"
                    :placeholder="disable ? '' : '发放数量应设为1~99999之间的整数'"
                    class="edit-input"
                    :readonly="disable"
@@ -86,7 +86,7 @@
         <div class="edit-input-box">
           <div class="no-wrap">
             <input v-model="msg.condition"
-                   type="text"
+                   type="number"
                    :placeholder="disable ? '' : '不填则默认为“0”'"
                    class="edit-input"
                    :readonly="disable"
@@ -174,7 +174,7 @@
             <div class="com-list-box com-list-content">
               <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">
                 <span v-if="item.value !== ''">{{categorySelectItem[item.value]}}</span>
-                <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+                <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('category', item, index)">删除</span>
               </div>
             </div>
           </div>
@@ -210,7 +210,7 @@
               <div class="com-list-item">¥{{item.trade_price || 0}}</div>
               <div class="com-list-item">{{item.usable_stock || 0}}</div>
               <div class="com-list-item">
-                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('goods', item, index)">删除</span>
               </div>
             </div>
           </div>
@@ -387,7 +387,8 @@
         categorySelectItem: {}, // 确定选择的品类
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
-        checkFull: false
+        checkFull: false,
+        delType: ''
       }
     },
     computed: {
@@ -605,20 +606,26 @@
         }
       },
       // 删除商品
-      _showDelGoods(item, index) {
+      _showDelGoods(type, item, index) {
         if (this.disable) {
           return
         }
         this.goodsDelId = item.goods_id
         this.goodsDelIndex = index
-        this.$refs.confirm.show('是否确定删除该商品？')
+        this.delType = type
+        this.$refs.confirm.show(`是否确定删除该${type === 'category' ? '品类': '商品'}？`)
       },
       // 删除商品弹窗
       _delGoods() {
-        let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-        this.selectGoodsId.splice(index, 1)
-        this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(this.goodsDelId)
+        if (this.delType === 'category') {
+          this.categorySelectItem = {}
+          this.categoryCheckItem = {}
+        } else {
+          let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+          this.selectGoodsId.splice(index, 1)
+          this.goodsList.splice(this.goodsDelIndex, 1)
+          this.selectDelId.push(this.goodsDelId)
+        }
       },
       _cancelModal() {
         if (this.categoryShow) {
