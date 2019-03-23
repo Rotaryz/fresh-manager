@@ -411,7 +411,7 @@
       },
       testDiscountNum() {
         if (this.msg.preferential_type === 1) {
-          return this.msg.denomination > 0 && this.msg.denomination < 9.9
+          return this.msg.denomination > 0 && this.msg.denomination < 10
         } else {
           return true
         }
