@@ -116,7 +116,7 @@
       },
       _deleteMarket(id) {
         this.delId = id
-        this.$refs.confirm.show('删除后商家将无法查看优惠券的信息，且无法恢复，谨慎操作!', '删除优惠券')
+        this.$refs.confirm.show('是否确定删除该优惠券营销')
       },
       async _sureConfirm() {
         let res = await API.Market.deleteMarket(this.delId)

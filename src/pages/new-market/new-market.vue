@@ -692,11 +692,22 @@
       // 弹窗
       _showCouponModal() {
         if (this.disable) return
-        this.modalType = 'coupon'
+        if (this.modalType !== 'coupon') {
+          this._initData()
+          this.modalType = 'coupon'
+          this.couponList = []
+          this._getCouponList()
+        }
         this.$refs.couponModal.showModal()
       },
       _showGroupModal() {
         if (this.disable) return
+        if (this.modalType === 'coupon') {
+          this._initData()
+          this.modalType = ''
+          this.groupList = []
+          this._getGroupList()
+        }
         this.groupList = this.groupList.map(item => {
           let index = this.selectGroupList.findIndex(val => item.id === val.id)
           if (index > -1) {
@@ -729,7 +740,6 @@
       },
       // 统一用一个关闭弹窗方法
       _cancelModal() {
-        this._initData()
         this.$refs.couponModal && this.$refs.couponModal.hideModal()
         this.$refs.groupModal && this.$refs.groupModal.hideModal()
       },
@@ -765,7 +775,11 @@
       },
       _additionCoupon() {
         this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
-        this.couponCheckItem.id && (this.selectCouponList[0] = this.couponSelectItem)
+        if (this.couponCheckItem.id) {
+          let arr = []
+          arr.push(this.couponSelectItem)
+          this.selectCouponList = arr
+        }
         this._cancelModal()
       },
       // 翻页
