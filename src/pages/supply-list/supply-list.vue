@@ -4,7 +4,7 @@
       <!--时间选择-->
       <span class="down-tip">下单时间</span>
       <date-picker
-        class="edit-input-box" type="date"
+        class="edit-input-box" type="datetime"
         placeholder="开始时间"
         style="width: 187px;height: 28px;border-radius: 1px"
         :value="startTime"
@@ -15,7 +15,7 @@
       <div class="down-item">
         <date-picker
           class="edit-input-box edit-input-right"
-          type="date"
+          type="datetime"
           placeholder="结束时间"
           style="width: 187px;height: 28px;border-radius: 1px"
           :value="endTime"
@@ -80,8 +80,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" :pagination="page"
-                         @addPage="setPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageTotal" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
     </div>
   </div>

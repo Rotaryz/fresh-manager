@@ -1,6 +1,12 @@
 import API from '@api'
 import app from '@src/main'
 
+let time = new Date()
+let startTime = new Date(time.getTime() - 2 * 24 * 60 * 60 * 1000)
+startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ' 23:00:00'
+let endTime = new Date(time.getTime() - 24 * 60 * 60 * 1000)
+endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ' 23:00:00'
+
 export const state = {
   orders: [], // OMS订单
   pageTotal: {
@@ -10,8 +16,8 @@ export const state = {
     total_page: 1
   },
   page: 1,
-  startTime: '',
-  endTime: '',
+  startTime: startTime,
+  endTime: endTime,
   status: '',
   keyword: '',
   detail: {} // OMS订单详情
