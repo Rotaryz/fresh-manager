@@ -629,8 +629,8 @@
       },
       // 确定选择团长
       _addition() {
-        this.groupSelectItem = this.groupCheckItem
-        this.essInformation.shop_id = this.groupSelectItem.shop_id
+        this.groupCheckItem.id && (this.groupSelectItem = this.groupCheckItem)
+        this.groupCheckItem.id && (this.essInformation.shop_id = this.groupSelectItem.shop_id)
         this._hideGroup()
       },
       // 取消选择团长

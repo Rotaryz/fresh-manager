@@ -686,7 +686,7 @@
       },
       // 确定选择品类
       _addition() {
-        this.categorySelectItem = this.categoryCheckItem
+        this.categoryCheckItem.id && (this.categorySelectItem = this.categoryCheckItem)
         this.categoryShow = false
         this.$refs.categoryModal.hideModal()
       },

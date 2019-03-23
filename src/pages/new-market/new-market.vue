@@ -475,7 +475,7 @@
       },
       testCouponList() {
         let length = this.selectCouponList.length
-        return length
+        return length > 0
       },
       testGroupList() {
         return (+this.marketIndex === 3) ? this.selectGroupList.length : true
@@ -493,7 +493,6 @@
           let id = this.$route.query.id || null
           if (id && news.config_json) {
             let obj = _.cloneDeep(news)
-            console.log(obj, 'market')
             this.selectCouponList[0] = obj.coupon
             this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
             this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
@@ -765,8 +764,8 @@
         this._cancelModal()
       },
       _additionCoupon() {
-        this.couponSelectItem = this.couponCheckItem
-        this.selectCouponList[0] = this.couponCheckItem
+        this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
+        this.couponCheckItem.id && (this.selectCouponList[0] = this.couponSelectItem)
         this._cancelModal()
       },
       // 翻页
@@ -820,22 +819,22 @@
           break
         }
         this.msg.config_json.type_str = TYPE[this.marketIndex]
-        API.Market.storeMarket(this.msg, true)
-          .then(res => {
-            this.$loading.hide()
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              this.isSubmit = false
-              return
-            }
-
-            this.$toast.show('保存成功')
-            setTimeout(() => {
-              this._back()
-              this.isSubmit = false
-            }, 1000)
-
-          })
+        // API.Market.storeMarket(this.msg, true)
+        //   .then(res => {
+        //     this.$loading.hide()
+        //     if (res.error !== this.$ERR_OK) {
+        //       this.$toast.show(res.message)
+        //       this.isSubmit = false
+        //       return
+        //     }
+        //
+        //     this.$toast.show('保存成功')
+        //     setTimeout(() => {
+        //       this._back()
+        //       this.isSubmit = false
+        //     }, 1000)
+        //
+        //   })
       },
       // 验证表单
       checkForm() {
