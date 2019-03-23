@@ -8,7 +8,7 @@
         </div>
         <div class="function-btn">
           <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
-          <div v-if="$VUE_APP_ENV !== 'production'" class="btn-main g-btn-item" @click="_syncLeader">关联</div>
+          <!--<div class="btn-main g-btn-item" @click="_syncLeader">关联</div>-->
         </div>
       </div>
       <div class="big-list">
@@ -25,7 +25,7 @@
             <div class="list-item">{{item.address}}</div>
             <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.is_freeze_str}}</div>
-            <div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>
+            <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
               <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
@@ -72,7 +72,7 @@
     '详细地址',
     '创建时间',
     '状态',
-    '是否关联',
+    // '是否关联',
     '操作'
   ]
 

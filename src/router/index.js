@@ -82,11 +82,19 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
   next()
 })
 
+const ADD_TEXT = '新建'
+const EDIT_TEXT = '编辑'
+
 router.afterEach((routeTo, routeFrom) => {
   // 动态添加页面标题
-  const titles = routeTo.meta.titles || []
   const name = routeTo.params.name
   const marginBottom = routeTo.meta.marginBottom || 0
+  const variableIndex = routeTo.meta.variableIndex
+  let titles = [...routeTo.meta.titles] || []
+  // 判断该页面是否是变动的标题
+  if (variableIndex || variableIndex === 0) {
+    titles[variableIndex] = (routeTo.query.id || routeTo.params.id ? EDIT_TEXT : ADD_TEXT) + titles[variableIndex]
+  }
   titles[titles.length - 1] = name || titles[titles.length - 1]
   if (titles) {
     store.commit('global/SET_CURRENT_TITLES', titles)

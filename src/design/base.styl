@@ -100,10 +100,10 @@ body, html
   position: relative
   color: $color-main
   font-family: $font-family-regular
-  padding: 7px 0px
-  width: 92px
+  padding: 7px 10px
+  min-width: 92px
+  box-sizing :border-box
   justify-content: center
-  box-sizing: border-box
   display: flex
   align-items: center
   border: 1px solid $color-main
@@ -126,8 +126,25 @@ body, html
   cursor: not-allowed
   color: #ACACAC
   background: #E1E1E1
+  border: 1px solid #ACACAC
   &:hover
     background: #E1E1E1
+    color: #ACACAC
+    .add-icon
+      &:before, &:after
+        background: #ACACAC
+
+.btn-disable-store
+  cursor: not-allowed
+  color: #D2D2D2
+  background: #FBFBFB
+  border: 1px solid #E9ECEE
+  &:hover
+    background: #FBFBFB
+    color: #D2D2D2
+    .add-icon
+      &:before, &:after
+        background: #D2D2D2
   &:active
     opacity: 1
 
@@ -195,6 +212,9 @@ body, html
     height: 2px
     background: $color-main
     transition: all 0.3s
+.add-icon-disable
+  &:before, &:after
+    background: #D2D2D2
 
 .ivu-date-picker-rel
   height: 100%

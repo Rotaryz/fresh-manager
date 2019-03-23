@@ -22,11 +22,11 @@
       },
       width: {
         type: String,
-        default: '44px'
+        default: '69px'
       },
       height: {
         type: String,
-        default: '22px'
+        default: '28px'
       },
       switchColor: {
         type: String,
@@ -35,6 +35,18 @@
       closeColor: {
         type: String,
         default: '#E1E1E1'
+      },
+      transform: {
+        type: String,
+        default: '40px'
+      },
+      confirmText: {
+        type: String,
+        default: ''
+      },
+      cancelText: {
+        type: String,
+        default: ''
       }
     },
     methods: {
@@ -65,9 +77,8 @@
       border-radius: 50%
       background: $color-white
       transition: transform .5s
-      transform: translateX(40px)
     .move
-      transform: translateX(0px)
+      transform: translateX(0px) !important
     .status
       font-size: 14px
       col-center()

@@ -1,6 +1,12 @@
 import store from '@state/store'
 
 export default [
+  // 模板
+  {
+    path: '/demo',
+    name: 'demo',
+    component: () => lazyLoadView(import('@pages/demo/demo'))
+  },
   // 登录界面
   {
     path: '/login',
@@ -104,7 +110,8 @@ export default [
         name: 'edit-goods',
         component: () => lazyLoadView(import('@pages/edit-goods/edit-goods')),
         meta: {
-          titles: ['商城', '商品', '商品列表', '新建商品'],
+          titles: ['商城', '商品', '商品列表', '商品'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -186,7 +193,8 @@ export default [
         name: 'edit-rush',
         component: () => lazyLoadView(import('@pages/edit-rush/edit-rush')),
         meta: {
-          titles: ['商城', '活动', '今日抢购', '新建活动'],
+          titles: ['商城', '活动', '今日抢购', '活动'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -631,7 +639,8 @@ export default [
         name: 'edit-leader',
         component: () => lazyLoadView(import('@pages/edit-leader/edit-leader')),
         meta: {
-          titles: ['商城', '团长', '团长配送单', '新建团长'],
+          titles: ['商城', '团长', '团长配送单', '团长'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -836,10 +845,411 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购任务'],
           beforeResolve(routeTo, routeFrom, next) {
+            let time = new Date()
+            time = time.toLocaleDateString().replace(/\//g, '-')
+            store
+              .dispatch('proTask/getPurchaseTaskList', {
+                time: '',
+                startTime: time,
+                endTime: time,
+                keyword: '',
+                page: 1,
+                status: '',
+                loading: true
+              })
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 采购员
+      {
+        path: 'buyer',
+        name: 'buyer',
+        component: () => lazyLoadView(import('@pages/buyer/buyer')),
+        meta: {
+          titles: ['供应链', '采购', '采购员列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('buyer/getPurchaseUser')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 新建采购员
+      {
+        path: 'buyer/edit-procurement',
+        name: 'edit-procurement',
+        component: () => lazyLoadView(import('@pages/edit-procurement/edit-procurement')),
+        meta: {
+          marginBottom: 80,
+          titles: ['供应链', '采购', '采购员', '采购员'],
+          variableIndex: 3,
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('buyer/getPurchaseUserDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 采购单列表
+      {
+        path: 'purchase-order',
+        name: 'purchase-order',
+        component: () => lazyLoadView(import('@pages/purchase-order/purchase-order')),
+        meta: {
+          titles: ['供应链', '采购', '采购单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let time = new Date()
+            time = time.toLocaleDateString().replace(/\//g, '-')
+            store
+              .dispatch('supply/getPurchaseList', {
+                time: '',
+                startTime: time,
+                endTime: time,
+                keyword: '',
+                page: 1,
+                loading: true
+              })
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 采购单详情
+      {
+        path: 'purchase-order/purchase-order-detail/:id',
+        name: 'purchase-order-detail',
+        component: () => lazyLoadView(import('@pages/purchase-order-detail/purchase-order-detail')),
+        meta: {
+          titles: ['供应链', '采购', '采购单', '采购单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('supply/getPurchaseDetail', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
             next()
           }
         }
       },
+      // 供应商
+      {
+        path: 'supplier',
+        name: 'supplier',
+        component: () => lazyLoadView(import('@pages/supplier/supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('supplier/getSupplier')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 新建供应商
+      {
+        path: 'supplier/edit-supplier',
+        name: 'edit-supplier',
+        component: () => lazyLoadView(import('@pages/edit-supplier/edit-supplier')),
+        meta: {
+          titles: ['供应链', '采购', '供应商', '供应商'],
+          variableIndex: 3,
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('supplier/getSupplierDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 成品入库
+      {
+        path: 'product-enter',
+        name: 'product-enter',
+        component: () => lazyLoadView(import('@pages/product-enter/product-enter')),
+        meta: {
+          titles: ['供应链', '仓库', '成品入库'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('product/getEnterData', 1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+              return next({name: '404'})
+            })
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-enter/enter-detail/:id',
+        name: 'enter-detail',
+        component: () => lazyLoadView(import('@pages/enter-detail/enter-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '成品入库', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('product/getEnterDetailData', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out',
+        name: 'product-out',
+        component: () => lazyLoadView(import('@pages/product-out/product-out')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('product/getOutData', 1)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+              return next({name: '404'})
+            })
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out/out-detail/:id',
+        name: 'out-detail',
+        component: () => lazyLoadView(import('@pages/out-detail/out-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('product/getOutDetailData', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 成品入库明细
+      {
+        path: 'product-out/edit-store',
+        name: 'edit-store',
+        component: () => lazyLoadView(import('@pages/edit-store/edit-store')),
+        meta: {
+          titles: ['供应链', '仓库', '成品出库', '新建出库单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 库位管理
+      {
+        path: 'store-manage',
+        name: 'store-manage',
+        component: () => lazyLoadView(import('@pages/store-manage/store-manage')),
+        meta: {
+          titles: ['供应链', '仓库', '库位管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('product/getStore')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              }).catch(() => {
+              return next({name: '404'})
+            })
+          }
+        }
+      },
+      // 配送任务
+      {
+        path: 'distribution-task',
+        name: 'distribution-task',
+        component: () => lazyLoadView(import('@pages/distribution-task/distribution-task')),
+        meta: {
+          titles: ['供应链', '配送', '配送任务'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let tabIndex = store.state.distribution.tabIndex
+            if (tabIndex === 0) {
+              store
+                .dispatch('distribution/getOrderList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            } else {
+              store
+                .dispatch('distribution/getDriverList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            }
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'dispatching-management',
+        name: 'dispatching-management',
+        component: () => lazyLoadView(import('@pages/dispatching-management/dispatching-management')),
+        meta: {
+          titles: ['供应链', '配送', '调度管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('delivery/getDriverList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'supply-list',
+        name: 'supply-list',
+        component: () => lazyLoadView(import('@pages/supply-list/supply-list')),
+        meta: {
+          titles: ['供应链', '订单', '订单列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('oms/getOmsOrders')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 调度管理
+      {
+        path: 'supply-list/supply-detail/:id',
+        name: 'supply-detail',
+        component: () => lazyLoadView(import('@pages/supply-detail/supply-detail')),
+        meta: {
+          titles: ['供应链', '订单', '订单列表', '订单详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.params.id) {
+              return next()
+            }
+            store
+              .dispatch('oms/getOmsOrderDetail', routeTo.params.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      }
     ]
   },
   {

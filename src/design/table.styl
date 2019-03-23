@@ -32,6 +32,10 @@
   flex-direction: column
   flex: 1
 
+.big-list-max
+  max-height: inherit
+  padding-bottom: 20px
+
 .list-header
   min-height: 45px
   font-family: $font-family-regular
@@ -61,7 +65,7 @@
     align-items: center
 
 .list-box
-  padding-left: 30px
+  padding-left: 20px
   box-sizing: border-box
   border-bottom-1px(#E9ECEE)
   display: flex
@@ -219,20 +223,83 @@
 .down-content
   padding: 0 20px
   box-sizing: border-box
-  height: 72px
+  min-height: 72px
   background: $color-white
   display: flex
   align-items: center
   margin-bottom: 20px
+  flex-wrap: wrap
   .down-item
     display: flex
     margin-right: 30px
   .down-item-small
     margin-right: 10px
+  .down-item-text
+    margin: 20px 80px 0 0
+    color: $color-text-main
+    .down-text
+      font-size: $font-size-12
+      color: $color-text-main
+      white-space: nowrap
+    .header-text
+      font-size: $font-size-14
+      color: $color-text-main
+      white-space: nowrap
+  .down-item-text
+    margin: 20px 80px 0 0
+    color: $color-text-main
+    .down-text
+      font-size: $font-size-12
+      color: $color-text-main
+      white-space: nowrap
+    .header-text
+      font-size: $font-size-14
+      color: $color-text-main
+      white-space: nowrap
   .down-tip
     font-size: $font-size-12
     color: $color-text-main
     margin-right: 10px
+  .time-tip
+    margin: 0 2px
+    font-size: $font-size-14
 
 .g-btn-item
   margin-left: 10px
+
+.down-content
+  .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
+    height: 100%
+  .ivu-input
+    color: $color-text-assist
+    font-family: $font-family-regular
+  .ivu-input-icon
+    height: 100%
+    line-height: 28px
+
+.time-content
+  .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input
+    height: 100%
+  .ivu-input
+    color: $color-text-assist
+    font-family: $font-family-regular
+  .ivu-input-icon
+    height: 100%
+    line-height: 34px
+
+.list-status
+  display: inline-block
+  width: 9px
+  height: 9px
+  border-radius: 50%
+  margin-right: 6px
+  background: $color-negative
+
+.list-status-fail
+  background: #E1E1E1
+
+.list-status-success
+  background: $color-positive
+
+.list-status-warn
+  background: #FFCB53

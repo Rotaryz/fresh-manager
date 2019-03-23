@@ -52,7 +52,7 @@
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
-            <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.total && `¥ ${item.total}`}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.after_sale_status_text}}</div>
           </div>
         </div>
