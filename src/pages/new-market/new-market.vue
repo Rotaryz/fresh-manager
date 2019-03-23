@@ -122,7 +122,7 @@
         </div>
 
         <!--沉睡客户配置-->
-        <div class="edit-item">
+        <div v-if="marketIndex === 2" class="edit-item">
           <div class="edit-title long-title">
             <span class="start">*</span>
             <span>沉睡客户配置</span>
@@ -968,6 +968,8 @@
       .long-title
         text-align: left
         width: 180px
+        .tip
+          margin-left: 5px
       .edit-content
         margin-left: 40px
         position: relative
