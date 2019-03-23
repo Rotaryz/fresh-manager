@@ -339,7 +339,8 @@
   const ARROW_TEXT = [
     ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
-    ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
+    ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
+    // ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['团长打开小区管理优惠券营销转发优惠券', '选择微信聊天列表发送', '点击链接进入领券页领取优惠券', '领取成功点击去使用跳转商城', '客户商城选购商品', '提交订单立减金额']
   ]
   export default {
@@ -505,7 +506,7 @@
       case 0:
         this.msg.type = 1
         this.type || (this.msg.config_json.way = 'between_days')
-        this.arrowArr = new Array(3).fill(1)
+        this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
         this.title = '新客户规则设置'
         this.type || this._getCouponList()
         break
@@ -513,7 +514,7 @@
         this.msg.type = 2
         this.msg.config_json.way = 'order_count'
         this.msg.config_json.days = 3
-        this.arrowArr = new Array(4).fill(1)
+        this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
         this.title = '活跃客户规则设置'
         this.type || this._getCouponList()
         break
@@ -521,13 +522,13 @@
         this.msg.type = 3
         this.msg.config_json.way = 'days'
         this.msg.config_json.days = 6
-        this.arrowArr = new Array(3).fill(1)
+        this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
         this.title = '沉睡客户规则设置'
         this.type || this._getCouponList()
         break
       case 3:
         this.msg.type = 4
-        this.arrowArr = new Array(6).fill(1)
+        this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
         this.title = '发券规则设置'
         this.type || this._getCouponList()
         this.type || this._getGroupList()

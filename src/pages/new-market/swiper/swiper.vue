@@ -23,7 +23,8 @@
   const IMAGE_ARR = [
     ['pic-coupon_window','pic-choose_commodity','pic-place_order'],
     ['pic-message_template', 'pic-share_goupon', 'pic-choose_commodity','pic-place_order'],
-    ['pic-coupon_window','pic-choose_commodity','pic-place_order'],
+    ['pic-message_template', 'pic-share_goupon', 'pic-choose_commodity','pic-place_order'],
+    // ['pic-coupon_window','pic-choose_commodity','pic-place_order'],
     ['pic-single_goupon', 'pic-address_book', 'pic-receive_goupon', 'pic-share_goupon', 'pic-choose_commodity','pic-place_order']
   ]
   const COMPONENT_NAME = 'SWIPER'
