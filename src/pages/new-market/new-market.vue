@@ -935,6 +935,7 @@
           float: left
           margin-right: 10px
           border-radius: 50%
+          cursor: pointer
           transition: all 0.3s
         .num
           color: #666

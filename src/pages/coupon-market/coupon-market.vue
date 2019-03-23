@@ -35,7 +35,7 @@
               </div>
               <!--状态-->
               <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
-                <base-switch :status="item.status" :type="1"></base-switch>
+                <base-switch :status="item.status" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>

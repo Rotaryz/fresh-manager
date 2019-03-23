@@ -1,8 +1,7 @@
 <template>
-  <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor}" @click="_changeSwitch">
-    <span class="circular" :class="{'move': status}"></span>
-    <span v-if="type === 0" class="status" :class="status ? 'status-right' : 'status-left'">{{status ? '上架': '下架'}}</span>
-    <span v-if="type === 1" class="status" :class="status ? 'status-right' : 'status-left'">{{status ? '开启': '关闭'}}</span>
+  <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor, 'width': width, 'height': height}" @click="_changeSwitch">
+    <span class="circular" :class="{'move': status}" :style="{'transform': `translateX(${transform})`}"></span>
+    <span class="status" :class="status ? 'status-right' : 'status-left'">{{status ? confirmText: cancelText}}</span>
   </div>
 </template>
 
@@ -15,10 +14,6 @@
       status: {
         type: Number,
         default: 1
-      },
-      type: {
-        type: Number,
-        default: 0
       },
       width: {
         type: String,
@@ -42,17 +37,17 @@
       },
       confirmText: {
         type: String,
-        default: ''
+        default: '上架'
       },
       cancelText: {
         type: String,
-        default: ''
+        default: '下架'
       }
     },
     methods: {
       _changeSwitch() {
         this.$emit('changeSwitch')
-      // this.switchStatus = status
+        // this.switchStatus = status
       }
     }
   }
@@ -77,13 +72,12 @@
       border-radius: 50%
       background: $color-white
       transition: transform .5s
-      transform: translateX(40px)
     .move
       transform: translateX(0px) !important
     .status
       font-size: 14px
       col-center()
-      font-family: $font-family-regular
+      font-family: $fontFamilyRegular
       color: #fff
     .status-right
       right: 9px
