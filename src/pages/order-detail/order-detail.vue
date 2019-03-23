@@ -48,7 +48,7 @@
         </div>
         <div class="ro-order-list">
           <div v-for="(item, index) in detail.goods" :key="index" class="ro-order-list-box">
-            <div class="ro-order-list-item ro-order-list-text">{{item.goods_name}}</div>
+            <div class="ro-order-list-item ro-order-list-text ro-order-list-item-double">{{item.goods_name}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
@@ -117,7 +117,7 @@
     &:nth-child(5), &:nth-child(7)
       flex: 1
     &:last-child
-      flex: 0.5
+      flex: 0.3
 
   .block
     font-family: $font-family-medium

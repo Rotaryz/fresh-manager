@@ -50,7 +50,7 @@
           class="edit-input-box" type="date"
           placement="bottom-end"
           placeholder="选择开始时间"
-          style="width: 240px;height: 44px;border-radius: 1px"
+          style="width: 240px;height: 44px;border-radius: 2px"
           readonly
           @on-change="_getStartTime"
         ></date-picker>
@@ -750,7 +750,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 400px
         height: 44px
         display: flex
@@ -892,7 +892,7 @@
       font-family: $font-family-regular
       transition: all 0.3s
       text-align: center
-      border-radius: 1px
+      border-radius: 2px
       border: 1px solid #4DBD65
       display: flex
       align-items: center
@@ -907,7 +907,7 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -963,7 +963,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 1px
+      border-radius: 2px
       .title-input
         height: 60px
         layout(row)
@@ -992,7 +992,7 @@
         .main-input-box
           width: 310px
           height: 44px
-          border-radius: 1px
+          border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
@@ -1019,7 +1019,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -1055,7 +1055,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -1067,7 +1067,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -1124,7 +1124,7 @@
     display: flex
 
   .goods-content
-    border-radius: 1px
+    border-radius: 2px
     border: 1px solid $color-line
     margin: 0 20px
     .outreach-goods-list
@@ -1144,7 +1144,7 @@
           border-bottom: none
         .select-icon
           margin-right: 20px
-          border-radius: 1px
+          border-radius: 2px
           border: 1px solid $color-line
           height: 16px
           width: 16px
@@ -1180,13 +1180,13 @@
             font-size: $font-size-14
 
         .add-btn
-          border-radius: 1px
+          border-radius: 2px
           margin-left: 88px
           padding: 5px 0
           width: 56px
           text-align: center
         .add-btn-disable
-          border-radius: 1px
+          border-radius: 2px
           margin-left: 88px
           padding: 5px 0
           width: 56px
@@ -1200,7 +1200,7 @@
           border: none
 
   .group-content
-    border-radius: 1px
+    border-radius: 2px
     border: 1px solid $color-line
     margin: 0 20px
     .title
@@ -1294,7 +1294,7 @@
   .com-edit
     height: 34px
     width: 93px
-    border-radius: 1px
+    border-radius: 2px
     box-sizing: border-box
     border: 1px solid $color-line
     padding-left: 22px

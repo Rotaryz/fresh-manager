@@ -257,7 +257,7 @@
         opacity: 0
         color: $color-white
         padding: 8px 18px
-        border-radius: 1px
+        border-radius: 2px
         line-height: 16px
         font-family: $font-family-regular
         font-size: $font-size-14
@@ -283,7 +283,7 @@
     width: 534px
     height: 261px
     background: $color-white
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .top
@@ -329,7 +329,7 @@
         cursor: pointer
         text-align: center
         border: 1px solid $color-text-assist
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main
@@ -351,7 +351,7 @@
     font-size: $font-size-12
     box-sizing: border-box
     border: 0.5px solid $color-line
-    border-radius: 1px
+    border-radius: 2px
     padding-left: 14px
     transition: all 0.2s
     &:hover
@@ -366,7 +366,7 @@
     overflow: hidden
     height: 28px
     width: 47px
-    border-radius: 1px
+    border-radius: 2px
     background: $color-main
     text-align: center
     line-height: 28px

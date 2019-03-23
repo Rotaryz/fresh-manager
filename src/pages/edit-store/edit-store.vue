@@ -288,7 +288,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 400px
         height: 40px
         border: 1px solid $color-line
@@ -308,7 +308,7 @@
   .edit-input
     font-size: $font-size-14
     padding: 0 14px
-    border-radius: 1px
+    border-radius: 2px
     width: 100px
     height: 34px
     border: 1px solid $color-line

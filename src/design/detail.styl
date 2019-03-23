@@ -59,7 +59,7 @@
     width: 100%
     .ro-order-list-box
       width: 100%
-      padding-left: 30px
+      padding:0 20px
       layout(row)
       white-space: nowrap
       height: 60px
@@ -94,10 +94,14 @@
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-text-main
+      .ro-order-list-item-double
+        white-space: normal
+        line-height: 18px
+        no-wrap-plus()
   .ro-order-list-header
     width: 100%
     layout(row)
-    padding-left: 30px
+    padding:0 20px
     white-space: nowrap
     box-sizing: border-box
     align-items: center
@@ -277,7 +281,7 @@
     width: 34px
     height: 2px
     background: $color-main
-    border-radius: 1px
+    border-radius: 2px
     bottom: 0px
     left: 0
   .content-title

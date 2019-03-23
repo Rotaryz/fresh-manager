@@ -7,7 +7,7 @@
         :value="startTime"
         class="edit-input-box" type="date"
         placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 1px"
+        style="width: 187px;height: 28px;border-radius: 2px"
         @on-change="_getStartTime"
       ></date-picker>
       <!--@on-change="_getStartTime"-->
@@ -18,7 +18,7 @@
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="_getEndTime"
         ></date-picker>
       </div>
@@ -450,7 +450,7 @@
   @import "~@design"
 
   .pro-select-icon
-    border-radius: 1px
+    border-radius: 2px
     border: 1px solid $color-line
     height: 14px
     width: 14px
@@ -510,7 +510,7 @@
     padding-bottom: 30px
     background: #fff
     width: 534px
-    border-radius: 1px
+    border-radius: 2px
 
     .title-input
       height: 60px
@@ -550,7 +550,7 @@
         width: 333px
         height: 44px
         border: 1px solid $color-line
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14
@@ -633,7 +633,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -654,7 +654,7 @@
 
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -778,7 +778,7 @@
         height: 2px
         width: 34px
         background: $color-main
-        border-radius: 1px
+        border-radius: 2px
     .shade-title
       color: $color-text-main
       font-family: $font-family-medium

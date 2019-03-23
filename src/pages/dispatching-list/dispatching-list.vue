@@ -197,7 +197,7 @@
       right: 0
       background: $color-white
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
-      border-radius: 1px
+      border-radius: 2px
       position: absolute
       &.fade-enter, &.fade-leave-to
         opacity: 0

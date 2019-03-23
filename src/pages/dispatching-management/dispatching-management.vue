@@ -428,7 +428,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .pro-select-icon
-    border-radius: 1px
+    border-radius: 2px
     border: 1px solid $color-line
     height: 14px
     width: 14px
@@ -454,7 +454,7 @@
     padding-bottom: 30px
     background: #fff
     width: 534px
-    border-radius: 1px
+    border-radius: 2px
 
     .title-input
       height: 60px
@@ -494,7 +494,7 @@
         width: 333px
         height: 44px
         border: 1px solid $color-line
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14
@@ -577,7 +577,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -599,7 +599,7 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -652,7 +652,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 1px
+      border-radius: 2px
       .title-input
         height: 60px
         layout(row)
@@ -681,7 +681,7 @@
         .main-input-box
           width: 310px
           height: 44px
-          border-radius: 1px
+          border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
@@ -708,7 +708,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -744,7 +744,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -756,7 +756,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -813,7 +813,7 @@
     display: flex
 
   .goods-content
-    border-radius: 1px
+    border-radius: 2px
     margin: 0 20px
     height: 400px
     .rush-goods-list

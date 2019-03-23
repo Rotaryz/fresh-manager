@@ -242,7 +242,7 @@
           min-width: 26px
           height: 26px
           box-sizing: border-box
-          border-radius: 1px
+          border-radius: 2px
           border: 0.5px solid $color-line
           font-size: $font-size-12
           color: $color-text-main
@@ -262,7 +262,7 @@
             top: -0.5px
             box-sizing: content-box
             transition: all 0.3s ease-out
-            border-radius: 1px
+            border-radius: 2px
           &:before
             content: ''
             border-right: 0.5px solid transparent
@@ -275,7 +275,7 @@
             left: -0.5px
             box-sizing: content-box
             transition: all 0.3s ease-out
-            border-radius: 1px
+            border-radius: 2px
         .page-child-active
           border: 0.5px solid transparent
           transition: all 0.3s ease-out
@@ -323,7 +323,7 @@
       .border-page
         display: flex
         line-height: 26px
-        border-radius: 1px
+        border-radius: 2px
         margin: 0 10px
         border: 0.5px solid $color-line
         font-size: $font-size-12
@@ -369,7 +369,7 @@
           box-shadow: 0 1px 5px 0 rgba(12, 6, 14, 0.20)
           text-align: center
           background: #fff
-          border-radius: 1px
+          border-radius: 2px
           bottom: 30px
           font-size: $font-size-12
           color: $color-text-sub

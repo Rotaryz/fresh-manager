@@ -46,7 +46,7 @@
                 v-if="enterMsg.status === 0"
                 class="edit-input-box" type="date"
                 placeholder="保质时间"
-                style="width: 110px;height: 34px;border-radius: 1px"
+                style="width: 110px;height: 34px;border-radius: 2px"
                 @on-change="changeStartTime($event, index)"
               ></date-picker>
               <div v-if="enterMsg.status === 1">{{item.shelf_life || '--------'}}</div>
@@ -203,7 +203,7 @@
   .edit-input
     font-size: $font-size-14
     padding: 0 14px
-    border-radius: 1px
+    border-radius: 2px
     width: 100px
     height: 34px
     border: 1px solid $color-line

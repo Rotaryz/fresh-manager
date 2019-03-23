@@ -54,17 +54,17 @@ body, html
     &:before
       width: 200%
       transform: scale(.5) translateZ(0)
-
+  
   .border-right-1px
     &:after
       height: 200%
       transform: scale(.5) translateZ(0)
-
+  
   .border-bottom-1px
     &:after
       width: 200%
       transform: scale(.5) translateZ(0)
-
+  
   .border-left-1px
     &:before
       height: 200%
@@ -75,17 +75,17 @@ body, html
     &:before
       width: 300%
       transform: scale(1 / 3) translateZ(0)
-
+  
   .border-right-1px
     &:after
       height: 300%
       transform: scale(1 / 3) translateZ(0)
-
+  
   .border-bottom-1px
     &:after
       width: 300%
       transform: scale(1 / 3) translateZ(0)
-
+  
   .border-left-1px
     &:before
       height: 300%
@@ -102,14 +102,14 @@ body, html
   font-family: $font-family-regular
   padding: 7px 10px
   min-width: 92px
-  box-sizing :border-box
+  box-sizing: border-box
   justify-content: center
   display: flex
   align-items: center
   border: 1px solid $color-main
   transition: all 0.3s
   font-size: $font-size-12
-  border-radius: 1px
+  border-radius: 2px
   line-height: 1
   cursor: pointer
   user-select: none
@@ -161,6 +161,7 @@ body, html
   font-size: $font-size-14
   user-select: none
   transition: all 0.2s
+  overflow: visible
   &:hover
     color: #06397E
   &:after
@@ -218,9 +219,9 @@ body, html
 
 .ivu-date-picker-rel
   height: 100%
-  border-radius: 1px
+  border-radius: 2px
   .ivu-input-default
-    border-radius: 1px
+    border-radius: 2px
 
 .ivu-input
   outline: none !important

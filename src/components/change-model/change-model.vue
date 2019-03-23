@@ -99,7 +99,7 @@
   .default-input
     background: #fff
     width: 534px
-    border-radius: 1px
+    border-radius: 2px
     .title-input
       height: 60px
       layout(row)
@@ -127,7 +127,7 @@
         width: 310px
         height: 44px
         border: 1px solid $color-line
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14
@@ -152,7 +152,7 @@
       width: 96px
       height: 40px
       line-height: 40px
-      border-radius: 1px
+      border-radius: 2px
       border: 1px solid $color-text-D9
       cursor: pointer
       transition: all 0.3s

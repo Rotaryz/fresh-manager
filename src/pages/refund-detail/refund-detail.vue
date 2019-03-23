@@ -221,7 +221,7 @@
     .btn-item
       background: $color-positive
       border: 1px solid $color-positive
-      border-radius: 1px
+      border-radius: 2px
       width: 90px
       cursor: pointer
       color: $color-white
@@ -239,7 +239,7 @@
     width: 534px
     height: 261px
     background: $color-white
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .top
@@ -281,7 +281,7 @@
         cursor: pointer
         text-align: center
         border: 1px solid $color-text-assist
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         font-size: $font-size-16
         color: $color-text-main

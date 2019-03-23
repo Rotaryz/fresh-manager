@@ -228,7 +228,7 @@
 
   .data-header
     height: 260px
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     box-sizing: border-box
 
@@ -293,7 +293,7 @@
     background: $color-white
     width: 50%
     box-sizing: border-box
-    border-radius: 1px
+    border-radius: 2px
 
   .date-shop
     margin-left: 20px

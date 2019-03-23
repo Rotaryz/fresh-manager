@@ -6,7 +6,7 @@
       <date-picker
         class="edit-input-box" type="date"
         placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 1px"
+        style="width: 187px;height: 28px;border-radius: 2px"
         :value="startTime"
         @on-change="changeStartTime"
       ></date-picker>
@@ -17,7 +17,7 @@
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           :value="endTime"
           @on-change="changeEndTime"
         ></date-picker>

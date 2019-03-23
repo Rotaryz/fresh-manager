@@ -606,7 +606,7 @@
     height: 480px
     margin: 30px auto 0
     border-1px($color-line)
-    border-radius: 1px
+    border-radius: 2px
     overflow-x: hidden
     .goods_cate-item
       display: flex
@@ -625,7 +625,7 @@
     height: 220px
     margin: 30px auto 0
     border: 0.5px solid $color-line
-    border-radius: 1px
+    border-radius: 2px
     outline: none
     display: block
     resize: none
@@ -659,7 +659,7 @@
     .advertisement-item
       margin-top: 24px
       border: 0.5 pxdashed #D9D9D9
-      border-radius: 1px
+      border-radius: 2px
       background: #F5F7FA
       height: 140px
       padding: 20px
@@ -681,7 +681,7 @@
           background-image: url('./pic-add_img@2x.png')
           position: relative
           border: 0.5 pxsolid #F2F2F2
-          border-radius: 1px
+          border-radius: 2px
           box-sizing: border-box
           .img-change-tip
             position: absolute
@@ -734,7 +734,7 @@
             top: 24px
             background: $color-white
             box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
-            border-radius: 1px
+            border-radius: 2px
             position: absolute
             &.fade-enter, &.fade-leave-to
               opacity: 0
@@ -790,7 +790,7 @@
           height: 32px
           line-height: 32px
           border: 1px solid $color-main
-          border-radius: 1px
+          border-radius: 2px
           font-size: $font-size-14
           font-family: $font-family-regular
           color: $color-main
@@ -831,7 +831,7 @@
           width: 280px
           height: 44px
           margin-left: 20px
-          border-radius: 1px
+          border-radius: 2px
           background: $color-white
           border: 0.5px solid #D9D9D9
 
@@ -852,7 +852,7 @@
       width: 3px
       height: 14px
       background: $color-main
-      border-radius: 1px
+      border-radius: 2px
       col-center()
       left: 0px
     .content-title
@@ -872,7 +872,7 @@
   //  商品弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -993,7 +993,7 @@
         height: 2px
         width: 34px
         background: $color-main
-        border-radius: 1px
+        border-radius: 2px
     .shade-title
       color: $color-text-main
       font-family: $font-family-medium
@@ -1036,7 +1036,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 240px
         height: 44px
         display: flex
@@ -1083,7 +1083,7 @@
     width: 108px
     height: 32px
     background: $color-main
-    border-radius: 1px
+    border-radius: 2px
     line-height: 32px
     text-align: center
     transition: 0.3s all

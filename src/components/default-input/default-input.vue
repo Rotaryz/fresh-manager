@@ -61,7 +61,7 @@
     background: #fff
     width: 380px
     height: 213px
-    border-radius: 1px
+    border-radius: 2px
     padding: 0 20px
     box-sizing: border-box
     .title-box
@@ -86,7 +86,7 @@
         width: 100%
         height: 44px
         border: 0.5px solid #D3D8DC
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14

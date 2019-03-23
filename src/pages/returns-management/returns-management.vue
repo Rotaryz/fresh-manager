@@ -238,7 +238,7 @@
     padding: 0 20px
     box-sizing: border-box
     background: $color-white
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .top
@@ -297,7 +297,7 @@
       line-height: 28px
       background: $color-positive
       border: 1px solid $color-positive
-      border-radius: 1px
+      border-radius: 2px
       font-family: $font-family-regular
       font-size: $font-size-12
       color: $color-white
