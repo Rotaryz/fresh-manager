@@ -114,6 +114,7 @@ export const actions = {
       endTime: time[1]
     }
     commit('SET_TIME', time)
+    commit('SET_PAGE', 1)
     dispatch('getCouponList')
   },
   setStatus({commit, dispatch}, selectStatus) {
