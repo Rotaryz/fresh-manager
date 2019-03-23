@@ -1,6 +1,6 @@
 <template>
   <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor}" @click="_changeSwitch">
-    <span class="circular" :class="{'move': status}"></span>
+    <span class="circular" :class="{'move': status}" :style="{'transform': `translateX(${transform})`}"></span>
     <span v-if="type === 0" class="status" :class="status ? 'status-right' : 'status-left'">{{status ? '上架': '下架'}}</span>
     <span v-if="type === 1" class="status" :class="status ? 'status-right' : 'status-left'">{{status ? '开启': '关闭'}}</span>
   </div>
@@ -72,7 +72,7 @@
     .status
       font-size: 14px
       col-center()
-      font-family: $fontFamilyRegular
+      font-family: $font-family-regular
       color: #fff
     .status-right
       right: 9px
