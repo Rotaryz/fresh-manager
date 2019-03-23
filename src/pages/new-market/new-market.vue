@@ -122,16 +122,17 @@
         </div>
 
         <!--沉睡客户配置-->
-        <div v-if="false" class="edit-item">
-          <div class="edit-title">
+        <div class="edit-item">
+          <div class="edit-title long-title">
             <span class="start">*</span>
             <span>沉睡客户配置</span>
+            <span class="tip">6天不活跃的客户（没有订单）</span>
           </div>
-          <div class="edit-content no-wrap">
+          <!--<div class="edit-content no-wrap">
             <span style="margin-right: 10px">满足 前</span>
             <base-drop-down :width="120" :height="44" :select="dayData" @setValue="_selectDay"></base-drop-down>
             <span style="margin-left: 10px">内无下单记录的客户</span>
-          </div>
+          </div>-->
         </div>
 
         <!--选择优惠券-->
@@ -965,6 +966,9 @@
           display: block
           font-size: $font-size-12
           color: $color-text-assist
+      .long-title
+        text-align: left
+        width: 180px
       .edit-content
         margin-left: 40px
         position: relative

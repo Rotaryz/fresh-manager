@@ -108,7 +108,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          活动时间
+          有效时间
         </div>
         <date-picker
           :value="msg.start_at"
@@ -352,7 +352,7 @@
           show: false,
           content: '通用',
           type: 'default',
-          data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定单品', id: 3}] // 格式：{title: '55'}}
+          data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定商品', id: 3}] // 格式：{title: '55'}}
         },
         parentId: 0,
         goodsPage: {
@@ -396,10 +396,19 @@
         return this.msg.coupon_name
       },
       testMoney() { // 优惠价格
-        return this.msg.denomination && RATE.test(this.msg.denomination)
+        console.log(this.msg.preferential_type)
+        if (this.msg.preferential_type === 2) {
+          return this.msg.denomination && RATE.test(this.msg.denomination)
+        } else {
+          return true
+        }
       },
       testDiscount() {
-        return this.msg.denomination && MONEYREG.test(this.msg.denomination)
+        if (this.msg.preferential_type === 1) {
+          return this.msg.denomination && MONEYREG.test(this.msg.denomination)
+        } else {
+          return true
+        }
       },
       testDiscountNum() {
         if (this.msg.preferential_type === 1) {
@@ -408,11 +417,14 @@
           return true
         }
       },
+      testCount() { // 发放数量
+        return this.msg.usable_stock
+      },
+      testCountReg() { // 发放数量数字类型
+        return this.msg.usable_stock && COUNTREG.test(this.msg.usable_stock)
+      },
       testCondition () {
         return (this.msg.condition && +this.msg.preferential_type === 2) ? RATE.test(this.msg.condition) : true
-      },
-      testCount() { // 发放数量
-        return this.msg.range_type && COUNTREG.test(this.msg.range_type)
       },
       testStart() { // 开始时间
         return this.msg.start_at
@@ -436,13 +448,12 @@
           let id = this.$route.query.id || null
           if (id) {
             let obj = _.cloneDeep(news)
-            console.log(obj, 'coupon')
             this.categorySelectItem.social_name = obj.social_name
             if (obj.range_type === 2) {
               this.useRange.content = '指定品类'
               this.categorySelectItem = obj.ranges[0]
             } else if (obj.range_type === 3) {
-              this.useRange.content = '指定单品'
+              this.useRange.content = '指定商品'
               this.goodsList = obj.ranges
               this.selectGoodsId = obj.ranges.map((item) => {
                 return item.range_id
@@ -482,11 +493,10 @@
       },
       // 选择商品
       async _getGoodsList() {
-        let res = await API.Outreach.getGoodsList({
+        let res = await API.Coupon.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          shelf_id: this.id,
           limit: 10,
           page: this.couponPage
         })
@@ -739,6 +749,7 @@
           {value: this.testDiscount, txt: '请输入折扣数'},
           {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testCount, txt: '请输入发放数量'},
+          {value: this.testCountReg, txt: '请输入正确的发放数量'},
           {value: this.testCondition, txt: '满减金额数必须为整数'},
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
