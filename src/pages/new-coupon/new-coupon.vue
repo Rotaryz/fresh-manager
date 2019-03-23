@@ -448,11 +448,13 @@
           if (id) {
             let obj = _.cloneDeep(news)
             this.categorySelectItem.social_name = obj.social_name
-            if (obj.range_type === 2) {
-              this.useRange.content = '指定品类'
+            if (+obj.range_type === 1) {
+              this.$set(this.useRange, 'content', '通用')
+            } else if (+obj.range_type === 2) {
+              this.$set(this.useRange, 'content', '指定品类')
               this.categorySelectItem = obj.ranges[0]
-            } else if (obj.range_type === 3) {
-              this.useRange.content = '指定商品'
+            } else if (+obj.range_type === 3) {
+              this.$set(this.useRange, 'content', '指定商品')
               this.goodsList = obj.ranges
               this.selectGoodsId = obj.ranges.map((item) => {
                 return item.range_id
