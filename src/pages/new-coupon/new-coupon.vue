@@ -1308,6 +1308,7 @@
           margin-left: 88px
           padding: 5px 0
           width: 56px
+          min-width: 56px
           text-align: center
         .add-btn-disable
           border-radius: 1px

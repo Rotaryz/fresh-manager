@@ -77,6 +77,7 @@
       border-radius: 50%
       background: $color-white
       transition: transform .5s
+      transform: translateX(40px)
     .move
       transform: translateX(0px) !important
     .status
