@@ -108,7 +108,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          活动时间
+          有效时间
         </div>
         <date-picker
           :value="msg.start_at"
@@ -206,8 +206,8 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.original_price || 0}}</div>
+              <div class="com-list-item">{{item.sale_unit}}</div>
+              <div class="com-list-item">¥{{item.trade_price || 0}}</div>
               <div class="com-list-item">{{item.usable_stock || 0}}</div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -273,7 +273,7 @@
               <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
                 <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.original_price}}</div>
+                <div class="goods-money">¥{{item.trade_price}}</div>
               </div>
               <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
@@ -352,7 +352,7 @@
           show: false,
           content: '通用',
           type: 'default',
-          data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定单品', id: 3}] // 格式：{title: '55'}}
+          data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定商品', id: 3}] // 格式：{title: '55'}}
         },
         parentId: 0,
         goodsPage: {
@@ -396,10 +396,18 @@
         return this.msg.coupon_name
       },
       testMoney() { // 优惠价格
-        return this.msg.denomination && RATE.test(this.msg.denomination)
+        if (this.msg.preferential_type === 2) {
+          return this.msg.denomination && RATE.test(this.msg.denomination)
+        } else {
+          return true
+        }
       },
       testDiscount() {
-        return this.msg.denomination && MONEYREG.test(this.msg.denomination)
+        if (this.msg.preferential_type === 1) {
+          return this.msg.denomination && MONEYREG.test(this.msg.denomination)
+        } else {
+          return true
+        }
       },
       testDiscountNum() {
         if (this.msg.preferential_type === 1) {
@@ -408,11 +416,14 @@
           return true
         }
       },
+      testCount() { // 发放数量
+        return this.msg.usable_stock
+      },
+      testCountReg() { // 发放数量数字类型
+        return this.msg.usable_stock && COUNTREG.test(this.msg.usable_stock)
+      },
       testCondition () {
         return (this.msg.condition && +this.msg.preferential_type === 2) ? RATE.test(this.msg.condition) : true
-      },
-      testCount() { // 发放数量
-        return this.msg.range_type && COUNTREG.test(this.msg.range_type)
       },
       testStart() { // 开始时间
         return this.msg.start_at
@@ -436,13 +447,12 @@
           let id = this.$route.query.id || null
           if (id) {
             let obj = _.cloneDeep(news)
-            console.log(obj, 'coupon')
             this.categorySelectItem.social_name = obj.social_name
             if (obj.range_type === 2) {
               this.useRange.content = '指定品类'
               this.categorySelectItem = obj.ranges[0]
             } else if (obj.range_type === 3) {
-              this.useRange.content = '指定单品'
+              this.useRange.content = '指定商品'
               this.goodsList = obj.ranges
               this.selectGoodsId = obj.ranges.map((item) => {
                 return item.range_id
@@ -482,11 +492,10 @@
       },
       // 选择商品
       async _getGoodsList() {
-        let res = await API.Outreach.getGoodsList({
+        let res = await API.Coupon.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          shelf_id: this.id,
           limit: 10,
           page: this.couponPage
         })
@@ -499,6 +508,7 @@
           total_page: res.meta.last_page
         }
         this.chooseGoods = res.data.map((item, index) => {
+          item.selected = 0
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
@@ -739,6 +749,7 @@
           {value: this.testDiscount, txt: '请输入折扣数'},
           {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testCount, txt: '请输入发放数量'},
+          {value: this.testCountReg, txt: '请输入正确的发放数量'},
           {value: this.testCondition, txt: '满减金额数必须为整数'},
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
@@ -1282,6 +1293,8 @@
           color: $color-text-main
           font-family: $font-family-regular
           justify-content: space-between
+          flex: 1
+          overflow: hidden
           height: 40px
           .goods-name
             width: 210px

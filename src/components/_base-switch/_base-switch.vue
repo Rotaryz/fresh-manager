@@ -82,7 +82,7 @@
     .status
       font-size: 14px
       col-center()
-      font-family: $fontFamilyRegular
+      font-family: $font-family-regular
       color: #fff
     .status-right
       right: 9px

@@ -1175,6 +1175,8 @@
           color: $color-text-main
           font-family: $font-family-regular
           justify-content: space-between
+          flex: 1
+          overflow: hidden
           height: 40px
           .goods-name
             width: 210px
