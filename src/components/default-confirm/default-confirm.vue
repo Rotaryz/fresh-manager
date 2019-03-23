@@ -2,7 +2,12 @@
   <default-modal ref="modal">
     <div slot="content" class="default-confirm">
       <div class="confirm-content">
-        <!--<div class="title">{{title}}</div>-->
+        <div class="title-box">
+          <div class="title">
+            {{infoTitle}}
+          </div>
+          <span class="close hand" @click="cancel"></span>
+        </div>
         <div class="text">{{text}}</div>
         <div v-if="oneBtn" class="btn-group">
           <span class="btn confirm one-btn" @click="cancel">确定</span>
@@ -28,6 +33,10 @@
       oneBtn: {
         type: Boolean,
         default: false
+      },
+      infoTitle: {
+        type: String,
+        default: '温馨提示'
       }
     },
     data() {
@@ -62,55 +71,35 @@
   @import "~@design"
 
   .default-confirm
-    width: 329.6px
-    height: 200px
+    width: 380px
+    height: 185px
     background: #fff
-    border-radius: 1px
-    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
+    border-radius: 3px
+    box-shadow: 0 8px 14px 0 rgba(12, 6, 14, 0.08)
     text-align: center
-    .btn-group
-      text-align: center
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
       display: flex
-      justify-content: center
-      user-select: none
-      .btn
-        width: 96px
-        height: 40px
-        line-height: 40px
-        border-radius: 1px
-        border: 1px solid $color-text-D9
-        cursor: pointer
-        transition: all 0.3s
-      .cancel
-        border: 1px solid $color-line
-        &:hover
-          color: $color-text-sub
-          border-color: $color-text-sub
-      .confirm
-        border: 1px solid $color-main
-        background: $color-main
-        color: $color-white
-        margin-left: 20px
-        &:hover
-          opacity: 0.8
-      .one-btn
-        margin-left: 0
-    .title
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 10px
+        height: @width
+        icon-image('icon-close')
+    .text
+      margin-top: 7px
       font-size: $font-size-16
       font-family: $font-family-regular
-      height: 44px
-      line-height: 44px
-      padding: 0 15px
-    .text
-      font-size: $font-size-16
-      color: $color-text-main
-      height: 120px
-      display: flex
-      align-items: center
-      justify-content: center
-      margin: 10px 15px
-      overflow-y: auto
-      text-align: justify
+      color: #666
+      text-align: left
       word-break: break-all
       line-height: 1.4
 </style>

@@ -1,11 +1,11 @@
 <template>
   <default-modal ref="modal">
     <div slot="content" class="default-input">
-      <div class="title-input">
-        <div class="title">{{numberTitle}}</div>
-        <div class="close-box">
-          <div class="close" @click="cancel"></div>
+      <div class="title-box">
+        <div class="title">
+          {{numberTitle}}
         </div>
+        <span class="close hand" @click="cancel"></span>
       </div>
       <div class="main-input">
         <input v-model="numberTxt" type="text" class="main-input-box" :placeholder="numberPla">
@@ -59,81 +59,48 @@
 
   .default-input
     background: #fff
-    width: 534px
-    height: 261px
+    width: 380px
+    height: 213px
     border-radius: 1px
-    .title-input
-      height: 60px
-      layout(row)
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      border-bottom: 0.5px solid $color-line
-      padding-left: 20px
       .title
-        color: $color-text-main
         font-size: $font-size-16
-        font-family: $font-family-regular
-      .close-box
-        padding: 17px
-        cursor: pointer
-        .close
-          width: 22px
-          height: 22px
-          border-radius: 50%
-          background-size: 22px
-          bg-image('icon-close')
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 10px
+        height: @width
+        icon-image('icon-close')
 
     .main-input
-      padding: 42px 20px 0 40px
+      margin-top: 7px
       .main-input-box
-        width: 310px
+        width: 100%
         height: 44px
-        border: 0.5px solid $color-line
+        border: 0.5px solid #D3D8DC
         border-radius: 1px
         font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14
         padding-left: 14px
-        border: 1px solid $color-line
         transition: all 0.3s
         &::-webkit-inner-spin-button
           appearance: none
         &:hover
-          border: 1px solid #ACACAC
+          border: 0.5px solid #ACACAC
         &::placeholder
           font-family: $font-family-regular
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
-
-  .btn-group
-    margin-top: 55px
-    text-align: center
-    display: flex
-    justify-content: flex-end
-    user-select: none
-    .btn
-      width: 96px
-      height: 40px
-      line-height: 40px
-      border-radius: 1px
-      cursor: pointer
-      transition: all 0.3s
-    .cancel
-      border: 1px solid $color-line
-      &:hover
-        color: $color-text-sub
-        border-color: $color-text-sub
-    .confirm
-      border: 1px solid $color-main
-      background: $color-main
-      color: $color-white
-      margin-left: 20px
-      &:hover
-        opacity: 0.8
-    .one-btn
-      margin-left: 0
-
   .z
     width: 100%
 </style>

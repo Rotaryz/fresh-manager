@@ -303,3 +303,38 @@
 
 .list-status-warn
   background: #FFCB53
+
+// 弹窗按钮样式
+.btn-group
+  margin-top: 40px
+  text-align: center
+  display: flex
+  justify-content: flex-end
+  user-select: none
+  .btn
+    width: 96px
+    height: 40px
+    line-height: 40px
+    border-radius: 2px
+    border: 1px solid #D6D6D6
+    cursor: pointer
+    transition: all 0.3s
+    margin-left: 10px
+  .cancel
+    border: 1px solid $color-line
+    &:hover
+      color: $color-text-sub
+      border-color: $color-text-sub
+  .confirm
+    border: 1px solid $color-main
+    background: $color-main
+    color: $color-white
+    &:hover
+      opacity: 0.8
+  .manager
+    border: 1px solid $color-main
+    color: $color-main
+    &:hover
+      opacity: 0.8
+  .one-btn
+    margin-left: 0

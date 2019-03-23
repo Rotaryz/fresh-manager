@@ -57,9 +57,11 @@
     <default-modal ref="modal">
       <div slot="content">
         <div class="Auditing">
-          <div class="top">
-            <div class="title">审核</div>
-            <div class="close" @click.stop="hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
+          <div class="title-box">
+            <div class="title">
+              审核
+            </div>
+            <span class="close hand" @click.stop="hideModal"></span>
           </div>
           <div class="textarea-box">
             <span class="after"></span>
@@ -67,9 +69,9 @@
             <span class="before"></span>
           </div>
           <div class="btn-group">
-            <div class="btn-item" @click.stop="hideModal">取消</div>
-            <div class="btn-item" @click.stop="auditing(0)">驳回</div>
-            <div class="btn-item" @click.stop="auditing(1)">批准退款</div>
+            <div class="btn cancel" @click.stop="hideModal">取消</div>
+            <div class="btn manager" @click.stop="auditing(0)">驳回</div>
+            <div class="btn confirm" @click.stop="auditing(1)">批准退款</div>
           </div>
         </div>
       </div>
@@ -152,6 +154,9 @@
     created() {
       this._getShopList()
     },
+    mounted() {
+      this.$refs.modal.showModal()
+    },
     methods: {
       ...returnsMethods,
       _getShopList() {
@@ -228,8 +233,10 @@
     color: #ACACAC
 
   .Auditing
-    width: 534px
-    height: 261px
+    width: 380px
+    height: 225px
+    padding: 0 20px
+    box-sizing: border-box
     background: $color-white
     border-radius: 1px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
@@ -241,51 +248,37 @@
       justify-content: space-between
       padding: 0 20px
       layout(row)
+
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
       .title
-        font-family: $font-family-regular
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
         color: $color-text-main
       .close
-        width: 16px
-        height: 16px
-        cursor: pointer
-        .close-img
-          width: 16px
-          height: 16px
-          display: block
+        width: 10px
+        height: @width
+        icon-image('icon-close')
     .textarea-box
       .modelarea
         font-size: $font-size-14
-        width: 494px
+        width: 100%
         resize: none
-        height: 80px
-        padding: 12px
-        margin: 30px auto 30px
-        border: 1px solid $color-line
+        height: 76px
+        padding: 14px 12px
+        box-sizing: border-box
+        border-radius: 2px
+        border: 0.5px solid $color-line
+        background: #F9F9F9
+        &:focus
+          background: $color-white
     .btn-group
-      layout(row)
-      align-items: center
-      justify-content: flex-end
-      padding-right: 20px
-      .btn-item
-        width: 96px
-        line-height: 40px
-        margin-left: 10px
-        cursor: pointer
-        text-align: center
-        border: 1px solid $color-text-assist
-        border-radius: 1px
-        font-family: $font-family-regular
-        font-size: $font-size-16
-        color: $color-text-main
-        height: 40px
-        &:nth-child(2)
-          color: $color-positive
-          border-color: $color-positive
-        &:nth-child(3)
-          background: $color-positive
-          color: $color-white
-          border-color: $color-positive
+      margin-top: 24px
 
   .search-warp
     layout(row)
