@@ -228,7 +228,7 @@
         <!--列表-->
         <div class="category-content">
           <div class="coupon-category-list">
-            <div v-for="(item, index) in assortment.data" :key="index" class="category-item" @click="selectCategory(item, index)">
+            <div v-for="(item, index) in categoryList" :key="index" class="category-item" @click="selectCategory(item, index)">
               <div class="left">
                 <span class="check" :class="{'checked': (categoryCheckItem.id ? (item.id === categoryCheckItem.id) : (item.id === categorySelectItem.id))}"></span>
                 <span class="name">{{item.name}}</span>
@@ -563,6 +563,8 @@
         let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
+        this.categoryList = res.error === this.$ERR_OK ? res.data : []
+        this.categoryList = this.categoryList.slice(1)
       },
       // 搜索商品/搜索品类
       async _searchGoods(text) {
