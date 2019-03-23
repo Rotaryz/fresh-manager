@@ -40,6 +40,28 @@
           <p class="identification-name">订单列表</p>
         </div>
       </div>
+      <div class="order-detail">
+        <div class="order-item">
+          <p class="order-text order-title">全部：</p>
+          <p class="order-text order-money">d</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待调度：</p>
+          <p class="order-text order-money">ds</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待分拣：</p>
+          <p class="order-text order-money">sd</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待配送：</p>
+          <p class="order-text order-money">sd</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">已完成：</p>
+          <p class="order-text order-money">sd</p>
+        </div>
+      </div>
       <div class="big-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
@@ -58,7 +80,8 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" :pagination="page" @addPage="setPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageTotal" :pagination="page"
+                         @addPage="setPage"></base-pagination>
       </div>
     </div>
   </div>

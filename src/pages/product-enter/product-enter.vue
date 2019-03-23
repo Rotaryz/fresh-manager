@@ -38,6 +38,20 @@
           <p class="identification-name">入库列表</p>
         </div>
       </div>
+      <div class="order-detail">
+        <div class="order-item">
+          <p class="order-text order-title">全部：</p>
+          <p class="order-text order-money">d</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待提交：</p>
+          <p class="order-text order-money">ds</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">已完成：</p>
+          <p class="order-text order-money">sd</p>
+        </div>
+      </div>
       <div class="big-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>

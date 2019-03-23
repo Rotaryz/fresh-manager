@@ -44,6 +44,24 @@
           <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
         </div>
       </div>
+      <div class="order-detail">
+        <div class="order-item">
+          <p class="order-text order-title">全部：</p>
+          <p class="order-text order-money">d</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待发布：</p>
+          <p class="order-text order-money">ds</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待采购：</p>
+          <p class="order-text order-money">sd</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">已完成：</p>
+          <p class="order-text order-money">sd</p>
+        </div>
+      </div>
       <div class="big-list">
         <div class="list-header list-box">
           <div class="pro-select-icon hand" :class="{'pro-select-icon-active': select}" @click="selectPurchase('all')"></div>

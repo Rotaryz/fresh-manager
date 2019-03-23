@@ -42,6 +42,20 @@
           <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main">新建出库单<span class="add-icon"></span></router-link>
         </div>
       </div>
+      <div class="order-detail">
+        <div class="order-item">
+          <p class="order-text order-title">全部：</p>
+          <p class="order-text order-money">d</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待出库：</p>
+          <p class="order-text order-money">ds</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">已完成：</p>
+          <p class="order-text order-money">sd</p>
+        </div>
+      </div>
       <div class="big-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
