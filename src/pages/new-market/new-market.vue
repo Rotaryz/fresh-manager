@@ -819,22 +819,22 @@
           break
         }
         this.msg.config_json.type_str = TYPE[this.marketIndex]
-        // API.Market.storeMarket(this.msg, true)
-        //   .then(res => {
-        //     this.$loading.hide()
-        //     if (res.error !== this.$ERR_OK) {
-        //       this.$toast.show(res.message)
-        //       this.isSubmit = false
-        //       return
-        //     }
-        //
-        //     this.$toast.show('保存成功')
-        //     setTimeout(() => {
-        //       this._back()
-        //       this.isSubmit = false
-        //     }, 1000)
-        //
-        //   })
+        API.Market.storeMarket(this.msg, true)
+          .then(res => {
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              this.isSubmit = false
+              return
+            }
+
+            this.$toast.show('保存成功')
+            setTimeout(() => {
+              this._back()
+              this.isSubmit = false
+            }, 1000)
+
+          })
       },
       // 验证表单
       checkForm() {
