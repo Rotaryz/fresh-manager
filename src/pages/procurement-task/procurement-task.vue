@@ -223,7 +223,12 @@
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsItem: {},
         choicePage: 1,
-        statistic: {}
+        statistic: {
+          all: 0,
+          wait_release: 0,
+          wait_purchase: 0,
+          success: 0
+        }
       }
     },
     computed: {

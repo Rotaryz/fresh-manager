@@ -113,7 +113,13 @@
       return {
         commodities: COMMODITIES_LIST,
         statusSelect: SELECT,
-        statistic: {},
+        statistic: {
+          all: 0,
+          wait_dispatch: 0,
+          wait_sorting: 0,
+          wait_delivery: 0,
+          success: 0
+        },
         startTime1: ''
       }
     },

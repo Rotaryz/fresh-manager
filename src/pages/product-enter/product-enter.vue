@@ -111,7 +111,11 @@
           type: 'default',
           data: [{name: '全部', value: ''}, {name: '待提交', value: 0}, {name: '已完成', value: 1}]
         },
-        statistic: {}
+        statistic: {
+          all: 0,
+          wait_submit: 0,
+          success: 0
+        }
       }
     },
     computed: {

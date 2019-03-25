@@ -115,7 +115,11 @@
           type: 'default',
           data: [{name: '全部', value: ''}, {name: '待出库', value: 0}, {name: '已完成', value: 1}]
         },
-        statistic: {}
+        statistic: {
+          all: 0,
+          wait_out: 0,
+          success: 0
+        }
       }
     },
     computed: {
