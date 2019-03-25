@@ -4,11 +4,12 @@
       <!--时间选择-->
       <span class="down-tip">下单时间</span>
       <date-picker
-        class="edit-input-box" type="datetime"
+        class="edit-input-box"
+        type="datetime"
         placeholder="开始时间"
         style="width: 187px;height: 28px;border-radius: 1px"
         :value="startTime"
-        @on-change="changeStartTime"
+        @on-ok="changeStartTime"
       ></date-picker>
       <div class="time-tip">~</div>
       <div class="down-item">
