@@ -24,9 +24,8 @@
         <div class="list">
           <div v-for="(item, index) in list" :key="index" class="list-content list-box">
             <div class="list-item">{{item.created_at}}</div>
-            <div class="list-item">{{item.user_name}}</div>
-            <div class="list-item">{{item.true_name}}</div>
             <div class="list-item">{{item.mobile}}</div>
+            <div class="list-item">{{item.true_name}}</div>
             <div class="list-item">
               <router-link tag="div" :to="`edit-procurement?id=${item.id}`" append class="list-operation">编辑</router-link>
             </div>
@@ -45,7 +44,7 @@
 
   const PAGE_NAME = 'BUYER'
   const TITLE = '采购员'
-  const COMMODITIES_LIST = ['创建时间', '账号', '姓名', '手机', '操作']
+  const COMMODITIES_LIST = ['创建时间', '手机', '姓名', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -77,5 +76,5 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.2
+          flex: 0.3
 </style>
