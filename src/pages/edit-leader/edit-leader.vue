@@ -169,7 +169,7 @@
             this.$loading.hide()
             this.$toast.show(res.message)
             if (res.error !== this.$ERR_OK) {
-              this.isSubmit = true
+              this.isSubmit = false
               return
             }
             setTimeout(() => {

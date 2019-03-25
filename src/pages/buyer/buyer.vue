@@ -76,5 +76,5 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.2
+          flex: 0.3
 </style>
