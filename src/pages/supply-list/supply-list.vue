@@ -9,7 +9,7 @@
         placeholder="开始时间"
         style="width: 187px;height: 28px;border-radius: 1px"
         :value="startTime"
-        @on-ok="changeStartTime"
+        @on-change="changeStartTime"
       ></date-picker>
       <div class="time-tip">~</div>
       <div class="down-item">
