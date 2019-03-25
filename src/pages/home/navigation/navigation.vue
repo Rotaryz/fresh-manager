@@ -63,6 +63,11 @@
           url: '/home/rush-purchase',
           isLight: false
         },
+        // {
+        //   title: '限时抢购',
+        //   url: '/home/flash-sale',
+        //   isLight: false
+        // },
         {
           title: '拓展活动',
           url: '/home/outreach-activity',
