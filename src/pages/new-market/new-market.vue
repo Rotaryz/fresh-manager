@@ -1,6 +1,6 @@
 <template>
   <div class="new-market detail-content">
-    <div v-if="!disable" class="identification">
+    <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
         <p class="identification-name">新建优惠券营销</p>
