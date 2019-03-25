@@ -154,9 +154,6 @@
     created() {
       this._getShopList()
     },
-    mounted() {
-      this.$refs.modal.showModal()
-    },
     methods: {
       ...returnsMethods,
       _getShopList() {
