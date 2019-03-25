@@ -47,19 +47,19 @@
       <div class="order-detail">
         <div class="order-item">
           <p class="order-text order-title">全部：</p>
-          <p class="order-text order-money">d</p>
+          <p class="order-text order-money">{{statistic.all}}</p>
         </div>
         <div class="order-item">
           <p class="order-text order-title">待发布：</p>
-          <p class="order-text order-money">ds</p>
+          <p class="order-text order-money">{{statistic.wait_release}}</p>
         </div>
         <div class="order-item">
           <p class="order-text order-title">待采购：</p>
-          <p class="order-text order-money">sd</p>
+          <p class="order-text order-money">{{statistic.wait_purchase}}</p>
         </div>
         <div class="order-item">
           <p class="order-text order-title">已完成：</p>
-          <p class="order-text order-money">sd</p>
+          <p class="order-text order-money">{{statistic.success}}</p>
         </div>
       </div>
       <div class="big-list">
@@ -222,7 +222,8 @@
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsItem: {},
-        choicePage: 1
+        choicePage: 1,
+        statistic: {}
       }
     },
     computed: {
@@ -235,9 +236,15 @@
       this.endTime = time
       await this._getFirstAssortment()
       await this._getGoodsList()
+      await this._statistic()
     },
     methods: {
       ...proTaskMethods,
+      async _statistic() {
+        let res = await API.Product.purchaseTaskStatistic({start_time: this.startTime, end_time: this.endTime})
+        this.statistic = res.error === this.$ERR_OK ? res.data : {}
+        console.log(this.statistic)
+      },
       // 选择商品
       _selectGoods(item, index) {
         this.showSelectIndex = index
@@ -362,7 +369,7 @@
           loading: false
         })
       },
-      _getStartTime(time) {
+      async _getStartTime(time) {
         this.startTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('开始时间不能大于结束时间')
@@ -379,6 +386,7 @@
           page: this.page,
           loading: false
         })
+        await this._statistic()
       },
       _search(word) {
         this.keyword = word
@@ -394,7 +402,7 @@
           loading: false
         })
       },
-      _getEndTime(time) {
+      async _getEndTime(time) {
         this.endTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('结束时间不能小于开始时间')
@@ -411,6 +419,7 @@
           page: this.page,
           loading: false
         })
+        await this._statistic()
       },
       async _sendPublish() {
         let selectArr = []
