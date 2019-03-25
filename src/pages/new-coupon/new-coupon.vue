@@ -403,6 +403,13 @@
           return true
         }
       },
+      testMoneyReg() { // 优惠价格
+        if (this.msg.preferential_type === 2) {
+          return this.msg.denomination >= 1 && this.msg.denomination <= 999
+        } else {
+          return true
+        }
+      },
       testDiscount() {
         if (this.msg.preferential_type === 1) {
           return this.msg.denomination && MONEYREG.test(this.msg.denomination)
@@ -422,6 +429,9 @@
       },
       testCountReg() { // 发放数量数字类型
         return this.msg.usable_stock && COUNTREG.test(this.msg.usable_stock)
+      },
+      testCountNum() {
+        return this.msg.usable_stock >= 1 && this.msg.usable_stock <= 999
       },
       testCondition () {
         return (this.msg.condition && +this.msg.preferential_type === 2) ? RATE.test(this.msg.condition) : true
@@ -760,11 +770,13 @@
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testMoney, txt: '请输入优惠金额'},
+          {value: this.testMoney, txt: '请输入整数优惠金额'},
+          {value: this.testMoneyReg, txt: '输入的优惠金额应在1~999之间'},
           {value: this.testDiscount, txt: '请输入折扣数'},
           {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testCount, txt: '请输入发放数量'},
           {value: this.testCountReg, txt: '请输入正确的发放数量'},
+          {value: this.testCountNum, txt: '输入的发放数量应在1~999之间'},
           {value: this.testCondition, txt: '满减金额数必须为整数'},
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
