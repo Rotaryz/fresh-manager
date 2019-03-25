@@ -52,11 +52,11 @@
 
 <script type="text/ecmascript-6">
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {outreachComputed, outreachMethods} from '@state/helpers'
+  import {saleComputed, saleMethods} from '@state/helpers'
   import {getCorpId} from '@utils/tool'
   import API from '@api'
 
-  const PAGE_NAME = 'OUTREACH_ACTIVITY'
+  const PAGE_NAME = 'FLASH_SALE'
   const TITLE = '限时抢购'
   const ACTIVITI_TITLE = [
     {name: '活动时间', flex: 1.2, value: 'start_at', type: 2},
@@ -66,9 +66,9 @@
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 4}
   ]
-  // const OUTREACH_LIST = [
-  //   {activity_name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', group: '白云花园社区', sale_count: 20, total: 100, order_count: '30', status: 1}
-  // ]
+  const SALE_LIST = [
+    {activity_name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', group: '白云花园社区', sale_count: 20, total: 100, order_count: '30', status: 1}
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -80,6 +80,7 @@
     data() {
       return {
         activityTitle: ACTIVITI_TITLE,
+        saleList2: SALE_LIST,
         startTime: '',
         endTime: '',
         page: 1,
@@ -93,14 +94,14 @@
       }
     },
     computed: {
-      ...outreachComputed
+      ...saleComputed
     },
     created() {
       this.corpId = getCorpId()
     },
     mounted() {},
     methods: {
-      ...outreachMethods,
+      ...saleMethods,
       async _setTime(arr) {
         this.$refs.pages.beginPage()
         this.page = 1

@@ -17,8 +17,18 @@ export default {
    * @param loading
    * @returns {*}
    */
-  saleDetail(id, loading = true) {
+  saleDetail(id, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/activity-fixed/${id}`
     return request.get(url, {}, loading)
-  }
+  },
+  /**
+   * 删除限时抢购
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  saleDelete(id, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed/${id}`
+    return request.delete(url, {}, loading)
+  },
 }

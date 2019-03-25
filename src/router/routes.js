@@ -217,6 +217,59 @@ export default [
           }
         }
       },
+      // 限时抢购
+      {
+        path: 'flash-sale',
+        name: 'flash-sale',
+        component: () => lazyLoadView(import('@pages/flash-sale/flash-sale')),
+        meta: {
+          titles: ['商城', '活动', '限时抢购'],
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   //  抢购列表
+          //   store
+          //     .dispatch('rush/getRushList', {page: 1})
+          //     .then((res) => {
+          //       if (!res) {
+          //         return next({name: '404'})
+          //       }
+          //       return next()
+          //     })
+          //     .catch(() => {
+          //       return next({name: '404'})
+          //     })
+          // }
+        }
+      },
+      // 新建查看限时抢购
+      {
+        path: 'flash-sale/new-sale',
+        name: 'edit-rush',
+        component: () => lazyLoadView(import('@pages/new-sale/new-sale')),
+        meta: {
+          titles: ['商城', '活动', '限时抢购', '活动'],
+          variableIndex: 3,
+          marginBottom: 80,
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   let id = routeTo.query.id
+          //   //  抢购详情
+          //   if (id) {
+          //     store
+          //       .dispatch('rush/getRushDetail', {id})
+          //       .then((res) => {
+          //         if (!res) {
+          //           return next({name: '404'})
+          //         }
+          //         return next()
+          //       })
+          //       .catch(() => {
+          //         return next({name: '404'})
+          //       })
+          //   } else {
+          //     next()
+          //   }
+          // }
+        }
+      },
       // 拓展活动
       {
         path: 'outreach-activity',

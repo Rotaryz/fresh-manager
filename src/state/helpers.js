@@ -67,6 +67,13 @@ export const rushComputed = {
 
 export const rushMethods = mapActions('rush', ['getRushList', 'getRushDetail', 'setRushList'])
 
+// 限时抢购
+export const saleComputed = {
+  ...mapGetters('sale', ['saleList', 'salePage', 'saleDetail'])
+}
+
+export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', 'setSaleList'])
+
 // 拓展活动
 export const outreachComputed = {
   ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail'])

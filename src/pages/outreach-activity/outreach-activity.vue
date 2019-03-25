@@ -40,8 +40,6 @@
                   <transition name="fade">
                     <div v-if="codeShow === index" class="code-content">
                       <img :src="item.qrcode_url + '?imageView2/format/jpg'" alt="" class="code">
-                      <!--<a v-if="item.qrcode_url" class="text" :href="qrUrl + `/social-shopping/api/image-download?u=${item.qrcode_url}&current_corp=${corpId}`" target="_blank">下载</a>-->
-                      <!--<span v-else class="text">下载</span>-->
                     </div>
                   </transition>
                 </div>
