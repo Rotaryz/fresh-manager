@@ -610,7 +610,7 @@
       async _getGroupList() {
         let res = await API.Outreach.getGroupList({
           keyword: this.keyword,
-          limit: 6,
+          limit: 2,
           page: this.page
         })
         if (res.error !== this.$ERR_OK) {
@@ -623,12 +623,16 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.groupList = res.data.map(item => {
-          item.checked = this.selectGroupList.some(val => {
+        let data = res.data
+        this.groupList = data.map(item => {
+          item.right = this.selectGroupList.some(val => {
             return val.id === item.id
           })
+          item.checked = this.groupSelectItem.some(val => {
+            return val.id === item.id
+          })
+          return item
         })
-        this.groupList = res.data
       },
       _getCouponList() {
         let data = {
