@@ -658,29 +658,24 @@
       // 弹窗
       _showCouponModal() {
         if (this.disable) return
+        this.couponCheckItem = {}
         if (this.modalType !== 'coupon') {
           this._initData()
           this.modalType = 'coupon'
           this.couponList = []
-          this._getCouponList()
         }
+        this._getCouponList()
         this.$refs.couponModal.showModal()
       },
       _showGroupModal() {
         if (this.disable) return
+        this.groupSelectItem = []
         if (this.modalType === 'coupon') {
           this._initData()
           this.modalType = ''
           this.groupList = []
-          this._getGroupList()
         }
-        this.groupList = this.groupList.map(item => {
-          let index = this.selectGroupList.findIndex(val => item.id === val.id)
-          if (index > -1) {
-            item.checked = true
-          }
-          return item
-        })
+        this._getGroupList()
         this.$refs.groupModal.showModal()
       },
       // 搜索
@@ -700,7 +695,6 @@
         this.page = 1
         this.keyword = ''
         this.modalType = ''
-        this.couponCheckItem = {}
         this.$refs.paginationGroup && this.$refs.paginationGroup.beginPage()
         this.$refs.paginationCoupon && this.$refs.paginationCoupon.beginPage()
       },
@@ -1302,6 +1296,7 @@
         .right
           border-color: #E1E1E1
           &:before
+            opacity: 1
             icon-image(icon-check_ash)
         .title-item
           padding-right: 20px
