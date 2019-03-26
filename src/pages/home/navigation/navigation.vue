@@ -74,12 +74,12 @@
       title: '营销',
       children: [
         {
-          title: '优惠券管理',
+          title: '优惠券',
           url: '/home/coupon-manage',
           isLight: false
         },
         {
-          title: '优惠券营销',
+          title: '营销计划',
           url: '/home/coupon-market',
           isLight: false
         }
