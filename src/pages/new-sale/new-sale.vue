@@ -24,7 +24,7 @@
           type="datetime"
           placeholder="开始时间"
           style="width: 240px;height: 44px;border-radius: 1px"
-          value-format="yyyy-MM-DD HH:mm:ss"
+          valueFormat="yyyy-MM-DD HH:mm:ss"
           @change="_getStartTime"
         ></date-picker>
         <div class="tip">至</div>
@@ -35,7 +35,7 @@
           type="datetime"
           placeholder="开始时间"
           style="width: 240px;height: 44px;border-radius: 1px"
-          value-format="yyyy-MM-DD HH:mm:ss"
+          valueFormat="yyyy-MM-DD HH:mm:ss"
           @change="_getStartTime"
         ></date-picker>
         <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>

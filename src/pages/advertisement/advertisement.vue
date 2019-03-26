@@ -106,6 +106,37 @@
           </div>
         </div>
       </div>
+
+      <!--活动-->
+      <div v-if="cmsType === 'activity'" class="advertisement-content">
+        <div class="content-header">
+          <div class="content-title">活动列表</div>
+        </div>
+        <div class="edit-activity">
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              营销活动
+            </div>
+            <div class="edit-box">
+              <base-drop-down :width="400" :height="44" :select="activityType"></base-drop-down>
+            </div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              选择活动
+            </div>
+            <div class="edit-box">
+              <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
+            </div>
+          </div>
+          <div class="submit-activity advertisement-btn">
+            <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
+          </div>
+        </div>
+      </div>
+
       <!--商品弹窗-->
       <default-modal ref="goods">
         <div slot="content" class="shade-box">
