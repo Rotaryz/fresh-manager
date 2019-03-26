@@ -58,16 +58,16 @@
     {
       title: '活动',
       children: [
-        {
-          title: '今日抢购',
-          url: '/home/rush-purchase',
-          isLight: false
-        },
         // {
-        //   title: '限时抢购',
-        //   url: '/home/flash-sale',
+        //   title: '今日抢购',
+        //   url: '/home/rush-purchase',
         //   isLight: false
         // },
+        {
+          title: '限时抢购',
+          url: '/home/flash-sale',
+          isLight: false
+        },
         {
           title: '拓展活动',
           url: '/home/outreach-activity',
@@ -254,6 +254,13 @@
   ]
   const FIRST_MENU = [
     // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
+    {
+      name: '统计',
+      icon: require('./icon-statistics@2x.png'),
+      isLight: false,
+      second: STATISTICS,
+      url: '/home/data-survey'
+    },
     {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
     {
       name: '供应链',
@@ -261,13 +268,6 @@
       isLight: false,
       second: SUPPLY,
       url: '/home/supply-list'
-    },
-    {
-      name: '统计',
-      icon: require('./icon-statistics@2x.png'),
-      isLight: false,
-      second: STATISTICS,
-      url: '/home/data-survey'
     },
     {
       name: '财务',
