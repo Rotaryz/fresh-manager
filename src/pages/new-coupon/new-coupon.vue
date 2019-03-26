@@ -46,7 +46,7 @@
           <div class="no-wrap">
             <input v-model="msg.denomination"
                    type="number"
-                   :placeholder="+msg.preferential_type === 1 ? '优惠券面值应设为0.1~9.9之间' : '优惠券面值应设为1~999之间的整数'"
+                   :placeholder="+msg.preferential_type === 1 ? '优惠券面值应设为0.1~9.9之间的数值' : '优惠券面值应设为1~999之间的整数'"
                    class="edit-input"
                    :readonly="disable"
                    maxlength="12"
@@ -308,6 +308,7 @@
   const PAGE_NAME = 'MEW_COUPON'
   const TITLE = '新建查看优惠券'
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+  const COUNT_TRIM = /^(([0-9]*)|(([0]\.\d{1}|[1-9]*\.\d{1})))$/
   const COUNTREG = /^[1-9]\d*$/
   const RATE = /^[0-9]\d*$/
   const COMMODITIES_LIST = ['商品名称', '单位', '售价(元)', '库存', '操作']
@@ -405,7 +406,7 @@
       },
       testMoneyReg() { // 优惠价格
         if (this.msg.preferential_type === 2) {
-          return this.msg.denomination >= 1 && this.msg.denomination <= 999
+          return +this.msg.denomination >= 1 && +this.msg.denomination <= 999
         } else {
           return true
         }
@@ -419,7 +420,14 @@
       },
       testDiscountNum() {
         if (this.msg.preferential_type === 1) {
-          return this.msg.denomination > 0 && this.msg.denomination < 10
+          return +this.msg.denomination >= 0.1 && +this.msg.denomination <= 9.9
+        } else {
+          return true
+        }
+      },
+      testDiscountReg() {
+        if (this.msg.preferential_type === 1) {
+          return COUNT_TRIM.test(this.msg.denomination)
         } else {
           return true
         }
@@ -770,12 +778,13 @@
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testMoney, txt: '请输入整数优惠金额'},
+          {value: this.testMoney, txt: '优惠券面值应设为1~999之间的整数'},
           {value: this.testMoneyReg, txt: '优惠券面值应设为1~999之间的整数'},
-          {value: this.testDiscount, txt: '请输入折扣数'},
+          {value: this.testDiscount, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
-          {value: this.testCount, txt: '请输入发放数量'},
-          {value: this.testCountReg, txt: '请输入正确的发放数量'},
+          {value: this.testDiscountReg, txt: '请输入0.1到9.9之间的折扣数'},
+          {value: this.testCount, txt: '发放数量应设为1~99999之间的整数'},
+          {value: this.testCountReg, txt: '发放数量应设为1~99999之间的整数'},
           {value: this.testCountNum, txt: '发放数量应设为1~99999之间的整数'},
           {value: this.testCondition, txt: '满减金额数必须为整数'},
           {value: this.testStart, txt: '请选择活动开始时间'},
