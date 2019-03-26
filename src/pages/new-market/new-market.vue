@@ -896,20 +896,20 @@
     display: flex
   /*左边轮播图*/
   .left-view
-    margin: 40px 80px 14px
-    width: 380px
-    height: 716px
+    margin: 20px 60px 14px
+    width: 340px
+    height: 640px
     .top-content
-      height: 626px
+      height: 550px
       background: url(./pic-model@2x.png) no-repeat
       background-size: 100% 100%
       overflow: hidden
 
     .wrapper
-      width: 336px
-      height: 536px
+      width: 300px
+      height: 472.2px
       overflow: hidden
-      margin: 91px auto 0
+      margin: 80px auto 0
     .wrapper-box
       width: 100%
       height: 100%
@@ -948,7 +948,7 @@
   /*右边表单*/
   .right-form
     flex: 1
-    padding: 20px
+    padding: 36px 20px 20px
     .title
       font-size: $font-size-16
       position: relative
