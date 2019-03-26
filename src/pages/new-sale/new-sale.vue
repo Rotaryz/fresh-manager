@@ -18,36 +18,40 @@
           开始时间
         </div>
         <date-picker
-          :value="essInformation.start_at"
-          class="edit-input-box" type="date"
-          placement="bottom-end"
+          v-model="msg.start_at"
+          :editable="false"
+          class="edit-input-box"
+          type="datetime"
           placeholder="开始时间"
           style="width: 240px;height: 44px;border-radius: 1px"
-          @on-change="_getStartTime"
+          value-format="yyyy-MM-DD HH:mm:ss"
+          @change="_getStartTime"
         ></date-picker>
         <div class="tip">至</div>
         <date-picker
-          :value="essInformation.end_at"
-          class="edit-input-box edit-input-right"
-          type="date"
-          placement="bottom-end"
-          placeholder="结束时间"
-          style="width: 240px;height: 44px"
-          @on-change="_getEndTime"
+          v-model="msg.end_at"
+          :editable="false"
+          class="edit-input-box"
+          type="datetime"
+          placeholder="开始时间"
+          style="width: 240px;height: 44px;border-radius: 1px"
+          value-format="yyyy-MM-DD HH:mm:ss"
+          @change="_getStartTime"
         ></date-picker>
         <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
       </div>
-    </div>
-    <div class="edit-item">
-      <div class="edit-title">
-        <span class="start">*</span>
-        持续时间
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          持续时间
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :width="200" :height="44" :select="duration" @setValue="_selectDuration"></base-drop-down>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
       </div>
-      <div class="input-box">
-        <base-drop-down :width="400" :height="44" :select="duration" @setValue="_selectDuration"></base-drop-down>
-      </div>
-      <div :class="{'text-no-change':disable}"></div>
     </div>
+
     <div class="content-header">
       <div class="content-title">活动商品</div>
     </div>
@@ -64,10 +68,11 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
-              <div class="com-list-item">{{item.original_price}}</div>
+              <div class="com-list-item">¥{{item.original_price}}</div>
+              <div class="com-list-item">{{item.sale_count}}</div>
               <div class="com-list-item">
                 <input v-model="item.trade_price" type="number" class="com-edit">
-                <span v-if="item.original_price" class="small-money">￥</span>
+                <span v-if="item.original_price" class="small-money">¥</span>
               </div>
               <div class="com-list-item">
                 <input v-model="item.person_day_buy_limit" type="number" class="com-edit com-edit-small">
@@ -75,7 +80,6 @@
               <div class="com-list-item">
                 <input v-model="item.usable_stock" type="number" class="com-edit com-edit-small">
               </div>
-              <div class="com-list-item">{{item.sale_count}}</div>
               <div class="com-list-item">
                 <input v-model="item.sort" type="number" class="com-edit com-edit-small">
               </div>
@@ -145,18 +149,18 @@
   import API from '@api'
   import {ERR_OK} from '../../utils/config'
   import _ from 'lodash'
-  import {DatePicker} from 'iview'
+  import {DatePicker} from 'element-ui'
 
   const PAGE_NAME = 'EDIT_RUSH'
   const TITLE = '新建编辑今日抢购'
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
-    '划线价',
-    '活动价格',
-    '单人每日限购',
-    '活动可售数量',
+    '原售价(元)',
     '销量',
+    '抢购价(元)',
+    '每人限购',
+    '可用库存',
     '排序',
     '操作'
   ]
@@ -227,8 +231,9 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        essInformation: {activity_type: 'fixed'},
-        isSubmit: false
+        msg: {},
+        isSubmit: false,
+        startAt: ''
       }
     },
     computed: {
@@ -246,11 +251,14 @@
                 return item.goods_id
               })
             }
-            this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
+            this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
           }
         },
         immediate: true
       }
+    },
+    created() {
+      this._initDay()
     },
     async mounted() {
       // this.classifyIndex = 0
@@ -263,14 +271,15 @@
     methods: {
       ...rushMethods,
       _getStartTime(time) {
-        this.essInformation.start_at = time
+        console.log(time)
+        this.msg.start_at = time
       },
       _getEndTime(time) {
-        this.essInformation.end_at = time
+        this.msg.end_at = time
       },
       _initDay() {
         let arr = new Array(24).fill(1)
-        arr.map((item, index) => {
+        arr = arr.map((item, index) => {
           return {
             name: (index+1)+'小时',
             id: index+5
@@ -542,14 +551,14 @@
           return
         }
         let date = Date.parse(new Date())
-        let endTime = this.essInformation.end_at + ' 23:00'
-        if (!this.essInformation.activity_name) {
+        let endTime = this.msg.end_at + ' 23:00'
+        if (!this.msg.activity_name) {
           this.$toast.show('活动名称不能为空')
           return
-        } else if (!this.essInformation.start_at) {
+        } else if (!this.msg.start_at) {
           this.$toast.show('活动开始时间不能为空')
           return
-        } else if (!this.essInformation.end_at) {
+        } else if (!this.msg.end_at) {
           this.$toast.show('活动结束时间不能为空')
           return
         } else if (Date.parse(endTime) < date) {
@@ -574,7 +583,7 @@
           }
         // }
         }
-        let data = Object.assign({}, this.essInformation, {activity_goods: list})
+        let data = Object.assign({}, this.msg, {activity_goods: list})
         let res = null
         this.isSubmit = true
         if (this.id) {
@@ -626,6 +635,8 @@
       color: #F52424
     .edit-input-box
       margin: 0 14px 0 40px
+      &:nth-child(4)
+        margin: 0 14px
       .edit-input
         font-size: $font-size-14
         padding: 0 14px

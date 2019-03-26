@@ -231,3 +231,28 @@ body, html
 
 .ivu-input:hover
   border-color: #ACACAC !important
+
+.edit-item
+  .edit-input-box
+    .el-input__inner
+      color: $color-text-assist
+      outline: none
+      box-shadow: none
+      height: 44px
+      border-radius: 0
+      font-family: $font-family-regular
+      &:focus
+        outline: none
+        border-color: $color-main
+      &:hover
+        border: 1px solid #ACACAC
+    .el-input__icon1
+      width: 15px
+      height: 15px
+      background: url('~@pages/new-sale/icon-date@2x.png') no-repeat
+      background-size: cover
+      position: absolute
+      right: 10px
+      col-center()
+      &:before
+        content: ""
