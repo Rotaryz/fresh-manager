@@ -15,16 +15,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          活动名称
-        </div>
-        <div class="edit-input-box">
-          <input v-model="essInformation.activity_name" type="text" placeholder="请输入" class="edit-input">
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          活动时间
+          开始时间
         </div>
         <date-picker
           :value="essInformation.start_at"
@@ -47,14 +38,20 @@
         <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
       </div>
     </div>
+    <div class="edit-item">
+      <div class="edit-title">
+        <span class="start">*</span>
+        持续时间
+      </div>
+      <div class="input-box">
+        <base-drop-down :width="400" :height="44" :select="duration" @setValue="_selectDuration"></base-drop-down>
+      </div>
+      <div :class="{'text-no-change':disable}"></div>
+    </div>
     <div class="content-header">
       <div class="content-title">活动商品</div>
     </div>
     <div class="activity-box">
-      <!--<div class="classify">-->
-      <!--<div v-for="(item, index) in classify" :key="index" class="classify-item hand" :class="{'classify-item-active': index === classifyIndex}" @click="_setClassify(index, item)">{{item.name}}</div>-->
-      <!--</div>-->
-      <!--<div :class="{'btn-disable': disable}" class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>-->
       <div class="activity-list">
         <div class="activity-tab">
           <div :class="{'btn-disable': disable}" class="add-goods-btn hand" @click="_showGoods">添加商品 +</div>
@@ -91,75 +88,7 @@
 
       </div>
     </div>
-    <!--编辑分类弹窗-->
-    <default-modal ref="shadeCustom">
-      <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">编辑活动分类</div>
-          <span class="close hand" @click="_hideEditShade"></span>
-        </div>
-        <div class="auxiliary-box">
-          <div v-for="(item, index) in tagList" :key="index" class="auxiliary-item">
-            <div class="text">{{item.name}}</div>
-            <div class="auxiliary-model">
-              <div class="img-box" @click="_showModal(false,item,index)"></div>
-              <div class="img-box del" @click="_showConfirm(item.id, index)"></div>
-            </div>
-          </div>
-          <div class="btn-main auxiliary-add" @click="_showModal(true)">新增+</div>
-        </div>
-        <!--<div class="back">-->
-        <!--<div class="back-cancel back-btn hand" @click="_hideEditShade">取消</div>-->
-        <!--<div class="back-btn btn-main">保存</div>-->
-        <!--</div>-->
-        <!--小弹窗新增编辑-->
-        <transition name="fade">
-          <section v-show="isShow" class="default-modal-small">
-            <div :class="showActive ? 'model-active' : 'model-un-active'">
-              <div slot="content" class="default-input">
-                <div class="title-input">
-                  <div class="title">新建活动分类</div>
-                  <div class="close-box hand" @click="_hideModal">
-                    <div class="close"></div>
-                  </div>
-                </div>
-                <div class="main-input">
-                  <div class="main-model-box">
-                    <div class="text">分类名称</div>
-                    <input v-model="classifyName" type="text" class="main-input-box" placeholder="长度不能超过5位" maxlength="5">
-                  </div>
-                  <div class="main-model-box">
-                    <div class="text">排序号</div>
-                    <input v-model="classifyNum" type="number" class="main-input-box" placeholder="0" @mousewheel.native.prevent>
-                  </div>
-                  <div class="btn-group">
-                    <span class="btn cancel" @click="_hideModal">取消</span>
-                    <span class="btn confirm" @click="_operationClassify">确定</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </transition>
-        <!--小弹窗新增编辑-->
-        <transition name="fade">
-          <section v-show="isShowConfirm" class="default-modal-small">
-            <div :class="showConfirmActive ? 'model-active' : 'model-un-active'">
-              <div class="default-confirm">
-                <div class="confirm-content">
-                  <!--<div class="title">{{title}}</div>-->
-                  <div class="text">确定要删除该分类？</div>
-                  <div class="btn-group-confirm">
-                    <span class="btn cancel" @click="_hideConfirm">取消</span>
-                    <span class="btn confirm" @click="_delItem()">确定</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </transition>
-      </div>
-    </default-modal>
+
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModel">
       <div slot="content" class="shade-box">
@@ -263,6 +192,13 @@
         page: 1,
         choeesGoods: [],
         rushMsg: [],
+        duration: {
+          check: false,
+          show: false,
+          content: '选择时间',
+          type: 'default',
+          data: [] // 格式：{title: '55'}}
+        },
         assortment: {
           check: false,
           show: false,
@@ -331,6 +267,20 @@
       },
       _getEndTime(time) {
         this.essInformation.end_at = time
+      },
+      _initDay() {
+        let arr = new Array(24).fill(1)
+        arr.map((item, index) => {
+          return {
+            name: (index+1)+'小时',
+            id: index+5
+          }
+        })
+        arr = [{name: '1分钟', id: 1}, {name: '5分钟', id: 2}, {name: '15分钟', id: 3}, {name: '30分钟', id: 4}].concat(arr)
+        this.duration.data = arr
+      },
+      _selectDuration(item) {
+        console.log(item)
       },
       // 选择商品
       async _getGoodsList() {
