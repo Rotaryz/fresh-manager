@@ -1,45 +1,26 @@
 <template>
-  <div class="edit-outreach detail-content">
-    <div v-if="!disable" class="identification">
+  <div class="edit-rush detail-content">
+    <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">新建活动</p>
+        <p class="identification-name">{{id ? '编辑活动' : '新建活动'}}</p>
       </div>
       <div class="function-btn">
       </div>
     </div>
-    <div class="content-header" :class="{'margin-top': disable}">
+    <div class="content-header">
       <div class="content-title">基本信息</div>
     </div>
-    <div class="outreach-time">
+    <div class="rush-time">
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="essInformation.activity_name"
-                 type="text"
-                 :placeholder="disable ? '' : '请输入'"
-                 class="edit-input"
-                 :readonly="disable"
-                 :class="{'disable-input':disable}"
-          >
-        </div>
-        <div :class="{'text-no-change':disable}"></div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          活动图片
-        </div>
-        <div class="image-box">
-          <base-edit-image :picList.sync="banner_image" :picNum="1" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>
-          <div class="tip">上传图片的最佳尺寸：750*480，其他尺寸会影响页面效果，格式png，jpeg，jpg</div>
-          <div :class="{'img-no-change':disable}"></div>
+          <input v-model="essInformation.activity_name" type="text" placeholder="请输入" class="edit-input">
         </div>
       </div>
-
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -47,60 +28,38 @@
         </div>
         <date-picker
           :value="essInformation.start_at"
-          class="edit-input-box"
-          type="date"
-          :editable="false"
+          class="edit-input-box" type="date"
           placement="bottom-end"
-          placeholder="选择开始时间"
+          placeholder="开始时间"
           style="width: 240px;height: 44px;border-radius: 1px"
-          readonly
           @on-change="_getStartTime"
         ></date-picker>
-        <div class="tip-text">至</div>
+        <div class="tip">至</div>
         <date-picker
           :value="essInformation.end_at"
           class="edit-input-box edit-input-right"
           type="date"
-          :editable="false"
           placement="bottom-end"
-          placeholder="选择结束时间"
+          placeholder="结束时间"
           style="width: 240px;height: 44px"
           @on-change="_getEndTime"
         ></date-picker>
-        <div :class="{'time-no-change':disable}"></div>
-      </div>
-
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          拓展社区
-        </div>
-        <div class="edit-input-box">
-          <input v-model="groupSelectItem.social_name"
-                 type="text"
-                 placeholder="选择团长"
-                 class="edit-input"
-                 :class="{'disable-input':disable}"
-                 readonly
-                 @click="_showGroup"
-          >
-          <span class="icon"></span>
-        </div>
-        <div :class="{'text-no-change':disable}"></div>
+        <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
       </div>
     </div>
     <div class="content-header">
       <div class="content-title">活动商品</div>
     </div>
     <div class="activity-box">
+      <!--<div class="classify">-->
+      <!--<div v-for="(item, index) in classify" :key="index" class="classify-item hand" :class="{'classify-item-active': index === classifyIndex}" @click="_setClassify(index, item)">{{item.name}}</div>-->
+      <!--</div>-->
+      <!--<div :class="{'btn-disable': disable}" class="btn-main classify-manager" @click="_showEditShade">活动分类管理</div>-->
       <div class="activity-list">
         <div class="activity-tab">
-          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
-            <img class="icon" src="./icon-add@2x.png" alt="">
-            添加商品
-          </div>
+          <div :class="{'btn-disable': disable}" class="add-goods-btn hand" @click="_showGoods">添加商品 +</div>
         </div>
-        <div class="outreach-list-box">
+        <div class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>
@@ -108,13 +67,20 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.original_price || 0}}</div>
-              <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
-                <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
-                <span v-if="item.original_price" class="small-money">¥</span>
+              <div class="com-list-item">{{item.original_price}}</div>
+              <div class="com-list-item">
+                <input v-model="item.trade_price" type="number" class="com-edit">
+                <span v-if="item.original_price" class="small-money">￥</span>
               </div>
-              <div class="com-list-item" :class="{'sort-focus':sortFocus === index}">
-                <input v-model="item.sort" type="number" class="com-edit com-edit-small" :class="{'no-border': disable}" :readonly="disable">
+              <div class="com-list-item">
+                <input v-model="item.person_day_buy_limit" type="number" class="com-edit com-edit-small">
+              </div>
+              <div class="com-list-item">
+                <input v-model="item.usable_stock" type="number" class="com-edit com-edit-small">
+              </div>
+              <div class="com-list-item">{{item.sale_count}}</div>
+              <div class="com-list-item">
+                <input v-model="item.sort" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -122,49 +88,80 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
-
-    <!-- 选择团长弹窗-->
-    <default-modal ref="groupModal">
+    <!--编辑分类弹窗-->
+    <default-modal ref="shadeCustom">
       <div slot="content" class="shade-box">
         <div class="shade-header">
-          <div class="shade-title">选择团长</div>
-          <span class="close hand" @click="_cancelGoods"></span>
+          <div class="shade-title">编辑活动分类</div>
+          <span class="close hand" @click="_hideEditShade"></span>
         </div>
-        <!--搜索-->
-        <div class="shade-tab">
-          <div class="tab-item">
-            <base-search ref="groupSearch" placeHolder="请输入团长名称或账号" @search="_searchGoods"></base-search>
-          </div>
-        </div>
-        <!--列表-->
-        <div class="group-content">
-          <div class="title">
-            <span v-for="(item, index) in groupTitle" :key="index" :class="item.class" :style="{flex: item.flex}">{{item.name}}</span>
-          </div>
-          <div class="outreach-group-list">
-            <div v-for="(item, index) in groupList" :key="index" class="group-item" @click="selectGroup(item, index)">
-              <span v-for="(val, ind) in groupTitle" :key="ind" :class="val.class" :style="{flex: val.flex}">
-                <span v-if="ind === 0" class="check" :class="{'checked': (groupCheckItem.id ? (item.id === groupCheckItem.id) : (item.id === groupSelectItem.id))}"></span>
-                <span v-else>{{item[val.value]}}</span>
-              </span>
+        <div class="auxiliary-box">
+          <div v-for="(item, index) in tagList" :key="index" class="auxiliary-item">
+            <div class="text">{{item.name}}</div>
+            <div class="auxiliary-model">
+              <div class="img-box" @click="_showModal(false,item,index)"></div>
+              <div class="img-box del" @click="_showConfirm(item.id, index)"></div>
             </div>
           </div>
+          <div class="btn-main auxiliary-add" @click="_showModal(true)">新增+</div>
         </div>
-        <!--翻页器-->
-        <div class="page-box">
-          <base-pagination ref="paginationGroup" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
-        </div>
-        <div class="back">
-          <div class="back-btn back-submit hand" @click="_addition">确定</div>
-          <div class="back-cancel back-btn hand" @click="_cancelGroup">取消</div>
-        </div>
+        <!--<div class="back">-->
+        <!--<div class="back-cancel back-btn hand" @click="_hideEditShade">取消</div>-->
+        <!--<div class="back-btn btn-main">保存</div>-->
+        <!--</div>-->
+        <!--小弹窗新增编辑-->
+        <transition name="fade">
+          <section v-show="isShow" class="default-modal-small">
+            <div :class="showActive ? 'model-active' : 'model-un-active'">
+              <div slot="content" class="default-input">
+                <div class="title-input">
+                  <div class="title">新建活动分类</div>
+                  <div class="close-box hand" @click="_hideModal">
+                    <div class="close"></div>
+                  </div>
+                </div>
+                <div class="main-input">
+                  <div class="main-model-box">
+                    <div class="text">分类名称</div>
+                    <input v-model="classifyName" type="text" class="main-input-box" placeholder="长度不能超过5位" maxlength="5">
+                  </div>
+                  <div class="main-model-box">
+                    <div class="text">排序号</div>
+                    <input v-model="classifyNum" type="number" class="main-input-box" placeholder="0" @mousewheel.native.prevent>
+                  </div>
+                  <div class="btn-group">
+                    <span class="btn cancel" @click="_hideModal">取消</span>
+                    <span class="btn confirm" @click="_operationClassify">确定</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </transition>
+        <!--小弹窗新增编辑-->
+        <transition name="fade">
+          <section v-show="isShowConfirm" class="default-modal-small">
+            <div :class="showConfirmActive ? 'model-active' : 'model-un-active'">
+              <div class="default-confirm">
+                <div class="confirm-content">
+                  <!--<div class="title">{{title}}</div>-->
+                  <div class="text">确定要删除该分类？</div>
+                  <div class="btn-group-confirm">
+                    <span class="btn cancel" @click="_hideConfirm">取消</span>
+                    <span class="btn confirm" @click="_delItem()">确定</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </transition>
       </div>
     </default-modal>
-
     <!-- 选择商品弹窗-->
-    <default-modal ref="goodsModal">
+    <default-modal ref="goodsModel">
       <div slot="content" class="shade-box">
         <div class="shade-header">
           <div class="shade-title">选择商品</div>
@@ -178,12 +175,12 @@
             <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
           </div>
         </div>
         <div class="goods-content">
-          <div class="outreach-goods-list">
-            <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
+          <div class="rush-goods-list">
+            <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
               <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
@@ -215,22 +212,25 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {outreachComputed, outreachMethods} from '@state/helpers'
+  import {rushComputed, rushMethods} from '@state/helpers'
   import API from '@api'
+  import {ERR_OK} from '../../utils/config'
   import _ from 'lodash'
   import {DatePicker} from 'iview'
 
-  const PAGE_NAME = 'EDIT_OUTREACH'
-  const TITLE = '新建查看拓展活动'
-  const COMMODITIES_LIST = ['商品名称', '单位', '原售价(元)', '活动售价(元)', '排序', '操作']
-  const GROUP_TITLE = [
-    {name: '选择', class: 'title-item', flex: 0.7, value: ''},
-    {name: '团长帐号', class: 'title-item', flex: 1, value: 'mobile'},
-    {name: '团长名称', class: 'title-item', flex: 1, value: 'name'},
-    {name: '社区名称', class: 'title-item', flex: 1.2, value: 'social_name'},
-    {name: '社区地址', class: 'title-item', flex: 2, value: 'address'}
+  const PAGE_NAME = 'EDIT_RUSH'
+  const TITLE = '新建编辑今日抢购'
+  const COMMODITIES_LIST = [
+    '商品名称',
+    '单位',
+    '划线价',
+    '活动价格',
+    '单人每日限购',
+    '活动可售数量',
+    '销量',
+    '排序',
+    '操作'
   ]
-
   export default {
     name: PAGE_NAME,
     page: {
@@ -245,12 +245,24 @@
       return {
         commodities: COMMODITIES_LIST,
         classifyIndex: 0,
+        listHeight: 417,
+        showActive: false,
+        isShow: false,
+        classifyName: '',
+        classifyNum: 0,
+        showConfirmActive: false,
+        isShowConfirm: false,
         delId: [], // 删除id数组
+        isStoreClassify: true,
+        classifyChangeIdx: 0,
         id: null,
+        classifyDelId: 0,
+        classifyDelIndex: 0,
         tagList: [],
+        tagItem: {},
         page: 1,
-        chooseGoods: [],
-        outreachMsg: [],
+        choeesGoods: [],
+        rushMsg: [],
         assortment: {
           check: false,
           show: false,
@@ -277,135 +289,52 @@
         goodsDelId: 0,
         goodsDelIndex: 0,
         selectDelId: [],
-        disable: false, // 有id不可编辑
+        disable: false,
         goodsList: [],
-        essInformation: {
-          activity_type: 'offline',
-          activity_name: '',
-          activity_cover_image: '',
-          start_at: '',
-          end_at: '',
-          shop_id: '',
-          image_id: '',
-          activity_goods: []
-        },
-        isSubmit: false, // 在提交
-        groupShow: false, // 选择团长弹窗
-        groupList: [],
-        groupTitle: GROUP_TITLE,
-        groupCheckItem: {}, // 选中的团长
-        groupSelectItem: {}, // 确定选择的团长
-        priceFocus: '', // 聚焦活动手机
-        sortFocus: '', // 聚焦排序
-        banner_image: []
+        essInformation: {activity_type: 'fixed'},
+        isSubmit: false
       }
     },
     computed: {
-      ...outreachComputed,
-      testName() {
-        // 活动名称
-        return this.essInformation.activity_name
-      },
-      testImg() {
-        // 活动图片
-        return this.essInformation.image_id !== ''
-      },
-      testStart() {
-        // 开始时间
-        return this.essInformation.start_at
-      },
-      testStartDate() {
-        // 开始时间规则判断
-        return Date.parse(this.essInformation.start_at) < new Date()
-      },
-      testEnd() {
-        // 结束时间
-        return this.essInformation.end_at
-      },
-      testEndDate() {
-        // 结束时间规则判断
-        return (
-          Date.parse(this.essInformation.end_at + ' 00:00') > Date.parse('' + this.essInformation.start_at + ' 00:00')
-        )
-      },
-      testGroup() {
-        // 社区
-        return this.essInformation.shop_id !== ''
-      }
+      ...rushComputed
     },
     watch: {
-      outreachDetail: {
+      rushDetail: {
         handler(news) {
           let id = this.$route.query.id || null
           if (id) {
             let obj = _.cloneDeep(news)
             this.goodsList = obj.activity_goods
-            let imgArr = [{id: 0, image_id: 0, image_url: obj.activity_cover_image}]
-            this.banner_image = imgArr
-            this.groupSelectItem.social_name = obj.social_name
             if (this.goodsList) {
               this.selectGoodsId = obj.activity_goods.map((item) => {
                 return item.goods_id
               })
             }
-            this.essInformation = {
-              start_at: obj.start_at,
-              end_at: obj.end_at,
-              activity_name: obj.activity_name,
-              activity_cover_image: obj.activity_cover_image
-            }
+            this.essInformation = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
           }
         },
         immediate: true
       }
     },
-    created() {
-      let time = new Date().toLocaleDateString().replace(/^(\d)$/, '0$1')
-      this.essInformation.start_at = time.replace(/\//g, '-')
-      if (this.$route.query.id) {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '查看活动'])
-      } else {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '新建活动'])
-      }
-    },
     async mounted() {
-      this.disable = this.$route.query.id
+      // this.classifyIndex = 0
+      this.disable = this.$route.query.disable && +this.$route.query.disable === 2 ? 1 : 0
       this.id = this.$route.query.id || null
       await this._getFirstAssortment()
+      this._getListHeight()
       this._getGoodsList()
     },
     methods: {
-      ...outreachMethods,
-      failFile(msg) {
-        this.$emit('showToast', msg)
-      },
-      getPic(image) {
-        let item = {id: 0, image_id: image.id, image_url: image.url}
-        this.essInformation.activity_cover_image = image.url
-        this.essInformation.image_id = image.id
-        this.banner_image[0] = item
-      },
-      delPic(index) {
-        this.essInformation.activity_cover_image = ''
-        this.banner_image = []
-      },
+      ...rushMethods,
       _getStartTime(time) {
         this.essInformation.start_at = time
       },
       _getEndTime(time) {
         this.essInformation.end_at = time
       },
-      async _showGroup() {
-        if (this.disable) return
-        this.groupShow = true
-        this._initData()
-        this.$refs.groupSearch._setText('')
-        this.$refs.groupModal.showModal()
-        this._getGroupList()
-      },
       // 选择商品
       async _getGoodsList() {
-        let res = await API.Outreach.getGoodsList({
+        let res = await API.Rush.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
@@ -421,11 +350,10 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.chooseGoods = res.data.map((item, index) => {
+        this.choeesGoods = res.data.map((item, index) => {
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          // item.trade_price = item.trade_price || 0
           if (delIndex !== -1) {
             item.selected = 0
           }
@@ -438,29 +366,15 @@
           return item
         })
       },
-      changePrice(index) {
-        this.priceFocus = index
-      },
-      changeSort(index) {
-        this.sortFocus = index
-      },
-      inputBlur() {
-        this.priceFocus = ''
-        this.sortFocus = ''
-      },
       // 获取分页商品列表
       async _getMoreGoods(page) {
         this.page = page
-        if (this.groupShow) {
-          await this._getGroupList()
-        } else {
-          await this._getGoodsList()
-        }
+        await this._getGoodsList()
       },
       // 选择二级分类
       async _secondAssortment(item) {
         this.parentId = item.id
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
         this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         this.secondAssortment.content = '选择二级分类'
@@ -477,37 +391,27 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
       },
-      // 搜索商品/搜索团长
+      // 搜索商品
       async _searchGoods(text) {
         this.keyword = text
         this.page = 1
-
-        if (this.groupShow) {
-          this.$refs.paginationGroup.beginPage()
-          await this._getGroupList()
-        } else {
-          this.$refs.pagination.beginPage()
-          await this._getGoodsList()
-        }
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
       },
       // 勾选商品
       _selectGoods(item, index) {
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 3) {
-            this.$toast.show('选择商品数量不能超过三个')
-            return
-          }
-          this.chooseGoods[index].selected = 2
+          this.choeesGoods[index].selected = 2
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
           break
         case 2:
-          this.chooseGoods[index].selected = 0
+          this.choeesGoods[index].selected = 0
           let idx = this.selectGoods.findIndex((items) => items.id === item.id)
           let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
           if (idx !== -1) {
@@ -536,33 +440,24 @@
         this.selectDelId.push(this.goodsDelId)
       },
       _cancelGoods() {
-        if (this.groupShow) {
-          this._hideGroup()
-        } else {
-          this.selectGoods.forEach((item) => {
-            let idx = this.chooseGoods.findIndex((items) => items.goods_id === item.goods_id)
-            let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-            this.chooseGoods[idx].selected = this.chooseGoods[idx].selected === 1 ? 1 : 0
-            this.selectGoodsId.splice(delIdx, 1)
-          })
-          this.selectGoods = []
-          this._hideGoods()
-        }
+        this.selectGoods.forEach((item) => {
+          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
+          this.selectGoodsId.splice(delIdx, 1)
+        })
+        this.selectGoods = []
+        this._hideGoods()
       },
       // 单个添加
       _additionOne(item, index) {
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 3 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过三个')
-          return
-        }
-
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
-        this.chooseGoods[index].selected = 1
+        this.choeesGoods[index].selected = 1
         this.goodsList.push(item)
-        this.chooseGoods.forEach((item) => {
+        this.selectGoodsId.push(item.id)
+        this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)
             if (idx !== -1) {
@@ -573,7 +468,7 @@
       },
       // 批量添加
       _batchAddition() {
-        this.chooseGoods = this.chooseGoods.map((item) => {
+        this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
@@ -585,89 +480,158 @@
         if (this.disable) {
           return
         }
-        this._initData()
-        this.$refs.goodsSearch._setText('')
         await this._getGoodsList()
         // 展示添加商品弹窗
-        this.$refs.goodsModal.showModal()
+        this.$refs.goodsModel.showModal()
       },
       _hideGoods() {
-        this.$refs.goodsModal.hideModal()
+        this.$refs.goodsModel.hideModal()
       },
-
-      _initData() {
-        this.page = 1
-        this.keyword = ''
-        this.$refs.pagination.beginPage()
-        this.$refs.paginationGroup.beginPage()
+      // 切换分类
+      _setClassify(index, item) {
+        this.classifyIndex = index
       },
-
-      // 获取团长列表
-      async _getGroupList() {
-        let res = await API.Outreach.getGroupList({
-          keyword: this.keyword,
-          limit: 6,
-          page: this.page
-        })
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.$loading.hide()
-        this.goodsPage = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        this.groupList = res.data
-      },
-      // 关闭选择团长弹窗
-      _hideGroup() {
-        this.groupShow = false
-        this.$refs.groupModal.hideModal()
-      },
-      // 选择团长
-      selectGroup(item, index) {
-        this.groupCheckItem = item
-      },
-      // 确定选择团长
-      _addition() {
-        this.groupCheckItem.id && (this.groupSelectItem = this.groupCheckItem)
-        this.groupCheckItem.id && (this.essInformation.shop_id = this.groupSelectItem.shop_id)
-        this._hideGroup()
-      },
-      // 取消选择团长
-      _cancelGroup() {
-        this.groupCheckItem = {}
-        this._hideGroup()
+      // 获取高度
+      _getListHeight() {
+        let ele = document.querySelector('html')
+        let height = ele.clientHeight
+        this.listHeight = height - 700
       },
       _back() {
         this.$router.back()
       },
-      //  保存
-      async _saveActivity() {
-        if (this.id) return
-        if (this.disable || this.isSubmit) return
-        let checkForm = this.checkForm()
-        if (!checkForm) return
-        let list = this.goodsList
-        if (!list.length) {
-          this.$toast.show('请添加商品')
+      // 删除分类
+      async _delItem() {
+        // this.classifyDelId
+        let res = await API.Rush.deleteTag(this.classifyDelId)
+        this.$toast.show(res.message)
+        if (res.error !== ERR_OK) {
+          // this._hideConfirm()
           return
         }
-        for (let i in list) {
-          if (!list[i].trade_price || list[i].sort === '') {
-            this.$toast.show(`请输入商品“${list[i].name}”的活动售价`)
-            return
-          } else if (+list[i].trade_price < 0 || +list[i].sort < 0) {
-            this.$toast.show(`“${list[i].name}”输入数据有误`)
+        this.rushMsg.lists.splice(this.classifyDelIndex, 1)
+        this._hideConfirm()
+      },
+      _showEditShade() {
+        if (this.disable) {
+          return
+        }
+        // 展示分类编辑弹窗
+        this.$refs.shadeCustom.showModal()
+      },
+      _hideEditShade() {
+        // 隐藏分类编辑弹窗
+        this.$refs.shadeCustom.hideModal()
+      },
+      _showModal(status, item, index) {
+        if (status && this.classify.length >= 10) {
+          this.$toast.show('分类不能超过10个')
+          return
+        }
+        this.isShow = true
+        this.showActive = true
+        this.isStoreClassify = status
+        if (!status) {
+          this.classifyName = item.name
+          this.classifyNum = item.sort
+          this.tagItem = item
+          this.classifyChangeIdx = index
+        }
+      },
+      // 新建编辑分类
+      async _operationClassify() {
+        let res = null
+        if (this.isStoreClassify) {
+          res = await API.Rush.storeTag({name: this.classifyName, sort: this.classifyNum, shelf_id: this.id})
+          this.$toast.show(res.message)
+          if (res.error !== this.$ERR_OK) {
             return
           }
+          let obj = {name: this.classifyName, sort: this.classifyNum, id: res.data.id}
+          this.rushMsg.lists.push({shelf_tag: obj, activity_goods: []})
+        } else {
+          res = await API.Rush.updateTag({name: this.classifyName, sort: this.classifyNum}, this.tagItem.id)
+          this.$toast.show(res.message)
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.rushMsg.lists[this.classifyChangeIdx]['shelf_tag'] = {
+            name: this.classifyName,
+            sort: this.classifyNum,
+            id: this.tagItem.id
+          }
+        }
+        this._hideModal()
+      },
+      // 隐藏分类弹窗
+      _hideModal() {
+        setTimeout(() => {
+          this.isShow = false
+          this.classifyName = ''
+          this.classifyNum = ''
+        }, 100)
+        this.showActive = false
+      },
+      _showConfirm(id, index) {
+        this.isShowConfirm = true
+        this.showConfirmActive = true
+        this.classifyDelId = id
+        this.classifyDelIndex = index
+      },
+      _hideConfirm() {
+        setTimeout(() => {
+          this.isShowConfirm = false
+        }, 100)
+        this.showConfirmActive = false
+      },
+      //  保存
+      async _saveActivity() {
+        if (this.disable) {
+          return
+        } else if (this.isSubmit) {
+          return
+        }
+        let date = Date.parse(new Date())
+        let endTime = this.essInformation.end_at + ' 23:00'
+        if (!this.essInformation.activity_name) {
+          this.$toast.show('活动名称不能为空')
+          return
+        } else if (!this.essInformation.start_at) {
+          this.$toast.show('活动开始时间不能为空')
+          return
+        } else if (!this.essInformation.end_at) {
+          this.$toast.show('活动结束时间不能为空')
+          return
+        } else if (Date.parse(endTime) < date) {
+          this.$toast.show('活动结束时间不能小于当天')
+          return
+        }
+        let list = this.goodsList
+        for (let i in list) {
+          // for (let index in list[i].shelf_goods) {
+          if (!list[i].trade_price || !list[i].person_day_buy_limit || !list[i].usable_stock || list[i].sort === '') {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].person_day_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.') ||
+            +list[i].sort < 0
+          ) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
+            return
+          }
+        // }
         }
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
         this.isSubmit = true
-        // 调用保存活动接口
-        res = await API.Outreach.storeActivity(data, this.id, true)
+        if (this.id) {
+          res = await API.Rush.updateGoods(data, this.id, true)
+        } else {
+          res = await API.Rush.storeGoods(data, this.id, true)
+        }
         this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
@@ -677,26 +641,6 @@
         setTimeout(() => {
           this._back()
         }, 1000)
-      },
-      checkForm() {
-        let arr = [
-          {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testImg, txt: '请选择活动图片'},
-          {value: this.testStart, txt: '请选择活动开始时间'},
-          // {value: this.testStartDate, txt: '活动开始时间只能为今天'},
-          {value: this.testEnd, txt: '请选择活动结束时间'},
-          {value: this.testEndDate, txt: '活动结束时间必须大于今天'},
-          {value: this.testGroup, txt: '请选择拓展社区'}
-        ]
-        for (let i = 0, j = arr.length; i < j; i++) {
-          if (!arr[i].value) {
-            this.$toast.show(arr[i].txt)
-            return false
-          }
-          if (i === j - 1 && arr[i].value) {
-            return true
-          }
-        }
       }
     }
   }
@@ -705,18 +649,13 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
-  ::-webkit-input-placeholder{
-    font-size: 14px
-    font-family: $font-family-regular
-    color: #ACACAC
-  }
-  .edit-outreach
+
+  .edit-rush
     padding-bottom: 20px
     position: relative
     flex: 1
-  .margin-top
-    margin-top: 24px
-  .outreach-time
+
+  .rush-time
     margin-bottom: 27px
 
   .edit-item
@@ -724,7 +663,6 @@
     color: #2A2A2A
     min-height: 40px
     margin-top: 24px
-    position: relative
     .edit-title
       margin-top: 7.5px
       font-size: $font-size-14
@@ -732,29 +670,17 @@
       white-space: nowrap
       text-align: left
       min-width: 64px
-    .image-box
-      margin-left: 40px
-      position: relative
-      .img-no-change
-        position: absolute
-        left: 0
-        top: 0
-        width: 90px
-        height: 90px
-        z-index: 100
-        cursor: not-allowed
     .start
       display: inline-block
       margin-right: -2px
       color: #F52424
     .edit-input-box
       margin: 0 14px 0 40px
-      position: relative
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
         border-radius: 1px
-        width: 400px
+        width: 240px
         height: 44px
         display: flex
         align-items: center
@@ -773,41 +699,20 @@
           icon-image('icon-date_icon')
           width: 12px
           height: @width
-      .disable-input
-        background: #F5F5F5
-        color: #ACACAC
-      .icon
-        width: 0
-        height: 0
-        border: 6px solid #333
-        position: absolute
-        margin-top: 4px
-        right: 10px
-        col-center()
-        border-bottom-color: transparent
-        border-left: 4px solid transparent
-        border-right: 4px solid transparent
     .edit-input-right
       margin-left: 14px
     .tip
-      font-size: $font-size-14
+      line-height: 44px
+      font-size: $font-size-12
       font-family: $font-family-regular
-      color: $color-text-assist
+      color: $color-text-main
     .tip-text
       margin-left: 2px
       line-height: 44px
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
-    .time-no-change,.text-no-change
-      position: absolute
-      left: 100px
-      top: 0
-      width: 550px
-      height: 50px
-      z-index: 100
-    .text-no-change
-      cursor: not-allowed
+
   .edit-activity
     box-sizing: border-box
     padding-left: 20px
@@ -881,32 +786,23 @@
     padding-bottom: 80px
 
   .activity-tab
-    margin: 24px 0
+    height: 58px
     display: flex
     align-items: center
     box-sizing: border-box
     .add-goods-btn
       box-sizing: border-box
-      height: 32px
-      line-height: 32px
-      width: 108px
-      color: #4DBD65
-      font-size: $font-size-14
-      font-family: $font-family-regular
+      height: 28px
+      line-height: 28px
+      width: 92px
+      background: $color-main
+      color: $color-white
+      font-size: $font-size-12
+      white-space: nowrap
       transition: all 0.3s
       text-align: center
       border-radius: 1px
-      border: 1px solid #4DBD65
-      display: flex
-      align-items: center
-      justify-content: center
-    .disable
-      cursor: not-allowed
-    .icon
-      width: 10px
-      height: 10px
-      margin-right: 5px
-      object-fit: cover
+
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
@@ -938,12 +834,64 @@
         transition: all 0.3s
         &:hover
           transform: scale(1.3)
+    // 分类编辑新建
+    .auxiliary-box
+      padding: 0 20px
+      box-sizing: border-box
+      margin-top: 32px
+      layout(row)
+      flex-wrap: wrap
+      .auxiliary-item
+        min-width: 80px
+        height: 32px
+        border-1px(#333, 4px)
+        text-align: center
+        position: relative
+        margin-right: 10px
+        margin-bottom: 20px
+        .text
+          font-size: $font-size-14
+          color: $color-text-main
+          line-height: 32px
+          font-family: $font-family-regular
+        .auxiliary-model
+          opacity: 0
+          position: absolute
+          width: 100%
+          height: 100%
+          border-radius: 1px
+          background: rgba(51, 51, 51, 0.9)
+          left: 0
+          top: 0
+          padding: 0 11px
+          box-sizing: border-box
+          layout(row)
+          align-items: center
+          justify-content: space-between
+          transition: all 0.4s
+          .img-box
+            width: 22px
+            height: 22px
+            border-radius: 50%
+            background: #fff
+            cursor: pointer
+            background-size: 22px
+            bg-image('icon-quit_round')
+          .del
+            bg-image('icon-delete_round')
+          &:hover
+            opacity: 1
+      .auxiliary-add
+        font-size: $font-size-14
+        padding: 9px 12px
+        margin-bottom: 20px
+        min-width: 80px
+        text-align: center
     .back
       position: absolute
       left: 0
       right: 0
       bottom: 0
-      border-top: 1px solid $color-line
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -1131,146 +1079,76 @@
     border: 1px solid $color-line
     margin: 0 20px
     height: 400px
-    .outreach-goods-list
+    .rush-goods-list
       flex-wrap: wrap
       display: flex
-      .goods-item
-        box-sizing: border-box
-        padding: 0 20px
-        width: 50%
-        height: 79.5px
-        display: flex
-        align-items: center
-        border-bottom: 0.5px solid $color-line
-        &:nth-child(2n+1)
-          border-right: 1px solid $color-line
-        &:nth-child(9), &:nth-child(10)
-          border-bottom: none
-        .select-icon
-          margin-right: 20px
-          border-radius: 1px
-          border: 1px solid $color-line
-          height: 16px
-          width: 16px
-          transition: all 0.3s
-        .select-icon-disable
-          border: 1px solid transparent
-          cursor: not-allowed
-          icon-image('icon-check_ash')
-        .select-icon-active
-          border: 1px solid transparent
-          icon-image('icon-check')
-        .goods-img
-          margin-right: 10px
-          width: 40px
-          height: @width
-          overflow: hidden
-          background-repeat: no-repeat
-          background-size: cover
-          background-position: center
-          background-color: $color-background
-        .goods-msg
-          display: flex
-          flex-direction: column
-          color: $color-text-main
-          font-family: $font-family-regular
-          justify-content: space-between
-          flex: 1
-          overflow: hidden
-          height: 40px
-          .goods-name
-            width: 210px
-            no-wrap()
-          .goods-name, .goods-money
-            line-height: 1.2
-            font-size: $font-size-14
-
-        .add-btn
-          border-radius: 1px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          text-align: center
-        .add-btn-disable
-          border-radius: 1px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          box-sizing: border-box
-          text-align: center
-          font-size: $font-size-14
-          line-height: 1
-          cursor: not-allowed
-          background: $color-line
-          color: $color-text-assist
-          border: none
-
-  .group-content
-    border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
-    height: 407px
-    .title
-      display: flex
-      height: 45px
-      line-height: 45px
-      font-family: $font-family-regular
-      background: #F5F7FA
-      border-bottom: 1px solid #E9ECEE
-      align-items: center
+    .goods-item
+      box-sizing: border-box
       padding: 0 20px
-      .title-item
-        display: -webkit-box
+      width: 50%
+      height: 79.5px
+      display: flex
+      align-items: center
+      border-bottom: 0.5px solid $color-line
+      &:nth-child(2n+1)
+        border-right: 1px solid $color-line
+      &:nth-child(9), &:nth-child(10)
+        border-bottom: none
+      .select-icon
+        margin-right: 20px
+        border-radius: 1px
+        border: 1px solid $color-line
+        height: 16px
+        width: 16px
+        transition: all 0.3s
+      .select-icon-disable
+        border: 1px solid transparent
+        cursor: not-allowed
+        icon-image('icon-check_ash')
+      .select-icon-active
+        border: 1px solid transparent
+        icon-image('icon-check')
+      .goods-img
+        margin-right: 10px
+        width: 40px
+        height: @width
         overflow: hidden
-        -webkit-line-clamp: 2
-        -webkit-box-orient: vertical
-        padding-right: 20px
-    .outreach-group-list
-      font-size: $font-size-14
-      color: #333
-      font-family: $font-family-regular
-      .group-item
-        height: 60px
-        line-height: 18px
+        background-repeat: no-repeat
+        background-size: cover
+        background-position: center
+        background-color: $color-background
+      .goods-msg
         display: flex
-        align-items: center
-        border-bottom: 1px solid #E9ECEE
-        padding: 0 20px
-        &:nth-child(2n)
-          background: #F5F7FA
-        &:last-child
-          border-bottom: 0
-        .check
-          width: 16px
-          height: 16px
-          border: 1px solid #E1E1E1
-          border-radius: 50%
-          transition: all 0.3s
-          display: flex
-          justify-content: center
-          align-items: center
-          &:before
-            content: ""
-            display: block
-            width: 8px
-            height: 8px
-            border-radius: 50%
-            background: #4DBD65
-            opacity: 0
-            transition: all 0.3s
-        .checked
-          border-color: #4DBD65
-          &:before
-            opacity: 1
-        .title-item
-          padding-right: 20px
-          display: block
-          overflow: hidden
-          span
-            display: -webkit-box
-            overflow: hidden
-            -webkit-line-clamp: 2
-            -webkit-box-orient: vertical
+        flex-direction: column
+        color: $color-text-main
+        font-family: $font-family-regular
+        justify-content: space-between
+        height: 40px
+        .goods-name
+          width: 210px
+          no-wrap()
+        .goods-name, .goods-money
+          line-height: 1
+          font-size: $font-size-14
+      .add-btn
+        border-radius: 1px
+        margin-left: 88px
+        padding: 5px 0
+        min-width: 56px
+        text-align: center
+      .add-btn-disable
+        border-radius: 1px
+        margin-left: 88px
+        padding: 5px 0
+        width: 56px
+        box-sizing: border-box
+        text-align: center
+        font-size: $font-size-14
+        line-height: 1
+        cursor: not-allowed
+        background: $color-line
+        color: $color-text-assist
+        border: none
 
   /*弹窗动画*/
   @keyframes layerFadeIn {
@@ -1309,15 +1187,13 @@
     &::-webkit-inner-spin-button
       appearance: none
     &:hover
-      border-color: #ACACAC
+      border: 0.5px solid #ACACAC
     &::placeholder
       font-family: $font-family-regular
       color: $color-text-assist
     &:focus
       border-color: $color-main !important
-  .no-border
-    border-width: 0
-    background: rgba(255,255,255,0)
+
   .small-money
     col-center()
     left: 10px
@@ -1328,7 +1204,8 @@
 
   .com-edit-small
     width: 60px
-  .outreach-list-box
+
+  .rush-list-box
     background: $color-white
     overflow: visible
     display: flex

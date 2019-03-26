@@ -130,7 +130,6 @@
           return
         }
         let data = {
-          user_name: this.username,
           true_name: this.name,
           mobile: this.mobile,
           password: this.password

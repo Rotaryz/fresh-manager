@@ -211,9 +211,63 @@ export default [
                 .catch(() => {
                   return next({name: '404'})
                 })
+            } else {
+              next()
             }
-            return next()
           }
+        }
+      },
+      // 限时抢购
+      {
+        path: 'flash-sale',
+        name: 'flash-sale',
+        component: () => lazyLoadView(import('@pages/flash-sale/flash-sale')),
+        meta: {
+          titles: ['商城', '活动', '限时抢购'],
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   //  抢购列表
+          //   store
+          //     .dispatch('rush/getRushList', {page: 1})
+          //     .then((res) => {
+          //       if (!res) {
+          //         return next({name: '404'})
+          //       }
+          //       return next()
+          //     })
+          //     .catch(() => {
+          //       return next({name: '404'})
+          //     })
+          // }
+        }
+      },
+      // 新建查看限时抢购
+      {
+        path: 'flash-sale/new-sale',
+        name: 'edit-rush',
+        component: () => lazyLoadView(import('@pages/new-sale/new-sale')),
+        meta: {
+          titles: ['商城', '活动', '限时抢购', '活动'],
+          variableIndex: 3,
+          marginBottom: 80,
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   let id = routeTo.query.id
+          //   //  抢购详情
+          //   if (id) {
+          //     store
+          //       .dispatch('rush/getRushDetail', {id})
+          //       .then((res) => {
+          //         if (!res) {
+          //           return next({name: '404'})
+          //         }
+          //         return next()
+          //       })
+          //       .catch(() => {
+          //         return next({name: '404'})
+          //       })
+          //   } else {
+          //     next()
+          //   }
+          // }
         }
       },
       // 拓展活动
@@ -262,8 +316,113 @@ export default [
                 .catch(() => {
                   return next({name: '404'})
                 })
+            } else {
+              next()
             }
-            return next()
+          }
+        }
+      },
+      // 优惠券
+      {
+        path: 'coupon-manage',
+        name: 'coupon-manage',
+        component: () => lazyLoadView(import('@pages/coupon-manage/coupon-manage')),
+        meta: {
+          titles: ['商城', '营销', '优惠券'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 活动列表
+            store
+              .dispatch('coupon/getCouponList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 新建查看优惠券
+      {
+        path: 'coupon-manage/new-coupon',
+        name: 'new-coupon',
+        component: () => lazyLoadView(import('@pages/new-coupon/new-coupon')),
+        meta: {
+          titles: ['商城', '营销', '优惠券', '新建优惠券'],
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('coupon/getCouponDetail', id)
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
+        }
+      },
+      // 营销计划
+      {
+        path: 'coupon-market',
+        name: 'coupon-market',
+        component: () => lazyLoadView(import('@pages/coupon-market/coupon-market')),
+        meta: {
+          titles: ['商城', '营销', '营销计划'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 活动列表
+            store
+              .dispatch('market/getMarketList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 新建查看营销
+      {
+        path: 'coupon-market/new-market',
+        name: 'new-market',
+        component: () => lazyLoadView(import('@pages/new-market/new-market')),
+        meta: {
+          titles: ['商城', '营销', '营销计划', '新建营销计划'],
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('market/getMarketDetail', id)
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
           }
         }
       },

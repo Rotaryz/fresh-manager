@@ -71,6 +71,21 @@
       ]
     },
     {
+      title: '营销',
+      children: [
+        {
+          title: '优惠券',
+          url: '/home/coupon-manage',
+          isLight: false
+        },
+        {
+          title: '营销计划',
+          url: '/home/coupon-market',
+          isLight: false
+        }
+      ]
+    },
+    {
       title: '订单',
       children: [
         {
