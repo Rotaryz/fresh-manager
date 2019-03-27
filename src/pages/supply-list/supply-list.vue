@@ -4,18 +4,18 @@
       <!--时间选择-->
       <span class="down-tip">下单时间</span>
       <date-picker
-        class="edit-input-box"
-        type="datetime"
+        class="edit-input-box" type="date"
         placeholder="开始时间"
         style="width: 187px;height: 28px;border-radius: 1px"
         :value="startTime"
         @on-change="changeStartTime"
       ></date-picker>
+      <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item">
         <date-picker
           class="edit-input-box edit-input-right"
-          type="datetime"
+          type="date"
           placeholder="结束时间"
           style="width: 187px;height: 28px;border-radius: 1px"
           :value="endTime"
@@ -38,28 +38,6 @@
         <div class="identification-page">
           <img src="./icon-order_list2@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
-        </div>
-      </div>
-      <div class="order-detail">
-        <div class="order-item">
-          <p class="order-text order-title">全部：</p>
-          <p class="order-text order-money">{{statistic.all}}</p>
-        </div>
-        <div class="order-item">
-          <p class="order-text order-title">待调度：</p>
-          <p class="order-text order-money">{{statistic.wait_dispatch}}</p>
-        </div>
-        <div class="order-item">
-          <p class="order-text order-title">待分拣：</p>
-          <p class="order-text order-money">{{statistic.wait_sorting}}</p>
-        </div>
-        <div class="order-item">
-          <p class="order-text order-title">待配送：</p>
-          <p class="order-text order-money">{{statistic.wait_delivery}}</p>
-        </div>
-        <div class="order-item">
-          <p class="order-text order-title">已完成：</p>
-          <p class="order-text order-money">{{statistic.success}}</p>
         </div>
       </div>
       <div class="big-list">
@@ -112,30 +90,17 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        statusSelect: SELECT,
-        statistic: {
-          all: 0,
-          wait_dispatch: 0,
-          wait_sorting: 0,
-          wait_delivery: 0,
-          success: 0
-        },
-        startTime1: ''
+        statusSelect: SELECT
       }
     },
     computed: {
       ...omsComputed
     },
-    async created() {
+    created() {
       this._getOmsOrderStatus()
-      await this._outOrdersStatistic()
     },
     methods: {
       ...omsMethods,
-      async _outOrdersStatistic() {
-        let res = await API.Oms.outOrdersStatistic({start_time: this.startTime, end_time: this.endTime})
-        this.statistic = res.error === this.$ERR_OK ? res.data : {}
-      },
       _getOmsOrderStatus() {
         API.Oms.getOmsOrderStatus().then((res) => {
           if (res.error !== this.$ERR_OK) {
@@ -159,14 +124,12 @@
         this.setKeyword(keyword)
         this.$refs.pagination.beginPage()
       },
-      async changeStartTime(value) {
+      changeStartTime(value) {
         this.setStartTime(value)
-        await this._outOrdersStatistic()
         this.$refs.pagination.beginPage()
       },
-      async changeEndTime(value) {
+      changeEndTime(value) {
         this.setEndTime(value)
-        await this._outOrdersStatistic()
         this.$refs.pagination.beginPage()
       }
     }
