@@ -112,7 +112,7 @@
         <div class="content-header">
           <div class="content-title">限时抢购</div>
         </div>
-        <div class="edit-activity">
+        <div>
           <div class="edit-item edit-flex">
             <div class="left">显示活动<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
             <div class="switch" @click="switchBtn()">
@@ -318,6 +318,7 @@
         })
       },
       switchBtn() {
+        this.activityStatus = this.activityStatus ? 0 : 1
         console.log(this.activityStatus)
       },
       _getActivityId(item) {
@@ -622,6 +623,7 @@
   @import "~@design"
   .advertisement-small
     display: flex
+    font-family: $font-family-regular
 
   .goods-cate
     flex: 1
@@ -1092,7 +1094,11 @@
       color: $color-text-assist
 
   .edit-flex
-    background: $color
+    border: 0.5px dashed #D9D9D9
+    border-radius: 1px
+    background: #F5F7FA
+    padding: 18px 20px
+    box-sizing: border-box
     display: flex
     justify-content: space-between
     align-items: center

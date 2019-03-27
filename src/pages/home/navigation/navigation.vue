@@ -257,11 +257,17 @@
     {
       name: '统计',
       icon: require('./icon-statistics@2x.png'),
-      isLight: false,
+      isLight: true,
       second: STATISTICS,
       url: '/home/data-survey'
     },
-    {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
+    {
+      name: '商城',
+      icon: require('./icon-tmall@2x.png'),
+      isLight: false,
+      second: SHOP,
+      url: '/home/product-list'
+    },
     {
       name: '供应链',
       icon: require('./icon-supply_chain@2x.png'),

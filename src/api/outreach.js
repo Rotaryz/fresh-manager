@@ -28,7 +28,8 @@ export default {
    * @returns {*}
    */
   deleteActivity(id, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    // let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
     return request.delete(url, null, loading)
   },
   /**
