@@ -322,13 +322,13 @@ export default [
           }
         }
       },
-      // 优惠券管理
+      // 优惠券
       {
         path: 'coupon-manage',
         name: 'coupon-manage',
         component: () => lazyLoadView(import('@pages/coupon-manage/coupon-manage')),
         meta: {
-          titles: ['商城', '营销', '优惠券管理'],
+          titles: ['商城', '营销', '优惠券'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
@@ -351,7 +351,7 @@ export default [
         name: 'new-coupon',
         component: () => lazyLoadView(import('@pages/new-coupon/new-coupon')),
         meta: {
-          titles: ['商城', '营销', '优惠券管理', '新建优惠券'],
+          titles: ['商城', '营销', '优惠券', '新建优惠券'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -374,13 +374,13 @@ export default [
           }
         }
       },
-      // 优惠券营销
+      // 营销计划
       {
         path: 'coupon-market',
         name: 'coupon-market',
         component: () => lazyLoadView(import('@pages/coupon-market/coupon-market')),
         meta: {
-          titles: ['商城', '营销', '优惠券营销'],
+          titles: ['商城', '营销', '营销计划'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
@@ -403,7 +403,7 @@ export default [
         name: 'new-market',
         component: () => lazyLoadView(import('@pages/new-market/new-market')),
         meta: {
-          titles: ['商城', '营销', '优惠券营销', '新建优惠券营销'],
+          titles: ['商城', '营销', '营销计划', '新建营销计划'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id

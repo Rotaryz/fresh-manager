@@ -81,14 +81,14 @@ export const outreachComputed = {
 
 export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
 
-// 优惠券管理
+// 优惠券
 export const couponComputed = {
   ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'time', 'status', 'page'])
 }
 
 export const couponMethods = mapActions('coupon', ['setTime', 'setStatus', 'setPage', 'getCouponList', 'getCouponDetail'])
 
-// 优惠券营销
+// 营销计划
 export const marketComputed = {
   ...mapGetters('market', ['marketList', 'pageDetail', 'marketDetail'])
 }

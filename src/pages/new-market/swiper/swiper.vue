@@ -71,15 +71,15 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .banner
-    width: 336px
-    height: 536px
+    width: 300px
+    height: 472.2px
     .ivu-carousel-item
       box-sizing: border-box
       padding-left: 0
     .carousel
       border-radius: 1px
-      width: 336px
-      height: 536px
+      width: 300px
+      height: 472.2px
       background-repeat: no-repeat
       background-size: cover
       background-position: center

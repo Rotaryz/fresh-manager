@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{disable ? '查看' : '新建'}}优惠券营销</p>
+        <p class="identification-name">{{disable ? '查看' : '新建'}}营销</p>
       </div>
       <div class="function-btn">
       </div>
@@ -26,7 +26,7 @@
       </div>
 
       <div class="right-form">
-        <h3 class="title">{{title}}</h3>
+        <h3 class="title">{{title}} <span v-if="marketIndex === 2" class="tip">{{'(6天内没有支付订单的客户)'}}</span></h3>
 
         <!--营销名称-->
         <div class="edit-item">
@@ -47,11 +47,11 @@
           </div>
         </div>
 
-        <!--新客户配置-->
+        <!--新客有礼-->
         <div v-if="marketIndex === 0" class="edit-item edit-item-new">
           <div class="edit-title">
             <span class="start">*</span>
-            <span>新客户配置</span>
+            <span>配置</span>
             <span class="tip">(二选一)</span>
           </div>
           <div class="edit-content">
@@ -92,11 +92,11 @@
           </div>
         </div>
 
-        <!--活跃客户配置-->
+        <!--复购有礼-->
         <div v-if="marketIndex === 1" class="edit-item edit-item-activity">
           <div class="edit-title">
             <span class="start">*</span>
-            <span>活跃客户配置</span>
+            <span>配置</span>
             <span class="tip">(二选一)</span>
           </div>
           <div class="edit-content">
@@ -121,21 +121,21 @@
           </div>
         </div>
 
-        <!--沉睡客户配置-->
-        <div v-if="marketIndex === 2" class="edit-item">
-          <div class="edit-title long-title">
+        <!--唤醒流失客户-->
+        <div v-if="false" class="edit-item">
+          <!--<div class="edit-title long-title">
             <span class="start">*</span>
-            <span>沉睡客户配置</span>
+            <span>配置</span>
             <span class="tip">6天不活跃的客户（没有订单）</span>
           </div>
-          <!--<div class="edit-content no-wrap">
+          <div class="edit-content no-wrap">
             <span style="margin-right: 10px">满足 前</span>
             <base-drop-down :width="120" :height="44" :select="dayData" @setValue="_selectDay"></base-drop-down>
             <span style="margin-left: 10px">内无下单记录的客户</span>
           </div>-->
         </div>
 
-        <!--选择优惠券-->
+        <!--社群福利券-->
         <div class="edit-item  edit-list-item">
           <div class="edit-title">
             <span class="start">*</span>
@@ -302,7 +302,7 @@
   import _ from 'lodash'
 
   const PAGE_NAME = 'NEW_MARKET'
-  const TITLE = '新建查看优惠券营销'
+  const TITLE = '新建查看营销'
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
   const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'share_coupon']
@@ -341,7 +341,7 @@
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
     // ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
-    ['团长打开小区管理优惠券营销转发优惠券', '选择微信聊天列表发送', '点击链接进入领券页领取优惠券', '领取成功点击去使用跳转商城', '客户商城选购商品', '提交订单立减金额']
+    ['团长打开小区管理营销计划转发优惠券', '选择微信聊天列表发送', '点击链接进入领券页领取优惠券', '领取成功点击去使用跳转商城', '客户商城选购商品', '提交订单立减金额']
   ]
   export default {
     name: PAGE_NAME,
@@ -493,9 +493,9 @@
     beforeCreate() {
       this.id = this.$route.query.id || null
       if(this.$route.query.id) {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券营销', '查看优惠券营销'])
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看营销'])
       } else {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券营销', '新建优惠券营销'])
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建营销'])
       }
     },
     created() {
@@ -507,7 +507,7 @@
         this.msg.type = 1
         this.type || (this.msg.config_json.way = 'between_days')
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '新客户规则设置'
+        this.title = '新客有礼'
         this.type || this._getCouponList()
         break
       case 1:
@@ -515,7 +515,7 @@
         this.msg.config_json.way = 'order_count'
         this.msg.config_json.days = 3
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '活跃客户规则设置'
+        this.title = '复购有礼'
         this.type || this._getCouponList()
         break
       case 2:
@@ -523,13 +523,13 @@
         this.msg.config_json.way = 'days'
         this.msg.config_json.days = 6
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '沉睡客户规则设置'
+        this.title = '唤醒流失客户'
         this.type || this._getCouponList()
         break
       case 3:
         this.msg.type = 4
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '发券规则设置'
+        this.title = '社群福利券'
         this.type || this._getCouponList()
         this.type || this._getGroupList()
       }
@@ -896,20 +896,20 @@
     display: flex
   /*左边轮播图*/
   .left-view
-    margin: 40px 80px 14px
-    width: 380px
-    height: 716px
+    margin: 20px 60px 14px
+    width: 340px
+    height: 640px
     .top-content
-      height: 626px
+      height: 550px
       background: url(./pic-model@2x.png) no-repeat
       background-size: 100% 100%
       overflow: hidden
 
     .wrapper
-      width: 336px
-      height: 536px
+      width: 300px
+      height: 472.2px
       overflow: hidden
-      margin: 91px auto 0
+      margin: 80px auto 0
     .wrapper-box
       width: 100%
       height: 100%
@@ -948,7 +948,7 @@
   /*右边表单*/
   .right-form
     flex: 1
-    padding: 20px
+    padding: 36px 20px 20px
     .title
       font-size: $font-size-16
       position: relative
@@ -964,6 +964,10 @@
         position: absolute
         left: 0
         top: 4px
+      .tip
+        color: $color-text-assist
+        font-size: $font-size-14
+
     .edit-item
       display: flex
       align-items: center

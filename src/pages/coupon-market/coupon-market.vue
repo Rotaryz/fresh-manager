@@ -7,7 +7,7 @@
       </div>
       <span class="down-tip">团长发放</span>
       <div class="down-item">
-        <div class="top-btn" @click="newMarket(3)">发送优惠券<span class="icon"></span></div>
+        <div class="top-btn" @click="newMarket(3)">社区福利券<span class="icon"></span></div>
       </div>
     </div>
     <div class="table-content">
@@ -39,7 +39,7 @@
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
-                <span class="list-operation" @click="_deleteMarket(item.id)">删除</span>
+                <span class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'COUPON_MARKET'
-  const TITLE = '优惠券营销'
+  const TITLE = '营销计划'
   const MARKET_TITLE = [
     {name: '营销名称', flex: 1.6, value: 'title', type: 1},
     {name: '类型', flex: 1, value: 'type', type: 2},
@@ -78,8 +78,8 @@
     data() {
       return {
         marketTitle: MARKET_TITLE,
-        topBtn: ['新客户', '活跃客户', '沉睡客户'],
-        type: ['未知', '新客户', '活跃客户', '沉睡客户', '发放优惠券'],
+        topBtn: ['新客有礼', '复购有礼', '唤醒流失客户'],
+        type: ['未知', '新客有礼', '复购有礼', '唤醒流失客户', '社群福利券'],
         page: 1,
         delId: 0
       }
@@ -114,9 +114,9 @@
             this.getMarketList({page: this.page})
           })
       },
-      _deleteMarket(id) {
-        this.delId = id
-        this.$refs.confirm.show('是否确定删除该优惠券营销')
+      _deleteMarket(item) {
+        this.delId = item.id
+        this.$refs.confirm.show(`删除${item.title || ''}营销计划`)
       },
       async _sureConfirm() {
         let res = await API.Market.deleteMarket(this.delId)

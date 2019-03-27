@@ -330,6 +330,10 @@
           let selectAddress = this.deliveryAddress.filter((res) => {
             return res.checked
           })
+          if (selectAddress.length === 0) {
+            this.$toast.show('请选择商户')
+            return
+          }
           let data = {
             delivery_address_ids: selectAddress.map((item) => item.id),
             road_id: this.handleRoadId,
