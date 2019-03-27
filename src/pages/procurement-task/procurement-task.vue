@@ -3,13 +3,16 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
-      <date-picker
-        :value="startTime"
-        class="edit-input-box" type="date"
-        placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 1px"
-        @on-change="_getStartTime"
-      ></date-picker>
+      <div class="down-time-box">
+        <date-picker
+          :value="startTime"
+          class="edit-input-box" type="date"
+          placeholder="开始时间"
+          style="width: 187px;height: 28px;border-radius: 1px"
+          @on-change="_getStartTime"
+        ></date-picker>
+        <div class="down-time-text">23:00:01</div>
+      </div>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item">
@@ -23,9 +26,14 @@
         ></date-picker>
       </div>
       <!--下拉选择-->
-      <span class="down-tip">状态</span>
+      <span class="down-tip">全部</span>
       <div class="down-item">
-        <base-drop-down :select="purchaseTask" @setValue="_setValue"></base-drop-down>
+        <base-drop-down :select="purchaseTask" :width="218" @setValue="_setValuett"></base-drop-down>
+      </div>
+      <!--下拉选择-->
+      <span class="down-tip">供应商</span>
+      <div class="down-item">
+        <base-drop-down :select="supplyTask" :width="218" @setValue="_setValue"></base-drop-down>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
@@ -40,18 +48,19 @@
           <p class="identification-name">采购任务列表</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main" @click="_sendPublish">发布给采购员</div>
+          <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}">生成采购单</div>
           <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
         </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div class="pro-select-icon hand" :class="{'pro-select-icon-active': select}" @click="selectPurchase('all')"></div>
+          <div class="pro-select-icon hand" :class="{'pro-select-icon-active': select, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: 'all', status: status})"></div>
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
           <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box">
-            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1}" @click="selectPurchase(index)"></div>
+            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.supplier}}</div>
@@ -151,12 +160,14 @@
         </div>
       </div>
     </default-modal>
+    <default-confirm ref="confirmMsg" :oneBtn="oneBtn"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'iview'
   import DefaultModal from '@components/default-modal/default-modal'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {proTaskComputed, proTaskMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
@@ -171,7 +182,8 @@
     },
     components: {
       DatePicker,
-      DefaultModal
+      DefaultModal,
+      DefaultConfirm
     },
     data() {
       return {
@@ -182,6 +194,7 @@
         keyword: '',
         time: '',
         status: '',
+        supplyId: '',
         selectList: [],
         purchaseTask: {
           check: false,
@@ -195,6 +208,15 @@
             {name: '已完成', value: 3}
           ]
         },
+        supplyTask: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [
+            {name: '全部', id: ''}
+          ]
+        },
         parentId: '',
         taskNum: '',
         showSelectIndex: -1,
@@ -204,7 +226,8 @@
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsItem: {},
-        choicePage: 1
+        choicePage: 1,
+        oneBtn: false
       }
     },
     computed: {
@@ -217,6 +240,7 @@
       this.endTime = time
       await this._getFirstAssortment()
       await this._getGoodsList()
+      await this._getSupplierList()
     },
     methods: {
       ...proTaskMethods,
@@ -322,6 +346,7 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
         this.cancel()
@@ -330,7 +355,7 @@
         this.taskNum = ''
         this.$refs.modal.showModal()
       },
-      _setValue(item) {
+      _setValuett(item) {
         this.status = item.value
         this.page = 1
         this.$refs.pages.beginPage()
@@ -341,6 +366,22 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
+          loading: false
+        })
+      },
+      _setValue(item) {
+        this.supplyId = item.id
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
       },
@@ -359,6 +400,7 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
       },
@@ -373,6 +415,7 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
       },
@@ -391,10 +434,12 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
       },
       async _sendPublish() {
+        if (this.status !== 1) return
         let selectArr = []
         this.purchaseTaskList.forEach((item) => {
           if (item.select) {
@@ -402,8 +447,14 @@
           }
         })
         // selectArr = selectArr.concat(this.selectList)
+        if (this.purchaseTaskList.length === 0) {
+          this.$toast.show('暂无任务可发布')
+          return
+        }
         if (!selectArr.length) {
-          this.$toast.show('请选择采购任务')
+          this.oneBtn = false
+          this.$refs.confirmMsg.show('是否发布全部任务给采购员？')
+          // this.$toast.show('请选择采购任务')
           return
         }
         let res = await API.Supply.purchaseTaskPublish({ids: selectArr})
@@ -438,9 +489,23 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
         // this.selectPurchase(this.selectList)
+      },
+      // 获取供应商列表
+      async _getSupplierList() {
+        let res = await API.Supply.getSupplier({
+          keyword: ''
+        })
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        res.data.forEach(item => {
+          item.name = item.supplier_name
+        })
+        this.supplyTask.data = this.supplyTask.data.concat(res.data)
       }
     }
   }

@@ -753,6 +753,7 @@ export default [
                 keyword: '',
                 page: 1,
                 status: '',
+                supplyId: '',
                 loading: true
               })
               .then((res) => {

@@ -54,7 +54,8 @@ export const actions = {
     const {page, keyword} = state
     let data = {
       page,
-      keyword
+      keyword,
+      limit: 10
     }
     return API.Supply.getSupplier(data)
       .then((res) => {
