@@ -99,5 +99,25 @@ export default {
   getDeliveryDriver(data, loading = true) {
     let url = '/scm/api/backend/delivery/delivery-driver-tasks'
     return request.get(url, data, loading)
+  },
+  /**
+   * 配送任务统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getSeliveryStatistic(data, loading = false) {
+    let url = '/scm/api/backend/delivery/delivery-statistic'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  配送任务签收
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  deliverySign(id, loading = false) {
+    let url = `/scm/api/backend/delivery/delivery-sign/${id}`
+    return request.get(url, false, loading)
   }
 }

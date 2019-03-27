@@ -21,7 +21,8 @@ export const state = {
   },
   driverPage: 1,
   driverStartTime: '',
-  driverEndTime: ''
+  driverEndTime: '',
+  orderStatus: ''
 }
 
 export const getters = {
@@ -45,6 +46,9 @@ export const getters = {
   },
   orderKeyword(state) {
     return state.orderKeyword
+  },
+  orderStatus(state) {
+    return state.orderStatus
   },
   driverList(state) {
     return state.driverList
@@ -82,6 +86,9 @@ export const mutations = {
   SET_ORDER_END_TIME(state, time) {
     state.orderEndTime = time
   },
+  SET_ORDER_STATUS(state, orderStatus) {
+    state.orderStatus = orderStatus
+  },
   SET_ORDER_KEYWORD(state, keyword) {
     state.orderKeyword = keyword
   },
@@ -104,7 +111,7 @@ export const mutations = {
 
 
 export const actions = {
-  setTabIndex({commit,dispatch, state}, index) {
+  setTabIndex({commit, dispatch, state}, index) {
     commit('SET_TAB_INDEX', index)
     if (state.tabIndex === 0) {
       dispatch('getOrderList', false)
@@ -113,12 +120,13 @@ export const actions = {
     }
   },
   getOrderList({commit, state}, loading = true) {
-    const {orderStartTime, orderEndTime, orderKeyword, orderPage} = state
+    const {orderStartTime, orderEndTime, orderKeyword, orderPage, orderStatus} = state
     let data = {
       start_time: orderStartTime,
-      end_time:orderEndTime,
+      end_time: orderEndTime,
       keyword: orderKeyword,
-      page:orderPage
+      page: orderPage,
+      status: orderStatus
     }
     return API.Delivery.getDeliveryOrder(data, loading)
       .then((res) => {
@@ -136,7 +144,7 @@ export const actions = {
         commit('SET_ORDER_PAGE_DETAIL', pageDetail)
         return list
       })
-      .catch(() =>{
+      .catch(() => {
         return false
       })
       .finally(() => {
@@ -163,12 +171,16 @@ export const actions = {
     commit('SET_ORDER_PAGE', page)
     dispatch('getOrderList')
   },
+  setOrderStatus({commit, dispatch}, status) {
+    commit('SET_ORDER_STATUS', status)
+    dispatch('getOrderList')
+  },
   getDriverList({commit, state}, loading = true) {
     const {driverStartTime, driverEndTime, driverPage} = state
     let data = {
       start_time: driverStartTime,
-      end_time:driverEndTime,
-      page:driverPage
+      end_time: driverEndTime,
+      page: driverPage
     }
     return API.Delivery.getDeliveryDriver(data, loading)
       .then((res) => {
@@ -186,7 +198,7 @@ export const actions = {
         commit('SET_DRIVER_PAGE_DETAIL', pageDetail)
         return list
       })
-      .catch(() =>{
+      .catch(() => {
         return false
       })
       .finally(() => {

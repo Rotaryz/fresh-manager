@@ -3,15 +3,18 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
-      <date-picker
-        class="edit-input-box" type="date"
-        placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 1px"
-        @on-change="changeStartTime"
-      ></date-picker>
+      <div class="down-time-box">
+        <date-picker
+          class="edit-input-box" type="date"
+          placeholder="开始时间"
+          style="width: 187px;height: 28px;border-radius: 1px"
+          @on-change="changeStartTime"
+        ></date-picker>
+        <div v-if="startTime" class="down-time-text">23:00:01</div>
+      </div>
       <!--@on-change="_getStartTime"-->
       <div class="tip">~</div>
-      <div class="down-item">
+      <div class="down-item down-time-box">
         <date-picker
           class="edit-input-box edit-input-right"
           type="date"
@@ -19,6 +22,7 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="changeEndTime"
         ></date-picker>
+        <div v-if="endTime" class="down-time-text">23:00:01</div>
       </div>
       <!--下拉选择-->
       <!--<span class="down-tip">状态</span>-->
@@ -133,7 +137,6 @@
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
           this.dispatchSelect[index].num = this.statistic[key]
         }
-        console.log(this.dispatchSelect)
       },
       getProductListData() {
         let data = {
@@ -202,9 +205,10 @@
         padding-right: 14px
         &:last-child
           max-width: 105px
-        &:nth-child(8), &:nth-child(2)
+        &:nth-child(8), &:nth-child(1)
           flex: 1.5
-
+        &:nth-child(4), &:nth-child(2)
+          flex: 1.7
   .list-item-progress
     display: flex
     align-items: flex-end
