@@ -3,24 +3,30 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">下单时间</span>
-      <date-picker
-        class="edit-input-box" type="date"
-        placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 1px"
-        :value="startTime"
-        @on-change="changeStartTime"
-      ></date-picker>
+      <div class="down-time-box">
+        <date-picker
+          class="edit-input-box" type="date"
+          placeholder="开始时间"
+          style="width: 187px;height: 28px;border-radius: 1px"
+          :value="startTime"
+          @on-change="changeStartTime"
+        ></date-picker>
+        <div v-if="startTime" class="down-time-text">23:00:01</div>
+      </div>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item">
-        <date-picker
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
-          :value="endTime"
-          @on-change="changeEndTime"
-        ></date-picker>
+        <div class="down-time-box">
+          <date-picker
+            class="edit-input-box edit-input-right"
+            type="date"
+            placeholder="结束时间"
+            style="width: 187px;height: 28px;border-radius: 1px"
+            :value="endTime"
+            @on-change="changeEndTime"
+          ></date-picker>
+          <div v-if="endTime" class="down-time-text">23:00:00</div>
+        </div>
       </div>
       <!--下拉选择-->
       <span class="down-tip">状态</span>
@@ -46,7 +52,7 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in orders" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.merge_at}}</div>
+            <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.order_sn}}</div>
             <div class="list-item">{{item.buyer_name}}</div>
             <div class="list-item">{{item.total ? '￥' : ''}}{{item.total}}</div>
@@ -71,7 +77,7 @@
 
   const PAGE_NAME = 'SUPPLIER'
   const TITLE = '订单列表'
-  const COMMODITIES_LIST = ['下单时间', '订单号', '商户名称', '销售金额', '状态', '操作']
+  const COMMODITIES_LIST = ['创建时间', '订单号', '商户名称', '销售金额', '状态', '操作']
   const SELECT = {
     check: false,
     show: false,

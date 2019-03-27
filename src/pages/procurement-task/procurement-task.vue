@@ -11,7 +11,7 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="_getStartTime"
         ></date-picker>
-        <div class="down-time-text">23:00:01</div>
+        <div v-if="startTime" class="down-time-text">23:00:01</div>
       </div>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
@@ -28,12 +28,12 @@
       <!--下拉选择-->
       <span class="down-tip">全部</span>
       <div class="down-item">
-        <base-drop-down :select="purchaseTask" :width="218" @setValue="_setValuett"></base-drop-down>
+        <base-drop-down :select="purchaseTask" @setValue="_setValuett"></base-drop-down>
       </div>
       <!--下拉选择-->
       <span class="down-tip">供应商</span>
       <div class="down-item">
-        <base-drop-down :select="supplyTask" :width="218" @setValue="_setValue"></base-drop-down>
+        <base-drop-down :select="supplyTask" @setValue="_setValue"></base-drop-down>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
@@ -468,6 +468,7 @@
             keyword: this.keyword,
             status: this.status,
             page: this.page,
+            supplyId: this.supplyId,
             loading: false
           })
         }
