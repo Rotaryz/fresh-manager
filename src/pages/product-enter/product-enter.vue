@@ -38,6 +38,20 @@
           <p class="identification-name">入库列表</p>
         </div>
       </div>
+      <div class="order-detail">
+        <div class="order-item">
+          <p class="order-text order-title">全部：</p>
+          <p class="order-text order-money">{{statistic.all}}</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">待提交：</p>
+          <p class="order-text order-money">{{statistic.wait_submit}}</p>
+        </div>
+        <div class="order-item">
+          <p class="order-text order-title">已完成：</p>
+          <p class="order-text order-money">{{statistic.success}}</p>
+        </div>
+      </div>
       <div class="big-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
@@ -96,17 +110,27 @@
           content: '全部状态',
           type: 'default',
           data: [{name: '全部', value: ''}, {name: '待提交', value: 0}, {name: '已完成', value: 1}]
+        },
+        statistic: {
+          all: 0,
+          wait_submit: 0,
+          success: 0
         }
       }
     },
     computed: {
       ...productComputed
     },
-    created() {
+    async created() {
       this.productEnterList = _.cloneDeep(this.enterList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
+      await this._statistic()
     },
     methods: {
+      async _statistic() {
+        let res = await API.Store.entryOrdersStatistic({start_time: this.startTime, end_time: this.endTime})
+        this.statistic = res.error === this.$ERR_OK ? res.data : {}
+      },
       getProductListData() {
         let data = {
           status: this.status,
@@ -136,16 +160,18 @@
         this.getProductListData()
         this.$refs.pagination.beginPage()
       },
-      changeStartTime(value) {
+      async changeStartTime(value) {
         this.startTime = value
         this.goodsPage = 1
         this.getProductListData()
+        await this._statistic()
         this.$refs.pagination.beginPage()
       },
-      changeEndTime(value) {
+      async changeEndTime(value) {
         this.endTime = value
         this.goodsPage = 1
         this.getProductListData()
+        await this._statistic()
         this.$refs.pagination.beginPage()
       },
       setValue(item) {
@@ -205,6 +231,6 @@
       font-size: $font-size-14
 
   .tip
-    margin :0 2px
+    margin: 0 2px
     font-size: $font-size-14
 </style>
