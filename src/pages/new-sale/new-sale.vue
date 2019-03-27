@@ -12,6 +12,25 @@
       <div class="content-title">基本信息</div>
     </div>
     <div class="rush-time">
+      <!--<div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          持续时间
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :width="200" :height="44" :select="duration" @setValue="_selectDuration"></base-drop-down>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          活动名称
+        </div>
+        <div class="edit-input-box">
+          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input">
+        </div>
+      </div>
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -39,16 +58,6 @@
           @change="_getStartTime"
         ></date-picker>
         <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          持续时间
-        </div>
-        <div class="edit-input-box">
-          <base-drop-down :width="200" :height="44" :select="duration" @setValue="_selectDuration"></base-drop-down>
-        </div>
-        <div :class="{'text-no-change':disable}"></div>
       </div>
     </div>
 

@@ -78,7 +78,7 @@
         </div>
       </div>
       <!--活动-->
-      <div v-if="cmsType === 'activity'" class="advertisement-content">
+      <!--<div v-if="cmsType === 'activity'" class="advertisement-content">
         <div class="content-header">
           <div class="content-title">活动列表</div>
         </div>
@@ -105,34 +105,22 @@
             <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
           </div>
         </div>
-      </div>
+      </div>-->
 
       <!--活动-->
       <div v-if="cmsType === 'activity'" class="advertisement-content">
         <div class="content-header">
-          <div class="content-title">活动列表</div>
+          <div class="content-title">限时抢购</div>
         </div>
         <div class="edit-activity">
-          <div class="edit-item">
-            <div class="edit-title">
-              <span class="start">*</span>
-              营销活动
-            </div>
-            <div class="edit-box">
-              <base-drop-down :width="400" :height="44" :select="activityType"></base-drop-down>
-            </div>
-          </div>
-          <div class="edit-item">
-            <div class="edit-title">
-              <span class="start">*</span>
-              选择活动
-            </div>
-            <div class="edit-box">
-              <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
+          <div class="edit-item edit-flex">
+            <div class="left">显示活动<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
+            <div class="switch" @click="switchBtn()">
+              <base-switch :status="activityStatus" confirmText="开启" cancelText="关闭"></base-switch>
             </div>
           </div>
           <div class="submit-activity advertisement-btn">
-            <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
+            <div class="submit-activity-btn hand" @click="_editActivity()">保存并发布</div>
           </div>
         </div>
       </div>
@@ -296,7 +284,8 @@
         },
         goodsCate: [],
         showCateIndex: 0,
-        activityItem: {}
+        activityItem: {},
+        activityStatus: 0
       }
     },
     computed: {
@@ -327,6 +316,9 @@
           item.name = item.activity_name
           return item
         })
+      },
+      switchBtn() {
+        console.log(this.activityStatus)
       },
       _getActivityId(item) {
         this.activityItem.activityId = item.id
@@ -689,7 +681,7 @@
       justify-content: center
     .advertisement-item
       margin-top: 24px
-      border: 0.5 pxdashed #D9D9D9
+      border: 0.5px dashed #D9D9D9
       border-radius: 1px
       background: #F5F7FA
       height: 140px
@@ -1099,6 +1091,11 @@
       font-family: $font-family-regular
       color: $color-text-assist
 
+  .edit-flex
+    background: $color
+    display: flex
+    justify-content: space-between
+    align-items: center
   .edit-activity
     padding-left: 40px
 
