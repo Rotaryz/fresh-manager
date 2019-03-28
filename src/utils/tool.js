@@ -1,3 +1,6 @@
+import API from '@api'
+import {ERR_OK} from './config'
+
 /**
  * 获取当前的corpId
  * @returns {string}
@@ -20,5 +23,18 @@ export function getCorpId() {
       return process.env.VUE_APP_GUOJIDANWEI_CORP
     default:
       return process.env.VUE_APP_CURRENT_CORP
+  }
+}
+
+/**
+ * 获取当前的corpId
+ * @returns {string}
+ */
+export async function getCurrentTime() {
+  let res = await API.Global.getCurrentTime()
+  if (res.error === ERR_OK) {
+    let json = res.data
+    json.timestamp = json.timestamp * 1000
+    return res.data
   }
 }

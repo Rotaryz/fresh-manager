@@ -5,6 +5,7 @@
       <span class="down-tip">建单时间</span>
       <div class="down-time-box">
         <date-picker
+          :value="startTime"
           class="edit-input-box" type="date"
           placeholder="开始时间"
           style="width: 187px;height: 28px;border-radius: 1px"
@@ -16,6 +17,7 @@
       <div class="tip">~</div>
       <div class="down-item down-time-box">
         <date-picker
+          :value="endTime"
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
@@ -81,6 +83,7 @@
   import _ from 'lodash'
   import API from '@api'
   import {productComputed} from '@state/helpers'
+  import {getCurrentTime} from '@utils/tool'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品出库'
@@ -115,6 +118,11 @@
       ...productComputed
     },
     async created() {
+      let time = await getCurrentTime()
+      let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+      this.startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+      let endTime = new Date(time.timestamp)
+      this.endTime = endTime.toLocaleDateString().replace(/\//g, '-')
       this.productOutList = _.cloneDeep(this.outList)
       this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
