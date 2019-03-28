@@ -573,6 +573,7 @@
               loading: false
             })
           }
+          await this._statistic()
           break
         case 2:
           let supplyRes = await API.Supply.purchaseTask(
