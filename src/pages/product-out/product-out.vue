@@ -5,13 +5,13 @@
       <span class="down-tip">建单时间</span>
       <div class="down-time-box">
         <date-picker
-          :value="startTime"
+          :value=" `${startTime}`"
           class="edit-input-box" type="date"
           placeholder="开始时间"
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="changeStartTime"
         ></date-picker>
-        <div v-if="startTime" class="down-time-text">23:00:01</div>
+        <div v-if="startTime" class="down-time-text">{{accurateStart}}</div>
       </div>
       <!--@on-change="_getStartTime"-->
       <div class="tip">~</div>
@@ -24,7 +24,7 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="changeEndTime"
         ></date-picker>
-        <div v-if="endTime" class="down-time-text">23:00:00</div>
+        <div v-if="endTime" class="down-time-text">{{accurateEnd}}</div>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -104,7 +104,9 @@
           all: 0,
           wait_out: 0,
           success: 0
-        }
+        },
+        accurateStart: '',
+        accurateEnd: ''
       }
     },
     computed: {
@@ -113,13 +115,21 @@
     async created() {
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
+      this.accurateStart = this.$route.params.accurateStart
+      this.accurateEnd = this.$route.params.accurateEnd
       this.productOutList = _.cloneDeep(this.outList)
       this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
     },
     methods: {
+      _getTime() {
+        let start = this.startTime && this.startTime.length < 11 ? `${this.startTime} ${this.accurateStart}` : this.startTime
+        let end = this.endTime && this.endTime.length < 11 ? `${this.endTime} ${this.accurateEnd}` : this.endTime
+        return [start, end]
+      },
       async _statistic() {
-        let res = await API.Store.outOrdersStatistic({start_time: this.startTime, end_time: this.endTime, keyword: this.keyWord})
+        let time = this._getTime()
+        let res = await API.Store.outOrdersStatistic({start_time: time[0], end_time: time[1], keyword: this.keyWord})
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
@@ -127,12 +137,13 @@
         }
       },
       getProductListData() {
+        let time = this._getTime()
         let data = {
           status: this.status,
           page: this.goodsPage,
           limit: 10,
-          start_time: this.startTime,
-          end_time: this.endTime,
+          start_time: time[0],
+          end_time: time[1],
           keyword: this.keyWord
         }
         API.Store.getOutList(data, false).then((res) => {
@@ -156,16 +167,18 @@
         await this._statistic()
         this.$refs.pagination.beginPage()
       },
-      changeStartTime(value) {
+      async changeStartTime(value) {
         this.startTime = value
         this.goodsPage = 1
         this.getProductListData()
+        await this._statistic()
         this.$refs.pagination.beginPage()
       },
-      changeEndTime(value) {
+      async changeEndTime(value) {
         this.endTime = value
         this.goodsPage = 1
         this.getProductListData()
+        await this._statistic()
         this.$refs.pagination.beginPage()
       },
       setValue(item) {

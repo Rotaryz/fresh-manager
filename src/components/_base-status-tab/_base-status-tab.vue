@@ -1,5 +1,5 @@
 <template>
-  <div class="base-status-tab">
+  <div class="base-status-tab" :style="{opacity: show ? 1 : 0}">
     <div v-for="(item, index) in statusList" :key="index" class="status-tab-item hand"
          :class="{'status-tab-item-active': statusIndex === index}" @click="checkStatus(index, item)"
     >
@@ -26,6 +26,10 @@
       infoTabIndex: {
         type: Number,
         default: 0
+      },
+      show: {
+        type: Boolean,
+        default: true
       }
     },
     data() {

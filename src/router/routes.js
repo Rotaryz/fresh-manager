@@ -1116,11 +1116,13 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             let time = await getCurrentTime()
             let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+            startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
             let endTime = new Date(time.timestamp)
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             routeTo.params.start = startTime
             routeTo.params.end = endTime
+            routeTo.params.accurateStart = time.start
+            routeTo.params.accurateEnd = time.end
             store
               .dispatch('product/getEnterData', {startTime, endTime, page: 1})
               .then((res) => {
@@ -1166,11 +1168,13 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             let time = await getCurrentTime()
             let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+            startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
             let endTime = new Date(time.timestamp)
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             routeTo.params.start = startTime
             routeTo.params.end = endTime
+            routeTo.params.accurateStart = time.start
+            routeTo.params.accurateEnd = time.end
             store
               .dispatch('product/getOutData', {startTime, endTime, page: 1})
               .then((res) => {
@@ -1255,9 +1259,11 @@ export default [
             endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             routeTo.params.start = startTime
             routeTo.params.end = endTime
+            routeTo.params.accurateStart = time.start
+            routeTo.params.accurateEnd = time.end
             let tabIndex = store.state.distribution.tabIndex
             if (tabIndex === 0) {
-              store.dispatch('distribution/infoOrderTime', {startTime, endTime})
+              store.dispatch('distribution/infoOrderTime', {startTime, endTime, start: time.start, end: time.end})
               store
                 .dispatch('distribution/getOrderList')
                 .then((res) => {
@@ -1270,7 +1276,7 @@ export default [
                   return next({name: '404'})
                 })
             } else {
-              store.dispatch('distribution/infoDriverTime', {startTime, endTime})
+              store.dispatch('distribution/infoDriverTime', {startTime, endTime, start: time.start, end: time.end})
               store
                 .dispatch('distribution/getDriverList')
                 .then((res) => {
@@ -1315,7 +1321,14 @@ export default [
         component: () => lazyLoadView(import('@pages/supply-list/supply-list')),
         meta: {
           titles: ['供应链', '订单', '订单列表'],
-          beforeResolve(routeTo, routeFrom, next) {
+          async beforeResolve(routeTo, routeFrom, next) {
+            // 获取服务器时间且初始化
+            let time = await getCurrentTime()
+            let startTime = new Date(time.timestamp - (86400 * 1000 * 2))
+            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+            let endTime = new Date(time.timestamp - (86400 * 1000 * 1))
+            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            store.dispatch('oms/infoOrderTime', {startTime, endTime})
             store
               .dispatch('oms/getOmsOrders')
               .then((res) => {

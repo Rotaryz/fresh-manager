@@ -20,7 +20,7 @@ export default {
    * @returns {*}
    */
   getCurrentTime(loading = false) {
-    let url = '/scm/api/current-time'
+    let url = '/scm/api/backend/common/current-time'
     return request.get(url, false, loading)
   }
 }

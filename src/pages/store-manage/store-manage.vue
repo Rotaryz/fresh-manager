@@ -178,7 +178,6 @@
                 this.storeListData[i].warehouse_positions = []
               }
             }
-            console.log(this.storeListData)
             this.storeListData[this.bigIndex].warehouse_positions.splice(this.smallIndex, 1)
             this.$forceUpdate()
           } else {
