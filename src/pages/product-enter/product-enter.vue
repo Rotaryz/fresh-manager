@@ -22,7 +22,7 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="changeEndTime"
         ></date-picker>
-        <div v-if="endTime" class="down-time-text">23:00:01</div>
+        <div v-if="endTime" class="down-time-text">23:00:00</div>
       </div>
       <!--下拉选择-->
       <!--<span class="down-tip">状态</span>-->

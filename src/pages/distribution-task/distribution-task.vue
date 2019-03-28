@@ -25,8 +25,8 @@
           :value="tabIndex === 0 ? orderEndTime : driverEndTime"
           @on-change="changeEndTime"
         ></date-picker>
-        <div v-if="orderEndTime && tabIndex === 0" class="down-time-text">23:00:01</div>
-        <div v-if="driverEndTime && tabIndex === 1" class="down-time-text">23:00:01</div>
+        <div v-if="orderEndTime && tabIndex === 0" class="down-time-text">23:00:00</div>
+        <div v-if="driverEndTime && tabIndex === 1" class="down-time-text">23:00:00</div>
       </div>
       <div v-if="tabIndex === 0" class="distribution-down">
         <span class="down-tip">搜索</span>
