@@ -5,6 +5,7 @@
       <span class="down-tip">建单时间</span>
       <div class="down-time-box">
         <date-picker
+          :value="startTime"
           class="edit-input-box" type="date"
           placeholder="开始时间"
           style="width: 187px;height: 28px;border-radius: 1px"
@@ -12,10 +13,10 @@
         ></date-picker>
         <div v-if="startTime" class="down-time-text">23:00:01</div>
       </div>
-      <!--@on-change="_getStartTime"-->
       <div class="tip">~</div>
       <div class="down-item down-time-box">
         <date-picker
+          :value="endTime"
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
@@ -24,12 +25,6 @@
         ></date-picker>
         <div v-if="endTime" class="down-time-text">23:00:00</div>
       </div>
-      <!--下拉选择-->
-      <!--<span class="down-tip">状态</span>-->
-      <!--<div class="down-item">-->
-      <!--<base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>-->
-      <!--</div>-->
-      <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="入库单号或采购单号" @search="changeKeyword"></base-search>
@@ -111,6 +106,8 @@
       ...authComputed
     },
     async created() {
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
       this.productEnterList = _.cloneDeep(this.enterList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
       await this._statistic()

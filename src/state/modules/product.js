@@ -1,5 +1,6 @@
 import API from '@api'
 import app from '@src/main'
+import {getCurrentTime} from '@utils/tool'
 
 export const state = {
   storeList: [],
@@ -83,8 +84,13 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getEnterData({state, commit, dispatch}, {page, loading = true}) {
-    let data = {status: '', keyword: '', start_time: '', end_time: '', limit: 10, page: 1}
+  async getEnterData({state, commit, dispatch}, {startTime, endTime, page, loading = true}) {
+    // let time = await getCurrentTime()
+    // let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+    // startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+    // let endTime = new Date(time.timestamp)
+    // endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+    let data = {status: '', keyword: '', start_time: startTime, end_time: endTime, limit: 10, page: 1}
     return API.Store.getEnterList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -107,8 +113,13 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getOutData({state, commit, dispatch}, {page, loading = true}) {
-    let data = {status: '', keyword: '', start_time: '', end_time: '', limit: 10, page: 1}
+  async getOutData({state, commit, dispatch}, {page, loading = true}) {
+    let time = await getCurrentTime()
+    let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+    startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+    let endTime = new Date(time.timestamp)
+    endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+    let data = {status: '', keyword: '', start_time: startTime, end_time: endTime, limit: 10, page: 1}
     return API.Store.getOutList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {

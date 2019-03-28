@@ -109,8 +109,15 @@ export const mutations = {
   }
 }
 
-
 export const actions = {
+  infoOrderTime({commit, dispatch},{startTime, endTime}) {
+    commit('SET_ORDER_START_TIME', startTime)
+    commit('SET_ORDER_END_TIME', endTime)
+  },
+  infoDriverTime({commit, dispatch}, {startTime, endTime}) {
+    commit('SET_DRIVER_START_TIME', startTime)
+    commit('SET_DRIVER_END_TIME', endTime)
+  },
   setTabIndex({commit, dispatch, state}, index) {
     commit('SET_TAB_INDEX', index)
     if (state.tabIndex === 0) {
@@ -152,7 +159,6 @@ export const actions = {
       })
   },
   setOrderStartTime({commit, dispatch}, startTime) {
-    console.log(startTime)
     commit('SET_ORDER_START_TIME', startTime)
     commit('SET_ORDER_PAGE', 1)
     dispatch('getOrderList')

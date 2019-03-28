@@ -216,11 +216,41 @@ export const deliveryMethods = {
 
 // 调度任务
 export const distributionComputed = {
-  ...mapGetters('distribution', ['tabIndex', 'orderList', 'orderPageDetail', 'orderPage', 'orderStartTime', 'orderEndTime', 'orderKeyword', 'orderStatus', 'driverList', 'driverPageDetail', 'driverPage', 'driverStartTime', 'driverEndTime'])
+  ...mapGetters('distribution',
+    [
+      'tabIndex',
+      'orderList',
+      'orderPageDetail',
+      'orderPage',
+      'orderStartTime',
+      'orderEndTime',
+      'orderKeyword',
+      'orderStatus',
+      'driverList',
+      'driverPageDetail',
+      'driverPage',
+      'driverStartTime',
+      'driverEndTime'
+    ])
 }
 
 export const distributionMethods = {
-  ...mapActions('distribution', ['setTabIndex', 'getOrderList', 'setOrderStartTime', 'setOrderEndTime', 'setOrderKeyword', 'setOrderPage', 'setOrderStatus', 'getDriverList', 'setDriverStartTime', 'setDriverEndTime', 'setDriverPage'])
+  ...mapActions('distribution',
+    [
+      'setTabIndex',
+      'getOrderList',
+      'setOrderStartTime',
+      'setOrderEndTime',
+      'setOrderKeyword',
+      'setOrderPage',
+      'setOrderStatus',
+      'getDriverList',
+      'setDriverStartTime',
+      'setDriverEndTime',
+      'setDriverPage',
+      'infoOrderTime',
+      'infoDriverTime'
+    ])
 }
 
 // 采购员

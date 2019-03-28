@@ -77,7 +77,7 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER'
   const TITLE = '采购单列表'
-  const COMMODITIES_LIST = ['生成时间', '采购订单号', '采购品类数', '预采购金额', '供应商', '采购员', '状态', '操作']
+  const COMMODITIES_LIST = ['生成时间', '采购单号', '采购商品数', '预采购金额', '供应商', '采购员', '状态', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -102,13 +102,8 @@
       ...supplyComputed
     },
     async created() {
-      let yesterdayTime = new Date() - (86400 * 1000 * 1)
-      yesterdayTime = new Date(yesterdayTime)
-      yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
-      let time = new Date()
-      time = time.toLocaleDateString().replace(/\//g, '-')
-      this.startTime = yesterdayTime
-      this.endTime = time
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
       await this._statistic()
     },
     methods: {
@@ -194,7 +189,6 @@
         await this._statistic()
       },
       async _statistic() {
-        console.log(this.keyword)
         let res = await API.Supply.getPurchaseOrderStatistic({start_time: this.startTime, end_time: this.endTime, keyword: this.keyword})
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {

@@ -14,7 +14,6 @@
         <div v-if="orderStartTime && tabIndex === 0" class="down-time-text">23:00:01</div>
         <div v-if="driverStartTime && tabIndex === 1" class="down-time-text">23:00:01</div>
       </div>
-      <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item down-time-box">
         <date-picker
@@ -64,17 +63,10 @@
               <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
               <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
               <div class="list-item" :style="{flex: commodities[9].flex}">
-                <span class="list-operation" @click="handleOperation(item)">操作</span>
+                <span class="list-operation" @click="handleOperation(item)">导出</span>
                 <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
               </div>
             </div>
-            <!--<div v-for="(order, key) in orderList" :key="key" class="list-content list-box">-->
-            <!--<div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">-->
-            <!--{{item.operation ? '' : order[item.key]}}-->
-            <!--<div v-if="item.operation">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</div>-->
           </div>
           <div v-else-if="tabIndex === 1">
             <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
@@ -142,6 +134,8 @@
         exportDriverId: '',
         statistic: {all: 0, wait_delivery: 0, success_delivery: 0},
         signItem: {},
+        startTime: '',
+        endTime: '',
         dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待配送', value: 1, key: 'wait_delivery', num: 0}, {name: '配送完成', value: 2, key: 'success_delivery', num: 0}]
       }
     },
@@ -194,6 +188,8 @@
       }
     },
     async created() {
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
       await this._statistic()
     },
@@ -224,6 +220,18 @@
       },
       changeStatus(item, index) {
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+        switch (index) {
+        case 0:
+          if (!this.orderStartTime && !this.orderEndTime) {
+            this.infoOrderTime({startTime: this.startTime, endTime: this.endTime})
+          }
+          break
+        case 1:
+          if (!this.driverStartTime && !this.driverEndTime) {
+            this.infoDriverTime({startTime: this.startTime, endTime: this.endTime})
+          }
+          break
+        }
         this.setTabIndex(index)
       },
       async changeKeyword(keyword) {

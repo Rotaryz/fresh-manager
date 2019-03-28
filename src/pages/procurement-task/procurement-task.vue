@@ -222,13 +222,8 @@
       ...proTaskComputed
     },
     async created() {
-      let time = new Date()
-      time = time.toLocaleDateString().replace(/\//g, '-')
-      let yesterdayTime = new Date() - (86400 * 1000 * 1)
-      yesterdayTime = new Date(yesterdayTime)
-      yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
-      this.startTime = yesterdayTime
-      this.endTime = time
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
       await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
@@ -573,6 +568,7 @@
               loading: false
             })
           }
+          await this._statistic()
           break
         case 2:
           let supplyRes = await API.Supply.purchaseTask(
