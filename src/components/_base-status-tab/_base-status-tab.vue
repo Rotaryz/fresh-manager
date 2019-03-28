@@ -46,7 +46,7 @@
     },
     mounted() {
       this.el = document.querySelectorAll('.status-tab-item')
-      this.style = `width: ${this.el[this.statusIndex].offsetWidth}px`
+      this.style = `left: ${this.el[this.statusIndex].offsetLeft}px; width: ${this.el[this.statusIndex].offsetWidth}px`
     },
     methods: {
       checkStatus(index, item) {
@@ -71,7 +71,7 @@
     position: relative
     .status-tab-item
       border-radius: 100px
-      padding: 0 20px
+      width: 106px
       color: $color-text-main
       line-height: 30px
       text-align: center
@@ -84,6 +84,7 @@
     .status-tab-item-active
       color: $color-white
   .status-slider
+    width: 106px
     position: absolute
     top: 0
     left: 0
