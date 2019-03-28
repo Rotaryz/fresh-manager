@@ -29,11 +29,6 @@
         </div>
       </div>
       <!--下拉选择-->
-      <span class="down-tip">全部</span>
-      <div class="down-item">
-        <base-drop-down :select="purchaseTask" @setValue="_setValuett"></base-drop-down>
-      </div>
-      <!--下拉选择-->
       <span class="down-tip">供应商</span>
       <div class="down-item">
         <base-drop-down :select="supplyTask" @setValue="_setValue"></base-drop-down>
@@ -49,6 +44,7 @@
         <div class="identification-page">
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务列表</p>
+          <base-status-tab :statusList="dispatchSelect" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
@@ -199,18 +195,7 @@
         status: '',
         supplyId: '',
         selectList: [],
-        purchaseTask: {
-          check: false,
-          show: false,
-          content: '全部状态',
-          type: 'default',
-          data: [
-            {name: '全部', value: ''},
-            {name: '待发布', value: 1},
-            {name: '待采购', value: 2},
-            {name: '已完成', value: 3}
-          ]
-        },
+        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_release', num: 0}, {name: '待采购', value: 2, key: 'wait_purchase', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
         supplyTask: {
           check: false,
           show: false,
@@ -248,6 +233,7 @@
       await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
+      await this._statistic()
     },
     methods: {
       ...proTaskMethods,
@@ -279,11 +265,13 @@
         this.page = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
+        await this._statistic()
       },
       // 获取分页商品列表
       async _getMoreGoods(page) {
         this.choicePage = page
         await this._getGoodsList()
+        await this._statistic()
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -362,7 +350,7 @@
         this.taskNum = ''
         this.$refs.modal.showModal()
       },
-      _setValuett(item) {
+      async _setStatus(item) {
         this.status = item.value
         this.page = 1
         this.$refs.pages.beginPage()
@@ -377,7 +365,7 @@
           loading: false
         })
       },
-      _setValue(item) {
+      async _setValue(item) {
         this.supplyId = item.id
         this.page = 1
         this.$refs.pages.beginPage()
@@ -391,8 +379,9 @@
           supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
       },
-      _getStartTime(time) {
+      async _getStartTime(time) {
         this.startTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('开始时间不能大于结束时间')
@@ -410,8 +399,9 @@
           supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
       },
-      _search(word) {
+      async _search(word) {
         this.keyword = word
         this.page = 1
         this.$refs.pages.beginPage()
@@ -425,8 +415,9 @@
           supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
       },
-      _getEndTime(time) {
+      async _getEndTime(time) {
         this.endTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('结束时间不能小于开始时间')
@@ -444,6 +435,7 @@
           supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
       },
       async _sendPublish() {
         if (this.status !== 1) return
@@ -608,6 +600,14 @@
           this.setTaskList(supplyRes.data)
           this.$router.push('/home/procurement-task/edit-task')
           break
+        }
+      },
+      async _statistic() {
+        let res = await API.Supply.getTaskStatusNumber({start_time: this.startTime, end_time: this.endTime, keyword: this.keyWord, supplier_id: this.supplyId})
+        this.statistic = res.error === this.$ERR_OK ? res.data : {}
+        for (let key in this.statistic) {
+          let index = this.dispatchSelect.findIndex((item) => item.key === key)
+          this.dispatchSelect[index].num = this.statistic[key]
         }
       }
     }
