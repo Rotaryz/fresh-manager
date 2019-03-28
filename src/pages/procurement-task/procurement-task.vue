@@ -146,7 +146,6 @@
                   <div class="goods-money">{{item.goods_sku_code}}</div>
                 </div>
               </div>
-              <!--select-icon-active-->
             </div>
           </div>
           <div class="page-box">
@@ -257,7 +256,6 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
       },
       // 搜索商品
       async _searchGoods(text) {
@@ -344,6 +342,7 @@
           supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
         this.cancel()
       },
       _addTask() {
@@ -445,7 +444,6 @@
             selectArr.push(item.id)
           }
         })
-        // selectArr = selectArr.concat(this.selectList)
         if (this.purchaseTaskList.length === 0) {
           this.$toast.show('暂无任务可发布')
           return
@@ -471,6 +469,7 @@
             loading: false
           })
         }
+        await this._statistic()
       },
       async _createPublish() {
         if (this.status !== 2) return
@@ -520,11 +519,6 @@
           return
         }
         this.page = page
-        // this.purchaseTaskList.forEach((item) => {
-        //   if (item.select) {
-        //     this.selectList.push(item.id)
-        //   }
-        // })
         await this.getPurchaseTaskList({
           time: this.time,
           startTime: this.startTime,
@@ -535,7 +529,6 @@
           supplyId: this.supplyId,
           loading: false
         })
-        // this.selectPurchase(this.selectList)
       },
       // 获取供应商列表
       async _getSupplierList() {
@@ -584,12 +577,12 @@
           let supplyRes = await API.Supply.purchaseTask(
             {
               time: this.time,
-              startTime: this.startTime,
-              endTime: this.endTime,
+              start_time: this.startTime,
+              end_time: this.endTime,
               keyword: this.keyword,
               status: this.status,
               page: this.page,
-              supplyId: this.supplyId,
+              supplier_id: this.supplyId,
               loading: false
             })
           this.$loading.hide()
