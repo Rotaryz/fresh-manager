@@ -180,5 +180,25 @@ export default {
   editOutOrder(data, loading = false) {
     let url = `/scm/api/backend/warehouse/self-out-orders`
     return request.post(url, data, loading)
+  },
+  /**
+   * 出库单的统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  outOrdersStatistic(data, loading = false) {
+    let url = `/scm/api/backend/warehouse/out-orders-statistic`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 入库单的统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  entryOrdersStatistic(data, loading = false) {
+    let url = `/scm/api/backend/warehouse/entry-orders-statistic`
+    return request.get(url, data, loading)
   }
 }
