@@ -28,11 +28,6 @@
           <div v-if="endTime" class="down-time-text">23:00:00</div>
         </div>
       </div>
-      <!--下拉选择-->
-      <span class="down-tip">状态</span>
-      <div class="down-item">
-        <base-drop-down :select="statusSelect" @setValue="changeStatus"></base-drop-down>
-      </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -44,6 +39,7 @@
         <div class="identification-page">
           <img src="./icon-order_list2@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
+          <base-status-tab :statusList="dispatchSelect" @setStatus="changeStatus"></base-status-tab>
         </div>
       </div>
       <div class="big-list">
@@ -78,13 +74,6 @@
   const PAGE_NAME = 'SUPPLIER'
   const TITLE = '订单列表'
   const COMMODITIES_LIST = ['创建时间', '订单号', '商户名称', '销售金额', '状态', '操作']
-  const SELECT = {
-    check: false,
-    show: false,
-    content: '全部',
-    type: 'default',
-    data: []
-  }
   export default {
     name: PAGE_NAME,
     page: {
@@ -96,30 +85,30 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        statusSelect: SELECT
+        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_submit', num: 0}, {name: '待采购', value: 2, key: 'success', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
       }
     },
     computed: {
       ...omsComputed
     },
     created() {
-      this._getOmsOrderStatus()
+      this._getOutOrdersStatistic()
     },
     methods: {
       ...omsMethods,
-      _getOmsOrderStatus() {
-        API.Oms.getOmsOrderStatus().then((res) => {
+      _getOutOrdersStatistic() {
+        API.Oms.outOrdersStatistic({start_time: this.startTime, end_time: this.endTime, keyword: this.keyWord}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
           let selectData = res.data.map((item) => {
             return {
               name: item.status_str,
-              status: item.status
+              status: item.status,
+              num: item.statistic
             }
           })
-          selectData.unshift({name: '全部', status: ''})
-          this.statusSelect.data = selectData
+          this.dispatchSelect = selectData
         })
       },
       changeStatus(selectStatus) {
@@ -127,16 +116,25 @@
         this.$refs.pagination.beginPage()
       },
       changeKeyword(keyword) {
+        this.keyWord = keyword
         this.setKeyword(keyword)
         this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
       },
       changeStartTime(value) {
         this.setStartTime(value)
         this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
       },
       changeEndTime(value) {
         this.setEndTime(value)
         this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
+      },
+      _setStatus(item) {
+        this.setStatus(item)
+        this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
       }
     }
   }
