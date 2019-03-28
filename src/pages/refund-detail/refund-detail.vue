@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-order_list@2x.png" class="identification-icon">
-        <p class="identification-name">订单详情</p>
+        <p class="identification-name">退款详情</p>
       </div>
       <div class="function-btn">
       </div>
