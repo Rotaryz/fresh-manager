@@ -246,17 +246,33 @@
       async changeStartTime(value) {
         if (this.tabIndex === 0) {
           this.setOrderStartTime(value)
+          if (Date.parse(value) > Date.parse(this.endTime)) {
+            this.$toast.show('结束时间不能小于开始时间')
+            return
+          }
           await this._statistic()
         } else if (this.tabIndex === 1) {
+          if (Date.parse(value) > Date.parse(this.endTime)) {
+            this.$toast.show('结束时间不能小于开始时间')
+            return
+          }
           this.setDriverStartTime(value)
         }
         this.$refs.pagination.beginPage()
       },
       async changeEndTime(value) {
         if (this.tabIndex === 0) {
+          if (Date.parse(this.startTime) > Date.parse(value)) {
+            this.$toast.show('结束时间不能小于开始时间')
+            return
+          }
           this.setOrderEndTime(value)
           await this._statistic()
         } else if (this.tabIndex === 1) {
+          if (Date.parse(this.startTime) > Date.parse(value)) {
+            this.$toast.show('结束时间不能小于开始时间')
+            return
+          }
           this.setDriverEndTime(value)
         }
         this.$refs.pagination.beginPage()
