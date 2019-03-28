@@ -250,7 +250,6 @@
         this.goodsPage = 1
         this._getUrl()
         this.getGoodsListData()
-        console.log(data.id)
       },
       secondValue(data) {
         this.secondSelect.content = data.name
@@ -259,7 +258,6 @@
         this.goodsPage = 1
         this._getUrl()
         this.getGoodsListData()
-        console.log(data)
       }
     }
   }

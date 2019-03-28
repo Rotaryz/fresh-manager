@@ -87,7 +87,6 @@ export const mutations = {
 export const actions = {
   // 获取社区订单列表
   async getOmsOrders({state, commit}) {
-    console.log(state)
     let time = await getCurrentTime()
     let yesterdayTime = new Date(time.timestamp - (86400 * 1000 * 1))
     yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')

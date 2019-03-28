@@ -212,7 +212,6 @@ export const actions = {
       })
   },
   setDriverStartTime({commit, dispatch}, startTime) {
-    console.log(startTime)
     commit('SET_DRIVER_START_TIME', startTime)
     commit('SET_DRIVER_PAGE', 1)
     dispatch('getDriverList')
