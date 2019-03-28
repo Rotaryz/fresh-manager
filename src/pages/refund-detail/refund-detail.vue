@@ -1,5 +1,13 @@
 <template>
   <div class="refund-detail detail-content">
+    <div class="identification">
+      <div class="identification-page">
+        <img src="./icon-order_list@2x.png" class="identification-icon">
+        <p class="identification-name">订单详情</p>
+      </div>
+      <div class="function-btn">
+      </div>
+    </div>
     <div class="detail-item">
       <div class="top">
         <div class="title">基本信息</div>
