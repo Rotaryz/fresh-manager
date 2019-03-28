@@ -1,12 +1,5 @@
 import API from '@api'
 import app from '@src/main'
-import {getCurrentTime} from '@utils/tool'
-let yesterdayTime = new Date() - (86400 * 1000 * 1)
-yesterdayTime = new Date(yesterdayTime)
-yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
-let beforeDayTime = new Date() - (86400 * 1000 * 2)
-beforeDayTime = new Date(beforeDayTime)
-beforeDayTime = beforeDayTime.toLocaleDateString().replace(/\//g, '-')
 export const state = {
   orders: [], // OMS订单
   pageTotal: {
@@ -16,12 +9,11 @@ export const state = {
     total_page: 1
   },
   page: 1,
-  startTime: beforeDayTime,
-  endTime: yesterdayTime,
+  startTime: '',
+  endTime: '',
   status: '',
   keyword: '',
-  detail: {}, // OMS订单详情
-  isFirst: 1
+  detail: {}
 }
 
 export const getters = {
@@ -48,9 +40,6 @@ export const getters = {
   },
   detail(state) {
     return state.detail
-  },
-  isFirst(state) {
-    return state.isFirst
   }
 }
 
@@ -78,21 +67,12 @@ export const mutations = {
   },
   SET_DETAIL(state, detail) {
     state.detail = detail
-  },
-  SET_IS_FIRST(state, isFirst) {
-    state.isFirst = isFirst
   }
 }
 
 export const actions = {
   // 获取社区订单列表
-  async getOmsOrders({state, commit}) {
-    let time = await getCurrentTime()
-    let yesterdayTime = new Date(time.timestamp - (86400 * 1000 * 1))
-    yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
-    let beforeDayTime = new Date(time.timestamp - (86400 * 1000 * 2))
-    beforeDayTime = beforeDayTime.toLocaleDateString().replace(/\//g, '-')
-    console.log(time.timestamp, yesterdayTime, beforeDayTime)
+  getOmsOrders({state, commit}) {
     const {page, startTime, endTime, status, keyword} = state
     let data = {
       status,
@@ -167,5 +147,13 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getOmsOrders')
+  },
+  infoOrderTime({commit, dispatch},{startTime, endTime}) {
+    commit('SET_START_TIME', startTime)
+    commit('SET_END_TIME', endTime)
+  },
+  infoDriverTime({commit, dispatch}, {startTime, endTime}) {
+    commit('SET_START_TIME', startTime)
+    commit('SET_END_TIME', endTime)
   }
 }
