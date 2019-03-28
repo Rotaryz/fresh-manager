@@ -1152,7 +1152,14 @@ export default [
         component: () => lazyLoadView(import('@pages/supply-list/supply-list')),
         meta: {
           titles: ['供应链', '订单', '订单列表'],
-          beforeResolve(routeTo, routeFrom, next) {
+          async beforeResolve(routeTo, routeFrom, next) {
+            // 获取服务器时间且初始化
+            let time = await getCurrentTime()
+            let startTime = new Date(time.timestamp - (86400 * 1000 * 2))
+            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+            let endTime = new Date(time.timestamp - (86400 * 1000 * 1))
+            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            store.dispatch('oms/infoOrderTime', {startTime, endTime})
             store
               .dispatch('oms/getOmsOrders')
               .then((res) => {

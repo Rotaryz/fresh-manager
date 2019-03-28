@@ -165,7 +165,9 @@ export const omsMethods = {
     'setEndTime',
     'setKeyword',
     'setStatus',
-    'setPage'
+    'setPage',
+    'infoOrderTime',
+    'infoDriverTime'
   ])
 }
 // 采购单
