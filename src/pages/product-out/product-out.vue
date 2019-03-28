@@ -169,6 +169,10 @@
       },
       async changeStartTime(value) {
         this.startTime = value
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('结束时间不能小于开始时间')
+          return
+        }
         this.goodsPage = 1
         this.getProductListData()
         await this._statistic()
@@ -176,6 +180,10 @@
       },
       async changeEndTime(value) {
         this.endTime = value
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('结束时间不能小于开始时间')
+          return
+        }
         this.goodsPage = 1
         this.getProductListData()
         await this._statistic()
