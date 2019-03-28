@@ -194,7 +194,6 @@
         await this._statistic()
       },
       async _statistic() {
-        console.log(this.keyword)
         let res = await API.Supply.getPurchaseOrderStatistic({start_time: this.startTime, end_time: this.endTime, keyword: this.keyword})
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {

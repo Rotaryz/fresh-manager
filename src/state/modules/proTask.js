@@ -45,7 +45,7 @@ export const mutations = {
 
 export const actions = {
   // 采购列表
-  getPurchaseTaskList({state, commit, dispatch}, {time, startTime, endTime, keyword, status, page, supplyId, loading = true}) {
+  async getPurchaseTaskList({state, commit, dispatch}, {time, startTime, endTime, keyword, status, page, supplyId, loading = true}) {
     return API.Supply.purchaseTask({time, start_time: startTime, end_time: endTime, keyword, status, page, supplier_id: supplyId, limit: 10}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -78,33 +78,33 @@ export const actions = {
     let type = typeof data.type
     let index = data.type
     switch (type) {
-    case 'string':
-      let select = state.select
-      select = !select
-      arr = arr.map((item) => {
-        item.select = item.status !== 3 ? select : false
-        return item
-      })
-      commit('SET_SELECT', select)
-      break
-    case 'number':
-      if (arr[index].status === 3) return
-      if (arr[index].status === 1 || arr[index].status === 2) {
-        arr[index].select = arr[index].status !== 3 ? !arr[index].select : false
-      }
-      let idx = arr.findIndex((item) => !item.select)
-      let select2 = idx === -1
-      commit('SET_SELECT', select2)
-      break
-    case 'object':
-      // index.forEach((item) => {
-      //   arr.forEach((arrItem) => {
-      //     if (arrItem.id === item) {
-      //       console.log(arrItem)
-      //     }
-      //   })
-      // })
-      break
+      case 'string':
+        let select = state.select
+        select = !select
+        arr = arr.map((item) => {
+          item.select = item.status !== 3 ? select : false
+          return item
+        })
+        commit('SET_SELECT', select)
+        break
+      case 'number':
+        if (arr[index].status === 3) return
+        if (arr[index].status === 1 || arr[index].status === 2) {
+          arr[index].select = arr[index].status !== 3 ? !arr[index].select : false
+        }
+        let idx = arr.findIndex((item) => !item.select)
+        let select2 = idx === -1
+        commit('SET_SELECT', select2)
+        break
+      case 'object':
+        // index.forEach((item) => {
+        //   arr.forEach((arrItem) => {
+        //     if (arrItem.id === item) {
+        //       console.log(arrItem)
+        //     }
+        //   })
+        // })
+        break
     }
     commit('SET_PURCHASE_TASK_LIST', arr)
   },
