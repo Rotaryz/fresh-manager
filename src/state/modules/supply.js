@@ -38,8 +38,8 @@ export const mutations = {
 
 export const actions = {
   // 采购列表
-  getPurchaseList({state, commit, dispatch}, {time, startTime, endTime, keyword, page, loading = true}) {
-    return API.Supply.purchaseOrder({time, start_time: startTime, end_time: endTime, keyword, page}, loading)
+  getPurchaseList({state, commit, dispatch}, {time, startTime, endTime, keyword, page, status, loading = true}) {
+    return API.Supply.purchaseOrder({time, start_time: startTime, end_time: endTime, keyword, page, status}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

@@ -182,5 +182,25 @@ export default {
   submitPurchaseOrder(data, loading = true) {
     let url = '/scm/api/backend/purchase/purchase-order'
     return request.post(url, data, loading)
+  },
+  /**
+   * 采购任务的统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getTaskStatusNumber(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-task-statistic'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 采购单的统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getPurchaseOrderStatistic(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-order-statistic'
+    return request.get(url, data, loading)
   }
 }
