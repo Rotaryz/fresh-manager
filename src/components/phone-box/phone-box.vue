@@ -80,8 +80,54 @@
                 <div v-for="(item, index) in navList" :key="index" class="nav-item">{{item.title}}</div>
               </div>
 
-              <div class="pro-list">
+              <div v-for="(item, index) in goodsList" :key="index" class="pro-list">
 
+                <div class="goods-left">
+                  <div class="goods-left-img">
+                    <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
+                  </div>
+                  <div class="goods-left-icon">
+                    <img class="item-img" src="./icon-label@2x.png">
+                  </div>
+                </div>
+                <div class="goods-right">
+                  <div class="goods-right-top">
+                    <div class="title">{{item.name}}</div>
+                    <div v-if="item.describe" class="text-sub">{{item.describe}}</div>
+                    <!--<div class="text-sales-box">
+                      <div class="text-sales">已售{{item.sale_count}}件</div>
+                    </div>-->
+                  </div>
+                  <div class="add-box">
+                    <div class="add-box-left">
+                      <section class="left">
+                        <div class="text-group">团购价</div>
+                      </section>
+                      <div class="price-box">
+                        <div class="money">{{item.trade_price}}</div>
+                        <div class="unit">元</div>
+                        <div class="lineation">{{item.original_price}}元</div>
+                      </div>
+                    </div>
+                    <section v-if="item.usable_stock * 1 > 0" class="add-box-right">
+                      <div class="add-goods-btn">
+                        <div class="phone-add-icon">
+                          <div class="add1"></div>
+                          <div class="add2"></div>
+                        </div>
+                        <div>
+                          <div class="add-text">购物车</div>
+
+                        </div>
+                      </div>
+                    </section>
+                    <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
+                      <div class="add-goods-btn add-goods-btn-active">
+                        <div class="add-text">已抢完</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div v-if="!navList.length" class="nav-list">
@@ -325,6 +371,151 @@
         color: #333
         text-align: center
 
+  .pro-list
+    height: 111px
+    layout(row)
+    border-bottom-1px(#e6e6e6)
+    align-items: center
+    &:last-child
+      border-none()
+    .goods-left
+      margin-left: 5px
+      position: relative
+      width: 86.7px
+      height: @width
+      margin-right: 12px
+      .goods-left-img
+        width: 100%
+        height: 100%
+        border-radius: 3px
+        .item-img
+          width: 100%
+          height: 100%
+          border-radius: 3px
+          display: block
+          object-fit: cover
+      .goods-left-icon
+        width: 28px
+        position: absolute
+        left: -5px
+        top: -5px
+        img
+          display: block
+          width: 28px
+          object-fit: cover
+    .goods-right
+      flex: 1
+      overflow: hidden
+      layout()
+      justify-content: space-between
+      min-height: 86.7px
+      .goods-right-top
+        width: 100%
+      .title
+        font-size: $font-size-13
+        font-family: $font-family-regular
+        color: $color-text-main
+        min-height: $font-size-13
+        line-height: 1.1
+        no-wrap()
+      .text-sub
+        font-size: $font-size-10
+        font-family: $font-family-regular
+        color: $color-text-sub
+        margin-bottom: 4px
+        no-wrap()
+        padding-right: 10px
+        box-sizing: border-box
+      .text-sales-box
+        layout(row)
+        .text-sales
+          font-size: $font-size-12
+          font-family: $font-family-regular
+          color: #808080
+          margin-bottom: 9px
+          border-radius: 10px
+          height: 15px
+          line-height: 14px
+          box-sizing: border-box
+          border-1px(#808080, 10px)
+          padding: 0 5px
+      .add-box
+        layout(row)
+        justify-content: space-between
+        align-items: center
+        position :relative
+        .left
+          layout(row)
+          .text-group
+            font-size: $font-size-12
+            font-family: $font-family-regular
+            color: #FF8300
+            height: 13px
+            line-height: 13px
+            margin-bottom: 3px
+            border-radius: 10px
+            padding: 0 5px
+        .price-box
+          layout(row)
+          align-items: flex-end
+          .money
+            font-family: $font-family-regular
+            color: #FF8300
+            font-size: $font-size-20
+            line-height: 1
+          .unit
+            font-family: $font-family-regular
+            color: #FF8300
+            font-size: $font-size-12
+            line-height: 1
+            margin-right: 2px
+            padding-bottom: 2.5px
+          .lineation
+            font-family: $font-family-regular
+            color: #B7B7B7
+            font-size: $font-size-12
+            text-decoration line-through
+            padding-bottom: 1px
+            line-height: 1
+            margin-left: 3.6px
+        .add-goods-btn
+          layout(row)
+          width: 64.5px
+          height: 24px
+          background: #73C200
+          justify-content: center
+          align-items: center
+          border-radius: 14px
+          .add-text
+            font-size: $font-size-12
+            font-family: $font-family-regular
+            color: #fff
+          .phone-add-icon
+            width: 11px
+            height: 11px
+            position: relative
+            margin-right: 2px
+            .add1
+              width: 11px
+              height: 3px
+              transform: scaleY(0.5)
+              background-color: #fff
+              position: absolute
+              left: 0
+              top: 4.5px
+              border-radius: 30px
+            .add2
+              width: 3px
+              height: 11px
+              transform: scaleX(0.5)
+              background-color: #fff
+              border-radius: 30px
+              position: absolute
+              left: 4px
+              top: 0
+
+        .add-goods-btn-active
+          background: #b7b7b7
   .goods-big-box
     background: $color-white
   .goods-title-box
@@ -376,6 +567,7 @@
     display: flex
     flex-wrap: nowrap
     .goods-list
+      width: 78.7px
       padding: 8.5px 9.8px 15px
       height: 140px
       box-sizing: border-box
@@ -409,6 +601,7 @@
 
 
   .goods-none
+    width: 78.7px
     padding: 13px 0
     border-radius: 3px
     border-bottom-1px(#e6e6e6)

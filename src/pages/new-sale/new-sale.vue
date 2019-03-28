@@ -382,6 +382,10 @@
       _selectGoods(item, index) {
         switch (item.selected) {
         case 0:
+          if (this.selectGoodsId.length === 10) {
+            this.$toast.show('选择商品数量不能超过10个')
+            return
+          }
           this.choeesGoods[index].selected = 2
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
@@ -430,9 +434,13 @@
         if (item.selected === 1) {
           return
         }
+        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
+          this.$toast.show('选择商品数量不能超过10个')
+          return
+        }
+        if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         this.goodsList.push(item)
-        this.selectGoodsId.push(item.id)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)

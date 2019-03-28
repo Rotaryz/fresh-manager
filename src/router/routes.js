@@ -243,7 +243,7 @@ export default [
       // 新建查看限时抢购
       {
         path: 'flash-sale/new-sale',
-        name: 'edit-rush',
+        name: 'new-sale',
         component: () => lazyLoadView(import('@pages/new-sale/new-sale')),
         meta: {
           titles: ['商城', '活动', '限时抢购', '活动'],

@@ -111,7 +111,7 @@
         this.$refs.confirm.show('确定删除该活动？')
       },
       async _sureConfirm() {
-        let res = await API.Outreach.deleteActivity(this.delId)
+        let res = await API.Sale.saleDelete(this.delId)
 
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
