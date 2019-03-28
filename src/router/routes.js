@@ -244,7 +244,7 @@ export default [
       // 新建查看限时抢购
       {
         path: 'flash-sale/new-sale',
-        name: 'edit-rush',
+        name: 'new-sale',
         component: () => lazyLoadView(import('@pages/new-sale/new-sale')),
         meta: {
           titles: ['商城', '活动', '限时抢购', '活动'],
@@ -1373,7 +1373,7 @@ export default [
   {
     path: '/404',
     name: '404',
-    component: require('@pages/_404/_404').default,
+    component: () => lazyLoadView(import('@pages/_404/_404')),
     props: true
   },
   {
@@ -1389,9 +1389,9 @@ export default [
 function lazyLoadView(AsyncView) {
   const AsyncHandler = () => ({
     component: AsyncView,
-    loading: require('@pages/_loading/_loading').default,
+    loading: () => import('@pages/_loading/_loading'),
     delay: 400,
-    error: require('@pages/_timeout/_timeout').default,
+    error: () => import('@pages/_timeout/_timeout'),
     timeout: 10000
   })
 
