@@ -39,7 +39,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
-          <p class="identification-name">入库列表</p>
+          <p c lass="identification-name">入库列表</p>
           <base-status-tab :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
         </div>
       </div>
