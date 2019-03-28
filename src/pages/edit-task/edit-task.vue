@@ -70,7 +70,6 @@
       ...proTaskComputed
     },
     created() {
-      console.log(this.editTaskList)
       this.taskList = JSON.parse(JSON.stringify(this.editTaskList))
       this.supplier_name = this.taskList[0].supplier
       this.supplier_id = this.taskList[0].supplier_id
@@ -126,9 +125,11 @@
           number = 0
         }
         item.purchase_num = number.toFixed(2)
-        if (!item.purchase_price || item.purchase_price < 0) return
-        if (item.base_num) {
-          this.taskList[index].total = (item.purchase_num * item.purchase_price).toFixed(2)
+        if (!item.purchase_price || item.purchase_price < 0) {
+        } else {
+          if (item.base_num) {
+            this.taskList[index].total = (item.purchase_num * item.purchase_price).toFixed(2)
+          }
         }
         this.$forceUpdate()
       },
@@ -141,9 +142,11 @@
           number = 0
         }
         item.base_num = number.toFixed(2)
-        if (!item.purchase_price || item.purchase_price < 0) return
-        if (item.purchase_num) {
-          this.taskList[index].total = (item.purchase_num * item.purchase_price).toFixed(2)
+        this.$forceUpdate()
+        if (!item.purchase_price || item.purchase_price < 0) {} else {
+          if (item.purchase_num) {
+            this.taskList[index].total = (item.purchase_num * item.purchase_price).toFixed(2)
+          }
         }
         this.$forceUpdate()
       },
@@ -152,7 +155,7 @@
           item.purchase_price = item.purchase_price * -1
         }
         if (!item.purchase_price || item.purchase_price < 0) return
-        if (item.purchase_price) {
+        if (item.purchase_num) {
           this.taskList[index].total = (item.purchase_num * item.purchase_price).toFixed(2)
         }
         this.$forceUpdate()
