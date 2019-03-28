@@ -11,8 +11,8 @@
           :value="tabIndex === 0 ? orderStartTime : driverStartTime"
           @on-change="changeStartTime"
         ></date-picker>
-        <div v-if="orderStartTime && tabIndex === 0" class="down-time-text">23:00:01</div>
-        <div v-if="driverStartTime && tabIndex === 1" class="down-time-text">23:00:01</div>
+        <div v-if="orderStartTime && tabIndex === 0" class="down-time-text">{{accurateStart}}</div>
+        <div v-if="driverStartTime && tabIndex === 1" class="down-time-text">{{accurateStart}}</div>
       </div>
       <div class="time-tip">~</div>
       <div class="down-item down-time-box">
@@ -24,8 +24,8 @@
           :value="tabIndex === 0 ? orderEndTime : driverEndTime"
           @on-change="changeEndTime"
         ></date-picker>
-        <div v-if="orderEndTime && tabIndex === 0" class="down-time-text">23:00:00</div>
-        <div v-if="driverEndTime && tabIndex === 1" class="down-time-text">23:00:00</div>
+        <div v-if="orderEndTime && tabIndex === 0" class="down-time-text">{{accurateEnd}}</div>
+        <div v-if="driverEndTime && tabIndex === 1" class="down-time-text">{{accurateEnd}}</div>
       </div>
       <div v-if="tabIndex === 0" class="distribution-down">
         <span class="down-tip">搜索</span>
@@ -39,7 +39,7 @@
         <div class="identification-page">
           <img src="./icon-driver@2x.png" class="identification-icon">
           <p class="identification-name">{{tabStatus[tabIndex].text}}</p>
-          <base-status-tab v-show="tabIndex === 0" :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
+          <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
         </div>
@@ -136,7 +136,9 @@
         signItem: {},
         startTime: '',
         endTime: '',
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待配送', value: 1, key: 'wait_delivery', num: 0}, {name: '配送完成', value: 2, key: 'success_delivery', num: 0}]
+        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待配送', value: 1, key: 'wait_delivery', num: 0}, {name: '配送完成', value: 2, key: 'success_delivery', num: 0}],
+        accurateStart: '',
+        accurateEnd: ''
       }
     },
     computed: {
@@ -190,6 +192,8 @@
     async created() {
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
+      this.accurateStart = this.$route.params.accurateStart
+      this.accurateEnd = this.$route.params.accurateEnd
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
       await this._statistic()
     },
@@ -223,12 +227,12 @@
         switch (index) {
         case 0:
           if (!this.orderStartTime && !this.orderEndTime) {
-            this.infoOrderTime({startTime: this.startTime, endTime: this.endTime})
+            this.infoOrderTime({startTime: this.startTime, endTime: this.endTime, start: this.accurateStart, end: this.accurateEnd})
           }
           break
         case 1:
           if (!this.driverStartTime && !this.driverEndTime) {
-            this.infoDriverTime({startTime: this.startTime, endTime: this.endTime})
+            this.infoDriverTime({startTime: this.startTime, endTime: this.endTime, start: this.accurateStart, end: this.accurateEnd})
           }
           break
         }

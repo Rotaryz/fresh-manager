@@ -11,7 +11,7 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="changeStartTime"
         ></date-picker>
-        <div v-if="startTime" class="down-time-text">23:00:01</div>
+        <div v-if="startTime" class="down-time-text">{{accurateStart}}</div>
       </div>
       <div class="tip">~</div>
       <div class="down-item down-time-box">
@@ -23,7 +23,7 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="changeEndTime"
         ></date-picker>
-        <div v-if="endTime" class="down-time-text">23:00:00</div>
+        <div v-if="endTime" class="down-time-text">{{accurateEnd}}</div>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -34,7 +34,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
-          <p c lass="identification-name">入库列表</p>
+          <p class="identification-name">入库列表</p>
           <base-status-tab :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
         </div>
       </div>
@@ -98,7 +98,9 @@
           all: 0,
           wait_submit: 0,
           success: 0
-        }
+        },
+        accurateStart: '',
+        accurateEnd: ''
       }
     },
     computed: {
@@ -108,11 +110,18 @@
     async created() {
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
+      this.accurateStart = this.$route.params.accurateStart
+      this.accurateEnd = this.$route.params.accurateEnd
       this.productEnterList = _.cloneDeep(this.enterList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
       await this._statistic()
     },
     methods: {
+      _getTime() {
+        let start = this.startTime && this.startTime.length < 11 ? `${this.startTime} ${this.accurateStart}` : this.startTime
+        let end = this.endTime && this.endTime.length < 11 ? `${this.endTime} ${this.accurateEnd}` : this.endTime
+        return [start, end]
+      },
       entryOrdersExport(item) {
         let currentId = this.getCurrentId()
         let data = {
@@ -128,7 +137,8 @@
         window.open(url)
       },
       async _statistic() {
-        let res = await API.Store.entryOrdersStatistic({start_time: this.startTime, end_time: this.endTime, keyword: this.keyWord})
+        let time = this._getTime()
+        let res = await API.Store.entryOrdersStatistic({start_time: time[0], end_time: time[1], keyword: this.keyWord})
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
@@ -136,12 +146,13 @@
         }
       },
       getProductListData() {
+        let time = this._getTime()
         let data = {
           status: this.status,
           page: this.goodsPage,
           limit: 10,
-          start_time: this.startTime,
-          end_time: this.endTime,
+          start_time: time[0],
+          end_time: time[1],
           keyword: this.keyWord
         }
         API.Store.getEnterList(data, false).then((res) => {
