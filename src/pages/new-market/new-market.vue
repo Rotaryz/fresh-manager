@@ -84,9 +84,9 @@
             </div>
             <div class="check-item">
               <span class="check-icon" :class="{'checked': newItem === 'days'}" @click="checkNew('days')"></span>
-              <span style="margin-right: 10px; cursor: pointer" @click="checkNew('days')">满足注册时间 前</span>
+              <span style="margin-right: 10px; cursor: pointer" @click="checkNew('days')">满足注册时间</span>
               <base-drop-down :width="120" :height="44" :select="dayDataNew" @setValue="_selectDayNew"></base-drop-down>
-              <span style="margin: 0 10px">内注册的客户</span>
+              <span style="margin: 0 10px">内的客户</span>
             </div>
             <div v-if="disable" :class="{'time-no-change':disable}"></div>
           </div>
@@ -103,7 +103,7 @@
             <p class="text">如果设置的数字为空或为“0”，则视为没有设置，设置条件后，系统自动按照条件筛选出匹配的客户</p>
             <div class="check-item">
               <span class="check-icon" :class="{'checked': activityItem === 'order_count'}" @click="checkActivity('order_count')"></span>
-              <span style="margin-right: 10px" @click="checkActivity('order_count')">满足下单次数 前</span>
+              <span style="margin-right: 10px" @click="checkActivity('order_count')">满足下单次数 </span>
               <base-drop-down :width="120" :height="44" :select="dayData" @setValue="_selectDay"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
               <input v-model="msg.config_json.order_count" type="number" :readonly="activityItem === 'order_toal'" placeholder="输入次数" class="count-input">
@@ -111,7 +111,7 @@
             </div>
             <div class="check-item">
               <span class="check-icon" :class="{'checked': activityItem === 'order_toal'}" @click="checkActivity('order_toal')"></span>
-              <span style="margin-right: 10px" @click="checkActivity('order_toal')">满足订单金额 前</span>
+              <span style="margin-right: 10px" @click="checkActivity('order_toal')">满足订单金额 </span>
               <base-drop-down :width="120" :height="44" :select="dayData2" @setValue="_selectDay2"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
               <input v-model="msg.config_json.order_toal" type="number" :readonly="activityItem === 'order_count'" placeholder="输入金额" class="count-input">

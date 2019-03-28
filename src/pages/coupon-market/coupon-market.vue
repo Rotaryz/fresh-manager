@@ -7,7 +7,7 @@
       </div>
       <span class="down-tip">团长发放</span>
       <div class="down-item">
-        <div class="top-btn" @click="newMarket(3)">社区福利券<span class="icon"></span></div>
+        <div class="top-btn" @click="newMarket(3)">社群福利券<span class="icon"></span></div>
       </div>
     </div>
     <div class="table-content">
