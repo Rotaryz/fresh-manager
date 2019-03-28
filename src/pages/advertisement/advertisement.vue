@@ -44,7 +44,7 @@
         </div>
       </div>
       <!--导航-->
-      <div v-if="cmsType === 'navigation'" class="advertisement-content">
+      <div v-if="false" class="advertisement-content">
         <div class="content-header">
           <div class="content-title">导航栏设置</div>
           <div class="content-sub">(最多添加10个导航栏，鼠标拖拽调整广告顺序)</div>
@@ -221,8 +221,8 @@
     bannarIcon: require('./icon-carousel@2x.png'),
     navigation: '导航栏设置',
     navigationIcon: require('./icon-nav_settings@2x.png'),
-    activity: '活动列表',
-    activityIcon: require('./icon-activity_settings@2x.png')
+    activity: '限时抢购',
+    activityIcon: require('./icon-time@2x.png')
   }
   const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: ADD_IMAGE} // 模板对象
   export default {

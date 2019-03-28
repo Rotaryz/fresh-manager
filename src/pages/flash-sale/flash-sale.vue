@@ -1,9 +1,9 @@
 <template>
   <div class="flash-sale table">
     <div class="down-content">
-      <span class="down-tip">选择日期</span>
+      <span class="down-tip">活动时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="选择活动时间" @getTime="_setTime"></base-date-select>
+        <base-date-select placeHolder="选择日期" @getTime="_setTime"></base-date-select>
       </div>
     </div>
     <div class="table-content">
@@ -149,50 +149,9 @@
         background: #E1E1E1
       .status-success:before
         background: $color-positive
-
-      .code-box
-        position: relative
-        display: flex
-        align-items: center
-        .code-main
-          margin-left: -15px
-          padding-left: 15px
-          height: 16px
-      .small-code
-        width: 16px
-        height: 16px
-        object-fit: cover
-        cursor: pointer
-      .code-bg
-        padding-right: 10px
-      .code-content
-        position: absolute
-        left: -170px
-        top: -68px
-        width: 160px
-        height: 160px
-        border-radius: 1px
-        overflow: hidden
-        box-shadow: 0 0 8px 0 #E9ECEE
-        border: 1px solid #E9ECEE
-        background: #FFF
-        z-index: 1
-        .code
-          width: 120px
-          height: 120px
-          margin: 20px auto
-          display: block
-        .text
-          font-size: $font-size-16
-          color: #4DBD65
-          font-family: $font-family-regular
-          text-align: center
-          line-height: 40px
-          height: 40px
-          background: #F5F7FA
-          display: block
-          border-top: 1px solid #E9ECEE
-          cursor: pointer
+      .list-double-row
+        .item-sub
+          color: #333
   .btn-main
     margin-right: 10px
 </style>

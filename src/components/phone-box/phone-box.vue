@@ -72,9 +72,9 @@
           </div>
 
           <!--分类-->
-          <div v-if="cms.module_name === 'navigation'" class="hand nav-box" :class="{'touch': comType === cms.module_name}">
+          <div v-if="cms.module_name === 'navigation'" class="hand nav-box">
             <div class="line"></div>
-            <div class="nav-content">
+            <div class="nav-content" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
               <div v-if="navList.length" class="nav-list">
                 <div class="nav-item">全部</div>
                 <div v-for="(item, index) in navList" :key="index" class="nav-item">{{item.title}}</div>
@@ -117,7 +117,7 @@
                         </div>
                         <div>
                           <div class="add-text">购物车</div>
-
+                          <span>已售{{item.sale_count}}斤</span>
                         </div>
                       </div>
                     </section>
@@ -298,8 +298,8 @@
       position: absolute
       top: 0
       left: 0
-      width: 0
-      height: 0
+      width: 100%
+      height: 100%
       transition: all 0.2s
       box-sizing: border-box
       border: 2px solid $color-main !important
@@ -312,8 +312,8 @@
       position: absolute
       top: 0
       left: 0
-      width: 0
-      height: 0
+      width: 100%
+      height: 100%
       transition: all 0.2s
       box-sizing: border-box
       border: 2px dashed #D9D9D9
@@ -327,8 +327,8 @@
       position: absolute
       top: 0
       left: 0
-      width: 0
-      height: 0
+      width: 100%
+      height: 100%
       transition: all 0.2s
       box-sizing: border-box
       border: 2px dashed #D9D9D9
@@ -346,6 +346,12 @@
       line-height: 35px
       text-align: center
       position: relative
+      font-size: 11px
+      color: #111
+      font-family: $font-family-regular
+      &:first-child
+        font-size: 12.5px
+        font-family: $font-family-medium
       &:first-child:before
         content: ""
         width: 24px
