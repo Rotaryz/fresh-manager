@@ -142,6 +142,8 @@
         exportDriverId: '',
         statistic: {all: 0, wait_delivery: 0, success_delivery: 0},
         signItem: {},
+        startTime: '',
+        endTime: '',
         dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待配送', value: 1, key: 'wait_delivery', num: 0}, {name: '配送完成', value: 2, key: 'success_delivery', num: 0}]
       }
     },
@@ -194,6 +196,8 @@
       }
     },
     async created() {
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
       await this._statistic()
     },
@@ -224,6 +228,18 @@
       },
       changeStatus(item, index) {
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+        switch (index) {
+        case 0:
+          if (!this.orderStartTime && !this.orderEndTime) {
+            this.infoOrderTime({startTime: this.startTime, endTime: this.endTime})
+          }
+          break
+        case 1:
+          if (!this.driverStartTime && !this.driverEndTime) {
+            this.infoDriverTime({startTime: this.startTime, endTime: this.endTime})
+          }
+          break
+        }
         this.setTabIndex(index)
       },
       async changeKeyword(keyword) {
