@@ -83,7 +83,6 @@
   import _ from 'lodash'
   import API from '@api'
   import {productComputed} from '@state/helpers'
-  import {getCurrentTime} from '@utils/tool'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品出库'
@@ -118,11 +117,8 @@
       ...productComputed
     },
     async created() {
-      let time = await getCurrentTime()
-      let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-      this.startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-      let endTime = new Date(time.timestamp)
-      this.endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
       this.productOutList = _.cloneDeep(this.outList)
       this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()

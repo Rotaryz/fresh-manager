@@ -84,12 +84,12 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  async getEnterData({state, commit, dispatch}, {page, loading = true}) {
-    let time = await getCurrentTime()
-    let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-    startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-    let endTime = new Date(time.timestamp)
-    endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+  async getEnterData({state, commit, dispatch}, {startTime, endTime, page, loading = true}) {
+    // let time = await getCurrentTime()
+    // let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+    // startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+    // let endTime = new Date(time.timestamp)
+    // endTime = endTime.toLocaleDateString().replace(/\//g, '-')
     let data = {status: '', keyword: '', start_time: startTime, end_time: endTime, limit: 10, page: 1}
     return API.Store.getEnterList(data, loading)
       .then((res) => {

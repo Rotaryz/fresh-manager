@@ -1,5 +1,5 @@
 import store from '@state/store'
-// import {getCurrentTime} from '@utils/tool'
+import {getCurrentTime} from '@utils/tool'
 
 export default [
   // 模板
@@ -950,7 +950,14 @@ export default [
         component: () => lazyLoadView(import('@pages/product-enter/product-enter')),
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
-          beforeResolve(routeTo, routeFrom, next) {
+          async beforeResolve(routeTo, routeFrom, next) {
+            let time = await getCurrentTime()
+            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+            let endTime = new Date(time.timestamp)
+            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            routeTo.params.start = startTime
+            routeTo.params.end = endTime
             store
               .dispatch('product/getEnterData', 1)
               .then((res) => {
@@ -993,7 +1000,14 @@ export default [
         component: () => lazyLoadView(import('@pages/product-out/product-out')),
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
-          beforeResolve(routeTo, routeFrom, next) {
+          async beforeResolve(routeTo, routeFrom, next) {
+            let time = await getCurrentTime()
+            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+            let endTime = new Date(time.timestamp)
+            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            routeTo.params.start = startTime
+            routeTo.params.end = endTime
             store
               .dispatch('product/getOutData', 1)
               .then((res) => {
@@ -1069,9 +1083,18 @@ export default [
         component: () => lazyLoadView(import('@pages/distribution-task/distribution-task')),
         meta: {
           titles: ['供应链', '配送', '配送任务'],
-          beforeResolve(routeTo, routeFrom, next) {
+          async beforeResolve(routeTo, routeFrom, next) {
+            // 获取服务器时间且初始化
+            let time = await getCurrentTime()
+            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+            let endTime = new Date(time.timestamp)
+            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            routeTo.params.start = startTime
+            routeTo.params.end = endTime
             let tabIndex = store.state.distribution.tabIndex
             if (tabIndex === 0) {
+              store.dispatch('distribution/infoOrderTime', {startTime, endTime})
               store
                 .dispatch('distribution/getOrderList')
                 .then((res) => {
@@ -1084,6 +1107,7 @@ export default [
                   return next({name: '404'})
                 })
             } else {
+              store.dispatch('distribution/infoDriverTime', {startTime, endTime})
               store
                 .dispatch('distribution/getDriverList')
                 .then((res) => {
