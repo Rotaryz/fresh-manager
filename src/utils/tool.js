@@ -37,5 +37,5 @@ export async function getCurrentTime() {
     json.timestamp = json.timestamp * 1000
     return res.data
   }
-  return {timestamp: 0, time: 0}
+  return {timestamp: 0, time: 0, start: '', end: ''}
 }
