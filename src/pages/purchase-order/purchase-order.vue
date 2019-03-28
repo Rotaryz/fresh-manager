@@ -11,7 +11,7 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="_getStartTime"
         ></date-picker>
-        <div v-if="startTime" class="down-time-text">23:00:01</div>
+        <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
       </div>
       <!---->
       <div class="time-tip">~</div>
@@ -25,7 +25,7 @@
             style="width: 187px;height: 28px;border-radius: 1px"
             @on-change="_getEndTime"
           ></date-picker>
-          <div v-if="endTime" class="down-time-text">23:00:00</div>
+          <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
         </div>
       </div>
       <!--搜索-->
@@ -189,7 +189,7 @@
         await this._statistic()
       },
       async _statistic() {
-        let res = await API.Supply.getPurchaseOrderStatistic({start_time: this.startTime, end_time: this.endTime, keyword: this.keyword})
+        let res = await API.Supply.getPurchaseOrderStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword})
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)

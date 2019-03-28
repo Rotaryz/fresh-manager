@@ -9,7 +9,9 @@ export const state = {
     total_page: 1
   },
   purchaseList: [], // 采购列表
-  purchaseDetail: {} // 采购详情
+  purchaseDetail: {}, // 采购详情
+  timeStart: '',
+  timeEnd: ''
 }
 
 export const getters = {
@@ -21,6 +23,12 @@ export const getters = {
   },
   pageTotal(state) {
     return state.pageTotal
+  },
+  timeStart(state) {
+    return state.timeStart
+  },
+  timeEnd(state) {
+    return state.timeEnd
   }
 }
 
@@ -33,13 +41,19 @@ export const mutations = {
   },
   SET_PURCHASE_DETAIL(state, pageTotal) {
     state.purchaseDetail = pageTotal
+  },
+  SET_TIME_START(state, timeStart) {
+    state.timeStart = timeStart
+  },
+  SET_TIME_END(state, timeEnd) {
+    state.timeEnd = timeEnd
   }
 }
 
 export const actions = {
   // 采购列表
   getPurchaseList({state, commit, dispatch}, {time, startTime, endTime, keyword, page, status, loading = true}) {
-    return API.Supply.purchaseOrder({time, start_time: startTime, end_time: endTime, keyword, page, status}, loading)
+    return API.Supply.purchaseOrder({time, start_time: startTime ? startTime + ' ' + state.timeStart : '', end_time: endTime ? endTime + ' ' + state.timeEnd : '', keyword, page, status}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -78,5 +92,9 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  infoPurchaseTime({commit, dispatch},{start, end}) {
+    commit('SET_TIME_START', start)
+    commit('SET_TIME_END', end)
   }
 }
