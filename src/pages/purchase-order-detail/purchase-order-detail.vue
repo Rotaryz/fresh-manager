@@ -74,7 +74,6 @@
       let token = this.$storage.get('auth.currentUser', '')
       let params = `${this.$route.params.id}?access_token=${token.access_token}&current_corp=${currentId}`
       this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-order-export/${params}`
-      console.log(this.downUrl)
     },
     methods: {
       ...supplyMethods,
