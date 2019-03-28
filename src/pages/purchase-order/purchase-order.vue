@@ -3,24 +3,30 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
-      <date-picker
-        :value="startTime"
-        class="edit-input-box" type="date"
-        placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 1px"
-        @on-change="_getStartTime"
-      ></date-picker>
+      <div class="down-time-box">
+        <date-picker
+          :value="startTime"
+          class="edit-input-box" type="date"
+          placeholder="开始时间"
+          style="width: 187px;height: 28px;border-radius: 1px"
+          @on-change="_getStartTime"
+        ></date-picker>
+        <div v-if="startTime" class="down-time-text">23:00:01</div>
+      </div>
       <!---->
       <div class="time-tip">~</div>
       <div class="down-item">
-        <date-picker
-          :value="endTime"
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
-          @on-change="_getEndTime"
-        ></date-picker>
+        <div class="down-time-box">
+          <date-picker
+            :value="endTime"
+            class="edit-input-box edit-input-right"
+            type="date"
+            placeholder="结束时间"
+            style="width: 187px;height: 28px;border-radius: 1px"
+            @on-change="_getEndTime"
+          ></date-picker>
+          <div v-if="endTime" class="down-time-text">23:00:00</div>
+        </div>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
@@ -92,9 +98,12 @@
       ...supplyComputed
     },
     created() {
+      let yesterdayTime = new Date() - (86400 * 1000 * 1)
+      yesterdayTime = new Date(yesterdayTime)
+      yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
       let time = new Date()
       time = time.toLocaleDateString().replace(/\//g, '-')
-      this.startTime = time
+      this.startTime = yesterdayTime
       this.endTime = time
     },
     methods: {

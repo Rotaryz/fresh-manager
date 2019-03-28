@@ -162,5 +162,25 @@ export default {
   getAllBuyer(data = {}, loading = false) {
     let url = '/scm/api/backend/purchase/purchase-user-list'
     return request.get(url, data, loading)
+  },
+  /**
+   * 采购任务是否为同一供应商
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getDiffSupplier(data = {}, loading = false) {
+    let url = '/scm/api/backend/purchase/task-diff-supplier'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 采购单列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  submitPurchaseOrder(data, loading = true) {
+    let url = '/scm/api/backend/purchase/purchase-order'
+    return request.post(url, data, loading)
   }
 }

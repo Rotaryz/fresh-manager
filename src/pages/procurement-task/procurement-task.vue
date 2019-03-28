@@ -11,29 +11,32 @@
           style="width: 187px;height: 28px;border-radius: 1px"
           @on-change="_getStartTime"
         ></date-picker>
-        <div class="down-time-text">23:00:01</div>
+        <div v-if="startTime" class="down-time-text">23:00:01</div>
       </div>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item">
-        <date-picker
-          :value="endTime"
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
-          @on-change="_getEndTime"
-        ></date-picker>
+        <div class="down-time-box">
+          <date-picker
+            :value="endTime"
+            class="edit-input-box edit-input-right"
+            type="date"
+            placeholder="结束时间"
+            style="width: 187px;height: 28px;border-radius: 1px"
+            @on-change="_getEndTime"
+          ></date-picker>
+          <div v-if="endTime" class="down-time-text">23:00:00</div>
+        </div>
       </div>
       <!--下拉选择-->
       <span class="down-tip">全部</span>
       <div class="down-item">
-        <base-drop-down :select="purchaseTask" :width="218" @setValue="_setValuett"></base-drop-down>
+        <base-drop-down :select="purchaseTask" @setValue="_setValuett"></base-drop-down>
       </div>
       <!--下拉选择-->
       <span class="down-tip">供应商</span>
       <div class="down-item">
-        <base-drop-down :select="supplyTask" :width="218" @setValue="_setValue"></base-drop-down>
+        <base-drop-down :select="supplyTask" @setValue="_setValue"></base-drop-down>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
@@ -49,7 +52,7 @@
         </div>
         <div class="function-btn">
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
-          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}">生成采购单</div>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}" @click="_createPublish">生成采购单</div>
           <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
         </div>
       </div>
@@ -160,7 +163,7 @@
         </div>
       </div>
     </default-modal>
-    <default-confirm ref="confirmMsg" :oneBtn="oneBtn"></default-confirm>
+    <default-confirm ref="confirmMsg" :oneBtn="oneBtn" @confirm="confirmMsg"></default-confirm>
   </div>
 </template>
 
@@ -227,7 +230,8 @@
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsItem: {},
         choicePage: 1,
-        oneBtn: false
+        oneBtn: false,
+        confirmType: ''
       }
     },
     computed: {
@@ -236,7 +240,10 @@
     async created() {
       let time = new Date()
       time = time.toLocaleDateString().replace(/\//g, '-')
-      this.startTime = time
+      let yesterdayTime = new Date() - (86400 * 1000 * 1)
+      yesterdayTime = new Date(yesterdayTime)
+      yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
+      this.startTime = yesterdayTime
       this.endTime = time
       await this._getFirstAssortment()
       await this._getGoodsList()
@@ -453,8 +460,8 @@
         }
         if (!selectArr.length) {
           this.oneBtn = false
+          this.confirmType = 1
           this.$refs.confirmMsg.show('是否发布全部任务给采购员？')
-          // this.$toast.show('请选择采购任务')
           return
         }
         let res = await API.Supply.purchaseTaskPublish({ids: selectArr})
@@ -468,9 +475,53 @@
             keyword: this.keyword,
             status: this.status,
             page: this.page,
+            supplyId: this.supplyId,
             loading: false
           })
         }
+      },
+      async _createPublish() {
+        if (this.status !== 2) return
+        let selectArr = []
+        this.purchaseTaskList.forEach((item) => {
+          if (item.select) {
+            selectArr.push(item)
+          }
+        })
+        if (this.purchaseTaskList.length === 0) {
+          this.$toast.show('暂无任务可生成')
+          return
+        }
+        if (!selectArr.length) {
+          let res = await API.Supply.getDiffSupplier({
+            keyword: this.keyword,
+            start_time: this.startTime,
+            end_time: this.endTime,
+            supplier_id: this.supplyId
+          })
+          if (res.error !== this.$ERR_OK) {
+            this.oneBtn = true
+            this.$refs.confirmMsg.show(res.message)
+            return
+          }
+          this.oneBtn = false
+          this.confirmType = 2
+          this.$refs.confirmMsg.show('是否发布全部任务给采购员？')
+          return
+        }
+        let isMoreSupplier = false
+        let isMoreId = selectArr[0].supplier_id
+        selectArr.forEach((item) => {
+          if (item.supplier_id !== isMoreId) {
+            isMoreSupplier = true
+          }
+        })
+        if (isMoreSupplier) {
+          this.oneBtn = true
+          this.$refs.confirmMsg.show('存在不同供应商，无法生成采购单！')
+        }
+        this.setTaskList(selectArr)
+        this.$router.push('/home/procurement-task/edit-task')
       },
       async _getMoreList(page) {
         if (this.page === page) {
@@ -506,6 +557,58 @@
           item.name = item.supplier_name
         })
         this.supplyTask.data = this.supplyTask.data.concat(res.data)
+      },
+      async confirmMsg() {
+        switch (this.confirmType) {
+        case 1:
+          let res = await API.Supply.purchaseTaskPublish(
+            {
+              time: this.time,
+              startTime: this.startTime,
+              endTime: this.endTime,
+              keyword: this.keyword,
+              status: this.status,
+              page: this.page,
+              supplyId: this.supplyId,
+              loading: false,
+              ids: []
+            })
+          this.$toast.show(res.message)
+          this.$loading.hide()
+          if (res.error === this.$ERR_OK) {
+            this.getPurchaseTaskList({
+              time: this.time,
+              startTime: this.startTime,
+              endTime: this.endTime,
+              keyword: this.keyword,
+              status: this.status,
+              page: this.page,
+              supplyId: this.supplyId,
+              loading: false
+            })
+          }
+          break
+        case 2:
+          let supplyRes = await API.Supply.purchaseTask(
+            {
+              time: this.time,
+              startTime: this.startTime,
+              endTime: this.endTime,
+              keyword: this.keyword,
+              status: this.status,
+              page: this.page,
+              supplyId: this.supplyId,
+              loading: false
+            })
+          this.$loading.hide()
+          if (supplyRes.error !== this.$ERR_OK) {
+            this.$toast.show(supplyRes.message)
+            return
+          }
+          this.setTaskList(supplyRes.data)
+          this.$router.push('/home/procurement-task/edit-task')
+          break
+        }
       }
     }
   }

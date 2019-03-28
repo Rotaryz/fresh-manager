@@ -9,7 +9,8 @@ export const state = {
     total_page: 1
   },
   purchaseTaskList: [], // 采购任务列表
-  select: false
+  select: false,
+  editTaskList: []
 }
 
 export const getters = {
@@ -21,6 +22,9 @@ export const getters = {
   },
   select(state) {
     return state.select
+  },
+  editTaskList(state) {
+    return state.editTaskList
   }
 }
 
@@ -33,13 +37,16 @@ export const mutations = {
   },
   SET_SELECT(state, select) {
     state.select = select
+  },
+  SET_EDIT_TASK_LIST(state, editTaskList) {
+    state.editTaskList = editTaskList
   }
 }
 
 export const actions = {
   // 采购列表
   getPurchaseTaskList({state, commit, dispatch}, {time, startTime, endTime, keyword, status, page, supplyId, loading = true}) {
-    return API.Supply.purchaseTask({time, start_time: startTime, end_time: endTime, keyword, status, page, supplier_id: supplyId}, loading)
+    return API.Supply.purchaseTask({time, start_time: startTime, end_time: endTime, keyword, status, page, supplier_id: supplyId, limit: 10}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -100,5 +107,8 @@ export const actions = {
       break
     }
     commit('SET_PURCHASE_TASK_LIST', arr)
+  },
+  setTaskList({state, commit}, arr) {
+    commit('SET_EDIT_TASK_LIST', arr)
   }
 }
