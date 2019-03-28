@@ -1,5 +1,5 @@
 <template>
-  <div class="loading">
+  <div>
     加载中...
   </div>
 </template>
@@ -10,8 +10,7 @@
   export default {
     name: PAGE_NAME,
     page: {
-      title: 'Loading page...',
-      meta: [{name: 'description', content: 'Loading page...'}]
+      title: 'Loading'
     }
   }
 </script>

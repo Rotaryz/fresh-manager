@@ -90,7 +90,7 @@ router.afterEach((routeTo, routeFrom) => {
   const name = routeTo.params.name
   const marginBottom = routeTo.meta.marginBottom || 0
   const variableIndex = routeTo.meta.variableIndex
-  let titles = [...routeTo.meta.titles] || []
+  let titles = routeTo.meta.titles ? [...routeTo.meta.titles] : []
   // 判断该页面是否是变动的标题
   if (variableIndex || variableIndex === 0) {
     titles[variableIndex] = (routeTo.query.id || routeTo.params.id ? EDIT_TEXT : ADD_TEXT) + titles[variableIndex]
