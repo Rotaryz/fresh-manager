@@ -123,11 +123,19 @@
       },
       changeStartTime(value) {
         this.setStartTime(value)
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
         this.$refs.pagination.beginPage()
         this._getOutOrdersStatistic()
       },
       changeEndTime(value) {
         this.setEndTime(value)
+        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
         this.$refs.pagination.beginPage()
         this._getOutOrdersStatistic()
       },

@@ -82,7 +82,6 @@ export const actions = {
       keyword: keyword,
       is_merge_order: true // 后台需要的标识
     }
-    console.log(data)
     return API.Oms.getOmsOrders(data)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -139,7 +138,6 @@ export const actions = {
     dispatch('getOmsOrders')
   },
   setStatus({commit, dispatch}, selectStatus) {
-    console.log(selectStatus)
     commit('SET_STATUS', selectStatus.status)
     commit('SET_PAGE', 1)
     dispatch('getOmsOrders')
