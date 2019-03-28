@@ -177,7 +177,7 @@ export const tradeMethods = {
 
 // OMS
 export const omsComputed = {
-  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail'])
+  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail', 'timeStart', 'timeEnd'])
 }
 
 export const omsMethods = {
@@ -195,17 +195,17 @@ export const omsMethods = {
 }
 // 采购单
 export const supplyComputed = {
-  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail'])
+  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail', 'timeStart', 'timeEnd'])
 }
 
-export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail'])
+export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail', 'infoPurchaseTime'])
 
 // 采购任务
 export const proTaskComputed = {
-  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList'])
+  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd'])
 }
 
-export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase', 'setTaskList'])
+export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase', 'setTaskList', 'infoTaskTime'])
 
 // 调度任务
 export const deliveryComputed = {
