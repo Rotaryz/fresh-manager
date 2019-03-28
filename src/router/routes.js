@@ -751,6 +751,9 @@ export default [
             endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             routeTo.params.start = startTime
             routeTo.params.end = endTime
+            let start = time.start
+            let end = time.end
+            store.dispatch('proTask/infoTaskTime', {start, end})
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: '',
@@ -852,6 +855,9 @@ export default [
             endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             routeTo.params.start = startTime
             routeTo.params.end = endTime
+            let start = time.start
+            let end = time.end
+            store.dispatch('supply/infoPurchaseTime', {start, end})
             store
               .dispatch('supply/getPurchaseList', {
                 time: '',
@@ -1169,7 +1175,9 @@ export default [
             startTime = startTime.toLocaleDateString().replace(/\//g, '-')
             let endTime = new Date(time.timestamp - (86400 * 1000 * 1))
             endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            store.dispatch('oms/infoOrderTime', {startTime, endTime})
+            let start = time.start
+            let end = time.end
+            store.dispatch('oms/infoOrderTime', {startTime, endTime, start, end})
             store
               .dispatch('oms/getOmsOrders')
               .then((res) => {

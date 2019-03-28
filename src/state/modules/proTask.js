@@ -10,7 +10,9 @@ export const state = {
   },
   purchaseTaskList: [], // 采购任务列表
   select: false,
-  editTaskList: []
+  editTaskList: [],
+  timeStart: '',
+  timeEnd: ''
 }
 
 export const getters = {
@@ -25,6 +27,12 @@ export const getters = {
   },
   editTaskList(state) {
     return state.editTaskList
+  },
+  timeStart(state) {
+    return state.timeStart
+  },
+  timeEnd(state) {
+    return state.timeEnd
   }
 }
 
@@ -40,13 +48,19 @@ export const mutations = {
   },
   SET_EDIT_TASK_LIST(state, editTaskList) {
     state.editTaskList = editTaskList
+  },
+  SET_TIME_START(state, timeStart) {
+    state.timeStart = timeStart
+  },
+  SET_TIME_END(state, timeEnd) {
+    state.timeEnd = timeEnd
   }
 }
 
 export const actions = {
   // 采购列表
   async getPurchaseTaskList({state, commit, dispatch}, {time, startTime, endTime, keyword, status, page, supplyId, loading = true}) {
-    return API.Supply.purchaseTask({time, start_time: startTime, end_time: endTime, keyword, status, page, supplier_id: supplyId, limit: 10}, loading)
+    return API.Supply.purchaseTask({time, start_time: startTime ? startTime + ' ' + state.timeStart : '', end_time: endTime ? endTime + ' ' + state.timeEnd : '', keyword, status, page, supplier_id: supplyId, limit: 10}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -110,5 +124,9 @@ export const actions = {
   },
   setTaskList({state, commit}, arr) {
     commit('SET_EDIT_TASK_LIST', arr)
+  },
+  infoTaskTime({commit, dispatch},{start, end}) {
+    commit('SET_TIME_START', start)
+    commit('SET_TIME_END', end)
   }
 }

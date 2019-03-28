@@ -11,7 +11,7 @@
           :value="startTime"
           @on-change="changeStartTime"
         ></date-picker>
-        <div v-if="startTime" class="down-time-text">23:00:01</div>
+        <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
       </div>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
@@ -25,7 +25,7 @@
             :value="endTime"
             @on-change="changeEndTime"
           ></date-picker>
-          <div v-if="endTime" class="down-time-text">23:00:00</div>
+          <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
         </div>
       </div>
       <!--搜索-->
@@ -97,7 +97,7 @@
     methods: {
       ...omsMethods,
       _getOutOrdersStatistic() {
-        API.Oms.outOrdersStatistic({start_time: this.startTime, end_time: this.endTime, keyword: this.keyWord}).then((res) => {
+        API.Oms.outOrdersStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyWord}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -122,12 +122,20 @@
         this._getOutOrdersStatistic()
       },
       changeStartTime(value) {
+        if (Date.parse(value) > Date.parse(this.endTime)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
         this.setStartTime(value)
         this.$refs.pagination.beginPage()
         this._getOutOrdersStatistic()
       },
       changeEndTime(value) {
         this.setEndTime(value)
+        if (Date.parse(this.startTime) > Date.parse(value)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
         this.$refs.pagination.beginPage()
         this._getOutOrdersStatistic()
       },
