@@ -1,5 +1,6 @@
 import API from '@api'
 import app from '@src/main'
+import {getCurrentTime} from '@utils/tool'
 let yesterdayTime = new Date() - (86400 * 1000 * 1)
 yesterdayTime = new Date(yesterdayTime)
 yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
@@ -19,7 +20,8 @@ export const state = {
   endTime: yesterdayTime,
   status: '',
   keyword: '',
-  detail: {} // OMS订单详情
+  detail: {}, // OMS订单详情
+  isFirst: 1
 }
 
 export const getters = {
@@ -46,6 +48,9 @@ export const getters = {
   },
   detail(state) {
     return state.detail
+  },
+  isFirst(state) {
+    return state.isFirst
   }
 }
 
@@ -73,12 +78,22 @@ export const mutations = {
   },
   SET_DETAIL(state, detail) {
     state.detail = detail
+  },
+  SET_IS_FIRST(state, isFirst) {
+    state.isFirst = isFirst
   }
 }
 
 export const actions = {
   // 获取社区订单列表
-  getOmsOrders({state, commit}) {
+  async getOmsOrders({state, commit}) {
+    console.log(state)
+    let time = await getCurrentTime()
+    let yesterdayTime = new Date(time.timestamp - (86400 * 1000 * 1))
+    yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
+    let beforeDayTime = new Date(time.timestamp - (86400 * 1000 * 2))
+    beforeDayTime = beforeDayTime.toLocaleDateString().replace(/\//g, '-')
+    console.log(time.timestamp, yesterdayTime, beforeDayTime)
     const {page, startTime, endTime, status, keyword} = state
     let data = {
       status,
@@ -88,6 +103,7 @@ export const actions = {
       keyword: keyword,
       is_merge_order: true // 后台需要的标识
     }
+    console.log(data)
     return API.Oms.getOmsOrders(data)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
