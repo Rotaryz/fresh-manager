@@ -904,14 +904,18 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             let time = new Date()
             time = time.toLocaleDateString().replace(/\//g, '-')
+            let yesterdayTime = new Date() - (86400 * 1000 * 1)
+            yesterdayTime = new Date(yesterdayTime)
+            yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: '',
-                startTime: time,
+                startTime: yesterdayTime,
                 endTime: time,
                 keyword: '',
                 page: 1,
                 status: '',
+                supplyId: '',
                 loading: true
               })
               .then((res) => {
@@ -924,6 +928,18 @@ export default [
               .catch(() => {
                 next({name: '404'})
               })
+          }
+        }
+      },
+      // 生成采购任务
+      {
+        path: 'procurement-task/edit-task',
+        name: 'edit-task',
+        component: () => lazyLoadView(import('@pages/edit-task/edit-task')),
+        meta: {
+          titles: ['供应链', '采购', '采购任务', '生成采购单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
           }
         }
       },
@@ -985,12 +1001,15 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购单'],
           beforeResolve(routeTo, routeFrom, next) {
+            let yesterdayTime = new Date() - (86400 * 1000 * 1)
+            yesterdayTime = new Date(yesterdayTime)
+            yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
             let time = new Date()
             time = time.toLocaleDateString().replace(/\//g, '-')
             store
               .dispatch('supply/getPurchaseList', {
                 time: '',
-                startTime: time,
+                startTime: yesterdayTime,
                 endTime: time,
                 keyword: '',
                 page: 1,

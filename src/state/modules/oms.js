@@ -1,6 +1,11 @@
 import API from '@api'
 import app from '@src/main'
-
+let yesterdayTime = new Date() - (86400 * 1000 * 1)
+yesterdayTime = new Date(yesterdayTime)
+yesterdayTime = yesterdayTime.toLocaleDateString().replace(/\//g, '-')
+let beforeDayTime = new Date() - (86400 * 1000 * 2)
+beforeDayTime = new Date(beforeDayTime)
+beforeDayTime = beforeDayTime.toLocaleDateString().replace(/\//g, '-')
 export const state = {
   orders: [], // OMS订单
   pageTotal: {
@@ -10,8 +15,8 @@ export const state = {
     total_page: 1
   },
   page: 1,
-  startTime: '',
-  endTime: '',
+  startTime: beforeDayTime,
+  endTime: yesterdayTime,
   status: '',
   keyword: '',
   detail: {} // OMS订单详情

@@ -200,10 +200,10 @@ export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurcha
 
 // 采购任务
 export const proTaskComputed = {
-  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select'])
+  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList'])
 }
 
-export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase'])
+export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase', 'setTaskList'])
 
 // 调度任务
 export const deliveryComputed = {
@@ -216,11 +216,11 @@ export const deliveryMethods = {
 
 // 调度任务
 export const distributionComputed = {
-  ...mapGetters('distribution', ['tabIndex', 'orderList', 'orderPageDetail', 'orderPage', 'orderStartTime', 'orderEndTime', 'orderKeyword', 'driverList', 'driverPageDetail', 'driverPage', 'driverStartTime', 'driverEndTime'])
+  ...mapGetters('distribution', ['tabIndex', 'orderList', 'orderPageDetail', 'orderPage', 'orderStartTime', 'orderEndTime', 'orderKeyword', 'orderStatus', 'driverList', 'driverPageDetail', 'driverPage', 'driverStartTime', 'driverEndTime'])
 }
 
 export const distributionMethods = {
-  ...mapActions('distribution', ['setTabIndex', 'getOrderList', 'setOrderStartTime', 'setOrderEndTime', 'setOrderKeyword', 'setOrderPage', 'getDriverList', 'setDriverStartTime', 'setDriverEndTime', 'setDriverPage'])
+  ...mapActions('distribution', ['setTabIndex', 'getOrderList', 'setOrderStartTime', 'setOrderEndTime', 'setOrderKeyword', 'setOrderPage', 'setOrderStatus', 'getDriverList', 'setDriverStartTime', 'setDriverEndTime', 'setDriverPage'])
 }
 
 // 采购员

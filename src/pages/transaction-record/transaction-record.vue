@@ -178,21 +178,6 @@
       col-center()
       right: 0
 
-  .order-detail
-    display: flex
-    padding-bottom: 30px
-    .order-item
-      margin-right: 50px
-      display: flex
-      .order-text
-        font-family: $font-family-regular
-        font-size: $font-size-14
-      .order-title
-        color: $color-text-main
-      .order-money
-        font-family: $font-family-regular
-        color: $color-negative
-
   .list-box
     .list-item
       box-sizing: border-box
