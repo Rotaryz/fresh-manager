@@ -963,7 +963,7 @@ export default [
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             store
-              .dispatch('product/getEnterData', 1)
+              .dispatch('product/getEnterData', {startTime, endTime, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1013,7 +1013,7 @@ export default [
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             store
-              .dispatch('product/getOutData', 1)
+              .dispatch('product/getOutData', {startTime, endTime, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

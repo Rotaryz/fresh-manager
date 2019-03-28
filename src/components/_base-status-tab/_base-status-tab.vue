@@ -5,6 +5,7 @@
     >
       {{item.name}} ({{item.num}})
     </div>
+    <span class="status-slider" :style="style"></span>
   </div>
 </template>
 
@@ -29,7 +30,9 @@
     },
     data() {
       return {
-        statusIndex: this.infoTabIndex
+        statusIndex: this.infoTabIndex,
+        style: '',
+        el: null
       }
     },
     watch: {
@@ -37,9 +40,14 @@
         this.statusIndex = newVal
       }
     },
+    mounted() {
+      this.el = document.querySelectorAll('.status-tab-item')
+      this.style = `width: ${this.el[this.statusIndex].offsetWidth}px`
+    },
     methods: {
       checkStatus(index, item) {
         this.statusIndex = index
+        this.style = `left: ${this.el[index].offsetLeft}px; width: ${this.el[this.statusIndex].offsetWidth}px`
         this.$emit('setStatus', item, index)
       }
     }
@@ -56,6 +64,7 @@
     border-radius: 100px
     height: 30px
     box-sizing: border-box
+    position: relative
     .status-tab-item
       border-radius: 100px
       padding: 0 20px
@@ -65,7 +74,17 @@
       transition: 0.2s all
       font-size: $font-size-14
       font-family: $font-family-regular
+      background: transparent
+      position: relative
+      z-index: 1
     .status-tab-item-active
       color: $color-white
-      background: $color-main
+  .status-slider
+    position: absolute
+    top: 0
+    left: 0
+    height: 30px
+    border-radius: 100px
+    transition: left 0.2s
+    background: $color-main
 </style>
