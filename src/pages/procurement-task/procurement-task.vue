@@ -617,9 +617,9 @@
     transition: all 0.3s
 
   .pro-select-icon-disable
-    border: 1px solid transparent
     cursor: not-allowed
-    icon-image('icon-check_ash')
+    background: #eee
+    border: 1px solid #e9ecee
 
   .pro-select-icon-active
     border: 1px solid transparent
