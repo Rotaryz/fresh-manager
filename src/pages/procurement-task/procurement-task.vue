@@ -510,6 +510,7 @@
         if (isMoreSupplier) {
           this.oneBtn = true
           this.$refs.confirmMsg.show('存在不同供应商，无法生成采购单！')
+          return
         }
         this.setTaskList(selectArr)
         this.$router.push('/home/procurement-task/edit-task')
