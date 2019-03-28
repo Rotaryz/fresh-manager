@@ -13,7 +13,6 @@
         ></date-picker>
         <div v-if="startTime" class="down-time-text">23:00:01</div>
       </div>
-      <!--@on-change="_getStartTime"-->
       <div class="tip">~</div>
       <div class="down-item down-time-box">
         <date-picker
@@ -26,12 +25,6 @@
         ></date-picker>
         <div v-if="endTime" class="down-time-text">23:00:00</div>
       </div>
-      <!--下拉选择-->
-      <!--<span class="down-tip">状态</span>-->
-      <!--<div class="down-item">-->
-      <!--<base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>-->
-      <!--</div>-->
-      <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="入库单号或采购单号" @search="changeKeyword"></base-search>

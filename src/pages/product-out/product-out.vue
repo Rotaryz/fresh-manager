@@ -26,12 +26,6 @@
         ></date-picker>
         <div v-if="endTime" class="down-time-text">23:00:00</div>
       </div>
-      <!--下拉选择-->
-      <!--<span class="down-tip">状态</span>-->
-      <!--<div class="down-item">-->
-      <!--<base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>-->
-      <!--</div>-->
-      <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="出库单号或商户名称" @search="changeKeyword"></base-search>

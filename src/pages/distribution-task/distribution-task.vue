@@ -14,7 +14,6 @@
         <div v-if="orderStartTime && tabIndex === 0" class="down-time-text">23:00:01</div>
         <div v-if="driverStartTime && tabIndex === 1" class="down-time-text">23:00:01</div>
       </div>
-      <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item down-time-box">
         <date-picker
@@ -68,13 +67,6 @@
                 <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
               </div>
             </div>
-            <!--<div v-for="(order, key) in orderList" :key="key" class="list-content list-box">-->
-            <!--<div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">-->
-            <!--{{item.operation ? '' : order[item.key]}}-->
-            <!--<div v-if="item.operation">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</div>-->
           </div>
           <div v-else-if="tabIndex === 1">
             <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
