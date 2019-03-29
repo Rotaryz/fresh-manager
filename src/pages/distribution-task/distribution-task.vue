@@ -308,3 +308,4 @@
       &:nth-child(10)
         max-width: 80px
 </style>
+
