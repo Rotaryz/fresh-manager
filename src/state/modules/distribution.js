@@ -125,7 +125,6 @@ export const mutations = {
 
 export const actions = {
   infoOrderTime({state, commit, dispatch}, {startTime, endTime, start, end}) {
-    console.log(state)
     commit('SET_ORDER_START_TIME', startTime)
     commit('SET_ORDER_END_TIME', endTime)
     commit('SET_START', start)
