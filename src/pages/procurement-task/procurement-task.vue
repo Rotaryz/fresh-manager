@@ -481,8 +481,8 @@
         if (!selectArr.length) {
           let res = await API.Supply.getDiffSupplier({
             keyword: this.keyword,
-            start_time: this.startTime,
-            end_time: this.endTime,
+            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            end_time:  this.endTime ? this.endTime + ' ' + this.timeEnd : '',
             supplier_id: this.supplyId
           })
           if (res.error !== this.$ERR_OK) {
