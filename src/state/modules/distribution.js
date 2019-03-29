@@ -124,13 +124,14 @@ export const mutations = {
 }
 
 export const actions = {
-  infoOrderTime({commit, dispatch}, {startTime, endTime, start, end}) {
+  infoOrderTime({state, commit, dispatch}, {startTime, endTime, start, end}) {
+    console.log(state)
     commit('SET_ORDER_START_TIME', startTime)
     commit('SET_ORDER_END_TIME', endTime)
     commit('SET_START', start)
     commit('SET_end', end)
   },
-  infoDriverTime({commit, dispatch}, {startTime, endTime, start, end}) {
+  infoDriverTime({state, commit, dispatch}, {startTime, endTime, start, end}) {
     commit('SET_DRIVER_START_TIME', startTime)
     commit('SET_DRIVER_END_TIME', endTime)
     commit('SET_START', start)
@@ -207,8 +208,8 @@ export const actions = {
     const {driverStartTime, driverEndTime, driverPage,start, end} = state
     let starts = driverStartTime && driverStartTime.length < 11 ? `${driverStartTime} ${start}` : driverStartTime
     let ends = driverEndTime && driverEndTime.length < 11 ? `${driverEndTime} ${end}` : driverEndTime
-    commit('SET_ORDER_START_TIME', starts)
-    commit('SET_ORDER_END_TIME', ends)
+    commit('SET_DRIVER_START_TIME', starts)
+    commit('SET_DRIVER_END_TIME', ends)
     let data = {
       start_time: starts,
       end_time: ends,
