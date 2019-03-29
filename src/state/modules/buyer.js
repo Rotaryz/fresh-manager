@@ -103,5 +103,8 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getPurchaseUser')
+  },
+  infoSetKeyWord({commit}) {
+    commit('SET_KEYWORD', '')
   }
 }

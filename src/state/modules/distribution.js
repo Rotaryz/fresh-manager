@@ -129,6 +129,7 @@ export const actions = {
     commit('SET_ORDER_END_TIME', endTime)
     commit('SET_START', start)
     commit('SET_end', end)
+    commit('SET_ORDER_KEYWORD', '')
   },
   infoDriverTime({state, commit, dispatch}, {startTime, endTime, start, end}) {
     commit('SET_DRIVER_START_TIME', startTime)
