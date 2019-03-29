@@ -287,7 +287,7 @@
       // 获取限时抢购商品列表
       _getActivityGoods() {
         this.infoBannerList.modules.forEach(item => {
-          if (item.module_name === 'activity_fixed' && item.content_data && item.content_data.list.length > 0) {
+          if (item.module_name === 'activity_fixed' && item.content_data && item.content_data.list && item.content_data.list.length > 0) {
             API.Advertisement.getActivityGoods(item.content_data.list[0].id)
               .then(res => {
                 if (res.error !== this.$ERR_OK) {

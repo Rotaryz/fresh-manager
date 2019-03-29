@@ -69,7 +69,7 @@
           <div v-if="cms.module_name === 'goods_cate'" class="nav-box">
             <div class="line"></div>
             <div class="nav-content no-line">
-              <div v-if="cms.content_data.list.length" class="nav-list">
+              <div v-if="cms.content_data && cms.content_data.list && cms.content_data.list.length" class="nav-list">
                 <div v-for="(item, index) in cms.content_data.list" :key="index" class="nav-item">{{item.name}}</div>
               </div>
 
@@ -108,8 +108,9 @@
                     </section>
                     <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
                       <div class="add-goods-btn add-goods-btn-active">
-                        <div class="add-text">已抢完</div>
+                        <span class="add-text">已抢完</span>
                       </div>
+                      <span class="sale-count">已售{{item.sale_count}}{{item.sale_unit || '斤'}}</span>
                     </div>
                   </div>
                 </div>
