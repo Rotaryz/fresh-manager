@@ -296,5 +296,16 @@
   .distribution-down
     display: flex
     align-items: center
+  .list-box
+    .list-item
+      padding-right: 14px
+      &:nth-child(2)
+        min-width: 200px
+      &:nth-child(3)
+        min-width: 200px
+      &:nth-child(6)
+        white-space: normal
+      &:nth-child(10)
+        max-width: 105px
 </style>
 

@@ -238,7 +238,7 @@ export const buyerComputed = {
 }
 
 export const buyerMethods = {
-  ...mapActions('buyer', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage'])
+  ...mapActions('buyer', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
 }
 
 // 供应商
@@ -247,7 +247,7 @@ export const supplierComputed = {
 }
 
 export const supplierMethods = {
-  ...mapActions('supplier', ['getSupplier', 'getSupplierDetail', 'setKeyword', 'setPage'])
+  ...mapActions('supplier', ['getSupplier', 'getSupplierDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
 }
 
 // 库位管理

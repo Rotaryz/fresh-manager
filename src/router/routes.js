@@ -799,6 +799,8 @@ export default [
           titles: ['供应链', '采购', '采购员列表'],
           beforeResolve(routeTo, routeFrom, next) {
             store
+              .dispatch('buyer/infoSetKeyWord')
+            store
               .dispatch('buyer/getPurchaseUser')
               .then((res) => {
                 if (!res) {
@@ -912,6 +914,8 @@ export default [
         meta: {
           titles: ['供应链', '采购', '供应商'],
           beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('supplier/infoSetKeyWord')
             store
               .dispatch('supplier/getSupplier')
               .then((res) => {

@@ -97,7 +97,7 @@
     methods: {
       ...omsMethods,
       _getOutOrdersStatistic() {
-        API.Oms.outOrdersStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyWord}).then((res) => {
+        API.Oms.outOrdersStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -116,7 +116,6 @@
         this.$refs.pagination.beginPage()
       },
       changeKeyword(keyword) {
-        this.keyWord = keyword
         this.setKeyword(keyword)
         this.$refs.pagination.beginPage()
         this._getOutOrdersStatistic()
