@@ -67,12 +67,35 @@ export const rushComputed = {
 
 export const rushMethods = mapActions('rush', ['getRushList', 'getRushDetail', 'setRushList'])
 
+// 限时抢购
+export const saleComputed = {
+  ...mapGetters('sale', ['saleList', 'salePage', 'saleDetail'])
+}
+
+export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', 'setSaleList'])
+
 // 拓展活动
 export const outreachComputed = {
   ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail'])
 }
 
 export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
+
+// 优惠券
+export const couponComputed = {
+  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'time', 'status', 'page'])
+}
+
+export const couponMethods = mapActions('coupon', ['setTime', 'setStatus', 'setPage', 'getCouponList', 'getCouponDetail'])
+
+// 营销计划
+export const marketComputed = {
+  ...mapGetters('market', ['marketList', 'pageDetail', 'marketDetail'])
+}
+
+export const marketMethods = {
+  ...mapActions('market', ['getMarketList', 'getMarketDetail'])
+}
 
 export const auxiliaryComputed = {
   ...mapState('auxiliary', {

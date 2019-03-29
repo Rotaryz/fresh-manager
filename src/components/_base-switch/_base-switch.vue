@@ -1,7 +1,7 @@
 <template>
   <div class="switch-item hand" :style="{'background': status ? switchColor : closeColor, 'width': width, 'height': height}" @click="_changeSwitch">
     <span class="circular" :class="{'move': status}" :style="{'transform': `translateX(${transform})`}"></span>
-    <span class="status" :class="status ? 'status-right' : 'status-left'">{{status ? confirmText || '上架': cancelText || '下架'}}</span>
+    <span class="status" :class="status ? 'status-right' : 'status-left'">{{status ? confirmText: cancelText}}</span>
   </div>
 </template>
 
@@ -37,17 +37,17 @@
       },
       confirmText: {
         type: String,
-        default: ''
+        default: '上架'
       },
       cancelText: {
         type: String,
-        default: ''
+        default: '下架'
       }
     },
     methods: {
       _changeSwitch() {
         this.$emit('changeSwitch')
-      // this.switchStatus = status
+        // this.switchStatus = status
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="rush-purchase table">
+  <div class="flash-sale table">
     <div class="down-content">
       <span class="down-tip">活动时间</span>
       <div class="down-item">
@@ -10,21 +10,21 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-customer_list@2x.png" class="identification-icon">
-          <p class="identification-name">拓展活动</p>
+          <p class="identification-name">限时抢购</p>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="edit-outreach" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
+          <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in activityTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+          <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">
-              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+          <div v-for="(item, index) in saleList2" :key="index" class="list-content list-box">
+            <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+              <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
+                {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
               </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
                 <p class="item-dark">{{item.start_at}}</p>
@@ -32,21 +32,10 @@
               </div>
 
               <!--状态-->
-              <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
-              <!--二维码-->
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="code-box">
-                <div class="code-main" @mouseenter="showCode(index)" @mouseleave="hideCode">
-                  <img src="./icon-qr@2x.png" class="small-code">
-                  <transition name="fade">
-                    <div v-if="codeShow === index" class="code-content">
-                      <img :src="item.qrcode_url + '?imageView2/format/jpg'" alt="" class="code">
-                    </div>
-                  </transition>
-                </div>
-              </div>
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'/home/outreach-activity/edit-outreach?id=' + (item.id || 0)" class="list-operation">查看</router-link>
+                <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
               </div>
             </div>
@@ -54,7 +43,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="salePage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -63,26 +52,23 @@
 
 <script type="text/ecmascript-6">
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {outreachComputed, outreachMethods} from '@state/helpers'
+  import {saleComputed, saleMethods} from '@state/helpers'
   import {getCorpId} from '@utils/tool'
   import API from '@api'
 
-  const PAGE_NAME = 'OUTREACH_ACTIVITY'
-  const TITLE = '拓展活动'
-  const ACTIVITI_TITLE = [
-    {name: '活动名称', flex: 1.4, value: 'activity_name', type: 1},
+  const PAGE_NAME = 'FLASH_SALE'
+  const TITLE = '限时抢购'
+  const SALE_TITLE = [
     {name: '活动时间', flex: 1.2, value: 'start_at', type: 2},
-    {name: '社区', flex: 1.4, value: 'social_name', type: 1},
-    {name: '成交订单', flex: 1, value: 'pay_num', type: 1},
-    {name: '交易金额', flex: 1, value: 'pay_amount', type: 1},
-    {name: '复购率', flex: 1, value: 'repeat_rate', type: 1},
-    {name: '状态', flex: 1, value: 'status', type: 3},
-    {name: '二维码', flex: 1, value: '', type: 4},
+    {name: '商品', flex: 1.4, value: 'name', type: 1},
+    {name: '销量', flex: 1, value: 'pay_num', type: 1},
+    {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
+    {name: '状态', flex: 1, value: 'status', type: 4},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
-  // const OUTREACH_LIST = [
-  //   {activity_name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', group: '白云花园社区', sale_count: 20, total: 100, order_count: '30', status: 1}
-  // ]
+  const SALE_LIST = [
+    {name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', pay_num: 20, pay_amount: 100, status: 1}
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -93,7 +79,8 @@
     },
     data() {
       return {
-        activityTitle: ACTIVITI_TITLE,
+        saleTitle: SALE_TITLE,
+        saleList2: SALE_LIST,
         startTime: '',
         endTime: '',
         page: 1,
@@ -107,20 +94,20 @@
       }
     },
     computed: {
-      ...outreachComputed
+      ...saleComputed
     },
     created() {
       this.corpId = getCorpId()
     },
     mounted() {},
     methods: {
-      ...outreachMethods,
+      ...saleMethods,
       async _setTime(arr) {
         this.$refs.pages.beginPage()
         this.page = 1
         this.startTime = arr[0]
         this.endTime = arr[1]
-        await this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        await this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
       },
       showCode(index) {
         clearTimeout(this.timer)
@@ -133,7 +120,7 @@
       },
       addPage(page) {
         this.page = page
-        this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
       },
       _deleteActivity(id) {
         this.delId = id
@@ -148,7 +135,7 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
       }
     }
   }
@@ -209,8 +196,6 @@
           display: block
           border-top: 1px solid #E9ECEE
           cursor: pointer
-    .list-content .list-about
-      overflow: inherit
   .btn-main
     margin-right: 10px
 </style>
