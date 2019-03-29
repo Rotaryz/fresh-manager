@@ -17,7 +17,7 @@ export default {
    * @param loading
    * @returns {*}
    */ cmsMsg(data, loading = false) {
-    let url = '/social-shopping/api/backend/cms/page-index'
+    let url = '/social-shopping/v1/api/backend/cms/page-index'
     return request.get(url, data, loading)
   },
   /**
@@ -66,7 +66,7 @@ export default {
    * @returns {*|AxiosPromise<any>|IDBRequest|Promise<void>}
    */
   getModuleMsg(data) {
-    let url = `/social-shopping/api/backend/cms/module-data`
+    let url = `/social-shopping/v1/api/backend/cms/module-data`
     return request.get(url, data, false)
   },
   /**
@@ -88,5 +88,26 @@ export default {
   activiList(loading = false) {
     let url = `/social-shopping/api/backend/cms/cms-activity-list`
     return request.get(url, null, loading)
-  }
+  },
+  /**
+   * 获取活动商品
+   * @param data
+   * @param id
+   * @returns {*|AxiosPromise<any>|IDBRequest|Promise<void>}
+   */
+  getActivityGoods(id, loading = false) {
+    let url = `/social-shopping/v1/api/backend/activity-manage/activity-fixed-goods`
+    return request.get(url, {activity_id: id}, loading)
+  },
+  /**
+   * 获取分类列表商品列表
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsList(data, loading = false) {
+    let url = `/social-shopping/v1/api/backend/goods-manage/goods`
+    return request.get(url, data, loading)
+  },
+
 }

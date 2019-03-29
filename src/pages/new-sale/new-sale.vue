@@ -75,7 +75,7 @@
           </div>
           <div class="remind">商品数量一共可添加10个</div>
         </div>
-        <div class="rush-list-box">
+        <div v-if="goodsList.length" class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>
@@ -84,19 +84,19 @@
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
               <div class="com-list-item">¥{{item.original_price}}</div>
-              <div class="com-list-item">{{item.sale_count}}</div>
+              <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
-                <input v-model="item.trade_price" type="number" class="com-edit">
+                <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
                 <span v-if="item.original_price" class="small-money">¥</span>
               </div>
               <div class="com-list-item">
-                <input v-model="item.person_all_buy_limit" type="number" class="com-edit com-edit-small">
+                <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
-                <input v-model="item.usable_stock" type="number" class="com-edit com-edit-small">
+                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
-                <input v-model="item.sort" type="number" class="com-edit com-edit-small">
+                <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -619,7 +619,6 @@
       width: 242px
       height: 28px
       z-index: 100
-    .text-no-change
       cursor: not-allowed
     .time-no-change
       width: 522px

@@ -9,7 +9,13 @@
       </div>
     </div>
     <div class="advertisement-small">
-      <phone-box :bannerList="bannerList" :goodsList="goodsList" :navList="navList" :cmsMsg="infoBannerList.modules" @setType="_changeType"></phone-box>
+      <phone-box
+        :bannerList="bannerList"
+        :cateGoods="cateGoods"
+        :activityGoodsList="activityGoodsList"
+        :cmsMsg="infoBannerList.modules"
+        @setType="_changeType"
+      ></phone-box>
       <!--广告-->
       <div v-if="cmsType === 'bannar'" class="advertisement-content">
         <div class="content-header">
@@ -20,7 +26,7 @@
           <transition-group>
             <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
               <div class="advertisement-msg">
-                <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
+                <div class="img-box hand" :style="{'background-image': 'url(' + (banner.image_url || banner.add_icon) + ')'}">
                   <div v-if="banner.showLoading" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
@@ -43,72 +49,9 @@
           <div class="new-advertisement hand" @click="_addMore">新建广告</div>
         </div>
       </div>
-      <!--导航-->
-      <div v-if="false" class="advertisement-content">
-        <div class="content-header">
-          <div class="content-title">导航栏设置</div>
-          <div class="content-sub">(最多添加10个导航栏，鼠标拖拽调整广告顺序)</div>
-        </div>
-        <draggable v-model="temporaryNavigation" @update="_setSort()">
-          <transition-group>
-            <div v-for="(item, idx) in temporaryNavigation" :key="idx" class="advertisement-item">
-              <div class="advertisement-msg nav-msg">
-                <div class="img-box hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
-                  <div v-if="item.showLoading" class="loading-mask">
-                    <img src="./loading.gif" class="loading">
-                  </div>
-                  <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, item, $event)">
-                  <div v-if="item.image_id" class="img-change-tip">更换图片</div>
-                </div>
-                <div>
-                  <input v-model="item.title" type="text" class="nav-name" placeholder="请输入标题名称" maxlength="4">
-                  <div class="advertisement-link">
-                    <div class="add-link hand" @click="_showGoods(idx, item.other_id)">添加链接</div>
-                    <p class="goods-title">{{item.type === 'out_html' || item.type === 'mini_link' ? item.url : item.name}}</p>
-                  </div>
-                </div>
-                <p class="use hand" @click="_showConfirm(item.id, idx)">删除</p>
-              </div>
-            </div>
-          </transition-group>
-        </draggable>
-        <div class="advertisement-btn">
-          <div class="submit-activity-btn hand" @click="_editNav()">提交</div>
-          <div class="new-advertisement hand" @click="_navMore">新建导航</div>
-        </div>
-      </div>
-      <!--活动-->
-      <!--<div v-if="cmsType === 'activity'" class="advertisement-content">
-        <div class="content-header">
-          <div class="content-title">活动列表</div>
-        </div>
-        <div class="edit-activity">
-          <div class="edit-item">
-            <div class="edit-title">
-              <span class="start">*</span>
-              营销活动
-            </div>
-            <div class="edit-box">
-              <base-drop-down :width="400" :height="44" :select="activityType"></base-drop-down>
-            </div>
-          </div>
-          <div class="edit-item">
-            <div class="edit-title">
-              <span class="start">*</span>
-              选择活动
-            </div>
-            <div class="edit-box">
-              <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
-            </div>
-          </div>
-          <div class="submit-activity advertisement-btn">
-            <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
-          </div>
-        </div>
-      </div>-->
 
       <!--活动-->
-      <div v-if="cmsType === 'activity'" class="advertisement-content">
+      <div v-if="cmsType === 'activity_fixed'" class="advertisement-content">
         <div class="content-header">
           <div class="content-title">限时抢购</div>
         </div>
@@ -221,10 +164,10 @@
     bannarIcon: require('./icon-carousel@2x.png'),
     navigation: '导航栏设置',
     navigationIcon: require('./icon-nav_settings@2x.png'),
-    activity: '限时抢购',
-    activityIcon: require('./icon-time@2x.png')
+    activity_fixed: '限时抢购',
+    activity_fixedIcon: require('./icon-time@2x.png')
   }
-  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: ADD_IMAGE} // 模板对象
+  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: '', add_icon: ADD_IMAGE} // 模板对象
   export default {
     name: PAGE_NAME,
     components: {
@@ -244,7 +187,6 @@
         showSelectIndex: -1,
         showLoading: false,
         bannerList: [TEMPLATE_OBJ],
-        navList: [],
         goodsList: [],
         temporaryBannar: [],
         temporaryNavigation: [],
@@ -268,24 +210,20 @@
         left: 55,
         outLink: 'mini_goods',
         cmsId: 0,
+        cmsModuleId: '',
         activityType: {
           check: false,
           show: false,
-          content: '今日抢购',
+          content: '限时抢购',
           type: 'default',
-          data: [{name: '今日抢购'}]
-        },
-        activityList: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: []
+          data: [{name: '限时抢购'}]
         },
         goodsCate: [],
         showCateIndex: 0,
         activityItem: {},
-        activityStatus: 0
+        activityStatus: 0,
+        activityGoodsList: [],
+        cateGoods: []
       }
     },
     computed: {
@@ -300,32 +238,21 @@
       this.cmsId = this.infoBannerList.modules[0].id
       this.$loading.show()
       this.infoBannerList.modules.forEach(async (item) => {
-        await this._getModuleMsg(item.module_name, item.id)
+        await this._getModuleMsg(item.module_name, item.id, item.module_id)
       })
-      this.$loading.hide()
       await this._getFirstAssortment()
       await this._getGoodsList()
+      await this._getActivityGoods()
+      await this._getCateGoods()
+      this.$loading.hide()
     },
     methods: {
       ...adverMethods,
-      // 获取今日抢购活动列表
-      async _activityList() {
-        let res = await API.Advertisement.activiList()
-        this.activityList.data = res.error === this.$ERR_OK ? res.data : []
-        this.activityList.data = this.activityList.data.map((item) => {
-          item.name = item.activity_name
-          return item
-        })
-      },
       switchBtn() {
         this.activityStatus = this.activityStatus ? 0 : 1
-        console.log(this.activityStatus)
       },
-      _getActivityId(item) {
-        this.activityItem.activityId = item.id
-      },
-      async _getModuleMsg(type, id) {
-        let res = await API.Advertisement.getModuleMsg({id: id})
+      async _getModuleMsg(type, id, moduleId) {
+        let res = await API.Advertisement.getModuleMsg({id: id, module_id: moduleId})
         if (res.error !== this.$ERR_OK) {
           return
         }
@@ -334,16 +261,42 @@
           this.bannerList = res.data.length ? res.data : this.bannerList
           this.temporaryBannar = _.cloneDeep(res.data)
           break
-        case 'navigation':
-          this.navList = res.data
-          this.temporaryNavigation = _.cloneDeep(res.data)
+        case 'activity_fixed':
+          this.activityStatus = ((res.data[0] && +res.data[0].is_close === 1) ? 0 : 1)
           break
-        case 'activity':
-          this.goodsList = res.data.list
-          this.activityItem = {name: res.data.name, activityId: res.data.other_id, id: res.data.id || ''}
-          this.activityList.content = res.data.name || '请选择'
+        case 'goods_cate':
+          // this.temporaryNavigation = _.cloneDeep(res.data)
           break
         }
+      },
+      // 获取分类商品列表
+      _getCateGoods() {
+        API.Advertisement.getGoodsList({
+          is_online: 1,
+          keyword: '',
+          goods_category_id: 0,
+          limit: 10,
+          page: 1
+        }).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.cateGoods = res.data
+        })
+      },
+      // 获取限时抢购商品列表
+      _getActivityGoods() {
+        this.infoBannerList.modules.forEach(item => {
+          if (item.module_name === 'activity_fixed' && item.content_data && item.content_data.list.length > 0) {
+            API.Advertisement.getActivityGoods(item.content_data.list[0].id)
+              .then(res => {
+                if (res.error !== this.$ERR_OK) {
+                  return
+                }
+                this.activityGoodsList = res.data
+              })
+          }
+        })
       },
       _setSort() {},
       _setLinkType(index, e) {
@@ -355,10 +308,8 @@
       async _changeType(cms) {
         this.cmsType = cms.module_name
         this.cmsId = cms.id
-        if (this.cmsType === 'activity') {
-          await this._activityList()
-        }
-        await this._getModuleMsg(this.cmsType, this.cmsId)
+        this.cmsModuleId = cms.module_id
+        await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -377,7 +328,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        await this._getModuleMsg(this.cmsType, this.cmsId)
+        await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
@@ -491,18 +442,6 @@
           el.scrollTop = el.scrollHeight
         }, 100)
       },
-      // 添加更多的广告
-      _navMore() {
-        if (this.temporaryNavigation.length >= 10) {
-          this.$toast.show('最多添加十个导航')
-          return
-        }
-        this.temporaryNavigation.push(_.cloneDeep(TEMPLATE_OBJ))
-        let el = document.querySelector('html')
-        setTimeout(() => {
-          el.scrollTop = el.scrollHeight
-        }, 100)
-      },
       // 添加图片
       async _addPic(index, item, e) {
         this.upIndex = index
@@ -550,40 +489,13 @@
         })
         await this._editCms(data)
       },
-      // 新建nav
-      async _editNav() {
-        if (!this.temporaryNavigation.length) {
-          this.$toast.show('导航不能为空', 1500)
-          return
-        } else {
-          for (let i = 0; i < this.temporaryNavigation.length; i++) {
-            if (!this.temporaryNavigation[i].title) {
-              this.$toast.show(`导航${i + 1}标题不能为空`, 1500)
-              return
-            } else if (!this.temporaryNavigation[i].image_id) {
-              this.$toast.show(`导航${i + 1}图片不能为空`, 1500)
-              return
-            } else if (!this.temporaryNavigation[i].name && !this.temporaryNavigation[i].url) {
-              this.$toast.show(`导航${i + 1}链接不能为空`, 1500)
-              return
-            }
-          }
-        }
-        let data = this.temporaryNavigation.map((item) => {
-          return {page_module_id: this.cmsId, ext_json: item}
-        })
-        await this._editCms(data)
-      },
       // 新建活动
       async _editActivity() {
-        if (!this.activityItem.activityId) {
-          this.$toast.show(`请选择活动`, 1500)
-          return
-        }
+
         let data = [
           {
             page_module_id: this.cmsId,
-            ext_json: {id: this.activityItem.id, other_id: this.activityItem.activityId, type: 'activity'}
+            ext_json: {is_close: this.activityStatus}
           }
         ]
         await this._editCms(data)
@@ -592,7 +504,7 @@
       async _editCms(data) {
         let res = await API.Advertisement.saveModuleMsg({data})
         if (res.error === this.$ERR_OK) {
-          await this._getModuleMsg(this.cmsType, this.cmsId)
+          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
         }
         this.$loading.hide()
         this.$toast.show(res.message)
@@ -1102,6 +1014,7 @@
     display: flex
     justify-content: space-between
     align-items: center
+    margin-top: 30px
   .edit-activity
     padding-left: 40px
 

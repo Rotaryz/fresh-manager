@@ -26,45 +26,39 @@
           </div>
 
           <!--限时抢购-->
-          <div v-if="cms.module_name === 'activity'" class="goods-big-box">
+          <div v-if="cms.module_name === 'activity_fixed'" class="goods-big-box">
             <div class="line"></div>
             <div :class="{'touch': comType === cms.module_name}" class="goods-small-box hand" @click="_setType(cms)">
               <!--title-->
               <div class="goods-title-box">
                 <div class="goods-title-main">
                   <div class="goods-title-left">
-                    <span class="logo">限时抢购</span>
-                    <span class="time">01:59:25</span>
+                    <img src="./pic-time_qg@2x.png" class="logo">
                   </div>
                   <div class="goods-title-right">
-                    <div class="sale">
-                      <span class="time">10:00</span>
-                      <span class="text">正在抢购</span>
-                    </div>
-                    <div class="sale">
-                      <span class="time">10:00</span>
-                      <span class="text">正在抢购</span>
-                    </div>
-                    <div class="sale">
-                      <span class="time">10:00</span>
-                      <span class="text">正在抢购</span>
+                    <div v-for="(val, ind) in cms.content_data.list" :key="ind" class="sale">
+                      <span class="time">{{val.at}}</span>
+                      <span class="text">{{val.at_str}}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="goods-box hand">
-                <div v-for="(item, index) in goodsList" :key="index" class="goods-list">
+                <div v-for="(item, index) in activityGoodsList" :key="index" class="goods-list">
                   <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
+                  <img v-else src="./icon-picmr@2x.png" class="item-img goods-none">
                   <div class="title">{{item.name}}</div>
                   <div class="bottom">
-                    <span class="price">10.8<em class="unit">元</em></span>
+                    <span class="price">{{item.original_price}}<em class="unit">元</em></span>
                     <span class="add"></span>
                   </div>
                 </div>
-                <div v-if="!goodsList.length" class="goods-none">
-                  <div class="none-box">
-                    <img src="./icon-picmr@2x.png" class="none-img">
+                <div v-if="!activityGoodsList.length" class="none-content">
+                  <div v-for="(item, index) in new Array(4).fill(1)" :key="index" class="goods-none">
+                    <div class="none-box">
+                      <img src="./icon-picmr@2x.png" class="none-img">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -72,19 +66,18 @@
           </div>
 
           <!--分类-->
-          <div v-if="cms.module_name === 'navigation'" class="hand nav-box">
+          <div v-if="cms.module_name === 'goods_cate'" class="nav-box">
             <div class="line"></div>
-            <div class="nav-content" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
-              <div v-if="navList.length" class="nav-list">
-                <div class="nav-item">全部</div>
-                <div v-for="(item, index) in navList" :key="index" class="nav-item">{{item.title}}</div>
+            <div class="nav-content no-line">
+              <div v-if="cms.content_data.list.length" class="nav-list">
+                <div v-for="(item, index) in cms.content_data.list" :key="index" class="nav-item">{{item.name}}</div>
               </div>
 
-              <div v-for="(item, index) in goodsList" :key="index" class="pro-list">
-
+              <div v-for="(item, index) in cateGoods" :key="index" class="pro-list">
                 <div class="goods-left">
                   <div class="goods-left-img">
                     <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
+                    <img v-else src="./icon-picmr@2x.png" class="item-img goods-none">
                   </div>
                   <div class="goods-left-icon">
                     <img class="item-img" src="./icon-label@2x.png">
@@ -94,32 +87,24 @@
                   <div class="goods-right-top">
                     <div class="title">{{item.name}}</div>
                     <div v-if="item.describe" class="text-sub">{{item.describe}}</div>
-                    <!--<div class="text-sales-box">
-                      <div class="text-sales">已售{{item.sale_count}}件</div>
-                    </div>-->
                   </div>
                   <div class="add-box">
                     <div class="add-box-left">
                       <section class="left">
-                        <div class="text-group">团购价</div>
+                        <img src="./pic-price_bg@2x.png" class="text-group">
                       </section>
                       <div class="price-box">
-                        <div class="money">{{item.trade_price}}</div>
+                        <div class="money">{{item.trade_price || 0}}</div>
                         <div class="unit">元</div>
-                        <div class="lineation">{{item.original_price}}元</div>
+                        <div class="lineation">{{item.original_price || 0}}元</div>
                       </div>
                     </div>
                     <section v-if="item.usable_stock * 1 > 0" class="add-box-right">
                       <div class="add-goods-btn">
-                        <div class="phone-add-icon">
-                          <div class="add1"></div>
-                          <div class="add2"></div>
-                        </div>
-                        <div>
-                          <div class="add-text">购物车</div>
-                          <span>已售{{item.sale_count}}斤</span>
-                        </div>
+                        <img src="./icon-jia@2x.png" alt="" class="add-cart-icon">
+                        <span class="add-text">购物车</span>
                       </div>
+                      <span class="sale-count">已售{{item.sale_count}}{{item.sale_unit || '斤'}}</span>
                     </section>
                     <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
                       <div class="add-goods-btn add-goods-btn-active">
@@ -130,9 +115,9 @@
                 </div>
               </div>
 
-              <div v-if="!navList.length" class="nav-list">
-                <div v-for="(item) in [0, 1, 2, 3, 4, 5 , 6, 7, 8, 9]" :key="item" class="nav-item">
-                  <div class="nav-top-box"></div>
+              <div v-if="!cateGoods.length" class="no-goods">
+                <div v-for="(item) in [0, 1, 2]" :key="item" class="no-goods-item">
+                  <img src="./icon-picmr@2x.png" class="none-img">
                 </div>
               </div>
             </div>
@@ -183,7 +168,13 @@
           return []
         }
       },
-      goodsList: {
+      cateGoods: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
+      activityGoodsList: {
         type: Array,
         default: () => {
           return []
@@ -217,7 +208,8 @@
   @import "~@design"
   .add-box-right
     col-center()
-    right :0
+    text-align: center
+    right : 10PX
 
   .phone-box
     margin: 0 76px 0 71px
@@ -317,6 +309,10 @@
       transition: all 0.2s
       box-sizing: border-box
       border: 2px dashed #D9D9D9
+  .no-line:after
+    border:0
+    width: 0
+    height: 0
 
   .goods-small-box
     overflow: hidden
@@ -338,9 +334,10 @@
     background: $color-white
     width: 400%
     height: 35px
+    padding: 0 15px
     border-bottom: 0.5px solid #E6E6E6
     .nav-item
-      width: 50px
+      margin-right: 20px
       float: left
       height: 35px
       line-height: 35px
@@ -377,6 +374,20 @@
         color: #333
         text-align: center
 
+  .no-goods
+    .no-goods-item
+      width: 270px
+      height: 85px
+      background: #F5F5F5
+      margin: 10px auto 0
+      display: flex
+      align-items: center
+      justify-content: center
+      &:last-child
+        margin-bottom: 10px
+    .none-img
+      width: 36px
+      height: 29px
   .pro-list
     height: 111px
     layout(row)
@@ -400,11 +411,15 @@
           border-radius: 3px
           display: block
           object-fit: cover
+        .goods-none
+          width: 80px
+          height: 86px
+          object-fit: contain
       .goods-left-icon
         width: 28px
         position: absolute
-        left: -5px
-        top: -5px
+        left: -3px
+        top: -3px
         img
           display: block
           width: 28px
@@ -453,14 +468,7 @@
         .left
           layout(row)
           .text-group
-            font-size: $font-size-12
-            font-family: $font-family-regular
-            color: #FF8300
-            height: 13px
-            line-height: 13px
-            margin-bottom: 3px
-            border-radius: 10px
-            padding: 0 5px
+            height: 14px
         .price-box
           layout(row)
           align-items: flex-end
@@ -485,41 +493,25 @@
             line-height: 1
             margin-left: 3.6px
         .add-goods-btn
-          layout(row)
-          width: 64.5px
-          height: 24px
+          width: 60px
+          height: 20px
           background: #73C200
+          display: flex
           justify-content: center
           align-items: center
-          border-radius: 14px
+          border-radius: 20px
+          .add-cart-icon
+            width: 10px
+            height: 10px
+            object-fit: cover
+            margin-right: 2px
           .add-text
-            font-size: $font-size-12
+            font-size: $font-size-10
             font-family: $font-family-regular
             color: #fff
-          .phone-add-icon
-            width: 11px
-            height: 11px
-            position: relative
-            margin-right: 2px
-            .add1
-              width: 11px
-              height: 3px
-              transform: scaleY(0.5)
-              background-color: #fff
-              position: absolute
-              left: 0
-              top: 4.5px
-              border-radius: 30px
-            .add2
-              width: 3px
-              height: 11px
-              transform: scaleX(0.5)
-              background-color: #fff
-              border-radius: 30px
-              position: absolute
-              left: 4px
-              top: 0
-
+        .sale-count
+          font-size: 10px
+          color: $color-text-assist
         .add-goods-btn-active
           background: #b7b7b7
   .goods-big-box
@@ -539,16 +531,23 @@
         flex-direction: column
         justify-content: center
         line-height: 1.2
+        .logo
+          width: 80px
+          height: 29px
+          object-fit: cover
       .goods-title-right
         width: 180px
         display: flex
         align-items: center
+        justify-content: flex-end
         .sale
           font-size: $font-size-14
           font-family: $font-family-medium
-          width: 100px
+          width: 54px
+          margin-left: 5px
           color: #808080
           text-align: center
+          margin-top: 4px
         .time
           display: block
           height: 16px
@@ -570,19 +569,20 @@
     box-sizing: border-box
     position: relative
     overflow: hidden
-    display: flex
-    flex-wrap: nowrap
     .goods-list
-      width: 78.7px
+      float: left
+      width: 72px
       padding: 8.5px 9.8px 15px
-      height: 140px
-      box-sizing: border-box
+      height: 115px
+      box-sizing: content-box
       align-items: center
       .item-img
         width: 68.7px
         height: 68.7px
         object-fit: cover
         margin: 5px auto 0
+      .goods-none
+        object-fit: contain
       .title
         color: #111
         font-size: 10.26px
@@ -605,22 +605,27 @@
         height: 18.2px
         icon-image(icon-shopcart)
 
-
-  .goods-none
-    width: 78.7px
-    padding: 13px 0
-    border-radius: 3px
-    border-bottom-1px(#e6e6e6)
-    &:last-child
-      border-none()
-    .none-box
-      background: #F5F5F5
-      height: 94.6px
-      display: flex
+  .none-content
+    width: 400%
+    .goods-none
+      float: left
+      margin-right: 5px
+      width: 83px
+      height: 83px
+      padding: 8.5px 0 15px
+      box-sizing: content-box
       align-items: center
-      justify-content: center
-    .none-img
-      width: 40px
+      box-sizing: content-box
+      align-items: center
+      border-radius: 3px
+      .none-box
+        background: #F5F5F5
+        height: 100%
+        display: flex
+        align-items: center
+        justify-content: center
+      .none-img
+        width: 36px
   .line
     height: 7.9px
     background #F7F7F7
