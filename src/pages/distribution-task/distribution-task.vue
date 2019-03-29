@@ -64,7 +64,6 @@
               <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
               <div class="list-item" :style="{flex: commodities[9].flex}">
                 <span class="list-operation" @click="handleOperation(item)">导出</span>
-                <span class="list-operation" @click="handleOperation(item)">导出</span>
                 <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
               </div>
             </div>

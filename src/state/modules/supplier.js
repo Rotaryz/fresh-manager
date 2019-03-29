@@ -104,5 +104,8 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getSupplier')
+  },
+  infoSetKeyWord({commit}) {
+    commit('SET_KEYWORD', '')
   }
 }

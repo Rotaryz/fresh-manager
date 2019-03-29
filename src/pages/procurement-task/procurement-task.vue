@@ -492,7 +492,7 @@
           }
           this.oneBtn = false
           this.confirmType = 2
-          this.$refs.confirmMsg.show('是否发布全部任务给采购员？')
+          this.$refs.confirmMsg.show('是否将全部任务生成采购单？')
           return
         }
         let isMoreSupplier = false
