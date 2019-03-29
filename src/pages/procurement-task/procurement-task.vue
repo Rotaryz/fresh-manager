@@ -481,8 +481,8 @@
         if (!selectArr.length) {
           let res = await API.Supply.getDiffSupplier({
             keyword: this.keyword,
-            start_time: this.startTime,
-            end_time: this.endTime,
+            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            end_time:  this.endTime ? this.endTime + ' ' + this.timeEnd : '',
             supplier_id: this.supplyId
           })
           if (res.error !== this.$ERR_OK) {
@@ -492,7 +492,7 @@
           }
           this.oneBtn = false
           this.confirmType = 2
-          this.$refs.confirmMsg.show('是否发布全部任务给采购员？')
+          this.$refs.confirmMsg.show('是否将全部任务生成采购单？')
           return
         }
         let isMoreSupplier = false
