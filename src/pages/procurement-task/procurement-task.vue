@@ -36,7 +36,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="订单号或商品名称" @search="_search"></base-search>
+        <base-search placeHolder="商品名称搜索" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
