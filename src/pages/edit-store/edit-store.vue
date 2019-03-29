@@ -145,7 +145,7 @@
       },
       outFn(item, index) {
         if (item.base_num.length === 0) {
-          this.$toast.show('请输出出库数')
+          this.$toast.show('请输入出库数')
           return
         }
         this.curItem = item
