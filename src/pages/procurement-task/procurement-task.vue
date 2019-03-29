@@ -517,8 +517,8 @@
         this.page = page
         await this.getPurchaseTaskList({
           time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
+          startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
           keyword: this.keyword,
           status: this.status,
           page: this.page,
@@ -545,8 +545,8 @@
           let res = await API.Supply.purchaseTaskPublish(
             {
               time: this.time,
-              startTime: this.startTime,
-              endTime: this.endTime,
+              startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+              endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
               keyword: this.keyword,
               status: this.status,
               page: this.page,
@@ -574,8 +574,8 @@
           let supplyRes = await API.Supply.purchaseTask(
             {
               time: this.time,
-              start_time: this.startTime,
-              end_time: this.endTime,
+              start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+              end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
               keyword: this.keyword,
               status: this.status,
               page: this.page,

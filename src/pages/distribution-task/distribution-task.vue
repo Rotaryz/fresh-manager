@@ -30,7 +30,7 @@
       <div v-if="tabIndex === 0" class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
-          <base-search :infoText="orderKeyword" placeHolder="订单号或商户名称" @search="changeKeyword"></base-search>
+          <base-search :infoText="orderKeyword" placeHolder="配送单号或商户名称" @search="changeKeyword"></base-search>
         </div>
       </div>
     </div>
@@ -98,10 +98,10 @@
     {title: '建单时间', key: 'created_at', flex: 1},
     {title: '配送单号', key: 'order_sn', flex: 1},
     {title: '关联订单号', key: 'sale_order_sn', flex: 1.3},
-    {title: '路线', key: 'road_name', flex: 1},
+    {title: '路线', key: 'road_name', flex: 0.6},
     {title: '商户名称', key: 'receiver', flex: 1},
     {title: '配送地址', key: 'receive_address', flex: 1.3},
-    {title: '收货时间', key: 'delivery_date', flex: 0.6},
+    {title: '收货时间', key: 'delivery_date', flex: 0.8},
     {title: '司机', key: 'driver_name', flex: 0.6},
     {title: '状态', key: 'status_str', flex: 0.6},
     {title: '操作', key: '', operation: '导出', flex: 0.7}
@@ -297,3 +297,4 @@
     display: flex
     align-items: center
 </style>
+
