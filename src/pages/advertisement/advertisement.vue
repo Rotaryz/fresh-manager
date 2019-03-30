@@ -236,6 +236,7 @@
     },
     async created() {
       this.cmsId = this.infoBannerList.modules[0].id
+      this.cmsModuleId = this.infoBannerList.modules[0].module_id
       this.$loading.show()
       this.infoBannerList.modules.forEach(async (item) => {
         await this._getModuleMsg(item.module_name, item.id, item.module_id)
@@ -485,6 +486,7 @@
           }
         }
         let data = this.temporaryBannar.map((item) => {
+          delete item.add_icon
           return {page_module_id: this.cmsId, ext_json: item}
         })
         await this._editCms(data)

@@ -639,8 +639,8 @@
           this.categorySelectItem = {}
           this.categoryCheckItem = {}
         } else {
-          let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-          this.selectGoodsId.splice(index, 1)
+          // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+          this.selectGoodsId.splice(this.goodsDelIndex, 1)
           this.goodsList.splice(this.goodsDelIndex, 1)
           this.selectDelId.push(this.goodsDelId)
         }

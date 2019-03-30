@@ -69,7 +69,7 @@
     <div class="activity-box">
       <div class="activity-list">
         <div class="activity-tab">
-          <div :class="{'btn-disable': disable}" class="add-goods-btn hand" @click="_showGoods">
+          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加商品
           </div>
@@ -82,7 +82,7 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.sale_unit}}</div>
+              <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
               <div class="com-list-item">¥{{item.original_price}}</div>
               <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
@@ -327,6 +327,7 @@
           total_page: res.meta.last_page
         }
         this.choeesGoods = res.data.map((item, index) => {
+          item.selected = 0
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
@@ -417,8 +418,8 @@
       },
       // 删除商品弹窗
       _delGoods() {
-        let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-        this.selectGoodsId.splice(index, 1)
+        // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+        this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
       },
@@ -726,7 +727,7 @@
     .remind
       margin-left: 10px
       color: $color-text-assist
-    .btn-disable
+    .disable
       cursor: not-allowed
 
   //  弹窗
