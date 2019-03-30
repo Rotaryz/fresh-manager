@@ -82,7 +82,7 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.goods_units}}</div>
+              <div class="com-list-item">{{item.sale_unit}}</div>
               <div class="com-list-item">¥{{item.original_price}}</div>
               <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
@@ -310,7 +310,7 @@
       },
       // 选择商品
       async _getGoodsList() {
-        let res = await API.Rush.getGoodsList({
+        let res = await API.Sale.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
@@ -339,6 +339,9 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
+          item.trade_price = ''
+          item.usable_stock = ''
+          item.sort = 0
           return item
         })
       },
@@ -506,6 +509,7 @@
         }
         list.map(item => {
           delete item.person_day_buy_limit
+          item.goods_id = item.id
           return item
         })
         let data = Object.assign({}, this.msg, {activity_goods: list})
@@ -724,7 +728,6 @@
       color: $color-text-assist
     .btn-disable
       cursor: not-allowed
-      background: #e9ecee
 
   //  弹窗
   .shade-box

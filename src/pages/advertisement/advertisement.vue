@@ -375,7 +375,7 @@
       },
       // 获取商品列表
       async _getGoodsList() {
-        let res = await API.Rush.getGoodsList({
+        let res = await API.Advertisement.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,

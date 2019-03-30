@@ -41,5 +41,16 @@ export default {
     let url = `/social-shopping/api/backend/activity-manage/activity-fixed`
     return request.post(url, data, loading)
   },
+  /**
+   *
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsList(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods`
+    return request.get(url, data, loading)
+  },
+
 
 }

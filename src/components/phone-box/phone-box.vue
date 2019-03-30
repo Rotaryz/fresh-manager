@@ -570,10 +570,12 @@
     box-sizing: border-box
     position: relative
     overflow: hidden
+    width: 200%
+    height: 140px
     .goods-list
       float: left
       width: 72px
-      padding: 8.5px 9.8px 15px
+      padding: 8.5px 0 15px 9.8px
       height: 115px
       box-sizing: content-box
       align-items: center

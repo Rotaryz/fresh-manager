@@ -90,7 +90,6 @@
       ...saleComputed
     },
     created() {
-      console.log(this.saleList)
     },
     mounted() {},
     methods: {

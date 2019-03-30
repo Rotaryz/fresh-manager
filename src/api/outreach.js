@@ -49,7 +49,7 @@ export default {
    * @returns {*}
    */
   getGoodsList(data, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-goods`
+    let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
   },
   /**
