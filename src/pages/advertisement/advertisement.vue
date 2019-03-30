@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <!--活动-->
+      <!--限时抢购-->
       <div v-if="cmsType === 'activity_fixed'" class="advertisement-content">
         <div class="content-header">
           <div class="content-title">限时抢购</div>
@@ -262,7 +262,7 @@
           this.temporaryBannar = _.cloneDeep(res.data)
           break
         case 'activity_fixed':
-          this.activityStatus = ((res.data[0] && +res.data[0].is_close === 1) ? 0 : 1)
+          this.activityStatus = ((res.data && +res.data.is_close === 1) ? 0 : 1)
           break
         case 'goods_cate':
           // this.temporaryNavigation = _.cloneDeep(res.data)
@@ -495,10 +495,15 @@
         let data = [
           {
             page_module_id: this.cmsId,
-            ext_json: {is_close: this.activityStatus}
+            config_data: {is_close: this.activityStatus === 1 ? 0 : 1}
           }
         ]
-        await this._editCms(data)
+        let res = await API.Advertisement.saveFlashSale({data})
+        // if (res.error === this.$ERR_OK) {
+        //   await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+        // }
+        this.$loading.hide()
+        this.$toast.show(res.message)
       },
       // 保存模块数据
       async _editCms(data) {

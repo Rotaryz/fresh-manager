@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   getSaleList(data, loading = true) {
-    let url = '/social-shopping/v1/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/activity-manage/activity'
     return request.get(url, data, loading)
   },
   /**
@@ -18,7 +18,7 @@ export default {
    * @returns {*}
    */
   saleDetail(id, loading = false) {
-    let url = `/social-shopping/v1/api/backend/activity-manage/activity-fixed/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed/${id}`
     return request.get(url, {}, loading)
   },
   /**
@@ -28,7 +28,7 @@ export default {
    * @returns {*}
    */
   saleDelete(id, loading = false) {
-    let url = `/social-shopping/v1/api/backend/activity-manage/activity/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
     return request.delete(url, {}, loading)
   },
   /**
@@ -38,7 +38,7 @@ export default {
    * @returns {*}
    */
   storeSale(data, loading = false) {
-    let url = `/social-shopping/v1/api/backend/activity-manage/activity-fixed`
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed`
     return request.post(url, data, loading)
   },
 
