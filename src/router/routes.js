@@ -1334,10 +1334,19 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
             let time = await getCurrentTime()
-            let startTime = new Date(time.timestamp - (86400 * 1000 * 2))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-            let endTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            let startTime = ''
+            let endTime = ''
+            if (time.is_over_23_hour) {
+              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp)
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            } else {
+              startTime = new Date(time.timestamp - (86400 * 1000 * 2))
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            }
             let start = time.start
             let end = time.end
             store.dispatch('oms/infoOrderTime', {startTime, endTime, start, end})

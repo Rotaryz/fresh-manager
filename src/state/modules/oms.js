@@ -166,6 +166,7 @@ export const actions = {
     commit('SET_TIME_START', start)
     commit('SET_TIME_END', end)
     commit('SET_KEYWORD', '')
+    commit('SET_STATUS', '')
   },
   infoDriverTime({commit, dispatch}, {startTime, endTime}) {
     commit('SET_START_TIME', startTime)
