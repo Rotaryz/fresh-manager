@@ -50,7 +50,7 @@
                   <img v-else src="./icon-picmr@2x.png" class="item-img goods-none">
                   <div class="title">{{item.name}}</div>
                   <div class="bottom">
-                    <span class="price">{{item.original_price}}<em class="unit">元</em></span>
+                    <span class="price">{{item.trade_price}}<em class="unit">元</em></span>
                     <span class="add"></span>
                   </div>
                 </div>
