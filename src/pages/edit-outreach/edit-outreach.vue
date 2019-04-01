@@ -107,7 +107,7 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.goods_units}}</div>
+              <div class="com-list-item">{{item.sale_unit}}</div>
               <div class="com-list-item">¥{{item.original_price || 0}}</div>
               <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
                 <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
@@ -435,6 +435,9 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
+          item.trade_price = ''
+          item.usable_stock = ''
+          item.sort = 0
           return item
         })
       },
@@ -530,8 +533,8 @@
       },
       // 删除商品弹窗
       _delGoods() {
-        let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-        this.selectGoodsId.splice(index, 1)
+        // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+        this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
       },

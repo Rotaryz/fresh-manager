@@ -55,7 +55,7 @@
             if (!user) {
               return
             }
-            this.$router.push(this.$route.query.redirectFrom || '/home/product-list')
+            this.$router.push(this.$route.query.redirectFrom || '/home')
           })
           .catch((error) => {
             this.$toast.show(error)

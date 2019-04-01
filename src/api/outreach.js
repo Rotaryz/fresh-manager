@@ -28,7 +28,8 @@ export default {
    * @returns {*}
    */
   deleteActivity(id, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    // let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
     return request.delete(url, null, loading)
   },
   /**
@@ -48,7 +49,7 @@ export default {
    * @returns {*}
    */
   getGoodsList(data, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-goods`
+    let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
   },
   /**
