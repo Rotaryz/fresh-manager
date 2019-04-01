@@ -258,16 +258,17 @@
         line-height: 1
         color: $color-text-main
       .close
-        width: 10px
+        width: 12px
         height: @width
         icon-image('icon-close')
     .textarea-box
+      margin-top: -3px
       .modelarea
         font-size: $font-size-14
         width: 100%
         resize: none
         height: 76px
-        padding: 14px 12px
+        padding: 13px 11px
         box-sizing: border-box
         border-radius: 2px
         border: 0.5px solid $color-line

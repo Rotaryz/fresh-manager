@@ -795,6 +795,7 @@
     justify-content: center
 
   .back-box
+    background: $color-white
     border-top-1px($color-line)
     position: absolute
     left: 0

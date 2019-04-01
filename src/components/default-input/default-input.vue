@@ -76,7 +76,7 @@
         line-height: 1
         color: $color-text-main
       .close
-        width: 10px
+        width: 12px
         height: @width
         icon-image('icon-close')
 
