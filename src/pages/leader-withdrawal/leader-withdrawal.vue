@@ -330,8 +330,6 @@
         background: #F9F9F9
         &:focus
           background: $color-white
-    .btn-group
-      margin-top: 24px
 
   .with-search
     height: 28px

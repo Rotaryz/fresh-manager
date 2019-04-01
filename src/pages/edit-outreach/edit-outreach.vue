@@ -128,8 +128,10 @@
     <!-- 选择团长弹窗-->
     <default-modal ref="groupModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择团长</div>
+        <div class="title-box">
+          <div class="title">
+            选择团长
+          </div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <!--搜索-->
@@ -166,8 +168,10 @@
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+        <div class="title-box">
+          <div class="title">
+            选择商品
+          </div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <div class="shade-tab">
@@ -705,7 +709,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
-  ::-webkit-input-placeholder{
+  ::-webkit-input-placeholder {
     font-size: 14px
     font-family: $font-family-regular
     color: #ACACAC
@@ -799,7 +803,7 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
-    .time-no-change,.text-no-change
+    .time-no-change, .text-no-change
       position: absolute
       left: 100px
       top: 0
@@ -919,31 +923,31 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-    .shade-header
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
       display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      height: 60.5px
-      box-sizing: border-box
-      padding: 0 20px
-      border-bottom: 0.5px solid $color-line
-      .shade-title
-        color: $color-text-main
-        font-family: $font-family-medium
+      .title
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
       .close
-        icon-image('icon-close')
-        width: 16px
+        width: 12px
         height: @width
-        transition: all 0.3s
-        &:hover
-          transform: scale(1.3)
+        icon-image('icon-close')
     .back
+      border-top-1px($color-line)
       position: absolute
       left: 0
       right: 0
       bottom: 0
-      border-top: 1px solid $color-line
+      background: $color-white
+      justify-content: flex-end
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -1013,7 +1017,6 @@
             border-color: $color-main !important
 
     .btn-group
-      margin-top: 40px
       text-align: center
       display: flex
       justify-content: flex-end
@@ -1111,25 +1114,21 @@
 
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
-    align-items: center
-    padding: 0 20px
+    height: 48px
     box-sizing: border-box
     display: flex
     .tab-item
       margin-right: 10px
 
   .page-box
-    padding: 0 20px
     box-sizing: border-box
-    height: 66px
+    height: 76px
     align-items: center
     display: flex
 
   .goods-content
     border-radius: 2px
     border: 1px solid $color-line
-    margin: 0 20px
     height: 400px
     .outreach-goods-list
       flex-wrap: wrap
@@ -1207,8 +1206,6 @@
 
   .group-content
     border-radius: 2px
-    border: 1px solid $color-line
-    margin: 0 20px
     height: 407px
     .title
       display: flex
@@ -1216,7 +1213,7 @@
       line-height: 45px
       font-family: $font-family-regular
       background: #F5F7FA
-      border-bottom: 1px solid #E9ECEE
+      border: 0.5px solid #E9ECEE
       align-items: center
       padding: 0 20px
       .title-item
@@ -1234,12 +1231,14 @@
         line-height: 18px
         display: flex
         align-items: center
-        border-bottom: 1px solid #E9ECEE
+        border-bottom: 0.5px solid #E9ECEE
+        border-right: 0.5px solid #E9ECEE
+        border-left: 0.5px solid #E9ECEE
         padding: 0 20px
+        &:first-child
+          border-top: none
         &:nth-child(2n)
           background: #F5F7FA
-        &:last-child
-          border-bottom: 0
         .check
           width: 16px
           height: 16px
@@ -1317,7 +1316,7 @@
       border-color: $color-main !important
   .no-border
     border-width: 0
-    background: rgba(255,255,255,0)
+    background: rgba(255, 255, 255, 0)
   .small-money
     col-center()
     left: 10px

@@ -397,7 +397,6 @@
             border-color: $color-main !important
 
     .btn-group
-      margin-top: 40px
       text-align: center
       display: flex
       justify-content: flex-end

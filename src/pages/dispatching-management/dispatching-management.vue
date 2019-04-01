@@ -459,7 +459,7 @@
     width: 100%
 
   .default-input
-    padding-bottom: 30px
+    padding-bottom: 80px
     background: #fff
     width: 534px
     border-radius: 2px
@@ -486,7 +486,7 @@
           bg-image('icon-close')
 
     .main-input
-      padding: 29.5px 20px 0 40px
+      padding: 10px 20px 0 26px
       display: flex
       .main-input-big
         display: flex
@@ -576,10 +576,9 @@
       margin-bottom: 24px
 
     .btn-group
-      margin-top: 20px
       text-align: center
       display: flex
-      justify-content: center
+      justify-content: flex-end
       user-select: none
       .btn
         width: 96px
@@ -707,7 +706,6 @@
             border-color: $color-main !important
 
     .btn-group
-      margin-top: 40px
       text-align: center
       display: flex
       justify-content: flex-end

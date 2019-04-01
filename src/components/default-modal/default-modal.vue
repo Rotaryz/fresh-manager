@@ -61,6 +61,7 @@
     align-items: center
 
   .model-active
+    position: relative
     animation: layerFadeIn .3s
 
   .model-un-active

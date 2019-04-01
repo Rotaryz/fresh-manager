@@ -212,8 +212,10 @@
     <!-- 选择优惠券弹窗-->
     <default-modal ref="couponModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择优惠券</div>
+        <div class="title-box">
+          <div class="title">
+            选择优惠券
+          </div>
           <span class="close hand" @click="_cancelModal"></span>
         </div>
         <!--搜索-->
@@ -255,8 +257,10 @@
     <!-- 选择团长弹窗-->
     <default-modal ref="groupModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择团长</div>
+        <div class="title-box">
+          <div class="title">
+            选择团长
+          </div>
           <span class="close hand" @click="_cancelModal"></span>
         </div>
         <!--搜索-->
@@ -1157,40 +1161,40 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
-    height: 687px
+    height: 675px
     max-width: 1000px
     width: 1000px
     position: relative
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-    .shade-header
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
       display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      height: 60.5px
-      box-sizing: border-box
-      padding: 0 20px
-      border-bottom: 0.5px solid $color-line
-      .shade-title
-        color: $color-text-main
-        font-family: $font-family-medium
+      .title
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
       .close
-        icon-image('icon-close')
-        width: 16px
+        width: 12px
         height: @width
-        transition: all 0.3s
-        &:hover
-          transform: scale(1.3)
+        icon-image('icon-close')
     .back
+      border-top-1px($color-line)
       position: absolute
       left: 0
       right: 0
       bottom: 0
-      border-top: 1px solid $color-line
+      background: $color-white
+      justify-content: flex-end
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -1208,19 +1212,247 @@
         animation: layerFadeIn .3s
       .model-un-active
         animation: hideFadeIn .4s
+
+    /*分类弹窗*/
+    .default-input
+      box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+      background: #fff
+      border-radius: 2px
+      .title-input
+        height: 60px
+        layout(row)
+        align-items: center
+        justify-content: space-between
+        border-bottom: 0.5px solid $color-line
+        padding-left: 20px
+        .title
+          color: $color-text-main
+          font-size: $font-size-16
+          font-family: $font-family-medium
+        .close-box
+          padding: 17px
+          .close
+            width: 16px
+            height: 16px
+            border-radius: 50%
+            background-size: 22px
+            icon-image('icon-close')
+            transition: all 0.3s
+            &:hover
+              transform: scale(1.3)
+
+      .main-input
+        padding: 42px 20px 30px 20px
+        .main-input-box
+          width: 310px
+          height: 44px
+          border-radius: 2px
+          font-family: $font-family-regular
+          color: $color-text-main
+          font-size: $font-size-14
+          padding-left: 14px
+          border: 1px solid $color-line
+          transition: all 0.3s
+          &::-webkit-inner-spin-button
+            appearance: none
+          &:hover
+            border: 1px solid #ACACAC
+          &::placeholder
+            font-family: $font-family-regular
+            color: $color-text-assist
+          &:focus
+            border-color: $color-main !important
+
+    .btn-group
+      text-align: center
+      display: flex
+      justify-content: flex-end
+      user-select: none
+      .btn
+        width: 96px
+        height: 40px
+        line-height: 40px
+        border-radius: 2px
+        cursor: pointer
+        transition: all 0.3s
+      .cancel
+        border: 1px solid $color-line
+        &:hover
+          color: $color-text-sub
+          border-color: $color-text-sub
+      .confirm
+        border: 1px solid $color-main
+        background: $color-main
+        color: $color-white
+        margin-left: 20px
+        &:hover
+          background: #44AB67
+        &:active
+          opacity: 0.8
+      .one-btn
+        margin-left: 0
+
+    .main-model-box
+      layout(row)
+      align-items: center
+      margin-bottom: 24px
+      .text
+        color: #666
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        width: 60px
+        margin-right: 36px
+
+  /*新建编辑内部的确定弹窗*/
+  .default-confirm
+    width: 329.6px
+    height: 200px
+    background: #fff
+    border-radius: 2px
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
+    text-align: center
+    .btn-group-confirm
+      text-align: center
+      display: flex
+      justify-content: center
+      user-select: none
+      .btn
+        width: 96px
+        height: 40px
+        line-height: 40px
+        border-radius: 2px
+        border: 1px solid $color-text-D9
+        cursor: pointer
+        transition: all 0.3s
+      .cancel
+        border: 1px solid $color-line
+        &:hover
+          color: $color-text-sub
+          border-color: $color-text-sub
+      .confirm
+        border: 1px solid $color-main
+        background: $color-main
+        color: $color-white
+        margin-left: 20px
+        &:hover
+          background: #44AB67
+        &:active
+          opacity: 0.8
+      .one-btn
+        margin-left: 0
+    .title
+      font-size: $font-size-16
+      font-family: $font-family-medium
+      height: 44px
+      line-height: 44px
+      padding: 0 15px
+    .text
+      font-size: $font-size-16
+      color: $color-text-main
+      height: 120px
+      display: flex
+      align-items: center
+      justify-content: center
+      margin: 10px 15px
+      overflow-y: auto
+      text-align: justify
+      word-break: break-all
+      line-height: 1.4
+
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
-    align-items: center
-    padding: 0 20px
+    height: 48px
     box-sizing: border-box
     display: flex
     .tab-item
       margin-right: 10px
-  .group-content
-    border-radius: 1px
+
+  .page-box
+    box-sizing: border-box
+    height: 76px
+    align-items: center
+    display: flex
+
+  .goods-content
+    border-radius: 2px
     border: 1px solid $color-line
-    margin: 0 20px
+    height: 400px
+    .outreach-goods-list
+      flex-wrap: wrap
+      display: flex
+      .goods-item
+        box-sizing: border-box
+        padding: 0 20px
+        width: 50%
+        height: 79.5px
+        display: flex
+        align-items: center
+        border-bottom: 0.5px solid $color-line
+        &:nth-child(2n+1)
+          border-right: 1px solid $color-line
+        &:nth-child(9), &:nth-child(10)
+          border-bottom: none
+        .select-icon
+          margin-right: 20px
+          border-radius: 2px
+          border: 1px solid $color-line
+          height: 16px
+          width: 16px
+          transition: all 0.3s
+        .select-icon-disable
+          border: 1px solid transparent
+          cursor: not-allowed
+          icon-image('icon-check_ash')
+        .select-icon-active
+          border: 1px solid transparent
+          icon-image('icon-check')
+        .goods-img
+          margin-right: 10px
+          width: 40px
+          height: @width
+          overflow: hidden
+          background-repeat: no-repeat
+          background-size: cover
+          background-position: center
+          background-color: $color-background
+        .goods-msg
+          display: flex
+          flex-direction: column
+          color: $color-text-main
+          font-family: $font-family-regular
+          justify-content: space-between
+          flex: 1
+          overflow: hidden
+          height: 40px
+          .goods-name
+            width: 210px
+            no-wrap()
+          .goods-name, .goods-money
+            line-height: 1.2
+            font-size: $font-size-14
+
+        .add-btn
+          border-radius: 2px
+          margin-left: 88px
+          padding: 5px 0
+          width: 56px
+          text-align: center
+        .add-btn-disable
+          border-radius: 2px
+          margin-left: 88px
+          padding: 5px 0
+          width: 56px
+          box-sizing: border-box
+          text-align: center
+          font-size: $font-size-14
+          line-height: 1
+          cursor: not-allowed
+          background: $color-line
+          color: $color-text-assist
+          border: none
+
+  .group-content
+    border-radius: 2px
     height: 407px
     .title
       display: flex
@@ -1228,7 +1460,7 @@
       line-height: 45px
       font-family: $font-family-regular
       background: #F5F7FA
-      border-bottom: 1px solid #E9ECEE
+      border: 0.5px solid #E9ECEE
       align-items: center
       padding: 0 20px
       .title-item
@@ -1246,16 +1478,15 @@
         line-height: 18px
         display: flex
         align-items: center
-        border-bottom: 1px solid #E9ECEE
+        border-bottom: 0.5px solid #E9ECEE
+        border-right: 0.5px solid #E9ECEE
+        border-left: 0.5px solid #E9ECEE
         padding: 0 20px
-        cursor: pointer
+        &:first-child
+          border-top: none
         &:nth-child(2n)
           background: #F5F7FA
-        &:last-child
-          border-bottom: 0
-        &:first-child
-          border-bottom: 1px solid #E9ECEE
-        .radio
+        .check
           width: 16px
           height: 16px
           border: 1px solid #E1E1E1
@@ -1273,35 +1504,10 @@
             background: #4DBD65
             opacity: 0
             transition: all 0.3s
-          .checked
-            border-color: #4DBD65
-            &:before
-              opacity: 1
-        .check
-          width: 16px
-          height: 16px
-          border: 1px solid #E1E1E1
-          transition: all 0.3s
-          display: flex
-          justify-content: center
-          align-items: center
-          &:before
-            content: ""
-            width: 14px
-            height: 14px
-            icon-image(icon-check)
-            display: block
-            opacity: 0
-            transition: all 0.3s
         .checked
           border-color: #4DBD65
           &:before
             opacity: 1
-        .right
-          border-color: #E1E1E1
-          &:before
-            opacity: 1
-            icon-image(icon-check_ash)
         .title-item
           padding-right: 20px
           display: block
@@ -1311,10 +1517,5 @@
             overflow: hidden
             -webkit-line-clamp: 2
             -webkit-box-orient: vertical
-  .page-box
-    padding: 0 20px
-    box-sizing: border-box
-    height: 66px
-    align-items: center
-    display: flex
+
 </style>

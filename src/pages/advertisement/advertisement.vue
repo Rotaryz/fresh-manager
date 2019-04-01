@@ -288,9 +288,6 @@
       await this._getFirstAssortment()
       await this._getGoodsList()
     },
-    mounted() {
-      this.$refs.goods.showModal()
-    },
     methods: {
       ...adverMethods,
       // 获取今日抢购活动列表
@@ -657,7 +654,7 @@
   .link-text-box
     width: 960px
     height: 220px
-    margin: 30px auto 0
+    margin: 20px auto 0
     border: 0.5px solid $color-line
     border-radius: 2px
     outline: none

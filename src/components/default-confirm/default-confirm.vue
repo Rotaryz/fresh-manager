@@ -79,6 +79,7 @@
     text-align: center
     padding: 0 20px
     box-sizing: border-box
+    position: relative
     .title-box
       display: flex
       box-sizing: border-box

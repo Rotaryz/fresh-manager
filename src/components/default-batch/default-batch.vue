@@ -233,7 +233,6 @@
       .color-active
         color: $color-negative
   .btn-group
-    margin-top: 36px
     text-align: center
     display: flex
     justify-content: center
