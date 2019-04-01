@@ -515,7 +515,6 @@
         })
         let data = Object.assign({}, this.msg, {activity_goods: list})
         let res = null
-        this.isSubmit = true
         res = await API.Sale.storeSale(data, true)
         this.$loading.hide()
         this.$toast.show(res.message)
@@ -524,6 +523,7 @@
           return
         }
         setTimeout(() => {
+          this.isSubmit = true
           this._back()
         }, 1000)
       },
