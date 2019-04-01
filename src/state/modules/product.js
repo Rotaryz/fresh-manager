@@ -83,8 +83,8 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getEnterData({state, commit, dispatch}, {page, loading = true}) {
-    let data = {status: '', keyword: '', start_time: '', end_time: '', limit: 10, page: 1}
+  async getEnterData({state, commit, dispatch}, {startTime, endTime, page, loading = true}) {
+    let data = {status: '', keyword: '', start_time: startTime, end_time: endTime, limit: 10, page: 1}
     return API.Store.getEnterList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -107,8 +107,8 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getOutData({state, commit, dispatch}, {page, loading = true}) {
-    let data = {status: '', keyword: '', start_time: '', end_time: '', limit: 10, page: 1}
+  async getOutData({state, commit, dispatch}, {startTime, endTime, page, loading = true}) {
+    let data = {status: '', keyword: '', start_time: startTime, end_time: endTime, limit: 10, page: 1}
     return API.Store.getOutList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {

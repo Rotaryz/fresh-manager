@@ -177,7 +177,7 @@ export const tradeMethods = {
 
 // OMS
 export const omsComputed = {
-  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail'])
+  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail', 'timeStart', 'timeEnd'])
 }
 
 export const omsMethods = {
@@ -188,22 +188,24 @@ export const omsMethods = {
     'setEndTime',
     'setKeyword',
     'setStatus',
-    'setPage'
+    'setPage',
+    'infoOrderTime',
+    'infoDriverTime'
   ])
 }
 // 采购单
 export const supplyComputed = {
-  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail'])
+  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail', 'timeStart', 'timeEnd'])
 }
 
-export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail'])
+export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail', 'infoPurchaseTime'])
 
 // 采购任务
 export const proTaskComputed = {
-  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select'])
+  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd'])
 }
 
-export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase'])
+export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase', 'setTaskList', 'infoTaskTime'])
 
 // 调度任务
 export const deliveryComputed = {
@@ -216,11 +218,41 @@ export const deliveryMethods = {
 
 // 调度任务
 export const distributionComputed = {
-  ...mapGetters('distribution', ['tabIndex', 'orderList', 'orderPageDetail', 'orderPage', 'orderStartTime', 'orderEndTime', 'orderKeyword', 'driverList', 'driverPageDetail', 'driverPage', 'driverStartTime', 'driverEndTime'])
+  ...mapGetters('distribution',
+    [
+      'tabIndex',
+      'orderList',
+      'orderPageDetail',
+      'orderPage',
+      'orderStartTime',
+      'orderEndTime',
+      'orderKeyword',
+      'orderStatus',
+      'driverList',
+      'driverPageDetail',
+      'driverPage',
+      'driverStartTime',
+      'driverEndTime'
+    ])
 }
 
 export const distributionMethods = {
-  ...mapActions('distribution', ['setTabIndex', 'getOrderList', 'setOrderStartTime', 'setOrderEndTime', 'setOrderKeyword', 'setOrderPage', 'getDriverList', 'setDriverStartTime', 'setDriverEndTime', 'setDriverPage'])
+  ...mapActions('distribution',
+    [
+      'setTabIndex',
+      'getOrderList',
+      'setOrderStartTime',
+      'setOrderEndTime',
+      'setOrderKeyword',
+      'setOrderPage',
+      'setOrderStatus',
+      'getDriverList',
+      'setDriverStartTime',
+      'setDriverEndTime',
+      'setDriverPage',
+      'infoOrderTime',
+      'infoDriverTime'
+    ])
 }
 
 // 采购员
@@ -229,7 +261,7 @@ export const buyerComputed = {
 }
 
 export const buyerMethods = {
-  ...mapActions('buyer', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage'])
+  ...mapActions('buyer', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
 }
 
 // 供应商
@@ -238,7 +270,7 @@ export const supplierComputed = {
 }
 
 export const supplierMethods = {
-  ...mapActions('supplier', ['getSupplier', 'getSupplierDetail', 'setKeyword', 'setPage'])
+  ...mapActions('supplier', ['getSupplier', 'getSupplierDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
 }
 
 // 库位管理

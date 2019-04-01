@@ -29,5 +29,14 @@ export default {
   getOmsOrderStatus(loading = false) {
     let url = '/scm/api/backend/oms/order-status'
     return request.get(url)
+  },
+  /**
+   * 订单的统计
+   * @param loading
+   * @returns {*}
+   */
+  outOrdersStatistic(data, loading = false) {
+    let url = '/scm/api/backend/oms/order-statistic'
+    return request.get(url, data,loading)
   }
 }

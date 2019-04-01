@@ -462,8 +462,9 @@
     transition: all 0.2s
     border-right-1px($color-line)
     &::-webkit-scrollbar
-      width: 8px
-      height: 10px
+      width: 0
+      height: 0
+      transition: all 0.2s
     &::-webkit-scrollbar-thumb
       background-color: rgba(0, 0, 0, .15)
       border-radius: 10px
@@ -472,6 +473,11 @@
     &::-webkit-scrollbar-track
       box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
       border-radius: 10px
+    &:hover
+      &::-webkit-scrollbar
+        transition: all 0.2s
+        width: 8px
+        height: 10px
     .second-title
       transition: all 0.2s
       margin: 30px 0 10px

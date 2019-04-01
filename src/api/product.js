@@ -144,5 +144,15 @@ export default {
   getSupplier(data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/supplier`
     return request.get(url, data, loading)
+  },
+
+  /**
+   * 订单的统计
+   * @param loading
+   * @returns {*}
+   */
+  purchaseTaskStatistic(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-task-statistic'
+    return request.get(url, data, loading)
   }
 }

@@ -6,6 +6,7 @@ import '@components/_globals'
 import {Plugins} from '@utils/plugins'
 import 'iview/dist/styles/iview.css'
 import 'element-ui/lib/theme-chalk/index.css'
+
 Vue.use(Plugins)
 
 Vue.config.productionTip = process.env.NODE_ENV === 'production'

@@ -1,6 +1,6 @@
 <template>
   <div class="time-out">
-    <h1 :class="$style.title">
+    <h1 class="title">
       The page timed out while loading. Are you sure you're still connected to the Internet?
     </h1>
   </div>
@@ -12,8 +12,7 @@
   export default {
     name: PAGE_NAME,
     page: {
-      title: 'Page timeout',
-      meta: [{name: 'description', content: 'The page timed out while _loading.'}]
+      title: 'timeout'
     }
   }
 </script>

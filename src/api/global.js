@@ -13,6 +13,15 @@ export default {
   jssdkConfigDemo(data, loading = false, toast = true) {
     let url = '/api/wechat/jssdk'
     return defaultProcess('get', url, data, loading, toast, fn)
+  },
+  /**
+   * 获取服务器时间
+   * @param loading
+   * @returns {*}
+   */
+  getCurrentTime(loading = false) {
+    let url = '/scm/api/backend/common/current-time'
+    return request.get(url, false, loading)
   }
 }
 

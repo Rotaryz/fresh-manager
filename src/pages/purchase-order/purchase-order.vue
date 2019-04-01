@@ -3,24 +3,30 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
-      <date-picker
-        :value="startTime"
-        class="edit-input-box" type="date"
-        placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 1px"
-        @on-change="_getStartTime"
-      ></date-picker>
+      <div class="down-time-box">
+        <date-picker
+          :value="startTime"
+          class="edit-input-box" type="date"
+          placeholder="开始时间"
+          style="width: 187px;height: 28px;border-radius: 1px"
+          @on-change="_getStartTime"
+        ></date-picker>
+        <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
+      </div>
       <!---->
       <div class="time-tip">~</div>
       <div class="down-item">
-        <date-picker
-          :value="endTime"
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
-          @on-change="_getEndTime"
-        ></date-picker>
+        <div class="down-time-box">
+          <date-picker
+            :value="endTime"
+            class="edit-input-box edit-input-right"
+            type="date"
+            placeholder="结束时间"
+            style="width: 187px;height: 28px;border-radius: 1px"
+            @on-change="_getEndTime"
+          ></date-picker>
+          <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
+        </div>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
@@ -33,6 +39,7 @@
         <div class="identification-page">
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购单列表</p>
+          <base-status-tab :statusList="dispatchSelect" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
         </div>
@@ -64,12 +71,13 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
   import {DatePicker} from 'iview'
   import {supplyComputed, supplyMethods} from '@state/helpers'
 
   const PAGE_NAME = 'PURCHASE_ORDER'
   const TITLE = '采购单列表'
-  const COMMODITIES_LIST = ['生成时间', '采购订单号', '采购品类数', '预采购金额', '供应商', '采购员', '状态', '操作']
+  const COMMODITIES_LIST = ['生成时间', '采购单号', '采购商品数', '预采购金额', '供应商', '采购员', '状态', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -85,21 +93,36 @@
         startTime: '',
         endTime: '',
         keyword: '',
-        time: ''
+        time: '',
+        status: '',
+        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待入库', value: 1, key: 'wait_entry', num: 0}, {name: '已完成', value: 2, key: 'success', num: 0}]
       }
     },
     computed: {
       ...supplyComputed
     },
-    created() {
-      let time = new Date()
-      time = time.toLocaleDateString().replace(/\//g, '-')
-      this.startTime = time
-      this.endTime = time
+    async created() {
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
+      await this._statistic()
     },
     methods: {
       ...supplyMethods,
-      _getStartTime(time) {
+      async _setStatus(item) {
+        this.status = item.value
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          page: this.page,
+          status: this.status,
+          loading: false
+        })
+      },
+      async _getStartTime(time) {
         this.startTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('开始时间不能大于结束时间')
@@ -113,10 +136,12 @@
           endTime: this.endTime,
           keyword: this.keyword,
           page: this.page,
+          status: this.status,
           loading: false
         })
+        await this._statistic()
       },
-      _search(word) {
+      async _search(word) {
         this.keyword = word
         this.page = 1
         this.$refs.pages.beginPage()
@@ -126,10 +151,12 @@
           endTime: this.endTime,
           keyword: this.keyword,
           page: this.page,
+          status: this.status,
           loading: false
         })
+        await this._statistic()
       },
-      _getEndTime(time) {
+      async _getEndTime(time) {
         this.endTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('结束时间不能小于开始时间')
@@ -143,10 +170,12 @@
           endTime: this.endTime,
           keyword: this.keyword,
           page: this.page,
+          status: this.status,
           loading: false
         })
+        await this._statistic()
       },
-      _getMoreList(page) {
+      async _getMoreList(page) {
         this.page = page
         this.getPurchaseList({
           time: this.time,
@@ -154,8 +183,18 @@
           endTime: this.endTime,
           keyword: this.keyword,
           page: this.page,
+          status: this.status,
           loading: false
         })
+        await this._statistic()
+      },
+      async _statistic() {
+        let res = await API.Supply.getPurchaseOrderStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword})
+        this.statistic = res.error === this.$ERR_OK ? res.data : {}
+        for (let key in this.statistic) {
+          let index = this.dispatchSelect.findIndex((item) => item.key === key)
+          this.dispatchSelect[index].num = this.statistic[key]
+        }
       }
     }
   }

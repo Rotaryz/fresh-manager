@@ -213,6 +213,7 @@
     margin-right: 5px
   .identification-name
     line-height: 1
+    white-space: nowrap
     font-size: $font-size-16
     font-family: $font-family-regular
     color: $color-text-main
@@ -303,3 +304,29 @@
 
 .list-status-warn
   background: #FFCB53
+.order-detail
+  display: flex
+  padding-bottom: 30px
+  .order-item
+    display: flex
+    .order-text
+      font-family: $font-family-regular
+      font-size: $font-size-14
+    .order-title
+      color: $color-text-main
+    .order-money
+      min-width: 50px
+      font-family: $font-family-regular
+      color: $color-negative
+
+.down-time-box
+  position: relative
+.down-time-text
+  right: 58px
+  col-center()
+  font-size: 12px
+  line-height: 1
+  margin-top: 1px
+  color: #acacac
+  position: absolute
+  pointer-events: none
