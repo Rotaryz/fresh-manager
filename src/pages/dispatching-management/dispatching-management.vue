@@ -204,7 +204,9 @@
         roadSelect: ROAD_SELECT,
         handleDriverType: ADD_DRIVER,
         handleRoadType: ADD_ROAD,
-        deliveryAddress: []
+        deliveryAddress: [],
+        isRoadSubmit: false,
+        isDriverSubmit: false
       }
     },
     computed: {
@@ -311,21 +313,27 @@
             this.$toast.show('线路名称不能为空!')
             return
           }
+          if (this.isRoadSubmit) return
+          this.isRoadSubmit = true
           API.Delivery.addRoad({road_name: this.roadName}).then((res) => {
             const LOADING = false
             this.$loading.hide()
             this.cancel()
             this.$toast.show(res.message)
+            this.isRoadSubmit = false
             if (res.error === this.$ERR_OK) {
               this.getRoads(LOADING)
             }
           })
         } else if (this.handleRoadType === DELETE_ROAD) {
+          if (this.isRoadSubmit) return
+          this.isRoadSubmit = true
           API.Delivery.deleteRoad(this.handleRoadId).then((res) => {
             const LOADING = false
             this.$loading.hide()
             this.cancel()
             this.$toast.show(res.message)
+            this.isRoadSubmit = false
             if (res.error === this.$ERR_OK) {
               this.getRoads(LOADING)
             }
@@ -343,11 +351,14 @@
             road_id: this.handleRoadId,
             road_name: this.roadName
           }
+          if (this.isRoadSubmit) return
+          this.isRoadSubmit = true
           API.Delivery.setAddress(data).then((res) => {
             const LOADING = false
             this.$loading.hide()
             this.cancel()
             this.$toast.show(res.message)
+            this.isRoadSubmit = false
             if (res.error === this.$ERR_OK) {
               this.getRoads(LOADING)
             }
@@ -379,21 +390,27 @@
           return
         }
         if (this.handleDriverType === ADD_DRIVER) {
+          if (this.isDriverSubmit) return
+          this.isDriverSubmit = true
           API.Delivery.addDriver(this.driverForm).then((res) => {
             const LOADING = false
             this.$loading.hide()
             this.cancel()
             this.$toast.show(res.message)
+            this.isDriverSubmit = false
             if (res.error === this.$ERR_OK) {
               this.getDriverList(LOADING)
             }
           })
         } else if (this.handleDriverType === EDIT_DRIVER) {
+          if (this.isDriverSubmit) return
+          this.isDriverSubmit = true
           API.Delivery.editDriver(this.driverForm.driver_id, this.driverForm).then((res) => {
             const LOADING = false
             this.$loading.hide()
             this.cancel()
             this.$toast.show(res.message)
+            this.isDriverSubmit = false
             if (res.error === this.$ERR_OK) {
               this.getDriverList(LOADING)
             }

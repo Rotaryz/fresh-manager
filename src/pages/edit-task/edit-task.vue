@@ -63,7 +63,8 @@
         taskList: [],
         outMsg: {},
         supplier_id: '',
-        supplier_name: ''
+        supplier_name: '',
+        isSubmit: false
       }
     },
     computed: {
@@ -105,6 +106,8 @@
           }
           arr.push(obj)
         })
+        if (this.isSubmit) return
+        this.isSubmit = true
         let res = await API.Supply.submitPurchaseOrder({
           supplier_id: this.supplier_id,
           tasks: arr
@@ -112,6 +115,7 @@
         this.$toast.show(res.message)
         this.$loading.hide()
         if (res.error !== this.$ERR_OK) {
+          this.isSubmit = false
           return
         }
         this.$router.push('/home/purchase-order')

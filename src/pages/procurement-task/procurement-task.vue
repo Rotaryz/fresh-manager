@@ -255,7 +255,7 @@
       // 搜索商品
       async _searchGoods(text) {
         this.text = text
-        this.page = 1
+        this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
         await this._statistic()
@@ -278,14 +278,14 @@
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
         this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         this.secondAssortment.content = '选择二级分类'
-        this.page = 1
+        this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
       // 选择二级分类
       async _choessSecondAssortment(item) {
         this.parentId = item.id
-        this.page = 1
+        this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
@@ -559,12 +559,12 @@
           if (res.error === this.$ERR_OK) {
             this.getPurchaseTaskList({
               time: this.time,
-              startTime: this.startTime,
-              endTime: this.endTime,
+              start_time: this.startTime,
+              end_time: this.endTime,
               keyword: this.keyword,
               status: this.status,
               page: this.page,
-              supplyId: this.supplyId,
+              supplier_id: this.supplyId,
               loading: false
             })
           }

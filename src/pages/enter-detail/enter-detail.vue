@@ -96,7 +96,8 @@
         enterDetailList: [],
         enterMsg: {},
         curIndex: 0,
-        id: null
+        id: null,
+        isSubmit: false
       }
     },
     computed: {
@@ -119,13 +120,17 @@
           obj.warehouse_position_id = item.warehouse_position_id || ''
           arr.push(obj)
         })
+        if (this.isSubmit) return
+        this.isSubmit = true
         API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
+            this.$toast.show('入库成功')
             this.enterMsg.status = 1
             this.$router.back()
           } else {
             this.$toast.show(res.message)
+            this.isSubmit = false
           }
         })
       },

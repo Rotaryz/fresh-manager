@@ -82,7 +82,8 @@
         password: '',
         confirmPassword: '',
         name: '',
-        mobile: ''
+        mobile: '',
+        isSubmit: false
       }
     },
     computed: {
@@ -134,11 +135,14 @@
           mobile: this.mobile,
           password: this.password
         }
+        if (this.isSubmit) return
+        this.isSubmit = true
         if (this.id) {
           API.Supply.editPurchaseUser(this.id, data).then((res) => {
             this.$loading.hide()
             this.$toast.show(res.message)
             if (res.error !== this.$ERR_OK) {
+              this.isSubmit = false
               return
             }
             this.back()
@@ -148,6 +152,7 @@
             this.$loading.hide()
             this.$toast.show(res.message)
             if (res.error !== this.$ERR_OK) {
+              this.isSubmit = false
               return
             }
             this.back()

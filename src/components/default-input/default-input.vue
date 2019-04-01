@@ -30,7 +30,8 @@
       return {
         numberTxt: '',
         numberTitle: '',
-        numberPla: ''
+        numberPla: '',
+        isSubmit: false
       }
     },
     methods: {
@@ -44,6 +45,11 @@
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
+        if (this.isSubmit) return
+        this.isSubmit = true
+        setTimeout(() => {
+          this.isSubmit = false
+        }, 800)
         this.$emit('confirm', this.numberTxt)
       },
       cancel() {

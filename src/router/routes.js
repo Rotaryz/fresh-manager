@@ -904,10 +904,19 @@ export default [
           titles: ['供应链', '采购', '采购任务'],
           async beforeResolve(routeTo, routeFrom, next) {
             let time = await getCurrentTime()
-            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-            let endTime = new Date(time.timestamp)
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            let startTime = ''
+            let endTime = ''
+            if (time.is_over_23_hour) {
+              startTime = new Date(time.timestamp)
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            } else {
+              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp)
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             let start = time.start
@@ -1010,10 +1019,19 @@ export default [
           titles: ['供应链', '采购', '采购单'],
           async beforeResolve(routeTo, routeFrom, next) {
             let time = await getCurrentTime()
-            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-            let endTime = new Date(time.timestamp)
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            let startTime = ''
+            let endTime = ''
+            if (time.is_over_23_hour) {
+              startTime = new Date(time.timestamp)
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            } else {
+              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp)
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             let start = time.start
@@ -1125,10 +1143,19 @@ export default [
           titles: ['供应链', '仓库', '成品入库'],
           async beforeResolve(routeTo, routeFrom, next) {
             let time = await getCurrentTime()
-            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-            let endTime = new Date(time.timestamp)
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
+            let startTime = ''
+            let endTime = ''
+            if (time.is_over_23_hour) {
+              startTime = new Date(time.timestamp)
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
+              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
+            } else {
+              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
+              endTime = new Date(time.timestamp)
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
+            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
@@ -1177,10 +1204,19 @@ export default [
           titles: ['供应链', '仓库', '成品出库'],
           async beforeResolve(routeTo, routeFrom, next) {
             let time = await getCurrentTime()
-            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-            let endTime = new Date(time.timestamp)
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
+            let startTime = ''
+            let endTime = ''
+            if (time.is_over_23_hour) {
+              startTime = new Date(time.timestamp)
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
+              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
+            } else {
+              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
+              endTime = new Date(time.timestamp)
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
+            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
@@ -1263,10 +1299,19 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
             let time = await getCurrentTime()
-            let startTime = new Date(time.timestamp - (86400 * 1000 * 1))
-            startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-            let endTime = new Date(time.timestamp)
-            endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            let startTime = ''
+            let endTime = ''
+            if (time.is_over_23_hour) {
+              startTime = new Date(time.timestamp)
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            } else {
+              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
+              endTime = new Date(time.timestamp)
+              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start

@@ -97,7 +97,8 @@
         curIndex: 0,
         curItem: {},
         storeData: '',
-        showIndex: null
+        showIndex: null,
+        isSubmit: false
       }
     },
     methods: {
@@ -227,11 +228,15 @@
           this.$toast.show('请选择商品的批次')
           return
         }
+        if (this.isSubmit) return
+        this.isSubmit = true
         API.Store.editOutOrder({type: 8, details: this.storeList, out_object: this.storeData}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            this.$toast.show('新建出库单成功')
             this.$router.back()
           } else {
             this.$toast.show(res.message)
+            this.isSubmit = false
           }
         })
       }

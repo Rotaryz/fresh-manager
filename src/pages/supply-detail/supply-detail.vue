@@ -3,7 +3,7 @@
     <div class="down-content">
       <div class="enter-title">商户名称：{{detail.buyer_name}}</div>
       <div class="enter-title">订单号：{{detail.order_sn}}</div>
-      <div class="enter-title">下单时间：{{detail.merge_at}}</div>
+      <div class="enter-title">下单时间：{{detail.created_at}}</div>
       <div class="enter-title">状态：{{detail.status_str}}</div>
       <div class="enter-title">销售金额：<span class="enter-title-money">{{detail.total && `￥${detail.total}`}}</span></div>
     </div>

@@ -75,7 +75,8 @@
         batchList: [],
         curIndex: 0,
         curItem: {},
-        showIndex: null
+        showIndex: null,
+        isSubmit: false
       }
     },
     computed: {
@@ -134,6 +135,8 @@
           this.$toast.show(`序号${number}请选择批次`)
           return false
         }
+        if (this.isSubmit) return
+        this.isSubmit = true
         API.Store.putOutSubmit(this.id, {details: arr}).then((res) => {
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
@@ -142,6 +145,7 @@
             this.$router.back()
           } else {
             this.$toast.show(res.message)
+            this.isSubmit = false
           }
         })
       },
