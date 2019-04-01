@@ -511,7 +511,6 @@
         list.map(item => {
           delete item.person_day_buy_limit
           item.goods_id = item.id
-          return item
         })
         let data = Object.assign({}, this.msg, {activity_goods: list})
         let res = null

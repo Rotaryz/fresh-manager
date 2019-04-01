@@ -666,6 +666,9 @@
             return
           }
         }
+        list.map(item => {
+          item.goods_id = item.id
+        })
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
         this.isSubmit = true
