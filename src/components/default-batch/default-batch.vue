@@ -77,7 +77,7 @@
     methods: {
       show(index) {
         this.numberBatch = index
-        this.changeNumber = (this.curItem.base_num - this.numberBatch).toFixed(2)
+        this.changeNumber = ((this.curItem.base_num * 10 - this.numberBatch * 10) / 10).toFixed(2)
         this.$refs.modal && this.$refs.modal.showModal()
       },
       cancel() {
@@ -138,7 +138,7 @@
           })
         }
         this.numberBatch = number
-        this.changeNumber = (this.curItem.base_num - this.numberBatch).toFixed(2)
+        this.changeNumber = ((this.curItem.base_num * 10 - this.numberBatch * 10) / 10).toFixed(2)
       }
     }
   }

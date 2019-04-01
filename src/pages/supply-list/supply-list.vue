@@ -3,29 +3,30 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">下单时间</span>
-      <date-picker
-        class="edit-input-box" type="date"
-        placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 2px"
-        :value="startTime"
-        @on-change="changeStartTime"
-      ></date-picker>
+      <div class="down-time-box">
+        <date-picker
+          class="edit-input-box" type="date"
+          placeholder="开始时间"
+          style="width: 187px;height: 28px;border-radius: 2px"
+          :value="startTime"
+          @on-change="changeStartTime"
+        ></date-picker>
+        <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
+      </div>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item">
-        <date-picker
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 2px"
-          :value="endTime"
-          @on-change="changeEndTime"
-        ></date-picker>
-      </div>
-      <!--下拉选择-->
-      <span class="down-tip">状态</span>
-      <div class="down-item">
-        <base-drop-down :select="statusSelect" @setValue="changeStatus"></base-drop-down>
+        <div class="down-time-box">
+          <date-picker
+            class="edit-input-box edit-input-right"
+            type="date"
+            placeholder="结束时间"
+            style="width: 187px;height: 28px;border-radius: 2px"
+            :value="endTime"
+            @on-change="changeEndTime"
+          ></date-picker>
+          <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
+        </div>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
@@ -38,6 +39,7 @@
         <div class="identification-page">
           <img src="./icon-order_list2@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
+          <base-status-tab :statusList="dispatchSelect" @setStatus="changeStatus"></base-status-tab>
         </div>
       </div>
       <div class="big-list">
@@ -46,7 +48,7 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in orders" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.merge_at}}</div>
+            <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.order_sn}}</div>
             <div class="list-item">{{item.buyer_name}}</div>
             <div class="list-item">{{item.total ? '￥' : ''}}{{item.total}}</div>
@@ -71,14 +73,7 @@
 
   const PAGE_NAME = 'SUPPLIER'
   const TITLE = '订单列表'
-  const COMMODITIES_LIST = ['下单时间', '订单号', '商户名称', '销售金额', '状态', '操作']
-  const SELECT = {
-    check: false,
-    show: false,
-    content: '全部',
-    type: 'default',
-    data: []
-  }
+  const COMMODITIES_LIST = ['创建时间', '订单号', '商户名称', '销售金额', '状态', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -90,30 +85,30 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        statusSelect: SELECT
+        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_submit', num: 0}, {name: '待采购', value: 2, key: 'success', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
       }
     },
     computed: {
       ...omsComputed
     },
     created() {
-      this._getOmsOrderStatus()
+      this._getOutOrdersStatistic()
     },
     methods: {
       ...omsMethods,
-      _getOmsOrderStatus() {
-        API.Oms.getOmsOrderStatus().then((res) => {
+      _getOutOrdersStatistic() {
+        API.Oms.outOrdersStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
           let selectData = res.data.map((item) => {
             return {
               name: item.status_str,
-              status: item.status
+              status: item.status,
+              num: item.statistic
             }
           })
-          selectData.unshift({name: '全部', status: ''})
-          this.statusSelect.data = selectData
+          this.dispatchSelect = selectData
         })
       },
       changeStatus(selectStatus) {
@@ -123,14 +118,30 @@
       changeKeyword(keyword) {
         this.setKeyword(keyword)
         this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
       },
       changeStartTime(value) {
+        if (Date.parse(value) > Date.parse(this.endTime)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
         this.setStartTime(value)
         this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
       },
       changeEndTime(value) {
+        if (Date.parse(this.startTime) > Date.parse(value)) {
+          this.$toast.show('开始时间不能大于结束时间')
+          return
+        }
         this.setEndTime(value)
         this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
+      },
+      _setStatus(item) {
+        this.setStatus(item)
+        this.$refs.pagination.beginPage()
+        this._getOutOrdersStatistic()
       }
     }
   }

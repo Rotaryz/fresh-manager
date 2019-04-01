@@ -142,7 +142,6 @@
         this.$refs.modalBox.cancel()
       },
       echangInput(item, index) {
-        console.log(item)
         if (item.base_num < 0) {
           item.base_num = item.base_num * -1
         }
@@ -151,7 +150,6 @@
           number = 0
         }
         item.purchase_num = number.toFixed(2)
-        console.log(number)
         if (item.base_num) {
           this.enterDetailList[index].total = (item.base_num * item.price).toFixed(2)
         }

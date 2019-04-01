@@ -102,6 +102,7 @@
   @import "~@design"
   @import "~@style/detail"
   .order-detail
+    flex-direction: column
     width: 100%
     padding-bottom: 80px
 

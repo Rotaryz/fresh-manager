@@ -170,7 +170,6 @@ body, html
   white-space: nowrap
   cursor: pointer
   font-size: $font-size-14
-  user-select: none
   transition: all 0.2s
   overflow: visible
   &:hover
@@ -187,6 +186,23 @@ body, html
     margin-right: 0
     &:after
       display: none
+
+.list-operation-strong
+  display: inline-block
+  position: relative
+  color: #4D77BD
+  white-space: nowrap
+  cursor: pointer
+  font-size: $font-size-14
+  transition: all 0.2s
+  padding: 0 6px
+  line-height: 22px
+  border: 0.5px solid #4D77BD
+  border-radius: 2px
+  box-sizing: border-box
+  margin-right: 10px
+  &:hover
+    color: #06397E
 
 .list-operation-disable
   cursor: not-allowed
@@ -243,3 +259,17 @@ body, html
 
 .ivu-input:hover
   border-color: #ACACAC !important
+
+.el-date-editor
+  display: flex
+  align-items: center
+  .el-input__inner
+    height: 100%
+  .el-input__prefix
+    display: flex
+    align-items: center
+    left: 84%
+    .el-icon-date
+      line-height: 1
+  .el-input__icon
+    line-height: 1

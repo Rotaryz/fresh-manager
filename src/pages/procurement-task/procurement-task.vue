@@ -3,34 +3,40 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
-      <date-picker
-        :value="startTime"
-        class="edit-input-box" type="date"
-        placeholder="开始时间"
-        style="width: 187px;height: 28px;border-radius: 2px"
-        @on-change="_getStartTime"
-      ></date-picker>
+      <div class="down-time-box">
+        <date-picker
+          :value="startTime"
+          class="edit-input-box" type="date"
+          placeholder="开始时间"
+          style="width: 187px;height: 28px;border-radius: 2px"
+          @on-change="_getStartTime"
+        ></date-picker>
+        <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
+      </div>
       <!--@on-change="_getStartTime"-->
       <div class="time-tip">~</div>
       <div class="down-item">
-        <date-picker
-          :value="endTime"
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 2px"
-          @on-change="_getEndTime"
-        ></date-picker>
+        <div class="down-time-box">
+          <date-picker
+            :value="endTime"
+            class="edit-input-box edit-input-right"
+            type="date"
+            placeholder="结束时间"
+            style="width: 187px;height: 28px;border-radius: 2px"
+            @on-change="_getEndTime"
+          ></date-picker>
+          <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
+        </div>
       </div>
       <!--下拉选择-->
-      <span class="down-tip">状态</span>
+      <span class="down-tip">供应商</span>
       <div class="down-item">
-        <base-drop-down :select="purchaseTask" @setValue="_setValue"></base-drop-down>
+        <base-drop-down :select="supplyTask" @setValue="_setValue"></base-drop-down>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="订单号或商品名称" @search="_search"></base-search>
+        <base-search placeHolder="商品名称搜索" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -38,20 +44,22 @@
         <div class="identification-page">
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务列表</p>
+          <base-status-tab :statusList="dispatchSelect" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main" @click="_sendPublish">发布给采购员</div>
+          <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}" @click="_createPublish">生成采购单</div>
           <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
         </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div class="pro-select-icon hand" :class="{'pro-select-icon-active': select}" @click="selectPurchase('all')"></div>
+          <div class="pro-select-icon hand" :class="{'pro-select-icon-active': select, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: 'all', status: status})"></div>
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
           <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box">
-            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1}" @click="selectPurchase(index)"></div>
+            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.supplier}}</div>
@@ -138,7 +146,6 @@
                   <div class="goods-money">{{item.goods_sku_code}}</div>
                 </div>
               </div>
-              <!--select-icon-active-->
             </div>
           </div>
           <div class="page-box">
@@ -151,12 +158,14 @@
         </div>
       </div>
     </default-modal>
+    <default-confirm ref="confirmMsg" :oneBtn="oneBtn" @confirm="confirmMsg"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'iview'
   import DefaultModal from '@components/default-modal/default-modal'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {proTaskComputed, proTaskMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
@@ -171,7 +180,8 @@
     },
     components: {
       DatePicker,
-      DefaultModal
+      DefaultModal,
+      DefaultConfirm
     },
     data() {
       return {
@@ -182,17 +192,16 @@
         keyword: '',
         time: '',
         status: '',
+        supplyId: '',
         selectList: [],
-        purchaseTask: {
+        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_release', num: 0}, {name: '待采购', value: 2, key: 'wait_purchase', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
+        supplyTask: {
           check: false,
           show: false,
-          content: '全部状态',
+          content: '全部',
           type: 'default',
           data: [
-            {name: '全部', value: ''},
-            {name: '待发布', value: 1},
-            {name: '待采购', value: 2},
-            {name: '已完成', value: 3}
+            {name: '全部', id: ''}
           ]
         },
         parentId: '',
@@ -204,19 +213,21 @@
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsItem: {},
-        choicePage: 1
+        choicePage: 1,
+        oneBtn: false,
+        confirmType: ''
       }
     },
     computed: {
       ...proTaskComputed
     },
     async created() {
-      let time = new Date()
-      time = time.toLocaleDateString().replace(/\//g, '-')
-      this.startTime = time
-      this.endTime = time
+      this.startTime = this.$route.params.start
+      this.endTime = this.$route.params.end
       await this._getFirstAssortment()
       await this._getGoodsList()
+      await this._getSupplierList()
+      await this._statistic()
     },
     methods: {
       ...proTaskMethods,
@@ -240,7 +251,6 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.goodsId)
       },
       // 搜索商品
       async _searchGoods(text) {
@@ -248,11 +258,13 @@
         this.page = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
+        await this._statistic()
       },
       // 获取分页商品列表
       async _getMoreGoods(page) {
         this.choicePage = page
         await this._getGoodsList()
+        await this._statistic()
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -322,15 +334,17 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
         this.cancel()
       },
       _addTask() {
         this.taskNum = ''
         this.$refs.modal.showModal()
       },
-      _setValue(item) {
+      async _setStatus(item) {
         this.status = item.value
         this.page = 1
         this.$refs.pages.beginPage()
@@ -341,10 +355,27 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
       },
-      _getStartTime(time) {
+      async _setValue(item) {
+        this.supplyId = item.id
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          supplyId: this.supplyId,
+          loading: false
+        })
+        await this._statistic()
+      },
+      async _getStartTime(time) {
         this.startTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('开始时间不能大于结束时间')
@@ -359,10 +390,12 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
       },
-      _search(word) {
+      async _search(word) {
         this.keyword = word
         this.page = 1
         this.$refs.pages.beginPage()
@@ -373,10 +406,12 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
       },
-      _getEndTime(time) {
+      async _getEndTime(time) {
         this.endTime = time
         if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
           this.$toast.show('结束时间不能小于开始时间')
@@ -391,19 +426,27 @@
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
+        await this._statistic()
       },
       async _sendPublish() {
+        if (this.status !== 1) return
         let selectArr = []
         this.purchaseTaskList.forEach((item) => {
           if (item.select) {
             selectArr.push(item.id)
           }
         })
-        // selectArr = selectArr.concat(this.selectList)
+        if (this.purchaseTaskList.length === 0) {
+          this.$toast.show('暂无任务可发布')
+          return
+        }
         if (!selectArr.length) {
-          this.$toast.show('请选择采购任务')
+          this.oneBtn = false
+          this.confirmType = 1
+          this.$refs.confirmMsg.show('是否发布全部任务给采购员？')
           return
         }
         let res = await API.Supply.purchaseTaskPublish({ids: selectArr})
@@ -417,30 +460,145 @@
             keyword: this.keyword,
             status: this.status,
             page: this.page,
+            supplyId: this.supplyId,
             loading: false
           })
         }
+        await this._statistic()
+      },
+      async _createPublish() {
+        if (this.status !== 2) return
+        let selectArr = []
+        this.purchaseTaskList.forEach((item) => {
+          if (item.select) {
+            selectArr.push(item)
+          }
+        })
+        if (this.purchaseTaskList.length === 0) {
+          this.$toast.show('暂无任务可生成')
+          return
+        }
+        if (!selectArr.length) {
+          let res = await API.Supply.getDiffSupplier({
+            keyword: this.keyword,
+            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            end_time:  this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            supplier_id: this.supplyId
+          })
+          if (res.error !== this.$ERR_OK) {
+            this.oneBtn = true
+            this.$refs.confirmMsg.show(res.message)
+            return
+          }
+          this.oneBtn = false
+          this.confirmType = 2
+          this.$refs.confirmMsg.show('是否将全部任务生成采购单？')
+          return
+        }
+        let isMoreSupplier = false
+        let isMoreId = selectArr[0].supplier_id
+        selectArr.forEach((item) => {
+          if (item.supplier_id !== isMoreId) {
+            isMoreSupplier = true
+          }
+        })
+        if (isMoreSupplier) {
+          this.oneBtn = true
+          this.$refs.confirmMsg.show('存在不同供应商，无法生成采购单！')
+          return
+        }
+        this.setTaskList(selectArr)
+        this.$router.push('/home/procurement-task/edit-task')
       },
       async _getMoreList(page) {
         if (this.page === page) {
           return
         }
         this.page = page
-        // this.purchaseTaskList.forEach((item) => {
-        //   if (item.select) {
-        //     this.selectList.push(item.id)
-        //   }
-        // })
         await this.getPurchaseTaskList({
           time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
+          startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
           keyword: this.keyword,
           status: this.status,
           page: this.page,
+          supplyId: this.supplyId,
           loading: false
         })
-        // this.selectPurchase(this.selectList)
+      },
+      // 获取供应商列表
+      async _getSupplierList() {
+        let res = await API.Supply.getSupplier({
+          keyword: ''
+        })
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        res.data.forEach(item => {
+          item.name = item.supplier_name
+        })
+        this.supplyTask.data = this.supplyTask.data.concat(res.data)
+      },
+      async confirmMsg() {
+        switch (this.confirmType) {
+        case 1:
+          let res = await API.Supply.purchaseTaskPublish(
+            {
+              time: this.time,
+              startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+              endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+              keyword: this.keyword,
+              status: this.status,
+              page: this.page,
+              supplyId: this.supplyId,
+              loading: false,
+              ids: []
+            })
+          this.$toast.show(res.message)
+          this.$loading.hide()
+          if (res.error === this.$ERR_OK) {
+            this.getPurchaseTaskList({
+              time: this.time,
+              startTime: this.startTime,
+              endTime: this.endTime,
+              keyword: this.keyword,
+              status: this.status,
+              page: this.page,
+              supplyId: this.supplyId,
+              loading: false
+            })
+          }
+          await this._statistic()
+          break
+        case 2:
+          let supplyRes = await API.Supply.purchaseTask(
+            {
+              time: this.time,
+              start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+              end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+              keyword: this.keyword,
+              status: this.status,
+              page: this.page,
+              supplier_id: this.supplyId,
+              loading: false
+            })
+          this.$loading.hide()
+          if (supplyRes.error !== this.$ERR_OK) {
+            this.$toast.show(supplyRes.message)
+            return
+          }
+          this.setTaskList(supplyRes.data)
+          this.$router.push('/home/procurement-task/edit-task')
+          break
+        }
+      },
+      async _statistic() {
+        let res = await API.Supply.getTaskStatusNumber({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword, supplier_id: this.supplyId})
+        this.statistic = res.error === this.$ERR_OK ? res.data : {}
+        for (let key in this.statistic) {
+          let index = this.dispatchSelect.findIndex((item) => item.key === key)
+          this.dispatchSelect[index].num = this.statistic[key]
+        }
       }
     }
   }
@@ -459,9 +617,9 @@
     transition: all 0.3s
 
   .pro-select-icon-disable
-    border: 1px solid transparent
     cursor: not-allowed
-    icon-image('icon-check_ash')
+    background: #eee
+    border: 1px solid #e9ecee
 
   .pro-select-icon-active
     border: 1px solid transparent

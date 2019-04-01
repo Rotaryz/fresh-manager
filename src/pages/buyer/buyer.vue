@@ -4,7 +4,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search :infoText="keyword" placeHolder="采购员姓名或账号搜索" @search="changeKeyword"></base-search>
+        <base-search :infoText="keyword" placeHolder="采购员姓名或手机搜索" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -76,5 +76,5 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.2
+          flex: 0.3
 </style>

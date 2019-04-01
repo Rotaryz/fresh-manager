@@ -54,7 +54,8 @@ export const actions = {
     const {page, keyword} = state
     let data = {
       page,
-      keyword
+      keyword,
+      limit: 10
     }
     return API.Supply.getSupplier(data)
       .then((res) => {
@@ -103,5 +104,8 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getSupplier')
+  },
+  infoSetKeyWord({commit}) {
+    commit('SET_KEYWORD', '')
   }
 }

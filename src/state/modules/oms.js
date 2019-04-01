@@ -1,6 +1,5 @@
 import API from '@api'
 import app from '@src/main'
-
 export const state = {
   orders: [], // OMS订单
   pageTotal: {
@@ -14,7 +13,9 @@ export const state = {
   endTime: '',
   status: '',
   keyword: '',
-  detail: {} // OMS订单详情
+  detail: {},
+  timeStart: '',
+  timeEnd: ''
 }
 
 export const getters = {
@@ -41,6 +42,12 @@ export const getters = {
   },
   detail(state) {
     return state.detail
+  },
+  timeStart(state) {
+    return state.timeStart
+  },
+  timeEnd(state) {
+    return state.timeEnd
   }
 }
 
@@ -68,6 +75,12 @@ export const mutations = {
   },
   SET_DETAIL(state, detail) {
     state.detail = detail
+  },
+  SET_TIME_START(state, timeStart) {
+    state.timeStart = timeStart
+  },
+  SET_TIME_END(state, timeEnd) {
+    state.timeEnd = timeEnd
   }
 }
 
@@ -78,8 +91,8 @@ export const actions = {
     let data = {
       status,
       page,
-      start_time: startTime,
-      end_time: endTime,
+      start_time: startTime ? startTime + ' ' + state.timeStart : '',
+      end_time: endTime ? endTime + ' ' + state.timeEnd : '',
       keyword: keyword,
       is_merge_order: true // 后台需要的标识
     }
@@ -139,7 +152,6 @@ export const actions = {
     dispatch('getOmsOrders')
   },
   setStatus({commit, dispatch}, selectStatus) {
-    console.log(selectStatus)
     commit('SET_STATUS', selectStatus.status)
     commit('SET_PAGE', 1)
     dispatch('getOmsOrders')
@@ -147,5 +159,17 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getOmsOrders')
+  },
+  infoOrderTime({commit, dispatch},{startTime, endTime, start, end}) {
+    commit('SET_START_TIME', startTime)
+    commit('SET_END_TIME', endTime)
+    commit('SET_TIME_START', start)
+    commit('SET_TIME_END', end)
+    commit('SET_KEYWORD', '')
+    commit('SET_STATUS', '')
+  },
+  infoDriverTime({commit, dispatch}, {startTime, endTime}) {
+    commit('SET_START_TIME', startTime)
+    commit('SET_END_TIME', endTime)
   }
 }

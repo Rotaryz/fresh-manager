@@ -88,7 +88,7 @@
       },
       async confirmInput(text) {
         if (text.length === 0) {
-          this.$toast.show('输入长度单位不能为零')
+          this.$toast.show('库位名称不能为空')
           return
         }
         if (text.length > 6) {
@@ -178,7 +178,6 @@
                 this.storeListData[i].warehouse_positions = []
               }
             }
-            console.log(this.storeListData)
             this.storeListData[this.bigIndex].warehouse_positions.splice(this.smallIndex, 1)
             this.$forceUpdate()
           } else {

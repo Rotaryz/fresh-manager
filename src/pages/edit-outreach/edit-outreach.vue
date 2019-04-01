@@ -47,7 +47,9 @@
         </div>
         <date-picker
           :value="essInformation.start_at"
-          class="edit-input-box" type="date"
+          class="edit-input-box"
+          type="date"
+          :editable="false"
           placement="bottom-end"
           placeholder="选择开始时间"
           style="width: 240px;height: 44px;border-radius: 2px"
@@ -59,6 +61,7 @@
           :value="essInformation.end_at"
           class="edit-input-box edit-input-right"
           type="date"
+          :editable="false"
           placement="bottom-end"
           placeholder="选择结束时间"
           style="width: 240px;height: 44px"
@@ -628,8 +631,8 @@
       },
       // 确定选择团长
       _addition() {
-        this.groupSelectItem = this.groupCheckItem
-        this.essInformation.shop_id = this.groupSelectItem.shop_id
+        this.groupCheckItem.id && (this.groupSelectItem = this.groupCheckItem)
+        this.groupCheckItem.id && (this.essInformation.shop_id = this.groupSelectItem.shop_id)
         this._hideGroup()
       },
       // 取消选择团长
@@ -1127,6 +1130,7 @@
     border-radius: 2px
     border: 1px solid $color-line
     margin: 0 20px
+    height: 400px
     .outreach-goods-list
       flex-wrap: wrap
       display: flex
@@ -1171,6 +1175,8 @@
           color: $color-text-main
           font-family: $font-family-regular
           justify-content: space-between
+          flex: 1
+          overflow: hidden
           height: 40px
           .goods-name
             width: 210px
@@ -1203,6 +1209,7 @@
     border-radius: 2px
     border: 1px solid $color-line
     margin: 0 20px
+    height: 407px
     .title
       display: flex
       height: 45px
