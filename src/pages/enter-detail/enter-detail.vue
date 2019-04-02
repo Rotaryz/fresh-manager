@@ -179,15 +179,18 @@
       .list-item
         padding-right: 14px
         align-items: center
+        white-space: nowrap
         &:last-child
           flex: 1
-        &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
+        &:nth-child(4), &:nth-child(5), &:nth-child(8), &:nth-child(9)
+          min-width: 150px
+        &:nth-child(2), &:nth-child(6)
           flex: 1.3
   .list-item-layout
     layout(row)
   .down-content
     align-items: flex-start
-    padding:5px 20px 25px
+    padding: 5px 20px 25px
     box-sizing: border-box
   .enter-title
     font-size: $font-size-14
@@ -238,6 +241,6 @@
       height: 14px
       icon-image(icon-delete)
   .tip
-    margin :0 2px
+    margin: 0 2px
     font-size: $font-size-14
 </style>

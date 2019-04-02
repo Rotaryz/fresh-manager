@@ -465,7 +465,7 @@
     &:hover
       &::-webkit-scrollbar
         transition: all 0.2s
-        width: 8px
+        width: 6px
         height: 10px
     .second-title
       transition: all 0.2s

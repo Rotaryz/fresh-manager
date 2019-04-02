@@ -1,11 +1,11 @@
 <template>
   <default-modal ref="modal">
     <div slot="content" class="default-input">
-      <div class="title-input">
-        <div class="title">{{numberTitle}}</div>
-        <div class="close-box" @click="cancel">
-          <div class="close"></div>
+      <div class="title-box">
+        <div class="title">
+          {{numberTitle}}
         </div>
+        <span class="close hand" @click="cancel"></span>
       </div>
       <div class="main-input">
         <div v-if="showCate" class="main-model-box">
@@ -33,6 +33,7 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+
   const COMPONENT_NAME = 'CHANGE_MODEL'
 
   export default {
@@ -100,29 +101,24 @@
     background: #fff
     width: 534px
     border-radius: 2px
-    .title-input
-      height: 60px
-      layout(row)
+    padding: 0 20px 60px
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      border-bottom: 0.5px solid $color-line
-      padding-left: 20px
       .title
-        color: $color-text-main
         font-size: $font-size-16
-        font-family: $font-family-regular
-      .close-box
-        padding: 17px
-        cursor: pointer
-        .close
-          width: 22px
-          height: 22px
-          border-radius: 50%
-          background-size: 22px
-          bg-image('icon-close')
-
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
     .main-input
-      padding: 42px 20px 30px 20px
+      padding: 10px 0 16px
       .main-input-box
         width: 310px
         height: 44px
@@ -146,7 +142,7 @@
     text-align: center
     display: flex
     justify-content: flex-end
-    user-select :none
+    user-select: none
     .btn
       width: 96px
       height: 40px
@@ -168,7 +164,7 @@
       &:hover
         opacity: 0.8
     .one-btn
-      margin-left :0
+      margin-left: 0
   .main-model-box
     layout(row)
     align-items: center

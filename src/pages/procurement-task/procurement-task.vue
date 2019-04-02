@@ -127,10 +127,16 @@
     <!--商品弹窗-->
     <default-modal ref="goods">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+        <div class="title-box">
+          <div class="title">
+            选择商品
+          </div>
           <span class="close hand" @click="_hideGoods"></span>
         </div>
+        <!--<div class="shade-header">-->
+        <!--<div class="shade-title">选择商品</div>-->
+        <!--<span class="close hand" @click="_hideGoods"></span>-->
+        <!--</div>-->
         <!--商品详情-->
         <div>
           <div class="shade-tab">
@@ -238,9 +244,6 @@
       await this._getGoodsList()
       await this._getSupplierList()
       await this._statistic()
-    },
-    mounted() {
-      this.$refs.modal.showModal()
     },
     methods: {
       ...proTaskMethods,
@@ -853,24 +856,22 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
+    padding: 0 20px
     .shade-tab
-      height: 68px
+      margin-bottom: 20px
       align-items: center
-      padding: 0 20px
       box-sizing: border-box
       display: flex
       .tab-item
         margin-right: 10px
     .page-box
-      padding: 0 20px
       box-sizing: border-box
-      height: 66px
+      height: 76px
       align-items: center
       display: flex
 
   .goods-content
     border-radius: 4px
-    margin: 0 20px
     height: 420px
     .goods-list
       flex-wrap: wrap
@@ -954,44 +955,21 @@
       align-items: center
       display: flex
 
-  .shade-header
+  .title-box
     display: flex
-    justify-content: space-between
-    height: 52px
     box-sizing: border-box
-    padding: 23px 20px 0 0
-    .shade-tab-type
-      height: 100%
-      display: flex
-      position: relative
-      .shade-tab-item
-        line-height: 1
-        display: flex
-        transition: all 0.3s
-        color: $color-text-main
-        font-family: $font-family-regular
-        margin-left: 40px
-      .shade-tab-item-active
-        font-family: $font-family-medium
-      .line
-        transition: all 0.3s
-        left: 40px
-        position: absolute
-        bottom: 0px
-        height: 3px
-        width: 64px
-        background: $color-main
-        border-radius: 3px
-    .shade-title
-      color: $color-text-main
-      font-family: $font-family-medium
+    padding: 23px 0
+    align-items: center
+    justify-content: space-between
+    .title
       font-size: $font-size-16
+      font-family: $font-family-medium
+      line-height: 1
+      color: $color-text-main
     .close
-      icon-image('icon-close')
       width: 12px
       height: @width
-      transition: all 0.3s
-
+      icon-image('icon-close')
   .back-box
     background: $color-white
     height: 70px

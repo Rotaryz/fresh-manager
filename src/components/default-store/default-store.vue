@@ -2,11 +2,11 @@
   <div class="default-store">
     <default-modal ref="modal">
       <div slot="content" class="default-input">
-        <div class="title-input">
-          <div class="title">选择库位</div>
-          <div class="close-box">
-            <div class="close" @click="cancel"></div>
+        <div class="title-box">
+          <div class="title">
+            选择库位
           </div>
+          <span class="close hand" @click="cancel"></span>
         </div>
         <div class="main-input">
           <div v-for="(item,index) in storeList" :key="index" class="edit-item">
@@ -29,6 +29,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import API from '@api'
+
   const COMPONENT_NAME = 'DEFAULT_STORE'
 
   export default {
@@ -144,32 +145,27 @@
     background: #fff
     width: 534px
     border-radius: 2px
-    .title-input
-      height: 60px
-      layout(row)
+    padding: 0 20px 60px
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      border-bottom: 0.5px solid $color-line
-      padding-left: 20px
       .title
-        color: $color-text-main
         font-size: $font-size-16
-        font-family: $font-family-regular
-      .close-box
-        padding: 17px
-        cursor: pointer
-        .close
-          width: 22px
-          height: 22px
-          border-radius: 50%
-          background-size: 22px
-          bg-image('icon-close')
-
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
   .edit-item
     display: flex
     color: #2A2A2A
     min-height: 40px
-    margin-top: 20px
+    margin-bottom: 20px
     .edit-title
       margin-top: 7.5px
       font-size: $font-size-14
@@ -178,6 +174,13 @@
       text-align: left
       margin-right: 20px
       width: 64px
+      position: relative
+      &:after
+        content: '*'
+        left: -7px
+        position: absolute
+        margin-right: -2px
+        color: #F52424
     .start
       display: inline-block
       margin-right: -2px
@@ -203,14 +206,14 @@
         border-color: $color-main !important
 
   .main-input
-    padding: 10px 10px 30px 40px
+    padding: 0 0 20px 6px
     min-height: 180px
     layout()
     justify-content: space-between
   .btn-group
     text-align: center
     display: flex
-    justify-content: center
+    justify-content: flex-end
     user-select: none
     .btn
       width: 96px

@@ -2,11 +2,11 @@
   <div class="default-store">
     <default-modal ref="modal">
       <div slot="content" class="default-input">
-        <div class="title-input">
-          <div class="title">选择出库批次</div>
-          <div class="close-box">
-            <div class="close" @click="cancel"></div>
+        <div class="title-box">
+          <div class="title">
+            选择出库批次
           </div>
+          <span class="close hand" @click="cancel"></span>
         </div>
         <div class="main-input">
           <div class="batch-title">
@@ -53,13 +53,13 @@
     props: {
       batchList: {
         type: Array,
-        default: function() {
+        default: function () {
           return []
         }
       },
       curItem: {
         type: Object,
-        default: function() {
+        default: function () {
           return []
         }
       }
@@ -84,7 +84,7 @@
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
-        if (this.curItem.base_num - this.numberBatch !== 0){
+        if (this.curItem.base_num - this.numberBatch !== 0) {
           this.$toast.show('请分配完出库数')
           return
         }
@@ -109,14 +109,14 @@
             bigNumber += (item1.out_count * 1)
           }
         })
-        if (item.out_count > (this.curItem.base_num - bigNumber)){
+        if (item.out_count > (this.curItem.base_num - bigNumber)) {
           item.out_count = (this.curItem.base_num - bigNumber)
           let arr = []
           arr = (item.out_count + '').split('.')
           if (arr.length === 2) {
-            if(arr[1].length > 3) {
+            if (arr[1].length > 3) {
               item.out_count = (this.curItem.base_num - bigNumber).toFixed(2)
-              let storeCount = item.out_count.substr(item.out_count.length - 1,1)
+              let storeCount = item.out_count.substr(item.out_count.length - 1, 1)
               if (storeCount * 1 === 0) {
                 item.out_count = (this.curItem.base_num - bigNumber).toFixed(1)
               }
@@ -151,26 +151,22 @@
     background: #fff
     width: 1000px
     border-radius: 2px
-    .title-input
-      height: 60px
-      layout(row)
+    padding: 0 20px 100px
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      border-bottom: 0.5px solid $color-line
-      padding-left: 20px
       .title
-        color: $color-text-main
         font-size: $font-size-16
-        font-family: $font-family-regular
-      .close-box
-        padding: 17px
-        cursor: pointer
-        .close
-          width: 22px
-          height: 22px
-          border-radius: 50%
-          background-size: 22px
-          bg-image('icon-close')
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
   .select-icon
     width: 16px
     height: 16px
@@ -217,14 +213,12 @@
         border-color: $color-main !important
 
   .main-input
-    padding: 0 20px 10px 20px
     min-height: 180px
     layout()
     justify-content: space-between
   .batch-title
-    height: 68.5px
+    margin-bottom: 20px
     layout(row)
-    align-items: center
     .batch-box
       font-size: $font-size-14
       color: $color-text-main
@@ -235,7 +229,7 @@
   .btn-group
     text-align: center
     display: flex
-    justify-content: center
+    justify-content: flex-end
     user-select: none
     .btn
       width: 96px
