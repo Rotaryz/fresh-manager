@@ -121,7 +121,7 @@
       async _getQrCode(id, index) {
         this.imgIndex = index
         this.loadImg = true
-        let res = await API.Leader.createQrcode({path: 'pages/choiceness?shopId=' + id})
+        let res = await API.Leader.createQrcode({path: 'pages/choiceness?s=' + id})
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return
