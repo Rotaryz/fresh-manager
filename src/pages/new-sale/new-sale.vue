@@ -282,9 +282,9 @@
           })
         }
         this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
-        this._getFirstAssortment()
-        this._getGoodsList()
       }
+      this._getFirstAssortment()
+      // this._getGoodsList()
     },
     async mounted() {
       // this.classifyIndex = 0

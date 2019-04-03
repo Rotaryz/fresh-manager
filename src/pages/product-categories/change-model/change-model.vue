@@ -114,7 +114,6 @@
         }
         this.image_url = res.data.url
         this.image_id = res.data.id
-        console.log(this.image_url, this.image_id)
       },
       setData(item, data) {
         this.typeId = item.id
