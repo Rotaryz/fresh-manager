@@ -53,7 +53,7 @@
           :editable="false"
           class="edit-input-box"
           type="datetime"
-          placeholder="开始时间"
+          placeholder="结束时间"
           style="width: 240px;height: 28px;border-radius: 1px"
           valueFormat="yyyy-MM-dd HH:mm:ss"
           @change="_getEndTime"
