@@ -414,7 +414,7 @@
           keyword: this.keyword,
           goods_category_id: this.parentId,
           shelf_id: this.id,
-          limit: 10,
+          limit: 7,
           page: this.page
         })
         if (res.error !== this.$ERR_OK) {
@@ -948,6 +948,7 @@
       bottom: 0
       background: $color-white
       justify-content: flex-end
+      height: 70px
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -1127,82 +1128,89 @@
     display: flex
 
   .goods-content
-    border-radius: 2px
-    border: 1px solid $color-line
-    height: 400px
-    .outreach-goods-list
+    border-radius: 4px
+    height: 420px
+    .goods-list
       flex-wrap: wrap
       display: flex
-      .goods-item
-        box-sizing: border-box
-        padding: 0 20px
-        width: 50%
-        height: 79.5px
+    .goods-item
+      box-sizing: border-box
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
+      display: flex
+      align-items: center
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
+      .goods-img
+        margin-right: 10px
+        width: 40px
+        height: @width
+        overflow: hidden
+        background-repeat: no-repeat
+        background-size: cover
+        background-position: center
+        background-color: $color-background
+      .goods-msg
+        flex: 1
         display: flex
+        color: $color-text-main
+        font-family: $font-family-regular
+        justify-content: space-between
+        height: 100%
         align-items: center
-        border-bottom: 0.5px solid $color-line
-        &:nth-child(2n+1)
-          border-right: 1px solid $color-line
-        &:nth-child(9), &:nth-child(10)
-          border-bottom: none
-        .select-icon
-          margin-right: 20px
-          border-radius: 2px
-          border: 1px solid $color-line
-          height: 16px
-          width: 16px
-          transition: all 0.3s
-        .select-icon-disable
-          border: 1px solid transparent
-          cursor: not-allowed
-          icon-image('icon-check_ash')
-        .select-icon-active
-          border: 1px solid transparent
-          icon-image('icon-check')
-        .goods-img
-          margin-right: 10px
-          width: 40px
-          height: @width
-          overflow: hidden
-          background-repeat: no-repeat
-          background-size: cover
-          background-position: center
-          background-color: $color-background
-        .goods-msg
-          display: flex
-          flex-direction: column
-          color: $color-text-main
-          font-family: $font-family-regular
-          justify-content: space-between
-          flex: 1
-          overflow: hidden
-          height: 40px
-          .goods-name
-            width: 210px
-            no-wrap()
-          .goods-name, .goods-money
-            line-height: 1.2
-            font-size: $font-size-14
-
-        .add-btn
-          border-radius: 2px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          text-align: center
-        .add-btn-disable
-          border-radius: 2px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          box-sizing: border-box
-          text-align: center
-          font-size: $font-size-14
+        .goods-name
+          width: 500px
+          no-wrap()
+        .goods-name, .goods-money
           line-height: 1
-          cursor: not-allowed
-          background: $color-line
-          color: $color-text-assist
-          border: none
+          font-size: $font-size-14
+      .add-btn
+        border-radius: 2px
+        margin-left: 88px
+        padding: 7px 0
+        min-width: 54px
+        text-align: center
+      .add-btn-disable
+        border-radius: 2px
+        margin-left: 88px
+        padding: 7px 0
+        box-sizing: border-box
+        text-align: center
+        font-size: $font-size-14
+        line-height: 1
+        cursor: not-allowed
+        background: $color-line
+        color: $color-text-assist
+        border: none
+    .page-box
+      padding: 0 20px
+      box-sizing: border-box
+      height: 77px
+      align-items: center
+      display: flex
 
   .group-content
     border-radius: 2px

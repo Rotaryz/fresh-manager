@@ -961,13 +961,13 @@
       .add-btn
         border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         width: 56px
         text-align: center
       .add-btn-disable
         border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         width: 56px
         box-sizing: border-box
         text-align: center

@@ -100,10 +100,6 @@
           </div>
           <span class="close hand" @click="_hideEditShade"></span>
         </div>
-        <!--<div class="shade-header">-->
-        <!--<div class="shade-title">编辑活动分类</div>-->
-        <!--<span class="close hand" @click="_hideEditShade"></span>-->
-        <!--</div>-->
         <div class="auxiliary-box">
           <div v-for="(item, index) in tagList" :key="index" class="auxiliary-item">
             <div class="text">{{item.name}}</div>
@@ -114,10 +110,6 @@
           </div>
           <div class="btn-main auxiliary-add" @click="_showModal(true)">新增+</div>
         </div>
-        <!--<div class="back">-->
-        <!--<div class="back-cancel back-btn hand" @click="_hideEditShade">取消</div>-->
-        <!--<div class="back-btn btn-main">保存</div>-->
-        <!--</div>-->
         <!--小弹窗新增编辑-->
         <transition name="fade">
           <section v-show="isShow" class="default-modal-small">
@@ -894,6 +886,7 @@
       left: 0
       right: 0
       bottom: 0
+      height: 70px
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -1069,7 +1062,7 @@
 
   .page-box
     box-sizing: border-box
-    height: 66px
+    height: 76px
     align-items: center
     display: flex
 
