@@ -233,7 +233,8 @@
         content: "*"
         color: #F52424
     .no-before
-      margin-left: 7px
+      padding-left: 7px
+      box-sizing: border-box
       &:before
         content: ""
     .img-box
