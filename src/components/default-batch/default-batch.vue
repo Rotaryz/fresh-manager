@@ -110,7 +110,7 @@
           }
         })
         if (item.out_count > (this.curItem.base_num - bigNumber)){
-          item.out_count = (this.curItem.base_num - bigNumber)
+          item.out_count = this.curItem.base_num - bigNumber
           let arr = []
           arr = (item.out_count + '').split('.')
           if (arr.length === 2) {
@@ -139,6 +139,7 @@
         }
         this.numberBatch = number
         this.changeNumber = ((this.curItem.base_num * 10 - this.numberBatch * 10) / 10).toFixed(2)
+        this.$forceUpdate()
       }
     }
   }
