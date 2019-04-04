@@ -257,7 +257,7 @@
       .carousel
         margin-top: 5px
         border-radius: 1px
-        width: 287px
+        width: 289px
         height: 94.6px
         background-repeat: no-repeat
         background-size: cover
@@ -620,6 +620,7 @@
     border-top-right-radius: 0
   .none-content
     width: 400%
+    height:106px
     .goods-none
       float: left
       margin-right: 5px
