@@ -190,7 +190,8 @@ export const omsMethods = {
     'setStatus',
     'setPage',
     'infoOrderTime',
-    'infoDriverTime'
+    'infoDriverTime',
+    'setResetStartTime'
   ])
 }
 // 采购单

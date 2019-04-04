@@ -141,6 +141,9 @@ export const actions = {
     commit('SET_PAGE', 1)
     dispatch('getOmsOrders')
   },
+  setResetStartTime({commit}, startTime) {
+    commit('SET_START_TIME', startTime)
+  },
   setEndTime({commit, dispatch}, endTime) {
     commit('SET_END_TIME', endTime)
     commit('SET_PAGE', 1)
