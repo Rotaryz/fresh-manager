@@ -57,7 +57,7 @@
           <div class="edit-content">
             <div class="check-item">
               <span class="check-icon" :class="{'checked': newItem === 'between_days'}" @click="checkNew('between_days')"></span>
-              <span style="margin-right: 10px; cursor: pointer" @click="checkNew('between_days')">满足注册时间 从</span>
+              <span style="margin-right: 10px; cursor: pointer; white-space: nowrap" @click="checkNew('between_days')">满足注册时间 从</span>
               <date-picker
                 :value="msg.config_json.start_day"
                 class="edit-input-box"
@@ -80,7 +80,7 @@
                 style="width: 240px;height: 44px"
                 @on-change="_getEndTime"
               ></date-picker>
-              <span style="margin: 0 10px">的客户</span>
+              <span style="margin: 0 10px; white-space: nowrap">的客户</span>
             </div>
             <div class="check-item">
               <span class="check-icon" :class="{'checked': newItem === 'days'}" @click="checkNew('days')"></span>
@@ -404,14 +404,14 @@
           show: false,
           content: '3天',
           type: 'default',
-          data:  [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}]  // 格式：{title: '55'}}
+          data: [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}]  // 格式：{title: '55'}}
         },
         dayDataNew: {
           check: false,
           show: false,
           content: '3天',
           type: 'default',
-          data:  [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
+          data: [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
         },
         count: '',
         activityItem: 'order_count', // 活跃客户配置
@@ -444,7 +444,7 @@
         }
       },
       testNewEndTimeReg() { // 结束时间规则判断
-        if (+this.marketIndex === 0  && this.msg.config_json.way === 'between_days') {
+        if (+this.marketIndex === 0 && this.msg.config_json.way === 'between_days') {
           return Date.parse(this.msg.config_json.end_day + ' 00:00') > Date.parse('' + this.msg.config_json.start_day + ' 00:00')
         } else {
           return true
@@ -492,11 +492,10 @@
         return result
       }
     },
-    watch: {
-    },
+    watch: {},
     beforeCreate() {
       this.id = this.$route.query.id || null
-      if(this.$route.query.id) {
+      if (this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看营销'])
       } else {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建营销'])
@@ -506,7 +505,7 @@
       this.disable = this.$route.query.id
       this.marketIndex = +this.$route.query.index || 0
       this.type = this.$route.query.id || ''
-      switch(this.marketIndex) {
+      switch (this.marketIndex) {
       case 0:
         this.msg.type = 1
         this.type || (this.msg.config_json.way = 'between_days')
@@ -884,7 +883,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
-  ::-webkit-input-placeholder{
+  ::-webkit-input-placeholder {
     font-size: 14px
     font-family: $font-family-regular
     color: #ACACAC
@@ -951,6 +950,7 @@
         margin-top: 16px
   /*右边表单*/
   .right-form
+    box-sizing: border-box
     flex: 1
     padding: 36px 20px 20px
     .title
@@ -1018,7 +1018,7 @@
           position: absolute
           right: 10px
           col-center()
-        .time-no-change,.text-no-change,.day-no-change
+        .time-no-change, .text-no-change, .day-no-change
           position: absolute
           left: 0
           top: 0
