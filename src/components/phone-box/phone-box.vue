@@ -27,7 +27,6 @@
 
           <!--限时抢购-->
           <div v-if="cms.module_name === 'activity_fixed'" class="goods-big-box">
-            <div class="line"></div>
             <div :class="{'touch': comType === cms.module_name}" class="goods-small-box hand" @click="_setType(cms)">
               <!--title-->
               <div class="goods-title-box">
@@ -44,14 +43,16 @@
                 </div>
               </div>
 
-              <div class="goods-box hand">
-                <div v-for="(item, index) in activityGoodsList" :key="index" class="goods-list">
-                  <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
-                  <img v-else src="./icon-picmr@2x.png" class="item-img goods-none">
-                  <div class="title">{{item.name}}</div>
-                  <div class="bottom">
-                    <span class="price">{{item.trade_price}}<em class="unit">元</em></span>
-                    <span class="add"></span>
+              <div class="goods-box hand" :class="{'no-radius':cms.content_data.list.length === 1}">
+                <div v-if="activityGoodsList.length" class="content">
+                  <div v-for="(item, index) in activityGoodsList" :key="index" class="goods-list">
+                    <img src="./icon-qiang@2x.png" alt="" class="tag">
+                    <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
+                    <img v-else src="./icon-picmr@2x.png" class="item-img goods-none">
+                    <div class="title">{{item.name}}</div>
+                    <div class="bottom">
+                      <span class="price">{{item.trade_price}}<em class="unit">元</em><del class="grey">{{item.original_price}}元</del></span>
+                    </div>
                   </div>
                 </div>
                 <div v-if="!activityGoodsList.length" class="none-content">
@@ -67,10 +68,9 @@
 
           <!--分类-->
           <div v-if="cms.module_name === 'goods_cate'" class="nav-box">
-            <div class="line"></div>
             <div class="nav-content no-line">
               <div v-if="cms.content_data && cms.content_data.list && cms.content_data.list.length" class="nav-list">
-                <div v-for="(item, index) in cms.content_data.list" :key="index" class="nav-item">{{item.name}}</div>
+                <div v-for="(item, index) in cms.content_data.list" :key="index" class="nav-item"><img class="img" :src="item.image_url || require('./icon-all@2x.png')" alt=""><span class="text">{{item.name}}</span></div>
               </div>
 
               <div v-for="(item, index) in cateGoods" :key="index" class="pro-list">
@@ -245,16 +245,8 @@
     justify-content: center
     box-sizing: border-box
     position: relative
-    &:after
-      content: ''
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      transition: all 0.2s
-      box-sizing: border-box
-      border: 2px dashed #D9D9D9
+    transition: all 0.2s
+    border: 2px dashed #D9D9D9
     .big-box
       width: 299px
       height: 100%
@@ -285,21 +277,12 @@
   .touch
     overflow: hidden
     position: relative
-    transition: all 0.2s
-    &:after
-      content: ''
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      transition: all 0.2s
-      box-sizing: border-box
-      border: 2px solid $color-main !important
+    border: 2px solid $color-main !important
 
   .nav-content
     overflow: hidden
     position: relative
+    margin-top: 15px
     &:after
       content: ''
       position: absolute
@@ -316,32 +299,24 @@
     height: 0
 
   .goods-small-box
+    padding-bottom: 12px
+    background: #FFE359
     overflow: hidden
     position: relative
     transition: all 0.2s
-    &:after
-      content: ''
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      transition: all 0.2s
-      box-sizing: border-box
-      border: 2px dashed #D9D9D9
-
+    background-clip: padding-box
+    border: 2px dashed #D9D9D9
   .nav-list
     box-sizing: border-box
     background: $color-white
     width: 400%
-    height: 35px
-    padding: 0 15px
+    height: 65px
     border-bottom: 0.5px solid #E6E6E6
     .nav-item
-      margin-right: 20px
+      width: 50px
       float: left
-      height: 35px
-      line-height: 35px
+      height: 65px
+      margin-right: 10px
       text-align: center
       position: relative
       font-size: 11px
@@ -359,6 +334,18 @@
         position: absolute
         bottom: 0
         row-center()
+      .img
+        width: 35px
+        height: 35px
+        margin-bottom: 5px
+        object-fit: cover
+        border-radius: 50%
+        display: block
+        margin: 0 auto
+      .text
+        font-size: 12px
+        transform: scale(0.92)
+        display: block
       .nav-top-box
         width: 47px
         height: @width
@@ -469,7 +456,7 @@
         .left
           layout(row)
           .text-group
-            height: 14px
+            height: 17px
         .price-box
           layout(row)
           align-items: flex-end
@@ -516,74 +503,89 @@
         .add-goods-btn-active
           background: #b7b7b7
   .goods-big-box
-    background: $color-white
+    border-radius: 6px
+    margin-top: 13px
   .goods-title-box
     box-sizing: border-box
-    border-bottom-1px($color-line)
-    height: 45px
+    height: 46.6px
     .goods-title-main
       display: flex
       justify-content: space-between
       height: 45px
-      padding: 0 9.6px
+      padding: 5px 7px
       .goods-title-left
+        margin-top: 7px
         width: 100px
         display: flex
         flex-direction: column
         justify-content: center
         line-height: 1.2
         .logo
-          width: 80px
-          height: 29px
+          width: 74px
           object-fit: cover
       .goods-title-right
-        width: 180px
+        width: 150px
+        height: 41px
         display: flex
         align-items: center
         justify-content: flex-end
         .sale
           font-size: $font-size-14
           font-family: $font-family-medium
-          width: 54px
-          margin-left: 5px
-          color: #808080
+          width: 55px
+          height: 39px
+          border-top-left-radius: 3px
+          border-top-right-radius: 3px
+          color: #1D2023
           text-align: center
           margin-top: 4px
+          padding: 5px 0
+          box-sizing: border-box
         .time
           display: block
-          height: 16px
-          line-height: 16px
-          width: 48px
+          height: 14px
+          line-height: 14px
           margin: 0 auto
         .text
           display: block
           font-family: $font-family-regular
           font-size: 10px
+          line-height: 14px
+          transform: scale(0.8)
         .sale:first-child
-          color: #FFF
-          .time
-            background: #FF8506
-            border-radius: 10px
-          .text
-            color: #FF8506
+          background: #FFF
+          background-size: 100% 100%
   .goods-box
     box-sizing: border-box
-    position: relative
     overflow: hidden
-    width: 200%
-    height: 140px
+    margin: 0 7px
+    border-radius: 5px
+    .content
+      background: #FFF
+      width: 200%
+      height: 140px
+      overflow: hidden
     .goods-list
       float: left
       width: 72px
-      padding: 8.5px 0 15px 9.8px
-      height: 115px
+      padding: 7.9px 0 10px 7.9px
+      height: 126px
       box-sizing: content-box
       align-items: center
+      position: relative
+      &:first-child
+        padding-left: 5.7px
+      .tag
+        width: 16px
+        height: 16px
+        position: absolute
+        left: 5.9px
+        top: 5.9px
       .item-img
-        width: 68.7px
-        height: 68.7px
+        width: 71px
+        height: 71px
         object-fit: cover
-        margin: 5px auto 0
+        border-radius: 2.5px
       .goods-none
         object-fit: contain
       .title
@@ -592,22 +594,30 @@
         overflow: hidden
         white-space: nowrap
         text-overflow: ellipsis
+        margin-top: 10px
       .bottom
-        display: flex
-        align-items: center
-        justify-content: space-between
         color: #FF8506
         font-family: $font-family-medium
         font-size: 13.42px
+        margin-top: 2px
         .price
           .unit
             font-style: normal
             font-size: 8px
+        .grey
+          color: #B7B7B7
+          display: inline-block
+          margin-left: 3.6px
+          font-size: 12px
+          vertical-align: bottom
+          transform: scale(0.8)
       .add
         width: 18.2px
         height: 18.2px
         icon-image(icon-shopcart)
 
+  .no-radius
+    border-top-right-radius: 0
   .none-content
     width: 400%
     .goods-none

@@ -129,14 +129,6 @@
           imageUrl: this.image_url,
           type: this.showImg
         })
-        console.log({
-          name: this.pointName,
-          sort: this.pointNumber,
-          id: this.typeId,
-          imageId: this.image_id,
-          imageUrl: this.image_url,
-          type: this.showImg
-        })
       },
       cancel() {
         this.hide()
@@ -240,8 +232,10 @@
       &:before
         content: "*"
         color: #F52424
-    .no-before:before
-      content: ""
+    .no-before
+      margin-left: 7px
+      &:before
+        content: ""
     .img-box
       height: 44px
       width: 44px

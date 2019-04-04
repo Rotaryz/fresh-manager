@@ -328,7 +328,7 @@
   .add-box
     height: 60px
     border-top-1px($color-line)
-    padding-left: 48px
+    padding-left: 90px
     layout(row)
     align-items: center
     .icon
@@ -348,7 +348,7 @@
     height: 60px
     border-top-1px($color-line)
     background: $color-white
-    padding-left: 48px
+    padding-left: 90px
     padding-right: 14px
     layout(row)
     align-items: center
