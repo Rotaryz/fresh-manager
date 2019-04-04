@@ -82,35 +82,14 @@
     display: flex
     .date-item
       line-height: 28px
-      font-size: $font-size-12
-      color: $color-text-main
-      width: 60px
+      font-size: $font-size-14
+      color: #666
+      margin-left: 20px
       height: 28px
       position: relative
       transition: all 0.3s ease-out
-      border: 0.5px solid $color-line
       border-left: none
       text-align: center
-      &:nth-child(1)
-        border-left: 0.5px solid $color-line
-      &:last-child
-        border-top-right-radius: 1px
-        border-bottom-right-radius: 1px
-        &:after
-          border-top-right-radius: 1px
-          border-bottom-right-radius: 1px
-        &:before
-          border-top-right-radius: 1px
-          border-bottom-right-radius: 1px
-      &:first-child
-        border-top-left-radius: 1px
-        border-bottom-left-radius: 1px
-        &:after
-          border-top-left-radius: 1px
-          border-bottom-left-radius: 1px
-        &:before
-          border-top-left-radius: 1px
-          border-bottom-left-radius: 1px
       &:after
         content: ''
         border-top: 0.5px solid transparent
@@ -137,10 +116,8 @@
         transition: all 0.3s ease-out
 
     .date-item-active
-      border: 0.5px solid $color-main !important
       transition: all 0.3s ease-out
-      color: $color-white
-      background: $color-main
+      color: #4DBD65
       &:after
         border-color: transparent
         transition: all 0.3s ease-out

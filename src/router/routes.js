@@ -1433,6 +1433,15 @@ export default [
               })
           }
         }
+      },
+      // 调度管理
+      {
+        path: 'new-data',
+        name: 'new-data',
+        component: () => lazyLoadView(import('@pages/new-data/new-data')),
+        meta: {
+          titles: ['概况', '数据概况']
+        }
       }
     ]
   },

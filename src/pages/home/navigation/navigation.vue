@@ -171,6 +171,11 @@
           title: '数据统计',
           url: '/home/data-survey',
           isLight: false
+        },
+        {
+          title: '数据统计',
+          url: '/home/new-data',
+          isLight: false
         }
       ]
     }
