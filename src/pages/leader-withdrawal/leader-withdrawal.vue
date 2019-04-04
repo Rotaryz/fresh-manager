@@ -239,11 +239,17 @@
 
   .list-box
     .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:first-child
+      &:nth-child(1)
         flex: 1.5
+        min-width: 188px
+      &:nth-child(2)
+        flex: 1.2
+      &:nth-child(4)
+        flex: 1.5
+      &:last-child
+        max-width: 104px
+        min-width: 104px
+        padding: 0
     .list-help
       overflow: visible !important
       display: flex

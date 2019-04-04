@@ -437,6 +437,11 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .list-box
+    .list-item
+      &:last-child
+        max-width: 50px
+        padding: 0
   .pro-select-icon
     border-radius: 2px
     border: 1px solid $color-line

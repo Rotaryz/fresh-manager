@@ -180,9 +180,11 @@
 
   .list-box
     .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
+      &:nth-child(1)
+        flex: 1.7
+      &:last-child
+        max-width: 180px
+        flex: 0.8
 
   .btn-main
     position: relative

@@ -167,21 +167,16 @@
     box-sizing: border-box
 
   .list-box
-    padding-left: 30px
-    box-sizing: border-box
-    display: flex
-    align-items: center
     .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      position: relative
-      z-index: 1
+      &:nth-child(1)
+        flex :1.4
+        min-width: 208px
+      &:nth-child(2)
+        flex :1.4
       &:last-child
         flex: 0.6
-    .list-operation-box
-      padding-right: 10px
-      flex: 0.6
+        max-width: 76px
+        padding: 0
 
   .pagination-box
     height: 60px

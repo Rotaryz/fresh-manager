@@ -1397,6 +1397,13 @@ export default [
     component: () => lazyLoadView(import('@pages/_404/_404')),
     props: true
   },
+  // 系统升级
+  {
+    path: '/upgrade',
+    name: 'upgrade',
+    component: () => lazyLoadView(import('@pages/_upgrade/_upgrade')),
+    props: true
+  },
   {
     path: '/',
     redirect: '/login'

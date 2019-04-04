@@ -650,7 +650,8 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.7
+          max-width: 60px
+          padding: 0
         &:nth-child(8), &:nth-child(2)
           flex: 1.5
 

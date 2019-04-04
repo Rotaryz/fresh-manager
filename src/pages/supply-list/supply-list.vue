@@ -154,6 +154,10 @@
     .list-box
       .list-item
         padding-right: 14px
+        &:nth-child(4), &:nth-child(5)
+          flex: 0.6
         &:last-child
+          max-width 50px
+          padding: 0
           flex: 0.3
 </style>

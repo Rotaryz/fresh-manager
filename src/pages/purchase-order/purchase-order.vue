@@ -208,9 +208,10 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.4
+          max-width :50px
+          padding: 0
         &:nth-child(2)
-          flex: 2
+          flex: 2.2
         &:nth-child(1)
-          flex: 1.5
+          flex: 1.1
 </style>

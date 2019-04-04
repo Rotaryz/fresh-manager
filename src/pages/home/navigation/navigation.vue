@@ -14,7 +14,9 @@
     <div class="second">
       <div v-for="(item, index) in navList" :key="index" class="second-item">
         <p class="second-title">{{item.title}}</p>
-        <div v-for="(child, i) in item.children" :key="i" :class="child | childrenActive" class="second-link hand" @click="_setChildActive(child)">{{child.title}}</div>
+        <div v-for="(child, i) in item.children" :key="i" class="second-link hand" @click="_setChildActive(child)">
+          <span :class="child | childrenActive" class="second-link-content">{{child.title}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -466,7 +468,7 @@
       &::-webkit-scrollbar
         transition: all 0.2s
         width: 6px
-        height: 10px
+        height: 8px
     .second-title
       transition: all 0.2s
       margin: 30px 0 10px
@@ -482,5 +484,10 @@
       &:hover
         color: $color-main
     .second-link-active
+      background: rgba(79, 189, 102, 0.17)
       color: $color-main
+    .second-link-content
+      margin-left: -6px
+      border-radius: 2px
+      padding: 5px 6px
 </style>

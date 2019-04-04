@@ -31,7 +31,7 @@
           class="edit-input-box" type="date"
           placement="bottom-end"
           placeholder="开始时间"
-          style="width: 240px;height: 44px;border-radius: 2px"
+          style="width: 240px;height: 40px;border-radius: 2px"
           @on-change="_getStartTime"
         ></date-picker>
         <div class="tip">至</div>
@@ -41,7 +41,7 @@
           type="date"
           placement="bottom-end"
           placeholder="结束时间"
-          style="width: 240px;height: 44px"
+          style="width: 240px;height: 40px"
           @on-change="_getEndTime"
         ></date-picker>
         <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
@@ -65,7 +65,7 @@
           </div>
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
+              <div class="com-list-item com-list-double">{{item.name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
               <div class="com-list-item">{{item.original_price}}</div>
               <div class="com-list-item">
@@ -681,7 +681,7 @@
         padding: 0 14px
         border-radius: 2px
         width: 240px
-        height: 44px
+        height: 40px
         display: flex
         align-items: center
         justify-content: space-between
@@ -779,9 +779,17 @@
         .com-list-item
           &:nth-child(1)
             flex: 2
+          &:nth-child(7)
+            flex: 0.5
+          &:last-child
+            max-width: 70px
+        .com-list-double
+          white-space: normal
+          line-height: 18px
+          no-wrap-plus()
 
   .activity-tab
-    height: 58px
+    margin-bottom: 20px
     display: flex
     align-items: center
     box-sizing: border-box
@@ -790,13 +798,18 @@
       height: 28px
       line-height: 28px
       width: 92px
-      background: $color-main
-      color: $color-white
+      border: 1px solid $color-main
+      color: $color-main
+      background: $color-white
       font-size: $font-size-12
       white-space: nowrap
       transition: all 0.3s
       text-align: center
       border-radius: 2px
+    .btn-disable
+      border: 1px solid $color-main
+      color: $color-main
+      background: $color-white
 
   //  弹窗
   .shade-box
@@ -1142,7 +1155,6 @@
         background: $color-line
         color: $color-text-assist
         border: none
-
   /*弹窗动画*/
   @keyframes layerFadeIn {
     0% {
@@ -1196,7 +1208,7 @@
     color: $color-text-main
 
   .com-edit-small
-    width: 60px
+    width: 70px
 
   .rush-list-box
     background: $color-white

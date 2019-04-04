@@ -277,17 +277,9 @@
             transition: all 0.3s ease-out
             border-radius: 2px
         .page-child-active
-          border: 0.5px solid transparent
           transition: all 0.3s ease-out
           color: $color-main
-          &:after
-            border-color: $color-main
-            transition: all 0.3s ease-out
-            width: 100%
-          &:before
-            border-color: $color-main
-            transition: all 0.3s ease-out
-            height: 100%
+          border-color: $color-main
 
         .page-hide-more
           width: 20px

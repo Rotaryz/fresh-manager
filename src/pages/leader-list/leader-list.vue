@@ -98,7 +98,8 @@
     computed: {
       ...leaderComputed
     },
-    created() {},
+    created() {
+    },
     methods: {
       ...leaderMethods,
       async _syncLeader() {
@@ -165,7 +166,11 @@
       flex: 1
       &:nth-child(6), &:nth-child(7)
         flex: 1.5
+      &:nth-child(8)
+        flex: 0.7
       &:last-child
+        padding: 0
+        max-width: 140px
         flex: 1.8
 
   .pop-main

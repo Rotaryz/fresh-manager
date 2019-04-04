@@ -299,6 +299,8 @@
   .list-box
     .list-item
       padding-right: 14px
+      &:nth-child(1)
+        min-width: 160px
       &:nth-child(2)
         min-width: 200px
       &:nth-child(3)

@@ -65,7 +65,7 @@
                 :editable="false"
                 placement="bottom-end"
                 placeholder="选择开始时间"
-                style="width: 240px;height: 44px;border-radius: 1px"
+                style="width: 240px;height: 40px;border-radius: 1px"
                 @click.stop
                 @on-change="_getStartTime"
               ></date-picker>
@@ -77,15 +77,15 @@
                 :editable="false"
                 placement="bottom-end"
                 placeholder="选择结束时间"
-                style="width: 240px;height: 44px"
+                style="width: 240px;height: 40px"
                 @on-change="_getEndTime"
               ></date-picker>
               <span style="margin: 0 10px; white-space: nowrap">的客户</span>
             </div>
             <div class="check-item">
               <span class="check-icon" :class="{'checked': newItem === 'days'}" @click="checkNew('days')"></span>
-              <span style="margin-right: 10px; cursor: pointer" @click="checkNew('days')">满足注册时间</span>
-              <base-drop-down :width="120" :height="44" :select="dayDataNew" @setValue="_selectDayNew"></base-drop-down>
+              <span style="margin-right: 28px; cursor: pointer" @click="checkNew('days')">满足注册时间</span>
+              <base-drop-down :width="120" :height="40" :select="dayDataNew" @setValue="_selectDayNew"></base-drop-down>
               <span style="margin: 0 10px">内的客户</span>
             </div>
             <div v-if="disable" :class="{'time-no-change':disable}"></div>
@@ -104,7 +104,7 @@
             <div class="check-item">
               <span class="check-icon" :class="{'checked': activityItem === 'order_count'}" @click="checkActivity('order_count')"></span>
               <span style="margin-right: 10px" @click="checkActivity('order_count')">满足下单次数 </span>
-              <base-drop-down :width="120" :height="44" :select="dayData" @setValue="_selectDay"></base-drop-down>
+              <base-drop-down :width="120" :height="40" :select="dayData" @setValue="_selectDay"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
               <input v-model="msg.config_json.order_count" type="number" :readonly="activityItem === 'order_toal'" placeholder="输入次数" class="count-input">
               <span style="margin-left: 10px">次的客户</span>
@@ -112,7 +112,7 @@
             <div class="check-item">
               <span class="check-icon" :class="{'checked': activityItem === 'order_toal'}" @click="checkActivity('order_toal')"></span>
               <span style="margin-right: 10px" @click="checkActivity('order_toal')">满足订单金额 </span>
-              <base-drop-down :width="120" :height="44" :select="dayData2" @setValue="_selectDay2"></base-drop-down>
+              <base-drop-down :width="120" :height="40" :select="dayData2" @setValue="_selectDay2"></base-drop-down>
               <span style="margin: 0 10px">内大于</span>
               <input v-model="msg.config_json.order_toal" type="number" :readonly="activityItem === 'order_count'" placeholder="输入金额" class="count-input">
               <span style="margin-left: 10px">元的客户</span>
@@ -130,7 +130,7 @@
           </div>
           <div class="edit-content no-wrap">
             <span style="margin-right: 10px">满足 前</span>
-            <base-drop-down :width="120" :height="44" :select="dayData" @setValue="_selectDay"></base-drop-down>
+            <base-drop-down :width="120" :height="40" :select="dayData" @setValue="_selectDay"></base-drop-down>
             <span style="margin-left: 10px">内无下单记录的客户</span>
           </div>-->
         </div>
@@ -999,8 +999,8 @@
           padding: 0 14px
           border-radius: 1px
           width: 400px
-          height: 44px
-          line-height: 44px
+          height: 40px
+          line-height: 40px
           display: flex
           align-items: center
           justify-content: space-between
@@ -1023,7 +1023,7 @@
           left: 0
           top: 0
           width: 400px
-          height: 44px
+          height: 40px
           z-index: 100
         .text-no-change
           cursor: not-allowed
@@ -1245,7 +1245,7 @@
         padding: 42px 20px 30px 20px
         .main-input-box
           width: 310px
-          height: 44px
+          height: 40px
           border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
@@ -1343,8 +1343,8 @@
     .title
       font-size: $font-size-16
       font-family: $font-family-medium
-      height: 44px
-      line-height: 44px
+      height: 40px
+      line-height: 40px
       padding: 0 15px
     .text
       font-size: $font-size-16

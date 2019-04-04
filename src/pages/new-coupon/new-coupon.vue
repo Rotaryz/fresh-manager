@@ -118,7 +118,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择开始时间"
-          style="width: 240px;height: 44px;border-radius: 1px"
+          style="width: 240px;height: 40px;border-radius: 1px"
           @on-change="_getStartTime"
         ></date-picker>
         <div class="tip-text">至</div>
@@ -130,7 +130,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择结束时间"
-          style="width: 240px;height: 44px"
+          style="width: 240px;height: 40px"
           @on-change="_getEndTime"
         ></date-picker>
         <div :class="{'time-no-change':disable}"></div>
@@ -143,7 +143,7 @@
           使用范围
         </div>
         <div class="input-box">
-          <base-drop-down :width="400" :height="44" :select="useRange" @setValue="_selectRange"></base-drop-down>
+          <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -887,7 +887,7 @@
         padding: 0 14px
         border-radius: 1px
         width: 400px
-        height: 44px
+        height: 40px
         display: flex
         align-items: center
         margin-right: 10px
@@ -932,7 +932,7 @@
     .edit-input-right
       margin-left: 14px
     .tip-text
-      line-height: 44px
+      line-height: 40px
       color: #333
     .time-no-change,.text-no-change,.check-no-change
       position: absolute
@@ -1148,7 +1148,7 @@
         padding: 42px 20px 30px 20px
         .main-input-box
           width: 310px
-          height: 44px
+          height: 40px
           border-radius: 1px
           font-family: $font-family-regular
           color: $color-text-main
@@ -1247,8 +1247,8 @@
     .title
       font-size: $font-size-16
       font-family: $font-family-medium
-      height: 44px
-      line-height: 44px
+      height: 40px
+      line-height: 40px
       padding: 0 15px
     .text
       font-size: $font-size-16

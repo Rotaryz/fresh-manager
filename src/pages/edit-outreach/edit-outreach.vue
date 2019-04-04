@@ -52,7 +52,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择开始时间"
-          style="width: 240px;height: 44px;border-radius: 2px"
+          style="width: 240px;height: 40px;border-radius: 2px"
           readonly
           @on-change="_getStartTime"
         ></date-picker>
@@ -64,7 +64,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择结束时间"
-          style="width: 240px;height: 44px"
+          style="width: 240px;height: 40px"
           @on-change="_getEndTime"
         ></date-picker>
         <div :class="{'time-no-change':disable}"></div>
@@ -228,8 +228,8 @@
   const TITLE = '新建查看拓展活动'
   const COMMODITIES_LIST = ['商品名称', '单位', '原售价(元)', '活动售价(元)', '排序', '操作']
   const GROUP_TITLE = [
-    {name: '选择', class: 'title-item', flex: 0.7, value: ''},
-    {name: '团长帐号', class: 'title-item', flex: 1, value: 'mobile'},
+    {name: '选择', class: 'title-item', flex: 0.4, value: ''},
+    {name: '团长帐号', class: 'title-item', flex: 0.8, value: 'mobile'},
     {name: '团长名称', class: 'title-item', flex: 1, value: 'name'},
     {name: '社区名称', class: 'title-item', flex: 1.2, value: 'social_name'},
     {name: '社区地址', class: 'title-item', flex: 2, value: 'address'}
@@ -759,7 +759,7 @@
         padding: 0 14px
         border-radius: 2px
         width: 400px
-        height: 44px
+        height: 40px
         display: flex
         align-items: center
         justify-content: space-between
@@ -799,7 +799,7 @@
       color: $color-text-assist
     .tip-text
       margin-left: 2px
-      line-height: 44px
+      line-height: 40px
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
@@ -999,7 +999,7 @@
         padding: 42px 20px 30px 20px
         .main-input-box
           width: 310px
-          height: 44px
+          height: 40px
           border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
@@ -1097,8 +1097,8 @@
     .title
       font-size: $font-size-16
       font-family: $font-family-medium
-      height: 44px
-      line-height: 44px
+      height: 40px
+      line-height: 40px
       padding: 0 15px
     .text
       font-size: $font-size-16
@@ -1230,6 +1230,8 @@
         -webkit-line-clamp: 2
         -webkit-box-orient: vertical
         padding-right: 20px
+        &:nth-child(1)
+          max-width: 60px
     .outreach-group-list
       font-size: $font-size-14
       color: #333
@@ -1273,6 +1275,8 @@
           padding-right: 20px
           display: block
           overflow: hidden
+          &:nth-child(1)
+            max-width: 60px
           span
             display: -webkit-box
             overflow: hidden

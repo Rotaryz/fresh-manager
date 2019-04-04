@@ -52,8 +52,8 @@
             <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
             <div class="list-item list-operation-box">
               <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
-              <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
               <div v-if="item.status === 0" class="list-operation" @click="entryOrdersExport(item)">导出</div>
+              <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
             </div>
           </div>
         </div>

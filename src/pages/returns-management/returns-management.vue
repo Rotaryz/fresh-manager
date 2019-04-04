@@ -228,7 +228,17 @@
   textarea::-webkit-input-placeholder
     font-size: $font-size-14
     color: #ACACAC
-
+  .list-box
+    .list-item
+      &:nth-child(1)
+        min-width: 188px
+      &:nth-child(7)
+        flex: 0.8
+      &:nth-child(8), &:nth-child(4)
+        flex: 0.6
+      &:last-child
+        padding: 0
+        max-width: 76px
   .Auditing
     width: 380px
     height: 225px

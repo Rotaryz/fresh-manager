@@ -212,8 +212,10 @@
         &:last-child
           max-width: 60px
         &:nth-child(1)
-          flex: 1.2
-        &:nth-child(8), &:nth-child(2), &:nth-child(3)
+          flex: 1.1
+        &:nth-child(5), &:nth-child(6)
+          flex: 0.7
+        &:nth-child(2), &:nth-child(3)
           flex: 1.5
 
   .list-item-progress

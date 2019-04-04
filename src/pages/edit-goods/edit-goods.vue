@@ -28,9 +28,9 @@
         </div>
         <div class="edit-input-box mini-edit-input-box">
           <div class="mini-mr20">
-            <base-drop-down :height="44" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+            <base-drop-down :height="40" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
           </div>
-          <base-drop-down :height="44" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+          <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -39,7 +39,7 @@
           基本单位
         </div>
         <div class="edit-input-box">
-          <base-drop-down :height="44" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setValue"></base-drop-down>
+          <base-drop-down :height="40" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -148,7 +148,7 @@
           供应商
         </div>
         <div class="edit-input-box">
-          <base-drop-down :height="44" :width="400" :select="supplierSelect" @setValue="supplierSelectValue"></base-drop-down>
+          <base-drop-down :height="40" :width="400" :select="supplierSelect" @setValue="supplierSelectValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -669,8 +669,11 @@
         border-radius: 2px
         width: 400px
         height: 40px
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
         transition: all 0.3s
+        &:disabled
+          color: $color-text-assist
+          background: $color-white
         &::-webkit-inner-spin-button
           appearance: none
         &:hover
@@ -682,17 +685,24 @@
           border-color: $color-main !important
       .mini-edit-input
         width: 133px
+        border-radius: 0
+        border-top-left-radius: 2px
+        border-bottom-left-radius: 2px
+        border-right: none
+        &:hover
+          border-color: $color-line
       .edit-input-unit
         font-size: $font-size-14
         font-family: $font-family-regular
         color: $color-text-main
-        border-radius: 2px
         width: 134px
         height: 40px
         line-height: 40px
         text-align: center
         background: #F9F9F9
-        border: 1px solid #D6D6D6
+        border: 1px solid $color-line
+        border-right: none
+        margin-right: -1px
   .mini-edit-input-box
     layout(row)
     .mini-mr20
