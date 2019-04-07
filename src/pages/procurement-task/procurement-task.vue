@@ -117,7 +117,7 @@
             </div>
           </div>
         </div>
-        <p class="main-input-tip">生成采购任务时，将加上商品损耗比</p>
+        <!--<p class="main-input-tip">生成采购任务时，将加上商品损耗比</p>-->
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
           <div class="btn confirm" @click="confirm">确定</div>
