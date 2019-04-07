@@ -10,7 +10,7 @@
                 <carousel :autoplaySpeed="3000"
                           arrow="never"
                           :height="104"
-                          autoplay
+                          :autoplay="true"
                           :radiusDot="true"
                           dots="none"
                           @on-change="_getBanner"
@@ -524,7 +524,7 @@
           width: 74px
           object-fit: cover
       .goods-title-right
-        width: 150px
+        width: 165px
         height: 41px
         display: flex
         align-items: center
