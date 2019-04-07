@@ -616,11 +616,11 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
-    .time-no-change,.text-no-change
+    .time-no-change, .text-no-change
       position: absolute
       left: 103px
       top: 0
-      width: 242px
+      width: 402px
       height: 40px
       z-index: 100
       cursor: not-allowed

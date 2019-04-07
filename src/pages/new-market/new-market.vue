@@ -1486,7 +1486,7 @@
           border-top: none
         &:nth-child(2n)
           background: #F5F7FA
-        .check
+        .radio
           width: 16px
           height: 16px
           border: 1px solid #E1E1E1
@@ -1504,10 +1504,35 @@
             background: #4DBD65
             opacity: 0
             transition: all 0.3s
+          .checked
+            border-color: #4DBD65
+            &:before
+              opacity: 1
+        .check
+          width: 16px
+          height: 16px
+          border: 1px solid #E1E1E1
+          transition: all 0.3s
+          display: flex
+          justify-content: center
+          align-items: center
+          &:before
+            content: ""
+            width: 14px
+            height: 14px
+            icon-image(icon-check)
+            display: block
+            opacity: 0
+            transition: all 0.3s
         .checked
           border-color: #4DBD65
           &:before
             opacity: 1
+        .right
+          border-color: #E1E1E1
+          &:before
+            opacity: 1
+            icon-image(icon-check_ash)
         .title-item
           padding-right: 20px
           display: block
