@@ -54,8 +54,8 @@ function checkCode(res) {
   if (res.status === ERR_NO) {
     console.warn(res.msg)
   }
-  // 如果网络请求成功，而提交的数据，或者是后端的一些未知错误所导致的，可以根据实际情况进行捕获异常
   if (res.data && res.data.code !== ERR_OK) {
+    // 如果网络请求成功，而提交的数据，或者是后端的一些未知错误所导致的，可以根据实际情况进行捕获异常
     Utils.handleErrorType(res.data.code)
     throw requestException(res)
   }

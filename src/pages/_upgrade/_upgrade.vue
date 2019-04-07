@@ -3,12 +3,14 @@
     <div class="upgrade-content">
       <img src="./pic-xtsj@2x.png" class="upgrade-content-img">
       <span class="upgrade-title">系统升级</span>
-      <button class="upgrade-btn hand">刷新</button>
+      <button class="upgrade-btn hand" @click="goTargetPath">刷新</button>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+
   const PAGE_NAME = 'UPGRADE'
   const TITLE = '系统升级'
 
@@ -18,7 +20,24 @@
       title: TITLE
     },
     data() {
-      return {}
+      return {
+        path: ''
+      }
+    },
+    created() {
+      this.path = this.$storage.get('upgradeRoute') || '/'
+    },
+    methods: {
+      async goTargetPath() {
+        // 请求判断升级是否完成
+        let res = await API.Global.getSystemStatus()
+        if (res.error === this.$ERR_OK && res.data.status === 0) {
+          this.$router.replace(this.path)
+          this.$storage.remove('upgradeRoute')
+          return
+        }
+        this.$toast.show('系统正在升级中...')
+      }
     }
   }
 </script>
@@ -54,6 +73,4 @@
       height: 30px
       line-height: 30px
       transition: all 0.2s
-      &:hover
-        opacity: 0.8
 </style>
