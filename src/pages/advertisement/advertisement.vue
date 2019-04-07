@@ -117,8 +117,10 @@
               <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
                 <span class="after"></span>
               </div>
-              <div class="shade-goods-name">{{goods.name}}</div>
-              <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+              <div class="shade-goods-msg">
+                <div class="shade-goods-name">{{goods.name}}</div>
+                <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+              </div>
             </div>
           </div>
           <div v-if="tabIndex === 2" class="link-text">
@@ -207,7 +209,7 @@
         delIndex: 0,
         cmsType: 'bannar',
         tabIndex: 0,
-        left: 55,
+        left: 36,
         outLink: 'mini_goods',
         cmsId: 0,
         cmsModuleId: '',
@@ -302,7 +304,7 @@
       _setSort() {},
       _setLinkType(index, e) {
         this.tabIndex = index
-        this.left = e.target.offsetLeft + (e.target.offsetWidth - 34) / 2
+        this.left = e.target.offsetLeft + (e.target.offsetWidth - 64) / 2
         this.outLink = this.typeList[index].status
       },
       // cms的类型
@@ -380,7 +382,7 @@
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          limit: 10,
+          limit: 7,
           page: this.choicePage
         })
         if (res.error !== this.$ERR_OK) {
@@ -548,18 +550,46 @@
     flex: 1
     width: 960px
     height: 480px
-    margin: 30px auto 0
-    border-1px($color-line)
-    border-radius: 1px
+    margin: 20px auto 0
+    border-radius: 2px
     overflow-x: hidden
     .goods_cate-item
       display: flex
       align-items: center
-      border-bottom-1px($color-line)
-      padding-left: 20px
-      height: 80px
+      padding: 0 20px
+      height: 60px
+      position: relative
+      box-sizing: border-box
+      &:nth-child(2n - 1)
+        background: #f5f7fa
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .shade-goods-msg
+        flex: 1
+        justify-content: space-between
+        display: flex
       .shade-goods-name
-        width: 176px
+        width: 500px
+        no-wrap()
       .shade-goods-name, .shade-goods-num
         font-size: $font-size-14
         color: $color-text-main
@@ -567,15 +597,18 @@
   .link-text-box
     width: 960px
     height: 220px
-    margin: 30px auto 0
+    margin: 20px auto 0
     border: 0.5px solid $color-line
-    border-radius: 1px
+    border-radius: 2px
     outline: none
     display: block
     resize: none
-    padding: 14px
+    padding: 20px 14px
     box-sizing: border-box
     position: relative
+    background: #F9F9F9
+    &:focus
+      background: $color-white
 
   .advertisement
     flex: 1
@@ -602,8 +635,8 @@
       justify-content: center
     .advertisement-item
       margin-top: 24px
-      border: 0.5px dashed #D9D9D9
-      border-radius: 1px
+      border: 0.5 pxdashed #D9D9D9
+      border-radius: 2px
       background: #F5F7FA
       height: 140px
       padding: 20px
@@ -625,7 +658,7 @@
           background-image: url('./pic-add_img@2x.png')
           position: relative
           border: 0.5 pxsolid #F2F2F2
-          border-radius: 1px
+          border-radius: 2px
           box-sizing: border-box
           .img-change-tip
             position: absolute
@@ -678,7 +711,7 @@
             top: 24px
             background: $color-white
             box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
-            border-radius: 1px
+            border-radius: 2px
             position: absolute
             &.fade-enter, &.fade-leave-to
               opacity: 0
@@ -734,7 +767,7 @@
           height: 32px
           line-height: 32px
           border: 1px solid $color-main
-          border-radius: 1px
+          border-radius: 2px
           font-size: $font-size-14
           font-family: $font-family-regular
           color: $color-main
@@ -775,48 +808,15 @@
           width: 280px
           height: 44px
           margin-left: 20px
-          border-radius: 1px
+          border-radius: 2px
           background: $color-white
           border: 0.5px solid #D9D9D9
 
-  /*background-image: url('./')*/
-
-  /*基本信息类头部盒子样式*/
-  .content-header
-    border-bottom-1px($color-line)
-    display: flex
-    align-items: center
-    height: 60px
-    position: relative
-    box-sizing: border-box
-    text-indent: 13px
-    &:before
-      content: ''
-      position: absolute
-      width: 3px
-      height: 14px
-      background: $color-main
-      border-radius: 1px
-      col-center()
-      left: 0px
-    .content-title
-      color: $color-text-main
-      font-family: $font-family-regular
-      font-size: $font-size-16
-    .content-sub
-      color: $color-text-assist
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      text-indent: 10px
-    .del
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: $color-sub
 
   //  商品弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -826,7 +826,7 @@
     overflow-y: auto
     flex-wrap: wrap
     .shade-tab
-      height: 67.5px
+      height: 68px
       align-items: center
       padding: 0 20px
       box-sizing: border-box
@@ -843,23 +843,41 @@
   .goods-content
     border-radius: 4px
     margin: 0 20px
-    height: 400px
+    height: 420px
     .goods-list
       flex-wrap: wrap
       display: flex
-      border: 0.5px solid $color-line
     .goods-item
       box-sizing: border-box
-      padding: 0 20px
-      width: 50%
-      height: 79.5px
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
       display: flex
       align-items: center
-      border-bottom: 0.5px solid $color-line
-      &:nth-child(2n+1)
-        border-right: 0.5px solid $color-line
-      &:nth-child(9), &:nth-child(10)
-        border-bottom: none
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
       .goods-img
         margin-right: 10px
         width: 40px
@@ -870,14 +888,15 @@
         background-position: center
         background-color: $color-background
       .goods-msg
+        flex: 1
         display: flex
-        flex-direction: column
         color: $color-text-main
         font-family: $font-family-regular
         justify-content: space-between
-        height: 40px
+        height: 100%
+        align-items: center
         .goods-name
-          width: 350px
+          width: 500px
           no-wrap()
         .goods-name, .goods-money
           line-height: 1
@@ -885,13 +904,13 @@
       .add-btn
         border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         width: 56px
         text-align: center
       .add-btn-disable
         border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         width: 56px
         box-sizing: border-box
         text-align: center
@@ -903,61 +922,57 @@
     .page-box
       padding: 0 20px
       box-sizing: border-box
-      height: 66px
+      height: 77px
       align-items: center
       display: flex
 
   .shade-header
     display: flex
-    align-items: center
     justify-content: space-between
-    height: 60.5px
+    height: 52px
     box-sizing: border-box
-    padding: 0 20px 0 0
-    border-bottom-1px($color-line)
+    padding: 23px 20px 0 0
     .shade-tab-type
       height: 100%
       display: flex
       position: relative
       .shade-tab-item
+        line-height: 1
         display: flex
         transition: all 0.3s
         color: $color-text-main
         font-family: $font-family-regular
-        align-items: center
         margin-left: 40px
       .shade-tab-item-active
-        font-weight: bold
         font-family: $font-family-medium
       .line
         transition: all 0.3s
-        left: 55px
+        left: 40px
         position: absolute
         bottom: 0px
-        height: 2px
-        width: 34px
+        height: 3px
+        width: 64px
         background: $color-main
-        border-radius: 1px
+        border-radius: 3px
     .shade-title
       color: $color-text-main
       font-family: $font-family-medium
       font-size: $font-size-16
     .close
       icon-image('icon-close')
-      width: 16px
+      width: 12px
       height: @width
       transition: all 0.3s
-      &:hover
-        transform: scale(1.3)
-
-  .back
-    justify-content: center
 
   .back-box
+    background: $color-white
+    height: 70px
     border-top-1px($color-line)
+    justify-content: flex-end
     position: absolute
     left: 0
     bottom: 0
+
 
   .edit-item
     display: flex
@@ -980,7 +995,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 240px
         height: 44px
         display: flex
@@ -1037,7 +1052,7 @@
     width: 108px
     height: 32px
     background: $color-main
-    border-radius: 1px
+    border-radius: 2px
     line-height: 32px
     text-align: center
     transition: 0.3s all
@@ -1090,10 +1105,5 @@
       border-radius: 50%
 
   .select-icon-active
-    border: 1px solid $color-main
-    .after
-      width: 8px
-      height: 8px
-      border-radius: 50%
-      background: $color-main
+    border: 5px solid $color-main
 </style>

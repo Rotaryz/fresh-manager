@@ -8,7 +8,18 @@ body, html
   background: $color-background
   color: $color-text-main
   transition: all 0.3s
-
+  &::-webkit-scrollbar
+    width: 8px
+    height: 10px
+  &::-webkit-scrollbar-thumb
+    background-color: rgba(0, 0, 0, .15)
+    border-radius: 10px
+  &::-webkit-scrollbar-thumb:hover
+    background-color: rgba(0, 0, 0, .3)
+  &::-webkit-scrollbar-track
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+    border-radius: 10px
+    
 .border-top-1px, .border-right-1px, .border-bottom-1px, .border-left-1px
   position: relative
   &:before, &:after
@@ -109,7 +120,7 @@ body, html
   border: 1px solid $color-main
   transition: all 0.3s
   font-size: $font-size-12
-  border-radius: 1px
+  border-radius: 2px
   line-height: 1
   cursor: pointer
   user-select: none
@@ -159,7 +170,8 @@ body, html
   white-space: nowrap
   cursor: pointer
   font-size: $font-size-14
-  transition: all 0.2s
+  transition: color 0.2s
+  overflow: visible
   &:hover
     color: #06397E
   &:after
@@ -182,7 +194,7 @@ body, html
   white-space: nowrap
   cursor: pointer
   font-size: $font-size-14
-  transition: all 0.2s
+  transition: color 0.2s
   padding: 0 6px
   line-height: 22px
   border: 0.5px solid #4D77BD
@@ -190,6 +202,7 @@ body, html
   box-sizing: border-box
   margin-right: 10px
   &:hover
+    border: 0.5px solid #4D77BD
     color: #06397E
 
 .list-operation-disable
@@ -233,9 +246,9 @@ body, html
 
 .ivu-date-picker-rel
   height: 100%
-  border-radius: 1px
+  border-radius: 2px
   .ivu-input-default
-    border-radius: 1px
+    border-radius: 2px
 
 .ivu-input
   outline: none !important

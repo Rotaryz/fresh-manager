@@ -98,7 +98,8 @@
     computed: {
       ...leaderComputed
     },
-    created() {},
+    created() {
+    },
     methods: {
       ...leaderMethods,
       async _syncLeader() {
@@ -165,12 +166,16 @@
       flex: 1
       &:nth-child(6), &:nth-child(7)
         flex: 1.5
+      &:nth-child(8)
+        flex: 0.7
       &:last-child
+        padding: 0
+        max-width: 140px
         flex: 1.8
 
   .pop-main
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     width: 530px
     height: 360px

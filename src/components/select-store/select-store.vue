@@ -2,8 +2,10 @@
   <!-- 选择商品弹窗-->
   <default-modal ref="goodsModel">
     <div slot="content" class="shade-box">
-      <div class="shade-header">
-        <div class="shade-title">选择商品</div>
+      <div class="title-box">
+        <div class="title">
+          选择商品
+        </div>
         <span class="close hand" @click="_cancelGoods"></span>
       </div>
       <div class="shade-tab">
@@ -260,11 +262,10 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -273,25 +274,22 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-    .shade-header
+    padding: 0 20px
+    .title-box
       display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      height: 60.5px
-      box-sizing: border-box
-      padding: 0 20px
-      border-bottom: 0.5px solid $color-line
-      .shade-title
-        color: $color-text-main
-        font-family: $font-family-medium
+      .title
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
       .close
-        icon-image('icon-close')
-        width: 16px
+        width: 12px
         height: @width
-        transition: all 0.3s
-        &:hover
-          transform: scale(1.3)
+        icon-image('icon-close')
     // 分类编辑新建
     .auxiliary-box
       padding: 0 20px
@@ -317,7 +315,7 @@
           position: absolute
           width: 100%
           height: 100%
-          border-radius: 1px
+          border-radius: 2px
           background: rgba(51, 51, 51, 0.9)
           left: 0
           top: 0
@@ -346,11 +344,12 @@
         min-width: 80px
         text-align: center
     .back
+      background: $color-white
+      justify-content: flex-end
       position: absolute
       left: 0
       right: 0
       bottom: 0
-      border-top: 1px solid $color-line
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -373,7 +372,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 1px
+      border-radius: 2px
       .title-input
         height: 60px
         layout(row)
@@ -402,7 +401,7 @@
         .main-input-box
           width: 310px
           height: 44px
-          border-radius: 1px
+          border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
@@ -420,7 +419,6 @@
             border-color: $color-main !important
 
     .btn-group
-      margin-top: 40px
       text-align: center
       display: flex
       justify-content: flex-end
@@ -429,7 +427,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -465,7 +463,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -477,7 +475,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -518,48 +516,43 @@
 
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
+    margin-bottom: 20px
     align-items: center
-    padding: 0 20px
     box-sizing: border-box
     display: flex
     .tab-item
       margin-right: 10px
 
   .page-box
-    padding: 0 20px
     box-sizing: border-box
     height: 66px
     align-items: center
     display: flex
 
   .goods-content
-    border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
-    height: 400px
+    border-radius: 2px
     .rush-goods-list
-      flex-wrap: wrap
-      display: flex
+      height: 420px
     .goods-item
       box-sizing: border-box
       padding: 0 20px
-      width: 50%
-      height: 79.5px
+      width: 100%
+      height: 60px
       display: flex
       align-items: center
       border-bottom: 0.5px solid $color-line
+      border-right: 0.5px solid $color-line
+      border-left: 0.5px solid $color-line
+      position: relative
       &:nth-child(2n+1)
-        border-right: 1px solid $color-line
-      &:nth-child(9), &:nth-child(10)
-        border-bottom: none
+        background: #f5f7fa
+      &:first-child
+        border-top: 0.5px solid $color-line
       .select-icon
         margin-right: 20px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-line
-        min-height: 16px
         height: 16px
-        min-width: 16px
         width: 16px
         transition: all 0.3s
       .select-icon-disable
@@ -572,9 +565,7 @@
       .goods-img
         margin-right: 10px
         width: 40px
-        min-width: 40px
         height: @width
-        min-height: @width
         overflow: hidden
         background-repeat: no-repeat
         background-size: cover
@@ -582,27 +573,29 @@
         background-color: $color-background
       .goods-msg
         display: flex
-        flex-direction: column
         color: $color-text-main
         font-family: $font-family-regular
-        justify-content: space-between
         height: 40px
+        align-items: center
+        margin-right: 130px
+        flex: 1
         .goods-name
-          width: 210px
+          width: 593px
           no-wrap()
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14
       .add-btn
-        border-radius: 1px
+        col-center()
+        right: 20px
+        border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         min-width: 56px
         text-align: center
       .add-btn-disable
-        border-radius: 1px
-        margin-left: 88px
-        padding: 5px 0
+        border-radius: 2px
+        padding: 7px 0
         width: 56px
         box-sizing: border-box
         text-align: center
@@ -612,6 +605,7 @@
         background: $color-line
         color: $color-text-assist
         border: none
+
   .rush-null-text
     width: 100%
     text-align: center

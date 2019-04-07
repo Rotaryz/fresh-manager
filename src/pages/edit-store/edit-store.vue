@@ -71,10 +71,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-// import AddGoods from '@components/add-goods/add-goods'
+  // import AddGoods from '@components/add-goods/add-goods'
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'
+
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
   const COMMODITIES_LIST = ['序号', '商品名称', '分类', '可用库存/总库存', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
@@ -162,7 +163,7 @@
               this.storeList[index].select_batch.forEach(item => {
                 number += (item.select_out_num * 1)
                 this.batchList.forEach(item1 => {
-                  if(item1.batch_num === item.batch_num) {
+                  if (item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
                   }
                 })
@@ -257,6 +258,12 @@
         flex: 0.4
       &:nth-child(3)
         flex: 1.5
+      &:nth-child(5)
+        min-width: 150px
+      &:nth-child(6)
+        .list-operation
+          &:after
+            display: none
       &:last-child
         flex: 0.6
   .edit-store
@@ -293,7 +300,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 400px
         height: 40px
         border: 1px solid $color-line
@@ -313,7 +320,7 @@
   .edit-input
     font-size: $font-size-14
     padding: 0 14px
-    border-radius: 1px
+    border-radius: 2px
     width: 100px
     height: 34px
     border: 1px solid $color-line
@@ -337,7 +344,7 @@
       left: 0
       box-sizing: border-box
       padding: 12px 37px 12px 12px
-      background: rgba(51,51,51,9)
+      background: rgba(51, 51, 51, 9)
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-white

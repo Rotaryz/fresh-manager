@@ -8,7 +8,7 @@
           :value="startTime"
           class="edit-input-box" type="date"
           placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="_getStartTime"
         ></date-picker>
         <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
@@ -22,7 +22,7 @@
             class="edit-input-box edit-input-right"
             type="date"
             placeholder="结束时间"
-            style="width: 187px;height: 28px;border-radius: 1px"
+            style="width: 187px;height: 28px;border-radius: 2px"
             @on-change="_getEndTime"
           ></date-picker>
           <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
@@ -208,9 +208,10 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.4
+          max-width :50px
+          padding: 0
         &:nth-child(2)
-          flex: 2
+          flex: 2.2
         &:nth-child(1)
-          flex: 1.5
+          flex: 1.1
 </style>

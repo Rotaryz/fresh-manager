@@ -60,12 +60,13 @@
       height: 300%
       transform: scaleY(1 / 3) translateZ(0)
   .list-item
+    white-space: nowrap
     font-size: $font-size-14
     display: flex
     align-items: center
 
 .list-box
-  padding-left: 20px
+  padding: 0 20px
   box-sizing: border-box
   border-bottom-1px(#E9ECEE)
   display: flex
@@ -90,7 +91,7 @@
       transform: scaleX(1 / 3) translateZ(0)
   .list-item
     box-sizing: border-box
-    padding-right: 10px
+    padding-right: 20px
     flex: 1
     .list-img
       width: 45px
@@ -117,13 +118,23 @@
       .item-sub
         no-wrap()
         line-height: 1
-        margin-top: 8px
+        margin-top: 6px
         font-size: $font-size-14
         color: $color-text-assist
       .item-dark
         no-wrap()
         font-size: $font-size-14
         line-height: 1
+      .item-sub-time
+        no-wrap()
+        margin-top: 6px
+        font-size: $font-size-14
+        line-height: 1
+    .list-item-double
+      white-space: normal
+      line-height: 18px
+      no-wrap-plus()
+
 
 .pagination-box
   height: 60px
@@ -148,7 +159,7 @@
     font-family: $font-family-regular
   .ivu-input-icon
     height: 100%
-    line-height: 44px
+    line-height: 40px
   .ivu-select-dropdown
     width: 240px !important
     left: 105 !important
@@ -178,7 +189,7 @@
     white-space: nowrap
     transition: all 0.3s
     text-align: center
-    border-radius: 1px
+    border-radius: 2px
   .back-submit
     background: $color-main
     color: $color-white
@@ -308,6 +319,7 @@
   display: flex
   padding-bottom: 30px
   .order-item
+    width: 240px
     display: flex
     .order-text
       font-family: $font-family-regular
@@ -330,3 +342,42 @@
   color: #acacac
   position: absolute
   pointer-events: none
+
+// 弹窗按钮样式
+.btn-group
+  position: absolute
+  bottom: 20px
+  left: 0
+  width: 100%
+  padding: 0 20px
+  text-align: center
+  display: flex
+  justify-content: flex-end
+  user-select: none
+  .btn
+    width: 96px
+    height: 40px
+    line-height: 40px
+    border-radius: 2px
+    border: 1px solid #D6D6D6
+    cursor: pointer
+    transition: all 0.3s
+    margin-left: 10px
+  .cancel
+    border: 1px solid $color-line
+    &:hover
+      color: $color-text-sub
+      border-color: $color-text-sub
+  .confirm
+    border: 1px solid $color-main
+    background: $color-main
+    color: $color-white
+    &:hover
+      opacity: 0.8
+  .manager
+    border: 1px solid $color-main
+    color: $color-main
+    &:hover
+      opacity: 0.8
+  .one-btn
+    margin-left: 0

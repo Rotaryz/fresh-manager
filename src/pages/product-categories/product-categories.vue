@@ -285,7 +285,6 @@
     align-items: center
     justify-content: space-between
     height: 80px
-
   .categories-box
     border-1px($color-line, 1px)
     .big-box

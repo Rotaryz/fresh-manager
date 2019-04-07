@@ -8,7 +8,7 @@
           :value="startTime"
           class="edit-input-box" type="date"
           placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="changeStartTime"
         ></date-picker>
         <div v-if="startTime" class="down-time-text">{{accurateStart}}</div>
@@ -20,7 +20,7 @@
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="changeEndTime"
         ></date-picker>
         <div v-if="endTime" class="down-time-text">{{accurateEnd}}</div>
@@ -52,8 +52,8 @@
             <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
             <div class="list-item list-operation-box">
               <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
-              <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
               <div v-if="item.status === 0" class="list-operation" @click="entryOrdersExport(item)">导出</div>
+              <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
             </div>
           </div>
         </div>

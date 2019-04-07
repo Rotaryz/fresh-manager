@@ -7,7 +7,7 @@
         <date-picker
           class="edit-input-box" type="date"
           placeholder="选择下单日期"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           :value="tabIndex === 0 ? orderStartTime : driverStartTime"
           @on-change="changeStartTime"
         ></date-picker>
@@ -20,7 +20,7 @@
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="选择下单日期"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           :value="tabIndex === 0 ? orderEndTime : driverEndTime"
           @on-change="changeEndTime"
         ></date-picker>
@@ -299,6 +299,8 @@
   .list-box
     .list-item
       padding-right: 14px
+      &:nth-child(1)
+        min-width: 160px
       &:nth-child(2)
         min-width: 200px
       &:nth-child(3)
@@ -308,4 +310,3 @@
       &:nth-child(10)
         max-width: 105px
 </style>
-
