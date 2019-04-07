@@ -255,6 +255,7 @@
       width: 293px
       height: 104px
       .carousel
+        margin-left: 2px
         margin-top: 5px
         border-radius: 2px
         width: 289px
