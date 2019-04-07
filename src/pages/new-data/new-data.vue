@@ -23,11 +23,71 @@
                 </div>
               </div>
             </div>
+            <div class="real-list-box">
+              <img src="./icon-money_more@2x.png" class="real-list-box-icon">
+              <div class="real-text-box">
+                <div class="real-text-top">销售额</div>
+                <div class="real-text-bottom">
+                  <div class="real-text-number">222380.00</div>
+                  <div class="real-text-sale">总销售额: 2222380.00</div>
+                </div>
+              </div>
+            </div>
+            <div class="real-list-box">
+              <img src="./icon-money_more@2x.png" class="real-list-box-icon">
+              <div class="real-text-box">
+                <div class="real-text-top">销售额</div>
+                <div class="real-text-bottom">
+                  <div class="real-text-number">222380.00</div>
+                  <div class="real-text-sale">总销售额: 2222380.00</div>
+                </div>
+              </div>
+            </div>
+            <div class="real-list-box">
+              <img src="./icon-money_more@2x.png" class="real-list-box-icon">
+              <div class="real-text-box">
+                <div class="real-text-top">销售额</div>
+                <div class="real-text-bottom">
+                  <div class="real-text-number">222380.00</div>
+                  <div class="real-text-sale">总销售额: 2222380.00</div>
+                </div>
+              </div>
+            </div>
+            <div class="real-list-box">
+              <img src="./icon-money_more@2x.png" class="real-list-box-icon">
+              <div class="real-text-box">
+                <div class="real-text-top">销售额</div>
+                <div class="real-text-bottom">
+                  <div class="real-text-number">222380.00</div>
+                  <div class="real-text-sale">总销售额: 2222380.00</div>
+                </div>
+              </div>
+            </div>
+            <div class="real-list-box">
+              <img src="./icon-money_more@2x.png" class="real-list-box-icon">
+              <div class="real-text-box">
+                <div class="real-text-top">销售额</div>
+                <div class="real-text-bottom">
+                  <div class="real-text-number">222380.00</div>
+                  <div class="real-text-sale">总销售额: 2222380.00</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div class="data-header-right">
-        <div class="small-box"></div>
+        <div class="base-box">
+          <div class="identification survey-box">
+            <div class="identification-page">
+              <img src="./icon-real_time@2x.png" class="identification-icon">
+              <p class="identification-name">基础功能</p>
+            </div>
+          </div>
+          <div class="base-function-box">
+            <div class="base-list-item"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="data-middle-box">
@@ -83,7 +143,7 @@
       .header-left-box
         width: 100%
         height: 260px
-        background: #fff
+        background: $color-white
         .real-time-box
           layout(row)
           .real-list-box
@@ -122,15 +182,27 @@
                   font-size: 12px
                   font-family: $font-family-regular
                   color: #999
+          .real-list-box:nth-of-type(3n)
+            border-right: 0 solid #E9ECEE
+          .real-list-box:nth-of-type(4), .real-list-box:nth-of-type(5), .real-list-box:nth-of-type(6)
+            border-bottom: 0 solid #E9ECEE
     .data-header-right
       width: 33.33333%
       height: 260px
       padding-left: 13px
       box-sizing: border-box
-      .small-box
+      .base-box
         width: 100%
         height: 260px
-        background: #333
+        background: $color-white
+        .base-function-box
+          layout(row)
+          .base-list-item
+            width: 33.3333%
+            height: 100px
+            border-right: 0.5px solid #E9ECEE
+            border-bottom: 0.5px solid #E9ECEE
+            padding: 17px 20px 0
   .data-middle-box
     layout(row)
     display: flex
