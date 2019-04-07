@@ -789,7 +789,8 @@
     .rush-goods-list
       flex-wrap: wrap
       display: flex
-
+    .big-list
+      height: 465px
   .list-item-disable
     color: #ACACAC
 
