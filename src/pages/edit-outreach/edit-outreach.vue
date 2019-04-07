@@ -100,7 +100,7 @@
             添加商品
           </div>
         </div>
-        <div class="outreach-list-box">
+        <div v-if="goodsList.length" class="outreach-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>

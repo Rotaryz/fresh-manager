@@ -4,7 +4,7 @@
       <div class="title-input">
         <div class="title">{{numberTitle}}</div>
         <div class="close-box" @click="cancel">
-          <div class="close"></div>
+          <div class="close hand"></div>
         </div>
       </div>
       <div class="main-input">
@@ -16,7 +16,7 @@
         </div>
         <div class="main-model-box">
           <div class="text">分类名称</div>
-          <input v-model="pointName" type="text" class="main-input-box" :placeholder="numberPla">
+          <input v-model="pointName" type="text" maxlength="10" class="main-input-box" :placeholder="numberPla">
         </div>
         <div v-if="showImg" class="main-model-box">
           <div class="text">分类图标</div>
@@ -148,30 +148,25 @@
   .default-input
     background: #fff
     width: 534px
-    border-radius: 1px
+    border-radius: 2px
+    padding: 0 20px 60px
     .title-input
-      height: 60px
-      layout(row)
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      border-bottom: 0.5px solid $color-line
-      padding-left: 20px
       .title
-        color: $color-text-main
         font-size: $font-size-16
-        font-family: $font-family-regular
-      .close-box
-        padding: 17px
-        cursor: pointer
-        .close
-          width: 22px
-          height: 22px
-          border-radius: 50%
-          background-size: 22px
-          bg-image('icon-close')
-
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
     .main-input
-      padding: 42px 20px 30px 20px
+      padding: 10px 0 16px
       .main-input-box
         width: 310px
         height: 44px

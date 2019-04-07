@@ -224,6 +224,6 @@
       flex: 1
       &:last-child
         padding: 0
-        max-width: 80px
+        max-width: 75px
 
 </style>

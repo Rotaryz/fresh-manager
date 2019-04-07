@@ -140,7 +140,7 @@
       font-size: $font-size-14
       &:last-child
         padding-right: 0
-        max-width: 80px
+        max-width: 75px
       .item
         text-overflow: ellipsis
         overflow: hidden
