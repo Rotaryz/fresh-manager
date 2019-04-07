@@ -205,8 +205,8 @@
 
     <default-confirm ref="confirm" @confirm="_delItem"></default-confirm>
     <div class="back">
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
 
     <!-- 选择优惠券弹窗-->
@@ -248,8 +248,8 @@
           <base-pagination ref="paginationCoupon" :pageDetail="couponPage" @addPage="_getMoreCoupon"></base-pagination>
         </div>
         <div class="back">
-          <div class="back-btn back-submit hand" @click="_additionCoupon">确定</div>
           <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
+          <div class="back-btn back-submit hand" @click="_additionCoupon">确定</div>
         </div>
       </div>
     </default-modal>
@@ -288,8 +288,8 @@
           <base-pagination ref="paginationGroup" :pageDetail="groupPage" @addPage="_getMoreGroup"></base-pagination>
         </div>
         <div class="back">
-          <div class="back-btn back-submit hand" @click="_additionGroup">确定</div>
           <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
+          <div class="back-btn back-submit hand" @click="_additionGroup">确定</div>
         </div>
       </div>
     </default-modal>
@@ -1495,19 +1495,8 @@
           display: flex
           justify-content: center
           align-items: center
-          &:before
-            content: ""
-            display: block
-            width: 8px
-            height: 8px
-            border-radius: 50%
-            background: #4DBD65
-            opacity: 0
-            transition: all 0.3s
-          .checked
-            border-color: #4DBD65
-            &:before
-              opacity: 1
+        .checked
+          border: 5px solid $color-main
         .check
           width: 16px
           height: 16px
