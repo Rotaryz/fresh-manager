@@ -151,8 +151,8 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -1029,6 +1029,25 @@
           transform: scaleX(1 / 3) translateZ(0)
       &:nth-child(2n - 1)
         background: #f5f7fa
+      .select-icon
+        margin-right: 20px
+        border-radius: 1px
+        border: 1px solid #e9ecee
+        height: 16px
+        width: 16px
+        -webkit-transition: all .3s
+        transition: all .3s
+      .select-icon-active
+        border: 1px solid transparent
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check@2x.png")
+      .select-icon-disable
+        border: 1px solid transparent
+        cursor: not-allowed
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check_ash@2x.png")
       .goods-img
         margin-right: 10px
         width: 40px
