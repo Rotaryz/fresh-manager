@@ -620,7 +620,11 @@
     padding-bottom: 40px
     .content-header
       display: flex
+      align-items: center
+      .content-title
+        font-size: 16px
       .content-sub
+        font-size: 14px
         margin-left: 10px
         color: #acacac
         font-family: $font-family-regular
