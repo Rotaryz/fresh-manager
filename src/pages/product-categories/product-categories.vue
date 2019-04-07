@@ -93,7 +93,7 @@
         this.categoryType = 0
       },
       newConfirm(data) {
-        let {name, sort, id, imageId, imageUrl, type} = data
+        let {name, sort, imageId, imageUrl, type} = data
         if (name.length === 0 || name.length > 10) {
           // if (this.categoryType === 0) {
           //   this.categoryNewName = name
