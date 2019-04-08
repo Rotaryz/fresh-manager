@@ -46,13 +46,13 @@
         <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
     </div>
-    <coupon-confirm ref="confirm" @confirm="_sureConfirm"></coupon-confirm>
+    <default-confirm ref="confirm" infoTitle="删除优惠券" :oneBtn="false" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import API from '@api'
-  import CouponConfirm from './coupon-confirm/coupon-confirm'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {couponComputed, couponMethods} from '@state/helpers'
 
   const PAGE_NAME = 'COUPON_MANAGE'
@@ -83,7 +83,7 @@
       title: TITLE
     },
     components: {
-      CouponConfirm
+      DefaultConfirm
     },
     data() {
       return {
@@ -115,7 +115,7 @@
       _deleteCoupon(item, id) {
         this.delId = id
         this.delItem = item
-        this.$refs.confirm.show('删除后将无法查看优惠券的信息，且无法恢复，谨慎操作！', '删除优惠券')
+        this.$refs.confirm.show('删除后将无法查看优惠券的信息，且无法恢复，谨慎操作！')
       },
       async _sureConfirm() {
         let res = await API.Coupon.deleteCoupon(this.delId)
@@ -155,7 +155,7 @@
       font-size: $font-size-14
       &:last-child
         padding-right: 0
-        max-width: 76px
+        max-width: 75px
       .item
         text-overflow: ellipsis
         overflow: hidden

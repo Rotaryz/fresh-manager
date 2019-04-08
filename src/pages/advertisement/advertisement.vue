@@ -45,8 +45,8 @@
           </transition-group>
         </draggable>
         <div class="advertisement-btn">
-          <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
           <div class="new-advertisement hand" @click="_addMore">新建广告</div>
+          <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
         </div>
       </div>
 
@@ -618,6 +618,16 @@
     flex: 1
     overflow: hidden
     padding-bottom: 40px
+    .content-header
+      display: flex
+      align-items: center
+      .content-title
+        font-size: 16px
+      .content-sub
+        font-size: 14px
+        margin-left: 10px
+        color: #acacac
+        font-family: $font-family-regular
     .advertisement-btn
       margin: 50px 0 0 0
       display: flex
@@ -1044,7 +1054,7 @@
     border-top: 0.5px solid $color-line
 
   .submit-activity-btn
-    margin-right: 20px
+    margin-left: 20px
     font-family: $font-family-regular
     font-size: $font-size-14
     color: $color-white

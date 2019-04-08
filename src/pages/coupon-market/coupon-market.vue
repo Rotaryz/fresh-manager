@@ -49,12 +49,12 @@
         <base-pagination ref="pages" :pageDetail="pageDetail" @addPage="addPage"></base-pagination>
       </div>
     </div>
-    <market-confirm ref="confirm" @confirm="_sureConfirm"></market-confirm>
+    <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import MarketConfirm from './market-confirm/market-confirm'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {marketComputed, marketMethods} from '@state/helpers'
   import API from '@api'
 
@@ -73,7 +73,7 @@
       title: TITLE
     },
     components: {
-      MarketConfirm
+      DefaultConfirm
     },
     data() {
       return {
@@ -140,7 +140,7 @@
       font-size: $font-size-14
       &:last-child
         padding-right: 0
-        max-width: 80px
+        max-width: 75px
       .item
         text-overflow: ellipsis
         overflow: hidden

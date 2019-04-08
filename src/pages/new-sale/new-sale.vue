@@ -35,7 +35,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          开始时间
+          活动时间
         </div>
         <date-picker
           v-model="msg.start_at"
@@ -43,7 +43,7 @@
           class="edit-input-box"
           type="datetime"
           placeholder="开始时间"
-          style="width: 240px;height: 28px;border-radius: 1px"
+          style="width: 240px;height: 40px;border-radius: 1px"
           valueFormat="yyyy-MM-dd HH:mm:ss"
           @change="_getStartTime"
         ></date-picker>
@@ -54,7 +54,7 @@
           class="edit-input-box"
           type="datetime"
           placeholder="结束时间"
-          style="width: 240px;height: 28px;border-radius: 1px"
+          style="width: 240px;height: 40px;border-radius: 1px"
           valueFormat="yyyy-MM-dd HH:mm:ss"
           @change="_getEndTime"
         ></date-picker>
@@ -111,8 +111,8 @@
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModel">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+        <div class="title-box">
+          <div class="title">选择商品</div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <div class="shade-tab">
@@ -151,8 +151,8 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -315,7 +315,7 @@
           keyword: this.keyword,
           goods_category_id: this.parentId,
           shelf_id: this.id,
-          limit: 10,
+          limit: 7,
           page: this.page
         })
         if (res.error !== this.$ERR_OK) {
@@ -584,10 +584,10 @@
         margin: 0 14px
       .edit-input
         font-size: $font-size-12
+        border-radius: 2px
         padding: 0 14px
-        border-radius: 1px
-        width: 240px
-        height: 28px
+        width: 400px
+        height: 40px
         display: flex
         align-items: center
         justify-content: space-between
@@ -606,22 +606,22 @@
     .edit-input-right
       margin-left: 14px
     .tip
-      line-height: 28px
+      line-height: 40px
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-main
     .tip-text
       margin-left: 2px
-      line-height: 28px
+      line-height: 40px
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
-    .time-no-change,.text-no-change
+    .time-no-change, .text-no-change
       position: absolute
       left: 103px
       top: 0
-      width: 242px
-      height: 28px
+      width: 402px
+      height: 40px
       z-index: 100
       cursor: not-allowed
     .time-no-change
@@ -713,7 +713,7 @@
       font-family: $font-family-regular
       transition: all 0.3s
       text-align: center
-      border-radius: 1px
+      border-radius: 2px
       border: 1px solid #4DBD65
       display: flex
       align-items: center
@@ -732,7 +732,7 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -741,25 +741,23 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-    .shade-header
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
       display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      height: 60.5px
-      box-sizing: border-box
-      padding: 0 20px
-      border-bottom: 0.5px solid $color-line
-      .shade-title
-        color: $color-text-main
-        font-family: $font-family-medium
+      .title
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
       .close
-        icon-image('icon-close')
-        width: 16px
+        width: 12px
         height: @width
-        transition: all 0.3s
-        &:hover
-          transform: scale(1.3)
+        icon-image('icon-close')
     // 分类编辑新建
     .auxiliary-box
       padding: 0 20px
@@ -785,7 +783,7 @@
           position: absolute
           width: 100%
           height: 100%
-          border-radius: 1px
+          border-radius: 2px
           background: rgba(51, 51, 51, 0.9)
           left: 0
           top: 0
@@ -814,10 +812,14 @@
         min-width: 80px
         text-align: center
     .back
+      border-top-1px($color-line)
       position: absolute
       left: 0
       right: 0
       bottom: 0
+      background: $color-white
+      justify-content: flex-end
+      height: 70px
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -840,7 +842,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 1px
+      border-radius: 2px
       .title-input
         height: 60px
         layout(row)
@@ -869,7 +871,7 @@
         .main-input-box
           width: 310px
           height: 44px
-          border-radius: 1px
+          border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
@@ -895,7 +897,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -931,7 +933,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -943,7 +945,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -984,55 +986,68 @@
 
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
-    align-items: center
-    padding: 0 20px
+    height: 48px
     box-sizing: border-box
     display: flex
     .tab-item
       margin-right: 10px
 
-  .page-box
-    padding: 0 20px
-    box-sizing: border-box
-    height: 66px
-    align-items: center
-    display: flex
-
   .goods-content
-    border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
-    height: 400px
+    border-radius: 4px
+    height: 420px
     .rush-goods-list
       flex-wrap: wrap
       display: flex
     .goods-item
       box-sizing: border-box
-      padding: 0 20px
-      width: 50%
-      height: 79.5px
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
       display: flex
       align-items: center
-      border-bottom: 0.5px solid $color-line
-      &:nth-child(2n+1)
-        border-right: 1px solid $color-line
-      &:nth-child(9), &:nth-child(10)
-        border-bottom: none
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
       .select-icon
         margin-right: 20px
         border-radius: 1px
-        border: 1px solid $color-line
+        border: 1px solid #e9ecee
         height: 16px
         width: 16px
-        transition: all 0.3s
+        -webkit-transition: all .3s
+        transition: all .3s
+      .select-icon-active
+        border: 1px solid transparent
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check@2x.png")
       .select-icon-disable
         border: 1px solid transparent
         cursor: not-allowed
-        icon-image('icon-check_ash')
-      .select-icon-active
-        border: 1px solid transparent
-        icon-image('icon-check')
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check_ash@2x.png")
       .goods-img
         margin-right: 10px
         width: 40px
@@ -1043,29 +1058,28 @@
         background-position: center
         background-color: $color-background
       .goods-msg
+        flex: 1
         display: flex
-        flex-direction: column
         color: $color-text-main
         font-family: $font-family-regular
         justify-content: space-between
-        height: 40px
+        height: 100%
+        align-items: center
         .goods-name
-          width: 210px
+          width: 500px
           no-wrap()
         .goods-name, .goods-money
           line-height: 1
-          font-size: $font-size-14
       .add-btn
-        border-radius: 1px
+        border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
-        min-width: 56px
+        padding: 7px 0
+        min-width: 54px
         text-align: center
       .add-btn-disable
-        border-radius: 1px
+        border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
-        width: 56px
+        padding: 7px 0
         box-sizing: border-box
         text-align: center
         font-size: $font-size-14
@@ -1074,6 +1088,11 @@
         background: $color-line
         color: $color-text-assist
         border: none
+  .page-box
+    box-sizing: border-box
+    height: 76px
+    align-items: center
+    display: flex
 
   /*弹窗动画*/
   @keyframes layerFadeIn {
@@ -1104,7 +1123,7 @@
   .com-edit
     height: 34px
     width: 93px
-    border-radius: 1px
+    border-radius: 2px
     box-sizing: border-box
     border: 1px solid $color-line
     padding-left: 22px

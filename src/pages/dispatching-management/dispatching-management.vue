@@ -134,8 +134,8 @@
         <!--<base-pagination ref="shopPage"></base-pagination>-->
         <!--</div>-->
         <div class="back">
-          <div class="back-btn back-submit hand" @click="handleRoad">确定</div>
           <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+          <div class="back-btn back-submit hand" @click="handleRoad">确定</div>
         </div>
       </div>
     </default-modal>
@@ -454,21 +454,22 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  .list-box
-    .list-item
-      &:last-child
-        max-width: 50px
-        padding: 0
+  .table-content
+    .list-box
+      .list-item
+        &:last-child
+          max-width: 50px
+          padding: 0
   .pro-select-icon
     border-radius: 2px
     border: 1px solid $color-line
     height: 14px
     width: 14px
     transition: all 0.3s
-    margin-right: 80px
+    margin-right: 50px
 
   .pro-text
-    width: 94px
+    width: 64px
 
   .pro-select-icon-disable
     border: 1px solid transparent
@@ -788,7 +789,8 @@
     .rush-goods-list
       flex-wrap: wrap
       display: flex
-
+    .big-list
+      height: 465px
   .list-item-disable
     color: #ACACAC
 

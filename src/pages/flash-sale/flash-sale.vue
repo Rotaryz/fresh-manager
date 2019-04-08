@@ -126,11 +126,17 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .list-box
+    .list-item:last-child
+      max-width: 75px
+      padding-right: 0
   .list
     flex: 1
     .list-item
       font-size: $font-size-14
+      &:last-child
+        max-width: 75px
+        padding-right: 0
       .item
         text-overflow: ellipsis
         overflow: hidden
@@ -151,6 +157,7 @@
       .list-double-row
         .item-sub
           color: #333
+
   .btn-main
     margin-right: 10px
 </style>
