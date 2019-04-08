@@ -121,6 +121,7 @@ export const actions = {
           return false
         }
         let arr = res.data
+
         commit('SET_GOODS_LIST', arr)
         return true
       })
