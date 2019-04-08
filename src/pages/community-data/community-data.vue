@@ -1,11 +1,14 @@
 <template>
   <div class="community-data">
-    <div class="data-header">
-      <div class="data-caption data-caption-line">
+    <div class="data-caption data-caption-line">
+      <div class="content-title">
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">微信群运营数据概况</div>
-        <!--<base-option-box @checkTime="_orderMore"></base-option-box>-->
       </div>
+      <base-option-box @checkTime="_getData"></base-option-box>
+    </div>
+    <div class="data-content">
+      <div class="left-tab">全部群数据</div>
     </div>
   </div>
 </template>
@@ -35,6 +38,13 @@
     },
     methods: {
       ...communityMethods,
+      _getData(value) {
+        if (typeof value === 'string') {
+          this.getOrderDetail({startTime: '', endTime: '', time: value, loading: true})
+          return
+        }
+        this.getOrderDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
+      },
     }
   }
 </script>
@@ -50,25 +60,24 @@
     padding: 20px
     flex-direction: column
     padding: 20px
-
-  .data-header
-    height: 260px
-    border-radius: 2px
-    background: $color-white
-    box-sizing: border-box
-
   .data-caption
     padding: 20px
     display: flex
     justify-content: space-between
     align-items: center
     box-sizing: border-box
+    .content-title
+      display: flex
+      align-items: center
     .title-icon
       width: 14px
       height: 14px
+      margin-right: 5px
     .data-title
       font-family: $font-family-regular
       color: $color-text-main
       font-size: $font-size-16
+  .data-caption-line
+    border-bottom-1px($color-line)
 
 </style>
