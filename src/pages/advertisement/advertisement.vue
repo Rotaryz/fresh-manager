@@ -1054,7 +1054,7 @@
     border-top: 0.5px solid $color-line
 
   .submit-activity-btn
-    margin-right: 20px
+    margin-left: 20px
     font-family: $font-family-regular
     font-size: $font-size-14
     color: $color-white
