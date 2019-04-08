@@ -92,6 +92,10 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
+      &:nth-child(3)
+        flex: 1.7
       &:last-child
+        max-width: 50px
+        padding: 0
         flex: 0.6
 </style>

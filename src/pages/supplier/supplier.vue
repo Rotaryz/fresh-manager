@@ -76,9 +76,12 @@
   .supplier
     .list-box
       .list-item
-        padding-right: 14px
         &:last-child
+          max-width :50px
+          padding: 0
           flex: 0.3
+        &:nth-child(1)
+          flex: 1.2
         &:nth-child(4)
           flex: 1.5
 </style>

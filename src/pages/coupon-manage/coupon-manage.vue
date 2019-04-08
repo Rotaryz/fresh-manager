@@ -150,9 +150,12 @@
     no-wrap()
     font-family: $font-family-regular
     font-size: $font-size-14
-  .list
+  .list-box
     .list-item
       font-size: $font-size-14
+      &:last-child
+        padding-right: 0
+        max-width: 76px
       .item
         text-overflow: ellipsis
         overflow: hidden

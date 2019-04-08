@@ -41,7 +41,7 @@
             <div class="list-item list-text">￥{{item.price}}</div>
             <div class="list-item list-text">￥{{item.total}}</div>
             <div class="list-item list-text">{{item.delivery_at}}</div>
-            <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
+            <div class="list-item list-text list-item-double" :title="item.social_name">{{item.social_name}}</div>
             <div class="list-item list-text">{{item.status_text}}</div>
             <div class="list-item list-use">
               <router-link tag="span" :to="{path: `order-detail/${item.order_id}`}" append class="list-operation">详情</router-link>
@@ -183,7 +183,7 @@
       line-height: 28px
       background: $color-positive
       border: 1px solid $color-positive
-      border-radius: 1px
+      border-radius: 2px
       font-family: $font-family-regular
       font-size: $font-size-12
       color: $color-white
@@ -193,5 +193,19 @@
     no-wrap()
     font-family: $font-family-regular
     font-size: $font-size-14
+
+  .list-box
+    .list-item
+      box-sizing: border-box
+      flex: 1
+      &:nth-child(1)
+        flex: 1.2
+      &:nth-child(6), &:nth-child(5)
+        flex: 1.2
+      &:nth-child(7)
+        flex: 0.7
+      &:last-child
+        padding: 0
+        max-width: 28px
 
 </style>

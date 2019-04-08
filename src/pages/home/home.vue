@@ -71,7 +71,7 @@
       padding: 20px
       margin-top: 40px
       .container-small
-        border-radius: 1px
+        border-radius: 2px
         flex: 1
         display: flex
     .container-routine

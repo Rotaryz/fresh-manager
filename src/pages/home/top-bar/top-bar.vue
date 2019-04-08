@@ -34,7 +34,8 @@
       ...authMethods,
       tryToLogOut() {
         this.logOut()
-        this.$router.replace({name: 'login', query: {redirectFrom: this.$route.fullPath}})
+        // this.$router.replace({name: 'login', query: {redirectFrom: this.$route.fullPath}})
+        this.$router.replace({name: 'login'})
       }
     }
   }

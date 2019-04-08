@@ -94,7 +94,7 @@
         &:nth-child(1)
           flex: 1.5
         &:nth-child(6)
-          flex: 0.7
+          flex: 0.5
 
   .purchase-list
     padding-bottom: 20px

@@ -344,7 +344,7 @@
       width: 34px
       height: 2px
       background: $color-main
-      border-radius: 1px
+      border-radius: 2px
       bottom: -1px
       left: 0
     .content-title

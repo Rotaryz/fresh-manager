@@ -63,8 +63,8 @@
   const MARKET_TITLE = [
     {name: '营销名称', flex: 1.6, value: 'title', type: 1},
     {name: '类型', flex: 1, value: 'type', type: 2},
-    {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '领取数', flex: 1, value: 'take_count', type: 4},
+    {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
   export default {
@@ -134,10 +134,13 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .list
+  .list-box
     flex: 1
     .list-item
       font-size: $font-size-14
+      &:last-child
+        padding-right: 0
+        max-width: 80px
       .item
         text-overflow: ellipsis
         overflow: hidden

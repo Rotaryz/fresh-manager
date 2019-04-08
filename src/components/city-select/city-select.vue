@@ -216,12 +216,12 @@
   .admin-big-box
     cursor: pointer
     box-sizing: border-box
-    border-radius: 1px
+    border-radius: 2px
     font-size: $font-size-medium
     color: $color-text-main
     position: relative
     .admin-select-box
-      border-radius: 1px
+      border-radius: 2px
       border 1px solid $color-line
       padding: 0 31px 0 15px
       line-height: 27px

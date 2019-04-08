@@ -162,7 +162,7 @@
         position: absolute
         width: 100%
         height: 100%
-        border-radius: 1px
+        border-radius: 2px
         background: rgba(51, 51, 51, 0.9)
         left: 0
         top: 0
@@ -219,7 +219,7 @@
       width: 34px
       height: 2px
       background: $color-main
-      border-radius: 1px
+      border-radius: 2px
       bottom: -1px
       left: 0
     .content-title

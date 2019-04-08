@@ -14,6 +14,7 @@
         <div class="big-box-main">
           <div class="big-main-left hand" @click="openList(index)">
             <div class="icon" :class="item.select ? 'open' : ''"></div>
+            <div class="img" :style="{'background-image': 'url(' +item.image_url+ ')'}"></div>
             <div class="text">{{item.name}}</div>
           </div>
           <div class="big-main-right">
@@ -45,7 +46,7 @@
 <script type="text/ecmascript-6">
   import {categoriesComputed, categoriesMethods} from '@state/helpers'
   import API from '@api'
-  import ChangeModel from '@components/change-model/change-model'
+  import ChangeModel from './change-model/change-model'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
 
@@ -84,10 +85,15 @@
     methods: {
       ...categoriesMethods,
       newBigCate() {
-        this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
+        // this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
+        this.$refs.bigModel.show('新建商品分类', {
+          name: this.categoryNewName,
+          type: true
+        })
         this.categoryType = 0
       },
-      newConfirm(name, sort) {
+      newConfirm(data) {
+        let {name, sort, imageId, imageUrl, type} = data
         if (name.length === 0 || name.length > 10) {
           // if (this.categoryType === 0) {
           //   this.categoryNewName = name
@@ -97,14 +103,18 @@
           this.$toast.show('分类名称的长度不能超过10个字')
           return
         }
+        if(!imageId && type) {
+          this.$toast.show('请上传分类图标')
+          return
+        }
         switch (this.categoryType) {
         case 0:
-          API.Product.createCategory({name: name, sort: sort}).then((res) => {
+          API.Product.createCategory({name: name, sort: sort, image_id: imageId}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$refs.bigModel.hide()
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.categoryList.push({name: name, sort: sort, id: res.data.id, list: []})
+              this.categoryList.push({name: name, sort: sort, id: res.data.id, list: [], image_url: imageUrl})
               this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -130,12 +140,13 @@
           })
           break
         case 2:
-          API.Product.editCategory(this.bigItem.id, {name: name, sort: sort, parent_id: 0}).then((res) => {
+          API.Product.editCategory(this.bigItem.id, {name: name, sort: sort, image_id: imageId, parent_id: 0}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$refs.bigModel.hide()
               this.$toast.show('修改成功')
               this.categoryList[this.bigIndex].name = name
               this.categoryList[this.bigIndex].sort = sort
+              this.categoryList[this.bigIndex].image_url = imageUrl
               this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -152,7 +163,11 @@
         this.$forceUpdate()
       },
       addChilrenCate(item, index) {
-        this.$refs.bigModel.show('新建商品子分类', this.categoryChild)
+        // this.$refs.bigModel.show('新建商品子分类', this.categoryChild, '', '', false)
+        this.$refs.bigModel.show('新建商品子分类', {
+          name: this.categoryChild,
+          type: false
+        })
         this.categoryType = 1
         this.bigItem = item
         this.bigIndex = index
@@ -161,7 +176,15 @@
         this.bigItem = item
         this.bigIndex = index
         this.categoryType = 2
-        this.$refs.bigModel.show('修改商品分类', item.name, item.sort)
+        // this.$refs.bigModel.show('修改商品分类', item.name, item.sort, item.image_url, item.id)
+        this.$refs.bigModel.show('修改商品分类', {
+          name: item.name,
+          sort: item.sort,
+          imageUrl: item.image_url,
+          imageId: item.image_id,
+          id: item.id,
+          type: true
+        })
       },
       delBigCatee(item, index) {
         this.bigItem = item
@@ -176,7 +199,12 @@
         this.smallItem = twoitem
         this.smallIndex = twoindex
         this.$refs.smallModel.setData(item, this.categoryList)
-        this.$refs.smallModel.show('修改商品分类', this.smallItem.name, this.smallItem.sort)
+        // this.$refs.smallModel.show('修改商品分类', this.smallItem.name, this.smallItem.sort, '', false)
+        this.$refs.smallModel.show('修改商品分类', {
+          name: this.smallItem.name,
+          sort: this.smallItem.sort,
+          type: false
+        })
       },
       delSmallCatee(item, index, twoitem, twoindex) {
         this.bigItem = item
@@ -187,7 +215,8 @@
         this.deteleType = 1
         this.$refs.bigConfirm.show(`确定删除该分类？`)
       },
-      eidtConfirm(name, sort, id) {
+      eidtConfirm(data) {
+        let {name, sort, id} = data
         if (name.length === 0 || name.length > 10) {
           this.$toast.show('分类名称的长度不能超过10个字')
           return
@@ -256,7 +285,6 @@
     align-items: center
     justify-content: space-between
     height: 80px
-
   .categories-box
     border-1px($color-line, 1px)
     .big-box
@@ -281,9 +309,15 @@
             border-radius: 50%
             background-size: 16px
             bg-image('icon-retract')
-            margin-right: 5px
             &.open
               bg-image('icon-open')
+          .img
+            width: 32px
+            height: 32px
+            border-radius: 2px
+            border: 0.5px solid $color-line
+            margin: 0 10px
+            background-size: cover
           .text
             font-size: $font-size-14
             line-height: 1
@@ -293,7 +327,7 @@
   .add-box
     height: 60px
     border-top-1px($color-line)
-    padding-left: 57px
+    padding-left: 90px
     layout(row)
     align-items: center
     .icon
@@ -313,7 +347,7 @@
     height: 60px
     border-top-1px($color-line)
     background: $color-white
-    padding-left: 57px
+    padding-left: 90px
     padding-right: 14px
     layout(row)
     align-items: center

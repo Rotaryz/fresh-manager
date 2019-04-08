@@ -28,7 +28,29 @@ export default {
    * @returns {*}
    */
   saleDelete(id, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-fixed/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
     return request.delete(url, {}, loading)
   },
+  /**
+   * 新建限时抢购
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  storeSale(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed`
+    return request.post(url, data, loading)
+  },
+  /**
+   *
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsList(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods`
+    return request.get(url, data, loading)
+  },
+
+
 }

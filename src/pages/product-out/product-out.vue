@@ -8,7 +8,7 @@
           :value=" `${startTime}`"
           class="edit-input-box" type="date"
           placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="changeStartTime"
         ></date-picker>
         <div v-if="startTime" class="down-time-text">{{accurateStart}}</div>
@@ -21,7 +21,7 @@
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="changeEndTime"
         ></date-picker>
         <div v-if="endTime" class="down-time-text">{{accurateEnd}}</div>
@@ -53,7 +53,6 @@
             <div class="list-item">
               <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.out_order_sn}}</router-link>
             </div>
-
             <!--<div class="list-item">{{item.out_order_sn}}</div>-->
             <div class="list-item">{{item.merchant_name}}</div>
             <div class="list-item">￥{{item.total}}</div>
@@ -213,8 +212,10 @@
         &:last-child
           max-width: 60px
         &:nth-child(1)
-          flex: 1.2
-        &:nth-child(8), &:nth-child(2), &:nth-child(3)
+          flex: 1.1
+        &:nth-child(5), &:nth-child(6)
+          flex: 0.7
+        &:nth-child(2), &:nth-child(3)
           flex: 1.5
 
   .list-item-progress

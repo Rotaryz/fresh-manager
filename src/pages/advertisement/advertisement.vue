@@ -9,7 +9,13 @@
       </div>
     </div>
     <div class="advertisement-small">
-      <phone-box :bannerList="bannerList" :goodsList="goodsList" :navList="navList" :cmsMsg="infoBannerList.modules" @setType="_changeType"></phone-box>
+      <phone-box
+        :bannerList="bannerList"
+        :cateGoods="cateGoods"
+        :activityGoodsList="activityGoodsList"
+        :cmsMsg="infoBannerList.modules"
+        @setType="_changeType"
+      ></phone-box>
       <!--广告-->
       <div v-if="cmsType === 'bannar'" class="advertisement-content">
         <div class="content-header">
@@ -20,7 +26,7 @@
           <transition-group>
             <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
               <div class="advertisement-msg">
-                <div class="img-box hand" :style="{'background-image': 'url(' + banner.image_url + ')'}">
+                <div class="img-box hand" :style="{'background-image': 'url(' + (banner.image_url || banner.add_icon) + ')'}">
                   <div v-if="banner.showLoading" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
@@ -43,69 +49,25 @@
           <div class="new-advertisement hand" @click="_addMore">新建广告</div>
         </div>
       </div>
-      <!--导航-->
-      <div v-if="cmsType === 'navigation'" class="advertisement-content">
+
+      <!--限时抢购-->
+      <div v-if="cmsType === 'activity_fixed'" class="advertisement-content">
         <div class="content-header">
-          <div class="content-title">导航栏设置</div>
-          <div class="content-sub">(最多添加10个导航栏，鼠标拖拽调整广告顺序)</div>
+          <div class="content-title">限时抢购</div>
         </div>
-        <draggable v-model="temporaryNavigation" @update="_setSort()">
-          <transition-group>
-            <div v-for="(item, idx) in temporaryNavigation" :key="idx" class="advertisement-item">
-              <div class="advertisement-msg nav-msg">
-                <div class="img-box hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
-                  <div v-if="item.showLoading" class="loading-mask">
-                    <img src="./loading.gif" class="loading">
-                  </div>
-                  <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, item, $event)">
-                  <div v-if="item.image_id" class="img-change-tip">更换图片</div>
-                </div>
-                <div>
-                  <input v-model="item.title" type="text" class="nav-name" placeholder="请输入标题名称" maxlength="4">
-                  <div class="advertisement-link">
-                    <div class="add-link hand" @click="_showGoods(idx, item.other_id)">添加链接</div>
-                    <p class="goods-title">{{item.type === 'out_html' || item.type === 'mini_link' ? item.url : item.name}}</p>
-                  </div>
-                </div>
-                <p class="use hand" @click="_showConfirm(item.id, idx)">删除</p>
-              </div>
-            </div>
-          </transition-group>
-        </draggable>
-        <div class="advertisement-btn">
-          <div class="submit-activity-btn hand" @click="_editNav()">提交</div>
-          <div class="new-advertisement hand" @click="_navMore">新建导航</div>
-        </div>
-      </div>
-      <!--活动-->
-      <div v-if="cmsType === 'activity'" class="advertisement-content">
-        <div class="content-header">
-          <div class="content-title">活动列表</div>
-        </div>
-        <div class="edit-activity">
-          <div class="edit-item">
-            <div class="edit-title">
-              <span class="start">*</span>
-              营销活动
-            </div>
-            <div class="edit-box">
-              <base-drop-down :width="400" :height="44" :select="activityType"></base-drop-down>
-            </div>
-          </div>
-          <div class="edit-item">
-            <div class="edit-title">
-              <span class="start">*</span>
-              选择活动
-            </div>
-            <div class="edit-box">
-              <base-drop-down :width="400" :height="44" :select="activityList" @setValue="_getActivityId"></base-drop-down>
+        <div>
+          <div class="edit-item edit-flex">
+            <div class="left">显示活动<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
+            <div class="switch" @click="switchBtn()">
+              <base-switch :status="activityStatus" confirmText="开启" cancelText="关闭"></base-switch>
             </div>
           </div>
           <div class="submit-activity advertisement-btn">
-            <div class="submit-activity-btn hand" @click="_editActivity()">提交</div>
+            <div class="submit-activity-btn hand" @click="_editActivity()">保存并发布</div>
           </div>
         </div>
       </div>
+
       <!--商品弹窗-->
       <default-modal ref="goods">
         <div slot="content" class="shade-box">
@@ -155,8 +117,10 @@
               <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
                 <span class="after"></span>
               </div>
-              <div class="shade-goods-name">{{goods.name}}</div>
-              <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+              <div class="shade-goods-msg">
+                <div class="shade-goods-name">{{goods.name}}</div>
+                <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+              </div>
             </div>
           </div>
           <div v-if="tabIndex === 2" class="link-text">
@@ -202,10 +166,10 @@
     bannarIcon: require('./icon-carousel@2x.png'),
     navigation: '导航栏设置',
     navigationIcon: require('./icon-nav_settings@2x.png'),
-    activity: '活动列表',
-    activityIcon: require('./icon-activity_settings@2x.png')
+    activity_fixed: '限时抢购',
+    activity_fixedIcon: require('./icon-time@2x.png')
   }
-  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: ADD_IMAGE} // 模板对象
+  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: '', add_icon: ADD_IMAGE} // 模板对象
   export default {
     name: PAGE_NAME,
     components: {
@@ -225,7 +189,6 @@
         showSelectIndex: -1,
         showLoading: false,
         bannerList: [TEMPLATE_OBJ],
-        navList: [],
         goodsList: [],
         temporaryBannar: [],
         temporaryNavigation: [],
@@ -246,26 +209,23 @@
         delIndex: 0,
         cmsType: 'bannar',
         tabIndex: 0,
-        left: 55,
+        left: 36,
         outLink: 'mini_goods',
         cmsId: 0,
+        cmsModuleId: '',
         activityType: {
           check: false,
           show: false,
-          content: '今日抢购',
+          content: '限时抢购',
           type: 'default',
-          data: [{name: '今日抢购'}]
-        },
-        activityList: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: []
+          data: [{name: '限时抢购'}]
         },
         goodsCate: [],
         showCateIndex: 0,
-        activityItem: {}
+        activityItem: {},
+        activityStatus: 0,
+        activityGoodsList: [],
+        cateGoods: []
       }
     },
     computed: {
@@ -278,30 +238,24 @@
     },
     async created() {
       this.cmsId = this.infoBannerList.modules[0].id
+      this.cmsModuleId = this.infoBannerList.modules[0].module_id
       this.$loading.show()
       this.infoBannerList.modules.forEach(async (item) => {
-        await this._getModuleMsg(item.module_name, item.id)
+        await this._getModuleMsg(item.module_name, item.id, item.module_id)
       })
-      this.$loading.hide()
       await this._getFirstAssortment()
       await this._getGoodsList()
+      await this._getActivityGoods()
+      await this._getCateGoods()
+      this.$loading.hide()
     },
     methods: {
       ...adverMethods,
-      // 获取今日抢购活动列表
-      async _activityList() {
-        let res = await API.Advertisement.activiList()
-        this.activityList.data = res.error === this.$ERR_OK ? res.data : []
-        this.activityList.data = this.activityList.data.map((item) => {
-          item.name = item.activity_name
-          return item
-        })
+      switchBtn() {
+        this.activityStatus = this.activityStatus ? 0 : 1
       },
-      _getActivityId(item) {
-        this.activityItem.activityId = item.id
-      },
-      async _getModuleMsg(type, id) {
-        let res = await API.Advertisement.getModuleMsg({id: id})
+      async _getModuleMsg(type, id, moduleId) {
+        let res = await API.Advertisement.getModuleMsg({id: id, module_id: moduleId})
         if (res.error !== this.$ERR_OK) {
           return
         }
@@ -310,31 +264,55 @@
           this.bannerList = res.data.length ? res.data : this.bannerList
           this.temporaryBannar = _.cloneDeep(res.data)
           break
-        case 'navigation':
-          this.navList = res.data
-          this.temporaryNavigation = _.cloneDeep(res.data)
+        case 'activity_fixed':
+          this.activityStatus = ((res.data && +res.data.is_close === 1) ? 0 : 1)
           break
-        case 'activity':
-          this.goodsList = res.data.list
-          this.activityItem = {name: res.data.name, activityId: res.data.other_id, id: res.data.id || ''}
-          this.activityList.content = res.data.name || '请选择'
+        case 'goods_cate':
+          // this.temporaryNavigation = _.cloneDeep(res.data)
           break
         }
+      },
+      // 获取分类商品列表
+      _getCateGoods() {
+        API.Advertisement.getGoodsList({
+          is_online: 1,
+          keyword: '',
+          goods_category_id: 0,
+          limit: 10,
+          page: 1
+        }).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.cateGoods = res.data
+        })
+      },
+      // 获取限时抢购商品列表
+      _getActivityGoods() {
+        this.infoBannerList.modules.forEach(item => {
+          if (item.module_name === 'activity_fixed' && item.content_data && item.content_data.list && item.content_data.list.length > 0) {
+            API.Advertisement.getActivityGoods(item.content_data.list[0].id)
+              .then(res => {
+                if (res.error !== this.$ERR_OK) {
+                  return
+                }
+                this.activityGoodsList = res.data
+              })
+          }
+        })
       },
       _setSort() {},
       _setLinkType(index, e) {
         this.tabIndex = index
-        this.left = e.target.offsetLeft + (e.target.offsetWidth - 34) / 2
+        this.left = e.target.offsetLeft + (e.target.offsetWidth - 64) / 2
         this.outLink = this.typeList[index].status
       },
       // cms的类型
       async _changeType(cms) {
         this.cmsType = cms.module_name
         this.cmsId = cms.id
-        if (this.cmsType === 'activity') {
-          await this._activityList()
-        }
-        await this._getModuleMsg(this.cmsType, this.cmsId)
+        this.cmsModuleId = cms.module_id
+        await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -353,7 +331,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        await this._getModuleMsg(this.cmsType, this.cmsId)
+        await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
@@ -400,11 +378,11 @@
       },
       // 获取商品列表
       async _getGoodsList() {
-        let res = await API.Rush.getGoodsList({
+        let res = await API.Advertisement.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          limit: 10,
+          limit: 7,
           page: this.choicePage
         })
         if (res.error !== this.$ERR_OK) {
@@ -467,18 +445,6 @@
           el.scrollTop = el.scrollHeight
         }, 100)
       },
-      // 添加更多的广告
-      _navMore() {
-        if (this.temporaryNavigation.length >= 10) {
-          this.$toast.show('最多添加十个导航')
-          return
-        }
-        this.temporaryNavigation.push(_.cloneDeep(TEMPLATE_OBJ))
-        let el = document.querySelector('html')
-        setTimeout(() => {
-          el.scrollTop = el.scrollHeight
-        }, 100)
-      },
       // 添加图片
       async _addPic(index, item, e) {
         this.upIndex = index
@@ -522,53 +488,32 @@
           }
         }
         let data = this.temporaryBannar.map((item) => {
-          return {page_module_id: this.cmsId, ext_json: item}
-        })
-        await this._editCms(data)
-      },
-      // 新建nav
-      async _editNav() {
-        if (!this.temporaryNavigation.length) {
-          this.$toast.show('导航不能为空', 1500)
-          return
-        } else {
-          for (let i = 0; i < this.temporaryNavigation.length; i++) {
-            if (!this.temporaryNavigation[i].title) {
-              this.$toast.show(`导航${i + 1}标题不能为空`, 1500)
-              return
-            } else if (!this.temporaryNavigation[i].image_id) {
-              this.$toast.show(`导航${i + 1}图片不能为空`, 1500)
-              return
-            } else if (!this.temporaryNavigation[i].name && !this.temporaryNavigation[i].url) {
-              this.$toast.show(`导航${i + 1}链接不能为空`, 1500)
-              return
-            }
-          }
-        }
-        let data = this.temporaryNavigation.map((item) => {
+          delete item.add_icon
           return {page_module_id: this.cmsId, ext_json: item}
         })
         await this._editCms(data)
       },
       // 新建活动
       async _editActivity() {
-        if (!this.activityItem.activityId) {
-          this.$toast.show(`请选择活动`, 1500)
-          return
-        }
+
         let data = [
           {
             page_module_id: this.cmsId,
-            ext_json: {id: this.activityItem.id, other_id: this.activityItem.activityId, type: 'activity'}
+            config_data: {is_close: this.activityStatus === 1 ? 0 : 1}
           }
         ]
-        await this._editCms(data)
+        let res = await API.Advertisement.saveFlashSale({data})
+        // if (res.error === this.$ERR_OK) {
+        //   await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+        // }
+        this.$loading.hide()
+        this.$toast.show(res.message)
       },
       // 保存模块数据
       async _editCms(data) {
         let res = await API.Advertisement.saveModuleMsg({data})
         if (res.error === this.$ERR_OK) {
-          await this._getModuleMsg(this.cmsType, this.cmsId)
+          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
         }
         this.$loading.hide()
         this.$toast.show(res.message)
@@ -599,23 +544,52 @@
   @import "~@design"
   .advertisement-small
     display: flex
+    font-family: $font-family-regular
 
   .goods-cate
     flex: 1
     width: 960px
     height: 480px
-    margin: 30px auto 0
-    border-1px($color-line)
-    border-radius: 1px
+    margin: 20px auto 0
+    border-radius: 2px
     overflow-x: hidden
     .goods_cate-item
       display: flex
       align-items: center
-      border-bottom-1px($color-line)
-      padding-left: 20px
-      height: 80px
+      padding: 0 20px
+      height: 60px
+      position: relative
+      box-sizing: border-box
+      &:nth-child(2n - 1)
+        background: #f5f7fa
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .shade-goods-msg
+        flex: 1
+        justify-content: space-between
+        display: flex
       .shade-goods-name
-        width: 176px
+        width: 500px
+        no-wrap()
       .shade-goods-name, .shade-goods-num
         font-size: $font-size-14
         color: $color-text-main
@@ -623,15 +597,18 @@
   .link-text-box
     width: 960px
     height: 220px
-    margin: 30px auto 0
+    margin: 20px auto 0
     border: 0.5px solid $color-line
-    border-radius: 1px
+    border-radius: 2px
     outline: none
     display: block
     resize: none
-    padding: 14px
+    padding: 20px 14px
     box-sizing: border-box
     position: relative
+    background: #F9F9F9
+    &:focus
+      background: $color-white
 
   .advertisement
     flex: 1
@@ -659,7 +636,7 @@
     .advertisement-item
       margin-top: 24px
       border: 0.5 pxdashed #D9D9D9
-      border-radius: 1px
+      border-radius: 2px
       background: #F5F7FA
       height: 140px
       padding: 20px
@@ -681,7 +658,7 @@
           background-image: url('./pic-add_img@2x.png')
           position: relative
           border: 0.5 pxsolid #F2F2F2
-          border-radius: 1px
+          border-radius: 2px
           box-sizing: border-box
           .img-change-tip
             position: absolute
@@ -734,7 +711,7 @@
             top: 24px
             background: $color-white
             box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
-            border-radius: 1px
+            border-radius: 2px
             position: absolute
             &.fade-enter, &.fade-leave-to
               opacity: 0
@@ -790,7 +767,7 @@
           height: 32px
           line-height: 32px
           border: 1px solid $color-main
-          border-radius: 1px
+          border-radius: 2px
           font-size: $font-size-14
           font-family: $font-family-regular
           color: $color-main
@@ -831,48 +808,15 @@
           width: 280px
           height: 44px
           margin-left: 20px
-          border-radius: 1px
+          border-radius: 2px
           background: $color-white
           border: 0.5px solid #D9D9D9
 
-  /*background-image: url('./')*/
-
-  /*基本信息类头部盒子样式*/
-  .content-header
-    border-bottom-1px($color-line)
-    display: flex
-    align-items: center
-    height: 60px
-    position: relative
-    box-sizing: border-box
-    text-indent: 13px
-    &:before
-      content: ''
-      position: absolute
-      width: 3px
-      height: 14px
-      background: $color-main
-      border-radius: 1px
-      col-center()
-      left: 0px
-    .content-title
-      color: $color-text-main
-      font-family: $font-family-regular
-      font-size: $font-size-16
-    .content-sub
-      color: $color-text-assist
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      text-indent: 10px
-    .del
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: $color-sub
 
   //  商品弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -882,7 +826,7 @@
     overflow-y: auto
     flex-wrap: wrap
     .shade-tab
-      height: 67.5px
+      height: 68px
       align-items: center
       padding: 0 20px
       box-sizing: border-box
@@ -899,23 +843,41 @@
   .goods-content
     border-radius: 4px
     margin: 0 20px
-    height: 400px
+    height: 420px
     .goods-list
       flex-wrap: wrap
       display: flex
-      border: 0.5px solid $color-line
     .goods-item
       box-sizing: border-box
-      padding: 0 20px
-      width: 50%
-      height: 79.5px
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
       display: flex
       align-items: center
-      border-bottom: 0.5px solid $color-line
-      &:nth-child(2n+1)
-        border-right: 0.5px solid $color-line
-      &:nth-child(9), &:nth-child(10)
-        border-bottom: none
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
       .goods-img
         margin-right: 10px
         width: 40px
@@ -926,14 +888,15 @@
         background-position: center
         background-color: $color-background
       .goods-msg
+        flex: 1
         display: flex
-        flex-direction: column
         color: $color-text-main
         font-family: $font-family-regular
         justify-content: space-between
-        height: 40px
+        height: 100%
+        align-items: center
         .goods-name
-          width: 350px
+          width: 500px
           no-wrap()
         .goods-name, .goods-money
           line-height: 1
@@ -941,13 +904,13 @@
       .add-btn
         border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         width: 56px
         text-align: center
       .add-btn-disable
         border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         width: 56px
         box-sizing: border-box
         text-align: center
@@ -959,61 +922,57 @@
     .page-box
       padding: 0 20px
       box-sizing: border-box
-      height: 66px
+      height: 77px
       align-items: center
       display: flex
 
   .shade-header
     display: flex
-    align-items: center
     justify-content: space-between
-    height: 60.5px
+    height: 52px
     box-sizing: border-box
-    padding: 0 20px 0 0
-    border-bottom-1px($color-line)
+    padding: 23px 20px 0 0
     .shade-tab-type
       height: 100%
       display: flex
       position: relative
       .shade-tab-item
+        line-height: 1
         display: flex
         transition: all 0.3s
         color: $color-text-main
         font-family: $font-family-regular
-        align-items: center
         margin-left: 40px
       .shade-tab-item-active
-        font-weight: bold
         font-family: $font-family-medium
       .line
         transition: all 0.3s
-        left: 55px
+        left: 40px
         position: absolute
         bottom: 0px
-        height: 2px
-        width: 34px
+        height: 3px
+        width: 64px
         background: $color-main
-        border-radius: 1px
+        border-radius: 3px
     .shade-title
       color: $color-text-main
       font-family: $font-family-medium
       font-size: $font-size-16
     .close
       icon-image('icon-close')
-      width: 16px
+      width: 12px
       height: @width
       transition: all 0.3s
-      &:hover
-        transform: scale(1.3)
-
-  .back
-    justify-content: center
 
   .back-box
+    background: $color-white
+    height: 70px
     border-top-1px($color-line)
+    justify-content: flex-end
     position: absolute
     left: 0
     bottom: 0
+
 
   .edit-item
     display: flex
@@ -1036,7 +995,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 240px
         height: 44px
         display: flex
@@ -1068,6 +1027,16 @@
       font-family: $font-family-regular
       color: $color-text-assist
 
+  .edit-flex
+    border: 0.5px dashed #D9D9D9
+    border-radius: 1px
+    background: #F5F7FA
+    padding: 18px 20px
+    box-sizing: border-box
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-top: 30px
   .edit-activity
     padding-left: 40px
 
@@ -1083,7 +1052,7 @@
     width: 108px
     height: 32px
     background: $color-main
-    border-radius: 1px
+    border-radius: 2px
     line-height: 32px
     text-align: center
     transition: 0.3s all
@@ -1136,10 +1105,5 @@
       border-radius: 50%
 
   .select-icon-active
-    border: 1px solid $color-main
-    .after
-      width: 8px
-      height: 8px
-      border-radius: 50%
-      background: $color-main
+    border: 5px solid $color-main
 </style>
