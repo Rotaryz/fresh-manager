@@ -4,7 +4,7 @@
       <header class="logo">
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
-      <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'position-bottom':item.url==='/home/beginner-guide'}]">
+      <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'beginner-guide':item.url==='/home/beginner-guide'}]">
         <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index)">
           <img :src="item.icon" class="nav-item-icon">
           <p class="nav-item-name">{{item.name}}</p>
@@ -283,8 +283,8 @@
       second: FINANCE,
       url: '/home/business-overview'
     }, {
-      name: "新手指引",
-      icon: require('./icon-statistics@2x.png'),
+      name: "",
+      icon: require('./icon-guide@2x.png'),
       isLight: false,
       second: BEGINNER_GUIDE,
       url: '/home/beginner-guide'
@@ -460,11 +460,6 @@
       z-index: 1
       width: 100px
 
-    .position-bottom
-      position absolute
-      left: 0
-      bottom: 0px
-
     .nav-item
       height: 54px
       display: flex
@@ -485,6 +480,24 @@
     .nav-item-active
       color: $color-text-main
       background: $color-white
+
+    .beginner-guide
+      position absolute
+      left: 0
+      bottom: 0px
+
+      .nav-item-active
+        background-color #464C5E
+      /*&:hover .nav-item*/
+      /*background-color #464C5E*/
+      .nav-item
+        height: auto
+        padding-bottom 18px
+        padding-top 16px
+        .nav-item-icon
+          width 62px
+          height 68px
+          margin-left: 10px
 
   .logo
     position: relative
