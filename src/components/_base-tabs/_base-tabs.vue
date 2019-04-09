@@ -14,9 +14,9 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      defaultTab:{
-        type:[Number,String],
-        default:0
+      defaultTab: {
+        type: [Number, String],
+        default: 0
       },
       tabList: {
         type: Array,
@@ -49,10 +49,13 @@
       }
     },
     mounted() {
-      this.activeIdx = this.defaultTab
       window.onresize = () => {
-        this.getWidthAndPositon()
+        return (() => {
+          this.getWidthAndPositon()
+        })()
       }
+
+      this.activeIdx = this.defaultTab
       if (this.tabList.length) {
         this.getWidthAndPositon()
       }
@@ -62,14 +65,15 @@
         return this.id ? item[this.id] : idx
       },
       getWidthAndPositon() {
-        var l = this.$refs['activeTab' + this.activeIdx][0]
-        this.activeLine.lineWidth = l.offsetWidth
-        this.activeLine.left = l.offsetLeft
+        var el = this.$refs['activeTab' + this.activeIdx][0]
+        if (!el) return
+        this.activeLine.lineWidth = el.offsetWidth
+        this.activeLine.left = el.offsetLeft
       },
       changeTab(idx) {
         this.activeIdx = idx
         this.$emit('tab-change', idx)
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.getWidthAndPositon()
         })
       }
@@ -101,15 +105,18 @@
 
     .tab-item
       padding: 20px 69px
-      text-align center
+      text-align: center
+      cursor: pointer
+
       .text
         display: inline-block
         font-size: $font-size-16
         font-family: $font-family-medium
         color: $tabs-default-color
+
       .idx-mark
         display: inline-block
-        margin-right:4px
+        margin-right: 4px
         font-size: $font-size-12
         height: 16px;
         width: 16px;
@@ -120,7 +127,8 @@
 
     .tab-item-active
       .text
-          color: $color-main
+        color: $color-main
+
       .idx-mark
         background: $color-main
 

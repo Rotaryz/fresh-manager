@@ -465,6 +465,11 @@
       z-index: 1
       width: 100px
 
+    .position-bottom
+      position absolute
+      left: 0
+      bottom: 0px
+
     .nav-item
       height: 54px
       display: flex
