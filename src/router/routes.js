@@ -1434,6 +1434,15 @@ export default [
           }
         }
       },
+      // 新手指南
+      {
+        path: 'beginner-guide',
+        name: 'beginner-guide',
+        meta: {
+          titles: ['新手指南']
+        },
+        component: () => lazyLoadView(import('@pages/beginner-guide/beginner-guide'))
+      },
       // 调度管理
       {
         path: 'new-data',
