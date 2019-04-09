@@ -249,10 +249,10 @@
   ]
   const BEGINNER_GUIDE = [
     {
-      title: '新手指南',
+      title: '新手指引',
       children: [
         {
-          title: '新手指南',
+          title: '新手指引',
           url: '/home/beginner-guide',
           isLight: true
         }

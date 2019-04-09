@@ -1,5 +1,5 @@
 <template>
-  <tag :class="['flow-item', to || activeText?'can-active':'' ]"
+  <tag :class="['flow-item', {'can-active':to},{'text-active':  activeText} ]"
        :style="getStyle" :tag="to ? 'router-link':'div'" :to="to"
   >
     <template v-if="iconSrc">
@@ -83,13 +83,20 @@
         type: [String, Object],
         default: ""
       },
+      fontSize: {
+        type: Number,
+        default: 14
+      }
     },
     data() {
       return {}
     },
     computed: {
       getStyle() {
+        let size = !this.iconSrc ? 12 : this.fontSize
+        console.log('iconSrc', this.fontSize, size)
         return {
+          'font-size': size + 'px',
           left: this.positions[0] + 'px',
           top: this.positions[1] + 'px',
           width: this.width - 2 + 'px'
@@ -130,7 +137,10 @@
       width 100%
       text-align center
       margin-top: 10px
-      font-size: $font-size-14
+      font-size inherit
+
+    &.text-active
+      color: $active-color
 
     &.can-active
       color: $active-color

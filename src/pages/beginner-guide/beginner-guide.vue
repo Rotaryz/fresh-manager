@@ -4,8 +4,7 @@
     <template v-for="(flow,idx) in flowData">
       <flow v-show="idx === activeIdx" :key="idx" :flowImg="getImg(flow.imgName,'pic')" :flowImgWidth="flow.width" class="flow-wrap">
         <flow-item v-for="(item,key) in flow.data" :key="key" :text="item.name" :positions="item.positions" :iconSrc="getImg(item.imgName)"
-                   :activeText="item.activeText||''"
-                   :to="item.routerName"
+                   :activeText="item.activeText||''" :fontSize="item.fontSize || 14" :to="item.routerName"
         >
         </flow-item>
       </flow>
@@ -31,32 +30,27 @@
     positions: [-100, 174]
   }, {
     name: "创建团长",
-    routerName: 'leader-list',
-    url: 'home/leader-list',
+    routerName: 'edit-leader',
     imgName: "createcolonel",
     positions: [PAGE_ONE_LEFT_FRIST, 300]
   }, {
     name: "创建采购员",
     imgName: "buyer",
-    url: 'home/edit-procurement',
     routerName: 'edit-procurement',
     positions: [PAGE_ONE_LEFT_FRIST, PAGE_ONE_TOP_FRIST]
   }, {
     name: "创建供应商",
     imgName: "supplier",
-    url: 'home/edit-supplier',
     routerName: 'edit-supplier',
     positions: [PAGE_ONE_LEFT_SECOND, PAGE_ONE_TOP_FRIST]
   }, {
     name: "创建单位",
     imgName: "unit",
-    url: 'home/auxiliary-information',
     routerName: 'auxiliary-information',
     positions: [PAGE_ONE_LEFT_SECOND, PAGE_ONE_TOP_THIRD]
   }, {
     name: "创建分类",
     imgName: "classification",
-    url: 'home/product-categories',
     routerName: 'product-categories',
     positions: [PAGE_ONE_LEFT_FRIST, PAGE_ONE_TOP_THIRD]
   }, {
@@ -108,12 +102,12 @@
   }, {
     name: "社区订单",
     imgName: "order",
-    routerName: "dispatching-list",
+    routerName: "supply-list",
     positions: [PAGE_TWO_LEFT_SECOND, PAGE_TWO_TOP_FRIST]
   }, {
     name: "消费者订单",
     imgName: "consumerorder",
-    routerName: "supply-list",
+    routerName: "order-list",
     positions: [PAGE_TWO_LEFT_THIRD, PAGE_TWO_TOP_FRIST]
   }, {
     name: "线上商城",
@@ -193,11 +187,13 @@
   }, {
     name: "红包秒退",
     imgName: "redenvelopes",
+    fontSize:12,
     positions: [480, -45]
   }, {
     name: "下发退款",
     imgName: "refund",
-    routerName: "returns-management",
+    activeText:true,
+    fontSize:12,
     positions: [230, 240]
   }, {
     name: "审核",
