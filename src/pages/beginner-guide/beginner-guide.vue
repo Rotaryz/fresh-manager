@@ -1,10 +1,11 @@
 <template>
   <div class="beginner-guide">
-    <base-tabs :tabList="flowData" @tab-change="tabChange" :defaultTab="activeIdx"></base-tabs>
+    <base-tabs :tabList="flowData" :defaultTab="activeIdx" @tab-change="tabChange"></base-tabs>
     <template v-for="(flow,idx) in flowData">
       <flow v-show="idx === activeIdx" :key="idx" :flowImg="getImg(flow.imgName,'pic')" :flowImgWidth="flow.width" class="flow-wrap">
         <flow-item v-for="(item,key) in flow.data" :key="key" :text="item.name" :positions="item.positions" :iconSrc="getImg(item.imgName)"
-                   :to="item.routerName">
+                   :to="item.routerName"
+        >
         </flow-item>
       </flow>
     </template>

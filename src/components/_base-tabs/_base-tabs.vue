@@ -1,7 +1,8 @@
 <template>
   <ul class="tab-list">
     <li v-for="(flow,idx) in tabList" :key="flow.text" :ref="'activeTab'+idx" :class="['tab-item', activeIdx===getId(flow,idx) ?'tab-item-active':'']" :style="{color:defaultColor}"
-        @click.capture="changeTab(getId(flow,idx),$event)">
+        @click.capture="changeTab(getId(flow,idx),$event)"
+    >
       <span v-if="isShowMark" class="idx-mark">{{idx +1}}</span>
       <span class="text">{{flow.text}}</span>
     </li>

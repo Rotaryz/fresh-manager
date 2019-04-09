@@ -2,7 +2,8 @@
   <tag :class="['flow-item', to ?'can-active':'' ]"
        :style="getStyle"
        :tag="to ? 'router-link':'div'"
-       :to="to">
+       :to="to"
+  >
     <div :class="{'img-wrap':true}">
       <img :src="iconSrc" alt="icon" :width="width-2" :height="width-2">
     </div>

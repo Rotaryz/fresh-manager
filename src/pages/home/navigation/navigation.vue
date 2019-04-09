@@ -362,12 +362,12 @@
           this.$toast.show('该功能正在开发中')
           return
         }
-        this.firstMenu = this.firstMenu.map((item, index) => {
-          item.isLight = index === i
-          return item
-        })
-        this.firstIndex = i
-        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].second))
+        // this.firstMenu = this.firstMenu.map((item, index) => {
+        //   item.isLight = index === i
+        //   return item
+        // })
+        // this.firstIndex = i
+        // this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].second))
         this.$router.push(this.firstMenu[i].url)
       },
       // 跳转二级菜单页面
@@ -403,7 +403,6 @@
           }
           this.firstMenu[idx].isLight = false
         })
-        console.log(currentNav, 'currentNav')
         this.navList = currentNav || []
         // 旧版
         // let currentPath = this.$route.fullPath
