@@ -1,5 +1,5 @@
 <template>
-  <div :style="{padding: padding[0]+'px '+padding[1]+'px'}">
+  <div :style="{padding: padding[0]+'px '+ padding[1]+'px'}">
     <div class="flow">
       <img :src="flowImg" alt="流程关系线" :width="flowImgWidth">
       <slot></slot>
@@ -31,11 +31,11 @@
     },
     methods: {
       getStyle() {
-        let st =  {
+        let style =  {
           wdith: this.flowImgWidth + 'px',
           padding: `${this.padding[0]}px ${this.padding[1]}px`
         }
-        return st
+        return style
       }
     }
   }

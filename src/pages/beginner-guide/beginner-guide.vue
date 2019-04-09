@@ -3,8 +3,13 @@
     <base-tabs :tabList="flowData" :defaultTab="activeIdx" @tab-change="tabChange"></base-tabs>
     <template v-for="(flow,idx) in flowData">
       <flow v-show="idx === activeIdx" :key="idx" :flowImg="getImg(flow.imgName,'pic')" :flowImgWidth="flow.width" class="flow-wrap">
-        <flow-item v-for="(item,key) in flow.data" :key="key" :text="item.name" :positions="item.positions" :iconSrc="getImg(item.imgName)"
-                   :activeText="item.activeText||''" :fontSize="item.fontSize || 14" :to="item.routerName"
+        <flow-item v-for="(item,key) in flow.data"
+                   :key="key" :text="item.name"
+                   :positions="item.positions"
+                   :iconSrc="getImg(item.imgName)"
+                   :activeText="item.activeText||''"
+                   :fontSize="item.fontSize || 14"
+                   :to="item.routerName"
         >
         </flow-item>
       </flow>
@@ -249,9 +254,6 @@
 
     },
     methods: {
-      goTo(){
-        this.$router.push({path: "/home/transaction-record"})
-      },
       getImg(name, type = 'icon') {
         return name ? `/imgs/beginner-guide/${type}-${name}@2x.png` :''
       },

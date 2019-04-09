@@ -1,13 +1,15 @@
 <template>
-  <ul class="tab-list">
-    <li v-for="(flow,idx) in tabList" :key="flow.text" :ref="'activeTab'+idx" :class="['tab-item', activeIdx===getId(flow,idx) ?'tab-item-active':'']" :style="{color:defaultColor}"
-        @click.capture="changeTab(getId(flow,idx),$event)"
-    >
-      <span v-if="isShowMark" class="idx-mark">{{idx +1}}</span>
-      <span class="text">{{flow.text}}</span>
-    </li>
-    <span class="tab-active-line" :style="{'left': activeLine.left + 'px', width: activeLine.lineWidth + 'px',background:activeColor}"></span>
-  </ul>
+  <div class="tab-wrap">
+    <ul class="tab-list">
+      <li v-for="(flow,idx) in tabList" :key="flow.text" :ref="'activeTab'+idx" :class="['tab-item', activeIdx===getId(flow,idx) ?'tab-item-active':'']" :style="{color:defaultColor}"
+          @click.capture="changeTab(getId(flow,idx),$event)"
+      >
+        <span v-if="isShowMark" class="idx-mark">{{idx +1}}</span>
+        <span class="text">{{flow.text}}</span>
+      </li>
+      <span class="tab-active-line" :style="{'left': activeLine.left + 'px', width: activeLine.lineWidth + 'px',background:activeColor}"></span>
+    </ul>
+  </div>
 </template>
 <script>
   const COMPONENT_NAME = 'BASE_TAB_SELECT'
@@ -24,11 +26,11 @@
       },
       activeColor: {
         type: String,
-        default: ""
+        default: ''
       },
       defaultColor: {
         type: String,
-        default: ""
+        default: ''
       },
       isShowMark: {
         type: Boolean,
@@ -36,7 +38,7 @@
       },
       id: {
         type: [String, Number],
-        default: ""
+        default: ''
       }
     },
     data() {
@@ -65,7 +67,7 @@
         return this.id ? item[this.id] : idx
       },
       getWidthAndPositon() {
-        var el = this.$refs['activeTab' + this.activeIdx][0]
+        let el = this.$refs['activeTab' + this.activeIdx][0]
         if (!el) return
         this.activeLine.lineWidth = el.offsetWidth
         this.activeLine.left = el.offsetLeft
@@ -84,13 +86,18 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   $tabs-default-color = #999
-  .tab-list
+  .tab-wrap
     width: 100%
+    border-bottom 1px solid #E9ECEE
+    display: flex;
+    justify-content: center;
+  .tab-list
+    display inline-block
     display: flex
     align-items: center
     position: relative
     justify-content: center;
-    border-bottom 0.5px solid #E9ECEE
+
 
     .tab-active-line {
       transition: all .3s
