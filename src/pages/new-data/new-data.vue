@@ -236,7 +236,7 @@
               this.baseList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },
@@ -409,7 +409,7 @@
         let params = `access_token=${token.access_token}&start_time=&end_time=&time=${this.shopTime}`
         this.shopDownUrl =
           process.env.VUE_APP_API +
-          `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
+          `/social-shopping/v1/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
       },
       // 社区排行
       getManagerRank(time, loading) {
@@ -435,7 +435,7 @@
         let params = `access_token=${token.access_token}&start_time=&end_time=&time=${this.time}`
         this.downUrl =
           process.env.VUE_APP_API +
-          `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
+          `/social-shopping/v1/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
       },
       // 待处理事项
       getScmTaskData() {
@@ -460,7 +460,7 @@
               this.disposeList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },

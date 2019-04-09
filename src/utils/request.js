@@ -7,6 +7,7 @@ const TIME_OUT = 10000
 const ERR_OK = 0
 const ERR_NO = -404
 const COMMON_HEADER = {}
+const version = 'v1'
 
 const http = axios.create({
   timeout: TIME_OUT,
@@ -77,6 +78,9 @@ function requestException(res) {
 
 export default {
   post(url, data, loading = false) {
+    if (url.includes('/social-shopping')) {
+      url = url.replace('/social-shopping', '/social-shopping/' + version)
+    }
     Utils.showLoading(loading)
     return http({
       method: 'post',
@@ -91,6 +95,9 @@ export default {
       })
   },
   get(url, params, loading = false) {
+    if (url.includes('/social-shopping')) {
+      url = url.replace('/social-shopping', '/social-shopping/' + version)
+    }
     Utils.showLoading(loading)
     return http({
       method: 'get',
@@ -105,6 +112,9 @@ export default {
       })
   },
   put(url, data, loading = false) {
+    if (url.includes('/social-shopping')) {
+      url = url.replace('/social-shopping', '/social-shopping/' + version)
+    }
     Utils.showLoading(loading)
     return http({
       method: 'put',
@@ -119,6 +129,9 @@ export default {
       })
   },
   delete(url, data, loading = false) {
+    if (url.includes('/social-shopping')) {
+      url = url.replace('/social-shopping', '/social-shopping/' + version)
+    }
     Utils.showLoading(loading)
     return http({
       method: 'delete',
