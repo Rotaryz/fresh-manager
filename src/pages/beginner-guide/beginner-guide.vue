@@ -21,7 +21,7 @@
   const PAGE_ONE_LEFT_FRIST = 155
   const PAGE_ONE_LEFT_SECOND = 291
   const PAGE_ONE_TOP_FRIST = -45
-  const PAGE_ONE_TOP_SECOND = 42
+  const PAGE_ONE_TOP_SECOND = 48
   const PAGE_ONE_TOP_THIRD = 126
   const ICON_WIDTH = 98
   const STORE_INFO_GUIDE = [{
@@ -81,8 +81,8 @@
     activeText: false,
     positions: [975, 75]
   }]
-  const PAGE_TWO_TOP_FRIST = -45
-  const PAGE_TWO_TOP_SECOND = 150
+  const PAGE_TWO_TOP_FRIST = -48
+  const PAGE_TWO_TOP_SECOND = 154
   const PAGE_TWO_TOP_THREE = -20
   const PAGE_TWO_TOP_FOUR = 175
   const PAGE_TWO_LEFT_FRIST = 130
@@ -272,5 +272,5 @@
     background-color #fff
 
   .flow-wrap
-    margin-top 50px
+    margin-top 150px
 </style>

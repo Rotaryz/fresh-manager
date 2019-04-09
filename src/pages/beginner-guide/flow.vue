@@ -23,7 +23,7 @@
       },
       padding: {
         type: Array,
-        default: () => [70, 120]
+        default: () => [40, 120]
       }
     },
     data() {

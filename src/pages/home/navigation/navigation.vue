@@ -378,30 +378,25 @@
       _handleNavList() {
         let currentPath = this.$route.fullPath
         let currentNav
-        this.firstMenu.forEach((item,idx) => {
-          this.firstMenu[idx].isLight = false
+        this.firstMenu.forEach((item, idx) => {
           if (currentPath.includes(item.url)) {
             currentNav = item.second
             this.firstMenu[idx].isLight = true
             this.firstMenu[idx].second[0].children[0].isLight = true
-            return item
+          } else {
+            this.firstMenu[idx].isLight = false
           }
-          if (item.second) {
-            return item.second.find((it,id) => {
-              return it.children.find((child,i) => {
-                if(currentPath.includes(child.url)){
-                  currentNav = item.second
-                  this.firstMenu[idx].isLight = true
-                  this.firstMenu[idx].second[id].children[i].isLight = true
-                  return child
-                }else{
-                  this.firstMenu[idx].isLight = false
-                  this.firstMenu[idx].second[id].children[i].isLight = false
-                }
-              })
+          item.second && item.second.forEach((it, id) => {
+            it.children && it.children.forEach((child, i) => {
+              if (currentPath.includes(child.url)) {
+                currentNav = item.second
+                this.firstMenu[idx].isLight = true
+                this.firstMenu[idx].second[id].children[i].isLight = true
+              } else {
+                this.firstMenu[idx].second[id].children[i].isLight = false
+              }
             })
-          }
-          this.firstMenu[idx].isLight = false
+          })
         })
         this.navList = currentNav || []
         // 旧版

@@ -1,5 +1,5 @@
 <template>
-  <tag :class="['flow-item', {'can-active':to},{'text-active':  activeText} ]"
+  <tag :class="['flow-item', {'can-active':to},{'text-active':activeText} ]"
        :style="getStyle" :tag="to ? 'router-link':'div'" :to="to"
   >
     <template v-if="iconSrc">
@@ -136,7 +136,6 @@
     .name
       width 100%
       text-align center
-      margin-top: 10px
       font-size inherit
 
     &.text-active
@@ -144,7 +143,8 @@
 
     &.can-active
       color: $active-color
-
+      .name
+        margin-top: 10px
       .img-wrap
         border-color: $active-color
 

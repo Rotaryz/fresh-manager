@@ -90,7 +90,7 @@
     align-items: center
     position: relative
     justify-content: center;
-    border-bottom 2px solid #E9ECEE
+    border-bottom 0.5px solid #E9ECEE
 
     .tab-active-line {
       transition: all .3s
