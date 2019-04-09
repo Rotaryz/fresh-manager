@@ -131,7 +131,7 @@
       </div>
       <div class="dispose-matter-box">
         <div v-for="(item, index) in disposeList" :key="index" class="dispose-list-box">
-          <div class="dispose-top-item hand">
+          <div class="dispose-top-item hand" @click="jumpDispose(item)">
             <div class="dispose-text">{{item.text}}</div>
             <div v-if="item.number !== 0 && shopShow && srmShow" class="dispose-number">{{item.number}}</div>
             <img v-if="item.number === 0 && shopShow && srmShow" src="./icon-complete@2x.png" alt="" class="dispose-img">
@@ -151,7 +151,7 @@
   const COMMUNITYLIST = ['社区', '销售额', '支付订单数', '佣金收益']
   const REALDATA = [{imgUrl: '', title: '销售额', subTitle: '总销售额:', key: 'order', curr_total: 0, total: 0}, {imgUrl: 'subscriber', title: '访客数', subTitle: '总访客数:', key: 'visitor', curr_total: 0, total: 0}, {imgUrl: 'wallet', title: '支付转化率', subTitle: '平均支付转化率:', key: 'pay_rate', curr_total: 0, total: 0}, {imgUrl: 'subscriber', title: '买家数', subTitle: '总买家数:', key: 'pay_customer', curr_total: 0, total: 0}, {imgUrl: '', title: '客单价', subTitle: '平均客单价:', key: 'customer_price', curr_total: 0, total: 0}, {imgUrl: 'card', title: '复购率', subTitle: '平均复购率:', key: 'repeat_consume_rate', curr_total: 0, total: 0}]
   const BASELIST = [{title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list'}, {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/rush-purchase'}, {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list'}, {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier'}, {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer'}, {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management'}]
-  const DISPOSELIST = [{text:'发', subText: '待发布采购任务', key: 'publish_task_count', number: 0, url: ''}, {text:'采', subText: '待采购任务', key: 'purchase_task_count', number: 0, url: ''}, {text:'入', subText: '待入库任务', key: 'entry_order_count', number: 0, url: ''}, {text:'出', subText: '待出库任务', key: 'out_order_count', number: 0, url: ''}, {text:'配', subText: '待配送任务', key: 'delivery_count', number: 0, url: ''}, {text:'运', subText: '待售后订单', key: 'after_sale_count', number: 0, url: ''}, {text:'财', subText: '待审核提现', key: 'withdraw_count', number: 0, url: ''}]
+  const DISPOSELIST = [{text:'发', subText: '待发布采购任务', key: 'publish_task_count', number: 0, url: '/home/procurement-task?status=1&timeNull=1'}, {text:'采', subText: '待采购任务', key: 'purchase_task_count', number: 0, url: '/home/procurement-task?status=2&timeNull=1'}, {text:'入', subText: '待入库任务', key: 'entry_order_count', number: 0, url: '/home/product-enter?status=0&timeNull=1'}, {text:'出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0&timeNull=1'}, {text:'配', subText: '待配送任务', key: 'delivery_count', number: 0, url: '/home/distribution-task?status=1&timeNull=1'}, {text:'运', subText: '待售后订单', key: 'after_sale_count', number: 0, url: '/home/returns-management?status=0'}, {text:'财', subText: '待审核提现', key: 'withdraw_count', number: 0, url: '/home/leader-withdrawal?status=0'}]
   const RANKTIME = [{title: '今天', status: 'today'}, {title: '昨天', status: 'yesterday'}, {title: '7天', status: 'week'}, {title: '30天', status: 'month'}]
   const CHARTTIME  = [{title: '销售额', status: '1'}, {title: '访客数', status: '2'}, {title: '买家数', status: '3'}, {title: '客单价', status: '4'}]
   export default {
@@ -179,7 +179,7 @@
       }
     },
     mounted() {
-      this.getSurveyTrade('', '', 'week', false)
+      this.getSurveyTrade('', '', 'week', true)
       this.getScmBaseData()
       this.getShopBaseData()
       this.getScmTaskData()
@@ -241,7 +241,6 @@
         })
       },
       jumpBase(item) {
-        console.log(item)
         this.$router.push(item.url)
       },
       //  7日趋势
@@ -464,6 +463,9 @@
             this.$toast(res.message)
           }
         })
+      },
+      jumpDispose(item) {
+        this.$router.push(item.url)
       }
     }
   }

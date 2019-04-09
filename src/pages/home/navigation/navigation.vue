@@ -167,11 +167,11 @@
     {
       title: '统计',
       children: [
-        {
-          title: '数据统计',
-          url: '/home/data-survey',
-          isLight: false
-        },
+        // {
+        //   title: '数据统计',
+        //   url: '/home/data-survey',
+        //   isLight: false
+        // },
         {
           title: '数据统计',
           url: '/home/new-data',
@@ -279,7 +279,8 @@
       icon: require('./icon-statistics@2x.png'),
       isLight: false,
       second: STATISTICS,
-      url: '/home/data-survey'
+      url: '/home/new-data'
+      // url: '/home/data-survey'
     },
     {
       name: '财务',

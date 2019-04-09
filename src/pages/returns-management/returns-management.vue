@@ -121,15 +121,16 @@
         searchPlaceHolder: SEARCH_PLACE_HOLDER,
         checkId: '',
         remark: '',
-        socialSelect: SELECT
+        socialSelect: SELECT,
+        infoTabIndex: 0
       }
     },
     computed: {
       ...authComputed,
       ...returnsComputed,
-      infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.status)
-      },
+      // infoTabIndex() {
+      //   return this.tabStatus.findIndex((item) => item.status === this.status)
+      // },
       returnsExportUrl() {
         let currentId = this.getCurrentId()
         let data = {
@@ -150,6 +151,9 @@
       }
     },
     created() {
+      if (this.$route.query.status) {
+        this.infoTabIndex = this.$route.query.status * 1 + 1
+      }
       this._getShopList()
     },
     methods: {

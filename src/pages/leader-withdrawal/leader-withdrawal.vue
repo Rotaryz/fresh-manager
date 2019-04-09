@@ -172,6 +172,9 @@
         let selectData = res.data
         selectData.unshift({name: '全部状态', id: ''})
         this.statusSelect.data = selectData
+        if (this.$route.query.status * 1 === 0) {
+          this.statusSelect.content = '待审核'
+        }
       },
       exportExcel() {
         window.open(this.withdrawalExportUrl, '_blank')

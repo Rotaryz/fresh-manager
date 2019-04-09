@@ -150,5 +150,8 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getReturnsList')
+  },
+  infoStatus({commit, dispatch}, status) {
+    commit('SET_STATUS', status * 1)
   }
 }

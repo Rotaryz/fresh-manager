@@ -36,7 +36,7 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">出库列表</p>
-          <base-status-tab :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
+          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main">新建出库单<span class="add-icon"></span></router-link>
@@ -106,7 +106,8 @@
           success: 0
         },
         accurateStart: '',
-        accurateEnd: ''
+        accurateEnd: '',
+        statusTab: 0
       }
     },
     computed: {
@@ -117,6 +118,10 @@
       this.endTime = this.$route.params.end
       this.accurateStart = this.$route.params.accurateStart
       this.accurateEnd = this.$route.params.accurateEnd
+      if (this.$route.query.status) {
+        this.statusTab = this.$route.query.status * 1 + 1
+        this.status = this.$route.query.status * 1
+      }
       this.productOutList = _.cloneDeep(this.outList)
       this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
