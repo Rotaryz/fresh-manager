@@ -119,7 +119,9 @@
 
   .list-box
     .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
+      &:nth-child(1)
+        flex: 1.2
+      &:last-child
+        max-width: 168px
+
 </style>

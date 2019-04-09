@@ -34,7 +34,7 @@
                 {{type[item[val.value]]}}
               </div>
               <!--状态-->
-              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
+              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item)">
                 <base-switch :status="item.status" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
@@ -49,12 +49,12 @@
         <base-pagination ref="pages" :pageDetail="pageDetail" @addPage="addPage"></base-pagination>
       </div>
     </div>
-    <market-confirm ref="confirm" @confirm="_sureConfirm"></market-confirm>
+    <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import MarketConfirm from './market-confirm/market-confirm'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {marketComputed, marketMethods} from '@state/helpers'
   import API from '@api'
 
@@ -63,8 +63,8 @@
   const MARKET_TITLE = [
     {name: '营销名称', flex: 1.6, value: 'title', type: 1},
     {name: '类型', flex: 1, value: 'type', type: 2},
-    {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '领取数', flex: 1, value: 'take_count', type: 4},
+    {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
   export default {
@@ -73,7 +73,7 @@
       title: TITLE
     },
     components: {
-      MarketConfirm
+      DefaultConfirm
     },
     data() {
       return {
@@ -100,7 +100,7 @@
         this.page = page
         this.getMarketList({page: this.page})
       },
-      switchBtn(item, index) {
+      switchBtn(item) {
         let data = {
           status: item.status ? 0 : 1,
           id: item.id
@@ -134,10 +134,12 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .list
-    flex: 1
+  .list-box
     .list-item
       font-size: $font-size-14
+      &:last-child
+        padding-right: 0
+        max-width: 75px
       .item
         text-overflow: ellipsis
         overflow: hidden

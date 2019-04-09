@@ -42,11 +42,11 @@
     <default-confirm ref="confirm" @confirm="handleRoad"></default-confirm>
     <default-modal ref="line">
       <div slot="content" class="default-input">
-        <div class="title-input">
-          <div class="title">新建线路</div>
-          <div class="close-box" @click="cancel">
-            <div class="close"></div>
+        <div class="title-box">
+          <div class="title">
+            新建线路
           </div>
+          <span class="close hand" @click="cancel"></span>
         </div>
         <div class="main-input">
           <div class="main-left">
@@ -66,11 +66,11 @@
     </default-modal>
     <default-modal ref="driver">
       <div slot="content" class="default-input">
-        <div class="title-input">
-          <div class="title">{{handleDriverType === 0 ? '新建' : '编辑'}}司机</div>
-          <div class="close-box" @click="cancel">
-            <div class="close"></div>
+        <div class="title-box">
+          <div class="title">
+            {{handleDriverType === 0 ? '新建' : '编辑'}}司机
           </div>
+          <span class="close hand" @click="cancel"></span>
         </div>
         <div class="main-input">
           <div class="main-left">
@@ -102,8 +102,10 @@
     </default-modal>
     <default-modal ref="addressModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商户</div>
+        <div class="title-box">
+          <div class="title">
+            选择商户
+          </div>
           <span class="close hand" @click="cancel"></span>
         </div>
         <div class="shade-tab">
@@ -132,8 +134,8 @@
         <!--<base-pagination ref="shopPage"></base-pagination>-->
         <!--</div>-->
         <div class="back">
-          <div class="back-btn back-submit hand" @click="handleRoad">确定</div>
           <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+          <div class="back-btn back-submit hand" @click="handleRoad">确定</div>
         </div>
       </div>
     </default-modal>
@@ -452,16 +454,22 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .table-content
+    .list-box
+      .list-item
+        &:last-child
+          max-width: 50px
+          padding: 0
   .pro-select-icon
-    border-radius: 1px
+    border-radius: 2px
     border: 1px solid $color-line
     height: 14px
     width: 14px
     transition: all 0.3s
-    margin-right: 80px
+    margin-right: 50px
 
   .pro-text
-    width: 94px
+    width: 64px
 
   .pro-select-icon-disable
     border: 1px solid transparent
@@ -476,34 +484,14 @@
     width: 100%
 
   .default-input
-    padding-bottom: 30px
+    padding: 0 20px
+    padding-bottom: 80px
     background: #fff
     width: 534px
-    border-radius: 1px
-
-    .title-input
-      height: 60px
-      layout(row)
-      align-items: center
-      justify-content: space-between
-      border-bottom: 0.5px solid $color-line
-      padding-left: 20px
-      .title
-        color: $color-text-main
-        font-size: $font-size-16
-        font-family: $font-family-regular
-      .close-box
-        padding: 17px
-        cursor: pointer
-        .close
-          width: 22px
-          height: 22px
-          border-radius: 50%
-          background-size: 22px
-          bg-image('icon-close')
+    border-radius: 2px
 
     .main-input
-      padding: 29.5px 20px 0 40px
+      padding: 0px 0px 0 6px
       display: flex
       .main-input-big
         display: flex
@@ -519,7 +507,7 @@
         width: 333px
         height: 44px
         border: 1px solid $color-line
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14
@@ -572,7 +560,6 @@
       margin-right: 20px
       display: flex
       flex-direction: column
-      align-items: flex-end
       .text
         line-height: 44px
         color: #666
@@ -593,16 +580,15 @@
       margin-bottom: 24px
 
     .btn-group
-      margin-top: 20px
       text-align: center
       display: flex
-      justify-content: center
+      justify-content: flex-end
       user-select: none
       .btn
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -621,10 +607,26 @@
       .one-btn
         margin-left: 0
 
+
+  .title-box
+    display: flex
+    box-sizing: border-box
+    padding: 23px 0
+    align-items: center
+    justify-content: space-between
+    .title
+      font-size: $font-size-16
+      font-family: $font-family-medium
+      line-height: 1
+      color: $color-text-main
+    .close
+      width: 12px
+      height: @width
+      icon-image('icon-close')
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -632,6 +634,7 @@
     position: relative
     overflow-x: hidden
     flex-wrap: wrap
+    padding: 0 20px
     .shade-header
       display: flex
       align-items: center
@@ -668,6 +671,8 @@
         box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
         border-radius: 10px
     .back
+      background: $color-white
+      justify-content: flex-end
       position: absolute
       left: 0
       right: 0
@@ -677,7 +682,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 1px
+      border-radius: 2px
       .title-input
         height: 60px
         layout(row)
@@ -702,11 +707,11 @@
               transform: scale(1.3)
 
       .main-input
-        padding: 42px 20px 30px 20px
+        padding: 0 20px 30px 20px
         .main-input-box
           width: 310px
           height: 44px
-          border-radius: 1px
+          border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
@@ -724,7 +729,6 @@
             border-color: $color-main !important
 
     .btn-group
-      margin-top: 40px
       text-align: center
       display: flex
       justify-content: flex-end
@@ -733,7 +737,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -764,67 +768,9 @@
         width: 60px
         margin-right: 36px
 
-  /*新建编辑内部的确定弹窗*/
-  .default-confirm
-    width: 329.6px
-    height: 200px
-    background: #fff
-    border-radius: 1px
-    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
-    text-align: center
-    .btn-group-confirm
-      text-align: center
-      display: flex
-      justify-content: center
-      user-select: none
-      .btn
-        width: 96px
-        height: 40px
-        line-height: 40px
-        border-radius: 1px
-        border: 1px solid $color-text-D9
-        cursor: pointer
-        transition: all 0.3s
-      .cancel
-        border: 1px solid $color-line
-        &:hover
-          color: $color-text-sub
-          border-color: $color-text-sub
-      .confirm
-        border: 1px solid $color-main
-        background: $color-main
-        color: $color-white
-        margin-left: 20px
-        &:hover
-          background: #44AB67
-        &:active
-          opacity: 0.8
-      .one-btn
-        margin-left: 0
-    .title
-      font-size: $font-size-16
-      font-family: $font-family-medium
-      height: 44px
-      line-height: 44px
-      padding: 0 15px
-    .text
-      font-size: $font-size-16
-      color: $color-text-main
-      height: 120px
-      display: flex
-      align-items: center
-      justify-content: center
-      margin: 10px 15px
-      overflow-y: auto
-      text-align: justify
-      word-break: break-all
-      line-height: 1.4
-
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
-    align-items: center
-    padding: 0 20px
+    margin-bottom: 20px
     box-sizing: border-box
     display: flex
     .tab-item
@@ -838,13 +784,13 @@
     display: flex
 
   .goods-content
-    border-radius: 1px
-    margin: 0 20px
+    border-radius: 2px
     height: 400px
     .rush-goods-list
       flex-wrap: wrap
       display: flex
-
+    .big-list
+      height: 465px
   .list-item-disable
     color: #ACACAC
 

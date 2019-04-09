@@ -52,7 +52,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择开始时间"
-          style="width: 240px;height: 44px;border-radius: 1px"
+          style="width: 240px;height: 40px;border-radius: 2px"
           readonly
           @on-change="_getStartTime"
         ></date-picker>
@@ -64,7 +64,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择结束时间"
-          style="width: 240px;height: 44px"
+          style="width: 240px;height: 40px"
           @on-change="_getEndTime"
         ></date-picker>
         <div :class="{'time-no-change':disable}"></div>
@@ -100,14 +100,14 @@
             添加商品
           </div>
         </div>
-        <div class="outreach-list-box">
+        <div v-if="goodsList.length" class="outreach-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.goods_units}}</div>
+              <div class="com-list-item">{{item.sale_unit}}</div>
               <div class="com-list-item">¥{{item.original_price || 0}}</div>
               <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
                 <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
@@ -128,8 +128,10 @@
     <!-- 选择团长弹窗-->
     <default-modal ref="groupModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择团长</div>
+        <div class="title-box">
+          <div class="title">
+            选择团长
+          </div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <!--搜索-->
@@ -166,8 +168,10 @@
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+        <div class="title-box">
+          <div class="title">
+            选择商品
+          </div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <div class="shade-tab">
@@ -206,8 +210,8 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -224,8 +228,8 @@
   const TITLE = '新建查看拓展活动'
   const COMMODITIES_LIST = ['商品名称', '单位', '原售价(元)', '活动售价(元)', '排序', '操作']
   const GROUP_TITLE = [
-    {name: '选择', class: 'title-item', flex: 0.7, value: ''},
-    {name: '团长帐号', class: 'title-item', flex: 1, value: 'mobile'},
+    {name: '选择', class: 'title-item', flex: 0.4, value: ''},
+    {name: '团长帐号', class: 'title-item', flex: 0.8, value: 'mobile'},
     {name: '团长名称', class: 'title-item', flex: 1, value: 'name'},
     {name: '社区名称', class: 'title-item', flex: 1.2, value: 'social_name'},
     {name: '社区地址', class: 'title-item', flex: 2, value: 'address'}
@@ -410,7 +414,7 @@
           keyword: this.keyword,
           goods_category_id: this.parentId,
           shelf_id: this.id,
-          limit: 10,
+          limit: 7,
           page: this.page
         })
         if (res.error !== this.$ERR_OK) {
@@ -435,6 +439,9 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
+          item.trade_price = ''
+          item.usable_stock = ''
+          item.sort = 0
           return item
         })
       },
@@ -457,12 +464,16 @@
           await this._getGoodsList()
         }
       },
-      // 选择二级分类
+      // 选择一级分类
       async _secondAssortment(item) {
         this.parentId = item.id
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
-        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        if (item.id === '') {
+          this.secondAssortment.data = []
+        } else {
+          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        }
         this.secondAssortment.content = '选择二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
@@ -530,8 +541,8 @@
       },
       // 删除商品弹窗
       _delGoods() {
-        let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-        this.selectGoodsId.splice(index, 1)
+        // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+        this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
       },
@@ -663,6 +674,9 @@
             return
           }
         }
+        list.map(item => {
+          item.goods_id = item.id
+        })
         let data = Object.assign({}, this.essInformation, {activity_goods: list})
         let res = null
         this.isSubmit = true
@@ -705,7 +719,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
-  ::-webkit-input-placeholder{
+  ::-webkit-input-placeholder {
     font-size: 14px
     font-family: $font-family-regular
     color: #ACACAC
@@ -753,9 +767,9 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 400px
-        height: 44px
+        height: 40px
         display: flex
         align-items: center
         justify-content: space-between
@@ -795,11 +809,11 @@
       color: $color-text-assist
     .tip-text
       margin-left: 2px
-      line-height: 44px
+      line-height: 40px
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
-    .time-no-change,.text-no-change
+    .time-no-change, .text-no-change
       position: absolute
       left: 100px
       top: 0
@@ -895,7 +909,7 @@
       font-family: $font-family-regular
       transition: all 0.3s
       text-align: center
-      border-radius: 1px
+      border-radius: 2px
       border: 1px solid #4DBD65
       display: flex
       align-items: center
@@ -910,7 +924,7 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -919,31 +933,32 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-    .shade-header
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
       display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      height: 60.5px
-      box-sizing: border-box
-      padding: 0 20px
-      border-bottom: 0.5px solid $color-line
-      .shade-title
-        color: $color-text-main
-        font-family: $font-family-medium
+      .title
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
       .close
-        icon-image('icon-close')
-        width: 16px
+        width: 12px
         height: @width
-        transition: all 0.3s
-        &:hover
-          transform: scale(1.3)
+        icon-image('icon-close')
     .back
+      border-top-1px($color-line)
       position: absolute
       left: 0
       right: 0
       bottom: 0
-      border-top: 1px solid $color-line
+      background: $color-white
+      justify-content: flex-end
+      height: 70px
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -966,7 +981,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 1px
+      border-radius: 2px
       .title-input
         height: 60px
         layout(row)
@@ -994,8 +1009,8 @@
         padding: 42px 20px 30px 20px
         .main-input-box
           width: 310px
-          height: 44px
-          border-radius: 1px
+          height: 40px
+          border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
@@ -1013,7 +1028,6 @@
             border-color: $color-main !important
 
     .btn-group
-      margin-top: 40px
       text-align: center
       display: flex
       justify-content: flex-end
@@ -1022,7 +1036,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -1058,7 +1072,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -1070,7 +1084,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -1093,8 +1107,8 @@
     .title
       font-size: $font-size-16
       font-family: $font-family-medium
-      height: 44px
-      line-height: 44px
+      height: 40px
+      line-height: 40px
       padding: 0 15px
     .text
       font-size: $font-size-16
@@ -1111,104 +1125,124 @@
 
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
-    align-items: center
-    padding: 0 20px
+    height: 48px
     box-sizing: border-box
     display: flex
     .tab-item
       margin-right: 10px
 
   .page-box
-    padding: 0 20px
     box-sizing: border-box
-    height: 66px
+    height: 76px
     align-items: center
     display: flex
 
   .goods-content
-    border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
-    height: 400px
-    .outreach-goods-list
+    border-radius: 4px
+    height: 420px
+    .goods-list
       flex-wrap: wrap
       display: flex
-      .goods-item
-        box-sizing: border-box
-        padding: 0 20px
-        width: 50%
-        height: 79.5px
+    .goods-item
+      box-sizing: border-box
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
+      display: flex
+      align-items: center
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
+      .goods-img
+        margin-right: 10px
+        width: 40px
+        height: @width
+        overflow: hidden
+        background-repeat: no-repeat
+        background-size: cover
+        background-position: center
+        background-color: $color-background
+      .select-icon
+        margin-right: 20px
+        border-radius: 1px
+        border: 1px solid #e9ecee
+        height: 16px
+        width: 16px
+        -webkit-transition: all .3s
+        transition: all .3s
+      .select-icon-active
+        border: 1px solid transparent
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check@2x.png")
+      .select-icon-disable
+        border: 1px solid transparent
+        cursor: not-allowed
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check_ash@2x.png")
+      .goods-msg
+        flex: 1
         display: flex
+        color: $color-text-main
+        font-family: $font-family-regular
+        justify-content: space-between
+        height: 100%
         align-items: center
-        border-bottom: 0.5px solid $color-line
-        &:nth-child(2n+1)
-          border-right: 1px solid $color-line
-        &:nth-child(9), &:nth-child(10)
-          border-bottom: none
-        .select-icon
-          margin-right: 20px
-          border-radius: 1px
-          border: 1px solid $color-line
-          height: 16px
-          width: 16px
-          transition: all 0.3s
-        .select-icon-disable
-          border: 1px solid transparent
-          cursor: not-allowed
-          icon-image('icon-check_ash')
-        .select-icon-active
-          border: 1px solid transparent
-          icon-image('icon-check')
-        .goods-img
-          margin-right: 10px
-          width: 40px
-          height: @width
-          overflow: hidden
-          background-repeat: no-repeat
-          background-size: cover
-          background-position: center
-          background-color: $color-background
-        .goods-msg
-          display: flex
-          flex-direction: column
-          color: $color-text-main
-          font-family: $font-family-regular
-          justify-content: space-between
-          flex: 1
-          overflow: hidden
-          height: 40px
-          .goods-name
-            width: 210px
-            no-wrap()
-          .goods-name, .goods-money
-            line-height: 1.2
-            font-size: $font-size-14
-
-        .add-btn
-          border-radius: 1px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          text-align: center
-        .add-btn-disable
-          border-radius: 1px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          box-sizing: border-box
-          text-align: center
-          font-size: $font-size-14
+        .goods-name
+          width: 500px
+          no-wrap()
+        .goods-name, .goods-money
           line-height: 1
-          cursor: not-allowed
-          background: $color-line
-          color: $color-text-assist
-          border: none
+          font-size: $font-size-14
+      .add-btn
+        border-radius: 2px
+        margin-left: 88px
+        padding: 7px 0
+        min-width: 54px
+        text-align: center
+      .add-btn-disable
+        border-radius: 2px
+        margin-left: 88px
+        padding: 7px 0
+        box-sizing: border-box
+        text-align: center
+        font-size: $font-size-14
+        line-height: 1
+        cursor: not-allowed
+        background: $color-line
+        color: $color-text-assist
+        border: none
+    .page-box
+      padding: 0 20px
+      box-sizing: border-box
+      height: 77px
+      align-items: center
+      display: flex
 
   .group-content
-    border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
+    border-radius: 2px
     height: 407px
     .title
       display: flex
@@ -1216,7 +1250,7 @@
       line-height: 45px
       font-family: $font-family-regular
       background: #F5F7FA
-      border-bottom: 1px solid #E9ECEE
+      border: 0.5px solid #E9ECEE
       align-items: center
       padding: 0 20px
       .title-item
@@ -1225,6 +1259,8 @@
         -webkit-line-clamp: 2
         -webkit-box-orient: vertical
         padding-right: 20px
+        &:nth-child(1)
+          max-width: 60px
     .outreach-group-list
       font-size: $font-size-14
       color: #333
@@ -1234,12 +1270,14 @@
         line-height: 18px
         display: flex
         align-items: center
-        border-bottom: 1px solid #E9ECEE
+        border-bottom: 0.5px solid #E9ECEE
+        border-right: 0.5px solid #E9ECEE
+        border-left: 0.5px solid #E9ECEE
         padding: 0 20px
+        &:first-child
+          border-top: none
         &:nth-child(2n)
           background: #F5F7FA
-        &:last-child
-          border-bottom: 0
         .check
           width: 16px
           height: 16px
@@ -1266,6 +1304,8 @@
           padding-right: 20px
           display: block
           overflow: hidden
+          &:nth-child(1)
+            max-width: 60px
           span
             display: -webkit-box
             overflow: hidden
@@ -1301,7 +1341,7 @@
   .com-edit
     height: 34px
     width: 93px
-    border-radius: 1px
+    border-radius: 2px
     box-sizing: border-box
     border: 1px solid $color-line
     padding-left: 22px
@@ -1317,7 +1357,7 @@
       border-color: $color-main !important
   .no-border
     border-width: 0
-    background: rgba(255,255,255,0)
+    background: rgba(255, 255, 255, 0)
   .small-money
     col-center()
     left: 10px

@@ -17,7 +17,7 @@ export default [
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
         if (store.getters['auth/loggedIn']) {
-          next({name: 'product-list'})
+          next({name: 'data-survey'})
         } else {
           next()
         }
@@ -31,7 +31,7 @@ export default [
     meta: {
       authRequired: true
     },
-    redirect: 'home/product-list',
+    redirect: 'home/data-survey',
     children: [
       /**
        * 商品
@@ -225,20 +225,20 @@ export default [
         component: () => lazyLoadView(import('@pages/flash-sale/flash-sale')),
         meta: {
           titles: ['商城', '活动', '限时抢购'],
-          // beforeResolve(routeTo, routeFrom, next) {
-          //   //  抢购列表
-          //   store
-          //     .dispatch('rush/getRushList', {page: 1})
-          //     .then((res) => {
-          //       if (!res) {
-          //         return next({name: '404'})
-          //       }
-          //       return next()
-          //     })
-          //     .catch(() => {
-          //       return next({name: '404'})
-          //     })
-          // }
+          beforeResolve(routeTo, routeFrom, next) {
+            //  抢购列表
+            store
+              .dispatch('sale/getSaleList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       // 新建查看限时抢购
@@ -250,25 +250,25 @@ export default [
           titles: ['商城', '活动', '限时抢购', '活动'],
           variableIndex: 3,
           marginBottom: 80,
-          // beforeResolve(routeTo, routeFrom, next) {
-          //   let id = routeTo.query.id
-          //   //  抢购详情
-          //   if (id) {
-          //     store
-          //       .dispatch('rush/getRushDetail', {id})
-          //       .then((res) => {
-          //         if (!res) {
-          //           return next({name: '404'})
-          //         }
-          //         return next()
-          //       })
-          //       .catch(() => {
-          //         return next({name: '404'})
-          //       })
-          //   } else {
-          //     next()
-          //   }
-          // }
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            //  抢购详情
+            if (id) {
+              store
+                .dispatch('sale/getSaleDetail', {id})
+                .then((res) => {
+                  // if (!res) {
+                  //   next({name: '404'})
+                  // }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
         }
       },
       // 拓展活动
@@ -1467,6 +1467,13 @@ export default [
     path: '/404',
     name: '404',
     component: () => lazyLoadView(import('@pages/_404/_404')),
+    props: true
+  },
+  // 系统升级
+  {
+    path: '/upgrade',
+    name: 'upgrade',
+    component: () => lazyLoadView(import('@pages/_upgrade/_upgrade')),
     props: true
   },
   {

@@ -14,7 +14,9 @@
     <div class="second">
       <div v-for="(item, index) in navList" :key="index" class="second-item">
         <p class="second-title">{{item.title}}</p>
-        <div v-for="(child, i) in item.children" :key="i" :class="child | childrenActive" class="second-link hand" @click="_setChildActive(child)">{{child.title}}</div>
+        <div v-for="(child, i) in item.children" :key="i" class="second-link hand" @click="_setChildActive(child)">
+          <span :class="child | childrenActive" class="second-link-content">{{child.title}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -58,9 +60,14 @@
     {
       title: '活动',
       children: [
+        // {
+        //   title: '今日抢购',
+        //   url: '/home/rush-purchase',
+        //   isLight: false
+        // },
         {
-          title: '今日抢购',
-          url: '/home/rush-purchase',
+          title: '限时抢购',
+          url: '/home/flash-sale',
           isLight: false
         },
         {
@@ -279,20 +286,26 @@
   ]
   const FIRST_MENU = [
     // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
-    {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
+    {
+      name: '统计',
+      icon: require('./icon-statistics@2x.png'),
+      isLight: true,
+      second: STATISTICS,
+      url: '/home/data-survey'
+    },
+    {
+      name: '商城',
+      icon: require('./icon-tmall@2x.png'),
+      isLight: false,
+      second: SHOP,
+      url: '/home/product-list'
+    },
     {
       name: '供应链',
       icon: require('./icon-supply_chain@2x.png'),
       isLight: false,
       second: SUPPLY,
       url: '/home/supply-list'
-    },
-    {
-      name: '统计',
-      icon: require('./icon-statistics@2x.png'),
-      isLight: false,
-      second: STATISTICS,
-      url: '/home/data-survey'
     },
     {
       name: '财务',
@@ -495,8 +508,8 @@
     &:hover
       &::-webkit-scrollbar
         transition: all 0.2s
-        width: 8px
-        height: 10px
+        width: 6px
+        height: 8px
     .second-title
       transition: all 0.2s
       margin: 30px 0 10px
@@ -512,5 +525,10 @@
       &:hover
         color: $color-main
     .second-link-active
+      background: rgba(79, 189, 102, 0.17)
       color: $color-main
+    .second-link-content
+      margin-left: -6px
+      border-radius: 2px
+      padding: 5px 6px
 </style>

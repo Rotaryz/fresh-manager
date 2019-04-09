@@ -26,10 +26,10 @@
         </div>
         <div class="list">
           <div v-for="(item,index) in rushList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.activity_name || '---'}}</div>
+            <div class="list-item list-item-hidden">{{item.activity_name || '---'}}</div>
             <div class="list-item list-double-row">
               <p class="item-dark">{{item.start_at}}</p>
-              <p class="item-sub">{{item.end_at}}</p>
+              <p class="item-sub-time">{{item.end_at}}</p>
             </div>
             <div class="list-item">{{item.goods_count}}</div>
             <div class="list-item">{{item.sale_count}}</div>
@@ -145,7 +145,16 @@
         background: #E1E1E1
       .list-status-success
         background: $color-positive
-
+  .list-box
+    .list-item
+      box-sizing: border-box
+      flex: 1
+      &:nth-child(1), &:nth-child(2)
+        flex: 1.2
+      &:last-child
+        max-width: 80px
+        padding: 0
+        flex: 0.8
   .btn-main
     margin-right: 10px
 </style>

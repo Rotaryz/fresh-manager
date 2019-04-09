@@ -28,9 +28,11 @@
               </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
                 <p class="item-dark">{{item.start_at}}</p>
-                <p class="item-sub">{{item.end_at}}</p>
+                <p class="item-sub-time">{{item.end_at}}</p>
               </div>
-
+              <div v-if="+val.type === 6" :style="{flex: val.flex}" class="list-item-double">
+                {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+              </div>
               <!--状态-->
               <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
               <!--二维码-->
@@ -70,9 +72,9 @@
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
   const TITLE = '拓展活动'
   const ACTIVITI_TITLE = [
-    {name: '活动名称', flex: 1.4, value: 'activity_name', type: 1},
+    {name: '活动名称', flex: 1.2, value: 'activity_name', type: 6},
     {name: '活动时间', flex: 1.2, value: 'start_at', type: 2},
-    {name: '社区', flex: 1.4, value: 'social_name', type: 1},
+    {name: '社区', flex: 1.2, value: 'social_name', type: 6},
     {name: '成交订单', flex: 1, value: 'pay_num', type: 1},
     {name: '交易金额', flex: 1, value: 'pay_amount', type: 1},
     {name: '复购率', flex: 1, value: 'repeat_rate', type: 1},
@@ -112,7 +114,8 @@
     created() {
       this.corpId = getCorpId()
     },
-    mounted() {},
+    mounted() {
+    },
     methods: {
       ...outreachMethods,
       async _setTime(arr) {
@@ -187,7 +190,7 @@
         top: -68px
         width: 160px
         height: 160px
-        border-radius: 1px
+        border-radius: 2px
         overflow: hidden
         box-shadow: 0 0 8px 0 #E9ECEE
         border: 1px solid #E9ECEE
@@ -213,4 +216,14 @@
       overflow: inherit
   .btn-main
     margin-right: 10px
+
+
+  .list-box
+    .list-item
+      box-sizing: border-box
+      flex: 1
+      &:last-child
+        padding: 0
+        max-width: 75px
+
 </style>

@@ -22,6 +22,7 @@ export function getCorpId() {
   case 'gjdw':
     return process.env.VUE_APP_GUOJIDANWEI_CORP
   default:
+    // return null
     return process.env.VUE_APP_CURRENT_CORP
   }
 }
