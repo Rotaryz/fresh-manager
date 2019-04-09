@@ -30,5 +30,55 @@ export default {
   goodsData(data, loading = true) {
     let url = '/social-shopping/api/backend/statistics-goods-data'
     return request.get(url, data, loading)
+  },
+  /**
+   *  供应链基础数据统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getBaseData(data, loading = false) {
+    let url = '/scm/api/backend/statistics/base-data'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  基础数据统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getStatisticsBaseData(data, loading = false) {
+    let url = '/social-shopping/api/backend/statistics-base-data'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  供应链待处理任务统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getTaskData(data, loading = false) {
+    let url = '/scm/api/backend/statistics/task-data'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  商城待处理任务统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getStatisticsTaskData(data, loading = false) {
+    let url = '/social-shopping/api/backend/statistics-task-data'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  商城待处理任务统计
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  echartData(data, loading = false) {
+    let url = '/social-shopping/api/backend/statistics-week-data'
+    return request.get(url, data, loading)
   }
 }
