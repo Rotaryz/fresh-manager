@@ -1,13 +1,14 @@
 <template>
-  <tag :class="['flow-item', to ?'can-active':'' ]"
-       :style="getStyle"
-       :tag="to ? 'router-link':'div'"
-       :to="to"
+  <tag :class="['flow-item', {'can-active':to},{'text-active':activeText} ]"
+       :style="getStyle" :tag="to ? 'router-link':'div'" :to="to"
   >
-    <div :class="{'img-wrap':true}">
-      <img :src="iconSrc" alt="icon" :width="width-2" :height="width-2">
-    </div>
-    <div class="name" v-text="text"></div>
+    <template v-if="iconSrc">
+      <div :class="{'img-wrap':true}">
+        <img :src="iconSrc" alt="icon" :width="width-2" :height="width-2">
+      </div>
+      <div class="name" v-text="text"></div>
+    </template>
+    <template v-if="!iconSrc && text"> {{text}}</template>
   </tag>
 
 </template>
@@ -59,7 +60,6 @@
         default: () => [0, 0]
       },
       iconSrc: {
-        require: true,
         type: String,
         default: ""
       },
@@ -67,9 +67,9 @@
         type: String,
         default: ""
       },
-      canClickColor: {
-        type: String,
-        default: '#44A659'
+      activeText: {
+        type: [String, Boolean],
+        default: false
       },
       hoverClass: {
         type: String,
@@ -83,13 +83,20 @@
         type: [String, Object],
         default: ""
       },
+      fontSize: {
+        type: Number,
+        default: 14
+      }
     },
     data() {
       return {}
     },
     computed: {
       getStyle() {
+        let size = !this.iconSrc ? 12 : this.fontSize
+        console.log('iconSrc', this.fontSize, size)
         return {
+          'font-size': size + 'px',
           left: this.positions[0] + 'px',
           top: this.positions[1] + 'px',
           width: this.width - 2 + 'px'
@@ -110,29 +117,7 @@
     display flex
     flex-direction: column;
     align-items: center
-
-    &.can-active
-      .name
-        color: $active-color
-
-      .img-wrap
-        border-color: $active-color
-
-      &:hover
-        .img-wrap
-          &.border
-            background: $hover-color
-            border-color: transparent
-
-        .name
-          text-decoration: underline
-
-    .name
-      width 100%
-      text-align center
-      margin-top: 10px
-      font-size: $font-size-14
-      color: $text-default-color
+    color: $text-default-color
 
     .img-wrap
       padding: 100% 100% 0 0;
@@ -141,10 +126,35 @@
       border 2px solid transparent
       overflow hidden
 
-      img
-        position absolute
-        top: 0px
-        left: 0px
-        width 100px
-        height 100px
+    img
+      position absolute
+      top: 0px
+      left: 0px
+      width 100px
+      height 100px
+
+    .name
+      width 100%
+      text-align center
+      font-size inherit
+
+    &.text-active
+      color: $active-color
+
+    &.can-active
+      color: $active-color
+      .name
+        margin-top: 10px
+      .img-wrap
+        border-color: $active-color
+
+      &:hover
+        .img-wrap
+          background: $hover-color
+          border-color: transparent
+
+        .name
+          text-decoration: underline
+
+
 </style>
