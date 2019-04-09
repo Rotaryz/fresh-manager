@@ -96,6 +96,7 @@ router.afterEach((routeTo, routeFrom) => {
     titles[variableIndex] = (routeTo.query.id || routeTo.params.id ? EDIT_TEXT : ADD_TEXT) + titles[variableIndex]
   }
   titles[titles.length - 1] = name || titles[titles.length - 1]
+  console.log(titles,'titles')
   if (titles) {
     store.commit('global/SET_CURRENT_TITLES', titles)
   }

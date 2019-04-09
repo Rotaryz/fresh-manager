@@ -4,7 +4,7 @@
       <header class="logo">
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
-      <ul v-for="(item, index) in firstMenu" :key="index" class="menu">
+      <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'position-bottom':item.url==='/home/beginner-guide'}]">
         <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index)">
           <img :src="item.icon" class="nav-item-icon">
           <p class="nav-item-name">{{item.name}}</p>
@@ -247,6 +247,18 @@
       ]
     }
   ]
+  const BEGINNER_GUIDE = [
+    {
+      title: '新手指南',
+      children: [
+        {
+          title: '新手指南',
+          url: '/home/beginner-guide',
+          isLight: true
+        }
+      ]
+    }
+  ]
   const FIRST_MENU = [
     // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
     {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
@@ -270,9 +282,17 @@
       isLight: false,
       second: FINANCE,
       url: '/home/business-overview'
+    }, {
+      name: "新手指引",
+      icon: require('./icon-statistics@2x.png'),
+      isLight: false,
+      second: BEGINNER_GUIDE,
+      url: '/home/beginner-guide'
     }
-    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
+    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''},
+
   ]
+
   export default {
     name: COMPONENT_NAME,
     filters: {
@@ -357,25 +377,57 @@
       // 监听页面变化
       _handleNavList() {
         let currentPath = this.$route.fullPath
-        let currentIndex = this.navList.findIndex((item) => {
-          return item.children.some((child) => currentPath.includes(child.url))
-        })
-        this.navList.map((item) => {
-          item.children = item.children.map((child) => {
-            child.isLight = false
-            return child
-          })
-          return item
-        })
-        let urlIndex = -1
-        this.navList[currentIndex].children.map((item, index) => {
-          if (urlIndex === -1) {
-            urlIndex = currentPath.includes(item.url) ? index : -1
+        let currentNav
+        this.firstMenu.forEach((item,idx) => {
+          this.firstMenu[idx].isLight = false
+          if (currentPath.includes(item.url)) {
+            currentNav = item.second
+            this.firstMenu[idx].isLight = true
+            this.firstMenu[idx].second[0].children[0].isLight = true
+            return item
           }
-          item.isLight = currentPath.includes(item.url)
-          return item
+          if (item.second) {
+            return item.second.find((it,id) => {
+              return it.children.find((child,i) => {
+                if(currentPath.includes(child.url)){
+                  currentNav = item.second
+                  this.firstMenu[idx].isLight = true
+                  this.firstMenu[idx].second[id].children[i].isLight = true
+                  return child
+                }else{
+                  this.firstMenu[idx].isLight = false
+                  this.firstMenu[idx].second[id].children[i].isLight = false
+                }
+              })
+            })
+          }
+          this.firstMenu[idx].isLight = false
         })
-        this.firstMenu[this.firstIndex].url = this.navList[currentIndex].children[urlIndex].url
+        console.log(currentNav, 'currentNav')
+        this.navList = currentNav || []
+        // 旧版
+        // let currentPath = this.$route.fullPath
+        // let currentIndex = this.navList.findIndex((item) => {
+        //   return item.children.some((child) => currentPath.includes(child.url))
+        // })
+        // console.log(currentIndex, 'currentIndex')
+        // this.navList.map((item) => {
+        //   item.children = item.children.map((child) => {
+        //     child.isLight = false
+        //     return child
+        //   })
+        //   return item
+        // })
+        // console.log(this.navList, 'this.navList')
+        // let urlIndex = -1
+        // this.navList[currentIndex].children.map((item, index) => {
+        //   if (urlIndex === -1) {
+        //     urlIndex = currentPath.includes(item.url) ? index : -1
+        //   }
+        //   item.isLight = currentPath.includes(item.url)
+        //   return item
+        // })
+        // this.firstMenu[this.firstIndex].url = this.navList[currentIndex].children[urlIndex].url
       }
     }
   }
@@ -401,16 +453,19 @@
     z-index: 2000
     width: 210px
     display: flex
+
     .first
       overflow: hidden
       min-height: 100vh
       width: $menu-width
       position: relative
       background: #363B4B
+
     .menu
       position: relative
       z-index: 1
       width: 100px
+
     .nav-item
       height: 54px
       display: flex
@@ -419,12 +474,15 @@
       padding: 0 10px
       box-sizing: border-box
       transition: all 0.3s
+
       .nav-item-icon
         width: 14px
         height: 14px
         margin-right: 5px
+
       .nav-item-name
         font-size: $font-size-14
+
     .nav-item-active
       color: $color-text-main
       background: $color-white
@@ -436,6 +494,7 @@
     display: flex
     align-items: center
     justify-content: center
+
     .logo-img
       overflow: hidden
       width: 32px
@@ -450,37 +509,46 @@
     white-space: nowrap
     transition: all 0.2s
     border-right-1px($color-line)
+
     &::-webkit-scrollbar
       width: 0
       height: 0
       transition: all 0.2s
+
     &::-webkit-scrollbar-thumb
       background-color: rgba(0, 0, 0, .15)
       border-radius: 10px
+
     &::-webkit-scrollbar-thumb:hover
       background-color: rgba(0, 0, 0, .3)
+
     &::-webkit-scrollbar-track
       box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
       border-radius: 10px
+
     &:hover
       &::-webkit-scrollbar
         transition: all 0.2s
         width: 8px
         height: 10px
+
     .second-title
       transition: all 0.2s
       margin: 30px 0 10px
       color: #888888
       font-size: $font-size-14
       line-height: 1
+
     .second-link
       transition: all 0.2s
       height: 34px
       line-height: 34px
       color: $color-text-main
       font-size: $font-size-14
+
       &:hover
         color: $color-main
+
     .second-link-active
       color: $color-main
 </style>
