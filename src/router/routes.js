@@ -767,29 +767,6 @@ export default [
           }
         }
       },
-      // 团长提现
-      {
-        path: 'leader-withdrawal',
-        name: 'leader-withdrawal',
-        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
-        meta: {
-          titles: ['商城', '团长', '团长提现'],
-          beforeResolve(routeTo, routeFrom, next) {
-            //  订单列表
-            store
-              .dispatch('leader/getWithdrawalList')
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
-          }
-        }
-      },
       // 收支明细
       {
         path: 'leader-withdrawal/budget-detail/:id/:name',
@@ -857,6 +834,56 @@ export default [
         component: () => lazyLoadView(import('@pages/operating-cost/operating-cost')),
         meta: {
           titles: ['财务', '营收概况', '营业成本']
+        }
+      },
+      // 团长佣金
+      {
+        path: 'leader-commission',
+        name: 'leader-commission',
+        component: () => lazyLoadView(import('@pages/leader-commission/leader-commission')),
+        meta: {
+          titles: ['财务', '团长', '团长佣金']
+        }
+      },
+      // 团长提现
+      {
+        path: 'leader-withdrawal',
+        name: 'leader-withdrawal',
+        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
+        meta: {
+          titles: ['财务', '团长', '团长提现'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('leader/getWithdrawalList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 交易明细
+      {
+        path: 'transaction-detail',
+        name: 'transaction-detail',
+        component: () => lazyLoadView(import('@pages/transaction-detail/transaction-detail')),
+        meta: {
+          titles: ['财务', '账户', '交易明细']
+        }
+      },
+      // 账户总览
+      {
+        path: 'account-overview',
+        name: 'account-overview',
+        component: () => lazyLoadView(import('@pages/account-overview/account-overview')),
+        meta: {
+          titles: ['财务', '账户', '账户总览']
         }
       },
       /**
