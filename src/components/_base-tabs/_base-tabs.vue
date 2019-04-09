@@ -90,6 +90,7 @@
     align-items: center
     position: relative
     justify-content: center;
+    border-bottom 2px solid #E9ECEE
 
     .tab-active-line {
       transition: all .3s
@@ -98,7 +99,7 @@
       width: 40px
       position: absolute
       left: 8px
-      bottom: 0
+      bottom: -2px
       border-radius: 2px
       z-index: 10
     }
