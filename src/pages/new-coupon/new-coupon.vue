@@ -565,12 +565,16 @@
         this.couponPage = page
         await this._getGoodsList()
       },
-      // 选择二级分类
+      // 选择一级分类
       async _secondAssortment(item) {
         this.parentId = item.id
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
-        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        if (item.id === '') {
+          this.secondAssortment.data = []
+        } else {
+          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        }
         this.secondAssortment.content = '选择二级分类'
         this.couponPage = 1
         this.$refs.pagination.beginPage()

@@ -34,7 +34,7 @@
                 {{type[item[val.value]]}}
               </div>
               <!--状态-->
-              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
+              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item)">
                 <base-switch :status="item.status" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
@@ -100,7 +100,7 @@
         this.page = page
         this.getMarketList({page: this.page})
       },
-      switchBtn(item, index) {
+      switchBtn(item) {
         let data = {
           status: item.status ? 0 : 1,
           id: item.id
@@ -135,7 +135,6 @@
   @import "~@design"
 
   .list-box
-    flex: 1
     .list-item
       font-size: $font-size-14
       &:last-child
