@@ -1,15 +1,18 @@
 <template>
-  <tag :class="['flow-item', {'can-active':to},{'text-active':activeText} ]"
-       :style="getStyle" :tag="to ? 'router-link':'div'" :to="to"
-  >
-    <template v-if="iconSrc">
-      <div :class="{'img-wrap':true}">
-        <img :src="iconSrc" alt="icon" :width="width-2" :height="width-2">
-      </div>
-      <div class="name" v-text="text"></div>
-    </template>
-    <template v-if="!iconSrc && text"> {{text}}</template>
-  </tag>
+  <div @click="itemClick">
+    <tag :class="['flow-item', {'can-active':to},{'text-active':activeText} ]"
+         :style="getStyle" :tag="to ? 'router-link':'div'" :to="to"
+    >
+      <template v-if="iconSrc">
+        <div :class="{'img-wrap':true}">
+          <img :src="iconSrc" alt="icon" :width="width-2" :height="width-2">
+        </div>
+        <div class="name" v-text="text"></div>
+      </template>
+      <template v-if="!iconSrc && text"> {{text}}</template>
+    </tag>
+  </div>
+
 
 </template>
 <script type="text/ecmascript-6">
@@ -94,13 +97,17 @@
     computed: {
       getStyle() {
         let size = !this.iconSrc ? 12 : this.fontSize
-        console.log('iconSrc', this.fontSize, size)
         return {
           'font-size': size + 'px',
           left: this.positions[0] + 'px',
           top: this.positions[1] + 'px',
           width: this.width - 2 + 'px'
         }
+      }
+    },
+    methods: {
+      itemClick() {
+        this.$emit('item-click')
       }
     }
   }
@@ -143,8 +150,10 @@
 
     &.can-active
       color: $active-color
+
       .name
         margin-top: 10px
+
       .img-wrap
         border-color: $active-color
 

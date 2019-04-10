@@ -283,4 +283,7 @@ export const productComputed = {
 export const productMethods = {
   ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
 }
-
+// 新手指引
+export const beginnerGuideComputed = {
+  ...mapGetters('beginnerGuide', ['active'])
+}
