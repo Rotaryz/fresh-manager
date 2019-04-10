@@ -427,10 +427,10 @@
                 this._back()
               }, 1000)
             } else {
+              this.isSubmit = false
               this.$toast.show(res.message)
             }
             this.$loading.hide()
-            this.isSubmit = false
           })
           return
         }
@@ -441,10 +441,10 @@
               this._back()
             }, 1000)
           } else {
+            this.isSubmit = false
             this.$toast.show(res.message)
           }
           this.$loading.hide()
-          this.isSubmit = false
         })
       },
       getSelectData() {
