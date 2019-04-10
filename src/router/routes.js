@@ -466,7 +466,7 @@ export default [
           titles: ['商城', '订单', '退货管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
-            let status = routeTo.query.status
+            let status = routeTo.query.status || ''
             store.dispatch('returns/infoStatus', status)
             store
               .dispatch('returns/getReturnsList')
