@@ -17,7 +17,7 @@ export default [
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
         if (store.getters['auth/loggedIn']) {
-          next({name: 'data-survey'})
+          next({name: 'new-data'})
         } else {
           next()
         }
@@ -31,7 +31,7 @@ export default [
     meta: {
       authRequired: true
     },
-    redirect: 'home/data-survey',
+    redirect: 'home/new-data',
     children: [
       /**
        * 商品
