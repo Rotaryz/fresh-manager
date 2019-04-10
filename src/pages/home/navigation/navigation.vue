@@ -174,19 +174,24 @@
     {
       title: '统计',
       children: [
-        // {
-        //   title: '数据统计',
-        //   url: '/home/data-survey',
-        //   isLight: false
-        // },
         {
           title: '数据统计',
-          url: '/home/new-data',
+          url: '/home/data-survey',
           isLight: false
         }
       ]
     }
   ]
+  const DATA = [{
+    title: '概况',
+    children: [
+      {
+        title: '数据概况',
+        url: '/home/new-data',
+        isLight: false
+      }
+    ]
+  }]
   const SUPPLY = [
     {
       title: '订单',
@@ -272,13 +277,13 @@
     }
   ]
   const FIRST_MENU = [
-    // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
+    {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: DATA, url: '/home/new-data'},
     {
       name: '统计',
       icon: require('./icon-statistics@2x.png'),
       isLight: true,
       second: STATISTICS,
-      url: '/home/new-data'
+      url: '/home/data-survey'
     },
     {
       name: '商城',
