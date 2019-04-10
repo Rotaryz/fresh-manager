@@ -278,13 +278,13 @@
   ]
   const FIRST_MENU = [
     {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: DATA, url: '/home/new-data'},
-    {
-      name: '统计',
-      icon: require('./icon-statistics@2x.png'),
-      isLight: true,
-      second: STATISTICS,
-      url: '/home/data-survey'
-    },
+    // {
+    //   name: '统计',
+    //   icon: require('./icon-statistics@2x.png'),
+    //   isLight: true,
+    //   second: STATISTICS,
+    //   url: '/home/data-survey'
+    // },
     {
       name: '商城',
       icon: require('./icon-tmall@2x.png'),
