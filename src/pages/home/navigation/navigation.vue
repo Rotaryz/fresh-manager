@@ -139,17 +139,17 @@
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false
-        },
-        {
-          title: '团长结算',
-          url: '/home/head-settlement',
-          isLight: false
-        },
-        {
-          title: '团长提现',
-          url: '/home/leader-withdrawal',
-          isLight: false
         }
+        // {
+        //   title: '团长结算',
+        //   url: '/home/head-settlement',
+        //   isLight: false
+        // },
+        // {
+        //   title: '团长提现',
+        //   url: '/home/leader-withdrawal',
+        //   isLight: false
+        // }
       ]
     }
   ]
@@ -161,10 +161,40 @@
           title: '营业概况',
           url: '/home/business-overview',
           isLight: false
+        }
+        // {
+        //   title: '交易记录',
+        //   url: '/home/transaction-record',
+        //   isLight: false
+        // }
+      ]
+    },
+    {
+      title: '账户',
+      children: [
+        {
+          title: '账户总览',
+          url: '/home/account-overview',
+          isLight: false
         },
         {
-          title: '交易记录',
-          url: '/home/transaction-record',
+          title: '交易明细',
+          url: '/home/transaction-detail',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '团长',
+      children: [
+        {
+          title: '团长佣金',
+          url: '/home/head-settlement',
+          isLight: false
+        },
+        {
+          title: '提现记录',
+          url: '/home/leader-withdrawal',
           isLight: false
         }
       ]
@@ -370,25 +400,28 @@
       // 监听页面变化
       _handleNavList() {
         let currentPath = this.$route.fullPath
-        let currentIndex = this.navList.findIndex((item) => {
-          return item.children.some((child) => currentPath.includes(child.url))
-        })
-        this.navList.map((item) => {
-          item.children = item.children.map((child) => {
-            child.isLight = false
-            return child
-          })
-          return item
-        })
-        let urlIndex = -1
-        this.navList[currentIndex].children.map((item, index) => {
-          if (urlIndex === -1) {
-            urlIndex = currentPath.includes(item.url) ? index : -1
+        let currentNav
+        this.firstMenu.forEach((item, idx) => {
+          if (currentPath.includes(item.url)) {
+            currentNav = item.second
+            this.firstMenu[idx].isLight = true
+            this.firstMenu[idx].second[0].children[0].isLight = true
+          } else {
+            this.firstMenu[idx].isLight = false
           }
-          item.isLight = currentPath.includes(item.url)
-          return item
+          item.second && item.second.forEach((it, id) => {
+            it.children && it.children.forEach((child, i) => {
+              if (currentPath.includes(child.url)) {
+                currentNav = item.second
+                this.firstMenu[idx].isLight = true
+                this.firstMenu[idx].second[id].children[i].isLight = true
+              } else {
+                this.firstMenu[idx].second[id].children[i].isLight = false
+              }
+            })
+          })
         })
-        this.firstMenu[this.firstIndex].url = this.navList[currentIndex].children[urlIndex].url
+        this.navList = currentNav || []
       }
     }
   }

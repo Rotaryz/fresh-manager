@@ -21,8 +21,8 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-bandit_list@2x.png" class="identification-icon">
-          <p class="identification-name">团长提现列表</p>
+          <img src="./icon-order_list2@2x.png" class="identification-icon">
+          <p class="identification-name">提现记录</p>
         </div>
         <div class="function-btn">
           <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
@@ -52,7 +52,7 @@
               </div>
             </div>
             <div class="list-item list-operation-box">
-              <span v-if="item.status === 0 || item.status === 4 || item.status === 5" class="list-operation" @click="checkApply(item.id)">审核</span>
+              <!--<span v-if="item.status === 0 || item.status === 4 || item.status === 5" class="list-operation" @click="checkApply(item.id)">审核</span>-->
               <router-link tag="span" :to="`budget-detail/${item.payee_id}/${item.name}`" append class="list-operation">收支明细</router-link>
             </div>
           </div>
@@ -94,7 +94,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'LEADER_WITHDRAWAL'
-  const TITLE = '团长提现'
+  const TITLE = '提现记录'
   const LIST_TITLE = [
     '提现单号',
     '团长账号',
