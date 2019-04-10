@@ -466,6 +466,8 @@ export default [
           titles: ['商城', '订单', '退货管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
+            let status = routeTo.query.status
+            store.dispatch('returns/infoStatus', status)
             store
               .dispatch('returns/getReturnsList')
               .then((res) => {
@@ -776,6 +778,11 @@ export default [
           titles: ['商城', '团长', '团长提现'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
+            let status = routeTo.query.status
+            console.log (status)
+            if (status * 1 === 0) {
+              store.dispatch('leader/infoStatus', {status})
+            }
             store
               .dispatch('leader/getWithdrawalList')
               .then((res) => {
@@ -917,10 +924,15 @@ export default [
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
+            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             let start = time.start
             let end = time.end
+            let status = routeTo.query.status
             store.dispatch('proTask/infoTaskTime', {start, end})
             store
               .dispatch('proTask/getPurchaseTaskList', {
@@ -929,7 +941,7 @@ export default [
                 endTime: endTime,
                 keyword: '',
                 page: 1,
-                status: '',
+                status: status,
                 supplyId: '',
                 loading: true
               })
@@ -1156,12 +1168,17 @@ export default [
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
+            }
+            let status = routeTo.query.status
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
             routeTo.params.accurateEnd = time.end
             store
-              .dispatch('product/getEnterData', {startTime, endTime, page: 1})
+              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1217,12 +1234,17 @@ export default [
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
+            }
+            let status = routeTo.query.status
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
             routeTo.params.accurateEnd = time.end
             store
-              .dispatch('product/getOutData', {startTime, endTime, page: 1})
+              .dispatch('product/getOutData', {startTime, endTime, status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1312,13 +1334,18 @@ export default [
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
+            }
+            let status = routeTo.query.status
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
             routeTo.params.accurateEnd = time.end
             let tabIndex = store.state.distribution.tabIndex
             if (tabIndex === 0) {
-              store.dispatch('distribution/infoOrderTime', {startTime, endTime, start: time.start, end: time.end})
+              store.dispatch('distribution/infoOrderTime', {startTime, endTime, start: time.start, end: time.end, status})
               store
                 .dispatch('distribution/getOrderList')
                 .then((res) => {
@@ -1432,6 +1459,24 @@ export default [
                 next({name: '404'})
               })
           }
+        }
+      },
+      // 新手指南
+      {
+        path: 'beginner-guide',
+        name: 'beginner-guide',
+        meta: {
+          titles: ['新手指南']
+        },
+        component: () => lazyLoadView(import('@pages/beginner-guide/beginner-guide'))
+      },
+      // 调度管理
+      {
+        path: 'new-data',
+        name: 'new-data',
+        component: () => lazyLoadView(import('@pages/new-data/new-data')),
+        meta: {
+          titles: ['概况', '数据概况']
         }
       }
     ]

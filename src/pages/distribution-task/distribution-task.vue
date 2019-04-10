@@ -39,7 +39,7 @@
         <div class="identification-page">
           <img src="./icon-driver@2x.png" class="identification-icon">
           <p class="identification-name">{{tabStatus[tabIndex].text}}</p>
-          <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
+          <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
         </div>
@@ -138,7 +138,8 @@
         endTime: '',
         dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待配送', value: 1, key: 'wait_delivery', num: 0}, {name: '配送完成', value: 2, key: 'success_delivery', num: 0}],
         accurateStart: '',
-        accurateEnd: ''
+        accurateEnd: '',
+        statusTab: 0
       }
     },
     computed: {
@@ -195,6 +196,9 @@
       this.accurateStart = this.$route.params.accurateStart
       this.accurateEnd = this.$route.params.accurateEnd
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+      if (this.$route.query.status) {
+        this.statusTab = this.$route.query.status * 1
+      }
       await this._statistic()
     },
     methods: {

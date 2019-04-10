@@ -57,7 +57,8 @@ export const leaderMethods = mapActions('leader', [
   'setWithdrawalSearch',
   'setBillPage',
   'setBillType',
-  'setWidthTime'
+  'setWidthTime',
+  'infoStatus'
 ])
 
 // 今日采购
@@ -144,7 +145,7 @@ export const returnsComputed = {
 }
 
 export const returnsMethods = {
-  ...mapActions('returns', ['getReturnsList', 'setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage'])
+  ...mapActions('returns', ['getReturnsList', 'setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'infoStatus'])
 }
 
 // 轮播广告

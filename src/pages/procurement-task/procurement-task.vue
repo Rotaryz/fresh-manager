@@ -44,7 +44,7 @@
         <div class="identification-page">
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务列表</p>
-          <base-status-tab :statusList="dispatchSelect" @setStatus="_setStatus"></base-status-tab>
+          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
@@ -231,7 +231,8 @@
         goodsItem: {},
         choicePage: 1,
         oneBtn: false,
-        confirmType: ''
+        confirmType: '',
+        statusTab: 0
       }
     },
     computed: {
@@ -240,6 +241,10 @@
     async created() {
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
+      if (this.$route.query.status) {
+        this.statusTab = this.$route.query.status * 1
+        this.status = this.$route.query.status * 1
+      }
       await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
