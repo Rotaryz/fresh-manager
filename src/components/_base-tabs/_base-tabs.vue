@@ -1,7 +1,7 @@
 <template>
   <div class="tab-wrap">
     <ul class="tab-list">
-      <li v-for="(flow,idx) in tabList" :key="flow.text" :ref="'activeTab'+idx" :class="['tab-item', activeIdx===getId(flow,idx) ?'tab-item-active':'']" :style="{color:defaultColor}"
+      <li v-for="(flow,idx) in tabList" :key="flow.text" :ref="'activeTab'+idx" :class="['tab-item', defaultTab===getId(flow,idx) ?'tab-item-active':'']" :style="{color:defaultColor}"
           @click.capture="changeTab(getId(flow,idx),$event)"
       >
         <span v-if="isShowMark" class="idx-mark">{{idx +1}}</span>
@@ -43,7 +43,7 @@
     },
     data() {
       return {
-        activeIdx: 0,
+        // activeIdx: 0,
         activeLine: {
           left: "",
           lineWidth: 100
@@ -53,31 +53,26 @@
     mounted() {
       window.onresize = () => {
         return (() => {
-          this.getWidthAndPositon()
+          this.getWidthAndPositon(this.defaultTab)
         })()
       }
-
-      this.activeIdx = this.defaultTab
       if (this.tabList.length) {
-        this.getWidthAndPositon()
+        this.getWidthAndPositon(this.defaultTab)
       }
     },
     methods: {
       getId(item, idx) {
         return this.id ? item[this.id] : idx
       },
-      getWidthAndPositon() {
-        let el = this.$refs['activeTab' + this.activeIdx][0]
+      getWidthAndPositon(id) {
+        let el = this.$refs['activeTab' + id][0]
         if (!el) return
         this.activeLine.lineWidth = el.offsetWidth
         this.activeLine.left = el.offsetLeft
       },
       changeTab(idx) {
-        this.activeIdx = idx
+        this.getWidthAndPositon(idx)
         this.$emit('tab-change', idx)
-        this.$nextTick(() => {
-          this.getWidthAndPositon()
-        })
       }
     }
   }

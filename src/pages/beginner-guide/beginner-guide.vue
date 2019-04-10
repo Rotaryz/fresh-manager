@@ -10,6 +10,7 @@
                    :activeText="item.activeText||''"
                    :fontSize="item.fontSize || 14"
                    :to="item.routerName"
+                   @item-click="clickUrl(item.routerName)"
         >
         </flow-item>
       </flow>
@@ -66,7 +67,7 @@
   }, {
     name: "创建活动",
     imgName: "activity",
-    routerName: 'edit-outreach',
+    routerName: 'rush-purchase',
     positions: [615, PAGE_ONE_TOP_SECOND]
   }, {
     name: "编辑首页",
@@ -250,10 +251,15 @@
         return data && data.data || []
       }
     },
-    mounted() {
-
+    created() {
+      this.activeIdx = this.$store.state.beginner.activeIdx
     },
     methods: {
+      clickUrl(is){
+        if(is){
+          this.$store.commit('beginner/SET_ACTIVE',this.activeIdx)
+        }
+      },
       getImg(name, type = 'icon') {
         return name ? `/imgs/beginner-guide/${type}-${name}@2x.png` :''
       },

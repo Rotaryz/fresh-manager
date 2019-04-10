@@ -5,7 +5,7 @@
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
       <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'beginner-guide':item.url==='/home/beginner-guide'}]">
-        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index)">
+        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
           <img :src="item.icon" class="nav-item-icon">
           <p class="nav-item-name">{{item.name}}</p>
         </li>
@@ -355,7 +355,10 @@
         })
       },
       // 点击一级导航
-      _setFirstMenu(i) {
+      _setFirstMenu(i,url) {
+        if(url === '/home/beginner-guide'){
+          this.$store.commit('beginner/SET_ACTIVE', 0)
+        }
         if (this.firstMenu[i].isLight) {
           return
         } else if (!this.firstMenu[i].second.length) {
