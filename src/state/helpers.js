@@ -317,3 +317,7 @@ export const financeMethods ={
       'setPayListPage'
     ])
 }
+// 新手指引
+export const beginnerGuideComputed = {
+  ...mapGetters('beginnerGuide', ['active'])
+}
