@@ -170,18 +170,18 @@
       ]
     }
   ]
-  const STATISTICS = [
-    {
-      title: '统计',
-      children: [
-        {
-          title: '数据统计',
-          url: '/home/data-survey',
-          isLight: false
-        }
-      ]
-    }
-  ]
+  // const STATISTICS = [
+  //   {
+  //     title: '统计',
+  //     children: [
+  //       {
+  //         title: '数据统计',
+  //         url: '/home/data-survey',
+  //         isLight: false
+  //       }
+  //     ]
+  //   }
+  // ]
   const DATA = [{
     title: '概况',
     children: [
