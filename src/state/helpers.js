@@ -284,3 +284,36 @@ export const productMethods = {
   ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
 }
 
+// 财务管理
+export const financeComputed = {
+  ...mapGetters('finance',
+    [
+      'settleStatus',
+      'statusTabIndex',
+      'settleLogs',
+      'settleLogsPageTotal',
+      'settleLogsPage',
+      'settleLogsDate',
+      'settleLogsStatus',
+      'settleLogsKeyword',
+      'account',
+      'payList',
+      'payListPageTotal',
+      'payListPage'
+    ])
+}
+
+export const financeMethods ={
+  ...mapActions('finance',
+    [
+      'getSettleStatus',
+      'getSettleLogs',
+      'setSettleDate',
+      'setSettleKeyword',
+      'setSettleLogsStatus',
+      'setSettleLogsPage',
+      'getAccount',
+      'getPayList',
+      'setPayListPage'
+    ])
+}

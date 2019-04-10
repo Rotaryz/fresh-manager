@@ -139,17 +139,17 @@
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false
-        },
-        {
-          title: '团长结算',
-          url: '/home/head-settlement',
-          isLight: false
-        },
-        {
-          title: '团长提现',
-          url: '/home/leader-withdrawal',
-          isLight: false
         }
+        // {
+        //   title: '团长结算',
+        //   url: '/home/head-settlement',
+        //   isLight: false
+        // },
+        // {
+        //   title: '团长提现',
+        //   url: '/home/leader-withdrawal',
+        //   isLight: false
+        // }
       ]
     }
   ]
@@ -161,10 +161,40 @@
           title: '营业概况',
           url: '/home/business-overview',
           isLight: false
+        }
+        // {
+        //   title: '交易记录',
+        //   url: '/home/transaction-record',
+        //   isLight: false
+        // }
+      ]
+    },
+    {
+      title: '账户',
+      children: [
+        {
+          title: '账户总览',
+          url: '/home/account-overview',
+          isLight: false
         },
         {
-          title: '交易记录',
-          url: '/home/transaction-record',
+          title: '交易明细',
+          url: '/home/transaction-detail',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '团长',
+      children: [
+        {
+          title: '团长佣金',
+          url: '/home/head-settlement',
+          isLight: false
+        },
+        {
+          title: '提现记录',
+          url: '/home/leader-withdrawal',
           isLight: false
         }
       ]
