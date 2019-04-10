@@ -94,7 +94,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'LEADER_WITHDRAWAL'
-  const TITLE = '团长提现'
+  const TITLE = '提现记录'
   const LIST_TITLE = [
     '提现单号',
     '团长账号',

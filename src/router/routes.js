@@ -726,7 +726,7 @@ export default [
         name: 'head-settlement',
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
-          titles: ['商城', '团长', '团长结算'],
+          titles: ['财务', '团长', '团长佣金'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
@@ -874,7 +874,20 @@ export default [
         name: 'transaction-detail',
         component: () => lazyLoadView(import('@pages/transaction-detail/transaction-detail')),
         meta: {
-          titles: ['财务', '账户', '交易明细']
+          titles: ['财务', '账户', '交易明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('finance/getSettleStatus')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       // 账户总览
@@ -883,7 +896,20 @@ export default [
         name: 'account-overview',
         component: () => lazyLoadView(import('@pages/account-overview/account-overview')),
         meta: {
-          titles: ['财务', '账户', '账户总览']
+          titles: ['财务', '账户', '账户总览'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('finance/getAccount')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       /**
