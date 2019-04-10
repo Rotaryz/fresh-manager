@@ -30,7 +30,7 @@
         <div class="base-box">
           <div class="identification survey-box">
             <div class="identification-page">
-              <img src="./icon-real_time@2x.png" class="identification-icon">
+              <img src="./icon-basics@2x.png" class="identification-icon">
               <p class="identification-name">基础功能</p>
             </div>
           </div>
