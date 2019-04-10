@@ -426,6 +426,7 @@
           total_page: res.meta.last_page
         }
         this.chooseGoods = res.data.map((item, index) => {
+          item.selected = 0
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
