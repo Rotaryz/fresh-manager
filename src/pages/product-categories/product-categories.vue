@@ -114,7 +114,7 @@
               this.$refs.bigModel.hide()
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.categoryList.push({name: name, sort: sort, id: res.data.id, list: [], image_url: imageUrl})
+              this.categoryList.push({name: name, sort: sort, id: res.data.id, list: [], image_url: imageUrl, image_id: imageId})
               this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
