@@ -101,7 +101,7 @@
         this.$refs.pagination.beginPage()
       },
       changeStatus(status) {
-        this.setSettleLogsStatus(status.value, 1)
+        this.setSettleLogsStatus({status: status.value, isFetch: 1})
         this.$refs.pagination.beginPage()
       },
       exportExcel() {

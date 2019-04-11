@@ -209,7 +209,7 @@ export const actions = {
     commit('SET_SETTLE_LOGS_PAGE', 1)
     dispatch('getSettleStatus')
   },
-  setSettleLogsStatus({commit, dispatch}, status, isFetch) {
+  setSettleLogsStatus({commit, dispatch}, {status, isFetch}) {
     commit('SET_SETTLE_LOGS_STATUS', status)
     commit('SET_SETTLE_LOGS_PAGE', 1)
     isFetch && dispatch('getSettleLogs')
