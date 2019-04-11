@@ -67,7 +67,7 @@
   }, {
     name: "创建活动",
     imgName: "activity",
-    routerName: 'flash-sale',
+    routerName: 'new-sale',
     positions: [615, PAGE_ONE_TOP_SECOND]
   }, {
     name: "编辑首页",
