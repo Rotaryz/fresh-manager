@@ -66,7 +66,7 @@
         </div>
         <div class="middle-small-right">
           <div class="goods-rank">
-            <div class="identification survey-box">
+            <div class="identification survey-box survey-box-none">
               <div class="identification-page">
                 <img src="./icon-ranking@2x.png" class="identification-icon">
                 <p class="identification-name">商品排行</p>
@@ -96,7 +96,7 @@
       </div>
       <div class="data-middle-right">
         <div class="community-rank">
-          <div class="identification survey-box">
+          <div class="identification survey-box survey-box-none">
             <div class="identification-page">
               <img src="./icon-ranking@2x.png" class="identification-icon">
               <p class="identification-name">社区排行</p>
@@ -178,7 +178,10 @@
         time: 'week',
         shopTime: 'week',
         downUrl: '',
-        shopDownUrl: ''
+        shopDownUrl: '',
+        drawX: [],
+        drawY: [],
+        drawTitle: ''
       }
     },
     mounted() {
@@ -257,42 +260,44 @@
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
-            this.drawEcharLine(res.data)
+            this.drawX = res.data.x
+            this.drawY= res.data.y
+            this.drawTitle = res.data.title
+            this.drawEcharLine()
           } else {
             this.$toast.show(res.message)
           }
         })
       },
-      drawEcharLine(data) {
-        let xAxis = data.x
-        let yAxis = data.y
-        let title = data.title
+      drawEcharLine() {
         let myChart = this.$echarts.init(document.getElementById('trend'))
         myChart.setOption({
           grid: {
             top: '45',
-            left: '25',
-            right: '20',
-            bottom: '22',
+            left: '15',
+            right: '30',
+            bottom: '20',
             containLabel: true
           },
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: xAxis,
+            data: this.drawX,
             splitLine: {
               show: false,
               lineStyle: {
-                color: '#E6E6E6',
+                color: '#F0F3F5',
                 width: 0.5
               }
             },
             axisLabel: {
-              color: '#666',
+              color: '#999',
               fontSize: 12,
-              align: 'center'
+              align: 'center',
+              margin: 17
             },
             axisTick: {
+              show: false,
               lineStyle: {
                 color: '#ccc',
                 width: 0.5
@@ -300,7 +305,7 @@
             },
             axisLine: {
               lineStyle: {
-                color: '#ccc',
+                color: '#F0F3F5',
                 width: 0.5
               }
             }
@@ -324,9 +329,8 @@
             splitLine: {
               show: true,
               lineStyle: {
-                color: '#EFEFEF',
-                width: 0.5,
-                type: 'dotted'
+                color: '#F0F3F5',
+                width: 0.5
               }
             },
             axisTick: {
@@ -338,7 +342,8 @@
             },
             axisLabel: {
               formatter: '{value}',
-              color: '#666'
+              color: '#999',
+              margin: 20
             },
             axisLine: {
               show: false,
@@ -350,10 +355,9 @@
           },
           series: [
             {
-              name: title,
-              data: yAxis,
+              name: this.drawTitle,
+              data: this.drawY,
               type: 'line',
-              smooth: true,
               areaStyle: {
                 color: {
                   type: 'linear',
@@ -376,18 +380,24 @@
               },
               itemStyle: {
                 normal: {
-                  color: 'rgba(130,131,255,1)',
+                  color: '#8283FF',
                   borderWidth: 1,
                   lineStyle: {
-                    color: 'rgba(130,131,255,1)',
-                    width: 3
+                    color: '#8283FF',
+                    width: 2
                   }
+                },
+                emphasis: {
+                  borderWidth: 3,
+                  borderColor: '#8283FF'
                 }
               }
             }
           ]
         })
-        myChart.resize()
+        window.onresize = function(){
+          myChart.resize()
+        }
       },
       _echartMore(value) {
         this.getEchartData(value, true)
@@ -534,7 +544,7 @@
                 margin-bottom: 10px
               .real-text-bottom
                 layout(row)
-                align-items: center
+                align-items: flex-end
                 justify-content: space-between
                 .real-text-number
                   font-size: 26px
@@ -631,17 +641,18 @@
     .dispose-matter-box
       layout(row)
       align-items: center
-      height: 120px
+      height: 140px
       width: 100%
       .dispose-list-box
         layout()
         align-items: center
         justify-content: center
-        width: 180px
+        flex: 1
+        max-width: 200px
         .dispose-top-item
           width: 50px
           height: @width
-          border: 0.5px solid #ccc
+          border-1px(#ccc, 500px)
           border-radius: 50px
           position: relative
           .dispose-text
@@ -666,6 +677,7 @@
             font-size: $font-size-13
             text-align: center
             font-family: $font-family-medium
+            z-index: 10
           .dispose-img
             width: 22px
             height: @width
@@ -675,6 +687,7 @@
             border-radius: 50px
             display: block
             font-family: $font-family-medium
+            z-index: 11
         .dispose-name
           margin-top: 10px
           font-size: $font-size-14
@@ -686,14 +699,14 @@
       padding-right: 10px
       flex: 1
       &:nth-child(1)
-        max-width: 46px
+        max-width: 56px
       &:nth-child(2)
         flex: 1.6
       &:nth-child(3), &:nth-child(4), &:nth-child(5)
         text-align: right
         justify-content: flex-end
       &:last-child
-        padding-right: 20px
+        padding-right: 0
   .community-list
     .list-item
       box-sizing: border-box
@@ -705,7 +718,7 @@
         text-align: right
         justify-content: flex-end
       &:last-child
-        padding-right: 20px
+        padding-right: 0
   .new-data
     .list-content
       &:nth-child(2n)
@@ -743,4 +756,10 @@
     #trend
       height: 345px
       width: 100%
+  .list-header
+    &:after
+      border-top: 0.5px solid #E6E7EB !important
+      border-bottom: 0.5px solid #E6E7EB !important
+  .survey-box-none
+    border-none()
 </style>
