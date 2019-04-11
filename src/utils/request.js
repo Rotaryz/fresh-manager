@@ -2,6 +2,7 @@
 
 import axios from 'axios'
 import * as Utils from './request-utils'
+import {getCorpId} from '@utils/tool'
 
 const TIME_OUT = 10000
 const ERR_OK = 0
@@ -16,6 +17,9 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
+    if (!config.headers.common['Current-Corp']) {
+      config.headers.common['Current-Corp'] = getCorpId()
+    }
     return config
   },
   (error) => {
