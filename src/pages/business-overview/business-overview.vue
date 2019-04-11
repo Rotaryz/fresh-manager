@@ -90,6 +90,7 @@
           return
         }
         this.drawTotalLine(res.data)
+        console.log(res.data)
       },
       drawTotalLine(data) {
         let xAxis = data.x

@@ -1,50 +1,79 @@
 <template>
-  <div class="left-tab">
-    <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0)">
-      <div class="left">
-        <span class="name">全部群数据</span>
+  <div ref="leftTab" class="left-tab" @scroll="tabScroll">
+    <div ref="leftBox" class="left-box">
+      <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0, {id: 0})">
+        <div class="left">
+          <span class="name">全部群数据</span>
+        </div>
+        <div v-if="+tabIndex === 0" class="right">
+          <span class="edit-icon" :class="{'current': +tabIndex === 0}"></span>
+        </div>
       </div>
-      <div class="right">
-        <span class="edit-icon" :class="{'current': +tabIndex === 0}"></span>
+      <div
+        v-for="(item, index) in groupArr"
+        :key="index"
+        class="left-tab-item hand"
+        :class="{'active': +tabIndex === index+1}"
+        @click="changeCommunity(index+1, item)"
+      >
+        <div class="left">
+          <img src="./icon-v4@2x.png" alt="" class="level-icon">
+          <span class="name">{{name}}</span>
+        </div>
+        <div class="right" @click.stop="editGroup()">
+          <span class="edit-icon" :class="{'current': +tabIndex === index+1}"></span>
+        </div>
       </div>
     </div>
-    <div
-      v-for="(item, index) in new Array(30).fill(1)"
-      :key="index"
-      class="left-tab-item hand"
-      :class="{'active': +tabIndex === index+1}"
-      @click="changeCommunity(index+1)"
-    >
-      <div class="left">
-        <img src="./icon-v4@2x.png" alt="" class="level-icon">
-        <span class="name">社区A微信群</span>
-      </div>
-      <div class="right">
-        <span class="edit-icon" :class="{'current': +tabIndex === index+1}"></span>
-      </div>
-    </div>
-    <div class="left-tab-item" style="flex: 1 0 0"></div>
+    <!--<div class="left-tab-item" style="flex: 1 0 0"></div>-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  const COMPONENT_NAME = 'LEFT-TAB'
   export default{
+    name: COMPONENT_NAME,
     props: {
       tabArr: {
         type: Array,
         default: () => {
           return []
         }
+      },
+      name: {
+        type: String,
+        default: '社区A微信群'
       }
     },
     data() {
       return {
-        tabIndex: 0
+        tabIndex: 0,
+        groupArr: new Array(20).fill(1),
+        getMore: false
       }
     },
     methods: {
-      changeCommunity(index) {
+      changeCommunity(index, item) {
         this.tabIndex = index
+        this.$emit('changeCommunity', item)
+      },
+      editGroup(type) {
+        if (type) return
+        this.$emit('editGroup', this.name)
+      },
+      tabScroll() {
+        let leftBoxHeight = this.$refs.leftBox.offsetHeight
+        let leftTabHeight = this.$refs.leftTab.offsetHeight
+        let scrollTop = this.$refs.leftTab.scrollTop
+        if (leftBoxHeight > leftTabHeight && (scrollTop >= leftBoxHeight - leftTabHeight)) {
+          if (this.getMore) return
+          this.getMore = true
+          this.groupArr.push(new Array(10).fill(1))
+          console.log(this.$refs.leftBox.offsetHeight)
+          setTimeout(() => {
+            this.getMore = false
+          }, 200)
+        }
       }
     }
   }
@@ -69,11 +98,6 @@
     &::-webkit-scrollbar-thumb
       background-color: rgba(0, 0, 0, .15)
       border-radius: 10px
-    &::-webkit-scrollbar-thumb:hover
-      background-color: rgba(0, 0, 0, .3)
-    &::-webkit-scrollbar-track
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
-      border-radius: 0
     &:hover::-webkit-scrollbar
       width: 6px
       height: 8px
@@ -110,6 +134,10 @@
           margin-right: 5px
         .name
           font-size: $font-size-12
+          width: 70px
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
       .edit-icon
         width: 12px
         height: 12px

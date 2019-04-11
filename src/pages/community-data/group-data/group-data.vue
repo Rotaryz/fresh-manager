@@ -4,57 +4,41 @@
       <div
         v-for="(item, index) in tabArr"
         :key="index"
-        :class="['tab-item', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
+        :class="['tab-item', 'hand', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
         @click="changeTab(index)"
       >
-        <img v-if="item.name === 'equal'" src="./icon-equal@2x.png" alt="" class="tag">
-        <img v-else-if="item.name === 'multiply'" src="./icon-equal@2x.png" alt="" class="tag">
-        <div v-else class="content hand">
-          <span class="num">{{item.value}}</span>
-          <span class="text">{{item.name}}</span>
-        </div>
+        <span class="num">{{item.value}}</span>
+        <span class="text">{{item.name}}</span>
       </div>
     </div>
     <div class="data-content">
-      <div v-show="time !== 'today' && time !== 'yesterday'" id="business"></div>
+      <div v-show="time !== 'today' && time !== 'yesterday'" id="group"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
-        <span class="num">2000</span>
-        <span class="text">营收金额</span>
+        <span class="num">100</span>
+        <span class="text">主力客户</span>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  const COMPONENT_NAME = 'BUSINESS_DATA'
+  const COMPONENT_NAME = 'GROUP_DATA'
   const TAB_ARR = [
     {
-      value: 3300,
-      name: '营收金额'
+      value: 200,
+      name: '潜在客户'
     },
     {
-      value: '',
-      name: 'equal'
+      value: 60,
+      name: '新客户'
     },
     {
-      value: 210,
+      value: 180,
       name: '主力客户'
     },
     {
-      value: '',
-      name: 'multiply'
-    },
-    {
-      value: '20',
-      name: '复购数'
-    },
-    {
-      value: '',
-      name: 'multiply'
-    },
-    {
-      value: '29',
-      name: '客单价'
+      value: 60,
+      name: '沉睡客户'
     }
   ]
   export default{
@@ -118,15 +102,12 @@
     },
     methods: {
       changeTab(index) {
-        if (+index === 1 || +index === 3 || +index === 5) return
         this.tabIndex = index
-
-        this.drawLine(this.data, this.tabArr[index].name)
       },
-      drawLine(data, name) {
+      drawLine(data) {
         let xAxis = data.x
         let series = data.series
-        let myChart = this.$echarts.init(document.getElementById('business'))
+        let myChart = this.$echarts.init(document.getElementById('group'))
         myChart.setOption({
           legend: {
             itemWidth: 14,
@@ -219,43 +200,11 @@
                   width: 0.5
                 }
               }
-            },
-            {
-              minInterval: 1,
-              name: '',
-              type: 'value',
-              splitLine: {
-                show: false,
-                lineStyle: {
-                  color: '#F0F3F5',
-                  opacity: 0,
-                  width: 0.5,
-                  type: 'dotted'
-                }
-              },
-              axisTick: {
-                show: false,
-                lineStyle: {
-                  color: '#c4c4c4',
-                  width: 0.5
-                }
-              },
-              axisLabel: {
-                formatter: '{value}%',
-                color: '#666'
-              },
-              axisLine: {
-                show: false,
-                lineStyle: {
-                  color: '#c4c4c4',
-                  width: 0.5
-                }
-              }
             }
           ],
           series: [
             {
-              name: name,
+              name: '浏览数',
               data: series.num,
               type: 'line',
               hoverAnimation: true,
@@ -269,25 +218,6 @@
                   lineStyle: {
                     color: '#5681EA',
                     width: 2
-                  }
-                }
-              }
-            },
-            {
-              name: '百分比',
-              data: series.rate,
-              yAxisIndex:1,
-              type: 'line',
-              smooth: true,
-              itemStyle: {
-                normal: {
-                  color: '#5681EA',
-                  opacity: 0,
-                  borderWidth: 1,
-                  lineStyle: {
-                    color: '#5681EA',
-                    width: 2,
-                    opacity: 0
                   }
                 }
               }
@@ -323,6 +253,14 @@
       border: 0.5px solid #E6EAED
       border-right: 0.5px solid transparent
       border-left: 0.5px solid transparent
+      &:after
+        content: ""
+        position: absolute
+        height: 27px
+        width: 1px
+        border-right: 0.5px solid #E6EAED
+        right: 0
+        col-center()
       &:before
         content: ""
         position: absolute
@@ -332,9 +270,6 @@
         height: 2px
         background-color: transparent
         transition: all 0.3s
-      .tag
-        width: 14px
-        height: 14px
       .num
         font-family: $font-family-din-bold
         font-size: $font-size-20
@@ -346,13 +281,6 @@
         color: $color-text-main
         line-height: 12px
         margin-top: 5px
-      .content
-        display: flex
-        flex-direction: column
-        justify-content: center
-        align-items: center
-    .tab-item:nth-child(2n)
-      flex: 0.5
     .tab-item:last-child:after
       border-right: 0
     .active
@@ -362,13 +290,17 @@
       border-bottom: 0.5px solid transparent
       &:before
         background-color: $color-positive
+      &:after
+        border-right: 0.5px solid transparent
     .active:first-child
       border-left: 0.5px solid transparent
     .active:last-child
       border-right: 0.5px solid transparent
+    .no-after:after
+      border-right: 0.5px solid transparent
   .data-content
     flex: 1
-    #business
+    #group
       width: 100%
       height: 100%
     .alone-data

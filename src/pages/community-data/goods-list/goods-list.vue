@@ -20,6 +20,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
     {name: '图片', flex: 0.4, class: 'img', value: ''},
     {name: '商品名称', flex: 4, class: 'name', value: 'name'},
@@ -37,6 +38,7 @@
     {name: '水果蔬菜水果水果', count: 200, rate: '10%'}
   ]
   export default{
+    name: COMPONENT_NAME,
     props: {
 
     },

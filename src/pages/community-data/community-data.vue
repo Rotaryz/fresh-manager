@@ -8,21 +8,21 @@
       <base-option-box @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
-      <left-tab :tabArr="tabArr"></left-tab>
+      <left-tab :tabArr="tabArr" :name="name" @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
       <div class="right-data">
         <div class="top-sec">
           <section class="data-sec quality-data">
             <div class="sec-title">
               <p class="text">群质量数据<span>(当前等级Lv4)</span></p>
-              <p class="right-text">等级说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
+              <p class="right-text hand" @click="showDescription">等级说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
             </div>
-            <quality-data></quality-data>
+            <quality-data :time="msg.time"></quality-data>
           </section>
           <section class="data-sec business-data">
             <div class="sec-title">
               <p class="text">群运营数据</p>
             </div>
-            <business-data></business-data>
+            <business-data :time="msg.time"></business-data>
           </section>
         </div>
         <div class="bottom-sec">
@@ -30,7 +30,7 @@
             <div class="sec-title">
               <p class="text">群用户分组<span>(群总人数500)</span></p>
             </div>
-            <quality-data></quality-data>
+            <group-data :time="msg.time"></group-data>
           </section>
           <section class="data-sec goods-list">
             <div class="sec-title">
@@ -41,6 +41,8 @@
         </div>
       </div>
     </div>
+    <description-modal ref="description"></description-modal>
+    <edit-modal ref="editModal" @confirm="confirm" @cancel="cancel"></edit-modal>
   </div>
 </template>
 
@@ -50,6 +52,9 @@
   import QualityData from './quality-data/quality-data'
   import GoodsList from './goods-list/goods-list'
   import BusinessData from './business-data/business-data'
+  import GroupData from './group-data/group-data'
+  import EditModal from './edit-modal/edit-modal'
+  import DescriptionModal from './description-modal/description-modal'
 
   const PAGE_NAME = 'COMMUNITY-DATA'
   const TITLE = '社群数据'
@@ -62,12 +67,20 @@
       LeftTab,
       QualityData,
       GoodsList,
-      BusinessData
+      BusinessData,
+      GroupData,
+      EditModal,
+      DescriptionModal
     },
     data() {
       return {
         letTab: 0,
-        tabArr: []
+        tabArr: [],
+        msg: {
+          time: 'today'
+        },
+        name: '社区A微信群',
+        groupId: ''
       }
     },
     computed: {
@@ -76,15 +89,37 @@
     created() {
 
     },
+
     methods: {
       ...communityMethods,
       _getData(value) {
         if (typeof value === 'string') {
-          this.getOrderDetail({startTime: '', endTime: '', time: value, loading: true})
+          this.msg.time = value
+          // this.getOrderDetail({startTime: '', endTime: '', time: value, loading: true})
           return
         }
-        this.getOrderDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
+        this.msg.startTime = value[0]
+        this.msg.endTime = value[1]
+        console.log(this.msg)
+        // this.getOrderDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
       },
+      changeCommunity(item) {
+        this.groupId = item.id
+      },
+      showDescription() {
+        this.$refs.description.show()
+      },
+      editGroup(name) {
+        this.$refs.editModal.show({groupName: name})
+        // groupAccount帐号  groupName群名  personNumber群人数 id//
+      },
+      confirm(data) {
+        this.name = data.groupName
+        this.$refs.editModal.hide()
+      },
+      cancel() {
+
+      }
     }
   }
 </script>

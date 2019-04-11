@@ -4,7 +4,7 @@
       <div
         v-for="(item, index) in tabArr"
         :key="index"
-        :class="['tab-item', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
+        :class="['tab-item', 'hand', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
         @click="changeTab(index)"
       >
         <span class="num">{{item.value}}</span>
@@ -12,7 +12,8 @@
       </div>
     </div>
     <div class="data-content">
-      <div class="alone-data">
+      <div v-show="time !== 'today' && time !== 'yesterday'" id="data"></div>
+      <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
         <span class="num">2000</span>
         <span class="text">浏览数(PV)</span>
       </div>
@@ -21,6 +22,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  const COMPONENT_NAME = 'QUALITY_DATA'
   const TAB_ARR = [
     {
       value: 2500,
@@ -36,18 +38,238 @@
     }
   ]
   export default{
+    name: COMPONENT_NAME,
     props: {
-
+      time: {
+        type: String,
+        default: ''
+      }
     },
     data() {
       return {
         tabArr: TAB_ARR,
-        tabIndex: 0
+        tabIndex: 0,
+        data: {
+          x: [
+            "04/03",
+            "04/04",
+            "04/05",
+            "04/06",
+            "04/07",
+            "04/08",
+            "04/09"
+          ],
+          series: {
+            num: [
+              "20",
+              "60",
+              "10",
+              "30",
+              "100",
+              "40",
+              "50"
+            ],
+            rate: [
+              "10",
+              "20",
+              "30",
+              "40",
+              "50",
+              "60",
+              "70",
+              "80",
+              "90",
+              "100",
+            ]
+          }
+        }
+      }
+    },
+    watch: {
+      time(value, old) {
+        if (value !== 'today' && value !== 'yesterday') {
+          setTimeout(() => {
+            this.drawLine(this.data)
+          }, 30)
+        }
       }
     },
     methods: {
       changeTab(index) {
         this.tabIndex = index
+      },
+      drawLine(data) {
+        let xAxis = data.x
+        let series = data.series
+        let myChart = this.$echarts.init(document.getElementById('data'))
+        myChart.setOption({
+          legend: {
+            itemWidth: 14,
+            itemHeight: 14,
+            borderRadius: 0,
+            bottom: 10,
+            align: 'auto',
+            data: []
+          },
+          grid: {
+            left: '20',
+            right: '20',
+            bottom: '20',
+            containLabel: true
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxis,
+            splitLine: {
+              show: false,
+              lineStyle: {
+                color: '#F0F3F5',
+                width: 0.5,
+                type: "doted"
+              }
+            },
+            axisLabel: {
+              color: '#666',
+              fontSize: 12,
+              align: 'center'
+            },
+            axisTick: {
+              show: false,
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            }
+          },
+          tooltip: {
+            trigger: 'axis',
+            formatter: '{a0}: {c0}',
+            textStyle: {
+              align: 'left'
+            },
+            axisPointer: {
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            },
+            padding: [5, 10, 5, 10]
+          },
+          yAxis: [
+            {
+              minInterval: 1,
+              position: 'left',
+              name: '',
+              type: 'value',
+              splitLine: {
+                show: true,
+                lineStyle: {
+                  color: '#F0F3F5',
+                  width: 0.5
+                }
+              },
+              axisTick: {
+                show: false,
+                lineStyle: {
+                  color: '#c4c4c4',
+                  width: 0.5
+                }
+              },
+              axisLabel: {
+                formatter: '{value}',
+                color: '#666'
+              },
+              axisLine: {
+                show: false,
+                lineStyle: {
+                  color: '#c4c4c4',
+                  width: 0.5
+                }
+              }
+            },
+            {
+              minInterval: 1,
+              name: '',
+              type: 'value',
+              splitLine: {
+                show: false,
+                lineStyle: {
+                  color: '#F0F3F5',
+                  opacity: 0,
+                  width: 0.5,
+                  type: 'dotted'
+                }
+              },
+              axisTick: {
+                show: false,
+                lineStyle: {
+                  color: '#c4c4c4',
+                  width: 0.5
+                }
+              },
+              axisLabel: {
+                formatter: '{value}%',
+                color: '#666'
+              },
+              axisLine: {
+                show: false,
+                lineStyle: {
+                  color: '#c4c4c4',
+                  width: 0.5
+                }
+              }
+            }
+          ],
+          series: [
+            {
+              name: '浏览数',
+              data: series.num,
+              type: 'line',
+              smooth: false,
+              hoverAnimation: true,
+              symbolSize: 2,
+              showSymbol: false,
+              itemStyle: {
+                normal: {
+                  color: '#5681EA',
+                  borderWidth: 1,
+                  lineStyle: {
+                    color: '#5681EA',
+                    width: 2
+                  }
+                }
+              }
+            },
+            {
+              name: '百分比',
+              data: series.rate,
+              yAxisIndex:1,
+              type: 'line',
+              smooth: true,
+              itemStyle: {
+                normal: {
+                  color: '#5681EA',
+                  opacity: 0,
+                  borderWidth: 1,
+                  lineStyle: {
+                    color: '#5681EA',
+                    width: 2,
+                    opacity: 0
+                  }
+                }
+              }
+            }
+          ]
+        })
+        myChart.resize()
       }
     }
   }
@@ -123,6 +345,9 @@
       border-right: 0.5px solid transparent
   .data-content
     flex: 1
+    #data
+      width: 100%
+      height: 100%
     .alone-data
       width: 100%
       height: 100%
