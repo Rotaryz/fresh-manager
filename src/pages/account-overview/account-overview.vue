@@ -125,7 +125,7 @@
     methods: {
       ...financeMethods,
       checkTransaction(status) {
-        this.setSettleLogsStatus(status, 0)
+        this.setSettleLogsStatus({status, isFetch: 0})
         this.$router.push({name: 'transaction-detail'})
       },
       showVoucher(image) {
