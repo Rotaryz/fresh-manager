@@ -5,7 +5,7 @@
     >
       <template v-if="iconSrc">
         <div :class="{'img-wrap':true}">
-          <img :src="iconSrc" alt="icon" :width="width-2" :height="width-2">
+          <img :src="iconSrc" alt="icon" :width="width-2" :height="width-2" draggable="false">
         </div>
         <div class="name" v-text="text"></div>
       </template>
