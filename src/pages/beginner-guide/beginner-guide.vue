@@ -1,5 +1,5 @@
 <template>
-  <div class="beginner-guide">
+  <div class="beginner-guide" draggable="false">
     <base-tabs :tabList="flowData" :defaultTab="activeIdx" @tab-change="tabChange"></base-tabs>
     <template v-for="(flow,idx) in flowData">
       <flow v-show="idx === activeIdx" :key="idx" :flowImg="getImg(flow.imgName,'pic')" :flowImgWidth="flow.width" class="flow-wrap">
@@ -67,7 +67,7 @@
   }, {
     name: "创建活动",
     imgName: "activity",
-    routerName: 'flash-sale',
+    routerName: 'new-sale',
     positions: [615, PAGE_ONE_TOP_SECOND]
   }, {
     name: "编辑首页",

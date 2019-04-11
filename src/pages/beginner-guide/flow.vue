@@ -1,7 +1,7 @@
 <template>
   <div :style="{padding: padding[0]+'px '+ padding[1]+'px'}">
     <div class="flow">
-      <img :src="flowImg" alt="流程关系线" :width="flowImgWidth">
+      <img :src="flowImg" alt="流程关系线" :width="flowImgWidth" draggable="false">
       <slot></slot>
     </div>
   </div>
