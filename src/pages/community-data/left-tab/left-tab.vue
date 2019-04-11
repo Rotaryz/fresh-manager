@@ -17,7 +17,7 @@
         @click="changeCommunity(index+1, item)"
       >
         <div class="left">
-          <img src="./icon-v4@2x.png" alt="" class="level-icon">
+          <img :src="require('./'+ lvArr[3] +'@2x.png')" alt="" class="level-icon">
           <span class="name">{{name}}</span>
         </div>
         <div class="right" @click.stop="editGroup()">
@@ -31,6 +31,7 @@
 
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'LEFT-TAB'
+  const LV_ARR = ['icon-v1', 'icon-v2', 'icon-v3', 'icon-v4']
   export default{
     name: COMPONENT_NAME,
     props: {
@@ -49,7 +50,8 @@
       return {
         tabIndex: 0,
         groupArr: new Array(20).fill(1),
-        getMore: false
+        getMore: false,
+        lvArr: LV_ARR
       }
     },
     methods: {

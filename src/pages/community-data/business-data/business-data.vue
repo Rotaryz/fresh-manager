@@ -8,7 +8,7 @@
         @click="changeTab(index)"
       >
         <img v-if="item.name === 'equal'" src="./icon-equal@2x.png" alt="" class="tag">
-        <img v-else-if="item.name === 'multiply'" src="./icon-equal@2x.png" alt="" class="tag">
+        <img v-else-if="item.name === 'multiply'" src="./icon-multiply@2x.png" alt="" class="tag">
         <div v-else class="content hand">
           <span class="num">{{item.value}}</span>
           <span class="text">{{item.name}}</span>
@@ -111,7 +111,7 @@
       time(value, old) {
         if (value !== 'today' && value !== 'yesterday') {
           setTimeout(() => {
-            this.drawLine(this.data)
+            this.drawLine(this.data, this.tabArr[this.tabIndex].name)
           }, 30)
         }
       }
@@ -139,12 +139,14 @@
           grid: {
             left: '20',
             right: '20',
-            bottom: '20',
+            bottom: '25',
+            top: '35',
             containLabel: true
           },
           xAxis: {
             type: 'category',
             boundaryGap: false,
+            offset: 12,
             data: xAxis,
             splitLine: {
               show: false,

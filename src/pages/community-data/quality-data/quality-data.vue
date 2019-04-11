@@ -7,7 +7,7 @@
         :class="['tab-item', 'hand', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
         @click="changeTab(index)"
       >
-        <span class="num">{{item.value}}</span>
+        <span class="num">{{item.value}}{{index === 0 ? '(PV)' : ''}}</span>
         <span class="text">{{item.name}}</span>
       </div>
     </div>
@@ -26,7 +26,7 @@
   const TAB_ARR = [
     {
       value: 2500,
-      name: '浏览数(PV)'
+      name: '浏览数'
     },
     {
       value: 200,
@@ -82,6 +82,40 @@
               "100",
             ]
           }
+        },
+        data2: {
+          x: [
+            "04/03",
+            "04/04",
+            "04/05",
+            "04/06",
+            "04/07",
+            "04/08",
+            "04/09"
+          ],
+          series: {
+            num: [
+              "50",
+              "30",
+              "10",
+              "40",
+              "100",
+              "60",
+              "70"
+            ],
+            rate: [
+              "10",
+              "20",
+              "30",
+              "40",
+              "50",
+              "60",
+              "70",
+              "80",
+              "90",
+              "100",
+            ]
+          }
         }
       }
     },
@@ -89,7 +123,7 @@
       time(value, old) {
         if (value !== 'today' && value !== 'yesterday') {
           setTimeout(() => {
-            this.drawLine(this.data)
+            this.drawLine(this.data, this.tabArr[this.tabIndex].name)
           }, 30)
         }
       }
@@ -97,8 +131,9 @@
     methods: {
       changeTab(index) {
         this.tabIndex = index
+        this.drawLine(this.data2, this.tabArr[index].name)
       },
-      drawLine(data) {
+      drawLine(data, name) {
         let xAxis = data.x
         let series = data.series
         let myChart = this.$echarts.init(document.getElementById('data'))
@@ -114,12 +149,14 @@
           grid: {
             left: '20',
             right: '20',
-            bottom: '20',
+            bottom: '25',
+            top: '35',
             containLabel: true
           },
           xAxis: {
             type: 'category',
             boundaryGap: false,
+            offset: 12,
             data: xAxis,
             splitLine: {
               show: false,
@@ -230,7 +267,7 @@
           ],
           series: [
             {
-              name: '浏览数',
+              name: name,
               data: series.num,
               type: 'line',
               smooth: false,
