@@ -136,6 +136,9 @@
       this._getUrl()
       this.goodsList = _.cloneDeep(this.productList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
+      if (this.$route.query.online * 1 === 1) {
+        this.dispatchSelect.content = '上架'
+      }
       this.getCategoriesData()
     },
     methods: {
