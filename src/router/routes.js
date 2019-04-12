@@ -44,9 +44,13 @@ export default [
         meta: {
           titles: ['商城', '商品', '商品列表'],
           beforeResolve(routeTo, routeFrom, next) {
+            let online = ''
+            if (routeTo.query.online) {
+              online = routeTo.query.online
+            }
             //  团长列表
             store
-              .dispatch('editgoods/getGoodsData', 1)
+              .dispatch('editgoods/getGoodsData', online)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
