@@ -92,7 +92,7 @@
 
     <!--成员信息-->
     <div class="content-header">
-      <div class="content-title">活动商品</div>
+      <div class="content-title">成员信息</div>
     </div>
     <div class="activity-box">
       <div class="activity-list">
@@ -129,7 +129,7 @@
 
     <!--活动商品-->
     <div class="content-header header-margin">
-      <div class="content-title">活动商品</div>
+      <div class="content-title">商品信息</div>
     </div>
     <div class="activity-box">
       <div class="activity-list">
