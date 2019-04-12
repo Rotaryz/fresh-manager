@@ -293,7 +293,8 @@ export const outreachGroupMethods = {
   ...mapActions('outreachGroup', [
     'getGroupList',
     'showModal',
-    'groupListAddChildren'
+    'groupListAddChildren',
+    'getOutreachList'
   ])
 }
 

@@ -15,6 +15,8 @@
   import GroupTab from './group-tab/group-tab'
   import GroupContent from './group-content/group-content'
   import changeModel from './change-model/change-model'
+  import {outreachGroupMethods} from '@state/helpers'
+
   const PAGE_NAME = 'OUTREACH_GROUP'
   const TITLE = '拓展团队'
 
@@ -34,7 +36,11 @@
 
       }
     },
+    created() {
+      this.getOutreachList({page: 1})
+    },
     methods: {
+      ...outreachGroupMethods,
       test() {
         // this.$refs.addChildren.show()
         // this.$refs.editorChildren.show()
