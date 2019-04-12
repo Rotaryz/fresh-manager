@@ -14,7 +14,6 @@
             <div class="flex-wrapper margin">账户余额(元)</div>
             <div class="flex-wrapper end">
               <p class="number">{{account.remaining}}</p>
-              <!--<p class="tip">下次结算: 2019-04-07 自动打款</p>-->
             </div>
           </div>
         </div>
