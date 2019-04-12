@@ -277,7 +277,7 @@ export default [
         name: 'outreach-activity',
         component: () => lazyLoadView(import('@pages/outreach-activity/outreach-activity')),
         meta: {
-          titles: ['商城', '活动', '拓展活动'],
+          titles: ['商城', '活动', '拓展任务'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
@@ -294,13 +294,13 @@ export default [
           }
         }
       },
-      // 拓展活动-员工详情
+      // 拓展活动-团队成员列表
       {
         path: 'outreach-activity/outreach-activity-staff',
         name: 'outreach-activity-staff',
         component: () => lazyLoadView(import('@pages/outreach-activity-staff/outreach-activity-staff')),
         meta: {
-          titles: ['商城', '活动', '拓展活动'],
+          titles: ['商城', '活动', '拓展任务', '团队成员'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
@@ -340,7 +340,7 @@ export default [
           }
         }
       },
-      // 拓展团队-员工详情
+      // 拓展团队-团队成员列表
       {
         path: 'outreach-group/outreach-group-staff',
         name: 'outreach-group-staff',

@@ -24,7 +24,7 @@
           <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+                {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
               </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
                 <p class="item-dark">{{item.start_at}}</p>
@@ -35,14 +35,16 @@
               </div>
               <!--状态-->
               <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
-              <!--二维码-->
+              <!--复购率-->
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box">
                 <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">
                   {{item[val.value] || '0%'}}
                   <transition name="fade">
                     <div v-if="tipShow === index" class="tip-content">
                       <span class="text">比昨天上升2%</span>
-                      <img src="" alt="" class="tip-icon">
+                      <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
+                      <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
+                      <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                     </div>
                   </transition>
                 </div>
@@ -50,7 +52,7 @@
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'/home/outreach-activity/edit-outreach?id=' + (item.id || 0)" class="list-operation">详情</router-link>
-                <router-link tag="span" :to="'/home/outreach-activity/edit-outreach?id=' + (item.id || 0)" class="list-operation">成员</router-link>
+                <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">成员</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
               </div>
             </div>
@@ -87,6 +89,7 @@
   // const OUTREACH_LIST = [
   //   {activity_name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', group: '白云花园社区', sale_count: 20, total: 100, order_count: '30', status: 1}
   // ]
+  const ICON = ['icon-rising', 'icon-up_hover', 'icon-flat']
   export default {
     name: PAGE_NAME,
     page: {
@@ -104,10 +107,11 @@
         delId: 0,
         downId: 0,
         status: 0,
-        tipShow: 0,
+        tipShow: '',
         timer: '',
         qrUrl: process.env.VUE_APP_API,
-        corpId: ''
+        corpId: '',
+        iconArr: ICON
       }
     },
     computed: {
@@ -132,7 +136,6 @@
         this.tipShow = index
       },
       hideTip() {
-        return
         this.timer = setTimeout(() => {
           this.tipShow = ''
         }, 500)
@@ -184,31 +187,44 @@
       .tip-content
         position: absolute
         right: -125px
-        top: -10px
-        width: 120px
-        height: 40px
-        border-radius: 2px
+        top: -6px
+        width: 116px
+        height: 32px
+        border-radius: 4px
         padding-left: 10px
-        overflow: hidden
         box-shadow: 0 0 8px 0 #E9ECEE
         border: 1px solid #E9ECEE
-        background: #FFF
+        background: rgba(50,50,50,0.8)
         z-index: 1
         display: flex
         align-items: center
-        .tip-text
-          font-size: $font-size-14
-          color: #4DBD65
+        &:before
+          content: ""
+          width: 9px
+          height: 10px
+          border: 5px solid rgba(50,50,50,0.8)
+          border-top: 4px solid transparent
+          border-bottom: 5px solid transparent
+          border-left: 4px solid transparent
+          col-center()
+          left: -9px
+        .text
+          font-size: $font-size-12
+          color: #FFF
           font-family: $font-family-regular
-          line-height: 40px
-          height: 40px
+          line-height: 32px
+          height: 32px
         .tip-icon
           width: 8px
-          height: 15px
+          height: 10px
+          margin-left: 5px
+        .down
+          transform: rotate(180deg)
+        .equal
+          width: 8px
+          height: 2px
     .list-content .list-about
       overflow: inherit
-  .btn-main
-    margin-right: 10px
 
 
   .list-box
