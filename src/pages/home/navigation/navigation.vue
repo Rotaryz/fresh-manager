@@ -334,7 +334,7 @@
       icon: require('./icon-finance@2x.png'),
       isLight: false,
       second: FINANCE,
-      url: '/home/business-overview'
+      url: '/home/account-overview'
     }, {
       name: "",
       icon: require('./icon-guide@2x.png'),

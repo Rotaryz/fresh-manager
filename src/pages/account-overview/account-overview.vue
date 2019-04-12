@@ -75,7 +75,7 @@
             <div class="list-item list-text">{{item.withdrawal_card}}</div>
             <!--<div class="list-item list-text">5</div>-->
             <div class="list-item list-text hand">
-              <img v-if="item.image_url"  src="./icon-voucher@2x.png" alt="" class="voucher" @click="showVoucher(item.image_url)">
+              <img v-if="item.image_url" src="./icon-voucher@2x.png" alt="" class="voucher" @click="showVoucher(item.image_url)">
             </div>
           </div>
         </div>
