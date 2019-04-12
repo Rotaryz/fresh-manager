@@ -158,7 +158,7 @@
             display: block
             width: 21px
             height: 17px
-            margin: 0 auto
+            margin-left: 18px
 
   .franchise-img
     background: $color-white
