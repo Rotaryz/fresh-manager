@@ -294,6 +294,75 @@ export default [
           }
         }
       },
+      // 拓展活动-员工详情
+      {
+        path: 'outreach-activity/outreach-activity-staff',
+        name: 'outreach-activity-staff',
+        component: () => lazyLoadView(import('@pages/outreach-activity-staff/outreach-activity-staff')),
+        meta: {
+          titles: ['商城', '活动', '拓展活动'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 活动列表
+            store
+            .dispatch('outreach/getOutreachList', {page: 1})
+            .then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+            .catch(() => {
+              return next({name: '404'})
+            })
+          }
+        }
+      },
+      // 拓展团队
+      {
+        path: 'outreach-group',
+        name: 'outreach-group',
+        component: () => lazyLoadView(import('@pages/outreach-group/outreach-group')),
+        meta: {
+          titles: ['商城', '活动', '拓展团队'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 活动列表
+            store
+            .dispatch('outreach/getOutreachList', {page: 1})
+            .then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+            .catch(() => {
+              return next({name: '404'})
+            })
+          }
+        }
+      },
+      // 拓展团队-员工详情
+      {
+        path: 'outreach-group/outreach-group-staff',
+        name: 'outreach-group-staff',
+        component: () => lazyLoadView(import('@pages/outreach-group-staff/outreach-group-staff')),
+        meta: {
+          titles: ['商城', '活动', '拓展团队'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 活动列表
+            store
+            .dispatch('outreach/getOutreachList', {page: 1})
+            .then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+            .catch(() => {
+              return next({name: '404'})
+            })
+          }
+        }
+      },
       // 新建查看拓展活动
       {
         path: 'outreach-activity/edit-outreach',

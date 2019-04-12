@@ -70,9 +70,19 @@
           url: '/home/flash-sale',
           isLight: false
         },
+      ]
+    },
+    {
+      title: '拓展',
+      children: [
         {
-          title: '拓展活动',
+          title: '拓展任务',
           url: '/home/outreach-activity',
+          isLight: false
+        },
+        {
+          title: '拓展团队',
+          url: '/home/outreach-group',
           isLight: false
         }
       ]
