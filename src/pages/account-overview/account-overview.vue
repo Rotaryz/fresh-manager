@@ -25,9 +25,10 @@
           <div class="item-content-wrapper">
             <div class="flex-wrapper margin">
               <p class="title">已入账收入(元)</p>
-              <div class="flex-wrapper hand" @click="checkTransaction(1)">
-                <p class="detail">明细</p>
-                <img src="./icon-help_lv@2x.png" alt="" class="detail-icon">
+              <div class="flex-wrapper hand">
+                <p class="detail hand" @click="checkTransaction(1)">明细</p>
+                <img src="./icon-help_lv@2x.png" alt="" class="detail-icon hand">
+                <div class="explain">入账资金（所有状态为已入账的交易明细）金额总和</div>
               </div>
             </div>
             <div class="flex-wrapper">
@@ -41,10 +42,11 @@
           </div>
           <div class="item-content-wrapper">
             <div class="flex-wrapper margin">
-              <p>待入账收入(元)</p>
+              <p class="title">待入账收入(元)</p>
               <div class="flex-wrapper hand" @click="checkTransaction(0)">
                 <p class="detail">明细</p>
                 <img src="./icon-help_lv@2x.png" alt="" class="detail-icon">
+                <div class="explain">入账资金（所有状态为待入账的交易明细）金额总和</div>
               </div>
             </div>
             <div class="flex-wrapper">
@@ -72,7 +74,7 @@
             <div class="list-item list-text">{{item.user_name}}</div>
             <div class="list-item list-text">{{item.withdrawal_card}}</div>
             <!--<div class="list-item list-text">5</div>-->
-            <div class="list-item list-text hand" @click="showVoucher(item.image_url)">
+            <div v-if="item.image_url" class="list-item list-text hand" @click="showVoucher(item.image_url)">
               <img src="./icon-voucher@2x.png" alt="" class="voucher">
             </div>
           </div>
@@ -169,7 +171,6 @@
     width: 1000px
     .fran-img
       object-fit: cover
-      overflow: hidden
       margin-top: 7px
       height: 470px
       width: 960px
@@ -188,5 +189,27 @@
         width: 12px
         height: @width
         icon-image('icon-close')
+  .item-wrapper
+    position: relative
+    .detail-icon:hover ~ .explain
+      opacity: .8
+      z-index: 111
+      visibility: initial
+    .explain
+      background: #32323A
+      opacity: 0
+      color: $color-white
+      padding: 8px 18px
+      border-radius: 2px
+      line-height: 16px
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      width: 360px
+      white-space: normal
+      position: absolute
+      left: 45px
+      top: 24.5px
+      transition: opacity .3s
+      visibility: hidden
 
 </style>
