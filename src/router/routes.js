@@ -1469,7 +1469,7 @@ export default [
         path: 'beginner-guide',
         name: 'beginner-guide',
         meta: {
-          titles: ['新手指南']
+          titles: ['新手指引']
         },
         component: () => lazyLoadView(import('@pages/beginner-guide/beginner-guide'))
       },
