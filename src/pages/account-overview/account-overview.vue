@@ -27,8 +27,14 @@
               <p class="title">已入账收入(元)</p>
               <div class="flex-wrapper hand">
                 <p class="detail hand" @click="checkTransaction(1)">明细</p>
-                <img src="./icon-help_lv@2x.png" alt="" class="detail-icon hand">
-                <div class="explain">入账资金（所有状态为已入账的交易明细）金额总和</div>
+                <div class="explain-wrapper">
+                  <img src="./icon-help@2x.png" alt="" class="detail-icon hand">
+                  <div class="static-explain">
+                    <div class="explain">
+                      入账资金（所有状态为已入账的交易明细）金额总和
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="flex-wrapper">
@@ -43,14 +49,40 @@
           <div class="item-content-wrapper">
             <div class="flex-wrapper margin">
               <p class="title">待入账收入(元)</p>
-              <div class="flex-wrapper hand" @click="checkTransaction(0)">
-                <p class="detail">明细</p>
-                <img src="./icon-help_lv@2x.png" alt="" class="detail-icon">
-                <div class="explain">入账资金（所有状态为待入账的交易明细）金额总和</div>
+              <div class="flex-wrapper hand">
+                <p class="detail" @click="checkTransaction(0)">明细</p>
+                <div class="explain-wrapper">
+                  <img src="./icon-help@2x.png" alt="" class="detail-icon">
+                  <div class="static-explain">
+                    <div class="explain">入账资金（所有状态为待入账的交易明细）金额总和</div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="flex-wrapper">
               <p class="number">{{account.wait_settle}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="item-wrapper">
+          <div class="icon-wrapper">
+            <img src="./icon-refund@2x.png" alt="" class="icon">
+          </div>
+          <div class="item-content-wrapper">
+            <div class="flex-wrapper margin">
+              <p class="title">已退款(元)</p>
+              <div class="flex-wrapper hand">
+                <p class="detail" @click="checkTransaction(2)">明细</p>
+                <div class="explain-wrapper">
+                  <img src="./icon-help@2x.png" alt="" class="detail-icon">
+                  <div class="static-explain">
+                    <div class="explain">用户支付后进行了退款的金额</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex-wrapper">
+              <p class="number">{{account.refund}}</p>
             </div>
           </div>
         </div>
@@ -191,25 +223,46 @@
         icon-image('icon-close')
   .item-wrapper
     position: relative
-    .detail-icon:hover ~ .explain
-      opacity: .8
-      z-index: 111
-      visibility: initial
-    .explain
-      background: #32323A
-      opacity: 0
-      color: $color-white
-      padding: 8px 18px
-      border-radius: 2px
-      line-height: 16px
-      font-family: $font-family-regular
-      font-size: $font-size-14
-      width: 360px
-      white-space: normal
-      position: absolute
-      left: 45px
-      top: 24.5px
-      transition: opacity .3s
-      visibility: hidden
+    .explain-wrapper
+      position: relative
+      width: 16px
+      height: 16px
+      display: flex
+      flex-direction: column
+      align-items: center
+      &:hover .static-explain
+        opacity: .8
+        visibility: initial
+      .static-explain
+        position: absolute
+        display: flex
+        justify-content: center
+        bottom: 25px
+        width: 237px
+        visibility: hidden
+        opacity: 0
+        transition: opacity .3s
+        &:after
+          position: absolute
+          bottom: -6px
+          display: block
+          content: ''
+          width: 0
+          height: 0
+          border-left: 4px solid transparent
+          border-right: 4px solid transparent
+          border-top: 6px solid #32323A
+        .explain
+          padding: 8px 11px
+          border-radius: 4px
+          line-height: 20px
+          font-family: $font-family-regular
+          font-size: $font-size-14
+          white-space: normal
+          transition: opacity .3s
+          color: $color-white
+          background: #32323A
+          z-index: 111
+
 
 </style>
