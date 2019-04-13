@@ -89,8 +89,47 @@
         <div :class="{'text-no-change':disable}"></div>
       </div>
     </div>
+
+    <!--成员信息-->
     <div class="content-header">
-      <div class="content-title">活动商品</div>
+      <div class="content-title">成员信息</div>
+    </div>
+    <div class="activity-box">
+      <div class="activity-list">
+        <div class="activity-tab">
+          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showMember">
+            <img class="icon" src="./icon-add@2x.png" alt="">
+            添加成员
+          </div>
+        </div>
+        <div v-if="goodsList.length" class="outreach-list-box">
+          <div class="commodities-list-header com-list-box commodities-list-top">
+            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+          </div>
+          <div class="big-box">
+            <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
+              <div class="com-list-item">{{item.name}}</div>
+              <div class="com-list-item">{{item.sale_unit}}</div>
+              <div class="com-list-item">¥{{item.original_price || 0}}</div>
+              <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
+                <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
+                <span v-if="item.original_price" class="small-money">¥</span>
+              </div>
+              <div class="com-list-item" :class="{'sort-focus':sortFocus === index}">
+                <input v-model="item.sort" type="number" class="com-edit com-edit-small" :class="{'no-border': disable}" :readonly="disable">
+              </div>
+              <div class="com-list-item">
+                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--活动商品-->
+    <div class="content-header header-margin">
+      <div class="content-title">商品信息</div>
     </div>
     <div class="activity-box">
       <div class="activity-list">
@@ -165,6 +204,16 @@
       </div>
     </default-modal>
 
+    <!-- 添加成员弹窗-->
+    <member-modal
+      ref="memberModal"
+      :assortment="memberAssortment"
+      :secondAssortment="memberSecondAssortment"
+      @_cancelMembers="_cancelMembers"
+      @_memberAddition="_memberAddition"
+    >
+    </member-modal>
+
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModal">
       <div slot="content" class="shade-box">
@@ -219,6 +268,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import MemberModal from './member-modal/member-modal'
   import {outreachComputed, outreachMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
@@ -243,7 +293,8 @@
     components: {
       DefaultModal,
       DefaultConfirm,
-      DatePicker
+      DatePicker,
+      MemberModal
     },
     data() {
       return {
@@ -607,6 +658,17 @@
         this.$refs.goodsModal.hideModal()
       },
 
+      async _showMember() {
+        if (this.disable) {
+          return
+        }
+        this._initData()
+        this.$refs.goodsSearch._setText('')
+        await this._getGoodsList()
+        // 展示添加商品弹窗
+        this.$refs.memberModal.showModal()
+      },
+
       _initData() {
         this.page = 1
         this.keyword = ''
@@ -831,6 +893,8 @@
     .edit-input-box
       margin: 0 14px 0 32px
 
+  .header-margin
+    margin-top: 50px
   .activity-box
     margin-top: 25px
     position: relative

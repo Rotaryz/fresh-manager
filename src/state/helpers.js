@@ -321,3 +321,17 @@ export const financeMethods ={
 export const beginnerGuideComputed = {
   ...mapGetters('beginnerGuide', ['active'])
 }
+
+// 拓展团队
+export const outreachGroupMethods = {
+  ...mapActions('outreachGroup', [
+    'getGroupList',
+    'showModal',
+    'groupListAddChildren',
+    'getOutreachList'
+  ])
+}
+
+export const outreachGroupComputed = {
+  ...mapGetters('outreachGroup', ['groupList'])
+}
