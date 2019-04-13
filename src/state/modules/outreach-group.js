@@ -18,38 +18,129 @@ export const getters = {
 
 export const mutations = {
   GET_GROUP_LIST(state, list) {
-    state.groupList = list || [1]
+    state.groupList = list || []
   },
-  UPDATE_LIST(state, obj) {
-    state.groupList.push(obj)
+  // UPDATE_LIST(state, obj) {
+  //   state.groupList = obj || []
+  // },
+  ADD_DEPARTMENT(state, object) {
+    // const parentId = res.data.parent_id
+    const {res, obj} = object
+    const newItem = {
+      ...res.data,
+      index: -1,
+      rotate: false
+    }
+    if (!state.groupList.length) {
+      state.groupList.push(newItem)
+    } else {
+      let current = obj.current
+      current.list.push(newItem)
+    }
+  },
+  DELETE_LIST(state, obj) {
+    const {parent, childIndex} = obj
+    if (!parent) {
+      state.groupList = []
+    } else {
+      parent.list.splice(childIndex, 1)
+    }
   },
   SET_OUTREACH_LIST(state, outreachList) {
     state.outreachList = outreachList
   },
-  // SET_OUTREACH_DETAIL(state, outreachDetail) {
-  //   state.outreachDetail = outreachDetail
-  // },
   SET_OUTREACH_PAGE(state, outreachPage) {
     state.outreachPage = outreachPage
+  },
+  CAHNGE_TAB(state, obj) {
+    // todo
+    state.groupList.forEach(item => {
+      item.index = -1
+      item.list && item.list.forEach((item) => {
+        item.index = -1
+        item.list && item.list.forEach((item) => {
+          item.index = -1
+        })
+      })
+    })
+    const {item, index} = obj
+    item.index = index === item.index ? -1 : index
+    item.rotate = !item.rotate
   }
 }
 
 export const actions = {
   // 获取组织架构
-  getGroupList({state, commit, dispatch}, list) {
-    return new Promise((resolve, reject) => {
-      resolve(true)
-      commit('GET_GROUP_LIST', list)
+  getGroupList({state, commit, dispatch}, {parentId, loading = true}) {
+    return API.OutreachGroup.getGroupList({parent_id: parentId}, loading)
+    .then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        return false
+      }
+      let arr = res.data
+      // todo
+      arr.map((item) => {
+        item.index = -1
+        item.rotate = false
+        item.list && item.list.map((item) => {
+          item.index = -1
+          item.rotate = false
+          item.list && item.list.map((item) => {
+            item.index = -1
+            item.rotate = false
+          })
+        })
+      })
+      commit('GET_GROUP_LIST', arr)
+      return true
+    })
+    .catch(() => {
+      return false
+    })
+    .finally(() => {
+      app.$loading.hide()
     })
   },
   // 显示添加弹框
   showModal({state, commit}, obj) {
     const {ctx, key} = obj
-    ctx && ctx.$refs[key] && ctx.$refs[key].show()
+    ctx && ctx.$refs[key] && ctx.$refs[key].show(obj)
   },
   // 添加子部门
   groupListAddChildren({state, commit}, obj) {
-    commit('UPDATE_LIST', obj)
+    API.OutreachGroup.createDepartment(obj).then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        return false
+      }
+      commit('ADD_DEPARTMENT', {res, obj})
+    }).catch(() => {
+    })
+    .finally(() => {
+      app.$loading.hide()
+    })
+  },
+  // 删除部门
+  deleteDepartment({state, commit}, obj) {
+    const {current} = obj
+    if (current.list && current.list.length) {
+      app.$toast.show('无法删除')
+      return
+    }
+    API.OutreachGroup.deleteDepartment(current).then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        app.$toast.show(res.message)
+        return
+      }
+      commit('DELETE_LIST', obj)
+    }).catch(() => {
+    })
+    .finally(() => {
+      app.$loading.hide()
+    })
+  },
+  // 切换tab
+  changeTab({state, commit}, obj) {
+    commit('CAHNGE_TAB', obj)
   },
   getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
     return API.Outreach.getOutreachList(

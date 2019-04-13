@@ -84,21 +84,25 @@
           content: '选择团队',
           type: 'default',
           data: [{name: ''}]
-        }
+        },
+        current: {}
       }
     },
     methods: {
       ...outreachGroupMethods,
-      show() {
+      show(obj) {
         // this.numberTitle = title
         // this.pointName = name
         // this.image_url = imageUrl || ''
         // this.pointNumber = sort
         // this.image_id = imageId || ''
         // this.showImg = type
+        this.current = obj.current
+        console.log(obj)
         this.$refs.modal && this.$refs.modal.showModal()
       },
       hide() {
+        this.name = ''
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
@@ -111,7 +115,9 @@
         //   // type: this.showImg
         // })
         const obj = {
-          name: this.name
+          name: this.name,
+          parent_id: this.current && this.current.id || 0,
+          current: this.current
         }
         this.groupListAddChildren(obj)
         this.hide()

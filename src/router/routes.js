@@ -327,7 +327,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
-            .dispatch('outreachGroup/getGroupList')
+            .dispatch('outreachGroup/getGroupList', {parentId : -1})
             .then((res) => {
               if (!res) {
                 return next({name: '404'})
