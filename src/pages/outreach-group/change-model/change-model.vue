@@ -137,7 +137,7 @@
           this.teamSelect.content = this.current.name || '选择团队'
           this.teamSelect.data = []
           this.currentTeam = this.current || {}
-          this.departmentSelect.data = this.groupList[0].list || []
+          this.departmentSelect.data = (this.groupList[0] && this.groupList[0].list) || []
         }
       },
       setValue(item, type) {
