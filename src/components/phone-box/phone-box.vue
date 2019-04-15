@@ -344,6 +344,7 @@
         display: block
         margin: 0 auto
       .text
+        margin-top: 4px
         font-size: 12px
         transform: scale(0.92)
         display: block
