@@ -322,10 +322,21 @@ export const financeMethods ={
 export const beginnerGuideComputed = {
   ...mapGetters('beginnerGuide', ['active'])
 }
-
+// 拓展团队详情
+export const outreachGroupDetailComputed = {
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData']),
+}
+export const outreachGroupDetailMethods = {
+  ...mapActions('outreachGroup', [
+    'getGroupList',
+    'showModal',
+    'groupListAddChildren',
+    'getOutreachList',
+    'getTaskDetail'
+  ])
+}
 // 拓展团队
 export const outreachGroupComputed = {
-  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData']),
   ...mapState('oGModal', {
     isShow: (state) => state.isShow,
     name: (state) => state.name,

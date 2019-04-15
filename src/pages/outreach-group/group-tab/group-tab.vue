@@ -363,7 +363,7 @@
   .group-tab
     position :relative
     width: 140px
-    height :861px
+    height :100%
     border-right: 0.5px solid $color-line
     overflow-y :scroll
     scroll-opacity()

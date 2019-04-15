@@ -149,6 +149,7 @@
   .group-content
     flex: 1
     padding :0 19px
+    layout(column,block,nowrap)
     .header
       height :68px
       display :flex
