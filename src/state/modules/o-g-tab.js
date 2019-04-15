@@ -179,7 +179,7 @@ export const actions = {
     if (state.isLastDepartment) {
       dispatch(`oGContent/reqStaffList`, {}, {root: true})
     } else {
-      commit(`oGContent/${CONTENT.CLEAR_STAFF_LIST}`, {}, {root: true})
+      commit(`oGContent/${CONTENT.RESET_PAGE}`, {}, {root: true})
     }
   }
 }
