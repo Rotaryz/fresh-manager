@@ -4,7 +4,7 @@
       <div v-for="(item, index) in topItem" :key="index" class="top-item">
         <img class="img" :src="require('./'+ item.icon +'@2x.png')" alt="">
         <span class="name">{{item.name}}</span>
-        <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{item.value}}</span>
+        <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{teamData[value] || 0}}</span>
       </div>
     </header>
     <div class="big-list">
@@ -63,27 +63,18 @@
 
   const COMPONENT_NAME = 'GROUP_CONTENT'
   const TOP_ITEM = [
-    {name: '订单', icon: 'icon-order', value: '900'},
-    {name: '交易额', icon: 'icon-deal', value: '100'},
-    {name: '复购率', icon: 'icon-repeat', value: '10%'}
+    {name: '订单', icon: 'icon-order', value: 'order_counts'},
+    {name: '交易额', icon: 'icon-deal', value: 'total_sum'},
+    {name: '复购率', icon: 'icon-repeat', value: 'repurchase_rate'}
   ]
   const ICON = ['icon-rising', 'icon-up_hover', 'icon-flat']
-  // const ACTIVITI_TITLE = [
-  //   {name: '姓名', flex: 1.2, value: 'activity_name', type: 1},
-  //   {name: '手机号', flex: 1.2, value: 'social_name', type: 1},
-  //   {name: '所属团队', flex: 1.2, value: 'start_at', type: 1},
-  //   {name: '订单', flex: 1, value: 'pay_num', type: 1},
-  //   {name: '交易额(元)', flex: 1, value: 'repeat_rate', type: 1},
-  //   {name: '复购率', flex: 1, value: '', type: 1},
-  //   {name: '操作', flex: 1, value: '', type: 2}
-  // ]
   const ACTIVITI_TITLE = [
-    {name: '姓名', flex: 1.2, value: 'activity_name', type: 6},
-    {name: '手机号', flex: 1.2, value: 'social_name', type: 6},
-    {name: '所属团队', flex: 1.2, value: 'start_at', type: 1},
-    {name: '订单', flex: 1, value: 'pay_num', type: 1},
-    {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 1},
-    {name: '复购率', flex: 1, value: 'repeat_rate', type: 4},
+    {name: '姓名', flex: 1.2, value: 'name', type: 6},
+    {name: '手机号', flex: 1.2, value: 'mobile', type: 6},
+    {name: '所属团队', flex: 1.2, value: 'department_name', type: 1},
+    {name: '订单', flex: 1, value: 'order_counts', type: 1},
+    {name: '交易额(元)', flex: 1, value: 'total_sum', type: 1},
+    {name: '复购率', flex: 1, value: 'rate', type: 4},
     // {name: '状态', flex: 1, value: 'status', type: 3},
     // {name: '二维码', flex: 1, value: '', type: 4},
     {name: '操作', flex: 1, value: '', type: 5}
@@ -123,13 +114,6 @@
     // },
     methods: {
       ...outreachMethods,
-      async _setTime(arr) {
-        this.$refs.pages.beginPage()
-        this.page = 1
-        this.startTime = arr[0]
-        this.endTime = arr[1]
-        await this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
-      },
       showTip(index) {
         clearTimeout(this.timer)
         this.tipShow = index

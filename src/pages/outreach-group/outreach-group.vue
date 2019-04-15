@@ -1,7 +1,7 @@
 <template>
   <div class="outreach-group">
     <group-header></group-header>
-    <section class="container" @click="test">
+    <section class="container">
       <group-tab></group-tab>
       <group-content></group-content>
     </section>
@@ -36,23 +36,8 @@
 
       }
     },
-    created() {
-      this.getOutreachList({page: 1})
-    },
     methods: {
       ...outreachGroupMethods,
-      test() {
-        // this.$refs.addChildren.show()
-        // this.$refs.editorChildren.show()
-        // this.$refs.changeModel.show('修改商品分类', {
-        //   name: 13,
-        //   sort: 123,
-        //   type: 12
-        // })
-      },
-      eidtConfirm() {
-
-      }
     }
   }
 </script>

@@ -294,9 +294,10 @@ export const outreachGroupMethods = {
     'getGroupList',
     'showModal',
     'groupListAddChildren',
-    'getOutreachList',
+    // 'getOutreachList',
     'changeTab',
-    'deleteDepartment'
+    'deleteDepartment',
+    'getStaffList'
   ])
 }
 

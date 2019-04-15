@@ -9,11 +9,15 @@ export const state = {
     total: 1,
     per_page: 10,
     total_page: 1
-  }
+  },
+  teamData: {}
 }
 
 export const getters = {
-  groupList: state => state.groupList
+  groupList: state => state.groupList,
+  outreachPage: state => state.outreachPage,
+  outreachList: state => state.outreachList,
+  teamData: state => state.teamData
 }
 
 export const mutations = {
@@ -66,6 +70,9 @@ export const mutations = {
     const {item, index} = obj
     item.index = index === item.index ? -1 : index
     item.rotate = !item.rotate
+  },
+  SET_TEAM_DATA(state, res) {
+    state.teamData = res
   }
 }
 
@@ -142,12 +149,9 @@ export const actions = {
   changeTab({state, commit}, obj) {
     commit('CAHNGE_TAB', obj)
   },
-  getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
-    return API.Outreach.getOutreachList(
-      {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
-      loading
-    )
-    .then((res) => {
+  // 获取成员列表
+  getStaffList({state, commit, dispatch}, {id, page, loading = false}) {
+    API.OutreachGroup.getStaffList({id, page}).then((res) => {
       if (res.error !== app.$ERR_OK) {
         return false
       }
@@ -157,15 +161,42 @@ export const actions = {
         per_page: res.meta.per_page,
         total_page: res.meta.last_page
       }
+      console.log(res)
       commit('SET_OUTREACH_LIST', arr)
       commit('SET_OUTREACH_PAGE', outreachPage)
+      commit('SET_TEAM_DATA', res)
       return true
-    })
-    .catch(() => {
+    }).catch(() => {
       return false
     })
     .finally(() => {
       app.$loading.hide()
     })
   },
+  // getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
+  //   return API.Outreach.getOutreachList(
+  //     {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
+  //     loading
+  //   )
+  //   .then((res) => {
+  //     if (res.error !== app.$ERR_OK) {
+  //       return false
+  //     }
+  //     let arr = res.data
+  //     let outreachPage = {
+  //       total: res.meta.total,
+  //       per_page: res.meta.per_page,
+  //       total_page: res.meta.last_page
+  //     }
+  //     commit('SET_OUTREACH_LIST', arr)
+  //     commit('SET_OUTREACH_PAGE', outreachPage)
+  //     return true
+  //   })
+  //   .catch(() => {
+  //     return false
+  //   })
+  //   .finally(() => {
+  //     app.$loading.hide()
+  //   })
+  // },
 }

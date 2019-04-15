@@ -69,7 +69,7 @@
               :style="child1.rotate?'height: auto': 'overflow:hidden'"
               v-for="(child2, idx2) in child1.list"
               :key="child2.id"
-              @click.stop="changeTabHandle(child2, idx2)"
+              @click.stop="changeTabHandle(child2, idx2, 'last')"
             >
               <div class="team-item-wrapper"
                    :class="{active: idx2 === child2.index}"
@@ -82,7 +82,7 @@
                   <figure class="icon-hover">
                     <ul class="tool-wrapper">
                       <div class="tool-bridge"></div>
-                      <li class="tool-item-wrapper" v-for="(tool, i) in toolList" :key="i" @click.stop="toolHandle(tool,child1,child2, idx2, true)">
+                      <li class="tool-item-wrapper" v-for="(tool, i) in toolList" :key="i" @click.stop="toolHandle(tool,child1,child1.list[idx2], idx2, true)">
                         <div class="tool-wrapper-icon" :class="tool.iconStyle"></div>
                         <p class="tool-wrapper-text">{{tool.text}}</p>
                       </li>
@@ -148,6 +148,7 @@
       },
       changeTabHandle(item, index, type) {
         this.changeTab({item, index, type})
+        this.getStaffList({page: 1, id: item.id})
       },
       resetParams(type) {
         if (type - 1 < 0) return

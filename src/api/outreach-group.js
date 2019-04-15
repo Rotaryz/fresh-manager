@@ -26,5 +26,11 @@ export default {
   createStaff(data, loading = true) {
     let url = `/social-shopping/api/backend/activity-manage/member`
     return request.post(url, data, loading)
+  },
+  // 获取成员列表
+  getStaffList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/department-offline-members/${data.id}`
+    data = ''
+    return request.get(url, data, loading)
   }
 }
