@@ -39,11 +39,11 @@
           </figure>
           <div
             class="icon-drop"
-            :class="{'active' : checkItemStatus(company)}"
+            :class="{'active' : checkItemStatus(company), 'select' : select.currentId === company.id}"
           ></div>
           <p
             class="text font-f-m"
-            :class="{'active' : checkItemStatus(company)}"
+            :class="{'active' : select.currentId === company.id}"
           >{{company.name}}</p>
         </section>
         <dl
@@ -78,10 +78,10 @@
               <div class="icon icon-image"></div>
             </figure>
             <div class="icon-drop"
-                 :class="{'active' : checkItemStatus(department)}"
+                 :class="{'active' : checkItemStatus(department), 'select' : select.currentId === department.id}"
             ></div>
             <p class="text"
-               :class="{'active' : checkItemStatus(department)}"
+               :class="{'active' : select.currentId === department.id}"
             >{{department.name}}</p>
           </dt>
           <dd
@@ -100,7 +100,7 @@
                 isLastDepartment: true
               })"
             >
-              <article v-if="checkItemStatus(team)" class="active-box">
+              <article v-if="select.currentId === team.id" class="active-box">
               </article>
               <figure
                 class="icon-hover"
@@ -119,7 +119,7 @@
                 <div class="icon"></div>
               </figure>
               <p class="text"
-                 :class="{'active' : checkItemStatus(team)}"
+                 :class="{'active' : select.currentId === team.id}"
               >{{team.name}}</p>
             </section>
           </dd>
@@ -140,7 +140,8 @@
     data() {
       return {
         timer: null,
-        statusArray: []
+        statusArray: [],
+        select: {currentId: '', parentId: ''}
       }
     },
     computed: {
@@ -155,6 +156,7 @@
         currentId: this.groupList[0].id,
         parentId: 0
       }
+      this.select = obj
       this.statusArray.push(obj)
     },
     methods: {
@@ -189,6 +191,11 @@
           } else {
             this.statusArray = [{currentId: current.id, parentId}]
           }
+          if (this.select.currentId === current.id || hasIn) {
+            this.select = {currentId: '', parentId: ''}
+          } else {
+            this.select = {currentId: current.id, parentId}
+          }
           break
         case 'department':
           if (hasIn) {
@@ -200,6 +207,11 @@
               return +item.parentId !== +parentId
             })
             this.statusArray.push({currentId: current.id, parentId})
+          }
+          if (this.select.currentId === current.id || hasIn) {
+            this.select = {currentId: '', parentId: ''}
+          } else {
+            this.select = {currentId: current.id, parentId}
           }
           break
         case 'team':
@@ -213,6 +225,7 @@
             })
             this.statusArray.push({currentId: current.id, parentId})
           }
+          this.select = {currentId: current.id, parentId}
           break
         default:
           break
@@ -305,8 +318,9 @@
       transform :rotate(0deg)
       transition: all 0.3s
       &.active
-        icon-image(icon-drop_green)
         transform :rotate(90deg)
+      &.select
+        icon-image(icon-drop_green)
     .text
       position :relative
       padding-left :5px
