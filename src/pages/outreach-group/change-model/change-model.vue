@@ -29,11 +29,11 @@
         <div class="main-input">
           <div class="main-model-box">
             <div class="text">名称</div>
-            <input v-model="inputName" type="text" maxlength="10" class="main-input-box" placeholder="输入名称">
+            <input v-model="inputName" type="text" :maxlength="maxLength" class="main-input-box" placeholder="输入名称">
           </div>
           <div class="main-model-box">
             <div class="text">手机</div>
-            <input v-model="inputMobile" type="tel" maxlength="10" class="main-input-box" placeholder="请输入手机">
+            <input v-model="inputMobile" type="tel" maxlength="11" class="main-input-box" placeholder="请输入手机">
           </div>
           <div class="main-model-box">
             <div class="text">移动</div>
@@ -57,7 +57,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
-  // import API from '@api'
+  import API from '@api'
   const COMPONENT_NAME = 'CHANGE_MODEL'
 
   export default {
@@ -70,14 +70,14 @@
           show: false,
           content: '选择部门',
           type: 'default',
-          data: [{name: '郭英唐'}, {name: '白云区'}]
+          data: []
         },
         teamSelect: {
           check: false,
           show: false,
           content: '选择团队',
           type: 'default',
-          data: [{name: ''}]
+          data: []
         },
         nowTime: 0
       }
@@ -100,6 +100,17 @@
           this.setMobile(val)
         }
       }
+      // departmentSelects: {
+      //   get() {
+      //     return this.departmentSelect
+      //   },
+      //   set() {
+      //     // todo
+      //   }
+      // },
+      // teamSelects() {
+      //   return this.teamSelect
+      // }
     },
     watch: {
       isShow(val) {
@@ -108,6 +119,7 @@
           return
         }
         if (val) {
+          this._getFirstAssortment()
           this.$refs.modal && this.$refs.modal.showModal()
         } else {
           this.$refs.modal && this.$refs.modal.hideModal()
@@ -123,6 +135,23 @@
         } catch (e) {
         } finally {
         }
+      },
+      // 获取部门列表
+      async _getFirstAssortment(id) {
+        if (this.groupList) {
+          this.departmentSelect.data = this.groupList[0].list || []
+        }
+        // console.log(this.editPosition)
+        // const id = this.editPosition()
+        // let res = await API.Outreach.getBranchList({parent_id: id})
+        // this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+        // this.assortment.data.unshift({name: '全部', id: ''})
+      },
+      // 获取团队列表
+      async _getSecondAssortment(id) {
+        let res = await API.Outreach.getBranchList({parent_id: id})
+        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.secondAssortment.data.unshift({name: '全部', id: ''})
       },
       // show(obj) {
       //   // this.numberTitle = title

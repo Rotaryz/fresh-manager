@@ -7,7 +7,21 @@ export const state = {
   maxLength: 6,
   useType: '',
   modalType: '',
-  mobile: ''
+  mobile: '',
+  // departmentSelect: {
+  //   check: false,
+  //   show: false,
+  //   content: '选择部门',
+  //   type: 'default',
+  //   data: []
+  // },
+  // teamSelect: {
+  //   check: false,
+  //   show: false,
+  //   content: '选择团队',
+  //   type: 'default',
+  //   data: []
+  // },
 }
 
 export const getters = {}

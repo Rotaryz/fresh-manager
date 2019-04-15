@@ -342,7 +342,8 @@ export const outreachGroupComputed = {
   }),
   ...mapState('oGTab', {
     groupList: (state) => state.groupList,
-    isLastDepartment: (state) => state.isLastDepartment
+    isLastDepartment: (state) => state.isLastDepartment,
+    editPosition: (state) => state.editPosition
   }),
   ...mapState('oGContent', {
     staffList: (state) => state.staffList,

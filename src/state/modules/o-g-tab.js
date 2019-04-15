@@ -82,12 +82,10 @@ export const actions = {
     })
   },
   addDepartment({commit, state, rootState}, args) {
-    // console.log(state.addPosition, rootState.oGModal.name)
     const data = {
       parent_id: (state.addPosition.current || {}).id || 0,
       name: rootState.oGModal.name
     }
-    console.log(data)
     return API.OutreachGroup.createDepartment(data, true).then((res) => {
       if (res.error !== app.$ERR_OK) {
         app.$toast.show(res.message)

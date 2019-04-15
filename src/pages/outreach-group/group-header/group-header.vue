@@ -24,7 +24,7 @@
     methods: {
       ...outreachGroupMethods,
       handleAdd() {
-        this.handleModal({isShow: true, title: '新建成员', useType: 'addStaff', modalType: 'addStaff'})
+        this.handleModal({isShow: true, title: '新建成员', useType: 'addStaff', modalType: 'addStaff', groupList: this.groupList})
       },
       exportExcel() {
         // todo
