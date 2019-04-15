@@ -638,6 +638,7 @@
           return
         }
 
+
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
@@ -758,7 +759,10 @@
         list.map(item => {
           item.goods_id = item.id
         })
-        let data = Object.assign({}, this.essInformation, {activity_goods: list})
+        let members = this.selectMembers.map(item => {
+          return item.id
+        })
+        let data = Object.assign({}, this.essInformation, {activity_goods: list, member_ids: members})
         let res = null
         this.isSubmit = true
         // 调用保存活动接口
