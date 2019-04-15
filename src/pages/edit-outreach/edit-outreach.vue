@@ -3,7 +3,7 @@
     <div v-if="!disable" class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">新建活动</p>
+        <p class="identification-name">新建拓展</p>
       </div>
       <div class="function-btn">
       </div>
@@ -15,7 +15,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          活动名称
+          拓展名称
         </div>
         <div class="edit-input-box">
           <input v-model="essInformation.activity_name"
@@ -31,7 +31,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          活动图片
+          拓展图片
         </div>
         <div class="image-box">
           <base-edit-image :picList.sync="banner_image" :picNum="1" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>
@@ -43,7 +43,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          活动时间
+          拓展时间
         </div>
         <date-picker
           :value="essInformation.start_at"
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <!--活动商品-->
+    <!--拓展商品-->
     <div class="content-header header-margin">
       <div class="content-title">商品信息</div>
     </div>
@@ -266,7 +266,7 @@
   import {DatePicker} from 'iview'
 
   const PAGE_NAME = 'EDIT_OUTREACH'
-  const TITLE = '新建查看拓展活动'
+  const TITLE = '新建查看拓展任务'
   const COMMODITIES_LIST = ['商品名称', '单位', '原售价(元)', '活动售价(元)', '排序', '操作']
   const MEMBERS_LIST = ['成员姓名', '手机', '操作']
   const GROUP_TITLE = [
@@ -354,11 +354,11 @@
     computed: {
       ...outreachComputed,
       testName() {
-        // 活动名称
+        // 拓展名称
         return this.essInformation.activity_name
       },
       testImg() {
-        // 活动图片
+        // 拓展图片
         return this.essInformation.image_id !== ''
       },
       testStart() {
@@ -418,9 +418,9 @@
       let time = new Date().toLocaleDateString().replace(/^(\d)$/, '0$1')
       this.essInformation.start_at = time.replace(/\//g, '-')
       if (this.$route.query.id) {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '查看活动'])
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '任务', '拓展任务', '查看任务'])
       } else {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '拓展活动', '新建活动'])
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '任务', '拓展任务', '新建任务'])
       }
     },
     async mounted() {
@@ -638,6 +638,7 @@
           return
         }
 
+
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
@@ -758,7 +759,10 @@
         list.map(item => {
           item.goods_id = item.id
         })
-        let data = Object.assign({}, this.essInformation, {activity_goods: list})
+        let members = this.selectMembers.map(item => {
+          return item.id
+        })
+        let data = Object.assign({}, this.essInformation, {activity_goods: list, member_ids: members})
         let res = null
         this.isSubmit = true
         // 调用保存活动接口
@@ -775,12 +779,12 @@
       },
       checkForm() {
         let arr = [
-          {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testImg, txt: '请选择活动图片'},
-          {value: this.testStart, txt: '请选择活动开始时间'},
+          {value: this.testName, txt: '请输入拓展名称'},
+          {value: this.testImg, txt: '请选择拓展图片'},
+          {value: this.testStart, txt: '请选择拓展开始时间'},
           // {value: this.testStartDate, txt: '活动开始时间只能为今天'},
-          {value: this.testEnd, txt: '请选择活动结束时间'},
-          {value: this.testEndDate, txt: '活动结束时间必须大于今天'},
+          {value: this.testEnd, txt: '请选择拓展结束时间'},
+          {value: this.testEndDate, txt: '拓展结束时间必须大于今天'},
           {value: this.testGroup, txt: '请选择拓展社区'},
           {value: this.testMember, txt: '请添加成员后保存'}
         ]

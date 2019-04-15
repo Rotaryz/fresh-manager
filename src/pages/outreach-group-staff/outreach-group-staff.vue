@@ -47,7 +47,7 @@
   import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY_STAFF'
-  const TITLE = '拓展活动-团队成员'
+  const TITLE = '拓展团队-详情'
 
   const ACTIVITI_TITLE = [
     {name: '拓展任务', flex: 1.2, value: 'activity_name', type: 1},
@@ -97,7 +97,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id
+        return process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id + '?' + search.join('&')
       }
     },
     created() {

@@ -281,7 +281,7 @@ export default [
         name: 'outreach-activity',
         component: () => lazyLoadView(import('@pages/outreach-activity/outreach-activity')),
         meta: {
-          titles: ['商城', '活动', '拓展任务'],
+          titles: ['商城', '拓展', '拓展任务'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
@@ -304,7 +304,7 @@ export default [
         name: 'outreach-activity-staff',
         component: () => lazyLoadView(import('@pages/outreach-activity-staff/outreach-activity-staff')),
         meta: {
-          titles: ['商城', '活动', '拓展任务', '团队成员'],
+          titles: ['商城', '拓展', '拓展任务', '成员'],
           beforeResolve(routeTo, routeFrom, next) {
             // 获取团队成员列表
             let id = routeTo.query.id
@@ -332,7 +332,7 @@ export default [
         name: 'outreach-group',
         component: () => lazyLoadView(import('@pages/outreach-group/outreach-group')),
         meta: {
-          titles: ['商城', '活动', '拓展团队'],
+          titles: ['商城', '拓展', '拓展团队'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
@@ -355,7 +355,7 @@ export default [
         name: 'outreach-group-staff',
         component: () => lazyLoadView(import('@pages/outreach-group-staff/outreach-group-staff')),
         meta: {
-          titles: ['商城', '活动', '拓展团队', '拓展团队'],
+          titles: ['商城', '拓展', '拓展团队', '详情'],
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
             // 活动详情
@@ -383,7 +383,7 @@ export default [
         name: 'edit-outreach',
         component: () => lazyLoadView(import('@pages/edit-outreach/edit-outreach')),
         meta: {
-          titles: ['商城', '活动', '拓展活动', '新建活动'],
+          titles: ['商城', '拓展', '拓展活动', '新建活动'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
