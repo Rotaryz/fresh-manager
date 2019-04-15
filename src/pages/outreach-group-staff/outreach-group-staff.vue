@@ -3,8 +3,11 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-personage@2x.png" class="identification-icon">
-          <p class="identification-name">{{taskData.member_name}}的线下拓展任务详情</p>
+          <div class="center">
+            <img src="./icon-personage@2x.png" class="identification-icon">
+            <p class="identification-name">{{taskData.member_name}}的线下拓展任务详情</p>
+          </div>
+          <div class="btn-main" @click="exportExcel">导出</div>
         </div>
         <div class="top-data">
           <div v-for="(item, index) in topItem" :key="index" class="top-item">
@@ -80,7 +83,22 @@
       }
     },
     computed: {
-      ...outreachGroupComputed
+      ...outreachGroupComputed,
+      exportUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token,
+          page: this.page
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id
+      }
     },
     created() {
       this.id = this.$route.query.id || ''
@@ -99,6 +117,9 @@
       addPage(page) {
         this.page = page
         this.getTaskDetail({page, id: this.id})
+      },
+      exportExcel() {
+        window.open(this.exportUrl, '_blank')
       }
     }
   }
@@ -109,10 +130,15 @@
 
   .identification
     height: 106px
-    padding: 22px 20px 26px
+    padding: 22px 0 26px
     display: block
+    .identification-page
+      justify-content: space-between
+      .center
+        display: flex
+        align-items: center
     .top-data
-      margin-top: 24px
+      margin-top: 20px
       display: flex
       align-items: center
     .top-item
