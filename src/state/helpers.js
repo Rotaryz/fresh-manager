@@ -1,4 +1,5 @@
-import {mapState, mapGetters, mapActions} from 'vuex'
+import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
+import { MODAL, TAB, TOOLS, CONTENT } from './mutations-types/outreach-group'
 
 export const authComputed = {
   ...mapState('auth', {
@@ -57,7 +58,8 @@ export const leaderMethods = mapActions('leader', [
   'setWithdrawalSearch',
   'setBillPage',
   'setBillType',
-  'setWidthTime'
+  'setWidthTime',
+  'infoStatus'
 ])
 
 // 今日采购
@@ -76,10 +78,10 @@ export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', '
 
 // 拓展活动
 export const outreachComputed = {
-  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail'])
+  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail', 'memberList', 'memberData', 'memberPage'])
 }
 
-export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
+export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList'])
 
 // 优惠券
 export const couponComputed = {
@@ -144,7 +146,7 @@ export const returnsComputed = {
 }
 
 export const returnsMethods = {
-  ...mapActions('returns', ['getReturnsList', 'setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage'])
+  ...mapActions('returns', ['getReturnsList', 'setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'infoStatus'])
 }
 
 // 轮播广告
@@ -283,3 +285,111 @@ export const productMethods = {
   ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
 }
 
+// 财务管理
+export const financeComputed = {
+  ...mapGetters('finance',
+    [
+      'settleStatus',
+      'statusTabIndex',
+      'settleLogs',
+      'settleLogsPageTotal',
+      'settleLogsPage',
+      'settleLogsDate',
+      'settleLogsStatus',
+      'settleLogsKeyword',
+      'account',
+      'payList',
+      'payListPageTotal',
+      'payListPage'
+    ])
+}
+
+export const financeMethods ={
+  ...mapActions('finance',
+    [
+      'getSettleStatus',
+      'getSettleLogs',
+      'setSettleDate',
+      'setSettleKeyword',
+      'setSettleLogsStatus',
+      'setSettleLogsPage',
+      'getAccount',
+      'getPayList',
+      'setPayListPage'
+    ])
+}
+// 新手指引
+export const beginnerGuideComputed = {
+  ...mapGetters('beginnerGuide', ['active'])
+}
+
+// 拓展团队
+export const outreachGroupComputed = {
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData']),
+  ...mapState('oGModal', {
+    isShow: (state) => state.isShow,
+    name: (state) => state.name,
+    title: (state) => state.title,
+    maxLength: (state) => state.maxLength,
+    useType: (state) => state.useType,
+    modalType: (state) => state.modalType,
+    mobile: (state) => state.mobile
+  }),
+  ...mapState('oGTools', {
+    showTools: (state) => state.isShow,
+    x: (state) => state.x,
+    y: (state) => state.y
+  }),
+  ...mapState('oGTab', {
+    groupList: (state) => state.groupList,
+    isLastDepartment: (state) => state.isLastDepartment
+  }),
+  ...mapState('oGContent', {
+    staffList: (state) => state.staffList,
+    teamData: (state) => state.teamData,
+    pageDetail: (state) => state.pageDetail
+  })
+}
+
+export const outreachGroupMethods = {
+  ...mapActions('outreachGroup', [
+    'getGroupList',
+    'showModal',
+    'groupListAddChildren',
+    'getOutreachList',
+    'getTaskDetail'
+  ]),
+  ...mapMutations('oGModal', [
+    MODAL.SHOW_MODAL,
+    MODAL.SET_NAME,
+    MODAL.SUBMIT,
+    MODAL.CANCEL,
+    MODAL.SET_MOBILE
+  ]),
+  ...mapMutations('oGTools', [
+    TOOLS.SET_POSITION,
+    TOOLS.SHOW_TOOLS,
+    TOOLS.UPDATE_IS_ENTER
+  ]),
+  ...mapMutations('oGTab', [
+    TAB.SET_ADD_POSITION,
+    TAB.SET_DEL_POSITION,
+    TAB.SET_EDIT_POSITION,
+    TAB.SET_MOVE_POSITION
+  ]),
+  ...mapActions('oGTab', [
+    'addDepartment',
+    'changeTab',
+    'deleteDepartment',
+    'editDepartment',
+    'moveDepartment'
+  ]),
+  ...mapMutations('oGContent', [
+    CONTENT.SET_CURRENT_STAFF
+  ]),
+  ...mapActions('oGContent', [
+    'reqStaffList',
+    'addStaff',
+    'editorStaff'
+  ])
+}

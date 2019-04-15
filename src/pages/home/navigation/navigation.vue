@@ -4,8 +4,8 @@
       <header class="logo">
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
-      <ul v-for="(item, index) in firstMenu" :key="index" class="menu">
-        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index)">
+      <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'beginner-guide':item.url==='/home/beginner-guide'}]">
+        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
           <img :src="item.icon" class="nav-item-icon">
           <p class="nav-item-name">{{item.name}}</p>
         </li>
@@ -70,9 +70,19 @@
           url: '/home/flash-sale',
           isLight: false
         },
+      ]
+    },
+    {
+      title: '拓展',
+      children: [
         {
-          title: '拓展活动',
+          title: '拓展任务',
           url: '/home/outreach-activity',
+          isLight: false
+        },
+        {
+          title: '拓展团队',
+          url: '/home/outreach-group',
           isLight: false
         }
       ]
@@ -139,49 +149,89 @@
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false
+        }
+        // {
+        //   title: '团长结算',
+        //   url: '/home/head-settlement',
+        //   isLight: false
+        // },
+        // {
+        //   title: '团长提现',
+        //   url: '/home/leader-withdrawal',
+        //   isLight: false
+        // }
+      ]
+    }
+  ]
+  const FINANCE = [
+    // {
+    //   title: '财务',
+    //   children: [
+    //     {
+    //       title: '营业概况',
+    //       url: '/home/business-overview',
+    //       isLight: false
+    //     }
+    //     // {
+    //     //   title: '交易记录',
+    //     //   url: '/home/transaction-record',
+    //     //   isLight: false
+    //     // }
+    //   ]
+    // },
+    {
+      title: '账户',
+      children: [
+        {
+          title: '账户总览',
+          url: '/home/account-overview',
+          isLight: false
         },
         {
-          title: '团长结算',
+          title: '交易明细',
+          url: '/home/transaction-detail',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '团长',
+      children: [
+        {
+          title: '团长佣金',
           url: '/home/head-settlement',
           isLight: false
         },
         {
-          title: '团长提现',
+          title: '提现记录',
           url: '/home/leader-withdrawal',
           isLight: false
         }
       ]
     }
   ]
-  const FINANCE = [
-    {
-      title: '财务',
-      children: [
-        {
-          title: '营业概况',
-          url: '/home/business-overview',
-          isLight: false
-        },
-        {
-          title: '交易记录',
-          url: '/home/transaction-record',
-          isLight: false
-        }
-      ]
-    }
-  ]
-  const STATISTICS = [
-    {
-      title: '统计',
-      children: [
-        {
-          title: '数据统计',
-          url: '/home/data-survey',
-          isLight: false
-        }
-      ]
-    }
-  ]
+  // const STATISTICS = [
+  //   {
+  //     title: '统计',
+  //     children: [
+  //       {
+  //         title: '数据统计',
+  //         url: '/home/data-survey',
+  //         isLight: false
+  //       }
+  //     ]
+  //   }
+  // ]
+  const DATA = [{
+    title: '概况',
+    children: [
+      {
+        title: '数据概况',
+        url: '/home/new-data',
+        isLight: false
+      }
+    ]
+  }]
   const SUPPLY = [
     {
       title: '订单',
@@ -254,15 +304,27 @@
       ]
     }
   ]
-  const FIRST_MENU = [
-    // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
+  const BEGINNER_GUIDE = [
     {
-      name: '统计',
-      icon: require('./icon-statistics@2x.png'),
-      isLight: true,
-      second: STATISTICS,
-      url: '/home/data-survey'
-    },
+      title: '新手指引',
+      children: [
+        {
+          title: '新手指引',
+          url: '/home/beginner-guide',
+          isLight: true
+        }
+      ]
+    }
+  ]
+  const FIRST_MENU = [
+    {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: DATA, url: '/home/new-data'},
+    // {
+    //   name: '统计',
+    //   icon: require('./icon-statistics@2x.png'),
+    //   isLight: true,
+    //   second: STATISTICS,
+    //   url: '/home/data-survey'
+    // },
     {
       name: '商城',
       icon: require('./icon-tmall@2x.png'),
@@ -282,10 +344,18 @@
       icon: require('./icon-finance@2x.png'),
       isLight: false,
       second: FINANCE,
-      url: '/home/business-overview'
+      url: '/home/account-overview'
+    }, {
+      name: "",
+      icon: require('./icon-guide@2x.png'),
+      isLight: false,
+      second: BEGINNER_GUIDE,
+      url: '/home/beginner-guide'
     }
-    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
+    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''},
+
   ]
+
   export default {
     name: COMPONENT_NAME,
     filters: {
@@ -348,7 +418,10 @@
         })
       },
       // 点击一级导航
-      _setFirstMenu(i) {
+      _setFirstMenu(i,url) {
+        if(url === '/home/beginner-guide'){
+          this.$store.commit('beginner/SET_ACTIVE', 0)
+        }
         if (this.firstMenu[i].isLight) {
           return
         } else if (!this.firstMenu[i].second.length) {
@@ -370,25 +443,28 @@
       // 监听页面变化
       _handleNavList() {
         let currentPath = this.$route.fullPath
-        let currentIndex = this.navList.findIndex((item) => {
-          return item.children.some((child) => currentPath.includes(child.url))
-        })
-        this.navList.map((item) => {
-          item.children = item.children.map((child) => {
-            child.isLight = false
-            return child
-          })
-          return item
-        })
-        let urlIndex = -1
-        this.navList[currentIndex].children.map((item, index) => {
-          if (urlIndex === -1) {
-            urlIndex = currentPath.includes(item.url) ? index : -1
+        let currentNav
+        this.firstMenu.forEach((item, idx) => {
+          if (currentPath.includes(item.url)) {
+            currentNav = item.second
+            this.firstMenu[idx].isLight = true
+            this.firstMenu[idx].second[0].children[0].isLight = true
+          } else {
+            this.firstMenu[idx].isLight = false
           }
-          item.isLight = currentPath.includes(item.url)
-          return item
+          item.second && item.second.forEach((it, id) => {
+            it.children && it.children.forEach((child, i) => {
+              if (currentPath.includes(child.url)) {
+                currentNav = item.second
+                this.firstMenu[idx].isLight = true
+                this.firstMenu[idx].second[id].children[i].isLight = true
+              } else {
+                this.firstMenu[idx].second[id].children[i].isLight = false
+              }
+            })
+          })
         })
-        this.firstMenu[this.firstIndex].url = this.navList[currentIndex].children[urlIndex].url
+        this.navList = currentNav || []
       }
     }
   }
@@ -414,16 +490,19 @@
     z-index: 2000
     width: 210px
     display: flex
+
     .first
       overflow: hidden
       min-height: 100vh
       width: $menu-width
       position: relative
       background: #363B4B
+
     .menu
       position: relative
       z-index: 1
       width: 100px
+
     .nav-item
       height: 54px
       display: flex
@@ -432,15 +511,36 @@
       padding: 0 10px
       box-sizing: border-box
       transition: all 0.3s
+
       .nav-item-icon
         width: 14px
         height: 14px
         margin-right: 5px
+
       .nav-item-name
         font-size: $font-size-14
+
     .nav-item-active
       color: $color-text-main
       background: $color-white
+
+    .beginner-guide
+      position absolute
+      left: 0
+      bottom: 0px
+
+      .nav-item-active
+        background-color #464C5E
+      /*&:hover .nav-item*/
+      /*background-color #464C5E*/
+      .nav-item
+        height: auto
+        padding-bottom 18px
+        padding-top 16px
+        .nav-item-icon
+          width 62px
+          height 68px
+          margin-left: 10px
 
   .logo
     position: relative
@@ -449,6 +549,7 @@
     display: flex
     align-items: center
     justify-content: center
+
     .logo-img
       overflow: hidden
       width: 32px
@@ -463,18 +564,23 @@
     white-space: nowrap
     transition: all 0.2s
     border-right-1px($color-line)
+
     &::-webkit-scrollbar
       width: 0
       height: 0
       transition: all 0.2s
+
     &::-webkit-scrollbar-thumb
       background-color: rgba(0, 0, 0, .15)
       border-radius: 10px
+
     &::-webkit-scrollbar-thumb:hover
       background-color: rgba(0, 0, 0, .3)
+
     &::-webkit-scrollbar-track
       box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
       border-radius: 10px
+
     &:hover
       &::-webkit-scrollbar
         transition: all 0.2s
@@ -486,14 +592,17 @@
       color: #888888
       font-size: $font-size-14
       line-height: 1
+
     .second-link
       transition: all 0.2s
       height: 34px
       line-height: 34px
       color: $color-text-main
       font-size: $font-size-14
+
       &:hover
         color: $color-main
+
     .second-link-active
       background: rgba(79, 189, 102, 0.17)
       color: $color-main
