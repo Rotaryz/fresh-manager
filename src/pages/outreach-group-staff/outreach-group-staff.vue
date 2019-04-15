@@ -97,7 +97,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id + '?' + search.join('&')
+        return process.env.VUE_APP_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id + '?' + search.join('&')
       }
     },
     created() {
@@ -145,10 +145,10 @@
       display: flex
       align-items: center
     .img
-      height: 12px
+      height: 14px
       object-fit: cover
     .name
-      font-size: $font-size-12
+      font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-text-main
       margin-left: 5px

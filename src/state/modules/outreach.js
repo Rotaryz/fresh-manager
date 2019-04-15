@@ -9,7 +9,7 @@ export const state = {
     order_counts: 0,
     total_sum: 0,
     repurchase_rate: '0%',
-    member_name: ''
+    activity_name: ''
   },
   outreachPage: {
     total: 1,
@@ -129,7 +129,7 @@ export const actions = {
           order_counts: res.order_counts || 0,
           total_sum: res.total_sum || 0,
           repurchase_rate: res.repurchase_rate || '0%',
-          member_name: res.member_name || ''
+          activity_name: res.activity_name || ''
         }
         commit('SET_MEMBER_LIST', arr)
         commit('SET_MEMBER_DATA', data)

@@ -4,7 +4,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-team@2x.png" class="identification-icon">
-          <p class="identification-name">{{memberData.social_name}}线下拓展团队</p>
+          <p class="identification-name">{{memberData.activity_name}}线下拓展团队</p>
         </div>
         <div class="top-data">
           <div v-for="(item, index) in topItem" :key="index" class="top-item">
@@ -27,7 +27,7 @@
 
               <!--二维码-->
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="code-box">
-                <div class="code-main" @mouseenter="showCode(index)" @mouseleave="hideCode">
+                <div class="code-main" @click="_getQrCode(item, index)">
                   <img src="./icon-qr@2x.png" class="small-code">
                   <transition name="fade">
                     <div v-if="codeShow === index" class="code-content">
@@ -40,8 +40,21 @@
           </div>
         </div>
       </div>
+      <default-modal v-if="memberList.length" ref="codeModal">
+        <div slot="content" class="pop-main code">
+          <div class="shade-header">
+            <div class="shade-title">{{memberList[codeIndex] && memberList[codeIndex].member_name}}</div>
+            <!--@click="_cancelGoods"-->
+            <span class="close hand" @click="_close"></span>
+          </div>
+          <div class="img-box">
+            <img v-if="!loadImg" key="1" :src="qrUrl" alt="" class="xcx-img">
+            <img v-if="loadImg" key="2" src="./loading.gif" alt="" class="load-img">
+          </div>
+        </div>
+      </default-modal>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="memberPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
   </div>
@@ -49,6 +62,8 @@
 
 <script type="text/ecmascript-6">
   import {outreachComputed, outreachMethods} from '@state/helpers'
+  import DefaultModal from '@components/default-modal/default-modal'
+  import API from '@api'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY_STAFF'
   const TITLE = '拓展活动-团队成员'
@@ -73,6 +88,7 @@
       title: TITLE
     },
     components: {
+      DefaultModal
     },
     data() {
       return {
@@ -82,11 +98,17 @@
         page: 1,
         status: 0,
         codeShow: '',
-        qrUrl: process.env.VUE_APP_API
+        id: '',
+        qrUrl: '',
+        loadImg: false,
+        codeIndex: ''
       }
     },
     computed: {
       ...outreachComputed
+    },
+    created() {
+      this.id = this.$route.query.id || ''
     },
     methods: {
       ...outreachMethods,
@@ -101,7 +123,23 @@
       },
       addPage(page) {
         this.page = page
-      }
+        this.$emit('getMemberList', {page, id: this.id})
+      },
+      async _getQrCode(item, index) {
+        this.codeIndex = index
+        this.loadImg = true
+        this.$refs.codeModal.showModal()
+        let res = await API.Outreach.getQrCode({path: `pages/recommend?s=${item.shop_id}&m=${item.activity_id}&e=${item.member_id}`, is_hyaline: false})
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+          return
+        }
+        this.loadImg = false
+        this.qrUrl = res.data.image_url
+      },
+      _close() {
+        this.$refs.codeModal.hideModal()
+      },
     }
   }
 </script>
@@ -124,10 +162,10 @@
       display: flex
       align-items: center
     .img
-      height: 12px
+      height: 14px
       object-fit: cover
     .name
-      font-size: $font-size-12
+      font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-text-main
       margin-left: 5px
@@ -203,4 +241,47 @@
       &:last-child
         padding: 0
         max-width: 122px
+  .pop-main
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+    border-radius: 2px
+    background: $color-white
+    width: 530px
+    height: 360px
+    box-sizing: border-box
+    text-align: left
+    display: flex
+    flex-direction: column
+    .shade-header
+      display: flex
+      align-items: center
+      justify-content: space-between
+      height: 60.5px
+      box-sizing: border-box
+      padding: 0 20px
+      border-bottom: 0.5px solid $color-line
+    .shade-title
+      color: $color-text-main
+      font-family: $font-family-regular
+      font-size: $font-size-16
+    .close
+      icon-image('icon-close')
+      width: 16px
+      height: @width
+      transition: all 0.3s
+      &:hover
+        transform: scale(1.3)
+    .img-box
+      flex: 1
+      display: flex
+      align-items: center
+      justify-content: center
+    .xcx-img
+      display: block
+      width: 238px
+      height: @width
+
+    .load-img
+      display: block
+      width: 40px
+      height: 40px
 </style>
