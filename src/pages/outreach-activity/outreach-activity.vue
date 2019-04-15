@@ -36,18 +36,18 @@
               <!--状态-->
               <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
               <!--复购率-->
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box">
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box hand">
                 <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">
                   <span>{{item[val.value] || '0%'}}</span>
-                  <img v-if="+(item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
-                  <img v-if="+(item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
-                  <img v-if="+(item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
+                  <img v-if="+(item.rise && item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
+                  <img v-if="+(item.rise && item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
+                  <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                   <transition name="fade">
                     <div v-if="tipShow === index" class="tip-content">
                       <span class="text">比昨天上升{{item.rise}}</span>
-                      <img v-if="+(item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
-                      <img v-if="+(item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
-                      <img v-if="+(item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
+                      <img v-if="+(item.rise && item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
+                      <img v-if="+(item.rise && item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
+                      <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                     </div>
                   </transition>
                 </div>
@@ -200,7 +200,7 @@
       .tip-content
         position: absolute
         right: -138px
-        top: -6px
+        top: -8px
         width: 132px
         height: 32px
         border-radius: 4px

@@ -102,7 +102,7 @@
             添加成员
           </div>
         </div>
-        <div v-if="selectMembers.length" class="outreach-list-box">
+        <div v-if="selectMembers && selectMembers.length" class="outreach-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in memberHeader" :key="index" class="member-list-item">{{item}}</div>
           </div>
@@ -131,7 +131,7 @@
             添加商品
           </div>
         </div>
-        <div v-if="goodsList.length" class="outreach-list-box">
+        <div v-if="goodsList && goodsList.length" class="outreach-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
             <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
           </div>
