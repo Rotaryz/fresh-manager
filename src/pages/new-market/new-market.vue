@@ -397,21 +397,21 @@
           show: false,
           content: '3天',
           type: 'default',
-          data: [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
+          data: [{name: '1天', id: 1}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
         },
         dayData2: {
           check: false,
           show: false,
           content: '3天',
           type: 'default',
-          data: [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}]  // 格式：{title: '55'}}
+          data: [{name: '1天', id: 1}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}]  // 格式：{title: '55'}}
         },
         dayDataNew: {
           check: false,
           show: false,
           content: '3天',
           type: 'default',
-          data: [{name: '1天'}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
+          data: [{name: '1天', id: 1}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
         },
         count: '',
         activityItem: 'order_count', // 活跃客户配置
