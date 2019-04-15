@@ -22,6 +22,26 @@ export default {
     return request.get(url, {}, loading)
   },
   /**
+   * 拓展活动成员列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getMemberList(data, loading = true) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 拓展任务详情
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getTaskDetail(id, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    return request.get(url, {}, loading)
+  },
+  /**
    * 删除活动
    * @param data
    * @param loading
