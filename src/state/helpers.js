@@ -389,7 +389,9 @@ export const outreachGroupMethods = {
     'moveDepartment'
   ]),
   ...mapMutations('oGContent', [
-    CONTENT.SET_CURRENT_STAFF
+    CONTENT.SET_CURRENT_STAFF,
+    CONTENT.CLEAR_STAFF_LIST,
+    CONTENT.RESET_PAGE
   ]),
   ...mapActions('oGContent', [
     'reqStaffList',

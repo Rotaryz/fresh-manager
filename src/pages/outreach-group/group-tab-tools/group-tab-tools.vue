@@ -1,18 +1,4 @@
 <template>
-<!--  <div-->
-<!--    v-if="showTools"-->
-<!--    class="group-tab-tools"-->
-<!--    :style="{left: x + 'px', top: y + 'px'}"-->
-<!--    @mouseenter="handleMouseEnter"-->
-<!--    @mousemove="handleMouseMove"-->
-<!--    @mouseleave="handleMouseLeave"-->
-<!--  >-->
-<!--    <ul class="tools-wrapper">-->
-<!--      <li class="tool-wrapper" v-for="(tool, index) in tools" :key="index" @click.stop="handleClick(tool)">-->
-<!--        <p>{{tool.name}}</p>-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--  </div>-->
   <ul
     v-if="showTools"
     class="group-tab-tools"

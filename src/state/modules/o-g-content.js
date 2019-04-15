@@ -32,6 +32,18 @@ export const mutations = {
   [CONTENT.CLEAR_STAFF_LIST] (state) {
     state.staffList = []
   },
+  [CONTENT.RESET_PAGE] (state) {
+    state.staffList = []
+    state.limit = 10
+    state.currentStaff = {}
+    state.teamData = {}
+    state.pageDetail = {
+      total: 1,
+      per_page: 10,
+      total_page: 1
+    }
+    state.page= 1
+  },
   [CONTENT.REQ_STAFF_LIST] (state, res) {
     state.pageDetail = {
       total: res.meta.total,
@@ -74,7 +86,6 @@ export const actions = {
   },
   editorStaff({commit, state, rootState}, args) {
     const id = args.currentTeam.id
-    console.log(id , args)
     if (!id) {
       return
     }

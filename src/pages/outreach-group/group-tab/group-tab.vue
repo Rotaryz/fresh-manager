@@ -8,8 +8,7 @@
       <div class="icon"></div>
       <p class="text">添加</p>
     </section>
-    <section
-      class="group-wrapper">
+    <section class="group-wrapper">
       <nav
         v-for="(company, cIdx) in groupList"
         :key="cIdx"

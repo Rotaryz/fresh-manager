@@ -99,6 +99,9 @@
     computed: {
       ...outreachGroupComputed
     },
+    beforeDestroy() {
+      this.restPage()
+    },
     methods: {
       ...outreachGroupMethods,
       showTip(index) {
