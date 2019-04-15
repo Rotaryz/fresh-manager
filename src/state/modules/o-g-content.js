@@ -62,11 +62,29 @@ export const actions = {
     })
   },
   addStaff({commit, state, rootState}, args) {
-    return API.OutreachGroup.addDepartment().then(() => {
-      const staff = {
-        name: rootState.oGModal.name
+    console.log(args)
+    const id = args.currentTeam.id
+    if (!id) {
+      return
+    }
+    let data = {
+      name: rootState.oGModal.name,
+      mobile: rootState.oGModal.mobile,
+      department_id: id
+    }
+    return API.OutreachGroup.createStaff(data).then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        return false
       }
-      commit(CONTENT.ADD_STAFF, staff)
+      console.log(res)
+      // const staff = {
+      //   name: rootState.oGModal.name
+      // }
+      // commit(CONTENT.ADD_STAFF, staff)
+    }).catch((e) => {
+      console.warn(e)
+    }).finally(() => {
+      app.$loading.hide()
     })
   },
   editorStaff({commit, state, rootState}, args) {
