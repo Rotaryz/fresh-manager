@@ -148,7 +148,6 @@
       ...outreachGroupComputed
     },
     created() {
-      console.log(this.groupList)
       if (!this.groupList.length || !this.groupList[0].id) {
         return
       }
@@ -177,6 +176,7 @@
         this.handleModal({isShow: true, title: '添加子部门', useType: 'addDepartment', modalType: 'addDepartment', maxLength: 8})
       },
       handleChangeStatus(args) {
+        let flag = false
         const {current, parentObj, grade, isLastDepartment} = args
         let parentId = grade === 'company' ? 0 : parentObj.id
         let hasIn = this.statusArray.some((item) => {
@@ -216,9 +216,10 @@
           break
         case 'team':
           if (hasIn) {
-            this.statusArray = this.statusArray.filter((item) => {
-              return +item.currentId !== +current.id
-            })
+            // this.statusArray = this.statusArray.filter((item) => {
+            //   return +item.currentId !== +current.id
+            // })
+            flag = true
           } else {
             this.statusArray = this.statusArray.filter((item) => {
               return +item.parentId !== +parentId
@@ -230,6 +231,7 @@
         default:
           break
         }
+        if (flag) return
         this.changeTab({current, isLastDepartment, parentObj})
       },
       handleChecked(args) {
