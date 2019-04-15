@@ -342,7 +342,7 @@ export const beginnerGuideComputed = {
 
 // 拓展团队
 export const outreachGroupComputed = {
-  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData'])
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData']),
   ...mapState('oGModal', {
     isShow: (state) => state.isShow,
     name: (state) => state.name,
