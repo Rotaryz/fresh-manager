@@ -111,7 +111,7 @@
 
   .identification
     height: 106px
-    padding: 22px 20px 26px
+    padding: 22px 0 26px
     display: block
     .top-data
       margin-top: 24px
