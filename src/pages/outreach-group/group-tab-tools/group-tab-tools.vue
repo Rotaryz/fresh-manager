@@ -66,7 +66,9 @@
       },
       handleMouseLeave(e) {
         this.updateIsEnter(false)
-        this.handleTools(false)
+        this.timer = setTimeout(() => {
+          this.handleTools(false)
+        }, 500)
       },
       handleClick(tool) {
         this.handleMouseLeave()

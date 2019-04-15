@@ -7,7 +7,9 @@ export const state = {
   delPosition: {},
   editPosition: {},
   movePosition: {},
-  isLastDepartment: false
+  isLastDepartment: false,
+  current: {},
+  parentObj: {}
 }
 
 export const getters = {}
@@ -17,9 +19,10 @@ export const mutations = {
     state.groupList = initGroupList(res.data || [])
   },
   [TAB.CHANGE_TAB_STATUS] (state, args) {
-    const {current} = args
-    closeAll(state.groupList)
-    current.isChecked = !current.isChecked
+    const {current, isLastDepartment, parentObj} = args
+    state.isLastDepartment = isLastDepartment
+    state.current = current
+    state.parentObj = parentObj
   },
   [TAB.ADD_DEPARTMENT] (state, department) {
     state.addPosition.position.unshift(department)
@@ -158,12 +161,12 @@ export const actions = {
     })
   },
   changeTab({commit,state, dispatch, rootState}, args) {
+    commit(TAB.CHANGE_TAB_STATUS, args)
     if (state.isLastDepartment) {
-      dispatch(`oGContent/reqStaffList`, {id: 0}, {root: true})
+      dispatch(`oGContent/reqStaffList`, {}, {root: true})
     } else {
       commit(`oGContent/${CONTENT.CLEAR_STAFF_LIST}`, {}, {root: true})
     }
-    commit(TAB.CHANGE_TAB_STATUS, args)
   }
 }
 

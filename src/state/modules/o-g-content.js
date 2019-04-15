@@ -11,6 +11,7 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
+  page: 1
 }
 
 export const getters = {}
@@ -39,30 +40,17 @@ export const mutations = {
     }
     state.staffList = res.data || []
     state.teamData = res
+  },
+  [CONTENT.SET_PAGE] (state, page) {
+    state.page = page
   }
 }
 
 export const actions = {
   reqStaffList({commit, state, rootState}, args) {
-    if (!rootState.oGTab.addPosition.current) return
-    const data = {
-      ...args,
-      id: rootState.oGTab.addPosition.current.id
-    }
-    return API.OutreachGroup.getStaffList(data).then((res) => {
-      if (res.error !== app.$ERR_OK) {
-        app.$toast.show(res.message)
-        return
-      }
-      commit(CONTENT.REQ_STAFF_LIST, res)
-    }).catch((e) => {
-      console.warn(e)
-    }).finally(() => {
-      app.$loading.hide()
-    })
+    reqList({commit, state, rootState}, args)
   },
   addStaff({commit, state, rootState}, args) {
-    console.log(args)
     const id = args.currentTeam.id
     if (!id) {
       return
@@ -74,13 +62,10 @@ export const actions = {
     }
     return API.OutreachGroup.createStaff(data).then((res) => {
       if (res.error !== app.$ERR_OK) {
+        app.$toast.show(res.message)
         return false
       }
-      console.log(res)
-      // const staff = {
-      //   name: rootState.oGModal.name
-      // }
-      // commit(CONTENT.ADD_STAFF, staff)
+      reqList({commit, state, rootState}, {})
     }).catch((e) => {
       console.warn(e)
     }).finally(() => {
@@ -88,11 +73,47 @@ export const actions = {
     })
   },
   editorStaff({commit, state, rootState}, args) {
-    return API.OutreachGroup.addDepartment().then(() => {
-      const staff = {
-        name: rootState.oGModal.name
+    const id = args.currentTeam.id
+    console.log(id , args)
+    if (!id) {
+      return
+    }
+    let data = {
+      name: rootState.oGModal.name,
+      mobile: rootState.oGModal.mobile,
+      department_id: id,
+      id: state.currentStaff.id
+    }
+    return API.OutreachGroup.updateStaff(data).then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        app.$toast.show(res.message)
+        return
       }
-      commit(CONTENT.EDIT_STAFF, staff)
+      reqList({commit, state, rootState}, {})
+    }).catch((e) => {
+      console.warn(e)
+    }).finally(() => {
+      app.$loading.hide()
     })
   },
+}
+
+function reqList({commit, state, rootState}, args) {
+  if (!rootState.oGTab.current) return
+  const data = {
+    ...args,
+    page: state.page,
+    id: rootState.oGTab.current.id
+  }
+  return API.OutreachGroup.getStaffList(data).then((res) => {
+    if (res.error !== app.$ERR_OK) {
+      app.$toast.show(res.message)
+      return
+    }
+    commit(CONTENT.REQ_STAFF_LIST, res)
+  }).catch((e) => {
+    console.warn(e)
+  }).finally(() => {
+    app.$loading.hide()
+  })
 }

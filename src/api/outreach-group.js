@@ -32,17 +32,21 @@ export default {
     let url = `/social-shopping/api/backend/activity-manage/member`
     return request.post(url, data, loading)
   },
+  // 新建成员
+  updateStaff(data, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/member/${data.id}`
+    return request.put(url, data, loading)
+  },
   // 获取成员列表
   getStaffList(data, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/department-offline-members/${data.id}`
     data = ''
     return request.get(url, data, loading)
   },
-  addDepartment() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve()
-      },100)
-    })
+  // 删除成员
+  deleteStaff(data, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/member/${data.id}`
+    data = ''
+    return request.delete(url, data, loading)
   }
 }

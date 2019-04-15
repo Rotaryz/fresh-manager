@@ -343,12 +343,15 @@ export const outreachGroupComputed = {
   ...mapState('oGTab', {
     groupList: (state) => state.groupList,
     isLastDepartment: (state) => state.isLastDepartment,
-    editPosition: (state) => state.editPosition
+    editPosition: (state) => state.editPosition,
+    current: (state) => state.current,
+    parentObj: (state) => state.parentObj
   }),
   ...mapState('oGContent', {
     staffList: (state) => state.staffList,
     teamData: (state) => state.teamData,
-    pageDetail: (state) => state.pageDetail
+    pageDetail: (state) => state.pageDetail,
+    page: (state) => state.page
   })
 }
 

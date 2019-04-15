@@ -100,17 +100,6 @@
           this.setMobile(val)
         }
       }
-      // departmentSelects: {
-      //   get() {
-      //     return this.departmentSelect
-      //   },
-      //   set() {
-      //     // todo
-      //   }
-      // },
-      // teamSelects() {
-      //   return this.teamSelect
-      // }
     },
     watch: {
       isShow(val) {
@@ -144,8 +133,9 @@
       },
       _initDepartmentSelect() {
         if (this.groupList) {
-          // console.log(this.editPosition)
-          this.departmentSelect.content = '选择部门'
+          this.departmentSelect.content = this.parentObj.name || '选择部门'
+          this.teamSelect.content = this.current.name || '选择团队'
+          this.currentTeam = this.current || {}
           this.departmentSelect.data = this.groupList[0].list || []
         }
       },
@@ -156,7 +146,6 @@
         }
         if (type === 'team') {
           this.currentTeam = item
-          console.log(this.currentTeam)
         }
       }
     }
