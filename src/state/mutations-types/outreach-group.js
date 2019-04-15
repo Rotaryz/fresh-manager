@@ -30,5 +30,6 @@ export const CONTENT = {
   ADD_STAFF: 'addStaff',
   EDIT_STAFF: 'editStaff',
   SET_CURRENT_STAFF: 'setCurrentStaff',
-  CLEAR_STAFF_LIST: 'clearStaffList'
+  CLEAR_STAFF_LIST: 'clearStaffList',
+  REQ_STAFF_LIST: 'reqStaffList'
 }

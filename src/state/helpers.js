@@ -327,7 +327,9 @@ export const outreachGroupComputed = {
     isLastDepartment: (state) => state.isLastDepartment
   }),
   ...mapState('oGContent', {
-    staffList: (state) => state.staffList
+    staffList: (state) => state.staffList,
+    teamData: (state) => state.teamData,
+    pageDetail: (state) => state.pageDetail
   })
 }
 

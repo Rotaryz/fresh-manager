@@ -3,7 +3,7 @@
     <div class="icon"></div>
     <p class="title">拓展团队</p>
     <div class="function-btn">
-      <router-link tag="div" to="outreach-group-staff" append class="btn-main">添加成员<span class="add-icon"></span></router-link>
+      <div v-if="isLastDepartment" class="btn-main" @click="handleAdd">添加成员<span class="add-icon"></span></div>
     </div>
     <div style="width: 20px"></div>
     <div class="function-btn">
@@ -13,16 +13,19 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
   const COMPONENT_NAME = 'GROUP_HEADER'
 
   export default {
     name: COMPONENT_NAME,
-    data() {
-      return {
-
-      }
+    computed: {
+      ...outreachGroupComputed
     },
     methods: {
+      ...outreachGroupMethods,
+      handleAdd() {
+        this.handleModal({isShow: true, title: '新建成员', useType: 'addStaff', modalType: 'addStaff'})
+      },
       exportExcel() {
         // todo
       }
