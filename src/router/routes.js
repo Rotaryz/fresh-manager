@@ -306,18 +306,23 @@ export default [
         meta: {
           titles: ['商城', '活动', '拓展任务', '团队成员'],
           beforeResolve(routeTo, routeFrom, next) {
-            // 活动列表
-            store
-            .dispatch('outreach/getOutreachList', {page: 1})
-            .then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
-            .catch(() => {
-              return next({name: '404'})
-            })
+            // 获取团队成员列表
+            let id = routeTo.query.id
+            if (id) {
+              store
+                .dispatch('outreach/getMemberList', {id, page: 1})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
           }
         }
       },

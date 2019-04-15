@@ -38,13 +38,16 @@
               <!--复购率-->
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box">
                 <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">
-                  {{item[val.value] || '0%'}}
+                  <span>{{item[val.value] || '0%'}}</span>
+                  <img v-if="+(item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
+                  <img v-if="+(item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
+                  <img v-if="+(item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                   <transition name="fade">
                     <div v-if="tipShow === index" class="tip-content">
-                      <span class="text">比昨天上升2%</span>
-                      <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
-                      <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
-                      <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
+                      <span class="text">比昨天上升{{item.rise}}</span>
+                      <img v-if="+(item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
+                      <img v-if="+(item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
+                      <img v-if="+(item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                     </div>
                   </transition>
                 </div>
@@ -183,12 +186,22 @@
           margin-left: -15px
           padding-left: 15px
           height: 16px
-
+          display: flex
+          align-items: center
+          .tip-icon
+            width: 8px
+            height: 10px
+            margin-left: 5px
+          .down
+            transform: rotate(180deg)
+          .equal
+            width: 8px
+            height: 2px
       .tip-content
         position: absolute
-        right: -125px
+        right: -138px
         top: -6px
-        width: 116px
+        width: 132px
         height: 32px
         border-radius: 4px
         padding-left: 10px

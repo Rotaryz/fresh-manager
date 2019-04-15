@@ -6,6 +6,12 @@ export const state = {
   outreachList: [],
   outreachDetail: {},
   taskDetail: [], // 成员任务详情
+  taskData: {
+    order_counts: 0,
+    total_sum: 0,
+    repurchase_rate: '0%',
+    member_name: ''
+  },
   outreachPage: {
     total: 1,
     per_page: 10,
@@ -22,7 +28,8 @@ export const getters = {
   groupList: state => state.groupList,
   outreachPage: state => state.outreachPage,
   taskDetail: state => state.taskDetail,
-  taskPage: state => state.taskPage
+  taskPage: state => state.taskPage,
+  taskData: state => state.taskData
 }
 
 export const mutations = {
@@ -37,6 +44,9 @@ export const mutations = {
   },
   SET_TASK_DETAIL(state, taskDetail) {
     state.taskDetail = taskDetail
+  },
+  SET_TASK_DATA(state, taskData) {
+    state.taskData = taskData
   },
   // SET_OUTREACH_DETAIL(state, outreachDetail) {
   //   state.outreachDetail = outreachDetail
@@ -81,6 +91,7 @@ export const actions = {
         per_page: res.meta.per_page,
         total_page: res.meta.last_page
       }
+
       commit('SET_OUTREACH_LIST', arr)
       commit('SET_OUTREACH_PAGE', outreachPage)
       return true
@@ -109,9 +120,15 @@ export const actions = {
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
+        let data = {
+          order_counts: res.order_counts || 0,
+          total_sum: res.total_sum || 0,
+          repurchase_rate: res.repurchase_rate,
+          member_name: res.member_name || ''
+        }
         commit('SET_TASK_DETAIL', arr)
+        commit('SET_TASK_DATA', data)
         commit('SET_TASK_PAGE', taskPage)
-        console.log(state.taskDetail)
         return true
       })
       .catch(() => {

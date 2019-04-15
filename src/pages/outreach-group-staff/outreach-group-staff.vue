@@ -4,13 +4,13 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-personage@2x.png" class="identification-icon">
-          <p class="identification-name">陈先生的线下拓展任务详情</p>
+          <p class="identification-name">{{taskData.member_name}}的线下拓展任务详情</p>
         </div>
         <div class="top-data">
           <div v-for="(item, index) in topItem" :key="index" class="top-item">
             <img class="img" :src="require('./'+ item.icon +'@2x.png')" alt="">
             <span class="name">{{item.name}}</span>
-            <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{item.value}}</span>
+            <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{taskData[item.value]}}</span>
           </div>
         </div>
       </div>

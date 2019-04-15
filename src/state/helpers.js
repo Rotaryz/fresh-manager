@@ -77,10 +77,10 @@ export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', '
 
 // 拓展活动
 export const outreachComputed = {
-  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail'])
+  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail', 'memberList', 'memberData', 'memberPage'])
 }
 
-export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
+export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList'])
 
 // 优惠券
 export const couponComputed = {
@@ -334,5 +334,5 @@ export const outreachGroupMethods = {
 }
 
 export const outreachGroupComputed = {
-  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage'])
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData'])
 }
