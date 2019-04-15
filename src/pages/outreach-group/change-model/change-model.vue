@@ -135,6 +135,7 @@
         if (this.groupList) {
           this.departmentSelect.content = this.parentObj.name || '选择部门'
           this.teamSelect.content = this.current.name || '选择团队'
+          this.teamSelect.data = []
           this.currentTeam = this.current || {}
           this.departmentSelect.data = this.groupList[0].list || []
         }

@@ -42,7 +42,7 @@
             </div>
 
             <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-              <router-link tag="span" :to="'/home/outreach-group/outreach-group-staff?id=' + (item.id || 0)" class="list-operation">详情</router-link>
+              <router-link tag="a" target="_blank" :to="'/home/outreach-group/outreach-group-staff?id=' + (item.id || 0)" class="list-operation">详情</router-link>
               <!--              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>-->
               <p class="list-operation" @click="handleEditor(item)">编辑</p>
               <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>

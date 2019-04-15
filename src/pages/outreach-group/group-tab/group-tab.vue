@@ -144,6 +144,17 @@
     computed: {
       ...outreachGroupComputed
     },
+    created() {
+      console.log(this.groupList)
+      if (!this.groupList.length || !this.groupList[0].id) {
+        return
+      }
+      const obj = {
+        currentId: this.groupList[0].id,
+        parentId: 0
+      }
+      this.statusArray.push(obj)
+    },
     methods: {
       ...outreachGroupMethods,
       checkItemStatus(current) {
@@ -159,7 +170,7 @@
       },
       handleAddDepartment(position) {
         this.setAddPosition({position})
-        this.handleModal({isShow: true, title: '添加子部门', useType: 'addDepartment', modalType: 'addDepartment'})
+        this.handleModal({isShow: true, title: '添加子部门', useType: 'addDepartment', modalType: 'addDepartment', maxLength: 8})
       },
       handleChangeStatus(args) {
         const {current, parentObj, grade, isLastDepartment} = args

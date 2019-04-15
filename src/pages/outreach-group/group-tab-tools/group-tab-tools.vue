@@ -66,10 +66,10 @@
           this.$toast.show('不能再添加子部门了！')
           return
         }
-        this.handleModal({isShow: true, title: '添加子部门', useType: 'addDepartment'})
+        this.handleModal({isShow: true, title: '添加子部门', useType: 'addDepartment', maxLength: 8})
       },
       handleEditDepartment() {
-        this.handleModal({isShow: true, title: '编辑子部门名称', useType: 'editDepartment'})
+        this.handleModal({isShow: true, title: '编辑子部门名称', useType: 'editDepartment', maxLength: 8})
       },
       handleMoveDepartment(tool) {
         const {moveType} = tool
