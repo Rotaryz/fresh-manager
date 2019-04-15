@@ -7,7 +7,7 @@
     </div>
     <div style="width: 20px"></div>
     <div class="function-btn">
-      <div class="btn-main" @click="exportExcel">导出Excel</div>
+      <div v-if="isLastDepartment" class="btn-main" @click="exportUrl">导出Excel</div>
     </div>
   </div>
 </template>
@@ -32,8 +32,23 @@
           groupList: this.groupList
         })
       },
-      exportExcel() {
-      // todo
+      exportUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token,
+          page: this.page
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        console.log(process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.current.id)
+        return (
+          process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.current.id
+        )
       }
     }
   }
