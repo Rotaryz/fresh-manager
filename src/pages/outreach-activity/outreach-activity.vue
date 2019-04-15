@@ -9,7 +9,7 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-customer_list@2x.png" class="identification-icon">
+          <img src="./icon-task@2x.png" class="identification-icon">
           <p class="identification-name">拓展任务</p>
         </div>
         <div class="function-btn">
@@ -169,6 +169,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
+  .identification .identification-icon
+    width: 12px
+    height: 12px
   .list
     flex: 1
     .list-item
@@ -199,9 +202,9 @@
             height: 2px
       .tip-content
         position: absolute
-        right: -138px
+        right: -144px
         top: -8px
-        width: 132px
+        width: 150px
         height: 32px
         border-radius: 4px
         padding-left: 10px

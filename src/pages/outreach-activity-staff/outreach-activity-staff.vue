@@ -113,6 +113,9 @@
     height: 106px
     padding: 22px 0 26px
     display: block
+    .identification-icon
+      width: 17px
+      height: 12px
     .top-data
       margin-top: 24px
       display: flex
