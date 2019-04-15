@@ -77,7 +77,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
-  const TITLE = '拓展活动'
+  const TITLE = '拓展任务'
   const ACTIVITI_TITLE = [
     {name: '拓展任务', flex: 1.2, value: 'activity_name', type: 6},
     {name: '拓展社区', flex: 1.2, value: 'social_name', type: 6},
