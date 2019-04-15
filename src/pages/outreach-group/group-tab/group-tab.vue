@@ -345,6 +345,8 @@
       color: $color-text-main
       line-height: @font-size
       no-wrap()
+      &.active
+        color: $color-positive
     .icon-hover
       position :absolute
       top:0
@@ -371,9 +373,6 @@
       display :flex
       align-items :center
       padding-left :125px
-    &.active
-      .text
-        color: $color-positive
 
   .group-tab
     position :relative
