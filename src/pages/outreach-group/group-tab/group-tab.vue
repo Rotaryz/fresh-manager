@@ -125,9 +125,6 @@
   import {outreachGroupMethods, outreachGroupComputed} from '@state/helpers'
 
   const COMPONENT_NAME = 'GROUP_TAB'
-  // const toolList = [
-  //   {text: '添加子部门', text2: '添加成员', icon: ''}
-  // ]
 
   export default {
     name: COMPONENT_NAME,
@@ -136,17 +133,6 @@
         timer: null
       }
     },
-    // data() {
-    //   return {
-    //     toolList: [
-    //       {text: '添加子部门',iconStyle: 'add', fn: 'showModalHandle'},
-    //       {text: '修改名称' ,iconStyle: 'edit'},
-    //       {text: '上移' ,iconStyle: 'up'},
-    //       {text: '下移' ,iconStyle: 'down'},
-    //       {text: '删除' ,iconStyle: 'delete', fn: 'deleteDepartment'},
-    //     ]
-    //   }
-    // },
     computed: {
       ...outreachGroupComputed,
     },
@@ -184,37 +170,6 @@
           this.handleTools(false)
         }, 300)
       }
-      // ...outreachGroupMethods,
-      // toolHandle(tool, parent, current, currentIndex, unableAdd){
-      //   console.log(current)
-      //   let key = tool.fn
-      //   if (key === 'showModalHandle') {
-      //     if (unableAdd) {
-      //       this.$toast.show('不能再添加子部门')
-      //       return
-      //     }
-      //     this.showModalHandle('addChildren', current)
-      //     return
-      //   }
-      //   this[key]({current, parent, currentIndex})
-      // },
-      // showModalHandle(key, current) {
-      //   this.showModal({
-      //     ctx: this.$parent,
-      //     key,
-      //     current
-      //   })
-      // },
-      // changeTabHandle(item, index, type) {
-      //   this.changeTab({item, index, type})
-      //   this.getStaffList({page: 1, id: item.id})
-      // },
-      // resetParams(type) {
-      //   if (type - 1 < 0) return
-      //   this['index' + type] = -1
-      //   this['rotate' + type] = !this['rotate' + type]
-      //   return this.resetParams(type - 1)
-      // }
     }
   }
 </script>

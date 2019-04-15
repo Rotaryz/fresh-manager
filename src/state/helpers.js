@@ -324,23 +324,6 @@ export const beginnerGuideComputed = {
 }
 
 // 拓展团队
-// export const outreachGroupMethods = {
-//   ...mapActions('outreachGroup', [
-//     'getGroupList',
-//     'showModal',
-//     'groupListAddChildren',
-//     // 'getOutreachList',
-//     'changeTab',
-//     'deleteDepartment',
-//     'getStaffList'
-//   ])
-// }
-//
-// export const outreachGroupComputed = {
-//   ...mapGetters('outreachGroup', ['groupList'])
-// }
-
-// 拓展团队
 export const outreachGroupComputed = {
   ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData']),
   ...mapState('oGModal', {

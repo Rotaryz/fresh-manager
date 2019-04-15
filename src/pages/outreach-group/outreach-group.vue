@@ -16,7 +16,6 @@
   import GroupContent from './group-content/group-content'
   import changeModel from './change-model/change-model'
   import GroupTabTools from './group-tab-tools/group-tab-tools'
-  // import {outreachGroupMethods} from '@state/helpers'
 
   const PAGE_NAME = 'OUTREACH_GROUP'
   const TITLE = '拓展团队'
@@ -38,9 +37,6 @@
 
       }
     },
-    // methods: {
-    //   ...outreachGroupMethods,
-    // }
   }
 </script>
 
