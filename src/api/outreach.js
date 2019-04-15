@@ -81,5 +81,25 @@ export default {
   getQrCode(data, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/qrcode-download`
     return request.post(url, data, loading)
-  }
+  },
+  /**
+   * 部门列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getBranchList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/department`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 成员列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getTeamList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/member`
+    return request.get(url, data, loading)
+  },
 }

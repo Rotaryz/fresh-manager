@@ -102,24 +102,16 @@
             添加成员
           </div>
         </div>
-        <div v-if="goodsList.length" class="outreach-list-box">
+        <div v-if="selectMembers.length" class="outreach-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
-            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+            <div v-for="(item, index) in memberHeader" :key="index" class="member-list-item">{{item}}</div>
           </div>
           <div class="big-box">
-            <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.sale_unit}}</div>
-              <div class="com-list-item">¥{{item.original_price || 0}}</div>
-              <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
-                <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
-                <span v-if="item.original_price" class="small-money">¥</span>
-              </div>
-              <div class="com-list-item" :class="{'sort-focus':sortFocus === index}">
-                <input v-model="item.sort" type="number" class="com-edit com-edit-small" :class="{'no-border': disable}" :readonly="disable">
-              </div>
-              <div class="com-list-item">
-                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+            <div v-for="(item, index) in selectMembers" :key="index" class="com-list-box com-list-content">
+              <div class="member-list-item">{{item.name}}</div>
+              <div class="member-list-item">{{item.mobile}}</div>
+              <div class="member-list-item">
+                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelMembers(item, index)">删除</span>
               </div>
             </div>
           </div>
@@ -207,9 +199,8 @@
     <!-- 添加成员弹窗-->
     <member-modal
       ref="memberModal"
-      :assortment="memberAssortment"
-      :secondAssortment="memberSecondAssortment"
-      @_cancelMembers="_cancelMembers"
+      :selectMembers="selectMembers"
+      @addMemberOne="addMemberOne"
       @_memberAddition="_memberAddition"
     >
     </member-modal>
@@ -277,6 +268,7 @@
   const PAGE_NAME = 'EDIT_OUTREACH'
   const TITLE = '新建查看拓展活动'
   const COMMODITIES_LIST = ['商品名称', '单位', '原售价(元)', '活动售价(元)', '排序', '操作']
+  const MEMBERS_LIST = ['成员姓名', '手机', '操作']
   const GROUP_TITLE = [
     {name: '选择', class: 'title-item', flex: 0.4, value: ''},
     {name: '团长帐号', class: 'title-item', flex: 0.8, value: 'mobile'},
@@ -299,6 +291,7 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
+        memberHeader: MEMBERS_LIST,
         classifyIndex: 0,
         delId: [], // 删除id数组
         id: null,
@@ -352,7 +345,10 @@
         groupSelectItem: {}, // 确定选择的团长
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
-        banner_image: []
+        banner_image: [],
+        selectMembers: [], // 活动成员列表
+        memberDelId: '', // 删除的成员ID
+        delType: '' // 删除弹窗的类型 成员 member 商品 goods
       }
     },
     computed: {
@@ -386,6 +382,9 @@
       testGroup() {
         // 社区
         return this.essInformation.shop_id !== ''
+      },
+      testMember() {
+        return this.selectMembers.length
       }
     },
     watch: {
@@ -395,6 +394,7 @@
           if (id) {
             let obj = _.cloneDeep(news)
             this.goodsList = obj.activity_goods
+            this.selectMembers = obj.members
             let imgArr = [{id: 0, image_id: 0, image_url: obj.activity_cover_image}]
             this.banner_image = imgArr
             this.groupSelectItem.social_name = obj.social_name
@@ -587,16 +587,32 @@
         if (this.disable) {
           return
         }
+        this.delType = 'goods'
         this.goodsDelId = item.goods_id
         this.goodsDelIndex = index
         this.$refs.confirm.show('是否确定删除该商品？')
       },
+      // 删除成员
+      _showDelMembers(item, idx) {
+        if (this.disable) {
+          return
+        }
+        this.delType = 'member'
+        this.memberDelId = item.id
+        this.$refs.confirm.show('是否确定删除该成员？')
+      },
       // 删除商品弹窗
       _delGoods() {
-        // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-        this.selectGoodsId.splice(this.goodsDelIndex, 1)
-        this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(this.goodsDelId)
+        if (this.delType === 'goods') {
+          // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+          this.selectGoodsId.splice(this.goodsDelIndex, 1)
+          this.goodsList.splice(this.goodsDelIndex, 1)
+          this.selectDelId.push(this.goodsDelId)
+        } else {
+          this.selectMembers = this.selectMembers.filter(item => {
+            return +item.id !== +this.memberDelId
+          })
+        }
       },
       _cancelGoods() {
         if (this.groupShow) {
@@ -644,6 +660,12 @@
         this.selectGoods = []
         this._hideGoods()
       },
+      _memberAddition(arr) {
+        this.selectMembers = this.selectMembers.concat(arr)
+      },
+      addMemberOne(item) {
+        this.selectMembers.push(item)
+      },
       async _showGoods() {
         if (this.disable) {
           return
@@ -662,13 +684,9 @@
         if (this.disable) {
           return
         }
-        this._initData()
-        this.$refs.goodsSearch._setText('')
-        await this._getGoodsList()
         // 展示添加商品弹窗
         this.$refs.memberModal.showModal()
       },
-
       _initData() {
         this.page = 1
         this.keyword = ''
@@ -763,7 +781,8 @@
           // {value: this.testStartDate, txt: '活动开始时间只能为今天'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '活动结束时间必须大于今天'},
-          {value: this.testGroup, txt: '请选择拓展社区'}
+          {value: this.testGroup, txt: '请选择拓展社区'},
+          {value: this.testMember, txt: '请添加成员后保存'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -951,8 +970,17 @@
         margin-top: 0
       .com-list-box
         .com-list-item
+          position: relative
           &:nth-child(1)
             flex: 2
+        .member-list-item
+          position: relative
+          flex: 1
+          &:nth-child(1)
+            flex: 2
+          &:nth-child(2)
+            flex: 4
+            margin-right: 80px
 
   .history-record
     box-sizing: border-box
@@ -1399,9 +1427,6 @@
       opacity: 0
     }
   }
-
-  .com-list-item
-    position: relative
 
   .com-edit
     height: 34px
