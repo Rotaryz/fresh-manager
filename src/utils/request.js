@@ -78,9 +78,9 @@ function requestException(res) {
     error.serverData = serviceData
   }
   switch (serviceData.code) {
-  case 13004:
-    error.error = 0
-    break
+    case 13004:
+      error.error = 0
+      break
   }
   return error
 }

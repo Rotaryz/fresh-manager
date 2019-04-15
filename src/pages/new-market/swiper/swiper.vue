@@ -21,11 +21,18 @@
   import {Carousel, CarouselItem} from 'iview'
 
   const IMAGE_ARR = [
-    ['pic-coupon_window','pic-choose_commodity','pic-place_order'],
-    ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity','pic-place_order'],
-    ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity','pic-place_order'],
+    ['pic-coupon_window', 'pic-choose_commodity', 'pic-place_order'],
+    ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity', 'pic-place_order'],
+    ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity', 'pic-place_order'],
     // ['pic-coupon_window','pic-choose_commodity','pic-place_order'],
-    ['pic-single_goupon', 'pic-address_book', 'pic-receive_goupon', 'pic-share_goupon2', 'pic-choose_commodity','pic-place_order']
+    [
+      'pic-single_goupon',
+      'pic-address_book',
+      'pic-receive_goupon',
+      'pic-share_goupon2',
+      'pic-choose_commodity',
+      'pic-place_order'
+    ]
   ]
   const COMPONENT_NAME = 'SWIPER'
   export default {
@@ -47,10 +54,9 @@
         bannerList: [`${require('./pic-address_book@2x.png')}`]
       }
     },
-    watch: {
-    },
+    watch: {},
     created() {
-      this.bannerList = this.imageArr[this.type].map(item => {
+      this.bannerList = this.imageArr[this.type].map((item) => {
         return require(`./${item}@2x.png`)
       })
     },
@@ -62,8 +68,7 @@
         this.bannerIndex = value
         this.$emit('bannerChange', value)
       },
-      _setType(cms) {
-      }
+      _setType(cms) {}
     }
   }
 </script>

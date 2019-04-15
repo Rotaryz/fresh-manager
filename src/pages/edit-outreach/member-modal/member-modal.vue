@@ -87,9 +87,7 @@
         }
       }
     },
-    created() {
-
-    },
+    created() {},
     methods: {
       _initData() {
         this.memberList = []
@@ -194,11 +192,11 @@
         this._getMemberList()
       },
       _selectMember(item, idx) {
-        let hasIn = this.checkedMembers.some(item1 => {
+        let hasIn = this.checkedMembers.some((item1) => {
           return +item.id === +item1.id
         })
         if (hasIn) {
-          this.checkedMembers = this.checkedMembers.filter(item2 => {
+          this.checkedMembers = this.checkedMembers.filter((item2) => {
             return +item2.id !== +item.id
           })
         } else {
@@ -214,19 +212,19 @@
       },
       // 是否确定选择过
       checkSelect(item) {
-        return this.selectMembers.some(item1 => {
+        return this.selectMembers.some((item1) => {
           return +item.id === +item1.id
         })
       },
       // 是否临时勾选
       checkChoice(item) {
-        return this.checkedMembers.some(item1 => {
+        return this.checkedMembers.some((item1) => {
           return +item.id === +item1.id
         })
       },
       // 按钮文字
       formatBtn(item) {
-        let hasIn = this.selectMembers.some(item1 => {
+        let hasIn = this.selectMembers.some((item1) => {
           return +item.id === +item1.id
         })
         if (hasIn) {

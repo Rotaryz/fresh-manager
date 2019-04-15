@@ -136,7 +136,11 @@
         signItem: {},
         startTime: '',
         endTime: '',
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待配送', value: 1, key: 'wait_delivery', num: 0}, {name: '配送完成', value: 2, key: 'success_delivery', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待配送', value: 1, key: 'wait_delivery', num: 0},
+          {name: '配送完成', value: 2, key: 'success_delivery', num: 0}
+        ],
         accurateStart: '',
         accurateEnd: '',
         statusTab: 0
@@ -215,7 +219,11 @@
         }
       },
       async _statistic() {
-        let res = await API.Delivery.getSeliveryStatistic({start_time: this.orderStartTime, end_time: this.orderEndTime, keyword: this.orderKeyword})
+        let res = await API.Delivery.getSeliveryStatistic({
+          start_time: this.orderStartTime,
+          end_time: this.orderEndTime,
+          keyword: this.orderKeyword
+        })
         this.statistic = res.error === this.$ERR_OK ? res.data : {all: 0, wait_delivery: 0, success_delivery: 0}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
@@ -231,12 +239,22 @@
         switch (index) {
         case 0:
           if (!this.orderStartTime && !this.orderEndTime) {
-            this.infoOrderTime({startTime: this.startTime, endTime: this.endTime, start: this.accurateStart, end: this.accurateEnd})
+            this.infoOrderTime({
+              startTime: this.startTime,
+              endTime: this.endTime,
+              start: this.accurateStart,
+              end: this.accurateEnd
+            })
           }
           break
         case 1:
           if (!this.driverStartTime && !this.driverEndTime) {
-            this.infoDriverTime({startTime: this.startTime, endTime: this.endTime, start: this.accurateStart, end: this.accurateEnd})
+            this.infoDriverTime({
+              startTime: this.startTime,
+              endTime: this.endTime,
+              start: this.accurateStart,
+              end: this.accurateEnd
+            })
           }
           break
         }

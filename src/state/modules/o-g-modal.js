@@ -7,7 +7,7 @@ export const state = {
   maxLength: 6,
   useType: '',
   modalType: '',
-  mobile: '',
+  mobile: ''
 }
 
 export const getters = {}
@@ -32,7 +32,7 @@ export const mutations = {
   [MODAL.CANCEL](state) {
     state.isShow = false
   },
-  [MODAL.SET_MOBILE] (state, mobile) {
+  [MODAL.SET_MOBILE](state, mobile) {
     state.mobile = mobile
   }
 }

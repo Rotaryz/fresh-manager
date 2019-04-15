@@ -53,13 +53,13 @@
     props: {
       batchList: {
         type: Array,
-        default: function () {
+        default: function() {
           return []
         }
       },
       curItem: {
         type: Object,
-        default: function () {
+        default: function() {
           return []
         }
       }
@@ -72,8 +72,7 @@
         changeNumber: 0
       }
     },
-    created() {
-    },
+    created() {},
     methods: {
       show(index) {
         this.numberBatch = index.toFixed(2)
@@ -89,7 +88,7 @@
           return
         }
         let arr = []
-        this.batchList.forEach(item1 => {
+        this.batchList.forEach((item1) => {
           if (item1.out_count && item1.out_count > 0) {
             let obj = {
               batch_num: item1.batch_num,
@@ -104,13 +103,13 @@
       changeInput(item) {
         let number = 0
         let bigNumber = 0
-        this.batchList.forEach(item1 => {
+        this.batchList.forEach((item1) => {
           if (item1.id !== item.id && item1.out_count) {
-            bigNumber += (item1.out_count * 1)
+            bigNumber += item1.out_count * 1
           }
         })
-        if (item.out_count > (this.curItem.base_num - bigNumber)) {
-          item.out_count = (this.curItem.base_num - bigNumber)
+        if (item.out_count > this.curItem.base_num - bigNumber) {
+          item.out_count = this.curItem.base_num - bigNumber
           let arr = []
           arr = (item.out_count + '').split('.')
           if (arr.length === 2) {
@@ -123,17 +122,17 @@
             }
           }
         }
-        this.batchList.forEach(item1 => {
+        this.batchList.forEach((item1) => {
           if (item1.out_count) {
-            number += (item1.out_count * 1)
+            number += item1.out_count * 1
           }
         })
         if (item.usable_stock * 1 < item.out_count) {
           item.out_count = item.usable_stock
           number = 0
-          this.batchList.forEach(item1 => {
+          this.batchList.forEach((item1) => {
             if (item1.out_count) {
-              number += (item1.out_count * 1)
+              number += item1.out_count * 1
             }
           })
         }

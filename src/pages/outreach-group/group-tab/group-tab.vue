@@ -17,9 +17,9 @@
         <section
           class="common-item"
           @click.stop="handleChangeStatus({
-          current: company,
-          parentObj: groupList,
-          grade: 'company'
+            current: company,
+            parentObj: groupList,
+            grade: 'company'
           })"
         >
           <article class="active-box"></article>
@@ -27,22 +27,24 @@
             class="icon-hover"
             @mouseleave="handleMouseLeave"
             @click.stop="handleChecked({
-               position: company.list,
-               current: company,
-               parent: groupList,
-               index: cIdx,
-               parentObj: groupList,
-               e: $event,
-               })"
+              position: company.list,
+              current: company,
+              parent: groupList,
+              index: cIdx,
+              parentObj: groupList,
+              e: $event,
+            })"
           >
-            <div class="icon" id="icon1"></div>
+            <div id="icon1" class="icon"></div>
           </figure>
           <div
             class="icon-drop"
-            :class="{'active' : checkItemStatus(company)}"></div>
+            :class="{'active' : checkItemStatus(company)}"
+          ></div>
           <p
             class="text font-f-m"
-            :class="{'active' : checkItemStatus(company)}">{{company.name}}</p>
+            :class="{'active' : checkItemStatus(company)}"
+          >{{company.name}}</p>
         </section>
         <dl
           v-for="(department, dIdx) in company.list"
@@ -57,21 +59,21 @@
               current: department,
               parentObj: company,
               grade: 'department'
-              })"
+            })"
           >
             <article class="active-box"></article>
             <figure
               class="icon-hover"
               @mouseleave="handleMouseLeave"
               @click.stop="handleChecked({
-                 position: department.list,
-                 current: department,
-                 parent: company.list,
-                 index: dIdx,
-                 parentObj: company,
-                 e: $event,
-                 grade: 'department'
-                 })"
+                position: department.list,
+                current: department,
+                parent: company.list,
+                index: dIdx,
+                parentObj: company,
+                e: $event,
+                grade: 'department'
+              })"
             >
               <div class="icon icon-image"></div>
             </figure>
@@ -96,7 +98,7 @@
                 parentObj: department,
                 grade: 'team',
                 isLastDepartment: true
-                })"
+              })"
             >
               <article v-if="checkItemStatus(team)" class="active-box">
               </article>
@@ -104,22 +106,22 @@
                 class="icon-hover"
                 @mouseleave="handleMouseLeave"
                 @click.stop="handleChecked({
-                   position: team.list,
-                   current: team,
-                   parent: department.list,
-                   index: tIdx,
-                   isLastDepartment: true,
-                   parentObj: department,
-                   e: $event,
-                   grade: 'team'
-                   })"
+                  position: team.list,
+                  current: team,
+                  parent: department.list,
+                  index: tIdx,
+                  isLastDepartment: true,
+                  parentObj: department,
+                  e: $event,
+                  grade: 'team'
+                })"
               >
                 <div class="icon"></div>
               </figure>
               <p class="text">{{team.name}}</p>
             </section>
           </dd>
-<!--          <div v-if="child1.list && child1.list.length && child1.rotate" style="height: 11px"></div>-->
+          <!--          <div v-if="child1.list && child1.list.length && child1.rotate" style="height: 11px"></div>-->
         </dl>
       </nav>
     </section>
@@ -140,17 +142,17 @@
       }
     },
     computed: {
-      ...outreachGroupComputed,
+      ...outreachGroupComputed
     },
     methods: {
       ...outreachGroupMethods,
       checkItemStatus(current) {
-        return this.statusArray.some(item => {
+        return this.statusArray.some((item) => {
           return +item.currentId === +current.id
         })
       },
       formatStyle(current) {
-        let hasIn = this.statusArray.some(item => {
+        let hasIn = this.statusArray.some((item) => {
           return +item.currentId === +current.id
         })
         return hasIn ? 'height: auto' : 'overflow:hidden'
@@ -162,13 +164,13 @@
       handleChangeStatus(args) {
         const {current, parentObj, grade, isLastDepartment} = args
         let parentId = grade === 'company' ? 0 : parentObj.id
-        let hasIn = this.statusArray.some(item => {
+        let hasIn = this.statusArray.some((item) => {
           return +item.currentId === +current.id
         })
         switch (grade) {
-        case 'company' :
+        case 'company':
           if (hasIn) {
-            this.statusArray = this.statusArray.filter(item => {
+            this.statusArray = this.statusArray.filter((item) => {
               return +item.currentId !== +current.id
             })
           } else {
@@ -177,11 +179,11 @@
           break
         case 'department':
           if (hasIn) {
-            this.statusArray = this.statusArray.filter(item => {
+            this.statusArray = this.statusArray.filter((item) => {
               return !(+item.currentId === +current.id || +item.parentId === +current.id)
             })
           } else {
-            this.statusArray = this.statusArray.filter(item => {
+            this.statusArray = this.statusArray.filter((item) => {
               return +item.parentId !== +parentId
             })
             this.statusArray.push({currentId: current.id, parentId})
@@ -189,11 +191,11 @@
           break
         case 'team':
           if (hasIn) {
-            this.statusArray = this.statusArray.filter(item => {
+            this.statusArray = this.statusArray.filter((item) => {
               return +item.currentId !== +current.id
             })
           } else {
-            this.statusArray = this.statusArray.filter(item => {
+            this.statusArray = this.statusArray.filter((item) => {
               return +item.parentId !== +parentId
             })
             this.statusArray.push({currentId: current.id, parentId})

@@ -609,7 +609,7 @@
           this.goodsList.splice(this.goodsDelIndex, 1)
           this.selectDelId.push(this.goodsDelId)
         } else {
-          this.selectMembers = this.selectMembers.filter(item => {
+          this.selectMembers = this.selectMembers.filter((item) => {
             return +item.id !== +this.memberDelId
           })
         }
@@ -755,7 +755,7 @@
             return
           }
         }
-        list.map(item => {
+        list.map((item) => {
           item.goods_id = item.id
         })
         let data = Object.assign({}, this.essInformation, {activity_goods: list})

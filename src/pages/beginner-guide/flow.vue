@@ -31,7 +31,7 @@
     },
     methods: {
       getStyle() {
-        let style =  {
+        let style = {
           wdith: this.flowImgWidth + 'px',
           padding: `${this.padding[0]}px ${this.padding[1]}px`
         }

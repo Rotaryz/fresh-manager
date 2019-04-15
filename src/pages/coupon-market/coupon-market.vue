@@ -87,10 +87,8 @@
     computed: {
       ...marketComputed
     },
-    created() {
-    },
-    mounted() {
-    },
+    created() {},
+    mounted() {},
     methods: {
       ...marketMethods,
       newMarket(index) {
@@ -105,14 +103,13 @@
           status: item.status ? 0 : 1,
           id: item.id
         }
-        API.Market.switchMarket(data)
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.getMarketList({page: this.page})
-          })
+        API.Market.switchMarket(data).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.getMarketList({page: this.page})
+        })
       },
       _deleteMarket(item) {
         this.delId = item.id

@@ -59,11 +59,7 @@
   const TITLE = '优惠券列表'
   const DATE_PLACE_HOLDER = '选择时间'
 
-  const ORDERSTATUS = [
-    {text: '进行中', status: 1},
-    {text: '未开始', status: 0},
-    {text: '已过期', status: 2}
-  ]
+  const ORDERSTATUS = [{text: '进行中', status: 1}, {text: '未开始', status: 0}, {text: '已过期', status: 2}]
   const COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name', type: 1},
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},
@@ -75,7 +71,7 @@
     {name: '剩余数量', flex: 1, value: 'usable_stock', type: 1},
     {name: '已领取数', flex: 1, value: 'customer_coupon_count', type: 1},
     {name: '已使用数', flex: 1, value: 'customer_coupon_used_count', type: 1},
-    {name: '操作', flex: 1, value: '', type: 4},
+    {name: '操作', flex: 1, value: '', type: 4}
   ]
   export default {
     name: PAGE_NAME,
@@ -100,8 +96,7 @@
         return this.tabStatus.findIndex((item) => item.status === this.status)
       }
     },
-    created() {
-    },
+    created() {},
     methods: {
       ...couponMethods,
       changeStatus(selectStatus) {

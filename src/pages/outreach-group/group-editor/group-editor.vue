@@ -10,9 +10,7 @@
   export default {
     name: COMPONENT_NAME,
     data() {
-      return {
-
-      }
+      return {}
     }
   }
 </script>

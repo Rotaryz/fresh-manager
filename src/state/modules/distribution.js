@@ -206,7 +206,7 @@ export const actions = {
     dispatch('getOrderList')
   },
   getDriverList({commit, state}, loading = true) {
-    const {driverStartTime, driverEndTime, driverPage,start, end} = state
+    const {driverStartTime, driverEndTime, driverPage, start, end} = state
     let starts = driverStartTime && driverStartTime.length < 11 ? `${driverStartTime} ${start}` : driverStartTime
     let ends = driverEndTime && driverEndTime.length < 11 ? `${driverEndTime} ${end}` : driverEndTime
     commit('SET_DRIVER_START_TIME', starts)
@@ -252,5 +252,5 @@ export const actions = {
   setDriverPage({commit, dispatch}, page) {
     commit('SET_DRIVER_PAGE', page)
     dispatch('getDriverList')
-  },
+  }
 }

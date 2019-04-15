@@ -121,5 +121,5 @@ export default {
   getTeamList(data, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/member`
     return request.get(url, data, loading)
-  },
+  }
 }

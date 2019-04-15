@@ -1,5 +1,5 @@
 import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
-import { MODAL, TAB, TOOLS, CONTENT } from './mutations-types/outreach-group'
+import {MODAL, TAB, TOOLS, CONTENT} from './mutations-types/outreach-group'
 
 export const authComputed = {
   ...mapState('auth', {
@@ -78,7 +78,14 @@ export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', '
 
 // 拓展活动
 export const outreachComputed = {
-  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail', 'memberList', 'memberData', 'memberPage'])
+  ...mapGetters('outreach', [
+    'outreachList',
+    'outreachPage',
+    'outreachDetail',
+    'memberList',
+    'memberData',
+    'memberPage'
+  ])
 }
 
 export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList'])
@@ -88,7 +95,13 @@ export const couponComputed = {
   ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'time', 'status', 'page'])
 }
 
-export const couponMethods = mapActions('coupon', ['setTime', 'setStatus', 'setPage', 'getCouponList', 'getCouponDetail'])
+export const couponMethods = mapActions('coupon', [
+  'setTime',
+  'setStatus',
+  'setPage',
+  'getCouponList',
+  'getCouponDetail'
+])
 
 // 营销计划
 export const marketComputed = {
@@ -146,7 +159,15 @@ export const returnsComputed = {
 }
 
 export const returnsMethods = {
-  ...mapActions('returns', ['getReturnsList', 'setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'infoStatus'])
+  ...mapActions('returns', [
+    'getReturnsList',
+    'setShopId',
+    'setTime',
+    'setKeyword',
+    'setStatus',
+    'setPage',
+    'infoStatus'
+  ])
 }
 
 // 轮播广告
@@ -179,7 +200,18 @@ export const tradeMethods = {
 
 // OMS
 export const omsComputed = {
-  ...mapGetters('oms', ['orders', 'pageTotal', 'page', 'startTime', 'endTime', 'status', 'keyword', 'detail', 'timeStart', 'timeEnd'])
+  ...mapGetters('oms', [
+    'orders',
+    'pageTotal',
+    'page',
+    'startTime',
+    'endTime',
+    'status',
+    'keyword',
+    'detail',
+    'timeStart',
+    'timeEnd'
+  ])
 }
 
 export const omsMethods = {
@@ -208,7 +240,12 @@ export const proTaskComputed = {
   ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd'])
 }
 
-export const proTaskMethods = mapActions('proTask', ['getPurchaseTaskList', 'selectPurchase', 'setTaskList', 'infoTaskTime'])
+export const proTaskMethods = mapActions('proTask', [
+  'getPurchaseTaskList',
+  'selectPurchase',
+  'setTaskList',
+  'infoTaskTime'
+])
 
 // 调度任务
 export const deliveryComputed = {
@@ -221,41 +258,39 @@ export const deliveryMethods = {
 
 // 调度任务
 export const distributionComputed = {
-  ...mapGetters('distribution',
-    [
-      'tabIndex',
-      'orderList',
-      'orderPageDetail',
-      'orderPage',
-      'orderStartTime',
-      'orderEndTime',
-      'orderKeyword',
-      'orderStatus',
-      'driverList',
-      'driverPageDetail',
-      'driverPage',
-      'driverStartTime',
-      'driverEndTime'
-    ])
+  ...mapGetters('distribution', [
+    'tabIndex',
+    'orderList',
+    'orderPageDetail',
+    'orderPage',
+    'orderStartTime',
+    'orderEndTime',
+    'orderKeyword',
+    'orderStatus',
+    'driverList',
+    'driverPageDetail',
+    'driverPage',
+    'driverStartTime',
+    'driverEndTime'
+  ])
 }
 
 export const distributionMethods = {
-  ...mapActions('distribution',
-    [
-      'setTabIndex',
-      'getOrderList',
-      'setOrderStartTime',
-      'setOrderEndTime',
-      'setOrderKeyword',
-      'setOrderPage',
-      'setOrderStatus',
-      'getDriverList',
-      'setDriverStartTime',
-      'setDriverEndTime',
-      'setDriverPage',
-      'infoOrderTime',
-      'infoDriverTime'
-    ])
+  ...mapActions('distribution', [
+    'setTabIndex',
+    'getOrderList',
+    'setOrderStartTime',
+    'setOrderEndTime',
+    'setOrderKeyword',
+    'setOrderPage',
+    'setOrderStatus',
+    'getDriverList',
+    'setDriverStartTime',
+    'setDriverEndTime',
+    'setDriverPage',
+    'infoOrderTime',
+    'infoDriverTime'
+  ])
 }
 
 // 采购员
@@ -278,7 +313,15 @@ export const supplierMethods = {
 
 // 库位管理
 export const productComputed = {
-  ...mapGetters('product', ['storeList', 'enterList', 'statePageTotal', 'outList', 'outPageTotal', 'enterDetail', 'outDetail'])
+  ...mapGetters('product', [
+    'storeList',
+    'enterList',
+    'statePageTotal',
+    'outList',
+    'outPageTotal',
+    'enterDetail',
+    'outDetail'
+  ])
 }
 
 export const productMethods = {
@@ -287,36 +330,34 @@ export const productMethods = {
 
 // 财务管理
 export const financeComputed = {
-  ...mapGetters('finance',
-    [
-      'settleStatus',
-      'statusTabIndex',
-      'settleLogs',
-      'settleLogsPageTotal',
-      'settleLogsPage',
-      'settleLogsDate',
-      'settleLogsStatus',
-      'settleLogsKeyword',
-      'account',
-      'payList',
-      'payListPageTotal',
-      'payListPage'
-    ])
+  ...mapGetters('finance', [
+    'settleStatus',
+    'statusTabIndex',
+    'settleLogs',
+    'settleLogsPageTotal',
+    'settleLogsPage',
+    'settleLogsDate',
+    'settleLogsStatus',
+    'settleLogsKeyword',
+    'account',
+    'payList',
+    'payListPageTotal',
+    'payListPage'
+  ])
 }
 
-export const financeMethods ={
-  ...mapActions('finance',
-    [
-      'getSettleStatus',
-      'getSettleLogs',
-      'setSettleDate',
-      'setSettleKeyword',
-      'setSettleLogsStatus',
-      'setSettleLogsPage',
-      'getAccount',
-      'getPayList',
-      'setPayListPage'
-    ])
+export const financeMethods = {
+  ...mapActions('finance', [
+    'getSettleStatus',
+    'getSettleLogs',
+    'setSettleDate',
+    'setSettleKeyword',
+    'setSettleLogsStatus',
+    'setSettleLogsPage',
+    'getAccount',
+    'getPayList',
+    'setPayListPage'
+  ])
 }
 // 新手指引
 export const beginnerGuideComputed = {
@@ -324,7 +365,7 @@ export const beginnerGuideComputed = {
 }
 // 拓展团队详情
 export const outreachGroupDetailComputed = {
-  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData']),
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData'])
 }
 export const outreachGroupDetailMethods = {
   ...mapActions('outreachGroup', [
@@ -374,39 +415,10 @@ export const outreachGroupMethods = {
     'getOutreachList',
     'getTaskDetail'
   ]),
-  ...mapMutations('oGModal', [
-    MODAL.SHOW_MODAL,
-    MODAL.SET_NAME,
-    MODAL.SUBMIT,
-    MODAL.CANCEL,
-    MODAL.SET_MOBILE
-  ]),
-  ...mapMutations('oGTools', [
-    TOOLS.SET_POSITION,
-    TOOLS.SHOW_TOOLS,
-    TOOLS.UPDATE_IS_ENTER
-  ]),
-  ...mapMutations('oGTab', [
-    TAB.SET_ADD_POSITION,
-    TAB.SET_DEL_POSITION,
-    TAB.SET_EDIT_POSITION,
-    TAB.SET_MOVE_POSITION
-  ]),
-  ...mapActions('oGTab', [
-    'addDepartment',
-    'changeTab',
-    'deleteDepartment',
-    'editDepartment',
-    'moveDepartment'
-  ]),
-  ...mapMutations('oGContent', [
-    CONTENT.SET_CURRENT_STAFF,
-    CONTENT.CLEAR_STAFF_LIST,
-    CONTENT.RESET_PAGE
-  ]),
-  ...mapActions('oGContent', [
-    'reqStaffList',
-    'addStaff',
-    'editorStaff'
-  ])
+  ...mapMutations('oGModal', [MODAL.SHOW_MODAL, MODAL.SET_NAME, MODAL.SUBMIT, MODAL.CANCEL, MODAL.SET_MOBILE]),
+  ...mapMutations('oGTools', [TOOLS.SET_POSITION, TOOLS.SHOW_TOOLS, TOOLS.UPDATE_IS_ENTER]),
+  ...mapMutations('oGTab', [TAB.SET_ADD_POSITION, TAB.SET_DEL_POSITION, TAB.SET_EDIT_POSITION, TAB.SET_MOVE_POSITION]),
+  ...mapActions('oGTab', ['addDepartment', 'changeTab', 'deleteDepartment', 'editDepartment', 'moveDepartment']),
+  ...mapMutations('oGContent', [CONTENT.SET_CURRENT_STAFF, CONTENT.CLEAR_STAFF_LIST, CONTENT.RESET_PAGE]),
+  ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff'])
 }

@@ -259,17 +259,17 @@
       },
       testStartDate() {
         // 开始时间规则判断
-        return Date.parse('' + this.msg.start_at) > (new Date() - 360000)
+        return Date.parse('' + this.msg.start_at) > new Date() - 360000
       },
       testEndTime() {
         return this.msg.end_at
       },
-      testEndTimeReg() { // 结束时间规则判断
+      testEndTimeReg() {
+        // 结束时间规则判断
         return Date.parse('' + this.msg.end_at) > Date.parse('' + this.msg.start_at)
-      },
+      }
     },
-    watch: {
-    },
+    watch: {},
     created() {
       this.disable = this.$route.query.id
       this.id = this.$route.query.id || null
@@ -284,10 +284,10 @@
         this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
       }
       this._getFirstAssortment()
-      // this._getGoodsList()
+    // this._getGoodsList()
     },
     async mounted() {
-      // this.classifyIndex = 0
+    // this.classifyIndex = 0
     },
     methods: {
       ...saleMethods,
@@ -301,11 +301,13 @@
         let arr = new Array(24).fill(1)
         arr = arr.map((item, index) => {
           return {
-            name: (index+1)+'小时',
-            id: index+5
+            name: index + 1 + '小时',
+            id: index + 5
           }
         })
-        arr = [{name: '1分钟', id: 1}, {name: '5分钟', id: 2}, {name: '15分钟', id: 3}, {name: '30分钟', id: 4}].concat(arr)
+        arr = [{name: '1分钟', id: 1}, {name: '5分钟', id: 2}, {name: '15分钟', id: 3}, {name: '30分钟', id: 4}].concat(
+          arr
+        )
         this.duration.data = arr
       },
       // 选择商品
@@ -512,7 +514,7 @@
             return
           }
         }
-        list.map(item => {
+        list.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id
         })
@@ -548,7 +550,6 @@
           }
         }
       }
-
     }
   }
 </script>

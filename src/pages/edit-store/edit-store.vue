@@ -71,14 +71,24 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import AddGoods from '@components/add-goods/add-goods'
+// import AddGoods from '@components/add-goods/add-goods'
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'
 
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
-  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '可用库存/总库存', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
+  const COMMODITIES_LIST = [
+    '序号',
+    '商品名称',
+    '分类',
+    '可用库存/总库存',
+    '出库数(基本单位)',
+    '出库批次',
+    '出库单价',
+    '出库金额',
+    '操作'
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -120,7 +130,7 @@
         let obj = item
         obj.base_num = ''
         obj.select_batch = []
-        this.storeList.forEach(item => {
+        this.storeList.forEach((item) => {
           if (item.goods_id === obj.goods_id) {
             isExist = true
           }
@@ -130,9 +140,9 @@
         }
       },
       batchAddition(list) {
-        list.forEach(item => {
+        list.forEach((item) => {
           let isExist = false
-          this.storeList.forEach(item1 => {
+          this.storeList.forEach((item1) => {
             if (item.goods_id * 1 === item1.goods_id * 1) {
               isExist = true
             }
@@ -160,9 +170,9 @@
             let number = 0
             this.batchList = res.data
             if (this.storeList[index].select_batch.length) {
-              this.storeList[index].select_batch.forEach(item => {
-                number += (item.select_out_num * 1)
-                this.batchList.forEach(item1 => {
+              this.storeList[index].select_batch.forEach((item) => {
+                number += item.select_out_num * 1
+                this.batchList.forEach((item1) => {
                   if (item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
                   }
@@ -179,10 +189,10 @@
         this.storeList[this.curIndex].select_batch = arr
         let allprice = 0
         let number = 0
-        arr.forEach(item => {
+        arr.forEach((item) => {
           if (item.select_out_num > 0) {
-            number += (item.select_out_num * 1)
-            allprice += (item.select_out_num * item.price)
+            number += item.select_out_num * 1
+            allprice += item.select_out_num * item.price
           }
         })
         this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
@@ -213,7 +223,7 @@
         }
         let isInputNull = false
         let isStoreNull = false
-        this.storeList.forEach(item => {
+        this.storeList.forEach((item) => {
           if (item.base_num.length === 0) {
             isInputNull = true
           }

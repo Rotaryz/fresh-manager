@@ -336,16 +336,16 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
-            .dispatch('oGTab/reqGroupList', {parentId : -1}, {root: true})
-            .then((res) => {
-              if (!res) {
+              .dispatch('oGTab/reqGroupList', {parentId: -1}, {root: true})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
                 return next({name: '404'})
-              }
-              return next()
-            })
-            .catch(() => {
-              return next({name: '404'})
-            })
+              })
           }
         }
       },
@@ -1074,10 +1074,10 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
@@ -1136,8 +1136,7 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购员列表'],
           beforeResolve(routeTo, routeFrom, next) {
-            store
-              .dispatch('buyer/infoSetKeyWord')
+            store.dispatch('buyer/infoSetKeyWord')
             store
               .dispatch('buyer/getPurchaseUser')
               .then((res) => {
@@ -1194,10 +1193,10 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
@@ -1261,8 +1260,7 @@ export default [
         meta: {
           titles: ['供应链', '采购', '供应商'],
           beforeResolve(routeTo, routeFrom, next) {
-            store
-              .dispatch('supplier/infoSetKeyWord')
+            store.dispatch('supplier/infoSetKeyWord')
             store
               .dispatch('supplier/getSupplier')
               .then((res) => {
@@ -1318,10 +1316,10 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
@@ -1342,9 +1340,10 @@ export default [
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
-              return next({name: '404'})
-            })
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
@@ -1384,10 +1383,10 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
@@ -1408,9 +1407,10 @@ export default [
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
-              return next({name: '404'})
-            })
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
@@ -1463,9 +1463,10 @@ export default [
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
-              return next({name: '404'})
-            })
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
@@ -1484,10 +1485,10 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
@@ -1503,7 +1504,13 @@ export default [
             routeTo.params.accurateEnd = time.end
             let tabIndex = store.state.distribution.tabIndex
             if (tabIndex === 0) {
-              store.dispatch('distribution/infoOrderTime', {startTime, endTime, start: time.start, end: time.end, status})
+              store.dispatch('distribution/infoOrderTime', {
+                startTime,
+                endTime,
+                start: time.start,
+                end: time.end,
+                status
+              })
               store
                 .dispatch('distribution/getOrderList')
                 .then((res) => {
@@ -1567,14 +1574,14 @@ export default [
             let startTime = ''
             let endTime = ''
             if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 2))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 2)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp - 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             }
             let start = time.start
@@ -1664,7 +1671,7 @@ export default [
 
 function lazyLoadView(AsyncView) {
   const AsyncHandler = () => ({
-    component: AsyncView,
+    component: AsyncView
     // loading: require('@pages/_loading/_loading').default,
     // delay: 400,
     // error: require('@pages/_timeout/_timeout').default,

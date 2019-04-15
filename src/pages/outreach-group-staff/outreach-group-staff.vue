@@ -68,8 +68,7 @@
     page: {
       title: TITLE
     },
-    components: {
-    },
+    components: {},
     data() {
       return {
         activityTitle: ACTIVITI_TITLE,
@@ -97,7 +96,9 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id
+        return (
+          process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id
+        )
       }
     },
     created() {

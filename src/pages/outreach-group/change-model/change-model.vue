@@ -113,7 +113,7 @@
         } else {
           this.$refs.modal && this.$refs.modal.hideModal()
         }
-      },
+      }
     },
     created() {
       this.cancel()

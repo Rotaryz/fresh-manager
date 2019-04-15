@@ -69,7 +69,7 @@
           title: '限时抢购',
           url: '/home/flash-sale',
           isLight: false
-        },
+        }
       ]
     },
     {
@@ -150,16 +150,16 @@
           url: '/home/dispatching-list',
           isLight: false
         }
-        // {
-        //   title: '团长结算',
-        //   url: '/home/head-settlement',
-        //   isLight: false
-        // },
-        // {
-        //   title: '团长提现',
-        //   url: '/home/leader-withdrawal',
-        //   isLight: false
-        // }
+      // {
+      //   title: '团长结算',
+      //   url: '/home/head-settlement',
+      //   isLight: false
+      // },
+      // {
+      //   title: '团长提现',
+      //   url: '/home/leader-withdrawal',
+      //   isLight: false
+      // }
       ]
     }
   ]
@@ -222,16 +222,18 @@
   //     ]
   //   }
   // ]
-  const DATA = [{
-    title: '概况',
-    children: [
-      {
-        title: '数据概况',
-        url: '/home/new-data',
-        isLight: false
-      }
-    ]
-  }]
+  const DATA = [
+    {
+      title: '概况',
+      children: [
+        {
+          title: '数据概况',
+          url: '/home/new-data',
+          isLight: false
+        }
+      ]
+    }
+  ]
   const SUPPLY = [
     {
       title: '订单',
@@ -345,15 +347,15 @@
       isLight: false,
       second: FINANCE,
       url: '/home/account-overview'
-    }, {
-      name: "",
+    },
+    {
+      name: '',
       icon: require('./icon-guide@2x.png'),
       isLight: false,
       second: BEGINNER_GUIDE,
       url: '/home/beginner-guide'
     }
-    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''},
-
+  // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''},
   ]
 
   export default {
@@ -418,8 +420,8 @@
         })
       },
       // 点击一级导航
-      _setFirstMenu(i,url) {
-        if(url === '/home/beginner-guide'){
+      _setFirstMenu(i, url) {
+        if (url === '/home/beginner-guide') {
           this.$store.commit('beginner/SET_ACTIVE', 0)
         }
         if (this.firstMenu[i].isLight) {
@@ -452,17 +454,19 @@
           } else {
             this.firstMenu[idx].isLight = false
           }
-          item.second && item.second.forEach((it, id) => {
-            it.children && it.children.forEach((child, i) => {
-              if (currentPath.includes(child.url)) {
-                currentNav = item.second
-                this.firstMenu[idx].isLight = true
-                this.firstMenu[idx].second[id].children[i].isLight = true
-              } else {
-                this.firstMenu[idx].second[id].children[i].isLight = false
-              }
+          item.second &&
+            item.second.forEach((it, id) => {
+              it.children &&
+                it.children.forEach((child, i) => {
+                  if (currentPath.includes(child.url)) {
+                    currentNav = item.second
+                    this.firstMenu[idx].isLight = true
+                    this.firstMenu[idx].second[id].children[i].isLight = true
+                  } else {
+                    this.firstMenu[idx].second[id].children[i].isLight = false
+                  }
+                })
             })
-          })
         })
         this.navList = currentNav || []
       }

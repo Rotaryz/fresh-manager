@@ -210,15 +210,18 @@
         status: '',
         supplyId: '',
         selectList: [],
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_release', num: 0}, {name: '待采购', value: 2, key: 'wait_purchase', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待发布', value: 1, key: 'wait_release', num: 0},
+          {name: '待采购', value: 2, key: 'wait_purchase', num: 0},
+          {name: '已完成', value: 3, key: 'success', num: 0}
+        ],
         supplyTask: {
           check: false,
           show: false,
           content: '全部',
           type: 'default',
-          data: [
-            {name: '全部', id: ''}
-          ]
+          data: [{name: '全部', id: ''}]
         },
         parentId: '',
         taskNum: '',
@@ -563,7 +566,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        res.data.forEach(item => {
+        res.data.forEach((item) => {
           item.name = item.supplier_name
         })
         this.supplyTask.data = this.supplyTask.data.concat(res.data)
@@ -571,18 +574,17 @@
       async confirmMsg() {
         switch (this.confirmType) {
         case 1:
-          let res = await API.Supply.purchaseTaskPublish(
-            {
-              time: this.time,
-              startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-              endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
-              keyword: this.keyword,
-              status: this.status,
-              page: this.page,
-              supplyId: this.supplyId,
-              loading: false,
-              ids: []
-            })
+          let res = await API.Supply.purchaseTaskPublish({
+            time: this.time,
+            startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            keyword: this.keyword,
+            status: this.status,
+            page: this.page,
+            supplyId: this.supplyId,
+            loading: false,
+            ids: []
+          })
           this.$toast.show(res.message)
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
@@ -600,17 +602,16 @@
           await this._statistic()
           break
         case 2:
-          let supplyRes = await API.Supply.purchaseTask(
-            {
-              time: this.time,
-              start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-              end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
-              keyword: this.keyword,
-              status: this.status,
-              page: this.page,
-              supplier_id: this.supplyId,
-              loading: false
-            })
+          let supplyRes = await API.Supply.purchaseTask({
+            time: this.time,
+            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            keyword: this.keyword,
+            status: this.status,
+            page: this.page,
+            supplier_id: this.supplyId,
+            loading: false
+          })
           this.$loading.hide()
           if (supplyRes.error !== this.$ERR_OK) {
             this.$toast.show(supplyRes.message)
@@ -622,7 +623,12 @@
         }
       },
       async _statistic() {
-        let res = await API.Supply.getTaskStatusNumber({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword, supplier_id: this.supplyId})
+        let res = await API.Supply.getTaskStatusNumber({
+          start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          keyword: this.keyword,
+          supplier_id: this.supplyId
+        })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)

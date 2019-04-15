@@ -17,13 +17,13 @@ export function getCorpId() {
   }
   // 根据corp返回不同环境下的corpId
   switch (corp) {
-  case 'retuan':
-    return process.env.VUE_APP_RETUAN_CORP
-  case 'gjdw':
-    return process.env.VUE_APP_GUOJIDANWEI_CORP
-  default:
-    // return null
-    return process.env.VUE_APP_CURRENT_CORP
+    case 'retuan':
+      return process.env.VUE_APP_RETUAN_CORP
+    case 'gjdw':
+      return process.env.VUE_APP_GUOJIDANWEI_CORP
+    default:
+      // return null
+      return process.env.VUE_APP_CURRENT_CORP
   }
 }
 

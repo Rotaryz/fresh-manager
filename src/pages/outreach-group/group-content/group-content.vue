@@ -30,20 +30,20 @@
             <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box">
               <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">
                 {{item[val.value] || '0%'}}
-<!--                <transition name="fade">-->
-<!--                  <div v-if="tipShow === index" class="tip-content">-->
-<!--                    <span class="text">比昨天上升2%</span>-->
-<!--                    <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">-->
-<!--                    <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">-->
-<!--                    <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">-->
-<!--                  </div>-->
-<!--                </transition>-->
+                <!--                <transition name="fade">-->
+                <!--                  <div v-if="tipShow === index" class="tip-content">-->
+                <!--                    <span class="text">比昨天上升2%</span>-->
+                <!--                    <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">-->
+                <!--                    <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">-->
+                <!--                    <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">-->
+                <!--                  </div>-->
+                <!--                </transition>-->
               </div>
             </div>
 
             <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
               <router-link tag="span" :to="'/home/outreach-group/outreach-group-staff?id=' + (item.id || 0)" class="list-operation">详情</router-link>
-<!--              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>-->
+              <!--              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>-->
               <p class="list-operation" @click="handleEditor(item)">编辑</p>
               <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
             </div>
@@ -119,7 +119,14 @@
       },
       handleEditor(item) {
         this.setCurrentStaff(item)
-        this.handleModal({...item, isShow: true, title: '编辑成员', useType: 'editorStaff', modalType: 'addStaff', groupList: this.groupList})
+        this.handleModal({
+          ...item,
+          isShow: true,
+          title: '编辑成员',
+          useType: 'editorStaff',
+          modalType: 'addStaff',
+          groupList: this.groupList
+        })
       },
       _deleteActivity(id) {
         this.delId = id

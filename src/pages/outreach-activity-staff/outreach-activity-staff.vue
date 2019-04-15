@@ -72,8 +72,7 @@
     page: {
       title: TITLE
     },
-    components: {
-    },
+    components: {},
     data() {
       return {
         activityTitle: ACTIVITI_TITLE,
