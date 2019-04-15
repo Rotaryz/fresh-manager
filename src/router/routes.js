@@ -327,7 +327,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
-            .dispatch('outreachGroup/getGroupList', {parentId : -1})
+            .dispatch('oGTab/reqGroupList', {parentId : -1}, {root: true})
             .then((res) => {
               if (!res) {
                 return next({name: '404'})

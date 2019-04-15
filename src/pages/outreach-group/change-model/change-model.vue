@@ -1,76 +1,70 @@
 <template>
   <default-modal ref="modal">
-    <section v-if="useType === 'editorChildren'" slot="content" class="default-input">
-      <div class="title-input">
-        <div class="title">编辑信息</div>
-        <div class="close-box" @click="cancel">
-          <div class="close hand"></div>
-        </div>
-      </div>
-      <div class="main-input">
-        <div class="main-model-box">
-          <div class="text">名称</div>
-          <input v-model="name" type="text" maxlength="10" class="main-input-box" placeholder="输入名称">
-        </div>
-        <div class="main-model-box">
-          <div class="text">手机</div>
-          <input v-model="mobile" type="text" maxlength="10" class="main-input-box" placeholder="输入名称">
-        </div>
-        <div class="main-model-box">
-          <div class="text">移动</div>
-          <div>
-            <base-drop-down :width="209" :height="40" :select="departmentSelect" @setValue="setValue('department')"></base-drop-down>
-          </div>
-          <div style="width: 20px"></div>
-          <div>
-            <base-drop-down :width="209" :height="40" :select="teamSelect" @setValue="setValue('team')"></base-drop-down>
+    <section slot="content" class="default-input">
+      <article v-if="modalType !== 'addStaff'">
+        <div class="title-input">
+          <div class="title">{{title}}</div>
+          <div class="close-box" @click="cancel">
+            <div class="close hand"></div>
           </div>
         </div>
-        <div class="btn-group">
-          <div class="btn cancel" @click="cancel">取消</div>
-          <div class="btn confirm" @click="confirm">确定</div>
+        <div class="main-input">
+          <div class="main-model-box">
+            <div class="text">名称</div>
+            <input v-model="inputName" type="text" :maxlength="maxLength" class="main-input-box" placeholder="输入名称">
+          </div>
+          <div class="btn-group">
+            <div class="btn cancel" @click="cancel">取消</div>
+            <div class="btn confirm" @click="handleSubmit">确定</div>
+          </div>
         </div>
-      </div>
-    </section>
-    <section v-if="useType === 'addChildren'" slot="content" class="default-input">
-      <div class="title-input">
-        <div class="title">添加子部门</div>
-        <div class="close-box" @click="cancel">
-          <div class="close hand"></div>
+      </article>
+      <article v-if="modalType === 'addStaff'">
+        <div class="title-input">
+          <div class="title">{{title}}</div>
+          <div class="close-box" @click="cancel">
+            <div class="close hand"></div>
+          </div>
         </div>
-      </div>
-      <div class="main-input">
-        <div class="main-model-box">
-          <div class="text">名称</div>
-          <input v-model="name" type="text" maxlength="10" class="main-input-box" placeholder="输入名称">
+        <div class="main-input">
+          <div class="main-model-box">
+            <div class="text">名称</div>
+            <input v-model="inputName" type="text" maxlength="10" class="main-input-box" placeholder="输入名称">
+          </div>
+          <div class="main-model-box">
+            <div class="text">手机</div>
+            <input v-model="inputMobile" type="tel" maxlength="10" class="main-input-box" placeholder="请输入手机">
+          </div>
+          <div class="main-model-box">
+            <div class="text">移动</div>
+            <div>
+              <base-drop-down :width="209" :height="40" :select="departmentSelect" @setValue="setValue('department')"></base-drop-down>
+            </div>
+            <div style="width: 20px"></div>
+            <div>
+              <base-drop-down :width="209" :height="40" :select="teamSelect" @setValue="setValue('team')"></base-drop-down>
+            </div>
+          </div>
+          <div class="btn-group">
+            <div class="btn cancel" @click="cancel">取消</div>
+            <div class="btn confirm" @click="handleSubmit">确定</div>
+          </div>
         </div>
-        <div class="btn-group">
-          <div class="btn cancel" @click="cancel">取消</div>
-          <div class="btn confirm" @click="confirm">确定</div>
-        </div>
-      </div>
+      </article>
     </section>
   </default-modal>
 </template>
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
-  import {outreachGroupMethods} from '@state/helpers'
+  import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
   // import API from '@api'
   const COMPONENT_NAME = 'CHANGE_MODEL'
 
   export default {
     name: COMPONENT_NAME,
     components: {DefaultModal},
-    props: {
-      useType : {
-        type: String,
-        default: ''
-      }
-    },
     data() {
       return {
-        name: '',
-        mobile: '',
         departmentSelect: {
           check: false,
           show: false,
@@ -85,47 +79,87 @@
           type: 'default',
           data: [{name: ''}]
         },
-        current: {}
+        nowTime: 0
+      }
+    },
+    computed: {
+      ...outreachGroupComputed,
+      inputName: {
+        get() {
+          return this.name
+        },
+        set(val) {
+          this.setName(val)
+        }
+      },
+      inputMobile: {
+        get() {
+          return this.mobile
+        },
+        set(val) {
+          this.setMobile(val)
+        }
+      }
+    },
+    watch: {
+      isShow(val) {
+        if (Date.now() - this.nowTime < 500) {
+          this.nowTime = Date.now()
+          return
+        }
+        if (val) {
+          this.$refs.modal && this.$refs.modal.showModal()
+        } else {
+          this.$refs.modal && this.$refs.modal.hideModal()
+        }
       }
     },
     methods: {
       ...outreachGroupMethods,
-      show(obj) {
-        // this.numberTitle = title
-        // this.pointName = name
-        // this.image_url = imageUrl || ''
-        // this.pointNumber = sort
-        // this.image_id = imageId || ''
-        // this.showImg = type
-        this.current = obj.current
-        console.log(obj)
-        this.$refs.modal && this.$refs.modal.showModal()
-      },
-      hide() {
-        this.name = ''
-        this.$refs.modal && this.$refs.modal.hideModal()
-      },
-      confirm() {
-        // this.$emit('confirm', {
-        //   // name: this.pointName,
-        //   // sort: this.pointNumber,
-        //   // id: this.typeId,
-        //   // imageId: this.image_id,
-        //   // imageUrl: this.image_url,
-        //   // type: this.showImg
-        // })
-        const obj = {
-          name: this.name,
-          parent_id: this.current && this.current.id || 0,
-          current: this.current
+      async handleSubmit() {
+        try {
+          await this[this.useType]()
+          this.submit()
+        } catch (e) {
+        } finally {
         }
-        this.groupListAddChildren(obj)
-        this.hide()
       },
-      cancel() {
-        this.hide()
-        // this.$emit('cancel')
-      },
+      // show(obj) {
+      //   // this.numberTitle = title
+      //   // this.pointName = name
+      //   // this.image_url = imageUrl || ''
+      //   // this.pointNumber = sort
+      //   // this.image_id = imageId || ''
+      //   // this.showImg = type
+      //   this.current = obj.current
+      //   console.log(obj)
+      //   this.$refs.modal && this.$refs.modal.showModal()
+      // },
+      // hide() {
+      //   this.name = ''
+      //   this.$refs.modal && this.$refs.modal.hideModal()
+      // },
+      // confirm() {
+      //   // this.$emit('confirm', {
+      //   //   // name: this.pointName,
+      //   //   // sort: this.pointNumber,
+      //   //   // id: this.typeId,
+      //   //   // imageId: this.image_id,
+      //   //   // imageUrl: this.image_url,
+      //   //   // type: this.showImg
+      //   // })
+      //   const obj = {
+      //     name: this.name,
+      //     parent_id: this.current && this.current.id || 0,
+      //     current: this.current
+      //   }
+      //   this.groupListAddChildren(obj)
+      //   this.hide()
+      // },
+      // cancel() {
+      //   this.hide()
+      //   // this.$emit('cancel')
+      // },
       setValue(item) {
         // todo
       }

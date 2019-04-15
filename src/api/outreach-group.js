@@ -1,12 +1,7 @@
 import request from '@utils/request'
 
 export default {
-  /**
-   * 部门列表
-   * @param data
-   * @param loading
-   * @returns {*}
-   */
+  // 获取组织列表
   getGroupList(data, loading = true) {
     let url = '/social-shopping/api/backend/activity-manage/department'
     return request.get(url, data, loading)
@@ -16,11 +11,21 @@ export default {
     let url = '/social-shopping/api/backend/activity-manage/department'
     return request.post(url, data, loading)
   },
-  // 新建部门
+  // 删除部门
   deleteDepartment(data, loading = true) {
     let url = `/social-shopping/api/backend/activity-manage/department/${data.id}`
     data = ''
     return request.delete(url, data, loading)
+  },
+  // 编辑部门
+  editDepartment(data, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/department/${data.id}`
+    return request.put(url, data, loading)
+  },
+  // 移动部门
+  moveDepartment(data, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/department/sort`
+    return request.post(url, data, loading)
   },
   // 新建成员
   createStaff(data, loading = true) {
@@ -32,5 +37,12 @@ export default {
     let url = `/social-shopping/api/backend/activity-manage/department-offline-members/${data.id}`
     data = ''
     return request.get(url, data, loading)
+  },
+  addDepartment() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      },100)
+    })
   }
 }

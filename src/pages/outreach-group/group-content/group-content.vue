@@ -1,59 +1,59 @@
 <template>
   <div class="group-content">
-    <header class="header">
-      <div v-for="(item, index) in topItem" :key="index" class="top-item">
-        <img class="img" :src="require('./'+ item.icon +'@2x.png')" alt="">
-        <span class="name">{{item.name}}</span>
-        <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{teamData[value] || 0}}</span>
-      </div>
-    </header>
-    <div class="big-list">
-      <div class="list-header list-box">
-        <div v-for="(item,index) in activityTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
-      </div>
-      <div class="list">
-        <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
-          <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">
-            <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-              {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
-            </div>
-            <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
-              <p class="item-dark">{{item.start_at}}</p>
-              <p class="item-sub-time">{{item.end_at}}</p>
-            </div>
-            <div v-if="+val.type === 6" :style="{flex: val.flex}" class="list-item-double">
-              {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
-            </div>
-            <!--状态-->
-            <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
-            <!--复购率-->
-            <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box">
-              <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">
-                {{item[val.value] || '0%'}}
-                <transition name="fade">
-                  <div v-if="tipShow === index" class="tip-content">
-                    <span class="text">比昨天上升2%</span>
-                    <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
-                    <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
-                    <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
-                  </div>
-                </transition>
-              </div>
-            </div>
+<!--    <header class="header">-->
+<!--      <div v-for="(item, index) in topItem" :key="index" class="top-item">-->
+<!--        <img class="img" :src="require('./'+ item.icon +'@2x.png')" alt="">-->
+<!--        <span class="name">{{item.name}}</span>-->
+<!--        <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{teamData[value] || 0}}</span>-->
+<!--      </div>-->
+<!--    </header>-->
+<!--    <div class="big-list">-->
+<!--      <div class="list-header list-box">-->
+<!--        <div v-for="(item,index) in activityTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>-->
+<!--      </div>-->
+<!--      <div class="list">-->
+<!--        <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">-->
+<!--          <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">-->
+<!--            <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">-->
+<!--              {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '-&#45;&#45;')}}-->
+<!--            </div>-->
+<!--            <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">-->
+<!--              <p class="item-dark">{{item.start_at}}</p>-->
+<!--              <p class="item-sub-time">{{item.end_at}}</p>-->
+<!--            </div>-->
+<!--            <div v-if="+val.type === 6" :style="{flex: val.flex}" class="list-item-double">-->
+<!--              {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '-&#45;&#45;')}}-->
+<!--            </div>-->
+<!--            &lt;!&ndash;状态&ndash;&gt;-->
+<!--            <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>-->
+<!--            &lt;!&ndash;复购率&ndash;&gt;-->
+<!--            <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box">-->
+<!--              <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">-->
+<!--                {{item[val.value] || '0%'}}-->
+<!--                <transition name="fade">-->
+<!--                  <div v-if="tipShow === index" class="tip-content">-->
+<!--                    <span class="text">比昨天上升2%</span>-->
+<!--                    <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">-->
+<!--                    <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">-->
+<!--                    <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">-->
+<!--                  </div>-->
+<!--                </transition>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-              <router-link tag="span" :to="'/home/outreach-group/outreach-group-staff?id=' + (item.id || 0)" class="list-operation">详情</router-link>
-<!--              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>-->
-              <p class="list-operation">编辑</p>
-              <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="pagination-box">
-      <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
-    </div>
+<!--            <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">-->
+<!--              <router-link tag="span" :to="'/home/outreach-group/outreach-group-staff?id=' + (item.id || 0)" class="list-operation">详情</router-link>-->
+<!--&lt;!&ndash;              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>&ndash;&gt;-->
+<!--              <p class="list-operation">编辑</p>-->
+<!--              <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="pagination-box">-->
+<!--      <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>-->
+<!--    </div>-->
   </div>
 </template>
 

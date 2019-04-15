@@ -5,8 +5,8 @@
       <group-tab></group-tab>
       <group-content></group-content>
     </section>
-    <change-model ref="addChildren" useType="addChildren"></change-model>
-    <change-model ref="editorChildren" useType="editorChildren"></change-model>
+    <change-model></change-model>
+    <group-tab-tools></group-tab-tools>
   </div>
 </template>
 
@@ -15,7 +15,8 @@
   import GroupTab from './group-tab/group-tab'
   import GroupContent from './group-content/group-content'
   import changeModel from './change-model/change-model'
-  import {outreachGroupMethods} from '@state/helpers'
+  import GroupTabTools from './group-tab-tools/group-tab-tools'
+  // import {outreachGroupMethods} from '@state/helpers'
 
   const PAGE_NAME = 'OUTREACH_GROUP'
   const TITLE = '拓展团队'
@@ -26,7 +27,8 @@
       GroupHeader,
       GroupTab,
       GroupContent,
-      changeModel
+      changeModel,
+      GroupTabTools
     },
     page: {
       title: TITLE
@@ -36,9 +38,9 @@
 
       }
     },
-    methods: {
-      ...outreachGroupMethods,
-    }
+    // methods: {
+    //   ...outreachGroupMethods,
+    // }
   }
 </script>
 
