@@ -44,7 +44,7 @@
                   <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                   <transition name="fade">
                     <div v-if="tipShow === index" class="tip-content">
-                      <span class="text">比昨天上升{{item.rise}}</span>
+                      <span class="text">比昨天{{item.rise && _textHandle(item.rise)}}{{item.rise.split('-').length > 1 ? item.rise.split('-')[1] : item.rise}}</span>
                       <img v-if="+(item.rise && item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
                       <img v-if="+(item.rise && item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
                       <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
@@ -161,6 +161,9 @@
           this.$toast.show('删除成功')
         }
         this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      },
+      _textHandle(num) {
+        return (+num.split('%')[0] < 0 ? '下降' : '上升')
       }
     }
   }

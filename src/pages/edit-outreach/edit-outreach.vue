@@ -138,7 +138,7 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.sale_unit}}</div>
+              <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
               <div class="com-list-item">¥{{item.original_price || 0}}</div>
               <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
                 <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">

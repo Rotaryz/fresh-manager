@@ -145,10 +145,10 @@
       display: flex
       align-items: center
     .img
-      height: 12px
+      height: 14px
       object-fit: cover
     .name
-      font-size: $font-size-12
+      font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-text-main
       margin-left: 5px

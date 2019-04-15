@@ -4,7 +4,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-team@2x.png" class="identification-icon">
-          <p class="identification-name">{{memberData.social_name}}线下拓展团队</p>
+          <p class="identification-name">{{memberData.activity_name}}线下拓展团队</p>
         </div>
         <div class="top-data">
           <div v-for="(item, index) in topItem" :key="index" class="top-item">
@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="memberPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
   </div>
@@ -124,10 +124,10 @@
       display: flex
       align-items: center
     .img
-      height: 12px
+      height: 14px
       object-fit: cover
     .name
-      font-size: $font-size-12
+      font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-text-main
       margin-left: 5px
