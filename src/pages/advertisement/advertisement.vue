@@ -246,8 +246,8 @@
       }
     },
     async created() {
-      this.cmsId = this.infoBannerList.modules[0].id
-      this.cmsModuleId = this.infoBannerList.modules[0].module_id
+      this.cmsId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].id : ''
+      this.cmsModuleId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].module_id : ''
       this.$loading.show()
       this.infoBannerList.modules.forEach(async (item) => {
         await this._getModuleMsg(item.module_name, item.id, item.module_id)

@@ -9,7 +9,7 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-customer_list@2x.png" class="identification-icon">
+          <img src="./icon-task@2x.png" class="identification-icon">
           <p class="identification-name">拓展任务</p>
         </div>
         <div class="function-btn">
@@ -44,7 +44,7 @@
                   <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                   <transition name="fade">
                     <div v-if="tipShow === index" class="tip-content">
-                      <span class="text">比昨天上升{{item.rise}}</span>
+                      <span class="text">比昨天{{item.rise && _textHandle(item.rise)}}{{item.rise.split('-').length > 1 ? item.rise.split('-')[1] : item.rise}}</span>
                       <img v-if="+(item.rise && item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
                       <img v-if="+(item.rise && item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
                       <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
@@ -77,7 +77,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
-  const TITLE = '拓展活动'
+  const TITLE = '拓展任务'
   const ACTIVITI_TITLE = [
     {name: '拓展任务', flex: 1.2, value: 'activity_name', type: 6},
     {name: '拓展社区', flex: 1.2, value: 'social_name', type: 6},
@@ -160,6 +160,9 @@
           this.$toast.show('删除成功')
         }
         this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      },
+      _textHandle(num) {
+        return (+num.split('%')[0] < 0 ? '下降' : '上升')
       }
     }
   }
@@ -168,6 +171,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
+  .identification .identification-icon
+    width: 12px
+    height: 12px
   .list
     flex: 1
     .list-item
@@ -198,9 +204,9 @@
             height: 2px
       .tip-content
         position: absolute
-        right: -138px
+        right: -144px
         top: -8px
-        width: 132px
+        width: 150px
         height: 32px
         border-radius: 4px
         padding-left: 10px

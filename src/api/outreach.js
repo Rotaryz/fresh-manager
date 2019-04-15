@@ -99,7 +99,7 @@ export default {
    * @returns {*}
    */
   getQrCode(data, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/qrcode-download`
+    let url = `/social-shopping/api/create-qrcode`
     return request.post(url, data, loading)
   },
   /**

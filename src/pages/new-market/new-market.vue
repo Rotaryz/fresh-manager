@@ -316,7 +316,7 @@
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1.2, value: 'time'},
-    {name: '操作', flex: 0.4, value: ''}
+    {name: '操作', flex: 0.4, value: ''},
   ]
   const SELECT_GROUP_TITLE = [
     {name: '团长帐号', flex: 1, value: 'mobile'},
@@ -330,7 +330,7 @@
     {name: '团长帐号', flex: 1, value: 'mobile'},
     {name: '团长名称', flex: 1, value: 'name'},
     {name: '社区名称', flex: 1.2, value: 'social_name'},
-    {name: '社区地址', flex: 2, value: 'address'}
+    {name: '社区地址', flex: 2, value: 'address'},
   ]
   const COUPON_TITLE = [
     {name: '选择', flex: 0.4, value: ''},
@@ -338,21 +338,14 @@
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1, value: 'time'}
+    {name: '有效期', flex: 1, value: 'time'},
   ]
   const ARROW_TEXT = [
     ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
     // ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
-    [
-      '团长打开小区管理营销计划转发优惠券',
-      '选择微信聊天列表发送',
-      '点击链接进入领券页领取优惠券',
-      '领取成功点击去使用跳转商城',
-      '客户商城选购商品',
-      '提交订单立减金额'
-    ]
+    ['团长打开小区管理营销计划转发优惠券', '选择微信聊天列表发送', '点击链接进入领券页领取优惠券', '领取成功点击去使用跳转商城', '客户商城选购商品', '提交订单立减金额']
   ]
   export default {
     name: PAGE_NAME,
@@ -404,42 +397,21 @@
           show: false,
           content: '3天',
           type: 'default',
-          data: [
-            {name: '1天'},
-            {name: '3天', id: 3},
-            {name: '5天', id: 5},
-            {name: '7天', id: 7},
-            {name: '15天', id: 15},
-            {name: '30天', id: 30}
-          ] // 格式：{title: '55'}}
+          data: [{name: '1天', id: 1}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
         },
         dayData2: {
           check: false,
           show: false,
           content: '3天',
           type: 'default',
-          data: [
-            {name: '1天'},
-            {name: '3天', id: 3},
-            {name: '5天', id: 5},
-            {name: '7天', id: 7},
-            {name: '15天', id: 15},
-            {name: '30天', id: 30}
-          ] // 格式：{title: '55'}}
+          data: [{name: '1天', id: 1}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}]  // 格式：{title: '55'}}
         },
         dayDataNew: {
           check: false,
           show: false,
           content: '3天',
           type: 'default',
-          data: [
-            {name: '1天'},
-            {name: '3天', id: 3},
-            {name: '5天', id: 5},
-            {name: '7天', id: 7},
-            {name: '15天', id: 15},
-            {name: '30天', id: 30}
-          ] // 格式：{title: '55'}}
+          data: [{name: '1天', id: 1}, {name: '3天', id: 3}, {name: '5天', id: 5}, {name: '7天', id: 7}, {name: '15天', id: 15}, {name: '30天', id: 30}] // 格式：{title: '55'}}
         },
         count: '',
         activityItem: 'order_count', // 活跃客户配置
@@ -454,59 +426,54 @@
     },
     computed: {
       ...marketComputed,
-      testName() {
-        // 活动名称
+      testName() { // 活动名称
         return this.msg.title
       },
       testNewStartTime() {
         if (+this.marketIndex === 0) {
-          return this.msg.config_json.way === 'between_days' ? this.msg.config_json.start_day : true
+          return (this.msg.config_json.way === 'between_days') ? this.msg.config_json.start_day : true
         } else {
           return true
         }
       },
       testNewEndTime() {
         if (+this.marketIndex === 0) {
-          return this.msg.config_json.way === 'between_days' ? this.msg.config_json.end_day : true
+          return (this.msg.config_json.way === 'between_days') ? this.msg.config_json.end_day : true
         } else {
           return true
         }
       },
-      testNewEndTimeReg() {
-        // 结束时间规则判断
+      testNewEndTimeReg() { // 结束时间规则判断
         if (+this.marketIndex === 0 && this.msg.config_json.way === 'between_days') {
-          return (
-            Date.parse(this.msg.config_json.end_day + ' 00:00') >
-            Date.parse('' + this.msg.config_json.start_day + ' 00:00')
-          )
+          return Date.parse(this.msg.config_json.end_day + ' 00:00') > Date.parse('' + this.msg.config_json.start_day + ' 00:00')
         } else {
           return true
         }
       },
       testActivityCount() {
         if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_count' ? this.msg.config_json.order_count : true
+          return (this.msg.config_json.way === 'order_count') ? this.msg.config_json.order_count : true
         } else {
           return true
         }
       },
       testActivityCountReg() {
         if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_count' ? COUNTREG.test(this.msg.config_json.order_count) : true
+          return (this.msg.config_json.way === 'order_count') ? COUNTREG.test(this.msg.config_json.order_count) : true
         } else {
           return true
         }
       },
       testActivityMoney() {
         if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_toal' ? this.msg.config_json.order_toal : true
+          return (this.msg.config_json.way === 'order_toal') ? this.msg.config_json.order_toal : true
         } else {
           return true
         }
       },
       testActivityMoneyReg() {
         if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_toal' ? MONEYREG.test(this.msg.config_json.order_toal) : true
+          return (this.msg.config_json.way === 'order_toal') ? MONEYREG.test(this.msg.config_json.order_toal) : true
         } else {
           return true
         }
@@ -516,10 +483,10 @@
         return length > 0
       },
       testGroupList() {
-        return +this.marketIndex === 3 ? this.selectGroupList.length : true
+        return (+this.marketIndex === 3) ? this.selectGroupList.length : true
       },
       testGroupCount() {
-        let result = this.selectGroupList.every((item) => {
+        let result = this.selectGroupList.every(item => {
           return item.number > 0 && COUNTREG.test(item.number)
         })
         return result
@@ -571,7 +538,8 @@
       }
       this._initMsg(this.marketDetail)
     },
-    async mounted() {},
+    async mounted() {
+    },
     methods: {
       ...marketMethods,
       bannerChange(index) {
@@ -630,7 +598,7 @@
         } else {
           this.selectGroupList.splice(this.willDelItem, 1)
           this.groupSelectItem.splice(this.willDelItem, 1)
-          this.groupList.map((item) => {
+          this.groupList.map(item => {
             if (item.id === this.currentItem.id) {
               item.right = false
               item.checked = false
@@ -659,11 +627,11 @@
           total_page: res.meta.last_page
         }
         let data = res.data
-        this.groupList = data.map((item) => {
-          item.right = this.selectGroupList.some((val) => {
+        this.groupList = data.map(item => {
+          item.right = this.selectGroupList.some(val => {
             return val.id === item.id
           })
-          item.checked = this.groupSelectItem.some((val) => {
+          item.checked = this.groupSelectItem.some(val => {
             return val.id === item.id
           })
           return item
@@ -676,18 +644,19 @@
           limit: 6,
           status: 1
         }
-        API.Coupon.getCouponList(data, false).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          this.couponPage = {
-            total: res.meta.total,
-            per_page: res.meta.per_page,
-            total_page: res.meta.last_page
-          }
-          this.couponList = res.data
-        })
+        API.Coupon.getCouponList(data, false)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.couponPage = {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+            this.couponList = res.data
+          })
       },
       // 弹窗
       _showCouponModal() {
@@ -761,7 +730,7 @@
       // 弹窗保存
       _additionGroup() {
         this.selectGroupList = [...this.groupSelectItem]
-        this.groupList = this.groupList.map((item) => {
+        this.groupList = this.groupList.map(item => {
           item.checked && (item.right = true)
           return item
         })
@@ -818,7 +787,7 @@
           }
           break
         case 3:
-          this.msg.shop_coupons = this.selectGroupList.map((item) => {
+          this.msg.shop_coupons = this.selectGroupList.map(item => {
             return {
               shop_id: item.id,
               number: item.number
@@ -827,20 +796,22 @@
           break
         }
         this.msg.config_json.type_str = TYPE[this.marketIndex]
-        API.Market.storeMarket(this.msg, true).then((res) => {
-          this.$loading.hide()
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            this.isSubmit = false
-            return
-          }
+        API.Market.storeMarket(this.msg, true)
+          .then(res => {
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              this.isSubmit = false
+              return
+            }
 
-          this.$toast.show('保存成功')
-          setTimeout(() => {
-            this._back()
-            this.isSubmit = false
-          }, 1000)
-        })
+            this.$toast.show('保存成功')
+            setTimeout(() => {
+              this._back()
+              this.isSubmit = false
+            }, 1000)
+
+          })
       },
       // 验证表单
       checkForm() {
@@ -875,7 +846,7 @@
           this.selectCouponList[0] = obj.coupon
           this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
           this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
-          this.selectGroupList = obj.shop_coupon.map((item) => {
+          this.selectGroupList = obj.shop_coupon.map(item => {
             return {
               total_stock: item.total_stock,
               mobile: item.shop && item.shop.mobile,
