@@ -17,7 +17,8 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  taskPage: { // 成员任务详情
+  taskPage: {
+    // 成员任务详情
     total: 1,
     per_page: 10,
     total_page: 1
@@ -25,11 +26,11 @@ export const state = {
 }
 
 export const getters = {
-  groupList: state => state.groupList,
-  outreachPage: state => state.outreachPage,
-  taskDetail: state => state.taskDetail,
-  taskPage: state => state.taskPage,
-  taskData: state => state.taskData
+  groupList: (state) => state.groupList,
+  outreachPage: (state) => state.outreachPage,
+  taskDetail: (state) => state.taskDetail,
+  taskPage: (state) => state.taskPage,
+  taskData: (state) => state.taskData
 }
 
 export const mutations = {
@@ -81,35 +82,32 @@ export const actions = {
       {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
       loading
     )
-    .then((res) => {
-      if (res.error !== app.$ERR_OK) {
-        return false
-      }
-      let arr = res.data
-      let outreachPage = {
-        total: res.meta.total,
-        per_page: res.meta.per_page,
-        total_page: res.meta.last_page
-      }
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        let outreachPage = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
 
-      commit('SET_OUTREACH_LIST', arr)
-      commit('SET_OUTREACH_PAGE', outreachPage)
-      return true
-    })
-    .catch(() => {
-      return false
-    })
-    .finally(() => {
-      app.$loading.hide()
-    })
+        commit('SET_OUTREACH_LIST', arr)
+        commit('SET_OUTREACH_PAGE', outreachPage)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
   },
 
   getTaskDetail({state, commit, dispatch}, {id, page, loading = true}) {
     commit('SET_TASK_DETAIL', [])
-    return API.Outreach.getTaskDetail(
-      {page, id},
-      loading
-    )
+    return API.Outreach.getTaskDetail({page, id}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -137,6 +135,5 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
-
   }
 }

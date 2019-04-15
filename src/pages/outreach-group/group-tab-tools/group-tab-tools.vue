@@ -1,18 +1,4 @@
 <template>
-<!--  <div-->
-<!--    v-if="showTools"-->
-<!--    class="group-tab-tools"-->
-<!--    :style="{left: x + 'px', top: y + 'px'}"-->
-<!--    @mouseenter="handleMouseEnter"-->
-<!--    @mousemove="handleMouseMove"-->
-<!--    @mouseleave="handleMouseLeave"-->
-<!--  >-->
-<!--    <ul class="tools-wrapper">-->
-<!--      <li class="tool-wrapper" v-for="(tool, index) in tools" :key="index" @click.stop="handleClick(tool)">-->
-<!--        <p>{{tool.name}}</p>-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--  </div>-->
   <ul
     v-if="showTools"
     class="group-tab-tools"
@@ -21,11 +7,11 @@
     @mousemove="handleMouseMove"
     @mouseleave="handleMouseLeave"
   >
-<!--    <div class="tool-bridge"></div>-->
+    <!--    <div class="tool-bridge"></div>-->
     <li
-      class="tool-item-wrapper"
       v-for="(tool, index) in tools"
       :key="index"
+      class="tool-item-wrapper"
       @click.stop="handleClick(tool)"
     >
       <div class="tool-wrapper-icon" :class="tool.iconStyle"></div>
@@ -44,11 +30,11 @@
     data() {
       return {
         tools: [
-          {text: '添加子部门',iconStyle: 'add', fn: 'handleAddDepartment'},
-          {text: '修改名称',iconStyle: 'edit', fn: 'handleEditDepartment'},
-          {text: '上移',iconStyle: 'up', fn: 'handleMoveDepartment', moveType: 'up'},
-          {text: '下移',iconStyle: 'down', fn: 'handleMoveDepartment', moveType: 'down'},
-          {text: '删除',iconStyle: 'delete', fn: 'deleteDepartment'},
+          {text: '添加子部门', iconStyle: 'add', fn: 'handleAddDepartment'},
+          {text: '修改名称', iconStyle: 'edit', fn: 'handleEditDepartment'},
+          {text: '上移', iconStyle: 'up', fn: 'handleMoveDepartment', moveType: 'up'},
+          {text: '下移', iconStyle: 'down', fn: 'handleMoveDepartment', moveType: 'down'},
+          {text: '删除', iconStyle: 'delete', fn: 'deleteDepartment'}
         ]
       }
     },
@@ -66,7 +52,9 @@
       },
       handleMouseLeave(e) {
         this.updateIsEnter(false)
-        this.handleTools(false)
+        this.timer = setTimeout(() => {
+          this.handleTools(false)
+        }, 500)
       },
       handleClick(tool) {
         this.handleMouseLeave()
@@ -88,7 +76,6 @@
         this.moveDepartment({moveType})
       }
     }
-
   }
 </script>
 

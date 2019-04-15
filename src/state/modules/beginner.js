@@ -1,6 +1,5 @@
-
 export const state = {
-    activeIdx:0
+  activeIdx: 0
 }
 
 export const mutations = {
@@ -8,4 +7,3 @@ export const mutations = {
     state.activeIdx = idx
   }
 }
-

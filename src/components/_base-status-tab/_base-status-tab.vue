@@ -19,7 +19,9 @@
         type: Array,
         default: () => {
           return [
-            {name: '全部', value: '', num: 0}, {name: '待提交', value: 0, num: 0}, {name: '已完成', value: 1, num: 0}
+            {name: '全部', value: '', num: 0},
+            {name: '待提交', value: 0, num: 0},
+            {name: '已完成', value: 1, num: 0}
           ]
         }
       },

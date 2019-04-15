@@ -29,20 +29,20 @@
         <div class="main-input">
           <div class="main-model-box">
             <div class="text">名称</div>
-            <input v-model="inputName" type="text" maxlength="10" class="main-input-box" placeholder="输入名称">
+            <input v-model="inputName" type="text" :maxlength="maxLength" class="main-input-box" placeholder="输入名称">
           </div>
           <div class="main-model-box">
             <div class="text">手机</div>
-            <input v-model="inputMobile" type="tel" maxlength="10" class="main-input-box" placeholder="请输入手机">
+            <input v-model="inputMobile" type="tel" maxlength="11" class="main-input-box" placeholder="请输入手机">
           </div>
           <div class="main-model-box">
             <div class="text">移动</div>
             <div>
-              <base-drop-down :width="209" :height="40" :select="departmentSelect" @setValue="setValue('department')"></base-drop-down>
+              <base-drop-down :width="209" :height="40" :select="departmentSelect" @setValue="setValue($event,'department')"></base-drop-down>
             </div>
             <div style="width: 20px"></div>
             <div>
-              <base-drop-down :width="209" :height="40" :select="teamSelect" @setValue="setValue('team')"></base-drop-down>
+              <base-drop-down :width="209" :height="40" :select="teamSelect" @setValue="setValue($event,'team')"></base-drop-down>
             </div>
           </div>
           <div class="btn-group">
@@ -57,7 +57,6 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
-  // import API from '@api'
   const COMPONENT_NAME = 'CHANGE_MODEL'
 
   export default {
@@ -70,15 +69,16 @@
           show: false,
           content: '选择部门',
           type: 'default',
-          data: [{name: '郭英唐'}, {name: '白云区'}]
+          data: []
         },
         teamSelect: {
           check: false,
           show: false,
           content: '选择团队',
           type: 'default',
-          data: [{name: ''}]
+          data: []
         },
+        currentTeam: {},
         nowTime: 0
       }
     },
@@ -108,60 +108,45 @@
           return
         }
         if (val) {
+          this._initDepartmentSelect()
           this.$refs.modal && this.$refs.modal.showModal()
         } else {
           this.$refs.modal && this.$refs.modal.hideModal()
         }
       }
     },
+    created() {
+      this.cancel()
+    },
+    beforeDestroy() {
+      this.cancel()
+    },
     methods: {
       ...outreachGroupMethods,
       async handleSubmit() {
         try {
-          await this[this.useType]()
+          await this[this.useType]({currentTeam: this.currentTeam})
           this.submit()
         } catch (e) {
         } finally {
         }
       },
-      // show(obj) {
-      //   // this.numberTitle = title
-      //   // this.pointName = name
-      //   // this.image_url = imageUrl || ''
-      //   // this.pointNumber = sort
-      //   // this.image_id = imageId || ''
-      //   // this.showImg = type
-      //   this.current = obj.current
-      //   console.log(obj)
-      //   this.$refs.modal && this.$refs.modal.showModal()
-      // },
-      // hide() {
-      //   this.name = ''
-      //   this.$refs.modal && this.$refs.modal.hideModal()
-      // },
-      // confirm() {
-      //   // this.$emit('confirm', {
-      //   //   // name: this.pointName,
-      //   //   // sort: this.pointNumber,
-      //   //   // id: this.typeId,
-      //   //   // imageId: this.image_id,
-      //   //   // imageUrl: this.image_url,
-      //   //   // type: this.showImg
-      //   // })
-      //   const obj = {
-      //     name: this.name,
-      //     parent_id: this.current && this.current.id || 0,
-      //     current: this.current
-      //   }
-      //   this.groupListAddChildren(obj)
-      //   this.hide()
-      // },
-      // cancel() {
-      //   this.hide()
-      //   // this.$emit('cancel')
-      // },
-      setValue(item) {
-        // todo
+      _initDepartmentSelect() {
+        if (this.groupList) {
+          this.departmentSelect.content = this.parentObj.name || '选择部门'
+          this.teamSelect.content = this.current.name || '选择团队'
+          this.currentTeam = this.current || {}
+          this.departmentSelect.data = this.groupList[0].list || []
+        }
+      },
+      setValue(item, type) {
+        if (type === 'department') {
+          this.teamSelect.content = '选择团队'
+          this.teamSelect.data = item.list || []
+        }
+        if (type === 'team') {
+          this.currentTeam = item
+        }
       }
     }
   }

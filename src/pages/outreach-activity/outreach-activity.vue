@@ -123,8 +123,7 @@
     created() {
       this.corpId = getCorpId()
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
       ...outreachMethods,
       async _setTime(arr) {

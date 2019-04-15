@@ -56,7 +56,18 @@
   const PAGE_NAME = 'TRANSACTION_DETAIL'
   const TITLE = '交易明细'
 
-  const LIST_TITLE = ['支付时间', '商品', '数量', '交易金额', '服务费', '团长佣金', '入账资金', '入账时间', '关联订单号', '状态']
+  const LIST_TITLE = [
+    '支付时间',
+    '商品',
+    '数量',
+    '交易金额',
+    '服务费',
+    '团长佣金',
+    '入账资金',
+    '入账时间',
+    '关联订单号',
+    '状态'
+  ]
   const EXCEL_URL = '/social-shopping/api/backend/finance/settle-logs-excel'
 
   export default {

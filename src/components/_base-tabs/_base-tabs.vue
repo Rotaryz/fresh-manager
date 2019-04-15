@@ -45,9 +45,9 @@
       return {
         // activeIdx: 0,
         activeLine: {
-          left: "",
+          left: '',
           lineWidth: 100
-        },
+        }
       }
     },
     mounted() {

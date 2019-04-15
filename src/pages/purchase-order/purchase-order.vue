@@ -95,7 +95,11 @@
         keyword: '',
         time: '',
         status: '',
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待入库', value: 1, key: 'wait_entry', num: 0}, {name: '已完成', value: 2, key: 'success', num: 0}]
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待入库', value: 1, key: 'wait_entry', num: 0},
+          {name: '已完成', value: 2, key: 'success', num: 0}
+        ]
       }
     },
     computed: {
@@ -189,7 +193,11 @@
         await this._statistic()
       },
       async _statistic() {
-        let res = await API.Supply.getPurchaseOrderStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword})
+        let res = await API.Supply.getPurchaseOrderStatistic({
+          start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          keyword: this.keyword
+        })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)

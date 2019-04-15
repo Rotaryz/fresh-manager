@@ -129,7 +129,7 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.choeesGoods.forEach(item => {
+        this.choeesGoods.forEach((item) => {
           if (item.selected * 1 === 1) {
             arr.push(item)
           }
@@ -183,9 +183,9 @@
           }
           return item
         })
-        this.choeesGoods.forEach(item => {
+        this.choeesGoods.forEach((item) => {
           let ischecked = false
-          this.selectStoreList.forEach(item1 => {
+          this.selectStoreList.forEach((item1) => {
             if (item1.goods_id * 1 === item.goods_id * 1) {
               ischecked = true
             }

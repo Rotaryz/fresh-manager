@@ -98,7 +98,11 @@
         endTime: '',
         keyWord: '',
         goodsPage: 1,
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待出库', value: 0, key: 'wait_out', num: 0}, {name: '已完成', value: 1, key: 'success', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待出库', value: 0, key: 'wait_out', num: 0},
+          {name: '已完成', value: 1, key: 'success', num: 0}
+        ],
         statistic: {
           all: 0,
           wait_out: 0,
@@ -127,7 +131,8 @@
     },
     methods: {
       _getTime() {
-        let start = this.startTime && this.startTime.length < 11 ? `${this.startTime} ${this.accurateStart}` : this.startTime
+        let start =
+          this.startTime && this.startTime.length < 11 ? `${this.startTime} ${this.accurateStart}` : this.startTime
         let end = this.endTime && this.endTime.length < 11 ? `${this.endTime} ${this.accurateEnd}` : this.endTime
         return [start, end]
       },

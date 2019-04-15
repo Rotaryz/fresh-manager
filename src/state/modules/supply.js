@@ -53,7 +53,17 @@ export const mutations = {
 export const actions = {
   // 采购列表
   getPurchaseList({state, commit, dispatch}, {time, startTime, endTime, keyword, page, status, loading = true}) {
-    return API.Supply.purchaseOrder({time, start_time: startTime ? startTime + ' ' + state.timeStart : '', end_time: endTime ? endTime + ' ' + state.timeEnd : '', keyword, page, status}, loading)
+    return API.Supply.purchaseOrder(
+      {
+        time,
+        start_time: startTime ? startTime + ' ' + state.timeStart : '',
+        end_time: endTime ? endTime + ' ' + state.timeEnd : '',
+        keyword,
+        page,
+        status
+      },
+      loading
+    )
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -93,7 +103,7 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  infoPurchaseTime({commit, dispatch},{start, end}) {
+  infoPurchaseTime({commit, dispatch}, {start, end}) {
     commit('SET_TIME_START', start)
     commit('SET_TIME_END', end)
   }

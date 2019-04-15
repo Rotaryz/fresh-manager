@@ -57,7 +57,16 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
-  const COMMODITIES_LIST = ['序号', '商品', '分类', '出库数量(销售单位)', '出库数量(基本单位)', '出库批次', '出库单价', '出库金额']
+  const COMMODITIES_LIST = [
+    '序号',
+    '商品',
+    '分类',
+    '出库数量(销售单位)',
+    '出库数量(基本单位)',
+    '出库批次',
+    '出库单价',
+    '出库金额'
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -100,9 +109,9 @@
             let number = 0
             this.batchList = res.data
             if (this.outDetailList[index].out_batches.length) {
-              this.outDetailList[index].out_batches.forEach(item => {
-                number += (item.select_out_num * 1)
-                this.batchList.forEach(item1 => {
+              this.outDetailList[index].out_batches.forEach((item) => {
+                number += item.select_out_num * 1
+                this.batchList.forEach((item1) => {
                   if (item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
                   }
@@ -158,10 +167,10 @@
       confirm(arr) {
         let allprice = 0
         let number = 0
-        arr.forEach(item => {
+        arr.forEach((item) => {
           if (item.select_out_num > 0) {
-            number += (item.select_out_num * 1)
-            allprice += (item.select_out_num * item.price)
+            number += item.select_out_num * 1
+            allprice += item.select_out_num * item.price
           }
         })
         this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)

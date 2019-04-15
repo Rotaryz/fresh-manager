@@ -62,7 +62,7 @@ export const mutations = {
   },
   SET_MEMBER_PAGE(state, memberPage) {
     state.memberPage = memberPage
-  },
+  }
 }
 
 export const actions = {
@@ -111,10 +111,7 @@ export const actions = {
   },
   getMemberList({state, commit, dispatch}, {id, page, loading = true}) {
     commit('SET_MEMBER_LIST', [])
-    return API.Outreach.getMemberList(
-      {page, id},
-      loading
-    )
+    return API.Outreach.getMemberList({page, id}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -142,6 +139,5 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
-
   }
 }

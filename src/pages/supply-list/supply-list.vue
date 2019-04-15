@@ -85,7 +85,12 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_submit', num: 0}, {name: '待采购', value: 2, key: 'success', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待发布', value: 1, key: 'wait_submit', num: 0},
+          {name: '待采购', value: 2, key: 'success', num: 0},
+          {name: '已完成', value: 3, key: 'success', num: 0}
+        ]
       }
     },
     computed: {
@@ -97,7 +102,11 @@
     methods: {
       ...omsMethods,
       _getOutOrdersStatistic() {
-        API.Oms.outOrdersStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword}).then((res) => {
+        API.Oms.outOrdersStatistic({
+          start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          keyword: this.keyword
+        }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }

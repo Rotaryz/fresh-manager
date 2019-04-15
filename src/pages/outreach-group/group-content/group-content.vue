@@ -30,21 +30,21 @@
             <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box">
               <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">
                 {{item[val.value] || '0%'}}
-<!--                <transition name="fade">-->
-<!--                  <div v-if="tipShow === index" class="tip-content">-->
-<!--                    <span class="text">比昨天上升2%</span>-->
-<!--                    <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">-->
-<!--                    <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">-->
-<!--                    <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">-->
-<!--                  </div>-->
-<!--                </transition>-->
+                <!--                <transition name="fade">-->
+                <!--                  <div v-if="tipShow === index" class="tip-content">-->
+                <!--                    <span class="text">比昨天上升2%</span>-->
+                <!--                    <img v-if="false" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">-->
+                <!--                    <img v-if="true" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">-->
+                <!--                    <img v-if="false" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">-->
+                <!--                  </div>-->
+                <!--                </transition>-->
               </div>
             </div>
 
             <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
               <router-link tag="span" :to="'/home/outreach-group/outreach-group-staff?id=' + (item.id || 0)" class="list-operation">详情</router-link>
-<!--              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>-->
-              <p class="list-operation">编辑</p>
+              <!--              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>-->
+              <p class="list-operation" @click="handleEditor(item)">编辑</p>
               <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
             </div>
           </div>
@@ -54,11 +54,13 @@
     <div class="pagination-box">
       <base-pagination ref="pages" :pageDetail="pageDetail" @addPage="addPage"></base-pagination>
     </div>
+    <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
   const COMPONENT_NAME = 'GROUP_CONTENT'
@@ -81,12 +83,14 @@
   ]
   export default {
     name: COMPONENT_NAME,
+    components: {
+      DefaultConfirm
+    },
     data() {
       return {
         activityTitle: ACTIVITI_TITLE,
         iconArr: ICON,
         topItem: TOP_ITEM,
-        page: 1,
         status: 0,
         tipShow: '',
         qrUrl: process.env.VUE_APP_API
@@ -94,6 +98,9 @@
     },
     computed: {
       ...outreachGroupComputed
+    },
+    beforeDestroy() {
+      this.restPage()
     },
     methods: {
       ...outreachGroupMethods,
@@ -107,22 +114,37 @@
         }, 500)
       },
       addPage(page) {
+        this.setPage(page)
         this.reqStaffList({page})
+      },
+      handleEditor(item) {
+        this.setCurrentStaff(item)
+        this.handleModal({
+          ...item,
+          isShow: true,
+          title: '编辑成员',
+          useType: 'editorStaff',
+          modalType: 'addStaff',
+          groupList: this.groupList
+        })
       },
       _deleteActivity(id) {
         this.delId = id
         this.$refs.confirm.show('确定删除该成员？')
       },
       async _sureConfirm() {
-        let res = await API.Outreach.deleteActivity(this.delId)
-
-        if (res.error !== this.$ERR_OK) {
-          this.$toast.show(res.message)
-          return
-        } else {
-          this.$toast.show('删除成功')
+        try {
+          let res = await API.OutreachGroup.deleteStaff({id: this.delId})
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+          } else {
+            this.reqStaffList()
+            this.$toast.show('删除成功')
+          }
+        } catch (e) {
+        } finally {
+          this.$loading.hide()
         }
-        this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
       }
     }
   }
@@ -134,6 +156,7 @@
   .group-content
     flex: 1
     padding :0 19px
+    layout(column,block,nowrap)
     .header
       height :68px
       display :flex

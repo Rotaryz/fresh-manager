@@ -44,7 +44,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
+  import {outreachGroupDetailComputed, outreachGroupDetailMethods} from '@state/helpers'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY_STAFF'
   const TITLE = '拓展团队-详情'
@@ -68,8 +68,7 @@
     page: {
       title: TITLE
     },
-    components: {
-    },
+    components: {},
     data() {
       return {
         activityTitle: ACTIVITI_TITLE,
@@ -83,7 +82,7 @@
       }
     },
     computed: {
-      ...outreachGroupComputed,
+      ...outreachGroupDetailComputed,
       exportUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
@@ -104,7 +103,7 @@
       this.id = this.$route.query.id || ''
     },
     methods: {
-      ...outreachGroupMethods,
+      ...outreachGroupDetailMethods,
       showCode(index) {
         clearTimeout(this.timer)
         this.codeShow = index

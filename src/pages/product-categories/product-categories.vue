@@ -103,7 +103,7 @@
           this.$toast.show('分类名称的长度不能超过10个字')
           return
         }
-        if(!imageId && type) {
+        if (!imageId && type) {
           this.$toast.show('请上传分类图标')
           return
         }
@@ -114,7 +114,14 @@
               this.$refs.bigModel.hide()
               this.$toast.show('创建成功')
               this.categoryNewName = ''
-              this.categoryList.push({name: name, sort: sort, id: res.data.id, list: [], image_url: imageUrl, image_id: imageId})
+              this.categoryList.push({
+                name: name,
+                sort: sort,
+                id: res.data.id,
+                list: [],
+                image_url: imageUrl,
+                image_id: imageId
+              })
               this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -140,18 +147,20 @@
           })
           break
         case 2:
-          API.Product.editCategory(this.bigItem.id, {name: name, sort: sort, image_id: imageId, parent_id: 0}).then((res) => {
-            if (res.error === this.$ERR_OK) {
-              this.$refs.bigModel.hide()
-              this.$toast.show('修改成功')
-              this.categoryList[this.bigIndex].name = name
-              this.categoryList[this.bigIndex].sort = sort
-              this.categoryList[this.bigIndex].image_url = imageUrl
-              this.categoryList.sort(this._sort)
-            } else {
-              this.$toast.show(res.message)
+          API.Product.editCategory(this.bigItem.id, {name: name, sort: sort, image_id: imageId, parent_id: 0}).then(
+            (res) => {
+              if (res.error === this.$ERR_OK) {
+                this.$refs.bigModel.hide()
+                this.$toast.show('修改成功')
+                this.categoryList[this.bigIndex].name = name
+                this.categoryList[this.bigIndex].sort = sort
+                this.categoryList[this.bigIndex].image_url = imageUrl
+                this.categoryList.sort(this._sort)
+              } else {
+                this.$toast.show(res.message)
+              }
             }
-          })
+          )
           break
         }
       },

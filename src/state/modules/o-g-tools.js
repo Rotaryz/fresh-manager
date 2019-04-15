@@ -10,15 +10,15 @@ export const state = {
 export const getters = {}
 
 export const mutations = {
-  [TOOLS.SHOW_TOOLS] (state, bool) {
+  [TOOLS.SHOW_TOOLS](state, bool) {
     if (state.isEnter) return
     state.isShow = bool
   },
-  [TOOLS.SET_POSITION] (state, position) {
+  [TOOLS.SET_POSITION](state, position) {
     position.x && (state.x = position.x)
     position.y && (state.y = position.y)
   },
-  [TOOLS.UPDATE_IS_ENTER] (state, bool) {
+  [TOOLS.UPDATE_IS_ENTER](state, bool) {
     state.isEnter = bool
   }
 }
