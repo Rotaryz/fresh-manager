@@ -118,7 +118,9 @@
               >
                 <div class="icon"></div>
               </figure>
-              <p class="text">{{team.name}}</p>
+              <p class="text"
+                 :class="{'active' : checkItemStatus(team)}"
+              >{{team.name}}</p>
             </section>
           </dd>
           <!--          <div v-if="child1.list && child1.list.length && child1.rotate" style="height: 11px"></div>-->
