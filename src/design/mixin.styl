@@ -225,3 +225,23 @@ all-center()
   top: 50%
   left: 50%
   transform: translate(-50%, -50%)
+
+// scroll
+scroll-opacity()
+  &::-webkit-scrollbar
+    width: 0
+    height: 0
+    transition: all 0.2s
+  &::-webkit-scrollbar-thumb
+    background-color: rgba(0, 0, 0, .15)
+    border-radius: 10px
+  &::-webkit-scrollbar-thumb:hover
+    background-color: rgba(0, 0, 0, .3)
+  &::-webkit-scrollbar-track
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+    border-radius: 10px
+  &:hover
+    &::-webkit-scrollbar
+      transition: all 0.2s
+      width: 6px
+      height: 8px

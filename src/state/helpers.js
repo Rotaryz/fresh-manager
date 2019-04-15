@@ -283,7 +283,55 @@ export const productComputed = {
 export const productMethods = {
   ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
 }
+
+// 财务管理
+export const financeComputed = {
+  ...mapGetters('finance',
+    [
+      'settleStatus',
+      'statusTabIndex',
+      'settleLogs',
+      'settleLogsPageTotal',
+      'settleLogsPage',
+      'settleLogsDate',
+      'settleLogsStatus',
+      'settleLogsKeyword',
+      'account',
+      'payList',
+      'payListPageTotal',
+      'payListPage'
+    ])
+}
+
+export const financeMethods ={
+  ...mapActions('finance',
+    [
+      'getSettleStatus',
+      'getSettleLogs',
+      'setSettleDate',
+      'setSettleKeyword',
+      'setSettleLogsStatus',
+      'setSettleLogsPage',
+      'getAccount',
+      'getPayList',
+      'setPayListPage'
+    ])
+}
 // 新手指引
 export const beginnerGuideComputed = {
   ...mapGetters('beginnerGuide', ['active'])
+}
+
+// 拓展团队
+export const outreachGroupMethods = {
+  ...mapActions('outreachGroup', [
+    'getGroupList',
+    'showModal',
+    'groupListAddChildren',
+    'getOutreachList'
+  ])
+}
+
+export const outreachGroupComputed = {
+  ...mapGetters('outreachGroup', ['groupList'])
 }
