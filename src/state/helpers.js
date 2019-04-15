@@ -328,10 +328,11 @@ export const outreachGroupMethods = {
     'getGroupList',
     'showModal',
     'groupListAddChildren',
-    'getOutreachList'
+    'getOutreachList',
+    'getTaskDetail'
   ])
 }
 
 export const outreachGroupComputed = {
-  ...mapGetters('outreachGroup', ['groupList'])
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage'])
 }

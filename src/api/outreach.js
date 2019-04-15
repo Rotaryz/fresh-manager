@@ -27,9 +27,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getMemberList(data, loading = true) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
-    return request.get(url, data, loading)
+  getMemberList({page, id}, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-offline-members/${id}`
+    return request.get(url, {page}, loading)
   },
   /**
    * 拓展任务详情
@@ -37,9 +37,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getTaskDetail(id, loading = true) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
-    return request.get(url, {}, loading)
+  getTaskDetail({page, id}, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/member-activity-list/${id}`
+    return request.get(url, {page}, loading)
   },
   /**
    * 删除活动

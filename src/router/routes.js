@@ -350,20 +350,25 @@ export default [
         name: 'outreach-group-staff',
         component: () => lazyLoadView(import('@pages/outreach-group-staff/outreach-group-staff')),
         meta: {
-          titles: ['商城', '活动', '拓展团队'],
+          titles: ['商城', '活动', '拓展团队', '拓展团队'],
           beforeResolve(routeTo, routeFrom, next) {
-            // 活动列表
-            store
-            .dispatch('outreach/getOutreachList', {page: 1})
-            .then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
-            .catch(() => {
-              return next({name: '404'})
-            })
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('outreachGroup/getTaskDetail', {id, page: 1})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
           }
         }
       },

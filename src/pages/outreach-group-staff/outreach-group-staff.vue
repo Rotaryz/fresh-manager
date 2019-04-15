@@ -19,7 +19,7 @@
           <div v-for="(item,index) in activityTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in taskDetail" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about': val.type === 2}">
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
                 {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
@@ -34,14 +34,14 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="taskPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {outreachComputed, outreachMethods} from '@state/helpers'
+  import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY_STAFF'
   const TITLE = '拓展活动-团队成员'
@@ -50,14 +50,14 @@
     {name: '拓展任务', flex: 1.2, value: 'activity_name', type: 1},
     {name: '拓展时间', flex: 1.2, value: 'start_at', type: 2},
     {name: '拓展社区', flex: 1.2, value: 'social_name', type: 1},
-    {name: '订单', flex: 1.2, value: 'start_at', type: 1},
-    {name: '交易额(元)', flex: 1.2, value: 'pay_num', type: 1},
+    {name: '订单', flex: 1.2, value: 'pay_num', type: 1},
+    {name: '交易额(元)', flex: 1.2, value: 'pay_amount', type: 1},
     {name: '复购率(15天)', flex: 1, value: 'repeat_rate', type: 1}
   ]
   const TOP_ITEM = [
-    {name: '订单', icon: 'icon-order', value: '900'},
-    {name: '交易额', icon: 'icon-deal', value: '100'},
-    {name: '复购率', icon: 'icon-repeat', value: '10%'}
+    {name: '订单', icon: 'icon-order', value: 'order_counts'},
+    {name: '交易额', icon: 'icon-deal', value: 'total_sum'},
+    {name: '复购率', icon: 'icon-repeat', value: 'repurchase_rate'}
   ]
   const ICON = ['icon-rising', 'icon-up_hover', 'icon-flat']
   export default {
@@ -75,14 +75,18 @@
         page: 1,
         status: 0,
         codeShow: '',
-        qrUrl: process.env.VUE_APP_API
+        qrUrl: process.env.VUE_APP_API,
+        id: ''
       }
     },
     computed: {
-      ...outreachComputed
+      ...outreachGroupComputed
+    },
+    created() {
+      this.id = this.$route.query.id || ''
     },
     methods: {
-      ...outreachMethods,
+      ...outreachGroupMethods,
       showCode(index) {
         clearTimeout(this.timer)
         this.codeShow = index
@@ -94,6 +98,7 @@
       },
       addPage(page) {
         this.page = page
+        this.getTaskDetail({page, id: this.id})
       }
     }
   }
