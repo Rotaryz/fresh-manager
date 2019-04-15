@@ -78,10 +78,10 @@ export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', '
 
 // 拓展活动
 export const outreachComputed = {
-  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail'])
+  ...mapGetters('outreach', ['outreachList', 'outreachPage', 'outreachDetail', 'memberList', 'memberData', 'memberPage'])
 }
 
-export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail'])
+export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList'])
 
 // 优惠券
 export const couponComputed = {
@@ -284,6 +284,40 @@ export const productComputed = {
 export const productMethods = {
   ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
 }
+
+// 财务管理
+export const financeComputed = {
+  ...mapGetters('finance',
+    [
+      'settleStatus',
+      'statusTabIndex',
+      'settleLogs',
+      'settleLogsPageTotal',
+      'settleLogsPage',
+      'settleLogsDate',
+      'settleLogsStatus',
+      'settleLogsKeyword',
+      'account',
+      'payList',
+      'payListPageTotal',
+      'payListPage'
+    ])
+}
+
+export const financeMethods ={
+  ...mapActions('finance',
+    [
+      'getSettleStatus',
+      'getSettleLogs',
+      'setSettleDate',
+      'setSettleKeyword',
+      'setSettleLogsStatus',
+      'setSettleLogsPage',
+      'getAccount',
+      'getPayList',
+      'setPayListPage'
+    ])
+}
 // 新手指引
 export const beginnerGuideComputed = {
   ...mapGetters('beginnerGuide', ['active'])
@@ -308,6 +342,7 @@ export const beginnerGuideComputed = {
 
 // 拓展团队
 export const outreachGroupComputed = {
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData'])
   ...mapState('oGModal', {
     isShow: (state) => state.isShow,
     name: (state) => state.name,
@@ -334,6 +369,13 @@ export const outreachGroupComputed = {
 }
 
 export const outreachGroupMethods = {
+  ...mapActions('outreachGroup', [
+    'getGroupList',
+    'showModal',
+    'groupListAddChildren',
+    'getOutreachList',
+    'getTaskDetail'
+  ]),
   ...mapMutations('oGModal', [
     MODAL.SHOW_MODAL,
     MODAL.SET_NAME,

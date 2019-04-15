@@ -5,37 +5,34 @@
         <div class="title">
           添加成员
         </div>
-        <span class="close hand" @click="_cancelGoods"></span>
+        <span class="close hand" @click="_cancelMember"></span>
       </div>
       <div class="shade-tab">
         <div class="tab-item">
-          <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
+          <base-drop-down :width="218" :select="assortment" @setValue="_choiceFirstAssortment"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+          <base-drop-down :width="140" :select="secondAssortment" @setValue="_choiceSecondAssortment"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+          <base-search ref="goodsSearch" placeHolder="成员姓名" @search="_searchMember"></base-search>
         </div>
       </div>
       <div class="goods-content">
         <div class="outreach-goods-list">
-          <div v-for="(item, index) in chooseMember" :key="index" class="goods-item">
-            <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-            <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
-            <div class="goods-msg">
-              <div class="goods-name">{{item.name}}</div>
-              <div class="goods-money">¥{{item.original_price}}</div>
-            </div>
-            <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
+          <div v-for="(item, index) in memberList" :key="index" class="goods-item">
+            <span class="select-icon hand" :class="{'select-icon-disable': checkSelect(item), 'select-icon-active': checkChoice(item)}" @click="_selectMember(item,index)"></span>
+            <div class="member-name">{{item.name}}</div>
+            <div class="member-tel">{{item.mobile}}</div>
+            <div class="add-btn btn-main" :class="{'add-btn-disable': checkSelect(item)}" @click="_additionOne(item, index)">{{formatBtn(item)}}</div>
           </div>
         </div>
       </div>
       <div class="page-box">
-        <base-pagination ref="pagination" :pageDetail="memberPage" @addPage="_getMoreGoods"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="memberPage" @addPage="_getMoreMember"></base-pagination>
       </div>
       <div class="back">
-        <div class="back-cancel back-btn hand" @click="_cancelMembers">取消</div>
+        <div class="back-cancel back-btn hand" @click="_cancelMember">取消</div>
         <div class="back-btn back-submit hand" @click="_memberAddition">批量添加</div>
       </div>
     </div>
@@ -44,6 +41,7 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+  import API from '@api'
 
   const NAME = 'MEMBER_MODAL'
 
@@ -53,61 +51,189 @@
       DefaultModal
     },
     props: {
-      chooseMember: {
+      selectMembers: {
         type: Array,
         default: () => {
           return []
-        }
-      },
-      memberPage: {
-        type: Object,
-        default: () => {
-          return {
-            total: 1,
-            per_page: 10,
-            total_page: 1
-          }
-        }
-      },
-      assortment: {
-        type: Object,
-        default: () => {
-          return {
-            check: false,
-            show: false,
-            content: '选择分类',
-            type: 'default',
-            data: [] // 格式：{title: '55'}}
-          }
-        }
-      },
-      secondAssortment: {
-        type: Object,
-        default: () => {
-          return {
-            check: false,
-            show: false,
-            content: '选择二级分类',
-            type: 'default',
-            data: [] // 格式：{title: '55'}}
-          }
         }
       }
     },
     data() {
       return {
-
+        memberList: [], // 成员列表
+        checkedMembers: [], // 选中的成员列表
+        assortment: {
+          check: false,
+          show: false,
+          content: '选择部门',
+          type: 'default',
+          data: []
+        },
+        secondAssortment: {
+          check: false,
+          show: false,
+          content: '选择团队',
+          type: 'default',
+          data: []
+        },
+        departmentId: 0, // 部门ID
+        firstAssortmentId: -2,
+        page: 1,
+        keyword: '',
+        memberPage: {
+          total: 1,
+          per_page: 7,
+          total_page: 1
+        }
       }
     },
+    created() {
+
+    },
     methods: {
-      _cancelMembers() {
-        this.$emit('_cancelMembers')
+      _initData() {
+        this.memberList = []
+        this.departmentId = 0
+        this.page = 1
+        this.keyword = ''
+        this.checkedMembers = []
+        this.assortment = {
+          check: false,
+          show: false,
+          content: '选择部门',
+          type: 'default',
+          data: []
+        }
+        this.secondAssortment = {
+          check: false,
+          show: false,
+          content: '选择团队',
+          type: 'default',
+          data: []
+        }
       },
       _memberAddition() {
-        this.$emit('_memberAddition')
+        this.$emit('_memberAddition', this.checkedMembers)
+        this.$refs.memberModal.hideModal()
       },
-      memberModal() {
+      async showModal() {
+        this.$refs.goodsSearch._setText('')
+        this._initData()
+        await this._getMemberList()
         this.$refs.memberModal.showModal()
+        this._getFirstAssortment(-2)
+      },
+      _cancelMember() {
+        this.$refs.goodsSearch._setText('')
+        this._initData()
+        this.$refs.memberModal.hideModal()
+      },
+      // 获取部门列表
+      async _getFirstAssortment(id) {
+        let res = await API.Outreach.getBranchList({parent_id: id})
+        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.assortment.data.unshift({name: '全部', id: ''})
+      },
+      // 获取团队列表
+      async _getSecondAssortment(id) {
+        let res = await API.Outreach.getBranchList({parent_id: id})
+        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.secondAssortment.data.unshift({name: '全部', id: ''})
+      },
+      // 获取成员列表
+      async _getMemberList() {
+        let data = {
+          department_id: this.departmentId,
+          name: this.keyword,
+          page: this.page,
+          limit: 7
+        }
+        let res = await API.Outreach.getTeamList(data)
+        if (res.error === this.$ERR_OK) {
+          this.memberList = res.data
+          this.memberPage = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+        }
+      },
+      _choiceFirstAssortment(item) {
+        if (item.id) {
+          this.departmentId = item.id
+          this.firstAssortmentId = item.id
+          this._getSecondAssortment(item.id)
+          this._getMemberList()
+        } else {
+          this.secondAssortment = {
+            check: false,
+            show: false,
+            content: '选择团队',
+            type: 'default',
+            data: []
+          }
+          this.departmentId = ''
+          this.firstAssortmentId = -2
+          this._getSecondAssortment(-2)
+          this._getMemberList()
+        }
+      },
+      _choiceSecondAssortment(item) {
+        if (item.id) {
+          this.departmentId = item.id
+          this._getMemberList()
+        } else {
+          this.departmentId = this.firstAssortmentId
+          this._getMemberList()
+        }
+      },
+      _searchMember(text) {
+        this.keyword = text
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        this._getMemberList()
+      },
+      _selectMember(item, idx) {
+        let hasIn = this.checkedMembers.some(item1 => {
+          return +item.id === +item1.id
+        })
+        if (hasIn) {
+          this.checkedMembers = this.checkedMembers.filter(item2 => {
+            return +item2.id !== +item.id
+          })
+        } else {
+          this.checkedMembers.push(item)
+        }
+      },
+      _additionOne(item, idx) {
+        this.$emit('addMemberOne', item)
+      },
+      _getMoreMember(page) {
+        this.page = page
+        this._getMemberList()
+      },
+      // 是否确定选择过
+      checkSelect(item) {
+        return this.selectMembers.some(item1 => {
+          return +item.id === +item1.id
+        })
+      },
+      // 是否临时勾选
+      checkChoice(item) {
+        return this.checkedMembers.some(item1 => {
+          return +item.id === +item1.id
+        })
+      },
+      // 按钮文字
+      formatBtn(item) {
+        let hasIn = this.selectMembers.some(item1 => {
+          return +item.id === +item1.id
+        })
+        if (hasIn) {
+          return '已添加'
+        } else {
+          return '添加'
+        }
       }
     }
   }
@@ -287,6 +413,7 @@
       width: 100%
       height: 60px
       display: flex
+      justify-content: space-between
       align-items: center
       position: relative
       &:last-child
@@ -340,6 +467,12 @@
         display: inline-block
         background-size: 100% 100%
         background-image: url("./icon-check_ash@2x.png")
+      .member-tel
+        flex: 1
+        margin-left: 280px
+      .member-name
+        width: 100px
+        margin-right: 50px
       .goods-msg
         flex: 1
         display: flex

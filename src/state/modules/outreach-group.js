@@ -5,153 +5,83 @@ export const state = {
   groupList: [],
   outreachList: [],
   outreachDetail: {},
+  taskDetail: [], // 成员任务详情
+  taskData: {
+    order_counts: 0,
+    total_sum: 0,
+    repurchase_rate: '0%',
+    member_name: ''
+  },
   outreachPage: {
     total: 1,
     per_page: 10,
     total_page: 1
   },
-  teamData: {}
+  taskPage: { // 成员任务详情
+    total: 1,
+    per_page: 10,
+    total_page: 1
+  }
 }
 
 export const getters = {
   groupList: state => state.groupList,
   outreachPage: state => state.outreachPage,
-  outreachList: state => state.outreachList,
-  teamData: state => state.teamData
+  taskDetail: state => state.taskDetail,
+  taskPage: state => state.taskPage,
+  taskData: state => state.taskData
 }
 
 export const mutations = {
   GET_GROUP_LIST(state, list) {
-    state.groupList = list || []
+    state.groupList = list || [1]
   },
-  // UPDATE_LIST(state, obj) {
-  //   state.groupList = obj || []
-  // },
-  ADD_DEPARTMENT(state, object) {
-    // const parentId = res.data.parent_id
-    const {res, obj} = object
-    const newItem = {
-      ...res.data,
-      index: -1,
-      rotate: false
-    }
-    if (!state.groupList.length) {
-      state.groupList.push(newItem)
-    } else {
-      let current = obj.current
-      current.list.push(newItem)
-    }
-  },
-  DELETE_LIST(state, obj) {
-    const {parent, childIndex} = obj
-    if (!parent) {
-      state.groupList = []
-    } else {
-      parent.list.splice(childIndex, 1)
-    }
+  UPDATE_LIST(state, obj) {
+    state.groupList.push(obj)
   },
   SET_OUTREACH_LIST(state, outreachList) {
     state.outreachList = outreachList
   },
+  SET_TASK_DETAIL(state, taskDetail) {
+    state.taskDetail = taskDetail
+  },
+  SET_TASK_DATA(state, taskData) {
+    state.taskData = taskData
+  },
+  // SET_OUTREACH_DETAIL(state, outreachDetail) {
+  //   state.outreachDetail = outreachDetail
+  // },
   SET_OUTREACH_PAGE(state, outreachPage) {
     state.outreachPage = outreachPage
   },
-  CAHNGE_TAB(state, obj) {
-    // todo
-    state.groupList.forEach(item => {
-      item.index = -1
-      item.list && item.list.forEach((item) => {
-        item.index = -1
-        item.list && item.list.forEach((item) => {
-          item.index = -1
-        })
-      })
-    })
-    const {item, index} = obj
-    item.index = index === item.index ? -1 : index
-    item.rotate = !item.rotate
-  },
-  SET_TEAM_DATA(state, res) {
-    state.teamData = res
+  SET_TASK_PAGE(state, taskPage) {
+    state.taskPage = taskPage
   }
 }
 
 export const actions = {
   // 获取组织架构
-  getGroupList({state, commit, dispatch}, {parentId, loading = true}) {
-    return API.OutreachGroup.getGroupList({parent_id: parentId}, loading)
-    .then((res) => {
-      if (res.error !== app.$ERR_OK) {
-        return false
-      }
-      let arr = res.data
-      // todo
-      arr.map((item) => {
-        item.index = -1
-        item.rotate = false
-        item.list && item.list.map((item) => {
-          item.index = -1
-          item.rotate = false
-          item.list && item.list.map((item) => {
-            item.index = -1
-            item.rotate = false
-          })
-        })
-      })
-      commit('GET_GROUP_LIST', arr)
-      return true
-    })
-    .catch(() => {
-      return false
-    })
-    .finally(() => {
-      app.$loading.hide()
+  getGroupList({state, commit, dispatch}, list) {
+    return new Promise((resolve, reject) => {
+      resolve(true)
+      commit('GET_GROUP_LIST', list)
     })
   },
   // 显示添加弹框
   showModal({state, commit}, obj) {
     const {ctx, key} = obj
-    ctx && ctx.$refs[key] && ctx.$refs[key].show(obj)
+    ctx && ctx.$refs[key] && ctx.$refs[key].show()
   },
   // 添加子部门
   groupListAddChildren({state, commit}, obj) {
-    API.OutreachGroup.createDepartment(obj).then((res) => {
-      if (res.error !== app.$ERR_OK) {
-        return false
-      }
-      commit('ADD_DEPARTMENT', {res, obj})
-    }).catch(() => {
-    })
-    .finally(() => {
-      app.$loading.hide()
-    })
+    commit('UPDATE_LIST', obj)
   },
-  // 删除部门
-  deleteDepartment({state, commit}, obj) {
-    const {current} = obj
-    if (current.list && current.list.length) {
-      app.$toast.show('无法删除')
-      return
-    }
-    API.OutreachGroup.deleteDepartment(current).then((res) => {
-      if (res.error !== app.$ERR_OK) {
-        app.$toast.show(res.message)
-        return
-      }
-      commit('DELETE_LIST', obj)
-    }).catch(() => {
-    })
-    .finally(() => {
-      app.$loading.hide()
-    })
-  },
-  // 切换tab
-  changeTab({state, commit}, obj) {
-    commit('CAHNGE_TAB', obj)
-  },
-  // 获取成员列表
-  getStaffList({state, commit, dispatch}, {id, page, loading = false}) {
-    API.OutreachGroup.getStaffList({id, page}).then((res) => {
+  getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
+    return API.Outreach.getOutreachList(
+      {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
+      loading
+    )
+    .then((res) => {
       if (res.error !== app.$ERR_OK) {
         return false
       }
@@ -161,42 +91,52 @@ export const actions = {
         per_page: res.meta.per_page,
         total_page: res.meta.last_page
       }
-      console.log(res)
+
       commit('SET_OUTREACH_LIST', arr)
       commit('SET_OUTREACH_PAGE', outreachPage)
-      commit('SET_TEAM_DATA', res)
       return true
-    }).catch(() => {
+    })
+    .catch(() => {
       return false
     })
     .finally(() => {
       app.$loading.hide()
     })
   },
-  // getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
-  //   return API.Outreach.getOutreachList(
-  //     {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
-  //     loading
-  //   )
-  //   .then((res) => {
-  //     if (res.error !== app.$ERR_OK) {
-  //       return false
-  //     }
-  //     let arr = res.data
-  //     let outreachPage = {
-  //       total: res.meta.total,
-  //       per_page: res.meta.per_page,
-  //       total_page: res.meta.last_page
-  //     }
-  //     commit('SET_OUTREACH_LIST', arr)
-  //     commit('SET_OUTREACH_PAGE', outreachPage)
-  //     return true
-  //   })
-  //   .catch(() => {
-  //     return false
-  //   })
-  //   .finally(() => {
-  //     app.$loading.hide()
-  //   })
-  // },
+
+  getTaskDetail({state, commit, dispatch}, {id, page, loading = true}) {
+    commit('SET_TASK_DETAIL', [])
+    return API.Outreach.getTaskDetail(
+      {page, id},
+      loading
+    )
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        let taskPage = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        let data = {
+          order_counts: res.order_counts || 0,
+          total_sum: res.total_sum || 0,
+          repurchase_rate: res.repurchase_rate,
+          member_name: res.member_name || ''
+        }
+        commit('SET_TASK_DETAIL', arr)
+        commit('SET_TASK_DATA', data)
+        commit('SET_TASK_PAGE', taskPage)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+
+  }
 }

@@ -44,9 +44,13 @@ export default [
         meta: {
           titles: ['商城', '商品', '商品列表'],
           beforeResolve(routeTo, routeFrom, next) {
+            let online = ''
+            if (routeTo.query.online) {
+              online = routeTo.query.online
+            }
             //  团长列表
             store
-              .dispatch('editgoods/getGoodsData', 1)
+              .dispatch('editgoods/getGoodsData', online)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -302,18 +306,23 @@ export default [
         meta: {
           titles: ['商城', '活动', '拓展任务', '团队成员'],
           beforeResolve(routeTo, routeFrom, next) {
-            // 活动列表
-            store
-            .dispatch('outreach/getOutreachList', {page: 1})
-            .then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
-            .catch(() => {
-              return next({name: '404'})
-            })
+            // 获取团队成员列表
+            let id = routeTo.query.id
+            if (id) {
+              store
+                .dispatch('outreach/getMemberList', {id, page: 1})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
           }
         }
       },
@@ -346,20 +355,25 @@ export default [
         name: 'outreach-group-staff',
         component: () => lazyLoadView(import('@pages/outreach-group-staff/outreach-group-staff')),
         meta: {
-          titles: ['商城', '活动', '拓展团队'],
+          titles: ['商城', '活动', '拓展团队', '拓展团队'],
           beforeResolve(routeTo, routeFrom, next) {
-            // 活动列表
-            store
-            .dispatch('outreach/getOutreachList', {page: 1})
-            .then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
-            .catch(() => {
-              return next({name: '404'})
-            })
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('outreachGroup/getTaskDetail', {id, page: 1})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
           }
         }
       },
@@ -797,7 +811,7 @@ export default [
         name: 'head-settlement',
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
-          titles: ['商城', '团长', '团长结算'],
+          titles: ['财务', '团长', '团长佣金'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
@@ -932,6 +946,82 @@ export default [
         component: () => lazyLoadView(import('@pages/operating-cost/operating-cost')),
         meta: {
           titles: ['财务', '营收概况', '营业成本']
+        }
+      },
+      // 团长佣金
+      {
+        path: 'leader-commission',
+        name: 'leader-commission',
+        component: () => lazyLoadView(import('@pages/leader-commission/leader-commission')),
+        meta: {
+          titles: ['财务', '团长', '团长佣金']
+        }
+      },
+      // 团长提现
+      {
+        path: 'leader-withdrawal',
+        name: 'leader-withdrawal',
+        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
+        meta: {
+          titles: ['财务', '团长', '团长提现'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('leader/getWithdrawalList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 交易明细
+      {
+        path: 'transaction-detail',
+        name: 'transaction-detail',
+        component: () => lazyLoadView(import('@pages/transaction-detail/transaction-detail')),
+        meta: {
+          titles: ['财务', '账户', '交易明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('finance/getSettleStatus')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 账户总览
+      {
+        path: 'account-overview',
+        name: 'account-overview',
+        component: () => lazyLoadView(import('@pages/account-overview/account-overview')),
+        meta: {
+          titles: ['财务', '账户', '账户总览'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('finance/getAccount')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       /**
@@ -1534,7 +1624,7 @@ export default [
         path: 'beginner-guide',
         name: 'beginner-guide',
         meta: {
-          titles: ['新手指南']
+          titles: ['新手指引']
         },
         component: () => lazyLoadView(import('@pages/beginner-guide/beginner-guide'))
       },

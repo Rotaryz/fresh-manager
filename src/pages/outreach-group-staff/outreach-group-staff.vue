@@ -3,14 +3,17 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-personage@2x.png" class="identification-icon">
-          <p class="identification-name">陈先生的线下拓展任务详情</p>
+          <div class="center">
+            <img src="./icon-personage@2x.png" class="identification-icon">
+            <p class="identification-name">{{taskData.member_name}}的线下拓展任务详情</p>
+          </div>
+          <div class="btn-main" @click="exportExcel">导出</div>
         </div>
         <div class="top-data">
           <div v-for="(item, index) in topItem" :key="index" class="top-item">
             <img class="img" :src="require('./'+ item.icon +'@2x.png')" alt="">
             <span class="name">{{item.name}}</span>
-            <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{item.value}}</span>
+            <span class="num">{{item.icon === 'icon-deal' ? '¥' : ''}}{{taskData[item.value]}}</span>
           </div>
         </div>
       </div>
@@ -19,7 +22,7 @@
           <div v-for="(item,index) in activityTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in taskDetail" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about': val.type === 2}">
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
                 {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
@@ -34,14 +37,14 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="taskPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {outreachComputed, outreachMethods} from '@state/helpers'
+  import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY_STAFF'
   const TITLE = '拓展活动-团队成员'
@@ -50,14 +53,14 @@
     {name: '拓展任务', flex: 1.2, value: 'activity_name', type: 1},
     {name: '拓展时间', flex: 1.2, value: 'start_at', type: 2},
     {name: '拓展社区', flex: 1.2, value: 'social_name', type: 1},
-    {name: '订单', flex: 1.2, value: 'start_at', type: 1},
-    {name: '交易额(元)', flex: 1.2, value: 'pay_num', type: 1},
+    {name: '订单', flex: 1.2, value: 'pay_num', type: 1},
+    {name: '交易额(元)', flex: 1.2, value: 'pay_amount', type: 1},
     {name: '复购率(15天)', flex: 1, value: 'repeat_rate', type: 1}
   ]
   const TOP_ITEM = [
-    {name: '订单', icon: 'icon-order', value: '900'},
-    {name: '交易额', icon: 'icon-deal', value: '100'},
-    {name: '复购率', icon: 'icon-repeat', value: '10%'}
+    {name: '订单', icon: 'icon-order', value: 'order_counts'},
+    {name: '交易额', icon: 'icon-deal', value: 'total_sum'},
+    {name: '复购率', icon: 'icon-repeat', value: 'repurchase_rate'}
   ]
   const ICON = ['icon-rising', 'icon-up_hover', 'icon-flat']
   export default {
@@ -75,14 +78,33 @@
         page: 1,
         status: 0,
         codeShow: '',
-        qrUrl: process.env.VUE_APP_API
+        qrUrl: process.env.VUE_APP_API,
+        id: ''
       }
     },
     computed: {
-      ...outreachComputed
+      ...outreachGroupComputed,
+      exportUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token,
+          page: this.page
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_SCM_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id
+      }
+    },
+    created() {
+      this.id = this.$route.query.id || ''
     },
     methods: {
-      ...outreachMethods,
+      ...outreachGroupMethods,
       showCode(index) {
         clearTimeout(this.timer)
         this.codeShow = index
@@ -94,6 +116,10 @@
       },
       addPage(page) {
         this.page = page
+        this.getTaskDetail({page, id: this.id})
+      },
+      exportExcel() {
+        window.open(this.exportUrl, '_blank')
       }
     }
   }
@@ -104,10 +130,15 @@
 
   .identification
     height: 106px
-    padding: 22px 20px 26px
+    padding: 22px 0 26px
     display: block
+    .identification-page
+      justify-content: space-between
+      .center
+        display: flex
+        align-items: center
     .top-data
-      margin-top: 24px
+      margin-top: 20px
       display: flex
       align-items: center
     .top-item
