@@ -173,7 +173,7 @@
       },
       handleAddDepartment(position) {
         this.setAddPosition({position})
-        this.handleModal({isShow: true, title: '添加子部门', useType: 'addDepartment', modalType: 'addDepartment', maxLength: 8})
+        this.handleModal({isShow: true, title: '添加公司', useType: 'addDepartment', modalType: 'addDepartment', maxLength: 8})
       },
       handleChangeStatus(args) {
         let flag = false

@@ -2,6 +2,7 @@
   <ul
     v-if="showTools"
     class="group-tab-tools"
+    :class="{'hide-first': isLastDepartment}"
     :style="{left: x + 'px', top: y + 'px'}"
     @mouseenter="handleMouseEnter"
     @mousemove="handleMouseMove"
@@ -140,5 +141,10 @@
             icon-image(icon-down_hover)
           &.delete
             icon-image(icon-delete_hover)
+
+  .hide-first
+    height: 134px
+    .tool-item-wrapper:first-child
+      display: none
 
 </style>

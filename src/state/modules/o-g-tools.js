@@ -4,7 +4,8 @@ export const state = {
   isShow: true,
   x: 0,
   y: 0,
-  isEnter: false
+  isEnter: false,
+  hideFirst: false // 第三级隐藏添加子部门按钮
 }
 
 export const getters = {}
