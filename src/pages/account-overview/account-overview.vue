@@ -75,7 +75,7 @@
                 <div class="explain-wrapper">
                   <img src="./icon-help@2x.png" alt="" class="detail-icon">
                   <div class="static-explain">
-                    <div class="explain">用户支付后进行了退款的金额</div>
+                    <div class="explain">用户支付后未入账的资金</div>
                   </div>
                 </div>
               </div>
