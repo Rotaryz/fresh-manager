@@ -1497,7 +1497,10 @@ export default [
               startTime = ''
               endTime = ''
             }
-            let status = routeTo.query.status
+            let status = ''
+            if (routeTo.query.status) {
+              status = routeTo.query.status * 1
+            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
@@ -1509,7 +1512,7 @@ export default [
                 endTime,
                 start: time.start,
                 end: time.end,
-                status
+                status: status
               })
               store
                 .dispatch('distribution/getOrderList')
