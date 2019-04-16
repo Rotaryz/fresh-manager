@@ -5,7 +5,7 @@
         v-for="(item, index) in tabArr"
         :key="index"
         :class="['tab-item', 'hand', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
-        @click="changeTab(index)"
+        @click="changeTab(item, index)"
       >
         <span class="num">{{item.value}}{{index === 0 ? '(PV)' : ''}}</span>
         <span class="text">{{item.name}}</span>
@@ -129,8 +129,9 @@
       }
     },
     methods: {
-      changeTab(index) {
+      changeTab(item, index) {
         this.tabIndex = index
+        this.$emit('changeQuality', item)
         this.drawLine(this.data2, this.tabArr[index].name)
       },
       drawLine(data, name) {

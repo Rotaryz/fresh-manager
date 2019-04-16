@@ -16,13 +16,15 @@
               <p class="text">群质量数据<span>(当前等级Lv4)</span></p>
               <p class="right-text hand" @click="showDescription">等级说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
             </div>
-            <quality-data :time="msg.time"></quality-data>
+            <!--群质量数据-->
+            <quality-data :time="msg.time" @changeQuality="changeQuality"></quality-data>
           </section>
           <section class="data-sec business-data">
             <div class="sec-title">
               <p class="text">群运营数据</p>
             </div>
-            <business-data :time="msg.time"></business-data>
+            <!--群运营数据-->
+            <business-data :time="msg.time" @changeBusiness="changeBusiness"></business-data>
           </section>
         </div>
         <div class="bottom-sec">
@@ -30,12 +32,14 @@
             <div class="sec-title">
               <p class="text">群用户分组<span>(群总人数500)</span></p>
             </div>
-            <group-data :time="msg.time"></group-data>
+            <!--用户分组-->
+            <group-data :time="msg.time" @changeGroup="changeGroup"></group-data>
           </section>
           <section class="data-sec goods-list">
             <div class="sec-title">
               <p class="text">最受欢迎商品Top10</p>
             </div>
+            <!--商品TOP10-->
             <goods-list></goods-list>
           </section>
         </div>
@@ -103,6 +107,19 @@
         console.log(this.msg)
         // this.getOrderDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
       },
+      // 切换质量数据tab栏
+      changeQuality(item) {
+        console.log(item)
+      },
+      // 切换运营数据tab栏
+      changeBusiness(item) {
+        console.log(item)
+      },
+      // 切换用户分组tab栏
+      changeGroup(item) {
+        console.log(item)
+      },
+      // 切换左侧tab栏
       changeCommunity(item) {
         this.groupId = item.id
       },

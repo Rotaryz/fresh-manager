@@ -5,7 +5,7 @@
         v-for="(item, index) in tabArr"
         :key="index"
         :class="['tab-item', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
-        @click="changeTab(index)"
+        @click="changeTab(item, index)"
       >
         <img v-if="item.name === 'equal'" src="./icon-equal@2x.png" alt="" class="tag">
         <img v-else-if="item.name === 'multiply'" src="./icon-multiply@2x.png" alt="" class="tag">
@@ -117,10 +117,10 @@
       }
     },
     methods: {
-      changeTab(index) {
+      changeTab(item, index) {
         if (+index === 1 || +index === 3 || +index === 5) return
         this.tabIndex = index
-
+        this.$emit('changeBusiness', item)
         this.drawLine(this.data, this.tabArr[index].name)
       },
       drawLine(data, name) {
