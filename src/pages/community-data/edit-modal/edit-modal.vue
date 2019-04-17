@@ -10,15 +10,15 @@
       <div class="main-input">
         <div class="main-model-box">
           <div class="text">团长账号</div>
-          <input v-model="data.groupAccount" type="number" class="main-input-box" placeholder="请输入团长账号">
+          <input v-model="msg.account" type="number" class="main-input-box" placeholder="请输入团长账号">
         </div>
         <div class="main-model-box">
           <div class="text">微信群名称</div>
-          <input v-model="data.groupName" type="text" class="main-input-box" placeholder="请输入微信群名称">
+          <input v-model="msg.name" type="text" class="main-input-box" placeholder="请输入微信群名称">
         </div>
         <div class="main-model-box">
           <div class="text">微信群人数</div>
-          <input v-model="data.personNumber" type="number" class="main-input-box" placeholder="请输入微信群人数">
+          <input v-model="msg.total" type="number" class="main-input-box" placeholder="请输入微信群人数">
         </div>
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
@@ -37,36 +37,29 @@
   export default {
     name: COMPONENT_NAME,
     components: {DefaultModal},
-    props: {
-      numberPla: {
-        type: String,
-        default: '请输入团长账号'
-      }
-    },
     data() {
       return {
-        data: {
-          groupAccount: '',
-          groupName: '',
-          personNumber: '',
+        msg: {
+          account: '',
+          name: '',
+          total: '',
           id: ''
         }
       }
     },
     methods: {
       show(data) {
-        this.data = data
+        this.msg = Object.assign({}, data)
         this.$refs.modal && this.$refs.modal.showModal()
       },
       hide() {
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
-        this.$emit('confirm', this.data)
+        this.$emit('confirm', this.msg)
       },
       cancel() {
         this.hide()
-        this.$emit('cancel')
       }
     }
   }

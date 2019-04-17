@@ -10,17 +10,17 @@
         </div>
       </div>
       <div
-        v-for="(item, index) in groupArr"
+        v-for="(item, index) in communityList"
         :key="index"
         class="left-tab-item hand"
         :class="{'active': +tabIndex === index+1}"
         @click="changeCommunity(index+1, item)"
       >
         <div class="left">
-          <img :src="require('./'+ lvArr[3] +'@2x.png')" alt="" class="level-icon">
-          <span class="name">{{name}}</span>
+          <img :src="require('./'+ lvArr[item.level] +'@2x.png')" alt="" class="level-icon">
+          <span class="name">{{item.name}}</span>
         </div>
-        <div class="right" @click.stop="editGroup()">
+        <div class="right" @click.stop="editGroup(+tabIndex === index+1, item)">
           <span class="edit-icon" :class="{'current': +tabIndex === index+1}"></span>
         </div>
       </div>
@@ -30,6 +30,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'LEFT-TAB'
   const LV_ARR = ['icon-v1', 'icon-v2', 'icon-v3', 'icon-v4']
   export default{
@@ -54,28 +55,30 @@
         lvArr: LV_ARR
       }
     },
+    computed: {
+      ...communityComputed
+    },
     methods: {
       changeCommunity(index, item) {
         this.tabIndex = index
         this.$emit('changeCommunity', item)
       },
-      editGroup(type) {
+      editGroup(type, item) {
         if (type) return
-        this.$emit('editGroup', this.name)
+        this.$emit('editGroup', item)
       },
       tabScroll() {
-        let leftBoxHeight = this.$refs.leftBox.offsetHeight
-        let leftTabHeight = this.$refs.leftTab.offsetHeight
-        let scrollTop = this.$refs.leftTab.scrollTop
-        if (leftBoxHeight > leftTabHeight && (scrollTop >= leftBoxHeight - leftTabHeight)) {
-          if (this.getMore) return
-          this.getMore = true
-          this.groupArr.push(new Array(10).fill(1))
-          console.log(this.$refs.leftBox.offsetHeight)
-          setTimeout(() => {
-            this.getMore = false
-          }, 200)
-        }
+        // let leftBoxHeight = this.$refs.leftBox.offsetHeight
+        // let leftTabHeight = this.$refs.leftTab.offsetHeight
+        // let scrollTop = this.$refs.leftTab.scrollTop
+        // if (leftBoxHeight > leftTabHeight && (scrollTop >= leftBoxHeight - leftTabHeight)) {
+        //   if (this.getMore) return
+        //   this.getMore = true
+        //   this.groupArr.push(new Array(10).fill(1))
+        //   setTimeout(() => {
+        //     this.getMore = false
+        //   }, 200)
+        // }
       }
     }
   }

@@ -8,7 +8,7 @@
       <base-option-box @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
-      <left-tab :tabArr="tabArr" :name="name" @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
+      <left-tab :name="name" @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
       <div class="right-data">
         <div class="top-sec">
           <section class="data-sec quality-data">
@@ -46,7 +46,7 @@
       </div>
     </div>
     <description-modal ref="description"></description-modal>
-    <edit-modal ref="editModal" @confirm="confirm" @cancel="cancel"></edit-modal>
+    <edit-modal ref="editModal" @confirm="confirm"></edit-modal>
   </div>
 </template>
 
@@ -59,6 +59,8 @@
   import GroupData from './group-data/group-data'
   import EditModal from './edit-modal/edit-modal'
   import DescriptionModal from './description-modal/description-modal'
+
+  import API from '@api'
 
   const PAGE_NAME = 'COMMUNITY-DATA'
   const TITLE = '社群数据'
@@ -83,29 +85,29 @@
         msg: {
           time: 'today'
         },
+        request: {
+          wx_group_id: null,
+          day_type: ''
+        },
         name: '社区A微信群',
-        groupId: ''
+        groupId: '',
+        editGroupItem: {}
       }
     },
     computed: {
       ...communityComputed
     },
     created() {
-
+      this.getGroupData(this.request)
+      this.getBusinessData(this.request)
+      this.getGroupData(this.request)
+      this.getGoodsList(this.request)
     },
 
     methods: {
       ...communityMethods,
       _getData(value) {
-        if (typeof value === 'string') {
-          this.msg.time = value
-          // this.getOrderDetail({startTime: '', endTime: '', time: value, loading: true})
-          return
-        }
-        this.msg.startTime = value[0]
-        this.msg.endTime = value[1]
-        console.log(this.msg)
-        // this.getOrderDetail({startTime: value[0], endTime: value[1], time: '', loading: true})
+        this.msg.time = value
       },
       // 切换质量数据tab栏
       changeQuality(item) {
@@ -126,15 +128,20 @@
       showDescription() {
         this.$refs.description.show()
       },
-      editGroup(name) {
-        this.$refs.editModal.show({groupName: name})
+      async editGroup(item) {
+        this.editGroupItem = item
+        this.$refs.editModal.show(item)
         // groupAccount帐号  groupName群名  personNumber群人数 id//
       },
-      confirm(data) {
-        this.name = data.groupName
+      async confirm(data) {
+        this.name = data.name
         this.$refs.editModal.hide()
-      },
-      cancel() {
+        let res = await API.Community.editCommunity(data)
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+          return
+        }
+        this.getCommunityList({page: 1})
 
       }
     }

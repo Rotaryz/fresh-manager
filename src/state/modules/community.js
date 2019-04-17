@@ -46,8 +46,8 @@ export const mutations = {
 }
 
 export const actions = {
-  getCommunityList({commit}, {startTime, endTime, time, loading = true}) {
-    return API.Data.tradeData({start_time: startTime, end_time: endTime, time: time}, loading)
+  getCommunityList({commit}, {page, loading = true}) {
+    return API.Community.getCommunityList({page}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -64,7 +64,7 @@ export const actions = {
       })
   },
   getQualityData({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Data.managerData({start_time: startTime, end_time: endTime, time: time}, loading)
+    return API.Community.getQualityData({start_time: startTime, end_time: endTime, time: time}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -81,7 +81,7 @@ export const actions = {
       })
   },
   getBusinessData({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Data.goodsData({start_time: startTime, end_time: endTime, time: time}, loading)
+    return API.Community.getBusinessData({start_time: startTime, end_time: endTime, time: time}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -98,7 +98,7 @@ export const actions = {
       })
   },
   getGroupData({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Data.goodsData({start_time: startTime, end_time: endTime, time: time}, loading)
+    return API.Community.getGroupData({start_time: startTime, end_time: endTime, time: time}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -115,7 +115,7 @@ export const actions = {
       })
   },
   getGoodsList({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Data.goodsData({start_time: startTime, end_time: endTime, time: time}, loading)
+    return API.Community.getGoodsList({start_time: startTime, end_time: endTime, time: time}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
