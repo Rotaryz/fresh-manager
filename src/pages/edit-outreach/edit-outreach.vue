@@ -561,10 +561,10 @@
       _selectGoods(item, index) {
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 3) {
-            this.$toast.show('选择商品数量不能超过三个')
-            return
-          }
+          // if (this.selectGoodsId.length === 3) {
+          //   this.$toast.show('选择商品数量不能超过三个')
+          //   return
+          // }
           this.chooseGoods[index].selected = 2
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
@@ -633,10 +633,10 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 3 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过三个')
-          return
-        }
+        // if (this.selectGoodsId.length === 3 && item.selected !== 2) {
+        //   this.$toast.show('选择商品数量不能超过三个')
+        //   return
+        // }
 
 
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
