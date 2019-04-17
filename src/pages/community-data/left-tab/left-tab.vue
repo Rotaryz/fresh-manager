@@ -41,10 +41,6 @@
         default: () => {
           return []
         }
-      },
-      name: {
-        type: String,
-        default: '社区A微信群'
       }
     },
     data() {

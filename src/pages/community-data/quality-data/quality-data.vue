@@ -7,8 +7,8 @@
         :class="['tab-item', 'hand', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
         @click="changeTab(item, index)"
       >
-        <span class="num">{{item.value}}{{index === 0 ? '(PV)' : ''}}</span>
-        <span class="text">{{item.name}}</span>
+        <span class="num">{{qualityData.titleData[index]}}</span>
+        <span class="text">{{item}}{{index === 0 ? '(PV)' : ''}}</span>
       </div>
     </div>
     <div class="data-content">
@@ -22,21 +22,10 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'QUALITY_DATA'
-  const TAB_ARR = [
-    {
-      value: 2500,
-      name: '浏览数'
-    },
-    {
-      value: 200,
-      name: '主力客户'
-    },
-    {
-      value: 100,
-      name: '支付订单'
-    }
-  ]
+  const TAB_ARR = ['浏览数', '主力客户', '支付订单']
+
   export default{
     name: COMPONENT_NAME,
     props: {
@@ -49,81 +38,17 @@
       return {
         tabArr: TAB_ARR,
         tabIndex: 0,
-        data: {
-          x: [
-            "04/03",
-            "04/04",
-            "04/05",
-            "04/06",
-            "04/07",
-            "04/08",
-            "04/09"
-          ],
-          series: {
-            num: [
-              "20",
-              "60",
-              "10",
-              "30",
-              "100",
-              "40",
-              "50"
-            ],
-            rate: [
-              "10",
-              "20",
-              "30",
-              "40",
-              "50",
-              "60",
-              "70",
-              "80",
-              "90",
-              "100",
-            ]
-          }
-        },
-        data2: {
-          x: [
-            "04/03",
-            "04/04",
-            "04/05",
-            "04/06",
-            "04/07",
-            "04/08",
-            "04/09"
-          ],
-          series: {
-            num: [
-              "50",
-              "30",
-              "10",
-              "40",
-              "100",
-              "60",
-              "70"
-            ],
-            rate: [
-              "10",
-              "20",
-              "30",
-              "40",
-              "50",
-              "60",
-              "70",
-              "80",
-              "90",
-              "100",
-            ]
-          }
-        }
+        rate: ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
       }
+    },
+    computed: {
+      ...communityComputed
     },
     watch: {
       time(value, old) {
         if (value !== 'today' && value !== 'yesterday') {
           setTimeout(() => {
-            this.drawLine(this.data, this.tabArr[this.tabIndex].name)
+            this.drawLine(this.qualityData.data[this.tabIndex], this.tabArr[this.tabIndex])
           }, 30)
         }
       }
@@ -132,11 +57,11 @@
       changeTab(item, index) {
         this.tabIndex = index
         this.$emit('changeQuality', item)
-        this.drawLine(this.data2, this.tabArr[index].name)
+        this.drawLine(this.qualityData.data[0], this.tabArr[index].name)
       },
       drawLine(data, name) {
         let xAxis = data.x
-        let series = data.series
+        let series = data.num
         let myChart = this.$echarts.init(document.getElementById('data'))
         myChart.setOption({
           legend: {
@@ -269,7 +194,7 @@
           series: [
             {
               name: name,
-              data: series.num,
+              data: series,
               type: 'line',
               smooth: false,
               hoverAnimation: true,
@@ -288,7 +213,7 @@
             },
             {
               name: '百分比',
-              data: series.rate,
+              data: this.rate,
               yAxisIndex:1,
               type: 'line',
               smooth: true,

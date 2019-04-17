@@ -11,8 +11,9 @@
     <div class="list">
       <div v-for="(item, index) in goods" :key="index" class="list-item">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
-          <img v-if="val.class === 'img'" class="img" src="./img.jpg" alt="">
-          <p v-else class="main">{{item[val.value]}}</p>
+          <img v-if="val.class === 'img'" class="img" :src="item.goods && item.goods.cover_image" alt="">
+          <p v-else-if="val.value === 'name'" class="main">{{item.goods && item.goods[val.value]}}</p>
+          <p v-else class="main">{{item.goods && item[val.value]}}</p>
         </div>
       </div>
     </div>
@@ -24,18 +25,32 @@
   const TITLE = [
     {name: '图片', flex: 0.4, class: 'img', value: ''},
     {name: '商品名称', flex: 4, class: 'name', value: 'name'},
-    {name: '销量', flex: 0.6, class: 'count', value: 'count'},
-    {name: '转化率', flex: 0.8, class: 'rate', value: 'rate'}
+    {name: '销量', flex: 0.6, class: 'count', value: 'sales'},
+    {name: '转化率', flex: 0.8, class: 'rate', value: 'conversion'}
   ]
-  const GOODS = [
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'},
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'},
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'},
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'},
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'},
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'},
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'},
-    {name: '水果蔬菜水果水果', count: 200, rate: '10%'}
+  const GOOD = [
+    {
+      "wx_group_id": 2,
+      "sales": 30,
+      "conversion": "76.93%",
+      "goods": {
+        "id": 399,
+        "name": "欧家新鲜",
+        "cover_image_id": 5210,
+        "cover_image": "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/18/155288050414670.png?imageView2/3/w/400/h/400/q/90"
+      }
+    },
+    {
+      "wx_group_id": 1,
+      "sales": 13,
+      "conversion": "59.10%",
+      "goods": {
+        "id": 400,
+        "name": "大米",
+        "cover_image_id": 6111,
+        "cover_image": "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/26/155358548164093.png?imageView2/3/w/400/h/400/q/90"
+      }
+    }
   ]
   export default{
     name: COMPONENT_NAME,
@@ -45,7 +60,7 @@
     data() {
       return {
         titleArr: TITLE,
-        goods: GOODS
+        goods: GOOD
       }
     },
     methods: {

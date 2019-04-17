@@ -5,10 +5,10 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">微信群运营数据概况</div>
       </div>
-      <base-option-box @checkTime="_getData"></base-option-box>
+      <base-option-box :arrTitle="arrTitle" @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
-      <left-tab :name="name" @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
+      <left-tab @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
       <div class="right-data">
         <div class="top-sec">
           <section class="data-sec quality-data">
@@ -17,14 +17,14 @@
               <p class="right-text hand" @click="showDescription">等级说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
             </div>
             <!--群质量数据-->
-            <quality-data :time="msg.time" @changeQuality="changeQuality"></quality-data>
+            <quality-data :time="request.day_type" @changeQuality="changeQuality"></quality-data>
           </section>
           <section class="data-sec business-data">
             <div class="sec-title">
               <p class="text">群运营数据</p>
             </div>
             <!--群运营数据-->
-            <business-data :time="msg.time" @changeBusiness="changeBusiness"></business-data>
+            <business-data :time="request.day_type" @changeBusiness="changeBusiness"></business-data>
           </section>
         </div>
         <div class="bottom-sec">
@@ -33,7 +33,7 @@
               <p class="text">群用户分组<span>(群总人数500)</span></p>
             </div>
             <!--用户分组-->
-            <group-data :time="msg.time" @changeGroup="changeGroup"></group-data>
+            <group-data :time="request.day_type" @changeGroup="changeGroup"></group-data>
           </section>
           <section class="data-sec goods-list">
             <div class="sec-title">
@@ -61,7 +61,12 @@
   import DescriptionModal from './description-modal/description-modal'
 
   import API from '@api'
-
+  const ARR_TITLE = [
+    {title: '今天', status: 'today'},
+    {title: '昨天', status: 'yesterday'},
+    {title: '7天', status: 'week'},
+    {title: '30天', status: 'month'}
+  ]
   const PAGE_NAME = 'COMMUNITY-DATA'
   const TITLE = '社群数据'
   export default {
@@ -80,17 +85,13 @@
     },
     data() {
       return {
+        arrTitle: ARR_TITLE,
         letTab: 0,
         tabArr: [],
-        msg: {
-          time: 'today'
-        },
         request: {
           wx_group_id: null,
-          day_type: ''
+          day_type: 'today'
         },
-        name: '社区A微信群',
-        groupId: '',
         editGroupItem: {}
       }
     },
@@ -98,7 +99,7 @@
       ...communityComputed
     },
     created() {
-      this.getGroupData(this.request)
+      this.getQualityData(this.request)
       this.getBusinessData(this.request)
       this.getGroupData(this.request)
       this.getGoodsList(this.request)
@@ -107,7 +108,7 @@
     methods: {
       ...communityMethods,
       _getData(value) {
-        this.msg.time = value
+        this.request.day_type = value
       },
       // 切换质量数据tab栏
       changeQuality(item) {
@@ -123,7 +124,7 @@
       },
       // 切换左侧tab栏
       changeCommunity(item) {
-        this.groupId = item.id
+        this.request.wx_group_id = item.id
       },
       showDescription() {
         this.$refs.description.show()

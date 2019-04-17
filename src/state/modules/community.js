@@ -3,9 +3,18 @@ import app from '@src/main'
 
 export const state = {
   communityList: [], // 社群列表
-  qualityData: [], // 群质量
-  businessData: [], // 群运营数据
-  groupData: [], // 群分组人数
+  qualityData: {
+    titleData: [],
+    data: []
+  }, // 群质量
+  businessData: {
+    titleData: [],
+    data: []
+  }, // 群运营数据
+  groupData: {
+    titleData: [],
+    data: []
+  }, // 群分组人数
   goodsList: [] // 商品TOP10
 }
 
@@ -28,17 +37,17 @@ export const getters = {
 }
 
 export const mutations = {
-  SET_COMMUNITY_LIST(state, list) {
-    state.communityList = list
+  SET_COMMUNITY_LIST(state, data) {
+    state.communityList = data
   },
-  SET_QUALITY_DATA(state, list) {
-    state.qualityData = list
+  SET_QUALITY_DATA(state, data) {
+    state.qualityData = data
   },
-  SET_BUSINESS_DATA(state, list) {
-    state.businessData = list
+  SET_BUSINESS_DATA(state, data) {
+    state.businessData = data
   },
-  SET_GROUP_DATA(state, list) {
-    state.groupData = list
+  SET_GROUP_DATA(state, data) {
+    state.groupData = data
   },
   SET_GOODS_LIST(state, list) {
     state.goodsList = list
@@ -46,7 +55,7 @@ export const mutations = {
 }
 
 export const actions = {
-  getCommunityList({commit}, {page, loading = true}) {
+  getCommunityList({commit}, {page}, loading = false) {
     return API.Community.getCommunityList({page}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -63,14 +72,34 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getQualityData({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Community.getQualityData({start_time: startTime, end_time: endTime, time: time}, loading)
+  getQualityData({commit}, data, loading = false) {
+    return API.Community.getQualityData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = res.data
-        commit('SET_QUALITY_DATA', arr)
+        let arr = ['pv', 'order', 'e_customer']
+        let titleData = arr.map(item => {
+          return res.data[item].total
+        })
+        let dataArr = arr.map(item => {
+          let time = res.data[item].data.map(val => {
+            return val.at.split('-').slice(1).join('/')
+          })
+          let valueArr = res.data[item].data.map(val => {
+            return val.value
+          })
+          return {
+            x: time,
+            rate: valueArr
+          }
+        })
+
+        let data = {
+          titleData,
+          data: dataArr
+        }
+        commit('SET_QUALITY_DATA', data)
         return true
       })
       .catch(() => {
@@ -80,14 +109,35 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getBusinessData({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Community.getBusinessData({start_time: startTime, end_time: endTime, time: time}, loading)
+  getBusinessData({commit}, data, loading = false) {
+    return API.Community.getBusinessData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = res.data
-        commit('SET_BUSINESS_DATA', arr)
+        let arr = ['pv', 'order', 'e_customer']
+        let titleData = arr.map(item => {
+          return res.data[item].total
+        })
+        let dataArr = arr.map(item => {
+          let time = res.data[item].data.map(val => {
+            return val.at.split('-').slice(1).join('/')
+          })
+          let valueArr = res.data[item].data.map(val => {
+            return val.value
+          })
+          return {
+            x: time,
+            rate: valueArr
+          }
+        })
+
+        let data = {
+          titleData,
+          data: dataArr
+        }
+
+        commit('SET_BUSINESS_DATA', data)
         return true
       })
       .catch(() => {
@@ -97,14 +147,14 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getGroupData({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Community.getGroupData({start_time: startTime, end_time: endTime, time: time}, loading)
+  getGroupData({commit}, data, loading = false) {
+    return API.Community.getGroupData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = res.data
-        commit('SET_GROUP_DATA', arr)
+        let data = res.data
+        commit('SET_GROUP_DATA', data)
         return true
       })
       .catch(() => {
@@ -114,8 +164,8 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getGoodsList({commit}, {startTime, endTime, time, page = 1, loading = false}) {
-    return API.Community.getGoodsList({start_time: startTime, end_time: endTime, time: time}, loading)
+  getGoodsList({commit}, data, loading = false) {
+    return API.Community.getGoodsList({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
