@@ -118,6 +118,5 @@ export default {
   getGoodsList(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
-  },
-
+  }
 }

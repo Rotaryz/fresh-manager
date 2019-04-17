@@ -87,7 +87,8 @@
       let token = this.$storage.get('auth.currentUser', '')
       let excelParams = token ? `?access_token=${token.access_token}&current_corp=${currentId}` : ''
       this.deliveryUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/store-delivery-export/${
-        this.id}${excelParams}`
+        this.id
+      }${excelParams}`
       this.userUrl = `${process.env.VUE_APP_API}/social-shopping/api/backend/user-order-export/${this.id}${excelParams}`
     },
     methods: {

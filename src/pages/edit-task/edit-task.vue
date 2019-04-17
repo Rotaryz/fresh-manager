@@ -82,7 +82,7 @@
     },
     methods: {
       async submitSure() {
-        for(let i = 0; i < this.taskList.length; i++) {
+        for (let i = 0; i < this.taskList.length; i++) {
           if (!this.taskList[i].purchase_num) {
             this.$toast.show(`请输入第${i + 1}行的采购数量`)
             return
@@ -147,7 +147,8 @@
         }
         item.base_num = number.toFixed(2)
         this.$forceUpdate()
-        if (!item.purchase_price || item.purchase_price < 0) {} else {
+        if (!item.purchase_price || item.purchase_price < 0) {
+        } else {
           if (item.purchase_num) {
             this.taskList[index].total = (item.purchase_num * item.purchase_price).toFixed(2)
           }

@@ -363,6 +363,10 @@ export const actions = {
     commit('SET_WITHDRAWAL_PAGE', 1)
     dispatch('getWithdrawalList')
   },
+  infoStatus({commit}, withdrawalStatus) {
+    console.log(withdrawalStatus)
+    commit('SET_WITHDRAWAL_STATUS', withdrawalStatus.status * 1)
+  },
   setWidthTime({commit, dispatch}, time) {
     commit('SET_TIME_AT', time)
     commit('SET_WITHDRAWAL_PAGE', 1)

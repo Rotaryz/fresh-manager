@@ -343,6 +343,79 @@
   position: absolute
   pointer-events: none
 
+.big-top-content
+  box-sizing: border-box
+  min-height: 200px
+  margin-bottom: 20px
+  background: $color-white
+  .header-wrapper
+    display: flex
+    align-items: center
+    height: 60px
+    padding: 0 20px
+    border-bottom: 1px solid $color-line
+    .icon
+      width: 14px
+      height: 14px
+      margin-right: 4px
+    .title
+      font-size: $font-size-16
+      color: $color-text-main
+  .content-wrapper
+    display: flex
+    align-items: center
+    height: 140px
+    padding: 0 20px
+    .item-wrapper
+      flex: 1
+      display: flex
+      align-items: center
+      .icon-wrapper
+        width: 58px
+        height: 58px
+        margin-right: 20px
+        .icon
+          width: 100%
+          height: 100%
+      .item-content-wrapper
+        display: flex
+        flex-direction: column
+        justify-content: space-between
+        .flex-wrapper
+          display: flex
+          font-size: $font-size-14
+          color: $color-text-main
+          align-items: center
+          &.end
+            align-items: flex-end
+          &.margin
+            margin-bottom: 10px
+          .title
+            line-height: 14px
+            font-size: $font-size-14
+          .number
+            margin-right: 10px
+            line-height: 32px
+            font-size: 32px
+            font-family: $font-family-din-bold
+            color: $color-text-main
+          .tip
+            no-wrap()
+            font-size: $font-size-14
+            color: $color-text-assist
+          .detail
+            margin-left: 10px
+            margin-right: 20px
+            line-height: 14px
+            font-size: $font-size-14
+            color: $color-main
+            text-decoration: underline
+          .detail-icon
+            width: 16px
+            height: 16px
+
+
+
 // 弹窗按钮样式
 .btn-group
   position: absolute

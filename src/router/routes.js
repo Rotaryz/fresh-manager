@@ -17,7 +17,7 @@ export default [
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
         if (store.getters['auth/loggedIn']) {
-          next({name: 'data-survey'})
+          next({name: 'new-data'})
         } else {
           next()
         }
@@ -31,7 +31,7 @@ export default [
     meta: {
       authRequired: true
     },
-    redirect: 'home/data-survey',
+    redirect: 'home/new-data',
     children: [
       /**
        * 商品
@@ -44,9 +44,13 @@ export default [
         meta: {
           titles: ['商城', '商品', '商品列表'],
           beforeResolve(routeTo, routeFrom, next) {
+            let online = ''
+            if (routeTo.query.online) {
+              online = routeTo.query.online
+            }
             //  团长列表
             store
-              .dispatch('editgoods/getGoodsData', 1)
+              .dispatch('editgoods/getGoodsData', online)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -277,7 +281,7 @@ export default [
         name: 'outreach-activity',
         component: () => lazyLoadView(import('@pages/outreach-activity/outreach-activity')),
         meta: {
-          titles: ['商城', '活动', '拓展活动'],
+          titles: ['商城', '拓展', '拓展任务'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
@@ -294,13 +298,92 @@ export default [
           }
         }
       },
+      // 拓展活动-团队成员列表
+      {
+        path: 'outreach-activity/outreach-activity-staff',
+        name: 'outreach-activity-staff',
+        component: () => lazyLoadView(import('@pages/outreach-activity-staff/outreach-activity-staff')),
+        meta: {
+          titles: ['商城', '拓展', '拓展任务', '成员'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 获取团队成员列表
+            let id = routeTo.query.id
+            if (id) {
+              store
+                .dispatch('outreach/getMemberList', {id, page: 1})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
+        }
+      },
+      // 拓展团队
+      {
+        path: 'outreach-group',
+        name: 'outreach-group',
+        component: () => lazyLoadView(import('@pages/outreach-group/outreach-group')),
+        meta: {
+          titles: ['商城', '拓展', '拓展团队'],
+          beforeResolve(routeTo, routeFrom, next) {
+            // 活动列表
+            store
+              .dispatch('oGTab/reqGroupList', {parentId: -1}, {root: true})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 拓展团队-团队成员列表
+      {
+        path: 'outreach-group/outreach-group-staff',
+        name: 'outreach-group-staff',
+        component: () => lazyLoadView(import('@pages/outreach-group-staff/outreach-group-staff')),
+        meta: {
+          titles: ['商城', '拓展', '拓展团队', '详情'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('outreachGroup/getTaskDetail', {id, page: 1})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
+        }
+      },
       // 新建查看拓展活动
       {
         path: 'outreach-activity/edit-outreach',
         name: 'edit-outreach',
         component: () => lazyLoadView(import('@pages/edit-outreach/edit-outreach')),
         meta: {
-          titles: ['商城', '活动', '拓展活动', '新建活动'],
+          titles: ['商城', '拓展', '拓展活动', '新建活动'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -466,6 +549,8 @@ export default [
           titles: ['商城', '订单', '退货管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
+            let status = routeTo.query.status || ''
+            store.dispatch('returns/infoStatus', status)
             store
               .dispatch('returns/getReturnsList')
               .then((res) => {
@@ -726,7 +811,7 @@ export default [
         name: 'head-settlement',
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
-          titles: ['商城', '团长', '团长结算'],
+          titles: ['财务', '团长', '团长佣金'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
@@ -776,6 +861,10 @@ export default [
           titles: ['商城', '团长', '团长提现'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
+            let status = routeTo.query.status
+            if (status * 1 === 0) {
+              store.dispatch('leader/infoStatus', {status})
+            }
             store
               .dispatch('leader/getWithdrawalList')
               .then((res) => {
@@ -859,6 +948,82 @@ export default [
           titles: ['财务', '营收概况', '营业成本']
         }
       },
+      // 团长佣金
+      {
+        path: 'leader-commission',
+        name: 'leader-commission',
+        component: () => lazyLoadView(import('@pages/leader-commission/leader-commission')),
+        meta: {
+          titles: ['财务', '团长', '团长佣金']
+        }
+      },
+      // 团长提现
+      {
+        path: 'leader-withdrawal',
+        name: 'leader-withdrawal',
+        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
+        meta: {
+          titles: ['财务', '团长', '团长提现'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  订单列表
+            store
+              .dispatch('leader/getWithdrawalList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 交易明细
+      {
+        path: 'transaction-detail',
+        name: 'transaction-detail',
+        component: () => lazyLoadView(import('@pages/transaction-detail/transaction-detail')),
+        meta: {
+          titles: ['财务', '账户', '交易明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('finance/getSettleStatus')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 账户总览
+      {
+        path: 'account-overview',
+        name: 'account-overview',
+        component: () => lazyLoadView(import('@pages/account-overview/account-overview')),
+        meta: {
+          titles: ['财务', '账户', '账户总览'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('finance/getAccount')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
       /**
        * 财务
        *
@@ -909,18 +1074,23 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
             }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             let start = time.start
             let end = time.end
+            let status = routeTo.query.status
             store.dispatch('proTask/infoTaskTime', {start, end})
             store
               .dispatch('proTask/getPurchaseTaskList', {
@@ -929,7 +1099,7 @@ export default [
                 endTime: endTime,
                 keyword: '',
                 page: 1,
-                status: '',
+                status: status,
                 supplyId: '',
                 loading: true
               })
@@ -966,8 +1136,7 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购员列表'],
           beforeResolve(routeTo, routeFrom, next) {
-            store
-              .dispatch('buyer/infoSetKeyWord')
+            store.dispatch('buyer/infoSetKeyWord')
             store
               .dispatch('buyer/getPurchaseUser')
               .then((res) => {
@@ -1024,10 +1193,10 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
@@ -1091,8 +1260,7 @@ export default [
         meta: {
           titles: ['供应链', '采购', '供应商'],
           beforeResolve(routeTo, routeFrom, next) {
-            store
-              .dispatch('supplier/infoSetKeyWord')
+            store.dispatch('supplier/infoSetKeyWord')
             store
               .dispatch('supplier/getSupplier')
               .then((res) => {
@@ -1148,28 +1316,34 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
+            }
+            let status = routeTo.query.status
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
             routeTo.params.accurateEnd = time.end
             store
-              .dispatch('product/getEnterData', {startTime, endTime, page: 1})
+              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
-              return next({name: '404'})
-            })
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
@@ -1209,28 +1383,34 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
             }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
+            }
+            let status = routeTo.query.status
             routeTo.params.start = startTime
             routeTo.params.end = endTime
             routeTo.params.accurateStart = time.start
             routeTo.params.accurateEnd = time.end
             store
-              .dispatch('product/getOutData', {startTime, endTime, page: 1})
+              .dispatch('product/getOutData', {startTime, endTime, status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
-              return next({name: '404'})
-            })
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
@@ -1283,9 +1463,10 @@ export default [
                   return next({name: '404'})
                 }
                 return next()
-              }).catch(() => {
-              return next({name: '404'})
-            })
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
           }
         }
       },
@@ -1304,13 +1485,21 @@ export default [
             if (time.is_over_23_hour) {
               startTime = new Date(time.timestamp)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            }
+            if (routeTo.query.timeNull * 1 === 1) {
+              startTime = ''
+              endTime = ''
+            }
+            let status = ''
+            if (routeTo.query.status) {
+              status = routeTo.query.status * 1
             }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
@@ -1318,7 +1507,13 @@ export default [
             routeTo.params.accurateEnd = time.end
             let tabIndex = store.state.distribution.tabIndex
             if (tabIndex === 0) {
-              store.dispatch('distribution/infoOrderTime', {startTime, endTime, start: time.start, end: time.end})
+              store.dispatch('distribution/infoOrderTime', {
+                startTime,
+                endTime,
+                start: time.start,
+                end: time.end,
+                status: status
+              })
               store
                 .dispatch('distribution/getOrderList')
                 .then((res) => {
@@ -1382,14 +1577,14 @@ export default [
             let startTime = ''
             let endTime = ''
             if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
               endTime = new Date(time.timestamp)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             } else {
-              startTime = new Date(time.timestamp - (86400 * 1000 * 2))
+              startTime = new Date(time.timestamp - 86400 * 1000 * 2)
               startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp - (86400 * 1000 * 1))
+              endTime = new Date(time.timestamp - 86400 * 1000 * 1)
               endTime = endTime.toLocaleDateString().replace(/\//g, '-')
             }
             let start = time.start
@@ -1463,6 +1658,24 @@ export default [
               })
           }
         }
+      },
+      // 新手指南
+      {
+        path: 'beginner-guide',
+        name: 'beginner-guide',
+        meta: {
+          titles: ['新手指引']
+        },
+        component: () => lazyLoadView(import('@pages/beginner-guide/beginner-guide'))
+      },
+      // 调度管理
+      {
+        path: 'new-data',
+        name: 'new-data',
+        component: () => lazyLoadView(import('@pages/new-data/new-data')),
+        meta: {
+          titles: ['概况', '数据概况']
+        }
       }
 
     ]
@@ -1492,7 +1705,7 @@ export default [
 
 function lazyLoadView(AsyncView) {
   const AsyncHandler = () => ({
-    component: AsyncView,
+    component: AsyncView
     // loading: require('@pages/_loading/_loading').default,
     // delay: 400,
     // error: require('@pages/_timeout/_timeout').default,

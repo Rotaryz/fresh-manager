@@ -33,9 +33,9 @@ export const mutations = {
 }
 
 export const actions = {
-  getGoodsData({state, commit, dispatch}, {page, loading = true}) {
-    let data = {is_online: '', keyword: '', goods_category_id: '', limit: 10, page: 1}
-    return API.Product.getGoodsList(data, loading)
+  getGoodsData({state, commit, dispatch}, online) {
+    let data = {is_online: online, keyword: '', goods_category_id: '', limit: 10, page: 1}
+    return API.Product.getGoodsList(data, true)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

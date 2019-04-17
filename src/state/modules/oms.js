@@ -163,7 +163,7 @@ export const actions = {
     commit('SET_PAGE', page)
     dispatch('getOmsOrders')
   },
-  infoOrderTime({commit, dispatch},{startTime, endTime, start, end}) {
+  infoOrderTime({commit, dispatch}, {startTime, endTime, start, end}) {
     commit('SET_START_TIME', startTime)
     commit('SET_END_TIME', endTime)
     commit('SET_TIME_START', start)

@@ -36,7 +36,7 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">出库列表</p>
-          <base-status-tab :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
+          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main">新建出库单<span class="add-icon"></span></router-link>
@@ -98,14 +98,19 @@
         endTime: '',
         keyWord: '',
         goodsPage: 1,
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待出库', value: 0, key: 'wait_out', num: 0}, {name: '已完成', value: 1, key: 'success', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待出库', value: 0, key: 'wait_out', num: 0},
+          {name: '已完成', value: 1, key: 'success', num: 0}
+        ],
         statistic: {
           all: 0,
           wait_out: 0,
           success: 0
         },
         accurateStart: '',
-        accurateEnd: ''
+        accurateEnd: '',
+        statusTab: 0
       }
     },
     computed: {
@@ -116,13 +121,18 @@
       this.endTime = this.$route.params.end
       this.accurateStart = this.$route.params.accurateStart
       this.accurateEnd = this.$route.params.accurateEnd
+      if (this.$route.query.status) {
+        this.statusTab = this.$route.query.status * 1 + 1
+        this.status = this.$route.query.status * 1
+      }
       this.productOutList = _.cloneDeep(this.outList)
       this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
     },
     methods: {
       _getTime() {
-        let start = this.startTime && this.startTime.length < 11 ? `${this.startTime} ${this.accurateStart}` : this.startTime
+        let start =
+          this.startTime && this.startTime.length < 11 ? `${this.startTime} ${this.accurateStart}` : this.startTime
         let end = this.endTime && this.endTime.length < 11 ? `${this.endTime} ${this.accurateEnd}` : this.endTime
         return [start, end]
       },

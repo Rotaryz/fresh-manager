@@ -129,7 +129,7 @@
           } else {
             index = this.curItem.id
           }
-          API.Store.addSmallStore({p_id: index, level_id: (this.bigIndex +1), name: text}).then((res) => {
+          API.Store.addSmallStore({p_id: index, level_id: this.bigIndex + 1, name: text}).then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$toast.show('新增成功')
               let obj = {
@@ -187,7 +187,7 @@
         }
       },
       async getStoreList() {
-        let res = await API.Store.getStoreList(null , false)
+        let res = await API.Store.getStoreList(null, false)
         if (res.error === this.$ERR_OK) {
           this.storeListData = res.data
         } else {
@@ -214,7 +214,7 @@
           this.$refs.modalBox.show('', `添加${item.name}`, '长度不能超过6位')
         } else {
           let isChecked = false
-          this.storeListData[index - 1].warehouse_positions.forEach(item1 => {
+          this.storeListData[index - 1].warehouse_positions.forEach((item1) => {
             if (item1.checked) {
               isChecked = true
               this.curItem = item1
@@ -234,7 +234,7 @@
         if (item.checked) {
           return false
         }
-        this.storeListData[index].warehouse_positions.forEach(item1 => {
+        this.storeListData[index].warehouse_positions.forEach((item1) => {
           item1.checked = false
         })
         item.checked = true

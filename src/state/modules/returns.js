@@ -75,6 +75,7 @@ export const mutations = {
 export const actions = {
   getReturnsList({commit, state}) {
     const {page, startTime, endTime, status, shopId, keyword} = state
+    console.log(status)
     let data = {
       status,
       page,
@@ -150,5 +151,8 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getReturnsList')
+  },
+  infoStatus({commit, dispatch}, status) {
+    commit('SET_STATUS', status)
   }
 }

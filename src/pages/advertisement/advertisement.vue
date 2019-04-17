@@ -169,7 +169,16 @@
     activity_fixed: '限时抢购',
     activity_fixedIcon: require('./icon-time@2x.png')
   }
-  const TEMPLATE_OBJ = {id: '', image_id: '', type: '', name: '', url: '', other_id: '', image_url: '', add_icon: ADD_IMAGE} // 模板对象
+  const TEMPLATE_OBJ = {
+    id: '',
+    image_id: '',
+    type: '',
+    name: '',
+    url: '',
+    other_id: '',
+    image_url: '',
+    add_icon: ADD_IMAGE
+  } // 模板对象
   export default {
     name: PAGE_NAME,
     components: {
@@ -237,8 +246,8 @@
       }
     },
     async created() {
-      this.cmsId = this.infoBannerList.modules[0].id
-      this.cmsModuleId = this.infoBannerList.modules[0].module_id
+      this.cmsId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].id : ''
+      this.cmsModuleId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].module_id : ''
       this.$loading.show()
       this.infoBannerList.modules.forEach(async (item) => {
         await this._getModuleMsg(item.module_name, item.id, item.module_id)
@@ -265,7 +274,7 @@
           this.temporaryBannar = _.cloneDeep(res.data)
           break
         case 'activity_fixed':
-          this.activityStatus = ((res.data && +res.data.is_close === 1) ? 0 : 1)
+          this.activityStatus = res.data && +res.data.is_close === 1 ? 0 : 1
           break
         case 'goods_cate':
           // this.temporaryNavigation = _.cloneDeep(res.data)
@@ -280,7 +289,7 @@
           goods_category_id: 0,
           limit: 10,
           page: 1
-        }).then(res => {
+        }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -289,15 +298,19 @@
       },
       // 获取限时抢购商品列表
       _getActivityGoods() {
-        this.infoBannerList.modules.forEach(item => {
-          if (item.module_name === 'activity_fixed' && item.content_data && item.content_data.list && item.content_data.list.length > 0) {
-            API.Advertisement.getActivityGoods(item.content_data.list[0].id)
-              .then(res => {
-                if (res.error !== this.$ERR_OK) {
-                  return
-                }
-                this.activityGoodsList = res.data
-              })
+        this.infoBannerList.modules.forEach((item) => {
+          if (
+            item.module_name === 'activity_fixed' &&
+            item.content_data &&
+            item.content_data.list &&
+            item.content_data.list.length > 0
+          ) {
+            API.Advertisement.getActivityGoods(item.content_data.list[0].id).then((res) => {
+              if (res.error !== this.$ERR_OK) {
+                return
+              }
+              this.activityGoodsList = res.data
+            })
           }
         })
       },
@@ -499,7 +512,6 @@
       },
       // 新建活动
       async _editActivity() {
-
         let data = [
           {
             page_module_id: this.cmsId,

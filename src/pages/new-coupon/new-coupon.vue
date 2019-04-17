@@ -394,17 +394,20 @@
     },
     computed: {
       ...couponComputed,
-      testName() { // 优惠名称
+      testName() {
+        // 优惠名称
         return this.msg.coupon_name
       },
-      testMoney() { // 优惠价格
+      testMoney() {
+        // 优惠价格
         if (this.msg.preferential_type === 2) {
           return this.msg.denomination && RATE.test(this.msg.denomination)
         } else {
           return true
         }
       },
-      testMoneyReg() { // 优惠价格
+      testMoneyReg() {
+        // 优惠价格
         if (this.msg.preferential_type === 2) {
           return +this.msg.denomination >= 1 && +this.msg.denomination <= 999
         } else {
@@ -432,45 +435,50 @@
           return true
         }
       },
-      testCount() { // 发放数量
+      testCount() {
+        // 发放数量
         return this.msg.usable_stock
       },
-      testCountReg() { // 发放数量数字类型
+      testCountReg() {
+        // 发放数量数字类型
         return this.msg.usable_stock && COUNTREG.test(this.msg.usable_stock)
       },
       testCountNum() {
         return this.msg.usable_stock >= 1 && this.msg.usable_stock <= 99999
       },
-      testCondition () {
-        return (this.msg.condition && +this.msg.preferential_type === 2) ? RATE.test(this.msg.condition) : true
+      testCondition() {
+        return this.msg.condition && +this.msg.preferential_type === 2 ? RATE.test(this.msg.condition) : true
       },
-      testStart() { // 开始时间
+      testStart() {
+        // 开始时间
         return this.msg.start_at
       },
-      testEnd() { // 结束时间
+      testEnd() {
+        // 结束时间
         return this.msg.end_at
       },
-      testEndDate() { // 结束时间规则判断
+      testEndDate() {
+        // 结束时间规则判断
         return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
       },
       testGoods() {
-        return +this.msg.range_type === 3 ? (this.goodsList && this.goodsList.length) : true
+        return +this.msg.range_type === 3 ? this.goodsList && this.goodsList.length : true
       },
       testCategory() {
         return +this.msg.range_type === 2 ? this.categorySelectItem.name : true
       }
     },
     watch: {
-      // couponDetail: {
-      //   handler(news) {
-      //     let id = this.$route.query.id || null
-      //
-      //   },
-      //   immediate: true
-      // }
+    // couponDetail: {
+    //   handler(news) {
+    //     let id = this.$route.query.id || null
+    //
+    //   },
+    //   immediate: true
+    // }
     },
     beforeCreate() {
-      if(this.$route.query.id) {
+      if (this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
       } else {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
@@ -507,7 +515,7 @@
         this.msg.preferential_type = num
       },
       changeFull() {
-        this.msg.support_activity = (+this.msg.support_activity === 1 ? 0 : 1)
+        this.msg.support_activity = +this.msg.support_activity === 1 ? 0 : 1
       },
       _getStartTime(time) {
         this.msg.start_at = time
@@ -635,7 +643,7 @@
         this.goodsDelId = item.goods_id
         this.goodsDelIndex = index
         this.delType = type
-        this.$refs.confirm.show(`是否确定删除该${type === 'category' ? '品类': '商品'}？`)
+        this.$refs.confirm.show(`是否确定删除该${type === 'category' ? '品类' : '商品'}？`)
       },
       // 删除商品弹窗
       _delGoods() {
@@ -670,7 +678,7 @@
         if (item.selected === 1) {
           return
         }
-        if(this.selectGoodsId.length === 10 && item.selected !== 2) {
+        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
           this.$toast.show('选择商品数量不能超过十个')
           return
         }
@@ -757,7 +765,7 @@
           this.categorySelectItem.range_id = this.categorySelectItem.id || 0
           this.msg.ranges[0] = this.categorySelectItem
         } else if (+this.msg.range_type === 3) {
-          this.goodsList.forEach(item => {
+          this.goodsList.forEach((item) => {
             item.range_id = item.id || 0
             item.coupon_range_id = item.coupon_range_id || 0
           })

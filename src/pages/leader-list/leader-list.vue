@@ -98,8 +98,7 @@
     computed: {
       ...leaderComputed
     },
-    created() {
-    },
+    created() {},
     methods: {
       ...leaderMethods,
       async _syncLeader() {

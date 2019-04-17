@@ -79,7 +79,15 @@
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
-    '批次号', '商品', '分类', '入库数量(基本单位)', '入库数量(采购单位) ', '入库单价(基本单位) ', '入库金额', '保质期', '存放库位'
+    '批次号',
+    '商品',
+    '分类',
+    '入库数量(基本单位)',
+    '入库数量(采购单位) ',
+    '入库单价(基本单位) ',
+    '入库金额',
+    '保质期',
+    '存放库位'
   ]
   export default {
     name: PAGE_NAME,
@@ -111,7 +119,7 @@
     methods: {
       submitFn() {
         let arr = []
-        this.enterDetailList.forEach(item => {
+        this.enterDetailList.forEach((item) => {
           let obj = {}
           obj.id = item.id
           obj.base_num = item.base_num

@@ -9,8 +9,8 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-customer_list@2x.png" class="identification-icon">
-          <p class="identification-name">拓展活动</p>
+          <img src="./icon-task@2x.png" class="identification-icon">
+          <p class="identification-name">拓展任务</p>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-outreach" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
@@ -24,7 +24,7 @@
           <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+                {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
               </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
                 <p class="item-dark">{{item.start_at}}</p>
@@ -35,20 +35,27 @@
               </div>
               <!--状态-->
               <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
-              <!--二维码-->
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="code-box">
-                <div class="code-main" @mouseenter="showCode(index)" @mouseleave="hideCode">
-                  <img src="./icon-qr@2x.png" class="small-code">
+              <!--复购率-->
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="tip-box hand">
+                <div class="tip-main" @mouseenter="showTip(index)" @mouseleave="hideTip">
+                  <span>{{item[val.value] || '0%'}}</span>
+                  <img v-if="+(item.rise && item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
+                  <img v-if="+(item.rise && item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
+                  <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                   <transition name="fade">
-                    <div v-if="codeShow === index" class="code-content">
-                      <img :src="item.qrcode_url + '?imageView2/format/jpg'" alt="" class="code">
+                    <div v-if="tipShow === index" class="tip-content">
+                      <span class="text">比昨天{{item.rise && _textHandle(item.rise)}}{{item.rise.split('-').length > 1 ? item.rise.split('-')[1] : item.rise}}</span>
+                      <img v-if="+(item.rise && item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
+                      <img v-if="+(item.rise && item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
+                      <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                     </div>
                   </transition>
                 </div>
               </div>
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'/home/outreach-activity/edit-outreach?id=' + (item.id || 0)" class="list-operation">查看</router-link>
+                <router-link tag="span" :to="'/home/outreach-activity/edit-outreach?id=' + (item.id || 0)" class="list-operation">详情</router-link>
+                <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">成员</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
               </div>
             </div>
@@ -70,21 +77,22 @@
   import API from '@api'
 
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
-  const TITLE = '拓展活动'
+  const TITLE = '拓展任务'
   const ACTIVITI_TITLE = [
-    {name: '活动名称', flex: 1.2, value: 'activity_name', type: 6},
-    {name: '活动时间', flex: 1.2, value: 'start_at', type: 2},
-    {name: '社区', flex: 1.2, value: 'social_name', type: 6},
-    {name: '成交订单', flex: 1, value: 'pay_num', type: 1},
+    {name: '拓展任务', flex: 1.2, value: 'activity_name', type: 6},
+    {name: '拓展社区', flex: 1.2, value: 'social_name', type: 6},
+    {name: '拓展时间', flex: 1.2, value: 'start_at', type: 2},
+    {name: '订单', flex: 1, value: 'pay_num', type: 1},
     {name: '交易金额', flex: 1, value: 'pay_amount', type: 1},
-    {name: '复购率', flex: 1, value: 'repeat_rate', type: 1},
+    {name: '复购率(15天)', flex: 1, value: 'repeat_rate', type: 4},
     {name: '状态', flex: 1, value: 'status', type: 3},
-    {name: '二维码', flex: 1, value: '', type: 4},
-    {name: '操作', flex: 1, value: '', type: 5}
+    // {name: '二维码', flex: 1, value: '', type: 4},
+    {name: '操作', flex: 1.2, value: '', type: 5}
   ]
   // const OUTREACH_LIST = [
   //   {activity_name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', group: '白云花园社区', sale_count: 20, total: 100, order_count: '30', status: 1}
   // ]
+  const ICON = ['icon-rising', 'icon-up_hover', 'icon-flat']
   export default {
     name: PAGE_NAME,
     page: {
@@ -102,10 +110,11 @@
         delId: 0,
         downId: 0,
         status: 0,
-        codeShow: '',
+        tipShow: '',
         timer: '',
         qrUrl: process.env.VUE_APP_API,
-        corpId: ''
+        corpId: '',
+        iconArr: ICON
       }
     },
     computed: {
@@ -114,8 +123,7 @@
     created() {
       this.corpId = getCorpId()
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
       ...outreachMethods,
       async _setTime(arr) {
@@ -125,13 +133,13 @@
         this.endTime = arr[1]
         await this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
       },
-      showCode(index) {
+      showTip(index) {
         clearTimeout(this.timer)
-        this.codeShow = index
+        this.tipShow = index
       },
-      hideCode() {
+      hideTip() {
         this.timer = setTimeout(() => {
-          this.codeShow = ''
+          this.tipShow = ''
         }, 500)
       },
       addPage(page) {
@@ -152,6 +160,9 @@
           this.$toast.show('删除成功')
         }
         this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      },
+      _textHandle(num) {
+        return (+num.split('%')[0] < 0 ? '下降' : '上升')
       }
     }
   }
@@ -160,6 +171,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
+  .identification .identification-icon
+    width: 12px
+    height: 12px
   .list
     flex: 1
     .list-item
@@ -169,53 +183,66 @@
         overflow: hidden
         white-space: nowrap
         font-size: 14px
-      .code-box
-        position: relative
+      .tip-box
         display: flex
         align-items: center
-        .code-main
+        .tip-main
+          position: relative
           margin-left: -15px
           padding-left: 15px
           height: 16px
-      .small-code
-        width: 16px
-        height: 16px
-        object-fit: cover
-        cursor: pointer
-      .code-bg
-        padding-right: 10px
-      .code-content
+          display: flex
+          align-items: center
+          .tip-icon
+            width: 8px
+            height: 10px
+            margin-left: 5px
+          .down
+            transform: rotate(180deg)
+          .equal
+            width: 8px
+            height: 2px
+      .tip-content
         position: absolute
-        left: -170px
-        top: -68px
-        width: 160px
-        height: 160px
-        border-radius: 2px
-        overflow: hidden
+        right: -144px
+        top: -8px
+        width: 150px
+        height: 32px
+        border-radius: 4px
+        padding-left: 10px
         box-shadow: 0 0 8px 0 #E9ECEE
         border: 1px solid #E9ECEE
-        background: #FFF
+        background: rgba(50,50,50,0.8)
         z-index: 1
-        .code
-          width: 120px
-          height: 120px
-          margin: 20px auto
-          display: block
+        display: flex
+        align-items: center
+        &:before
+          content: ""
+          width: 9px
+          height: 10px
+          border: 5px solid rgba(50,50,50,0.8)
+          border-top: 4px solid transparent
+          border-bottom: 5px solid transparent
+          border-left: 4px solid transparent
+          col-center()
+          left: -9px
         .text
-          font-size: $font-size-16
-          color: #4DBD65
+          font-size: $font-size-12
+          color: #FFF
           font-family: $font-family-regular
-          text-align: center
-          line-height: 40px
-          height: 40px
-          background: #F5F7FA
-          display: block
-          border-top: 1px solid #E9ECEE
-          cursor: pointer
+          line-height: 32px
+          height: 32px
+        .tip-icon
+          width: 8px
+          height: 10px
+          margin-left: 5px
+        .down
+          transform: rotate(180deg)
+        .equal
+          width: 8px
+          height: 2px
     .list-content .list-about
       overflow: inherit
-  .btn-main
-    margin-right: 10px
 
 
   .list-box
@@ -224,6 +251,6 @@
       flex: 1
       &:last-child
         padding: 0
-        max-width: 75px
+        max-width: 122px
 
 </style>

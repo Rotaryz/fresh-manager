@@ -20,10 +20,11 @@
         </div>
         <div v-if="showImg" class="main-model-box">
           <div class="text">分类图标</div>
-          <div class="img-box hand" :style="{'background-image': 'url(' + (image_url || require('./pic-add_img@2x.png')) + ')'}">
+          <div class="img-box hand" :class="{'border':image_id}" :style="{'background-image': 'url(' + (image_url || require('./pic-add_img@2x.png')) + ')'}">
             <div v-if="showLoading" class="loading-mask">
               <img src="./loading.gif" class="loading">
             </div>
+            <img v-if="image_id" class="delete hand" src="./icon-delete_img@2x.png" @click="deleteImg">
             <input type="file" class="sendImage hand" accept="image/*" @change="_addPic($event)">
           </div>
           <span class="tip">建议上传1:1、大小2M以下的图片</span>
@@ -114,6 +115,10 @@
         }
         this.image_url = res.data.url
         this.image_id = res.data.id
+      },
+      deleteImg() {
+        this.image_url = ''
+        this.image_id = ''
       },
       setData(item, data) {
         this.typeId = item.id
@@ -240,16 +245,14 @@
       background-position: center
       background-image: url('./pic-add_img@2x.png')
       position: relative
-      border: 0.5 pxsolid #F2F2F2
-      border-radius: 1px
-      box-sizing: border-box
+      border-radius: 2px
       margin-right: 10px
       .sendImage
         position: absolute
         width: 100%
         left: 0
         height: 100%
-        top: 0
+        top: 8px
         opacity: 0
         z-index: 1
       .loading-mask
@@ -263,6 +266,14 @@
         all-center()
         width: 25px
         height: 25px
+      .delete
+        width: 14px
+        height: 14px
+        position: absolute
+        right: -5px
+        top: -5px
+    .border
+      border: 0.5px solid $color-line
     .tip
       font-size: 14px
       font-family: $font-family-regular

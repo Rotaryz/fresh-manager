@@ -8,7 +8,7 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  marketDetail : {}
+  marketDetail: {}
 }
 
 export const getters = {
@@ -18,7 +18,7 @@ export const getters = {
   pageDetail(state) {
     return state.pageDetail
   },
-  marketDetail (state) {
+  marketDetail(state) {
     return state.marketDetail
   }
 }
@@ -31,7 +31,7 @@ export const mutations = {
     state.pageDetail = pageDetail
   },
   SET_MARKET_DETAIL(state, detail) {
-    state.marketDetail  = detail
+    state.marketDetail = detail
   }
 }
 

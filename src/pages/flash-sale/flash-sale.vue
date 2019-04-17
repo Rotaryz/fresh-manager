@@ -83,14 +83,13 @@
         startTime: '',
         endTime: '',
         page: 1,
-        delId: 0,
+        delId: 0
       }
     },
     computed: {
       ...saleComputed
     },
-    created() {
-    },
+    created() {},
     mounted() {},
     methods: {
       ...saleMethods,
