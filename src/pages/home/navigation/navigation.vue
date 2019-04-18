@@ -210,18 +210,23 @@
       ]
     }
   ]
-  // const STATISTICS = [
-  //   {
-  //     title: '统计',
-  //     children: [
-  //       {
-  //         title: '数据统计',
-  //         url: '/home/data-survey',
-  //         isLight: false
-  //       }
-  //     ]
-  //   }
-  // ]
+  const ACCOUNT = [
+    {
+      title: '账号',
+      children: [
+        {
+          title: '账号权限',
+          url: '/home/account-manage',
+          isLight: false
+        },
+        {
+          title: '操作日记',
+          url: '/home/account-diary',
+          isLight: false
+        }
+      ]
+    }
+  ]
   const DATA = [
     {
       title: '概况',
@@ -347,6 +352,13 @@
       isLight: false,
       second: FINANCE,
       url: '/home/account-overview'
+    },
+    {
+      name: '设置',
+      icon: require('./icon-set_up@2x.png'),
+      isLight: false,
+      second: ACCOUNT,
+      url: '/home/account-manage'
     },
     {
       name: '',

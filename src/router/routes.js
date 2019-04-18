@@ -2,6 +2,18 @@ import store from '@state/store'
 import {getCurrentTime} from '@utils/tool'
 
 export default [
+  // 操作日记
+  {
+    path: '/account-diary',
+    name: 'account-diary',
+    component: () => lazyLoadView(import('@pages/account-diary/account-diary'))
+  },
+  // 账号管理
+  {
+    path: '/account-manage',
+    name: 'account-manage',
+    component: () => lazyLoadView(import('@pages/account-manage/account-manage'))
+  },
   // 模板
   {
     path: '/demo',
@@ -1645,6 +1657,24 @@ export default [
         component: () => lazyLoadView(import('@pages/new-data/new-data')),
         meta: {
           titles: ['概况', '数据概况']
+        }
+      },
+      // 账号管理
+      {
+        path: 'account-manage',
+        name: 'account-manage',
+        component: () => lazyLoadView(import('@pages/account-manage/account-manage')),
+        meta: {
+          titles: ['设置', '账号', '账号权限']
+        }
+      },
+      // 操作日记
+      {
+        path: 'account-diary',
+        name: 'account-diary',
+        component: () => lazyLoadView(import('@pages/account-diary/account-diary')),
+        meta: {
+          titles: ['设置', '账号', '操作日记']
         }
       }
     ]

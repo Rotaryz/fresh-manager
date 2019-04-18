@@ -422,3 +422,12 @@ export const outreachGroupMethods = {
   ...mapMutations('oGContent', [CONTENT.SET_CURRENT_STAFF, CONTENT.CLEAR_STAFF_LIST, CONTENT.RESET_PAGE]),
   ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff'])
 }
+
+// 设置权限
+export const accountMethods = {
+  ...mapActions('account', ['setTabIndex'])
+}
+
+export const accountComputed = {
+  ...mapGetters('account', ['tabIndex'])
+}
