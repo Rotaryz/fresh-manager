@@ -135,10 +135,11 @@
           margin-right: 5px
         .name
           font-size: $font-size-12
-          width: 70px
+          width: 72px
           overflow: hidden
-          text-overflow: ellipsis
-          white-space: nowrap
+          display: -webkit-box
+          -webkit-line-clamp: 2
+          -webkit-box-orient: vertical
       .edit-icon
         width: 12px
         height: 12px

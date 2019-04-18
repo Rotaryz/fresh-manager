@@ -10,7 +10,7 @@
       <div class="main-input">
         <div class="main-model-box">
           <div class="text">团长账号</div>
-          <input v-model="msg.account" type="number" readonly class="main-input-box grey" placeholder="请输入团长账号">
+          <input :value="msg.manager && msg.manager.mobile" type="number" readonly class="main-input-box grey" placeholder="请输入团长账号">
         </div>
         <div class="main-model-box">
           <div class="text">微信群名称</div>
@@ -41,7 +41,6 @@
     data() {
       return {
         msg: {
-          account: '',
           name: '',
           total: '',
           id: ''
