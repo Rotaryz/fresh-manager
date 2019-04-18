@@ -143,7 +143,6 @@
       },
       async confirm(data) {
         this.name = data.name
-        this.$refs.editModal.hide()
         let res = await API.Community.editCommunity(data)
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)

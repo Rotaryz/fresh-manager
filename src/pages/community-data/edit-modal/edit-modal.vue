@@ -10,7 +10,7 @@
       <div class="main-input">
         <div class="main-model-box">
           <div class="text">团长账号</div>
-          <input v-model="msg.account" type="number" class="main-input-box" placeholder="请输入团长账号">
+          <input v-model="msg.account" type="number" readonly class="main-input-box grey" placeholder="请输入团长账号">
         </div>
         <div class="main-model-box">
           <div class="text">微信群名称</div>
@@ -32,6 +32,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
 
+  const NUMBER = /^[1-9]\d*$/
   const COMPONENT_NAME = 'EDIT_MODAL'
 
   export default {
@@ -56,7 +57,16 @@
         this.$refs.modal && this.$refs.modal.hideModal()
       },
       confirm() {
+        if (!this.msg.name) {
+          this.$toast.show('请输入微信群名称')
+          return
+        }
+        if (!NUMBER.test(this.msg.total)) {
+          this.$toast.show('请输入微信群人数')
+          return
+        }
         this.$emit('confirm', this.msg)
+        this.hide()
       },
       cancel() {
         this.hide()
@@ -109,6 +119,9 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
+      .grey
+        color: $color-text-assist
+        background: #F9F9F9
   .btn-group
     text-align: center
     display: flex
