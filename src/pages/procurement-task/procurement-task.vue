@@ -576,12 +576,12 @@
         case 1:
           let res = await API.Supply.purchaseTaskPublish({
             time: this.time,
-            startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-            endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
             keyword: this.keyword,
             status: this.status,
             page: this.page,
-            supplyId: this.supplyId,
+            supplier_id: this.supplyId,
             loading: false,
             ids: []
           })
@@ -590,12 +590,12 @@
           if (res.error === this.$ERR_OK) {
             this.getPurchaseTaskList({
               time: this.time,
-              start_time: this.startTime,
-              end_time: this.endTime,
+              startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+              endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
               keyword: this.keyword,
               status: this.status,
               page: this.page,
-              supplier_id: this.supplyId,
+              supplyId: this.supplyId,
               loading: false
             })
           }
