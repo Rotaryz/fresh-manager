@@ -79,26 +79,7 @@ export const actions = {
           return false
         }
         let arr = ['pv', 'order', 'e_customer']
-        let titleData = arr.map(item => {
-          return res.data[item].total
-        })
-        let dataArr = arr.map(item => {
-          let time = res.data[item].data.map(val => {
-            return val.at.split('-').slice(1).join('/')
-          })
-          let valueArr = res.data[item].data.map(val => {
-            return val.value
-          })
-          return {
-            x: time,
-            rate: valueArr
-          }
-        })
-
-        let data = {
-          titleData,
-          data: dataArr
-        }
+        let data = dataHandle(arr, res.data)
         commit('SET_QUALITY_DATA', data)
         return true
       })
@@ -115,28 +96,8 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['pv', 'order', 'e_customer']
-        let titleData = arr.map(item => {
-          return res.data[item].total
-        })
-        let dataArr = arr.map(item => {
-          let time = res.data[item].data.map(val => {
-            return val.at.split('-').slice(1).join('/')
-          })
-          let valueArr = res.data[item].data.map(val => {
-            return val.value
-          })
-          return {
-            x: time,
-            rate: valueArr
-          }
-        })
-
-        let data = {
-          titleData,
-          data: dataArr
-        }
-
+        let arr = ['profit', 'e_customer_order', 'per_order', 'e_customer']
+        let data = dataHandle(arr, res.data)
         commit('SET_BUSINESS_DATA', data)
         return true
       })
@@ -153,7 +114,8 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let data = res.data
+        let arr = ['p_customer', 'n_customer', 'e_customer', 's_customer']
+        let data = dataHandle(arr, res.data)
         commit('SET_GROUP_DATA', data)
         return true
       })
@@ -182,4 +144,28 @@ export const actions = {
         app.$loading.hide()
       })
   }
+}
+
+const dataHandle = (arr, data)=> {
+  let titleData = arr.map(item => {
+    return data[item].total
+  })
+  let dataArr = arr.map(item => {
+    let time = []
+    time = data[item].data.map(val => {
+      return val.at.split('-').slice(1).join('/')
+    })
+    let valueArr = data[item].data.map(val => {
+      return val.value || 0
+    })
+    return {
+      x: time,
+      rate: valueArr
+    }
+  })
+  let resultData = {
+    titleData,
+    data: dataArr
+  }
+  return resultData
 }

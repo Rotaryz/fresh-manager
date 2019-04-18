@@ -57,7 +57,7 @@
     methods: {
       changeCommunity(index, item) {
         this.tabIndex = index
-        this.$emit('changeCommunity', item)
+        this.$emit('changeCommunity', index, item)
       },
       editGroup(type, item) {
         if (type) return

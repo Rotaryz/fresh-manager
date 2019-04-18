@@ -7,56 +7,28 @@
         :class="['tab-item', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
         @click="changeTab(item, index)"
       >
-        <img v-if="item.name === 'equal'" src="./icon-equal@2x.png" alt="" class="tag">
-        <img v-else-if="item.name === 'multiply'" src="./icon-multiply@2x.png" alt="" class="tag">
+        <img v-if="item === 'equal'" src="./icon-equal@2x.png" alt="" class="tag">
+        <img v-else-if="item === 'multiply'" src="./icon-multiply@2x.png" alt="" class="tag">
         <div v-else class="content hand">
-          <span class="num">{{item.value}}</span>
-          <span class="text">{{item.name}}</span>
+          <span class="num">{{qualityData.titleData[index] || 0}}</span>
+          <span class="text">{{item}}</span>
         </div>
       </div>
     </div>
     <div class="data-content">
       <div v-show="time !== 'today' && time !== 'yesterday'" id="business"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
-        <span class="num">2000</span>
-        <span class="text">营收金额</span>
+        <span class="num">{{businessData.data[tabIndex] && businessData.data[tabIndex].rate[0] || 0}}</span>
+        <span class="text">{{tabArr[tabIndex]}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'BUSINESS_DATA'
-  const TAB_ARR = [
-    {
-      value: 3300,
-      name: '营收金额'
-    },
-    {
-      value: '',
-      name: 'equal'
-    },
-    {
-      value: 210,
-      name: '主力客户'
-    },
-    {
-      value: '',
-      name: 'multiply'
-    },
-    {
-      value: '20',
-      name: '复购数'
-    },
-    {
-      value: '',
-      name: 'multiply'
-    },
-    {
-      value: '29',
-      name: '客单价'
-    }
-  ]
+  const TAB_ARR = ['营收金额', 'equal', '主力客户', 'multiply', '复购数', 'multiply', '客单价']
   export default{
     name: COMPONENT_NAME,
     props: {
@@ -69,63 +41,39 @@
       return {
         tabArr: TAB_ARR,
         tabIndex: 0,
+        rate: ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
         data: {
-          x: [
-            "04/03",
-            "04/04",
-            "04/05",
-            "04/06",
-            "04/07",
-            "04/08",
-            "04/09"
-          ],
-          series: {
-            num: [
-              "20",
-              "60",
-              "10",
-              "50",
-              "100",
-              "60",
-              "30",
-              "40",
-              "100"
-            ],
-            rate: [
-              "10",
-              "20",
-              "30",
-              "40",
-              "50",
-              "60",
-              "70",
-              "80",
-              "90",
-              "100",
-            ]
-          }
-        }
+          x: ["04/03", "04/04", "04/05", "04/06", "04/07", "04/08", "04/09"],
+          series: ["0", "0", "0", "0", "0", "0", "0", "0", "0"]
+        },
+        arr : [0, 0, 1, 0, 2, 0, 3]
       }
     },
+    computed: {
+      ...communityComputed
+    },
     watch: {
-      time(value, old) {
+      businessData(value, old) {
         if (value !== 'today' && value !== 'yesterday') {
-          setTimeout(() => {
-            this.drawLine(this.data, this.tabArr[this.tabIndex].name)
-          }, 30)
+          this.drawLine(value.data[this.arr[this.tabIndex]], this.tabArr[this.tabIndex])
         }
       }
     },
     methods: {
+      setTab(num) {
+        this.tabIndex = 0
+      },
       changeTab(item, index) {
         if (+index === 1 || +index === 3 || +index === 5) return
         this.tabIndex = index
         this.$emit('changeBusiness', item)
-        this.drawLine(this.data, this.tabArr[index].name)
+        if (this.time !== 'today' && this.time !== 'yesterday') {
+          this.drawLine(this.businessData.data[this.arr[index]], this.tabArr[index])
+        }
       },
       drawLine(data, name) {
-        let xAxis = data.x
-        let series = data.series
+        let xAxis = (data.x && data.x.length) > 0 ? data.x : this.data.x
+        let series = data.rate.length > 0 ? data.rate : this.data.series
         let myChart = this.$echarts.init(document.getElementById('business'))
         myChart.setOption({
           legend: {
@@ -258,7 +206,7 @@
           series: [
             {
               name: name,
-              data: series.num,
+              data: series,
               type: 'line',
               hoverAnimation: true,
               symbolSize: 2,
@@ -277,7 +225,7 @@
             },
             {
               name: '百分比',
-              data: series.rate,
+              data: this.rate,
               yAxisIndex:1,
               type: 'line',
               smooth: true,
@@ -296,7 +244,9 @@
             }
           ]
         })
-        myChart.resize()
+        window.onresize = function() {
+          myChart.resize()
+        }
       }
     }
   }
@@ -372,7 +322,7 @@
     flex: 1
     #business
       width: 100%
-      height: 100%
+      height: 283px
     .alone-data
       width: 100%
       height: 100%

@@ -14,8 +14,8 @@
     <div class="data-content">
       <div v-show="time !== 'today' && time !== 'yesterday'" id="data"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
-        <span class="num">2000</span>
-        <span class="text">浏览数(PV)</span>
+        <span class="num">{{qualityData.data[tabIndex] && qualityData.data[tabIndex].rate[0] || 0}}</span>
+        <span class="text">{{tabArr[tabIndex]}}{{tabIndex === 0 ? '(PV)' : ''}}</span>
       </div>
     </div>
   </div>
@@ -38,30 +38,37 @@
       return {
         tabArr: TAB_ARR,
         tabIndex: 0,
-        rate: ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
+        rate: ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
+        data: {
+          x: ["04/03", "04/04", "04/05", "04/06", "04/07", "04/08", "04/09"],
+          series: ["0", "0", "0", "0", "0", "0", "0", "0", "0"]
+        }
       }
     },
     computed: {
       ...communityComputed
     },
     watch: {
-      time(value, old) {
+      qualityData(value, old) {
         if (value !== 'today' && value !== 'yesterday') {
-          setTimeout(() => {
-            this.drawLine(this.qualityData.data[this.tabIndex], this.tabArr[this.tabIndex])
-          }, 30)
+          this.drawLine(value.data[this.tabIndex], this.tabArr[this.tabIndex])
         }
       }
     },
     methods: {
+      setTab(num) {
+        this.tabIndex = 0
+      },
       changeTab(item, index) {
         this.tabIndex = index
         this.$emit('changeQuality', item)
-        this.drawLine(this.qualityData.data[0], this.tabArr[index].name)
+        if (this.time !== 'today' && this.time !== 'yesterday') {
+          this.drawLine(this.qualityData.data[index], this.tabArr[index])
+        }
       },
       drawLine(data, name) {
-        let xAxis = data.x
-        let series = data.num
+        let xAxis = data.x.length > 0 ? data.x : this.data.x
+        let series = data.rate.length > 0 ? data.rate : this.data.series
         let myChart = this.$echarts.init(document.getElementById('data'))
         myChart.setOption({
           legend: {
@@ -232,7 +239,9 @@
             }
           ]
         })
-        myChart.resize()
+        window.onresize = function() {
+          myChart.resize()
+        }
       }
     }
   }
@@ -310,7 +319,7 @@
     flex: 1
     #data
       width: 100%
-      height: 100%
+      height: 283px
     .alone-data
       width: 100%
       height: 100%

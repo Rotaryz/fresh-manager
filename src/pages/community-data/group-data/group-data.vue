@@ -7,40 +7,25 @@
         :class="['tab-item', 'hand', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
         @click="changeTab(item, index)"
       >
-        <span class="num">{{item.value}}</span>
-        <span class="text">{{item.name}}</span>
+        <span class="num">{{groupData.titleData[index]}}</span>
+        <span class="text">{{item}}</span>
       </div>
     </div>
     <div class="data-content">
       <div v-show="time !== 'today' && time !== 'yesterday'" id="group"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
-        <span class="num">100</span>
-        <span class="text">主力客户</span>
+        <span class="num">{{groupData.data[tabIndex] && groupData.data[tabIndex].rate[0] || 0}}</span>
+        <span class="text">{{tabArr[tabIndex]}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GROUP_DATA'
-  const TAB_ARR = [
-    {
-      value: 200,
-      name: '潜在客户'
-    },
-    {
-      value: 60,
-      name: '新客户'
-    },
-    {
-      value: 180,
-      name: '主力客户'
-    },
-    {
-      value: 60,
-      name: '沉睡客户'
-    }
-  ]
+  const TAB_ARR = ['潜在客户', '新客户', '主力客户', '沉睡客户']
+
   export default{
     name: COMPONENT_NAME,
     props: {
@@ -54,61 +39,35 @@
         tabArr: TAB_ARR,
         tabIndex: 0,
         data: {
-          x: [
-            "04/03",
-            "04/04",
-            "04/05",
-            "04/06",
-            "04/07",
-            "04/08",
-            "04/09"
-          ],
-          series: {
-            num: [
-              "20",
-              "60",
-              "10",
-              "50",
-              "100",
-              "60",
-              "30",
-              "40",
-              "100"
-            ],
-            rate: [
-              "10",
-              "20",
-              "30",
-              "40",
-              "50",
-              "60",
-              "70",
-              "80",
-              "90",
-              "100",
-            ]
-          }
+          x: ["04/03", "04/04", "04/05", "04/06", "04/07", "04/08", "04/09"],
+          series: ["0", "0", "0", "0", "0", "0", "0", "0", "0"]
         }
       }
     },
+    computed: {
+      ...communityComputed
+    },
     watch: {
-      time(value, old) {
-        if (value !== 'today' && value !== 'yesterday') {
-          setTimeout(() => {
-            this.drawLine(this.data, this.tabArr[this.tabIndex].name)
-          }, 30)
+      groupData(value, old) {
+        if (this.time !== 'today' && this.time !== 'yesterday') {
+          this.drawLine(value.data[this.tabIndex], this.tabArr[this.tabIndex])
         }
       }
     },
     methods: {
+      setTab(num) {
+        this.tabIndex = 0
+      },
       changeTab(item, index) {
         this.tabIndex = index
         this.$emit('changeGroup', item)
-        this.drawLine(this.data, this.tabArr[index].name)
+        if (this.time !== 'today' && this.time !== 'yesterday') {
+          this.drawLine(this.groupData.data[index], this.tabArr[index])
+        }
       },
       drawLine(data, name) {
-        let xAxis = data.x
-        let series = data.series
+        let xAxis = data.x.length > 0 ? data.x : this.data.x
+        let series = data.rate.length > 0 ? data.rate : this.data.series
         let myChart = this.$echarts.init(document.getElementById('group'))
         myChart.setOption({
           legend: {
@@ -209,7 +168,7 @@
           series: [
             {
               name: name,
-              data: series.num,
+              data: series,
               type: 'line',
               hoverAnimation: true,
               symbolSize: 2,
@@ -228,7 +187,9 @@
             }
           ]
         })
-        myChart.resize()
+        window.onresize = function() {
+          myChart.resize()
+        }
       }
     }
   }
@@ -306,7 +267,7 @@
     flex: 1
     #group
       width: 100%
-      height: 100%
+      height: 283px
     .alone-data
       width: 100%
       height: 100%

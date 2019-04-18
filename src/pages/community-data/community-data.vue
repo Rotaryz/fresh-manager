@@ -13,18 +13,18 @@
         <div class="top-sec">
           <section class="data-sec quality-data">
             <div class="sec-title">
-              <p class="text">群质量数据<span>(当前等级Lv4)</span></p>
+              <p class="text">群质量数据<span v-if="letTab !== 0">(当前等级Lv{{leftTabItem.level}})</span></p>
               <p class="right-text hand" @click="showDescription">等级说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
             </div>
             <!--群质量数据-->
-            <quality-data :time="request.day_type" @changeQuality="changeQuality"></quality-data>
+            <quality-data ref="qualityData" :time="request.day_type" @changeQuality="changeQuality"></quality-data>
           </section>
           <section class="data-sec business-data">
             <div class="sec-title">
               <p class="text">群运营数据</p>
             </div>
             <!--群运营数据-->
-            <business-data :time="request.day_type" @changeBusiness="changeBusiness"></business-data>
+            <business-data ref="businessData" :time="request.day_type" @changeBusiness="changeBusiness"></business-data>
           </section>
         </div>
         <div class="bottom-sec">
@@ -33,7 +33,7 @@
               <p class="text">群用户分组<span>(群总人数500)</span></p>
             </div>
             <!--用户分组-->
-            <group-data :time="request.day_type" @changeGroup="changeGroup"></group-data>
+            <group-data ref="groupData" :time="request.day_type" @changeGroup="changeGroup"></group-data>
           </section>
           <section class="data-sec goods-list">
             <div class="sec-title">
@@ -92,39 +92,46 @@
           wx_group_id: null,
           day_type: 'today'
         },
-        editGroupItem: {}
+        editGroupItem: {},
+        leftTabItem: {}
       }
     },
     computed: {
       ...communityComputed
     },
     created() {
-      this.getQualityData(this.request)
-      this.getBusinessData(this.request)
-      this.getGroupData(this.request)
-      this.getGoodsList(this.request)
+      this.getAllData()
     },
-
     methods: {
       ...communityMethods,
       _getData(value) {
         this.request.day_type = value
+        this.getAllData()
+        // this.$refs.qualityData.drawLine()
+        // this.$refs.businessData.drawLine()
+        // this.$refs.groupData.drawLine()
       },
       // 切换质量数据tab栏
       changeQuality(item) {
-        console.log(item)
+        // this.getQualityData(this.request)
       },
       // 切换运营数据tab栏
       changeBusiness(item) {
-        console.log(item)
+        // this.getBusinessData(this.request)
       },
       // 切换用户分组tab栏
       changeGroup(item) {
-        console.log(item)
+        // this.getGroupData(this.request)
       },
       // 切换左侧tab栏
-      changeCommunity(item) {
+      changeCommunity(index, item) {
+        this.leftTabItem = item
+        this.letTab = index
         this.request.wx_group_id = item.id
+        this.$refs.qualityData.setTab()
+        this.$refs.businessData.setTab()
+        this.$refs.groupData.setTab()
+        this.getAllData()
       },
       showDescription() {
         this.$refs.description.show()
@@ -144,6 +151,12 @@
         }
         this.getCommunityList({page: 1})
 
+      },
+      getAllData() {
+        this.getQualityData(this.request)
+        this.getBusinessData(this.request)
+        this.getGroupData(this.request)
+        this.getGoodsList(this.request)
       }
     }
   }
