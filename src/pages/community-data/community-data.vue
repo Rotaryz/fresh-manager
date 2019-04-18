@@ -30,7 +30,7 @@
         <div class="bottom-sec">
           <section class="data-sec group-data">
             <div class="sec-title">
-              <p class="text">群用户分组<span>(群总人数500)</span></p>
+              <p class="text">群用户分组<span v-if="letTab !== 0">(群总人数{{leftTabItem.count}})</span></p>
             </div>
             <!--用户分组-->
             <group-data ref="groupData" :time="request.day_type" @changeGroup="changeGroup"></group-data>

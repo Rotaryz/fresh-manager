@@ -50,7 +50,7 @@
     },
     watch: {
       qualityData(value, old) {
-        if (value !== 'today' && value !== 'yesterday') {
+        if (this.time !== 'today' && this.time !== 'yesterday') {
           this.drawLine(value.data[this.tabIndex], this.tabArr[this.tabIndex])
         }
       }
@@ -239,9 +239,6 @@
             }
           ]
         })
-        window.onresize = function() {
-          myChart.resize()
-        }
       }
     }
   }
@@ -319,7 +316,7 @@
     flex: 1
     #data
       width: 100%
-      height: 283px
+      height: 100%
     .alone-data
       width: 100%
       height: 100%

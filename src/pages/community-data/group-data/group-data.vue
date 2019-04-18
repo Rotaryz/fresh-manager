@@ -187,9 +187,6 @@
             }
           ]
         })
-        window.onresize = function() {
-          myChart.resize()
-        }
       }
     }
   }
@@ -267,7 +264,7 @@
     flex: 1
     #group
       width: 100%
-      height: 283px
+      height: 100%
     .alone-data
       width: 100%
       height: 100%
