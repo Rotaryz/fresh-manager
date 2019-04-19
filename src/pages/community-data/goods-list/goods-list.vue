@@ -9,7 +9,7 @@
       >{{item.name}}</span>
     </div>
     <div class="list">
-      <div v-for="(item, index) in goods" :key="index" class="list-item">
+      <div v-for="(item, index) in goodsList" :key="index" class="list-item">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
           <img v-if="val.class === 'img'" class="img" :src="item.goods && item.goods.cover_image" alt="">
           <p v-else-if="val.value === 'name'" class="main">{{item.goods && item.goods[val.value]}}</p>
@@ -21,6 +21,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
     {name: '图片', flex: 0.4, class: 'img', value: ''},
@@ -62,6 +63,9 @@
         titleArr: TITLE,
         goods: GOOD
       }
+    },
+    computed: {
+      ...communityComputed
     },
     methods: {
 
