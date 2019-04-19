@@ -15,7 +15,7 @@
         v-for="(item, index) in communityList"
         :key="index"
         class="left-tab-item hand"
-        :class="{'active': +tabIndex === index+1, 'grey': item.lose}"
+        :class="{'active': +tabIndex === index+1, 'grey': item.is_blocked}"
         @click="changeCommunity(index+1, item)"
       >
         <div class="left">
