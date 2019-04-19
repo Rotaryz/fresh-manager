@@ -14,6 +14,7 @@
 
 <script type="text/ecmascript-6">
   import {globalComputed, authComputed, authMethods} from '@state/helpers'
+  import route from '@router/routes'
 
   const COMPONENT_NAME = 'TOP_BAR'
   const DEFAULT_AVATAR = `https://zhidian-img.jkweixin.com/2018%2F11%2F23%2F1542945169074-logo.jpg`
@@ -30,12 +31,19 @@
       ...globalComputed,
       ...authComputed
     },
+    created() {
+      // route[2].children
+      console.log(route, 111)
+    },
     methods: {
       ...authMethods,
       tryToLogOut() {
         this.logOut()
         // this.$router.replace({name: 'login', query: {redirectFrom: this.$route.fullPath}})
         this.$router.replace({name: 'login'})
+      },
+      balance(name) {
+
       }
     }
   }
