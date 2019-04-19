@@ -286,7 +286,7 @@
               this.baseList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },
@@ -519,7 +519,7 @@
               this.disposeList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },
