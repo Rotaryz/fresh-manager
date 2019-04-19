@@ -15,7 +15,7 @@
         v-for="(item, index) in communityList"
         :key="index"
         class="left-tab-item hand"
-        :class="{'active': +tabIndex === index+1}"
+        :class="{'active': +tabIndex === index+1, 'grey': item.lose}"
         @click="changeCommunity(index+1, item)"
       >
         <div class="left">
@@ -36,7 +36,7 @@
 <script type="text/ecmascript-6">
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'LEFT-TAB'
-  const LV_ARR = ['icon-v1', 'icon-v2', 'icon-v3', 'icon-v4']
+  const LV_ARR = ['icon-v0', 'icon-v1', 'icon-v2', 'icon-v3', 'icon-v4']
   export default{
     name: COMPONENT_NAME,
     props: {
@@ -178,6 +178,8 @@
       border-right: 0.5px solid transparent
       &:before
         background-color: $color-positive
+    .grey
+      color: #ccc
   .bottom
     width: 20px
 </style>
