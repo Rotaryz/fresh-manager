@@ -13,7 +13,7 @@
         <div class="top-sec">
           <section class="data-sec quality-data">
             <div class="sec-title">
-              <p class="text">群质量数据<span v-if="letTab !== 0">(当前等级Lv{{leftTabItem.level || 0}})</span></p>
+              <p class="text">群质量数据<span v-if="+letTab !== 0">(当前等级Lv{{leftTabItem.level || 0}})</span></p>
               <p class="right-text hand" @click="showDescription">等级说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
             </div>
             <!--群质量数据-->
@@ -30,7 +30,7 @@
         <div class="bottom-sec">
           <section class="data-sec group-data">
             <div class="sec-title">
-              <p class="text">群用户分组<span v-if="letTab !== 0">(群总人数{{leftTabItem.total || 0}})</span></p>
+              <p class="text">群用户分组<span v-if="+letTab !== 0">(群总人数{{leftTabItem.total || 0}})</span></p>
             </div>
             <!--用户分组-->
             <group-data ref="groupData" :time="request.day_type" @changeGroup="changeGroup"></group-data>
