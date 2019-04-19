@@ -38,7 +38,6 @@
       return {
         tabArr: TAB_ARR,
         tabIndex: 0,
-        rate: ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
         data: {
           x: ["04/03", "04/04", "04/05", "04/06", "04/07", "04/08", "04/09"],
           series: ["0", "0", "0", "0", "0", "0", "0", "0", "0"]
@@ -164,38 +163,6 @@
                   width: 0.5
                 }
               }
-            },
-            {
-              minInterval: 1,
-              name: '',
-              type: 'value',
-              splitLine: {
-                show: false,
-                lineStyle: {
-                  color: '#F0F3F5',
-                  opacity: 0,
-                  width: 0.5,
-                  type: 'dotted'
-                }
-              },
-              axisTick: {
-                show: false,
-                lineStyle: {
-                  color: '#c4c4c4',
-                  width: 0.5
-                }
-              },
-              axisLabel: {
-                formatter: '{value}%',
-                color: '#666'
-              },
-              axisLine: {
-                show: false,
-                lineStyle: {
-                  color: '#c4c4c4',
-                  width: 0.5
-                }
-              }
             }
           ],
           series: [
@@ -214,25 +181,6 @@
                   lineStyle: {
                     color: '#5681EA',
                     width: 2
-                  }
-                }
-              }
-            },
-            {
-              name: '百分比',
-              data: this.rate,
-              yAxisIndex:1,
-              type: 'line',
-              smooth: true,
-              itemStyle: {
-                normal: {
-                  color: '#5681EA',
-                  opacity: 0,
-                  borderWidth: 1,
-                  lineStyle: {
-                    color: '#5681EA',
-                    width: 2,
-                    opacity: 0
                   }
                 }
               }
