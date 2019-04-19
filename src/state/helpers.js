@@ -424,10 +424,10 @@ export const outreachGroupMethods = {
 }
 
 // 设置权限
-export const accountMethods = {
-  ...mapActions('account', ['setTabIndex'])
+export const accountComputed = {
+  ...mapGetters('account', ['tabIndex', 'accountList', 'pageDetail', 'accountPage', 'keyword', 'permissionsList'])
 }
 
-export const accountComputed = {
-  ...mapGetters('account', ['tabIndex'])
+export const accountMethods = {
+  ...mapActions('account', ['setTabIndex', 'getAccountList', 'setKeyword'])
 }

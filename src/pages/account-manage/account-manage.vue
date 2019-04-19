@@ -5,7 +5,7 @@
       <div class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
-          <base-search :infoText="orderKeyword" placeHolder="请输入员工姓名/账号" @search="changeKeyword"></base-search>
+          <base-search :infoText="keyword" placeHolder="请输入员工姓名/账号" @search="changeKeyword"></base-search>
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@
           <img src="./icon-number_list@2x.png" class="identification-icon">
           <p class="identification-name">{{tabIndex === 0 ? '账号列表' : '角色权限'}}</p>
         </div>
-        <div class="function-btn">
+        <div v-if="tabIndex === 0" class="function-btn">
           <div class="btn-main" @click="addAccount(0)">新建账号<span class="add-icon"></span></div>
         </div>
       </div>
@@ -25,8 +25,7 @@
         </div>
         <div class="list">
           <div v-if="tabIndex === 0">
-            <!--<div v-for="(item, index) in orderList" :key="index" class="list-content list-box">-->
-            <div class="list-content list-box">
+            <div v-for="(item, index) in accountList" :key="index" class="list-content list-box">
               <div class="list-item" :style="{flex: commodities[0].flex}">导出</div>
               <div class="list-item" :style="{flex: commodities[1].flex}">导出</div>
               <div class="list-item" :style="{flex: commodities[2].flex}">导出</div>
@@ -39,8 +38,7 @@
             </div>
           </div>
           <div v-if="tabIndex === 1">
-            <!--<div v-for="(item, index) in orderList" :key="index" class="list-content list-box">-->
-            <div v-for="(item, index) in 20" :key="index" class="list-content list-box">
+            <div v-for="(item, index) in permissionsList" :key="index" class="list-content list-box">
               <div class="list-item" :style="{flex: commodities[0].flex}">导出</div>
               <div class="list-item" :style="{flex: commodities[1].flex}">导出</div>
               <div class="list-item" :style="{flex: commodities[2].flex}">导出</div>
@@ -49,7 +47,7 @@
         </div>
       </div>
       <div v-if="tabIndex === 0" class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="accountPageDetail" :pagination="accountPage" @addPage="setOrderPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="accountPage" @addPage="setOrderPage"></base-pagination>
       </div>
     </div>
     <default-modal ref="addAccount">
@@ -64,7 +62,7 @@
             员工姓名
           </div>
           <div class="account-input-right">
-            <input v-model="true_name" type="text" class="main-input-box" placeholder="请输入真实姓名" maxlength="6">
+            <input v-model="true_name" type="text" class="main-input-box" placeholder="请输入真实姓名">
           </div>
         </div>
         <div class="account-input-box account-input-margin">
@@ -73,8 +71,8 @@
             账号
           </div>
           <div class="account-input-right">
-            <input v-if="accountType * 1 === 0" v-model="true_name" type="text" class="main-input-box" placeholder="请输入11位手机号作为账号"
-                   maxlength="6"
+            <input v-if="accountType * 1 === 0" v-model="mobile" type="text" class="main-input-box" placeholder="请输入11位手机号作为账号"
+                   maxlength="11"
             >
             <div v-if="accountType * 1 === 1" class="account-text">13316241009</div>
           </div>
@@ -97,12 +95,12 @@
             密码
           </div>
           <div class="account-input-right">
-            <input v-model="true_name" type="password" class="main-input-box" placeholder="请输入新密码" maxlength="6">
+            <input v-model="password" type="password" class="main-input-box" placeholder="请输入新密码">
           </div>
         </div>
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
-          <div class="btn confirm" @click="handleRoad">确定</div>
+          <div class="btn confirm" @click="createRoad">确定</div>
         </div>
       </div>
     </default-modal>
@@ -116,6 +114,7 @@
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   const PAGE_NAME = 'ACCOUNT_MANAGE'
   const TITLE = '账号管理'
+  const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
   const ORDERSTATUS = [{text: '账号管理', status: ''}, {text: '角色权限', status: 0}]
   const ACCOUNT_LIST = [
     {title: '账号姓名', key: 'created_at', flex: 0.9},
@@ -137,7 +136,7 @@
     {text: '管理员', selected: false, id: 0},
     {text: '运营', selected: false, id: 0},
     {text: '财务', selected: false, id: 0},
-    {text: '分拣员', selected: true, id: 0},
+    {text: '分拣员', selected: false, id: 0},
     {text: '仓配', selected: false, id: 0}
   ]
 
@@ -154,13 +153,13 @@
       return {
         tabStatus: ORDERSTATUS,
         commodities: ACCOUNT_LIST,
-        orderKeyword: '',
-        accountPageDetail: {},
-        accountPage: 1,
         true_name: '',
+        mobile: '',
+        password: '',
         roleList: ROLE_LIST,
         accountType: 0,
-        accountId: 0
+        accountId: 0,
+        enterAccount: false
       }
     },
     computed: {
@@ -174,28 +173,53 @@
     },
     methods: {
       ...accountMethods,
+      // 切换Tab栏
       changeStatus(item, index) {
         this.commodities = index === 0 ? ACCOUNT_LIST : PERMISSIONS_LIST
         this.setTabIndex(index)
       },
+      // 搜索员工
       changeKeyword() {},
+      // 分页
       setOrderPage() {},
+      // 创建或编辑账号
       addAccount(number) {
         this.accountType = number
         this.$refs.addAccount.showModal()
       },
-      handleRoad() {},
+      createRoad() {
+        if (this.enterAccount) return
+        if (!this.true_name) {
+          this.$toast.show('请输入真实姓名')
+          return
+        } else if (!this.mobile) {
+          this.$toast.show('请输入手机号')
+          return
+        } else if (!TELREG.test(this.mobile)) {
+          this.$toast.show('请输入正确的手机号')
+          return
+        } else if (!this.password) {
+          this.$toast.show('请输入密码')
+          return
+        } else if (this.password.length <= 4) {
+          this.$toast.show('密码必须大于4位')
+          return
+        }
+        console.log(1)
+      },
       cancel() {
         this.$refs.addAccount.hideModal()
       },
+      // 选择角色
       selectItem(index) {
         this.roleList[index].selected = !this.roleList[index].selected
       },
-      handleAccount() {},
+      // 删除账号
       delAccount() {
         let name = '石开达'
         this.$refs.confirm.show(`确定删除${name}员工账号吗？`)
-      }
+      },
+      handleAccount() {}
     }
   }
 </script>
