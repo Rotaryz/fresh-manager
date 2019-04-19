@@ -6,7 +6,9 @@
           <span class="name">全部群数据</span>
         </div>
         <div v-if="+tabIndex === 0" class="right">
-          <span class="edit-icon" :class="{'current': +tabIndex === 0}"></span>
+          <div class="btn">
+            <span class="edit-icon" :class="{'current no-edit': +tabIndex === 0}"></span>
+          </div>
         </div>
       </div>
       <div
@@ -20,8 +22,10 @@
           <img :src="require('./'+ lvArr[item.level] +'@2x.png')" alt="" class="level-icon">
           <span class="name">{{item.name}}</span>
         </div>
-        <div class="right" @click.stop="editGroup(+tabIndex === index+1, item)">
-          <span class="edit-icon" :class="{'current': +tabIndex === index+1}"></span>
+        <div class="right" @click.stop="editGroup(item)">
+          <div class="btn">
+            <span class="edit-icon" :class="{'current': +tabIndex === index+1}"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -59,8 +63,7 @@
         this.tabIndex = index
         this.$emit('changeCommunity', index, item)
       },
-      editGroup(type, item) {
-        if (type) return
+      editGroup(item) {
         this.$emit('editGroup', item)
       },
       tabScroll() {
@@ -140,23 +143,33 @@
           display: -webkit-box
           -webkit-line-clamp: 2
           -webkit-box-orient: vertical
-      .edit-icon
-        width: 12px
-        height: 12px
-        background-image: url("./icon-edit_default@2x.png")
-        background-repeat: no-repeat
-        background-position: center
-        background-size: cover
-        margin-right: 10px
-        display: block
-        transition: all 0.3s
-        &:hover
-          background-image: url("./icon-edit_hover@2x.png")
       .right
+        width: 24px
+        height: 48px
+        padding-left: 6px
+        display: flex
+        justify-content: center
+        align-items: center
+        &:hover
+          .edit-icon
+            background-image: url("./icon-edit_hover@2x.png")
+          .no-edit
+            background-image: url("./icon-right_greed@2x.png")
+      .btn
         width: 12px
         height: 12px
         border-radius: 50%
         margin-right: 6px
+        .edit-icon
+          width: 12px
+          height: 12px
+          background-image: url("./icon-edit_default@2x.png")
+          background-repeat: no-repeat
+          background-position: center
+          background-size: cover
+          margin-right: 10px
+          display: block
+          transition: all 0.3s
         .current
           background-image: url("./icon-right_greed@2x.png")
 
