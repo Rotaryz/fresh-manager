@@ -35,7 +35,10 @@
       <div class="list">
         <div v-for="(item, index) in storeList" :key="index" class="list-content list-box">
           <div class="list-item">{{index + 1}}</div>
-          <div class="list-item">{{item.goods_name}}</div>
+          <div class="list-item list-double-row">
+            <p class="item-dark">{{item.goods_name}}</p>
+            <p class="item-sub">增加商品编码；</p>
+          </div>
           <div class="list-item">{{item.goods_category}}</div>
           <div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>
           <div class="list-item list-item-layout">
@@ -71,7 +74,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-// import AddGoods from '@components/add-goods/add-goods'
+  // import AddGoods from '@components/add-goods/add-goods'
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'

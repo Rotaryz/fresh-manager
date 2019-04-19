@@ -587,6 +587,16 @@ export default [
           }
         }
       },
+      // 退货新增规则
+      {
+        path: 'returns-management/edit-rules',
+        name: 'edit-rules',
+        component: () => lazyLoadView(import('@pages/edit-rules/edit-rules')),
+        meta: {
+          titles: ['商城', '订单', '退货管理', '新建规则'],
+          marginBottom: 80
+        }
+      },
       {
         path: 'order-list/order-detail/:id',
         name: 'order-detail',
@@ -853,32 +863,32 @@ export default [
         }
       },
       // 团长提现
-      {
-        path: 'leader-withdrawal',
-        name: 'leader-withdrawal',
-        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
-        meta: {
-          titles: ['商城', '团长', '团长提现'],
-          beforeResolve(routeTo, routeFrom, next) {
-            //  订单列表
-            let status = routeTo.query.status
-            if (status * 1 === 0) {
-              store.dispatch('leader/infoStatus', {status})
-            }
-            store
-              .dispatch('leader/getWithdrawalList')
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
-          }
-        }
-      },
+      // {
+      //   path: 'leader-withdrawal',
+      //   name: 'leader-withdrawal',
+      //   component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
+      //   meta: {
+      //     titles: ['商城', '团长', '团长提现'],
+      //     beforeResolve(routeTo, routeFrom, next) {
+      //       //  订单列表
+      //       let status = routeTo.query.status
+      //       if (status * 1 === 0) {
+      //         store.dispatch('leader/infoStatus', {status})
+      //       }
+      //       store
+      //         .dispatch('leader/getWithdrawalList')
+      //         .then((res) => {
+      //           if (!res) {
+      //             return next({name: '404'})
+      //           }
+      //           return next()
+      //         })
+      //         .catch(() => {
+      //           return next({name: '404'})
+      //         })
+      //     }
+      //   }
+      // },
       // 收支明细
       {
         path: 'leader-withdrawal/budget-detail/:id/:name',
@@ -1310,31 +1320,9 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            let status = routeTo.query.status
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            routeTo.params.accurateStart = time.start
-            routeTo.params.accurateEnd = time.end
+            let status = routeTo.query.status || 0
             store
-              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1})
+              .dispatch('product/getEnterData', {startTime: '', endTime: '', status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1377,31 +1365,9 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            let status = routeTo.query.status
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            routeTo.params.accurateStart = time.start
-            routeTo.params.accurateEnd = time.end
+            let status = routeTo.query.status || 0
             store
-              .dispatch('product/getOutData', {startTime, endTime, status, page: 1})
+              .dispatch('product/getOutData', {startTime: '', endTime: '', status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1468,6 +1434,33 @@ export default [
                 return next({name: '404'})
               })
           }
+        }
+      },
+      // 库存管理
+      {
+        path: 'storehouse-management',
+        name: 'storehouse-management',
+        component: () => lazyLoadView(import('@pages/storehouse-management/storehouse-management')),
+        meta: {
+          titles: ['供应链', '仓库', '库存管理']
+        }
+      },
+      // 库存管理详情
+      {
+        path: 'storehouse-management/storehouse-detail',
+        name: 'storehouse-detail',
+        component: () => lazyLoadView(import('@pages/storehouse-detail/storehouse-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '库存管理', '库存详情']
+        }
+      },
+      // 批次
+      {
+        path: 'storehouse-management/batch',
+        name: 'batch',
+        component: () => lazyLoadView(import('@pages/batch/batch')),
+        meta: {
+          titles: ['供应链', '仓库', '库存管理', '批次']
         }
       },
       // 配送任务

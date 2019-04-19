@@ -14,9 +14,9 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div v-if="outMsg.status === 0" class="function-btn" @click="submitOutFn">
-          <div class="btn-main">确定出库<span class="add-icon"></span></div>
-        </div>
+        <!--<div v-if="outMsg.status === 0" class="function-btn" @click="submitOutFn">-->
+        <!--<div class="btn-main">确定出库<span class="add-icon"></span></div>-->
+        <!--</div>-->
       </div>
       <div class="big-list" :class="outDetailList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -25,7 +25,10 @@
         <div class="list">
           <div v-for="(item, index) in outDetailList" :key="index" class="list-content list-box">
             <div class="list-item">{{index + 1}}</div>
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.goods_name}}</p>
+              <p class="item-sub">增加商品编码；</p>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
@@ -46,6 +49,10 @@
       </div>
     </div>
     <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
+    <div v-if="outMsg.status === 0" class="back">
+      <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+      <div class="back-btn back-submit hand" @click="submitOutFn">确认提交</div>
+    </div>
   </div>
 </template>
 
@@ -97,6 +104,9 @@
       this.outMsg = _.cloneDeep(this.outDetail.out_order)
     },
     methods: {
+      cancel() {
+        this.$router.back()
+      },
       _showTip(index) {
         this.showIndex = index
       },

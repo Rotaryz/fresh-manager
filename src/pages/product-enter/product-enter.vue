@@ -3,27 +3,8 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
-      <div class="down-time-box">
-        <date-picker
-          :value="startTime"
-          class="edit-input-box" type="date"
-          placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 2px"
-          @on-change="changeStartTime"
-        ></date-picker>
-        <div v-if="startTime" class="down-time-text">{{accurateStart}}</div>
-      </div>
-      <div class="tip">~</div>
-      <div class="down-item down-time-box">
-        <date-picker
-          :value="endTime"
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="结束时间"
-          style="width: 187px;height: 28px;border-radius: 2px"
-          @on-change="changeEndTime"
-        ></date-picker>
-        <div v-if="endTime" class="down-time-text">{{accurateEnd}}</div>
+      <div class="down-item">
+        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime"></base-date-select>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -54,6 +35,7 @@
               <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
               <div v-if="item.status === 0" class="list-operation" @click="entryOrdersExport(item)">导出</div>
               <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
+              <div v-if="item.status === 1" class="list-operation" @click="difference(item)">差异报告</div>
             </div>
           </div>
         </div>
@@ -66,7 +48,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {DatePicker} from 'iview'
   import _ from 'lodash'
   import API from '@api'
   import {productComputed, authComputed} from '@state/helpers'
@@ -80,15 +61,12 @@
     page: {
       title: TITLE
     },
-    components: {
-      DatePicker
-    },
     data() {
       return {
         commodities: COMMODITIES_LIST,
         productEnterList: [],
         pageTotal: {},
-        status: '',
+        status: 0,
         startTime: '',
         endTime: '',
         keyWord: '',
@@ -105,7 +83,8 @@
         },
         accurateStart: '',
         accurateEnd: '',
-        statusTab: 0
+        statusTab: 1,
+        time: []
       }
     },
     computed: {
@@ -113,10 +92,8 @@
       ...authComputed
     },
     async created() {
-      this.startTime = this.$route.params.start
-      this.endTime = this.$route.params.end
-      this.accurateStart = this.$route.params.accurateStart
-      this.accurateEnd = this.$route.params.accurateEnd
+      this.accurateStart = ` ${this.$route.params.accurateStart}`
+      this.accurateEnd = ` ${this.$route.params.accurateEnd}`
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1 + 1
         this.status = this.$route.query.status * 1
@@ -126,13 +103,7 @@
       await this._statistic()
     },
     methods: {
-      _getTime() {
-        let start =
-          this.startTime && this.startTime.length < 11 ? `${this.startTime} ${this.accurateStart}` : this.startTime
-        let end = this.endTime && this.endTime.length < 11 ? `${this.endTime} ${this.accurateEnd}` : this.endTime
-        return [start, end]
-      },
-      entryOrdersExport(item) {
+      _setDownUrl(item, excelUrl) {
         let currentId = this.getCurrentId()
         let data = {
           current_corp: currentId,
@@ -146,9 +117,21 @@
         let url = process.env.VUE_APP_SCM_API + ENTRY_ORDERS_EXPORT + item.id + '?' + search.join('&')
         window.open(url)
       },
+      entryOrdersExport(item) {
+        this._setDownUrl(item, ENTRY_ORDERS_EXPORT)
+      },
+      difference(item) {
+        // todo 导出差异化链接未设置
+        this._setDownUrl(item, '')
+      },
       async _statistic() {
-        let time = this._getTime()
-        let res = await API.Store.entryOrdersStatistic({start_time: time[0], end_time: time[1], keyword: this.keyWord})
+        let res = await API.Store.entryOrdersStatistic(
+          {
+            tart_time: this.time[0] ? this.time[0] + this.accurateStart : '',
+            end_time: this.time[1] ? this.time[1] + this.accurateEnd : '',
+            keyword: this.keyWord
+          }
+        )
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
@@ -156,13 +139,12 @@
         }
       },
       getProductListData() {
-        let time = this._getTime()
         let data = {
           status: this.status,
           page: this.goodsPage,
           limit: 10,
-          start_time: time[0],
-          end_time: time[1],
+          start_time: this.time[0] ? this.time[0] + this.accurateStart : '',
+          end_time: this.time[1] ? this.time[1] + this.accurateEnd : '',
           keyword: this.keyWord
         }
         API.Store.getEnterList(data, false).then((res) => {
@@ -187,22 +169,7 @@
         this.$refs.pagination.beginPage()
       },
       async changeStartTime(value) {
-        this.startTime = value
-        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
-          this.$toast.show('结束时间不能小于开始时间')
-          return
-        }
-        this.goodsPage = 1
-        this.getProductListData()
-        await this._statistic()
-        this.$refs.pagination.beginPage()
-      },
-      async changeEndTime(value) {
-        this.endTime = value
-        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
-          this.$toast.show('结束时间不能小于开始时间')
-          return
-        }
+        this.time = value
         this.goodsPage = 1
         this.getProductListData()
         await this._statistic()
@@ -230,7 +197,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          max-width: 105px
+          max-width: 110px
         &:nth-child(8), &:nth-child(1)
           flex: 1.5
         &:nth-child(4), &:nth-child(2)

@@ -24,7 +24,10 @@
         <div class="list">
           <div v-for="(item, index) in enterDetailList" :key="index" class="list-content list-box">
             <div class="list-item">{{item.batch_num}}</div>
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.goods_name}}</p>
+              <p class="item-sub">增加商品编码；</p>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
@@ -190,13 +193,16 @@
   .procurement-task
     .list-box
       .list-item
-        padding-right: 14px
         align-items: center
-        white-space: nowrap
-        &:last-child
-          flex: 1
-        &:nth-child(4), &:nth-child(5), &:nth-child(8), &:nth-child(9)
+        &:nth-child(4), &:nth-child(5)
+          max-width: 150px
           min-width: 150px
+        &:nth-child(8)
+          max-width: 130px
+          min-width: 130px
+        &:nth-child(9)
+          max-width: 110px
+          min-width: 110px
         &:nth-child(2), &:nth-child(6)
           flex: 1.3
   .list-item-layout

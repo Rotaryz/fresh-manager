@@ -1,24 +1,23 @@
 <template>
-  <div class="storehouse-management table">
+  <div class="storehouse-detail table">
     <div class="down-content">
       <!--时间选择-->
-      <span class="down-tip">分类筛选</span>
+      <span class="down-tip">变动类型</span>
       <div class="down-item">
-        <base-drop-down placeHolder="请选择建单时间"></base-drop-down>
+        <base-drop-down></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="商品名称或商品编码"></base-search>
+        <base-search placeHolder="单据号"></base-search>
       </div>
     </div>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <!--<img src="./icon-inventory_list@2x.png" class="identification-icon">-->
-          <p class="identification-name">出库列表</p>
+          <img src="./icon-warehouse_goods@2x.png" class="identification-icon">
+          <p class="identification-name">{{title}}</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main">清单导出</div>
         </div>
       </div>
       <div class="big-list">
@@ -28,7 +27,9 @@
         <div class="list">
           <div class="list-content list-box">
             <div class="list-item">666</div>
-            <div class="list-item">666</div>
+            <div class="list-item">
+              <div class="list-operation">T27218-CGD-190304-00001</div>
+            </div>
             <div class="list-item">666</div>
             <div class="list-item">666</div>
             <div class="list-item">666</div>
@@ -45,9 +46,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-  const PAGE_NAME = 'STOREHOUSE_MANAGEMENT'
-  const TITLE = '库位管理'
-  const COMMODITIES_LIST = ['商品', '分类', '总库存', '锁定库存', '可用库存', '总库存货值', '库存均价', '库位', '操作']
+  const PAGE_NAME = 'STOREHOUSE_DETAIL'
+  const TITLE = '库存管理详情'
+  const COMMODITIES_LIST = ['操作时间', '单据号', '变动类型', '数量', '总库存数', '操作人']
 
   export default {
     name: PAGE_NAME,
@@ -56,6 +57,7 @@
     },
     data() {
       return {
+        title: '名称需要补充数据',
         commodities: COMMODITIES_LIST
       }
     }
@@ -65,6 +67,14 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .storehouse-management
-    width: 100%
+  .list-box
+    .list-item
+      align-items: center
+      &:nth-child(1)
+        flex: 1.3
+      &:nth-child(2)
+        flex: 2
+        min-width: 190px
+      &:last-child
+        flex: 0.7
 </style>

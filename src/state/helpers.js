@@ -155,7 +155,7 @@ export const orderMethods = {
 
 // 退货
 export const returnsComputed = {
-  ...mapGetters('returns', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page'])
+  ...mapGetters('returns', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page', 'tabIndex', 'socialName'])
 }
 
 export const returnsMethods = {
@@ -166,7 +166,8 @@ export const returnsMethods = {
     'setKeyword',
     'setStatus',
     'setPage',
-    'infoStatus'
+    'infoStatus',
+    'infoTab'
   ])
 }
 
