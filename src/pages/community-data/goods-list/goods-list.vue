@@ -127,7 +127,7 @@
         width: 36px
         height: 36px
         border-radius: 2px
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
   .rate
     max-width: 70px
 </style>
