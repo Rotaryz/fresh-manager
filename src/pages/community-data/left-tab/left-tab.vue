@@ -3,7 +3,7 @@
     <div ref="leftBox" class="left-box">
       <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0, {id: 0})">
         <div class="left">
-          <span class="name">全部群数据</span>
+          <span class="name">全部群数据({{communityList.length}})</span>
         </div>
         <div v-if="+tabIndex === 0" class="right">
           <div class="btn">
@@ -89,7 +89,7 @@
   @import "~@design"
 
   .left-tab
-    width: 146px
+    width: 176px
     padding-right: 6px
     height: 854px
     overflow-y: auto
@@ -107,26 +107,37 @@
       height: 8px
     .left-tab-item
       height: 50px
-      width: 140px
+      width: 170px
       display: flex
       align-items: center
       justify-content: space-between
-      padding-left: 20px
+      padding-left: 12px
       color: $color-text-main
-      font-size: $font-size-12
+      font-size: $font-size-14
       font-family: $font-family-regular
       position: relative
       border-bottom: 0.5px solid $color-line
       border-right: 0.5px solid $color-line
       transition: color 0.3s
       flex: 0 0 auto
+      &:hover
+        .edit-icon
+          width: 12px
+          height: 12px
+          background-image: url("./icon-edit_default@2x.png")
+          background-repeat: no-repeat
+          background-position: center
+          background-size: cover
+          margin-right: 10px
+          display: block
+          transition: all 0.3s
       &:before
         content: ''
         position: absolute
         left: 0
         top: 0
         height: 50px
-        width: 2px
+        width: 3px
         background-color: transparent
         transition: all 0.3s
       .left
@@ -135,10 +146,10 @@
         .level-icon
           width: 12px
           height: 12px
-          margin-right: 5px
+          margin-right: 6px
         .name
           font-size: $font-size-12
-          width: 72px
+          width: 112px
           overflow: hidden
           display: -webkit-box
           -webkit-line-clamp: 2
@@ -160,18 +171,16 @@
         width: 12px
         height: 12px
         border-radius: 50%
-        margin-right: 6px
-        .edit-icon
+        margin-right: 7px
+        .current
           width: 12px
           height: 12px
-          background-image: url("./icon-edit_default@2x.png")
           background-repeat: no-repeat
           background-position: center
           background-size: cover
           margin-right: 10px
           display: block
           transition: all 0.3s
-        .current
           background-image: url("./icon-right_greed@2x.png")
 
     .active

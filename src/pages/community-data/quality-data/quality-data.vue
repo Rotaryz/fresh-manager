@@ -7,14 +7,14 @@
         :class="['tab-item', 'hand', {'active': +tabIndex === index}, {'no-after': tabIndex-1 === index}]"
         @click="changeTab(item, index)"
       >
-        <span class="num">{{qualityData.titleData[index]}}</span>
+        <span class="num">{{qualityData.titleData[index] || 0}}</span>
         <span class="text">{{item}}{{index === 0 ? '(PV)' : ''}}</span>
       </div>
     </div>
     <div class="data-content">
       <div v-show="time !== 'today' && time !== 'yesterday'" id="data"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
-        <span class="num">{{qualityData.data[tabIndex] && qualityData.data[tabIndex].rate[0] || 0}}</span>
+        <span class="num">{{qualityData.titleData[tabIndex] || 0}}</span>
         <span class="text">{{tabArr[tabIndex]}}{{tabIndex === 0 ? '(PV)' : ''}}</span>
       </div>
     </div>
@@ -229,7 +229,7 @@
         left: 0
         top: 0
         width: 100%
-        height: 2px
+        height: 3px
         background-color: transparent
         transition: all 0.3s
       .num
@@ -247,6 +247,7 @@
       border-right: 0
     .active
       background: #FFF
+      color: $color-positive
       border-right: 0.5px solid #E6EAED
       border-left: 0.5px solid #E6EAED
       border-bottom: 0.5px solid transparent

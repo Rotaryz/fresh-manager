@@ -18,7 +18,7 @@
     <div class="data-content">
       <div v-show="time !== 'today' && time !== 'yesterday'" id="business"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
-        <span class="num">{{businessData.data[arr[tabIndex]] && businessData.data[arr[tabIndex]].rate[0] || 0}}</span>
+        <span class="num">{{businessData.titleData[arr[tabIndex]] || 0}}</span>
         <span class="text">{{tabArr[tabIndex]}}</span>
       </div>
     </div>
@@ -227,7 +227,7 @@
         left: 0
         top: 0
         width: 100%
-        height: 2px
+        height: 3px
         background-color: transparent
         transition: all 0.3s
       .tag
@@ -255,6 +255,7 @@
       border-right: 0
     .active
       background: #FFF
+      color: $color-positive
       border-right: 0.5px solid #E6EAED
       border-left: 0.5px solid #E6EAED
       border-bottom: 0.5px solid transparent
