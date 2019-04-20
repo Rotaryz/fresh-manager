@@ -21,10 +21,10 @@
       <div class="goods-content">
         <div class="outreach-goods-list">
           <div v-for="(item, index) in memberList" :key="index" class="goods-item">
-            <span class="select-icon hand" :class="{'select-icon-disable': checkSelect(item), 'select-icon-active': checkChoice(item)}" @click="_selectMember(item,index)"></span>
+            <span class="select-icon hand" :class="{'select-icon-disable': checkSelect(item), 'select-icon-active': checkChoice(item)}" @click="_selectMember(item,index, checkSelect(item))"></span>
             <div class="member-name">{{item.name}}</div>
             <div class="member-tel">{{item.mobile}}</div>
-            <div class="add-btn btn-main" :class="{'add-btn-disable': checkSelect(item)}" @click="_additionOne(item, index)">{{formatBtn(item)}}</div>
+            <div class="add-btn btn-main" :class="{'add-btn-disable': checkSelect(item)}" @click="_additionOne(item, index, checkSelect(item))">{{formatBtn(item)}}</div>
           </div>
         </div>
       </div>
@@ -191,7 +191,8 @@
         this.$refs.pagination.beginPage()
         this._getMemberList()
       },
-      _selectMember(item, idx) {
+      _selectMember(item, idx, type) {
+        if (type) return
         let hasIn = this.checkedMembers.some((item1) => {
           return +item.id === +item1.id
         })
@@ -203,7 +204,8 @@
           this.checkedMembers.push(item)
         }
       },
-      _additionOne(item, idx) {
+      _additionOne(item, idx, type) {
+        if (type) return
         this.$emit('addMemberOne', item)
       },
       _getMoreMember(page) {
