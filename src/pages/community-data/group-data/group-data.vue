@@ -235,7 +235,7 @@
         transition: all 0.3s
       .num
         font-family: $font-family-din-bold
-        font-size: $font-size-20 
+        font-size: $font-size-20
         line-height: 20px
       .text
         font-family: $font-family-regular
@@ -246,7 +246,6 @@
       border-right: 0
     .active
       background: #FFF
-      color: $color-positive
       border-right: 0.5px solid #E6EAED
       border-left: 0.5px solid #E6EAED
       border-bottom: 0.5px solid transparent
