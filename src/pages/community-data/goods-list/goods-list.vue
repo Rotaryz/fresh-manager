@@ -113,6 +113,7 @@
     font-size: $font-size-14
     color: $color-text-main
     font-family: $font-family-regular
+    box-sizing: border-box
     display: flex
     align-items: center
     &:last-child

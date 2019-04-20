@@ -210,7 +210,7 @@
       margin-right: 20px
       margin-top: 20px
       border: 1px solid #E6EAED
-      height: 405px
+      height: 407px
       display: flex
       flex-direction: column
       .sec-title
