@@ -19,7 +19,11 @@
         @click="changeCommunity(index+1, item)"
       >
         <div class="left">
-          <img :src="require('./'+ lvArr[item.level] +'@2x.png')" alt="" class="level-icon">
+          <div class="head">
+            <img v-for="(item, index) in item.head_images" :key="index" :src="require('./head/pic-'+ item +'.png')" alt="" class="head-image">
+            <img :src="require('./'+ lvArr[item.level] +'@2x.png')" alt="" class="level-icon">
+            <div class="bg"></div>
+          </div>
           <span class="name">{{item.name}}</span>
         </div>
         <div class="right" @click.stop="editGroup(item)">
@@ -143,14 +147,32 @@
       .left
         display: flex
         align-items: center
-        .level-icon
-          width: 12px
-          height: 12px
-          margin-right: 6px
+        .head
+          width: 28px
+          height: 28px
+          background: #E0E0E0
+          margin-right: 8px
+          border-radius: 1.1px
+          position: relative
+          padding-top: 1px
+          padding-left: 1px
+          .head-image
+            width: 8px
+            height: 8px
+            float: left
+            margin-right: 1px
+            margin-bottom: 1px
+
+          .level-icon
+            width: 14px
+            height: 14px
+            position: absolute
+            right: -2px
+            bottom: -2px
         .name
           font-size: $font-size-14
           line-height: 18px
-          width: 112px
+          width: 98px
           overflow: hidden
           display: -webkit-box
           -webkit-line-clamp: 2
@@ -193,6 +215,13 @@
         font-family: $font-family-medium
     .grey
       color: #ccc
+      .bg
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        background: rgba(255,255,255,.6)
   .bottom
     width: 20px
 </style>

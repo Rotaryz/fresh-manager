@@ -119,6 +119,10 @@
       .table-list
         height: 50px
         display: flex
+        &:last-child .item
+          border-bottom: 0
+        &:first-child .item,.table-title
+          border-top: 0.5px solid $color-line
       .table-title
         width: 134px
         height: 50px

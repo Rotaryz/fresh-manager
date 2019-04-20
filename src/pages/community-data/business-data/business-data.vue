@@ -254,7 +254,6 @@
       border-right: 0
     .active
       background: #FFF
-      color: $color-positive
       border-right: 0.5px solid #E6EAED
       border-left: 0.5px solid #E6EAED
       border-bottom: 0.5px solid transparent
