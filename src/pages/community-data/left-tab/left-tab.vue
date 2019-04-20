@@ -20,9 +20,9 @@
       >
         <div class="left">
           <div class="head">
-            <img v-for="(item, index) in item.head_images" :key="index" :src="require('./head/pic-'+ item +'.png')" alt="" class="head-image">
-            <img :src="require('./'+ lvArr[item.level] +'@2x.png')" alt="" class="level-icon">
+            <img v-for="(item, ind) in item.head_images" :key="ind" :src="require('./head/pic-'+ item +'.png')" alt="" class="head-image">
             <div class="bg"></div>
+            <img :src="require('./'+ lvArr[item.level] +'@2x.png')" alt="" class="level-icon">
           </div>
           <span class="name">{{item.name}}</span>
         </div>
@@ -110,7 +110,7 @@
       width: 6px
       height: 8px
     .left-tab-item
-      height: 50px
+      height: 60px
       width: 170px
       display: flex
       align-items: center
@@ -125,6 +125,7 @@
       transition: color 0.3s
       flex: 0 0 auto
       &:hover
+        color: $color-positive
         .edit-icon
           width: 12px
           height: 12px
@@ -140,7 +141,7 @@
         position: absolute
         left: 0
         top: 0
-        height: 50px
+        height: 60px
         width: 3px
         background-color: transparent
         transition: all 0.3s
