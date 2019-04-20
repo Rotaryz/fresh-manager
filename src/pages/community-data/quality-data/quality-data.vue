@@ -80,7 +80,7 @@
           },
           grid: {
             left: '20',
-            right: '20',
+            right: '30',
             bottom: '25',
             top: '35',
             containLabel: true
