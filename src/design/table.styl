@@ -101,6 +101,7 @@
       border-radius: 50%
 
 .list
+  position: relative
   flex: 1
   .list-content
     font-family: $font-family-regular
@@ -260,6 +261,8 @@
   .down-item-text
     margin: 20px 80px 0 0
     color: $color-text-main
+    &:last-child
+      margin-right: 0
     .down-text
       font-size: $font-size-12
       color: $color-text-main
@@ -413,7 +416,6 @@
           .detail-icon
             width: 16px
             height: 16px
-
 
 
 // 弹窗按钮样式

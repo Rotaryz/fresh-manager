@@ -27,21 +27,24 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in productOutList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.build_time}}</div>
-            <div class="list-item">{{item.order_sn}}</div>
-            <div class="list-item">
-              <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.out_order_sn}}</router-link>
-            </div>
-            <!--<div class="list-item">{{item.out_order_sn}}</div>-->
-            <div class="list-item">{{item.merchant_name}}</div>
-            <div class="list-item">￥{{item.total}}</div>
-            <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
-            <div class="list-item list-operation-box">
-              <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
-              <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
+          <div v-if="productOutList.length">
+            <div v-for="(item, index) in productOutList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.build_time}}</div>
+              <div class="list-item">{{item.order_sn}}</div>
+              <div class="list-item">
+                <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.out_order_sn}}</router-link>
+              </div>
+              <!--<div class="list-item">{{item.out_order_sn}}</div>-->
+              <div class="list-item">{{item.merchant_name}}</div>
+              <div class="list-item">￥{{item.total}}</div>
+              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
+              <div class="list-item list-operation-box">
+                <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
+                <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
+              </div>
             </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">

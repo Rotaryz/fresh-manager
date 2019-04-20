@@ -2,14 +2,11 @@
   <div class="storehouse-management table">
     <div class="down-content">
       <!--时间选择-->
-      <span class="down-tip">分类筛选</span>
-      <div class="down-item">
-        <base-drop-down placeHolder="请选择建单时间"></base-drop-down>
-      </div>
-      <span class="down-tip">搜索</span>
-      <div class="down-item">
-        <base-search placeHolder="商品名称或商品编码"></base-search>
-      </div>
+      <div class="enter-title">商户名称：{{detail.buyer_name}}</div>
+      <div class="enter-title">订单号：{{detail.order_sn}}</div>
+      <div class="enter-title">下单时间：{{detail.created_at}}</div>
+      <div class="enter-title">状态：{{detail.status_str}}</div>
+      <div class="enter-title">销售金额：<span class="enter-title-money">{{detail.total && `￥${detail.total}`}}</span></div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -26,14 +23,17 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
+          <div>
+            <div class="list-content list-box">
+              <div class="list-item">666</div>
+              <div class="list-item">666</div>
+              <div class="list-item">666</div>
+              <div class="list-item">666</div>
+              <div class="list-item">666</div>
+              <div class="list-item">666</div>
+            </div>
           </div>
+          <!--<base-blank v-else></base-blank>-->
         </div>
       </div>
       <div class="pagination-box">

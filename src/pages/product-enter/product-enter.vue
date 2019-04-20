@@ -24,20 +24,23 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in productEnterList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.build_time}}</div>
-            <div class="list-item">{{item.order_sn}}</div>
-            <div class="list-item">{{item.supplier}}</div>
-            <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
-            <div class="list-item">￥{{item.total}}</div>
-            <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
-            <div class="list-item list-operation-box">
-              <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
-              <div v-if="item.status === 0" class="list-operation" @click="entryOrdersExport(item)">导出</div>
-              <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
-              <div v-if="item.status === 1" class="list-operation" @click="difference(item)">差异报告</div>
+          <div v-if="productEnterList.length">
+            <div v-for="(item, index) in productEnterList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.build_time}}</div>
+              <div class="list-item">{{item.order_sn}}</div>
+              <div class="list-item">{{item.supplier}}</div>
+              <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
+              <div class="list-item">￥{{item.total}}</div>
+              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
+              <div class="list-item list-operation-box">
+                <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
+                <div v-if="item.status === 0" class="list-operation" @click="entryOrdersExport(item)">导出</div>
+                <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
+                <div v-if="item.status === 1" class="list-operation" @click="difference(item)">差异报告</div>
+              </div>
             </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">

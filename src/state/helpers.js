@@ -280,14 +280,12 @@ export const distributionMethods = {
   ...mapActions('distribution', [
     'setTabIndex',
     'getOrderList',
-    'setOrderStartTime',
-    'setOrderEndTime',
+    'setOrderTime',
     'setOrderKeyword',
     'setOrderPage',
     'setOrderStatus',
     'getDriverList',
-    'setDriverStartTime',
-    'setDriverEndTime',
+    'setDriverTime',
     'setDriverPage',
     'infoOrderTime',
     'infoDriverTime'

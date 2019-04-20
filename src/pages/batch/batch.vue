@@ -82,10 +82,13 @@
     data() {
       return {
         title: '名称需要补充数据',
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        curIndex: 0,
+        isChange: true
       }
     },
     methods: {
+      // 修改保质期
       changeStartTime(e, index) {
         // this.enterDetailList[index].shelf_life = e
       },
@@ -93,7 +96,15 @@
         this.curIndex = idnex
         this.$refs.modalBox.show()
       },
-      confirm() {
+      // 确认选择的库位
+      confirm(id, text) {
+        console.log(id, text)
+      },
+      // 修改
+      changeBatch() {
+        if (!this.isChange) {
+          return false
+        }
       }
     }
   }

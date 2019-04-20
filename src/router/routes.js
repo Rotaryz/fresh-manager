@@ -1463,6 +1463,34 @@ export default [
           titles: ['供应链', '仓库', '库存管理', '批次']
         }
       },
+      // 库存盘点
+      {
+        path: 'stock-taking',
+        name: 'stock-taking',
+        component: () => lazyLoadView(import('@pages/stock-taking/stock-taking')),
+        meta: {
+          titles: ['供应链', '仓库', '库存盘点']
+        }
+      },
+      // 新建盘点
+      {
+        path: 'stock-taking/edit-stock',
+        name: 'edit-stock',
+        component: () => lazyLoadView(import('@pages/edit-stock/edit-stock')),
+        meta: {
+          titles: ['供应链', '仓库', '库存盘点', '新建盘点'],
+          marginBottom: 80
+        }
+      },
+      // 盘点详情
+      {
+        path: 'stock-taking/stock-detail',
+        name: 'stock-detail',
+        component: () => lazyLoadView(import('@pages/stock-detail/stock-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '库存盘点', '盘点详情']
+        }
+      },
       // 配送任务
       {
         path: 'distribution-task',
@@ -1472,41 +1500,17 @@ export default [
           titles: ['供应链', '配送', '配送任务'],
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            let status = ''
-            if (routeTo.query.status) {
-              status = routeTo.query.status * 1
-            }
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            routeTo.params.accurateStart = time.start
-            routeTo.params.accurateEnd = time.end
             let tabIndex = store.state.distribution.tabIndex
+            store.dispatch('distribution/infoOrderTime', {
+              startTime: '',
+              endTime: '',
+              status: 1
+            })
+            store.dispatch('distribution/infoDriverTime', {
+              startTime: '',
+              endTime: ''
+            })
             if (tabIndex === 0) {
-              store.dispatch('distribution/infoOrderTime', {
-                startTime,
-                endTime,
-                start: time.start,
-                end: time.end,
-                status: status
-              })
               store
                 .dispatch('distribution/getOrderList')
                 .then((res) => {
@@ -1519,7 +1523,6 @@ export default [
                   return next({name: '404'})
                 })
             } else {
-              store.dispatch('distribution/infoDriverTime', {startTime, endTime, start: time.start, end: time.end})
               store
                 .dispatch('distribution/getDriverList')
                 .then((res) => {
