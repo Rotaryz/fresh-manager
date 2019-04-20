@@ -113,6 +113,7 @@
     font-size: $font-size-14
     color: $color-text-main
     font-family: $font-family-regular
+    box-sizing: border-box
     display: flex
     align-items: center
     &:last-child
@@ -126,7 +127,7 @@
         width: 36px
         height: 36px
         border-radius: 2px
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
   .rate
     max-width: 70px
 </style>

@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <!--<div class="left-tab-item" style="flex: 1 0 0"></div>-->
+    <div class="left-tab-item" style="flex: 1 0 0"></div>
   </div>
 </template>
 
@@ -91,7 +91,7 @@
   .left-tab
     width: 146px
     padding-right: 6px
-    height: 850px
+    height: 854px
     overflow-y: auto
     display: flex
     flex-direction: column

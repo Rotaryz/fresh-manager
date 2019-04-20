@@ -10,7 +10,7 @@
         <img v-if="item === 'equal'" src="./icon-equal@2x.png" alt="" class="tag">
         <img v-else-if="item === 'multiply'" src="./icon-ride@2x.png" alt="" class="tag">
         <div v-else class="content hand">
-          <span class="num">{{businessData.titleData[index] || 0}}</span>
+          <span class="num">{{businessData.titleData[arr[index]] || 0}}</span>
           <span class="text">{{item}}</span>
         </div>
       </div>
@@ -18,7 +18,7 @@
     <div class="data-content">
       <div v-show="time !== 'today' && time !== 'yesterday'" id="business"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
-        <span class="num">{{businessData.data[tabIndex] && businessData.data[tabIndex].rate[0] || 0}}</span>
+        <span class="num">{{businessData.data[arr[tabIndex]] && businessData.data[arr[tabIndex]].rate[0] || 0}}</span>
         <span class="text">{{tabArr[tabIndex]}}</span>
       </div>
     </div>

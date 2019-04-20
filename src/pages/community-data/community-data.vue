@@ -5,7 +5,7 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">微信群运营数据概况</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" @checkTime="_getData"></base-option-box>
+      <base-option-box :arrTitle="arrTitle" :tabActive="2" @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
       <left-tab @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
@@ -190,7 +190,7 @@
       color: $color-text-main
       font-size: $font-size-16
   .data-caption-line
-    border-bottom-1px($color-line)
+    border-bottom: 0.5px solid $color-line
   .data-content
     display: flex
   .right-data
@@ -209,8 +209,8 @@
       width: 50%
       margin-right: 20px
       margin-top: 20px
-      border: 1px solid #E6EAED
-      height: 405px
+      border-1px($color-line, 0)
+      height: 407px
       display: flex
       flex-direction: column
       .sec-title
