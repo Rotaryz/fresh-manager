@@ -5,7 +5,7 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">微信群运营数据概况</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" :tabActive="2" @checkTime="_getData"></base-option-box>
+      <base-option-box :arrTitle="arrTitle" :infoTab="2" :tabActive="2" @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
       <left-tab @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
@@ -90,7 +90,7 @@
         tabArr: [],
         request: {
           wx_group_id: null,
-          day_type: 'today'
+          day_type: 'week'
         },
         editGroupItem: {},
         leftTabItem: {}
