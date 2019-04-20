@@ -212,6 +212,7 @@
       align-items: center
       transition: all 0.3s
       position: relative
+      color: $color-text-main
       border: 0.5px solid #E6EAED
       border-right: 0.5px solid transparent
       border-left: 0.5px solid transparent
@@ -235,12 +236,10 @@
       .num
         font-family: $font-family-din-bold
         font-size: $font-size-20
-        color: $color-text-main
         line-height: 20px
       .text
         font-family: $font-family-regular
         font-size: $font-size-12
-        color: $color-text-main
         line-height: 12px
         margin-top: 5px
     .tab-item:last-child:after

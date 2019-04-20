@@ -148,7 +148,8 @@
           height: 12px
           margin-right: 6px
         .name
-          font-size: $font-size-12
+          font-size: $font-size-14
+          line-height: 18px
           width: 112px
           overflow: hidden
           display: -webkit-box
@@ -188,6 +189,8 @@
       border-right: 0.5px solid transparent
       &:before
         background-color: $color-positive
+      .name
+        font-family: $font-family-medium
     .grey
       color: #ccc
   .bottom
