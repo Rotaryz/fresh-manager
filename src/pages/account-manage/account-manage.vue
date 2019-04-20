@@ -16,7 +16,7 @@
           <p class="identification-name">{{tabIndex === 0 ? '账号列表' : '角色权限'}}</p>
         </div>
         <div v-if="tabIndex === 0" class="function-btn">
-          <div class="btn-main" @click="addAccount(0)">新建账号<span class="add-icon"></span></div>
+          <div class="btn-main" @click="addAccountFn(0)">新建账号<span class="add-icon"></span></div>
         </div>
       </div>
       <div class="big-list" :class="tabIndex === 1 ? 'big-list-max' : ''">
@@ -26,28 +26,28 @@
         <div class="list">
           <div v-if="tabIndex === 0">
             <div v-for="(item, index) in accountList" :key="index" class="list-content list-box">
-              <div class="list-item" :style="{flex: commodities[0].flex}">导出</div>
-              <div class="list-item" :style="{flex: commodities[1].flex}">导出</div>
-              <div class="list-item" :style="{flex: commodities[2].flex}">导出</div>
-              <div class="list-item" :style="{flex: commodities[3].flex}">导出</div>
-              <div class="list-item" :style="{flex: commodities[4].flex}">导出</div>
+              <div class="list-item" :style="{flex: commodities[0].flex}">{{item.truename}}</div>
+              <div class="list-item" :style="{flex: commodities[1].flex}">{{item.username}}</div>
+              <div class="list-item" :style="{flex: commodities[2].flex}">{{item.admin_role_display_name}}</div>
+              <div class="list-item" :style="{flex: commodities[3].flex}">{{item.created_at}}</div>
+              <div class="list-item" :style="{flex: commodities[4].flex}">{{item.last_login_at}}</div>
               <div class="list-item" :style="{flex: commodities[5].flex}">
-                <span class="list-operation" @click="addAccount(1)">编辑</span>
-                <span class="list-operation" @click="delAccount">删除</span>
+                <span v-if="item.is_super !== 1" class="list-operation" @click="addAccountFn(1, item)">编辑</span>
+                <span v-if="item.is_super !== 1" class="list-operation" @click="delAccount(item)">删除</span>
               </div>
             </div>
           </div>
           <div v-if="tabIndex === 1">
             <div v-for="(item, index) in permissionsList" :key="index" class="list-content list-box">
-              <div class="list-item" :style="{flex: commodities[0].flex}">导出</div>
-              <div class="list-item" :style="{flex: commodities[1].flex}">导出</div>
-              <div class="list-item" :style="{flex: commodities[2].flex}">导出</div>
+              <div class="list-item" :style="{flex: commodities[0].flex}">{{item.display_name}}</div>
+              <div class="list-item" :style="{flex: commodities[1].flex}">{{item.description}}</div>
+              <div class="list-item" :style="{flex: commodities[2].flex}">{{item.user_count}}</div>
             </div>
           </div>
         </div>
       </div>
       <div v-if="tabIndex === 0" class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="accountPage" @addPage="setOrderPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="accountPage" @addPage="setAccountPage"></base-pagination>
       </div>
     </div>
     <default-modal ref="addAccount">
@@ -62,7 +62,7 @@
             员工姓名
           </div>
           <div class="account-input-right">
-            <input v-model="true_name" type="text" class="main-input-box" placeholder="请输入真实姓名">
+            <input v-model="true_name" type="text" class="main-input-box" placeholder="请输入真实姓名" maxlength="15">
           </div>
         </div>
         <div class="account-input-box account-input-margin">
@@ -74,7 +74,7 @@
             <input v-if="accountType * 1 === 0" v-model="mobile" type="text" class="main-input-box" placeholder="请输入11位手机号作为账号"
                    maxlength="11"
             >
-            <div v-if="accountType * 1 === 1" class="account-text">13316241009</div>
+            <div v-if="accountType * 1 === 1" class="account-text">{{mobile}}</div>
           </div>
         </div>
         <div class="account-select-list">
@@ -85,7 +85,7 @@
           <div class="account-select-item">
             <div v-for="(item, index) in roleList" :key="index" class="select-item-box">
               <div class="pro-select-icon hand" :class="item.selected ? 'pro-select-icon-active' : ''" @click="selectItem(index)"></div>
-              <div class="select-text hand" @click="selectItem(index)">{{item.text}}</div>
+              <div class="select-text hand" @click="selectItem(index)">{{item.display_name}}</div>
             </div>
           </div>
         </div>
@@ -95,8 +95,11 @@
             密码
           </div>
           <div class="account-input-right">
-            <input v-model="password" type="password" class="main-input-box" placeholder="请输入新密码">
+            <input v-if="!isChange" v-model="password" type="password" class="main-input-box" placeholder="请输入新密码"
+                   maxlength="25"
+            >
           </div>
+          <div v-if="isChange" class="account-text change-password" @click="changePassword">修改密码</div>
         </div>
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
@@ -112,6 +115,7 @@
   import {accountComputed, accountMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import API from '@api'
   const PAGE_NAME = 'ACCOUNT_MANAGE'
   const TITLE = '账号管理'
   const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
@@ -126,19 +130,11 @@
   ]
 
   const PERMISSIONS_LIST = [
-    {title: '角色名称', key: 'created_at', flex: 1},
+    {title: '角色名称', key: 'created_at', flex: 0.8},
     {title: '角色描述', key: 'order_sn', flex: 3},
-    {title: '授权人员数量', key: 'sale_order_sn', flex: 0.5}
+    {title: '授权人员数量', key: 'sale_order_sn', flex: 0.4}
   ]
 
-  const ROLE_LIST = [
-    {text: '采购', selected: false, id: 0},
-    {text: '管理员', selected: false, id: 0},
-    {text: '运营', selected: false, id: 0},
-    {text: '财务', selected: false, id: 0},
-    {text: '分拣员', selected: false, id: 0},
-    {text: '仓配', selected: false, id: 0}
-  ]
 
   export default {
     name: PAGE_NAME,
@@ -156,10 +152,12 @@
         true_name: '',
         mobile: '',
         password: '',
-        roleList: ROLE_LIST,
+        roleList: [],
         accountType: 0,
         accountId: 0,
-        enterAccount: false
+        enterAccount: false,
+        curItem: {},
+        isChange: true
       }
     },
     computed: {
@@ -167,30 +165,77 @@
     },
     created() {
       this.commodities = this.tabIndex === 0 ? ACCOUNT_LIST : PERMISSIONS_LIST
-    },
-    mounted() {
-      // this.$refs.addAccount.showModal()
+      if (this.tabIndex === 1) {
+        this.getAccountList(false)
+      }
+      this.getRolesListData()
     },
     methods: {
       ...accountMethods,
       // 切换Tab栏
       changeStatus(item, index) {
         this.commodities = index === 0 ? ACCOUNT_LIST : PERMISSIONS_LIST
+        if (index === 1) {
+          this.getPermissionsList(false)
+        }
         this.setTabIndex(index)
       },
-      // 搜索员工
-      changeKeyword() {},
-      // 分页
-      setOrderPage() {},
+      // 搜索员工姓名/账号
+      changeKeyword(keyword) {
+        this.setKeyword(keyword)
+      },
+      // 搜索分页
+      setAccountPage(page) {
+        if (this.accountPage === page) return
+        this.setAccount(page)
+      },
       // 创建或编辑账号
-      addAccount(number) {
+      changePassword() {
+        this.isChange = false
+      },
+      addAccountFn(number, item) {
         this.accountType = number
+        this.curItem = item
+        switch (this.accountType) {
+        case 0:
+          this.true_name = ''
+          this.mobile = ''
+          this.password = ''
+          this.isChange = false
+          this.roleList.forEach((item, index) => {
+            item.selected = false
+          })
+          break
+        case 1:
+          this.true_name = item.truename
+          this.mobile = item.username
+          this.isChange = true
+          this.password = ''
+          this.roleList.forEach(roleItem => {
+            item.admin_role_name.forEach((nameItem) => {
+              if (roleItem.name === nameItem) {
+                roleItem.selected = true
+              }
+            })
+          })
+          this.password = ''
+          break
+        }
         this.$refs.addAccount.showModal()
       },
       createRoad() {
         if (this.enterAccount) return
+        let arr = []
+        this.roleList.forEach(item => {
+          if (item.selected) {
+            arr.push(item.name)
+          }
+        })
         if (!this.true_name) {
           this.$toast.show('请输入真实姓名')
+          return
+        } else if (this.true_name.length > 15) {
+          this.$toast.show('真实姓名不能大于15个字')
           return
         } else if (!this.mobile) {
           this.$toast.show('请输入手机号')
@@ -198,14 +243,53 @@
         } else if (!TELREG.test(this.mobile)) {
           this.$toast.show('请输入正确的手机号')
           return
-        } else if (!this.password) {
+        } else if (arr.length === 0) {
+          this.$toast.show('请选择账号角色')
+          return
+        } else if (!this.password && !this.isChange) {
           this.$toast.show('请输入密码')
           return
-        } else if (this.password.length <= 4) {
-          this.$toast.show('密码必须大于4位')
+        } else if (this.password.length < 6 && !this.isChange) {
+          this.$toast.show('密码必须大于5位')
           return
         }
-        console.log(1)
+        let data = {
+          truename: this.true_name,
+          username: this.mobile,
+          password: this.password,
+          role_id: arr
+        }
+        this.enterAccount = true
+        switch (this.accountType) {
+        case 0:
+          API.Account.createAccount(data).then(res => {
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.enterAccount = false
+              this.$toast.show(res.message)
+              return
+            }
+            this.$refs.addAccount.hideModal()
+            this.$toast.show('创建成功')
+            this.enterAccount = false
+            this.getAccountList(false)
+          })
+          break
+        case 1:
+          API.Account.editAccount(this.curItem.id, data).then(res => {
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.enterAccount = false
+              this.$toast.show(res.message)
+              return
+            }
+            this.$refs.addAccount.hideModal()
+            this.$toast.show('编辑成功')
+            this.enterAccount = false
+            this.getAccountList(false)
+          })
+          break
+        }
       },
       cancel() {
         this.$refs.addAccount.hideModal()
@@ -215,11 +299,35 @@
         this.roleList[index].selected = !this.roleList[index].selected
       },
       // 删除账号
-      delAccount() {
-        let name = '石开达'
-        this.$refs.confirm.show(`确定删除${name}员工账号吗？`)
+      delAccount(item) {
+        this.curItem = item
+        this.$refs.confirm.show(`确定删除${item.truename}员工账号吗？`)
       },
-      handleAccount() {}
+      handleAccount() {
+        API.Account.delAccount(this.curItem.id).then((res) => {
+          this.$loading.hide()
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.$toast.show('删除成功!')
+          this.$refs.confirm.hide()
+          this.getAccountList(false)
+        })
+      },
+      // 获取角色列表
+      getRolesListData() {
+        API.Account.getRolesData().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          res.data.forEach((item, index) => {
+            item.selected = false
+          })
+          this.roleList = res.data
+        })
+      }
     }
   }
 </script>
@@ -384,4 +492,7 @@
         opacity: 0.8
     .one-btn
       margin-left: 0
+  .change-password
+    cursor: pointer
+    color: #4d77bd
 </style>

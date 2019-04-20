@@ -429,5 +429,5 @@ export const accountComputed = {
 }
 
 export const accountMethods = {
-  ...mapActions('account', ['setTabIndex', 'getAccountList', 'setKeyword'])
+  ...mapActions('account', ['setTabIndex', 'getAccountList', 'setKeyword', 'setAccount', 'getPermissionsList'])
 }

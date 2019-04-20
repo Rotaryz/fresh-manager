@@ -60,13 +60,14 @@ export const actions = {
   setTabIndex({commit, state}, index) {
     commit('SET_TAB_INDEX', index)
   },
-  getAccountList({commit, state}) {
+  getAccountList({commit, state}, loading = true) {
+    console.log(loading)
     const {keyword} = state
     let data = {
       page: state.accountPage,
       keyword
     }
-    return API.Account.getAccountData(data)
+    return API.Account.getAccountData(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return
@@ -89,9 +90,30 @@ export const actions = {
         app.$loading.hide()
       })
   },
+  getPermissionsList({commit, state}, loading = true) {
+    return API.Account.getRolesData('', loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return
+        }
+        let list = res.data
+        commit('SET_PERMISSIONS_LIST', list)
+        return list
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
   setKeyword({commit, dispatch}, keyword) {
     commit('SET_KEY_WORD', keyword)
     commit('SET_ACCOUNT_PAGE', 1)
+    dispatch('getAccountList')
+  },
+  setAccount({commit, dispatch}, page) {
+    commit('SET_ACCOUNT_PAGE', page)
     dispatch('getAccountList')
   }
 }

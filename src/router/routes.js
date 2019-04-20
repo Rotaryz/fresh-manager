@@ -2,18 +2,6 @@ import store from '@state/store'
 import {getCurrentTime} from '@utils/tool'
 
 export default [
-  // 操作日记
-  {
-    path: '/account-diary',
-    name: 'account-diary',
-    component: () => lazyLoadView(import('@pages/account-diary/account-diary'))
-  },
-  // 账号管理
-  {
-    path: '/account-manage',
-    name: 'account-manage',
-    component: () => lazyLoadView(import('@pages/account-manage/account-manage'))
-  },
   // 模板
   {
     path: '/demo',
@@ -1665,7 +1653,35 @@ export default [
         name: 'account-manage',
         component: () => lazyLoadView(import('@pages/account-manage/account-manage')),
         meta: {
-          titles: ['设置', '账号', '账号权限']
+          titles: ['设置', '账号', '账号权限'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let tabIndex = store.state.account.tabIndex
+            if (tabIndex === 0) {
+              store
+                .dispatch('account/getAccountList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              store
+                .dispatch('account/getPermissionsList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            }
+          }
         }
       },
       // 操作日记

@@ -5,17 +5,19 @@
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
       <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'beginner-guide':item.url==='/home/beginner-guide'}]">
-        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
+        <li v-if="item.show" class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
           <img :src="item.icon" class="nav-item-icon">
           <p class="nav-item-name">{{item.name}}</p>
         </li>
       </ul>
     </div>
     <div class="second">
-      <div v-for="(item, index) in navList" :key="index" class="second-item">
-        <p class="second-title">{{item.title}}</p>
-        <div v-for="(child, i) in item.children" :key="i" class="second-link hand" @click="_setChildActive(child)">
-          <span :class="child | childrenActive" class="second-link-content">{{child.title}}</span>
+      <div v-for="(item, index) in navList" :key="index">
+        <div class="second-item">
+          <p class="second-title">{{item.title}}</p>
+          <div v-for="(child, i) in item.children" :key="i" class="second-link hand" @click="_setChildActive(child)">
+            <span :class="child | childrenActive" class="second-link-content">{{child.title}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -23,6 +25,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import storage from 'storage-controller'
   const COMPONENT_NAME = 'NAVIGATION_BAR'
   const INFO_INDEX = 0
   // const HEIGHT = 40
@@ -324,48 +327,53 @@
     }
   ]
   const FIRST_MENU = [
-    {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: DATA, url: '/home/new-data'},
-    // {
-    //   name: '统计',
-    //   icon: require('./icon-statistics@2x.png'),
-    //   isLight: true,
-    //   second: STATISTICS,
-    //   url: '/home/data-survey'
-    // },
+    {
+      name: '概况',
+      icon: require('./icon-dashboard@2x.png'),
+      isLight: false,
+      second: DATA,
+      url: '/home/new-data',
+      show: true
+    },
     {
       name: '商城',
       icon: require('./icon-tmall@2x.png'),
       isLight: false,
       second: SHOP,
-      url: '/home/product-list'
+      url: '/home/product-list',
+      show: true
     },
     {
       name: '供应链',
       icon: require('./icon-supply_chain@2x.png'),
       isLight: false,
       second: SUPPLY,
-      url: '/home/supply-list'
+      url: '/home/supply-list',
+      show: true
     },
     {
       name: '财务',
       icon: require('./icon-finance@2x.png'),
       isLight: false,
       second: FINANCE,
-      url: '/home/account-overview'
+      url: '/home/account-overview',
+      show: true
     },
     {
       name: '设置',
       icon: require('./icon-set_up@2x.png'),
       isLight: false,
       second: ACCOUNT,
-      url: '/home/account-manage'
+      url: '/home/account-manage',
+      show: true
     },
     {
       name: '',
       icon: require('./icon-guide@2x.png'),
       isLight: false,
       second: BEGINNER_GUIDE,
-      url: '/home/beginner-guide'
+      url: '/home/beginner-guide',
+      show: true
     }
   // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''},
   ]
@@ -405,6 +413,7 @@
       }
     },
     created() {
+      console.log(storage.get('menu'))
       this._getMenuIndex()
       this._handleNavList()
     },
