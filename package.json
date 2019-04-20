@@ -26,6 +26,7 @@
     "new": "hygen new"
   },
   "dependencies": {
+    "awe-dnd": "^0.3.4",
     "axios": "^0.18.0",
     "echarts": "^4.2.0-rc.2",
     "element-ui": "^2.6.3",

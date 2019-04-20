@@ -239,6 +239,10 @@
       title: '订单',
       children: [
         {
+          title: '商戶订单',
+          url: '/home/merchant-order',
+          isLight: false
+        },{
           title: '订单列表',
           url: '/home/supply-list',
           isLight: false
@@ -286,6 +290,21 @@
         {
           title: '库位管理',
           url: '/home/store-manage',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '分拣',
+      children: [
+        {
+          title: '分拣任务',
+          url: '/home/sorting-task',
+          isLight: false
+        },
+        {
+          title: '分拣配置',
+          url: '/home/sorting-config',
           isLight: false
         }
       ]
@@ -339,7 +358,7 @@
       icon: require('./icon-supply_chain@2x.png'),
       isLight: false,
       second: SUPPLY,
-      url: '/home/supply-list'
+      url: '/home/merchant-order'
     },
     {
       name: '财务',
@@ -440,6 +459,7 @@
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
+        console.log(child,'child')
         this.$router.push(child.url)
       },
       // 监听页面变化

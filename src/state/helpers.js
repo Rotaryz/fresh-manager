@@ -16,6 +16,9 @@ export const globalComputed = {
     marginBottom: (state) => state.marginBottom
   })
 }
+export const globalMethods= {
+  ...mapMutations('global',['SET_CURRENT_TITLES'])
+}
 
 // 团长
 export const leaderComputed = {
@@ -421,4 +424,27 @@ export const outreachGroupMethods = {
   ...mapActions('oGTab', ['addDepartment', 'changeTab', 'deleteDepartment', 'editDepartment', 'moveDepartment']),
   ...mapMutations('oGContent', [CONTENT.SET_CURRENT_STAFF, CONTENT.CLEAR_STAFF_LIST, CONTENT.RESET_PAGE]),
   ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff'])
+}
+// todo 分拣任务
+export const sortingComputed = {
+  ...mapGetters('sorting', ['sortingTask', 'sortingConfig','sortingTaskDetail'])
+}
+
+export const sortingMethods = {
+  ...mapActions('sorting', [
+    'getSortingTaskList',
+    'getSortingTaskDetail',
+  ]),
+  ...mapMutations('sorting', ['SET_KEYWORD','SET_PAGE','SET_STATUS','SET_TIME', 'SET_FILTER','SET_PAGE_TOTAL','SET_LIST','SET_DETAIL']),
+}
+// 商户订单
+export const merchantOrderComputed={
+  ...mapGetters('merchantOrder',['filter','pageTotal','orderList','detail'])
+}
+export const merchantOrderMethods ={
+  ...mapActions('merchantOrder', [
+    'getMerchantOrderList',
+    'getMerchantOrderDetail'
+  ]),
+  ...mapMutations('merchantOrder', ['SET_REFRESH','SET_KEYWORD','SET_PAGE','SET_STATUS','SET_TIME', 'SET_FILTER','SET_PAGE_TOTAL','SET_LIST','SET_DETAIL']),
 }
