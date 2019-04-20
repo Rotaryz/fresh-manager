@@ -61,7 +61,6 @@ export const actions = {
     commit('SET_TAB_INDEX', index)
   },
   getAccountList({commit, state}, loading = true) {
-    console.log(loading)
     const {keyword} = state
     let data = {
       page: state.accountPage,

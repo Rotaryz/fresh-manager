@@ -5,18 +5,18 @@
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
       <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'beginner-guide':item.url==='/home/beginner-guide'}]">
-        <li v-if="item.show" class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
+        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
           <img :src="item.icon" class="nav-item-icon">
-          <p class="nav-item-name">{{item.name}}</p>
+          <p class="nav-item-name">{{item.display_name}}</p>
         </li>
       </ul>
     </div>
     <div class="second">
       <div v-for="(item, index) in navList" :key="index">
         <div class="second-item">
-          <p class="second-title">{{item.title}}</p>
-          <div v-for="(child, i) in item.children" :key="i" class="second-link hand" @click="_setChildActive(child)">
-            <span :class="child | childrenActive" class="second-link-content">{{child.title}}</span>
+          <p class="second-title">{{item.display_name}}</p>
+          <div v-for="(child, i) in item.sub_menu" :key="i" class="second-link hand" @click="_setChildActive(child)">
+            <span :class="child | childrenActive" class="second-link-content">{{child.display_name}}</span>
           </div>
         </div>
       </div>
@@ -332,48 +332,42 @@
       icon: require('./icon-dashboard@2x.png'),
       isLight: false,
       second: DATA,
-      url: '/home/new-data',
-      show: true
+      url: '/home/new-data'
     },
     {
       name: '商城',
       icon: require('./icon-tmall@2x.png'),
       isLight: false,
       second: SHOP,
-      url: '/home/product-list',
-      show: true
+      url: '/home/product-list'
     },
     {
       name: '供应链',
       icon: require('./icon-supply_chain@2x.png'),
       isLight: false,
       second: SUPPLY,
-      url: '/home/supply-list',
-      show: true
+      url: '/home/supply-list'
     },
     {
       name: '财务',
       icon: require('./icon-finance@2x.png'),
       isLight: false,
       second: FINANCE,
-      url: '/home/account-overview',
-      show: true
+      url: '/home/account-overview'
     },
     {
       name: '设置',
       icon: require('./icon-set_up@2x.png'),
       isLight: false,
       second: ACCOUNT,
-      url: '/home/account-manage',
-      show: true
+      url: '/home/account-manage'
     },
     {
       name: '',
       icon: require('./icon-guide@2x.png'),
       isLight: false,
       second: BEGINNER_GUIDE,
-      url: '/home/beginner-guide',
-      show: true
+      url: '/home/beginner-guide'
     }
   // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''},
   ]
@@ -413,7 +407,26 @@
       }
     },
     created() {
-      console.log(storage.get('menu'))
+      let arr = storage.get('menu')
+      arr.forEach((item, index) => {
+        item.isLight = false
+        switch (item.icon_name) {
+        case 'statistics':
+          item.icon = require('./icon-dashboard@2x.png')
+          item.url = '/home/new-data'
+          break
+        case 'shop':
+          item.icon = require('./icon-tmall@2x.png')
+          item.url = '/home/product-list'
+          break
+        case 'guide':
+          item.display_name = ''
+          item.icon = require('./icon-guide@2x.png')
+          item.url = '/home/beginner-guide'
+          break
+        }
+      })
+      this.firstMenu = arr
       this._getMenuIndex()
       this._handleNavList()
     },
@@ -424,15 +437,15 @@
         let index = ''
         let smallIndex = -1
         this.firstMenu = this.firstMenu.map((item, idx) => {
-          if (item.second.length) {
-            item.second.forEach((end) => {
+          if (item.sub_menu && item.sub_menu.length) {
+            item.sub_menu.forEach((end) => {
               if (smallIndex === -1 && index === '') {
-                smallIndex = end.children.findIndex((child) => {
+                smallIndex = end.sub_menu.findIndex((child) => {
                   return currentPath.includes(child.url)
                 })
                 index = smallIndex !== -1 ? idx : ''
                 this.firstIndex = index
-                this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.second)) : this.navList
+                this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.sub_menu)) : this.navList
               }
             })
           }
@@ -447,7 +460,7 @@
         }
         if (this.firstMenu[i].isLight) {
           return
-        } else if (!this.firstMenu[i].second.length) {
+        } else if (!this.firstMenu[i].sub_menu || !this.firstMenu[i].sub_menu.length) {
           this.$toast.show('该功能正在开发中')
           return
         }
@@ -456,12 +469,12 @@
           return item
         })
         this.firstIndex = i
-        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].second))
+        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].sub_menu))
         this.$router.push(this.firstMenu[i].url)
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
-        this.$router.push(child.url)
+        this.$router.push(child.front_url)
       },
       // 监听页面变化
       _handleNavList() {
@@ -469,22 +482,22 @@
         let currentNav
         this.firstMenu.forEach((item, idx) => {
           if (currentPath.includes(item.url)) {
-            currentNav = item.second
+            currentNav = item.sub_menu
             this.firstMenu[idx].isLight = true
-            this.firstMenu[idx].second[0].children[0].isLight = true
+            this.firstMenu[idx].sub_menu[0].sub_menu[0].isLight = true
           } else {
             this.firstMenu[idx].isLight = false
           }
-          item.second &&
-            item.second.forEach((it, id) => {
-              it.children &&
-                it.children.forEach((child, i) => {
-                  if (currentPath.includes(child.url)) {
-                    currentNav = item.second
+          item.sub_menu &&
+            item.sub_menu.forEach((it, id) => {
+              it.sub_menu &&
+                it.sub_menu.forEach((child, i) => {
+                  if (currentPath.includes(child.front_url)) {
+                    currentNav = item.sub_menu
                     this.firstMenu[idx].isLight = true
-                    this.firstMenu[idx].second[id].children[i].isLight = true
+                    this.firstMenu[idx].sub_menu[id].sub_menu[i].isLight = true
                   } else {
-                    this.firstMenu[idx].second[id].children[i].isLight = false
+                    this.firstMenu[idx].sub_menu[id].sub_menu[i].isLight = false
                   }
                 })
             })
