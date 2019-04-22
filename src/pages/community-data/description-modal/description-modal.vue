@@ -31,8 +31,8 @@
       </div>
 
       <div v-if="type === 'business'" class="main-data">
-        <p class="main-text">营收=主力客户x复购数x笔单价</p>
-        <p class="main-text">衡量营收公式，主力客户+复购数+笔单价的数值上升，等于营收增长</p>
+        <p class="main-text">怎么增加营收？</p>
+        <p class="main-text">营收金额 = 主力客户 x 复购数 x 笔单价(主力客户、复购数、笔单价的各项数值持续上升，营收金额也持续增长)</p>
         <div class="btn-group">
           <div class="btn confirm" @click="confirm">确定</div>
         </div>
@@ -183,6 +183,9 @@
         color: $color-text-main
         font-family: $font-family-regular
         font-size: $font-size-14
+        display: block
+        &:first-child
+          margin-bottom: 10px
   .btn-group
     text-align: center
     display: flex
