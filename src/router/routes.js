@@ -1087,6 +1087,70 @@ export default [
         },
         component: () => lazyLoadView(import('@pages/merchant-order/merchant-order'))
       },
+      // 商品订单详情
+      {
+        path: 'merchant-order/merchant-order-detail/:id',
+        name: 'merchant-order-detail',
+        meta: {
+          titles: ['供应链', '订单', '商品明细'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('merchantOrder/getMerchantOrderDetail',routeTo.params).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/merchant-order/merchant-order-detail/merchant-order-detail'))
+      },
+      // 商品订单详情的明细
+      {
+        path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code',
+        name: 'consumer-order-detail',
+        meta: {
+          titles: ['供应链', '订单', '商品明细'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            console.log(routeTo,'routeTrouteTorouteTorouteTorouteToo')
+            store.commit('merchantOrder/SET_CONSUMER_PARAMS', routeTo.params)
+            store.dispatch('merchantOrder/getConsumerOrderDetail',routeTo.params).then((res) => {
+              console.log(res)
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/merchant-order/merchant-order-detail/consumer-order-detail'))
+      },
+      // 汇总订单明细
+      {
+        path: 'merchant-order/merger-order-detail',
+        name: 'merger-order-detail',
+        meta: {
+          titles: ['供应链', '订单', '商品明细'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('merchantOrder/getMergerOrderDetail',routeFrom.params).then((res) => {
+              console.log(res,'data')
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/merchant-order/merchant-order-detail/merger-order-detail'))
+      },
       // 采购任务
       {
         path: 'procurement-task',

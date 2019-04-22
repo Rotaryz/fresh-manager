@@ -1,0 +1,47 @@
+{
+  "data": [
+    {
+      "out_order_sn": "A456789",
+      "created_at": "2019-04-20 12:00:00",
+      "nickname": "倾听3",
+      "sale_num": "10份",
+      "sale_wait_pick_num": "0份",
+      "sale_out_of_num": "0份"
+    },
+    {
+      "out_order_sn": "A456789",
+      "created_at": "2019-04-20 12:00:00",
+      "nickname": "倾听1",
+      "sale_num": "10份",
+      "sale_wait_pick_num": "0份",
+      "sale_out_of_num": "0份"
+    },
+    {
+      "out_order_sn": "A123456",
+      "created_at": "2019-04-20 12:00:00",
+      "nickname": "倾听2",
+      "sale_num": "10份",
+      "sale_wait_pick_num": "0份",
+      "sale_out_of_num": "0份"
+    }
+  ],
+  "links": {
+    "first": "http://scm-api.com/scm/api/backend/oms/order-details?page=1",
+    "last": "http://scm-api.com/scm/api/backend/oms/order-details?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 2,
+    "path": "http://scm-api.com/scm/api/backend/oms/order-details",
+    "per_page": 10,
+    "to": 3,
+    "total":12
+  },
+  "status": "success",
+  "status_code": 200,
+  "error": 0,
+  "code": 0
+}
