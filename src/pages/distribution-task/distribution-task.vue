@@ -37,31 +37,37 @@
         </div>
         <div class="list">
           <div v-if="tabIndex === 0">
-            <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
-              <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
-              <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
-              <div class="list-item" :style="{flex: commodities[2].flex}">
-                <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.sale_order_sn}}</router-link>
-              </div>
-              <div class="list-item" :style="{flex: commodities[3].flex}">{{item.road_name}}</div>
-              <div class="list-item" :style="{flex: commodities[4].flex}">{{item.receiver}}</div>
-              <div class="list-item" :style="{flex: commodities[5].flex}">{{item.receive_address}}</div>
-              <div class="list-item" :style="{flex: commodities[6].flex}">{{item.delivery_date}}</div>
-              <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
-              <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
-              <div class="list-item" :style="{flex: commodities[9].flex}">
-                <span class="list-operation" @click="handleOperation(item)">导出</span>
-                <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
+            <div v-if="orderList.length">
+              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
+                <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
+                <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
+                <div class="list-item" :style="{flex: commodities[2].flex}">
+                  <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.sale_order_sn}}</router-link>
+                </div>
+                <div class="list-item" :style="{flex: commodities[3].flex}">{{item.road_name}}</div>
+                <div class="list-item" :style="{flex: commodities[4].flex}">{{item.receiver}}</div>
+                <div class="list-item" :style="{flex: commodities[5].flex}">{{item.receive_address}}</div>
+                <div class="list-item" :style="{flex: commodities[6].flex}">{{item.delivery_date}}</div>
+                <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
+                <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
+                <div class="list-item" :style="{flex: commodities[9].flex}">
+                  <span class="list-operation" @click="handleOperation(item)">导出</span>
+                  <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
+                </div>
               </div>
             </div>
+            <base-blank v-else></base-blank>
           </div>
           <div v-else-if="tabIndex === 1">
-            <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
-              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
-                {{item.operation ? '' : driver[item.key]}}
-                <div v-if="item.operation" class="list-operation" @click="handleOperation(driver)">{{item.operation}}</div>
+            <div v-if="orderList.length">
+              <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
+                <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
+                  {{item.operation ? '' : driver[item.key]}}
+                  <div v-if="item.operation" class="list-operation" @click="handleOperation(driver)">{{item.operation}}</div>
+                </div>
               </div>
             </div>
+            <base-blank v-else></base-blank>
           </div>
         </div>
       </div>

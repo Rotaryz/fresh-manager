@@ -30,7 +30,6 @@
                   :value="item.shelf_life"
                   @on-change="changeStartTime($event, index)"
                 ></date-picker>
-                <!--<div>{{'' || '&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;'}}</div>-->
               </div>
               <div class="list-item">
                 <div class="select-time">
@@ -38,17 +37,11 @@
                   <div v-show="item.warehouse_position" class="select-time-icon hand" @click.stop="clearPosition(index)"></div>
                 </div>
               </div>
-              <!--<div v-if="enterMsg.status === 1">-->
-              <!--{{item.warehouse_position|| '&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;'}}-->
-              <!--</div>-->
             </div>
           </div>
           <base-blank v-else></base-blank>
         </div>
       </div>
-      <!--<div class="pagination-box">-->
-      <!--<base-pagination ref="pagination"></base-pagination>-->
-      <!--</div>-->
     </div>
     <default-store ref="modalBox" @confirm="confirm"></default-store>
     <div class="back">
