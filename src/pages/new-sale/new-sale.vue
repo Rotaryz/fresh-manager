@@ -441,6 +441,7 @@
       },
       // 单个添加
       _additionOne(item, index) {
+        console.log(item, 111)
         if (item.selected === 1) {
           return
         }
