@@ -1,4 +1,5 @@
 import store from '@state/store'
+import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
 
 export default [
@@ -16,9 +17,11 @@ export default [
     meta: {
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
-        if (store.getters['auth/loggedIn']) {
+        console.log(storage.get('losePermissions'))
+        if (store.getters['auth/loggedIn'] && storage.get('losePermissions') !== 1) {
           next({name: 'new-data'})
         } else {
+          storage.remove('losePermissions')
           next()
         }
       }

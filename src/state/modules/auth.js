@@ -53,6 +53,8 @@ export const actions = {
   },
   // 退出
   logOut({commit}) {
+    storage.remove('menu')
+    storage.remove('permissions')
     commit('SET_CURRENT_USER', null)
   },
   // 验证用户身份的有效性

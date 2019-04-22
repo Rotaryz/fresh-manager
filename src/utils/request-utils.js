@@ -17,6 +17,11 @@ export function handleErrorType(code) {
       _handUpgrade()
       break
     }
+    case 13006: {
+      // 暂无权限
+      _handleLosePermissions()
+      break
+    }
     default:
       break
   }
@@ -34,6 +39,19 @@ function _handleLoseEfficacy() {
     storage.set('beforeLoginRoute', currentRoute)
   }
   storage.remove('token')
+}
+
+/**
+ * 暂无权限
+ * @private
+ */
+function _handleLosePermissions() {
+  storage.set('beforeLoginRoute', '/')
+  storage.set('losePermissions', 1)
+  storage.remove('auth.currentUser', null)
+  storage.remove('menu')
+  storage.remove('permissions')
+  app.$router.replace('/login')
 }
 
 /**
