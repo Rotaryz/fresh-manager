@@ -87,9 +87,9 @@ export const getters = {
 }
 
 export const mutations = {
-  SET_CONSUMER_PARAMS(state, {goods_sku_code, parent_order_id, page}) {
-    state.consumerOrderDetail.filter.goods_sku_code = goods_sku_code
-    state.consumerOrderDetail.filter.parent_order_id = parent_order_id
+  SET_CONSUMER_PARAMS(state, {goodsSkuCode, parentOrderId, page}) {
+    state.consumerOrderDetail.filter.goods_sku_code = goodsSkuCode
+    state.consumerOrderDetail.filter.parent_order_id = parentOrderId
     state.consumerOrderDetail.filter.page = page || 1
   },
   SET_CONSUMER_PAGE(state, page) {
