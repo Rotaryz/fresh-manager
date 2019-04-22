@@ -15,6 +15,7 @@
         <div class="identification-page">
           <img src="./icon-marketing_list@2x.png" class="identification-icon">
           <p class="identification-name">营销列表</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
       </div>
       <div class="big-list">
@@ -80,6 +81,11 @@
         marketTitle: MARKET_TITLE,
         topBtn: ['新客有礼', '复购有礼', '唤醒流失客户'],
         type: ['未知', '新客有礼', '复购有礼', '唤醒流失客户', '社群福利券'],
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '开启', value: 1, key: 'wait_submit', num: 0},
+          {name: '关闭', value: 1, key: 'success', num: 0}
+        ],
         page: 1,
         delId: 0
       }
@@ -93,6 +99,10 @@
       ...marketMethods,
       newMarket(index) {
         this.$router.push(`/home/coupon-market/new-market?index=${index}`)
+      },
+      changeStatus(selectStatus) {
+        console.log(selectStatus)
+        this.$refs.pages.beginPage()
       },
       addPage(page) {
         this.page = page

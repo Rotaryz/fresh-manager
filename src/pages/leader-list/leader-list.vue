@@ -5,6 +5,7 @@
         <div class="identification-page">
           <img src="./icon-bandit_list@2x.png" class="identification-icon">
           <p class="identification-name">团长列表</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
@@ -87,6 +88,10 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '正常', value: '', key: 'all', num: 0},
+          {name: '禁用', value: 1, key: 'wait_submit', num: 0}
+        ],
         leaderTitle: LEADER_TITLE,
         page: 1,
         loadImg: true,
@@ -101,6 +106,10 @@
     created() {},
     methods: {
       ...leaderMethods,
+      changeStatus(selectStatus) {
+        console.log(selectStatus)
+        this.$refs.pagination.beginPage()
+      },
       async _syncLeader() {
         let res = await API.Leader.syncShop()
         this.$loading.hide()

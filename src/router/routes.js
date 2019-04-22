@@ -678,7 +678,7 @@ export default [
         name: 'customer-management',
         component: () => lazyLoadView(import('@pages/customer-management/customer-management')),
         meta: {
-          titles: ['商城', '客户', '客户管理'],
+          titles: ['商城', '客户', '客户列表'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('customer/getCustomerList', {page: 1, startTime: '', endTime: '', keyword: '', sortType: 0})

@@ -11,6 +11,7 @@
         <div class="identification-page">
           <img src="./icon-today_rob@2x.png" class="identification-icon">
           <p class="identification-name">限时抢购</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
@@ -37,6 +38,7 @@
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
+                <span class="list-operation" @click="_deleteActivity(item.id)">复制活动</span>
               </div>
             </div>
           </div>
@@ -79,6 +81,12 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
+          {name: '进行中', value: 1, key: 'success', num: 0},
+          {name: '已结束', value: 1, key: 'success', num: 0}
+        ],
         saleTitle: SALE_TITLE,
         startTime: '',
         endTime: '',
@@ -93,6 +101,10 @@
     mounted() {},
     methods: {
       ...saleMethods,
+      changeStatus(selectStatus) {
+        console.log(selectStatus)
+        this.$refs.page.beginPage()
+      },
       async _setTime(arr) {
         this.$refs.pages.beginPage()
         this.page = 1
@@ -127,14 +139,14 @@
   @import "~@design"
   .list-box
     .list-item:last-child
-      max-width: 75px
+      max-width: 150px
       padding-right: 0
   .list
     flex: 1
     .list-item
       font-size: $font-size-14
       &:last-child
-        max-width: 75px
+        max-width: 150px
         padding-right: 0
       .item
         text-overflow: ellipsis

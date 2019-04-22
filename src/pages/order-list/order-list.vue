@@ -20,6 +20,7 @@
         <div class="identification-page">
           <img src="./icon-order_list@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeTab"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="exportExcel">导出Excel</div>
@@ -68,11 +69,8 @@
 
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [
-    {text: '全部', status: ''},
-    {text: '待付款', status: 0},
-    {text: '待提货', status: 1},
-    {text: '已完成', status: 2},
-    {text: '已关闭', status: 3}
+    {text: '拓展订单', status: 0},
+    {text: '商城订单', status: 1}
   ]
   const SOCIAL_SELECT = {
     check: false,
@@ -94,6 +92,13 @@
         searchPlaceHolder: SEARCH_PLACE_HOLDER,
         datePlaceHolder: DATE_PLACE_HOLDER,
         socialSelect: SOCIAL_SELECT,
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待付款', value: 1, key: 'wait_submit', num: 0},
+          {name: '待提货', value: 1, key: 'success', num: 0},
+          {name: '已完成', value: 1, key: 'success', num: 0},
+          {name: '已关闭', value: 1, key: 'success', num: 0}
+        ],
         downUrl: ''
       }
     },
@@ -127,6 +132,10 @@
     },
     methods: {
       ...orderMethods,
+      changeTab(selectStatus) {
+        console.log(selectStatus)
+        this.$refs.pagination.beginPage()
+      },
       _getShopList() {
         API.Leader.shopDropdownList().then((res) => {
           if (res.error !== this.$ERR_OK) {

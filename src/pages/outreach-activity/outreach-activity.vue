@@ -11,6 +11,7 @@
         <div class="identification-page">
           <img src="./icon-task@2x.png" class="identification-icon">
           <p class="identification-name">拓展任务</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-outreach" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
@@ -103,6 +104,12 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
+          {name: '进行中', value: 1, key: 'success', num: 0},
+          {name: '已结束', value: 1, key: 'success', num: 0}
+        ],
         activityTitle: ACTIVITI_TITLE,
         startTime: '',
         endTime: '',
@@ -132,6 +139,10 @@
         this.startTime = arr[0]
         this.endTime = arr[1]
         await this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+      },
+      changeStatus(selectStatus) {
+        console.log(selectStatus)
+        this.$refs.pages.beginPage()
       },
       showTip(index) {
         clearTimeout(this.timer)

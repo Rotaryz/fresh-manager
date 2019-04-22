@@ -4,6 +4,7 @@
       <div class="identification-page">
         <img src="./icon-goods_classify@2x.png" class="identification-icon">
         <p class="identification-name">商品分类</p>
+        <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
       </div>
       <div class="function-btn">
         <div class="btn-main" @click="newBigCate">新建大类<span class="add-icon"></span></div>
@@ -15,7 +16,7 @@
           <div class="big-main-left hand" @click="openList(index)">
             <div class="icon" :class="item.select ? 'open' : ''"></div>
             <div class="img" :style="{'background-image': 'url(' +item.image_url+ ')'}"></div>
-            <div class="text">{{item.name}}</div>
+            <div class="text">{{item.name}}({{item.list && item.list.length}}个子类)</div>
           </div>
           <div class="big-main-right">
             <span class="list-operation" @click="editBigCatee(item, index)">修改</span>
@@ -64,6 +65,10 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '一级类目', value: '', key: 'one', num: 0},
+          {name: '二级类目', value: 1, key: 'two', num: 0}
+        ],
         categoryType: 0,
         categoryNewName: '',
         categoryChild: '',
@@ -84,6 +89,10 @@
     },
     methods: {
       ...categoriesMethods,
+      changeStatus(selectStatus) {
+        console.log(selectStatus)
+        // this.$refs.pagination.beginPage()
+      },
       newBigCate() {
         // this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
         this.$refs.bigModel.show('新建商品分类', {
