@@ -41,7 +41,7 @@
               <p class="text">最受欢迎商品Top10</p>
             </div>
             <!--商品TOP10-->
-            <goods-list></goods-list>
+            <goods-list :time="request.day_type"></goods-list>
           </section>
         </div>
       </div>
