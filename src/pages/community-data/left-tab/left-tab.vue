@@ -20,7 +20,7 @@
       >
         <div class="left">
           <div class="head">
-            <img v-for="(item, ind) in item.head_images" :key="ind" :src="require('./head/pic-'+ item +'.png')" alt="" class="head-image">
+            <img v-for="(val, ind) in item.head_images" :key="ind" :src="require('./head/pic-'+ val +'.png')" alt="" class="head-image">
             <div class="bg"></div>
             <img :src="require('./'+ lvArr[item.level] +'@2x.png')" alt="" class="level-icon">
           </div>
