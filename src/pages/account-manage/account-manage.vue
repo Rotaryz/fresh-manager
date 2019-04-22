@@ -196,15 +196,15 @@
       addAccountFn(number, item) {
         this.accountType = number
         this.curItem = item
+        this.roleList.forEach((item, index) => {
+          item.selected = false
+        })
         switch (this.accountType) {
         case 0:
           this.true_name = ''
           this.mobile = ''
           this.password = ''
           this.isChange = false
-          this.roleList.forEach((item, index) => {
-            item.selected = false
-          })
           break
         case 1:
           this.true_name = item.truename

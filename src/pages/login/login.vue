@@ -101,8 +101,7 @@
         if (this.trySocial && this.tryScm) {
           storage.set('menu', this.menuList)
           storage.set('permissions', this.permissionsList)
-          console.log(this.permissionsList)
-          this.$router.push(this.$route.query.redirectFrom || '/home')
+          this.$router.push(this.menuList[0].sub_menu[0].sub_menu[0].front_url || 'home')
         }
       }
     }
