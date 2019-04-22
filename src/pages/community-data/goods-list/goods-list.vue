@@ -13,8 +13,8 @@
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
           <img v-if="val.class === 'img'" class="img" :src="item.goods && item.goods.cover_image" alt="">
           <p v-else-if="val.value === 'name'" class="main">{{item.goods && item.goods[val.value]}}</p>
-          <p v-else-if="val.value === 'view'" class="main">{{item.views || 0}}</p>
-          <p v-else class="main">{{item.goods && item[val.value]}}</p>
+          <p v-else-if="val.value === 'conversion'" class="main">{{+item.conversion.split('%')[0] === 0 ? 0 : item.conversion}}</p>
+          <p v-else class="main">{{item[val.value]}}</p>
         </div>
       </div>
     </div>
