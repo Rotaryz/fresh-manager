@@ -28,9 +28,10 @@
     display: flex
     align-items: center
     flex-direction: column
+    user-select: none
     .blank-img
       width: 88px
-      display :block
+      display: block
       margin-top: 15%
     .blank-text
       color: $color-text-assist
