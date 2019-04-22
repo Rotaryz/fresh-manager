@@ -57,7 +57,20 @@
           商品图片
         </div>
         <div class="image-box">
-          <base-edit-image :picList.sync="msg.goods_banner_images" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>
+          <div class="edit-image">
+            <draggable v-model="msg.goods_banner_images" class="draggable" @update="_setSort()">
+              <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+                <span @click="delPic(index)"></span>
+              </div>
+            </draggable>
+            <div v-if="msg.goods_banner_images.length < picNum" class="add-image hand">
+              <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic1', $event)">
+              <div v-if="showLoading" class="loading-mask">
+                <img src="./loading.gif" class="loading">
+              </div>
+            </div>
+          </div>
+          <!--<base-edit-image :picList.sync="msg.goods_banner_images" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>-->
           <div class="tip">上传图片的最佳尺寸：1:1，其他尺寸会影响页效果，格式png，jpeg，jpg，最多可上传5张，首张为封面。</div>
         </div>
       </div>
@@ -67,7 +80,20 @@
           商品详情
         </div>
         <div class="image-box">
-          <base-edit-image :picList.sync="msg.goods_detail_images" :picNum="15" @failFile="failFile" @getPic="getPic2" @delPic="delPic2"></base-edit-image>
+          <div class="edit-image">
+            <draggable v-model="msg.goods_detail_images" class="draggable" @update="_setSort()">
+              <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+                <span @click="delPic(index)"></span>
+              </div>
+            </draggable>
+            <div v-if="msg.goods_detail_images.length < 15" class="add-image hand">
+              <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic2', $event)">
+              <div v-if="showLoading" class="loading-mask">
+                <img src="./loading.gif" class="loading">
+              </div>
+            </div>
+          </div>
+          <!--<base-edit-image :picList.sync="msg.goods_detail_images" :picNum="15" @failFile="failFile" @getPic="getPic2" @delPic="delPic2"></base-edit-image>-->
           <div class="tip">上传图片的格式png，jpeg，jpg，最多可上传15张。</div>
         </div>
       </div>
@@ -194,6 +220,7 @@
 
 <script type="text/ecmascript-6">
   import API from '@api'
+  import Draggable from 'vuedraggable'
   import _ from 'lodash'
 
   const PAGE_NAME = 'EDIT_GOODS'
@@ -203,6 +230,9 @@
     name: PAGE_NAME,
     page: {
       title: TITLE
+    },
+    components: {
+      Draggable
     },
     props: {
       detail: {
@@ -296,7 +326,10 @@
           supplier_id: 0,
           is_weight: 1
         },
-        isWeight: 1
+        isWeight: 1,
+        showLoading: false,
+        picNum: 5,
+        uploadImg: ''
       }
     },
     created() {
@@ -328,6 +361,7 @@
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
         this.msg.goods_banner_images.push(item)
+        console.log(this.msg.goods_banner_images, 123)
       },
       delPic(index) {
         this.msg.goods_banner_images.splice(index, 1)
@@ -516,6 +550,36 @@
       },
       switchBtn() {
         this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
+      },
+      _setSort() {
+        console.log(this.msg.goods_banner_images)
+      },
+      async _addPic(type, e) {
+        this.uploadImg = type
+        this.showLoading = true
+        let param = this._infoImage(e.target.files[0])
+        e.target.value = ''
+        await this._upImage(param)
+      },
+      // 格式化图片流
+      _infoImage(file) {
+        let param = new FormData() // 创建form对象
+        param.append('file', file, file.name) // 通过append向form对象添加数据
+        return param
+      },
+      async _upImage(param) {
+        let res = await API.Upload.UploadImg(param)
+        this.showLoading = false
+        if (res.error !== this.$ERR_OK) {
+          this.failFile(res.message)
+          return
+        }
+        if (this.uploadImg === 'pic1') {
+          this.getPic(res.data)
+        } else {
+          this.getPic2(res.data)
+        }
+
       }
     }
   }
@@ -721,6 +785,74 @@
 
   .image-box
     margin-left: 40.9px
+  .edit-image
+    flex-wrap: wrap
+    display: flex
+    .draggable
+      flex-wrap: wrap
+      display: flex
+    .add-image
+      margin-bottom: 20px
+      icon-image('pic-picture1')
+      height: 90px
+      width: @height
+      position: relative
+      border-radius: 2px
+      overflow: hidden
+      .sendImage
+        height: 100%
+        width: 100%
+        top: 0
+        left: 0
+        opacity: 0
+        z-index: 1
+        position: absolute
+    .show-image
+      margin-bottom: 20px
+      background-repeat: no-repeat
+      background-size: cover
+      background-position: center
+      height: 90px
+      margin-right: 20px
+      width: @height
+      border-radius: 2px
+      position: relative
+      overflow: hidden
+    .close
+      icon-image('pic-delete')
+      width: 15px
+      height: 15px
+      position: absolute
+      top: 0
+      right: 0
+      z-index: 100
+
+    .loading-mask
+      width: 100%
+      height: 100%
+      position: absolute
+      top: 0
+      left: 0
+      background: rgba(0, 0, 0, .6)
+      .loading
+        all-center()
+        width: 25px
+        height: 25px
+  .add-image
+    margin-bottom: 20px
+    icon-image('pic-picture1')
+    height: 90px
+    width: @height
+    position: relative
+    border-radius: 2px
+    overflow: hidden
+    .sendImage
+      height: 100%
+      width: 100%
+      top: 0
+      left: 0
+      opacity: 0
+      z-index: 1
 
   .edit-image-box
     align-items: flex-start
