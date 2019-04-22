@@ -284,11 +284,6 @@
           isLight: false
         },
         {
-          title: '库位管理',
-          url: '/home/store-manage',
-          isLight: false
-        },
-        {
           title: '库存管理',
           url: '/home/storehouse-management',
           isLight: false
@@ -296,6 +291,11 @@
         {
           title: '库存盘点',
           url: '/home/stock-taking',
+          isLight: false
+        },
+        {
+          title: '库位管理',
+          url: '/home/store-manage',
           isLight: false
         }
       ]

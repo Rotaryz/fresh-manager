@@ -421,3 +421,20 @@ export const outreachGroupMethods = {
   ...mapMutations('oGContent', [CONTENT.SET_CURRENT_STAFF, CONTENT.CLEAR_STAFF_LIST, CONTENT.RESET_PAGE]),
   ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff'])
 }
+/**
+ * 仓库-库存
+ */
+export const storeComputed = {
+  ...mapGetters('store', [
+    'warehouseList',
+    'warehousePageTotal',
+    'warehouseDetailList',
+    'detailPageTotal'
+  ])
+}
+export const storeMethods = {
+  ...mapActions('store', [
+    'getWarehouseList',
+    'getWarehouseDetailList'
+  ])
+}

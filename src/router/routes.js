@@ -1442,7 +1442,20 @@ export default [
         name: 'storehouse-management',
         component: () => lazyLoadView(import('@pages/storehouse-management/storehouse-management')),
         meta: {
-          titles: ['供应链', '仓库', '库存管理']
+          titles: ['供应链', '仓库', '库存管理'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 库存管理详情
@@ -1451,12 +1464,25 @@ export default [
         name: 'storehouse-detail',
         component: () => lazyLoadView(import('@pages/storehouse-detail/storehouse-detail')),
         meta: {
-          titles: ['供应链', '仓库', '库存管理', '库存详情']
+          titles: ['供应链', '仓库', '库存管理', '库存详情'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getWarehouseDetailList', {code: routeTo.query.code, page: 1, order_sn: '', type: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 批次
       {
-        path: 'storehouse-management/batch',
+        path: 'storehouse-management/batch/:id',
         name: 'batch',
         component: () => lazyLoadView(import('@pages/batch/batch')),
         meta: {

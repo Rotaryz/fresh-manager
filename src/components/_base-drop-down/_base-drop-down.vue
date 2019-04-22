@@ -80,6 +80,9 @@
         if (!this.isUse) {
           return
         }
+        if (!this.select.data.length) {
+          return
+        }
         this.select.check = !this.select.check
         this.$emit('selectType', this.select)
       },

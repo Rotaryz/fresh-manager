@@ -200,5 +200,25 @@ export default {
   entryOrdersStatistic(data, loading = false) {
     let url = `/scm/api/backend/warehouse/entry-orders-statistic`
     return request.get(url, data, loading)
+  },
+  /**
+   * 库存列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  warehouseStock(data, loading = false) {
+    let url = `/scm/api/backend/stock/warehouse-stock`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 库存详情
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  warehouseStockLogs(code, data, loading = false) {
+    let url = `/scm/api/backend/stock/warehouse-stock-logs/${code}`
+    return request.get(url, data, loading)
   }
 }

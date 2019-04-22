@@ -25,16 +25,20 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">666</div>
-            <div class="list-item">
-              <div class="list-operation">T27218-CGD-190304-00001</div>
+          <div v-if="warehouseDetailList.length">
+            <div v-for="(item, index) in warehouseDetailList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.created_at}}</div>
+              <div class="list-item">
+                <div class="list-operation">{{item.created_at}}</div>
+              </div>
+              <div class="list-item">{{item.type_str}}</div>
+              <div class="list-item">{{item.num}}</div>
+              <div class="list-item">{{item.total_stock}}</div>
+              <div class="list-item">{{item.total_stock}}</div>
+              <div class="list-item">{{item.operator}}</div>
             </div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">
@@ -46,6 +50,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {storeComputed, storeMethods} from '@state/helpers'
+
   const PAGE_NAME = 'STOREHOUSE_DETAIL'
   const TITLE = '库存管理详情'
   const COMMODITIES_LIST = ['操作时间', '单据号', '变动类型', '数量', '总库存数', '操作人']
@@ -57,9 +63,15 @@
     },
     data() {
       return {
-        title: '名称需要补充数据',
+        title: this.$route.query.name,
         commodities: COMMODITIES_LIST
       }
+    },
+    computed: {
+      ...storeComputed
+    },
+    methods: {
+      ...storeMethods
     }
   }
 </script>

@@ -26,7 +26,7 @@
             <div class="list-item">{{item.batch_num}}</div>
             <div class="list-item list-double-row">
               <p class="item-dark">{{item.goods_name}}</p>
-              <p class="item-sub">增加商品编码；</p>
+              <p class="item-sub">{{item.goods_sku_encoding}}</p>
             </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item list-item-layout">

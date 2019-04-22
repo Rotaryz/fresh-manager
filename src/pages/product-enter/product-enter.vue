@@ -87,7 +87,7 @@
         accurateStart: '',
         accurateEnd: '',
         statusTab: 1,
-        time: []
+        time: ['', '']
       }
     },
     computed: {
@@ -95,8 +95,6 @@
       ...authComputed
     },
     async created() {
-      this.accurateStart = ` ${this.$route.params.accurateStart}`
-      this.accurateEnd = ` ${this.$route.params.accurateEnd}`
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1 + 1
         this.status = this.$route.query.status * 1
@@ -130,8 +128,8 @@
       async _statistic() {
         let res = await API.Store.entryOrdersStatistic(
           {
-            tart_time: this.time[0] ? this.time[0] + this.accurateStart : '',
-            end_time: this.time[1] ? this.time[1] + this.accurateEnd : '',
+            tart_time: this.time[0],
+            end_time: this.time[1],
             keyword: this.keyWord
           }
         )
@@ -146,8 +144,8 @@
           status: this.status,
           page: this.goodsPage,
           limit: 10,
-          start_time: this.time[0] ? this.time[0] + this.accurateStart : '',
-          end_time: this.time[1] ? this.time[1] + this.accurateEnd : '',
+          start_time: this.time[0],
+          end_time: this.time[1],
           keyword: this.keyWord
         }
         API.Store.getEnterList(data, false).then((res) => {

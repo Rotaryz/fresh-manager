@@ -92,7 +92,7 @@
           success: 0
         },
         statusTab: 1,
-        time: []
+        time: ['', '']
       }
     },
     computed: {
