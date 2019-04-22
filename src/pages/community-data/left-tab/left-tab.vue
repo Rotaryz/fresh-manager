@@ -1,7 +1,7 @@
 <template>
   <div ref="leftTab" class="left-tab" @scroll="tabScroll">
     <div ref="leftBox" class="left-box">
-      <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0, {id: 0})">
+      <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0, {id: ''})">
         <div class="left">
           <span class="name">全部群数据({{communityList.length}})</span>
         </div>

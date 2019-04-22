@@ -90,7 +90,7 @@
         letTab: 0,
         tabArr: [],
         request: {
-          wx_group_id: null,
+          wx_group_id: '',
           day_type: 'week'
         },
         editGroupItem: {},
