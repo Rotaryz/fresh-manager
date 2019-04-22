@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="left-tab-item" style="flex: 1 0 0"></div>
+    <div class="left-tab-item last"></div>
   </div>
 </template>
 
@@ -95,7 +95,7 @@
   .left-tab
     width: 176px
     padding-right: 6px
-    height: 854px
+    height: 870px
     overflow-y: auto
     display: flex
     flex-direction: column
@@ -207,6 +207,10 @@
           transition: all 0.3s
           background-image: url("./icon-right_greed@2x.png")
 
+    .last
+      border-bottom: 0
+      min-height: 80px
+      flex: 1 0 0
     .active
       color: $color-positive
       border-right: 0.5px solid transparent

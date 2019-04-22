@@ -1,6 +1,6 @@
 <template>
   <div class="goods-list">
-    <div class="goods-title" :class="{'padding': goods.length > 5}">
+    <div class="goods-title" :class="{'padding': goodsList.length > 5}">
       <span v-for="(item, index) in titleArr"
             :key="index"
             class="title-item"
@@ -13,6 +13,7 @@
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
           <img v-if="val.class === 'img'" class="img" :src="item.goods && item.goods.cover_image" alt="">
           <p v-else-if="val.value === 'name'" class="main">{{item.goods && item.goods[val.value]}}</p>
+          <p v-else-if="val.value === 'view'" class="main">{{item.views || 0}}</p>
           <p v-else class="main">{{item.goods && item[val.value]}}</p>
         </div>
       </div>
@@ -26,7 +27,8 @@
   const TITLE = [
     {name: '图片', flex: 0.4, class: 'img', value: ''},
     {name: '商品名称', flex: 4, class: 'name', value: 'name'},
-    {name: '销量', flex: 0.6, class: 'count', value: 'sales'},
+    {name: '浏览量', flex: 0.8, class: 'view', value: 'views'},
+    {name: '销量', flex: 0.8, class: 'count', value: 'sales'},
     {name: '转化率', flex: 0.8, class: 'rate', value: 'conversion'}
   ]
   const GOOD = [

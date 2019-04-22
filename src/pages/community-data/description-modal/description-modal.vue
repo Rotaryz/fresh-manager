@@ -3,11 +3,11 @@
     <div slot="content" class="default-input">
       <div class="title-box">
         <div class="title">
-          群等级说明
+          {{type === 'quality' ? '群等级说明' : '数据说明'}}
         </div>
         <span class="close hand" @click="cancel"></span>
       </div>
-      <div class="main-data">
+      <div v-if="type === 'quality'" class="main-data">
         <div class="data-table">
           <div class="table-list">
             <div class="table-title">
@@ -25,6 +25,14 @@
           </div>
         </div>
 
+        <div class="btn-group">
+          <div class="btn confirm" @click="confirm">确定</div>
+        </div>
+      </div>
+
+      <div v-if="type === 'business'" class="main-data">
+        <p class="main-text">营收=主力客户x复购数x笔单价</p>
+        <p class="main-text">衡量营收公式，主力客户+复购数+笔单价的数值上升，等于营收增长</p>
         <div class="btn-group">
           <div class="btn confirm" @click="confirm">确定</div>
         </div>
@@ -64,11 +72,13 @@
     },
     data() {
       return {
-        data: DATA
+        data: DATA,
+        type: ''
       }
     },
     methods: {
-      show() {
+      show(type) {
+        this.type = type
         this.$refs.modal && this.$refs.modal.showModal()
       },
       hide() {
@@ -169,6 +179,10 @@
         text-align: left
       .grey
         background: #F5F7FA
+      .main-text
+        color: $color-text-main
+        font-family: $font-family-regular
+        font-size: $font-size-14
   .btn-group
     text-align: center
     display: flex
