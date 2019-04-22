@@ -852,33 +852,6 @@ export default [
           }
         }
       },
-      // 团长提现
-      {
-        path: 'leader-withdrawal',
-        name: 'leader-withdrawal',
-        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
-        meta: {
-          titles: ['商城', '团长', '团长提现'],
-          beforeResolve(routeTo, routeFrom, next) {
-            //  订单列表
-            let status = routeTo.query.status
-            if (status * 1 === 0) {
-              store.dispatch('leader/infoStatus', {status})
-            }
-            store
-              .dispatch('leader/getWithdrawalList')
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
-          }
-        }
-      },
       // 收支明细
       {
         path: 'leader-withdrawal/budget-detail/:id/:name',
