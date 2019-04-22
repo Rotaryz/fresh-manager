@@ -429,12 +429,15 @@ export const storeComputed = {
     'warehouseList',
     'warehousePageTotal',
     'warehouseDetailList',
-    'detailPageTotal'
+    'detailPageTotal',
+    'stockPageTotal',
+    'stockList'
   ])
 }
 export const storeMethods = {
   ...mapActions('store', [
     'getWarehouseList',
-    'getWarehouseDetailList'
+    'getWarehouseDetailList',
+    'getStockList'
   ])
 }

@@ -34,13 +34,20 @@
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
             <div class="list-item list-item-batches hand" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
               <transition name="fade">
-                <div v-show="showIndex === index && item.out_batches.length !== 0" class="batches-box">
+                <div v-show="showIndex === index && item.status !== 0" class="batches-box">
                   <div v-for="(item1, index1) in item.out_batches" :key="index1">
                     {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                   </div>
                 </div>
               </transition>
-              <span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span>
+              <transition name="fade">
+                <div v-show="showIndex === index && item.status === 0" class="batches-box">
+                  <div v-for="(item1, index1) in item.select_batch" :key="index1">
+                    {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                  </div>
+                </div>
+              </transition>
+              <span class="list-operation">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
             </div>
             <div class="list-item">{{item.out_cost_price ? '￥' + item.out_cost_price : '￥0.00'}}/{{item.base_unit}}</div>
             <div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>
@@ -48,7 +55,7 @@
         </div>
       </div>
     </div>
-    <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
+    <default-batch ref="modalBox" :batchList="batchList" :curItem.sync="curItem" @confirm="confirm"></default-batch>
     <div v-if="outMsg.status === 0" class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
       <div class="back-btn back-submit hand" @click="submitOutFn">确认提交</div>
@@ -172,7 +179,14 @@
         if (this.outMsg.status * 1 === 1) return
         this.curItem = item
         this.curIndex = index
-        this.getOutBatchList(index)
+        this.batchList = item.select_batch
+        let number = 0
+        this.batchList = this.batchList.map((item) => {
+          number += (item.select_out_num * 1)
+          item.out_count = item.select_out_num
+          return item
+        })
+        this.$refs.modalBox.show(number, item)
       },
       confirm(arr) {
         let allprice = 0
@@ -227,7 +241,7 @@
       left: 0
       box-sizing: border-box
       padding: 12px 37px 12px 12px
-      background: rgba(51, 51, 51, 9)
+      background: rgba(51, 51, 51, .8)
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-white

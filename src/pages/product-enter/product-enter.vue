@@ -59,6 +59,7 @@
   const TITLE = '成品入库'
   const COMMODITIES_LIST = ['建单时间', '入库单号', '供应商', '采购单号', '入库金额', '状态', '操作']
   const ENTRY_ORDERS_EXPORT = '/scm/api/backend/warehouse/entry-orders-export/'
+  const DISS_EXPORT = '/scm/api/backend/warehouse/entry-orders-diff-export/'
   export default {
     name: PAGE_NAME,
     page: {
@@ -115,15 +116,16 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        let url = process.env.VUE_APP_SCM_API + ENTRY_ORDERS_EXPORT + item.id + '?' + search.join('&')
+        let url = process.env.VUE_APP_SCM_API + excelUrl + item.id + '?' + search.join('&')
         window.open(url)
       },
+      // 导出入库单通知
       entryOrdersExport(item) {
         this._setDownUrl(item, ENTRY_ORDERS_EXPORT)
       },
+      // 导出差异化报告
       difference(item) {
-        // todo 导出差异化链接未设置
-        this._setDownUrl(item, '')
+        this._setDownUrl(item, DISS_EXPORT)
       },
       async _statistic() {
         let res = await API.Store.entryOrdersStatistic(

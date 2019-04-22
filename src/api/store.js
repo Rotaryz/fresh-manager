@@ -202,6 +202,16 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 批量出库【1.2】
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  batchOut(data, loading = false) {
+    let url = `/scm/api/backend/warehouse/batch-out`
+    return request.post(url, data, loading)
+  },
+  /**
    * 库存列表
    * @param data
    * @param loading
@@ -209,6 +219,16 @@ export default {
    */
   warehouseStock(data, loading = false) {
     let url = `/scm/api/backend/stock/warehouse-stock`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 库存列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  warehouseStockType(data, loading = false) {
+    let url = `/scm/api/backend/stock/warehouse-stock-type`
     return request.get(url, data, loading)
   },
   /**
@@ -220,5 +240,25 @@ export default {
   warehouseStockLogs(code, data, loading = false) {
     let url = `/scm/api/backend/stock/warehouse-stock-logs/${code}`
     return request.get(url, data, loading)
+  },
+  /**
+   * 批次库存详情
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  warehouseBatchStock(code, data, loading = false) {
+    let url = `/scm/api/backend/stock/warehouse-batch-stock/${code}`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 批次库存修改库位
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  editWarehouseBatch(code, data, loading = false) {
+    let url = `/scm/api/backend/stock/warehouse-batch-stock/${code}`
+    return request.put(url, data, loading)
   }
 }

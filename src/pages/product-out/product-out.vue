@@ -19,7 +19,8 @@
           <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main">新建出库单<span class="add-icon"></span></router-link>
+          <div class="btn-main" :class="{'btn-disable-store': status !==0 || (status === 0 && !productOutList.length)}" @click="showBatchOut">批量出库</div>
+          <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main g-btn-item">新建出库单<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
@@ -51,6 +52,7 @@
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
+    <default-confirm ref="confirm" @confirm="batchOut"></default-confirm>
   </div>
 </template>
 
@@ -59,18 +61,20 @@
   import _ from 'lodash'
   import API from '@api'
   import {productComputed} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品出库'
   const COMMODITIES_LIST = ['建单时间', '出库单号', '关联订单号', '商户名称', '出库金额', '状态', '操作']
+
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
-    // components: {
-    //   DatePicker
-    // },
+    components: {
+      DefaultConfirm
+    },
     data() {
       return {
         commodities: COMMODITIES_LIST,
@@ -108,6 +112,17 @@
       await this._statistic()
     },
     methods: {
+      // 批量出库
+      async batchOut() {
+        let res = await API.Store.batchOut()
+        this.$toast.show(res.message)
+      },
+      showBatchOut() {
+        if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
+          return
+        }
+        this.$refs.confirm.show('是否确认批量出库？')
+      },
       async _statistic() {
         let res = await API.Store.outOrdersStatistic({
           start_time: this.time[0],

@@ -53,14 +53,14 @@
     props: {
       batchList: {
         type: Array,
-        default: function() {
+        default: function () {
           return []
         }
       },
       curItem: {
         type: Object,
-        default: function() {
-          return []
+        default: function () {
+          return {}
         }
       }
     },
@@ -72,11 +72,13 @@
         changeNumber: 0
       }
     },
-    created() {},
+    created() {
+    },
     methods: {
-      show(index) {
+      show(index, item) {
+        let value = item || this.curItem
         this.numberBatch = index.toFixed(2)
-        this.changeNumber = ((this.curItem.base_num * 10 - this.numberBatch * 10) / 10).toFixed(2)
+        this.changeNumber = ((value.base_num * 10 - this.numberBatch * 10) / 10).toFixed(2)
         this.$refs.modal && this.$refs.modal.showModal()
       },
       cancel() {

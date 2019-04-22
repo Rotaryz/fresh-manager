@@ -14,6 +14,12 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
+  stockPageTotal: { // 库存批次页码
+    total: 1,
+    per_page: 10,
+    total_page: 1
+  },
+  stockList: []
 }
 
 export const getters = {
@@ -28,6 +34,12 @@ export const getters = {
   },
   detailPageTotal(state) {
     return state.detailPageTotal
+  },
+  stockPageTotal(state) {
+    return state.stockPageTotal
+  },
+  stockList(state) {
+    return state.stockList
   }
 }
 
@@ -44,6 +56,12 @@ export const mutations = {
   },
   SET_DETAIL_PAGE_TOTAL(state, detailPageTotal) {
     state.detailPageTotal = detailPageTotal
+  },
+  SET_STOCK_PAGE_TOTAL(state, stockPageTotal) {
+    state.stockPageTotal = stockPageTotal
+  },
+  SET_STOCK_LIST(state, stockList) {
+    state.stockList = stockList
   }
 }
 
@@ -96,6 +114,32 @@ export const actions = {
         }
         commit('SET_WAREHOUSE_DETAIL_LIST', arr)
         commit('SET_DETAIL_PAGE_TOTAL', pageTotal)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  getStockList({state, commit}, {code, page = 1, loading = true}) {
+    let data = {
+      page
+    }
+    return API.Store.warehouseBatchStock(code, data, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        let pageTotal = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        commit('SET_STOCK_LIST', arr)
+        commit('SET_STOCK_PAGE_TOTAL', pageTotal)
         return true
       })
       .catch(() => {

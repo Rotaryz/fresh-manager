@@ -13,9 +13,9 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div v-if="enterMsg.status === 0" class="function-btn" @click="submitFn">
-          <div class="btn-main">提交入库单<span class="add-icon"></span></div>
-        </div>
+        <!--<div v-if="enterMsg.status === 0" class="function-btn" @click="submitFn">-->
+        <!--<div class="btn-main">提交入库单<span class="add-icon"></span></div>-->
+        <!--</div>-->
       </div>
       <div class="big-list" :class="enterDetailList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -50,6 +50,7 @@
                 class="edit-input-box" type="date"
                 placeholder="保质时间"
                 style="width: 110px;height: 34px;border-radius: 2px"
+                :value="item.shelf_life"
                 @on-change="changeStartTime($event, index)"
               ></date-picker>
               <div v-if="enterMsg.status === 1">{{item.shelf_life || '--------'}}</div>
@@ -60,7 +61,7 @@
                 <div v-if="!item.warehouse_position" class="select-time-name">请选择</div>
                 <!--<div class="select-time-icon"></div>-->
               </div>
-              <div v-if="enterMsg.status === 1">
+              <div v-if="enterMsg.status === 1" class="list-item">
                 {{item.warehouse_position|| '--------'}}
               </div>
             </div>
@@ -68,6 +69,10 @@
         </div>
       </div>
       <default-store ref="modalBox" @confirm="confirm"></default-store>
+    </div>
+    <div v-if="enterMsg.status === 0" class="back">
+      <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+      <div class="back-btn back-submit hand" @click="submitFn">确认提交</div>
     </div>
   </div>
 </template>
@@ -118,8 +123,13 @@
       this.id = this.$route.params.id || null
       this.enterDetailList = _.cloneDeep(this.enterDetail.data)
       this.enterMsg = _.cloneDeep(this.enterDetail.entry_order)
+      let marginBottom = this.enterMsg.status === 0 ? 80 : 0
+      this.$store.commit('global/SET_MARGIN_BOTTOM', marginBottom)
     },
     methods: {
+      cancel() {
+        this.$router.back()
+      },
       submitFn() {
         let arr = []
         this.enterDetailList.forEach((item) => {
@@ -201,8 +211,9 @@
           max-width: 130px
           min-width: 130px
         &:nth-child(9)
-          max-width: 110px
+          padding: 0
           min-width: 110px
+          flex: 1.2
         &:nth-child(2), &:nth-child(6)
           flex: 1.3
   .list-item-layout

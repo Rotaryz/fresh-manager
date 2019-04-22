@@ -1387,6 +1387,7 @@ export default [
         component: () => lazyLoadView(import('@pages/out-detail/out-detail')),
         meta: {
           titles: ['供应链', '仓库', '成品出库', '商品明细'],
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('product/getOutDetailData', routeTo.params.id)
@@ -1482,11 +1483,25 @@ export default [
       },
       // 批次
       {
-        path: 'storehouse-management/batch/:id',
+        path: 'storehouse-management/batch',
         name: 'batch',
         component: () => lazyLoadView(import('@pages/batch/batch')),
         meta: {
-          titles: ['供应链', '仓库', '库存管理', '批次']
+          marginBottom: 80,
+          titles: ['供应链', '仓库', '库存管理', '批次'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getStockList', {code: routeTo.query.code, page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 库存盘点

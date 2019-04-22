@@ -1,70 +1,68 @@
 <template>
   <div class="batch table">
-    <div class="down-content">
-      <!--时间选择-->
-      <span class="down-tip">分类筛选</span>
-      <div class="down-item">
-        <base-drop-down placeHolder="请选择建单时间"></base-drop-down>
-      </div>
-      <span class="down-tip">搜索</span>
-      <div class="down-item">
-        <base-search placeHolder="商品名称或商品编码"></base-search>
-      </div>
-    </div>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-out_stock@2x.png" class="identification-icon">
           <p class="identification-name">{{title}}</p>
         </div>
-        <div class="function-btn">
-          <div class="btn-main">修改</div>
-        </div>
+        <!--<div class="function-btn"></div>-->
       </div>
       <div class="big-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item time-content">
-              <date-picker
-                class="edit-input-box" type="date"
-                placeholder="请选择"
-                style="width: 110px;height: 34px;border-radius: 2px"
-                @on-change="changeStartTime($event, index)"
-              ></date-picker>
-              <!--<div>{{'' || '&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;'}}</div>-->
-            </div>
-            <div class="list-item">
-              <div class="select-time">
-                <div class="select-time-name select-time-name-null" @click="setStoreFn()">请选择</div>
-                <div class="select-time-icon hand" @click.stop></div>
+          <div v-if="stockListNow.length">
+            <div v-for="(item, index) in stockListNow" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.batch_num}}</div>
+              <div class="list-item">{{item.usable_stock}}</div>
+              <div class="list-item">{{item.stock_average}}</div>
+              <div class="list-item">{{item.stock_value}}</div>
+              <div class="list-item">{{item.base_num}}</div>
+              <div class="list-item">{{item.supplier}}</div>
+              <div class="list-item time-content">
+                <date-picker
+                  class="edit-input-box"
+                  type="date"
+                  placeholder="请选择"
+                  style="width: 110px;height: 34px;border-radius: 2px"
+                  :value="item.shelf_life"
+                  @on-change="changeStartTime($event, index)"
+                ></date-picker>
+                <!--<div>{{'' || '&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;'}}</div>-->
               </div>
+              <div class="list-item">
+                <div class="select-time">
+                  <div class="select-time-name" :class="{'select-time-name-null': !item.warehouse_position}" @click="setStoreFn(index)">{{item.warehouse_position || '请选择'}}</div>
+                  <div v-show="item.warehouse_position" class="select-time-icon hand" @click.stop="clearPosition(index)"></div>
+                </div>
+              </div>
+              <!--<div v-if="enterMsg.status === 1">-->
+              <!--{{item.warehouse_position|| '&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;'}}-->
+              <!--</div>-->
             </div>
-            <!--<div v-if="enterMsg.status === 1">-->
-            <!--{{item.warehouse_position|| '&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;'}}-->
-            <!--</div>-->
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pagination"></base-pagination>
-      </div>
+      <!--<div class="pagination-box">-->
+      <!--<base-pagination ref="pagination"></base-pagination>-->
+      <!--</div>-->
     </div>
     <default-store ref="modalBox" @confirm="confirm"></default-store>
+    <div class="back">
+      <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+      <div class="back-btn back-submit hand" @click="changeBatch">保存</div>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'iview'
   import DefaultStore from '@components/default-store/default-store'
+  import {storeComputed, storeMethods} from '@state/helpers'
+  import API from '@api'
 
   const PAGE_NAME = 'BATCH'
   const TITLE = '批次'
@@ -81,30 +79,69 @@
     },
     data() {
       return {
-        title: '名称需要补充数据',
+        title: this.$route.query.name,
         commodities: COMMODITIES_LIST,
         curIndex: 0,
-        isChange: true
+        isChange: true,
+        stockListNow: []
       }
     },
+    computed: {
+      ...storeComputed
+    },
+    created() {
+      this.stockListNow = JSON.parse(JSON.stringify(this.stockList))
+    },
     methods: {
+      ...storeMethods,
+      cancel() {
+        this.$router.back()
+      },
       // 修改保质期
       changeStartTime(e, index) {
-        // this.enterDetailList[index].shelf_life = e
+        this.stockListNow[index].shelf_life = e
       },
-      setStoreFn(idnex) {
-        this.curIndex = idnex
+      setStoreFn(index) {
+        this.curIndex = index
+        this.$refs.modalBox.getStoreList()
         this.$refs.modalBox.show()
       },
       // 确认选择的库位
       confirm(id, text) {
-        console.log(id, text)
+        this.$refs.modalBox.cancel()
+        this.stockListNow[this.curIndex].warehouse_position = text
+        this.stockListNow[this.curIndex].warehouse_position_id = id
+      },
+      clearPosition(index) {
+        this.stockListNow[index].warehouse_position = ''
+        this.stockListNow[index].warehouse_position_id = ''
       },
       // 修改
-      changeBatch() {
+      async changeBatch() {
         if (!this.isChange) {
           return false
         }
+        let data = []
+        for (let i in this.stockListNow) {
+          if (!this.stockListNow[i].shelf_life) {
+            this.$toast.show(`请选择批次号${this.stockListNow[i].batch_num}的保质期`)
+            return
+          } else if (!this.stockListNow[i].warehouse_position_id) {
+            this.$toast.show(`请选择批次号${this.stockListNow[i].batch_num}的存放库位`)
+            return
+          }
+          data.push({batch_num: this.stockListNow[i].batch_num, warehouse_position_id: this.stockListNow[i].warehouse_position_id, shelf_life: this.stockListNow[i].shelf_life})
+        }
+        this.isChange = false
+        let res = await API.Store.editWarehouseBatch(this.$route.query.code, {batch: data})
+        this.$toast.show(res.message, 600)
+        if (res.error !== this.$ERR_OK) {
+          this.isChange = true
+          return
+        }
+        setTimeout(() => {
+          this.$router.back()
+        }, 800)
       }
     }
   }

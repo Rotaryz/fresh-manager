@@ -66,7 +66,14 @@
                 >
                   详情
                 </router-link>
-                <router-link :to="`batch/${item.id}`" append class="list-operation">批次</router-link>
+                <router-link
+                  tag="div"
+                  :to="`batch?code=${item.goods_sku_code}&name=${item.goods_name}${item.goods_sku_encoding ? '(' + item.goods_sku_encoding + ')' : ''}`"
+                  append
+                  class="list-operation"
+                >
+                  批次
+                </router-link>
               </div>
             </div>
           </div>
@@ -233,6 +240,8 @@
       &:last-child
         padding: 0
         max-width: 80px
+      .item-dark
+        no-wrap()
   .help
     display: flex
     align-items: center
@@ -279,5 +288,4 @@
       color: $color-white
       background: #32323A
       z-index: 111
-
 </style>
