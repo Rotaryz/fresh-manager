@@ -272,7 +272,7 @@
             this.$refs.addAccount.hideModal()
             this.$toast.show('创建成功')
             this.enterAccount = false
-            this.getAccountList(false)
+            this.setKeyword('', false)
           })
           break
         case 1:
@@ -286,7 +286,7 @@
             this.$refs.addAccount.hideModal()
             this.$toast.show('编辑成功')
             this.enterAccount = false
-            this.getAccountList(false)
+            this.setKeyword('', false)
           })
           break
         }

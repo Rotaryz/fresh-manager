@@ -438,7 +438,6 @@
       arr = arr.sort((a, b) => {
         return a.sort - b.sort
       })
-      console.log(arr)
       this.firstMenu = arr
       this._getMenuIndex()
       this._handleNavList()

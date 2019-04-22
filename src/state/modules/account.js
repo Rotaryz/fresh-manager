@@ -106,10 +106,10 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  setKeyword({commit, dispatch}, keyword) {
+  setKeyword({commit, dispatch}, keyword, loading = true) {
     commit('SET_KEY_WORD', keyword)
     commit('SET_ACCOUNT_PAGE', 1)
-    dispatch('getAccountList')
+    dispatch('getAccountList', loading)
   },
   setAccount({commit, dispatch}, page) {
     commit('SET_ACCOUNT_PAGE', page)
