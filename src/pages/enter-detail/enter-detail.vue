@@ -132,15 +132,21 @@
       },
       submitFn() {
         let arr = []
-        this.enterDetailList.forEach((item) => {
-          let obj = {}
-          obj.id = item.id
-          obj.base_num = item.base_num
-          obj.purchase_num = item.purchase_num
-          obj.shelf_life = item.shelf_life
-          obj.warehouse_position_id = item.warehouse_position_id || ''
+        for (let i in this.enterDetailList) {
+          if (!this.enterDetailList[i].warehouse_position_id) {
+            // 库位必填
+            this.$toast.show(`请选择批次号${this.enterDetailList[i].batch_num}的存放库位`)
+            return
+          }
+          let obj = {
+            id: this.enterDetailList[i].id,
+            base_num: this.enterDetailList[i].base_num,
+            purchase_num: this.enterDetailList[i].purchase_num,
+            shelf_life: this.enterDetailList[i].shelf_life,
+            warehouse_position_id: this.enterDetailList[i].warehouse_position_id || ''
+          }
           arr.push(obj)
-        })
+        }
         if (this.isSubmit) return
         this.isSubmit = true
         API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {

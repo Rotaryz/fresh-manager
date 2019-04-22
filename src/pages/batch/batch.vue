@@ -116,10 +116,7 @@
         }
         let data = []
         for (let i in this.stockListNow) {
-          if (!this.stockListNow[i].shelf_life) {
-            this.$toast.show(`请选择批次号${this.stockListNow[i].batch_num}的保质期`)
-            return
-          } else if (!this.stockListNow[i].warehouse_position_id) {
+          if (!this.stockListNow[i].warehouse_position_id) {
             this.$toast.show(`请选择批次号${this.stockListNow[i].batch_num}的存放库位`)
             return
           }

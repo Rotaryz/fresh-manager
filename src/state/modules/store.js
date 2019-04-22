@@ -52,7 +52,6 @@ export const mutations = {
   },
   SET_WAREHOUSE_DETAIL_LIST(state, warehouseDetailList) {
     state.warehouseDetailList = warehouseDetailList
-    console.log(state.warehouseDetailList)
   },
   SET_DETAIL_PAGE_TOTAL(state, detailPageTotal) {
     state.detailPageTotal = detailPageTotal
@@ -124,22 +123,13 @@ export const actions = {
       })
   },
   getStockList({state, commit}, {code, page = 1, loading = true}) {
-    let data = {
-      page
-    }
-    return API.Store.warehouseBatchStock(code, data, loading)
+    return API.Store.warehouseBatchStock(code, {page}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
         let arr = res.data
-        let pageTotal = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
         commit('SET_STOCK_LIST', arr)
-        commit('SET_STOCK_PAGE_TOTAL', pageTotal)
         return true
       })
       .catch(() => {
