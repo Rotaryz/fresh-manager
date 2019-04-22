@@ -410,22 +410,35 @@
       let arr = storage.get('menu')
       arr.forEach((item, index) => {
         item.isLight = false
+        if (item.sub_menu && item.sub_menu[0].sub_menu) {
+          item.url = item.sub_menu[0].sub_menu[0].front_url
+        }
         switch (item.icon_name) {
         case 'statistics':
           item.icon = require('./icon-dashboard@2x.png')
-          item.url = '/home/new-data'
           break
         case 'shop':
           item.icon = require('./icon-tmall@2x.png')
-          item.url = '/home/product-list'
+          break
+        case 'scm':
+          item.icon = require('./icon-supply_chain@2x.png')
+          break
+        case 'finance':
+          item.icon = require('./icon-finance@2x.png')
+          break
+        case 'setting':
+          item.icon = require('./icon-set_up@2x.png')
           break
         case 'guide':
           item.display_name = ''
           item.icon = require('./icon-guide@2x.png')
-          item.url = '/home/beginner-guide'
           break
         }
       })
+      arr = arr.sort((a, b) => {
+        return a.sort - b.sort
+      })
+      console.log(arr)
       this.firstMenu = arr
       this._getMenuIndex()
       this._handleNavList()

@@ -35,7 +35,7 @@
         trySocial: false,
         tryScm: false,
         menuList: [],
-        permissionsList: []
+        permissionsList: {}
       }
     },
     computed: {
@@ -80,7 +80,7 @@
           }
           this.trySocial = true
           this.menuList = this.menuList.concat(res.data.admin_menu)
-          this.permissionsList = this.permissionsList.concat(res.data.permissions)
+          this.permissionsList = Object.assign(this.permissionsList, res.data.permissions)
           this.judgeRequest()
         })
       },
@@ -91,16 +91,17 @@
             this.$toast.show(res.message)
             return
           }
-          this.trySocial = true
+          this.tryScm = true
           this.menuList = this.menuList.concat(res.data.admin_menu)
-          this.permissionsList = this.permissionsList.concat(res.data.permissions)
+          this.permissionsList = Object.assign(this.permissionsList, res.data.permissions)
           this.judgeRequest()
         })
       },
       judgeRequest() {
-        if (this.trySocial && this.trySocial) {
+        if (this.trySocial && this.tryScm) {
           storage.set('menu', this.menuList)
           storage.set('permissions', this.permissionsList)
+          console.log(this.permissionsList)
           this.$router.push(this.$route.query.redirectFrom || '/home')
         }
       }
