@@ -38,7 +38,7 @@
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
-                <span class="list-operation" @click="_deleteActivity(item.id)">复制活动</span>
+                <router-link tag="span" :to="'new-sale?editId=' + (item.id || 0)" append class="list-operation">复制活动</router-link>
               </div>
             </div>
           </div>

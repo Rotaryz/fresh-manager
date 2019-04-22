@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{id ? '编辑活动' : '新建活动'}}</p>
+        <p class="identification-name">{{id ? '查看活动' : '新建活动'}}</p>
       </div>
       <div class="function-btn">
       </div>
@@ -12,16 +12,6 @@
       <div class="content-title">基本信息</div>
     </div>
     <div class="rush-time">
-      <!--<div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          持续时间
-        </div>
-        <div class="edit-input-box">
-          <base-drop-down :width="200" :height="44" :select="duration" @setValue="_selectDuration"></base-drop-down>
-        </div>
-        <div :class="{'text-no-change':disable}"></div>
-      </div>-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -272,7 +262,7 @@
     watch: {},
     created() {
       this.disable = this.$route.query.id
-      this.id = this.$route.query.id || null
+      this.id = this.$route.query.id || this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.saleDetail)
         this.goodsList = obj.activity_goods
