@@ -22,6 +22,7 @@
         <div class="identification-page">
           <img src="./icon-product_list@2x.png" class="identification-icon">
           <p class="identification-name">商品列表</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
@@ -104,6 +105,11 @@
           type: 'default',
           data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
         },
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '已上架', value: 1, key: 'up', num: 0},
+          {name: '已下架', value: 2, key: 'down', num: 0}
+        ],
         stairSelect: {
           check: false,
           show: false,
@@ -154,6 +160,10 @@
           this.$refs.pagination.beginPage()
           this.getGoodsListData()
         }
+      },
+      changeStatus(selectStatus) {
+        console.log(selectStatus)
+        this.$refs.pagination.beginPage()
       },
       _getUrl() {
         let currentId = this.getCurrentId()
