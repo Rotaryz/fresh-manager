@@ -31,7 +31,7 @@
       </div>
 
       <div v-if="type === 'business'" class="main-data">
-        <p class="main-text">怎么增加营收？</p>
+        <p class="main-text">如何增加营收金额？</p>
         <p class="main-text">营收金额 = 主力客户 x 复购数 x 笔单价(主力客户、复购数、笔单价的各项数值持续上升，营收金额也持续增长)</p>
         <div class="btn-group">
           <div class="btn confirm" @click="confirm">确定</div>
