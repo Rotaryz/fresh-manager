@@ -177,24 +177,35 @@
         console.log(item, index)
         this.tabIndex = index
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
-        switch (index) {
-        case 0:
-          this.SET_REFRESH()
-          this.getMerchantOrderList()
-          break
-        case 1:
+        if(!this.tabIndex){
+          this._updateMerchantOrderList({
+            page: 1,
+            limit: 10,
+            start_time: '',
+            end_time: '',
+            type: "",
+            status: "",
+            keyword: ""
+          })
+        }else{
           this.clearEmptyMerger()
-          this.getMergeOrderslist()
-          break
         }
       },
-      clearEmptyMerger() {
+      _updateMerchantOrderList(params) {
+        this.SET_PARAMS(params)
+        this.getMerchantOrderList()
+      },
+      _updateMergerList(params){
+        this.filterMerger = {...this.filterMerger,...params}
+        this.getMergeOrderslist()
+      },
+      clearEmptyMerger(params) {
         this.timeArrMerger = ["", ""]
-        this.filterMerger = {
+        this._updateMergerList({
           page: 1,
           time_start: "",
           time_end: ""
-        }
+        })
       },
       getMergeOrderslist() {
         API.MerchantOrder.getMergeOrderslist(this.filterMerger).then(res => {
@@ -204,21 +215,18 @@
       // 时间选择器
       changeTimeMerger(timeArr) {
         this.timeArrMerger = timeArr
-        this.filterMerger.time_start = this.timeArrMerger[0]
-        this.filterMerger.time_end = this.timeArrMerger[1]
-        this.getMergeOrderslist()
+        this._updateMergerList({time_start:this.timeArrMerger[0],time_end:this.timeArrMerger[1]})
       },
-      //
+      // 页面更改
       setMergerPage(page) {
-        this.filterMerger.page = page
-        this.getMergeOrderslist()
+        this._updateMergerList({page})
       },
       /**
        商户订单
        **/
       // 状态数据
-      getStatusData() {
-        API.MerchantOrder.getStausData().then(res => {
+      getStatusData(params) {
+        API.MerchantOrder.getStausData(params).then(res => {
           this.dispatchSelect = res.data.map(item => {
             return {
               name: item.status_str,
@@ -241,31 +249,45 @@
       },
       // 翻页
       setOrderPage(page) {
-        this.SET_PAGE({page})
-        this.getMerchantOrderList()
+        this._updateMerchantOrderList({
+          page
+        })
       },
       // 时间
-      changeTime(timeArr) {
-        this.SET_TIME({timeArr})
+      changeTime(timeArr = ['', '']) {
+        this._updateMerchantOrderList({
+          start_time: timeArr[0],
+          end_time: timeArr[1],
+          page: 1
+        })
+        this.getStatusData({
+          start_time: timeArr[0],
+          end_time: timeArr[1]
+        })
       },
       // 类型
       _setTypeFilter(item) {
-        console.log(item)
-        this.SET_FILTER({value: item.value})
-        this.SET_PAGE({page: 1})
-        this.getMerchantOrderList()
+        this._updateMerchantOrderList({
+          type: item.value,
+          page: 1
+        })
+        this.getStatusData({
+          keyword: item.name
+        })
       },
       // 状态
       setValue(item) {
-        this.SET_STATUS({status: item.value})
-        this.SET_PAGE({page: 1})
-        this.getMerchantOrderList()
+        this._updateMerchantOrderList({
+          status: item.value,
+          page: 1
+        })
       },
       // 搜索按钮
       changeKeyword(keyword) {
-        this.SET_KEYWORD({keyword})
-        this.SET_PAGE({page: 1})
-        this.getMerchantOrderList()
+        this._updateMerchantOrderList({
+          keyword,
+          page: 1
+        })
       },
     }
   }

@@ -57,29 +57,13 @@ export const mutations = {
   },
   SET_LIST(state, {list}) {
     state.afterSalesList = list
-  },
-  SET_PAGE(state, {page}) {
-    state.afterSalesFilter.page = page
-  },
-  SET_TIME(state, timeArr) {
-    state.afterSalesFilter.start_time = timeArr[0]
-    state.afterSalesFilter.end_time = timeArr[1]
-  },
-  SET_KEYWORD(state, {text}) {
-    state.afterSalesFilter.keyword = text
-  },
-  SET_STATUS(state, {text}) {
-    state.afterSalesFilter.status = text
-  },
-  SET_DETAIL_PAGE(state, {page}) {
-    state.afterSalesDetail.filter.page= page
-  },
+  }
 }
 
 export const actions = {
   // 售后订单列表
   getAfterSalesOrderList({state, commit, dispatch}) {
-    return API.AfterSalesOrder.getAfterSalesOrderList(state.filter, {loading: true})
+    return API.AfterSalesOrder.getAfterSalesOrderList(state.afterSalesFilter, {loading: true})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

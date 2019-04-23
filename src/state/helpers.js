@@ -450,14 +450,9 @@ export const merchantOrderMethods ={
     'getConsumerOrderDetail'
   ]),
   ...mapMutations('merchantOrder', [
+    'SET_PARAMS',
     'SET_CONSUMER_PAGE',
     'SET_CONSUMER_PARAMS',
-    'SET_REFRESH',
-    'SET_KEYWORD',
-    'SET_PAGE',
-    'SET_STATUS',
-    'SET_TIME',
-    'SET_FILTER',
     'SET_PAGE_TOTAL',
     'SET_LIST',
     'SET_DETAIL'

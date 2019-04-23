@@ -1067,14 +1067,16 @@ export default [
         meta: {
           titles: ['供应链', '订单', '商户订单'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('merchantOrder/getMerchantOrderList', {
-              time: '',
-              startTime: "",
-              endTime: "",
-              keyword: '',
+            store.commit('merchantOrder/SET_PARAMS', {
               page: 1,
-              loading: true
-            }).then((res) => {
+              limit: 10,
+              start_time: '',
+              end_time: '',
+              type: "",
+              status: "",
+              keyword: ""
+            })
+            store.dispatch('merchantOrder/getMerchantOrderList').then((res) => {
               if (!res) {
                 return next({name: '404'})
               }
@@ -1158,6 +1160,14 @@ export default [
         meta: {
           titles: ['供应链', '订单', '售后订单'],
           beforeResolve(routeTo, routeFrom, next) {
+            store.commit('afterSalesOrder/SET_PARAMS',{
+              page: 1,
+              limit: 10,
+              start_time: '',
+              end_time: '',
+              keyword: "",
+              status: ""
+            })
             store.dispatch('afterSalesOrder/getAfterSalesOrderList')
               .then((res) => {
                 if (!res) {

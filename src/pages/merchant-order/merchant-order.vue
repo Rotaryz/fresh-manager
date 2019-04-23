@@ -241,30 +241,41 @@
       },
       // 翻页
       setOrderPage(page) {
-        this.SET_PAGE({page})
+        console.log(page,page)
+        this.SET_PARAMS({page})
         this.getMerchantOrderList()
       },
       // 时间
-      changeTime(timeArr) {
-        this.SET_TIME({timeArr})
+      changeTime(timeArr = [null,null]) {
+        this.SET_PARAMS({
+          start_time: timeArr[0],
+          end_time: timeArr[1],
+          page:1
+        })
+        this.getMerchantOrderList()
       },
       // 类型
       _setTypeFilter(item) {
-        console.log(item)
-        this.SET_FILTER({value: item.value})
-        this.SET_PAGE({page: 1})
+        this.SET_PARAMS({
+          type: item.value,
+          page:1
+        })
         this.getMerchantOrderList()
       },
       // 状态
       setValue(item) {
-        this.SET_STATUS({status: item.value})
-        this.SET_PAGE({page: 1})
+        this.SET_PARAMS({
+          status: item.value,
+          page:1
+        })
         this.getMerchantOrderList()
       },
       // 搜索按钮
       changeKeyword(keyword) {
-        this.SET_KEYWORD({keyword})
-        this.SET_PAGE({page: 1})
+        this.SET_PARAMS({
+          keyword,
+          page:1
+        })
         this.getMerchantOrderList()
       },
     }

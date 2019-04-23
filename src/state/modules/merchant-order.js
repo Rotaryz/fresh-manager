@@ -2,22 +2,24 @@ import API from '@api'
 import app from '@src/main'
 
 export const state = {
-  pageTotal: {
-    // 页码详情
-    total: 1,
-    per_page: 10,
-    total_page: 1
-  },
-  orderList: [],
-  detail: {},
-  filter: {
-    page: 1,
-    limit: 10,
-    start_time: '',
-    end_time: '',
-    type: "",
-    status: "",
-    keyword: ""
+  merchant:{
+    pageTotal: {
+      // 页码详情
+      total: 1,
+      per_page: 10,
+      total_page: 1
+    },
+    list: [],
+    detail: {},
+    filter: {
+      page: 1,
+      limit: 10,
+      start_time: '',
+      end_time: '',
+      type: "",
+      status: "",
+      keyword: ""
+    },
   },
   merchantDetail: {
     buyer_name: "",
@@ -59,15 +61,14 @@ export const state = {
       detail: []
     }
   }
-
 }
 
 export const getters = {
   pageTotal(state) {
-    return state.pageTotal
+    return state.merchant.pageTotal
   },
   orderList(state) {
-    return state.orderList
+    return state.merchant.list
   },
   detail(state) {
     return state.detail
@@ -87,6 +88,9 @@ export const getters = {
 }
 
 export const mutations = {
+  SET_PARAMS(state, {key = 'merchant',...params}){
+    state[key].filter = {...state[key].filter,...params}
+  },
   SET_CONSUMER_PARAMS(state, {goodsSkuCode, parentOrderId, page}) {
     state.consumerOrderDetail.filter.goods_sku_code = goodsSkuCode
     state.consumerOrderDetail.filter.parent_order_id = parentOrderId
@@ -107,45 +111,19 @@ export const mutations = {
   SET_MERGER_DETAIL(state, {value}) {
     state.mergerDetail = value
   },
-  SET_REFRESH(state) {
-    state.filter = {
-      page: 1,
-      limit: 10,
-      start_time: '',
-      end_time: '',
-      type: "",
-      status: "",
-      keyword: ""
-    }
-  },
-  SET_FILTER(state, {name = 'type', value}) {
-    state.filter[name] = value
-  },
-  SET_PAGE(state, {page}) {
-    state.filter.page = page
-  },
-  SET_STATUS(state, {status}) {
-    state.filter.status = status
-  },
-  SET_PAGE_TOTAL(state, {pageTotal}) {
-    state.pageTotal = pageTotal
+
+  SET_PAGE_TOTAL(state, {type='merchant',pageTotal}) {
+    state[type].pageTotal = pageTotal
   },
   SET_LIST(state, {list}) {
-    state.orderList = list
-  },
-  SET_TIME(state, timeArr) {
-    state.filter.start_time = timeArr[0]
-    state.filter.end_time = timeArr[1]
-  },
-  SET_KEYWORD(state, {text}) {
-    state.filter.keyword = text
-  },
+    state.merchant.list = list
+  }
 }
 
 export const actions = {
   // 商户订单列表
   getMerchantOrderList({state, commit, dispatch}, params = {}) {
-    return API.MerchantOrder.getMerchantOrderList({...state.filter, ...params}, {loading: true})
+    return API.MerchantOrder.getMerchantOrderList(state.merchant.filter, {loading: true})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
