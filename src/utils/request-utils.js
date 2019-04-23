@@ -1,5 +1,6 @@
 import storage from 'storage-controller'
 import app from '@src/main'
+import store from '@state/store'
 
 // 错误码检查
 export function handleErrorType(code) {
@@ -20,6 +21,11 @@ export function handleErrorType(code) {
     case 13006: {
       // 暂无权限
       _handleLosePermissions()
+      break
+    }
+    case 13007: {
+      // 账号被删除
+      _handleDeleteAccount()
       break
     }
     default:
@@ -64,6 +70,12 @@ function _handUpgrade() {
     storage.set('upgradeRoute', currentRoute)
     app.$router.replace('/upgrade')
   }
+}
+
+function _handleDeleteAccount() {
+  storage.clear()
+  store.dispatch('auth/logOut')
+  app.$router.replace('/login')
 }
 
 export function showLoading(loading) {
