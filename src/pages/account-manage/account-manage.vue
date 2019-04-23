@@ -12,7 +12,8 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-number_list@2x.png" class="identification-icon">
+          <img v-if="tabIndex === 0" src="./icon-number_list@2x.png" class="identification-icon">
+          <img v-if="tabIndex === 1" src="./icon-power@2x.png" class="identification-icon">
           <p class="identification-name">{{tabIndex === 0 ? '账号列表' : '角色权限'}}</p>
         </div>
         <div v-if="tabIndex === 0" class="function-btn">
@@ -89,7 +90,7 @@
             </div>
           </div>
         </div>
-        <div class="account-input-box">
+        <div class="account-input-box account-input-bottom">
           <div class="account-input-left">
             <span class="start">*</span>
             密码
@@ -121,9 +122,9 @@
   const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
   const ORDERSTATUS = [{text: '账号管理', status: ''}, {text: '角色权限', status: 0}]
   const ACCOUNT_LIST = [
-    {title: '账号姓名', key: 'created_at', flex: 0.9},
-    {title: '账号', key: 'order_sn', flex: 0.9},
-    {title: '角色', key: 'sale_order_sn', flex: 0.9},
+    {title: '账号姓名', key: 'created_at', flex: 0.8},
+    {title: '账号', key: 'order_sn', flex: 0.6},
+    {title: '角色', key: 'sale_order_sn', flex: 1.3},
     {title: '注册时间', key: 'road_name', flex: 1},
     {title: '最后登录时间', key: 'receiver', flex: 1},
     {title: '操作', key: '', operation: '导出', flex: 0.7}
@@ -334,11 +335,12 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
   .account-manage
     width: 100%
   .list-box
     .list-item
+      &:nth-child(3)
+        white-space: normal
       &:nth-child(6)
         max-width: 80px !important
         padding-right: 0 !important
@@ -347,6 +349,7 @@
     min-height: 440px
     background: $color-white
     padding: 0 20px 60px
+    border-radius: 3px
     .account-box-title
       padding: 22px 0 30px
       layout(row)
@@ -373,6 +376,8 @@
     margin-bottom: 20px
   .account-input-margin
     margin-bottom: 30px
+  .account-input-bottom
+    margin-bottom: 40px
   .account-input-left
     width: 68px
     text-align: right
@@ -450,8 +455,8 @@
   .pro-select-icon
     border-radius: 2px
     border: 1px solid $color-line
-    height: 14px
-    width: 14px
+    width: 16px
+    height: @width
     margin-right: 6px
     background: $color-white
     transition: all 0.3s

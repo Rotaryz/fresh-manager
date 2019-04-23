@@ -412,9 +412,10 @@
     data() {
       return {
         currentIndex: '',
-        firstMenu: FIRST_MENU,
+        firstMenu: [],
         firstIndex: INFO_INDEX,
-        navList: []
+        navList: [],
+        oldMenu: FIRST_MENU
       }
     },
     watch: {
@@ -456,9 +457,6 @@
           item.icon = require('./icon-guide@2x.png')
           break
         }
-      })
-      arr = arr.sort((a, b) => {
-        return a.sort - b.sort
       })
       this.firstMenu = arr
       this._getMenuIndex()
