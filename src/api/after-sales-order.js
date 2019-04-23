@@ -28,18 +28,18 @@ export default {
   batchRefund(params) {
     // let url = '/mock/StausData.json'
     let url =`/scm/api/backend/oms/batch-refund`
-    return request.get(url, {goods_sku_codes:JSON.stringify(params) })
+    return request.post(url, {goods_sku_codes:params })
   },
   batchReplenishment(params) {
     // let url = '/mock/StausData.json'
     let url =`/scm/api/backend/oms/batch-delay`
-    return request.get(url, {goods_sku_codes: params})
+    return request.post(url, {goods_sku_codes: params})
   },
   // √ 批量列表
-  getBatchList(params,{loading=false}) {
+  getBatchList(params) {
     let url = '/scm/api/backend/oms/after-sale-order-details'
     // let url = '/mock/batchendSalesList.json'
-    return request.get(url, params,loading)
+    return request.get(url, params)
   },
 
 }

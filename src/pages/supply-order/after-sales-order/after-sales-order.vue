@@ -154,8 +154,8 @@
     },
     computed: {
       ...afterSalesOrderComputed,
-      timeArr(){
-        return [this.afterSalesFilter.start_time,this.afterSalesFilter.end_time]
+      timeArr() {
+        return [this.afterSalesFilter.start_time, this.afterSalesFilter.end_time]
       }
     },
     async created() {
@@ -189,9 +189,17 @@
       },
       // 弹框数据
       _getBatchList(val) {
-        API.AfterSalesOrder.getBatchList({keyword:val},{loading: true}).then(res => {
+        API.AfterSalesOrder.getBatchList({keyword: val}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
           this.batchendList = res.data
+        }).catch(() => {
+          return false
         })
+          .finally(() => {
+            this.$loading.hide()
+          })
       },
       // 弹框显示影藏
       _hideModal() {
@@ -216,11 +224,33 @@
       },
       // 补货
       _setBatchReplenishment() {
-        API.AfterSalesOrder.batchReplenishment(this.selectIds)
+        API.AfterSalesOrder.batchReplenishment(this.selectIds).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
+          this._hideModal()
+          this.getAfterSalesOrderList()
+        }).catch(() => {
+          return false
+        })
+          .finally(() => {
+            this.$loading.hide()
+          })
       },
       // 退款
       _setBatchRefund() {
-        API.AfterSalesOrder.batchRefund(this.selectIds)
+        API.AfterSalesOrder.batchRefund(this.selectIds).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
+          this._hideModal()
+          this.getAfterSalesOrderList()
+        }).catch(() => {
+          return false
+        })
+          .finally(() => {
+            this.$loading.hide()
+          })
       },
       // ---------- 列表
       // 更新列表数据
@@ -233,7 +263,7 @@
         let defaultParams = {
           start_time: this.afterSalesFilter.start_time,
           end_time: this.afterSalesFilter.end_time,
-          keyword:this.afterSalesFilter.keyword
+          keyword: this.afterSalesFilter.keyword
         }
         API.AfterSalesOrder.getStausData(defaultParams).then(res => {
           this.dispatchSelect = res.data.map(item => {
