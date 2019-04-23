@@ -89,8 +89,9 @@
     data() {
       return {
         statusTab: [
-          {name: '正常', value: '', key: 'all', num: 0},
-          {name: '禁用', value: 1, key: 'wait_submit', num: 0}
+          {name: '全部', value: '', num: 0},
+          {name: '正常', value: '', num: 0},
+          {name: '禁用', value: 1, num: 0}
         ],
         leaderTitle: LEADER_TITLE,
         page: 1,
