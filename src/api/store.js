@@ -290,5 +290,25 @@ export default {
   editStockList(data, loading = false) {
     let url = `/scm/api/backend/stock/warehouse-stock-list`
     return request.post(url, data, loading)
+  },
+  /**
+   * 库存清单调整
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  adjustOorderDetail(id, data, loading = false) {
+    let url = `/scm/api/backend/stock/adjust-order-detail/${id}`
+    return request.get(url, data, loading)
+  },
+  /**
+   *  盘点单详情
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  adjustOorderMsg(id, data, loading = false) {
+    let url = `/scm/api/backend/stock/adjust-order/${id}`
+    return request.get(url, data, loading)
   }
 }

@@ -1542,7 +1542,20 @@ export default [
         name: 'stock-detail',
         component: () => lazyLoadView(import('@pages/stock-detail/stock-detail')),
         meta: {
-          titles: ['供应链', '仓库', '库存盘点', '盘点详情']
+          titles: ['供应链', '仓库', '库存盘点', '盘点详情'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getAdjustOrderDetail', {id: routeTo.params.id, page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 配送任务

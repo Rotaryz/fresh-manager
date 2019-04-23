@@ -32,9 +32,9 @@
               <div class="list-item">{{item.actual_stock}}</div>
               <div class="list-item">{{item.diff_stock}}</div>
               <div class="list-item list-manager-box" :class="{'list-manager-box-active': blankIndex === index}" @click="setStatus(index, item)">
-                <span class="list-manager hand">{{item.adjust_type_str}}<span v-if="item.adjust_type === 1" class="list-icon"></span></span>
-                <ul v-if="item.adjust_type === 1" class="adjustment-list">
-                  <li v-for="(ad,key) in adjustment" :key="key" class="adjustment-item hand" :class="{'adjustment-item-active' : item.adjust_type_str === ad.name}" @click="selectType(ad)">{{ad.name}}</li>
+                <span class="list-manager hand">{{item.adjust_type_str}}<span v-if="item.adjust_type === 1 || item.adjust_type === 3" class="list-icon"></span></span>
+                <ul v-if="item.adjust_type === 1 || item.adjust_type === 3" class="adjustment-list">
+                  <li v-for="(ad,key) in adjustment" :key="key" class="adjustment-item hand" :class="{'adjustment-item-active' : item.adjust_type_str === ad.name}" @click.stop="selectType(ad)">{{ad.name}}</li>
                 </ul>
               </div>
             </div>
@@ -58,7 +58,7 @@
   const PAGE_NAME = 'EDIT_STOCK'
   const TITLE = '新建盘点'
   const COMMODITIES_LIST = ['序号', '商品', '分类', '基本单位', '库存数量', '盘点数量', '差异数量', '调整类型']
-  const ADJUSTMENT = [{name: '报损', type: 1}, {name: '盈亏', type: 2}]
+  const ADJUSTMENT = [{name: '报损', type: 1}, {name: '盘亏', type: 3}]
   export default {
     name: PAGE_NAME,
     page: {
@@ -79,7 +79,7 @@
     methods: {
       // 下拉选择调整类型
       setStatus(index, item) {
-        if (item.adjust_type !== 1) {
+        if (item.adjust_type !== 1 && item.adjust_type !== 3) {
           return
         }
         this.blankIndex = this.blankIndex === index ? -1 : index
@@ -87,6 +87,7 @@
       selectType(ad) {
         this.blankList[this.blankIndex].adjust_type_str = ad.name
         this.blankList[this.blankIndex].adjust_type = ad.type
+        this.blankIndex = -1
       },
       addition() {
         this.$refs.confirm.show('是否进行盘点库存调整？')
@@ -148,7 +149,6 @@
       .list-manager-box
         position: relative
         overflow: visible
-        z-index: 10
       .list-manager-box-active
         .adjustment-list
           opacity: 1
@@ -176,6 +176,8 @@
     box-shadow: 0 0 8px 0 #EBEBEB
     opacity: 0
     transition: opacity .4s
+    z-index: 100
+    background: $color-white
     &:after
       position: absolute
       top: -4px

@@ -433,7 +433,9 @@ export const storeComputed = {
     'stockPageTotal',
     'stockList',
     'adjustOrder',
-    'adjustPageTotal'
+    'adjustPageTotal',
+    'adjustOrderDetail',
+    'adjustDetailPageTotal'
   ])
 }
 export const storeMethods = {
@@ -441,6 +443,7 @@ export const storeMethods = {
     'getWarehouseList',
     'getWarehouseDetailList',
     'getStockList',
-    'getAdjustOrder'
+    'getAdjustOrder',
+    'getAdjustOrderDetail'
   ])
 }
