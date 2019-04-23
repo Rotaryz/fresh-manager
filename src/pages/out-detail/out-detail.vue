@@ -143,24 +143,14 @@
       },
       submitOutFn() {
         let arr = []
-        let isTure = false
-        let number = 1
         this.outDetailList.forEach((item, index) => {
           let obj = {
             id: item.id,
             select_batch: item.out_batches,
             type: 5
           }
-          if (item.out_batches.length === 0) {
-            isTure = true
-            number = index + 1
-          }
           arr.push(obj)
         })
-        if (isTure) {
-          this.$toast.show(`序号${number}请选择批次`)
-          return false
-        }
         if (this.isSubmit) return
         this.isSubmit = true
         API.Store.putOutSubmit(this.id, {details: arr}).then((res) => {
