@@ -180,9 +180,9 @@
       .grey
         background: #F5F7FA
       .main-text
-        color: $color-text-main
+        color: #666
         font-family: $font-family-regular
-        font-size: $font-size-14
+        font-size: $font-size-16
         display: block
         &:first-child
           margin-bottom: 10px

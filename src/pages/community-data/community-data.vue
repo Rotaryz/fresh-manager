@@ -194,12 +194,11 @@
     border-bottom: 0.5px solid $color-line
   .data-content
     display: flex
+    height: 100%
   .right-data
     margin-left: 20px
     margin-bottom: 20px
     flex: 1
-    display: flex
-    flex-wrap: wrap
     .top-sec
       width: 100%
       display: flex

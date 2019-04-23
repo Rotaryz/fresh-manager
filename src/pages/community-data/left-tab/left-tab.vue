@@ -95,7 +95,7 @@
   .left-tab
     width: 176px
     padding-right: 6px
-    height: 870px
+    height: 100%
     overflow-y: auto
     display: flex
     flex-direction: column
@@ -136,6 +136,8 @@
           margin-right: 10px
           display: block
           transition: all 0.3s
+        .no-edit
+          background-image: url("./icon-right_greed@2x.png")
       &:before
         content: ''
         position: absolute
@@ -196,16 +198,16 @@
         height: 12px
         border-radius: 50%
         margin-right: 7px
-        .current
-          width: 12px
-          height: 12px
-          background-repeat: no-repeat
-          background-position: center
-          background-size: cover
-          margin-right: 10px
-          display: block
-          transition: all 0.3s
-          background-image: url("./icon-right_greed@2x.png")
+      .current
+        width: 12px
+        height: 12px
+        background-repeat: no-repeat
+        background-position: center
+        background-size: cover
+        margin-right: 10px
+        display: block
+        transition: all 0.3s
+        background-image: url("./icon-right_greed@2x.png")
 
     .last
       border-bottom: 0
