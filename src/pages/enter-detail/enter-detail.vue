@@ -46,7 +46,7 @@
                 v-if="enterMsg.status === 0"
                 class="edit-input-box" type="date"
                 placeholder="保质时间"
-                style="width: 110px;height: 34px;border-radius: 1px"
+                style="width: 110px;height: 34px;border-radius: 2px"
                 @on-change="changeStartTime($event, index)"
               ></date-picker>
               <div v-if="enterMsg.status === 1">{{item.shelf_life || '--------'}}</div>
@@ -79,7 +79,15 @@
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
-    '批次号', '商品', '分类', '入库数量(基本单位)', '入库数量(采购单位) ', '入库单价(基本单位) ', '入库金额', '保质期', '存放库位'
+    '批次号',
+    '商品',
+    '分类',
+    '入库数量(基本单位)',
+    '入库数量(采购单位) ',
+    '入库单价(基本单位) ',
+    '入库金额',
+    '保质期',
+    '存放库位'
   ]
   export default {
     name: PAGE_NAME,
@@ -111,7 +119,7 @@
     methods: {
       submitFn() {
         let arr = []
-        this.enterDetailList.forEach(item => {
+        this.enterDetailList.forEach((item) => {
           let obj = {}
           obj.id = item.id
           obj.base_num = item.base_num
@@ -184,15 +192,18 @@
       .list-item
         padding-right: 14px
         align-items: center
+        white-space: nowrap
         &:last-child
           flex: 1
-        &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
+        &:nth-child(4), &:nth-child(5), &:nth-child(8), &:nth-child(9)
+          min-width: 150px
+        &:nth-child(2), &:nth-child(6)
           flex: 1.3
   .list-item-layout
     layout(row)
   .down-content
     align-items: flex-start
-    padding:5px 20px 25px
+    padding: 5px 20px 25px
     box-sizing: border-box
   .enter-title
     font-size: $font-size-14
@@ -206,7 +217,7 @@
   .edit-input
     font-size: $font-size-14
     padding: 0 14px
-    border-radius: 1px
+    border-radius: 2px
     width: 100px
     height: 34px
     border: 1px solid $color-line
@@ -243,6 +254,6 @@
       height: 14px
       icon-image(icon-delete)
   .tip
-    margin :0 2px
+    margin: 0 2px
     font-size: $font-size-14
 </style>

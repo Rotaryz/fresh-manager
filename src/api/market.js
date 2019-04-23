@@ -52,5 +52,4 @@ export default {
     let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${data.id}/status/${data.status}`
     return request.post(url, data, loading)
   }
-
 }

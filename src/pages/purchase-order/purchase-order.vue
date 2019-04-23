@@ -8,7 +8,7 @@
           :value="startTime"
           class="edit-input-box" type="date"
           placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="_getStartTime"
         ></date-picker>
         <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
@@ -22,7 +22,7 @@
             class="edit-input-box edit-input-right"
             type="date"
             placeholder="结束时间"
-            style="width: 187px;height: 28px;border-radius: 1px"
+            style="width: 187px;height: 28px;border-radius: 2px"
             @on-change="_getEndTime"
           ></date-picker>
           <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
@@ -95,7 +95,11 @@
         keyword: '',
         time: '',
         status: '',
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待入库', value: 1, key: 'wait_entry', num: 0}, {name: '已完成', value: 2, key: 'success', num: 0}]
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待入库', value: 1, key: 'wait_entry', num: 0},
+          {name: '已完成', value: 2, key: 'success', num: 0}
+        ]
       }
     },
     computed: {
@@ -189,7 +193,11 @@
         await this._statistic()
       },
       async _statistic() {
-        let res = await API.Supply.getPurchaseOrderStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword})
+        let res = await API.Supply.getPurchaseOrderStatistic({
+          start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          keyword: this.keyword
+        })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
@@ -208,9 +216,10 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.4
+          max-width :50px
+          padding: 0
         &:nth-child(2)
-          flex: 2
+          flex: 2.2
         &:nth-child(1)
-          flex: 1.5
+          flex: 1.1
 </style>

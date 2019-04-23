@@ -28,9 +28,9 @@
         </div>
         <div class="edit-input-box mini-edit-input-box">
           <div class="mini-mr20">
-            <base-drop-down :height="44" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+            <base-drop-down :height="40" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
           </div>
-          <base-drop-down :height="44" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+          <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -39,7 +39,7 @@
           基本单位
         </div>
         <div class="edit-input-box">
-          <base-drop-down :height="44" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setValue"></base-drop-down>
+          <base-drop-down :height="40" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -148,7 +148,7 @@
           供应商
         </div>
         <div class="edit-input-box">
-          <base-drop-down :height="44" :width="400" :select="supplierSelect" @setValue="supplierSelectValue"></base-drop-down>
+          <base-drop-down :height="40" :width="400" :select="supplierSelect" @setValue="supplierSelectValue"></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -237,7 +237,7 @@
               specs: '',
               is_weight: 1
             }
-          ],
+          ]
         },
         dispatchSelect: {
           check: false,
@@ -381,7 +381,11 @@
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
           return
-        } else if (+this.msg.commission_rate < 0 || +this.msg.commission_rate > 100 || this.msg.commission_rate.length === 0) {
+        } else if (
+          +this.msg.commission_rate < 0 ||
+          +this.msg.commission_rate > 100 ||
+          this.msg.commission_rate.length === 0
+        ) {
           this.$toast.show('成员佣金比率区间在0与100之间')
           return
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
@@ -427,10 +431,10 @@
                 this._back()
               }, 1000)
             } else {
+              this.isSubmit = false
               this.$toast.show(res.message)
             }
             this.$loading.hide()
-            this.isSubmit = false
           })
           return
         }
@@ -441,10 +445,10 @@
               this._back()
             }, 1000)
           } else {
+            this.isSubmit = false
             this.$toast.show(res.message)
           }
           this.$loading.hide()
-          this.isSubmit = false
         })
       },
       getSelectData() {
@@ -471,7 +475,7 @@
         })
       },
       getCategoriesData() {
-        API.Product.getCategory({parent_id: -1, goods_id: this.id}, false).then((res) => {
+        API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
             res.data.forEach((item) => {
@@ -559,7 +563,7 @@
       left: 0
       background-color: #fff
       box-sizing: border-box
-      border-radius: 1px
+      border-radius: 2px
       box-shadow: 0 2px 6px 0 #f2f0fa
       transition: all .3s
       opacity: 1
@@ -666,11 +670,14 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 400px
         height: 40px
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
         transition: all 0.3s
+        &:disabled
+          color: $color-text-assist
+          background: $color-white
         &::-webkit-inner-spin-button
           appearance: none
         &:hover
@@ -682,17 +689,24 @@
           border-color: $color-main !important
       .mini-edit-input
         width: 133px
+        border-radius: 0
+        border-top-left-radius: 2px
+        border-bottom-left-radius: 2px
+        border-right: none
+        &:hover
+          border-color: $color-line
       .edit-input-unit
         font-size: $font-size-14
         font-family: $font-family-regular
         color: $color-text-main
-        border-radius: 1px
         width: 134px
         height: 40px
         line-height: 40px
         text-align: center
         background: #F9F9F9
-        border: 1px solid #D6D6D6
+        border: 1px solid $color-line
+        border-right: none
+        margin-right: -1px
   .mini-edit-input-box
     layout(row)
     .mini-mr20

@@ -38,7 +38,7 @@
             <div class="list-item">
               <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
             </div>
-            <div class="list-item">{{item.name}}</div>
+            <div class="list-item list-item-double">{{item.name}}</div>
             <div class="list-item">{{item.goods_sku_code}}</div>
             <div class="list-item">{{item.goods_category_name}}</div>
             <div class="list-item">{{item.base_unit}}</div>
@@ -74,7 +74,7 @@
   const PAGE_NAME = 'PRODUCT_LIST'
   const TITLE = '商品列表'
   const PRODUCT_TITLE_LIST = [
-    '商品图片',
+    '图片',
     '商品名称',
     '商品编码',
     '分类',
@@ -136,6 +136,9 @@
       this._getUrl()
       this.goodsList = _.cloneDeep(this.productList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
+      if (this.$route.query.online * 1 === 1) {
+        this.dispatchSelect.content = '上架'
+      }
       this.getCategoriesData()
     },
     methods: {
@@ -234,7 +237,7 @@
         })
       },
       getCategoriesData() {
-        API.Product.getCategory({parent_id: -1}, false).then((res) => {
+        API.Product.getCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
           } else {
@@ -283,17 +286,16 @@
   .list-box
     .list-item
       box-sizing: border-box
-      padding-right: 10px
       flex: 1
       &:nth-child(1)
-        flex: 0.6
+        flex: 0.55
       &:nth-child(2)
         flex: 1.5
       &:nth-child(4)
-        flex: 1.2
-      &:nth-child(5)
-        flex: 0.6
+        flex: 1.1
       &:last-child
+        padding: 5px
+        max-width: 80px
         flex: 0.8
 
   .list-item-btn
@@ -303,6 +305,7 @@
     height: 40px
     width: 40px
     overflow: hidden
+    border-radius: 2px
     background-repeat: no-repeat
     background-size: cover
     background-position: center

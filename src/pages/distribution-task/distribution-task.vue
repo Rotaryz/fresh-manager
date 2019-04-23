@@ -7,7 +7,7 @@
         <date-picker
           class="edit-input-box" type="date"
           placeholder="选择下单日期"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           :value="tabIndex === 0 ? orderStartTime : driverStartTime"
           @on-change="changeStartTime"
         ></date-picker>
@@ -20,7 +20,7 @@
           class="edit-input-box edit-input-right"
           type="date"
           placeholder="选择下单日期"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           :value="tabIndex === 0 ? orderEndTime : driverEndTime"
           @on-change="changeEndTime"
         ></date-picker>
@@ -39,7 +39,7 @@
         <div class="identification-page">
           <img src="./icon-driver@2x.png" class="identification-icon">
           <p class="identification-name">{{tabStatus[tabIndex].text}}</p>
-          <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" @setStatus="setValue"></base-status-tab>
+          <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
         </div>
@@ -136,9 +136,14 @@
         signItem: {},
         startTime: '',
         endTime: '',
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待配送', value: 1, key: 'wait_delivery', num: 0}, {name: '配送完成', value: 2, key: 'success_delivery', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待配送', value: 1, key: 'wait_delivery', num: 0},
+          {name: '配送完成', value: 2, key: 'success_delivery', num: 0}
+        ],
         accurateStart: '',
-        accurateEnd: ''
+        accurateEnd: '',
+        statusTab: 0
       }
     },
     computed: {
@@ -195,6 +200,9 @@
       this.accurateStart = this.$route.params.accurateStart
       this.accurateEnd = this.$route.params.accurateEnd
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+      if (this.$route.query.status) {
+        this.statusTab = this.$route.query.status * 1
+      }
       await this._statistic()
     },
     methods: {
@@ -211,7 +219,11 @@
         }
       },
       async _statistic() {
-        let res = await API.Delivery.getSeliveryStatistic({start_time: this.orderStartTime, end_time: this.orderEndTime, keyword: this.orderKeyword})
+        let res = await API.Delivery.getSeliveryStatistic({
+          start_time: this.orderStartTime,
+          end_time: this.orderEndTime,
+          keyword: this.orderKeyword
+        })
         this.statistic = res.error === this.$ERR_OK ? res.data : {all: 0, wait_delivery: 0, success_delivery: 0}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
@@ -227,12 +239,22 @@
         switch (index) {
         case 0:
           if (!this.orderStartTime && !this.orderEndTime) {
-            this.infoOrderTime({startTime: this.startTime, endTime: this.endTime, start: this.accurateStart, end: this.accurateEnd})
+            this.infoOrderTime({
+              startTime: this.startTime,
+              endTime: this.endTime,
+              start: this.accurateStart,
+              end: this.accurateEnd
+            })
           }
           break
         case 1:
           if (!this.driverStartTime && !this.driverEndTime) {
-            this.infoDriverTime({startTime: this.startTime, endTime: this.endTime, start: this.accurateStart, end: this.accurateEnd})
+            this.infoDriverTime({
+              startTime: this.startTime,
+              endTime: this.endTime,
+              start: this.accurateStart,
+              end: this.accurateEnd
+            })
           }
           break
         }
@@ -299,6 +321,8 @@
   .list-box
     .list-item
       padding-right: 14px
+      &:nth-child(1)
+        min-width: 160px
       &:nth-child(2)
         min-width: 200px
       &:nth-child(3)
@@ -308,4 +332,3 @@
       &:nth-child(10)
         max-width: 105px
 </style>
-

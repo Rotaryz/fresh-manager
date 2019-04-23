@@ -118,7 +118,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择开始时间"
-          style="width: 240px;height: 44px;border-radius: 1px"
+          style="width: 240px;height: 40px;border-radius: 1px"
           @on-change="_getStartTime"
         ></date-picker>
         <div class="tip-text">至</div>
@@ -130,7 +130,7 @@
           :editable="false"
           placement="bottom-end"
           placeholder="选择结束时间"
-          style="width: 240px;height: 44px"
+          style="width: 240px;height: 40px"
           @on-change="_getEndTime"
         ></date-picker>
         <div :class="{'time-no-change':disable}"></div>
@@ -143,7 +143,7 @@
           使用范围
         </div>
         <div class="input-box">
-          <base-drop-down :width="400" :height="44" :select="useRange" @setValue="_selectRange"></base-drop-down>
+          <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -221,8 +221,8 @@
     <!-- 选择品类弹窗-->
     <default-modal ref="categoryModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择品类</div>
+        <div class="title-box">
+          <div class="title">选择品类</div>
           <span class="close hand" @click="_cancelModal"></span>
         </div>
         <!--列表-->
@@ -242,8 +242,8 @@
           <base-pagination ref="paginationCategory" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>-->
         <div class="back">
-          <div class="back-btn back-submit hand" @click="_addition">确定</div>
           <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
+          <div class="back-btn back-submit hand" @click="_addition">确定</div>
         </div>
       </div>
     </default-modal>
@@ -251,8 +251,8 @@
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModal">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+        <div class="title-box">
+          <div class="title">选择商品</div>
           <span class="close hand" @click="_cancelModal"></span>
         </div>
         <div class="shade-tab">
@@ -291,8 +291,8 @@
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -394,17 +394,20 @@
     },
     computed: {
       ...couponComputed,
-      testName() { // 优惠名称
+      testName() {
+        // 优惠名称
         return this.msg.coupon_name
       },
-      testMoney() { // 优惠价格
+      testMoney() {
+        // 优惠价格
         if (this.msg.preferential_type === 2) {
           return this.msg.denomination && RATE.test(this.msg.denomination)
         } else {
           return true
         }
       },
-      testMoneyReg() { // 优惠价格
+      testMoneyReg() {
+        // 优惠价格
         if (this.msg.preferential_type === 2) {
           return +this.msg.denomination >= 1 && +this.msg.denomination <= 999
         } else {
@@ -432,45 +435,50 @@
           return true
         }
       },
-      testCount() { // 发放数量
+      testCount() {
+        // 发放数量
         return this.msg.usable_stock
       },
-      testCountReg() { // 发放数量数字类型
+      testCountReg() {
+        // 发放数量数字类型
         return this.msg.usable_stock && COUNTREG.test(this.msg.usable_stock)
       },
       testCountNum() {
         return this.msg.usable_stock >= 1 && this.msg.usable_stock <= 99999
       },
-      testCondition () {
-        return (this.msg.condition && +this.msg.preferential_type === 2) ? RATE.test(this.msg.condition) : true
+      testCondition() {
+        return this.msg.condition && +this.msg.preferential_type === 2 ? RATE.test(this.msg.condition) : true
       },
-      testStart() { // 开始时间
+      testStart() {
+        // 开始时间
         return this.msg.start_at
       },
-      testEnd() { // 结束时间
+      testEnd() {
+        // 结束时间
         return this.msg.end_at
       },
-      testEndDate() { // 结束时间规则判断
+      testEndDate() {
+        // 结束时间规则判断
         return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
       },
       testGoods() {
-        return +this.msg.range_type === 3 ? (this.goodsList && this.goodsList.length) : true
+        return +this.msg.range_type === 3 ? this.goodsList && this.goodsList.length : true
       },
       testCategory() {
         return +this.msg.range_type === 2 ? this.categorySelectItem.name : true
       }
     },
     watch: {
-      // couponDetail: {
-      //   handler(news) {
-      //     let id = this.$route.query.id || null
-      //
-      //   },
-      //   immediate: true
-      // }
+    // couponDetail: {
+    //   handler(news) {
+    //     let id = this.$route.query.id || null
+    //
+    //   },
+    //   immediate: true
+    // }
     },
     beforeCreate() {
-      if(this.$route.query.id) {
+      if (this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
       } else {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
@@ -507,7 +515,7 @@
         this.msg.preferential_type = num
       },
       changeFull() {
-        this.msg.support_activity = (+this.msg.support_activity === 1 ? 0 : 1)
+        this.msg.support_activity = +this.msg.support_activity === 1 ? 0 : 1
       },
       _getStartTime(time) {
         this.msg.start_at = time
@@ -521,7 +529,7 @@
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          limit: 10,
+          limit: 7,
           page: this.couponPage
         })
         if (res.error !== this.$ERR_OK) {
@@ -565,12 +573,16 @@
         this.couponPage = page
         await this._getGoodsList()
       },
-      // 选择二级分类
+      // 选择一级分类
       async _secondAssortment(item) {
         this.parentId = item.id
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
-        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        if (item.id === '') {
+          this.secondAssortment.data = []
+        } else {
+          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        }
         this.secondAssortment.content = '选择二级分类'
         this.couponPage = 1
         this.$refs.pagination.beginPage()
@@ -631,7 +643,7 @@
         this.goodsDelId = item.goods_id
         this.goodsDelIndex = index
         this.delType = type
-        this.$refs.confirm.show(`是否确定删除该${type === 'category' ? '品类': '商品'}？`)
+        this.$refs.confirm.show(`是否确定删除该${type === 'category' ? '品类' : '商品'}？`)
       },
       // 删除商品弹窗
       _delGoods() {
@@ -639,8 +651,8 @@
           this.categorySelectItem = {}
           this.categoryCheckItem = {}
         } else {
-          let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-          this.selectGoodsId.splice(index, 1)
+          // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+          this.selectGoodsId.splice(this.goodsDelIndex, 1)
           this.goodsList.splice(this.goodsDelIndex, 1)
           this.selectDelId.push(this.goodsDelId)
         }
@@ -666,7 +678,7 @@
         if (item.selected === 1) {
           return
         }
-        if(this.selectGoodsId.length === 10 && item.selected !== 2) {
+        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
           this.$toast.show('选择商品数量不能超过十个')
           return
         }
@@ -753,7 +765,7 @@
           this.categorySelectItem.range_id = this.categorySelectItem.id || 0
           this.msg.ranges[0] = this.categorySelectItem
         } else if (+this.msg.range_type === 3) {
-          this.goodsList.forEach(item => {
+          this.goodsList.forEach((item) => {
             item.range_id = item.id || 0
             item.coupon_range_id = item.coupon_range_id || 0
           })
@@ -887,7 +899,7 @@
         padding: 0 14px
         border-radius: 1px
         width: 400px
-        height: 44px
+        height: 40px
         display: flex
         align-items: center
         margin-right: 10px
@@ -932,7 +944,7 @@
     .edit-input-right
       margin-left: 14px
     .tip-text
-      line-height: 44px
+      line-height: 40px
       color: #333
     .time-no-change,.text-no-change,.check-no-change
       position: absolute
@@ -1064,7 +1076,7 @@
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -1073,31 +1085,32 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-    .shade-header
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
       display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      height: 60.5px
-      box-sizing: border-box
-      padding: 0 20px
-      border-bottom: 0.5px solid $color-line
-      .shade-title
-        color: $color-text-main
-        font-family: $font-family-medium
+      .title
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
       .close
-        icon-image('icon-close')
-        width: 16px
+        width: 12px
         height: @width
-        transition: all 0.3s
-        &:hover
-          transform: scale(1.3)
+        icon-image('icon-close')
     .back
+      border-top-1px($color-line)
       position: absolute
       left: 0
       right: 0
       bottom: 0
-      border-top: 1px solid $color-line
+      background: $color-white
+      justify-content: flex-end
+      height: 70px
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -1148,7 +1161,7 @@
         padding: 42px 20px 30px 20px
         .main-input-box
           width: 310px
-          height: 44px
+          height: 40px
           border-radius: 1px
           font-family: $font-family-regular
           color: $color-text-main
@@ -1247,8 +1260,8 @@
     .title
       font-size: $font-size-16
       font-family: $font-family-medium
-      height: 44px
-      line-height: 44px
+      height: 40px
+      line-height: 40px
       padding: 0 15px
     .text
       font-size: $font-size-16
@@ -1265,9 +1278,7 @@
 
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
-    align-items: center
-    padding: 0 20px
+    height: 48px
     box-sizing: border-box
     display: flex
     .tab-item
@@ -1276,93 +1287,110 @@
   .page-box
     padding: 0 20px
     box-sizing: border-box
-    height: 66px
+    height: 77px
     align-items: center
     display: flex
 
   .goods-content
-    border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
-    height: 400px
+    border-radius: 4px
+    height: 420px
     .category-list
       flex-wrap: wrap
       display: flex
-      .goods-item
-        box-sizing: border-box
-        padding: 0 20px
-        width: 50%
-        height: 79.5px
+    .goods-item
+      box-sizing: border-box
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
+      display: flex
+      align-items: center
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
+      .goods-img
+        margin-right: 10px
+        width: 40px
+        height: @width
+        overflow: hidden
+        background-repeat: no-repeat
+        background-size: cover
+        background-position: center
+        background-color: $color-background
+      .select-icon
+        margin-right: 20px
+        border-radius: 1px
+        border: 1px solid #e9ecee
+        height: 16px
+        width: 16px
+        -webkit-transition: all .3s
+        transition: all .3s
+      .select-icon-active
+        border: 1px solid transparent
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check@2x.png")
+      .select-icon-disable
+        border: 1px solid transparent
+        cursor: not-allowed
+        display: inline-block
+        background-size: 100% 100%
+        background-image: url("./icon-check_ash@2x.png")
+      .goods-msg
+        flex: 1
         display: flex
+        color: $color-text-main
+        font-family: $font-family-regular
+        justify-content: space-between
+        height: 100%
         align-items: center
-        border-bottom: 0.5px solid $color-line
-        &:nth-child(2n+1)
-          border-right: 1px solid $color-line
-        &:nth-child(9), &:nth-child(10)
-          border-bottom: none
-        .select-icon
-          margin-right: 20px
-          border-radius: 1px
-          border: 1px solid $color-line
-          height: 16px
-          width: 16px
-          transition: all 0.3s
-        .select-icon-disable
-          border: 1px solid transparent
-          cursor: not-allowed
-          icon-image('icon-check_ash')
-        .select-icon-active
-          border: 1px solid transparent
-          icon-image('icon-check')
-        .goods-img
-          margin-right: 10px
-          width: 40px
-          height: @width
-          overflow: hidden
-          background-repeat: no-repeat
-          background-size: cover
-          background-position: center
-          background-color: $color-background
-        .goods-msg
-          display: flex
-          flex-direction: column
-          color: $color-text-main
-          font-family: $font-family-regular
-          justify-content: space-between
-          flex: 1
-          overflow: hidden
-          height: 40px
-          .goods-name
-            width: 210px
-            no-wrap()
-          .goods-name, .goods-money
-            line-height: 1.2
-            font-size: $font-size-14
-
-        .add-btn
-          border-radius: 1px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          min-width: 56px
-          text-align: center
-        .add-btn-disable
-          border-radius: 1px
-          margin-left: 88px
-          padding: 5px 0
-          width: 56px
-          box-sizing: border-box
-          text-align: center
-          font-size: $font-size-14
+        .goods-name
+          width: 500px
+          no-wrap()
+        .goods-name, .goods-money
           line-height: 1
-          cursor: not-allowed
-          background: $color-line
-          color: $color-text-assist
-          border: none
+      .add-btn
+        border-radius: 2px
+        margin-left: 88px
+        padding: 7px 0
+        min-width: 54px
+        text-align: center
+      .add-btn-disable
+        border-radius: 2px
+        margin-left: 88px
+        padding: 7px 0
+        box-sizing: border-box
+        text-align: center
+        font-size: $font-size-14
+        line-height: 1
+        cursor: not-allowed
+        background: $color-line
+        color: $color-text-assist
+        border: none
 
   .category-content
     border-radius: 1px
-    margin: 20px 20px 0
+    margin: 7px 0 0
     height: 480px
     overflow-y: auto
     .title
@@ -1410,19 +1438,8 @@
           justify-content: center
           align-items: center
           margin-right: 20px
-          &:before
-            content: ""
-            display: block
-            width: 8px
-            height: 8px
-            border-radius: 50%
-            background: #4DBD65
-            opacity: 0
-            transition: all 0.3s
         .checked
-          border-color: #4DBD65
-          &:before
-            opacity: 1
+          border: 5px solid $color-main
         .title-item
           padding-right: 20px
           display: block

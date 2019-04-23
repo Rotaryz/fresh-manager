@@ -22,6 +22,15 @@ export default {
   getCurrentTime(loading = false) {
     let url = '/scm/api/backend/common/current-time'
     return request.get(url, false, loading)
+  },
+  /**
+   * 获取系统升级状态
+   * @param loading
+   * @returns {*}
+   */
+  getSystemStatus(loading = false) {
+    let url = '/social-shopping/api/get-system-status'
+    return request.get(url, false, loading)
   }
 }
 

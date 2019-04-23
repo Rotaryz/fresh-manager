@@ -133,7 +133,14 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
+      &:nth-child(1)
+        flex: 1.4
+        min-width: 208px
+      &:nth-child(2)
+        flex: 1.2
       &:last-child
+        padding: 0
+        max-width: 80px
         flex: 0.6
 
 </style>

@@ -9,8 +9,8 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-bandit_list@2x.png" class="identification-icon">
-          <p class="identification-name">团长结算列表</p>
+          <img src="./icon-order_list2@2x.png" class="identification-icon">
+          <p class="identification-name">团长佣金列表</p>
         </div>
         <div class="function-btn">
         </div>
@@ -43,7 +43,7 @@
   import {leaderComputed, leaderMethods} from '@state/helpers'
 
   const PAGE_NAME = 'PURCHASE_MANAGEMENT'
-  const TITLE = '团长结算'
+  const TITLE = '团长佣金'
   const LIST_TITLE = ['团长账号', '团长名称', '社区名称', '已结算佣金', '待结算佣金', '操作']
   export default {
     name: PAGE_NAME,
@@ -92,6 +92,10 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
+      &:nth-child(3)
+        flex: 1.7
       &:last-child
+        max-width: 50px
+        padding: 0
         flex: 0.6
 </style>

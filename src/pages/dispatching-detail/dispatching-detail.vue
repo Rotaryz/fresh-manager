@@ -38,7 +38,7 @@
           <div class="big-box">
             <div v-for="(item,index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{index + 1}}</div>
-              <div class="com-list-item">{{item.goods_name}}</div>
+              <div class="com-list-item com-list-double">{{item.goods_name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
               <div class="com-list-item">{{item.num}}</div>
               <div class="com-list-item">{{item.price}}</div>
@@ -111,4 +111,14 @@
 
   .excel
     margin-left: 10px !important
+  .block
+    font-family: $font-family-medium
+  .com-list-box
+    .com-list-item
+      &:nth-child(1)
+        flex: 0.2
+      &:nth-child(2)
+        flex: 1.5
+      &:last-child
+        flex: 0.5
 </style>

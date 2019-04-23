@@ -37,6 +37,6 @@ export default {
    */
   outOrdersStatistic(data, loading = false) {
     let url = '/scm/api/backend/oms/order-statistic'
-    return request.get(url, data,loading)
+    return request.get(url, data, loading)
   }
 }

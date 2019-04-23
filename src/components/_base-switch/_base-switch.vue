@@ -47,7 +47,7 @@
     methods: {
       _changeSwitch() {
         this.$emit('changeSwitch')
-        // this.switchStatus = status
+      // this.switchStatus = status
       }
     }
   }

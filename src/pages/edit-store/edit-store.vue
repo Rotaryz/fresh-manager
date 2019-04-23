@@ -75,9 +75,20 @@
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'
+
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
-  const COMMODITIES_LIST = ['序号', '商品名称', '分类', '可用库存/总库存', '出库数(基本单位)', '出库批次', '出库单价', '出库金额', '操作']
+  const COMMODITIES_LIST = [
+    '序号',
+    '商品名称',
+    '分类',
+    '可用库存/总库存',
+    '出库数(基本单位)',
+    '出库批次',
+    '出库单价',
+    '出库金额',
+    '操作'
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -119,7 +130,7 @@
         let obj = item
         obj.base_num = ''
         obj.select_batch = []
-        this.storeList.forEach(item => {
+        this.storeList.forEach((item) => {
           if (item.goods_id === obj.goods_id) {
             isExist = true
           }
@@ -129,9 +140,9 @@
         }
       },
       batchAddition(list) {
-        list.forEach(item => {
+        list.forEach((item) => {
           let isExist = false
-          this.storeList.forEach(item1 => {
+          this.storeList.forEach((item1) => {
             if (item.goods_id * 1 === item1.goods_id * 1) {
               isExist = true
             }
@@ -159,10 +170,10 @@
             let number = 0
             this.batchList = res.data
             if (this.storeList[index].select_batch.length) {
-              this.storeList[index].select_batch.forEach(item => {
-                number += (item.select_out_num * 1)
-                this.batchList.forEach(item1 => {
-                  if(item1.batch_num === item.batch_num) {
+              this.storeList[index].select_batch.forEach((item) => {
+                number += item.select_out_num * 1
+                this.batchList.forEach((item1) => {
+                  if (item1.batch_num === item.batch_num) {
                     item1.out_count = item.select_out_num
                   }
                 })
@@ -178,10 +189,10 @@
         this.storeList[this.curIndex].select_batch = arr
         let allprice = 0
         let number = 0
-        arr.forEach(item => {
+        arr.forEach((item) => {
           if (item.select_out_num > 0) {
-            number += (item.select_out_num * 1)
-            allprice += (item.select_out_num * item.price)
+            number += item.select_out_num * 1
+            allprice += item.select_out_num * item.price
           }
         })
         this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
@@ -212,7 +223,7 @@
         }
         let isInputNull = false
         let isStoreNull = false
-        this.storeList.forEach(item => {
+        this.storeList.forEach((item) => {
           if (item.base_num.length === 0) {
             isInputNull = true
           }
@@ -257,6 +268,12 @@
         flex: 0.4
       &:nth-child(3)
         flex: 1.5
+      &:nth-child(5)
+        min-width: 150px
+      &:nth-child(6)
+        .list-operation
+          &:after
+            display: none
       &:last-child
         flex: 0.6
   .edit-store
@@ -293,7 +310,7 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 400px
         height: 40px
         border: 1px solid $color-line
@@ -313,7 +330,7 @@
   .edit-input
     font-size: $font-size-14
     padding: 0 14px
-    border-radius: 1px
+    border-radius: 2px
     width: 100px
     height: 34px
     border: 1px solid $color-line
@@ -337,7 +354,7 @@
       left: 0
       box-sizing: border-box
       padding: 12px 37px 12px 12px
-      background: rgba(51,51,51,9)
+      background: rgba(51, 51, 51, 9)
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-white

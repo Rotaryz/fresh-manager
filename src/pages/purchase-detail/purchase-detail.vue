@@ -32,7 +32,7 @@
           <div class="big-box">
             <div v-for="(item, index) in detail.detail_list" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{index + 1}}</div>
-              <div class="com-list-item">{{item.goods_name}}</div>
+              <div class="com-list-item com-list-double">{{item.goods_name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
               <div class="com-list-item">{{item.wait_num}}</div>
               <div class="com-list-item">{{item.total_stock}}</div>
@@ -134,4 +134,8 @@
     .com-list-item
       &:nth-child(1)
         flex: 0.5
+      &:nth-child(2)
+        flex: 1.7
+      &:last-child
+        flex: 0.8
 </style>

@@ -4,7 +4,7 @@
       <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
         <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': select.check, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
           {{select.content}}
-          <img src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
+          <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
           <transition name="fade">
             <ul v-show="select.check" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
               <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
@@ -116,13 +116,13 @@
   .admin-big-box
     cursor: pointer
     box-sizing: border-box
-    border-radius: 1px
+    border-radius: 2px
     font-size: $font-size-medium
     color: $color-text-main
     position: relative
     .admin-select-box
       min-width: 102px
-      border-radius: 1px
+      border-radius: 2px
       border 1px solid $color-line
       padding: 0 31px 0 15px
       line-height: 27px

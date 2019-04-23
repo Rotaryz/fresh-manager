@@ -144,6 +144,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import storage from 'storage-controller'
   import {deliveryMethods} from '@state/helpers'
 
   import API from '@api'
@@ -152,11 +153,76 @@
   const TITLE = '数据'
   const RANKLIST = ['图片', '商品名称', '销售数量', '销售额']
   const COMMUNITYLIST = ['社区', '销售额', '支付订单数', '佣金收益']
-  const REALDATA = [{imgUrl: '', title: '销售额', subTitle: '总销售额:', key: 'order', curr_total: 0, total: 0}, {imgUrl: 'subscriber', title: '访客数', subTitle: '总访客数:', key: 'visitor', curr_total: 0, total: 0}, {imgUrl: 'wallet', title: '支付转化率', subTitle: '平均支付转化率:', key: 'pay_rate', curr_total: 0, total: 0}, {imgUrl: 'subscriber', title: '买家数', subTitle: '总买家数:', key: 'pay_customer', curr_total: 0, total: 0}, {imgUrl: '', title: '客单价', subTitle: '平均客单价:', key: 'customer_price', curr_total: 0, total: 0}, {imgUrl: 'card', title: '复购率', subTitle: '平均复购率:', key: 'repeat_consume_rate', curr_total: 0, total: 0}]
-  const BASELIST = [{title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list'}, {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale'}, {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list'}, {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier'}, {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer'}, {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management'}]
-  const DISPOSELIST = [{text: '发', subText: '待发布采购任务', key: 'publish_task_count', number: 0, url: '/home/procurement-task?status=1&timeNull=1'}, {text: '采', subText: '待采购任务', key: 'purchase_task_count', number: 0, url: '/home/procurement-task?status=2&timeNull=1'}, {text: '入', subText: '待入库任务', key: 'entry_order_count', number: 0, url: '/home/product-enter?status=0&timeNull=1'}, {text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0&timeNull=1'}, {text: '配', subText: '待配送任务', key: 'delivery_count', number: 0, url: '/home/distribution-task?status=1&timeNull=1'}, {text: '运', subText: '待售后订单', key: 'after_sale_count', number: 0, url: '/home/returns-management?status=0'}, {text: '财', subText: '待审核提现', key: 'withdraw_count', number: 0, url: '/home/leader-withdrawal?status=0'}]
-  const RANKTIME = [{title: '今天', status: 'today'}, {title: '昨天', status: 'yesterday'}, {title: '7天', status: 'week'}, {title: '30天', status: 'month'}]
-  const CHARTTIME = [{title: '销售额', status: '1'}, {title: '访客数', status: '2'}, {title: '买家数', status: '3'}, {title: '客单价', status: '4'}]
+  const REALDATA = [
+    {imgUrl: '', title: '销售额', subTitle: '总销售额:', key: 'order', curr_total: 0, total: 0},
+    {imgUrl: 'subscriber', title: '访客数', subTitle: '总访客数:', key: 'visitor', curr_total: 0, total: 0},
+    {imgUrl: 'wallet', title: '支付转化率', subTitle: '平均支付转化率:', key: 'pay_rate', curr_total: 0, total: 0},
+    {imgUrl: 'subscriber', title: '买家数', subTitle: '总买家数:', key: 'pay_customer', curr_total: 0, total: 0},
+    {imgUrl: '', title: '客单价', subTitle: '平均客单价:', key: 'customer_price', curr_total: 0, total: 0},
+    {imgUrl: 'card', title: '复购率', subTitle: '平均复购率:', key: 'repeat_consume_rate', curr_total: 0, total: 0}
+  ]
+  const BASELIST = [
+    {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
+    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale', permissions: 'activity'},
+    {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list', permissions: 'shop-manager'},
+    {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier', permissions: 'supplier'},
+    {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},
+    {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management', permissions: 'driver'}
+  ]
+  const DISPOSELIST = [
+    {
+      text: '发',
+      subText: '待发布采购任务',
+      key: 'publish_task_count',
+      number: 0,
+      url: '/home/procurement-task?status=1&timeNull=1',
+      permissions: 'purchase-task'
+    },
+    {
+      text: '采',
+      subText: '待采购任务',
+      key: 'purchase_task_count',
+      number: 0,
+      url: '/home/procurement-task?status=2&timeNull=1',
+      permissions: 'purchase-task'
+    },
+    {
+      text: '入',
+      subText: '待入库任务',
+      key: 'entry_order_count',
+      number: 0,
+      url: '/home/product-enter?status=0&timeNull=1',
+      permissions: 'entry-orders'
+    },
+    {
+      text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0&timeNull=1',
+      permissions: 'out-orders'
+    },
+    {
+      text: '配',
+      subText: '待配送任务',
+      key: 'delivery_count',
+      number: 0,
+      url: '/home/distribution-task?status=1&timeNull=1',
+      permissions: 'delivery'
+    },
+    {
+      text: '运', subText: '待售后订单', key: 'after_sale_count', number: 0, url: '/home/returns-management?status=0',
+      permissions: 'after-sale-orders'
+    }
+  ]
+  const RANKTIME = [
+    {title: '今天', status: 'today'},
+    {title: '昨天', status: 'yesterday'},
+    {title: '7天', status: 'week'},
+    {title: '30天', status: 'month'}
+  ]
+  const CHARTTIME = [
+    {title: '销售额', status: '1'},
+    {title: '访客数', status: '2'},
+    {title: '买家数', status: '3'},
+    {title: '客单价', status: '4'}
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -181,10 +247,12 @@
         shopDownUrl: '',
         drawX: [],
         drawY: [],
-        drawTitle: ''
+        drawTitle: '',
+        permissions: {}
       }
     },
     mounted() {
+      this.permissions = storage.get('permissions')
       this.getSurveyTrade('', '', 'week', true)
       this.getScmBaseData()
       this.getShopBaseData()
@@ -231,7 +299,7 @@
               this.baseList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },
@@ -248,6 +316,15 @@
         })
       },
       jumpBase(item) {
+        if (!this.permissions[item.permissions]) {
+          this.$toast.show('暂无权限!')
+          return
+        }
+        if (this.permissions[item.permissions].index * 1 !== 1) {
+          this.$toast.show('暂无权限!')
+          return
+        }
+        console.log(this.permissions[item.permissions].index)
         if (item.title === '司机') {
           this.setTabIndex(1)
         }
@@ -261,7 +338,7 @@
           }
           if (res.error === this.$ERR_OK) {
             this.drawX = res.data.x
-            this.drawY= res.data.y
+            this.drawY = res.data.y
             this.drawTitle = res.data.title
             this.drawEcharLine()
           } else {
@@ -395,7 +472,7 @@
             }
           ]
         })
-        window.onresize = function(){
+        window.onresize = function() {
           myChart.resize()
         }
       },
@@ -464,7 +541,7 @@
               this.disposeList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },
@@ -474,7 +551,9 @@
             this.shopShow = true
             for (let key in res.data) {
               let index = this.disposeList.findIndex((item) => item.key === key)
-              this.disposeList[index].number = res.data[key]
+              if (index >= 0) {
+                this.disposeList[index].number = res.data[key]
+              }
             }
           } else {
             this.$toast.show(res.message)
@@ -482,6 +561,14 @@
         })
       },
       jumpDispose(item) {
+        if (!this.permissions[item.permissions]) {
+          this.$toast.show('暂无权限!')
+          return
+        }
+        if (this.permissions[item.permissions].index * 1 !== 1) {
+          this.$toast.show('暂无权限!')
+          return
+        }
         this.$router.push(item.url)
       }
     }
@@ -648,7 +735,7 @@
         align-items: center
         justify-content: center
         flex: 1
-        max-width: 200px
+        max-width: 220px
         .dispose-top-item
           width: 50px
           height: @width

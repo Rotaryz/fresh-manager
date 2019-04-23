@@ -8,7 +8,7 @@
           :value="startTime"
           class="edit-input-box" type="date"
           placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           @on-change="_getStartTime"
         ></date-picker>
         <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
@@ -22,7 +22,7 @@
             class="edit-input-box edit-input-right"
             type="date"
             placeholder="结束时间"
-            style="width: 187px;height: 28px;border-radius: 1px"
+            style="width: 187px;height: 28px;border-radius: 2px"
             @on-change="_getEndTime"
           ></date-picker>
           <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
@@ -44,7 +44,7 @@
         <div class="identification-page">
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务列表</p>
-          <base-status-tab :statusList="dispatchSelect" @setStatus="_setStatus"></base-status-tab>
+          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
@@ -86,28 +86,38 @@
     </div>
     <default-modal ref="modal">
       <div slot="content" class="default-input">
-        <div class="title-input">
-          <div class="title">新建采购任务</div>
-          <div class="close-box" @click="cancel">
-            <div class="close"></div>
+        <div class="title-box">
+          <div class="title">
+            新建采购任务
           </div>
+          <span class="close hand" @click="cancel"></span>
         </div>
+        <!--<div class="title-input">-->
+        <!--<div class="title">新建采购任务</div>-->
+        <!--<div class="close-box" @click="cancel">-->
+        <!--<div class="close"></div>-->
+        <!--</div>-->
+        <!--</div>-->
         <div class="main-input">
-          <div class="main-left">
+          <div class="main-input-item">
             <div class="text">采购商品</div>
-            <div class="text">采购量</div>
-          </div>
-          <div class="main-right">
             <div class="main-input-box">
-              <span v-if="goodsItem.goods_sku_code">{{goodsItem.goods_name}}</span>
+              <div v-if="goodsItem.goods_sku_code" class="main-goods">
+                <span>{{goodsItem.goods_name}}</span>
+                <span class="main-close hand" @click="delGoods"></span>
+              </div>
               <span v-else class="main-input-box-add hand" @click="_showGoods">点击添加</span>
             </div>
+          </div>
+          <div class="main-input-item">
+            <div class="text">采购量</div>
             <div class="main-input-big">
               <input v-model="taskNum" type="number" class="main-input-box" placeholder="请输入采购数量">
-              <span v-if="goodsItem.purchase_unit" class="main-input-tip">{{goodsItem.purchase_unit}}</span>
+              <span v-if="goodsItem.purchase_unit" class="main-input-unit">{{goodsItem.purchase_unit}}</span>
             </div>
           </div>
         </div>
+        <!--<p class="main-input-tip">生成采购任务时，将加上商品损耗比</p>-->
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
           <div class="btn confirm" @click="confirm">确定</div>
@@ -117,10 +127,16 @@
     <!--商品弹窗-->
     <default-modal ref="goods">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+        <div class="title-box">
+          <div class="title">
+            选择商品
+          </div>
           <span class="close hand" @click="_hideGoods"></span>
         </div>
+        <!--<div class="shade-header">-->
+        <!--<div class="shade-title">选择商品</div>-->
+        <!--<span class="close hand" @click="_hideGoods"></span>-->
+        <!--</div>-->
         <!--商品详情-->
         <div>
           <div class="shade-tab">
@@ -194,15 +210,18 @@
         status: '',
         supplyId: '',
         selectList: [],
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_release', num: 0}, {name: '待采购', value: 2, key: 'wait_purchase', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待发布', value: 1, key: 'wait_release', num: 0},
+          {name: '待采购', value: 2, key: 'wait_purchase', num: 0},
+          {name: '已完成', value: 3, key: 'success', num: 0}
+        ],
         supplyTask: {
           check: false,
           show: false,
           content: '全部',
           type: 'default',
-          data: [
-            {name: '全部', id: ''}
-          ]
+          data: [{name: '全部', id: ''}]
         },
         parentId: '',
         taskNum: '',
@@ -215,7 +234,8 @@
         goodsItem: {},
         choicePage: 1,
         oneBtn: false,
-        confirmType: ''
+        confirmType: '',
+        statusTab: 0
       }
     },
     computed: {
@@ -224,6 +244,10 @@
     async created() {
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
+      if (this.$route.query.status) {
+        this.statusTab = this.$route.query.status * 1
+        this.status = this.$route.query.status * 1
+      }
       await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
@@ -240,7 +264,8 @@
         let res = await API.Store.getGoodsList({
           keyword: this.text,
           goods_category_id: this.parentId,
-          page: this.choicePage
+          page: this.choicePage,
+          limit: 7
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -271,12 +296,19 @@
         this.goodsItem = this.choiceGoods[this.showSelectIndex]
         this._hideGoods()
       },
-      // 选择二级分类
+      delGoods() {
+        this.goodsItem = {}
+      },
+      // 选择一级分类
       async _secondAssortment(item) {
         this.parentId = item.id
-        let res = await API.Store.goodsCategory({parent_id: this.parentId})
-        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        if (item.id === '') {
+          this.secondAssortment.data = []
+        } else {
+          let res = await API.Store.goodsCategory({parent_id: this.parentId})
+          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        }
         this.secondAssortment.content = '选择二级分类'
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
@@ -482,7 +514,7 @@
           let res = await API.Supply.getDiffSupplier({
             keyword: this.keyword,
             start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-            end_time:  this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
             supplier_id: this.supplyId
           })
           if (res.error !== this.$ERR_OK) {
@@ -534,7 +566,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        res.data.forEach(item => {
+        res.data.forEach((item) => {
           item.name = item.supplier_name
         })
         this.supplyTask.data = this.supplyTask.data.concat(res.data)
@@ -542,8 +574,21 @@
       async confirmMsg() {
         switch (this.confirmType) {
         case 1:
-          let res = await API.Supply.purchaseTaskPublish(
-            {
+          let res = await API.Supply.purchaseTaskPublish({
+            time: this.time,
+            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            keyword: this.keyword,
+            status: this.status,
+            page: this.page,
+            supplier_id: this.supplyId,
+            loading: false,
+            ids: []
+          })
+          this.$toast.show(res.message)
+          this.$loading.hide()
+          if (res.error === this.$ERR_OK) {
+            this.getPurchaseTaskList({
               time: this.time,
               startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
               endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
@@ -551,37 +596,22 @@
               status: this.status,
               page: this.page,
               supplyId: this.supplyId,
-              loading: false,
-              ids: []
-            })
-          this.$toast.show(res.message)
-          this.$loading.hide()
-          if (res.error === this.$ERR_OK) {
-            this.getPurchaseTaskList({
-              time: this.time,
-              start_time: this.startTime,
-              end_time: this.endTime,
-              keyword: this.keyword,
-              status: this.status,
-              page: this.page,
-              supplier_id: this.supplyId,
               loading: false
             })
           }
           await this._statistic()
           break
         case 2:
-          let supplyRes = await API.Supply.purchaseTask(
-            {
-              time: this.time,
-              start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-              end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
-              keyword: this.keyword,
-              status: this.status,
-              page: this.page,
-              supplier_id: this.supplyId,
-              loading: false
-            })
+          let supplyRes = await API.Supply.purchaseTask({
+            time: this.time,
+            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            keyword: this.keyword,
+            status: this.status,
+            page: this.page,
+            supplier_id: this.supplyId,
+            loading: false
+          })
           this.$loading.hide()
           if (supplyRes.error !== this.$ERR_OK) {
             this.$toast.show(supplyRes.message)
@@ -593,7 +623,12 @@
         }
       },
       async _statistic() {
-        let res = await API.Supply.getTaskStatusNumber({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword, supplier_id: this.supplyId})
+        let res = await API.Supply.getTaskStatusNumber({
+          start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          keyword: this.keyword,
+          supplier_id: this.supplyId
+        })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)
@@ -608,7 +643,7 @@
   @import "~@design"
 
   .pro-select-icon
-    border-radius: 1px
+    border-radius: 2px
     border: 1px solid $color-line
     height: 14px
     width: 14px
@@ -630,7 +665,8 @@
       .list-item
         padding-right: 14px
         &:last-child
-          flex: 0.7
+          max-width: 60px
+          padding: 0
         &:nth-child(8), &:nth-child(2)
           flex: 1.5
 
@@ -665,38 +701,57 @@
       font-size: $font-size-14
 
   .default-input
-    padding-bottom: 30px
+    padding: 0 20px 30px
     background: #fff
     width: 534px
-    border-radius: 1px
-
-    .title-input
-      height: 60px
-      layout(row)
+    border-radius: 2px
+    height: 302px
+    box-sizing: border-box
+    .main-input-tip
+      line-height: 1
+      font-size: $font-size-14
+      color: #ACACAC
+      position: absolute
+      bottom: 100px
+      left: 104px
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      border-bottom: 0.5px solid $color-line
-      padding-left: 20px
       .title
-        color: $color-text-main
         font-size: $font-size-16
-        font-family: $font-family-regular
-      .close-box
-        padding: 17px
-        cursor: pointer
-        .close
-          width: 22px
-          height: 22px
-          border-radius: 50%
-          background-size: 22px
-          bg-image('icon-close')
-
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
     .main-input
-      padding: 29.5px 20px 0 40px
-      display: flex
+      box-sizing: border-box
+      padding: 10px 6px 0
+      .main-input-item
+        display: flex
+        .text
+          line-height: 44px
+          color: #151515
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          position: relative
+          margin-bottom: 20px
+          width: 56px
+          margin-right: 20px
+          &:after
+            content: '*'
+            left: -7px
+            position: absolute
+            margin-right: -2px
+            color: #F52424
       .main-input-big
         display: flex
-        .main-input-tip
+        .main-input-unit
           line-height: 44px
           font-size: $font-size-14
           font-family: $font-family-regular
@@ -708,11 +763,11 @@
         width: 333px
         height: 44px
         border: 1px solid $color-line
-        border-radius: 1px
+        border-radius: 2px
         font-family: $font-family-regular
         color: $color-text-main
         font-size: $font-size-14
-        padding-left: 11px
+        padding: 0 11px
         transition: all 0.3s
         margin-bottom: 20px
         &::-webkit-inner-spin-button
@@ -725,11 +780,13 @@
         &:focus
           border-color: $color-main !important
         .main-input-box-add
-          width: 84px
+          display: inline-block
+          width: 92px
+          border-radius: 12px
           height: 24px
           background: #F5F7FA
           line-height: 24px
-          padding-left: 8px
+          padding-left: 12px
           box-sizing: border-box
           font-family: PingFangSC-Regular
           font-size: $font-size-14
@@ -740,7 +797,7 @@
           &:after
             content: ''
             position: absolute
-            right: 11px
+            right: 15px
             top: 8px
             width: 2px
             height: 8px
@@ -749,49 +806,42 @@
           &:before
             content: ''
             position: absolute
-            right: 8px
+            right: 12px
             top: 11px
             width: 8px
             height: 2px
             background: #ACACAC
             transition: all 0.3s
 
-    .main-left
-      min-width: 60px
-      margin-right: 20px
-      display: flex
-      flex-direction: column
-      align-items: flex-end
-      .text
-        line-height: 44px
-        color: #151515
-        font-size: $font-size-14
-        font-family: $font-family-regular
-        position: relative
-        margin-bottom: 20px
-        &:after
-          content: '*'
-          left: -7px
-          position: absolute
-          margin-right: -2px
-          color: #F52424
 
+        .main-goods
+          display: flex
+          flex: 1
+          justify-content: space-between
+          align-items: center
+          .main-close
+            width: 16px
+            height: 16px
+            border-radius: 50%
+            icon-image('icon-close_content1')
+            transition: all 0.2s
+            &:hover
+              icon-image('icon-close_content2')
     .main-model-box
       layout(row)
       align-items: center
       margin-bottom: 24px
 
     .btn-group
-      margin-top: 20px
       text-align: center
       display: flex
-      justify-content: center
+      justify-content: flex-end
       user-select: none
       .btn
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -810,9 +860,10 @@
       .one-btn
         margin-left: 0
 
+  //  商品弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -821,44 +872,57 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-
-  .shade-tab
-    height: 67.5px
-    align-items: center
     padding: 0 20px
-    box-sizing: border-box
-    display: flex
-    .tab-item
-      margin-right: 10px
-
-  .page-box
-    padding: 0 20px
-    box-sizing: border-box
-    height: 66px
-    align-items: center
-    display: flex
+    .shade-tab
+      margin-bottom: 20px
+      align-items: center
+      box-sizing: border-box
+      display: flex
+      .tab-item
+        margin-right: 10px
+    .page-box
+      box-sizing: border-box
+      height: 76px
+      align-items: center
+      display: flex
 
   .goods-content
     border-radius: 4px
-    margin: 0 20px
-    height: 400px
+    height: 420px
     .goods-list
       flex-wrap: wrap
       display: flex
-    .goods-list-border
-      border: 0.5px solid $color-line
     .goods-item
       box-sizing: border-box
-      padding: 0 20px
-      width: 50%
-      height: 79.5px
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
       display: flex
       align-items: center
-      border-bottom: 0.5px solid $color-line
-      &:nth-child(2n+1)
-        border-right: 0.5px solid $color-line
-      &:nth-child(9), &:nth-child(10)
-        border-bottom: none
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
       .goods-img
         margin-right: 10px
         width: 40px
@@ -869,14 +933,15 @@
         background-position: center
         background-color: $color-background
       .goods-msg
+        flex: 1
         display: flex
-        flex-direction: column
         color: $color-text-main
         font-family: $font-family-regular
         justify-content: space-between
-        height: 40px
+        height: 100%
+        align-items: center
         .goods-name
-          width: 350px
+          width: 500px
           no-wrap()
         .goods-name, .goods-money
           line-height: 1
@@ -902,61 +967,34 @@
     .page-box
       padding: 0 20px
       box-sizing: border-box
-      height: 66px
+      height: 77px
       align-items: center
       display: flex
 
-  .shade-header
+  .title-box
     display: flex
+    box-sizing: border-box
+    padding: 23px 0
     align-items: center
     justify-content: space-between
-    height: 60.5px
-    box-sizing: border-box
-    padding: 0 20px
-    border-bottom-1px($color-line)
-    .shade-tab-type
-      height: 100%
-      display: flex
-      position: relative
-      .shade-tab-item
-        display: flex
-        transition: all 0.3s
-        color: $color-text-main
-        font-family: $font-family-regular
-        align-items: center
-        margin-left: 40px
-      .shade-tab-item-active
-        font-weight: bold
-        font-family: $font-family-medium
-      .line
-        transition: all 0.3s
-        left: 55px
-        position: absolute
-        bottom: 0px
-        height: 2px
-        width: 34px
-        background: $color-main
-        border-radius: 1px
-    .shade-title
-      color: $color-text-main
-      font-family: $font-family-medium
+    .title
       font-size: $font-size-16
+      font-family: $font-family-medium
+      line-height: 1
+      color: $color-text-main
     .close
-      icon-image('icon-close')
-      width: 16px
+      width: 12px
       height: @width
-      transition: all 0.3s
-      &:hover
-        transform: scale(1.3)
-
-  .back
-    justify-content: center
-
+      icon-image('icon-close')
   .back-box
+    background: $color-white
+    height: 70px
     border-top-1px($color-line)
+    justify-content: flex-end
     position: absolute
     left: 0
     bottom: 0
+
 
   //  单选框
   .select-icon
@@ -978,10 +1016,5 @@
       border-radius: 50%
 
   .select-icon-active
-    border: 1px solid $color-main
-    .after
-      width: 8px
-      height: 8px
-      border-radius: 50%
-      background: $color-main
+    border: 5px solid $color-main
 </style>

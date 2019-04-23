@@ -46,24 +46,20 @@
         <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
     </div>
-    <coupon-confirm ref="confirm" @confirm="_sureConfirm"></coupon-confirm>
+    <default-confirm ref="confirm" infoTitle="删除优惠券" :oneBtn="false" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import API from '@api'
-  import CouponConfirm from './coupon-confirm/coupon-confirm'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {couponComputed, couponMethods} from '@state/helpers'
 
   const PAGE_NAME = 'COUPON_MANAGE'
   const TITLE = '优惠券列表'
   const DATE_PLACE_HOLDER = '选择时间'
 
-  const ORDERSTATUS = [
-    {text: '进行中', status: 1},
-    {text: '未开始', status: 0},
-    {text: '已过期', status: 2}
-  ]
+  const ORDERSTATUS = [{text: '进行中', status: 1}, {text: '未开始', status: 0}, {text: '已过期', status: 2}]
   const COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name', type: 1},
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},
@@ -75,7 +71,7 @@
     {name: '剩余数量', flex: 1, value: 'usable_stock', type: 1},
     {name: '已领取数', flex: 1, value: 'customer_coupon_count', type: 1},
     {name: '已使用数', flex: 1, value: 'customer_coupon_used_count', type: 1},
-    {name: '操作', flex: 1, value: '', type: 4},
+    {name: '操作', flex: 1, value: '', type: 4}
   ]
   export default {
     name: PAGE_NAME,
@@ -83,7 +79,7 @@
       title: TITLE
     },
     components: {
-      CouponConfirm
+      DefaultConfirm
     },
     data() {
       return {
@@ -100,8 +96,7 @@
         return this.tabStatus.findIndex((item) => item.status === this.status)
       }
     },
-    created() {
-    },
+    created() {},
     methods: {
       ...couponMethods,
       changeStatus(selectStatus) {
@@ -115,7 +110,7 @@
       _deleteCoupon(item, id) {
         this.delId = id
         this.delItem = item
-        this.$refs.confirm.show('删除后将无法查看优惠券的信息，且无法恢复，谨慎操作！', '删除优惠券')
+        this.$refs.confirm.show('删除后将无法查看优惠券的信息，且无法恢复，谨慎操作！')
       },
       async _sureConfirm() {
         let res = await API.Coupon.deleteCoupon(this.delId)
@@ -150,9 +145,12 @@
     no-wrap()
     font-family: $font-family-regular
     font-size: $font-size-14
-  .list
+  .list-box
     .list-item
       font-size: $font-size-14
+      &:last-child
+        padding-right: 0
+        max-width: 75px
       .item
         text-overflow: ellipsis
         overflow: hidden

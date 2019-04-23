@@ -22,13 +22,34 @@ export default {
     return request.get(url, {}, loading)
   },
   /**
+   * 拓展活动成员列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getMemberList({page, id}, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-offline-members/${id}`
+    return request.get(url, {page}, loading)
+  },
+  /**
+   * 拓展任务详情
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getTaskDetail({page, id}, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/member-activity-list/${id}`
+    return request.get(url, {page}, loading)
+  },
+  /**
    * 删除活动
    * @param data
    * @param loading
    * @returns {*}
    */
   deleteActivity(id, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    // let url = `/social-shopping/api/backend/activity-manage/activity-offline/${id}`
+    let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
     return request.delete(url, null, loading)
   },
   /**
@@ -48,7 +69,7 @@ export default {
    * @returns {*}
    */
   getGoodsList(data, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/activity-goods`
+    let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
   },
   /**
@@ -78,7 +99,27 @@ export default {
    * @returns {*}
    */
   getQrCode(data, loading = false) {
-    let url = `/social-shopping/api/backend/activity-manage/qrcode-download`
+    let url = `/social-shopping/api/create-qrcode`
     return request.post(url, data, loading)
+  },
+  /**
+   * 部门列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getBranchList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/department`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 成员列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getTeamList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/member`
+    return request.get(url, data, loading)
   }
 }

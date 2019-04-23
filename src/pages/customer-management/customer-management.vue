@@ -136,5 +136,15 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .list-box
+    .list-item
+      &:nth-child(1)
+        max-width: 100px
+      &:nth-child(2)
+        flex: 1.5
+      &:nth-child(3)
+        flex: 1.2
+      &:last-child
+        padding: 0
+        max-width: 140px
 </style>

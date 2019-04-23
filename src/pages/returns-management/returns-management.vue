@@ -57,9 +57,11 @@
     <default-modal ref="modal">
       <div slot="content">
         <div class="Auditing">
-          <div class="top">
-            <div class="title">审核</div>
-            <div class="close" @click.stop="hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
+          <div class="title-box">
+            <div class="title">
+              审核
+            </div>
+            <span class="close hand" @click.stop="hideModal"></span>
           </div>
           <div class="textarea-box">
             <span class="after"></span>
@@ -67,9 +69,9 @@
             <span class="before"></span>
           </div>
           <div class="btn-group">
-            <div class="btn-item" @click.stop="hideModal">取消</div>
-            <div class="btn-item" @click.stop="auditing(0)">驳回</div>
-            <div class="btn-item" @click.stop="auditing(1)">批准退款</div>
+            <div class="btn cancel" @click.stop="hideModal">取消</div>
+            <div class="btn manager" @click.stop="auditing(0)">驳回</div>
+            <div class="btn confirm" @click.stop="auditing(1)">批准退款</div>
           </div>
         </div>
       </div>
@@ -121,15 +123,16 @@
         searchPlaceHolder: SEARCH_PLACE_HOLDER,
         checkId: '',
         remark: '',
-        socialSelect: SELECT
+        socialSelect: SELECT,
+        infoTabIndex: 0
       }
     },
     computed: {
       ...authComputed,
       ...returnsComputed,
-      infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.status)
-      },
+      // infoTabIndex() {
+      //   return this.tabStatus.findIndex((item) => item.status === this.status)
+      // },
       returnsExportUrl() {
         let currentId = this.getCurrentId()
         let data = {
@@ -150,6 +153,9 @@
       }
     },
     created() {
+      if (this.$route.query.status) {
+        this.infoTabIndex = this.$route.query.status * 1 + 1
+      }
       this._getShopList()
     },
     methods: {
@@ -226,12 +232,24 @@
   textarea::-webkit-input-placeholder
     font-size: $font-size-14
     color: #ACACAC
-
+  .list-box
+    .list-item
+      &:nth-child(1)
+        min-width: 188px
+      &:nth-child(7)
+        flex: 0.8
+      &:nth-child(8), &:nth-child(4)
+        flex: 0.6
+      &:last-child
+        padding: 0
+        max-width: 76px
   .Auditing
-    width: 534px
-    height: 261px
+    width: 380px
+    height: 225px
+    padding: 0 20px
+    box-sizing: border-box
     background: $color-white
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .top
@@ -241,51 +259,36 @@
       justify-content: space-between
       padding: 0 20px
       layout(row)
+
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
       .title
-        font-family: $font-family-regular
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
         color: $color-text-main
       .close
-        width: 16px
-        height: 16px
-        cursor: pointer
-        .close-img
-          width: 16px
-          height: 16px
-          display: block
+        width: 12px
+        height: @width
+        icon-image('icon-close')
     .textarea-box
+      margin-top: -3px
       .modelarea
         font-size: $font-size-14
-        width: 494px
+        width: 100%
         resize: none
-        height: 80px
-        padding: 12px
-        margin: 30px auto 30px
-        border: 1px solid $color-line
-    .btn-group
-      layout(row)
-      align-items: center
-      justify-content: flex-end
-      padding-right: 20px
-      .btn-item
-        width: 96px
-        line-height: 40px
-        margin-left: 10px
-        cursor: pointer
-        text-align: center
-        border: 1px solid $color-text-assist
-        border-radius: 1px
-        font-family: $font-family-regular
-        font-size: $font-size-16
-        color: $color-text-main
-        height: 40px
-        &:nth-child(2)
-          color: $color-positive
-          border-color: $color-positive
-        &:nth-child(3)
-          background: $color-positive
-          color: $color-white
-          border-color: $color-positive
+        height: 76px
+        padding: 13px 11px
+        box-sizing: border-box
+        border-radius: 2px
+        border: 0.5px solid $color-line
+        background: #F9F9F9
+        &:focus
+          background: $color-white
 
   .search-warp
     layout(row)
@@ -304,7 +307,7 @@
       line-height: 28px
       background: $color-positive
       border: 1px solid $color-positive
-      border-radius: 1px
+      border-radius: 2px
       font-family: $font-family-regular
       font-size: $font-size-12
       color: $color-white

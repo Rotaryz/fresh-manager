@@ -90,6 +90,7 @@
           return
         }
         this.drawTotalLine(res.data)
+        console.log(res.data)
       },
       drawTotalLine(data) {
         let xAxis = data.x
@@ -344,7 +345,7 @@
       width: 34px
       height: 2px
       background: $color-main
-      border-radius: 1px
+      border-radius: 2px
       bottom: -1px
       left: 0
     .content-title

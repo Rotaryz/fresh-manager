@@ -20,7 +20,7 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in detail.details" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-item-double">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_sku_code}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}</div>
@@ -41,8 +41,8 @@
     '商品编码',
     '分类',
     '销售数量'
-    // '销售单价',
-    // '销售金额'
+  // '销售单价',
+  // '销售金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -66,11 +66,14 @@
   .procurement-task
     .list-box
       .list-item
-        padding-right: 14px
+        &:nth-child(1)
+          flex: 1.2
+        &:last-child
+          max-width: 100px
 
   .down-content
     align-items: flex-start
-    padding:5px 20px 25px
+    padding: 5px 20px 25px
     box-sizing: border-box
   .enter-title
     font-size: $font-size-14

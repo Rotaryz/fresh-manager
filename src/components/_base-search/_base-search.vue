@@ -70,7 +70,7 @@
     width: 100%
     box-sizing: border-box
     border: 0.5px solid $color-line
-    border-radius: 1px
+    border-radius: 2px
     padding-left: 10px
     transition: all 0.2s
     &:hover
@@ -82,11 +82,11 @@
       border: 1px solid $color-main !important
 
   .search-icon-box
-    width: 47px
+    width: 50px
     margin-left: 10px
     overflow: hidden
     height: 28px
-    border-radius: 1px
+    border-radius: 2px
     background: $color-main
     text-align: center
     line-height: 28px

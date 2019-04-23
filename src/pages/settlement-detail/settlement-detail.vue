@@ -154,8 +154,11 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
-      &:first-child, &:nth-child(8)
+      &:first-child
         flex: 1.5
+      &:nth-child(7)
+        flex: 1.2
       &:last-child
-        flex: 0.6
+        padding: 0
+        max-width: 50px
 </style>

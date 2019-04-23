@@ -16,6 +16,8 @@
 
 <script type="text/ecmascript-6">
   import {authMethods} from '@state/helpers'
+  import API from '@api'
+  import storage from 'storage-controller'
 
   const PAGE_NAME = 'LOGIN'
   const TITLE = '登录'
@@ -29,7 +31,11 @@
       return {
         username: '',
         password: '',
-        tryingToLogIn: false
+        tryingToLogIn: false,
+        trySocial: false,
+        tryScm: false,
+        menuList: [],
+        permissionsList: {}
       }
     },
     computed: {
@@ -55,7 +61,8 @@
             if (!user) {
               return
             }
-            this.$router.push(this.$route.query.redirectFrom || '/home/product-list')
+            this.getSocialData()
+            this.getScmData()
           })
           .catch((error) => {
             this.$toast.show(error)
@@ -63,6 +70,43 @@
           .finally(() => {
             this.tryingToLogIn = false
           })
+      },
+      // 请求商城权限
+      getSocialData() {
+        API.Account.getSocialMenu().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.trySocial = true
+          this.menuList = this.menuList.concat(res.data.admin_menu)
+          this.permissionsList = Object.assign(this.permissionsList, res.data.permissions)
+          this.judgeRequest()
+        })
+      },
+      // 请求供应链权限
+      getScmData() {
+        API.Account.getScmMenu().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.tryScm = true
+          this.menuList = this.menuList.concat(res.data.admin_menu)
+          this.permissionsList = Object.assign(this.permissionsList, res.data.permissions)
+          this.judgeRequest()
+        })
+      },
+      judgeRequest() {
+        if (this.trySocial && this.tryScm) {
+          this.menuList = this.menuList.sort((a, b) => {
+            return a.sort - b.sort
+          })
+          console.log(this.menuList)
+          storage.set('menu', this.menuList)
+          storage.set('permissions', this.permissionsList)
+          this.$router.push(this.menuList[0].sub_menu[0].sub_menu[0].front_url || 'home')
+        }
       }
     }
   }
@@ -104,7 +148,7 @@
         height: 44px
         box-sizing: border-box
         margin-bottom: 24px
-        border-radius: 1px
+        border-radius: 2px
         background: $color-white
 
         input
@@ -117,7 +161,7 @@
         width: 360px
         height: 43px
         margin-top: 16px
-        border-radius: 1px
+        border-radius: 2px
         line-height: 43px
         font-size: $font-size-14
         color: $color-white

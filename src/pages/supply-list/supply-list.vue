@@ -7,7 +7,7 @@
         <date-picker
           class="edit-input-box" type="date"
           placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 1px"
+          style="width: 187px;height: 28px;border-radius: 2px"
           :value="startTime"
           @on-change="changeStartTime"
         ></date-picker>
@@ -21,7 +21,7 @@
             class="edit-input-box edit-input-right"
             type="date"
             placeholder="结束时间"
-            style="width: 187px;height: 28px;border-radius: 1px"
+            style="width: 187px;height: 28px;border-radius: 2px"
             :value="endTime"
             @on-change="changeEndTime"
           ></date-picker>
@@ -85,7 +85,12 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '待发布', value: 1, key: 'wait_submit', num: 0}, {name: '待采购', value: 2, key: 'success', num: 0}, {name: '已完成', value: 3, key: 'success', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待发布', value: 1, key: 'wait_submit', num: 0},
+          {name: '待采购', value: 2, key: 'success', num: 0},
+          {name: '已完成', value: 3, key: 'success', num: 0}
+        ]
       }
     },
     computed: {
@@ -97,7 +102,11 @@
     methods: {
       ...omsMethods,
       _getOutOrdersStatistic() {
-        API.Oms.outOrdersStatistic({start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '', end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '', keyword: this.keyword}).then((res) => {
+        API.Oms.outOrdersStatistic({
+          start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
+          end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          keyword: this.keyword
+        }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -154,6 +163,10 @@
     .list-box
       .list-item
         padding-right: 14px
+        &:nth-child(4), &:nth-child(5)
+          flex: 0.6
         &:last-child
+          max-width 50px
+          padding: 0
           flex: 0.3
 </style>

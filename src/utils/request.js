@@ -2,6 +2,7 @@
 
 import axios from 'axios'
 import * as Utils from './request-utils'
+import {getCorpId} from '@utils/tool'
 
 const TIME_OUT = 10000
 const ERR_OK = 0
@@ -16,6 +17,9 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
+    if (!config.headers.common['Current-Corp']) {
+      config.headers.common['Current-Corp'] = getCorpId()
+    }
     return config
   },
   (error) => {
@@ -54,10 +58,11 @@ function checkCode(res) {
   if (res.status === ERR_NO) {
     console.warn(res.msg)
   }
-  // 如果网络请求成功，而提交的数据，或者是后端的一些未知错误所导致的，可以根据实际情况进行捕获异常
   if (res.data && res.data.code !== ERR_OK) {
+    // 如果网络请求成功，而提交的数据，或者是后端的一些未知错误所导致的，可以根据实际情况进行捕获异常
     Utils.handleErrorType(res.data.code)
-    throw requestException(res)
+    let error = requestException(res)
+    return error
   }
   return res.data
 }
@@ -70,7 +75,12 @@ function requestException(res) {
     error.code = serviceData.code
     error.error = serviceData.error
     error.message = serviceData.message
-    error.serverData = serviceData
+    error.data = serviceData.data || []
+  }
+  switch (serviceData.code) {
+    case 13004: // 系统升级
+      error.error = 0
+      break
   }
   return error
 }

@@ -31,7 +31,7 @@
           class="edit-input-box" type="date"
           placement="bottom-end"
           placeholder="开始时间"
-          style="width: 240px;height: 44px;border-radius: 1px"
+          style="width: 240px;height: 40px;border-radius: 2px"
           @on-change="_getStartTime"
         ></date-picker>
         <div class="tip">至</div>
@@ -41,7 +41,7 @@
           type="date"
           placement="bottom-end"
           placeholder="结束时间"
-          style="width: 240px;height: 44px"
+          style="width: 240px;height: 40px"
           @on-change="_getEndTime"
         ></date-picker>
         <div class="tip-text">每日23点刷新活动，单人每日限购重置</div>
@@ -65,7 +65,7 @@
           </div>
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
+              <div class="com-list-item com-list-double">{{item.name}}</div>
               <div class="com-list-item">{{item.goods_units}}</div>
               <div class="com-list-item">{{item.original_price}}</div>
               <div class="com-list-item">
@@ -94,8 +94,10 @@
     <!--编辑分类弹窗-->
     <default-modal ref="shadeCustom">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">编辑活动分类</div>
+        <div class="title-box">
+          <div class="title">
+            编辑活动分类
+          </div>
           <span class="close hand" @click="_hideEditShade"></span>
         </div>
         <div class="auxiliary-box">
@@ -108,10 +110,6 @@
           </div>
           <div class="btn-main auxiliary-add" @click="_showModal(true)">新增+</div>
         </div>
-        <!--<div class="back">-->
-        <!--<div class="back-cancel back-btn hand" @click="_hideEditShade">取消</div>-->
-        <!--<div class="back-btn btn-main">保存</div>-->
-        <!--</div>-->
         <!--小弹窗新增编辑-->
         <transition name="fade">
           <section v-show="isShow" class="default-modal-small">
@@ -163,8 +161,10 @@
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModel">
       <div slot="content" class="shade-box">
-        <div class="shade-header">
-          <div class="shade-title">选择商品</div>
+        <div class="title-box">
+          <div class="title">
+            选择商品
+          </div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <div class="shade-tab">
@@ -180,7 +180,7 @@
         </div>
         <div class="goods-content">
           <div class="rush-goods-list">
-            <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
+            <div v-for="(item, index) in choessGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
               <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
               <div class="goods-msg">
@@ -261,7 +261,7 @@
         tagList: [],
         tagItem: {},
         page: 1,
-        choeesGoods: [],
+        choessGoods: [],
         rushMsg: [],
         assortment: {
           check: false,
@@ -339,7 +339,7 @@
           keyword: this.keyword,
           goods_category_id: this.parentId,
           shelf_id: this.id,
-          limit: 10,
+          limit: 7,
           page: this.page
         })
         if (res.error !== this.$ERR_OK) {
@@ -350,7 +350,7 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.choeesGoods = res.data.map((item, index) => {
+        this.choessGoods = res.data.map((item, index) => {
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
@@ -406,12 +406,12 @@
       _selectGoods(item, index) {
         switch (item.selected) {
         case 0:
-          this.choeesGoods[index].selected = 2
+          this.choessGoods[index].selected = 2
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
           break
         case 2:
-          this.choeesGoods[index].selected = 0
+          this.choessGoods[index].selected = 0
           let idx = this.selectGoods.findIndex((items) => items.id === item.id)
           let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
           if (idx !== -1) {
@@ -441,9 +441,9 @@
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
-          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let idx = this.choessGoods.findIndex((items) => items.goods_id === item.goods_id)
           let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
+          this.choessGoods[idx].selected = this.choessGoods[idx].selected === 1 ? 1 : 0
           this.selectGoodsId.splice(delIdx, 1)
         })
         this.selectGoods = []
@@ -454,10 +454,10 @@
         if (item.selected === 1) {
           return
         }
-        this.choeesGoods[index].selected = 1
+        this.choessGoods[index].selected = 1
         this.goodsList.push(item)
         this.selectGoodsId.push(item.id)
-        this.choeesGoods.forEach((item) => {
+        this.choessGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)
             if (idx !== -1) {
@@ -468,7 +468,7 @@
       },
       // 批量添加
       _batchAddition() {
-        this.choeesGoods = this.choeesGoods.map((item) => {
+        this.choessGoods = this.choessGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
@@ -679,13 +679,13 @@
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
-        border-radius: 1px
+        border-radius: 2px
         width: 240px
-        height: 44px
+        height: 40px
         display: flex
         align-items: center
         justify-content: space-between
-        border: 1px solid $color-line
+        border: 0.5px solid $color-line
         transition: all 0.3s
         &:hover
           border-color: #ACACAC
@@ -779,14 +779,17 @@
         .com-list-item
           &:nth-child(1)
             flex: 2
-
-  .history-record
-    box-sizing: border-box
-    padding: 0 20px
-    padding-bottom: 80px
+          &:nth-child(7)
+            flex: 0.5
+          &:last-child
+            max-width: 70px
+        .com-list-double
+          white-space: normal
+          line-height: 18px
+          no-wrap-plus()
 
   .activity-tab
-    height: 58px
+    margin-bottom: 20px
     display: flex
     align-items: center
     box-sizing: border-box
@@ -795,18 +798,23 @@
       height: 28px
       line-height: 28px
       width: 92px
-      background: $color-main
-      color: $color-white
+      border: 1px solid $color-main
+      color: $color-main
+      background: $color-white
       font-size: $font-size-12
       white-space: nowrap
       transition: all 0.3s
       text-align: center
-      border-radius: 1px
+      border-radius: 2px
+    .btn-disable
+      border: 1px solid $color-main
+      color: $color-main
+      background: $color-white
 
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
-    border-radius: 1px
+    border-radius: 2px
     background: $color-white
     height: 675px
     max-width: 1000px
@@ -815,25 +823,22 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
-    .shade-header
+    padding: 0 20px
+    .title-box
       display: flex
+      box-sizing: border-box
+      padding: 23px 0
       align-items: center
       justify-content: space-between
-      height: 60.5px
-      box-sizing: border-box
-      padding: 0 20px
-      border-bottom: 0.5px solid $color-line
-      .shade-title
-        color: $color-text-main
-        font-family: $font-family-medium
+      .title
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
       .close
-        icon-image('icon-close')
-        width: 16px
+        width: 12px
         height: @width
-        transition: all 0.3s
-        &:hover
-          transform: scale(1.3)
+        icon-image('icon-close')
     // 分类编辑新建
     .auxiliary-box
       padding: 0 20px
@@ -859,7 +864,7 @@
           position: absolute
           width: 100%
           height: 100%
-          border-radius: 1px
+          border-radius: 2px
           background: rgba(51, 51, 51, 0.9)
           left: 0
           top: 0
@@ -888,10 +893,13 @@
         min-width: 80px
         text-align: center
     .back
+      background: $color-white
+      justify-content: flex-end
       position: absolute
       left: 0
       right: 0
       bottom: 0
+      height: 70px
     /*小弹窗盒子*/
     .default-modal-small
       position: absolute
@@ -914,7 +922,7 @@
     .default-input
       box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
       background: #fff
-      border-radius: 1px
+      border-radius: 2px
       .title-input
         height: 60px
         layout(row)
@@ -943,7 +951,7 @@
         .main-input-box
           width: 310px
           height: 44px
-          border-radius: 1px
+          border-radius: 2px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
@@ -961,7 +969,6 @@
             border-color: $color-main !important
 
     .btn-group
-      margin-top: 40px
       text-align: center
       display: flex
       justify-content: flex-end
@@ -970,7 +977,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         cursor: pointer
         transition: all 0.3s
       .cancel
@@ -1006,7 +1013,7 @@
     width: 329.6px
     height: 200px
     background: #fff
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .btn-group-confirm
@@ -1018,7 +1025,7 @@
         width: 96px
         height: 40px
         line-height: 40px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-text-D9
         cursor: pointer
         transition: all 0.3s
@@ -1059,44 +1066,41 @@
 
   /*选择商品样式*/
   .shade-tab
-    height: 67.5px
+    margin-bottom: 20px
     align-items: center
-    padding: 0 20px
     box-sizing: border-box
     display: flex
     .tab-item
       margin-right: 10px
 
   .page-box
-    padding: 0 20px
     box-sizing: border-box
-    height: 66px
+    height: 76px
     align-items: center
     display: flex
 
   .goods-content
-    border-radius: 1px
-    border: 1px solid $color-line
-    margin: 0 20px
-    height: 400px
+    border-radius: 2px
     .rush-goods-list
-      flex-wrap: wrap
-      display: flex
+      height: 420px
     .goods-item
       box-sizing: border-box
       padding: 0 20px
-      width: 50%
-      height: 79.5px
+      width: 100%
+      height: 60px
       display: flex
       align-items: center
       border-bottom: 0.5px solid $color-line
+      border-right: 0.5px solid $color-line
+      border-left: 0.5px solid $color-line
+      position: relative
       &:nth-child(2n+1)
-        border-right: 1px solid $color-line
-      &:nth-child(9), &:nth-child(10)
-        border-bottom: none
+        background: #f5f7fa
+      &:first-child
+        border-top: 0.5px solid $color-line
       .select-icon
         margin-right: 20px
-        border-radius: 1px
+        border-radius: 2px
         border: 1px solid $color-line
         height: 16px
         width: 16px
@@ -1109,7 +1113,7 @@
         border: 1px solid transparent
         icon-image('icon-check')
       .goods-img
-        margin-right: 10px
+        margin-right: 20px
         width: 40px
         height: @width
         overflow: hidden
@@ -1119,27 +1123,29 @@
         background-color: $color-background
       .goods-msg
         display: flex
-        flex-direction: column
         color: $color-text-main
         font-family: $font-family-regular
-        justify-content: space-between
         height: 40px
+        align-items: center
+        margin-right: 130px
+        flex: 1
         .goods-name
-          width: 210px
+          width: 593px
           no-wrap()
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14
       .add-btn
-        border-radius: 1px
+        col-center()
+        right: 20px
+        border-radius: 2px
         margin-left: 88px
-        padding: 5px 0
+        padding: 7px 0
         min-width: 56px
         text-align: center
       .add-btn-disable
-        border-radius: 1px
-        margin-left: 88px
-        padding: 5px 0
+        border-radius: 2px
+        padding: 7px 0
         width: 56px
         box-sizing: border-box
         text-align: center
@@ -1149,7 +1155,6 @@
         background: $color-line
         color: $color-text-assist
         border: none
-
   /*弹窗动画*/
   @keyframes layerFadeIn {
     0% {
@@ -1179,7 +1184,7 @@
   .com-edit
     height: 34px
     width: 93px
-    border-radius: 1px
+    border-radius: 2px
     box-sizing: border-box
     border: 1px solid $color-line
     padding-left: 22px
@@ -1203,7 +1208,7 @@
     color: $color-text-main
 
   .com-edit-small
-    width: 60px
+    width: 70px
 
   .rush-list-box
     background: $color-white

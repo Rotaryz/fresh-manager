@@ -59,8 +59,23 @@ export const mutations = {
 
 export const actions = {
   // 采购列表
-  async getPurchaseTaskList({state, commit, dispatch}, {time, startTime, endTime, keyword, status, page, supplyId, loading = true}) {
-    return API.Supply.purchaseTask({time, start_time: startTime ? startTime + ' ' + state.timeStart : '', end_time: endTime ? endTime + ' ' + state.timeEnd : '', keyword, status, page, supplier_id: supplyId, limit: 10}, loading)
+  async getPurchaseTaskList(
+    {state, commit, dispatch},
+    {time, startTime, endTime, keyword, status, page, supplyId, loading = true}
+  ) {
+    return API.Supply.purchaseTask(
+      {
+        time,
+        start_time: startTime ? startTime + ' ' + state.timeStart : '',
+        end_time: endTime ? endTime + ' ' + state.timeEnd : '',
+        keyword,
+        status,
+        page,
+        supplier_id: supplyId,
+        limit: 10
+      },
+      loading
+    )
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -125,7 +140,7 @@ export const actions = {
   setTaskList({state, commit}, arr) {
     commit('SET_EDIT_TASK_LIST', arr)
   },
-  infoTaskTime({commit, dispatch},{start, end}) {
+  infoTaskTime({commit, dispatch}, {start, end}) {
     commit('SET_TIME_START', start)
     commit('SET_TIME_END', end)
   }

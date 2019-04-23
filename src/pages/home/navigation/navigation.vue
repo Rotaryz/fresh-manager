@@ -4,23 +4,28 @@
       <header class="logo">
         <img class="logo-img" src="./pic-logo@2x.png">
       </header>
-      <ul v-for="(item, index) in firstMenu" :key="index" class="menu">
-        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index)">
+      <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'beginner-guide':item.url==='/home/beginner-guide'}]">
+        <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
           <img :src="item.icon" class="nav-item-icon">
-          <p class="nav-item-name">{{item.name}}</p>
+          <p class="nav-item-name">{{item.display_name}}</p>
         </li>
       </ul>
     </div>
     <div class="second">
-      <div v-for="(item, index) in navList" :key="index" class="second-item">
-        <p class="second-title">{{item.title}}</p>
-        <div v-for="(child, i) in item.children" :key="i" :class="child | childrenActive" class="second-link hand" @click="_setChildActive(child)">{{child.title}}</div>
+      <div v-for="(item, index) in navList" :key="index">
+        <div class="second-item">
+          <p class="second-title">{{item.display_name}}</p>
+          <div v-for="(child, i) in item.sub_menu" :key="i" class="second-link hand" @click="_setChildActive(child)">
+            <span :class="child | childrenActive" class="second-link-content">{{child.display_name}}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import storage from 'storage-controller'
   const COMPONENT_NAME = 'NAVIGATION_BAR'
   const INFO_INDEX = 0
   // const HEIGHT = 40
@@ -58,14 +63,29 @@
     {
       title: '活动',
       children: [
+        // {
+        //   title: '今日抢购',
+        //   url: '/home/rush-purchase',
+        //   isLight: false
+        // },
         {
-          title: '今日抢购',
-          url: '/home/rush-purchase',
+          title: '限时抢购',
+          url: '/home/flash-sale',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '拓展',
+      children: [
+        {
+          title: '拓展任务',
+          url: '/home/outreach-activity',
           isLight: false
         },
         {
-          title: '拓展活动',
-          url: '/home/outreach-activity',
+          title: '拓展团队',
+          url: '/home/outreach-group',
           isLight: false
         }
       ]
@@ -132,44 +152,91 @@
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false
+        }
+      // {
+      //   title: '团长结算',
+      //   url: '/home/head-settlement',
+      //   isLight: false
+      // },
+      // {
+      //   title: '团长提现',
+      //   url: '/home/leader-withdrawal',
+      //   isLight: false
+      // }
+      ]
+    }
+  ]
+  const FINANCE = [
+    // {
+    //   title: '财务',
+    //   children: [
+    //     {
+    //       title: '营业概况',
+    //       url: '/home/business-overview',
+    //       isLight: false
+    //     }
+    //     // {
+    //     //   title: '交易记录',
+    //     //   url: '/home/transaction-record',
+    //     //   isLight: false
+    //     // }
+    //   ]
+    // },
+    {
+      title: '账户',
+      children: [
+        {
+          title: '账户总览',
+          url: '/home/account-overview',
+          isLight: false
         },
         {
-          title: '团长结算',
+          title: '交易明细',
+          url: '/home/transaction-detail',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '团长',
+      children: [
+        {
+          title: '团长佣金',
           url: '/home/head-settlement',
           isLight: false
         },
         {
-          title: '团长提现',
+          title: '提现记录',
           url: '/home/leader-withdrawal',
           isLight: false
         }
       ]
     }
   ]
-  const FINANCE = [
+  const ACCOUNT = [
     {
-      title: '财务',
+      title: '账号',
       children: [
         {
-          title: '营业概况',
-          url: '/home/business-overview',
+          title: '账号权限',
+          url: '/home/account-manage',
           isLight: false
         },
         {
-          title: '交易记录',
-          url: '/home/transaction-record',
+          title: '操作日记',
+          url: '/home/account-diary',
           isLight: false
         }
       ]
     }
   ]
-  const STATISTICS = [
+  const DATA = [
     {
-      title: '统计',
+      title: '概况',
       children: [
         {
-          title: '数据统计',
-          url: '/home/data-survey',
+          title: '数据概况',
+          url: '/home/new-data',
           isLight: false
         }
       ]
@@ -247,9 +314,45 @@
       ]
     }
   ]
+  const BEGINNER_GUIDE = [
+    {
+      title: '新手指引',
+      children: [
+        {
+          title: '新手指引',
+          url: '/home/beginner-guide',
+          isLight: true
+        }
+      ]
+    }
+  ]
+  const STATIS = [
+    {
+      title: '统计',
+      children: [
+        {
+          title: '社群数据',
+          url: '/home/community-data',
+          isLight: false
+        }
+      ]
+    }
+  ]
   const FIRST_MENU = [
-    // {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: [], url: ''},
-    {name: '商城', icon: require('./icon-tmall@2x.png'), isLight: true, second: SHOP, url: '/home/product-list'},
+    {
+      name: '概况',
+      icon: require('./icon-dashboard@2x.png'),
+      isLight: false,
+      second: DATA,
+      url: '/home/new-data'
+    },
+    {
+      name: '商城',
+      icon: require('./icon-tmall@2x.png'),
+      isLight: false,
+      second: SHOP,
+      url: '/home/product-list'
+    },
     {
       name: '供应链',
       icon: require('./icon-supply_chain@2x.png'),
@@ -261,18 +364,33 @@
       name: '统计',
       icon: require('./icon-statistics@2x.png'),
       isLight: false,
-      second: STATISTICS,
-      url: '/home/data-survey'
+      second: STATIS,
+      url: '/home/community-data'
     },
     {
       name: '财务',
       icon: require('./icon-finance@2x.png'),
       isLight: false,
       second: FINANCE,
-      url: '/home/business-overview'
+      url: '/home/account-overview'
+    },
+    {
+      name: '设置',
+      icon: require('./icon-set_up@2x.png'),
+      isLight: false,
+      second: ACCOUNT,
+      url: '/home/account-manage'
+    },
+    {
+      name: '',
+      icon: require('./icon-guide@2x.png'),
+      isLight: false,
+      second: BEGINNER_GUIDE,
+      url: '/home/beginner-guide'
     }
-    // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''}
+  // {name: '系统', icon: require('./icon-system@2x.png'), isLight: false, second: [], url: ''},
   ]
+
   export default {
     name: COMPONENT_NAME,
     filters: {
@@ -294,9 +412,10 @@
     data() {
       return {
         currentIndex: '',
-        firstMenu: FIRST_MENU,
+        firstMenu: [],
         firstIndex: INFO_INDEX,
-        navList: []
+        navList: [],
+        oldMenu: FIRST_MENU
       }
     },
     watch: {
@@ -308,6 +427,38 @@
       }
     },
     created() {
+      let arr = storage.get('menu')
+      arr.forEach((item, index) => {
+        item.isLight = false
+        if (item.sub_menu && item.sub_menu[0].sub_menu) {
+          item.url = item.sub_menu[0].sub_menu[0].front_url
+        }
+        switch (item.icon_name) {
+        case 'statistics':
+          item.icon = require('./icon-dashboard@2x.png')
+          break
+        case 'shop':
+          item.icon = require('./icon-tmall@2x.png')
+          break
+        case 'scm':
+          item.icon = require('./icon-supply_chain@2x.png')
+          break
+        case 'finance':
+          item.icon = require('./icon-finance@2x.png')
+          break
+        case 'setting':
+          item.icon = require('./icon-set_up@2x.png')
+          break
+        case 'community':
+          item.icon = require('./icon-statistics@2x.png')
+          break
+        case 'guide':
+          item.display_name = ''
+          item.icon = require('./icon-guide@2x.png')
+          break
+        }
+      })
+      this.firstMenu = arr
       this._getMenuIndex()
       this._handleNavList()
     },
@@ -318,15 +469,15 @@
         let index = ''
         let smallIndex = -1
         this.firstMenu = this.firstMenu.map((item, idx) => {
-          if (item.second.length) {
-            item.second.forEach((end) => {
+          if (item.sub_menu && item.sub_menu.length) {
+            item.sub_menu.forEach((end) => {
               if (smallIndex === -1 && index === '') {
-                smallIndex = end.children.findIndex((child) => {
+                smallIndex = end.sub_menu.findIndex((child) => {
                   return currentPath.includes(child.url)
                 })
                 index = smallIndex !== -1 ? idx : ''
                 this.firstIndex = index
-                this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.second)) : this.navList
+                this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.sub_menu)) : this.navList
               }
             })
           }
@@ -335,10 +486,13 @@
         })
       },
       // 点击一级导航
-      _setFirstMenu(i) {
+      _setFirstMenu(i, url) {
+        if (url === '/home/beginner-guide') {
+          this.$store.commit('beginner/SET_ACTIVE', 0)
+        }
         if (this.firstMenu[i].isLight) {
           return
-        } else if (!this.firstMenu[i].second.length) {
+        } else if (!this.firstMenu[i].sub_menu || !this.firstMenu[i].sub_menu.length) {
           this.$toast.show('该功能正在开发中')
           return
         }
@@ -347,35 +501,41 @@
           return item
         })
         this.firstIndex = i
-        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].second))
+        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].sub_menu))
         this.$router.push(this.firstMenu[i].url)
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
-        this.$router.push(child.url)
+        this.$router.push(child.front_url)
       },
       // 监听页面变化
       _handleNavList() {
         let currentPath = this.$route.fullPath
-        let currentIndex = this.navList.findIndex((item) => {
-          return item.children.some((child) => currentPath.includes(child.url))
-        })
-        this.navList.map((item) => {
-          item.children = item.children.map((child) => {
-            child.isLight = false
-            return child
-          })
-          return item
-        })
-        let urlIndex = -1
-        this.navList[currentIndex].children.map((item, index) => {
-          if (urlIndex === -1) {
-            urlIndex = currentPath.includes(item.url) ? index : -1
+        let currentNav
+        this.firstMenu.forEach((item, idx) => {
+          if (currentPath.includes(item.url)) {
+            currentNav = item.sub_menu
+            this.firstMenu[idx].isLight = true
+            this.firstMenu[idx].sub_menu[0].sub_menu[0].isLight = true
+          } else {
+            this.firstMenu[idx].isLight = false
           }
-          item.isLight = currentPath.includes(item.url)
-          return item
+          item.sub_menu &&
+            item.sub_menu.forEach((it, id) => {
+              it.sub_menu &&
+                it.sub_menu.forEach((child, i) => {
+                  if (currentPath.includes(child.front_url)) {
+                    currentNav = item.sub_menu
+                    this.firstMenu[idx].isLight = true
+                    this.firstMenu[idx].sub_menu[id].sub_menu[i].isLight = true
+                  } else {
+                    this.firstMenu[idx].sub_menu[id].sub_menu[i].isLight = false
+                  }
+                })
+            })
         })
-        this.firstMenu[this.firstIndex].url = this.navList[currentIndex].children[urlIndex].url
+        this.navList = currentNav || []
+        this.$forceUpdate()
       }
     }
   }
@@ -401,16 +561,19 @@
     z-index: 2000
     width: 210px
     display: flex
+
     .first
       overflow: hidden
       min-height: 100vh
       width: $menu-width
       position: relative
       background: #363B4B
+
     .menu
       position: relative
       z-index: 1
       width: 100px
+
     .nav-item
       height: 54px
       display: flex
@@ -419,15 +582,36 @@
       padding: 0 10px
       box-sizing: border-box
       transition: all 0.3s
+
       .nav-item-icon
         width: 14px
         height: 14px
         margin-right: 5px
+
       .nav-item-name
         font-size: $font-size-14
+
     .nav-item-active
       color: $color-text-main
       background: $color-white
+
+    .beginner-guide
+      position absolute
+      left: 0
+      bottom: 0px
+
+      .nav-item-active
+        background-color #464C5E
+      /*&:hover .nav-item*/
+      /*background-color #464C5E*/
+      .nav-item
+        height: auto
+        padding-bottom 18px
+        padding-top 16px
+        .nav-item-icon
+          width 62px
+          height 68px
+          margin-left: 10px
 
   .logo
     position: relative
@@ -436,6 +620,7 @@
     display: flex
     align-items: center
     justify-content: center
+
     .logo-img
       overflow: hidden
       width: 32px
@@ -450,37 +635,50 @@
     white-space: nowrap
     transition: all 0.2s
     border-right-1px($color-line)
+
     &::-webkit-scrollbar
       width: 0
       height: 0
       transition: all 0.2s
+
     &::-webkit-scrollbar-thumb
       background-color: rgba(0, 0, 0, .15)
       border-radius: 10px
+
     &::-webkit-scrollbar-thumb:hover
       background-color: rgba(0, 0, 0, .3)
+
     &::-webkit-scrollbar-track
       box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
       border-radius: 10px
+
     &:hover
       &::-webkit-scrollbar
         transition: all 0.2s
-        width: 8px
-        height: 10px
+        width: 6px
+        height: 8px
     .second-title
       transition: all 0.2s
       margin: 30px 0 10px
       color: #888888
       font-size: $font-size-14
       line-height: 1
+
     .second-link
       transition: all 0.2s
       height: 34px
       line-height: 34px
       color: $color-text-main
       font-size: $font-size-14
+
       &:hover
         color: $color-main
+
     .second-link-active
+      background: rgba(79, 189, 102, 0.17)
       color: $color-main
+    .second-link-content
+      margin-left: -6px
+      border-radius: 2px
+      padding: 5px 6px
 </style>

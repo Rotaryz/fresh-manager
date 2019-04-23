@@ -1,5 +1,6 @@
 import storage from 'storage-controller'
 import app from '@src/main'
+import store from '@state/store'
 
 // 错误码检查
 export function handleErrorType(code) {
@@ -12,6 +13,21 @@ export function handleErrorType(code) {
       _handleLoseEfficacy()
       break
     }
+    case 13004: {
+      // 系统升级
+      _handUpgrade()
+      break
+    }
+    case 13006: {
+      // 暂无权限
+      _handleLosePermissions()
+      break
+    }
+    case 13007: {
+      // 账号被删除
+      _handleDeleteAccount()
+      break
+    }
     default:
       break
   }
@@ -19,12 +35,47 @@ export function handleErrorType(code) {
 
 function _toErrorPage(useType) {}
 
+/**
+ * 登录凭证失效
+ * @private
+ */
 function _handleLoseEfficacy() {
   const currentRoute = app.$route.path
   if (currentRoute !== '/') {
     storage.set('beforeLoginRoute', currentRoute)
   }
   storage.remove('token')
+}
+
+/**
+ * 暂无权限
+ * @private
+ */
+function _handleLosePermissions() {
+  storage.set('beforeLoginRoute', '/')
+  storage.set('losePermissions', 1)
+  storage.remove('auth.currentUser', null)
+  storage.remove('menu')
+  storage.remove('permissions')
+  app.$router.replace('/login')
+}
+
+/**
+ * 系统升级
+ * @private
+ */
+function _handUpgrade() {
+  const currentRoute = app.$route.path
+  if (currentRoute !== '/upgrade') {
+    storage.set('upgradeRoute', currentRoute)
+    app.$router.replace('/upgrade')
+  }
+}
+
+function _handleDeleteAccount() {
+  storage.clear()
+  store.dispatch('auth/logOut')
+  app.$router.replace('/login')
 }
 
 export function showLoading(loading) {

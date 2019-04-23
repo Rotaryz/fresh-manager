@@ -19,7 +19,7 @@
   export default {
     name: 'FLOWITEM',
     components: {
-      'tag': {
+      tag: {
         props: {
           to: {
             type: String,
@@ -40,9 +40,9 @@
             }
           }
         },
-        render: function (createElement) {
+        render: function(createElement) {
           return createElement(
-            this.tag,   // 标签名称
+            this.tag, // 标签名称
             {
               props: {
                 to: this.getRouter
@@ -50,7 +50,7 @@
             },
             this.$slots.default // 子元素数组
           )
-        },
+        }
       }
     },
     props: {
@@ -64,11 +64,11 @@
       },
       iconSrc: {
         type: String,
-        default: ""
+        default: ''
       },
       text: {
         type: String,
-        default: ""
+        default: ''
       },
       activeText: {
         type: [String, Boolean],
@@ -84,7 +84,7 @@
       },
       to: {
         type: [String, Object],
-        default: ""
+        default: ''
       },
       fontSize: {
         type: Number,

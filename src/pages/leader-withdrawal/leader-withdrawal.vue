@@ -21,8 +21,8 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-bandit_list@2x.png" class="identification-icon">
-          <p class="identification-name">团长提现列表</p>
+          <img src="./icon-order_list2@2x.png" class="identification-icon">
+          <p class="identification-name">提现记录</p>
         </div>
         <div class="function-btn">
           <div class="btn-main btn-main-end" @click="exportExcel">导出Excel</div>
@@ -52,7 +52,7 @@
               </div>
             </div>
             <div class="list-item list-operation-box">
-              <span v-if="item.status === 0 || item.status === 4 || item.status === 5" class="list-operation" @click="checkApply(item.id)">审核</span>
+              <!--<span v-if="item.status === 0 || item.status === 4 || item.status === 5" class="list-operation" @click="checkApply(item.id)">审核</span>-->
               <router-link tag="span" :to="`budget-detail/${item.payee_id}/${item.name}`" append class="list-operation">收支明细</router-link>
             </div>
           </div>
@@ -65,19 +65,21 @@
       <default-modal ref="modal">
         <div slot="content">
           <div class="Auditing">
-            <div class="top">
-              <div class="title">审核</div>
-              <div class="close" @click.stop="hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
+            <div class="title-box">
+              <div class="title">
+                审核
+              </div>
+              <span class="close hand" @click.stop="hideModal"></span>
             </div>
-            <div class="text-area-box">
+            <div class="textarea-box">
               <span class="after"></span>
-              <textarea v-model="note" placeholder="请输入审核意见" class="model-area"></textarea>
+              <textarea v-model="note" placeholder="备注原因" class="modelarea"></textarea>
               <span class="before"></span>
             </div>
             <div class="btn-group">
-              <div class="btn-item" @click.stop="hideModal">取消</div>
-              <div class="btn-item" @click.stop="auditing(2)">驳回</div>
-              <div class="btn-item" @click.stop="auditing(1)">批准提现</div>
+              <div class="btn cancel" @click.stop="hideModal">取消</div>
+              <div class="btn manager" @click.stop="auditing(2)">驳回</div>
+              <div class="btn confirm" @click.stop="auditing(1)">批准提现</div>
             </div>
           </div>
         </div>
@@ -92,7 +94,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'LEADER_WITHDRAWAL'
-  const TITLE = '团长提现'
+  const TITLE = '提现记录'
   const LIST_TITLE = [
     '提现单号',
     '团长账号',
@@ -172,6 +174,9 @@
         let selectData = res.data
         selectData.unshift({name: '全部状态', id: ''})
         this.statusSelect.data = selectData
+        if (this.$route.query.status * 1 === 0) {
+          this.statusSelect.content = '待审核'
+        }
       },
       exportExcel() {
         window.open(this.withdrawalExportUrl, '_blank')
@@ -222,6 +227,10 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
+  textarea::-webkit-input-placeholder
+    font-size: $font-size-14
+    color: #ACACAC
+
   .tab-header
     height: 80px
     display: flex
@@ -233,11 +242,17 @@
 
   .list-box
     .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:first-child
+      &:nth-child(1)
         flex: 1.5
+        min-width: 188px
+      &:nth-child(2)
+        flex: 1.2
+      &:nth-child(4)
+        flex: 1.5
+      &:last-child
+        max-width: 104px
+        min-width: 104px
+        padding: 0
     .list-help
       overflow: visible !important
       display: flex
@@ -257,7 +272,7 @@
         opacity: 0
         color: $color-white
         padding: 8px 18px
-        border-radius: 1px
+        border-radius: 2px
         line-height: 16px
         font-family: $font-family-regular
         font-size: $font-size-14
@@ -280,10 +295,12 @@
       opacity: 0
 
   .Auditing
-    width: 534px
-    height: 261px
+    width: 380px
+    height: 225px
+    padding: 0 20px
+    box-sizing: border-box
     background: $color-white
-    border-radius: 1px
+    border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     text-align: center
     .top
@@ -293,54 +310,35 @@
       justify-content: space-between
       padding: 0 20px
       layout(row)
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
       .title
-        font-family: $font-family-regular
         font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
         color: $color-text-main
       .close
-        width: 16px
-        height: 16px
-        cursor: pointer
-        .close-img
-          width: 16px
-          height: 16px
-          display: block
-          transition: all 0.3s
-          &:hover
-            transform: scale(1.1)
-    .text-area-box
-      .model-area
+        width: 12px
+        height: @width
+        icon-image('icon-close')
+    .textarea-box
+      margin-top: -3px
+      .modelarea
         font-size: $font-size-14
-        width: 494px
+        width: 100%
         resize: none
-        height: 80px
-        padding: 12px
-        margin: 30px auto 30px
-        border: 1px solid $color-line
-    .btn-group
-      layout(row)
-      align-items: center
-      justify-content: flex-end
-      padding-right: 20px
-      .btn-item
-        width: 96px
-        line-height: 40px
-        margin-left: 10px
-        cursor: pointer
-        text-align: center
-        border: 1px solid $color-text-assist
-        border-radius: 1px
-        font-family: $font-family-regular
-        font-size: $font-size-16
-        color: $color-text-main
-        height: 40px
-        &:nth-child(2)
-          color: $color-positive
-          border-color: $color-positive
-        &:nth-child(3)
-          background: $color-positive
-          color: $color-white
-          border-color: $color-positive
+        height: 76px
+        padding: 13px 11px
+        box-sizing: border-box
+        border-radius: 2px
+        border: 0.5px solid $color-line
+        background: #F9F9F9
+        &:focus
+          background: $color-white
 
   .with-search
     height: 28px
@@ -351,7 +349,7 @@
     font-size: $font-size-12
     box-sizing: border-box
     border: 0.5px solid $color-line
-    border-radius: 1px
+    border-radius: 2px
     padding-left: 14px
     transition: all 0.2s
     &:hover
@@ -366,7 +364,7 @@
     overflow: hidden
     height: 28px
     width: 47px
-    border-radius: 1px
+    border-radius: 2px
     background: $color-main
     text-align: center
     line-height: 28px
