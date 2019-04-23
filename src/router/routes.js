@@ -1607,6 +1607,36 @@ export default [
           }
         }
       },
+      /**
+       *
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 统计
+       */
+      // 社群数据
+      {
+        path: 'community-data',
+        name: 'community-data',
+        component: () => lazyLoadView(import('@pages/community-data/community-data')),
+        meta: {
+          titles: ['统计', '社群数据'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  社群列表
+            store
+              .dispatch('community/getCommunityList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
       // 调度管理
       {
         path: 'supply-list/supply-detail/:id',
@@ -1696,6 +1726,7 @@ export default [
           titles: ['设置', '账号', '操作日记']
         }
       }
+
     ]
   },
   {

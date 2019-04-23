@@ -326,6 +326,18 @@
       ]
     }
   ]
+  const STATIS = [
+    {
+      title: '统计',
+      children: [
+        {
+          title: '社群数据',
+          url: '/home/community-data',
+          isLight: false
+        }
+      ]
+    }
+  ]
   const FIRST_MENU = [
     {
       name: '概况',
@@ -347,6 +359,13 @@
       isLight: false,
       second: SUPPLY,
       url: '/home/supply-list'
+    },
+    {
+      name: '统计',
+      icon: require('./icon-statistics@2x.png'),
+      isLight: false,
+      second: STATIS,
+      url: '/home/community-data'
     },
     {
       name: '财务',
