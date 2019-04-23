@@ -38,13 +38,19 @@
             <div class="list-item">
               <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
             </div>
-            <div class="list-item list-item-double">{{item.name}}</div>
-            <div class="list-item">{{item.goods_sku_code}}</div>
+            <div class="list-item list-double-row">
+              <div class="item-dark">{{item.name}}{{item.name}}</div>
+              <div class="item-dark">{{item.goods_sku_code}}</div>
+            </div>
+            <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
             <div class="list-item">{{item.goods_category_name}}</div>
             <div class="list-item">{{item.base_unit}}</div>
             <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
             <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
-            <div class="list-item">{{item.usable_stock}}{{item.sale_unit}}</div>
+            <div class="list-item list-item-layout">
+              {{item.usable_stock}}{{item.sale_unit}}
+              <div>23</div>
+            </div>
             <div class="list-item">
               <div class="list-item-btn" @click="switchBtn(item, index)">
                 <base-switch :status="item.is_online"></base-switch>
@@ -76,7 +82,7 @@
   const PRODUCT_TITLE_LIST = [
     '图片',
     '商品名称',
-    '商品编码',
+    // '商品编码',
     '分类',
     '基本单位',
     '销售规格',
@@ -291,7 +297,7 @@
         flex: 0.55
       &:nth-child(2)
         flex: 1.5
-      &:nth-child(4)
+      &:nth-child(3)
         flex: 1.1
       &:last-child
         padding: 5px
