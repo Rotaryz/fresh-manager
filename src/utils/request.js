@@ -81,9 +81,6 @@ function requestException(res) {
     case 13004: // 系统升级
       error.error = 0
       break
-    case 10000: // 凭证失效
-      error.error = 0
-      break
   }
   return error
 }
