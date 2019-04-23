@@ -1,82 +1,74 @@
 import request from '@utils/request'
 
 export default {
-  /**
-   * 分拣列表
-   * @param data
-   * @param loading
-   * @returns {*}
-   */
+  //  √ 分拣列表
   getSortingTaskList(data, loading = true) {
-    // let url = '/social-shopping/api/backend/activity-manage/activity'
-    let url = '/mock/sortingTaskList.json'
+    let url = '/scm/api/backend/sorting/picking-order'
+    // let url = '/mock/sortingTaskList.json'
     return request.get(url, data, loading)
   },
-  // 配貨明細
-  getSortingDeliveryDetail({id, goodsSkuCode}, loading = false) {
-    // /scm/api/backend/sorting/allocation-detail/{id}
-    let url = '/mock/sortingTaskDetail.json'
-    return request.get(url, {goods_sku_code: goodsSkuCode}, loading)
+  // √  配貨明細
+  getSortingDeliveryDetail({id}, loading = true) {
+    // let url = '/mock/sortingTaskDetail.json'
+    let url = `/scm/api/backend/sorting/allocation-detail/{id}`
+    return request.get(url, loading)
   },
-  // 拣货明细
+  // √  拣货明细
   getSortingPickingDetail({id, goodsSkuCode}, loading = true) {
-    // /scm/api/backend/sorting/picking-order-detail/{id}
-    let url = '/mock/sortingPickDetail.json'
+    // let url = '/mock/sortingPickDetail.json'
+    let url = `/scm/api/backend/sorting/picking-order-detail/${id}`
     return request.get(url, {goods_sku_code: goodsSkuCode}, loading)
   },
-  // 分类列表
+  // √ 分类列表
   getClassifyList() {
-    // let url = '/mock/ClassifyList.json'
-    // return request.get(url)
-    return new Promise((resolve, reject) => {
-      var res = {
-        data: [{
-          name: "111112okfpodg",
-          id: 1,
-          children: [{name: 123, id: "234325df"}, {name: "12sad3", id: "234325sdsddf"}]
-        }, {
-          name: "2222dsfsdfgdsgcv",
-          id: 2,
-          children: [{name: "22222dsfjdlk", id: "sadsaf"}, {name: "1d323332sadsadsasad3", id: "2343asdsadsd25sdsddf"}]
-        }]
-      }
-      resolve(res)
-    })
+    let url = '/scm/api/backend/goods/goods-category'
+    return request.get(url)
   },
+  //  √ 状态数据
   getStausData() {
-    let url = '/mock/StausData.json'
+    // let url = '/mock/StausData.json'
+    let url ='/scm/api/backend/sorting/picking-order-statistic'
     return request.get(url)
   },
-  exportPickingOrder() {
-
+  // √ 导出分拣单
+  exportPickingOrder(paramsStr) {
+    let url ='/scm/api/backend/sorting/picking-order-export'
+    window.open(url+ paramsStr,'_blank')
   },
-  exportDeliveryOrder() {
-
+  // √ 导出配货单
+  exportDeliveryOrder(paramsStr) {
+    let url ='/scm/api/backend/sorting/allocation-export'
+    window.open(url+paramsStr,'_blank')
   },
-  // 配货位列表
-  getAllocationList() {
-    let url = '/mock/sortingConfigList.json'
-    // /scm/api/backend/sorting/allocation-position
-    return request.get(url)
+  // √ 配货位列表
+  getAllocationList(params) {
+    // let url = '/mock/sortingConfigList.json'
+    let url = '/scm/api/backend/sorting/allocation-position'
+    return request.get(url,{page:1})
   },
-//  线路列表
+//  √ 线路列表
   getRoadList() {
-    let url = '/mock/roadList.json'
+    // let url = '/mock/roadList.json'
+    let url = '/scm/api/backend/delivery/road'
     return request.get(url)
   },
-  setRoad(id, params) {
-    let url = '/mock/roadList.json'
-    // /scm/api/backend/sorting/picking-set-address/{id}
-    return request.put(url, params)
+  // 设置线路
+  setRoad(id, params,{loading=false}) {
+    // let url = '/mock/roadList.json'
+    let url = `/scm/api/backend/sorting/picking-set-address/${id}`
+    return request.put(url, params,loading)
   },
-  changeAllocationPostion(dataArr) {
-    let url = '/mock/roadList.json'
-    // /scm/api/backend/sorting/allocation-position
-    return request.post(url, {data: dataArr})
+  // 跟换配货位
+  changeAllocationPostion(dataArr,{loading=false}) {
+    // let url = '/mock/roadList.json'
+    let url = '/scm/api/backend/sorting/allocation-position'
+    return request.post(url, {data: dataArr},loading)
   },
-  exportAllocationList() {
+
+  //  √ 导出配货单
+  exportAllocationList(paramsStr) {
     let url = "/scm/api/backend/sorting/allocation-position-export"
-    return request.post(url)
+    window.open(url+ paramsStr,'_blank')
 
   }
 }

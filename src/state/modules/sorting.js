@@ -15,21 +15,15 @@ export const state = {
       goods_category_id:'',
       page: 1,
       limit: 10,
-      timeStart: '',
-      timeEnd: ''
+      start_time: '',
+      end_time: '',
+      keyword:"",
+      status:""
     }
   },
   sortingConfig: {
-    PageTotal: {
-      // 页码详情
-      total: 1,
-      per_page: 10,
-      total_page: 1
-    },
     list: [],
-    detail: {},
-    timeStart: '',
-    timeEnd: ''
+    detail: {}
   },
   sortingTaskDetail:{
     pickingDetail:{
@@ -56,6 +50,11 @@ export const getters = {
 }
 
 export const mutations = {
+  SET_PARAMS(state, {type = 'sortingTask', params}){
+    console.log(params,9)
+    state[type].filter = {...state[type].filter ,...params}
+    console.log(state[type].filter)
+  },
   SET_TASK_DETAIL(state, {type = 'deliveryDetail', value}){
     state.sortingTaskDetail[type] =value
   },
@@ -74,9 +73,10 @@ export const mutations = {
   SET_LIST(state, {list, type = 'sortingTask'}) {
     state[type].list = list
   },
-  SET_TIME(state, timeArr, type = 'sortingTask') {
-    state[type].filter.timeStart = timeArr[0]
-    state[type].filter.timeEnd = timeArr[1]
+  SET_TIME(state, {timeArr, type = 'sortingTask'}) {
+    console.log(timeArr, type)
+    state[type].filter.start_time = timeArr[0]
+    state[type].filter.end_time = timeArr[1]
   },
   SET_KEYWORD(state, {text, type = 'sortingTask'}) {
     state[type].filter.keyword = text
@@ -86,12 +86,15 @@ export const mutations = {
 
 export const actions = {
   // 拣货列表
-  getSortingTaskList({state, commit, dispatch},params={}) {
-    return API.Sorting.getSortingTaskList({...state.sortingTask.filter,...params},{loading:true})
+  getSortingTaskList({state, commit, dispatch}) {
+    console.log(state.sortingTask.filter,'state.sortingTask.filter')
+    return API.Sorting.getSortingTaskList(state.sortingTask.filter,{loading:true})
       .then((res) => {
+
         if (res.error !== app.$ERR_OK) {
           return false
         }
+        console.log(res,'getSortingTaskListmodule')
         let pageTotal = {
           total: res.meta.total,
           per_page: res.meta.per_page,
@@ -112,6 +115,7 @@ export const actions = {
   // 详情
   getSortingTaskDetail({commit}, data) {
     // TODO
+    console.log(data)
     API.Sorting.getSortingPickingDetail(data)
       .then((res) => {
 
@@ -119,18 +123,16 @@ export const actions = {
           return false
         }
         commit('SET_TASK_DETAIL', {value:res.data,type:'pickingDetail'})
-        console.log(state.sortingTaskDetail.pickingDetail,'getSortingPickingDetail11111')
         return true
       })
     return API.Sorting.getSortingDeliveryDetail(data, true)
       .then((res) => {
+        console.log(res,'getSortingPickingDetail11111')
         if (res.error !== app.$ERR_OK) {
           return false
         }
         commit('SET_TASK_DETAIL', {value:res.data})
-        console.log(state.sortingTaskDetail.deliveryDetail,'getSortingPickingDetail11111')
-
-        return res.data
+        return true
       })
       .catch(() => {
         return false
@@ -141,21 +143,15 @@ export const actions = {
   },
   // 配置列表
   getSortingConfigList({state, commit, dispatch},params={}){
-    return API.Sorting.getAllocationList({...state.sortingTask.filter,...params},{loading:true})
+    return API.Sorting.getAllocationList(state.sortingTask.filter,{loading:true})
       .then((res) => {
 
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let pageTotal = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
         let arr = res.data
+        console.log(arr,'arrarrarrarrarrarr')
         commit('SET_LIST', {list:arr,type:'sortingConfig'})
-        commit('SET_PAGE_TOTAL', {pageTotal,type:'sortingConfig'})
-        console.log(state.sortingConfig,'states')
         return true
       })
       .catch(() => {

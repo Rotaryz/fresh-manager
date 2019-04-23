@@ -11,7 +11,7 @@
       <div class="down-item down-group-item">
         <base-drop-down :select="filterTaskFrist" @setValue="_setValueFrist"></base-drop-down>
       </div>
-      <div class="down-item">
+      <div class="down-item" v-if="filterTaskSecond.data.length>0">
         <base-drop-down :select="filterTaskSecond" @setValue="_setValueSecond"></base-drop-down>
       </div>
       <!--搜索-->
@@ -61,12 +61,12 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {sortingComputed, sortingMethods} from '@state/helpers'
+  import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '拣货任务列表'
-  const COMMODITIES_LIST = ['商品名称',  '分类', '下单数','待拣货数','缺货数','存放库位','待配商户数','操作']
+  const COMMODITIES_LIST = ['商品名称', '分类', '下单数', '待拣货数', '缺货数', '存放库位', '待配商户数', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -74,7 +74,7 @@
     },
     data() {
       return {
-        datePlaceHolder:"选择下单日期",
+        datePlaceHolder: "选择下单日期",
         commodities: COMMODITIES_LIST,
         filterTaskFrist: {
           check: false,
@@ -91,19 +91,20 @@
           data: [{name: '全部', id: ''}]
         },
         // 拣货任务列表
-        statusTab:0,
+        statusTab: 0,
         statusList: [
           {name: '全部', value: '', num: 0},
           {name: '待分拣', value: 0, num: 0},
           {name: '已分拣', value: 1, num: 0}
         ],
-        activeStatus:''
+        activeStatus: '',
+        exportUrl: ""
       }
     },
     computed: {
       ...sortingComputed,
-      timeArr(){
-        return [ this.sortingTask.filter.timeStart, this.sortingTask.filter.timeEnd]
+      timeArr() {
+        return [this.sortingTask.filter.start_time, this.sortingTask.filter.end_time]
       }
     },
     created() {
@@ -111,20 +112,25 @@
       this._getStausData()
     },
     methods: {
+      ...authComputed,
       ...sortingMethods,
       // goToDetail
       //  事件选择器
       changeTime(timeArr) {
-        this.SET_TIME({timeArr})
-        this.SET_PAGE({page:1})
+        this.SET_PARAMS({
+          params: {
+            start_time: timeArr[0],
+            end_time: timeArr[1], page: 1
+          }
+        })
         this.getSortingTaskList()
       },
       // 状态栏数据
-      _getStausData(){
-        API.Sorting.getStausData().then(res=>{
-          console.log(res,'getStausData')
+      _getStausData() {
+        API.Sorting.getStausData().then(res => {
+          console.log(res, 'getStausData')
           let data = res.data
-          let resData =data.map(item=>{
+          let resData = data.map(item => {
             return {name: item.status_str, value: item.status, num: item.statistic}
           })
           this.statusList = resData
@@ -132,41 +138,57 @@
       },
       // 列表状态栏选择
       _setStatus(item) {
-        this.SET_STATUS({status:item.value})
-        this.SET_PAGE({page:1})
+        this.SET_PARAMS({params: {status: item.value, page: 1}})
         this.getSortingTaskList()
       },
       // 分类数据
-      _getClassifyList(){
-        API.Sorting.getClassifyList().then(res=>{
-          console.log(res,'getClassifyList')
+      _getClassifyList() {
+        API.Sorting.getClassifyList().then(res => {
+          console.log(res, 'getClassifyList')
           this.filterTaskFrist.data = res.data
         })
       },
       _setValueFrist(item) {
-        this.SET_FILTER({value:item.value})
-        this.SET_PAGE({page:1})
+        this.SET_PARAMS({params: {goods_category_id: item.id || '', page: 1}})
         this.getSortingTaskList()
-        this.filterTaskSecond.data = item.children
-        console.log(this.filterTaskFrist,'filterTaskFrist')
+        this.filterTaskSecond.data = item.list
+        this.filterTaskFrist.data = this.filterTaskFrist.data.map(li => {
+          li.is_selected = (li.id === item.id) ? 'true' : false
+          return li
+        })
+
+        console.log(this.filterTaskFrist, 'filterTaskFrist')
       },
       _setValueSecond(item) {
-        this.SET_FILTER({value:item.value})
-        this.SET_PAGE({page:1})
+        this.SET_PARAMS({params: {goods_category_id: item.id || '', page: 1}})
         this.getSortingTaskList()
       },
       _search(keyword) {
-        this.SET_KEYWORD({keyword})
-        this.SET_PAGE({page:1})
+        this.SET_PARAMS({params: {keyword, page: 1}})
         this.getSortingTaskList()
+      },
+      _getUrl() {
+        if (!this.exportParamsStr) {
+          let data = {
+            current_corp: this.getCurrentId(),
+            access_token: this.currentUser().access_token
+          }
+          let search = []
+          for (let key in data) {
+            search.push(`${key}=${data[key]}`)
+          }
+          this.exportParamsStr = '?' + search.join('&')
+        }
       },
       // 导出分拣单
       _exportPickingOrder() {
-
+        this._getUrl()
+        API.Sorting.exportPickingOrder(this.exportParamsStr)
       },
       // 导出配送单
       _exportDeliveryOrder() {
-
+        this._getUrl()
+        API.Sorting.exportDeliveryOrder(this.exportParamsStr)
       },
       _getMoreList(page) {
         this.SET_PAGE({page})

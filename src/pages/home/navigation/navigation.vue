@@ -243,8 +243,8 @@
           url: '/home/merchant-order',
           isLight: false
         },{
-          title: '订单列表',
-          url: '/home/supply-list',
+          title: '售后订单',
+          url: '/home/after-sales-order',
           isLight: false
         }
       ]

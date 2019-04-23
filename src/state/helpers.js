@@ -434,8 +434,9 @@ export const sortingMethods = {
   ...mapActions('sorting', [
     'getSortingTaskList',
     'getSortingTaskDetail',
+    'getSortingConfigList'
   ]),
-  ...mapMutations('sorting', ['SET_KEYWORD','SET_PAGE','SET_STATUS','SET_TIME', 'SET_FILTER','SET_PAGE_TOTAL','SET_LIST','SET_DETAIL']),
+  ...mapMutations('sorting', ['SET_PARAMS','SET_KEYWORD','SET_PAGE','SET_STATUS','SET_TIME', 'SET_FILTER','SET_PAGE_TOTAL','SET_LIST','SET_DETAIL']),
 }
 // 商户订单
 export const merchantOrderComputed={
@@ -460,5 +461,26 @@ export const merchantOrderMethods ={
     'SET_PAGE_TOTAL',
     'SET_LIST',
     'SET_DETAIL'
+  ])
+}
+// 售后订单
+export const afterSalesOrderComputed={
+  ...mapGetters('afterSalesOrder',['pageTotal','afterSalesList','afterSalesDetail','afterSalesFilter'])
+}
+export const afterSalesOrderMethods ={
+  ...mapActions('afterSalesOrder', [
+    'getAfterSalesOrderList',
+    'getAfterSalesOrderDetail',
+  ]),
+  ...mapMutations('afterSalesOrder', [
+    'SET_PARAMS',
+    'SET_KEYWORD',
+    'SET_PAGE',
+    'SET_TIME',
+    'SET_PAGE_TOTAL',
+    'SET_LIST',
+    'SET_DETAIL',
+    'SET_STATUS',
+    'SET_DETAIL_PAGE'
   ])
 }

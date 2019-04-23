@@ -1,0 +1,38 @@
+.pro-select-icon
+  border-radius: 2px
+  border: 1px solid $color-line
+  height: 14px
+  width: 14px
+  margin-right: 18px
+  background: $color-white
+  transition: all 0.3s
+
+.pro-select-icon-disable
+  cursor: not-allowed
+  background: #eee
+  border: 1px solid #e9ecee
+
+.pro-select-icon-active
+  border: 1px solid transparent
+  icon-image('icon-check')
+  //  单选框
+  .select-icon
+    width: 16px
+    height: 16px
+    border-radius: 50%
+    background: $color-white
+    border: 1px solid $color-line
+    transition: all, 0.3s
+    position: relative
+    transform-origin: 50%
+    margin-right: 20px
+    .after
+      all-center()
+      transform-origin: 50%
+      transition: all, 0.3s
+      width: 0
+      height: 0
+      border-radius: 50%
+
+  .select-icon-active
+    border: 5px solid $color-main

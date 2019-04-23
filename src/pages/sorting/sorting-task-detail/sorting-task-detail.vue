@@ -98,7 +98,7 @@
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.04)
       padding: 20px
       border-radius: 2px
-      width: 255px
+      width: 250px
       height: 144px
       margin-right: 20px
       margin-bottom 20px

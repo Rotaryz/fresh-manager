@@ -1068,18 +1068,18 @@ export default [
           titles: ['供应链', '订单', '商户订单'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getMerchantOrderList', {
-                time: '',
-                startTime: "",
-                endTime: "",
-                keyword: '',
-                page: 1,
-                loading: true
-              }).then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
+              time: '',
+              startTime: "",
+              endTime: "",
+              keyword: '',
+              page: 1,
+              loading: true
+            }).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
               .catch(() => {
                 next({name: '404'})
               })
@@ -1094,7 +1094,7 @@ export default [
         meta: {
           titles: ['供应链', '订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('merchantOrder/getMerchantOrderDetail',routeTo.params).then((res) => {
+            store.dispatch('merchantOrder/getMerchantOrderDetail', routeTo.params).then((res) => {
               if (!res) {
                 return next({name: '404'})
               }
@@ -1114,9 +1114,9 @@ export default [
         meta: {
           titles: ['供应链', '订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
-            console.log(routeTo,'routeTrouteTorouteTorouteTorouteToo')
+            console.log(routeTo, 'routeTrouteTorouteTorouteTorouteToo')
             store.commit('merchantOrder/SET_CONSUMER_PARAMS', routeTo.params)
-            store.dispatch('merchantOrder/getConsumerOrderDetail',routeTo.params).then((res) => {
+            store.dispatch('merchantOrder/getConsumerOrderDetail', routeTo.params).then((res) => {
               console.log(res)
               if (!res) {
                 return next({name: '404'})
@@ -1137,8 +1137,8 @@ export default [
         meta: {
           titles: ['供应链', '订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('merchantOrder/getMergerOrderDetail',routeFrom.params).then((res) => {
-              console.log(res,'data')
+            store.dispatch('merchantOrder/getMergerOrderDetail', routeFrom.params).then((res) => {
+              console.log(res, 'data')
               if (!res) {
                 return next({name: '404'})
               }
@@ -1150,6 +1150,47 @@ export default [
           }
         },
         component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/merger-order-detail'))
+      },
+      // 售后订单
+      {
+        path: 'after-sales-order',
+        name: 'after-sales-order',
+        meta: {
+          titles: ['供应链', '订单', '售后订单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('afterSalesOrder/getAfterSalesOrderList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/after-sales-order/after-sales-order'))
+      },
+      // 售后订单详情
+      {
+        path: 'after-sales-order/after-sales-detail/:id',
+        name: 'after-sales-detail',
+        meta: {
+          titles: ['供应链', '订单', '售后订单','商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('afterSalesOrder/getAfterSalesOrderDetail',routeTo.params).then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/after-sales-order/after-sales-detail/after-sales-detail'))
       },
       // 采购任务
       {
@@ -1567,16 +1608,18 @@ export default [
         name: 'sorting-task',
         meta: {
           titles: ['供应链', '分拣', '分拣任务'],
-          beforeResolve(routeTo, routeFrom, next){
-            store.dispatch('sorting/getSortingTaskList', {
-              page: 1,
-              limit: 10,
-              timeStart: '',
-              timeEnd: '',
-              status: '',
-              goods_category_id: "",
-              keyword: ""
-            }).then((res) => {
+          beforeResolve(routeTo, routeFrom, next) {
+            store.commit('sorting/SET_PARAMS',{params:{
+                goods_category_id:'',
+                page: 1,
+                limit: 10,
+                start_time: '',
+                end_time: '',
+                keyword:"",
+                status:""
+            }})
+            store.dispatch('sorting/getSortingTaskList').then((res) => {
+              // console.log('route',res)
               if (!res) {
                 return next({name: '404'})
               }
@@ -1594,9 +1637,9 @@ export default [
         path: 'sorting-task/sorting-task-detail/:id',
         name: 'sorting-task-detail',
         meta: {
-          titles: ['供应链', '分拣', '分拣任务','配货明细'],
-          beforeResolve(routeTo, routeFrom, next){
-            store.dispatch('sorting/getSortingTaskDetail',routeTo.params).then((res) => {
+          titles: ['供应链', '分拣', '分拣任务', '配货明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('sorting/getSortingTaskDetail', routeTo.params).then((res) => {
               if (!res) {
                 return next({name: '404'})
               }
@@ -1615,7 +1658,7 @@ export default [
         name: 'sorting-config',
         meta: {
           titles: ['供应链', '分拣', '分拣配置'],
-          beforeResolve(routeTo, routeFrom, next){
+          beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('sorting/getSortingConfigList', {
               page: 1
             }).then((res) => {
