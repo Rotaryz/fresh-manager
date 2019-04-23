@@ -260,5 +260,35 @@ export default {
   editWarehouseBatch(code, data, loading = false) {
     let url = `/scm/api/backend/stock/warehouse-batch-stock/${code}`
     return request.put(url, data, loading)
+  },
+  /**
+   * 盘点单列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  adjustOrder(data, loading = false) {
+    let url = `/scm/api/backend/stock/adjust-order`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 导入库存清单
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  importStock(data, loading = false) {
+    let url = `/scm/api/backend/stock/warehouse-stock-list-import`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 库存清单调整
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  editStockList(data, loading = false) {
+    let url = `/scm/api/backend/stock/warehouse-stock-list`
+    return request.post(url, data, loading)
   }
 }

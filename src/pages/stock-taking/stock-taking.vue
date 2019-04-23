@@ -4,11 +4,11 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" @getTime="setTime"></base-date-select>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="盘点单号"></base-search>
+        <base-search placeHolder="盘点单号" @search="searchOrderSn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -26,22 +26,25 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div class="list-content list-box">
-            <div class="list-item">2018-03-18 21:09:00</div>
-            <div class="list-item">T27218-CGD-190304-00001</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">666</div>
-            <div class="list-item">
-              <router-link to="stock-detail" append class="list-operation">详情</router-link>
+          <div v-if="adjustOrder.length">
+            <div v-for="(item, index) in adjustOrder" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.created_at}}</div>
+              <div class="list-item">{{item.order_sn}}</div>
+              <div class="list-item">{{item.system_stock}}</div>
+              <div class="list-item">{{item.actual_stock}}</div>
+              <div class="list-item">{{item.diff_stock}}</div>
+              <div class="list-item">{{item.diff_price}}</div>
+              <div class="list-item">{{item.operate}}</div>
+              <div class="list-item">
+                <router-link :to="`stock-detail/${item.id}`" append class="list-operation">详情</router-link>
+              </div>
             </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="adjustPageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
 
@@ -49,6 +52,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {storeComputed, storeMethods} from '@state/helpers'
+
   const PAGE_NAME = 'STOCK_TAKING'
   const TITLE = '库存盘点'
   const COMMODITIES_LIST = ['建单时间', '盘点单号', '库存数量', '盘点数量', '差异数量', '差异金额(元)', '操作人', '操作']
@@ -60,7 +65,37 @@
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST
+        commodities: COMMODITIES_LIST,
+        startTime: '',
+        endTime: '',
+        keyword: '',
+        page: 1
+      }
+    },
+    computed: {
+      ...storeComputed
+    },
+    methods: {
+      ...storeMethods,
+      _getAdjustOrder() {
+        this.getAdjustOrder({page: this.page, startTime: this.startTime, endTime: this.endTime, keyword: this.keyword, loading: false})
+      },
+      setTime(value) {
+        this.startTime = value[0]
+        this.endTime = value[1]
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        this._getAdjustOrder()
+      },
+      searchOrderSn(value) {
+        this.keyword = value
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        this._getAdjustOrder()
+      },
+      addPage(page) {
+        this.page = page
+        this._getAdjustOrder()
       }
     }
   }

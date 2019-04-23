@@ -431,13 +431,16 @@ export const storeComputed = {
     'warehouseDetailList',
     'detailPageTotal',
     'stockPageTotal',
-    'stockList'
+    'stockList',
+    'adjustOrder',
+    'adjustPageTotal'
   ])
 }
 export const storeMethods = {
   ...mapActions('store', [
     'getWarehouseList',
     'getWarehouseDetailList',
-    'getStockList'
+    'getStockList',
+    'getAdjustOrder'
   ])
 }

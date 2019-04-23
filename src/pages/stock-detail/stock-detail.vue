@@ -16,6 +16,7 @@
           <p class="identification-name">库存明细</p>
         </div>
         <div class="function-btn">
+          <div class="btn-main">导出excel</div>
         </div>
       </div>
       <div class="big-list">

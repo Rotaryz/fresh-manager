@@ -19,10 +19,17 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  stockList: []
+  stockList: [],
+  adjustOrder: [],
+  adjustPageTotal: { // 库存批次页码
+    total: 1,
+    per_page: 10,
+    total_page: 1
+  },
 }
 
 export const getters = {
+  // 库存管理
   warehousePageTotal(state) {
     return state.warehousePageTotal
   },
@@ -38,9 +45,14 @@ export const getters = {
   stockPageTotal(state) {
     return state.stockPageTotal
   },
-  stockList(state) {
-    return state.stockList
-  }
+  adjustOrder(state) {
+    return state.adjustOrder
+  },
+//  库存盘点
+  adjustPageTotal(state) {
+    return state.adjustPageTotal
+  },
+
 }
 
 export const mutations = {
@@ -61,6 +73,13 @@ export const mutations = {
   },
   SET_STOCK_LIST(state, stockList) {
     state.stockList = stockList
+  },
+  // 库存盘点
+  SET_ADJUST_ORDER(state, adjustOrder) {
+    state.adjustOrder = adjustOrder
+  },
+  SET_ADJUST_PAGE_TOTAL(state, adjustPageTotal) {
+    state.adjustPageTotal = adjustPageTotal
   }
 }
 
@@ -130,6 +149,35 @@ export const actions = {
         }
         let arr = res.data
         commit('SET_STOCK_LIST', arr)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  getAdjustOrder({state, commit}, {page = 1, startTime, endTime, keyword, loading = true}) {
+    let data = {
+      page,
+      start_time: startTime,
+      end_time: endTime,
+      keyword
+    }
+    return API.Store.adjustOrder(data, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        let pageTotal = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        commit('SET_ADJUST_PAGE_TOTAL', pageTotal)
+        commit('SET_ADJUST_ORDER', arr)
         return true
       })
       .catch(() => {

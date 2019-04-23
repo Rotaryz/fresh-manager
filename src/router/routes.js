@@ -1510,7 +1510,20 @@ export default [
         name: 'stock-taking',
         component: () => lazyLoadView(import('@pages/stock-taking/stock-taking')),
         meta: {
-          titles: ['供应链', '仓库', '库存盘点']
+          titles: ['供应链', '仓库', '库存盘点'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getAdjustOrder', {page: 1, startTime: '', endTime: '', keyword: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 新建盘点
@@ -1525,7 +1538,7 @@ export default [
       },
       // 盘点详情
       {
-        path: 'stock-taking/stock-detail',
+        path: 'stock-taking/stock-detail/:id',
         name: 'stock-detail',
         component: () => lazyLoadView(import('@pages/stock-detail/stock-detail')),
         meta: {
