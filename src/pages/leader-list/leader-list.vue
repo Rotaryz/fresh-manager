@@ -103,12 +103,32 @@
     computed: {
       ...leaderComputed
     },
-    created() {},
+    created() {
+      this.getLeaderStatus()
+    },
     methods: {
       ...leaderMethods,
+      getLeaderStatus() {
+        API.Leader.getLeaderStatus()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
+      },
       changeStatus(selectStatus) {
-        console.log(selectStatus)
+        this.status = selectStatus.status
         this.$refs.pagination.beginPage()
+        this.page = 1
+        this.getLeaderList({page: this.page, status: selectStatus.status, loading: false})
       },
       async _syncLeader() {
         let res = await API.Leader.syncShop()
@@ -117,12 +137,12 @@
           this.$toast.show('关联成功')
           this.page = 1
           this.$refs.pagination.beginPage()
-          this.getLeaderList({page: this.page, loading: false})
+          this.getLeaderList({page: this.page, status: this.status, loading: false})
         }
       },
       _getMore(page) {
         this.page = page
-        this.getLeaderList({page: this.page, loading: false})
+        this.getLeaderList({page: this.page, status: this.status, loading: false})
       },
       _close() {
         this.$refs.dialog.hideModal()
@@ -150,7 +170,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        this.getLeaderList({page: this.page, loading: false})
+        this.getLeaderList({page: this.page, status: this.status, loading: false})
         this.$refs.confirm.hide()
       }
     }

@@ -48,7 +48,7 @@ export default [
             if (routeTo.query.online) {
               online = routeTo.query.online
             }
-            //  团长列表
+            //  商品列表
             store
               .dispatch('editgoods/getGoodsData', online)
               .then((res) => {

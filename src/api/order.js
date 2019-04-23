@@ -24,5 +24,15 @@ export default {
   checkApply(data, loading = true) {
     let url = `/social-shopping/api/backend/check-after-sale`
     return request.post(url, data, loading)
+  },
+  /**
+   * 订单列表分类统计
+   * @param loading
+   * @returns {*}
+   */
+  getOrderStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/order-status'
+    return request.get(url, data, loading)
   }
+
 }

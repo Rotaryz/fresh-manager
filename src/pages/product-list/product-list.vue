@@ -8,10 +8,6 @@
       <div class="down-item">
         <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
       </div>
-      <span class="down-tip">状态</span>
-      <div class="down-item">
-        <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
-      </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="商品名称或编码" @search="search"></base-search>
@@ -22,7 +18,7 @@
         <div class="identification-page">
           <img src="./icon-product_list@2x.png" class="identification-icon">
           <p class="identification-name">商品列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
@@ -106,9 +102,9 @@
           data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
         },
         statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '已上架', value: 1, key: 'up', num: 0},
-          {name: '已下架', value: 2, key: 'down', num: 0}
+          {name: '全部', num: 0, key: ''},
+          {name: '已上架', num: 0, key: 1},
+          {name: '已下架', num: 0, key: 0}
         ],
         stairSelect: {
           check: false,
@@ -132,7 +128,8 @@
         curItem: '',
         downUrl: '',
         oneBtn: false,
-        categoryId: ''
+        categoryId: '',
+        defaultIndex: 0
       }
     },
     computed: {
@@ -142,10 +139,13 @@
       this._getUrl()
       this.goodsList = _.cloneDeep(this.productList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
+      this.isOnline = this.$route.query.online
+      this.defaultIndex = this.$route.query.online
       if (this.$route.query.online * 1 === 1) {
         this.dispatchSelect.content = '上架'
       }
       this.getCategoriesData()
+      this.getGoodsStatus()
     },
     methods: {
       async _syncGoods() {
@@ -162,8 +162,11 @@
         }
       },
       changeStatus(selectStatus) {
-        console.log(selectStatus)
+        this.isOnline = selectStatus.value
         this.$refs.pagination.beginPage()
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
       },
       _getUrl() {
         let currentId = this.getCurrentId()
@@ -172,6 +175,23 @@
           this.keyWord
         }&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
+      },
+      getGoodsStatus() {
+        API.Product.getGoodsStatus()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                value: item.status,
+                num: item.statistic
+              }
+              // this.$set(this.statusTab[index], 'num', item.statistic)
+            })
+          })
       },
       getGoodsListData() {
         let data = {
@@ -241,6 +261,7 @@
             this.goodsList[index].is_online = item.is_online * 1 === 1 ? 0 : 1
             this.oneBtn = true
             this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功上架' : '该商品已成功下架')
+            this.getGoodsStatus()
           } else {
             this.$toast.show(res.message)
           }

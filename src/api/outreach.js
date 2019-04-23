@@ -121,5 +121,15 @@ export default {
   getTeamList(data, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/member`
     return request.get(url, data, loading)
+  },
+
+  /**
+   * 拓展任务状态统计
+   * @param loading
+   * @returns {*}
+   */
+  getOutreachStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity-status'
+    return request.get(url, data, loading)
   }
 }

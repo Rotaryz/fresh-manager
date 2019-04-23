@@ -116,7 +116,7 @@
         page: 1,
         delId: 0,
         downId: 0,
-        status: 0,
+        status: '',
         tipShow: '',
         timer: '',
         qrUrl: process.env.VUE_APP_API,
@@ -129,6 +129,7 @@
     },
     created() {
       this.corpId = getCorpId()
+      this.getOutreachStatus()
     },
     mounted() {},
     methods: {
@@ -138,11 +139,40 @@
         this.page = 1
         this.startTime = arr[0]
         this.endTime = arr[1]
-        await this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        await this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
+        this.getOutreachStatus()
       },
-      changeStatus(selectStatus) {
-        console.log(selectStatus)
+      async changeStatus(selectStatus) {
+        this.status = selectStatus.status
         this.$refs.pages.beginPage()
+        this.page = 1
+        await this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: selectStatus.status
+        })
+      },
+      getOutreachStatus() {
+        API.Outreach.getOutreachStatus({activity_type: 'offline', startTime: this.startTime, endTime: this.endTime})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
       },
       showTip(index) {
         clearTimeout(this.timer)
@@ -155,7 +185,12 @@
       },
       addPage(page) {
         this.page = page
-        this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       },
       _deleteActivity(id) {
         this.delId = id
@@ -170,7 +205,12 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       },
       _textHandle(num) {
         return (+num.split('%')[0] < 0 ? '下降' : '上升')

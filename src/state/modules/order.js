@@ -14,7 +14,8 @@ export const state = {
   startTime: '',
   endTime: '',
   keyword: '',
-  status: ''
+  status: '',
+  orderStatus: ''
 }
 
 export const getters = {
@@ -38,6 +39,9 @@ export const getters = {
   },
   status(state) {
     return state.status
+  },
+  orderStatus(state) {
+    return state.orderStatus
   },
   page(state) {
     return state.page
@@ -69,19 +73,23 @@ export const mutations = {
   },
   SET_PAGE(state, page) {
     state.page = page
+  },
+  SET_ORDER_STATUS(state, status) {
+    state.orderStatus = status
   }
 }
 
 export const actions = {
   getOrderList({commit, state}) {
-    const {page, startTime, endTime, status, shopId, keyword} = state
+    const {page, startTime, endTime, status, shopId, keyword, orderStatus} = state
     let data = {
-      status,
+      status: orderStatus,
       page,
       start_time: startTime,
       end_time: endTime,
       shop_id: shopId,
-      keyword: keyword
+      keyword: keyword,
+      source: status
     }
     return API.Order.getOrderList(data)
       .then((res) => {
@@ -144,6 +152,12 @@ export const actions = {
   },
   setStatus({commit, dispatch}, selectStatus) {
     commit('SET_STATUS', selectStatus.status)
+    commit('SET_PAGE', 1)
+    dispatch('getOrderList')
+  },
+  setOrderStatus({commit, dispatch}, selectStatus) {
+    console.log(selectStatus)
+    commit('SET_ORDER_STATUS', selectStatus.status)
     commit('SET_PAGE', 1)
     dispatch('getOrderList')
   },

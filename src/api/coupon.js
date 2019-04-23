@@ -70,5 +70,15 @@ export default {
   storeCoupon(data, loading = false) {
     let url = `/social-shopping/api/backend/coupon-manage/coupon`
     return request.post(url, data, loading)
+  },
+
+  /**
+   * 优惠券分类统计
+   * @param loading
+   * @returns {*}
+   */
+  getCouponStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/coupon-manage/coupon-status'
+    return request.get(url, data, loading)
   }
 }

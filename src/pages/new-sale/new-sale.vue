@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{id ? '查看活动' : '新建活动'}}</p>
+        <p class="identification-name">{{disable ? '查看活动' : '新建活动'}}</p>
       </div>
       <div class="function-btn">
       </div>
@@ -156,7 +156,7 @@
   import {DatePicker} from 'element-ui'
 
   const PAGE_NAME = 'EDIT_RUSH'
-  const TITLE = '新建编辑今日抢购'
+  const TITLE = '新建查看今日抢购'
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',

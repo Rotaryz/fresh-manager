@@ -82,18 +82,21 @@
         topBtn: ['新客有礼', '复购有礼', '唤醒流失客户'],
         type: ['未知', '新客有礼', '复购有礼', '唤醒流失客户', '社群福利券'],
         statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '开启', value: 1, key: 'wait_submit', num: 0},
-          {name: '关闭', value: 1, key: 'success', num: 0}
+          {name: '全部', value: '', num: 0},
+          {name: '开启', value: 1, num: 0},
+          {name: '关闭', value: 0, num: 0}
         ],
         page: 1,
-        delId: 0
+        delId: 0,
+        status: ''
       }
     },
     computed: {
       ...marketComputed
     },
-    created() {},
+    created() {
+      this.getMarketStatus()
+    },
     mounted() {},
     methods: {
       ...marketMethods,
@@ -101,12 +104,30 @@
         this.$router.push(`/home/coupon-market/new-market?index=${index}`)
       },
       changeStatus(selectStatus) {
-        console.log(selectStatus)
+        this.status = selectStatus.status
         this.$refs.pages.beginPage()
+        this.page = 1
+        this.getMarketList({page: this.page, status: selectStatus.status})
+      },
+      getMarketStatus() {
+        API.Market.getMarketStatus()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
       },
       addPage(page) {
         this.page = page
-        this.getMarketList({page: this.page})
+        this.getMarketList({page: this.page, status: this.status})
       },
       switchBtn(item) {
         let data = {
@@ -132,7 +153,7 @@
           return
         }
         this.$toast.show('删除成功')
-        this.getMarketList({page: this.page})
+        this.getMarketList({page: this.page, status: this.status})
       }
     }
   }

@@ -66,7 +66,7 @@
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
     {name: '状态', flex: 1, value: 'status', type: 4},
-    {name: '操作', flex: 1, value: '', type: 5}
+    {name: '操作', flex: 1.4, value: '', type: 5}
   ]
   // const SALE_LIST = [
   //   {name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', pay_num: 20, pay_amount: 100, status: 1}
@@ -91,30 +91,67 @@
         startTime: '',
         endTime: '',
         page: 1,
-        delId: 0
+        delId: 0,
+        status: ''
       }
     },
     computed: {
       ...saleComputed
     },
-    created() {},
+    created() {
+      this.getSaleStatus()
+    },
     mounted() {},
     methods: {
       ...saleMethods,
-      changeStatus(selectStatus) {
-        console.log(selectStatus)
-        this.$refs.page.beginPage()
+      async changeStatus(selectStatus) {
+        this.status = selectStatus.value
+        this.$refs.pages.beginPage()
+        this.page = 1
+        await this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: selectStatus.value
+        })
+      },
+      getSaleStatus() {
+        API.Sale.getSaleStatus({startTime: this.startTime,endTime: this.endTime})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                value: item.status,
+                num: item.statistic
+              }
+            })
+          })
       },
       async _setTime(arr) {
         this.$refs.pages.beginPage()
         this.page = 1
         this.startTime = arr[0]
         this.endTime = arr[1]
-        await this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        await this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
+        this.getSaleStatus()
       },
       addPage(page) {
         this.page = page
-        this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       },
       _deleteActivity(id) {
         this.delId = id
@@ -129,7 +166,12 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       }
     }
   }

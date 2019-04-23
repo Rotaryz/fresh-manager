@@ -165,8 +165,8 @@ export const mutations = {
 
 export const actions = {
   // 团长列表
-  getLeaderList({state, commit, dispatch}, {page, loading = true}) {
-    return API.Leader.getLeaderList({page}, loading)
+  getLeaderList({state, commit, dispatch}, {page, status = '', loading = true}) {
+    return API.Leader.getLeaderList({page, status}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

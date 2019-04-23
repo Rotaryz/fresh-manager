@@ -50,5 +50,15 @@ export default {
   getGoodsList(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
+  },
+
+  /**
+   * 限时抢购类型统计
+   * @param loading
+   * @returns {*}
+   */
+  getSaleStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity-status'
+    return request.get(url, data, loading)
   }
 }

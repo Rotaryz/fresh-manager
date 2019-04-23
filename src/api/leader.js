@@ -178,5 +178,16 @@ export default {
   syncShop(data = {}, loading = true) {
     let url = '/social-shopping/api/backend/guanmai/sync-shop'
     return request.get(url, data, loading)
+  },
+
+  /**
+   * 团长分类统计
+   * @param loading
+   * @returns {*}
+   */
+  getLeaderStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/shop-manager-status'
+    return request.get(url, data, loading)
   }
+
 }

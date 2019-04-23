@@ -69,8 +69,8 @@
 
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [
-    {text: '拓展订单', status: 0},
-    {text: '商城订单', status: 1}
+    {text: '拓展订单', status: 'c_offline'},
+    {text: '商城订单', status: 'c_shop'}
   ]
   const SOCIAL_SELECT = {
     check: false,
@@ -129,12 +129,34 @@
     },
     created() {
       this._getShopList()
+      this.getOrderStatus()
     },
     methods: {
       ...orderMethods,
       changeTab(selectStatus) {
-        console.log(selectStatus)
-        this.$refs.pagination.beginPage()
+        this.setOrderStatus(selectStatus)
+      },
+      getOrderStatus() {
+        API.Order.getOrderStatus({
+          status: this.status,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          shop_id: this.shopId,
+          keyword: this.keyword
+        })
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
       },
       _getShopList() {
         API.Leader.shopDropdownList().then((res) => {

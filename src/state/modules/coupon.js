@@ -11,7 +11,7 @@ export const state = {
   couponDetail: {},
   startTime: '',
   endTime: '',
-  status: 1,
+  status: '',
   page: 1
 }
 

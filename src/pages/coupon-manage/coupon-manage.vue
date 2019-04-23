@@ -1,6 +1,6 @@
 <template>
   <div class="purchase-management table">
-    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
+    <!--<base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>-->
     <div class="down-content">
       <span class="down-tip">创建时间</span>
       <div class="down-item">
@@ -12,7 +12,7 @@
         <div class="identification-page">
           <img src="./icon-coupon_list@2x.png" class="identification-icon">
           <p class="identification-name">优惠券列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <base-status-tab :statusList="statusTab" @setStatus="setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="new-coupon" append class="btn-main">新建优惠券<span class="add-icon"></span></router-link>
@@ -88,10 +88,10 @@
         datePlaceHolder: DATE_PLACE_HOLDER,
         couponTitle: COUPON_TITLE,
         statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '进行中', value: 1, key: 'wait_submit', num: 0},
-          {name: '未开始', value: 1, key: 'success', num: 0},
-          {name: '已过期', value: 1, key: 'success', num: 0}
+          {name: '全部', value: '', num: 0},
+          {name: '进行中', value: 1, num: 0},
+          {name: '未开始', value: 1, num: 0},
+          {name: '已过期', value: 1, num: 0}
         ],
         delId: '',
         delItem: {}
@@ -103,16 +103,26 @@
         return this.tabStatus.findIndex((item) => item.status === this.status)
       }
     },
-    created() {},
+    created() {
+      this.getCouponStatus()
+    },
     methods: {
       ...couponMethods,
-      changeStatus(selectStatus) {
-        console.log(selectStatus)
-        this.$refs.pagination.beginPage()
-      },
-      changeTime(time) {
-        this.setTime(time)
-        this.$refs.pagination.beginPage()
+      getCouponStatus() {
+        API.Coupon.getCouponStatus({startTime: this.startTime, endTime: this.endTime})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
       },
       _deleteCoupon(item, id) {
         this.delId = id

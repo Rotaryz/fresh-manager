@@ -4,7 +4,12 @@
       <div class="identification-page">
         <img src="./icon-goods_classify@2x.png" class="identification-icon">
         <p class="identification-name">商品分类</p>
-        <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+        <div class="base-status-tab">
+          <div v-for="(item, index) in statusTab" :key="index" class="status-tab-item">
+            {{item.name}} ({{item.num}})
+          </div>
+        </div>
+        <!--<base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
       </div>
       <div class="function-btn">
         <div class="btn-main" @click="newBigCate">新建大类<span class="add-icon"></span></div>
@@ -66,8 +71,8 @@
     data() {
       return {
         statusTab: [
-          {name: '一级类目', value: '', key: 'one', num: 0},
-          {name: '二级类目', value: 1, key: 'two', num: 0}
+          {name: '一级类目', num: 0},
+          {name: '二级类目', num: 0}
         ],
         categoryType: 0,
         categoryNewName: '',
@@ -86,12 +91,25 @@
     },
     created() {
       this.categoryList = _.cloneDeep(this.reqCategoryList)
+      this.getCategoryStatus()
     },
     methods: {
       ...categoriesMethods,
-      changeStatus(selectStatus) {
-        console.log(selectStatus)
-        // this.$refs.pagination.beginPage()
+      getCategoryStatus() {
+        API.Product.getCategoryStatus()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                num: item.statistic
+              }
+              // this.$set(this.statusTab[index], 'num', item.statistic)
+            })
+          })
       },
       newBigCate() {
         // this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
@@ -303,6 +321,26 @@
     align-items: center
     justify-content: space-between
     height: 80px
+  .base-status-tab
+    margin-left: 30px
+    display: flex
+    background: #F6F6F6
+    border-radius: 100px
+    height: 30px
+    box-sizing: border-box
+    position: relative
+    .status-tab-item
+      border-radius: 100px
+      width: 106px
+      color: $color-text-main
+      line-height: 30px
+      text-align: center
+      transition: 0.2s all
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      background: transparent
+      position: relative
+      z-index: 1
   .categories-box
     border-1px($color-line, 1px)
     .big-box
