@@ -25,7 +25,23 @@
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
-          <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>
+          <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
+          <div class="show-more-box g-btn-item" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
+            <div class="show-more-text">
+              <div class="show-text">更多</div>
+              <div class="show-icon"></div>
+            </div>
+            <div v-show="showIndex" class="big-hide-box"></div>
+            <transition name="fade">
+              <div v-show="showIndex" class="show-hide-box">
+                <div class="show-all-item">
+                  <div class="show-hide-item">商品导出</div>
+                  <div class="show-hide-item">批量新建</div>
+                  <div class="show-hide-item">批量修改</div>
+                </div>
+              </div>
+            </transition>
+          </div>
           <!--<div class="btn-main g-btn-item" @click="_syncGoods">同步</div>-->
         </div>
       </div>
@@ -49,7 +65,7 @@
             <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
             <div class="list-item list-item-layout">
               {{item.usable_stock}}{{item.sale_unit}}
-              <div>23</div>
+              <div class="list-item-img icon-pre"></div>
             </div>
             <div class="list-item">
               <div class="list-item-btn" @click="switchBtn(item, index)">
@@ -132,7 +148,8 @@
         curItem: '',
         downUrl: '',
         oneBtn: false,
-        categoryId: ''
+        categoryId: '',
+        showIndex: false
       }
     },
     computed: {
@@ -148,6 +165,12 @@
       this.getCategoriesData()
     },
     methods: {
+      _showTip() {
+        this.showIndex = true
+      },
+      _hideTip() {
+        this.showIndex = false
+      },
       async _syncGoods() {
         let res = await API.Product.syncGoodsInfo()
         this.$loading.hide()
@@ -306,7 +329,97 @@
 
   .list-item-btn
     display: inline-block
-
+  .list-item-img
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
+    &.icon-libray
+      bg-image(icon-library)
+    &.icon-pre
+      bg-image(icon-pre)
+  .show-more-box
+    position: relative
+    cursor: pointer
+    .big-hide-box
+      position: absolute
+      z-index: 1
+      width: 106px
+      height: 20px
+      right: 0
+    .show-more-text
+      width: 80px
+      height: 28px
+      line-height: 28px
+      color: $color-white
+      background: $color-main
+      layout(row)
+      align-items: center
+      justify-content: center
+      .show-text
+        font-size: $font-size-12
+        color: $color-white
+        font-family: $font-family-regular
+      .show-icon
+        width: 8px
+        height: 6px
+        margin-left: 6px
+        position: relative
+        &:after
+          content: ''
+          position: absolute
+          z-index: 99
+          top: 0
+          right: 0
+          width: 0
+          height: 0
+          border-left: 4px solid transparent
+          border-right: 4px solid transparent
+          border-top: 6px solid $color-white
+    .show-hide-box
+      position: absolute
+      width: 106px
+      top: 38px
+      right: 0
+      z-index: 11
+      color: $color-text-main
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      background: $color-white
+      box-shadow: 0 0 8px 0 #EBEBEB
+      border-radius: 4px
+      .show-hide-item
+        height: 50px
+        line-height: 50px
+        padding-left: 16px
+        border-bottom-1px($color-line)
+    .show-hide-item:hover
+      color: $color-main
+  .show-all-item
+    position: relative
+    &:after
+      content: ''
+      position: absolute
+      z-index: 99
+      top:-6px
+      right: 33px
+      width: 0
+      height: 0
+      border-left: 3px solid transparent
+      border-right: 3px solid transparent
+      border-bottom: 6px solid $color-white
+    &:before
+      content: ''
+      position: absolute
+      z-index: 99
+      top:-8px
+      right: 32px
+      width: 0
+      height: 0
+      border-left: 4px solid transparent
+      border-right: 4px solid transparent
+      border-bottom: 8px solid #EBEBEB
   .pic-box
     height: 40px
     width: 40px

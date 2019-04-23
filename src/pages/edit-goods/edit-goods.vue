@@ -79,6 +79,16 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
+          商品编码
+        </div>
+        <div class="edit-input-box">
+          <input v-model="msg.original_price" type="number" class="edit-input" maxlength="10">
+        </div>
+        <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
           销售规格
         </div>
         <div class="edit-input-box mini-edit-input-box">
@@ -130,6 +140,25 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
+          销售库存
+        </div>
+        <div class="edit-input-box goods-select-box">
+          <div class="goods-select-left" @click="selectStock(true)">
+            <div class="goods-select-icon" :class="isSelectStock ? 'goods-select-icon-active' : ''"></div>
+            <div class="goods-select-text">预售库存</div>
+          </div>
+          <input v-model="msg.usable_stock" type="number" class="edit-input edit-input-select" :disabled="!isSelectStock">
+          <div class="stock-box-text">预</div>
+          <div class="goods-select-left" @click="selectStock(false)">
+            <div class="goods-select-icon" :class="isSelectStock ? '' : 'goods-select-icon-active'"></div>
+            <div class="goods-select-text">仓库库存</div>
+          </div>
+          <div class="stock-box-text current-stock">当前可用库存<span class="stock-color">350</span>件</div>
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
           初始销量
         </div>
         <div class="edit-input-box">
@@ -162,6 +191,16 @@
           <base-drop-down :height="40" :width="133" :select="purchaseSelect" :isUse="!id" @setValue="purchaseSelectValue"></base-drop-down>
         </div>
         <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          采购单价
+        </div>
+        <div class="edit-input-box">
+          <input v-model="msg.original_price" type="number" class="edit-input" maxlength="10">
+        </div>
+        <div class="edit-pla">元/箱</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -296,7 +335,8 @@
           supplier_id: 0,
           is_weight: 1
         },
-        isWeight: 1
+        isWeight: 1,
+        isSelectStock: true
       }
     },
     created() {
@@ -324,6 +364,9 @@
       },
       _back() {
         this.$router.back()
+      },
+      selectStock(index) {
+        this.isSelectStock = index
       },
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
@@ -721,7 +764,46 @@
 
   .image-box
     margin-left: 40.9px
-
+  .goods-select-box
+    layout(row)
+    align-items: center
+    height: 44px
+    .goods-select-left
+      height: 44px
+      layout(row)
+      align-items: center
+      cursor: pointer
+      .goods-select-icon
+        width: 18px
+        height: @width
+        border: 1px solid #E1E1E1
+        background: #F9F9F9
+        border-radius: 50%
+        margin-right: 10px
+      .goods-select-icon-active
+        border: 0 solid transparent
+        background-size: @width
+        icon-image(icon-single_election)
+      .goods-select-text
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+        margin-right: 10px
+    .edit-input-select
+      width: 148px !important
+    .stock-box-text
+      width: 74px
+      height: 44px
+      line-height: 44px
+      font-family: $font-family-regular
+      color: $color-text-main
+      font-size: $font-size-14
+      padding-left: 14px
+    .current-stock
+      width: auto
+      padding-left: 0
+      .stock-color
+        color: $color-negative
   .edit-image-box
     align-items: flex-start
     min-height: 116px
