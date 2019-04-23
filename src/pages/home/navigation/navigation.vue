@@ -535,6 +535,7 @@
             })
         })
         this.navList = currentNav || []
+        this.$forceUpdate()
       }
     }
   }
