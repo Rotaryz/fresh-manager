@@ -27,11 +27,11 @@
         <div class="list">
           <div v-if="tabIndex === 0">
             <div v-for="(item, index) in accountList" :key="index" class="list-content list-box">
-              <div class="list-item" :style="{flex: commodities[0].flex}">{{item.truename}}</div>
+              <div class="list-item" :style="{flex: commodities[0].flex}">{{item.truename || '——'}}</div>
               <div class="list-item" :style="{flex: commodities[1].flex}">{{item.username}}</div>
               <div class="list-item" :style="{flex: commodities[2].flex}">{{item.admin_role_display_name}}</div>
               <div class="list-item" :style="{flex: commodities[3].flex}">{{item.created_at}}</div>
-              <div class="list-item" :style="{flex: commodities[4].flex}">{{item.last_login_at}}</div>
+              <div class="list-item" :style="{flex: commodities[4].flex}">{{item.last_login_at || '——'}}</div>
               <div class="list-item" :style="{flex: commodities[5].flex}">
                 <span v-if="item.is_super !== 1" class="list-operation" @click="addAccountFn(1, item)">编辑</span>
                 <span v-if="item.is_super !== 1" class="list-operation" @click="delAccount(item)">删除</span>
