@@ -448,6 +448,9 @@
         case 'setting':
           item.icon = require('./icon-set_up@2x.png')
           break
+        case 'community':
+          item.icon = require('./icon-statistics@2x.png')
+          break
         case 'guide':
           item.display_name = ''
           item.icon = require('./icon-guide@2x.png')
