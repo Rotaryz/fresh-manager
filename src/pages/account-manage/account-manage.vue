@@ -54,7 +54,7 @@
     <default-modal ref="addAccount">
       <div slot="content" class="add-account">
         <div class="account-box-title">
-          <div class="account-title-text">新建员工账号</div>
+          <div class="account-title-text">{{accountType * 1 === 0 ? '新建' : '编辑'}}员工账号</div>
           <div class="close hand" @click="cancel"></div>
         </div>
         <div class="account-input-box">
