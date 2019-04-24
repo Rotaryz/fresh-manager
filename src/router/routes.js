@@ -1644,7 +1644,7 @@ export default [
       },
       // 分拣任务明细
       {
-        path: 'sorting-task/sorting-task-detail/:id',
+        path: 'sorting-task/sorting-task-detail/:id/:goods_sku_code',
         name: 'sorting-task-detail',
         meta: {
           titles: ['供应链', '分拣', '分拣任务', '配货明细'],

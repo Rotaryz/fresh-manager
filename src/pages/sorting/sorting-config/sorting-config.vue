@@ -12,21 +12,28 @@
       <!--列表部分-->
       <div>
         <div class="list-header list-box">
-          <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
+          <div v-for="(item,index) in commodities" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in dragList"
+          <div v-for="(row, index) in dragList"
                :key="index"
-               v-dragging="{ item: item, list: dragList, group: 'sortingTask' }"
+               v-dragging="{ item: row, list: dragList, group: 'sortingTask' }"
                class="list-content list-box"
           >
-            <div class="list-item">{{sortingConfig.list[index].sort}}</div>
-            <div class="list-item">{{item.name}}</div>
-            <div class="list-item">{{item.road_name}}<div v-if="!item.road_name" class="list-operation" @click.stop="_showSettingModel(item.id)">设置线路</div>
+            <div class="list-item no-flex">
+              <div class="index">
+                {{sortingConfig.list[index].sort|format}}
+              </div>
             </div>
+            <div class="list-item" :style="{flex:2}">{{row[commodities[1].key]}}</div>
             <div class="list-item">
+              {{row[commodities[2].key]}}
+              <div v-if="!row[commodities[2].key]" class="list-operation" @click.stop="_showSettingModel(row.id)">设置线路</div>
+            </div>
+            <div class="list-item  no-flex operate">
               <div class="list-operation-wrap">
-                <div class="drag-operation">托拽</div>
+                <div class="drag-operation">
+                </div>
               </div>
             </div>
           </div>
@@ -76,11 +83,26 @@
 
   const PAGE_NAME = 'SORTING_CONFIG'
   const TITLE = '配货位-列表'
-  const COMMODITIES_LIST = ['配货位', '商户名称', '线路', '操作']
+  const COMMODITIES_LIST = [
+    {title: '配货位', key: 'sort',noShow:true,class:'no-flex'},
+    {title: '商户名称', key: 'name',flex:'2'},
+    {title: '线路', key: 'road_name',replaceText:'設置路綫',flex:'1'},
+    {title: '操作 ', key: 'road_id',type:"operate",class:'no-flex  operate'},
+  ]
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
+    },
+    filters: {
+      format(str) {
+        let arr = str.split('#')
+        if (arr[1]) {
+          return arr[1]
+        } else {
+          return str
+        }
+      }
     },
     components: {
       DefaultModal
@@ -115,75 +137,82 @@
 
       this.$dragging.$on('dragend', (res) => {
         let data = this.dragList.map((item, idx) => {
-          return {...item, ...{sort:this.sortingConfig.list[idx].sort}}
+          return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
         })
         this._changeAllocationPostion(data)
       })
     },
     methods: {
       ...sortingMethods,
-      updateList(){
-        this.getSortingConfigList().then(res=>{
-          this.dragList = _.cloneDeep(this.sortingConfig.list)
+      // 更新托拽列表
+      updateList() {
+        this.getSortingConfigList().then(res => {
+          if (res) {
+            this.dragList = _.cloneDeep(this.sortingConfig.list)
+          }
         })
-
       },
+      // 托拽
       _changeAllocationPostion(arr) {
         API.Sorting.changeAllocationPostion(arr).then(res => {
           this.$toast.show(res.message)
           if (res.error === this.$ERR_OK) {
             this.updateList()
           }
-        }).catch(() => {
-          return false
         })
           .finally(() => {
             this.$loading.hide()
           })
       },
       _getRoadList() {
-        API.Sorting.getRoadList().then(res => {
+        return API.Sorting.getRoadList().then(res => {
           let resData = res.data || []
           this.road.data = resData.map(item => {
             return {name: item.road_name, id: item.road_id}
           })
         })
       },
+      //  显示弹框
       _showSettingModel(id) {
-        this._getRoadList()
         this.road.content = ""
         this.selectRoad = {
           road_name: "",
           road_id: ""
         }
         this.settingId = id
-        this.$refs.modal.showModal()
+        this._getRoadList().finally(res => {
+          this.$refs.modal.showModal()
+        })
       },
+      //  隐藏弹框
       _hideModal() {
         this.$refs.modal.hideModal()
       },
+      // 选择路线
       _selectRoad(item) {
         this.selectRoad = item
-        console.log('selectRoad', this.selectRoad)
       },
+      // 确定设置路线
       _sureSetRoad() {
-        if (this.selectRoad.id) {
-          let params = {
-            road_name: this.selectRoad.name,
-            road_id: this.selectRoad.id
-          }
-          API.Sorting.setRoad(this.settingId, params,{loading:true}).then(res => {
-            if (res.error === this.$ERR_OK) {
-              this.$toast.show('线路设置成功')
-              this._hideModal()
-              this.updateList()
-            } else {
-              this.$toast.show(res.message)
-            }
-          })
-        } else {
+        if (!this.selectRoad.id) {
           this.$toast.show('请选择线路')
+          return
         }
+        let params = {
+          road_name: this.selectRoad.name,
+          road_id: this.selectRoad.id
+        }
+        API.Sorting.setRoad(this.settingId, params).then(res => {
+          if (res.error === this.$ERR_OK) {
+            this.$toast.show('线路设置成功')
+            this._hideModal()
+            this.updateList()
+          } else {
+            this.$toast.show(res.message)
+          }
+        }).finally(() => {
+          this.$loading.hide()
+        })
       },
       // 导出
       _getUrl() {
@@ -210,6 +239,25 @@
   @import "~@design"
   .table .table-content
     padding-bottom: 20px;
+    .list-item
+      &.no-flex
+        flex-grow:0
+        flex-shrink:0
+        flex-basis:100px
+      &.operate
+        flex-basis:50px
+      .index
+        display inline-block
+        padding: 0px 5px
+        heigth: 20px
+        line-height 20px
+        text-align center
+        background: #888888
+        border-radius: 10px
+        border-radius: 10px
+        font-family: PingFangSC-Medium
+        font-size: 16px
+        color: #FFFFFF
 
   .operation-guide-text
     color: #4D77BD
@@ -220,10 +268,11 @@
   .drag-operation
     width: 18px
     height: 18px
+    icon-image(icon-drag)
 
-  /*icon-image($name)
-  &.disable
-   icon-image($name) */
+    &:hover
+      icon-image(icon-drag_hover)
+
   .model-wrap
     background: $color-white
     border-radius: 2px

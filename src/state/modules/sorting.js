@@ -12,28 +12,28 @@ export const state = {
     list: [],
     detail: {},
     filter: {
-      goods_category_id:'',
+      goods_category_id: '',
       page: 1,
       limit: 10,
       start_time: '',
       end_time: '',
-      keyword:"",
-      status:""
+      keyword: "",
+      status: ""
     }
   },
   sortingConfig: {
     list: [],
     detail: {}
   },
-  sortingTaskDetail:{
-    pickingDetail:{
-      goods_name:"a",
-      position_name:'dvb',
-      goods_sku_code:'vcb',
-      merchant_num:'cvb',
-      base_wait_pick_num:'cvb'
+  sortingTaskDetail: {
+    pickingDetail: {
+      goods_name: "a",
+      position_name: 'dvb',
+      goods_sku_code: 'vcb',
+      merchant_num: 'cvb',
+      base_wait_pick_num: 'cvb'
     },
-    deliveryDetail:{}
+    deliveryDetail: []
   }
 }
 
@@ -44,64 +44,44 @@ export const getters = {
   sortingTask(state) {
     return state.sortingTask
   },
-  sortingTaskDetail(state){
+  sortingTaskDetail(state) {
     return state.sortingTaskDetail
   }
 }
 
 export const mutations = {
-  SET_PARAMS(state, {type = 'sortingTask', params}){
-    console.log(params,9)
-    state[type].filter = {...state[type].filter ,...params}
+  SET_PARAMS(state, {type = 'sortingTask', ...params}) {
+    state[type].filter = {...state[type].filter, ...params}
     console.log(state[type].filter)
   },
-  SET_TASK_DETAIL(state, {type = 'deliveryDetail', value}){
-    state.sortingTaskDetail[type] =value
-  },
-  SET_FILTER(state, {type = 'sortingTask', name = 'goods_category_id', value}) {
-    state[type].filter[name] = value
-  },
-  SET_PAGE(state, {page, type = 'sortingTask'}) {
-    state[type].filter.page = page
-  },
-  SET_STATUS(state, {status, type = 'sortingTask'}) {
-    state[type].filter.status = status
+  SET_TASK_DETAIL(state, {type = 'deliveryDetail', value}) {
+    state.sortingTaskDetail[type] = value
   },
   SET_PAGE_TOTAL(state, {pageTotal, type = 'sortingTask'}) {
     state[type].pageTotal = pageTotal
   },
   SET_LIST(state, {list, type = 'sortingTask'}) {
     state[type].list = list
-  },
-  SET_TIME(state, {timeArr, type = 'sortingTask'}) {
-    console.log(timeArr, type)
-    state[type].filter.start_time = timeArr[0]
-    state[type].filter.end_time = timeArr[1]
-  },
-  SET_KEYWORD(state, {text, type = 'sortingTask'}) {
-    state[type].filter.keyword = text
-  },
+  }
 }
 // export const
 
 export const actions = {
-  // 拣货列表
+  // 拣货列表 √
   getSortingTaskList({state, commit, dispatch}) {
-    console.log(state.sortingTask.filter,'state.sortingTask.filter')
-    return API.Sorting.getSortingTaskList(state.sortingTask.filter,{loading:true})
+    return API.Sorting.getSortingTaskList(state.sortingTask.filter)
       .then((res) => {
 
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        console.log(res,'getSortingTaskListmodule')
         let pageTotal = {
           total: res.meta.total,
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
         let arr = res.data
-        commit('SET_LIST', {list:arr})
+        commit('SET_LIST', {list: arr})
         commit('SET_PAGE_TOTAL', {pageTotal})
         return true
       })
@@ -113,27 +93,20 @@ export const actions = {
       })
   },
   // 详情
-  getSortingTaskDetail({commit}, data) {
+  getSortingTaskDetail({commit}, {id,...params}) {
+    console.log(params,9999)
     // TODO
-    console.log(data)
-    API.Sorting.getSortingPickingDetail(data)
-      .then((res) => {
-
-        if (res.error !== app.$ERR_OK) {
-          return false
-        }
-        commit('SET_TASK_DETAIL', {value:res.data,type:'pickingDetail'})
-        return true
-      })
-    return API.Sorting.getSortingDeliveryDetail(data, true)
-      .then((res) => {
-        console.log(res,'getSortingPickingDetail11111')
-        if (res.error !== app.$ERR_OK) {
-          return false
-        }
-        commit('SET_TASK_DETAIL', {value:res.data})
-        return true
-      })
+    return Promise.all([
+      API.Sorting.getSortingDeliveryDetail(id,params),
+      API.Sorting.getSortingPickingDetail(id)
+    ]).then(res => {
+      if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
+        return false
+      }
+      commit('SET_TASK_DETAIL', {value: res[0].data})// 配送
+      commit('SET_TASK_DETAIL', {value: res[1].data, type: 'pickingDetail'})// 拣货
+      return true
+    })
       .catch(() => {
         return false
       })
@@ -142,16 +115,15 @@ export const actions = {
       })
   },
   // 配置列表
-  getSortingConfigList({state, commit, dispatch},params={}){
-    return API.Sorting.getAllocationList(state.sortingTask.filter,{loading:true})
+  getSortingConfigList({state, commit, dispatch}) {
+    return API.Sorting.getAllocationList(state.sortingTask.filter)
       .then((res) => {
 
         if (res.error !== app.$ERR_OK) {
           return false
         }
         let arr = res.data
-        console.log(arr,'arrarrarrarrarrarr')
-        commit('SET_LIST', {list:arr,type:'sortingConfig'})
+        commit('SET_LIST', {list: arr, type: 'sortingConfig'})
         return true
       })
       .catch(() => {

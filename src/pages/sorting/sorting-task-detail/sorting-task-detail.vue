@@ -10,7 +10,7 @@
       <li v-for="(item,index) in sortingTaskDetail.deliveryDetail" :key="index" class="item-wrap">
         <div class="index">{{item.sort|format}}</div>
         <div class="name">{{item.name}}</div>
-        <div class="num">{{item.num}}</div>
+        <div class="num">{{item.num}}件</div>
       </li>
     </ul>
   </div>

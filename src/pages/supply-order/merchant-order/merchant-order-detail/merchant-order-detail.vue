@@ -83,13 +83,13 @@
     },
     methods: {
       goTo(item) {
-        console.log('merchantDetail',this.merchantDetail,999)
+        console.log('merchantDetail',this.$route,999)
         let cont = {
           name: 'consumer-order-detail',
           params: {
             id:item.id || 0,
             goods_sku_code: item.goods_sku_code || 0,
-            parent_order_id: this.merchantDetail.parent_order_id|| item.parent_order_id
+            parent_order_id: this.$route.params.id
           }
         }
         return cont

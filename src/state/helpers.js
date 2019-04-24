@@ -436,7 +436,7 @@ export const sortingMethods = {
     'getSortingTaskDetail',
     'getSortingConfigList'
   ]),
-  ...mapMutations('sorting', ['SET_PARAMS','SET_KEYWORD','SET_PAGE','SET_STATUS','SET_TIME', 'SET_FILTER','SET_PAGE_TOTAL','SET_LIST','SET_DETAIL']),
+  ...mapMutations('sorting', ['SET_PARAMS']),
 }
 // 商户订单
 export const merchantOrderComputed={

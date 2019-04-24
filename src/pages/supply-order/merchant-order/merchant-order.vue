@@ -97,13 +97,13 @@
   const PAGE_NAME = 'MERCHANT_ORDER'
   const TITLE = '商户订单'
   const COMMODITIES_LIST = [
-    {title: '下单时间', key: 'created_at', flex: 1},
-    {title: '订单号 ', key: 'order_sn', flex: 1},
-    {title: '商户名称', key: 'buyer_name', flex: 1.3},
+    {title: '下单时间', key: 'created_at', flex: 1.5},
+    {title: '订单号 ', key: 'order_sn', flex: 1.5},
+    {title: '商户名称', key: 'buyer_name', flex: 1},
     {title: '品类数', key: 'type_count', flex: 0.6},
-    {title: '状态', key: 'status', flex: 1},
-    {title: '类型', key: 'type_str', flex: 1.3},
-    {title: '操作', key: '', operation: '详情', flex: 0.7}
+    {title: '状态', key: 'status_str', flex: 0.6},
+    {title: '类型', key: 'type_str', flex: 0.8},
+    {title: '操作', key: '', operation: '详情', flex: 0.5}
   ]
   const COMMODITIES_LIST2 = [
     {title: '下单时间', key: 'created_at', flex: 3},

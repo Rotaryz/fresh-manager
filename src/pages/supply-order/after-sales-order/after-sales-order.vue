@@ -110,21 +110,21 @@
   const PAGE_NAME = 'MERCHANT_ORDER'
   const TITLE = '商户订单'
   const COMMODITIES_LIST = [
-    {title: '创建时间', key: 'created_at', flex: 1},
+    {title: '创建时间', key: 'created_at', flex: 1.5},
     {title: '售后订单号  ', key: 'after_sale_order_id', flex: 1},
-    {title: '商户名称', key: 'buyer_name', flex: 1.3},
-    {title: '缺货品类数', key: 'type_count', flex: 0.6},
-    {title: '原订单号 ', key: 'source_order_sn', flex: 1},
-    {title: '状态', key: 'status_str', flex: 1.3},
-    {title: '操作', key: '', operation: '详情', flex: 0.7}
+    {title: '商户名称', key: 'buyer_name', flex: 1.5},
+    {title: '缺货品类数', key: 'type_count', flex:1},
+    {title: '原订单号 ', key: 'source_order_sn', flex: 2},
+    {title: '状态', key: 'status_str', flex: 0.6},
+    {title: '操作', key: '', operation: '详情', flex: 0.6}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '', type: 'check', key: '', flex: 1},
-    {title: '商品', key: 'goods_name', flex: 1.3},
-    {title: '供应商', key: 'supplier_name', flex: 1.3},
-    {title: '缺货数量', key: 'sale_out_of_num', flex: 0.6},
+    {title: '', type: 'check', key: '', flex: 3},
+    {title: '商品', key: 'goods_name', flex: 3},
+    {title: '供应商', key: 'supplier_name', flex: 3},
+    {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 1.3},
+    {title: '处理状态', key: 'status_str', flex: 2},
   ]
   export default {
     name: PAGE_NAME,

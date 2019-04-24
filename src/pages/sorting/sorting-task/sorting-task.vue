@@ -36,19 +36,17 @@
       <!--列表部分-->
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
+          <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex:item.flex}">{{item.tilte}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in sortingTask.list" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.goods_name}}</div>
-            <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.base_num}}</div>
-            <div class="list-item">{{item.base_wait_pick_num}}</div>
-            <div class="list-item">{{item.base_out_of_num}}</div>
-            <div class="list-item">{{item.position_name}}</div>
-            <div class="list-item">{{item.merchant_num}}</div>
-            <div class="list-item">
-              <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:item.id,goodsSkuCode:item.goods_sku_code}}">明细</router-link>
+          <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
+            <div class="list-item" v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]">
+              <template v-if="item.type==='operate'">
+                <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
+              </template>
+              <template v-else>
+                {{row[item.key]}}
+              </template>
             </div>
           </div>
         </div>
@@ -66,7 +64,15 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '拣货任务列表'
-  const COMMODITIES_LIST = ['商品名称', '分类', '下单数', '待拣货数', '缺货数', '存放库位', '待配商户数', '操作']
+  const COMMODITIES_LIST = [
+    {tilte: '商品名称', key: 'goods_name', flex: '2'},
+    {tilte: '分类', key: 'goods_category', flex: '2'},
+    {tilte: '下单数', key: 'base_num'},
+    {tilte: '待拣货数', key: 'base_wait_pick_num'},
+    {tilte: '缺货数', key: 'base_out_of_num'},
+    {tilte: '存放库位', key: 'position_name'},
+    {tilte: '待配商户数', key: 'merchant_num'},
+    {tilte: '操作', key: 'id', type: "operate", replace: "明细"}]
   export default {
     name: PAGE_NAME,
     page: {
@@ -114,21 +120,34 @@
     methods: {
       ...authComputed,
       ...sortingMethods,
-      // goToDetail
+      // 更新列表
+      _updateList(params, noUpdataStatus) {
+        this.SET_PARAMS(params)
+        this.getSortingTaskList()
+        if (!noUpdataStatus) {
+          this._getStausData()
+        }
+      },
       //  事件选择器
       changeTime(timeArr) {
-        this.SET_PARAMS({
-          params: {
-            start_time: timeArr[0],
-            end_time: timeArr[1], page: 1
-          }
+        this._updateList({
+          start_time: timeArr[0],
+          end_time: timeArr[1],
+          page: 1
         })
-        this.getSortingTaskList()
       },
       // 状态栏数据
       _getStausData() {
-        API.Sorting.getStausData().then(res => {
-          console.log(res, 'getStausData')
+        let params = {
+          start_time: this.sortingTask.filter.start_time,
+          end_time: this.sortingTask.filter.end_time,
+          goods_category_id: this.sortingTask.filter.goods_category_id,
+          keyword: this.sortingTask.filter.keyword
+        }
+        API.Sorting.getStausData(params).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
           let data = res.data
           let resData = data.map(item => {
             return {name: item.status_str, value: item.status, num: item.statistic}
@@ -138,8 +157,7 @@
       },
       // 列表状态栏选择
       _setStatus(item) {
-        this.SET_PARAMS({params: {status: item.value, page: 1}})
-        this.getSortingTaskList()
+        this._updateList({status: item.value, page: 1}, true)
       },
       // 分类数据
       _getClassifyList() {
@@ -149,23 +167,18 @@
         })
       },
       _setValueFrist(item) {
-        this.SET_PARAMS({params: {goods_category_id: item.id || '', page: 1}})
-        this.getSortingTaskList()
+        this._updateList({goods_category_id: item.id || '', page: 1})
         this.filterTaskSecond.data = item.list
         this.filterTaskFrist.data = this.filterTaskFrist.data.map(li => {
           li.is_selected = (li.id === item.id) ? 'true' : false
           return li
         })
-
-        console.log(this.filterTaskFrist, 'filterTaskFrist')
       },
       _setValueSecond(item) {
-        this.SET_PARAMS({params: {goods_category_id: item.id || '', page: 1}})
-        this.getSortingTaskList()
+        this._updateList({goods_category_id: item.id || '', page: 1})
       },
       _search(keyword) {
-        this.SET_PARAMS({params: {keyword, page: 1}})
-        this.getSortingTaskList()
+        this._updateList({keyword, page: 1})
       },
       _getUrl() {
         if (!this.exportParamsStr) {
@@ -191,8 +204,7 @@
         API.Sorting.exportDeliveryOrder(this.exportParamsStr)
       },
       _getMoreList(page) {
-        this.SET_PAGE({page})
-        this.getSortingTaskList()
+        this._updateList({ page: 1})
       },
     }
   }
