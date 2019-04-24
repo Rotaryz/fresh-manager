@@ -88,14 +88,14 @@ export const mutations = {
 
 export const actions = {
   getReturnsList({commit, state}) {
-    const {page, startTime, endTime, status, shopId, keyword} = state
+    const {page, startTime, endTime, status, keyword, socialName} = state
     let data = {
       status,
       page,
       start_time: startTime,
       end_time: endTime,
-      shop_id: shopId,
-      keyword: keyword
+      keyword: keyword,
+      social_name: socialName
     }
     return API.Order.getReturnsList(data)
       .then((res) => {

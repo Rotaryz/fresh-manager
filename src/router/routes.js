@@ -548,20 +548,36 @@ export default [
         meta: {
           titles: ['商城', '订单', '退货管理'],
           beforeResolve(routeTo, routeFrom, next) {
-            //  订单列表
             let status = routeTo.query.status || ''
-            store.dispatch('returns/infoStatus', status)
-            store
-              .dispatch('returns/getReturnsList')
-              .then((res) => {
-                if (!res) {
+            let tabIndex = store.state.returns.tabIndex
+            if (tabIndex === 0) {
+              //  售后订单
+              store.dispatch('returns/infoStatus', status)
+              store
+                .dispatch('returns/getReturnsList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
                   return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
+                })
+            } else {
+              // 售后补偿
+              store
+                .dispatch('market/getMarketList', {page: 1, source_type: 2})
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            }
           }
         }
       },
@@ -594,7 +610,26 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-rules/edit-rules')),
         meta: {
           titles: ['商城', '订单', '退货管理', '新建规则'],
-          marginBottom: 80
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('market/getMarketDetail', id)
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
         }
       },
       {

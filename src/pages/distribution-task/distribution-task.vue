@@ -26,9 +26,9 @@
           <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main">导出配送单</div>
-          <div class="btn-main g-btn-item">导出消费者清单</div>
-          <div class="btn-main g-btn-item" @click="signIn('all')">批量签收</div>
+          <div class="btn-main" @click="deliveryExcel">导出配送单</div>
+          <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': orderStatus !==1 || (orderStatus === 1 && !orderList.length)}" @click="signIn('all')">批量签收</div>
         </div>
       </div>
       <div class="big-list">
@@ -110,6 +110,8 @@
   const ORDER_EXCEL_URL = '/scm/api/backend/delivery/delivery-export/'
   const USER_ORDER_EXCEL_URL = '/scm/api/backend/delivery/download-order-excel/'
   const DRIVER_EXCEL_URL = '/scm/api/backend/delivery/delivery-driver-tasks-export/'
+  const DOWNLOAD_ORDER_EXCEL = '/scm/api/backend/delivery/download-order-excels'
+  const DELIVERY_ORDER_EXCEL = '/scm/api/backend/delivery/delivery-exports'
   export default {
     name: PAGE_NAME,
     page: {
@@ -201,12 +203,43 @@
     },
     methods: {
       ...distributionMethods,
-      signMore() {
-
+      orderExcel() {
+        window.open(this._getUrl(DOWNLOAD_ORDER_EXCEL))
+      },
+      deliveryExcel() {
+        window.open(this._getUrl(DELIVERY_ORDER_EXCEL))
+      },
+      _getUrl(url) {
+        let currentId = this.getCurrentId()
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          start_time: this.orderStartTime || '',
+          end_time: this.orderEndTime || '',
+          keyword: this.orderKeyword,
+          status: this.orderStatus
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_SCM_API + url + '?' + search.join('&')
+      },
+      async signMore() {
+        let res = await API.Delivery.batchDeliverySign(true)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          await this._statistic()
+          this.getOrderList()
+        }
       },
       signIn(item) {
         if (item === 'all') {
-          this.$refs.confirm.show('确定批量签收配送单？')
+          if (this.orderList.length && this.orderStatus === 1) {
+            this.$refs.signMore.show('确定批量签收配送单？')
+          }
           return
         }
         this.signItem = item
@@ -285,5 +318,6 @@
         white-space: normal
       &:last-child
         padding: 0
+        min-width: 80px
         max-width: 80px
 </style>

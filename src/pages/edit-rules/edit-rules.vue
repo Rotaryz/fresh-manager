@@ -29,13 +29,32 @@
           <div class="edit-item">
             <div class="edit-title"><span class="start">*</span>规则名称</div>
             <div class="edit-content">
-              <base-drop-down :width="400" :height="40"></base-drop-down>
+              <base-drop-down :width="400" :height="40" :select="stairSelect" @setValue="selectRules"></base-drop-down>
             </div>
           </div>
           <div class="edit-item">
             <div class="edit-title"><span class="start">*</span>选择优惠券</div>
             <div class="edit-content">
-              <div class="btn-main hand edit-select" @click="showCouponModal">选择<span class="add-icon"></span></div>
+              <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal">选择<span class="add-icon"></span></div>
+            </div>
+          </div>
+          <div v-if="selectCouponList.length" class="edit-list-box">
+            <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+              <div v-for="(item, index) in selectCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
+
+            </div>
+            <div>
+              <div v-for="(item, index) in selectCouponList" :key="index" class="list">
+                <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
+                  <div v-if="val.value === 'time'" class="main">
+                    <p>{{item.start_at}}</p>
+                    <p>{{item.end_at}}</p>
+                  </div>
+                  <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
+                  <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                  <p v-else class="main">{{item[val.value]}}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -43,7 +62,7 @@
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
-      <div class="back-btn back-submit hand" @click="additionGroup">确定</div>
+      <div class="back-btn back-submit hand" :class="{'btn-disable': disable}" @click="additionGroup">确定</div>
     </div>
     <!-- 选择优惠券弹窗-->
     <default-modal ref="couponModal">
@@ -66,7 +85,7 @@
             <span v-for="(item, index) in couponTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
           </div>
           <div class="outreach-group-list">
-            <div v-for="(item, index) in couponList" :key="index" class="group-item" @click="_selectCoupon(item, index)">
+            <div v-for="(item, index) in couponList" :key="index" class="group-item" @click="selectCoupon(item, index)">
               <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
@@ -93,6 +112,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {marketComputed} from '@state/helpers'
+
   import Swiper from './swiper/swiper'
   import API from '@api'
   import DefaultModal from '@components/default-modal/default-modal'
@@ -107,6 +128,14 @@
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1, value: 'time'},
   ]
+  const SELECT_COUPON_TITLE = [
+    {name: '优惠券名称', flex: 1.4, value: 'coupon_name'},
+    {name: '类型', flex: 1, value: 'preferential_str'},
+    {name: '面值', flex: 1, value: 'denomination'},
+    {name: '剩余', flex: 1, value: 'usable_stock'},
+    {name: '有效期', flex: 1.2, value: 'time'},
+    {name: '操作', flex: 0.4, value: ''},
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -118,6 +147,8 @@
     },
     data() {
       return {
+        disable: this.$route.query.id,
+        selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
         marketIndex: 1,
         arrowArr: ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
         arrowIndex: 0,
@@ -130,12 +161,45 @@
         couponList: [],
         page: 0,
         keyword: '',
+        stairSelect: {
+          check: false,
+          show: false,
+          content: '请选择规则',
+          type: 'default',
+          data: []
+        },
+        rulesId: '',
+        rulesTitle: '',
+        couponSelectItem: {},
+        isAdditionGroup: true,
+        selectCouponList: [], // 已选优惠券列表
         couponTitle: COUPON_TITLE // 优惠券弹窗title
       }
     },
+    computed: {
+      ...marketComputed
+    },
+    async created() {
+      this._initMsg(this.marketDetail)
+      if (this.$route.query.id) {
+        return
+      }
+      await this._getRulesList()
+    },
     methods: {
+      async _getRulesList() {
+        let res = await API.Order.couponActivity()
+        this.stairSelect.data = res.error === this.$ERR_OK ? res.data : []
+      },
+      selectRules(item) {
+        this.rulesId = item.type
+        this.rulesTitle = item.name
+      },
+      selectCoupon(item, index) {
+        this.couponCheckItem = item
+      },
       cancel() {
-
+        this.$router.back()
       },
       bannerChange(index) {
         this.arrowIndex = index
@@ -147,10 +211,42 @@
       cancelModal() {
         this.$refs.couponModal.hideModal()
       },
-      additionGroup() {
+      async additionGroup() {
+        if (!this.isAdditionGroup || this.disable) {
+          return
+        }
+        if (!this.rulesId) {
+          this.$toast.show('请选择规则')
+          return
+        } else if (!this.couponSelectItem.id) {
+          this.$toast.show('请选择优惠券')
+          return
+        }
+        this.isAdditionGroup = false
+        let res = await API.Order.addCouponActivity({title: this.rulesTitle, type: this.rulesId, coupon_id: this.couponSelectItem.id})
+        this.$toast.show(res.message, 600)
+        if (res.error !== this.$ERR_OK) {
+          this.isAdditionGroup = true
+          return
+        }
+        setTimeout(() => {
+          this.$router.back()
+        }, 800)
+      },
+      // 删除优惠券
+      showConfirm() {
+        this.selectCouponList = []
+        this.couponSelectItem = {}
+        this.couponCheckItem = {}
       },
       additionCoupon() {
-
+        this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
+        if (this.couponCheckItem.id) {
+          let arr = []
+          arr.push(this.couponSelectItem)
+          this.selectCouponList = arr
+        }
+        this.cancelModal()
       },
       // 搜索
       async _searchData(text) {
@@ -187,9 +283,18 @@
       },
       // 弹窗
       showCouponModal() {
+        if (this.disable) return
         this.couponCheckItem = {}
         this._getCouponList()
         this.$refs.couponModal.showModal()
+      },
+      // 详情信息
+      _initMsg(news) {
+        let id = this.$route.query.id || null
+        if (id) {
+          this.selectCouponList[0] = news.coupon
+          this.stairSelect.content = news.title
+        }
       }
     }
   }
@@ -529,5 +634,57 @@
             overflow: hidden
             -webkit-line-clamp: 2
             -webkit-box-orient: vertical
-
+  .edit-list-box
+    margin-top: 20px
+    border: 1px solid $color-line
+    .list-title
+      background: #F5F7FA
+      height: 45px
+      line-height: 45px
+      padding: 0 20px
+      display: flex
+      border-bottom: 1px solid $color-line
+      .list-title-item
+        padding-right: 20px
+        &:last-child
+          padding-right: 0
+    .no-line
+      border-bottom: 0
+    .list
+      height: 60px
+      line-height: 60px
+      padding: 0 20px
+      display: flex
+      &:nth-child(2n)
+        background: #F5F7FA
+      .list-item
+        display: flex
+        align-items: center
+        overflow: hidden
+        padding-right: 20px
+        &:last-child
+          padding-right: 0
+        .main
+          line-height: 20px
+          overflow: hidden
+          white-space: nowrap
+          text-overflow: ellipsis
+        .input-count
+          width: 90px
+          height: 34px
+          padding-left: 15px
+          box-sizing: border-box
+          border: 1px solid $color-line
+          line-height: 20px
+        .handle
+          color: #4d77bd
+          cursor: pointer
+          &:hover
+            color: #06397e
+        .list-operation-disable
+          cursor: not-allowed
+  .btn-disable-store
+    .add-icon
+      &:before, &:after
+        background: #e9ecee
 </style>

@@ -50,8 +50,9 @@
     },
     methods: {
       checkStatus(index, item) {
+        let el = document.querySelectorAll('.status-tab-item')
         this.statusIndex = index
-        this.style = `left: ${this.el[index].offsetLeft}px; width: ${this.el[this.statusIndex].offsetWidth}px`
+        this.style = `left: ${el[index].offsetLeft}px; width: ${el[this.statusIndex].offsetWidth}px`
         this.$emit('setStatus', item, index)
       }
     }
