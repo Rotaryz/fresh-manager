@@ -26,7 +26,7 @@
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
           <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
-          <div class="show-more-box g-btn-item" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
+          <div class="show-more-box g-btn-item" @mouseenter="_showTip" @mouseleave="_hideTip">
             <div class="show-more-text">
               <div class="show-text">更多</div>
               <div class="show-icon"></div>
@@ -35,9 +35,23 @@
             <transition name="fade">
               <div v-show="showIndex" class="show-hide-box">
                 <div class="show-all-item">
-                  <div class="show-hide-item">商品导出</div>
-                  <div class="show-hide-item">批量新建</div>
-                  <div class="show-hide-item">批量修改</div>
+                  <a :href="downUrl" class="show-hide-item" target="_blank">商品导出</a>
+                  <div class="show-hide-item">
+                    批量新建
+                    <input
+                      type="file"
+                      class="stock-file hand"
+                      @change="importStock($event, 1)"
+                    >
+                  </div>
+                  <div class="show-hide-item">
+                    批量修改
+                    <input
+                      type="file"
+                      class="stock-file hand"
+                      @change="importStock($event, 0)"
+                    >
+                  </div>
                 </div>
               </div>
             </transition>
@@ -55,8 +69,8 @@
               <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
             </div>
             <div class="list-item list-double-row">
-              <div class="item-dark">{{item.name}}{{item.name}}</div>
-              <div class="item-dark">{{item.goods_sku_code}}</div>
+              <div class="item-dark">{{item.name}}</div>
+              <div class="item-dark">{{item.goods_sku_encoding}}</div>
             </div>
             <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
             <div class="list-item">{{item.goods_category_name}}</div>
@@ -65,7 +79,7 @@
             <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
             <div class="list-item list-item-layout">
               {{item.usable_stock}}{{item.sale_unit}}
-              <div class="list-item-img icon-pre"></div>
+              <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
             </div>
             <div class="list-item">
               <div class="list-item-btn" @click="switchBtn(item, index)">
@@ -290,6 +304,21 @@
         this.goodsPage = 1
         this._getUrl()
         this.getGoodsListData()
+      },
+      //  导入商品新建模板
+      async importStock(e, index) {
+        let param = this._infoFile(e.target.files[0])
+        this.$loading.show('上传中...')
+        let res = index === 1 ? await API.Product.goodsNewInto(param) : await API.Product.goodsNewEdit(param)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        e.target.value = ''
+      },
+      // 格式化文件
+      _infoFile(file) {
+        let param = new FormData() // 创建form对象
+        param.append('file', file, file.name)// 通过append向form对象添加数据
+        return param
       }
     }
   }
@@ -392,7 +421,12 @@
       .show-hide-item
         height: 50px
         line-height: 50px
+        color: $color-text-main
+        font-family: $font-family-regular
+        font-size: $font-size-14
         padding-left: 16px
+        display: block
+        position: relative
         border-bottom-1px($color-line)
     .show-hide-item:hover
       color: $color-main
@@ -428,4 +462,12 @@
     background-repeat: no-repeat
     background-size: cover
     background-position: center
+  .stock-file
+    position: absolute
+    top: 0
+    left: 0
+    font-size: 0
+    opacity: 0
+    height: 100%
+    width: 100%
 </style>

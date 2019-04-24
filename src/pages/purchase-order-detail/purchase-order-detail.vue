@@ -33,7 +33,10 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in purchaseDetail.details" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <div class="item-dark">{{item.goods_name}}</div>
+              <div class="item-dark">{{item.goods_sku_encoding}}</div>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.purchase_num}}{{item.purchase_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>

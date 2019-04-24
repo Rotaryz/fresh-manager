@@ -82,9 +82,8 @@
           商品编码
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.original_price" type="number" class="edit-input" maxlength="10">
+          <input v-model="goods_skus.goods_sku_encoding" type="text" class="edit-input" maxlength="20">
         </div>
-        <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -143,17 +142,17 @@
           销售库存
         </div>
         <div class="edit-input-box goods-select-box">
-          <div class="goods-select-left" @click="selectStock(true)">
-            <div class="goods-select-icon" :class="isSelectStock ? 'goods-select-icon-active' : ''"></div>
+          <div class="goods-select-left" @click="selectStock(1)">
+            <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
             <div class="goods-select-text">预售库存</div>
           </div>
-          <input v-model="msg.usable_stock" type="number" class="edit-input edit-input-select" :disabled="!isSelectStock">
+          <input v-model="goods_skus.presale_usable_stock" type="number" class="edit-input edit-input-select" :disabled="goods_skus.is_presale * 1 !== 1">
           <div class="stock-box-text">预</div>
-          <div class="goods-select-left" @click="selectStock(false)">
-            <div class="goods-select-icon" :class="isSelectStock ? '' : 'goods-select-icon-active'"></div>
+          <div class="goods-select-left" @click="selectStock(0)">
+            <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
             <div class="goods-select-text">仓库库存</div>
           </div>
-          <div class="stock-box-text current-stock">当前可用库存<span class="stock-color">350</span>件</div>
+          <div v-if="goods_skus.warehouse_usable_stock" class="stock-box-text current-stock">当前可用库存<span class="stock-color">{{goods_skus.warehouse_usable_stock}}</span>件</div>
         </div>
       </div>
       <div class="edit-item">
@@ -198,9 +197,9 @@
           采购单价
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.original_price" type="number" class="edit-input" maxlength="10">
+          <input v-model="goods_skus.purchase_price" type="number" class="edit-input" maxlength="10">
         </div>
-        <div class="edit-pla">元/箱</div>
+        <div v-if="goods_skus.purchase_unit" class="edit-pla">元/{{goods_skus.purchase_unit}}</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -258,12 +257,12 @@
           describe: '',
           goods_banner_images: [],
           goods_detail_images: [],
-          goods_units: '',
           trade_price: '',
           is_online: 1,
           is_multi_specs: 0,
           goods_category_id: 0,
           original_price: '',
+          purchase_price: '',
           usable_stock: '',
           commission_rate: '',
           goods_skus: [
@@ -272,6 +271,8 @@
               trade_price: 0,
               original_price: 0,
               usable_stock: 0,
+              goods_sku_encoding: '',
+              purchase_price: '',
               image_id: '',
               specs: '',
               is_weight: 1
@@ -331,9 +332,15 @@
           base_unit: '',
           sale_unit: '',
           purchase_unit: '',
+          goods_sku_encoding: '',
+          presale_usable_stock: '',
+          warehouse_usable_stock: '',
+          purchase_price: '',
           damage_rate: '',
           supplier_id: 0,
-          is_weight: 1
+          is_weight: 1,
+          is_change_stock: 1,
+          is_presale: 1
         },
         isWeight: 1,
         isSelectStock: true
@@ -366,7 +373,10 @@
         this.$router.back()
       },
       selectStock(index) {
-        this.isSelectStock = index
+        if (this.goods_skus.is_change_stock * 1 !== 1) {
+          return
+        }
+        this.goods_skus.is_presale = index
       },
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
@@ -391,6 +401,7 @@
         }
         this.msg.usable_stock += ''
         this.msg.init_sale_count += ''
+        this.goods_skus.presale_usable_stock += ''
         if (this.msg.name.length === 0 || this.msg.name.length >= 30) {
           this.$toast.show('请选择输入商品名称且小于30字')
           return
@@ -409,6 +420,9 @@
         } else if (this.goods_skus.base_sale_rate.length === 0) {
           this.$toast.show('请输入销售规格')
           return
+        } else if (this.goods_skus.goods_sku_encoding.length === 0) {
+          this.$toast.show('请输入商品编码')
+          return
         } else if (this.goods_skus.base_sale_rate <= 0) {
           this.$toast.show('请输入销售规格大于零')
           return
@@ -423,6 +437,15 @@
           return
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
+          return
+        } else if (this.goods_skus.presale_usable_stock.length === 0 && this.goods_skus.is_presale * 1 === 1) {
+          this.$toast.show('请输入预售库存')
+          return
+        } else if (this.goods_skus.presale_usable_stock <= 0 && this.goods_skus.is_presale * 1 === 1) {
+          this.$toast.show('请输入预售库存大于零')
+          return
+        } else if (this.goods_skus.presale_usable_stock.includes('.') && this.goods_skus.is_presale * 1 === 1) {
+          this.$toast.show('请输入正确的预售库存')
           return
         } else if (
           +this.msg.commission_rate < 0 ||
@@ -446,6 +469,9 @@
         } else if (this.goods_skus.purchase_unit === '') {
           this.$toast.show('请选择采购单位')
           return
+        } else if (this.goods_skus.purchase_price.length === 0) {
+          this.$toast.show('请输入采购单价')
+          return
         } else if (
           +this.goods_skus.damage_rate < 0 ||
           +this.goods_skus.damage_rate > 100 ||
@@ -460,6 +486,9 @@
         ) {
           this.$toast.show('请输入正确初始销量')
           return
+        }
+        if (this.goods_skus.is_presale * 1 === 0) {
+          this.goods_skus.presale_usable_stock = ''
         }
         this.msg.goods_skus[0] = this.goods_skus
         this.msg.goods_skus[0].trade_price = this.msg.trade_price

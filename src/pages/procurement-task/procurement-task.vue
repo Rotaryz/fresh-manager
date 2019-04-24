@@ -26,7 +26,7 @@
         </div>
         <div class="function-btn">
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
-          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}" @click="_createPublish">生成采购单</div>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}" @click="_createNewPublish">生成采购单</div>
           <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
           <div class="btn-main g-btn-item">导出</div>
         </div>
@@ -39,7 +39,10 @@
         <div class="list">
           <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box list-box-goods">
             <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>-->
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <div class="item-dark">{{item.goods_name}}</div>
+              <div class="item-dark">{{item.goods_sku_encoding}}</div>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.supplier}}</div>
             <div class="list-item">{{item.purchase_user}}</div>
@@ -159,7 +162,7 @@
           <div class="title">
             选择供应商
           </div>
-          <span class="close hand" @click="cancel"></span>
+          <span class="close hand" @click="supplierCancel"></span>
         </div>
         <div class="supplier-sub">请选择供应商，生成对应采购单</div>
         <div class="big-list">
@@ -167,18 +170,11 @@
             <div v-for="(item,index) in supplierList" :key="index" class="list-item">{{item}}</div>
           </div>
           <div class="list">
-            <div class="list-content list-box-supplier list-box">
-              <div class="list-item">请选择供应商</div>
-              <div class="list-item">请选择供应商</div>
+            <div v-for="(item, index) in supplierSortList" :key="index" class="list-content list-box-supplier list-box">
+              <div class="list-item">{{item.supplier_name}}</div>
+              <div class="list-item">{{item.task_count}}</div>
               <div class="list-item">
-                <div class="btn-main">生成采购单</div>
-              </div>
-            </div>
-            <div class="list-content list-box-supplier list-box">
-              <div class="list-item">请选择供应商</div>
-              <div class="list-item">请选择供应商</div>
-              <div class="list-item">
-                <div class="btn-main">生成采购单</div>
+                <div class="btn-main" @click="jumpTaskList(item)">生成采购单</div>
               </div>
             </div>
           </div>
@@ -223,6 +219,7 @@
         selectList: [],
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
+          {name: '锁定中', value: 1, key: 'wait_release', num: 0},
           {name: '待发布', value: 1, key: 'wait_release', num: 0},
           {name: '待采购', value: 2, key: 'wait_purchase', num: 0},
           {name: '已完成', value: 3, key: 'success', num: 0}
@@ -246,8 +243,9 @@
         choicePage: 1,
         oneBtn: false,
         confirmType: '',
-        statusTab: 0,
-        taskTime: ['', '']
+        statusTab: 2,
+        taskTime: ['', ''],
+        supplierSortList: []
       }
     },
     computed: {
@@ -257,8 +255,14 @@
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
       if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1
-        this.status = this.$route.query.status * 1
+        this.statusTab = this.$route.query.status * 1 + 1
+        this.status = this.$route.query.status
+      }
+      this.status = this.$route.params.status
+      if (this.goBackNumber > 0) {
+        this.statusTab = 3
+        this.status = 2
+        this._createNewPublish()
       }
       await this._getFirstAssortment()
       await this._getGoodsList()
@@ -266,7 +270,6 @@
       await this._statistic()
     },
     mounted() {
-      // this.$refs.selectSupplier.showModal()
     },
     methods: {
       ...proTaskMethods,
@@ -358,6 +361,10 @@
         this.taskNum = ''
         this.$refs.modal.hideModal()
       },
+      supplierCancel() {
+        this.setGoBackNumber(0)
+        this.$refs.selectSupplier.hideModal()
+      },
       async confirm() {
         if (!this.goodsItem.goods_sku_code) {
           this.$toast.show('请添加商品')
@@ -392,7 +399,6 @@
         this.$refs.modal.showModal()
       },
       async _setStatus(item) {
-        console.log(item)
         this.status = item.status
         this.page = 1
         this.$refs.pages.beginPage()
@@ -440,14 +446,15 @@
         await this._statistic()
       },
       async changeStartTime(value) {
-        console.log(value)
         this.taskTime = value
         this.page = 1
+        this.startTime = value[0]
+        this.endTime = value[1]
         this.$refs.pages.beginPage()
         this.getPurchaseTaskList({
           time: this.time,
-          startTime: value[0],
-          endTime: value[1],
+          startTime: this.startTime,
+          endTime: this.endTime,
           keyword: this.keyword,
           status: this.status,
           page: this.page,
@@ -506,8 +513,8 @@
         if (!selectArr.length) {
           let res = await API.Supply.getDiffSupplier({
             keyword: this.keyword,
-            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            start_time: this.startTime,
+            end_time: this.endTime,
             supplier_id: this.supplyId
           })
           if (res.error !== this.$ERR_OK) {
@@ -535,6 +542,41 @@
         this.setTaskList(selectArr)
         this.$router.push('/home/procurement-task/edit-task')
       },
+      async _createNewPublish() {
+        if (this.status !== 2) return
+        let res = await API.Supply.getSortSupplier({
+          keyword: this.keyword,
+          start_time: this.startTime,
+          end_time: this.endTime,
+          supplier_id: this.supplyId
+        })
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+          return
+        }
+        this.supplierSortList = res.data
+        this.$refs.selectSupplier.showModal()
+      },
+      async jumpTaskList(item) {
+        let supplyRes = await API.Supply.purchaseTask({
+          time: this.time,
+          start_time: this.startTime,
+          end_time: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          supplier_id: item.supplier_id,
+          loading: false
+        })
+        this.$loading.hide()
+        if (supplyRes.error !== this.$ERR_OK) {
+          this.$toast.show(supplyRes.message)
+          return
+        }
+        this.setGoBackNumber(this.supplierSortList.length)
+        this.setTaskList(supplyRes.data)
+        this.$router.push('/home/procurement-task/edit-task')
+      },
       async _getMoreList(page) {
         if (this.page === page) {
           return
@@ -542,8 +584,8 @@
         this.page = page
         await this.getPurchaseTaskList({
           time: this.time,
-          startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-          endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          startTime: this.startTime,
+          endTime: this.endTime,
           keyword: this.keyword,
           status: this.status,
           page: this.page,
@@ -569,8 +611,8 @@
         case 1:
           let res = await API.Supply.purchaseTaskPublish({
             time: this.time,
-            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            start_time: this.startTime,
+            end_time: this.endTime,
             keyword: this.keyword,
             status: this.status,
             page: this.page,
@@ -597,8 +639,8 @@
         case 2:
           let supplyRes = await API.Supply.purchaseTask({
             time: this.time,
-            start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-            end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+            start_time: this.startTime,
+            end_time: this.endTime,
             keyword: this.keyword,
             status: this.status,
             page: this.page,
@@ -617,12 +659,11 @@
       },
       async _statistic() {
         let res = await API.Supply.getTaskStatusNumber({
-          start_time: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-          end_time: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+          start_time: this.startTime,
+          end_time: this.endTime,
           keyword: this.keyword,
           supplier_id: this.supplyId
         })
-        console.log(res.data)
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         let selectData = res.data.map((item) => {
           return {

@@ -1115,7 +1115,11 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             routeTo.params.start = ''
             routeTo.params.end = ''
-            let status = routeTo.query.status
+            let status = routeTo.query.status || 1
+            if (store.getters['proTask/goBackNumber'] >= 1) {
+              status = 2
+            }
+            routeTo.params.status = status
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: '',
@@ -1211,30 +1215,15 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购单'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
             let startTime = ''
             let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            }
             routeTo.params.start = startTime
             routeTo.params.end = endTime
-            let start = time.start
-            let end = time.end
-            store.dispatch('supply/infoPurchaseTime', {start, end})
             store
               .dispatch('supply/getPurchaseList', {
                 time: '',
-                startTime: startTime,
-                endTime: endTime,
+                startTime: '',
+                endTime: '',
                 keyword: '',
                 page: 1,
                 loading: true

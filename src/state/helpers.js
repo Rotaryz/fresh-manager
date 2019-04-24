@@ -238,13 +238,15 @@ export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurcha
 
 // 采购任务
 export const proTaskComputed = {
-  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd'])
+  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd', 'goBackNumber'])
 }
 
 export const proTaskMethods = mapActions('proTask', [
   'getPurchaseTaskList',
   'selectPurchase',
   'setTaskList',
+  'setGoBackNumber',
+  'setGoBackNumberSub',
   'infoTaskTime'
 ])
 
