@@ -119,5 +119,15 @@ export default {
   deliverySign(id, loading = false) {
     let url = `/scm/api/backend/delivery/delivery-sign/${id}`
     return request.get(url, false, loading)
+  },
+  /**
+   *  配送任务批量签收
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  batchDeliverySign(loading = true) {
+    let url = `/scm/api/backend/delivery/batch-delivery-sign`
+    return request.get(url, false, loading)
   }
 }

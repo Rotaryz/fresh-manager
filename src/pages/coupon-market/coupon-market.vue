@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageDetail" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>

@@ -105,7 +105,7 @@ export const couponMethods = mapActions('coupon', [
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'pageDetail', 'marketDetail'])
+  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail'])
 }
 
 export const marketMethods = {
