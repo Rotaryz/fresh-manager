@@ -210,7 +210,6 @@
         window.open(this._getUrl(DELIVERY_ORDER_EXCEL))
       },
       _getUrl(url) {
-        console.log(this.orderStatus)
         let currentId = this.getCurrentId()
         let data = {
           current_corp: currentId,
