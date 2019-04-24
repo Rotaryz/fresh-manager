@@ -21,7 +21,7 @@
           <div class="big-main-left hand" @click="openList(index)">
             <div class="icon" :class="item.select ? 'open' : ''"></div>
             <div class="img" :style="{'background-image': 'url(' +item.image_url+ ')'}"></div>
-            <div class="text">{{item.name}}({{item.list && item.list.length}}个子类)</div>
+            <div class="text">{{item.name}} <span class="tip">({{item.list && item.list.length}}个子类)</span></div>
           </div>
           <div class="big-main-right">
             <span class="list-operation" @click="editBigCatee(item, index)">修改</span>
@@ -379,6 +379,8 @@
             line-height: 1
             color: $color-text-main
             font-family: $font-family-regular
+          .tip
+            color: $color-text-assist
 
   .add-box
     height: 60px

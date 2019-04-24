@@ -45,10 +45,11 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start" style="opacity: 0">*</span>
-          推荐语
+          商品副标题
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.describe" type="text" class="edit-input" maxlength="100">
+          <textarea v-model="msg.describe" class="edit-textarea edit-input" placeholder="输入商品副标题" maxlength="50"></textarea>
+          <span class="num">{{msg.describe && msg.describe.length || 0}}/50</span>
         </div>
       </div>
       <div class="edit-item  edit-image-box">
@@ -65,7 +66,7 @@
             </draggable>
             <div v-if="msg.goods_banner_images.length < picNum" class="add-image hand">
               <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic1', $event)">
-              <div v-if="showLoading" class="loading-mask">
+              <div v-if="showLoading && uploadImg === 'pic1'" class="loading-mask">
                 <img src="./loading.gif" class="loading">
               </div>
             </div>
@@ -83,12 +84,12 @@
           <div class="edit-image">
             <draggable v-model="msg.goods_detail_images" class="draggable" @update="_setSort()">
               <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
-                <span @click="delPic(index)"></span>
+                <span @click="delPic2(index)"></span>
               </div>
             </draggable>
             <div v-if="msg.goods_detail_images.length < 15" class="add-image hand">
               <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic2', $event)">
-              <div v-if="showLoading" class="loading-mask">
+              <div v-if="showLoading && uploadImg === 'pic2'" class="loading-mask">
                 <img src="./loading.gif" class="loading">
               </div>
             </div>
@@ -723,6 +724,7 @@
         color: #F52424
       .edit-input-box
         margin-left: 40.9px
+        position: relative
       .edit-input
         font-size: $font-size-14
         padding: 0 14px
@@ -743,6 +745,16 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
+      .edit-textarea
+        height: 94px
+        resize: none
+      .num
+        position: absolute
+        right: 10px
+        bottom: 10px
+        font-size: $font-size-12
+        font-family: $font-family-regular
+        color: $color-text-assist
       .mini-edit-input
         width: 133px
         border-radius: 0

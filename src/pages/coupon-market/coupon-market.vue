@@ -1,13 +1,14 @@
 <template>
   <div class="coupon-market table">
     <div class="down-content">
-      <span class="down-tip">平台发放 </span>
-      <div class="down-item">
-        <div v-for="(item, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">{{item}}<span class="icon"></span></div>
-      </div>
-      <span class="down-tip">团长发放</span>
-      <div class="down-item">
-        <div class="top-btn" @click="newMarket(3)">社群福利券<span class="icon"></span></div>
+      <div v-for="(item, index) in topBtn" :key="index" class="down-main">
+        <span class="down-title">{{item.name}}</span>
+        <div class="down-item">
+          <div v-for="(val, ind) in item.child" :key="ind" class="top-btn" @click="newMarket(val.value)">
+            <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
+            <span class="text">{{val.name}}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="table-content">
@@ -68,6 +69,36 @@
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
+  const TOP_BTN = [{
+    name: '平台发放',
+    child: [
+      {
+        name: '新客有礼',
+        value: 0,
+        icon: 'icon-new_courtesy'
+      },
+      {
+        name: '复购有礼',
+        value: 1,
+        icon: 'icon-complex_courtesy'
+      },
+      {
+        name: '唤醒流失客户',
+        value: 2,
+        icon: 'icon-awaken'
+      }
+
+    ]
+  },{
+    name: '团长发放',
+    child: [
+      {
+        name: '社群福利券',
+        value: 3,
+        icon: 'icon-awaken'
+      }
+    ]
+  }]
   export default {
     name: PAGE_NAME,
     page: {
@@ -79,8 +110,10 @@
     data() {
       return {
         marketTitle: MARKET_TITLE,
-        topBtn: ['新客有礼', '复购有礼', '唤醒流失客户'],
+        topBtn: TOP_BTN,
         type: ['未知', '新客有礼', '复购有礼', '唤醒流失客户', '社群福利券'],
+        iconArr: ['icon-new_courtesy', 'icon-complex_courtesy', 'icon-awaken'],
+        iconArr2: ['icon-group'],
         statusTab: [
           {name: '全部', value: '', num: 0},
           {name: '开启', value: 1, num: 0},
@@ -139,7 +172,8 @@
             this.$toast.show(res.message)
             return
           }
-          this.getMarketList({page: this.page})
+          this.getMarketList({page: this.page, status: this.status})
+          this.getMarketStatus()
         })
       },
       _deleteMarket(item) {
@@ -182,43 +216,39 @@
       overflow: hidden
       white-space: nowrap
       font-size: 14px
-  .down-tip
-    font-family: $font-family-regular
-  .down-item
-    .top-btn
-      height: 30px
-      line-height: 30px
-      padding: 0 10px
-      border-radius: 1px
-      display: flex
-      justify-content: center
-      align-items: center
-      border-width: 1px
-      border-style: solid
-      border-color: #E6EAED
-      background: #FFF
-      margin-right: 10px
+  .down-content
+    height: 170px
+    .down-main
+      margin-left: 40px
+    .down-title
+      font-size: $font-size-16
+      color: $color-text-main
       font-family: $font-family-regular
-      cursor: pointer
-      transition: all 0.3s
-      &:last-child
-        margin-right: 0
-      &:hover
-        color: #FFF
-        border-color: $color-main
-        background: $color-main
+    .down-item
+      margin-top: 24px
+      .top-btn
+        width: 84px
+        height: 82px
+        text-align: center
+        margin-right: 50px
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        cursor: pointer
         .icon
-          icon-image(icon-new_built2)
-      .icon
-        width: 16px
-        height: 16px
-        margin-left: 5px
-        icon-image(icon-new_built)
-        transition: all 0.3s
-    .select-btn
-      border: 1px solid $color-main
-      background: $color-main
-      color: $color-white
-      .icon
-        icon-image(icon-new_built2)
+          width: 56px
+          height: 56px
+          display: block
+          transition: all 0.3s
+        .text
+          margin-top: 10px
+          display: block
+        &:hover
+          .icon-0
+            box-shadow: 0 2px 4px 0 rgba(159,213,198,0.40)
+          .icon-1
+            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+          .icon-2
+            box-shadow: 0 2px 4px 0 rgba(199,159,213,0.40)
+          .icon-3
+            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
 </style>
