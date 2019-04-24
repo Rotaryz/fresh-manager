@@ -222,6 +222,7 @@
       margin-left: 40px
     .down-title
       font-size: $font-size-16
+      line-height: 1
       color: $color-text-main
       font-family: $font-family-regular
     .down-item
@@ -237,6 +238,7 @@
         .icon
           width: 56px
           height: 56px
+          margin: 0 auto
           display: block
           transition: all 0.3s
         .text
