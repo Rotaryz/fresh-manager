@@ -1078,35 +1078,14 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购任务'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            let start = time.start
-            let end = time.end
+            routeTo.params.start = ''
+            routeTo.params.end = ''
             let status = routeTo.query.status
-            store.dispatch('proTask/infoTaskTime', {start, end})
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: '',
-                startTime: startTime,
-                endTime: endTime,
+                startTime: '',
+                endTime: '',
                 keyword: '',
                 page: 1,
                 status: status,

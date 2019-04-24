@@ -3,30 +3,8 @@
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
-      <div class="down-time-box">
-        <date-picker
-          :value="startTime"
-          class="edit-input-box" type="date"
-          placeholder="开始时间"
-          style="width: 187px;height: 28px;border-radius: 2px"
-          @on-change="_getStartTime"
-        ></date-picker>
-        <div v-if="startTime" class="down-time-text">{{timeStart}}</div>
-      </div>
-      <!--@on-change="_getStartTime"-->
-      <div class="time-tip">~</div>
       <div class="down-item">
-        <div class="down-time-box">
-          <date-picker
-            :value="endTime"
-            class="edit-input-box edit-input-right"
-            type="date"
-            placeholder="结束时间"
-            style="width: 187px;height: 28px;border-radius: 2px"
-            @on-change="_getEndTime"
-          ></date-picker>
-          <div v-if="endTime" class="down-time-text">{{timeEnd}}</div>
-        </div>
+        <base-date-select placeHolder="请选择时间" @getTime="changeStartTime"></base-date-select>
       </div>
       <!--下拉选择-->
       <span class="down-tip">供应商</span>
@@ -50,16 +28,17 @@
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
           <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}" @click="_createPublish">生成采购单</div>
           <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
+          <div class="btn-main g-btn-item">导出</div>
         </div>
       </div>
       <div class="big-list">
-        <div class="list-header list-box">
-          <div class="pro-select-icon hand" :class="{'pro-select-icon-active': select, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: 'all', status: status})"></div>
+        <div class="list-header list-box list-box-goods">
+          <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': select, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: 'all', status: status})"></div>-->
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box">
-            <div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>
+          <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box list-box-goods">
+            <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>-->
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.supplier}}</div>
@@ -174,12 +153,43 @@
         </div>
       </div>
     </default-modal>
+    <default-modal ref="selectSupplier">
+      <div slot="content" class="supplier-box">
+        <div class="title-box">
+          <div class="title">
+            选择供应商
+          </div>
+          <span class="close hand" @click="cancel"></span>
+        </div>
+        <div class="supplier-sub">请选择供应商，生成对应采购单</div>
+        <div class="big-list">
+          <div class="list-header list-box-supplier list-box">
+            <div v-for="(item,index) in supplierList" :key="index" class="list-item">{{item}}</div>
+          </div>
+          <div class="list">
+            <div class="list-content list-box-supplier list-box">
+              <div class="list-item">请选择供应商</div>
+              <div class="list-item">请选择供应商</div>
+              <div class="list-item">
+                <div class="btn-main">生成采购单</div>
+              </div>
+            </div>
+            <div class="list-content list-box-supplier list-box">
+              <div class="list-item">请选择供应商</div>
+              <div class="list-item">请选择供应商</div>
+              <div class="list-item">
+                <div class="btn-main">生成采购单</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </default-modal>
     <default-confirm ref="confirmMsg" :oneBtn="oneBtn" @confirm="confirmMsg"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {DatePicker} from 'iview'
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {proTaskComputed, proTaskMethods} from '@state/helpers'
@@ -189,19 +199,20 @@
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '采购任务'
   const COMMODITIES_LIST = ['商品', '分类', '供应商', '采购员', '计划采购', '已采购', '采购进度', '发布时间', '状态']
+  const SUPPLIER_LIST = ['供应商', '采购任务数', '操作']
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
     components: {
-      DatePicker,
       DefaultModal,
       DefaultConfirm
     },
     data() {
       return {
         commodities: COMMODITIES_LIST,
+        supplierList: SUPPLIER_LIST,
         page: 1,
         startTime: '',
         endTime: '',
@@ -235,7 +246,8 @@
         choicePage: 1,
         oneBtn: false,
         confirmType: '',
-        statusTab: 0
+        statusTab: 0,
+        taskTime: ['', '']
       }
     },
     computed: {
@@ -252,6 +264,9 @@
       await this._getGoodsList()
       await this._getSupplierList()
       await this._statistic()
+    },
+    mounted() {
+      // this.$refs.selectSupplier.showModal()
     },
     methods: {
       ...proTaskMethods,
@@ -377,7 +392,8 @@
         this.$refs.modal.showModal()
       },
       async _setStatus(item) {
-        this.status = item.value
+        console.log(item)
+        this.status = item.status
         this.page = 1
         this.$refs.pages.beginPage()
         this.getPurchaseTaskList({
@@ -393,26 +409,6 @@
       },
       async _setValue(item) {
         this.supplyId = item.id
-        this.page = 1
-        this.$refs.pages.beginPage()
-        this.getPurchaseTaskList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          status: this.status,
-          page: this.page,
-          supplyId: this.supplyId,
-          loading: false
-        })
-        await this._statistic()
-      },
-      async _getStartTime(time) {
-        this.startTime = time
-        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
-          this.$toast.show('开始时间不能大于结束时间')
-          return
-        }
         this.page = 1
         this.$refs.pages.beginPage()
         this.getPurchaseTaskList({
@@ -443,18 +439,15 @@
         })
         await this._statistic()
       },
-      async _getEndTime(time) {
-        this.endTime = time
-        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
-          this.$toast.show('结束时间不能小于开始时间')
-          return
-        }
+      async changeStartTime(value) {
+        console.log(value)
+        this.taskTime = value
         this.page = 1
         this.$refs.pages.beginPage()
         this.getPurchaseTaskList({
           time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
+          startTime: value[0],
+          endTime: value[1],
           keyword: this.keyword,
           status: this.status,
           page: this.page,
@@ -590,8 +583,8 @@
           if (res.error === this.$ERR_OK) {
             this.getPurchaseTaskList({
               time: this.time,
-              startTime: this.startTime ? this.startTime + ' ' + this.timeStart : '',
-              endTime: this.endTime ? this.endTime + ' ' + this.timeEnd : '',
+              startTime: this.taskTime[0],
+              endTime: this.taskTime[1],
               keyword: this.keyword,
               status: this.status,
               page: this.page,
@@ -629,11 +622,16 @@
           keyword: this.keyword,
           supplier_id: this.supplyId
         })
+        console.log(res.data)
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
-        for (let key in this.statistic) {
-          let index = this.dispatchSelect.findIndex((item) => item.key === key)
-          this.dispatchSelect[index].num = this.statistic[key]
-        }
+        let selectData = res.data.map((item) => {
+          return {
+            name: item.status_str,
+            status: item.status,
+            num: item.statistic
+          }
+        })
+        this.dispatchSelect = selectData
       }
     }
   }
@@ -661,14 +659,26 @@
     icon-image('icon-check')
 
   .procurement-task
-    .list-box
+    min-width: 1150px
+    .list-box-goods
       .list-item
         padding-right: 14px
         &:last-child
           max-width: 60px
           padding: 0
-        &:nth-child(8), &:nth-child(2)
+        /*&:nth-child(8), &:nth-child(2)*/
+        &:nth-child(7), &:nth-child(1)
           flex: 1.5
+
+  .procurement-task
+    .list-box-supplier
+      .list-item
+        padding-right: 14px
+        &:nth-child(3)
+          max-width: 90px
+          .btn-main
+            width: 80px
+            min-width: 80px
 
   .list-item-progress
     display: flex
@@ -995,7 +1005,33 @@
     left: 0
     bottom: 0
 
-
+  // 选择供应商
+  .supplier-box
+    background: $color-white
+    width: 1000px
+    min-height: 650px
+    border-radius: 3px
+    padding: 0 20px
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 24px 0 27px
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
+    .supplier-sub
+      font-family: $font-family-regular
+      color: $color-text-main
+      font-size: $font-size-14
+      padding-bottom: 27px
   //  单选框
   .select-icon
     width: 16px
