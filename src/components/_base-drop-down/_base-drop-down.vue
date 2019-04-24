@@ -91,7 +91,7 @@
         this.selectIdx = index
         this.showHover = false
         this.select.content = value.name
-        this.$emit('setValue', value)
+        this.$emit('setValue', value, index)
       }
     }
   }

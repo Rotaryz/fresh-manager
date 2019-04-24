@@ -94,7 +94,6 @@
           this.$router.push(`/home/product-out/out-detail/${item.source_order_id}`)
           break
         }
-        console.log(item)
       },
       // 获取变动类型列表
       async _getwarehouseStockType() {
