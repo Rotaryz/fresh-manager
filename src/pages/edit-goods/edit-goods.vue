@@ -134,7 +134,7 @@
         </div>
         <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
       </div>
-      <div class="edit-item">
+      <!--<div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           团长佣金
@@ -143,7 +143,7 @@
           <input v-model="msg.commission_rate" type="number" class="edit-input" maxlength="3">
         </div>
         <div class="edit-pla">实际以成交价为准(%)</div>
-      </div>
+      </div>-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -256,7 +256,6 @@
           goods_category_id: 0,
           original_price: '',
           usable_stock: '',
-          commission_rate: '',
           goods_skus: [
             {
               id: 0,
@@ -414,13 +413,6 @@
           return
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
-          return
-        } else if (
-          +this.msg.commission_rate < 0 ||
-          +this.msg.commission_rate > 100 ||
-          this.msg.commission_rate.length === 0
-        ) {
-          this.$toast.show('成员佣金比率区间在0与100之间')
           return
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
           this.$toast.show('请输入正确商品库存')
