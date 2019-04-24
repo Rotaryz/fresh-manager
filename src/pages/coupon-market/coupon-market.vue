@@ -36,8 +36,8 @@
                 {{type[item[val.value]]}}
               </div>
               <!--状态-->
-              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item)">
-                <base-switch :status="item.status" confirmText="开启" cancelText="关闭"></base-switch>
+              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
+                <base-switch :status="statusHandle(item, index)" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
@@ -95,7 +95,7 @@
       {
         name: '社群福利券',
         value: 3,
-        icon: 'icon-awaken'
+        icon: 'icon-group'
       }
     ]
   }]
@@ -121,7 +121,8 @@
         ],
         page: 1,
         delId: 0,
-        status: ''
+        status: '',
+        statusArr: new Array(10).fill(undefined)
       }
     },
     computed: {
@@ -162,9 +163,24 @@
         this.page = page
         this.getMarketList({page: this.page, status: this.status})
       },
-      switchBtn(item) {
+      statusHandle(item, index) {
+        let status = 0
+        if (typeof(this.statusArr[index]) === 'number') {
+          status = this.statusArr[index]
+        } else {
+          status = item.status
+        }
+        return status
+      },
+      switchBtn(item, index) {
+        let status = 1
+        if (typeof(this.statusArr[index]) === 'number') {
+          status = +this.statusArr[index] === 0 ? 1 : 0
+        } else {
+          status = item.status ? 0 : 1
+        }
         let data = {
-          status: item.status ? 0 : 1,
+          status: status,
           id: item.id
         }
         API.Market.switchMarket(data).then((res) => {
@@ -172,7 +188,13 @@
             this.$toast.show(res.message)
             return
           }
-          this.getMarketList({page: this.page, status: this.status})
+          this.statusArr = this.statusArr.map((item, ind) => {
+            if (index === ind) {
+              item = status
+            }
+            return item
+          })
+          // this.getMarketList({page: this.page, status: this.status})
           this.getMarketStatus()
         })
       },
@@ -219,19 +241,23 @@
   .down-content
     height: 170px
     .down-main
-      margin-left: 40px
+      &:last-child
+        .top-btn:first-child
+          width: 84px
+          margin-left: -14px
     .down-title
       font-size: $font-size-16
       line-height: 1
       color: $color-text-main
       font-family: $font-family-regular
     .down-item
-      margin-top: 24px
+      margin-top: 22px
       .top-btn
         width: 84px
-        height: 82px
+        height: 84px
         text-align: center
         margin-right: 50px
+        color: $color-text-main
         font-size: $font-size-14
         font-family: $font-family-regular
         cursor: pointer
@@ -244,6 +270,8 @@
         .text
           margin-top: 10px
           display: block
+        &:first-child
+          width: 60px
         &:hover
           .icon-0
             box-shadow: 0 2px 4px 0 rgba(159,213,198,0.40)
@@ -253,4 +281,5 @@
             box-shadow: 0 2px 4px 0 rgba(199,159,213,0.40)
           .icon-3
             box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+
 </style>

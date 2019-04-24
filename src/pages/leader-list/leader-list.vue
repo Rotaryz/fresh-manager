@@ -27,6 +27,10 @@
             <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.is_freeze_str}}</div>
             <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
+            <!--状态-->
+            <!--<div class="list-item" @click="_showFreeze(item.is_freeze, item.id)">
+              <base-switch :status="item.is_freeze === 0 ? 1 : 0" confirmText="正常" cancelText="禁用"></base-switch>
+            </div>-->
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
               <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>

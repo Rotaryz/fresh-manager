@@ -108,31 +108,41 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          有效时间
+          用券时间
         </div>
-        <date-picker
-          :value="msg.start_at"
-          class="edit-input-box"
-          type="date"
-          :confirm="false"
-          :editable="false"
-          placement="bottom-end"
-          placeholder="选择开始时间"
-          style="width: 240px;height: 40px;border-radius: 1px"
-          @on-change="_getStartTime"
-        ></date-picker>
-        <div class="tip-text">至</div>
-        <date-picker
-          :value="msg.end_at"
-          class="edit-input-box edit-input-right"
-          type="date"
-          :confirm="false"
-          :editable="false"
-          placement="bottom-end"
-          placeholder="选择结束时间"
-          style="width: 240px;height: 40px"
-          @on-change="_getEndTime"
-        ></date-picker>
+        <div class="wrap">
+          <div class="time-select">
+            <date-picker
+              :value="msg.start_at"
+              class="edit-input-box"
+              type="date"
+              :confirm="false"
+              :editable="false"
+              placement="bottom-end"
+              placeholder="选择开始时间"
+              style="width: 240px;height: 40px;border-radius: 1px"
+              @on-change="_getStartTime"
+            ></date-picker>
+            <div class="tip-text">至</div>
+            <date-picker
+              :value="msg.end_at"
+              class="edit-input-box edit-input-right"
+              type="date"
+              :confirm="false"
+              :editable="false"
+              placement="bottom-end"
+              placeholder="选择结束时间"
+              style="width: 240px;height: 40px"
+              @on-change="_getEndTime"
+            ></date-picker>
+          </div>
+          <div class="select-item">
+            <span :class="['item-icon', {'checked': +msg.support_activity === 1}]"></span>
+            <span>支持活动商品使用</span>
+            <input type="text" class="day-item">
+            <span>天内可用</span>
+          </div>
+        </div>
         <div :class="{'time-no-change':disable}"></div>
       </div>
 
@@ -144,6 +154,30 @@
         </div>
         <div class="input-box">
           <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
+      <!--使用说明-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          使用说明
+        </div>
+        <div class="edit-input-box">
+          <div class="no-wrap">
+            <textarea v-model="msg.explain"
+                      type="text"
+                      :placeholder="disable ? '' : '请输入优惠券名称'"
+                      class="edit-input edit-textarea"
+                      :readonly="disable"
+                      maxlength="45"
+                      :class="{'disable-input':disable}"
+            >
+            </textarea>
+            <span class="tip">例如: 全场商品通用或特惠商品不可以</span>
+          </div>
+          <div class="textarea-num">{{msg.explain ? msg.explain.length : 0}}/45</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -377,6 +411,7 @@
           support_activity: 0, // 是否支持活动商品使用0 1
           start_at: '',
           end_at: '',
+          explain: '',
           range_type: 1, // 适用范围0未知1通用券2品类券3单品券
           ranges: []
         },
@@ -461,6 +496,9 @@
         // 结束时间规则判断
         return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
       },
+      testExplain() {
+        return this.msg.explain
+      },
       testGoods() {
         return +this.msg.range_type === 3 ? this.goodsList && this.goodsList.length : true
       },
@@ -468,15 +506,7 @@
         return +this.msg.range_type === 2 ? this.categorySelectItem.name : true
       }
     },
-    watch: {
-    // couponDetail: {
-    //   handler(news) {
-    //     let id = this.$route.query.id || null
-    //
-    //   },
-    //   immediate: true
-    // }
-    },
+    watch: {},
     beforeCreate() {
       if (this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
@@ -802,6 +832,7 @@
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
+          {value: this.testExplain, txt: '请输入优惠券名称'},
           {value: this.testGoods, txt: '请选择商品'},
           {value: this.testCategory, txt: '请选择品类'}
         ]
@@ -910,9 +941,15 @@
           border-color: #ACACAC
         &:focus
           border-color: $color-main
+      .edit-textarea
+        height: 94px
+        resize: none
+        padding: 4px 14px
       .no-wrap
         display: flex
         align-items: center
+        .tip
+          color: $color-text-assist
       .disable-input
         background: #F5F5F5
         color: #ACACAC
@@ -932,6 +969,11 @@
         col-center()
         right: 20px
         color: #ACACAC
+      .textarea-num
+        position: absolute
+        left: 360px
+        bottom: 6px
+        color: $color-text-assist
       .description
         display: flex
         align-items: center
@@ -946,6 +988,15 @@
     .tip-text
       line-height: 40px
       color: #333
+    .wrap
+      .time-select
+        display: flex
+        align-items: center
+      .select-item
+        margin-top: 15px
+        margin-left: 40px
+        display: flex
+        aglin-items: center
     .time-no-change,.text-no-change,.check-no-change
       position: absolute
       left: 127px
@@ -958,6 +1009,7 @@
     .check-no-change
       cursor: not-allowed
       height: 100px
+
   .edit-activity
     box-sizing: border-box
     padding-left: 20px

@@ -99,14 +99,15 @@
           {name: '已完成', value: 1, key: 'success', num: 0},
           {name: '已关闭', value: 1, key: 'success', num: 0}
         ],
-        downUrl: ''
+        downUrl: '',
+        defaultStatus: 'c_offline'
       }
     },
     computed: {
       ...authComputed,
       ...orderComputed,
       infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.status)
+        return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
       },
       orderExportUrl() {
         let currentId = this.getCurrentId()

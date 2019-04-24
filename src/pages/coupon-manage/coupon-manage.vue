@@ -12,7 +12,7 @@
         <div class="identification-page">
           <img src="./icon-coupon_list@2x.png" class="identification-icon">
           <p class="identification-name">优惠券列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="setStatus"></base-status-tab>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="new-coupon" append class="btn-main">新建优惠券<span class="add-icon"></span></router-link>
@@ -123,6 +123,14 @@
               }
             })
           })
+      },
+      changeStatus(status) {
+        this.$refs.pagination.beginPage()
+        this.setStatus(status)
+      },
+      changeTime(time) {
+        this.setTime(time)
+        this.$refs.pagination.beginPage()
       },
       _deleteCoupon(item, id) {
         this.delId = id
