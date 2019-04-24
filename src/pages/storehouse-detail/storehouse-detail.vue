@@ -29,7 +29,7 @@
             <div v-for="(item, index) in warehouseDetailList" :key="index" class="list-content list-box">
               <div class="list-item">{{item.created_at}}</div>
               <div class="list-item">
-                <div class="list-operation">{{item.order_sn}}</div>
+                <div class="list-operation" @click="goDetail(item)">{{item.order_sn}}</div>
               </div>
               <div class="list-item">{{item.type_str}}</div>
               <div class="list-item">{{item.num}}</div>
@@ -79,6 +79,23 @@
     },
     methods: {
       ...storeMethods,
+      goDetail(item) {
+        switch (item.type) {
+        case 1:
+          this.$router.push(`/home/product-enter/enter-detail/${item.source_order_id}`)
+          break
+        case 4:
+        case 9:
+        case 13:
+          this.$router.push(`/home/stock-taking/stock-detail/${item.source_order_id}`)
+          break
+        case 6:
+        case 11:
+          this.$router.push(`/home/product-out/out-detail/${item.source_order_id}`)
+          break
+        }
+        console.log(item)
+      },
       // 获取变动类型列表
       async _getwarehouseStockType() {
         let res = await API.Store.warehouseStockType()
