@@ -1,6 +1,6 @@
 <template>
   <div class="distribution-task table">
-    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="changeStatusTab"></base-tab-select>
+    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
     <template v-if="tabIndex===0">
       <div class="down-content">
         <span class="down-tip">建单时间</span>
@@ -17,7 +17,6 @@
             <base-search placeHolder="配送单号/商户名称" @search="changeKeyword"></base-search>
           </div>
         </div>
-
       </div>
       <div class="table-content">
         <div class="identification">
@@ -56,7 +55,7 @@
       <div class="down-content">
         <span class="down-tip">建单时间</span>
         <div class="down-item">
-          <base-date-select :placeHolder="datePlaceHolderMerger" :dateInfo="timeArrMerger" @getTime="changeTimeMerger"></base-date-select>
+          <base-date-select :placeHolder="datePlaceHolderMerger" :dateInfo="timeArrMerger" @getTime="_changeTimeMerger"></base-date-select>
         </div>
       </div>
       <div class="table-content">
@@ -71,20 +70,20 @@
             <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
           </div>
           <div class="list">
-            <div v-for="(item, index) in mergeOrderslist" :key="index" class="list-content list-box">
+            <div v-for="(item, index) in merger.list" :key="index" class="list-content list-box">
               <div v-for="row in commodities" :key="row.key" :style="{flex: row.flex}" class="list-item">
                 <template v-if="row.key" name="name">
                   {{item[row.key]}}
                 </template>
                 <template v-else name="operation">
-                  <router-link :to="{name:'merger-order-detail',params:{id:item.merge_order_id}}" class="list-operation">{{row.operation}}</router-link>
+                  <router-link :to="{name:'merger-order-detail',params:{mergeOrderId:item.merge_order_id}}" class="list-operation">{{row.operation}}</router-link>
                 </template>
               </div>
             </div>
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination :pageDetail="pageTotalMerger" @addPage="setMergerPage"></base-pagination>
+          <base-pagination :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -107,10 +106,10 @@
     {title: '操作', key: '', operation: '详情', flex: 0.7}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '下单时间', key: 'created_at', flex: 1},
-    {title: '汇总订单号', key: 'merge_order_id', flex: 1},
+    {title: '下单时间', key: 'created_at', flex: 3},
+    {title: '汇总订单号', key: 'order_sn', flex: 3},
     {title: '品类数', key: 'type_count', flex: 1},
-    {title: '操作', key: '', operation: '详情', flex: 0.32}
+    {title: '操作', key: '', operation: '详情', flex: 1}
   ]
   const ORDERSTATUS = [{text: '订单列表', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '汇总单列表', status: 1, img: require('./pic-zanwu@2x.png')}]
   export default {
@@ -123,7 +122,6 @@
         tabStatus: ORDERSTATUS,
         commodities: COMMODITIES_LIST,
         datePlaceHolder: "选择建单日期",
-        timeArr: [],
         typeFilter: {
           check: false,
           show: false,
@@ -142,24 +140,30 @@
           {name: '已完成', value: 3, num: 0}
         ],
         statusTab: 0,
-        mergeOrderslist: [],
         datePlaceHolderMerger: "选择下单日期",
-        timeArrMerger: ["", ""],
-        pageTotalMerger: {
-          // 页码详情
-          total: 1,
-          per_page: 10,
-          total_page: 1
-        },
-        filterMerger: {
-          page: 1,
-          time_start: "",
-          time_end: ""
+        merger: {
+          pageTotal: {
+            // 页码详情
+            total: 1,
+            per_page: 10,
+            total_page: 1
+          },
+          list:[],
+          filter: {
+            time_start: "",
+            time_end: " "
+          }
         }
       }
     },
     computed: {
       ...merchantOrderComputed,
+      timeArr() {
+        return [this.merchantFilter.start_time, this.merchantFilter.end_time]
+      },
+      timeArrMerger() {
+        return [this.merchantFilter.start_time, this.merchantFilter.end_time]
+      }
     },
     async created() {
       console.log(this.orderList, 'orderList')
@@ -168,16 +172,16 @@
         this.statusTab = this.$route.query.status * 1
       }
       this.getTypeList()
-      this.getStatusData()
+      this._getStatusData()
     },
     methods: {
       ...merchantOrderMethods,
       // 顶部 切换
-      changeStatusTab(item, index) {
+      _changeStatusTab(item, index) {
         console.log(item, index)
         this.tabIndex = index
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
-        if(!this.tabIndex){
+        if (!this.tabIndex) {
           this._updateMerchantOrderList({
             page: 1,
             limit: 10,
@@ -187,45 +191,55 @@
             status: "",
             keyword: ""
           })
-        }else{
-          this.clearEmptyMerger()
+        } else {
+          this._updateMergerList({
+            time_start: "",
+            time_end: ""
+          })
         }
       },
-      _updateMerchantOrderList(params) {
-        this.SET_PARAMS(params)
-        this.getMerchantOrderList()
+      _updateMergerList(params) {
+        this.merger.filter = {...this.merger.filter, ...params}
+        this._getMergeOrderslist()
       },
-      _updateMergerList(params){
-        this.filterMerger = {...this.filterMerger,...params}
-        this.getMergeOrderslist()
-      },
-      clearEmptyMerger(params) {
-        this.timeArrMerger = ["", ""]
-        this._updateMergerList({
-          page: 1,
-          time_start: "",
-          time_end: ""
+      _getMergeOrderslist() {
+        API.MerchantOrder.getMergeOrderslist(this.merger.filter).then(res => {
+          this.merger.list = res.data
+        }).catch(() => {
+          return false
         })
-      },
-      getMergeOrderslist() {
-        API.MerchantOrder.getMergeOrderslist(this.filterMerger).then(res => {
-          this.mergeOrderslist = res.data
-        })
+          .finally(() => {
+            this.$loading.hide()
+          })
       },
       // 时间选择器
-      changeTimeMerger(timeArr) {
-        this.timeArrMerger = timeArr
-        this._updateMergerList({time_start:this.timeArrMerger[0],time_end:this.timeArrMerger[1]})
+      _changeTimeMerger(timeArr) {
+        this._updateMergerList({time_start: timeArr[0], time_end: timeArr[1]})
       },
       // 页面更改
-      setMergerPage(page) {
+      _setMergerPage(page) {
         this._updateMergerList({page})
       },
       /**
        商户订单
        **/
+      // 更新商户订单
+      _updateMerchantOrderList(params, noUpdateStatus) {
+        this.SET_PARAMS(params)
+        if (!noUpdateStatus) {
+          this._getStatusData()
+        }
+        this.getMerchantOrderList()
+      },
       // 状态数据
-      getStatusData(params) {
+      _getStatusData() {
+        // let params = {start_time, end_time, keyword, type} = this.merchantFilter
+        let params = {
+          start_time: this.merchantFilter.start_time,
+          end_time: this.merchantFilter.end_time,
+          keyword: this.merchantFilter.keyword,
+          type: this.merchantFilter.type,
+        }
         API.MerchantOrder.getStausData(params).then(res => {
           this.dispatchSelect = res.data.map(item => {
             return {
@@ -251,7 +265,7 @@
       setOrderPage(page) {
         this._updateMerchantOrderList({
           page
-        })
+        }, true)
       },
       // 时间
       changeTime(timeArr = ['', '']) {
@@ -260,10 +274,6 @@
           end_time: timeArr[1],
           page: 1
         })
-        this.getStatusData({
-          start_time: timeArr[0],
-          end_time: timeArr[1]
-        })
       },
       // 类型
       _setTypeFilter(item) {
@@ -271,16 +281,13 @@
           type: item.value,
           page: 1
         })
-        this.getStatusData({
-          keyword: item.name
-        })
       },
       // 状态
       setValue(item) {
         this._updateMerchantOrderList({
           status: item.value,
           page: 1
-        })
+        }, true)
       },
       // 搜索按钮
       changeKeyword(keyword) {

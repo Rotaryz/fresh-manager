@@ -18,12 +18,9 @@
       <div class="list">
         <div v-for="(item, key) in mergerDetail.details" :key="key" class="list-content list-box">
           <div v-for="row in commodities" :key="row.title" :style="{flex: row.flex}" class="list-item">
-            <template v-if="row.key" name="name">
+            <div v-if="row.key" :class="{red:row.type==='red'&& item[row.key]>0}">
               {{item[row.key]}}
-            </template>
-            <template v-else name="operation">
-              <router-link class="list-operation" :to="{name:'home'}">{{row.operation}}</router-link>
-            </template>
+            </div>
           </div>
         </div>
       </div>
@@ -43,12 +40,11 @@
     data() {
       return {
         commodities: [
-          {title: '商品', key: 'goods_name', flex: 3},
+          {title: '商品', key: 'goods_name', flex: 1.8},
           {title: '分类', key: 'goods_category', flex: 1},
-          {title: '下单数量', key: 'base_num', flex: 1},
-          {title: '配货数量', key: 'sale_wait_pick_num', flex: 1,show:[2,3]},// 待配送 已完成
-          {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
-          {title: '操作', key: '', operation: '详情', flex: 0.32}
+          {title: '下单数量', key: 'sale_num', flex: 1},
+          {title: '配货数量', key: 'sale_wait_pick_num', flex: 1},
+          {title: '缺货数量', key: 'sale_out_of_num', type:'red',flex: 1},
         ],
         topListTilte: [{
           name: '汇总订单号 :', id: 'order_sn'
@@ -84,12 +80,11 @@
     margin-bottom: 20px
     display flex
     align-items center
-    justify-content space-between
     color: #333333
-
     li
-      .number
-        color: #f84e3c
+      margin-right:130px
+  .red
+    color: #f84e3c
 
 
 </style>

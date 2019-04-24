@@ -1111,14 +1111,12 @@ export default [
       },
       // 商品订单详情的明细
       {
-        path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code',
+        path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code/:id',
         name: 'consumer-order-detail',
         meta: {
-          titles: ['供应链', '订单', '商品明细'],
+          titles: ['供应链', '订单', '商品明细', '消费者订单'],
           async beforeResolve(routeTo, routeFrom, next) {
-            console.log(routeTo, 'routeTrouteTorouteTorouteTorouteToo')
-            store.commit('merchantOrder/SET_CONSUMER_PARAMS', routeTo.params)
-            store.dispatch('merchantOrder/getConsumerOrderDetail', routeTo.params).then((res) => {
+            store.dispatch('merchantOrder/getConsumerDetails', routeTo.params).then((res) => {
               console.log(res)
               if (!res) {
                 return next({name: '404'})
@@ -1132,14 +1130,14 @@ export default [
         },
         component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/consumer-order-detail'))
       },
-      // 汇总订单明细
+      // 汇总订单详情
       {
-        path: 'merchant-order/merger-order-detail',
+        path: 'merchant-order/merger-order-detail/:mergeOrderId',
         name: 'merger-order-detail',
         meta: {
           titles: ['供应链', '订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('merchantOrder/getMergerOrderDetail', routeFrom.params).then((res) => {
+            store.dispatch('merchantOrder/getMergerOrderDetail', routeTo.params).then((res) => {
               console.log(res, 'data')
               if (!res) {
                 return next({name: '404'})
@@ -1160,7 +1158,7 @@ export default [
         meta: {
           titles: ['供应链', '订单', '售后订单'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.commit('afterSalesOrder/SET_PARAMS',{
+            store.commit('afterSalesOrder/SET_PARAMS', {
               page: 1,
               limit: 10,
               start_time: '',
@@ -1187,14 +1185,14 @@ export default [
         path: 'after-sales-order/after-sales-detail/:id',
         name: 'after-sales-detail',
         meta: {
-          titles: ['供应链', '订单', '售后订单','商品明细'],
+          titles: ['供应链', '订单', '售后订单', '商品明细'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('afterSalesOrder/getAfterSalesOrderDetail',routeTo.params).then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
+            store.dispatch('afterSalesOrder/getAfterSalesOrderDetail', routeTo.params).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
               .catch(() => {
                 next({name: '404'})
               })
@@ -1619,15 +1617,17 @@ export default [
         meta: {
           titles: ['供应链', '分拣', '分拣任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.commit('sorting/SET_PARAMS',{params:{
-                goods_category_id:'',
+            store.commit('sorting/SET_PARAMS', {
+              params: {
+                goods_category_id: '',
                 page: 1,
                 limit: 10,
                 start_time: '',
                 end_time: '',
-                keyword:"",
-                status:""
-            }})
+                keyword: "",
+                status: ""
+              }
+            })
             store.dispatch('sorting/getSortingTaskList').then((res) => {
               // console.log('route',res)
               if (!res) {

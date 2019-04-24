@@ -2,7 +2,7 @@ import API from '@api'
 import app from '@src/main'
 
 export const state = {
-  merchant:{
+  merchant: {
     pageTotal: {
       // 页码详情
       total: 1,
@@ -10,7 +10,16 @@ export const state = {
       total_page: 1
     },
     list: [],
-    detail: {},
+    detail: {
+      buyer_name: "",
+      order_sn: "",
+      created_at: "",
+      status: "",
+      status_str: "",
+      type_str: "",
+      parent_order_id: "",
+      details: []
+    },
     filter: {
       page: 1,
       limit: 10,
@@ -21,22 +30,7 @@ export const state = {
       keyword: ""
     },
   },
-  merchantDetail: {
-    buyer_name: "",
-    order_sn: "",
-    created_at: "",
-    status: "",
-    status_str: "",
-    type_str: "",
-    details: []
-  },
-  mergerDetail: {
-    order_sn: "",
-    type_count: 0,
-    created_at: "",
-    details: []
-  },
-  consumerOrderDetail: {
+  consumerDetail: {
     pageTotal: {
       // 页码详情
       total: 1,
@@ -49,7 +43,7 @@ export const state = {
       goods_sku_code: "",
       parent_order_id: ""
     },
-    data: {
+    detail: {
       baseData: {
         goods_name: "",
         goods_sku_code: "",
@@ -58,71 +52,63 @@ export const state = {
         sale_wait_pick_num: "",
         sale_num: ""
       },
-      detail: []
+      details: []
     }
-  }
+  },
+  mergerDetail: {}
 }
 
 export const getters = {
+  // 商户订单
   pageTotal(state) {
     return state.merchant.pageTotal
   },
   orderList(state) {
     return state.merchant.list
   },
-  detail(state) {
-    return state.detail
-  },
-  filter(state) {
-    return state.filter
+  merchantFilter(state) {
+    return state.merchant.filter
   },
   merchantDetail(state) {
-    return state.merchantDetail
+    return state.merchant.detail
+  },
+  // 消费者详情
+  consumerDetailTotal(state) {
+    return state.consumerDetail.pageTotal
+  },
+  consumerDetail(state) {
+    return state.consumerDetail
   },
   mergerDetail(state) {
     return state.mergerDetail
   },
-  consumerOrderDetail(state) {
-    return state.consumerOrderDetail
-  }
+
 }
 
 export const mutations = {
-  SET_PARAMS(state, {key = 'merchant',...params}){
-    state[key].filter = {...state[key].filter,...params}
+  SET_PARAMS(state, {key = 'merchant', ...params}) {
+    state[key].filter = {...state[key].filter, ...params}
   },
-  SET_CONSUMER_PARAMS(state, {goodsSkuCode, parentOrderId, page}) {
-    state.consumerOrderDetail.filter.goods_sku_code = goodsSkuCode
-    state.consumerOrderDetail.filter.parent_order_id = parentOrderId
-    state.consumerOrderDetail.filter.page = page || 1
+  SET_PAGE_TOTAL(state, {key = 'merchant', pageTotal}) {
+    state[key].pageTotal = pageTotal
   },
-  SET_CONSUMER_PAGE(state, page) {
-    state.consumerOrderDetail.filter.page = page
+  SET_MERCHANT_LIST(state, {list}) {
+    state.merchant.list = list
   },
-  SET_CONSUMER_PAGE_TOTAL(state, pageTotal) {
-    state.consumerOrderDetail.pageTotal = pageTotal
+  SET_MERCHANT_DETAIL(state, {key = 'merchant', value}) {
+    state.merchant.detail = value
   },
-  SET_CONSUMER_DETAIL(state, {value}) {
-    state.consumerOrderDetail.data.details = value
-  },
-  SET_ORDER_DETAIL(state, {value}) {
-    state.merchantDetail = value
+  SET_CONSUMER_DETAIL(state, value) {
+    state.consumerDetail.detail = value
   },
   SET_MERGER_DETAIL(state, {value}) {
     state.mergerDetail = value
-  },
-
-  SET_PAGE_TOTAL(state, {type='merchant',pageTotal}) {
-    state[type].pageTotal = pageTotal
-  },
-  SET_LIST(state, {list}) {
-    state.merchant.list = list
   }
 }
 
 export const actions = {
   // 商户订单列表
-  getMerchantOrderList({state, commit, dispatch}, params = {}) {
+  getMerchantOrderList({state, commit, dispatch}) {
     return API.MerchantOrder.getMerchantOrderList(state.merchant.filter, {loading: true})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -134,7 +120,7 @@ export const actions = {
           total_page: res.meta.last_page
         }
         let arr = res.data
-        commit('SET_LIST', {list: arr})
+        commit('SET_MERCHANT_LIST', {list: arr})
         commit('SET_PAGE_TOTAL', {pageTotal})
         return true
       })
@@ -152,36 +138,67 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        commit('SET_ORDER_DETAIL', {value: res.data})
+        commit('SET_MERCHANT_DETAIL', {value: res.data})
         return true
+      }).catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
       })
   },
   // 商品详情
-  getConsumerOrderDetail({state, commit}) {
-    return API.MerchantOrder.getConsumerOrderDetail(state.consumerOrderDetail.filter)
+  getConsumerDetails({state, commit}, params) {
+    commit('SET_PARAMS', {
+      key: 'consumerDetail',
+      ...params
+    })
+    return Promise.all([
+      API.MerchantOrder.getConsumerDetails(state.consumerDetail.filter),
+      API.MerchantOrder.getConsumerDetailBase(params.id)
+    ]).then(res => {
+      if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
+        return false
+      }
+      commit('SET_CONSUMER_DETAIL', {details: res[0].data, baseData: res[1].data})
+
+      let pageTotal = {
+        total: res[0].meta.total,
+        per_page: res[0].meta.per_page,
+        total_page: res[0].meta.last_page
+      }
+      commit('SET_PAGE_TOTAL', {key: 'consumerDetail', pageTotal})
+      return true
+    })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  getConsumerDetailBase({state, commit}, {id}) {
+    return API.MerchantOrder.getConsumerDetailBase({id})
       .then((res) => {
-        console.log(state.consumerOrderDetail.filter)
+        console.log(state.consumerDetail.filter)
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        commit('SET_CONSUMER_DETAIL', {value: res.data})
-        let pageTotal = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        commit('SET_CONSUMER_PAGE_TOTAL', pageTotal)
-        return true
       })
   },
-  getMergerOrderDetail({state, commit}, data = {}) {
-    return API.MerchantOrder.getMergerOrderDetail(data)
+  getMergerOrderDetail({state, commit}, params) {
+    return API.MerchantOrder.getMergerOrderDetail(params)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
         commit('SET_MERGER_DETAIL', {value: res.data})
         return true
+      }).catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
       })
   }
 }

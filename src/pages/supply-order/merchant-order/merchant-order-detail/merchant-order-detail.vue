@@ -27,6 +27,9 @@
               </div>
             </template>
             <template v-else name="operation">
+              <!--<router-link class="list-operation" :to="`/home/merchant-order/consumer-order-detail/${item.goods_sku_code}/${item.order_detail_id}`">{{row.operation}}</router-link>-->
+              <!--<router-link class="list-operation" :to="{  name: 'consumer-order-detail',params: {goods_sku_code: item.goods_sku_code,parent_order_id: item.order_detail_id}}">{{row.operation}}-->
+              <!--</router-link>-->
               <router-link class="list-operation" :to="goTo(item)">{{row.operation}}</router-link>
             </template>
           </div>
@@ -49,10 +52,10 @@
     data() {
       return {
         commodities: [
-          {title: '商品', key: 'goods_name', flex: 3},
+          {title: '商品', key: 'goods_name', flex: 2},
           {title: '分类', key: 'goods_category', flex: 1},
           {title: '下单数量', key: 'sale_num', flex: 1},
-          {title: '配货数量', key: 'sale_wait_pick_num', flex: 1,show:[2,3]},// 待配送 已完成
+          {title: '配货数量', key: 'sale_wait_pick_num', flex: 1, show: [2, 3]},// 待配送 已完成
           {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
           {title: '操作', key: '', operation: '详情', flex: 0.32}
         ],
@@ -78,15 +81,18 @@
     created() {
 
     },
-    methods:{
-      goTo(item){
-        return {
-          name:'consumer-order-detail',
-          params:{
-            goodsSkuCode:item.goods_sku_code,
-            parentOrderId:item.order_detail_id
+    methods: {
+      goTo(item) {
+        console.log('merchantDetail',this.merchantDetail,999)
+        let cont = {
+          name: 'consumer-order-detail',
+          params: {
+            id:item.id || 0,
+            goods_sku_code: item.goods_sku_code || 0,
+            parent_order_id: this.merchantDetail.parent_order_id|| item.parent_order_id
           }
         }
+        return cont
       }
     }
   }

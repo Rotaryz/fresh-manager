@@ -22,8 +22,7 @@
           >
             <div class="list-item">{{sortingConfig.list[index].sort}}</div>
             <div class="list-item">{{item.name}}</div>
-            <div class="list-item">{{item.road_name}}
-              <div v-if="!item.road_name" class="list-operation" @click.stop="_showSettingModel(item.id)">设置线路</div>
+            <div class="list-item">{{item.road_name}}<div v-if="!item.road_name" class="list-operation" @click.stop="_showSettingModel(item.id)">设置线路</div>
             </div>
             <div class="list-item">
               <div class="list-operation-wrap">
@@ -135,7 +134,12 @@
           if (res.error === this.$ERR_OK) {
             this.updateList()
           }
+        }).catch(() => {
+          return false
         })
+          .finally(() => {
+            this.$loading.hide()
+          })
       },
       _getRoadList() {
         API.Sorting.getRoadList().then(res => {

@@ -11,7 +11,7 @@
       <div class="down-item down-group-item">
         <base-drop-down :select="filterTaskFrist" @setValue="_setValueFrist"></base-drop-down>
       </div>
-      <div class="down-item" v-if="filterTaskSecond.data.length>0">
+      <div class="down-item">
         <base-drop-down :select="filterTaskSecond" @setValue="_setValueSecond"></base-drop-down>
       </div>
       <!--搜索-->

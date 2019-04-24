@@ -440,22 +440,26 @@ export const sortingMethods = {
 }
 // 商户订单
 export const merchantOrderComputed={
-  ...mapGetters('merchantOrder',['consumerOrderDetail','mergerDetail','merchantDetail','filter','pageTotal','orderList','detail'])
+  ...mapGetters('merchantOrder',[
+    'pageTotal',
+    'orderList',
+    'mergerDetail',
+    'merchantDetail',
+    'merchantFilter',
+    'consumerDetailTotal',
+    'consumerDetail',
+    'mergerDetail'])
 }
 export const merchantOrderMethods ={
   ...mapActions('merchantOrder', [
     'getMerchantOrderList',
     'getMerchantOrderDetail',
-    'getMergerOrderDetail',
-    'getConsumerOrderDetail'
+    'getConsumerOrderDetail',
+    'getMergerOrderDetail'
   ]),
   ...mapMutations('merchantOrder', [
     'SET_PARAMS',
-    'SET_CONSUMER_PAGE',
-    'SET_CONSUMER_PARAMS',
-    'SET_PAGE_TOTAL',
-    'SET_LIST',
-    'SET_DETAIL'
+    'SET_PAGE_TOTAL'
   ])
 }
 // 售后订单

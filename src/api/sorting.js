@@ -8,13 +8,13 @@ export default {
     return request.get(url, data, loading)
   },
   // √  配貨明細
-  getSortingDeliveryDetail({id}, loading = true) {
+  getSortingDeliveryDetail({id}, loading = false) {
     // let url = '/mock/sortingTaskDetail.json'
-    let url = `/scm/api/backend/sorting/allocation-detail/{id}`
+    let url = `/scm/api/backend/sorting/allocation-detail/${id}`
     return request.get(url, loading)
   },
   // √  拣货明细
-  getSortingPickingDetail({id, goodsSkuCode}, loading = true) {
+  getSortingPickingDetail({id, goodsSkuCode}, loading = false) {
     // let url = '/mock/sortingPickDetail.json'
     let url = `/scm/api/backend/sorting/picking-order-detail/${id}`
     return request.get(url, {goods_sku_code: goodsSkuCode}, loading)
