@@ -268,7 +268,7 @@
         })
       },
       getCategoriesData() {
-        API.Product.getCategory({parent_id: -1}, false).then((res) => {
+        API.Product.getCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
           } else {

@@ -501,7 +501,7 @@
         })
       },
       getCategoriesData() {
-        API.Product.getCategory({parent_id: -1, goods_id: this.id}, false).then((res) => {
+        API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
             res.data.forEach((item) => {

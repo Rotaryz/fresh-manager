@@ -76,10 +76,10 @@ function requestException(res) {
     error.code = serviceData.code
     error.error = serviceData.error
     error.message = serviceData.message
-    error.serverData = serviceData
+    error.data = serviceData.data || []
   }
   switch (serviceData.code) {
-    case 13004:
+    case 13004: // 系统升级
       error.error = 0
       break
   }

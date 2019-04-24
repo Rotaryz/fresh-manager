@@ -42,6 +42,14 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 商品系统分类列表（无权限）
+   * @returns {*}
+   */
+  getCategoryList(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods-category-list`
+    return request.get(url, data, loading)
+  },
+  /**
    * 创建商品系统分类
    * @returns {*}
    */

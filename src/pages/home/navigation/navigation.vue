@@ -7,15 +7,17 @@
       <ul v-for="(item, index) in firstMenu" :key="index" :class="['menu',{'beginner-guide':item.url==='/home/beginner-guide'}]">
         <li class="nav-item hand" :class="item | isActive" @click="_setFirstMenu(index,item.url)">
           <img :src="item.icon" class="nav-item-icon">
-          <p class="nav-item-name">{{item.name}}</p>
+          <p class="nav-item-name">{{item.display_name}}</p>
         </li>
       </ul>
     </div>
     <div class="second">
-      <div v-for="(item, index) in navList" :key="index" class="second-item">
-        <p class="second-title">{{item.title}}</p>
-        <div v-for="(child, i) in item.children" :key="i" class="second-link hand" @click="_setChildActive(child)">
-          <span :class="child | childrenActive" class="second-link-content">{{child.title}}</span>
+      <div v-for="(item, index) in navList" :key="index">
+        <div class="second-item">
+          <p class="second-title">{{item.display_name}}</p>
+          <div v-for="(child, i) in item.sub_menu" :key="i" class="second-link hand" @click="_setChildActive(child)">
+            <span :class="child | childrenActive" class="second-link-content">{{child.display_name}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -23,6 +25,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import storage from 'storage-controller'
   const COMPONENT_NAME = 'NAVIGATION_BAR'
   const INFO_INDEX = 0
   // const HEIGHT = 40
@@ -210,18 +213,23 @@
       ]
     }
   ]
-  // const STATISTICS = [
-  //   {
-  //     title: '统计',
-  //     children: [
-  //       {
-  //         title: '数据统计',
-  //         url: '/home/data-survey',
-  //         isLight: false
-  //       }
-  //     ]
-  //   }
-  // ]
+  const ACCOUNT = [
+    {
+      title: '账号',
+      children: [
+        {
+          title: '账号权限',
+          url: '/home/account-manage',
+          isLight: false
+        },
+        {
+          title: '操作日记',
+          url: '/home/account-diary',
+          isLight: false
+        }
+      ]
+    }
+  ]
   const DATA = [
     {
       title: '概况',
@@ -331,14 +339,13 @@
     }
   ]
   const FIRST_MENU = [
-    {name: '概况', icon: require('./icon-dashboard@2x.png'), isLight: false, second: DATA, url: '/home/new-data'},
-    // {
-    //   name: '统计',
-    //   icon: require('./icon-statistics@2x.png'),
-    //   isLight: true,
-    //   second: STATISTICS,
-    //   url: '/home/data-survey'
-    // },
+    {
+      name: '概况',
+      icon: require('./icon-dashboard@2x.png'),
+      isLight: false,
+      second: DATA,
+      url: '/home/new-data'
+    },
     {
       name: '商城',
       icon: require('./icon-tmall@2x.png'),
@@ -366,6 +373,13 @@
       isLight: false,
       second: FINANCE,
       url: '/home/account-overview'
+    },
+    {
+      name: '设置',
+      icon: require('./icon-set_up@2x.png'),
+      isLight: false,
+      second: ACCOUNT,
+      url: '/home/account-manage'
     },
     {
       name: '',
@@ -398,9 +412,10 @@
     data() {
       return {
         currentIndex: '',
-        firstMenu: FIRST_MENU,
+        firstMenu: [],
         firstIndex: INFO_INDEX,
-        navList: []
+        navList: [],
+        oldMenu: FIRST_MENU
       }
     },
     watch: {
@@ -412,6 +427,38 @@
       }
     },
     created() {
+      let arr = storage.get('menu')
+      arr.forEach((item, index) => {
+        item.isLight = false
+        if (item.sub_menu && item.sub_menu[0].sub_menu) {
+          item.url = item.sub_menu[0].sub_menu[0].front_url
+        }
+        switch (item.icon_name) {
+        case 'statistics':
+          item.icon = require('./icon-dashboard@2x.png')
+          break
+        case 'shop':
+          item.icon = require('./icon-tmall@2x.png')
+          break
+        case 'scm':
+          item.icon = require('./icon-supply_chain@2x.png')
+          break
+        case 'finance':
+          item.icon = require('./icon-finance@2x.png')
+          break
+        case 'setting':
+          item.icon = require('./icon-set_up@2x.png')
+          break
+        case 'community':
+          item.icon = require('./icon-statistics@2x.png')
+          break
+        case 'guide':
+          item.display_name = ''
+          item.icon = require('./icon-guide@2x.png')
+          break
+        }
+      })
+      this.firstMenu = arr
       this._getMenuIndex()
       this._handleNavList()
     },
@@ -422,15 +469,15 @@
         let index = ''
         let smallIndex = -1
         this.firstMenu = this.firstMenu.map((item, idx) => {
-          if (item.second.length) {
-            item.second.forEach((end) => {
+          if (item.sub_menu && item.sub_menu.length) {
+            item.sub_menu.forEach((end) => {
               if (smallIndex === -1 && index === '') {
-                smallIndex = end.children.findIndex((child) => {
+                smallIndex = end.sub_menu.findIndex((child) => {
                   return currentPath.includes(child.url)
                 })
                 index = smallIndex !== -1 ? idx : ''
                 this.firstIndex = index
-                this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.second)) : this.navList
+                this.navList = index !== -1 ? JSON.parse(JSON.stringify(item.sub_menu)) : this.navList
               }
             })
           }
@@ -445,7 +492,7 @@
         }
         if (this.firstMenu[i].isLight) {
           return
-        } else if (!this.firstMenu[i].second.length) {
+        } else if (!this.firstMenu[i].sub_menu || !this.firstMenu[i].sub_menu.length) {
           this.$toast.show('该功能正在开发中')
           return
         }
@@ -454,12 +501,12 @@
           return item
         })
         this.firstIndex = i
-        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].second))
+        this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].sub_menu))
         this.$router.push(this.firstMenu[i].url)
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
-        this.$router.push(child.url)
+        this.$router.push(child.front_url)
       },
       // 监听页面变化
       _handleNavList() {
@@ -467,27 +514,28 @@
         let currentNav
         this.firstMenu.forEach((item, idx) => {
           if (currentPath.includes(item.url)) {
-            currentNav = item.second
+            currentNav = item.sub_menu
             this.firstMenu[idx].isLight = true
-            this.firstMenu[idx].second[0].children[0].isLight = true
+            this.firstMenu[idx].sub_menu[0].sub_menu[0].isLight = true
           } else {
             this.firstMenu[idx].isLight = false
           }
-          item.second &&
-            item.second.forEach((it, id) => {
-              it.children &&
-                it.children.forEach((child, i) => {
-                  if (currentPath.includes(child.url)) {
-                    currentNav = item.second
+          item.sub_menu &&
+            item.sub_menu.forEach((it, id) => {
+              it.sub_menu &&
+                it.sub_menu.forEach((child, i) => {
+                  if (currentPath.includes(child.front_url)) {
+                    currentNav = item.sub_menu
                     this.firstMenu[idx].isLight = true
-                    this.firstMenu[idx].second[id].children[i].isLight = true
+                    this.firstMenu[idx].sub_menu[id].sub_menu[i].isLight = true
                   } else {
-                    this.firstMenu[idx].second[id].children[i].isLight = false
+                    this.firstMenu[idx].sub_menu[id].sub_menu[i].isLight = false
                   }
                 })
             })
         })
         this.navList = currentNav || []
+        this.$forceUpdate()
       }
     }
   }
