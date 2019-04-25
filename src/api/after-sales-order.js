@@ -25,11 +25,13 @@ export default {
     let url = '/scm/api/backend/oms/after-sale-status'
     return request.get(url, params)
   },
+  // 退款
   batchRefund(params) {
     // let url = '/mock/StausData.json'
     let url =`/scm/api/backend/oms/batch-refund`
     return request.post(url, {goods_sku_codes:params })
   },
+  // 补货
   batchReplenishment(params) {
     // let url = '/mock/StausData.json'
     let url =`/scm/api/backend/oms/batch-delay`

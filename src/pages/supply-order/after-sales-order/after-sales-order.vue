@@ -84,8 +84,8 @@
         </div>
         <div class="back btn-group-wrap">
           <div class="back-cancel back-btn hand" @click="_hideModal">返回</div>
-          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量退款</div>
-          <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量补货</div>
+          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量补货</div>
+          <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量退款</div>
         </div>
       </div>
     </default-modal>
@@ -204,13 +204,15 @@
       _showConfirm(val) {
         if (this.selectIds.length === 0) return
         this.confirmType = val
-        let text = `确定对所选商品${this.confirmType === 1 ? '批量补货' : '批量退货'}?`
+        let text = `确定对所选商品${this.confirmType === 1 ? '批量补货' : '批量退款'}?`
         this.$refs.confirm.show(text)
       },
       _getConfirmResult() {
         if (this.confirmType === 1) {
+          // 补货
           this._setBatchReplenishment()
         } else {
+          // 退款
           this._setBatchRefund()
         }
       },
@@ -351,7 +353,7 @@
       width: 1000px
       padding: 10px 20px 30px
       .status_str
-        max-width 100px
+        max-width 65px
       .row-check
         max-width 60px
     .btn-group-wrap
