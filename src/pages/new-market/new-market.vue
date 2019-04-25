@@ -311,19 +311,19 @@
   const COUNTREG = /^[1-9]\d*$/
   const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'share_coupon']
   const SELECT_COUPON_TITLE = [
-    {name: '优惠券名称', flex: 1.4, value: 'coupon_name'},
+    {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1.2, value: 'time'},
-    {name: '操作', flex: 0.4, value: ''},
+    {name: '有效期', flex: 1.6, value: 'time'},
+    {name: '操作', flex: 0.7, value: ''},
   ]
   const SELECT_GROUP_TITLE = [
     {name: '团长帐号', flex: 1, value: 'mobile'},
     {name: '团长名称', flex: 1, value: 'name'},
     {name: '社区', flex: 1.4, value: 'social_name'},
     {name: '券数量', flex: 1, value: 'number'},
-    {name: '操作', flex: 0.4, value: ''}
+    {name: '操作', flex: 0.5, value: ''}
   ]
   const GROUP_TITLE = [
     {name: '选择', flex: 0.4, value: ''},
@@ -764,7 +764,6 @@
       },
       // 保存优惠券数据
       _saveActivity() {
-        if (this.id) return
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
@@ -808,7 +807,6 @@
             this.$toast.show('保存成功')
             setTimeout(() => {
               this._back()
-              this.isSubmit = false
             }, 1000)
 
           })
@@ -1066,6 +1064,7 @@
               padding-right: 20px
               &:last-child
                 padding-right: 0
+                max-width: 54px
           .no-line
             border-bottom: 0
           .list
@@ -1082,6 +1081,7 @@
               padding-right: 20px
               &:last-child
                 padding-right: 0
+                max-width: 54px
               .main
                 line-height: 20px
                 overflow: hidden

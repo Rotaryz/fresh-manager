@@ -738,7 +738,6 @@
       },
       //  保存
       async _saveActivity() {
-        if (this.id) return
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
