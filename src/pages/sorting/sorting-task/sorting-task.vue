@@ -216,4 +216,6 @@
    max-width:50px
   .list-operation
     text-decoration: underline
+  .down-content .down-group-item
+   margin-right:10px
 </style>

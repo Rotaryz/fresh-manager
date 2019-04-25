@@ -59,13 +59,10 @@
         }]
       }
     },
-
     computed: {
       ...sortingComputed
     },
     created() {
-      console.log(this.sortingTaskDetail.pickingDetail, 'sorting-task/sorting-task-detail/sorting-task/sorting-task-detail/')
-      // this.SET_CURRENT_TITLES(TITLE_GUIDE)
     }
   }
 </script>
@@ -103,14 +100,18 @@
     align-content: flex-start
 
     .item-wrap
-      box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.04)
+
       padding: 20px
       border-radius: 2px
       width: 250px
       height: 144px
       margin-right: 20px
       margin-bottom 20px
-
+      border-1px(#E6EAED )
+      box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.04)
+      &:hover
+        box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.04)
+        border-1px(#ccc)
       .index
         display inline-block
         padding: 0px 5px
