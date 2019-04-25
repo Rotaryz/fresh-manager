@@ -69,7 +69,7 @@
               <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
             </div>
             <div class="list-item list-double-row">
-              <div class="item-dark">{{item.name}}{{item.name}}</div>
+              <div class="item-dark">{{item.name}}</div>
               <div class="item-dark">{{item.goods_sku_encoding}}</div>
             </div>
             <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
@@ -201,7 +201,7 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
+        let params = `access_token=${token.access_token}&is_online=${this.categoryId}&is_online=${this.isOnline}&keyword=${
           this.keyWord
         }&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
