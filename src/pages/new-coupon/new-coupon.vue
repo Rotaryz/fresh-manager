@@ -613,7 +613,7 @@
         if (item.id === '') {
           this.secondAssortment.data = []
         } else {
-          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+          let res = await API.Outreach.goodsCategory({parent_id: this.parentId, get_goods_count: 1})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
@@ -631,7 +631,7 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+        let res = await API.Outreach.goodsCategory({parent_id: this.parentId, get_goods_count: 1})
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
         this.categoryList = res.error === this.$ERR_OK ? res.data : []

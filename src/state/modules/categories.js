@@ -25,7 +25,7 @@ export const mutations = {
 
 export const actions = {
   getCategoryList({state, commit, dispatch}, number = 0, loading = true) {
-    return API.Product.getCategory({parent_id: number}, loading)
+    return API.Product.getCategory({parent_id: number, get_goods_count: 1}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

@@ -438,7 +438,7 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Product.getCategory({parent_id: this.parentId})
+        let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
         this.$loading.hide()
         this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
