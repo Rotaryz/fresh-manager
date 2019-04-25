@@ -45,6 +45,12 @@ export const getters = {
   },
   page(state) {
     return state.page
+  },
+  startTime(state) {
+    return state.startTime
+  },
+  endTime(state) {
+    return state.endTime
   }
 }
 

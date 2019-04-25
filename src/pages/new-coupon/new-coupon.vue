@@ -136,12 +136,12 @@
               @on-change="_getEndTime"
             ></date-picker>
           </div>
-          <!--<div class="select-item">
-            <span :class="['item-icon', {'checked': +msg.day_range === 1}]"></span>
-            <span>领取当日起</span>
-            <input v-modal="msg.day" type="text" class="day-item">
+          <div class="select-item">
+            <span :class="['item-icon', 'hand', {'checked': +msg.is_day_limited === 1}]" @click="changeLimit"></span>
+            <span class="hand" @click="changeLimit">领取当日起</span>
+            <input v-model="msg.limit_days" type="text" class="day-item">
             <span>天内可用</span>
-          </div>-->
+          </div>
         </div>
         <div :class="{'time-no-change':disable}"></div>
       </div>
@@ -414,8 +414,8 @@
           explain: '',
           range_type: 1, // 适用范围0未知1通用券2品类券3单品券
           ranges: [],
-          // day_range: 0,
-          day: ''
+          limit_days: '',
+          is_day_limited: 0
         },
         isSubmit: false, // 在提交
         categoryShow: false, // 选择品类弹窗
@@ -548,6 +548,9 @@
       },
       changeFull() {
         this.msg.support_activity = +this.msg.support_activity === 1 ? 0 : 1
+      },
+      changeLimit() {
+        this.$set(this.msg, 'is_day_limited', this.msg.is_day_limited ? 0 : 1)
       },
       _getStartTime(time) {
         this.msg.start_at = time
@@ -995,10 +998,17 @@
         display: flex
         align-items: center
       .select-item
-        margin-top: 15px
+        margin-top: 20px
         margin-left: 40px
         display: flex
-        aglin-items: center
+        align-items: center
+      .day-item
+        width: 138px
+        height: 34px
+        box-sizing: border-box
+        padding: 0 10px
+        margin: 0 14px 0 10px
+        border: 1px solid $color-line
     .time-no-change,.text-no-change,.check-no-change
       position: absolute
       left: 127px

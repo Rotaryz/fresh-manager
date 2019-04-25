@@ -140,7 +140,7 @@ export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])
 
 // 订单
 export const orderComputed = {
-  ...mapGetters('order', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page', 'orderStatus'])
+  ...mapGetters('order', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page', 'orderStatus', 'startTime', 'endTime'])
 }
 
 export const orderMethods = {
