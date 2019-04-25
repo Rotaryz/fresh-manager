@@ -139,7 +139,7 @@ export default {
    */
   putEnterSubmit(id, data, loading = true) {
     let url = `/scm/api/backend/warehouse/entry-details/${id}`
-    return request.put(url, data, loading)
+    return request.post(url, data, loading)
   },
   /**
    * 出库批次列表
