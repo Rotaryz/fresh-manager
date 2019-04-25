@@ -14,7 +14,7 @@ export const state = {
   startTime: '',
   endTime: '',
   keyword: '',
-  status: 'c_offline',
+  status: 'c_shop',
   orderStatus: ''
 }
 

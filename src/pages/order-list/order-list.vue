@@ -69,8 +69,8 @@
 
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [
-    {text: '拓展订单', status: 'c_offline'},
-    {text: '商城订单', status: 'c_shop'}
+    {text: '商城订单', status: 'c_shop'},
+    {text: '拓展订单', status: 'c_offline'}
   ]
   const SOCIAL_SELECT = {
     check: false,
@@ -100,7 +100,7 @@
           {name: '已关闭', value: 1, key: 'success', num: 0}
         ],
         downUrl: '',
-        defaultStatus: 'c_offline'
+        defaultStatus: 'c_shop'
       }
     },
     computed: {
