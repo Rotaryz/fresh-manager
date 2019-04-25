@@ -326,7 +326,7 @@ export const productComputed = {
 }
 
 export const productMethods = {
-  ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
+  ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData', 'setOutList'])
 }
 
 // 财务管理

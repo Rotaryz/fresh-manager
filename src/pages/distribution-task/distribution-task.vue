@@ -249,6 +249,7 @@
         let res = await API.Delivery.deliverySign(this.signItem.id)
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
+          await this._statistic()
           this.getOrderList()
         }
       },

@@ -149,7 +149,7 @@
       return {
         disable: this.$route.query.id,
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
-        marketIndex: 1,
+        marketIndex: 0,
         arrowArr: ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
         arrowIndex: 0,
         couponCheckItem: {},
@@ -191,9 +191,12 @@
         let res = await API.Order.couponActivity()
         this.stairSelect.data = res.error === this.$ERR_OK ? res.data : []
       },
-      selectRules(item) {
+      selectRules(item, index) {
         this.rulesId = item.type
         this.rulesTitle = item.name
+        this.marketIndex = +index
+        this.arrowIndex = 0
+        this.$refs.swiper._changeBanner(0)
       },
       selectCoupon(item, index) {
         this.couponCheckItem = item

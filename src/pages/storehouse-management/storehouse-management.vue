@@ -46,7 +46,7 @@
         <div class="list">
           <div v-if="warehouseList.length">
             <div v-for="(item, index) in warehouseList" :key="index" class="list-content list-box">
-              <div class="list-item">
+              <div class="list-item list-double-row">
                 <p class="item-dark">{{item.goods_name}}</p>
                 <p class="item-sub">{{item.goods_sku_encoding}}</p>
               </div>
