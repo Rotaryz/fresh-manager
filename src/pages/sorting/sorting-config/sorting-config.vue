@@ -5,7 +5,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
-          <p class="identification-name">配货明细</p>
+          <p class="identification-name">配货位列表</p>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="_export">导出</div>

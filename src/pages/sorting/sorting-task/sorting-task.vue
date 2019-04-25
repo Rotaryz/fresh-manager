@@ -24,7 +24,7 @@
       <!--列表tab工具栏-->
       <div class="identification">
         <div class="identification-page">
-          <img src="icon-warehousing@2x.png" class="identification-icon">
+          <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">拣货任务列表</p>
           <base-status-tab :statusList="statusList" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
