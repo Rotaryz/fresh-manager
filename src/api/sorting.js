@@ -8,43 +8,48 @@ export default {
     return request.get(url, data, loading)
   },
   // √  配貨明細 下
-  getSortingDeliveryDetail(id,params, loading = true) {
+  getSortingDeliveryDetail(id, params, loading = true) {
     // let url = '/mock/sortingTaskDetail.json'
     let url = `/scm/api/backend/sorting/allocation-detail/${id}`
-    return request.get(url, params,loading)
+    return request.get(url, params, loading)
   },
   // √  拣货明细
   getSortingPickingDetail(id, loading = false) {
     // let url = '/mock/sortingPickDetail.json'
     let url = `/scm/api/backend/sorting/picking-order-detail/${id}`
-    return request.get(url,{}, loading)
+    return request.get(url, {}, loading)
   },
   // √ 分类列表
-  getClassifyList() {
+  getClassifyList(params = {}) {
+    let defautParams = {
+      'parent_id': 0,
+      'goods_id': 0
+    }
+    params = {...defautParams, ...params}
     let url = '/scm/api/backend/goods/goods-category'
-    return request.get(url)
+    return request.get(url,params)
   },
   //  √ 状态数据
   getStausData(params) {
     // let url = '/mock/StausData.json'
-    let url ='/scm/api/backend/sorting/picking-order-statistic'
-    return request.get(url,params)
+    let url = '/scm/api/backend/sorting/picking-order-statistic'
+    return request.get(url, params)
   },
   // √ 导出分拣单
   exportPickingOrder(paramsStr) {
-    let url ='/scm/api/backend/sorting/picking-order-export'
-    window.open(url+ paramsStr,'_blank')
+    let url = '/scm/api/backend/sorting/picking-order-export'
+    window.open(url + paramsStr, '_blank')
   },
   // √ 导出配货单
   exportDeliveryOrder(paramsStr) {
-    let url ='/scm/api/backend/sorting/allocation-export'
-    window.open(url+paramsStr,'_blank')
+    let url = '/scm/api/backend/sorting/allocation-export'
+    window.open(url + paramsStr, '_blank')
   },
   // √ 配货位列表 √
-  getAllocationList(loading=true) {
+  getAllocationList(loading = true) {
     // let url = '/mock/sortingConfigList.json'
     let url = '/scm/api/backend/sorting/allocation-position'
-    return request.get(url,{page:''},loading)
+    return request.get(url, {page: ''}, loading)
   },
 //  √ 线路列表
   getRoadList() {
@@ -53,22 +58,22 @@ export default {
     return request.get(url)
   },
   // √ 设置线路 √
-  setRoad(id, params,loading=false) {
+  setRoad(id, params, loading = false) {
     // let url = '/mock/roadList.json'
     let url = `/scm/api/backend/sorting/picking-set-address/${id}`
-    return request.put(url, params,loading)
+    return request.put(url, params, loading)
   },
   //  √ 跟换配货位 √
-  changeAllocationPostion(dataArr,loading=false) {
+  changeAllocationPostion(dataArr, loading = false) {
     // let url = '/mock/roadList.json'
     let url = '/scm/api/backend/sorting/allocation-position'
-    return request.post(url, {data: dataArr},loading)
+    return request.post(url, {data: dataArr}, loading)
   },
 
   //  √ 导出配货单
   exportAllocationList(paramsStr) {
     let url = "/scm/api/backend/sorting/allocation-position-export"
-    window.open(url+ paramsStr,'_blank')
+    window.open(url + paramsStr, '_blank')
 
   }
 }

@@ -67,12 +67,12 @@
   const COMMODITIES_LIST = [
     {tilte: '商品名称', key: 'goods_name', flex: '2'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
-    {tilte: '下单数', key: 'base_num'},
-    {tilte: '待拣货数', key: 'base_wait_pick_num'},
-    {tilte: '缺货数', key: 'base_out_of_num'},
-    {tilte: '存放库位', key: 'position_name',flex: '2'},
+    {tilte: '下单数', key: 'sale_num'},
+    {tilte: '待拣货数', key: 'sale_wait_pick_num'},
+    {tilte: '缺货数', key: 'sale_out_of_num'},
+    {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '操作', key: 'id', type: "operate", replace: "明细",class:'operate'}]
+    {tilte: '操作', key: 'id', type: "operate", replace: "明细", class: 'operate'}]
   export default {
     name: PAGE_NAME,
     page: {
@@ -114,7 +114,7 @@
       }
     },
     created() {
-      this._getClassifyList()
+      this._getFristList()
       this._getStausData()
     },
     methods: {
@@ -160,18 +160,24 @@
         this._updateList({status: item.value, page: 1}, true)
       },
       // 分类数据
-      _getClassifyList() {
-        API.Sorting.getClassifyList().then(res => {
+      _getClassifyList(params) {
+        return API.Sorting.getClassifyList(params).then(res => {
+          return res
+        })
+      },
+      _getFristList() {
+        this._getClassifyList().then(res => {
           console.log(res, 'getClassifyList')
           this.filterTaskFrist.data = res.data
         })
       },
       _setValueFrist(item) {
         this._updateList({goods_category_id: item.id || '', page: 1})
-        this.filterTaskSecond.data = item.list
-        this.filterTaskFrist.data = this.filterTaskFrist.data.map(li => {
-          li.is_selected = (li.id === item.id) ? 'true' : false
-          return li
+        this._getClassifyList({
+          'parent_id': item.parent_id,
+          'goods_id': item.id
+        }).then(res=>{
+          this.filterTaskSecond.data = res.data
         })
       },
       _setValueSecond(item) {
@@ -204,7 +210,7 @@
         API.Sorting.exportDeliveryOrder(this.exportParamsStr)
       },
       _getMoreList(page) {
-        this._updateList({ page: 1})
+        this._updateList({page: 1})
       },
     }
   }
@@ -213,9 +219,11 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .operate
-   max-width:50px
+    max-width: 50px
+
   .list-operation
     text-decoration: underline
+
   .down-content .down-group-item
-   margin-right:10px
+    margin-right: 10px
 </style>

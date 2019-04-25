@@ -27,11 +27,12 @@ export const state = {
   },
   sortingTaskDetail: {
     pickingDetail: {
-      goods_name: "a",
-      position_name: 'dvb',
-      goods_sku_code: 'vcb',
-      merchant_num: 'cvb',
-      base_wait_pick_num: 'cvb'
+      goods_name: "",
+      goods_sku_encoding:'',
+      position_name: '',
+      merchant_num: '',
+      wait_allocation_num: '',
+      sale_unit:''
     },
     deliveryDetail: []
   }
