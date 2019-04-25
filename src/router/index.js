@@ -14,7 +14,7 @@ Vue.use(VueMeta, {
 
 const router = new VueRouter({
   routes,
-  mode: 'history',
+  mode: process.env.NODE_ENV === 'production' ? 'history' : '',
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
