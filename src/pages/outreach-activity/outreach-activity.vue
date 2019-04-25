@@ -14,7 +14,7 @@
           <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="edit-outreach" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
+          <router-link tag="div" to="edit-outreach" append class="btn-main">新建任务<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
@@ -159,7 +159,7 @@
         })
       },
       getOutreachStatus() {
-        API.Outreach.getOutreachStatus({activity_type: 'offline', startTime: this.startTime, endTime: this.endTime})
+        API.Outreach.getOutreachStatus({activity_type: 'offline', start_at: this.startTime, end_at: this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
