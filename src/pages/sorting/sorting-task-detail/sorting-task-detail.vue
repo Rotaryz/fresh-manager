@@ -5,14 +5,21 @@
         <span>{{item.name}}</span><span :class="{number:item.type === 'number'}">{{sortingTaskDetail.pickingDetail[item.id]}}</span><span v-if="item.after">{{item.after}}</span>
       </li>
     </ul>
-
-    <ul class="content-wrap">
-      <li v-for="(item,index) in sortingTaskDetail.deliveryDetail" :key="index" class="item-wrap">
-        <div class="index">{{item.sort|format}}</div>
-        <div class="name">{{item.name}}</div>
-        <div class="num">{{item.num}}件</div>
-      </li>
-    </ul>
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-inventory@2x.png" class="identification-icon">
+          <p class="identification-name">配货明细</p>
+        </div>
+      </div>
+      <ul class="content-wrap">
+        <li v-for="(item,index) in sortingTaskDetail.deliveryDetail" :key="index" class="item-wrap">
+          <div class="index">{{item.sort|format}}</div>
+          <div class="name">{{item.name}}</div>
+          <div class="num">{{item.num}}件</div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -40,15 +47,15 @@
     data() {
       return {
         topListTilte: [{
-          name: '商品名称:', id: 'goods_name'
+          name: '商品名称：', id: 'goods_name'
         }, {
-          name: '商品编码:', id: 'goods_sku_code'
+          name: '商品编码：', id: 'goods_sku_code'
         }, {
-          name: '存放库位:', id: 'position_name'
+          name: '存放库位：', id: 'position_name'
         }, {
-          name: '配给商户数:', id: 'merchant_num'
+          name: '配给商户数；', id: 'merchant_num'
         }, {
-          name: '待配货数:', id: 'base_wait_pick_num', type: 'number', after: '件'
+          name: '待配货数：', id: 'base_wait_pick_num', type: 'number', after: '件'
         }]
       }
     },
@@ -73,27 +80,28 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
-    height: 72px
     background-color #fff
-    padding: 0px 20px
-    margin-bottom: 20px
-    display flex
-    align-items center
-    justify-content space-between
+    padding:30px 20px 10px 20px
     color: #333333
-
+    margin-bottom: 20px
     li
+      display inline-block
+      margin:0px 130px 20px 0px
       .number
         color: #f84e3c
 
+  .identification
+    padding:20px 20px 0px
+
   ul.content-wrap
-    flex:1
+    flex: 1
     min-width: 1120px
     padding: 20px 0px 0px 20px
     background-color #fff
     display flex
     flex-wrap wrap
     align-content: flex-start
+
     .item-wrap
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.04)
       padding: 20px

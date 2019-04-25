@@ -36,11 +36,11 @@
       <!--列表部分-->
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex:item.flex}">{{item.tilte}}</div>
+          <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex:item.flex}" :class="['list-item',item.class]">{{item.tilte}}</div>
         </div>
         <div class="list">
           <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
-            <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" class="list-item">
+            <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" :class="['list-item',item.class]">
               <template v-if="item.type==='operate'">
                 <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
               </template>
@@ -70,9 +70,9 @@
     {tilte: '下单数', key: 'base_num'},
     {tilte: '待拣货数', key: 'base_wait_pick_num'},
     {tilte: '缺货数', key: 'base_out_of_num'},
-    {tilte: '存放库位', key: 'position_name'},
+    {tilte: '存放库位', key: 'position_name',flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '操作', key: 'id', type: "operate", replace: "明细"}]
+    {tilte: '操作', key: 'id', type: "operate", replace: "明细",class:'operate'}]
   export default {
     name: PAGE_NAME,
     page: {
@@ -212,6 +212,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .operate
+   max-width:50px
   .list-operation
     text-decoration: underline
 </style>

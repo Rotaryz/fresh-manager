@@ -47,11 +47,11 @@
           {title: '缺货数量', key: 'sale_out_of_num', type:'red',flex: 1},
         ],
         topListTilte: [{
-          name: '汇总订单号 :', id: 'order_sn'
+          name: '汇总订单号：', id: 'order_sn'
         }, {
-          name: '品类数:', id: 'type_count'
+          name: '品类数：', id: 'type_count'
         }, {
-          name: '下单时间:', id: 'created_at'
+          name: '下单时间：', id: 'created_at'
         }]
       }
     },
@@ -74,15 +74,13 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
-    height: 72px
     background-color #fff
-    padding: 0px 20px
-    margin-bottom: 20px
-    display flex
-    align-items center
+    padding:30px 20px 10px 20px
     color: #333333
+    margin-bottom: 20px
     li
-      margin-right:130px
+      display inline-block
+      margin:0px 130px 20px 0px
   .red
     color: #f84e3c
 

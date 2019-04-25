@@ -26,75 +26,67 @@
       <!--列表-->
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
+          <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in afterSalesList" :key="index" class="list-content list-box">
-            <div v-for="row in commodities" :key="row.key" :style="{flex: row.flex}" class="list-item">
-              <template v-if="row.key" name="name">
-                {{item[row.key]}}
+          <div v-for="(row, index) in afterSalesList" :key="index" class="list-content list-box">
+            <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+              <template v-if="item.key" name="name">
+                {{row[item.key]}}
               </template>
               <template v-else name="operation">
-                <router-link class="list-operation" :to="{name:'after-sales-detail',params:{id:item.id}}">{{row.operation}}</router-link>
+                <router-link class="list-operation" :to="{name:'after-sales-detail',params:{id:row.id}}">{{item.operation}}</router-link>
               </template>
             </div>
           </div>
         </div>
-      </div>
-      <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_setOrderPage"></base-pagination>
       </div>
     </div>
     <default-modal ref="modal">
-      <div slot="content">
-        <div class="model-wrap">
-          <div class="top">
-            <div class="title"> 批量处理</div>
-            <div class="close " @click.stop="hideModal">
-              <!--<img class="close-img" src="./icon-close@2x.png" alt="">-->
+      <div slot="content" class="model-wrap">
+        <div class="top">
+          <div class="title"> 批量处理</div>
+          <div class="close" @click.stop="_hideModal">
+          </div>
+        </div>
+        <div class="model-content">
+          <div class="shade-tab">
+            <div class="tab-item serch-btn-box">
+              <base-search placeHolder="供应商" @search="_getBatchList"></base-search>
             </div>
           </div>
-          <div class="model-content">
-            <div class="shade-tab">
-              <div class="tab-item serch-btn-box">
-                <base-search placeHolder="供应商" @search="_getBatchList"></base-search>
+          <div>
+            <div class="list-header list-box">
+              <div v-for="(item,index) in batchCommodities" :key="index" :class="['list-item',item.class]" :style="{flex: item.flex}">
+                <template v-if="item.type==='check'">
+                  <div class="pro-select-icon hand" :class="{'pro-select-icon-active':checkAllStatus}" @click="_selectAllChange(item, index)">
+                    <span class="after"></span>
+                  </div>
+                </template>
+                {{item.title}}
               </div>
             </div>
-            <div>
-              <div class="list-header list-box">
-                <div v-for="(item,index) in batchCommodities" :key="index" class="list-item" :style="{flex: item.flex}">
-                  <template v-if="item.type==='check'">
-                    <div class="pro-select-icon hand" :class="{'pro-select-icon-active':checkAllStatus}" @click="_selectAllChange(item, index)">
+            <div class="list" :class="{'goods-list-border':batchendList.length}">
+              <div v-for="(row, index) in batchendList" :key="index" class="list-content list-box">
+                <div v-for="item in batchCommodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+                  <template v-if="item.type==='check'" name="check">
+                    <div class="pro-select-icon hand" :class="{'pro-select-icon-active': _isCheck(row.goods_sku_code)}" @click="_itemCheckChange(row, index)">
                       <span class="after"></span>
                     </div>
                   </template>
-                  {{item.title}}
+                  <template v-else>
+                    {{row[item.key]}}
+                  </template>
                 </div>
               </div>
-              <div class="list" :class="{'goods-list-border':batchendList.length}">
-                <div v-for="(item, index) in batchendList" :key="index" class="list-content list-box">
-                  <div v-for="row in batchCommodities" :key="row.key" :style="{flex: row.flex}" class="list-item">
-                    <template v-if="row.type==='check'" name="check">
-                      <div class="pro-select-icon hand" :class="{'pro-select-icon-active': _isCheck(item.goods_sku_code)}" @click="_itemCheckChange(item, index)">
-                        <span class="after"></span>
-                      </div>
-                    </template>
-                    <template v-else>
-                      {{item[row.key]}}
-                    </template>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="btn-group-wrap">
-              <div class="btn-item  back-cancel" @click="_hideModal">返回</div>
-              <div :class="['btn-item ','back-submit-empty',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量退款</div>
-              <div :class="['btn-item ','back-submit-fill',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量补货</div>
             </div>
           </div>
         </div>
-
+        <div class="back btn-group-wrap">
+          <div class="back-cancel back-btn hand" @click="_hideModal">返回</div>
+          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量退款</div>
+          <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量补货</div>
+        </div>
       </div>
     </default-modal>
     <default-confirm ref="confirm" @confirm="_getConfirmResult"></default-confirm>
@@ -116,15 +108,15 @@
     {title: '缺货品类数', key: 'type_count', flex:1},
     {title: '原订单号 ', key: 'source_order_sn', flex: 2},
     {title: '状态', key: 'status_str', flex: 0.6},
-    {title: '操作', key: '', operation: '详情', flex: 0.6}
+    {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '', type: 'check', key: '', flex: 3},
+    {title: '', type: 'check', key: '', flex: 3,class:'row-check'},
     {title: '商品', key: 'goods_name', flex: 3},
     {title: '供应商', key: 'supplier_name', flex: 3},
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 2},
+    {title: '处理状态', key: 'status_str', flex: 2,class:'status_str'},
   ]
   export default {
     name: PAGE_NAME,
@@ -275,10 +267,7 @@
           })
         })
       },
-      // 翻页
-      _setOrderPage(page) {
-        this._updateList({page})
-      },
+
       // 时间
       _changeTime(timeArr) {
         this._updateList({
@@ -311,6 +300,8 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   /*@import "@pages/supply-order/after-sales-detail/check/check.styl"*/
+  .operate
+    max-width 50px
   .pro-select-icon
     border-radius: 2px
     border: 1px solid $color-line
@@ -351,53 +342,30 @@
         color: $color-text-main
 
       .close
-        width: 16px
-        height: 16px
-
-        .close-img
-          width: 16px
-          height: 16px
-          display: block
+        width: 12px
+        height: 12px
+        cursor pointer
+        icon-image(icon-close)
 
     .model-content
       width: 1000px
-      padding: 20px
+      padding: 10px 20px 30px
+      .status_str
+        max-width 100px
+      .row-check
+        max-width 50px
+    .btn-group-wrap
+      layout(row)
+      height:auto
+      align-items: center
+      justify-content: flex-end
+      background: #fff
+      position: relative
+      left: 0
+      padding:20px
 
-      .model-body
-        height: 65px
-
-      .btn-group-wrap
-        layout(row)
-        align-items: center
-        justify-content: flex-end
-        padding: 20px
-
-        .btn-item
-          width: 96px
-          line-height: 40px
-          margin-left: 10px
-          cursor: pointer
-          text-align: center
-          border: 1px solid $color-text-assist
-          border-radius: 2px
-          font-family: $font-family-regular
-          font-size: $font-size-16
-          color: $color-text-main
-          height: 40px
-
-          &.back-submit-empty
-            color: $color-positive
-            border-color: $color-positive
-
-          &.back-submit-fill
-            background: $color-positive
-            color: $color-white
-            border-color: $color-positive
-
-          &.disable {
-            cursor: not-allowed
-          }
-
+  /*&:before*/
+          /*border-top: 0px solid #e9ecee;*/
   .tab-item.serch-btn-box
     width: 300px
     margin-bottom: 20px

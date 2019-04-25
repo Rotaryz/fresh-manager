@@ -17,20 +17,18 @@
         <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
       </div>
       <div class="list">
-        <div v-for="(item, key) in merchantDetail.details" :key="key" class="list-content list-box">
-          <div v-for="row in commodities" :key="row.title" :style="{flex: row.flex}" class="list-item">
-            <template v-if="row.key" name="name">
-              <div v-if="!row.show">
-                {{item[row.key]}}
+        <div v-for="(row, key) in merchantDetail.details" :key="key" class="list-content list-box">
+          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item">
+            <template v-if="item.key" name="name">
+
+              <div v-if="isLine" style="border-top:1px solid #333;width:30px;">
               </div>
-              <div v-if="row.show" style="border-top:1px solid #333;width:30px;">
+              <div v-else>
+                {{row[item.key]}}
               </div>
             </template>
             <template v-else name="operation">
-              <!--<router-link class="list-operation" :to="`/home/merchant-order/consumer-order-detail/${item.goods_sku_code}/${item.order_detail_id}`">{{row.operation}}</router-link>-->
-              <!--<router-link class="list-operation" :to="{  name: 'consumer-order-detail',params: {goods_sku_code: item.goods_sku_code,parent_order_id: item.order_detail_id}}">{{row.operation}}-->
-              <!--</router-link>-->
-              <router-link class="list-operation" :to="goTo(item)">{{row.operation}}</router-link>
+              <router-link class="list-operation" :to="goTo(row)">{{item.operation}}</router-link>
             </template>
           </div>
         </div>
@@ -60,34 +58,40 @@
           {title: '操作', key: '', operation: '详情', flex: 0.32}
         ],
         topListTilte: [{
-          name: '商户名称:', key: 'buyer_name'
+          name: '商户名称：', key: 'buyer_name'
         }, {
-          name: '订单号 :', key: 'order_sn'
+          name: '订单号：', key: 'order_sn'
         }, {
-          name: '下单时间:', key: 'created_at'
+          name: '下单时间：', key: 'created_at'
         }, {
-          name: '状态:', key: 'status_str'
+          name: '状态：', key: 'status_str'
         }, {
-          name: '品类数:', key: 'type_count'
+          name: '品类数：', key: 'type_count'
         }, {
-          name: '类型:', key: 'type_str'
+          name: '类型：', key: 'type_str'
         }]
       }
     },
 
     computed: {
-      ...merchantOrderComputed
+      ...merchantOrderComputed,
+      isLine() {
+        if(this.merchantDetail.status===0||this.merchantDetail.status===5){
+          return true
+        }
+        return false
+      }
     },
     created() {
 
     },
     methods: {
       goTo(item) {
-        console.log('merchantDetail',this.$route,999)
+        console.log('merchantDetail', this.$route, 999)
         let cont = {
           name: 'consumer-order-detail',
           params: {
-            id:item.id || 0,
+            id: item.id || 0,
             goods_sku_code: item.goods_sku_code || 0,
             parent_order_id: this.$route.params.id
           }
@@ -108,16 +112,15 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
-    height: 72px
     background-color #fff
-    padding: 0px 20px
-    margin-bottom: 20px
-    display flex
-    align-items center
-    justify-content space-between
+    padding: 30px 20px 10px 20px
     color: #333333
+    margin-bottom: 20px
 
     li
+      display inline-block
+      margin: 0px 130px 20px 0px
+
       .number
         color: #f84e3c
 
