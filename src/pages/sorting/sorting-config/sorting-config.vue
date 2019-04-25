@@ -161,14 +161,18 @@
       },
       // 托拽
       _changeAllocationPostion(arr) {
+        this.$loading.show('修改配货位')
         API.Sorting.changeAllocationPostion(arr).then(res => {
-          this.$toast.show(res.message)
+
           if (res.error === this.$ERR_OK) {
-            this.updateList()
+            this.$toast.show('修改配货位成功')
             this.isChange = false
+          }else{
+            this.$toast.show('修改配货位失败')
           }
         })
           .finally(() => {
+            this.updateList()
             this.$loading.hide()
           })
       },

@@ -59,7 +59,7 @@ export default {
     return request.put(url, params,loading)
   },
   //  √ 跟换配货位 √
-  changeAllocationPostion(dataArr,loading=true) {
+  changeAllocationPostion(dataArr,loading=false) {
     // let url = '/mock/roadList.json'
     let url = '/scm/api/backend/sorting/allocation-position'
     return request.post(url, {data: dataArr},loading)
