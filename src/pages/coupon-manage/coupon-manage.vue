@@ -66,13 +66,13 @@
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},
     {name: '面值', flex: 1, value: 'denomination', type: 2},
     {name: '使用范围', flex: 1, value: 'range_type_str', type: 1},
-    {name: '有效时间', flex: 1, value: '', type: 3},
-    {name: '创建时间', flex: 1, value: 'created_at', type: 1},
+    {name: '有效时间', flex: 1.2, value: '', type: 3},
+    {name: '创建时间', flex: 1.2, value: 'created_at', type: 1},
     {name: '发放总数', flex: 1, value: 'total_stock', type: 1},
     {name: '剩余数量', flex: 1, value: 'usable_stock', type: 1},
     {name: '已领取数', flex: 1, value: 'customer_coupon_count', type: 1},
     {name: '已使用数', flex: 1, value: 'customer_coupon_used_count', type: 1},
-    {name: '操作', flex: 1, value: '', type: 4}
+    {name: '操作', flex: 1.2, value: '', type: 4}
   ]
   export default {
     name: PAGE_NAME,
