@@ -120,7 +120,8 @@
           shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
-          keyword: this.keyword
+          keyword: this.keyword,
+          goods_category_id: this.goods_category_id
         }
         let search = []
         for (let key in data) {
@@ -141,8 +142,8 @@
       getOrderStatus(startTime, endTime) {
         API.Order.getOrderStatus({
           source: this.status,
-          startTime: startTime || this.startTime,
-          endTime: endTime || this.endTime,
+          start_time: this.startTime,
+          end_time: this.endTime,
           shop_id: this.shopId,
           keyword: this.keyword
         })

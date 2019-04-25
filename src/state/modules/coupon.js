@@ -39,7 +39,7 @@ export const actions = {
   getCouponList({commit}, msg) {
     let {startTime, endTime, status, page} = msg
     let data = {
-      status: status || '',
+      status,
       page,
       limit: 10,
       created_start_at: startTime,
