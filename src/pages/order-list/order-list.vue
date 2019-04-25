@@ -120,8 +120,7 @@
           shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
-          keyword: this.keyword,
-          goods_category_id: this.goods_category_id
+          keyword: this.keyword
         }
         let search = []
         for (let key in data) {
