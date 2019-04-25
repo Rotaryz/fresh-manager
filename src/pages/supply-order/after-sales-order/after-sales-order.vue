@@ -151,7 +151,6 @@
       }
     },
     async created() {
-      console.log(this.afterSalesList, 'afterSalesList')
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1
       }
@@ -168,7 +167,6 @@
       },
       // 每行选择
       _itemCheckChange(item) {
-        console.log(item)
         let id = item.goods_sku_code
         let idx = this.selectIds.indexOf(id)
         idx >= 0 ? this.selectIds.splice(idx, 1) : this.selectIds.push(id)

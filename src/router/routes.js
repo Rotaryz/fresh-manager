@@ -1165,7 +1165,6 @@ export default [
           titles: ['供应链', '订单', '商品明细', '消费者订单'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getConsumerDetails', routeTo.params).then((res) => {
-              console.log(res)
               if (!res) {
                 return next({name: '404'})
               }
@@ -1186,7 +1185,6 @@ export default [
           titles: ['供应链', '订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getMergerOrderDetail', routeTo.params).then((res) => {
-              console.log(res, 'data')
               if (!res) {
                 return next({name: '404'})
               }
@@ -1601,7 +1599,6 @@ export default [
               }
             })
             store.dispatch('sorting/getSortingTaskList').then((res) => {
-              // console.log('route',res)
               if (!res) {
                 return next({name: '404'})
               }

@@ -53,7 +53,6 @@ export default {
   },
   //  √ 汇总详情  √
   getMergerOrderDetail({mergeOrderId}, loading = true) {
-    console.log(mergeOrderId, 'getMergerOrderDetail')
     let url = `/scm/api/backend/oms/merge-orders/${mergeOrderId}`
     // let url = '/mock/mergerDetail.json'
     return request.get(url, loading)

@@ -89,7 +89,6 @@
     },
     methods: {
       goTo(item) {
-        console.log('merchantDetail', this.$route, 999)
         let cont = {
           name: 'consumer-order-detail',
           params: {

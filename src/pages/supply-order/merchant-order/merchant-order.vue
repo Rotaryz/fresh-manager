@@ -157,7 +157,6 @@
       }
     },
     async created() {
-      console.log(this.orderList, 'orderList')
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1
@@ -168,7 +167,6 @@
       ...merchantOrderMethods,
       // 顶部 切换
       _changeStatusTab(item, index) {
-        console.log(item, index)
         this.tabIndex = index
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
         if (!this.tabIndex) {

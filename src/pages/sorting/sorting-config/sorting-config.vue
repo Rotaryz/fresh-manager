@@ -139,13 +139,10 @@
       this.dragList = _.cloneDeep(this.sortingConfig.list)
     },
     mounted() {
-      console.log(this.sortingConfig, 'this.sortingConfig.list')
-
       this.$dragging.$on('dragged', (res) => {
-        // console.log(res,'dragged')
+
       })
       this.$dragging.$on('dragend', (res) => {
-        // console.log(res, 'dragenddragenddragenddragenddragenddragenddragend')
         if (this.isChange) return
         this.isChange = true
         let data = this.dragList.map((item, idx) => {

@@ -167,7 +167,6 @@
       },
       _getFristList() {
         this._getClassifyList().then(res => {
-          console.log(res, 'getClassifyList')
           this.filterTaskFrist.data = res.data
         })
       },
@@ -208,7 +207,6 @@
       // 导出分拣单
       _exportPickingOrder() {
         this._getUrl()
-        console.log(this.exportParamsStr,'this.exportParamsStr')
         API.Sorting.exportPickingOrder(this.exportParamsStr)
       },
       // 导出配送单
