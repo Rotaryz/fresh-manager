@@ -137,14 +137,10 @@
       console.log(this.sortingConfig, 'this.sortingConfig.list')
 
       this.$dragging.$on('dragged', (res) => {
-        console.log(res,'dragged')
-      // let data = this.dragList.map((item, idx) => {
-      //   return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
-      // })
-      // this._changeAllocationPostion(data)
+        // console.log(res,'dragged')
       })
       this.$dragging.$on('dragend', (res) => {
-        console.log(res, 'dragenddragenddragenddragenddragenddragenddragend')
+        // console.log(res, 'dragenddragenddragenddragenddragenddragenddragend')
         if(this.isChange) return
         this.isChange = true
         let data = this.dragList.map((item, idx) => {
