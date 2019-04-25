@@ -9,7 +9,7 @@
               <p class="identification-name">实时总览</p>
             </div>
             <div class="function-btn">
-              <base-option-box :infoTab="2" :arrTitle="rankTime" @checkTime="_orderMore"></base-option-box>
+              <base-option-box :infoTab="2" @checkTime="_orderMore"></base-option-box>
             </div>
           </div>
           <div class="real-time-box">
