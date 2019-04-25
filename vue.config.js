@@ -1,6 +1,7 @@
 const appConfig = require('./src/app.config')
 
 module.exports = {
+  baseUrl: './',
   configureWebpack: {
     name: appConfig.title,
     resolve: {
