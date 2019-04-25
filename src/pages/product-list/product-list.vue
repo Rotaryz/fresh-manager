@@ -69,7 +69,7 @@
               <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
             </div>
             <div class="list-item list-double-row">
-              <div class="item-dark">{{item.name}}</div>
+              <div class="item-dark">{{item.name}}{{item.name}}</div>
               <div class="item-dark">{{item.goods_sku_encoding}}</div>
             </div>
             <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
@@ -307,9 +307,10 @@
       },
       //  导入商品新建模板
       async importStock(e, index) {
+        console.log(e, index)
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
-        let res = index === 1 ? await API.Product.goodsNewInto(param) : await API.Product.goodsNewEdit(param)
+        let res = index === 1 ? await API.Product.goodsNewInto(param) : await API.Product.goodsNewInto(param)
         this.$loading.hide()
         this.$toast.show(res.message)
         e.target.value = ''

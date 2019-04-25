@@ -247,6 +247,7 @@
         oneBtn: false,
         confirmType: '',
         statusTab: 2,
+        downUrl: '',
         taskTime: ['', ''],
         supplierSortList: []
       }
@@ -255,6 +256,7 @@
       ...proTaskComputed
     },
     async created() {
+      this._getUrl()
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
       if (this.$route.query.status) {
@@ -279,6 +281,12 @@
       // 选择商品
       _selectGoods(item, index) {
         this.showSelectIndex = index
+      },
+      _getUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let params = `access_token=${token.access_token}&start_time=${this.startTime}&end_time=${this.endTime}&status=${this.status}&keyword=${this.keyword}&supplier_id=${this.supplyId}&current_corp=${currentId}`
+        this.downUrl = process.env.VUE_APP_API + `/scm/api/backend/purchase/purchase-task-goods-excel?${params}`
       },
       // 获取商品列表
       async _getGoodsList() {
@@ -415,6 +423,7 @@
           supplyId: this.supplyId,
           loading: false
         })
+        this._getUrl()
       },
       async _setValue(item) {
         this.supplyId = item.id
@@ -430,6 +439,7 @@
           supplyId: this.supplyId,
           loading: false
         })
+        this._getUrl()
         await this._statistic()
       },
       async _search(word) {
@@ -446,6 +456,7 @@
           supplyId: this.supplyId,
           loading: false
         })
+        this._getUrl()
         await this._statistic()
       },
       async changeStartTime(value) {
@@ -464,6 +475,7 @@
           supplyId: this.supplyId,
           loading: false
         })
+        this._getUrl()
         await this._statistic()
       },
       async _sendPublish() {
