@@ -159,16 +159,15 @@
       </div>
 
       <!--使用说明-->
-      <!--<div class="edit-item">
+      <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           使用说明
         </div>
         <div class="edit-input-box">
           <div class="no-wrap">
-            <textarea v-model="msg.explain"
+            <textarea v-model="msg.description"
                       type="text"
-                      :placeholder="disable ? '' : '请输入优惠券名称'"
                       class="edit-input edit-textarea"
                       :readonly="disable"
                       maxlength="45"
@@ -177,10 +176,10 @@
             </textarea>
             <span class="tip">例如: 全场商品通用或特惠商品不可以</span>
           </div>
-          <div class="textarea-num">{{msg.explain ? msg.explain.length : 0}}/45</div>
+          <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/45</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
-      </div>-->
+      </div>
     </div>
 
     <!--添加品类列表-->
@@ -411,11 +410,11 @@
           support_activity: 0, // 是否支持活动商品使用0 1
           start_at: '',
           end_at: '',
-          explain: '',
           range_type: 1, // 适用范围0未知1通用券2品类券3单品券
           ranges: [],
           limit_days: '',
-          is_day_limited: 0
+          is_day_limited: 0,
+          description: ''
         },
         isSubmit: false, // 在提交
         categoryShow: false, // 选择品类弹窗
