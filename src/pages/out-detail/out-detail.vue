@@ -14,9 +14,9 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div v-if="outMsg.status === 0" class="function-btn" @click="submitOutFn">
-          <div class="btn-main">确定出库<span class="add-icon"></span></div>
-        </div>
+        <!--<div v-if="outMsg.status === 0" class="function-btn" @click="submitOutFn">-->
+        <!--<div class="btn-main">确定出库<span class="add-icon"></span></div>-->
+        <!--</div>-->
       </div>
       <div class="big-list" :class="outDetailList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -25,19 +25,29 @@
         <div class="list">
           <div v-for="(item, index) in outDetailList" :key="index" class="list-content list-box">
             <div class="list-item">{{index + 1}}</div>
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.goods_name}}</p>
+              <p class="item-sub">{{item.goods_sku_encoding}}</p>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
-            <div class="list-item list-item-batches hand" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
+            <div class="list-item list-item-batches hand" @click="outFn(item, index)">
               <transition name="fade">
-                <div v-show="showIndex === index && item.out_batches.length !== 0" class="batches-box">
+                <div v-show="showIndex === index && item.status !== 0" class="batches-box">
                   <div v-for="(item1, index1) in item.out_batches" :key="index1">
                     {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                   </div>
                 </div>
               </transition>
-              <span class="list-operation">{{item.out_batches.length > 0 ? '查看批次' : '选择批次'}}</span>
+              <transition name="fade">
+                <div v-show="showIndex === index && item.status === 0" class="batches-box">
+                  <div v-for="(item1, index1) in item.select_batch" :key="index1">
+                    {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                  </div>
+                </div>
+              </transition>
+              <span class="list-operation" @mouseenter="_showTip(index)" @mouseleave="_hideTip">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
             </div>
             <div class="list-item">{{item.out_cost_price ? '￥' + item.out_cost_price : '￥0.00'}}/{{item.base_unit}}</div>
             <div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>
@@ -45,14 +55,18 @@
         </div>
       </div>
     </div>
-    <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
+    <default-batch ref="modalBox" :batchList="batchList" :curItem.sync="curItem" :isOnZero="true" @confirm="confirm"></default-batch>
+    <div v-if="outMsg.status === 0" class="back">
+      <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+      <div class="back-btn back-submit hand" @click="submitOutFn">确认提交</div>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import _ from 'lodash'
   import API from '@api'
-  import {productComputed} from '@state/helpers'
+  import {productComputed, productMethods} from '@state/helpers'
   import DefaultBatch from '@components/default-batch/default-batch'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -89,7 +103,7 @@
       }
     },
     computed: {
-      ...productComputed
+      ...productComputed,
     },
     created() {
       this.id = this.$route.params.id || null
@@ -97,6 +111,10 @@
       this.outMsg = _.cloneDeep(this.outDetail.out_order)
     },
     methods: {
+      ...productMethods,
+      cancel() {
+        this.$router.back()
+      },
       _showTip(index) {
         this.showIndex = index
       },
@@ -126,24 +144,21 @@
       },
       submitOutFn() {
         let arr = []
-        let isTure = false
-        let number = 1
-        this.outDetailList.forEach((item, index) => {
+        let list = JSON.parse(JSON.stringify(this.outDetailList))
+        list.forEach((item, index) => {
+          let selectBatch = []
+          item.select_batch.forEach((child) => {
+            if (+child.select_out_num > 0) {
+              selectBatch.push(child)
+            }
+          })
           let obj = {
             id: item.id,
-            select_batch: item.out_batches,
+            select_batch: selectBatch,
             type: 5
-          }
-          if (item.out_batches.length === 0) {
-            isTure = true
-            number = index + 1
           }
           arr.push(obj)
         })
-        if (isTure) {
-          this.$toast.show(`序号${number}请选择批次`)
-          return false
-        }
         if (this.isSubmit) return
         this.isSubmit = true
         API.Store.putOutSubmit(this.id, {details: arr}).then((res) => {
@@ -162,20 +177,28 @@
         if (this.outMsg.status * 1 === 1) return
         this.curItem = item
         this.curIndex = index
-        this.getOutBatchList(index)
-      },
+        this.batchList = item.select_batch
+        let number = 0
+        this.batchList = this.batchList.map((item) => {
+          item.out_count = !item.out_count ? item.select_out_num : item.out_count
+          number += (item.out_count * 1)
+          return item
+        })
+        this.$refs.modalBox.show(number, item)
+      }
+      ,
       confirm(arr) {
         let allprice = 0
         let number = 0
         arr.forEach((item) => {
-          if (item.select_out_num > 0) {
+          if (+item.select_out_num > 0) {
             number += item.select_out_num * 1
             allprice += item.select_out_num * item.price
           }
         })
         this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
         this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
-        this.outDetailList[this.curIndex].out_batches = arr
+        this.outDetailList[this.curIndex].select_batch = arr
         this.$refs.modalBox.cancel()
       }
     }
@@ -217,7 +240,7 @@
       left: 0
       box-sizing: border-box
       padding: 12px 37px 12px 12px
-      background: rgba(51, 51, 51, 9)
+      background: rgba(51, 51, 51, .8)
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-white

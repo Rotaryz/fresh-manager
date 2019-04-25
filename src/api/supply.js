@@ -174,6 +174,16 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 按不同供应商任务数排序
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getSortSupplier(data, loading = false) {
+    let url = '/scm/api/backend/purchase/task-list-supplier'
+    return request.get(url, data, loading)
+  },
+  /**
    * 采购单列表
    * @param data
    * @param loading

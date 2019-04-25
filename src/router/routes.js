@@ -1,4 +1,5 @@
 import store from '@state/store'
+import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
 
 export default [
@@ -16,9 +17,11 @@ export default [
     meta: {
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
-        if (store.getters['auth/loggedIn']) {
+        console.log(storage.get('losePermissions'))
+        if (store.getters['auth/loggedIn'] && storage.get('losePermissions') !== 1) {
           next({name: 'new-data'})
         } else {
+          storage.remove('losePermissions')
           next()
         }
       }
@@ -548,20 +551,36 @@ export default [
         meta: {
           titles: ['商城', '订单', '退货管理'],
           beforeResolve(routeTo, routeFrom, next) {
-            //  订单列表
             let status = routeTo.query.status || ''
-            store.dispatch('returns/infoStatus', status)
-            store
-              .dispatch('returns/getReturnsList')
-              .then((res) => {
-                if (!res) {
+            let tabIndex = store.state.returns.tabIndex
+            if (tabIndex === 0) {
+              //  售后订单
+              store.dispatch('returns/infoStatus', status)
+              store
+                .dispatch('returns/getReturnsList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
                   return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
+                })
+            } else {
+              // 售后补偿
+              store
+                .dispatch('market/getMarketList', {page: 1, source_type: 2})
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  return next()
+                })
+                .catch(() => {
+                  return next({name: '404'})
+                })
+            }
           }
         }
       },
@@ -584,6 +603,35 @@ export default [
               .catch(() => {
                 return next({name: '404'})
               })
+          }
+        }
+      },
+      // 退货新增规则
+      {
+        path: 'returns-management/edit-rules',
+        name: 'edit-rules',
+        component: () => lazyLoadView(import('@pages/edit-rules/edit-rules')),
+        meta: {
+          titles: ['商城', '订单', '退货管理', '新建规则'],
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('market/getMarketDetail', id)
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
           }
         }
       },
@@ -853,32 +901,32 @@ export default [
         }
       },
       // 团长提现
-      {
-        path: 'leader-withdrawal',
-        name: 'leader-withdrawal',
-        component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
-        meta: {
-          titles: ['商城', '团长', '团长提现'],
-          beforeResolve(routeTo, routeFrom, next) {
-            //  订单列表
-            let status = routeTo.query.status
-            if (status * 1 === 0) {
-              store.dispatch('leader/infoStatus', {status})
-            }
-            store
-              .dispatch('leader/getWithdrawalList')
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                return next()
-              })
-              .catch(() => {
-                return next({name: '404'})
-              })
-          }
-        }
-      },
+      // {
+      //   path: 'leader-withdrawal',
+      //   name: 'leader-withdrawal',
+      //   component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
+      //   meta: {
+      //     titles: ['商城', '团长', '团长提现'],
+      //     beforeResolve(routeTo, routeFrom, next) {
+      //       //  订单列表
+      //       let status = routeTo.query.status
+      //       if (status * 1 === 0) {
+      //         store.dispatch('leader/infoStatus', {status})
+      //       }
+      //       store
+      //         .dispatch('leader/getWithdrawalList')
+      //         .then((res) => {
+      //           if (!res) {
+      //             return next({name: '404'})
+      //           }
+      //           return next()
+      //         })
+      //         .catch(() => {
+      //           return next({name: '404'})
+      //         })
+      //     }
+      //   }
+      // },
       // 收支明细
       {
         path: 'leader-withdrawal/budget-detail/:id/:name',
@@ -1208,35 +1256,18 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购任务'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
+            routeTo.params.start = ''
+            routeTo.params.end = ''
+            let status = routeTo.query.status || 1
+            if (store.getters['proTask/goBackNumber'] >= 1) {
+              status = 2
             }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            let start = time.start
-            let end = time.end
-            let status = routeTo.query.status
-            store.dispatch('proTask/infoTaskTime', {start, end})
+            routeTo.params.status = status
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: '',
-                startTime: startTime,
-                endTime: endTime,
+                startTime: '',
+                endTime: '',
                 keyword: '',
                 page: 1,
                 status: status,
@@ -1327,33 +1358,17 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购单'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            }
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            let start = time.start
-            let end = time.end
-            store.dispatch('supply/infoPurchaseTime', {start, end})
+            let status = 1
+            routeTo.params.status = status
             store
               .dispatch('supply/getPurchaseList', {
                 time: '',
-                startTime: startTime,
-                endTime: endTime,
+                startTime: '',
+                endTime: '',
                 keyword: '',
                 page: 1,
-                loading: true
+                loading: true,
+                status: status
               })
               .then((res) => {
                 if (!res) {
@@ -1450,31 +1465,9 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            let status = routeTo.query.status
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            routeTo.params.accurateStart = time.start
-            routeTo.params.accurateEnd = time.end
+            let status = routeTo.query.status || 0
             store
-              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1})
+              .dispatch('product/getEnterData', {startTime: '', endTime: '', status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1517,31 +1510,9 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.start}`
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-') + ` ${time.end}`
-            }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            let status = routeTo.query.status
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            routeTo.params.accurateStart = time.start
-            routeTo.params.accurateEnd = time.end
+            let status = routeTo.query.status || 0
             store
-              .dispatch('product/getOutData', {startTime, endTime, status, page: 1})
+              .dispatch('product/getOutData', {startTime: '', endTime: '', status, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1561,6 +1532,7 @@ export default [
         component: () => lazyLoadView(import('@pages/out-detail/out-detail')),
         meta: {
           titles: ['供应链', '仓库', '成品出库', '商品明细'],
+          marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('product/getOutDetailData', routeTo.params.id)
@@ -1684,6 +1656,127 @@ export default [
         },
         component: () => lazyLoadView(import('@pages/sorting/sorting-config/sorting-config'))
       },
+      // 库存管理
+      {
+        path: 'storehouse-management',
+        name: 'storehouse-management',
+        component: () => lazyLoadView(import('@pages/storehouse-management/storehouse-management')),
+        meta: {
+          titles: ['供应链', '仓库', '库存管理'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 库存管理详情
+      {
+        path: 'storehouse-management/storehouse-detail',
+        name: 'storehouse-detail',
+        component: () => lazyLoadView(import('@pages/storehouse-detail/storehouse-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '库存管理', '库存详情'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getWarehouseDetailList', {code: routeTo.query.code, page: 1, order_sn: '', type: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 批次
+      {
+        path: 'storehouse-management/batch',
+        name: 'batch',
+        component: () => lazyLoadView(import('@pages/batch/batch')),
+        meta: {
+          marginBottom: 80,
+          titles: ['供应链', '仓库', '库存管理', '批次'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getStockList', {code: routeTo.query.code, page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 库存盘点
+      {
+        path: 'stock-taking',
+        name: 'stock-taking',
+        component: () => lazyLoadView(import('@pages/stock-taking/stock-taking')),
+        meta: {
+          titles: ['供应链', '仓库', '库存盘点'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getAdjustOrder', {page: 1, startTime: '', endTime: '', keyword: ''})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 新建盘点
+      {
+        path: 'stock-taking/edit-stock',
+        name: 'edit-stock',
+        component: () => lazyLoadView(import('@pages/edit-stock/edit-stock')),
+        meta: {
+          titles: ['供应链', '仓库', '库存盘点', '新建盘点'],
+          marginBottom: 80
+        }
+      },
+      // 盘点详情
+      {
+        path: 'stock-taking/stock-detail/:id',
+        name: 'stock-detail',
+        component: () => lazyLoadView(import('@pages/stock-detail/stock-detail')),
+        meta: {
+          titles: ['供应链', '仓库', '库存盘点', '盘点详情'],
+          beforeResolve(routeTo, routeForm, next) {
+            store
+              .dispatch('store/getAdjustOrderDetail', {id: routeTo.params.id, page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
       // 配送任务
       {
         path: 'distribution-task',
@@ -1693,41 +1786,17 @@ export default [
           titles: ['供应链', '配送', '配送任务'],
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
-            let time = await getCurrentTime()
-            let startTime = ''
-            let endTime = ''
-            if (time.is_over_23_hour) {
-              startTime = new Date(time.timestamp)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp + 86400 * 1000 * 1)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            } else {
-              startTime = new Date(time.timestamp - 86400 * 1000 * 1)
-              startTime = startTime.toLocaleDateString().replace(/\//g, '-')
-              endTime = new Date(time.timestamp)
-              endTime = endTime.toLocaleDateString().replace(/\//g, '-')
-            }
-            if (routeTo.query.timeNull * 1 === 1) {
-              startTime = ''
-              endTime = ''
-            }
-            let status = ''
-            if (routeTo.query.status) {
-              status = routeTo.query.status * 1
-            }
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
-            routeTo.params.accurateStart = time.start
-            routeTo.params.accurateEnd = time.end
             let tabIndex = store.state.distribution.tabIndex
+            store.dispatch('distribution/infoOrderTime', {
+              startTime: '',
+              endTime: '',
+              status: 1
+            })
+            store.dispatch('distribution/infoDriverTime', {
+              startTime: '',
+              endTime: ''
+            })
             if (tabIndex === 0) {
-              store.dispatch('distribution/infoOrderTime', {
-                startTime,
-                endTime,
-                start: time.start,
-                end: time.end,
-                status: status
-              })
               store
                 .dispatch('distribution/getOrderList')
                 .then((res) => {
@@ -1740,7 +1809,6 @@ export default [
                   return next({name: '404'})
                 })
             } else {
-              store.dispatch('distribution/infoDriverTime', {startTime, endTime, start: time.start, end: time.end})
               store
                 .dispatch('distribution/getDriverList')
                 .then((res) => {
@@ -1818,6 +1886,36 @@ export default [
           }
         }
       },
+      /**
+       *
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 统计
+       */
+      // 社群数据
+      {
+        path: 'community-data',
+        name: 'community-data',
+        component: () => lazyLoadView(import('@pages/community-data/community-data')),
+        meta: {
+          titles: ['统计', '社群数据'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  社群列表
+            store
+              .dispatch('community/getCommunityList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
       // 调度管理
       {
         path: 'supply-list/supply-detail/:id',
@@ -1860,7 +1958,54 @@ export default [
         meta: {
           titles: ['概况', '数据概况']
         }
+      },
+      // 账号管理
+      {
+        path: 'account-manage',
+        name: 'account-manage',
+        component: () => lazyLoadView(import('@pages/account-manage/account-manage')),
+        meta: {
+          titles: ['设置', '账号', '账号权限'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let tabIndex = store.state.account.tabIndex
+            if (tabIndex === 0) {
+              store
+                .dispatch('account/getAccountList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              store
+                .dispatch('account/getPermissionsList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            }
+          }
+        }
+      },
+      // 操作日记
+      {
+        path: 'account-diary',
+        name: 'account-diary',
+        component: () => lazyLoadView(import('@pages/account-diary/account-diary')),
+        meta: {
+          titles: ['设置', '账号', '操作日记']
+        }
       }
+
     ]
   },
   {

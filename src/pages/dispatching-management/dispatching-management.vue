@@ -17,21 +17,27 @@
         </div>
         <div class="list">
           <div v-if="tabIndex === 0">
-            <div v-for="(road, key) in roads" :key="key" class="list-content list-box">
-              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
-                {{item.operation ? '' : road[item.key]}}
-                <div v-if="item.operation === '删除'" class="list-operation" @click="handleOperation(item.operation, road)">{{item.operation}}</div>
-                <div v-if="item.operation === '商户配置'" class="list-operation" @click="handleOperation(item.operation, road)">{{`${item.operation}(${road[item.key]})`}}</div>
+            <div v-if="roads.length">
+              <div v-for="(road, key) in roads" :key="key" class="list-content list-box">
+                <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
+                  {{item.operation ? '' : road[item.key]}}
+                  <div v-if="item.operation === '删除'" class="list-operation" @click="handleOperation(item.operation, road)">{{item.operation}}</div>
+                  <div v-if="item.operation === '商户配置'" class="list-operation" @click="handleOperation(item.operation, road)">{{`${item.operation}(${road[item.key]})`}}</div>
+                </div>
               </div>
             </div>
+            <base-blank v-else></base-blank>
           </div>
           <div v-if="tabIndex === 1">
-            <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
-              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
-                {{item.operation ? '' : driver[item.key]}}
-                <div v-if="item.operation" class="list-operation" @click="handleOperation(item.operation, driver)">{{item.operation}}</div>
+            <div v-if="driverList.length">
+              <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
+                <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
+                  {{item.operation ? '' : driver[item.key]}}
+                  <div v-if="item.operation" class="list-operation" @click="handleOperation(item.operation, driver)">{{item.operation}}</div>
+                </div>
               </div>
             </div>
+            <base-blank v-else></base-blank>
           </div>
         </div>
       </div>

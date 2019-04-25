@@ -12,7 +12,8 @@ export const state = {
   select: false,
   editTaskList: [],
   timeStart: '',
-  timeEnd: ''
+  timeEnd: '',
+  goBackNumber: 0
 }
 
 export const getters = {
@@ -33,6 +34,9 @@ export const getters = {
   },
   timeEnd(state) {
     return state.timeEnd
+  },
+  goBackNumber(state) {
+    return state.goBackNumber
   }
 }
 
@@ -54,6 +58,9 @@ export const mutations = {
   },
   SET_TIME_END(state, timeEnd) {
     state.timeEnd = timeEnd
+  },
+  SET_Go_Back_Number(state, goBackNumber) {
+    state.goBackNumber = goBackNumber
   }
 }
 
@@ -66,8 +73,8 @@ export const actions = {
     return API.Supply.purchaseTask(
       {
         time,
-        start_time: startTime ? startTime + ' ' + state.timeStart : '',
-        end_time: endTime ? endTime + ' ' + state.timeEnd : '',
+        start_time: startTime,
+        end_time: endTime,
         keyword,
         status,
         page,
@@ -139,6 +146,12 @@ export const actions = {
   },
   setTaskList({state, commit}, arr) {
     commit('SET_EDIT_TASK_LIST', arr)
+  },
+  setGoBackNumber({state, commit}, type) {
+    commit('SET_Go_Back_Number', type * 1)
+  },
+  setGoBackNumberSub({state, commit}) {
+    commit('SET_Go_Back_Number', state.goBackNumber - 1)
   },
   infoTaskTime({commit, dispatch}, {start, end}) {
     commit('SET_TIME_START', start)

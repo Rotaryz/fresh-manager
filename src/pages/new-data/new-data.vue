@@ -144,6 +144,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import storage from 'storage-controller'
   import {deliveryMethods} from '@state/helpers'
 
   import API from '@api'
@@ -161,12 +162,12 @@
     {imgUrl: 'card', title: '复购率', subTitle: '平均复购率:', key: 'repeat_consume_rate', curr_total: 0, total: 0}
   ]
   const BASELIST = [
-    {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1'},
-    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale'},
-    {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list'},
-    {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier'},
-    {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer'},
-    {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management'}
+    {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
+    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale', permissions: 'activity'},
+    {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list', permissions: 'shop-manager'},
+    {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier', permissions: 'supplier'},
+    {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},
+    {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management', permissions: 'driver'}
   ]
   const DISPOSELIST = [
     {
@@ -174,31 +175,41 @@
       subText: '待发布采购任务',
       key: 'publish_task_count',
       number: 0,
-      url: '/home/procurement-task?status=1&timeNull=1'
+      url: '/home/procurement-task?status=1&timeNull=1',
+      permissions: 'purchase-task'
     },
     {
       text: '采',
       subText: '待采购任务',
       key: 'purchase_task_count',
       number: 0,
-      url: '/home/procurement-task?status=2&timeNull=1'
+      url: '/home/procurement-task?status=2&timeNull=1',
+      permissions: 'purchase-task'
     },
     {
       text: '入',
       subText: '待入库任务',
       key: 'entry_order_count',
       number: 0,
-      url: '/home/product-enter?status=0&timeNull=1'
+      url: '/home/product-enter?status=0&timeNull=1',
+      permissions: 'entry-orders'
     },
-    {text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0&timeNull=1'},
+    {
+      text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0&timeNull=1',
+      permissions: 'out-orders'
+    },
     {
       text: '配',
       subText: '待配送任务',
       key: 'delivery_count',
       number: 0,
-      url: '/home/distribution-task?status=1&timeNull=1'
+      url: '/home/distribution-task?status=1&timeNull=1',
+      permissions: 'delivery'
     },
-    {text: '运', subText: '待售后订单', key: 'after_sale_count', number: 0, url: '/home/returns-management?status=0'}
+    {
+      text: '运', subText: '待售后订单', key: 'after_sale_count', number: 0, url: '/home/returns-management?status=0',
+      permissions: 'after-sale-orders'
+    }
   ]
   const RANKTIME = [
     {title: '今天', status: 'today'},
@@ -236,10 +247,12 @@
         shopDownUrl: '',
         drawX: [],
         drawY: [],
-        drawTitle: ''
+        drawTitle: '',
+        permissions: {}
       }
     },
     mounted() {
+      this.permissions = storage.get('permissions')
       this.getSurveyTrade('', '', 'week', true)
       this.getScmBaseData()
       this.getShopBaseData()
@@ -286,7 +299,7 @@
               this.baseList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },
@@ -303,6 +316,15 @@
         })
       },
       jumpBase(item) {
+        if (!this.permissions[item.permissions]) {
+          this.$toast.show('暂无权限!')
+          return
+        }
+        if (this.permissions[item.permissions].index * 1 !== 1) {
+          this.$toast.show('暂无权限!')
+          return
+        }
+        console.log(this.permissions[item.permissions].index)
         if (item.title === '司机') {
           this.setTabIndex(1)
         }
@@ -519,7 +541,7 @@
               this.disposeList[index].number = res.data[key]
             }
           } else {
-            this.$toast(res.message)
+            this.$toast.show(res.message)
           }
         })
       },
@@ -539,6 +561,14 @@
         })
       },
       jumpDispose(item) {
+        if (!this.permissions[item.permissions]) {
+          this.$toast.show('暂无权限!')
+          return
+        }
+        if (this.permissions[item.permissions].index * 1 !== 1) {
+          this.$toast.show('暂无权限!')
+          return
+        }
         this.$router.push(item.url)
       }
     }

@@ -8,7 +8,6 @@ import 'iview/dist/styles/iview.css'
 import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(Plugins)
-
 Vue.config.productionTip = process.env.NODE_ENV === 'production'
 
 if (window.Cypress) {
@@ -24,3 +23,4 @@ const app = new Vue({
 export default app
 
 window.__app__ = app
+console.warn('运行环境:', process.env.VUE_APP_ENV)
