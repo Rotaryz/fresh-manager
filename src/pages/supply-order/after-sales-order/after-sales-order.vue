@@ -136,7 +136,7 @@
           {name: '待处理', value: 5, num: 0},
           {name: '已处理', value: 0, num: 0}
         ],
-        statusTab: 0,
+        statusTab: 1,
         batchendList: [],
         batchCommodities: COMMODITIES_LIST2,
         checkAllStatus: false,

@@ -25,7 +25,7 @@ export const state = {
       limit: 10,
       start_time: '',
       end_time: '',
-      status: "",
+      status: 0,
       keyword: ""
     },
   },

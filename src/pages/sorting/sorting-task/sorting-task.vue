@@ -97,7 +97,7 @@
           data: [{name: '全部', id: ''}]
         },
         // 拣货任务列表
-        statusTab: 0,
+        statusTab: 1,  // 待分拣
         statusList: [
           {name: '全部', value: '', num: 0},
           {name: '待分拣', value: 0, num: 0},

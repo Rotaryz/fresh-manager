@@ -32,8 +32,7 @@
                 <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
                     {{row[item.key]}}
-                    <div class="lack-icon" v-if="item.key ==='type_count' && row[item.after]">
-
+                    <div v-if="item.key ==='type_count' && row[item.after]" class="lack-icon">
                     </div>
                   </template>
                   <template v-else name="operation">
@@ -131,7 +130,7 @@
           {name: '待配送', value: 2, num: 0},
           {name: '已完成', value: 3, num: 0}
         ],
-        statusTab: 0,
+        statusTab: 2 ,// 待调度
         datePlaceHolderMerger: "选择下单日期",
         merger: {
           pageTotal: {
@@ -142,8 +141,8 @@
           },
           list:[],
           filter: {
-            time_start: "",
-            time_end: " "
+            start_time: "",
+            end_time: " "
           }
         }
       }
@@ -163,7 +162,6 @@
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1
       }
-      this.getTypeList()
       this._getStatusData()
     },
     methods: {
@@ -174,23 +172,27 @@
         this.tabIndex = index
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
         if (!this.tabIndex) {
+          // 待调度
+          this.statusTab = 2
           this._updateMerchantOrderList({
             page: 1,
             limit: 10,
             start_time: '',
             end_time: '',
             type: "",
-            status: "",
+            status: 0,
             keyword: ""
           })
         } else {
-          this._updateMergerList({
-            time_start: "",
-            time_end: ""
-          })
+          this._updateMergerList()
         }
       },
-      _updateMergerList(params) {
+      _updateMergerList(params={}) {
+        let defautFilter={
+          start_time: "",
+          end_time: " "
+        }
+        params = {...defautFilter,...params}
         this.merger.filter = {...this.merger.filter, ...params}
         this._getMergeOrderslist()
       },
@@ -206,7 +208,7 @@
       },
       // 时间选择器
       _changeTimeMerger(timeArr) {
-        this._updateMergerList({time_start: timeArr[0], time_end: timeArr[1]})
+        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1]})
       },
       // 页面更改
       _setMergerPage(page) {
@@ -238,17 +240,6 @@
               name: item.status_str,
               value: item.status,
               num: item.statistic
-            }
-          })
-        })
-      },
-      // 类型列表
-      getTypeList() {
-        API.MerchantOrder.getTypeList().then(res => {
-          this.typeFilter.data = res.data.map(item => {
-            return {
-              name: item.type_str,
-              value: item.type
             }
           })
         })

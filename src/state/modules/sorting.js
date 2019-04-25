@@ -18,7 +18,7 @@ export const state = {
       start_time: '',
       end_time: '',
       keyword: "",
-      status: ""
+      status: 0   // 待分拣
     }
   },
   sortingConfig: {
