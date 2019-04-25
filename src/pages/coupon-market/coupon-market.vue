@@ -141,6 +141,7 @@
         this.status = selectStatus.status
         this.$refs.pages.beginPage()
         this.page = 1
+        this.statusArr = new Array(10).fill(undefined)
         this.getMarketList({page: this.page, status: selectStatus.status})
       },
       getMarketStatus() {
@@ -150,7 +151,6 @@
               this.$toast.show(res.message)
               return
             }
-            this.statusArr = new Array(10).fill(undefined)
             this.statusTab = res.data.map((item, index) => {
               return {
                 name: item.status_str,
@@ -191,10 +191,12 @@
           }
           this.statusArr = this.statusArr.map((item, ind) => {
             if (index === ind) {
+              console.log(index, ind, status)
               item = status
             }
             return item
           })
+          console.log(this.statusArr)
           // this.getMarketList({page: this.page, status: this.status})
           this.getMarketStatus()
         })
