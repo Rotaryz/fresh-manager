@@ -44,6 +44,9 @@
               <template v-if="item.type==='operate'">
                 <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
               </template>
+              <template v-else-if="item.type === 'base_unit'">
+                {{row[item.key]}}{{row[item.type]}}
+              </template>
               <template v-else>
                 {{row[item.key]}}
               </template>
@@ -67,9 +70,9 @@
   const COMMODITIES_LIST = [
     {tilte: '商品名称', key: 'goods_name', flex: '2'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
-    {tilte: '下单数', key: 'sale_num'},
-    {tilte: '待拣货数', key: 'sale_wait_pick_num'},
-    {tilte: '缺货数', key: 'sale_out_of_num'},
+    {tilte: '下单数', type: "base_unit", key: 'sale_num'},
+    {tilte: '待拣货数', type: "base_unit", key: 'sale_wait_pick_num'},
+    {tilte: '缺货数', type: "base_unit", key: 'sale_out_of_num'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
     {tilte: '操作', key: 'id', type: "operate", replace: "明细", class: 'operate'}]
