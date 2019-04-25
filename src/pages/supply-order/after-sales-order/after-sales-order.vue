@@ -330,15 +330,18 @@
     align-items: center
 
   .model-wrap
+    height:80vh
     background: $color-white
     border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
-
+    display flex
+    flex-direction column
     .top
       height: 59.5px
       align-items: center
       justify-content: space-between
       padding: 0 20px
+      flex-shrink 0
       layout(row)
 
       .title
@@ -353,8 +356,10 @@
         icon-image(icon-close)
 
     .model-content
+      flex:1
       width: 1000px
       padding: 10px 20px 30px
+      overflow auto
       .status_str
         max-width 65px
       .row-check
@@ -368,7 +373,8 @@
       position: relative
       left: 0
       padding:20px
-
+      .back-submit
+        margin-right:0
   /*&:before*/
           /*border-top: 0px solid #e9ecee;*/
   .tab-item.serch-btn-box

@@ -67,7 +67,7 @@
               暂无线路，请在 <span class="operation-guide-text">配送-调度管理-线路</span>中新建
             </div>
 
-            <div class="back btn-group-wrap ">
+            <div class="back btn-group-wrap">
               <div class="back-cancel back-btn hand" @click.stop="_hideModal">关闭</div>
               <div v-if="road.data.length>0" class="back-btn back-submit hand" @click.stop="_sureSetRoad">确定</div>
             </div>
@@ -374,6 +374,7 @@
       font-size: $font-size-16
 
     .btn-group-wrap
+      height:auto
       layout(row)
       align-items: center
       justify-content: flex-end
@@ -381,7 +382,8 @@
       background: #fff
       position: relative
       left: 0
-
+      .back-submit
+          margin-right:0
       &:before
         border-top: 0px solid #e9ecee;
 </style>

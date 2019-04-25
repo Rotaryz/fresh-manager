@@ -109,11 +109,31 @@
       height: 144px
       margin-right: 20px
       margin-bottom 20px
-      border-1px(#E6EAED )
+      position: relative
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.04)
-      &:hover
-        box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.04)
-        border-1px(#ccc)
+
+
+      &:after
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border: 1px solid #E6EAED
+        border-radius: 2px
+        width 200%
+        height 200%
+        transform: scale(0.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 300%
+          height: 300%
+          border-radius: 2px * 3
+          transform: scale(1 / 3) translateZ(0)
+      &:hover:after
+        border: 1px solid #ccc
+
       .index
         display inline-block
         padding: 0px 5px
