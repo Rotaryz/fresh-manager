@@ -285,6 +285,7 @@
         case 0:
           API.Product.delCategory(this.bigItem.id).then((res) => {
             if (res.error === this.$ERR_OK) {
+
               setTimeout(() => {
                 this.categoryList.splice(this.bigIndex, 1)
                 this.oneBtn = true

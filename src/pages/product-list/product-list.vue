@@ -139,7 +139,7 @@
       this._getUrl()
       this.goodsList = _.cloneDeep(this.productList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
-      this.isOnline = this.$route.query.online
+      this.isOnline = this.$route.query.online || ''
       this.defaultIndex = this.$route.query.online
       if (this.$route.query.online * 1 === 1) {
         this.dispatchSelect.content = '上架'
@@ -177,7 +177,10 @@
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsStatus() {
-        API.Product.getGoodsStatus()
+        API.Product.getGoodsStatus({
+          keyword: this.keyWord,
+          goods_category_id: this.categoryId
+        })
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -228,6 +231,7 @@
         this.goodsPage = 1
         this._getUrl()
         this.getGoodsListData()
+        this.getGoodsStatus()
       },
       addPage(page) {
         this.goodsPage = page
@@ -284,6 +288,7 @@
         this.goodsPage = 1
         this._getUrl()
         this.getGoodsListData()
+        this.getGoodsStatus()
       },
       secondValue(data) {
         this.secondSelect.content = data.name
@@ -292,6 +297,7 @@
         this.goodsPage = 1
         this._getUrl()
         this.getGoodsListData()
+        this.getGoodsStatus()
       }
     }
   }
