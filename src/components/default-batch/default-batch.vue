@@ -62,6 +62,10 @@
         default: function () {
           return {}
         }
+      },
+      isOnZero: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -87,6 +91,14 @@
       confirm() {
         if (this.curItem.base_num - this.numberBatch !== 0) {
           this.$toast.show('请分配完出库数')
+          return
+        }
+        if (this.isOnZero) {
+          let list = this.batchList.map((item) => {
+            item.select_out_num = item.out_count
+            return item
+          })
+          this.$emit('confirm', list)
           return
         }
         let arr = []
