@@ -209,6 +209,7 @@
           return
         }
         this.$toast.show('删除成功')
+        this.getMarketStatus()
         this.getMarketList({page: this.page, status: this.status})
       }
     }

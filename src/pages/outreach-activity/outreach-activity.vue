@@ -205,6 +205,7 @@
         } else {
           this.$toast.show('删除成功')
         }
+        this.getOutreachStatus()
         this.getOutreachList({
           page: this.page,
           startTime: this.startTime,

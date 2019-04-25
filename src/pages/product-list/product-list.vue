@@ -249,6 +249,7 @@
             if (this.goodsList.length === 1 && this.goodsPage * 1 !== 1) {
               this.goodsPage--
             }
+            this.getGoodsStatus()
             this.getGoodsListData()
           } else {
             this.$toast.show(res.message)

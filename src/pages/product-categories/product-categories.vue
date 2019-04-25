@@ -149,6 +149,7 @@
                 image_url: imageUrl,
                 image_id: imageId
               })
+              this.getCategoryStatus()
               this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -167,6 +168,7 @@
                 parent_id: this.bigItem.id,
                 id: res.data.id
               })
+              this.getCategoryStatus()
               this.categoryList[this.bigIndex].list.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -285,7 +287,7 @@
         case 0:
           API.Product.delCategory(this.bigItem.id).then((res) => {
             if (res.error === this.$ERR_OK) {
-
+              this.getCategoryStatus()
               setTimeout(() => {
                 this.categoryList.splice(this.bigIndex, 1)
                 this.oneBtn = true
@@ -299,6 +301,7 @@
         case 1:
           API.Product.delCategory(this.smallItem.id).then((res) => {
             if (res.error === this.$ERR_OK) {
+              this.getCategoryStatus()
               setTimeout(() => {
                 this.categoryList[this.bigIndex].list.splice(this.smallIndex, 1)
                 this.oneBtn = true

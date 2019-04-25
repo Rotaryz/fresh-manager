@@ -108,7 +108,7 @@
     },
     methods: {
       ...couponMethods,
-      getCouponStatus({startTime, endTime}) {
+      getCouponStatus(startTime, endTime) {
         API.Coupon.getCouponStatus({startTime: startTime || this.startTime, endTime: endTime || this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
@@ -132,7 +132,7 @@
         await this.setTime(time)
         let startTime = time[0]
         let endTime = time[1]
-        this.getCouponStatus({startTime, endTime})
+        this.getCouponStatus(startTime, endTime)
         this.$refs.pagination.beginPage()
       },
       _deleteCoupon(item, id) {
@@ -149,6 +149,7 @@
         }
 
         this.$toast.show('删除成功')
+        this.getCouponStatus()
         this.getCouponList()
       }
     }

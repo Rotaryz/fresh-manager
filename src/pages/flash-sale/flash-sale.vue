@@ -166,6 +166,7 @@
         } else {
           this.$toast.show('删除成功')
         }
+        this.getSaleStatus()
         this.getSaleList({
           page: this.page,
           startTime: this.startTime,

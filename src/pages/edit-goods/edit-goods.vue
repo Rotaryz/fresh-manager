@@ -745,6 +745,7 @@
         &:focus
           border-color: $color-main !important
       .edit-textarea
+        padding: 5px 14px
         height: 94px
         resize: none
       .num
