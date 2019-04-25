@@ -20,7 +20,7 @@
                v-dragging="{ item: row, list: dragList, group: 'sortingTask' }"
                class="list-content list-box"
           >
-            <div class="list-item no-flex">
+            <div class="list-item sort">
               <div class="index">
                 {{sortingConfig.list[index].sort|format}}
               </div>
@@ -30,7 +30,7 @@
               {{row[commodities[2].key]}}
               <div v-if="!row[commodities[2].key]" class="list-operation" @click.stop="_showSettingModel(row.id)">设置线路</div>
             </div>
-            <div class="list-item  no-flex operate">
+            <div class="list-item  operate">
               <div class="list-operation-wrap">
                 <div class="drag-operation">
                 </div>
@@ -84,10 +84,10 @@
   const PAGE_NAME = 'SORTING_CONFIG'
   const TITLE = '配货位-列表'
   const COMMODITIES_LIST = [
-    {title: '配货位', key: 'sort',noShow:true,class:'no-flex'},
-    {title: '商户名称', key: 'name',flex:'2'},
-    {title: '线路', key: 'road_name',replaceText:'設置路綫',flex:'1'},
-    {title: '操作 ', key: 'road_id',type:"operate",class:'no-flex  operate'},
+    {title: '配货位', key: 'sort', noShow: true, class: 'sort'},
+    {title: '商户名称', key: 'name', flex: '2'},
+    {title: '线路', key: 'road_name', replaceText: '設置路綫', flex: '1'},
+    {title: '操作 ', key: 'road_id', type: "operate", class: 'operate'},
   ]
   export default {
     name: PAGE_NAME,
@@ -122,7 +122,8 @@
           road_name: '',
           road_id: ''
         },
-        settingId: ""
+        settingId: "",
+        isChange:false
       }
     },
     computed: {
@@ -136,6 +137,16 @@
       console.log(this.sortingConfig, 'this.sortingConfig.list')
 
       this.$dragging.$on('dragged', (res) => {
+        console.log(res,'dragged')
+      // let data = this.dragList.map((item, idx) => {
+      //   return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
+      // })
+      // this._changeAllocationPostion(data)
+      })
+      this.$dragging.$on('dragend', (res) => {
+        console.log(res, 'dragenddragenddragenddragenddragenddragenddragend')
+        if(this.isChange) return
+        this.isChange = true
         let data = this.dragList.map((item, idx) => {
           return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
         })
@@ -158,6 +169,7 @@
           this.$toast.show(res.message)
           if (res.error === this.$ERR_OK) {
             this.updateList()
+            this.isChange = false
           }
         })
           .finally(() => {
@@ -238,14 +250,18 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .table .table-content
-    padding-bottom: 20px;
+    padding-bottom: 20px
+
+    .list-content:hover
+      cursor pointer
+
     .list-item
-      &.no-flex
-        flex-grow:0
-        flex-shrink:0
-        flex-basis:100px
+      &.sort
+        max-width: 100px
+
       &.operate
-        flex-basis:50px
+        max-width: 50px
+
       .index
         display inline-block
         padding: 0px 5px

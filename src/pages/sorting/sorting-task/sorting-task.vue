@@ -40,7 +40,7 @@
         </div>
         <div class="list">
           <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
-            <div class="list-item" v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]">
+            <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" class="list-item">
               <template v-if="item.type==='operate'">
                 <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
               </template>
