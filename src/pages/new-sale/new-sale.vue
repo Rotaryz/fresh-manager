@@ -350,7 +350,8 @@
         if (item.id === '') {
           this.secondAssortment.data = []
         } else {
-          let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+          let res = await API.Product.getCategory({parent_id: this.parentId})
+          this.$loading.hide()
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
@@ -368,7 +369,8 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        let res = await API.Product.getCategory({parent_id: this.parentId})
+        this.$loading.hide()
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
       },
