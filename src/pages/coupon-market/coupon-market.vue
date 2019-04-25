@@ -245,6 +245,9 @@
   .down-content
     height: 170px
     .down-main
+      &:first-child
+        .top-btn:nth-child(2)
+          margin-right: 22px
       &:last-child
         .top-btn:first-child
           width: 84px
