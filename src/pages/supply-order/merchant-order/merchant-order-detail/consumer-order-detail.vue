@@ -19,7 +19,7 @@
       <div class="list">
         <div v-for="(row, key) in consumerDetail.detail.details" :key="key" class="list-content list-box">
           <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
-            <div :class="{red:item.key==='status_str'&& row.is_lack || item.key==='sale_out_of_num'&& row.is_lack}">
+            <div :class="{red:item.key==='status_str'&& row.status || item.key==='sale_out_of_num'&& row.is_lack}">
               {{row[item.key]}}
             </div>
           </div>
@@ -104,8 +104,8 @@
     li
       display inline-block
       margin:0px 130px 20px 0px
-    .red
-      color: #f84e3c
+  .red
+    color: #f84e3c
 
 
 </style>

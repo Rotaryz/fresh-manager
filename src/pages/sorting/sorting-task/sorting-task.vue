@@ -24,7 +24,7 @@
       <!--列表tab工具栏-->
       <div class="identification">
         <div class="identification-page">
-          <img src="icon-warehousing@2x.png" class="identification-icon">
+          <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">拣货任务列表</p>
           <base-status-tab :statusList="statusList" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
@@ -167,7 +167,6 @@
       },
       _getFristList() {
         this._getClassifyList().then(res => {
-          console.log(res, 'getClassifyList')
           this.filterTaskFrist.data = res.data
         })
       },
@@ -188,9 +187,15 @@
       },
       _getUrl() {
         if (!this.exportParamsStr) {
+          let obj = this.sortingTask.filter
           let data = {
             current_corp: this.getCurrentId(),
-            access_token: this.currentUser().access_token
+            access_token: this.currentUser().access_token,
+            goods_category_id:obj.goods_category_id,
+            start_time:obj.start_time,
+            end_time:obj.end_time,
+            keyword:obj.keyword,
+            status :obj.status
           }
           let search = []
           for (let key in data) {

@@ -84,8 +84,8 @@
         </div>
         <div class="back btn-group-wrap">
           <div class="back-cancel back-btn hand" @click="_hideModal">返回</div>
-          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量退款</div>
-          <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量补货</div>
+          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量补货</div>
+          <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量退款</div>
         </div>
       </div>
     </default-modal>
@@ -103,7 +103,7 @@
   const TITLE = '商户订单'
   const COMMODITIES_LIST = [
     {title: '创建时间', key: 'created_at', flex: 1.5},
-    {title: '售后订单号  ', key: 'after_sale_order_id', flex: 1},
+    {title: '售后订单号  ', key: 'order_sn', flex: 1},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
     {title: '缺货品类数', key: 'type_count', flex:1},
     {title: '原订单号 ', key: 'source_order_sn', flex: 2},
@@ -151,7 +151,6 @@
       }
     },
     async created() {
-      console.log(this.afterSalesList, 'afterSalesList')
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1
       }
@@ -168,7 +167,6 @@
       },
       // 每行选择
       _itemCheckChange(item) {
-        console.log(item)
         let id = item.goods_sku_code
         let idx = this.selectIds.indexOf(id)
         idx >= 0 ? this.selectIds.splice(idx, 1) : this.selectIds.push(id)
@@ -198,19 +196,24 @@
         this.$refs.modal.hideModal()
       },
       _showModal() {
-        this.$refs.modal.showModal()
         this._getBatchList()
+        this.$refs.modal.showModal()
+        this.checkAllStatus= false
+        this.selectIds= []
+
       },
       _showConfirm(val) {
         if (this.selectIds.length === 0) return
         this.confirmType = val
-        let text = `确定对所选商品${this.confirmType === 1 ? '批量补货' : '批量退货'}?`
+        let text = `确定对所选商品${this.confirmType === 1 ? '批量补货' : '批量退款'}?`
         this.$refs.confirm.show(text)
       },
       _getConfirmResult() {
         if (this.confirmType === 1) {
+          // 补货
           this._setBatchReplenishment()
         } else {
+          // 退款
           this._setBatchRefund()
         }
       },
@@ -300,6 +303,8 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   /*@import "@pages/supply-order/after-sales-detail/check/check.styl"*/
+  .table .table-content
+    padding-bottom: 20px;
   .operate
     max-width 50px
   .pro-select-icon
@@ -325,15 +330,18 @@
     align-items: center
 
   .model-wrap
+    height:80vh
     background: $color-white
     border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
-
+    display flex
+    flex-direction column
     .top
       height: 59.5px
       align-items: center
       justify-content: space-between
       padding: 0 20px
+      flex-shrink 0
       layout(row)
 
       .title
@@ -348,12 +356,14 @@
         icon-image(icon-close)
 
     .model-content
+      flex:1
       width: 1000px
       padding: 10px 20px 30px
+      overflow auto
       .status_str
-        max-width 100px
+        max-width 65px
       .row-check
-        max-width 50px
+        max-width 60px
     .btn-group-wrap
       layout(row)
       height:auto
@@ -363,7 +373,8 @@
       position: relative
       left: 0
       padding:20px
-
+      .back-submit
+        margin-right:0
   /*&:before*/
           /*border-top: 0px solid #e9ecee;*/
   .tab-item.serch-btn-box

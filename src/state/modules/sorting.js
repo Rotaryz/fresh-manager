@@ -53,7 +53,6 @@ export const getters = {
 export const mutations = {
   SET_PARAMS(state, {type = 'sortingTask', ...params}) {
     state[type].filter = {...state[type].filter, ...params}
-    console.log(state[type].filter)
   },
   SET_TASK_DETAIL(state, {type = 'deliveryDetail', value}) {
     state.sortingTaskDetail[type] = value
@@ -95,8 +94,6 @@ export const actions = {
   },
   // 详情
   getSortingTaskDetail({commit}, {id,...params}) {
-    console.log(params,9999)
-    // TODO
     return Promise.all([
       API.Sorting.getSortingDeliveryDetail(id,params),
       API.Sorting.getSortingPickingDetail(id)

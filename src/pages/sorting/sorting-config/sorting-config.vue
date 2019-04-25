@@ -5,7 +5,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
-          <p class="identification-name">配货明细</p>
+          <p class="identification-name">配货位列表</p>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="_export">导出</div>
@@ -67,7 +67,7 @@
               暂无线路，请在 <span class="operation-guide-text">配送-调度管理-线路</span>中新建
             </div>
 
-            <div class="back btn-group-wrap ">
+            <div class="back btn-group-wrap">
               <div class="back-cancel back-btn hand" @click.stop="_hideModal">关闭</div>
               <div v-if="road.data.length>0" class="back-btn back-submit hand" @click.stop="_sureSetRoad">确定</div>
             </div>
@@ -139,13 +139,10 @@
       this.dragList = _.cloneDeep(this.sortingConfig.list)
     },
     mounted() {
-      console.log(this.sortingConfig, 'this.sortingConfig.list')
-
       this.$dragging.$on('dragged', (res) => {
-        // console.log(res,'dragged')
+
       })
       this.$dragging.$on('dragend', (res) => {
-        // console.log(res, 'dragenddragenddragenddragenddragenddragenddragend')
         if (this.isChange) return
         this.isChange = true
         let data = this.dragList.map((item, idx) => {
@@ -377,6 +374,7 @@
       font-size: $font-size-16
 
     .btn-group-wrap
+      height:auto
       layout(row)
       align-items: center
       justify-content: flex-end
@@ -384,7 +382,8 @@
       background: #fff
       position: relative
       left: 0
-
+      .back-submit
+          margin-right:0
       &:before
         border-top: 0px solid #e9ecee;
 </style>

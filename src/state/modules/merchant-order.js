@@ -179,7 +179,6 @@ export const actions = {
   getConsumerDetailBase({state, commit}, {id}) {
     return API.MerchantOrder.getConsumerDetailBase({id})
       .then((res) => {
-        console.log(state.consumerDetail.filter)
         if (res.error !== app.$ERR_OK) {
           return false
         }
