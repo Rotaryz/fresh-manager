@@ -95,7 +95,7 @@
   .left-tab
     width: 176px
     padding-right: 6px
-    height: 100%
+    height: 852px
     overflow-y: auto
     display: flex
     flex-direction: column
