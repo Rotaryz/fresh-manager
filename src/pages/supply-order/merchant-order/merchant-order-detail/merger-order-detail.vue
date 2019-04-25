@@ -47,11 +47,11 @@
           {title: '缺货数量', key: 'sale_out_of_num', type:'red',flex: 1},
         ],
         topListTilte: [{
-          name: '汇总订单号 :', id: 'order_sn'
+          name: '汇总订单号：', id: 'order_sn'
         }, {
-          name: '品类数:', id: 'type_count'
+          name: '品类数：', id: 'type_count'
         }, {
-          name: '下单时间:', id: 'created_at'
+          name: '下单时间：', id: 'created_at'
         }]
       }
     },

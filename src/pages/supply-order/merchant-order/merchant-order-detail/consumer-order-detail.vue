@@ -54,17 +54,17 @@
           {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: "last-child"}
         ],
         topListTilte: [{
-          name: '商品名称:', key: 'goods_name'
+          name: '商品名称：', key: 'goods_name'
         }, {
-          name: '商品编号 :', key: 'goods_sku_encoding'
+          name: '商品编号：', key: 'goods_sku_encoding'
         }, {
-          name: '分类:', key: 'goods_category'
+          name: '分类：', key: 'goods_category'
         }, {
-          name: '下单数量:', key: 'sale_num'
+          name: '下单数量：', key: 'sale_num'
         }, {
-          name: '配货数量:', key: 'sale_wait_pick_num'
+          name: '配货数量：', key: 'sale_wait_pick_num'
         }, {
-          name: '缺货数量:', key: 'sale_out_of_num'
+          name: '缺货数量；', key: 'sale_out_of_num'
         }]
       }
     },

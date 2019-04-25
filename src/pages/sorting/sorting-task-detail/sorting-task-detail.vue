@@ -47,15 +47,15 @@
     data() {
       return {
         topListTilte: [{
-          name: '商品名称:', id: 'goods_name'
+          name: '商品名称：', id: 'goods_name'
         }, {
-          name: '商品编码:', id: 'goods_sku_code'
+          name: '商品编码：', id: 'goods_sku_code'
         }, {
-          name: '存放库位:', id: 'position_name'
+          name: '存放库位：', id: 'position_name'
         }, {
-          name: '配给商户数:', id: 'merchant_num'
+          name: '配给商户数；', id: 'merchant_num'
         }, {
-          name: '待配货数:', id: 'base_wait_pick_num', type: 'number', after: '件'
+          name: '待配货数：', id: 'base_wait_pick_num', type: 'number', after: '件'
         }]
       }
     },

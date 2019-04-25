@@ -58,17 +58,17 @@
           {title: '操作', key: '', operation: '详情', flex: 0.32}
         ],
         topListTilte: [{
-          name: '商户名称:', key: 'buyer_name'
+          name: '商户名称：', key: 'buyer_name'
         }, {
-          name: '订单号 :', key: 'order_sn'
+          name: '订单号：', key: 'order_sn'
         }, {
-          name: '下单时间:', key: 'created_at'
+          name: '下单时间：', key: 'created_at'
         }, {
-          name: '状态:', key: 'status_str'
+          name: '状态：', key: 'status_str'
         }, {
-          name: '品类数:', key: 'type_count'
+          name: '品类数：', key: 'type_count'
         }, {
-          name: '类型:', key: 'type_str'
+          name: '类型：', key: 'type_str'
         }]
       }
     },
