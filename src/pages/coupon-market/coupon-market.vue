@@ -264,6 +264,7 @@
         height: 84px
         text-align: center
         margin-right: 36px
+        overflow: hidden
         color: $color-text-main
         font-size: $font-size-14
         font-family: $font-family-regular
@@ -272,6 +273,7 @@
           width: 56px
           height: 56px
           margin: 0 auto
+          border-radius: 4px
           display: block
           transition: all 0.3s
         .text
