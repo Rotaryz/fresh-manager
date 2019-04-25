@@ -32,7 +32,7 @@
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
-            <div class="list-item list-item-batches hand" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
+            <div class="list-item list-item-batches hand" @click="outFn(item, index)">
               <transition name="fade">
                 <div v-show="showIndex === index && item.status !== 0" class="batches-box">
                   <div v-for="(item1, index1) in item.out_batches" :key="index1">
@@ -47,7 +47,7 @@
                   </div>
                 </div>
               </transition>
-              <span class="list-operation">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
+              <span class="list-operation" @mouseenter="_showTip(index)" @mouseleave="_hideTip">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
             </div>
             <div class="list-item">{{item.out_cost_price ? '￥' + item.out_cost_price : '￥0.00'}}/{{item.base_unit}}</div>
             <div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>
@@ -66,7 +66,7 @@
 <script type="text/ecmascript-6">
   import _ from 'lodash'
   import API from '@api'
-  import {productComputed} from '@state/helpers'
+  import {productComputed, productMethods} from '@state/helpers'
   import DefaultBatch from '@components/default-batch/default-batch'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -103,7 +103,7 @@
       }
     },
     computed: {
-      ...productComputed
+      ...productComputed,
     },
     created() {
       this.id = this.$route.params.id || null
@@ -111,6 +111,7 @@
       this.outMsg = _.cloneDeep(this.outDetail.out_order)
     },
     methods: {
+      ...productMethods,
       cancel() {
         this.$router.back()
       },
@@ -190,6 +191,7 @@
         this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
         this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
         this.outDetailList[this.curIndex].out_batches = arr
+        this.outDetailList[this.curIndex].select_batch = arr
         this.$refs.modalBox.cancel()
       }
     }
