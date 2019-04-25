@@ -361,7 +361,6 @@
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
         this.msg.goods_banner_images.push(item)
-        console.log(this.msg.goods_banner_images, 123)
       },
       delPic(index) {
         this.msg.goods_banner_images.splice(index, 1)

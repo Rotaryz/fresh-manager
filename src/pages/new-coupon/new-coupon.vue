@@ -137,13 +137,13 @@
             ></date-picker>
           </div>
           <div class="select-item">
-            <span :class="['item-icon', {'checked': +msg.support_activity === 1}]"></span>
-            <span>支持活动商品使用</span>
-            <input type="text" class="day-item">
+            <span :class="['item-icon', {'checked': +msg.day_range === 1}]"></span>
+            <span>领取当日起</span>
+            <input v-modal="msg.day" type="text" class="day-item">
             <span>天内可用</span>
           </div>
         </div>
-        <div :class="{'time-no-change':disable}"></div>
+        <div :class="{'check-no-change':disable}"></div>
       </div>
 
       <!--使用范围-->
@@ -413,7 +413,9 @@
           end_at: '',
           explain: '',
           range_type: 1, // 适用范围0未知1通用券2品类券3单品券
-          ranges: []
+          ranges: [],
+          day_range: 0,
+          day: ''
         },
         isSubmit: false, // 在提交
         categoryShow: false, // 选择品类弹窗

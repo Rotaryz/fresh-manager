@@ -53,7 +53,6 @@
     methods: {
       checkStatus(index, item) {
         this.statusIndex = index
-        console.log(this.el)
         this.style = `left: ${this.el[index].offsetLeft}px; width: ${this.el[this.statusIndex].offsetWidth}px`
         this.$emit('setStatus', item, index)
       }
