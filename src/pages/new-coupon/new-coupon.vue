@@ -136,14 +136,14 @@
               @on-change="_getEndTime"
             ></date-picker>
           </div>
-          <div class="select-item">
+          <!--<div class="select-item">
             <span :class="['item-icon', {'checked': +msg.day_range === 1}]"></span>
             <span>领取当日起</span>
             <input v-modal="msg.day" type="text" class="day-item">
             <span>天内可用</span>
-          </div>
+          </div>-->
         </div>
-        <div :class="{'check-no-change':disable}"></div>
+        <div :class="{'time-no-change':disable}"></div>
       </div>
 
       <!--使用范围-->
@@ -159,7 +159,7 @@
       </div>
 
       <!--使用说明-->
-      <div class="edit-item">
+      <!--<div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           使用说明
@@ -180,7 +180,7 @@
           <div class="textarea-num">{{msg.explain ? msg.explain.length : 0}}/45</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
-      </div>
+      </div>-->
     </div>
 
     <!--添加品类列表-->
@@ -414,7 +414,7 @@
           explain: '',
           range_type: 1, // 适用范围0未知1通用券2品类券3单品券
           ranges: [],
-          day_range: 0,
+          // day_range: 0,
           day: ''
         },
         isSubmit: false, // 在提交
@@ -834,7 +834,7 @@
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
-          {value: this.testExplain, txt: '请输入优惠券名称'},
+          // {value: this.testExplain, txt: '请输入优惠券名称'},
           {value: this.testGoods, txt: '请选择商品'},
           {value: this.testCategory, txt: '请选择品类'}
         ]
