@@ -137,11 +137,11 @@
       changeTab(selectStatus) {
         this.setOrderStatus(selectStatus)
       },
-      getOrderStatus() {
+      getOrderStatus({startTime, endTime}) {
         API.Order.getOrderStatus({
           status: this.status,
-          startTime: this.startTime,
-          endTime: this.endTime,
+          startTime: startTime || this.startTime,
+          endTime: endTime || this.endTime,
           shop_id: this.shopId,
           keyword: this.keyword
         })
@@ -181,14 +181,19 @@
       },
       changeShopId(shop) {
         this.setShopId(shop)
+        this.getOrderStatus()
         this.$refs.pagination.beginPage()
       },
       changeTime(time) {
         this.setTime(time)
+        let startTime = time[0]
+        let endTime = time[1]
+        this.getOrderStatus({startTime, endTime})
         this.$refs.pagination.beginPage()
       },
       changeKeyword(keyword) {
         this.setKeyword(keyword)
+        this.getOrderStatus()
         this.$refs.pagination.beginPage()
       }
     }

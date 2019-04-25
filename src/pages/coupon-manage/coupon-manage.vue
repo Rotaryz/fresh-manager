@@ -108,8 +108,8 @@
     },
     methods: {
       ...couponMethods,
-      getCouponStatus() {
-        API.Coupon.getCouponStatus({startTime: this.startTime, endTime: this.endTime})
+      getCouponStatus({startTime, endTime}) {
+        API.Coupon.getCouponStatus({startTime: startTime || this.startTime, endTime: endTime || this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -128,8 +128,11 @@
         this.$refs.pagination.beginPage()
         this.setStatus(status)
       },
-      changeTime(time) {
-        this.setTime(time)
+      async changeTime(time) {
+        await this.setTime(time)
+        let startTime = time[0]
+        let endTime = time[1]
+        this.getCouponStatus({startTime, endTime})
         this.$refs.pagination.beginPage()
       },
       _deleteCoupon(item, id) {

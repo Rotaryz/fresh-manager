@@ -256,7 +256,7 @@
         width: 84px
         height: 84px
         text-align: center
-        margin-right: 50px
+        margin-right: 36px
         color: $color-text-main
         font-size: $font-size-14
         font-family: $font-family-regular

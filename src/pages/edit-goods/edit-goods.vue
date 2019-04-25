@@ -61,7 +61,7 @@
           <div class="edit-image">
             <draggable v-model="msg.goods_banner_images" class="draggable" @update="_setSort()">
               <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
-                <span @click="delPic(index)"></span>
+                <span class="close" @click="delPic(index)"></span>
               </div>
             </draggable>
             <div v-if="msg.goods_banner_images.length < picNum" class="add-image hand">
@@ -84,7 +84,7 @@
           <div class="edit-image">
             <draggable v-model="msg.goods_detail_images" class="draggable" @update="_setSort()">
               <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
-                <span @click="delPic2(index)"></span>
+                <span class="close" @click="delPic2(index)"></span>
               </div>
             </draggable>
             <div v-if="msg.goods_detail_images.length < 15" class="add-image hand">
