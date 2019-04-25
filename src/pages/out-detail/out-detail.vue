@@ -55,7 +55,7 @@
         </div>
       </div>
     </div>
-    <default-batch ref="modalBox" :batchList="batchList" :curItem.sync="curItem" @confirm="confirm"></default-batch>
+    <default-batch ref="modalBox" :batchList="batchList" :curItem.sync="curItem" :isOnZero="true" @confirm="confirm"></default-batch>
     <div v-if="outMsg.status === 0" class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
       <div class="back-btn back-submit hand" @click="submitOutFn">确认提交</div>
@@ -144,10 +144,17 @@
       },
       submitOutFn() {
         let arr = []
-        this.outDetailList.forEach((item, index) => {
+        let list = JSON.parse(JSON.stringify(this.outDetailList))
+        list.forEach((item, index) => {
+          let selectBatch = []
+          item.select_batch.forEach((child) => {
+            if (+child.select_out_num > 0) {
+              selectBatch.push(child)
+            }
+          })
           let obj = {
             id: item.id,
-            select_batch: item.out_batches,
+            select_batch: selectBatch,
             type: 5
           }
           arr.push(obj)
@@ -178,19 +185,19 @@
           return item
         })
         this.$refs.modalBox.show(number, item)
-      },
+      }
+      ,
       confirm(arr) {
         let allprice = 0
         let number = 0
         arr.forEach((item) => {
-          if (item.select_out_num > 0) {
+          if (+item.select_out_num > 0) {
             number += item.select_out_num * 1
             allprice += item.select_out_num * item.price
           }
         })
         this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
         this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
-        this.outDetailList[this.curIndex].out_batches = arr
         this.outDetailList[this.curIndex].select_batch = arr
         this.$refs.modalBox.cancel()
       }
