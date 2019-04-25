@@ -84,7 +84,7 @@
     },
     created() {
       if (this.merchantDetail.status === 0 || this.merchantDetail.status === 5) {
-        this.commodities = commodities.slice(0, -2)
+        this.commodities = commodities.slice(0, -1)
       }
     },
     methods: {
