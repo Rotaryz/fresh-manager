@@ -1,4 +1,5 @@
 import store from '@state/store'
+import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
 
 export default [
@@ -16,9 +17,11 @@ export default [
     meta: {
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
-        if (store.getters['auth/loggedIn']) {
+        console.log(storage.get('losePermissions'))
+        if (store.getters['auth/loggedIn'] && storage.get('losePermissions') !== 1) {
           next({name: 'new-data'})
         } else {
+          storage.remove('losePermissions')
           next()
         }
       }
@@ -1883,6 +1886,36 @@ export default [
           }
         }
       },
+      /**
+       *
+       *
+       * ------------------------------------------------------------------------------------------
+       *
+       * 统计
+       */
+      // 社群数据
+      {
+        path: 'community-data',
+        name: 'community-data',
+        component: () => lazyLoadView(import('@pages/community-data/community-data')),
+        meta: {
+          titles: ['统计', '社群数据'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  社群列表
+            store
+              .dispatch('community/getCommunityList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
       // 调度管理
       {
         path: 'supply-list/supply-detail/:id',
@@ -1925,7 +1958,54 @@ export default [
         meta: {
           titles: ['概况', '数据概况']
         }
+      },
+      // 账号管理
+      {
+        path: 'account-manage',
+        name: 'account-manage',
+        component: () => lazyLoadView(import('@pages/account-manage/account-manage')),
+        meta: {
+          titles: ['设置', '账号', '账号权限'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let tabIndex = store.state.account.tabIndex
+            if (tabIndex === 0) {
+              store
+                .dispatch('account/getAccountList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              store
+                .dispatch('account/getPermissionsList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            }
+          }
+        }
+      },
+      // 操作日记
+      {
+        path: 'account-diary',
+        name: 'account-diary',
+        component: () => lazyLoadView(import('@pages/account-diary/account-diary')),
+        meta: {
+          titles: ['设置', '账号', '操作日记']
+        }
       }
+
     ]
   },
   {

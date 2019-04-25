@@ -193,6 +193,13 @@ export const dataComputed = {
 
 export const dataMethods = mapActions('data', ['getOrderDetail', 'getLeaderDetail', 'getShopDetail'])
 
+// 社群数据
+export const communityComputed = {
+  ...mapGetters('community', ['communityList', 'qualityData', 'businessData', 'groupData', 'goodsList'])
+}
+
+export const communityMethods = mapActions('community', ['getCommunityList', 'getQualityData', 'getBusinessData', 'getGroupData', 'getGoodsList'])
+
 // 交易记录
 export const tradeComputed = {
   ...mapGetters('trade', ['trades', 'pageDetail', 'page', 'date', 'keyword', 'type'])
@@ -509,4 +516,13 @@ export const afterSalesOrderMethods ={
     'SET_STATUS',
     'SET_DETAIL_PAGE'
   ])
+}
+
+// 设置权限
+export const accountComputed = {
+  ...mapGetters('account', ['tabIndex', 'accountList', 'pageDetail', 'accountPage', 'keyword', 'permissionsList'])
+}
+
+export const accountMethods = {
+  ...mapActions('account', ['setTabIndex', 'getAccountList', 'setKeyword', 'setAccount', 'getPermissionsList'])
 }
