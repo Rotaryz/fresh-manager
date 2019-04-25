@@ -135,7 +135,7 @@
     mounted() {
       console.log(this.sortingConfig, 'this.sortingConfig.list')
 
-      this.$dragging.$on('dragend', (res) => {
+      this.$dragging.$on('dragged', (res) => {
         let data = this.dragList.map((item, idx) => {
           return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
         })
