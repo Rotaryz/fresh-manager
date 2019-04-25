@@ -19,9 +19,7 @@
       <div class="list">
         <div v-for="(row, key) in consumerDetail.detail.details" :key="key" class="list-content list-box">
           <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
-            <div v-if="isLine" style="border-top:1px solid #333;width:30px;">
-            </div>
-            <div v-else>
+            <div :class="{red:item.key==='status_str'&& row.is_lack || item.key==='sale_out_of_num'&& row.is_lack}">
               {{row[item.key]}}
             </div>
           </div>
@@ -48,10 +46,11 @@
       return {
         commodities: [
           {title: '订单号', key: 'out_order_sn', flex: 1.8},
-          {title: '会员名 ', key: 'nickname', flex: 1},
+          {title: '会员名称', key: 'nickname', flex: 1},
           {title: '下单数量', key: 'sale_num', flex: 1},
-          {title: '配货数量', key: 'sale_wait_pick_num', flex: 1},// 待配送 已完成
-          {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: "last-child"}
+          {title: '配货数量', key: 'sale_wait_pick_num', flex: 1},
+          {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
+          {title: '处理结果', key: 'status_str', flex: 1, class: "last-child"}
         ],
         topListTilte: [{
           name: '商品名称：', key: 'goods_name'
@@ -105,8 +104,8 @@
     li
       display inline-block
       margin:0px 130px 20px 0px
-      .number
-        color: #f84e3c
+    .red
+      color: #f84e3c
 
 
 </style>

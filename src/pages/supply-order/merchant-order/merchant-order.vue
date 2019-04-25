@@ -7,10 +7,6 @@
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
         </div>
-        <span class="down-tip">类型</span>
-        <div class="down-item down-group-item">
-          <base-drop-down :select="typeFilter" @setValue="_setTypeFilter"></base-drop-down>
-        </div>
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
@@ -36,6 +32,8 @@
                 <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
                     {{row[item.key]}}
+                    <div v-if="item.key ==='type_count' && row[item.after]" class="lack-icon">
+                    </div>
                   </template>
                   <template v-else name="operation">
                     <router-link class="list-operation" :to="{name:'merchant-order-detail',params:{id:row.id}}">{{item.operation}}</router-link>
@@ -100,9 +98,9 @@
     {title: '下单时间', key: 'created_at', flex: 1.5},
     {title: '订单号 ', key: 'order_sn', flex: 1.5},
     {title: '商户名称', key: 'buyer_name', flex: 1},
-    {title: '品类数', key: 'type_count', flex: 0.6},
+    {title: '品类数', key: 'type_count', flex: 0.6,after:'is_lack'},
     {title: '状态', key: 'status_str', flex: 0.6},
-    {title: '类型', key: 'type_str', flex: 0.8},
+    // {title: '类型', key: 'type_str', flex: 0.8},
     {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
   ]
   const COMMODITIES_LIST2 = [
@@ -122,13 +120,6 @@
         tabStatus: ORDERSTATUS,
         commodities: COMMODITIES_LIST,
         datePlaceHolder: "选择建单日期",
-        typeFilter: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: [{name: '全部', id: ''}]
-        },
         tabIndex: 0,
         orderKeyword: "",
         signItem: {},
@@ -139,7 +130,7 @@
           {name: '待配送', value: 2, num: 0},
           {name: '已完成', value: 3, num: 0}
         ],
-        statusTab: 0,
+        statusTab: 2 ,// 待调度
         datePlaceHolderMerger: "选择下单日期",
         merger: {
           pageTotal: {
@@ -150,8 +141,8 @@
           },
           list:[],
           filter: {
-            time_start: "",
-            time_end: " "
+            start_time: "",
+            end_time: " "
           }
         }
       }
@@ -171,7 +162,6 @@
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1
       }
-      this.getTypeList()
       this._getStatusData()
     },
     methods: {
@@ -182,23 +172,27 @@
         this.tabIndex = index
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
         if (!this.tabIndex) {
+          // 待调度
+          this.statusTab = 2
           this._updateMerchantOrderList({
             page: 1,
             limit: 10,
             start_time: '',
             end_time: '',
             type: "",
-            status: "",
+            status: 0,
             keyword: ""
           })
         } else {
-          this._updateMergerList({
-            time_start: "",
-            time_end: ""
-          })
+          this._updateMergerList()
         }
       },
-      _updateMergerList(params) {
+      _updateMergerList(params={}) {
+        let defautFilter={
+          start_time: "",
+          end_time: " "
+        }
+        params = {...defautFilter,...params}
         this.merger.filter = {...this.merger.filter, ...params}
         this._getMergeOrderslist()
       },
@@ -214,7 +208,7 @@
       },
       // 时间选择器
       _changeTimeMerger(timeArr) {
-        this._updateMergerList({time_start: timeArr[0], time_end: timeArr[1]})
+        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1]})
       },
       // 页面更改
       _setMergerPage(page) {
@@ -250,17 +244,6 @@
           })
         })
       },
-      // 类型列表
-      getTypeList() {
-        API.MerchantOrder.getTypeList().then(res => {
-          this.typeFilter.data = res.data.map(item => {
-            return {
-              name: item.type_str,
-              value: item.type
-            }
-          })
-        })
-      },
       // 翻页
       setOrderPage(page) {
         this._updateMerchantOrderList({
@@ -272,13 +255,6 @@
         this._updateMerchantOrderList({
           start_time: timeArr[0],
           end_time: timeArr[1],
-          page: 1
-        })
-      },
-      // 类型
-      _setTypeFilter(item) {
-        this._updateMerchantOrderList({
-          type: item.value,
           page: 1
         })
       },
@@ -304,6 +280,10 @@
   @import "~@design"
   .operate
    max-width:50px
+  .lack-icon
+    width:16px
+    height:16px
+    icon-image(icon-lack)
   .distribution-down
     display: flex
     align-items: center

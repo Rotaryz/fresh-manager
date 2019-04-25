@@ -1121,7 +1121,7 @@ export default [
               start_time: '',
               end_time: '',
               type: "",
-              status: "",
+              status: 0,// 待调度
               keyword: ""
             })
             store.dispatch('merchantOrder/getMerchantOrderList').then((res) => {
@@ -1212,7 +1212,7 @@ export default [
               start_time: '',
               end_time: '',
               keyword: "",
-              status: ""
+              status: 0
             })
             store.dispatch('afterSalesOrder/getAfterSalesOrderList')
               .then((res) => {
@@ -1597,7 +1597,7 @@ export default [
                 start_time: '',
                 end_time: '',
                 keyword: "",
-                status: ""
+                status: 0   // 待分拣
               }
             })
             store.dispatch('sorting/getSortingTaskList').then((res) => {
