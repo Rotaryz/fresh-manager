@@ -159,7 +159,7 @@
         })
       },
       getOutreachStatus() {
-        API.Outreach.getOutreachStatus({activity_type: 'offline', start_time: this.startTime, end_time: this.endTime})
+        API.Outreach.getOutreachStatus({activity_type: 'offline', start_at: this.startTime, end_at: this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
