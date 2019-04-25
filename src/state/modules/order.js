@@ -14,7 +14,7 @@ export const state = {
   startTime: '',
   endTime: '',
   keyword: '',
-  status: '',
+  status: 'c_offline',
   orderStatus: ''
 }
 
@@ -156,7 +156,6 @@ export const actions = {
     dispatch('getOrderList')
   },
   setOrderStatus({commit, dispatch}, selectStatus) {
-    console.log(selectStatus)
     commit('SET_ORDER_STATUS', selectStatus.status)
     commit('SET_PAGE', 1)
     dispatch('getOrderList')

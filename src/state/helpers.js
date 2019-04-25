@@ -92,16 +92,10 @@ export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOu
 
 // 优惠券
 export const couponComputed = {
-  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'time', 'status', 'page'])
+  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail'])
 }
 
-export const couponMethods = mapActions('coupon', [
-  'setTime',
-  'setStatus',
-  'setPage',
-  'getCouponList',
-  'getCouponDetail'
-])
+export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail'])
 
 // 营销计划
 export const marketComputed = {

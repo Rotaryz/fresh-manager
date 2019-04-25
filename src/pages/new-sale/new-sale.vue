@@ -274,6 +274,7 @@
         this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
       }
       this._getFirstAssortment()
+
     // this._getGoodsList()
     },
     async mounted() {
@@ -506,7 +507,7 @@
         }
         list.map((item) => {
           delete item.person_day_buy_limit
-          item.goods_id = item.id
+          item.goods_id = item.id || item.goods_id
         })
         let data = Object.assign({}, this.msg, {activity_goods: list})
         let res = null

@@ -4,7 +4,7 @@
     <div class="down-content">
       <span class="down-tip">创建时间</span>
       <div class="down-item">
-        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>
+        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="[msg.startTime, msg.endTime]" @getTime="changeTime"></base-date-select>
       </div>
     </div>
     <div class="table-content">
@@ -12,7 +12,7 @@
         <div class="identification-page">
           <img src="./icon-coupon_list@2x.png" class="identification-icon">
           <p class="identification-name">优惠券列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <base-status-tab :statusList="statusTab" :infoTabIndex="+infoTabIndex" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="new-coupon" append class="btn-main">新建优惠券<span class="add-icon"></span></router-link>
@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="msg.page" @addPage="changePage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" infoTitle="删除优惠券" :oneBtn="false" @confirm="_sureConfirm"></default-confirm>
@@ -94,22 +94,29 @@
           {name: '已过期', value: 1, num: 0}
         ],
         delId: '',
-        delItem: {}
+        delItem: {},
+        msg: {
+          startTime: '',
+          endTime: '',
+          status: '',
+          page: 1,
+        },
+        infoTabIndex: 0
       }
     },
     computed: {
       ...couponComputed,
-      infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.status)
-      }
+      // infoTabIndex() {
+      //   return this.tabStatus.findIndex((item) => item.status === this.status)
+      // }
     },
     created() {
       this.getCouponStatus()
     },
     methods: {
       ...couponMethods,
-      getCouponStatus(startTime, endTime) {
-        API.Coupon.getCouponStatus({startTime: startTime || this.startTime, endTime: endTime || this.endTime})
+      getCouponStatus() {
+        API.Coupon.getCouponStatus({startTime: this.msg.startTime, endTime: this.msg.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -125,15 +132,21 @@
           })
       },
       changeStatus(status) {
+        this.msg.status = status.status
+        this.msg.page = 1
         this.$refs.pagination.beginPage()
-        this.setStatus(status)
+        this.getCouponList(this.msg)
       },
       async changeTime(time) {
-        await this.setTime(time)
-        let startTime = time[0]
-        let endTime = time[1]
-        this.getCouponStatus(startTime, endTime)
+        this.msg.startTime = time[0]
+        this.msg.endTime = time[1]
+        this.getCouponList(this.msg)
+        this.getCouponStatus()
         this.$refs.pagination.beginPage()
+      },
+      changePage(page) {
+        this.msg.page = page
+        this.getCouponList(this.msg)
       },
       _deleteCoupon(item, id) {
         this.delId = id
@@ -150,7 +163,7 @@
 
         this.$toast.show('删除成功')
         this.getCouponStatus()
-        this.getCouponList()
+        this.getCouponList(this.msg)
       }
     }
   }
