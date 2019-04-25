@@ -140,6 +140,7 @@
       async changeTime(time) {
         this.msg.startTime = time[0]
         this.msg.endTime = time[1]
+        this.msg.page = 1
         this.getCouponList(this.msg)
         this.getCouponStatus()
         this.$refs.pagination.beginPage()

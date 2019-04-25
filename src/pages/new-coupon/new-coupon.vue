@@ -143,7 +143,7 @@
             <span>天内可用</span>
           </div>
         </div>
-        <div :class="{'time-no-change':disable}"></div>
+        <div :class="{'check-no-change':disable}"></div>
       </div>
 
       <!--使用范围-->
@@ -497,8 +497,8 @@
         // 结束时间规则判断
         return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
       },
-      testExplain() {
-        return this.msg.explain
+      testDescription() {
+        return this.msg.description
       },
       testGoods() {
         return +this.msg.range_type === 3 ? this.goodsList && this.goodsList.length : true
@@ -791,6 +791,9 @@
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
+        if (!this.msg.is_day_limited) {
+          this.$set(this.msg, 'limit_days', 0)
+        }
         let data = {}
         data = Object.assign({}, this.msg)
         // 添加coupon_range_id
@@ -836,7 +839,7 @@
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
-          // {value: this.testExplain, txt: '请输入优惠券名称'},
+          {value: this.testDescription, txt: '请输入使用说明'},
           {value: this.testGoods, txt: '请选择商品'},
           {value: this.testCategory, txt: '请选择品类'}
         ]
