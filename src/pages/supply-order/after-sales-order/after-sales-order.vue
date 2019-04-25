@@ -198,8 +198,11 @@
         this.$refs.modal.hideModal()
       },
       _showModal() {
-        this.$refs.modal.showModal()
         this._getBatchList()
+        this.$refs.modal.showModal()
+        this.checkAllStatus= false
+        this.selectIds= []
+
       },
       _showConfirm(val) {
         if (this.selectIds.length === 0) return
@@ -302,6 +305,8 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   /*@import "@pages/supply-order/after-sales-detail/check/check.styl"*/
+  .table .table-content
+    padding-bottom: 20px;
   .operate
     max-width 50px
   .pro-select-icon

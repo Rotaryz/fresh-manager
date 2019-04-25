@@ -45,9 +45,8 @@ export const getters = {
 }
 
 export const mutations = {
-  SET_DETAIL(state, {value,pageTotal}) {
+  SET_DETAIL(state, {value}) {
     state.afterSalesDetail.data = value
-    state.afterSalesDetail.pageTotal = pageTotal
   },
   SET_PARAMS(state, params) {
     state.afterSalesFilter = {...state.afterSalesFilter, ...params}
@@ -85,20 +84,21 @@ export const actions = {
         app.$loading.hide()
       })
   },
-// 商户订单详情
+// 详情
   getAfterSalesOrderDetail({state, commit}, {id}) {
     return API.AfterSalesOrder.getAfterSalesOrderDetail({id})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let pageTotal = {
-          // total: res.meta.total,
-          // per_page: res.meta.per_page,
-          // total_page: res.meta.last_page
-        }
-        commit('SET_DETAIL', {value: res.data,pageTotal})
+
+        commit('SET_DETAIL', {value: res.data})
         return true
+      }).catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
       })
   }
 }

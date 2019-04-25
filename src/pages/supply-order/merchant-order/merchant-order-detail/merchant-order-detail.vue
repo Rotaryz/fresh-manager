@@ -47,7 +47,7 @@
     {title: '下单数量', key: 'sale_num', flex: 1},
     {title: '配货数量', key: 'sale_wait_pick_num', flex: 1,line:true},// 待配送 已完成
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1,line:true},
-    {title: '操作', key: '', operation: '消费者详情', flex: 1}
+    {title: '操作', key: '', operation: '消费者明细', flex: 1}
   ]
   export default {
     name: PAGE_NAME,
@@ -123,8 +123,8 @@
       display inline-block
       margin: 0px 130px 20px 0px
 
-      .number
-        color: #f84e3c
+  .red
+    color: #f84e3c
 
 
 </style>

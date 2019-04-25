@@ -11,7 +11,7 @@ export default {
   getAfterSalesOrderDetail({id}, loading = true) {
     let url = `/scm/api/backend/oms/after-sale-orders/${id}`
     // let url = '/mock/afterSalesDetail.json'
-    return request.get(url, loading)
+    return request.get(url, {},loading)
   },
   // √ 状态
   getStausData(params={}) {
