@@ -166,6 +166,7 @@
       },
       setStoreFn(idnex) {
         this.curIndex = idnex
+        this.$refs.modalBox.getStoreList()
         this.$refs.modalBox.show()
       },
       confirm(id, text) {

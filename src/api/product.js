@@ -182,5 +182,15 @@ export default {
   goodsNewEdit(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/import-update-goods`
     return request.post(url, data, loading)
+  },
+  /**
+   * 检查切换库存类型
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  checkStockType(id, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods-change-stock/${id}`
+    return request.get(url, loading)
   }
 }

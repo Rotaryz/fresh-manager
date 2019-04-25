@@ -28,7 +28,7 @@
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
           <div class="btn-main g-btn-item" :class="{'btn-disable-store': status !== 2}" @click="_createNewPublish">生成采购单</div>
           <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
-          <div class="btn-main g-btn-item">导出</div>
+          <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出</a>
         </div>
       </div>
       <div class="big-list">
@@ -286,7 +286,7 @@
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&start_time=${this.startTime}&end_time=${this.endTime}&status=${this.status}&keyword=${this.keyword}&supplier_id=${this.supplyId}&current_corp=${currentId}`
-        this.downUrl = process.env.VUE_APP_API + `/scm/api/backend/purchase/purchase-task-goods-excel?${params}`
+        this.downUrl = process.env.VUE_APP_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
       },
       // 获取商品列表
       async _getGoodsList() {

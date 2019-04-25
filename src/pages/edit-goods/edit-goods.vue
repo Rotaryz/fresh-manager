@@ -132,22 +132,13 @@
           <span class="start">*</span>
           销售库存
         </div>
-        <div class="edit-input-box">
-          <input v-model="msg.usable_stock" type="number" class="edit-input">
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          销售库存
-        </div>
         <div class="edit-input-box goods-select-box">
           <div class="goods-select-left" @click="selectStock(1)">
             <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
             <div class="goods-select-text">预售库存</div>
           </div>
           <input v-model="goods_skus.presale_usable_stock" type="number" class="edit-input edit-input-select" :disabled="goods_skus.is_presale * 1 !== 1">
-          <div class="stock-box-text">预</div>
+          <div class="stock-box-text">{{goods_skus.sale_unit}}</div>
           <div class="goods-select-left" @click="selectStock(0)">
             <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
             <div class="goods-select-text">仓库库存</div>
@@ -263,14 +254,12 @@
           goods_category_id: 0,
           original_price: '',
           purchase_price: '',
-          usable_stock: '',
           commission_rate: '',
           goods_skus: [
             {
               id: 0,
               trade_price: 0,
               original_price: 0,
-              usable_stock: 0,
               goods_sku_encoding: '',
               purchase_price: '',
               image_id: '',
@@ -334,12 +323,11 @@
           purchase_unit: '',
           goods_sku_encoding: '',
           presale_usable_stock: '',
-          warehouse_usable_stock: '',
+          warehouse_usable_stock: 0,
           purchase_price: '',
           damage_rate: '',
           supplier_id: 0,
           is_weight: 1,
-          is_change_stock: 1,
           is_presale: 1
         },
         isWeight: 1,
@@ -373,10 +361,19 @@
         this.$router.back()
       },
       selectStock(index) {
-        if (this.goods_skus.is_change_stock * 1 !== 1) {
-          return
+        if (!this.id) {
+          this.goods_skus.is_presale = index
+        } else {
+          API.Product.checkStockType(this.id, false).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              if (res.data.is_allow_change * 1 === 1) {
+                this.goods_skus.is_presale = index
+              }
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
         }
-        this.goods_skus.is_presale = index
       },
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
@@ -399,7 +396,6 @@
         if (this.isSubmit) {
           return
         }
-        this.msg.usable_stock += ''
         this.msg.init_sale_count += ''
         this.goods_skus.presale_usable_stock += ''
         if (this.msg.name.length === 0 || this.msg.name.length >= 30) {
@@ -454,9 +450,6 @@
         ) {
           this.$toast.show('成员佣金比率区间在0与100之间')
           return
-        } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
-          this.$toast.show('请输入正确商品库存')
-          return
         } else if (this.goods_skus.base_purchase_rate.length === 0) {
           this.$toast.show('请输入采购规格')
           return
@@ -487,13 +480,16 @@
           this.$toast.show('请输入正确初始销量')
           return
         }
+        if (this.goods_skus.is_presale * 1 === 0 && !this.id) {
+          this.goods_skus.presale_usable_stock = 0
+          this.goods_skus.warehouse_usable_stock = 0
+        }
         if (this.goods_skus.is_presale * 1 === 0) {
-          this.goods_skus.presale_usable_stock = ''
+          this.goods_skus.presale_usable_stock = 0
         }
         this.msg.goods_skus[0] = this.goods_skus
         this.msg.goods_skus[0].trade_price = this.msg.trade_price
         this.msg.goods_skus[0].original_price = this.msg.original_price
-        this.msg.goods_skus[0].usable_stock = this.msg.usable_stock
         this.isSubmit = true
         if (this.id) {
           API.Product.editGoodsDetail(this.id, this.msg).then((res) => {

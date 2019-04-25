@@ -307,7 +307,6 @@
       },
       //  导入商品新建模板
       async importStock(e, index) {
-        console.log(e, index)
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
         let res = index === 1 ? await API.Product.goodsNewInto(param) : await API.Product.goodsNewInto(param)
