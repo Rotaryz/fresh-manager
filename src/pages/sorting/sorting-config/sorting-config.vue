@@ -214,6 +214,7 @@
           road_name: this.selectRoad.name,
           road_id: this.selectRoad.id
         }
+        this.$loading.show('设置线路')
         API.Sorting.setRoad(this.settingId, params).then(res => {
           if (res.error === this.$ERR_OK) {
             this.$toast.show('线路设置成功')

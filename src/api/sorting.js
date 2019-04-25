@@ -53,7 +53,7 @@ export default {
     return request.get(url)
   },
   // √ 设置线路 √
-  setRoad(id, params,loading=true) {
+  setRoad(id, params,loading=false) {
     // let url = '/mock/roadList.json'
     let url = `/scm/api/backend/sorting/picking-set-address/${id}`
     return request.put(url, params,loading)
