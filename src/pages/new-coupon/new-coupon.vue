@@ -174,7 +174,7 @@
                       :class="{'disable-input':disable}"
             >
             </textarea>
-            <span class="tip">例如: 全场商品通用或特惠商品不可以</span>
+            <span class="tip">例如: 全场商品通用或特惠商品不可以使用</span>
           </div>
           <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/45</div>
         </div>
