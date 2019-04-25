@@ -1,0 +1,45 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "delivery_address_id": null,
+      "sort": "#1",
+      "name": "测试店铺（bing），请不要下单",
+      "road_id": 0,
+      "road_name": ""
+    },{
+      "id": 2,
+      "delivery_address_id": null,
+      "sort": "#2",
+      "name": "2222222222222222测试店铺（bing），请不要下单",
+      "road_id": 0,
+      "road_name": ""
+    },{
+      "id": 3,
+      "delivery_address_id": null,
+      "sort": "#3",
+      "name": "测试店铺（bing），请不要下单",
+      "road_id": 0,
+      "road_name": ""
+    }
+  ],
+  "links": {
+    "first": "http://scm-api.com/scm/api/backend/sorting/allocation-position?page=1",
+    "last": "http://scm-api.com/scm/api/backend/sorting/allocation-position?page=50",
+    "prev": null,
+    "next": "http://scm-api.com/scm/api/backend/sorting/allocation-position?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 50,
+    "path": "http://scm-api.com/scm/api/backend/sorting/allocation-position",
+    "per_page": 1,
+    "to": 1,
+    "total": 50
+  },
+  "status": "success",
+  "status_code": 200,
+  "error": 0,
+  "code": 0
+}

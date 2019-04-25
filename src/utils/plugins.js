@@ -8,6 +8,7 @@ import {fileType} from './cos/file-config'
 import * as cos from './cos/cos'
 import * as vod from './vod/vod'
 import createQrCode from './create-qr-code'
+import VueDND from 'awe-dnd'
 
 const ERR_OK = 0
 
@@ -28,4 +29,5 @@ export const Plugins = {
   }
 }
 // 使用插件
+Vue.use(VueDND)
 // Vue.use(AwesomePicker) todo

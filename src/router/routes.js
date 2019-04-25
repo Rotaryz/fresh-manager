@@ -1105,6 +1105,146 @@ export default [
        *
        * 供应链
        */
+      // 商户订单
+      {
+        path: 'merchant-order',
+        name: 'merchant-order',
+        meta: {
+          titles: ['供应链', '订单', '商户订单'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            store.commit('merchantOrder/SET_PARAMS', {
+              page: 1,
+              limit: 10,
+              start_time: '',
+              end_time: '',
+              type: "",
+              status: "",
+              keyword: ""
+            })
+            store.dispatch('merchantOrder/getMerchantOrderList').then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order'))
+      },
+      // 商品订单详情
+      {
+        path: 'merchant-order/merchant-order-detail/:id',
+        name: 'merchant-order-detail',
+        meta: {
+          titles: ['供应链', '订单', '商品明细'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('merchantOrder/getMerchantOrderDetail', routeTo.params).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/merchant-order-detail'))
+      },
+      // 商品订单详情的明细
+      {
+        path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code/:id',
+        name: 'consumer-order-detail',
+        meta: {
+          titles: ['供应链', '订单', '商品明细', '消费者订单'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('merchantOrder/getConsumerDetails', routeTo.params).then((res) => {
+              console.log(res)
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/consumer-order-detail'))
+      },
+      // 汇总订单详情
+      {
+        path: 'merchant-order/merger-order-detail/:mergeOrderId',
+        name: 'merger-order-detail',
+        meta: {
+          titles: ['供应链', '订单', '商品明细'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('merchantOrder/getMergerOrderDetail', routeTo.params).then((res) => {
+              console.log(res, 'data')
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/merger-order-detail'))
+      },
+      // 售后订单
+      {
+        path: 'after-sales-order',
+        name: 'after-sales-order',
+        meta: {
+          titles: ['供应链', '订单', '售后订单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.commit('afterSalesOrder/SET_PARAMS', {
+              page: 1,
+              limit: 10,
+              start_time: '',
+              end_time: '',
+              keyword: "",
+              status: ""
+            })
+            store.dispatch('afterSalesOrder/getAfterSalesOrderList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/after-sales-order/after-sales-order'))
+      },
+      // 售后订单详情
+      {
+        path: 'after-sales-order/after-sales-detail/:id',
+        name: 'after-sales-detail',
+        meta: {
+          titles: ['供应链', '订单', '售后订单', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('afterSalesOrder/getAfterSalesOrderDetail', routeTo.params).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              next()
+            })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/supply-order/after-sales-order/after-sales-detail/after-sales-detail'))
+      },
       // 采购任务
       {
         path: 'procurement-task',
@@ -1438,6 +1578,80 @@ export default [
               })
           }
         }
+      },
+      // 分拣任务
+      {
+        path: 'sorting-task',
+        name: 'sorting-task',
+        meta: {
+          titles: ['供应链', '分拣', '分拣任务'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.commit('sorting/SET_PARAMS', {
+              params: {
+                goods_category_id: '',
+                page: 1,
+                limit: 10,
+                start_time: '',
+                end_time: '',
+                keyword: "",
+                status: ""
+              }
+            })
+            store.dispatch('sorting/getSortingTaskList').then((res) => {
+              // console.log('route',res)
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/sorting/sorting-task/sorting-task'))
+      },
+      // 分拣任务明细
+      {
+        path: 'sorting-task/sorting-task-detail/:id/:goods_sku_code',
+        name: 'sorting-task-detail',
+        meta: {
+          titles: ['供应链', '分拣', '分拣任务', '配货明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('sorting/getSortingTaskDetail', routeTo.params).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/sorting/sorting-task-detail/sorting-task-detail'))
+      },
+      // 分拣配置
+      {
+        path: 'sorting-config',
+        name: 'sorting-config',
+        meta: {
+          titles: ['供应链', '分拣', '分拣配置'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('sorting/getSortingConfigList', {
+              page: 1
+            }).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/sorting/sorting-config/sorting-config'))
       },
       // 库存管理
       {

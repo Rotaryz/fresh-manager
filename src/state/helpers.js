@@ -16,6 +16,9 @@ export const globalComputed = {
     marginBottom: (state) => state.marginBottom
   })
 }
+export const globalMethods= {
+  ...mapMutations('global',['SET_CURRENT_TITLES'])
+}
 
 // 团长
 export const leaderComputed = {
@@ -447,5 +450,63 @@ export const storeMethods = {
     'getStockList',
     'getAdjustOrder',
     'getAdjustOrderDetail'
+  ])
+}
+// todo 分拣任务
+export const sortingComputed = {
+  ...mapGetters('sorting', ['sortingTask', 'sortingConfig','sortingTaskDetail'])
+}
+
+export const sortingMethods = {
+  ...mapActions('sorting', [
+    'getSortingTaskList',
+    'getSortingTaskDetail',
+    'getSortingConfigList'
+  ]),
+  ...mapMutations('sorting', ['SET_PARAMS']),
+}
+// 商户订单
+export const merchantOrderComputed={
+  ...mapGetters('merchantOrder',[
+    'pageTotal',
+    'orderList',
+    'mergerDetail',
+    'merchantDetail',
+    'merchantFilter',
+    'consumerDetailTotal',
+    'consumerDetail',
+    'mergerDetail'])
+}
+export const merchantOrderMethods ={
+  ...mapActions('merchantOrder', [
+    'getMerchantOrderList',
+    'getMerchantOrderDetail',
+    'getConsumerOrderDetail',
+    'getMergerOrderDetail'
+  ]),
+  ...mapMutations('merchantOrder', [
+    'SET_PARAMS',
+    'SET_PAGE_TOTAL'
+  ])
+}
+// 售后订单
+export const afterSalesOrderComputed={
+  ...mapGetters('afterSalesOrder',['pageTotal','afterSalesList','afterSalesDetail','afterSalesFilter'])
+}
+export const afterSalesOrderMethods ={
+  ...mapActions('afterSalesOrder', [
+    'getAfterSalesOrderList',
+    'getAfterSalesOrderDetail',
+  ]),
+  ...mapMutations('afterSalesOrder', [
+    'SET_PARAMS',
+    'SET_KEYWORD',
+    'SET_PAGE',
+    'SET_TIME',
+    'SET_PAGE_TOTAL',
+    'SET_LIST',
+    'SET_DETAIL',
+    'SET_STATUS',
+    'SET_DETAIL_PAGE'
   ])
 }
