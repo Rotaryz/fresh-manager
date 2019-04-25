@@ -139,7 +139,7 @@
       },
       getOrderStatus(startTime, endTime) {
         API.Order.getOrderStatus({
-          status: this.status,
+          source: this.status,
           startTime: startTime || this.startTime,
           endTime: endTime || this.endTime,
           shop_id: this.shopId,

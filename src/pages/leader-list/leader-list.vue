@@ -175,6 +175,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
+        this.getLeaderStatus()
         this.getLeaderList({page: this.page, status: this.status, loading: false})
         this.$refs.confirm.hide()
       }

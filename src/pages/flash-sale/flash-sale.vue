@@ -116,7 +116,7 @@
         })
       },
       getSaleStatus() {
-        API.Sale.getSaleStatus({activity_type: 'fixed', startTime: this.startTime,endTime: this.endTime})
+        API.Sale.getSaleStatus({activity_type: 'fixed', start_time: this.startTime,end_time: this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
