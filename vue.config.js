@@ -22,7 +22,10 @@ module.exports = {
             },
             '/scm': {
               target: process.env.VUE_APP_SCM_API
-            }
+            },
+            // '/mock':{
+            //   target:'http://localhost:9001/'
+            // }
           }
         }
       : // 代理本地地址.

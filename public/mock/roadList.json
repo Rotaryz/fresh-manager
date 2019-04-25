@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "road_name": "sds",
+      "road_id": "sadsad"
+    },
+    {
+      "road_name": "ewregfbv",
+      "road_id": "sadfsf"
+    },{
+      "road_name": "sds",
+      "road_id": "sadsad"
+    },
+    {
+      "road_name": "ewregfbv",
+      "road_id": "sadfsf"
+    },{
+      "road_name": "sds",
+      "road_id": "sadsad"
+    },
+    {
+      "road_name": "ewregfbv",
+      "road_id": "sadfsf"
+    }
+  ],
+  "status": "success",
+  "status_code": 200,
+  "error": 0,
+  "code": 0
+}

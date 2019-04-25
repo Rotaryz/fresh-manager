@@ -23,7 +23,10 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in taskList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <div class="item-dark">{{item.goods_name}}</div>
+              <div class="item-dark">{{item.goods_sku_encoding}}</div>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item list-item-layout">
               <input v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
@@ -47,7 +50,7 @@
 
 <script type="text/ecmascript-6">
   import API from '@api'
-  import {proTaskComputed} from '@state/helpers'
+  import {proTaskComputed, proTaskMethods} from '@state/helpers'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
@@ -77,10 +80,11 @@
       this.taskList.forEach((item) => {
         item.purchase_num = item.plan_num
         item.base_num = (item.plan_num * item.purchase_base_rate).toFixed(2)
-        item.purchase_price = 0
+        item.total = (item.purchase_num * item.purchase_price).toFixed(2)
       })
     },
     methods: {
+      ...proTaskMethods,
       async submitSure() {
         for (let i = 0; i < this.taskList.length; i++) {
           if (!this.taskList[i].purchase_num) {
@@ -118,7 +122,12 @@
           this.isSubmit = false
           return
         }
-        this.$router.push('/home/purchase-order')
+        this.setGoBackNumberSub()
+        if (this.goBackNumber > 0) {
+          this.$router.back()
+        } else {
+          this.$router.push('/home/purchase-order')
+        }
       },
       echangBase(item, index) {
         if (item.base_num < 0) {
@@ -178,6 +187,8 @@
         padding-right: 14px
         &:nth-child(1)
           flex: 1.2
+        &:nth-child(6)
+          max-width: 110px
 
   .down-content
     align-items: flex-start

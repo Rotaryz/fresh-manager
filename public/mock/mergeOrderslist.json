@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "id": 58,
+      "merge_order_id": 58,
+      "created_at": "2019-04-19 21:45:10",
+      "order_sn": "10000-HZD-190419883850",
+      "type_count": 1
+    }
+  ],
+  "links": {
+    "first": "http://scm-api.com/scm/api/backend/oms/merge-orders?page=1",
+    "last": "http://scm-api.com/scm/api/backend/oms/merge-orders?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "http://scm-api.com/scm/api/backend/oms/merge-orders",
+    "per_page": 10,
+    "to": 1,
+    "total": 1
+  },
+  "status": "success",
+  "status_code": 200,
+  "error": 0,
+  "code": 0
+}

@@ -42,6 +42,14 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 商品系统分类列表（无权限）
+   * @returns {*}
+   */
+  getCategoryList(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-manage/goods-category-list`
+    return request.get(url, data, loading)
+  },
+  /**
    * 创建商品系统分类
    * @returns {*}
    */
@@ -154,5 +162,25 @@ export default {
   purchaseTaskStatistic(data, loading = false) {
     let url = '/scm/api/backend/purchase/purchase-task-statistic'
     return request.get(url, data, loading)
+  },
+  /**
+   * 商品新建模板导入
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  goodsNewInto(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/import-create-goods`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 商品编辑模板
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  goodsNewEdit(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/import-update-goods`
+    return request.post(url, data, loading)
   }
 }
