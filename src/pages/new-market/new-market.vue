@@ -729,6 +729,7 @@
       },
       // 弹窗保存
       _additionGroup() {
+
         this.selectGroupList = [...this.selectGroupList, ...this.groupSelectItem]
         this.groupList = this.groupList.map(item => {
           item.checked && (item.right = true)
