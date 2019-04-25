@@ -328,7 +328,6 @@
           damage_rate: '',
           supplier_id: 0,
           is_weight: 1,
-          is_change_stock: 1,
           is_presale: 1
         },
         isWeight: 1,
@@ -362,10 +361,19 @@
         this.$router.back()
       },
       selectStock(index) {
-        if (this.goods_skus.is_change_stock * 1 !== 1) {
-          return
+        if (!this.id) {
+          this.goods_skus.is_presale = index
+        } else {
+          API.Product.checkStockType(this.id, false).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              if (res.data.is_allow_change * 1 === 1) {
+                this.goods_skus.is_presale = index
+              }
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
         }
-        this.goods_skus.is_presale = index
       },
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
