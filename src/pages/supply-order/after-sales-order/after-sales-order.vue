@@ -353,7 +353,7 @@
       .status_str
         max-width 100px
       .row-check
-        max-width 50px
+        max-width 60px
     .btn-group-wrap
       layout(row)
       height:auto
