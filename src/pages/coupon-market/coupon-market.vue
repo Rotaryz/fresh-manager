@@ -150,6 +150,7 @@
               this.$toast.show(res.message)
               return
             }
+            this.statusArr = new Array(10).fill(undefined)
             this.statusTab = res.data.map((item, index) => {
               return {
                 name: item.status_str,
