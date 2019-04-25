@@ -20,7 +20,7 @@
         <div v-for="(row, key) in merchantDetail.details" :key="key" class="list-content list-box">
           <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item">
             <template v-if="item.key" name="name">
-              <div v-if="isLine" style="border-top:1px solid #333;width:30px;">
+              <div v-if="isLine && item.line" style="border-top:1px solid #333;width:30px;">
               </div>
               <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
                 {{row[item.key]}}
@@ -45,8 +45,8 @@
     {title: '商品', key: 'goods_name', flex: 2},
     {title: '分类', key: 'goods_category', flex: 1},
     {title: '下单数量', key: 'sale_num', flex: 1},
-    {title: '配货数量', key: 'sale_wait_pick_num', flex: 1},// 待配送 已完成
-    {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
+    {title: '配货数量', key: 'sale_wait_pick_num', flex: 1,line:true},// 待配送 已完成
+    {title: '缺货数量', key: 'sale_out_of_num', flex: 1,line:true},
     {title: '操作', key: '', operation: '消费者详情', flex: 1}
   ]
   export default {
