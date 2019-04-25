@@ -103,7 +103,7 @@
   const TITLE = '商户订单'
   const COMMODITIES_LIST = [
     {title: '创建时间', key: 'created_at', flex: 1.5},
-    {title: '售后订单号  ', key: 'after_sale_order_id', flex: 1},
+    {title: '售后订单号  ', key: 'order_sn', flex: 1},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
     {title: '缺货品类数', key: 'type_count', flex:1},
     {title: '原订单号 ', key: 'source_order_sn', flex: 2},
