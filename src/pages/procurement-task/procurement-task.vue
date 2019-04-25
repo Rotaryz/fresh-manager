@@ -37,29 +37,32 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box list-box-goods">
-            <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>-->
-            <div class="list-item list-double-row">
-              <div class="item-dark">{{item.goods_name}}</div>
-              <div class="item-dark">{{item.goods_sku_encoding}}</div>
-            </div>
-            <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.supplier}}</div>
-            <div class="list-item">{{item.purchase_user}}</div>
-            <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
-            <div class="list-item">{{item.finish_num}}{{item.purchase_unit}}({{item.finish_base_num}}{{item.base_unit}})</div>
-            <div class="list-item list-item-progress">
-              <div class="progress-content">
-                <div class="progress-num">{{item.finish_num}}{{item.purchase_unit}}/{{item.plan_num}}{{item.purchase_unit}}</div>
-                <div class="progress-bar">
-                  <span class="progress-bar-active" :style="{width: item.finish_percent}"></span>
-                </div>
+          <div v-if="purchaseTaskList.length">
+            <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box list-box-goods">
+              <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>-->
+              <div class="list-item list-double-row">
+                <div class="item-dark">{{item.goods_name}}</div>
+                <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
-              <div class="progress-percentage">{{item.finish_percent}}</div>
+              <div class="list-item">{{item.goods_category}}</div>
+              <div class="list-item">{{item.supplier}}</div>
+              <div class="list-item">{{item.purchase_user}}</div>
+              <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
+              <div class="list-item">{{item.finish_num}}{{item.purchase_unit}}({{item.finish_base_num}}{{item.base_unit}})</div>
+              <div class="list-item list-item-progress">
+                <div class="progress-content">
+                  <div class="progress-num">{{item.finish_num}}{{item.purchase_unit}}/{{item.plan_num}}{{item.purchase_unit}}</div>
+                  <div class="progress-bar">
+                    <span class="progress-bar-active" :style="{width: item.finish_percent}"></span>
+                  </div>
+                </div>
+                <div class="progress-percentage">{{item.finish_percent}}</div>
+              </div>
+              <div class="list-item">{{item.publish_at}}</div>
+              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}</div>
             </div>
-            <div class="list-item">{{item.publish_at}}</div>
-            <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}</div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">

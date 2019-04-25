@@ -22,14 +22,17 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in list" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.created_at}}</div>
-            <div class="list-item">{{item.mobile}}</div>
-            <div class="list-item">{{item.true_name}}</div>
-            <div class="list-item">
-              <router-link tag="div" :to="`edit-procurement?id=${item.id}`" append class="list-operation">编辑</router-link>
+          <div v-if="list.length">
+            <div v-for="(item, index) in list" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.created_at}}</div>
+              <div class="list-item">{{item.mobile}}</div>
+              <div class="list-item">{{item.true_name}}</div>
+              <div class="list-item">
+                <router-link tag="div" :to="`edit-procurement?id=${item.id}`" append class="list-operation">编辑</router-link>
+              </div>
             </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">

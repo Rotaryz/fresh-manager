@@ -17,7 +17,7 @@
         <div class="identification-page">
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购单列表</p>
-          <base-status-tab :statusList="dispatchSelect" @setStatus="_setStatus"></base-status-tab>
+          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
         </div>
@@ -27,18 +27,21 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.create_day}}</div>
-            <div class="list-item">{{item.order_sn}}</div>
-            <div class="list-item">{{item.task_num}}</div>
-            <div class="list-item">{{item.per_amount ? '￥' : ''}}{{item.per_amount}}</div>
-            <div class="list-item">{{item.supply_name}}</div>
-            <div class="list-item">{{item.purchase_user_name}}</div>
-            <div class="list-item">{{item.status_str}}</div>
-            <div class="list-item">
-              <router-link tag="div" :to="'purchase-order-detail/'+ item.id" append class="list-operation">详情</router-link>
+          <div v-if="purchaseList.length">
+            <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.create_day}}</div>
+              <div class="list-item">{{item.order_sn}}</div>
+              <div class="list-item">{{item.task_num}}</div>
+              <div class="list-item">{{item.per_amount ? '￥' : ''}}{{item.per_amount}}</div>
+              <div class="list-item">{{item.supply_name}}</div>
+              <div class="list-item">{{item.purchase_user_name}}</div>
+              <div class="list-item">{{item.status_str}}</div>
+              <div class="list-item">
+                <router-link tag="div" :to="'purchase-order-detail/'+ item.id" append class="list-operation">详情</router-link>
+              </div>
             </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">
@@ -74,7 +77,8 @@
           {name: '待入库', value: 1, key: 'wait_entry', num: 0},
           {name: '已完成', value: 2, key: 'success', num: 0}
         ],
-        taskTime: ['', '']
+        taskTime: ['', ''],
+        statusTab: 1
       }
     },
     computed: {

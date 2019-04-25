@@ -73,8 +73,8 @@ export const actions = {
     return API.Supply.purchaseTask(
       {
         time,
-        start_time: startTime ? startTime + ' ' + state.timeStart : '',
-        end_time: endTime ? endTime + ' ' + state.timeEnd : '',
+        start_time: startTime,
+        end_time: endTime,
         keyword,
         status,
         page,

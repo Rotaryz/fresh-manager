@@ -1215,10 +1215,8 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购单'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let startTime = ''
-            let endTime = ''
-            routeTo.params.start = startTime
-            routeTo.params.end = endTime
+            let status = 1
+            routeTo.params.status = status
             store
               .dispatch('supply/getPurchaseList', {
                 time: '',
@@ -1226,7 +1224,8 @@ export default [
                 endTime: '',
                 keyword: '',
                 page: 1,
-                loading: true
+                loading: true,
+                status: status
               })
               .then((res) => {
                 if (!res) {
