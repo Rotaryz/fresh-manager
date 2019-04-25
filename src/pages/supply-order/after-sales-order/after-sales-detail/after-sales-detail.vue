@@ -13,13 +13,13 @@
         </div>
       </div>
       <div class="list-header list-box">
-        <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
+        <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
       </div>
       <div class="list">
-        <div v-for="(item, key) in afterSalesDetail.data.details" :key="key" class="list-content list-box">
-          <div v-for="row in commodities" :key="row.title" :style="{flex: row.flex}" class="list-item">
+        <div v-for="(row, key) in afterSalesDetail.data.details" :key="key" class="list-content list-box">
+          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" :class="['list-item',item.class]">
             <div>
-              {{item[row.key]}}
+              {{row[item.key]}}
             </div>
           </div>
         </div>
@@ -45,18 +45,18 @@
           {title: '商品', key: 'goods_name', flex: 3},
           {title: '分类', key: 'goods_category', flex: 1},
           {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
-          {title: '状态', key: 'sale_out_of_num', flex: 1},
+          {title: '状态', key: 'status_str', flex: 1,class:'last-td'},
         ],
         topListTilte: [{
-          name: '商户名称:', key: 'buyer_name'
+          name: '商户名称：', key: 'buyer_name'
         }, {
-          name: '售后订单 :', key: 'order_sn'
+          name: '售后订单：', key: 'order_sn'
         }, {
-          name: '创建时间:', key: 'created_at'
+          name: '创建时间：', key: 'created_at'
         }, {
-          name: '缺货品类数:', key: 'type_count'
+          name: '缺货品类数：', key: 'type_count'
         }, {
-          name: '状态:', key: 'status_str'
+          name: '状态：', key: 'status_str'
         }]
       }
     },
@@ -69,7 +69,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .last-td
+    max-width:50px
   .sorting-task-detail
     display flex
     flex-direction column
@@ -77,16 +78,13 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
-    height: 72px
     background-color #fff
-    padding: 0px 20px
-    margin-bottom: 20px
-    display flex
-    align-items center
-    justify-content space-between
+    padding:30px 20px 10px 20px
     color: #333333
-
+    margin-bottom: 20px
     li
+      display inline-block
+      margin:0px 130px 20px 0px
       .number
         color: #f84e3c
 

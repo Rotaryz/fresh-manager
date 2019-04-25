@@ -28,17 +28,17 @@
         </div>
         <div class="big-list">
           <div class="list-header list-box">
-            <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
+            <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
           </div>
           <div class="list">
             <div v-if="tabIndex === 0">
-              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
-                <div v-for="row in commodities" :key="row.key" :style="{flex: row.flex}" class="list-item">
-                  <template v-if="row.key" name="name">
-                    {{item[row.key]}}
+              <div v-for="(row, index) in orderList" :key="index" class="list-content list-box">
+                <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+                  <template v-if="item.key" name="name">
+                    {{row[item.key]}}
                   </template>
                   <template v-else name="operation">
-                    <router-link class="list-operation" :to="{name:'merchant-order-detail',params:{id:item.id}}">{{row.operation}}</router-link>
+                    <router-link class="list-operation" :to="{name:'merchant-order-detail',params:{id:row.id}}">{{item.operation}}</router-link>
                   </template>
                 </div>
               </div>
@@ -67,16 +67,16 @@
         </div>
         <div class="big-list">
           <div class="list-header list-box">
-            <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
+            <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
           </div>
           <div class="list">
-            <div v-for="(item, index) in merger.list" :key="index" class="list-content list-box">
-              <div v-for="row in commodities" :key="row.key" :style="{flex: row.flex}" class="list-item">
-                <template v-if="row.key" name="name">
-                  {{item[row.key]}}
+            <div v-for="(row, index) in merger.list" :key="index" class="list-content list-box">
+              <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
+                <template v-if="item.key" name="name">
+                  {{row[item.key]}}
                 </template>
                 <template v-else name="operation">
-                  <router-link :to="{name:'merger-order-detail',params:{mergeOrderId:item.merge_order_id}}" class="list-operation">{{row.operation}}</router-link>
+                  <router-link :to="{name:'merger-order-detail',params:{mergeOrderId:row.merge_order_id}}" class="list-operation">{{item.operation}}</router-link>
                 </template>
               </div>
             </div>
@@ -103,13 +103,13 @@
     {title: '品类数', key: 'type_count', flex: 0.6},
     {title: '状态', key: 'status_str', flex: 0.6},
     {title: '类型', key: 'type_str', flex: 0.8},
-    {title: '操作', key: '', operation: '详情', flex: 0.5}
+    {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
   ]
   const COMMODITIES_LIST2 = [
     {title: '下单时间', key: 'created_at', flex: 3},
     {title: '汇总订单号', key: 'order_sn', flex: 3},
     {title: '品类数', key: 'type_count', flex: 1},
-    {title: '操作', key: '', operation: '详情', flex: 1}
+    {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
   ]
   const ORDERSTATUS = [{text: '订单列表', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '汇总单列表', status: 1, img: require('./pic-zanwu@2x.png')}]
   export default {
@@ -302,6 +302,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .operate
+   max-width:50px
   .distribution-down
     display: flex
     align-items: center

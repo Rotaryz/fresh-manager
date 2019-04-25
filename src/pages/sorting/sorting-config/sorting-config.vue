@@ -4,6 +4,8 @@
       <!--列表tab工具栏-->
       <div class="identification">
         <div class="identification-page">
+          <img src="./icon-warehousing@2x.png" class="identification-icon">
+          <p class="identification-name">配货明细</p>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="_export">导出</div>
@@ -46,7 +48,8 @@
         <div class="model-wrap">
           <div class="top">
             <div class="title">{{road.data.length?'线路设置' :'温馨提示'}}</div>
-            <div class="close" @click.stop="_hideModal"><img class="close-img" src="./icon-close@2x.png" alt=""></div>
+            <div class="close" @click.stop="_hideModal">
+            </div>
           </div>
           <div class="model-content">
             <div v-if="road.data.length>0" class="model-body">
@@ -63,10 +66,12 @@
             <div v-if="road.data.length===0" class="prompt-content">
               暂无线路，请在 <span class="operation-guide-text">配送-调度管理-线路</span>中新建
             </div>
-            <div class="btn-group-wrap">
-              <div class="btn-item" @click.stop="_hideModal">关闭</div>
-              <div v-if="road.data.length>0" class="btn-item" @click.stop="_sureSetRoad">确定</div>
+
+            <div class="back btn-group-wrap ">
+              <div class="back-cancel back-btn hand" @click.stop="_hideModal">关闭</div>
+              <div v-if="road.data.length>0" class="back-btn back-submit hand" @click.stop="_sureSetRoad">确定</div>
             </div>
+
           </div>
         </div>
 
@@ -123,7 +128,7 @@
           road_id: ''
         },
         settingId: "",
-        isChange:false
+        isChange: false
       }
     },
     computed: {
@@ -141,7 +146,7 @@
       })
       this.$dragging.$on('dragend', (res) => {
         // console.log(res, 'dragenddragenddragenddragenddragenddragenddragend')
-        if(this.isChange) return
+        if (this.isChange) return
         this.isChange = true
         let data = this.dragList.map((item, idx) => {
           return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
@@ -167,7 +172,7 @@
           if (res.error === this.$ERR_OK) {
             this.$toast.show('修改配货位成功')
             this.isChange = false
-          }else{
+          } else {
             this.$toast.show('修改配货位失败')
           }
         })
@@ -294,14 +299,12 @@
     background: $color-white
     border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
-    text-align: center
+    /*text-align: center*/
 
     .top
-      height: 59.5px
-      border-bottom: 0.5px solid $color-line
       align-items: center
       justify-content: space-between
-      padding: 0 20px
+      padding: 20px
       layout(row)
 
       .title
@@ -310,25 +313,21 @@
         color: $color-text-main
 
       .close
-        width: 16px
-        height: 16px
-
-        .close-img
-          width: 16px
-          height: 16px
-          display: block
+        width: 12px
+        height: 12px
+        icon-image(icon-close)
 
   .model-content
     padding: 20px
 
     .model-body
       height: 65px
+      padding-top: 10px
 
       .edit-item
         display: flex
         color: #2A2A2A
         min-height: 40px
-        margin-top: 24px
 
         .edit-title
           margin-top: 7.5px
@@ -381,28 +380,11 @@
       layout(row)
       align-items: center
       justify-content: flex-end
-      padding-right: 20px
+      padding-top: 20px
+      background: #fff
+      position: relative
+      left: 0
 
-      .btn-item
-        width: 96px
-        line-height: 40px
-        margin-left: 10px
-        cursor: pointer
-        text-align: center
-        border: 1px solid $color-text-assist
-        border-radius: 2px
-        font-family: $font-family-regular
-        font-size: $font-size-16
-        color: $color-text-main
-        height: 40px
-
-        &:nth-child(1)
-          color: $color-positive
-          border-color: $color-positive
-
-        &:nth-child(2)
-          background: $color-positive
-          color: $color-white
-          border-color: $color-positive
-
+      &:before
+        border-top: 0px solid #e9ecee;
 </style>
