@@ -1677,7 +1677,12 @@ export default [
         name: 'new-data',
         component: () => lazyLoadView(import('@pages/new-data/new-data')),
         meta: {
-          titles: ['概况', '数据概况']
+          titles: ['概况', '数据概况'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            let time = await getCurrentTime()
+            routeTo.params.time = time
+            next()
+          }
         }
       },
       // 账号管理
