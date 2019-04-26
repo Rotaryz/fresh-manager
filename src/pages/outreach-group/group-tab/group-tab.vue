@@ -191,10 +191,11 @@
           } else {
             this.statusArray = [{currentId: current.id, parentId}]
           }
-          if (this.select.currentId === current.id || hasIn) {
-            this.select = {currentId: '', parentId: ''}
-          } else {
+          console.log(this.select.currentId, current.id)
+          if (this.select.currentId !== current.id) {
             this.select = {currentId: current.id, parentId}
+          } else {
+            flag = true
           }
           break
         case 'department':
@@ -208,10 +209,10 @@
             })
             this.statusArray.push({currentId: current.id, parentId})
           }
-          if (this.select.currentId === current.id || hasIn) {
-            this.select = {currentId: '', parentId: ''}
-          } else {
+          if (this.select.currentId !== current.id) {
             this.select = {currentId: current.id, parentId}
+          } else {
+            flag = true
           }
           break
         case 'team':
@@ -219,14 +220,17 @@
             // this.statusArray = this.statusArray.filter((item) => {
             //   return +item.currentId !== +current.id
             // })
-            flag = true
           } else {
             this.statusArray = this.statusArray.filter((item) => {
               return +item.parentId !== +parentId
             })
             this.statusArray.push({currentId: current.id, parentId})
           }
-          this.select = {currentId: current.id, parentId}
+          if (this.select.currentId !== current.id) {
+            this.select = {currentId: current.id, parentId}
+          } else {
+            flag = true
+          }
           break
         default:
           break
