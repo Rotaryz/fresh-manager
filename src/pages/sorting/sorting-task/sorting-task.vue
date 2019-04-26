@@ -131,7 +131,7 @@
         if (!noUpdataStatus) {
           this._getStausData()
         }
-        if(params.page===1){
+        if (params.page === 1) {
           this.$refs.pagination.beginPage()
         }
       },
@@ -182,11 +182,20 @@
         this._getClassifyList({
           'parent_id': item.id,
         }).then(res => {
+          this.filterTaskSecond.content='全部'
+          if (res.data.length === 0) {
+            this.filterTaskSecond.data=  [{name: '全部', id: ''}]
+            return
+          }
           this.filterTaskSecond.data = res.data
+
         })
       },
       _setValueSecond(item) {
-        this._updateList({goods_category_id: item.id || '', page: 1})
+        if(!item.id){
+          return
+        }
+        this._updateList({goods_category_id: item.id, page: 1})
       },
       _search(keyword) {
         this._updateList({keyword, page: 1})
@@ -206,7 +215,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return  '?' + search.join('&')
+        return '?' + search.join('&')
       },
       // 导出分拣单
       _exportPickingOrder() {
