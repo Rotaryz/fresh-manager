@@ -1588,7 +1588,6 @@ export default [
           titles: ['供应链', '分拣', '分拣任务'],
           beforeResolve(routeTo, routeFrom, next) {
             store.commit('sorting/SET_PARAMS', {
-              params: {
                 goods_category_id: '',
                 page: 1,
                 limit: 10,
@@ -1596,7 +1595,6 @@ export default [
                 end_time: '',
                 keyword: "",
                 status: 0   // 待分拣
-              }
             })
             store.dispatch('sorting/getSortingTaskList').then((res) => {
               if (!res) {

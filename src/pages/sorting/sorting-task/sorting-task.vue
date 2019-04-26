@@ -44,7 +44,7 @@
               <template v-if="item.type==='operate'">
                 <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
               </template>
-              <template v-else-if="item.type === 'base_unit'">
+              <template v-else-if="item.type === 'sale_unit'">
                 {{row[item.key]}}{{row[item.type]}}
               </template>
               <template v-else>
@@ -68,11 +68,12 @@
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '拣货任务列表'
   const COMMODITIES_LIST = [
+    {tilte: '生成时间', key: 'created_at', flex: '1.5'},
     {tilte: '商品名称', key: 'goods_name', flex: '2'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
-    {tilte: '下单数', type: "base_unit", key: 'sale_num'},
-    {tilte: '待拣货数', type: "base_unit", key: 'sale_wait_pick_num'},
-    {tilte: '缺货数', type: "base_unit", key: 'sale_out_of_num'},
+    {tilte: '下单数', type: "sale_unit", key: 'sale_num'},
+    {tilte: '待拣货数', type: "sale_unit", key: 'sale_wait_pick_num'},
+    {tilte: '缺货数', type: "sale_unit", key: 'sale_out_of_num'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
     {tilte: '操作', key: 'id', type: "operate", replace: "明细", class: 'operate'}]
@@ -83,7 +84,7 @@
     },
     data() {
       return {
-        datePlaceHolder: "选择下单日期",
+        datePlaceHolder: "选择生成日期",
         commodities: COMMODITIES_LIST,
         filterTaskFrist: {
           check: false,
@@ -129,6 +130,9 @@
         this.getSortingTaskList()
         if (!noUpdataStatus) {
           this._getStausData()
+        }
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
         }
       },
       //  事件选择器
@@ -176,49 +180,54 @@
       _setValueFrist(item) {
         this._updateList({goods_category_id: item.id || '', page: 1})
         this._getClassifyList({
-          'parent_id': item.parent_id,
-          'goods_id': item.id
-        }).then(res=>{
+          'parent_id': item.id,
+        }).then(res => {
+          this.filterTaskSecond.content='全部'
+          if (res.data.length === 0) {
+            this.filterTaskSecond.data=  [{name: '全部', id: ''}]
+            return
+          }
           this.filterTaskSecond.data = res.data
+
         })
       },
       _setValueSecond(item) {
-        this._updateList({goods_category_id: item.id || '', page: 1})
+        if(!item.id){
+          return
+        }
+        this._updateList({goods_category_id: item.id, page: 1})
       },
       _search(keyword) {
         this._updateList({keyword, page: 1})
       },
       _getUrl() {
-        if (!this.exportParamsStr) {
-          let obj = this.sortingTask.filter
-          let data = {
-            current_corp: this.getCurrentId(),
-            access_token: this.currentUser().access_token,
-            goods_category_id:obj.goods_category_id,
-            start_time:obj.start_time,
-            end_time:obj.end_time,
-            keyword:obj.keyword,
-            status :obj.status
-          }
-          let search = []
-          for (let key in data) {
-            search.push(`${key}=${data[key]}`)
-          }
-          this.exportParamsStr = '?' + search.join('&')
+        let obj = this.sortingTask.filter
+        let data = {
+          current_corp: this.getCurrentId(),
+          access_token: this.currentUser().access_token,
+          goods_category_id: obj.goods_category_id,
+          start_time: obj.start_time,
+          end_time: obj.end_time,
+          keyword: obj.keyword,
+          status: obj.status
         }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return '?' + search.join('&')
       },
       // 导出分拣单
       _exportPickingOrder() {
-        this._getUrl()
-        API.Sorting.exportPickingOrder(this.exportParamsStr)
+        API.Sorting.exportPickingOrder(this._getUrl())
       },
       // 导出配送单
       _exportDeliveryOrder() {
         this._getUrl()
-        API.Sorting.exportDeliveryOrder(this.exportParamsStr)
+        API.Sorting.exportDeliveryOrder(this._getUrl())
       },
       _getMoreList(page) {
-        this._updateList({page: 1})
+        this._updateList({page})
       },
     }
   }

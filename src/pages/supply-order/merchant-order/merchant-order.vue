@@ -81,7 +81,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
+          <base-pagination ref='pagination' :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -142,7 +142,7 @@
           list:[],
           filter: {
             start_time: "",
-            end_time: " "
+            end_time: ""
           }
         }
       }
@@ -188,11 +188,14 @@
       _updateMergerList(params={}) {
         let defautFilter={
           start_time: "",
-          end_time: " "
+          end_time: ""
         }
         params = {...defautFilter,...params}
         this.merger.filter = {...this.merger.filter, ...params}
         this._getMergeOrderslist()
+        if(params.page===1){
+          this.$refs.pagination.beginPage()
+        }
       },
       _getMergeOrderslist() {
         API.MerchantOrder.getMergeOrderslist(this.merger.filter).then(res => {
@@ -222,6 +225,9 @@
           this._getStatusData()
         }
         this.getMerchantOrderList()
+        if(params.page===1){
+          this.$refs.pagination.beginPage()
+        }
       },
       // 状态数据
       _getStatusData() {

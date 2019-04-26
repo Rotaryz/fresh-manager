@@ -238,6 +238,7 @@
       },
       // 删除优惠券
       showConfirm() {
+        if (this.disable) return
         this.selectCouponList = []
         this.couponSelectItem = {}
         this.couponCheckItem = {}
