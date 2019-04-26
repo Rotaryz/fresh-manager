@@ -80,6 +80,7 @@
             <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
               <div class="list-item list-text">{{item.title}}</div>
               <div class="list-item list-text">{{item.take_count}}</div>
+              <div class="list-item list-text">{{item.used_count}}</div>
               <div class="list-item list-text" @click="open(item, index)">
                 <base-switch confirmText="开启" cancelText="关闭" :status="item.status"></base-switch>
               </div>
@@ -146,7 +147,8 @@
   ]
   const RULES_LIST = [
     '规则名称',
-    '领取数',
+    '发放数',
+    '使用数',
     '状态',
     '操作'
   ]
@@ -257,8 +259,8 @@
       // 获取状态
       async _statistic() {
         let res = await API.Order.afterSaleOrdersStatus({
-          start_time: this.startTime,
-          end_time: this.endTime,
+          start_time: this.time[0],
+          end_time: this.time[1],
           keyword: this.keyword,
           social_name: this.socialName
         })
