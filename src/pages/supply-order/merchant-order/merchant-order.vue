@@ -225,6 +225,9 @@
           this._getStatusData()
         }
         this.getMerchantOrderList()
+        if(params.page===1){
+          this.$refs.pagination.beginPage()
+        }
       },
       // 状态数据
       _getStatusData() {
