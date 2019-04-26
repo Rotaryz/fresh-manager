@@ -310,5 +310,15 @@ export default {
   adjustOorderMsg(id, data, loading = false) {
     let url = `/scm/api/backend/stock/adjust-order/${id}`
     return request.get(url, data, loading)
+  },
+  /**
+   *停止调度配货[v1.2]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  stopAllocationStock(loading = false) {
+    let url = `/scm/api/backend/oms/stop-allocation-stock`
+    return request.get(url, {}, loading)
   }
 }
