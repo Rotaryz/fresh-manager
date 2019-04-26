@@ -116,7 +116,7 @@
       // 完成单日收货
       async allocationStock() {
         if (this.productEnterList.length) {
-          this.$refs.confirm.show('哟入库单还未完成入库，是否确认完成收货')
+          this.$refs.confirm.show('有入库单还未完成入库，是否确认完成收货')
           return
         }
         await this.sendAllocationStock()
