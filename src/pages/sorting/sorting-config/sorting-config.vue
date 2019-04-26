@@ -155,9 +155,12 @@
       ...sortingMethods,
       // 更新托拽列表
       updateList() {
-        this.getSortingConfigList().then(res => {
+        this.getSortingConfigList({loading:false}).then(res => {
           if (res) {
             this.dragList = _.cloneDeep(this.sortingConfig.list)
+            this.$nextTick(()=>{
+              this.$loading.hide()
+            })
           }
         })
       },
@@ -175,7 +178,6 @@
         })
           .finally(() => {
             this.updateList()
-            this.$loading.hide()
           })
       },
       _getRoadList() {
