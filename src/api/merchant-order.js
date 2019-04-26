@@ -16,8 +16,8 @@ export default {
   // √ 状态
   getStausData(params = {}) {
     let defaultParams = {
-      time_start: "",
-      time_end: "",
+      start_time: "",
+      end_time: "",
       keyword: "",
       type: ""
     }
@@ -49,6 +49,7 @@ export default {
   getMergeOrderslist(params, loading = false) {
     let url = '/scm/api/backend/oms/merge-orders'
     // let url = '/mock/mergeOrderslist.json'
+    console.log(url,params)
     return request.get(url, params, loading)
   },
   //  √ 汇总详情  √

@@ -142,7 +142,7 @@
           list:[],
           filter: {
             start_time: "",
-            end_time: " "
+            end_time: ""
           }
         }
       }
@@ -188,7 +188,7 @@
       _updateMergerList(params={}) {
         let defautFilter={
           start_time: "",
-          end_time: " "
+          end_time: ""
         }
         params = {...defautFilter,...params}
         this.merger.filter = {...this.merger.filter, ...params}

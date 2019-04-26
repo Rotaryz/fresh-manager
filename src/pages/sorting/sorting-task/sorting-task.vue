@@ -68,6 +68,7 @@
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '拣货任务列表'
   const COMMODITIES_LIST = [
+    {tilte: '生成时间', key: 'created_at', flex: '1.5'},
     {tilte: '商品名称', key: 'goods_name', flex: '2'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
     {tilte: '下单数', type: "sale_unit", key: 'sale_num'},
@@ -83,7 +84,7 @@
     },
     data() {
       return {
-        datePlaceHolder: "选择下单日期",
+        datePlaceHolder: "选择生成日期",
         commodities: COMMODITIES_LIST,
         filterTaskFrist: {
           check: false,
