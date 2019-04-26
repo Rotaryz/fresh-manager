@@ -113,8 +113,8 @@ export const actions = {
       })
   },
   // 配置列表
-  getSortingConfigList({state, commit, dispatch}) {
-    return API.Sorting.getAllocationList(state.sortingTask.filter)
+  getSortingConfigList({state, commit, dispatch},{loading=true}) {
+    return API.Sorting.getAllocationList(state.sortingTask.filter,loading)
       .then((res) => {
 
         if (res.error !== app.$ERR_OK) {
