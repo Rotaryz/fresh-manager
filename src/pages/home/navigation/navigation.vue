@@ -134,7 +134,7 @@
       title: '客户',
       children: [
         {
-          title: '客户管理',
+          title: '客户列表',
           url: '/home/customer-management',
           isLight: false
         }

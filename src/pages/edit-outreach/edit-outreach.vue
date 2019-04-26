@@ -630,7 +630,6 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        console.log(item, 222)
         if (item.selected === 1) {
           return
         }
@@ -739,7 +738,6 @@
       },
       //  保存
       async _saveActivity() {
-        if (this.id) return
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return

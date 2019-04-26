@@ -51,5 +51,15 @@ export default {
   switchMarket(data, loading = false) {
     let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${data.id}/status/${data.status}`
     return request.post(url, data, loading)
+  },
+
+  /**
+   * 营销分类统计
+   * @param loading
+   * @returns {*}
+   */
+  getMarketStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/coupon-activity-manage/coupon-activity-status'
+    return request.get(url, data, loading)
   }
 }

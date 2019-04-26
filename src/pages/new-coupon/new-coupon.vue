@@ -108,32 +108,42 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          有效时间
+          用券时间
         </div>
-        <date-picker
-          :value="msg.start_at"
-          class="edit-input-box"
-          type="date"
-          :confirm="false"
-          :editable="false"
-          placement="bottom-end"
-          placeholder="选择开始时间"
-          style="width: 240px;height: 40px;border-radius: 1px"
-          @on-change="_getStartTime"
-        ></date-picker>
-        <div class="tip-text">至</div>
-        <date-picker
-          :value="msg.end_at"
-          class="edit-input-box edit-input-right"
-          type="date"
-          :confirm="false"
-          :editable="false"
-          placement="bottom-end"
-          placeholder="选择结束时间"
-          style="width: 240px;height: 40px"
-          @on-change="_getEndTime"
-        ></date-picker>
-        <div :class="{'time-no-change':disable}"></div>
+        <div class="wrap">
+          <div class="time-select">
+            <date-picker
+              :value="msg.start_at"
+              class="edit-input-box"
+              type="date"
+              :confirm="false"
+              :editable="false"
+              placement="bottom-end"
+              placeholder="选择开始时间"
+              style="width: 240px;height: 40px;border-radius: 1px"
+              @on-change="_getStartTime"
+            ></date-picker>
+            <div class="tip-text">至</div>
+            <date-picker
+              :value="msg.end_at"
+              class="edit-input-box edit-input-right"
+              type="date"
+              :confirm="false"
+              :editable="false"
+              placement="bottom-end"
+              placeholder="选择结束时间"
+              style="width: 240px;height: 40px"
+              @on-change="_getEndTime"
+            ></date-picker>
+          </div>
+          <div class="select-item">
+            <span :class="['item-icon', 'hand', {'checked': +msg.is_day_limited === 1}]" @click="changeLimit"></span>
+            <span class="hand" @click="changeLimit">领取当日起</span>
+            <input v-model="msg.limit_days" type="text" class="day-item">
+            <span>天内可用</span>
+          </div>
+        </div>
+        <div :class="{'check-no-change':disable}"></div>
       </div>
 
       <!--使用范围-->
@@ -144,6 +154,29 @@
         </div>
         <div class="input-box">
           <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
+      <!--使用说明-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          使用说明
+        </div>
+        <div class="edit-input-box">
+          <div class="no-wrap">
+            <textarea v-model="msg.description"
+                      type="text"
+                      class="edit-input edit-textarea"
+                      :readonly="disable"
+                      maxlength="45"
+                      :class="{'disable-input':disable}"
+            >
+            </textarea>
+            <span class="tip">例如: 全场商品通用或特惠商品不可以使用</span>
+          </div>
+          <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/45</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -378,7 +411,10 @@
           start_at: '',
           end_at: '',
           range_type: 1, // 适用范围0未知1通用券2品类券3单品券
-          ranges: []
+          ranges: [],
+          limit_days: '',
+          is_day_limited: 0,
+          description: ''
         },
         isSubmit: false, // 在提交
         categoryShow: false, // 选择品类弹窗
@@ -461,6 +497,9 @@
         // 结束时间规则判断
         return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
       },
+      testDescription() {
+        return this.msg.description
+      },
       testGoods() {
         return +this.msg.range_type === 3 ? this.goodsList && this.goodsList.length : true
       },
@@ -468,15 +507,7 @@
         return +this.msg.range_type === 2 ? this.categorySelectItem.name : true
       }
     },
-    watch: {
-    // couponDetail: {
-    //   handler(news) {
-    //     let id = this.$route.query.id || null
-    //
-    //   },
-    //   immediate: true
-    // }
-    },
+    watch: {},
     beforeCreate() {
       if (this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
@@ -516,6 +547,9 @@
       },
       changeFull() {
         this.msg.support_activity = +this.msg.support_activity === 1 ? 0 : 1
+      },
+      changeLimit() {
+        this.$set(this.msg, 'is_day_limited', this.msg.is_day_limited ? 0 : 1)
       },
       _getStartTime(time) {
         this.msg.start_at = time
@@ -579,7 +613,7 @@
         if (item.id === '') {
           this.secondAssortment.data = []
         } else {
-          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+          let res = await API.Outreach.goodsCategory({parent_id: this.parentId, get_goods_count: 1})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
@@ -597,7 +631,7 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+        let res = await API.Outreach.goodsCategory({parent_id: this.parentId, get_goods_count: 1})
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
         this.categoryList = res.error === this.$ERR_OK ? res.data : []
@@ -753,10 +787,12 @@
       },
       //  保存
       async _saveActivity() {
-        if (this.id) return
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
+        if (!this.msg.is_day_limited) {
+          this.$set(this.msg, 'limit_days', 0)
+        }
         let data = {}
         data = Object.assign({}, this.msg)
         // 添加coupon_range_id
@@ -802,6 +838,7 @@
           {value: this.testStart, txt: '请选择活动开始时间'},
           {value: this.testEnd, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
+          {value: this.testDescription, txt: '请输入使用说明'},
           {value: this.testGoods, txt: '请选择商品'},
           {value: this.testCategory, txt: '请选择品类'}
         ]
@@ -910,9 +947,15 @@
           border-color: #ACACAC
         &:focus
           border-color: $color-main
+      .edit-textarea
+        height: 94px
+        resize: none
+        padding: 4px 14px
       .no-wrap
         display: flex
         align-items: center
+        .tip
+          color: $color-text-assist
       .disable-input
         background: #F5F5F5
         color: #ACACAC
@@ -932,6 +975,11 @@
         col-center()
         right: 20px
         color: #ACACAC
+      .textarea-num
+        position: absolute
+        left: 360px
+        bottom: 6px
+        color: $color-text-assist
       .description
         display: flex
         align-items: center
@@ -946,6 +994,22 @@
     .tip-text
       line-height: 40px
       color: #333
+    .wrap
+      .time-select
+        display: flex
+        align-items: center
+      .select-item
+        margin-top: 20px
+        margin-left: 40px
+        display: flex
+        align-items: center
+      .day-item
+        width: 138px
+        height: 34px
+        box-sizing: border-box
+        padding: 0 10px
+        margin: 0 14px 0 10px
+        border: 1px solid $color-line
     .time-no-change,.text-no-change,.check-no-change
       position: absolute
       left: 127px
@@ -958,6 +1022,7 @@
     .check-no-change
       cursor: not-allowed
       height: 100px
+
   .edit-activity
     box-sizing: border-box
     padding-left: 20px

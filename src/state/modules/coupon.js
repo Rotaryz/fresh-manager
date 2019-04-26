@@ -8,11 +8,7 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  couponDetail: {},
-  startTime: '',
-  endTime: '',
-  status: 1,
-  page: 1
+  couponDetail: {}
 }
 
 export const getters = {
@@ -24,15 +20,6 @@ export const getters = {
   },
   couponDetail(state) {
     return state.couponDetail
-  },
-  time(state) {
-    return [state.startTime, state.endTime]
-  },
-  status(state) {
-    return state.status
-  },
-  page(state) {
-    return state.page
   }
 }
 
@@ -45,22 +32,12 @@ export const mutations = {
   },
   SET_COUPON_DETAIL(state, detail) {
     state.couponDetail = detail
-  },
-  SET_TIME(state, time) {
-    state.startTime = time.startTime
-    state.endTime = time.endTime
-  },
-  SET_STATUS(state, status) {
-    state.status = status
-  },
-  SET_PAGE(stata, page) {
-    state.page = page
   }
 }
 
 export const actions = {
-  getCouponList({commit, state}) {
-    const {startTime, endTime, status, page} = state
+  getCouponList({commit}, msg) {
+    let {startTime, endTime, status, page} = msg
     let data = {
       status,
       page,
@@ -107,23 +84,5 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
-  },
-  setTime({commit, dispatch}, time) {
-    time = {
-      startTime: time[0],
-      endTime: time[1]
-    }
-    commit('SET_TIME', time)
-    commit('SET_PAGE', 1)
-    dispatch('getCouponList')
-  },
-  setStatus({commit, dispatch}, selectStatus) {
-    commit('SET_STATUS', selectStatus.status)
-    commit('SET_PAGE', 1)
-    dispatch('getCouponList')
-  },
-  setPage({commit, dispatch}, page) {
-    commit('SET_PAGE', page)
-    dispatch('getCouponList')
   }
 }

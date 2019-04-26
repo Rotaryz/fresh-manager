@@ -5,7 +5,7 @@
       <transition name="fade">
         <!-- v-show=""-->
         <div v-if="item.status === 'custom' && tabIndex === tabActive" class="block">
-          <base-date-select :clearable="false" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>
+          <base-date-select :clearable="false" :disabledDate="disabledDate" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>
         </div>
       </transition>
     </li>
@@ -42,6 +42,12 @@
       infoTab: {
         type: Number,
         default: 0
+      },
+      disabledDate: {
+        type: Object,
+        default: () => {
+          return {}
+        }
       },
       text: {
         type: String,

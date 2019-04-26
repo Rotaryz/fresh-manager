@@ -95,16 +95,10 @@ export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOu
 
 // 优惠券
 export const couponComputed = {
-  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'time', 'status', 'page'])
+  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail'])
 }
 
-export const couponMethods = mapActions('coupon', [
-  'setTime',
-  'setStatus',
-  'setPage',
-  'getCouponList',
-  'getCouponDetail'
-])
+export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail'])
 
 // 营销计划
 export const marketComputed = {
@@ -149,11 +143,11 @@ export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])
 
 // 订单
 export const orderComputed = {
-  ...mapGetters('order', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page'])
+  ...mapGetters('order', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page', 'orderStatus', 'startTime', 'endTime'])
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage'])
+  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus'])
 }
 
 // 退货

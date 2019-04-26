@@ -1,7 +1,7 @@
 const appConfig = require('./src/app.config')
 
 module.exports = {
-  baseUrl: './',
+  baseUrl: process.env.VUE_APP_ENV !== 'production' ? './' : '/',
   configureWebpack: {
     name: appConfig.title,
     resolve: {
@@ -23,10 +23,7 @@ module.exports = {
             },
             '/scm': {
               target: process.env.VUE_APP_SCM_API
-            },
-            // '/mock':{
-            //   target:'http://localhost:9001/'
-            // }
+            }
           }
         }
       : // 代理本地地址.

@@ -14,7 +14,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-customer_list@2x.png" class="identification-icon">
-          <p class="identification-name">客户管理</p>
+          <p class="identification-name">客户列表</p>
         </div>
         <div class="function-btn">
         </div>
@@ -52,7 +52,7 @@
   import {customerComputed, customerMethods} from '@state/helpers'
 
   const PAGE_NAME = 'CUSTOMER_MANAGEMENT'
-  const TITLE = '客户管理'
+  const TITLE = '客户列表'
   const LIST_TITLE = [
     {title: '客户头像', showSort: false, sort: []},
     {title: '客户昵称', showSort: false, sort: []},

@@ -1,13 +1,14 @@
 <template>
   <div class="coupon-market table">
     <div class="down-content">
-      <span class="down-tip">平台发放 </span>
-      <div class="down-item">
-        <div v-for="(item, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">{{item}}<span class="icon"></span></div>
-      </div>
-      <span class="down-tip">团长发放</span>
-      <div class="down-item">
-        <div class="top-btn" @click="newMarket(3)">社群福利券<span class="icon"></span></div>
+      <div v-for="(item, index) in topBtn" :key="index" class="down-main">
+        <span class="down-title">{{item.name}}</span>
+        <div class="down-item">
+          <div v-for="(val, ind) in item.child" :key="ind" class="top-btn" @click="newMarket(val.value)">
+            <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
+            <span class="text">{{val.name}}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="table-content">
@@ -15,6 +16,7 @@
         <div class="identification-page">
           <img src="./icon-marketing_list@2x.png" class="identification-icon">
           <p class="identification-name">营销列表</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
       </div>
       <div class="big-list">
@@ -34,8 +36,8 @@
                 {{type[item[val.value]]}}
               </div>
               <!--状态-->
-              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item)">
-                <base-switch :status="item.status" confirmText="开启" cancelText="关闭"></base-switch>
+              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
+                <base-switch :status="statusHandle(item, index)" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
@@ -67,6 +69,36 @@
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
+  const TOP_BTN = [{
+    name: '平台发放',
+    child: [
+      {
+        name: '新客有礼',
+        value: 0,
+        icon: 'icon-new_courtesy'
+      },
+      {
+        name: '复购有礼',
+        value: 1,
+        icon: 'icon-complex_courtesy'
+      },
+      {
+        name: '唤醒流失客户',
+        value: 2,
+        icon: 'icon-awaken'
+      }
+
+    ]
+  },{
+    name: '团长发放',
+    child: [
+      {
+        name: '社群福利券',
+        value: 3,
+        icon: 'icon-group'
+      }
+    ]
+  }]
   export default {
     name: PAGE_NAME,
     page: {
@@ -78,29 +110,78 @@
     data() {
       return {
         marketTitle: MARKET_TITLE,
-        topBtn: ['新客有礼', '复购有礼', '唤醒流失客户'],
+        topBtn: TOP_BTN,
         type: ['未知', '新客有礼', '复购有礼', '唤醒流失客户', '社群福利券'],
+        iconArr: ['icon-new_courtesy', 'icon-complex_courtesy', 'icon-awaken'],
+        iconArr2: ['icon-group'],
+        statusTab: [
+          {name: '全部', value: '', num: 0},
+          {name: '开启', value: 1, num: 0},
+          {name: '关闭', value: 0, num: 0}
+        ],
         page: 1,
-        delId: 0
+        delId: 0,
+        status: '',
+        statusArr: new Array(10).fill(undefined)
       }
     },
     computed: {
       ...marketComputed
     },
-    created() {},
+    created() {
+      this.getMarketStatus()
+    },
     mounted() {},
     methods: {
       ...marketMethods,
       newMarket(index) {
         this.$router.push(`/home/coupon-market/new-market?index=${index}`)
       },
+      changeStatus(selectStatus) {
+        this.status = selectStatus.status
+        this.$refs.pages.beginPage()
+        this.page = 1
+        this.statusArr = new Array(10).fill(undefined)
+        this.getMarketList({page: this.page, status: selectStatus.status})
+      },
+      getMarketStatus() {
+        API.Market.getMarketStatus()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
+      },
       addPage(page) {
         this.page = page
-        this.getMarketList({page: this.page})
+        this.getMarketList({page: this.page, status: this.status})
       },
-      switchBtn(item) {
+      statusHandle(item, index) {
+        let status = 0
+        if (typeof(this.statusArr[index]) === 'number') {
+          status = this.statusArr[index]
+        } else {
+          status = item.status
+        }
+        return status
+      },
+      switchBtn(item, index) {
+        let status = 1
+        if (typeof(this.statusArr[index]) === 'number') {
+          status = +this.statusArr[index] === 0 ? 1 : 0
+        } else {
+          status = item.status ? 0 : 1
+        }
         let data = {
-          status: item.status ? 0 : 1,
+          status: status,
           id: item.id
         }
         API.Market.switchMarket(data).then((res) => {
@@ -108,7 +189,16 @@
             this.$toast.show(res.message)
             return
           }
-          this.getMarketList({page: this.page})
+          this.statusArr = this.statusArr.map((item, ind) => {
+            if (index === ind) {
+              console.log(index, ind, status)
+              item = status
+            }
+            return item
+          })
+          console.log(this.statusArr)
+          // this.getMarketList({page: this.page, status: this.status})
+          this.getMarketStatus()
         })
       },
       _deleteMarket(item) {
@@ -122,7 +212,8 @@
           return
         }
         this.$toast.show('删除成功')
-        this.getMarketList({page: this.page})
+        this.getMarketStatus()
+        this.getMarketList({page: this.page, status: this.status})
       }
     }
   }
@@ -151,43 +242,53 @@
       overflow: hidden
       white-space: nowrap
       font-size: 14px
-  .down-tip
-    font-family: $font-family-regular
-  .down-item
-    .top-btn
-      height: 30px
-      line-height: 30px
-      padding: 0 10px
-      border-radius: 1px
-      display: flex
-      justify-content: center
-      align-items: center
-      border-width: 1px
-      border-style: solid
-      border-color: #E6EAED
-      background: #FFF
-      margin-right: 10px
-      font-family: $font-family-regular
-      cursor: pointer
-      transition: all 0.3s
+  .down-content
+    height: 170px
+    .down-main
+      &:first-child
+        .top-btn:nth-child(2)
+          margin-right: 22px
       &:last-child
-        margin-right: 0
-      &:hover
-        color: #FFF
-        border-color: $color-main
-        background: $color-main
+        .top-btn:first-child
+          width: 84px
+          margin-left: -14px
+    .down-title
+      font-size: $font-size-16
+      line-height: 1
+      color: $color-text-main
+      font-family: $font-family-regular
+    .down-item
+      margin-top: 22px
+      .top-btn
+        width: 84px
+        height: 84px
+        text-align: center
+        margin-right: 36px
+        overflow: hidden
+        color: $color-text-main
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        cursor: pointer
         .icon
-          icon-image(icon-new_built2)
-      .icon
-        width: 16px
-        height: 16px
-        margin-left: 5px
-        icon-image(icon-new_built)
-        transition: all 0.3s
-    .select-btn
-      border: 1px solid $color-main
-      background: $color-main
-      color: $color-white
-      .icon
-        icon-image(icon-new_built2)
+          width: 56px
+          height: 56px
+          margin: 0 auto
+          border-radius: 4px
+          display: block
+          transition: all 0.3s
+        .text
+          margin-top: 10px
+          display: block
+        &:first-child
+          width: 60px
+        &:hover
+          .icon-0
+            box-shadow: 0 2px 4px 0 rgba(159,213,198,0.40)
+          .icon-1
+            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+          .icon-2
+            box-shadow: 0 2px 4px 0 rgba(199,159,213,0.40)
+          .icon-3
+            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+
 </style>

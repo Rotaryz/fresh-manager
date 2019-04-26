@@ -1,6 +1,6 @@
 <template>
   <div class="base-date-select">
-    <date-picker :placeholder="placeHolder" :option="disabledDate" type="daterange" :value="dateInfo" :style="{'height': '28px'}"
+    <date-picker :placeholder="placeHolder" :options="disabledDate" type="daterange" :value="dateInfo" :style="{'height': '28px'}"
                  :clearable="clearable" @on-change="_getTime"
     ></date-picker>
   </div>

@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{id ? '编辑活动' : '新建活动'}}</p>
+        <p class="identification-name">{{disable ? '查看活动' : '新建活动'}}</p>
       </div>
       <div class="function-btn">
       </div>
@@ -12,16 +12,6 @@
       <div class="content-title">基本信息</div>
     </div>
     <div class="rush-time">
-      <!--<div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          持续时间
-        </div>
-        <div class="edit-input-box">
-          <base-drop-down :width="200" :height="44" :select="duration" @setValue="_selectDuration"></base-drop-down>
-        </div>
-        <div :class="{'text-no-change':disable}"></div>
-      </div>-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -166,7 +156,7 @@
   import {DatePicker} from 'element-ui'
 
   const PAGE_NAME = 'EDIT_RUSH'
-  const TITLE = '新建编辑今日抢购'
+  const TITLE = '新建查看今日抢购'
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
@@ -272,7 +262,7 @@
     watch: {},
     created() {
       this.disable = this.$route.query.id
-      this.id = this.$route.query.id || null
+      this.id = this.$route.query.id || this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.saleDetail)
         this.goodsList = obj.activity_goods
@@ -284,6 +274,7 @@
         this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
       }
       this._getFirstAssortment()
+
     // this._getGoodsList()
     },
     async mounted() {
@@ -359,7 +350,8 @@
         if (item.id === '') {
           this.secondAssortment.data = []
         } else {
-          let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+          let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
+          this.$loading.hide()
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
@@ -377,7 +369,8 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Rush.goodsCategory({parent_id: this.parentId})
+        let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
+        this.$loading.hide()
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
       },
@@ -441,7 +434,6 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        console.log(item, 111)
         if (item.selected === 1) {
           return
         }
@@ -491,7 +483,6 @@
       },
       //  保存
       async _saveActivity() {
-        if (this.id) return
         if (this.disable || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
@@ -517,7 +508,7 @@
         }
         list.map((item) => {
           delete item.person_day_buy_limit
-          item.goods_id = item.id
+          item.goods_id = item.id || item.goods_id
         })
         let data = Object.assign({}, this.msg, {activity_goods: list})
         let res = null
