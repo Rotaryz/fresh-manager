@@ -97,6 +97,7 @@
     max-width:80px
 
   .top-wrap
+    min-width:1414px
     background-color #fff
     padding:30px 20px 10px 20px
     color: #333333

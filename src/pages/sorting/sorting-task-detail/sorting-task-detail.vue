@@ -79,6 +79,7 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
+    min-width:1414px
     background-color #fff
     padding:30px 20px 10px 20px
     color: #333333
@@ -94,7 +95,6 @@
 
   ul.content-wrap
     flex: 1
-    min-width: 1120px
     padding: 20px 0px 0px 20px
     background-color #fff
     display flex

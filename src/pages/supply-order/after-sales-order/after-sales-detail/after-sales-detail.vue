@@ -42,7 +42,7 @@
     data() {
       return {
         commodities: [
-          {title: '商品', key: 'goods_name', flex: 3},
+          {title: '商品', key: 'goods_name', flex: 1.3},
           {title: '分类', key: 'goods_category', flex: 1},
           {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
           {title: '状态', key: 'status_str', flex: 1,class:'last-td'},
@@ -78,6 +78,7 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
+    min-width:1414px
     background-color #fff
     padding:30px 20px 10px 20px
     color: #333333

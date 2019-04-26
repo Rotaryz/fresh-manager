@@ -17,7 +17,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="商品名称或编码" @search="_search"></base-search>
+        <base-search placeHolder="商品名称或商品编码" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -44,11 +44,15 @@
               <template v-if="item.type==='operate'">
                 <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
               </template>
-              <template v-else-if="item.type === 'sale_unit'">
-                {{row[item.key]}}{{row[item.type]}}
-              </template>
+
               <template v-else>
                 {{row[item.key]}}
+                <template v-if="item.after">
+                  {{row[item.after]}}
+                </template>
+                <div v-if="item.afterBr">
+                  {{row[item.afterBr]}}
+                </div>
               </template>
             </div>
           </div>
@@ -69,11 +73,11 @@
   const TITLE = '拣货任务列表'
   const COMMODITIES_LIST = [
     {tilte: '生成时间', key: 'created_at', flex: '1.5'},
-    {tilte: '商品名称', key: 'goods_name', flex: '2'},
+    {tilte: '商品名称', key: 'goods_name', flex: '2',afterBr:'goods_sku_encoding'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
-    {tilte: '下单数', type: "sale_unit", key: 'sale_num'},
-    {tilte: '待拣货数', type: "sale_unit", key: 'sale_wait_pick_num'},
-    {tilte: '缺货数', type: "sale_unit", key: 'sale_out_of_num'},
+    {tilte: '下单数', key: 'sale_num', after: "sale_unit"},
+    {tilte: '待拣货数', key: 'sale_wait_pick_num', after: "sale_unit"},
+    {tilte: '缺货数', key: 'sale_out_of_num', after: "sale_unit"},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
     {tilte: '操作', key: 'id', type: "operate", replace: "明细", class: 'operate'}]
@@ -89,14 +93,14 @@
         filterTaskFrist: {
           check: false,
           show: false,
-          content: '全部',
+          content: '一级分类',
           type: 'default',
           data: [{name: '全部', id: ''}]
         },
         filterTaskSecond: {
           check: false,
           show: false,
-          content: '全部',
+          content: '二级分类',
           type: 'default',
           data: [{name: '全部', id: ''}]
         },

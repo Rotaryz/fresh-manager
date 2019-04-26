@@ -130,7 +130,7 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        datePlaceHolder: "选择创建 日期",
+        datePlaceHolder: "选择创建日期",
         dispatchSelect: [
           {name: '全部', value: '', num: 0},
           {name: '待处理', value: 5, num: 0},
@@ -200,10 +200,9 @@
         this.$refs.modal.showModal()
         this.checkAllStatus= false
         this.selectIds= []
-
       },
       _showConfirm(val) {
-        if (this.selectIds.length === 0) return
+        if (this.selectIds.length === 0) return this.$toast.show('请选择批量处理的选项')
         this.confirmType = val
         let text = `确定对所选商品${this.confirmType === 1 ? '批量补货' : '批量退款'}?`
         this.$refs.confirm.show(text)

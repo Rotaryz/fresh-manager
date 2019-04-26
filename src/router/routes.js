@@ -1142,7 +1142,7 @@ export default [
         path: 'merchant-order/merchant-order-detail/:id',
         name: 'merchant-order-detail',
         meta: {
-          titles: ['供应链', '订单','商户订单', '商品明细', '消费者明细'],
+          titles: ['供应链', '订单','商户订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getMerchantOrderDetail', routeTo.params).then((res) => {
               if (!res) {
@@ -1162,7 +1162,7 @@ export default [
         path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code/:id',
         name: 'consumer-order-detail',
         meta: {
-          titles: ['供应链', '订单', '商品明细', '消费者订单'],
+          titles: ['供应链', '订单','商户订单', '商品明细', '消费者明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getConsumerDetails', routeTo.params).then((res) => {
               if (!res) {
@@ -1182,7 +1182,7 @@ export default [
         path: 'merchant-order/merger-order-detail/:mergeOrderId',
         name: 'merger-order-detail',
         meta: {
-          titles: ['供应链', '订单', '商品明细'],
+          titles: ['供应链', '订单','商户汇总单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getMergerOrderDetail', routeTo.params).then((res) => {
               if (!res) {

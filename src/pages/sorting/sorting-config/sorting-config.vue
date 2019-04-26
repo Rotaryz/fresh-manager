@@ -370,11 +370,12 @@
 
     .prompt-content
       width: 340px
-      height: 50px
+      margin-bottom: 20px
       font-size: $font-size-16
+      color: #666
 
     .btn-group-wrap
-      height:auto
+      height: auto
       layout(row)
       align-items: center
       justify-content: flex-end
@@ -382,8 +383,10 @@
       background: #fff
       position: relative
       left: 0
+
       .back-submit
-          margin-right:0
+        margin-right: 0
+
       &:before
         border-top: 0px solid #e9ecee;
 </style>

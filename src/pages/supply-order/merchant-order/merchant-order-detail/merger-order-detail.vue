@@ -16,10 +16,10 @@
         <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
       </div>
       <div class="list">
-        <div v-for="(item, key) in mergerDetail.details" :key="key" class="list-content list-box">
-          <div v-for="row in commodities" :key="row.title" :style="{flex: row.flex}" class="list-item">
-            <div v-if="row.key" :class="{red:row.type==='red'&& item[row.key]>0}">
-              {{item[row.key]}}
+        <div v-for="(row, key) in mergerDetail.details" :key="key" class="list-content list-box">
+          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item">
+            <div v-if="item.key" :class="{red:row[item.type]}">
+              {{row[item.key]}}
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@
           {title: '分类', key: 'goods_category', flex: 1},
           {title: '下单数量', key: 'sale_num', flex: 1},
           {title: '配货数量', key: 'sale_wait_pick_num', flex: 1},
-          {title: '缺货数量', key: 'sale_out_of_num', type:'red',flex: 1},
+          {title: '缺货数量', key: 'sale_out_of_num', type:'is_lack',flex: 1},
         ],
         topListTilte: [{
           name: '汇总订单号：', id: 'order_sn'
@@ -74,6 +74,7 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
+    min-width:1414px
     background-color #fff
     padding:30px 20px 10px 20px
     color: #333333

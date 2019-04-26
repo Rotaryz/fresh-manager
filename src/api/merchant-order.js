@@ -56,6 +56,6 @@ export default {
   getMergerOrderDetail({mergeOrderId}, loading = true) {
     let url = `/scm/api/backend/oms/merge-orders/${mergeOrderId}`
     // let url = '/mock/mergerDetail.json'
-    return request.get(url, loading)
+    return request.get(url,{}, loading)
   }
 }

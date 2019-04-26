@@ -3,14 +3,14 @@
     <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
     <template v-if="tabIndex===0">
       <div class="down-content">
-        <span class="down-tip">建单时间</span>
+        <span class="down-tip">下单时间</span>
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
         </div>
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="配送单号/商户名称" @search="changeKeyword"></base-search>
+            <base-search placeHolder="订单号或商户名称" @search="changeKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@
     {title: '品类数', key: 'type_count', flex: 1},
     {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
   ]
-  const ORDERSTATUS = [{text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}]
+  const ORDERSTATUS = [{text: '订单列表', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '汇总单列表', status: 1, img: require('./pic-zanwu@2x.png')}]
   export default {
     name: PAGE_NAME,
     page: {
@@ -119,7 +119,7 @@
       return {
         tabStatus: ORDERSTATUS,
         commodities: COMMODITIES_LIST,
-        datePlaceHolder: "选择建单日期",
+        datePlaceHolder: "选择下单日期",
         tabIndex: 0,
         orderKeyword: "",
         signItem: {},

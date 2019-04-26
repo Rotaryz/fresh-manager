@@ -14,11 +14,11 @@
         </div>
       </div>
       <div class="list-header list-box">
-        <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
+        <div v-for="(item,index) in commodities" :key="index" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
       </div>
       <div class="list">
         <div v-for="(row, key) in merchantDetail.details" :key="key" class="list-content list-box">
-          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item">
+          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" :class="['list-item',item.class]">
             <template v-if="item.key" name="name">
               <div v-if="isLine && item.line" style="border-top:1px solid #333;width:30px;">
               </div>
@@ -47,7 +47,7 @@
     {title: '下单数量', key: 'sale_num', flex: 1},
     {title: '配货数量', key: 'sale_wait_pick_num', flex: 1,line:true},// 待配送 已完成
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1,line:true},
-    {title: '操作', key: '', operation: '消费者明细', flex: 1}
+    {title: '操作', key: '', operation: '消费者明细', flex: 1,class:'operate'}
   ]
   export default {
     name: PAGE_NAME,
@@ -67,8 +67,6 @@
           name: '状态：', key: 'status_str'
         }, {
           name: '品类数：', key: 'type_count'
-        }, {
-          name: '类型：', key: 'type_str'
         }]
       }
     },
@@ -105,7 +103,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .operate
+   max-width:100px
   .sorting-task-detail
     display flex
     flex-direction column
@@ -113,6 +112,7 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
+    min-width:1414px
     background-color #fff
     padding: 30px 20px 10px 20px
     color: #333333
