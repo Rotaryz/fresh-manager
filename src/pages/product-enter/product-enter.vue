@@ -18,6 +18,9 @@
           <p class="identification-name">入库列表</p>
           <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
+        <div class="function-btn">
+          <div v-if="status === 0" class="btn-main" @click="allocationStock">完成单日收货</div>
+        </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
@@ -46,6 +49,7 @@
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
       </div>
+      <default-confirm ref="confirm" @confirm="sendAllocationStock"></default-confirm>
     </div>
   </div>
 </template>
@@ -54,6 +58,7 @@
   import _ from 'lodash'
   import API from '@api'
   import {productComputed, authComputed} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品入库'
@@ -64,6 +69,9 @@
     name: PAGE_NAME,
     page: {
       title: TITLE
+    },
+    components: {
+      DefaultConfirm
     },
     data() {
       return {
@@ -105,6 +113,23 @@
       await this._statistic()
     },
     methods: {
+      // 完成单日收货
+      async allocationStock() {
+        if (this.productEnterList.length) {
+          this.$refs.confirm.show('哟入库单还未完成入库，是否确认完成收货')
+          return
+        }
+        await this.sendAllocationStock()
+      },
+      async sendAllocationStock() {
+        let res = await API.Store.stopAllocationStock()
+        this.$toast.show(res.message, 600)
+        if (res.error === this.$ERR_OK) {
+          setTimeout(() => {
+            this.$router.push('/home/product-out')
+          }, 800)
+        }
+      },
       _setDownUrl(item, excelUrl) {
         let currentId = this.getCurrentId()
         let data = {
@@ -167,15 +192,15 @@
       async changeKeyword(keyword) {
         this.keyWord = keyword
         this.goodsPage = 1
-        this.getProductListData()
         await this._statistic()
+        this.getProductListData()
         this.$refs.pagination.beginPage()
       },
       async changeStartTime(value) {
         this.time = value
         this.goodsPage = 1
-        this.getProductListData()
         await this._statistic()
+        this.getProductListData()
         this.$refs.pagination.beginPage()
       },
       setValue(item) {
