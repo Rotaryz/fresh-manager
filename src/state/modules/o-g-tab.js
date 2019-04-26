@@ -1,5 +1,5 @@
 import API from '@api'
-import {TAB} from '@state/mutations-types/outreach-group'
+import {TAB, CONTENT} from '@state/mutations-types/outreach-group'
 import app from '@src/main'
 export const state = {
   groupList: [],
@@ -176,12 +176,11 @@ export const actions = {
   },
   changeTab({commit, state, dispatch, rootState}, args) {
     commit(TAB.CHANGE_TAB_STATUS, args)
-    dispatch(`oGContent/reqStaffList`, {}, {root: true})
-    // if (state.isLastDepartment) {
-    //   dispatch(`oGContent/reqStaffList`, {}, {root: true})
-    // } else {
-    //   commit(`oGContent/${CONTENT.RESET_PAGE}`, {}, {root: true})
-    // }
+    if (state.isLastDepartment) {
+      dispatch(`oGContent/reqStaffList`, {}, {root: true})
+    } else {
+      commit(`oGContent/${CONTENT.RESET_PAGE}`, {}, {root: true})
+    }
   }
 }
 
