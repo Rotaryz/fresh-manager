@@ -146,7 +146,11 @@
         if (this.isChange) return
         this.isChange = true
         let data = this.dragList.map((item, idx) => {
-          return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
+          return {
+            id: item.id,
+            sort: this.sortingConfig.list[idx].sort
+          }
+          // return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
         })
         this._changeAllocationPostion(data)
       })
@@ -158,6 +162,9 @@
         this.getSortingConfigList().then(res => {
           if (res) {
             this.dragList = _.cloneDeep(this.sortingConfig.list)
+            this.$nextTick(()=>{
+              this.$loading.hide()
+            })
           }
         })
       },
@@ -165,7 +172,6 @@
       _changeAllocationPostion(arr) {
         this.$loading.show('修改配货位')
         API.Sorting.changeAllocationPostion(arr).then(res => {
-
           if (res.error === this.$ERR_OK) {
             this.$toast.show('修改配货位成功')
             this.isChange = false
@@ -175,7 +181,6 @@
         })
           .finally(() => {
             this.updateList()
-            this.$loading.hide()
           })
       },
       _getRoadList() {
