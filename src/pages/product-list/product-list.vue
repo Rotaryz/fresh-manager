@@ -347,6 +347,11 @@
         this.$loading.show('上传中...')
         let res = index === 1 ? await API.Product.goodsNewInto(param) : await API.Product.goodsNewEdit(param)
         this.$loading.hide()
+        if (res.error === this.$ERR_OK) {
+          this.goodsPage = 1
+          this.$refs.pagination.beginPage()
+          this.getGoodsListData()
+        }
         this.$toast.show(res.message)
         e.target.value = ''
       },
