@@ -123,11 +123,12 @@
       },
       async sendAllocationStock() {
         let res = await API.Store.stopAllocationStock()
-        this.$toast.show(res.message)
-        // if (res.error === this.$ERR_OK) {
-        //   await this._statistic()
-        //   this.getProductListData()
-        // }
+        this.$toast.show(res.message, 600)
+        if (res.error === this.$ERR_OK) {
+          setTimeout(() => {
+            this.$router.push('/home/product-out')
+          }, 800)
+        }
       },
       _setDownUrl(item, excelUrl) {
         let currentId = this.getCurrentId()
