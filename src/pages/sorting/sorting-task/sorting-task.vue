@@ -130,6 +130,9 @@
         if (!noUpdataStatus) {
           this._getStausData()
         }
+        if(params.page===1){
+          this.$refs.pagination.beginPage()
+        }
       },
       //  事件选择器
       changeTime(timeArr) {
@@ -176,8 +179,7 @@
       _setValueFrist(item) {
         this._updateList({goods_category_id: item.id || '', page: 1})
         this._getClassifyList({
-          'parent_id': item.parent_id,
-          'goods_id': item.id
+          'parent_id': item.id,
         }).then(res => {
           this.filterTaskSecond.data = res.data
         })

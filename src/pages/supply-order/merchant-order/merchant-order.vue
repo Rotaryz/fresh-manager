@@ -81,7 +81,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
+          <base-pagination ref='pagination' :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -193,6 +193,9 @@
         params = {...defautFilter,...params}
         this.merger.filter = {...this.merger.filter, ...params}
         this._getMergeOrderslist()
+        if(params.page===1){
+          this.$refs.pagination.beginPage()
+        }
       },
       _getMergeOrderslist() {
         API.MerchantOrder.getMergeOrderslist(this.merger.filter).then(res => {
