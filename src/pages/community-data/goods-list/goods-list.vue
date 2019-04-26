@@ -27,9 +27,9 @@
   const TITLE = [
     {name: '图片', flex: 0.4, class: 'img', value: ''},
     {name: '商品名称', flex: 4, class: 'name', value: 'name'},
-    {name: '浏览量', flex: 0.8, class: 'view', value: 'views'},
+    {name: '浏览量', flex: 1.2, class: 'view', value: 'views'},
     {name: '销量', flex: 0.8, class: 'count', value: 'sales'},
-    {name: '转化率', flex: 0.8, class: 'rate', value: 'conversion'}
+    {name: '转化率', flex: 1.2, class: 'rate', value: 'conversion'}
   ]
   const GOOD = [
     {

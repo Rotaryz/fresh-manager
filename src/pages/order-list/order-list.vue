@@ -20,6 +20,7 @@
         <div class="identification-page">
           <img src="./icon-order_list@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeTab"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="exportExcel">导出Excel</div>
@@ -68,11 +69,8 @@
 
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [
-    {text: '全部', status: ''},
-    {text: '待付款', status: 0},
-    {text: '待提货', status: 1},
-    {text: '已完成', status: 2},
-    {text: '已关闭', status: 3}
+    {text: '商城订单', status: 'c_shop'},
+    {text: '拓展订单', status: 'c_offline'}
   ]
   const SOCIAL_SELECT = {
     check: false,
@@ -94,14 +92,22 @@
         searchPlaceHolder: SEARCH_PLACE_HOLDER,
         datePlaceHolder: DATE_PLACE_HOLDER,
         socialSelect: SOCIAL_SELECT,
-        downUrl: ''
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '待付款', value: 1, key: 'wait_submit', num: 0},
+          {name: '待提货', value: 1, key: 'success', num: 0},
+          {name: '已完成', value: 1, key: 'success', num: 0},
+          {name: '已关闭', value: 1, key: 'success', num: 0}
+        ],
+        downUrl: '',
+        defaultStatus: 'c_shop'
       }
     },
     computed: {
       ...authComputed,
       ...orderComputed,
       infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.status)
+        return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
       },
       orderExportUrl() {
         let currentId = this.getCurrentId()
@@ -109,7 +115,8 @@
           current_corp: currentId,
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: this.currentUser.access_token,
-          status: this.status,
+          status: this.orderStatus,
+          source: this.status,
           shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
@@ -124,9 +131,35 @@
     },
     created() {
       this._getShopList()
+      this.getOrderStatus()
     },
     methods: {
       ...orderMethods,
+      changeTab(selectStatus) {
+        this.setOrderStatus(selectStatus)
+      },
+      getOrderStatus(startTime, endTime) {
+        API.Order.getOrderStatus({
+          source: this.status,
+          start_time: this.startTime,
+          end_time: this.endTime,
+          shop_id: this.shopId,
+          keyword: this.keyword
+        })
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
+      },
       _getShopList() {
         API.Leader.shopDropdownList().then((res) => {
           if (res.error !== this.$ERR_OK) {
@@ -145,18 +178,24 @@
       },
       changeStatus(selectStatus) {
         this.setStatus(selectStatus)
+        this.getOrderStatus()
         this.$refs.pagination.beginPage()
       },
       changeShopId(shop) {
         this.setShopId(shop)
+        this.getOrderStatus()
         this.$refs.pagination.beginPage()
       },
       changeTime(time) {
         this.setTime(time)
+        let startTime = time[0]
+        let endTime = time[1]
+        this.getOrderStatus(startTime, endTime)
         this.$refs.pagination.beginPage()
       },
       changeKeyword(keyword) {
         this.setKeyword(keyword)
+        this.getOrderStatus()
         this.$refs.pagination.beginPage()
       }
     }

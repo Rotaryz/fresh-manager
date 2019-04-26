@@ -38,7 +38,7 @@ export default {
    * @returns {*}
    */
   getCategory(data, loading = true) {
-    let url = `/social-shopping/api/backend/goods-manage/goods-category`
+    let url = `/social-shopping/api/backend/goods-manage/goods-category-list`
     return request.get(url, data, loading)
   },
   /**
@@ -161,6 +161,26 @@ export default {
    */
   purchaseTaskStatistic(data, loading = false) {
     let url = '/scm/api/backend/purchase/purchase-task-statistic'
+    return request.get(url, data, loading)
+  },
+
+  /**
+   * 商品类型统计
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/goods-manage/goods-status'
+    return request.get(url, data, loading)
+  },
+
+  /**
+   * 商品分类统计
+   * @param loading
+   * @returns {*}
+   */
+  getCategoryStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/goods-manage/goods-category-status'
     return request.get(url, data, loading)
   },
   /**

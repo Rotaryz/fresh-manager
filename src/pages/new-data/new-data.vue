@@ -72,7 +72,7 @@
                 <p class="identification-name">商品排行</p>
               </div>
               <div class="function-btn">
-                <base-option-box :infoTab="2" :arrTitle="rankTime" @checkTime="_shopMore"></base-option-box>
+                <base-option-box :infoTab="2" :disabledDate="disabledDate" @checkTime="_shopMore"></base-option-box>
                 <a class="educe-btn" :href="shopDownUrl" target="_blank">导出</a>
               </div>
             </div>
@@ -243,15 +243,24 @@
         managerList: [],
         time: 'week',
         shopTime: 'week',
+        shopStartTime: '',
+        shopEndTime: '',
         downUrl: '',
         shopDownUrl: '',
         drawX: [],
         drawY: [],
         drawTitle: '',
-        permissions: {}
+        permissions: {},
+        disabledDate: {}
       }
     },
     mounted() {
+      let time = this.$route.params.time
+      this.disabledDate = {
+        disabledDate (date) {
+          return date && (date.valueOf() <= time.timestamp - 2592000 * 1000 || date.valueOf() >= time.timestamp)
+        }
+      }
       this.permissions = storage.get('permissions')
       this.getSurveyTrade('', '', 'week', true)
       this.getScmBaseData()
@@ -259,7 +268,7 @@
       this.getScmTaskData()
       this.getShopTaskData()
       this.getEchartData()
-      this.getGoodsRank('week', false)
+      this.getGoodsRank('', '', 'week', false)
       this.getManagerRank('week', false)
       this._getUrl()
       this._getShopUrl()
@@ -324,7 +333,6 @@
           this.$toast.show('暂无权限!')
           return
         }
-        console.log(this.permissions[item.permissions].index)
         if (item.title === '司机') {
           this.setTabIndex(1)
         }
@@ -480,27 +488,33 @@
         this.getEchartData(value, true)
       },
       // 商品排行
-      getGoodsRank(time, loading) {
-        API.Data.goodsData({time: time, start_time: '', end_time: ''}, loading).then((res) => {
+      getGoodsRank(startTime, endTime, time, loading) {
+        this.shopTime = time
+        this.shopStartTime = startTime
+        this.shopEndTime = endTime
+        API.Data.goodsData({time: time, start_time: startTime, end_time: endTime}, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
             this.goodsList = res.data
+            this._getShopUrl()
           } else {
             this.$toast.show(res.message)
           }
         })
       },
       _shopMore(value) {
-        this.shopTime = value
-        this._getShopUrl()
-        this.getGoodsRank(value, true)
+        if (typeof value === 'string') {
+          this.getGoodsRank('', '', value, true)
+          return
+        }
+        this.getGoodsRank(value[0], value[1], '', true)
       },
       _getShopUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=&end_time=&time=${this.shopTime}`
+        let params = `access_token=${token.access_token}&start_time=${this.shopStartTime}&end_time=${this.shopEndTime}&time=${this.shopTime}`
         this.shopDownUrl =
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
@@ -584,7 +598,7 @@
     display: flex
     box-sizing: border-box
     flex-direction: column
-    min-width: 1280px
+    min-width: 1380px
   .data-header-box
     layout(row)
     display: flex

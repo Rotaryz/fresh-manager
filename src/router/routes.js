@@ -51,7 +51,7 @@ export default [
             if (routeTo.query.online) {
               online = routeTo.query.online
             }
-            //  团长列表
+            //  商品列表
             store
               .dispatch('editgoods/getGoodsData', online)
               .then((res) => {
@@ -258,7 +258,7 @@ export default [
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
-            let id = routeTo.query.id
+            let id = routeTo.query.id || routeTo.query.editId
             //  抢购详情
             if (id) {
               store
@@ -726,7 +726,7 @@ export default [
         name: 'customer-management',
         component: () => lazyLoadView(import('@pages/customer-management/customer-management')),
         meta: {
-          titles: ['商城', '客户', '客户管理'],
+          titles: ['商城', '客户', '客户列表'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('customer/getCustomerList', {page: 1, startTime: '', endTime: '', keyword: '', sortType: 0})
@@ -1951,7 +1951,12 @@ export default [
         name: 'new-data',
         component: () => lazyLoadView(import('@pages/new-data/new-data')),
         meta: {
-          titles: ['概况', '数据概况']
+          titles: ['概况', '数据概况'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            let time = await getCurrentTime()
+            routeTo.params.time = time
+            next()
+          }
         }
       },
       // 账号管理

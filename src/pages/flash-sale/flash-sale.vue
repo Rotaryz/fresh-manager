@@ -11,6 +11,7 @@
         <div class="identification-page">
           <img src="./icon-today_rob@2x.png" class="identification-icon">
           <p class="identification-name">限时抢购</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
@@ -37,6 +38,7 @@
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
+                <router-link tag="span" :to="'new-sale?editId=' + (item.id || 0)" append class="list-operation">复制活动</router-link>
               </div>
             </div>
           </div>
@@ -58,13 +60,13 @@
   const PAGE_NAME = 'FLASH_SALE'
   const TITLE = '限时抢购'
   const SALE_TITLE = [
-    {name: '活动名称', flex: 1.2, value: 'activity_name', type: 1},
-    {name: '活动时间', flex: 1.2, value: 'start_at', type: 2},
+    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
+    {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
     {name: '商品', flex: 1.4, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
     {name: '状态', flex: 1, value: 'status', type: 4},
-    {name: '操作', flex: 1, value: '', type: 5}
+    {name: '操作', flex: 1.4, value: '', type: 5}
   ]
   // const SALE_LIST = [
   //   {name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', pay_num: 20, pay_amount: 100, status: 1}
@@ -79,30 +81,78 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
+          {name: '进行中', value: 1, key: 'success', num: 0},
+          {name: '已结束', value: 1, key: 'success', num: 0}
+        ],
         saleTitle: SALE_TITLE,
         startTime: '',
         endTime: '',
         page: 1,
-        delId: 0
+        delId: 0,
+        status: ''
       }
     },
     computed: {
       ...saleComputed
     },
-    created() {},
+    created() {
+      this.getSaleStatus()
+    },
     mounted() {},
     methods: {
       ...saleMethods,
+      async changeStatus(selectStatus) {
+        this.status = selectStatus.value
+        this.$refs.pages.beginPage()
+        this.page = 1
+        await this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: selectStatus.value
+        })
+      },
+      getSaleStatus() {
+        API.Sale.getSaleStatus({activity_type: 'fixed', start_at: this.startTime,end_at: this.endTime})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            console.log(res.data)
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                value: item.status,
+                num: item.statistic
+              }
+            })
+          })
+      },
       async _setTime(arr) {
         this.$refs.pages.beginPage()
         this.page = 1
         this.startTime = arr[0]
         this.endTime = arr[1]
-        await this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        await this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
+        this.getSaleStatus()
       },
       addPage(page) {
         this.page = page
-        this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       },
       _deleteActivity(id) {
         this.delId = id
@@ -117,7 +167,13 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getSaleList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getSaleStatus()
+        this.getSaleList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       }
     }
   }
@@ -127,14 +183,14 @@
   @import "~@design"
   .list-box
     .list-item:last-child
-      max-width: 75px
+      max-width: 150px
       padding-right: 0
   .list
     flex: 1
     .list-item
       font-size: $font-size-14
       &:last-child
-        max-width: 75px
+        max-width: 150px
         padding-right: 0
       .item
         text-overflow: ellipsis

@@ -5,6 +5,7 @@
         <div class="identification-page">
           <img src="./icon-bandit_list@2x.png" class="identification-icon">
           <p class="identification-name">团长列表</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
@@ -26,6 +27,10 @@
             <div class="list-item">{{item.created_at}}</div>
             <div class="list-item">{{item.is_freeze_str}}</div>
             <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
+            <!--状态-->
+            <!--<div class="list-item" @click="_showFreeze(item.is_freeze, item.id)">
+              <base-switch :status="item.is_freeze === 0 ? 1 : 0" confirmText="正常" cancelText="禁用"></base-switch>
+            </div>-->
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
               <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
@@ -87,6 +92,11 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '全部', value: '', num: 0},
+          {name: '正常', value: '', num: 0},
+          {name: '禁用', value: 1, num: 0}
+        ],
         leaderTitle: LEADER_TITLE,
         page: 1,
         loadImg: true,
@@ -98,9 +108,33 @@
     computed: {
       ...leaderComputed
     },
-    created() {},
+    created() {
+      this.getLeaderStatus()
+    },
     methods: {
       ...leaderMethods,
+      getLeaderStatus() {
+        API.Leader.getLeaderStatus()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
+      },
+      changeStatus(selectStatus) {
+        this.status = selectStatus.status
+        this.$refs.pagination.beginPage()
+        this.page = 1
+        this.getLeaderList({page: this.page, status: selectStatus.status, loading: false})
+      },
       async _syncLeader() {
         let res = await API.Leader.syncShop()
         this.$loading.hide()
@@ -108,12 +142,12 @@
           this.$toast.show('关联成功')
           this.page = 1
           this.$refs.pagination.beginPage()
-          this.getLeaderList({page: this.page, loading: false})
+          this.getLeaderList({page: this.page, status: this.status, loading: false})
         }
       },
       _getMore(page) {
         this.page = page
-        this.getLeaderList({page: this.page, loading: false})
+        this.getLeaderList({page: this.page, status: this.status, loading: false})
       },
       _close() {
         this.$refs.dialog.hideModal()
@@ -141,7 +175,8 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        this.getLeaderList({page: this.page, loading: false})
+        this.getLeaderStatus()
+        this.getLeaderList({page: this.page, status: this.status, loading: false})
         this.$refs.confirm.hide()
       }
     }

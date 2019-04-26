@@ -11,9 +11,10 @@
         <div class="identification-page">
           <img src="./icon-task@2x.png" class="identification-icon">
           <p class="identification-name">拓展任务</p>
+          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="edit-outreach" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
+          <router-link tag="div" to="edit-outreach" append class="btn-main">新建任务<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
@@ -103,13 +104,19 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
+          {name: '进行中', value: 1, key: 'success', num: 0},
+          {name: '已结束', value: 1, key: 'success', num: 0}
+        ],
         activityTitle: ACTIVITI_TITLE,
         startTime: '',
         endTime: '',
         page: 1,
         delId: 0,
         downId: 0,
-        status: 0,
+        status: '',
         tipShow: '',
         timer: '',
         qrUrl: process.env.VUE_APP_API,
@@ -122,6 +129,7 @@
     },
     created() {
       this.corpId = getCorpId()
+      this.getOutreachStatus()
     },
     mounted() {},
     methods: {
@@ -131,7 +139,40 @@
         this.page = 1
         this.startTime = arr[0]
         this.endTime = arr[1]
-        await this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        await this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
+        this.getOutreachStatus()
+      },
+      async changeStatus(selectStatus) {
+        this.status = selectStatus.status
+        this.$refs.pages.beginPage()
+        this.page = 1
+        await this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: selectStatus.status
+        })
+      },
+      getOutreachStatus() {
+        API.Outreach.getOutreachStatus({activity_type: 'offline', start_at: this.startTime, end_at: this.endTime})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          })
       },
       showTip(index) {
         clearTimeout(this.timer)
@@ -144,7 +185,12 @@
       },
       addPage(page) {
         this.page = page
-        this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       },
       _deleteActivity(id) {
         this.delId = id
@@ -159,7 +205,13 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getOutreachList({page: this.page, startTime: this.startTime, endTime: this.endTime})
+        this.getOutreachStatus()
+        this.getOutreachList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status
+        })
       },
       _textHandle(num) {
         return (+num.split('%')[0] < 0 ? '下降' : '上升')

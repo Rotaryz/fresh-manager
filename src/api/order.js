@@ -26,6 +26,15 @@ export default {
     return request.post(url, data, loading)
   },
   /**
+   * 订单列表分类统计
+   * @param loading
+   * @returns {*}
+   */
+  getOrderStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/order-status'
+    return request.get(url, data, loading)
+  },
+  /**
    * 退货订单状态统计[v2.2.3]
    * @param data
    * @param loading

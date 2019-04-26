@@ -66,9 +66,9 @@ export const mutations = {
 }
 
 export const actions = {
-  getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
+  getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', status = '', loading = false}) {
     return API.Outreach.getOutreachList(
-      {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
+      {page: page, start_at: startTime, end_at: endTime, status, activity_type: 'offline'},
       loading
     )
       .then((res) => {

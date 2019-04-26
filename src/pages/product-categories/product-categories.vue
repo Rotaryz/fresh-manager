@@ -4,6 +4,12 @@
       <div class="identification-page">
         <img src="./icon-goods_classify@2x.png" class="identification-icon">
         <p class="identification-name">商品分类</p>
+        <div class="base-status-tab">
+          <div v-for="(item, index) in statusTab" :key="index" class="status-tab-item">
+            {{item.name}} ({{item.num}})
+          </div>
+        </div>
+        <!--<base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
       </div>
       <div class="function-btn">
         <div class="btn-main" @click="newBigCate">新建大类<span class="add-icon"></span></div>
@@ -15,7 +21,7 @@
           <div class="big-main-left hand" @click="openList(index)">
             <div class="icon" :class="item.select ? 'open' : ''"></div>
             <div class="img" :style="{'background-image': 'url(' +item.image_url+ ')'}"></div>
-            <div class="text">{{item.name}}</div>
+            <div class="text">{{item.name}} <span class="tip">({{item.list && item.list.length}}个子类)</span></div>
           </div>
           <div class="big-main-right">
             <span class="list-operation" @click="editBigCatee(item, index)">修改</span>
@@ -64,6 +70,10 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '一级类目', num: 0},
+          {name: '二级类目', num: 0}
+        ],
         categoryType: 0,
         categoryNewName: '',
         categoryChild: '',
@@ -81,9 +91,26 @@
     },
     created() {
       this.categoryList = _.cloneDeep(this.reqCategoryList)
+      this.getCategoryStatus()
     },
     methods: {
       ...categoriesMethods,
+      getCategoryStatus() {
+        API.Product.getCategoryStatus()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                num: item.statistic
+              }
+              // this.$set(this.statusTab[index], 'num', item.statistic)
+            })
+          })
+      },
       newBigCate() {
         // this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
         this.$refs.bigModel.show('新建商品分类', {
@@ -122,6 +149,7 @@
                 image_url: imageUrl,
                 image_id: imageId
               })
+              this.getCategoryStatus()
               this.categoryList.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -140,6 +168,7 @@
                 parent_id: this.bigItem.id,
                 id: res.data.id
               })
+              this.getCategoryStatus()
               this.categoryList[this.bigIndex].list.sort(this._sort)
             } else {
               this.$toast.show(res.message)
@@ -258,6 +287,7 @@
         case 0:
           API.Product.delCategory(this.bigItem.id).then((res) => {
             if (res.error === this.$ERR_OK) {
+              this.getCategoryStatus()
               setTimeout(() => {
                 this.categoryList.splice(this.bigIndex, 1)
                 this.oneBtn = true
@@ -271,6 +301,7 @@
         case 1:
           API.Product.delCategory(this.smallItem.id).then((res) => {
             if (res.error === this.$ERR_OK) {
+              this.getCategoryStatus()
               setTimeout(() => {
                 this.categoryList[this.bigIndex].list.splice(this.smallIndex, 1)
                 this.oneBtn = true
@@ -294,6 +325,26 @@
     align-items: center
     justify-content: space-between
     height: 80px
+  .base-status-tab
+    margin-left: 30px
+    display: flex
+    background: #F6F6F6
+    border-radius: 100px
+    height: 30px
+    box-sizing: border-box
+    position: relative
+    .status-tab-item
+      border-radius: 100px
+      width: 106px
+      color: $color-text-main
+      line-height: 30px
+      text-align: center
+      transition: 0.2s all
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      background: transparent
+      position: relative
+      z-index: 1
   .categories-box
     border-1px($color-line, 1px)
     .big-box
@@ -332,6 +383,8 @@
             line-height: 1
             color: $color-text-main
             font-family: $font-family-regular
+          .tip
+            color: $color-text-assist
 
   .add-box
     height: 60px

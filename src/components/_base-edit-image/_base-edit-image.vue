@@ -1,9 +1,11 @@
 <template>
   <div>
     <div v-if="fileType === 'image'" class="edit-image">
-      <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
-        <span v-if="isEdit" class="close" @click="_del(index)"></span>
-      </div>
+      <draggable v-model="picList" class="draggable" @update="_setSort()">
+        <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+          <span v-if="isEdit" class="close" @click="_del(index)"></span>
+        </div>
+      </draggable>
       <div v-if="picList.length < picNum" class="add-image hand">
         <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
         <div v-if="showLoading" class="loading-mask">
@@ -25,12 +27,16 @@
     </div>
   </div>
 </template>
-
 <script>
   import API from '@api'
+  import Draggable from 'vuedraggable'
   const EDIT_IMAGE = 'BASE_EDIT_IMAGE'
+
   export default {
     name: EDIT_IMAGE,
+    components: {
+      Draggable
+    },
     props: {
       showMorePic: {
         type: Boolean, // 是否多个图/视频
@@ -60,6 +66,9 @@
       }
     },
     methods: {
+      _setSort() {
+
+      },
       _del(index) {
         if (!this.isEdit) {
           return
@@ -88,32 +97,33 @@
         this.$emit('getPic', res.data)
       },
       _addVideo(e) {
-      // this.showLoading = true
-      // let arr = Array.from(e.target.files)
-      // e.target.value = ''
-      // let size = (arr[0].size / 1024 / 1024)
-      // console.log(size)
-      // if (size > 30) {
-      //   this.showLoading = false
-      //   this.$emit('failFile', '视频大小不能超过30M')
-      //   return
-      // }
-      // this.$vod.uploadFiles(arr[0], curr => {
-      // }).then(res => {
-      //   this.showLoading = false
-      //   if (res.error !== ERR_OK) {
-      //     this.$emit('failFile', res.message)
-      //     return
-      //   }
-      //   this.$emit('successVideo', res.data)
-      // }).catch(err => {
-      //   this.showLoading = false
-      //   this.$emit('failFile', err)
-      // })
+        // this.showLoading = true
+        // let arr = Array.from(e.target.files)
+        // e.target.value = ''
+        // let size = (arr[0].size / 1024 / 1024)
+        // console.log(size)
+        // if (size > 30) {
+        //   this.showLoading = false
+        //   this.$emit('failFile', '视频大小不能超过30M')
+        //   return
+        // }
+        // this.$vod.uploadFiles(arr[0], curr => {
+        // }).then(res => {
+        //   this.showLoading = false
+        //   if (res.error !== ERR_OK) {
+        //     this.$emit('failFile', res.message)
+        //     return
+        //   }
+        //   this.$emit('successVideo', res.data)
+        // }).catch(err => {
+        //   this.showLoading = false
+        //   this.$emit('failFile', err)
+        // })
       }
     }
   }
 </script>
+
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
@@ -121,7 +131,9 @@
   .edit-image
     flex-wrap: wrap
     display: flex
-
+    .draggable
+      flex-wrap: wrap
+      display: flex
   .add-image
     margin-bottom: 20px
     icon-image('pic-picture1')

@@ -114,6 +114,7 @@
         font-family: $font-family-medium
         line-height: 1
         color: $color-text-main
+        font-weight: 600
       .close
         width: 12px
         height: @width
@@ -180,9 +181,9 @@
       .grey
         background: #F5F7FA
       .main-text
-        color: $color-text-main
+        color: #666
         font-family: $font-family-regular
-        font-size: $font-size-14
+        font-size: $font-size-16
         display: block
         &:first-child
           margin-bottom: 10px
