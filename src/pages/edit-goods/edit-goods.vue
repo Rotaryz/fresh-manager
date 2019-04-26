@@ -475,7 +475,7 @@
         } else if (
           !this.msg.init_sale_count ||
           this.msg.init_sale_count.includes('.') ||
-          +this.msg.init_sale_count <= 0
+          +this.msg.init_sale_count < 0
         ) {
           this.$toast.show('请输入正确初始销量')
           return
