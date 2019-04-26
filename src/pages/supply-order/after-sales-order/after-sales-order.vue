@@ -302,6 +302,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   /*@import "@pages/supply-order/after-sales-detail/check/check.styl"*/
+  .list-operation
+    text-decoration: underline
+
   .table .table-content
     padding-bottom: 20px;
   .operate

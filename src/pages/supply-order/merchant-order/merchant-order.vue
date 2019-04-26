@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="setOrderPage"></base-pagination>
+          <base-pagination ref="paginationMerchant" :pageDetail="pageTotal" @addPage="setOrderPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -81,7 +81,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref='pagination' :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
+          <base-pagination ref="paginationMerger" :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -98,16 +98,16 @@
     {title: '下单时间', key: 'created_at', flex: 1.5},
     {title: '订单号 ', key: 'order_sn', flex: 1.5},
     {title: '商户名称', key: 'buyer_name', flex: 1},
-    {title: '品类数', key: 'type_count', flex: 0.6,after:'is_lack'},
+    {title: '品类数', key: 'type_count', flex: 0.6, after: 'is_lack'},
     {title: '状态', key: 'status_str', flex: 0.6},
     // {title: '类型', key: 'type_str', flex: 0.8},
-    {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
+    {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
   ]
   const COMMODITIES_LIST2 = [
     {title: '下单时间', key: 'created_at', flex: 3},
     {title: '汇总订单号', key: 'order_sn', flex: 3},
     {title: '品类数', key: 'type_count', flex: 1},
-    {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
+    {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
   ]
   const ORDERSTATUS = [{text: '订单列表', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '汇总单列表', status: 1, img: require('./pic-zanwu@2x.png')}]
   export default {
@@ -130,7 +130,7 @@
           {name: '待配送', value: 2, num: 0},
           {name: '已完成', value: 3, num: 0}
         ],
-        statusTab: 2 ,// 待调度
+        statusTab: 2,// 待调度
         datePlaceHolderMerger: "选择下单日期",
         merger: {
           pageTotal: {
@@ -139,7 +139,7 @@
             per_page: 10,
             total_page: 1
           },
-          list:[],
+          list: [],
           filter: {
             start_time: "",
             end_time: ""
@@ -185,16 +185,16 @@
           this._updateMergerList()
         }
       },
-      _updateMergerList(params={}) {
-        let defautFilter={
+      _updateMergerList(params = {}) {
+        let defautFilter = {
           start_time: "",
           end_time: ""
         }
-        params = {...defautFilter,...params}
+        params = {...defautFilter, ...params}
         this.merger.filter = {...this.merger.filter, ...params}
         this._getMergeOrderslist()
-        if(params.page===1){
-          this.$refs.pagination.beginPage()
+        if (params.page === 1) {
+          this.$refs.paginationMerger.beginPage()
         }
       },
       _getMergeOrderslist() {
@@ -225,8 +225,8 @@
           this._getStatusData()
         }
         this.getMerchantOrderList()
-        if(params.page===1){
-          this.$refs.pagination.beginPage()
+        if (params.page === 1) {
+          this.$refs.paginationMerchant.beginPage()
         }
       },
       // 状态数据
@@ -282,12 +282,17 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .list-operation
+    text-decoration: underline
+
   .operate
-   max-width:50px
+    max-width: 50px
+
   .lack-icon
-    width:16px
-    height:16px
+    width: 16px
+    height: 16px
     icon-image(icon-lack)
+
   .distribution-down
     display: flex
     align-items: center
