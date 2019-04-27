@@ -11,7 +11,7 @@
         <div class="identification-page">
           <img src="./icon-today_rob@2x.png" class="identification-icon">
           <p class="identification-name">限时抢购</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
@@ -99,6 +99,7 @@
       ...saleComputed
     },
     created() {
+      this.defaultIndex = this.$route.query.status * 1 || 0
       this.getSaleStatus()
     },
     mounted() {},
@@ -122,7 +123,6 @@
               this.$toast.show(res.message)
               return
             }
-            console.log(res.data)
             this.statusTab = res.data.map((item, index) => {
               return {
                 name: item.status_str,

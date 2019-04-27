@@ -234,8 +234,9 @@ export default [
           titles: ['商城', '活动', '限时抢购'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
+            let status = routeTo.query.status || ''
             store
-              .dispatch('sale/getSaleList', {page: 1})
+              .dispatch('sale/getSaleList', {page: 1, status})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -759,8 +760,10 @@ export default [
           titles: ['商城', '团长', '团长列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
+            let status = routeTo.query.status || ''
+            console.log(status)
             store
-              .dispatch('leader/getLeaderList', 1)
+              .dispatch('leader/getLeaderList', {page: 1, status})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

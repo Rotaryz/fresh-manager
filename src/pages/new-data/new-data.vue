@@ -163,8 +163,8 @@
   ]
   const BASELIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
-    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale', permissions: 'activity'},
-    {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list', permissions: 'shop-manager'},
+    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale?status=1', permissions: 'activity'},
+    {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list?status=0', permissions: 'shop-manager'},
     {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier', permissions: 'supplier'},
     {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},
     {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management', permissions: 'driver'}
@@ -175,7 +175,7 @@
       subText: '待发布采购任务',
       key: 'publish_task_count',
       number: 0,
-      url: '/home/procurement-task?status=1&timeNull=1',
+      url: '/home/procurement-task?status=1',
       permissions: 'purchase-task'
     },
     {
@@ -183,7 +183,7 @@
       subText: '待采购任务',
       key: 'purchase_task_count',
       number: 0,
-      url: '/home/procurement-task?status=2&timeNull=1',
+      url: '/home/procurement-task?status=2',
       permissions: 'purchase-task'
     },
     {
@@ -191,11 +191,11 @@
       subText: '待入库任务',
       key: 'entry_order_count',
       number: 0,
-      url: '/home/product-enter?status=0&timeNull=1',
+      url: '/home/product-enter?status=0',
       permissions: 'entry-orders'
     },
     {
-      text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0&timeNull=1',
+      text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0',
       permissions: 'out-orders'
     },
     {
@@ -203,7 +203,7 @@
       subText: '待配送任务',
       key: 'delivery_count',
       number: 0,
-      url: '/home/distribution-task?status=1&timeNull=1',
+      url: '/home/distribution-task?status=1',
       permissions: 'delivery'
     },
     {

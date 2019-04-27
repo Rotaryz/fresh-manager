@@ -41,7 +41,7 @@
     },
     watch: {
       infoTabIndex(newVal) {
-        console.log(newVal)
+        // console.log(newVal)
         this.statusIndex = newVal
       }
     },
@@ -51,7 +51,6 @@
     },
     methods: {
       checkStatus(index, item) {
-        console.log(index, item)
         let el = document.querySelectorAll('.status-tab-item')
         this.statusIndex = index
         this.style = `left: ${el[index].offsetLeft}px; width: ${el[this.statusIndex].offsetWidth}px`
