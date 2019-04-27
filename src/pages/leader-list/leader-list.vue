@@ -5,7 +5,7 @@
         <div class="identification-page">
           <img src="./icon-bandit_list@2x.png" class="identification-icon">
           <p class="identification-name">团长列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
@@ -102,13 +102,17 @@
         loadImg: true,
         codeUrl: '',
         freezeId: 0,
-        imgIndex: 0
+        imgIndex: 0,
+        defaultIndex: 0
       }
     },
     computed: {
       ...leaderComputed
     },
     created() {
+      if (this.$route.query.status * 1 === 0) {
+        this.defaultIndex = 1
+      }
       this.getLeaderStatus()
     },
     methods: {
