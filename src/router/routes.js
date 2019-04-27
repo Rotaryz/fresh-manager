@@ -1182,7 +1182,7 @@ export default [
         path: 'merchant-order/merger-order-detail/:mergeOrderId',
         name: 'merger-order-detail',
         meta: {
-          titles: ['供应链', '订单','商户汇总单', '商品明细'],
+          titles: ['供应链', '订单','商品汇总单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getMergerOrderDetail', routeTo.params).then((res) => {
               if (!res) {
