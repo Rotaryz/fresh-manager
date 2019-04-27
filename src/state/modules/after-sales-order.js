@@ -20,8 +20,6 @@ export const state = {
     }
   },
   afterSalesFilter: {
-    page: 1,
-    limit: 10,
     start_time: '',
     end_time: '',
     keyword: "",
