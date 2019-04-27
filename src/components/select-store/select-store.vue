@@ -26,7 +26,7 @@
             <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
             <div class="goods-msg">
               <div class="goods-name">{{item.goods_name}}</div>
-              <div class="goods-money">{{item.goods_sku_code}}</div>
+              <div class="goods-money">{{item.goods_sku_encoding}}</div>
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
