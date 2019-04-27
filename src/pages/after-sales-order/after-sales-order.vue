@@ -83,7 +83,7 @@
           </div>
         </div>
         <div class="back btn-group-wrap">
-          <div class="back-cancel back-btn hand" @click="_hideModal">返回</div>
+          <div class="back-cancel back-btn hand" @click="_hideModal">取消</div>
           <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量补货</div>
           <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量退款</div>
         </div>
@@ -107,7 +107,7 @@
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
     {title: '缺货品类数', key: 'type_count', flex:1},
     {title: '原订单号 ', key: 'source_order_sn', flex: 2},
-    {title: '状态', key: 'status_str', flex: 0.6},
+    {title: '订单状态', key: 'status_str', flex: 0.6},
     {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
   ]
   const COMMODITIES_LIST2 = [

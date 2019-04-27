@@ -8,7 +8,7 @@
     <div class="content-wrap table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-inventory@2x.png" class="identification-icon">
+          <img src="icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
       </div>
