@@ -27,7 +27,7 @@
             <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
           </div>
           <div class="list">
-            <div v-if="tabIndex === 0">
+            <template v-if="orderList.length">
               <div v-for="(row, index) in orderList" :key="index" class="list-content list-box">
                 <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
@@ -40,7 +40,8 @@
                   </template>
                 </div>
               </div>
-            </div>
+            </template>
+            <base-blank v-else></base-blank>
           </div>
         </div>
         <div class="pagination-box">
@@ -68,16 +69,19 @@
             <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
           </div>
           <div class="list">
-            <div v-for="(row, index) in merger.list" :key="index" class="list-content list-box">
-              <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
-                <template v-if="item.key" name="name">
-                  {{row[item.key]}}
-                </template>
-                <template v-else name="operation">
-                  <router-link :to="{name:'merger-order-detail',params:{mergeOrderId:row.merge_order_id}}" class="list-operation">{{item.operation}}</router-link>
-                </template>
+            <template v-if="merger.list.length">
+              <div v-for="(row, index) in merger.list" :key="index" class="list-content list-box">
+                <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
+                  <template v-if="item.key" name="name">
+                    {{row[item.key]}}
+                  </template>
+                  <template v-else name="operation">
+                    <router-link :to="{name:'merger-order-detail',params:{mergeOrderId:row.merge_order_id}}" class="list-operation">{{item.operation}}</router-link>
+                  </template>
+                </div>
               </div>
-            </div>
+            </template>
+            <base-blank v-else></base-blank>
           </div>
         </div>
         <div class="pagination-box">

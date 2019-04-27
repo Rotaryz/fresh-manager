@@ -17,13 +17,16 @@
         <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
       </div>
       <div class="list">
-        <div v-for="(row, key) in consumerDetail.detail.details" :key="key" class="list-content list-box">
-          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
-            <div :class="{red:item.key==='status_str'&& row.status || item.key==='sale_out_of_num'&& row.is_lack}">
-              {{row[item.key]}}
+        <tempalte v-if="consumerDetail.detail.details.length">
+          <div v-for="(row, key) in consumerDetail.detail.details" :key="key" class="list-content list-box">
+            <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
+              <div :class="{red:item.key==='status_str'&& row.status || item.key==='sale_out_of_num'&& row.is_lack}">
+                {{row[item.key]}}
+              </div>
             </div>
           </div>
-        </div>
+        </tempalte>
+        <base-blank v-else></base-blank>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="consumerDetail.pageTotal" @addPage="setPage"></base-pagination>
@@ -94,17 +97,19 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .last-child
-    max-width:80px
+    max-width: 80px
 
   .top-wrap
-    min-width:1414px
+    min-width: 1414px
     background-color #fff
-    padding:30px 20px 10px 20px
+    padding: 30px 20px 10px 20px
     color: #333333
     margin-bottom: 20px
+
     li
       display inline-block
-      margin:0px 130px 20px 0px
+      margin: 0px 130px 20px 0px
+
   .red
     color: #f84e3c
 

@@ -16,13 +16,16 @@
         <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">{{item.title}}</div>
       </div>
       <div class="list">
-        <div v-for="(row, key) in mergerDetail.details" :key="key" class="list-content list-box">
-          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item">
-            <div v-if="item.key" :class="{red:row[item.type]}">
-              {{row[item.key]}}
+        <tempalte v-if="mergerDetail.details.length">
+          <div v-for="(row, key) in mergerDetail.details" :key="key" class="list-content list-box">
+            <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item">
+              <div v-if="item.key" :class="{red:row[item.type]}">
+                {{row[item.key]}}
+              </div>
             </div>
           </div>
-        </div>
+        </tempalte>
+        <base-blank v-else></base-blank>
       </div>
     </ul>
   </div>
