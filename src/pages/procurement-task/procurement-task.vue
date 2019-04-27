@@ -293,7 +293,6 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        console.log(res.data)
         this.goodsPage = {
           total: res.meta.total,
           per_page: res.meta.per_page,
@@ -304,7 +303,6 @@
       // 搜索商品
       async _searchGoods(text) {
         this.statusTab = 4
-        console.log(this.statusTab)
         this.text = text
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
@@ -621,7 +619,6 @@
         this.supplyTask.data = this.supplyTask.data.concat(res.data)
       },
       async confirmMsg() {
-        console.log(this.confirmType)
         switch (this.confirmType) {
         case 1:
           let res = await API.Supply.purchaseTaskPublish({

@@ -116,6 +116,12 @@
       async batchOut() {
         let res = await API.Store.batchOut()
         this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this.goodsPage = 1
+          this.getProductListData()
+          await this._statistic()
+          this.$refs.pagination.beginPage()
+        }
       },
       showBatchOut() {
         if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
