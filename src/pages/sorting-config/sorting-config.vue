@@ -4,7 +4,7 @@
       <!--列表tab工具栏-->
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-warehousing@2x.png" class="identification-icon">
+          <img src="icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">配货位列表</p>
         </div>
         <div class="function-btn">
@@ -12,33 +12,40 @@
         </div>
       </div>
       <!--列表部分-->
-      <div>
-        <div class="list-header list-box">
-          <div v-for="(item,index) in commodities" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
-        </div>
-        <div class="list">
-          <div v-for="(row, index) in dragList"
-               :key="index"
-               v-dragging="{ item: row, list: dragList, group: 'sortingTask' }"
-               class="list-content list-box"
-          >
-            <div class="list-item sort">
-              <div class="index">
-                {{sortingConfig.list[index].sort|format}}
-              </div>
-            </div>
-            <div class="list-item" :style="{flex:2}">{{row[commodities[1].key]}}</div>
-            <div class="list-item">
-              {{row[commodities[2].key]}}
-              <div v-if="!row[commodities[2].key]" class="list-operation" @click.stop="_showSettingModel(row.id)">设置线路</div>
-            </div>
-            <div class="list-item  operate">
-              <div class="list-operation-wrap">
-                <div class="drag-operation">
+      <div style="display: flex;width:100%">
+        <div class="sort-table-box">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in commodities1" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
+          </div>
+          <div class="list">
+            <div v-for="(row, index) in sortingConfig.list" :key="index" class="list-content list-box">
+              <div class="list-item sort">
+                <div class="index">
+                  {{row.sort|format}}
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        <div style="flex:1">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
+          </div>
+          <slick-list v-model="dragList" lockAxis="y" class="list" helperClass="list-content list-box drag-box" @input="sortEndInput">
+            <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="list-content list-box">
+              <div class="list-item" :style="{flex:2}">{{row[commodities2[0].key]}}</div>
+              <div class="list-item">
+                {{row[commodities2[1].key]}}
+                <div v-if="!row[commodities2[1].key]" class="list-operation" @click.stop="_showSettingModel(row.id)">设置线路</div>
+              </div>
+              <div class="list-item  operate">
+                <div v-handle class="list-operation-wrap">
+                  <div class="drag-operation">
+                  </div>
+                </div>
+              </div>
+            </slick-item>
+          </slick-list>
         </div>
       </div>
     </div>
@@ -81,6 +88,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {SlickList, SlickItem, HandleDirective} from 'vue-slicksort'
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
   import API from '@api'
@@ -88,17 +96,12 @@
 
   const PAGE_NAME = 'SORTING_CONFIG'
   const TITLE = '配货位-列表'
-  const COMMODITIES_LIST = [
-    {title: '配货位', key: 'sort', noShow: true, class: 'sort'},
-    {title: '商户名称', key: 'name', flex: '2'},
-    {title: '线路', key: 'road_name', replaceText: '設置路綫', flex: '1'},
-    {title: '操作 ', key: 'road_id', type: "operate", class: 'operate'},
-  ]
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
+    directives: {handle: HandleDirective},
     filters: {
       format(str) {
         let arr = str.split('#')
@@ -110,11 +113,23 @@
       }
     },
     components: {
-      DefaultModal
+      DefaultModal,
+      SlickItem,
+      SlickList
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST,
+        items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8'],
+        commodities1: [{
+          title: '配货位', key: 'sort', noShow: true, class: 'sort'
+        }],
+        commodities2: [{
+          title: '商户名称', key: 'name', flex: '2'
+        }, {
+          title: '线路', key: 'road_name', replaceText: '設置路綫', flex: '1'
+        }, {
+          title: '操作 ', key: 'road_id', type: "operate", class: 'operate'
+        }],
         dragList: [],
         road: {
           check: false,
@@ -139,10 +154,12 @@
       this.dragList = _.cloneDeep(this.sortingConfig.list)
     },
     mounted() {
-      this.$dragging.$on('dragged', (res) => {
 
-      })
-      this.$dragging.$on('dragend', (res) => {
+    },
+    methods: {
+      ...sortingMethods,
+      // 托拽结束后
+      sortEndInput() {
         if (this.isChange) return
         this.isChange = true
         let data = this.dragList.map((item, idx) => {
@@ -150,19 +167,15 @@
             id: item.id,
             sort: this.sortingConfig.list[idx].sort
           }
-          // return {...item, ...{sort: this.sortingConfig.list[idx].sort}}
         })
         this._changeAllocationPostion(data)
-      })
-    },
-    methods: {
-      ...sortingMethods,
+      },
       // 更新托拽列表
       updateList() {
-        this.getSortingConfigList({loading:false}).then(res => {
+        this.getSortingConfigList({loading: false}).then(res => {
           if (res) {
             this.dragList = _.cloneDeep(this.sortingConfig.list)
-            this.$nextTick(()=>{
+            this.$nextTick(() => {
               this.$loading.hide()
             })
           }
@@ -257,45 +270,53 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .sort-table-box .list-box .list-item
+    padding-right:0px
+    text-align: center
+
+  .list-box.drag-box
+    background-color #fff
+    border:1px solid #ddd
+    .drag-operation
+      icon-image(icon-drag_hover)
+
+  .list-item
+    &.operate
+      max-width: 50px
+
+    .index
+      display inline-block
+      width:auto
+      padding: 0px 5px
+      height: 20px
+      line-height 20px
+      text-align center
+      background: #888888
+      border-radius: 10px
+      border-radius: 10px
+      font-family: PingFangSC-Medium
+      font-size: 16px
+      color: #FFFFFF
+
   .table .table-content
     padding-bottom: 20px
 
     .list-content:hover
       cursor pointer
 
-    .list-item
-      &.sort
-        max-width: 100px
-
-      &.operate
-        max-width: 50px
-
-      .index
-        display inline-block
-        padding: 0px 5px
-        heigth: 20px
-        line-height 20px
-        text-align center
-        background: #888888
-        border-radius: 10px
-        border-radius: 10px
-        font-family: PingFangSC-Medium
-        font-size: 16px
-        color: #FFFFFF
 
   .operation-guide-text
     color: #4D77BD
 
   .list-operation
     text-decoration: underline
-
-  .drag-operation
-    width: 18px
-    height: 18px
-    icon-image(icon-drag)
-
-    &:hover
+  .list-content
+    &:hover .drag-operation
       icon-image(icon-drag_hover)
+    .drag-operation
+      width: 18px
+      height: 18px
+      icon-image(icon-drag)
 
   .model-wrap
     background: $color-white

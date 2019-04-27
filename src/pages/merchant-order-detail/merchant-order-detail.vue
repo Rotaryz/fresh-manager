@@ -9,7 +9,7 @@
     <ul class="content-wrap table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-inventory@2x.png" class="identification-icon">
+          <img src="icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
       </div>
@@ -24,6 +24,9 @@
               </div>
               <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
                 {{row[item.key]}}
+              </div>
+              <div v-if="item.afterBr">
+                {{row[item.afterBr]}}
               </div>
             </template>
             <template v-else name="operation">
@@ -42,7 +45,7 @@
   const PAGE_NAME = 'MERCHANT_OREDER_DETAIL'
   const TITLE = '订单详情'
   let commodities = [
-    {title: '商品', key: 'goods_name', flex: 2},
+    {title: '商品', key: 'goods_name', flex: 2,afterBr:'goods_sku_encoding'},
     {title: '分类', key: 'goods_category', flex: 1},
     {title: '下单数量', key: 'sale_num', flex: 1},
     {title: '配货数量', key: 'sale_wait_pick_num', flex: 1,line:true},// 待配送 已完成
