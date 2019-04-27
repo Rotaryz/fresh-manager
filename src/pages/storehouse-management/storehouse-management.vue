@@ -38,7 +38,7 @@
             <div v-if="item === '可用库存' || item === '总库存货值'" class="help hand">
               <span class="help-icon"></span>
               <div class="static-explain">
-                <div class="explain">{{item === '可用库存' ? '当前可用于销售的库存。' : '当前该商品所有批次货值汇总'}}</div>
+                <div class="explain">{{item === '可用库存' ? '当前可用于销售的库存' : '当前该商品所有批次货值汇总'}}</div>
               </div>
             </div>
           </div>
