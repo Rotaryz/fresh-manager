@@ -92,7 +92,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pagination" :pageDetail="marketPageDetail" @addPage="setPage"></base-pagination>
+          <base-pagination ref="pagination" :pageDetail="marketPageDetail" @addPage="setMarketPage"></base-pagination>
         </div>
       </div>
 
@@ -286,7 +286,7 @@
         }
         this.infoTab(index)
       },
-      setPage(page) {
+      setMarketPage(page) {
         this.marketPage = page
         this.getMarketList({page: this.marketPage, source_type: 2})
       },
