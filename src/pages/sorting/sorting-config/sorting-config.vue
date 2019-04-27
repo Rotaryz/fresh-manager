@@ -274,8 +274,11 @@
     padding-right:0px
     text-align: center
 
-  .drag-box
-    background-color #ddd
+  .list-box.drag-box
+    background-color #fff
+    border:1px solid #ddd
+    .drag-operation
+      icon-image(icon-drag_hover)
 
   .list-item
     &.operate
