@@ -22,7 +22,7 @@
         <div class="identification-page">
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务列表</p>
-          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
+          <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main" :class="{'btn-disable-store': status !== 1}" @click="_sendPublish">发布给采购员</div>
@@ -302,6 +302,8 @@
       },
       // 搜索商品
       async _searchGoods(text) {
+        this.statusTab = 4
+        console.log(this.statusTab)
         this.text = text
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
@@ -386,22 +388,18 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        // console.log(this.dispatchSelect, this.statusTab)
-        // let index = 2
-        // this.status = this.dispatchSelect[index].status
-        // this.statusTab = 2
-        // this.page = 1
-        this.getPurchaseTaskList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          status: this.status,
-          page: this.page,
-          supplyId: this.supplyId,
-          loading: false
-        })
-        this.$forceUpdate()
+        let index = 2
+        this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
+        // this.getPurchaseTaskList({
+        //   time: this.time,
+        //   startTime: this.startTime,
+        //   endTime: this.endTime,
+        //   keyword: this.keyword,
+        //   status: this.status,
+        //   page: this.page,
+        //   supplyId: this.supplyId,
+        //   loading: false
+        // })
         await this._statistic()
         this.cancel()
       },
@@ -622,6 +620,7 @@
         this.supplyTask.data = this.supplyTask.data.concat(res.data)
       },
       async confirmMsg() {
+        console.log(this.confirmType)
         switch (this.confirmType) {
         case 1:
           let res = await API.Supply.purchaseTaskPublish({
@@ -638,18 +637,20 @@
           this.$toast.show(res.message)
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
-            this.getPurchaseTaskList({
-              time: this.time,
-              startTime: this.taskTime[0],
-              endTime: this.taskTime[1],
-              keyword: this.keyword,
-              status: this.status,
-              page: this.page,
-              supplyId: this.supplyId,
-              loading: false
-            })
+            let index = 3
+            this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
+            await this._statistic()
+            // this.getPurchaseTaskList({
+            //   time: this.time,
+            //   startTime: this.taskTime[0],
+            //   endTime: this.taskTime[1],
+            //   keyword: this.keyword,
+            //   status: this.status,
+            //   page: this.page,
+            //   supplyId: this.supplyId,
+            //   loading: false
+            // })
           }
-          await this._statistic()
           break
         case 2:
           let supplyRes = await API.Supply.purchaseTask({

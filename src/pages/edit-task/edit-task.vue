@@ -13,9 +13,9 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div class="function-btn">
-          <div class="btn-main" @click="submitSure">确认提交</div>
-        </div>
+        <!--<div class="function-btn">-->
+          <!--<div class="btn-main" @click="submitSure">确认提交</div>-->
+        <!--</div>-->
       </div>
       <div class="big-list" :class="taskList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -43,6 +43,10 @@
             <div class="list-item">{{item.total ? '￥' + item.total : '￥0.00'}}</div>
           </div>
         </div>
+      </div>
+      <div class="back">
+        <div class="back-cancel back-btn hand" @click="_back">返回</div>
+        <div class="back-btn back-submit hand" @click="submitSure">确认提交</div>
       </div>
     </div>
   </div>
@@ -163,6 +167,9 @@
           }
         }
         this.$forceUpdate()
+      },
+      _back() {
+        this.$router.back()
       },
       echangPrice(item, index) {
         if (item.purchase_price < 0) {
