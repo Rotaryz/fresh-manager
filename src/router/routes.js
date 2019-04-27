@@ -1205,8 +1205,6 @@ export default [
           titles: ['供应链', '订单', '售后订单'],
           beforeResolve(routeTo, routeFrom, next) {
             store.commit('afterSalesOrder/SET_PARAMS', {
-              page: 1,
-              limit: 10,
               start_time: '',
               end_time: '',
               keyword: "",
