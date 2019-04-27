@@ -341,6 +341,7 @@
         color: $color-text-main
 
       .close
+        cursor pointer
         width: 12px
         height: 12px
         cursor pointer
