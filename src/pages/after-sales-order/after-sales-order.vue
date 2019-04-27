@@ -42,8 +42,10 @@
             </div>
           </template>
           <base-blank v-else></base-blank>
-
         </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
     <default-modal ref="modal">
@@ -255,9 +257,15 @@
       },
       // ---------- 列表
       // 更新列表数据
-      _updateList(params) {
+      _updateList(params,noUpdataStatus) {
         this.SET_PARAMS(params)
         this.getAfterSalesOrderList()
+        if (!noUpdataStatus) {
+          this._getStatusData()
+        }
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
       },
       // 状态数据
       _getStatusData() {
@@ -276,29 +284,32 @@
           })
         })
       },
-
       // 时间
       _changeTime(timeArr) {
         this._updateList({
           start_time: timeArr[0],
-          end_time: timeArr[1]
+          end_time: timeArr[1],
+          page:1
         })
-        this._getStatusData()
-
       },
       // 状态
       _setValue(item) {
         this._updateList({
-          status: item.value
-        })
+          status: item.value,
+          page:1
+        },true)
       },
       // 搜索按钮
       _changeKeyword(keyword) {
         this._updateList({
-          keyword
+          keyword,
+          page:1
         })
-        this._getStatusData()
       },
+      // 分页
+      _getMoreList(page){
+        this._updateList({page},true)
+      }
     }
   }
 </script>

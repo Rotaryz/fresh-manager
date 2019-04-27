@@ -126,7 +126,7 @@
     },
     created() {
       this._getFristList()
-      this._getStausData()
+      this._getStatusData()
     },
     methods: {
       ...authComputed,
@@ -136,7 +136,7 @@
         this.SET_PARAMS(params)
         this.getSortingTaskList()
         if (!noUpdataStatus) {
-          this._getStausData()
+          this._getStatusData()
         }
         if (params.page === 1) {
           this.$refs.pagination.beginPage()
@@ -151,7 +151,7 @@
         })
       },
       // 状态栏数据
-      _getStausData() {
+      _getStatusData() {
         let params = {
           start_time: this.sortingTask.filter.start_time,
           end_time: this.sortingTask.filter.end_time,
