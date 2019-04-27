@@ -1135,7 +1135,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order'))
+        component: () => lazyLoadView(import('@pages/merchant-order/merchant-order'))
       },
       // 商品订单详情
       {
@@ -1155,7 +1155,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/merchant-order-detail'))
+        component: () => lazyLoadView(import('@pages/merchant-order-detail/merchant-order-detail'))
       },
       // 商品订单详情的明细
       {
@@ -1175,7 +1175,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/consumer-order-detail'))
+        component: () => lazyLoadView(import('@pages/consumer-order-detail/consumer-order-detail'))
       },
       // 汇总订单详情
       {
@@ -1195,7 +1195,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/supply-order/merchant-order/merchant-order-detail/merger-order-detail'))
+        component: () => lazyLoadView(import('@pages/merger-order-detail/merger-order-detail'))
       },
       // 售后订单
       {
@@ -1222,7 +1222,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/supply-order/after-sales-order/after-sales-order'))
+        component: () => lazyLoadView(import('@pages/after-sales-order/after-sales-order'))
       },
       // 售后订单详情
       {
@@ -1242,7 +1242,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/supply-order/after-sales-order/after-sales-detail/after-sales-detail'))
+        component: () => lazyLoadView(import('@pages/after-sales-detail/after-sales-detail'))
       },
       // 采购任务
       {
@@ -1605,7 +1605,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/sorting/sorting-task/sorting-task'))
+        component: () => lazyLoadView(import('@pages/sorting-task/sorting-task'))
       },
       // 分拣任务明细
       {
@@ -1625,7 +1625,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/sorting/sorting-task-detail/sorting-task-detail'))
+        component: () => lazyLoadView(import('@pages/sorting-task-detail/sorting-task-detail'))
       },
       // 分拣配置
       {
@@ -1647,7 +1647,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/sorting/sorting-config/sorting-config'))
+        component: () => lazyLoadView(import('@pages/sorting-config/sorting-config'))
       },
       // 库存管理
       {
