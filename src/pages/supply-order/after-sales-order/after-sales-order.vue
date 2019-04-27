@@ -274,8 +274,7 @@
       _changeTime(timeArr) {
         this._updateList({
           start_time: timeArr[0],
-          end_time: timeArr[1],
-          page: 1
+          end_time: timeArr[1]
         })
         this._getStatusData()
 
@@ -283,15 +282,13 @@
       // 状态
       _setValue(item) {
         this._updateList({
-          status: item.value,
-          page: 1
+          status: item.value
         })
       },
       // 搜索按钮
       _changeKeyword(keyword) {
         this._updateList({
-          keyword,
-          page: 1
+          keyword
         })
         this._getStatusData()
       },

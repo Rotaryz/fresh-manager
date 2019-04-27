@@ -109,7 +109,7 @@
     {title: '品类数', key: 'type_count', flex: 1},
     {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
   ]
-  const ORDERSTATUS = [{text: '订单列表', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '汇总单列表', status: 1, img: require('./pic-zanwu@2x.png')}]
+  const ORDERSTATUS = [{text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}]
   export default {
     name: PAGE_NAME,
     page: {
