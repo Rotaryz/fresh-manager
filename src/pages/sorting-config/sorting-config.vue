@@ -79,7 +79,7 @@
             </div>
 
             <div class="back btn-group-wrap">
-              <div class="back-cancel back-btn hand" @click.stop="_hideModal">关闭</div>
+              <div class="back-cancel back-btn hand" @click.stop="_hideModal">取消</div>
               <div v-if="road.data.length>0" class="back-btn back-submit hand" @click.stop="_sureSetRoad">确定</div>
             </div>
 
@@ -338,6 +338,7 @@
         color: $color-text-main
 
       .close
+        cursor pointer
         width: 12px
         height: 12px
         icon-image(icon-close)
