@@ -138,7 +138,7 @@
                 <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
                 <div class="goods-msg">
                   <div class="goods-name">{{item.goods_name}}</div>
-                  <div class="goods-money">{{item.goods_sku_code}}</div>
+                  <div class="goods-money">{{item.goods_sku_encoding}}</div>
                 </div>
               </div>
             </div>
@@ -250,7 +250,6 @@
       ...proTaskComputed
     },
     async created() {
-      this._getUrl()
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
       if (this.$route.query.status) {
@@ -267,6 +266,7 @@
       await this._getGoodsList()
       await this._getSupplierList()
       await this._statistic()
+      this._getUrl()
     },
     mounted() {
     },
@@ -293,6 +293,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
+        console.log(res.data)
         this.goodsPage = {
           total: res.meta.total,
           per_page: res.meta.per_page,
