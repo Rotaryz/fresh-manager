@@ -170,7 +170,7 @@
             <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
             <div class="goods-select-text">仓库库存</div>
           </div>
-          <div v-if="goods_skus.warehouse_usable_stock" class="stock-box-text current-stock">当前可用库存<span class="stock-color">{{goods_skus.warehouse_usable_stock}}</span>件</div>
+          <div v-if="id" class="stock-box-text current-stock">当前可用库存<span class="stock-color">{{goods_skus.warehouse_usable_stock}}</span>件</div>
         </div>
       </div>
       <div class="edit-item">
@@ -471,7 +471,7 @@
         } else if (this.goods_skus.presale_usable_stock.length === 0 && this.goods_skus.is_presale * 1 === 1) {
           this.$toast.show('请输入预售库存')
           return
-        } else if (this.goods_skus.presale_usable_stock <= 0 && this.goods_skus.is_presale * 1 === 1) {
+        } else if (this.goods_skus.presale_usable_stock < 0 && this.goods_skus.is_presale * 1 === 1) {
           this.$toast.show('请输入预售库存大于零')
           return
         } else if (this.goods_skus.presale_usable_stock.includes('.') && this.goods_skus.is_presale * 1 === 1) {
