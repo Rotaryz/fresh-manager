@@ -42,7 +42,7 @@
                 <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
                 <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
                 <div class="list-item" :style="{flex: commodities[2].flex}">
-                  <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.sale_order_sn}}</router-link>
+                  <router-link tag="a" target="_blank" :to="{path: `merchant-order/merchant-order-detail/${item.source_order_id}`}" class="list-operation">{{item.sale_order_sn}}</router-link>
                 </div>
                 <div class="list-item" :style="{flex: commodities[3].flex}">{{item.road_name}}</div>
                 <div class="list-item" :style="{flex: commodities[4].flex}">{{item.receiver}}</div>
@@ -315,8 +315,6 @@
         min-width: 200px
       &:nth-child(3)
         min-width: 200px
-      &:nth-child(6)
-        white-space: normal
       &:last-child
         padding: 0
         min-width: 80px

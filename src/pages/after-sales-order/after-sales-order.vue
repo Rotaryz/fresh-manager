@@ -29,17 +29,23 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
         </div>
         <div class="list">
-          <div v-for="(row, index) in afterSalesList" :key="index" class="list-content list-box">
-            <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
-              <template v-if="item.key" name="name">
-                {{row[item.key]}}
-              </template>
-              <template v-else name="operation">
-                <router-link class="list-operation" :to="{name:'after-sales-detail',params:{id:row.id}}">{{item.operation}}</router-link>
-              </template>
+          <template v-if="afterSalesList.length">
+            <div v-for="(row, index) in afterSalesList" :key="index" class="list-content list-box">
+              <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+                <template v-if="item.key" name="name">
+                  {{row[item.key]}}
+                </template>
+                <template v-else name="operation">
+                  <router-link class="list-operation" :to="{name:'after-sales-detail',params:{id:row.id}}">{{item.operation}}</router-link>
+                </template>
+              </div>
             </div>
-          </div>
+          </template>
+          <base-blank v-else></base-blank>
         </div>
+      </div>
+      <div class="pagination-box">
+        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
     <default-modal ref="modal">
@@ -67,18 +73,21 @@
               </div>
             </div>
             <div class="list" :class="{'goods-list-border':batchendList.length}">
-              <div v-for="(row, index) in batchendList" :key="index" class="list-content list-box">
-                <div v-for="item in batchCommodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
-                  <template v-if="item.type==='check'" name="check">
-                    <div class="pro-select-icon hand" :class="{'pro-select-icon-active': _isCheck(row.goods_sku_code)}" @click="_itemCheckChange(row, index)">
-                      <span class="after"></span>
-                    </div>
-                  </template>
-                  <template v-else>
-                    {{row[item.key]}}
-                  </template>
+              <template v-if="batchendList.length">
+                <div v-for="(row, index) in batchendList" :key="index" class="list-content list-box">
+                  <div v-for="item in batchCommodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+                    <template v-if="item.type==='check'" name="check">
+                      <div class="pro-select-icon hand" :class="{'pro-select-icon-active': _isCheck(row.goods_sku_code)}" @click="_itemCheckChange(row, index)">
+                        <span class="after"></span>
+                      </div>
+                    </template>
+                    <template v-else>
+                      {{row[item.key]}}
+                    </template>
+                  </div>
                 </div>
-              </div>
+              </template>
+              <base-blank v-else></base-blank>
             </div>
           </div>
         </div>
@@ -105,18 +114,18 @@
     {title: '创建时间', key: 'created_at', flex: 1.5},
     {title: '售后订单号  ', key: 'order_sn', flex: 1},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
-    {title: '缺货品类数', key: 'type_count', flex:1},
+    {title: '缺货品类数', key: 'type_count', flex: 1},
     {title: '原订单号 ', key: 'source_order_sn', flex: 2},
     {title: '订单状态', key: 'status_str', flex: 0.6},
-    {title: '操作', key: '', operation: '详情', flex: 1,class:"operate"}
+    {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '', type: 'check', key: '', flex: 3,class:'row-check'},
+    {title: '', type: 'check', key: '', flex: 3, class: 'row-check'},
     {title: '商品', key: 'goods_name', flex: 3},
     {title: '供应商', key: 'supplier_name', flex: 3},
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 2,class:'status_str'},
+    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str'},
   ]
   export default {
     name: PAGE_NAME,
@@ -179,7 +188,7 @@
       },
       // 弹框数据
       _getBatchList(val) {
-        API.AfterSalesOrder.getBatchList({keyword: val}).then((res) => {
+        API.AfterSalesOrder.getBatchList({keyword: val || ''}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
@@ -198,8 +207,8 @@
       _showModal() {
         this._getBatchList()
         this.$refs.modal.showModal()
-        this.checkAllStatus= false
-        this.selectIds= []
+        this.checkAllStatus = false
+        this.selectIds = []
       },
       _showConfirm(val) {
         if (this.selectIds.length === 0) return this.$toast.show('请选择批量处理的选项')
@@ -248,9 +257,15 @@
       },
       // ---------- 列表
       // 更新列表数据
-      _updateList(params) {
+      _updateList(params,noUpdataStatus) {
         this.SET_PARAMS(params)
         this.getAfterSalesOrderList()
+        if (!noUpdataStatus) {
+          this._getStatusData()
+        }
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
       },
       // 状态数据
       _getStatusData() {
@@ -269,29 +284,32 @@
           })
         })
       },
-
       // 时间
       _changeTime(timeArr) {
         this._updateList({
           start_time: timeArr[0],
-          end_time: timeArr[1]
+          end_time: timeArr[1],
+          page:1
         })
-        this._getStatusData()
-
       },
       // 状态
       _setValue(item) {
         this._updateList({
-          status: item.value
-        })
+          status: item.value,
+          page:1
+        },true)
       },
       // 搜索按钮
       _changeKeyword(keyword) {
         this._updateList({
-          keyword
+          keyword,
+          page:1
         })
-        this._getStatusData()
       },
+      // 分页
+      _getMoreList(page){
+        this._updateList({page},true)
+      }
     }
   }
 </script>
@@ -304,8 +322,10 @@
 
   .table .table-content
     padding-bottom: 20px;
+
   .operate
     max-width 50px
+
   .pro-select-icon
     border-radius: 2px
     border: 1px solid $color-line
@@ -329,12 +349,13 @@
     align-items: center
 
   .model-wrap
-    height:80vh
+    height: 80vh
     background: $color-white
     border-radius: 2px
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     display flex
     flex-direction column
+
     .top
       height: 59.5px
       align-items: center
@@ -355,27 +376,32 @@
         icon-image(icon-close)
 
     .model-content
-      flex:1
+      flex: 1
       width: 1000px
       padding: 10px 20px 30px
       overflow auto
+
       .status_str
         max-width 65px
+
       .row-check
         max-width 60px
+
     .btn-group-wrap
       layout(row)
-      height:auto
+      height: auto
       align-items: center
       justify-content: flex-end
       background: #fff
       position: relative
       left: 0
-      padding:20px
+      padding: 20px
+
       .back-submit
-        margin-right:0
+        margin-right: 0
+
   /*&:before*/
-          /*border-top: 0px solid #e9ecee;*/
+  /*border-top: 0px solid #e9ecee;*/
   .tab-item.serch-btn-box
     width: 300px
     margin-bottom: 20px
