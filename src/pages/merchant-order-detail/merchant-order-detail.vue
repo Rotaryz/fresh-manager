@@ -17,23 +17,26 @@
         <div v-for="(item,index) in commodities" :key="index" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
       </div>
       <div class="list">
-        <div v-for="(row, key) in merchantDetail.details" :key="key" class="list-content list-box">
-          <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" :class="['list-item',item.class]">
-            <template v-if="item.key" name="name">
-              <div v-if="isLine && item.line" style="border-top:1px solid #333;width:30px;">
-              </div>
-              <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
-                {{row[item.key]}}
-              </div>
-              <div v-if="item.afterBr">
-                {{row[item.afterBr]}}
-              </div>
-            </template>
-            <template v-else name="operation">
-              <router-link class="list-operation" :to="goTo(row)">{{item.operation}}</router-link>
-            </template>
+        <template v-if="merchantDetail.details.length">
+          <div v-for="(row, key) in merchantDetail.details" :key="key" class="list-content list-box">
+            <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" :class="['list-item',item.class]">
+              <template v-if="item.key" name="name">
+                <div v-if="isLine && item.line" style="border-top:1px solid #333;width:30px;">
+                </div>
+                <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
+                  {{row[item.key]}}
+                </div>
+                <div v-if="item.afterBr">
+                  {{row[item.afterBr]}}
+                </div>
+              </template>
+              <template v-else name="operation">
+                <router-link class="list-operation" :to="goTo(row)">{{item.operation}}</router-link>
+              </template>
+            </div>
           </div>
-        </div>
+        </template>
+        <base-blank v-else></base-blank>
       </div>
     </ul>
   </div>
@@ -45,12 +48,12 @@
   const PAGE_NAME = 'MERCHANT_OREDER_DETAIL'
   const TITLE = '订单详情'
   let commodities = [
-    {title: '商品', key: 'goods_name', flex: 2,afterBr:'goods_sku_encoding'},
+    {title: '商品', key: 'goods_name', flex: 2, afterBr: 'goods_sku_encoding'},
     {title: '分类', key: 'goods_category', flex: 1},
     {title: '下单数量', key: 'sale_num', flex: 1},
-    {title: '配货数量', key: 'sale_wait_pick_num', flex: 1,line:true},// 待配送 已完成
-    {title: '缺货数量', key: 'sale_out_of_num', flex: 1,line:true},
-    {title: '操作', key: '', operation: '消费者明细', flex: 1,class:'operate'}
+    {title: '配货数量', key: 'sale_wait_pick_num', flex: 1, line: true},// 待配送 已完成
+    {title: '缺货数量', key: 'sale_out_of_num', flex: 1, line: true},
+    {title: '操作', key: '', operation: '消费者明细', flex: 1, class: 'operate'}
   ]
   export default {
     name: PAGE_NAME,
@@ -107,7 +110,8 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .operate
-   max-width:100px
+    max-width: 100px
+
   .sorting-task-detail
     display flex
     flex-direction column
@@ -115,7 +119,7 @@
     font-family: PingFangSC-Regular
 
   .top-wrap
-    min-width:1414px
+    min-width: 1414px
     background-color #fff
     padding: 30px 20px 10px 20px
     color: #333333

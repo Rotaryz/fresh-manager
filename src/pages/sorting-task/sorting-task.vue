@@ -39,23 +39,26 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex:item.flex}" :class="['list-item',item.class]">{{item.tilte}}</div>
         </div>
         <div class="list">
-          <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
-            <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" :class="['list-item',item.class]">
-              <template v-if="item.type==='operate'">
-                <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
-              </template>
-
-              <template v-else>
-                {{row[item.key]}}
-                <template v-if="item.after">
-                  {{row[item.after]}}
+          <template v-if="sortingTask.list.length">
+            <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
+              <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" :class="['list-item',item.class]">
+                <template v-if="item.type==='operate'">
+                  <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
                 </template>
-                <div v-if="item.afterBr">
-                  {{row[item.afterBr]}}
-                </div>
-              </template>
+
+                <template v-else>
+                  {{row[item.key]}}
+                  <template v-if="item.after">
+                    {{row[item.after]}}
+                  </template>
+                  <div v-if="item.afterBr">
+                    {{row[item.afterBr]}}
+                  </div>
+                </template>
+              </div>
             </div>
-          </div>
+          </template>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">
@@ -73,7 +76,7 @@
   const TITLE = '拣货任务列表'
   const COMMODITIES_LIST = [
     {tilte: '生成时间', key: 'created_at', flex: '1.5'},
-    {tilte: '商品名称', key: 'goods_name', flex: '2',afterBr:'goods_sku_encoding'},
+    {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
     {tilte: '下单数', key: 'sale_num', after: "sale_unit"},
     {tilte: '待拣货数', key: 'sale_wait_pick_num', after: "sale_unit"},
@@ -186,9 +189,9 @@
         this._getClassifyList({
           'parent_id': item.id,
         }).then(res => {
-          this.filterTaskSecond.content='全部'
+          this.filterTaskSecond.content = '全部'
           if (res.data.length === 0) {
-            this.filterTaskSecond.data=  [{name: '全部', id: ''}]
+            this.filterTaskSecond.data = [{name: '全部', id: ''}]
             return
           }
           this.filterTaskSecond.data = res.data
@@ -196,7 +199,7 @@
         })
       },
       _setValueSecond(item) {
-        if(!item.id){
+        if (!item.id) {
           return
         }
         this._updateList({goods_category_id: item.id, page: 1})
