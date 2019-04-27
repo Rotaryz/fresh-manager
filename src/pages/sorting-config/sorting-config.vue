@@ -343,6 +343,7 @@
       .close
         width: 12px
         height: 12px
+        cursor pointer
         icon-image(icon-close)
 
   .model-content
