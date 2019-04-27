@@ -258,7 +258,6 @@
         this.status = this.$route.query.status
       }
       this.status = this.$route.params.status
-      console.log(this.status)
       if (this.goBackNumber > 0) {
         this.statusTab = 3
         this.status = 2

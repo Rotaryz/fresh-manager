@@ -61,33 +61,36 @@
           <div v-for="(item, index) in productTitleList" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
-            <div class="list-item">
-              <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
-            </div>
-            <div class="list-item list-double-row">
-              <div class="item-dark">{{item.name}}</div>
-              <div class="item-dark">{{item.goods_sku_encoding}}</div>
-            </div>
-            <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
-            <div class="list-item">{{item.goods_category_name}}</div>
-            <div class="list-item">{{item.base_unit}}</div>
-            <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
-            <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
-            <div class="list-item list-item-layout">
-              {{item.usable_stock}}{{item.sale_unit}}
-              <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
-            </div>
-            <div class="list-item">
-              <div class="list-item-btn" @click="switchBtn(item, index)">
-                <base-switch :status="item.is_online"></base-switch>
+          <div v-if="goodsList.length">
+            <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
+              <div class="list-item">
+                <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+              </div>
+              <div class="list-item list-double-row">
+                <div class="item-dark">{{item.name}}</div>
+                <div class="item-dark">{{item.goods_sku_encoding}}</div>
+              </div>
+              <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
+              <div class="list-item">{{item.goods_category_name}}</div>
+              <div class="list-item">{{item.base_unit}}</div>
+              <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
+              <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
+              <div class="list-item list-item-layout">
+                {{item.usable_stock}}{{item.sale_unit}}
+                <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
+              </div>
+              <div class="list-item">
+                <div class="list-item-btn" @click="switchBtn(item, index)">
+                  <base-switch :status="item.is_online"></base-switch>
+                </div>
+              </div>
+              <div class="list-item list-operation-box">
+                <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
+                <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
-            <div class="list-item list-operation-box">
-              <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
-              <span class="list-operation" @click.stop="delGoods(item)">删除</span>
-            </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">
