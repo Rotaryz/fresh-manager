@@ -85,7 +85,7 @@
                 <base-switch confirmText="开启" cancelText="关闭" :status="item.status"></base-switch>
               </div>
               <div class="list-item list-use">
-                <router-link tag="span" :to="`edit-rules?id=/${item.id}`" append class="list-operation">查看</router-link>
+                <router-link tag="span" :to="`edit-rules?id=${item.id}`" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="delRules(item.id)">删除</span>
               </div>
             </div>

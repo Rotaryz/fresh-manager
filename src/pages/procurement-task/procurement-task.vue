@@ -77,12 +77,6 @@
           </div>
           <span class="close hand" @click="cancel"></span>
         </div>
-        <!--<div class="title-input">-->
-        <!--<div class="title">新建采购任务</div>-->
-        <!--<div class="close-box" @click="cancel">-->
-        <!--<div class="close"></div>-->
-        <!--</div>-->
-        <!--</div>-->
         <div class="main-input">
           <div class="main-input-item">
             <div class="text">采购商品</div>
@@ -392,6 +386,11 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
+        // console.log(this.dispatchSelect, this.statusTab)
+        // let index = 2
+        // this.status = this.dispatchSelect[index].status
+        // this.statusTab = 2
+        // this.page = 1
         this.getPurchaseTaskList({
           time: this.time,
           startTime: this.startTime,
@@ -402,6 +401,7 @@
           supplyId: this.supplyId,
           loading: false
         })
+        this.$forceUpdate()
         await this._statistic()
         this.cancel()
       },
