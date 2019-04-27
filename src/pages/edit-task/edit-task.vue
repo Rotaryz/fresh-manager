@@ -211,27 +211,6 @@
     .enter-title-money
       color: #F84E3C
 
-  .list-item-batches
-    position: relative
-    overflow: inherit !important
-    .batches-box
-      position: absolute
-      top: 21px
-      left: 0
-      box-sizing: border-box
-      padding: 12px 37px 12px 12px
-      background: rgba(51, 51, 51, 9)
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: $color-white
-      z-index: 99
-      margin-bottom: 8px
-      &.fade-enter, &.fade-leave-to
-        opacity: 0
-      &.fade-enter-to, &.fade-leave-to
-        transition: all .3s ease-in-out
-      &:last-child
-        margin-bottom: 0
 
   .list-item-layout
     layout(row)
