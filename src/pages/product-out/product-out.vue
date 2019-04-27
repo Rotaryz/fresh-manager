@@ -33,7 +33,7 @@
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">
-                <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.out_order_sn}}</router-link>
+                <router-link tag="a" target="_blank" :to="{path: `merchant-order/merchant-order-detail/${item.source_order_id}`}" class="list-operation">{{item.out_order_sn}}</router-link>
               </div>
               <!--<div class="list-item">{{item.out_order_sn}}</div>-->
               <div class="list-item">{{item.merchant_name}}</div>
