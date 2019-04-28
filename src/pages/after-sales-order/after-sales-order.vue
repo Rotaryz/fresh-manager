@@ -58,7 +58,7 @@
         <div class="model-content">
           <div class="shade-tab">
             <div class="tab-item serch-btn-box">
-              <base-search placeHolder="供应商" @search="_getBatchList"></base-search>
+              <base-search ref="research" placeHolder="供应商" @search="_getBatchList"></base-search>
             </div>
           </div>
           <div>
@@ -202,13 +202,14 @@
       },
       // 弹框显示影藏
       _hideModal() {
+        this.checkAllStatus = false
+        this.$refs.research.infoTextMethods()
+        this.selectIds = []
         this.$refs.modal.hideModal()
       },
       _showModal() {
         this._getBatchList()
         this.$refs.modal.showModal()
-        this.checkAllStatus = false
-        this.selectIds = []
       },
       _showConfirm(val) {
         if (this.selectIds.length === 0) return this.$toast.show('请选择批量处理的选项')
