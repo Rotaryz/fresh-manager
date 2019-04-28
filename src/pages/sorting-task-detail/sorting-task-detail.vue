@@ -114,6 +114,10 @@
       flex-direction: column;
       align-items: flex-start;
       justify-content: space-between;
+      &:hover
+        box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.04)
+        &:after
+          border: 1px solid #ccc
       &:after
         content: ""
         pointer-events: none // 解决iphone上的点击无效Bug
@@ -132,9 +136,6 @@
           height: 300%
           border-radius: 2px * 3
           transform: scale(1 / 3) translateZ(0)
-      &:hover:after
-        border: 1px solid #ccc
-
       .index
         display inline-block
         padding: 0px 5px
