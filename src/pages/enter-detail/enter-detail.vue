@@ -32,12 +32,12 @@
             <div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
               <div v-if="enterMsg.status === 1">{{item.base_num}}</div>
-              <div>{{item.base_unit}}</div>
+              <div :class="{'base-unit': enterMsg.status === 1}">{{item.base_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
               <div v-if="enterMsg.status === 1">{{item.purchase_num}}</div>
-              <div>{{item.purchase_unit}}</div>
+              <div :class="{'base-unit': enterMsg.status === 1}">{{item.purchase_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <div>{{item.price}}</div>
@@ -206,7 +206,9 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .base-unit
+    no-wrap()
+    width: 38px
   .procurement-task
     .list-box
       .list-item
@@ -214,6 +216,7 @@
         &:nth-child(4), &:nth-child(5)
           max-width: 150px
           min-width: 150px
+          flex-wrap: nowrap
         &:nth-child(8)
           max-width: 130px
           min-width: 130px

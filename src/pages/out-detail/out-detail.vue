@@ -41,7 +41,7 @@
                 </div>
               </transition>
               <transition name="fade">
-                <div v-show="showIndex === index && item.status === 0 && item.out_batches.length" class="batches-box">
+                <div v-show="showIndex === index && item.status === 0 && item.select_batch.length" class="batches-box">
                   <div v-for="(item1, index1) in item.select_batch" :key="index1" class="batches-box-item">
                     {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                   </div>
