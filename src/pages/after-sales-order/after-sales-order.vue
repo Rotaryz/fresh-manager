@@ -31,9 +31,9 @@
         <div class="list">
           <template v-if="afterSalesList.length">
             <div v-for="(row, index) in afterSalesList" :key="index" class="list-content list-box">
-              <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+              <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class,item.rowClass]">
                 <template v-if="item.key" name="name">
-                  {{row[item.key]}}
+                  <span v-if="item.before" :class="[item.beforeClass[0],row[item.before]?item.beforeClass[1]:'']"></span>{{row[item.key]}}
                 </template>
                 <template v-else name="operation">
                   <router-link class="list-operation" :to="{name:'after-sales-detail',params:{id:row.id}}">{{item.operation}}</router-link>
@@ -115,8 +115,8 @@
     {title: '售后订单号  ', key: 'order_sn', flex: 1},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
     {title: '缺货品类数', key: 'type_count', flex: 1},
-    {title: '原订单号 ', key: 'source_order_sn', flex: 2},
-    {title: '订单状态', key: 'status_str', flex: 0.6},
+    {title: '原订单号 ', key: 'source_order_sn', flex: 2,rowClass:'source-order-sn'},
+    {title: '订单状态', key: 'status_str', flex: 0.6,before:'status',beforeClass:['list-status','list-status-success']},
     {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
   ]
   const COMMODITIES_LIST2 = [
@@ -317,6 +317,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   /*@import "@pages/supply-order/after-sales-detail/check/check.styl"*/
+  .source-order-sn
+    text-decoration: underline
+    color: #4d77bd
   .list-operation
     text-decoration: underline
 

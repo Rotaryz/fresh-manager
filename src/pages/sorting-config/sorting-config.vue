@@ -32,7 +32,7 @@
             <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
           </div>
           <template v-if="dragList.length">
-            <slick-list v-model="dragList" :distance="10" lockAxis="y" class="list" helperClass="list-content list-box drag-box" @input="sortEndInput">
+            <slick-list v-model="dragList" :distance="10" lockAxis="y" class="list drag-list" helperClass="list-content list-box drag-box" @input="sortEndInput">
               <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="list-content list-box">
                 <div class="list-item" :style="{flex:2}">{{row[commodities2[0].key]}}</div>
                 <div class="list-item">
@@ -279,8 +279,10 @@
     text-align: center
 
   .drag-box
-    background-color #ddd
-
+    cursor pointer
+    background: #f7faf5
+    &:hover .drag-operation
+      icon-image(icon-drag_hover)
   .list-item
     &.operate
       max-width: 50px
@@ -302,9 +304,9 @@
   .table .table-content
     padding-bottom: 20px
 
-    .list-content:hover
+    .drag-list:hover
       cursor pointer
-
+      user-select: none
 
   .operation-guide-text
     color: #4D77BD
@@ -313,12 +315,12 @@
     cursor pointer
     text-decoration: underline
   .list-content
-    &:hover .drag-operation
-      icon-image(icon-drag_hover)
     .drag-operation
       width: 18px
       height: 18px
       icon-image(icon-drag)
+    &:hover .drag-operation
+      icon-image(icon-drag_hover)
 
   .model-wrap
     background: $color-white
