@@ -19,7 +19,7 @@
           <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main" :class="{'btn-disable-store': status !==0 || (status === 0 && !productOutList.length)}" @click="showBatchOut">批量出库</div>
+          <div class="btn-main" @click="showBatchOut">批量出库</div>
           <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main g-btn-item">新建出库单<span class="add-icon"></span></router-link>
         </div>
       </div>
@@ -116,9 +116,16 @@
       async batchOut() {
         let res = await API.Store.batchOut()
         this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this.goodsPage = 1
+          this.getProductListData()
+          await this._statistic()
+          this.$refs.pagination.beginPage()
+        }
       },
       showBatchOut() {
         if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
+          this.$toast.show('暂无出库单')
           return
         }
         this.$refs.confirm.show('是否确认批量出库？')

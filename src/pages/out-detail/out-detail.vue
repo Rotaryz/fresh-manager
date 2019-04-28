@@ -32,22 +32,22 @@
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
-            <div class="list-item list-item-batches hand" @click="outFn(item, index)">
+            <div class="list-item list-item-batches hand" @mouseenter="_showTip(index)" @mouseleave="_hideTip" @click="outFn(item, index)">
               <transition name="fade">
-                <div v-show="showIndex === index && item.status !== 0" class="batches-box">
-                  <div v-for="(item1, index1) in item.out_batches" :key="index1">
+                <div v-show="showIndex === index && item.status !== 0 && item.out_batches.length" class="batches-box">
+                  <div v-for="(item1, index1) in item.out_batches" :key="index1" class="batches-box-item">
                     {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                   </div>
                 </div>
               </transition>
               <transition name="fade">
-                <div v-show="showIndex === index && item.status === 0" class="batches-box">
-                  <div v-for="(item1, index1) in item.select_batch" :key="index1">
+                <div v-show="showIndex === index && item.status === 0 && item.out_batches.length" class="batches-box">
+                  <div v-for="(item1, index1) in item.select_batch" :key="index1" class="batches-box-item">
                     {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                   </div>
                 </div>
               </transition>
-              <span class="list-operation" @mouseenter="_showTip(index)" @mouseleave="_hideTip">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
+              <span class="list-operation">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
             </div>
             <div class="list-item">{{item.out_cost_price ? '￥' + item.out_cost_price : '￥0.00'}}/{{item.base_unit}}</div>
             <div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>
@@ -239,19 +239,41 @@
       top: 21px
       left: 0
       box-sizing: border-box
-      padding: 12px 37px 12px 12px
+      padding: 12px 37px 0 12px
       background: rgba(51, 51, 51, .8)
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-white
       z-index: 99
       margin-bottom: 8px
+      max-height: 300px
+      overflow: auto
+      &::-webkit-scrollbar
+        width: 0
+        height: 0
+        transition: all 0.2s
+      &::-webkit-scrollbar-thumb
+        background-color: rgba(255, 255, 255, .5)
+        border-radius: 10px
+      &::-webkit-scrollbar-thumb:hover
+        background-color: rgba(255, 255, 255, .8)
+      &::-webkit-scrollbar-track
+        box-shadow: inset 0 0 6px rgba(255, 255, 255, .5)
+        border-radius: 10px
       &.fade-enter, &.fade-leave-to
         opacity: 0
       &.fade-enter-to, &.fade-leave-to
         transition: all .3s ease-in-out
       &:last-child
         margin-bottom: 0
+      &::-webkit-scrollbar
+        transition: all 0.2s
+        width: 6px
+        height: 8px
+      .batches-box-item
+        margin-bottom: 12px
+        height: 15px
+        line-height: 15px
 
   .tip
     margin: 0 2px

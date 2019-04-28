@@ -138,7 +138,7 @@
                 <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
                 <div class="goods-msg">
                   <div class="goods-name">{{item.goods_name}}</div>
-                  <div class="goods-money">{{item.goods_sku_code}}</div>
+                  <div class="goods-money">{{item.goods_sku_encoding}}</div>
                 </div>
               </div>
             </div>
@@ -250,7 +250,6 @@
       ...proTaskComputed
     },
     async created() {
-      this._getUrl()
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
       if (this.$route.query.status) {
@@ -267,6 +266,7 @@
       await this._getGoodsList()
       await this._getSupplierList()
       await this._statistic()
+      this._getUrl()
     },
     mounted() {
     },
@@ -303,7 +303,6 @@
       // 搜索商品
       async _searchGoods(text) {
         this.statusTab = 4
-        console.log(this.statusTab)
         this.text = text
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
@@ -620,7 +619,6 @@
         this.supplyTask.data = this.supplyTask.data.concat(res.data)
       },
       async confirmMsg() {
-        console.log(this.confirmType)
         switch (this.confirmType) {
         case 1:
           let res = await API.Supply.purchaseTaskPublish({
