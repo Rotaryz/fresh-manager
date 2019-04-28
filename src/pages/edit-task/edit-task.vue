@@ -13,9 +13,6 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <!--<div class="function-btn">-->
-          <!--<div class="btn-main" @click="submitSure">确认提交</div>-->
-        <!--</div>-->
       </div>
       <div class="big-list" :class="taskList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -82,8 +79,8 @@
       this.supplier_name = this.taskList[0].supplier
       this.supplier_id = this.taskList[0].supplier_id
       this.taskList.forEach((item) => {
-        item.purchase_num = item.plan_num
-        item.base_num = (item.plan_num * item.purchase_base_rate).toFixed(2)
+        item.purchase_num = (item.plan_num - item.finish_num) > 0 ? (item.plan_num - item.finish_num) : 0
+        item.base_num = (item.plan_base_num - item.finish_base_num) > 0 ? (item.plan_base_num - item.finish_base_num) : 0
         item.total = (item.purchase_num * item.purchase_price).toFixed(2)
       })
     },
