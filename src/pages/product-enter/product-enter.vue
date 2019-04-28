@@ -225,7 +225,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          max-width: 110px
+          max-width: 120px
         &:nth-child(8), &:nth-child(1)
           flex: 1.5
         &:nth-child(4), &:nth-child(2)

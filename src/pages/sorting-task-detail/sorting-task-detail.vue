@@ -102,7 +102,6 @@
     align-content: flex-start
 
     .item-wrap
-
       padding: 20px
       border-radius: 2px
       width: 250px
@@ -111,8 +110,14 @@
       margin-bottom 20px
       position: relative
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.04)
-
-
+      display flex
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      &:hover
+        box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.04)
+        &:after
+          border: 1px solid #ccc
       &:after
         content: ""
         pointer-events: none // 解决iphone上的点击无效Bug
@@ -131,9 +136,6 @@
           height: 300%
           border-radius: 2px * 3
           transform: scale(1 / 3) translateZ(0)
-      &:hover:after
-        border: 1px solid #ccc
-
       .index
         display inline-block
         padding: 0px 5px
@@ -142,7 +144,6 @@
         text-align center
         background: #888888
         border-radius: 10px
-        border-radius: 10px
         font-family: PingFangSC-Medium
         font-size: 16px
         color: #FFFFFF
@@ -150,7 +151,12 @@
       .name
         font-size: 14px
         color: #333333
-        margin: 20px 0px
+        line-height: 18px
+        overflow: hidden
+        text-overflow:ellipsis
+        display: -webkit-box
+        -webkit-box-orient: vertical
+        -webkit-line-clamp: 2
 
       .num
         font-family: PingFangSC-Medium

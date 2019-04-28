@@ -17,7 +17,7 @@
         <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
       </div>
       <div class="list">
-        <tempalte v-if="consumerDetail.detail.details.length">
+        <template v-if="consumerDetail.detail.details.length">
           <div v-for="(row, key) in consumerDetail.detail.details" :key="key" class="list-content list-box">
             <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
               <div :class="{red:item.key==='status_str'&& row.status || item.key==='sale_out_of_num'&& row.is_lack}">
@@ -25,7 +25,7 @@
               </div>
             </div>
           </div>
-        </tempalte>
+        </template>
         <base-blank v-else></base-blank>
       </div>
       <div class="pagination-box">
@@ -66,7 +66,7 @@
         }, {
           name: '配货数量：', key: 'sale_wait_pick_num'
         }, {
-          name: '缺货数量；', key: 'sale_out_of_num'
+          name: '缺货数量：', key: 'sale_out_of_num'
         }]
       }
     },
