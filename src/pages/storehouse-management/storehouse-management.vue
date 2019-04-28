@@ -51,9 +51,9 @@
                 <p class="item-sub">{{item.goods_sku_encoding}}</p>
               </div>
               <div class="list-item">{{item.goods_category}}</div>
-              <div class="list-item">{{item.total_stock}}</div>
-              <div class="list-item">{{item.blocked_stock}}</div>
-              <div class="list-item">{{item.usable_stock}}</div>
+              <div class="list-item">{{`${item.total_stock}${item.unit}`}}</div>
+              <div class="list-item">{{`${item.blocked_stock}${item.unit}`}}</div>
+              <div class="list-item">{{`${item.usable_stock}${item.unit}`}}</div>
               <div class="list-item">{{item.stock_value}}</div>
               <div class="list-item">{{item.stock_average}}</div>
               <div class="list-item">{{item.warehouse_position}}</div>
