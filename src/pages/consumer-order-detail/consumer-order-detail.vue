@@ -66,7 +66,7 @@
         }, {
           name: '配货数量：', key: 'sale_wait_pick_num'
         }, {
-          name: '缺货数量；', key: 'sale_out_of_num'
+          name: '缺货数量：', key: 'sale_out_of_num'
         }]
       }
     },
