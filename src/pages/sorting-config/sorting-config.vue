@@ -283,7 +283,7 @@
   .list-box.drag-box
     cursor pointer
     background: #f7faf5
-    &:hover .drag-operation
+    .drag-operation
       icon-image(icon-drag_hover)
   .list-item
     &.operate
