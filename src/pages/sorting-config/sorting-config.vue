@@ -32,7 +32,9 @@
             <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
           </div>
           <template v-if="dragList.length">
-            <slick-list v-model="dragList" :distance="10" lockAxis="y" class="list drag-list" helperClass="list-content list-box drag-box" @input="sortEndInput">
+            <slick-list v-model="dragList" :distance="10" lockAxis="y" class="list drag-list" helperClass="list-content list-box drag-box"
+                        @input="sortEndInput"
+            >
               <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="list-content list-box">
                 <div class="list-item" :style="{flex:2}">{{row[commodities2[0].key]}}</div>
                 <div class="list-item">
