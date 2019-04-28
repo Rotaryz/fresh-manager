@@ -34,14 +34,14 @@
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
             <div class="list-item list-item-batches hand" @mouseenter="_showTip(index)" @mouseleave="_hideTip" @click="outFn(item, index)">
               <transition name="fade">
-                <div v-show="showIndex === index && item.status !== 0" class="batches-box">
-                  <div v-for="(item1, index1) in item.out_batches" :key="index1" class="batches-box-item">
+                <div v-show="showIndex === index && item.status !== 0 && item.out_batches.length" class="batches-box">
+                  <div v-for="(item1, index1) in item.out_batches" :key="index1">
                     {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                   </div>
                 </div>
               </transition>
               <transition name="fade">
-                <div v-show="showIndex === index && item.status === 0" class="batches-box-item">
+                <div v-show="showIndex === index && item.status === 0 && item.out_batches.length" class="batches-box">
                   <div v-for="(item1, index1) in item.select_batch" :key="index1">
                     {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                   </div>
