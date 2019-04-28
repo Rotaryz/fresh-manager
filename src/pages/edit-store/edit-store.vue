@@ -43,7 +43,7 @@
           <div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>
           <div class="list-item list-item-layout">
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
-            <div v-if="item.base_unit">{{item.base_unit}}</div>
+            <div v-if="item.base_unit" class="base-unit">{{item.base_unit}}</div>
           </div>
           <div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
             <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
@@ -261,7 +261,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
-
+  .base-unit
+    no-wrap()
+    width: 38px
   .list-box
     .list-item
       box-sizing: border-box
@@ -272,6 +274,7 @@
       &:nth-child(3)
         flex: 1.5
       &:nth-child(5)
+        flex-wrap: nowrap
         min-width: 150px
       &:nth-child(6)
         .list-operation
