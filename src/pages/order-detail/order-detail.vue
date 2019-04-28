@@ -30,7 +30,7 @@
         <div class="info-item">会员手机：{{detail.address && detail.address.mobile}}</div>
         <div class="info-item">团长名称：{{detail.address && detail.address.shop_name}}</div>
         <div class="info-item">团长手机：{{detail.address && detail.address.shop_mobile}}</div>
-        <div class="info-item">取货时间：{{detail.address && detail.address.delivery_at}}</div>
+        <!--<div class="info-item">取货时间：{{detail.address && detail.address.delivery_at}}</div>-->
         <div class="info-item">提货单号：{{detail.address && detail.code}}</div>
         <div class="info-item">提货地址：{{detail.address && detail.address.shop_address}}</div>
       </div>
@@ -53,6 +53,7 @@
             <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.total && `¥ ${item.total}`}}</div>
+            <div class="ro-order-list-item ro-order-list-text">{{item.delivery_at}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.after_sale_status_text}}</div>
           </div>
         </div>
@@ -75,7 +76,7 @@
 
   const PAGE_NAME = 'ORDER_DETAIL'
   const TITLE = '订单详情'
-  const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款状态']
+  const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '发货日期', '退款状态']
 
   export default {
     name: PAGE_NAME,
@@ -115,7 +116,7 @@
       flex: 1
       white-space: normal !important
       word-break: break-all
-    &:nth-child(5), &:nth-child(7)
+    &:nth-child(5), &:nth-child(6), &:nth-child(7)
       flex: 1
     &:last-child
       flex: 0.3

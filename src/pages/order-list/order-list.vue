@@ -41,7 +41,7 @@
             </div>
             <div class="list-item list-text">￥{{item.price}}</div>
             <div class="list-item list-text">￥{{item.total}}</div>
-            <div class="list-item list-text">{{item.delivery_at}}</div>
+            <!--<div class="list-item list-text">{{item.delivery_at}}</div>-->
             <div class="list-item list-text list-item-double" :title="item.social_name">{{item.social_name}}</div>
             <div class="list-item list-text">{{item.status_text}}</div>
             <div class="list-item list-use">
@@ -67,7 +67,8 @@
   const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员手机'
   const EXCEL_URL = '/social-shopping/api/backend/order-excel'
 
-  const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
+  // const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
+  const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [
     {text: '商城订单', status: 'c_shop'},
     {text: '拓展订单', status: 'c_offline'}
