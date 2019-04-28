@@ -102,7 +102,6 @@
     align-content: flex-start
 
     .item-wrap
-
       padding: 20px
       border-radius: 2px
       width: 250px
@@ -111,8 +110,10 @@
       margin-bottom 20px
       position: relative
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.04)
-
-
+      display flex
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
       &:after
         content: ""
         pointer-events: none // 解决iphone上的点击无效Bug
@@ -150,7 +151,12 @@
       .name
         font-size: 14px
         color: #333333
-        margin: 20px 0px
+        line-height: 18px
+        overflow: hidden
+        text-overflow:ellipsis
+        display: -webkit-box
+        -webkit-box-orient: vertical
+        -webkit-line-clamp: 2
 
       .num
         font-family: PingFangSC-Medium
