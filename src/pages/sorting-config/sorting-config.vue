@@ -280,7 +280,7 @@
     padding-right:0px
     text-align: center
 
-  .drag-box
+  .list-box.drag-box
     cursor pointer
     background: #f7faf5
     &:hover .drag-operation
