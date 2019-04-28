@@ -83,7 +83,7 @@
                 <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
-                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small"  @input="echangBase(item, index)">
+                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
               </div>
               <div class="com-list-item">
                 <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
