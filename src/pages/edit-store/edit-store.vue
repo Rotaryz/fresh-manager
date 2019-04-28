@@ -45,15 +45,22 @@
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
             <div v-if="item.base_unit">{{item.base_unit}}</div>
           </div>
-          <div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
-            <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
+          <div class="list-item list-item-batches hand" @mouseenter="_showTip(index)" @mouseleave="_hideTip" @click="outFn(item, index)">
             <transition name="fade">
-              <div v-show="showIndex === index && item.select_batch.length !== 0" class="batches-box">
+              <div v-show="showIndex === index && item.status !== 0 && item.out_batches.length" class="batches-box">
+                <div v-for="(item1, index1) in item.out_batches" :key="index1" class="batches-box-item">
+                  {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                </div>
+              </div>
+            </transition>
+            <transition name="fade">
+              <div v-show="showIndex === index && item.status === 0 && item.select_batch.length" class="batches-box">
                 <div v-for="(item1, index1) in item.select_batch" :key="index1" class="batches-box-item">
                   {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
                 </div>
               </div>
             </transition>
+            <span class="list-operation">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
           </div>
           <div class="list-item"><span v-if="item.price">￥</span>{{item.price || '￥0.00'}}/{{item.base_unit}}</div>
           <div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '￥0.00'}}</div>
