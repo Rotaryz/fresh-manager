@@ -107,6 +107,7 @@
         <div class="edit-title">
           <span class="start">*</span>
           销售规格
+
         </div>
         <div class="edit-input-box mini-edit-input-box">
           <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
