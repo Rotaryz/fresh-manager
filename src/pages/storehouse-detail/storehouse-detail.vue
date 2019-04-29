@@ -32,8 +32,8 @@
                 <div class="list-operation" @click="goDetail(item)">{{item.order_sn}}</div>
               </div>
               <div class="list-item">{{item.type_str}}</div>
-              <div class="list-item">{{item.num}}</div>
-              <div class="list-item">{{item.total_stock}}</div>
+              <div class="list-item">{{`${item.num}${item.unit}`}}</div>
+              <div class="list-item">{{`${item.total_stock}${item.unit}`}}</div>
               <div class="list-item">{{item.operator}}</div>
             </div>
           </div>

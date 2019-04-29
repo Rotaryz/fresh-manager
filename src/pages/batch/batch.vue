@@ -16,10 +16,10 @@
           <div v-if="stockListNow.length">
             <div v-for="(item, index) in stockListNow" :key="index" class="list-content list-box">
               <div class="list-item">{{item.batch_num}}</div>
-              <div class="list-item">{{item.usable_stock}}</div>
-              <div class="list-item">{{item.stock_average}}</div>
-              <div class="list-item">{{item.stock_value}}</div>
-              <div class="list-item">{{item.base_num}}</div>
+              <div class="list-item">{{`${item.usable_stock}${item.unit}`}}</div>
+              <div class="list-item">￥{{item.stock_average}}</div>
+              <div class="list-item">￥{{item.stock_value}}</div>
+              <div class="list-item">{{`${item.base_num}${item.unit}`}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <div class="list-item time-content">
                 <date-picker

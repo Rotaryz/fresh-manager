@@ -13,9 +13,6 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <!--<div class="function-btn">-->
-          <!--<div class="btn-main" @click="submitSure">确认提交</div>-->
-        <!--</div>-->
       </div>
       <div class="big-list" :class="taskList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -30,15 +27,15 @@
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item list-item-layout">
               <input v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
-              <div>{{item.purchase_unit}}</div>
+              <div class="base-unit">{{item.purchase_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <input v-model="item.base_num" type="number" class="edit-input" @input="echangBase(item, index)">
-              <div>{{item.base_unit}}</div>
+              <div class="base-unit">{{item.base_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <input v-model="item.purchase_price" type="number" class="edit-input" @input="echangPrice(item, index)">
-              <div>元/{{item.purchase_unit}}</div>
+              <div class="base-big-unit">元/{{item.purchase_unit}}</div>
             </div>
             <div class="list-item">{{item.total ? '￥' + item.total : '￥0.00'}}</div>
           </div>
@@ -79,11 +76,11 @@
     },
     created() {
       this.taskList = JSON.parse(JSON.stringify(this.editTaskList))
-      this.supplier_name = this.taskList[0].supplier
-      this.supplier_id = this.taskList[0].supplier_id
+      this.supplier_name = this.taskList[0] ? this.taskList[0].supplier : ''
+      this.supplier_id = this.taskList[0] ? this.taskList[0].supplier_id : ''
       this.taskList.forEach((item) => {
-        item.purchase_num = item.plan_num
-        item.base_num = (item.plan_num * item.purchase_base_rate).toFixed(2)
+        item.purchase_num = (item.plan_num - item.finish_num) > 0 ? (item.plan_num - item.finish_num) : 0
+        item.base_num = (item.plan_base_num - item.finish_base_num) > 0 ? (item.plan_base_num - item.finish_base_num) : 0
         item.total = (item.purchase_num * item.purchase_price).toFixed(2)
       })
     },
@@ -187,13 +184,20 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .base-unit
+    no-wrap()
+    width: 32px
+  .base-big-unit
+    no-wrap()
+    width: 60px
   .procurement-task
     .list-box
       .list-item
         padding-right: 14px
         &:nth-child(1)
           flex: 1.2
+        &:nth-child(3), &:nth-child(4), &:nth-child(5)
+          flex-wrap: nowrap
         &:nth-child(6)
           max-width: 110px
 
