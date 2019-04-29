@@ -32,11 +32,11 @@
           <template v-if="afterSalesList.length">
             <div v-for="(row, index) in afterSalesList" :key="index" class="list-content list-box">
               <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class,item.rowClass]">
-                <template v-if="item.key" name="name">
-                  <span v-if="item.before" :class="[item.beforeClass[0],row[item.before]?item.beforeClass[1]:'']"></span>{{row[item.key]}}
+                <template v-if="item.type==='operate'" name="operation">
+                  <router-link class="list-operation" :to="_getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
                 </template>
-                <template v-else name="operation">
-                  <router-link class="list-operation" :to="{name:'after-sales-detail',params:{id:row.id}}">{{item.operation}}</router-link>
+                <template v-else name="name">
+                  <span v-if="item.before" :class="[item.beforeClass[0],row[item.before]?item.beforeClass[1]:'']"></span>{{row[item.key]}}
                 </template>
               </div>
             </div>
@@ -112,18 +112,18 @@
   const TITLE = '商户订单'
   const COMMODITIES_LIST = [
     {title: '创建时间', key: 'created_at', flex: 1.5},
-    {title: '售后订单号  ', key: 'order_sn', flex: 1},
+    {title: '售后订单号  ', key: 'order_sn', flex: 2},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
-    {title: '缺货品类数', key: 'type_count', flex: 1},
-    {title: '原订单号 ', key: 'source_order_sn', flex: 2,rowClass:'source-order-sn'},
-    {title: '订单状态', key: 'status_str', flex: 0.6,before:'status',beforeClass:['list-status','list-status-success']},
-    {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
+    {title: '缺货品类数', key: 'type_count', flex: 1, class: 'sale_out_of_num'},
+    {title: '原订单号 ', key: 'source_order_sn', flex: 2, type: 'operate', params: {id: 'source_order_id'}, routerName: 'merchant-order-detail'},
+    {title: '订单状态', key: 'status_str', flex: 0.6, before: 'status', beforeClass: ['list-status', 'list-status-success']},
+    {title: '操作', key: '', type: 'operate', operateText: '详情', flex: 1, class: "operate", params: {id: 'id'}, routerName: 'after-sales-detail'}
   ]
   const COMMODITIES_LIST2 = [
     {title: '', type: 'check', key: '', flex: 3, class: 'row-check'},
     {title: '商品', key: 'goods_name', flex: 3},
     {title: '供应商', key: 'supplier_name', flex: 3},
-    {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
+    {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: 'sale_out_of_num'},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
     {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str'},
   ]
@@ -170,6 +170,16 @@
       /**
        售后订单
        **/
+      _getRouterUrl(item, row) {
+        let res = {}
+        for (let i in item.params) {
+          res[i] = row [item.params[i]]
+        }
+        return {
+          name: item.routerName,
+          params: res
+        }
+      },
       // ------弹框
       _isCheck(id) {
         return this.selectIds.some(item => item === id)
@@ -258,7 +268,7 @@
       },
       // ---------- 列表
       // 更新列表数据
-      _updateList(params,noUpdataStatus) {
+      _updateList(params, noUpdataStatus) {
         this.SET_PARAMS(params)
         this.getAfterSalesOrderList()
         if (!noUpdataStatus) {
@@ -290,26 +300,26 @@
         this._updateList({
           start_time: timeArr[0],
           end_time: timeArr[1],
-          page:1
+          page: 1
         })
       },
       // 状态
       _setValue(item) {
         this._updateList({
           status: item.value,
-          page:1
-        },true)
+          page: 1
+        }, true)
       },
       // 搜索按钮
       _changeKeyword(keyword) {
         this._updateList({
           keyword,
-          page:1
+          page: 1
         })
       },
       // 分页
-      _getMoreList(page){
-        this._updateList({page},true)
+      _getMoreList(page) {
+        this._updateList({page}, true)
       }
     }
   }
@@ -321,6 +331,7 @@
   .source-order-sn
     text-decoration: underline
     color: #4d77bd
+
   .list-operation
     text-decoration: underline
 
@@ -329,6 +340,9 @@
 
   .operate
     max-width 50px
+
+  .sale_out_of_num
+    max-width 120px
 
   .pro-select-icon
     border-radius: 2px
