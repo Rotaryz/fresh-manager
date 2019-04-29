@@ -181,7 +181,7 @@
       },
       _getFristList() {
         this._getClassifyList().then(res => {
-          this.filterTaskFrist.data = res.data
+          this.filterTaskFrist.data = [{name: '全部', id: ''},...res.data]
         })
       },
       _setValueFrist(item) {
@@ -190,12 +190,7 @@
           'parent_id': item.id,
         }).then(res => {
           this.filterTaskSecond.content = '全部'
-          if (res.data.length === 0) {
-            this.filterTaskSecond.data = [{name: '全部', id: ''}]
-            return
-          }
-          this.filterTaskSecond.data = res.data
-
+          this.filterTaskSecond.data = [{name: '全部', id: item.id},...res.data]
         })
       },
       _setValueSecond(item) {
