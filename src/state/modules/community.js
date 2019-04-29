@@ -156,7 +156,11 @@ const dataHandle = (arr, data)=> {
       return val.at.split('-').slice(1).join('/')
     })
     let valueArr = data[item].data.map(val => {
-      return val.value || 0
+      if (typeof(val.value) === 'string') {
+        return val.value.replace(',', '')
+      } else {
+        return val.value || 0
+      }
     })
     return {
       x: time,
