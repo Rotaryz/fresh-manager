@@ -65,8 +65,8 @@
               </div>
             </draggable>
             <div v-if="msg.goods_banner_images.length < picNum" class="add-image hand">
-              <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic1', $event)">
-              <div v-if="showLoading && uploadImg === 'pic1'" class="loading-mask">
+              <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_banner_images', picNum, $event)">
+              <div v-if="showLoading && uploadImg === 'goods_banner_images'" class="loading-mask">
                 <img src="./loading.gif" class="loading">
               </div>
             </div>
@@ -88,8 +88,8 @@
               </div>
             </draggable>
             <div v-if="msg.goods_detail_images.length < 15" class="add-image hand">
-              <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic2', $event)">
-              <div v-if="showLoading && uploadImg === 'pic2'" class="loading-mask">
+              <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_detail_images', 15, $event)">
+              <div v-if="showLoading && uploadImg === 'goods_detail_images'" class="loading-mask">
                 <img src="./loading.gif" class="loading">
               </div>
             </div>
@@ -136,7 +136,7 @@
         </div>
         <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
       </div>
-      <div class="edit-item">
+      <!--<div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           团长佣金
@@ -145,7 +145,7 @@
           <input v-model="msg.commission_rate" type="number" class="edit-input" maxlength="3">
         </div>
         <div class="edit-pla">实际以成交价为准(%)</div>
-      </div>
+      </div>-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -257,8 +257,8 @@
           is_multi_specs: 0,
           goods_category_id: 0,
           original_price: '',
+          // commission_rate: '',
           usable_stock: '',
-          commission_rate: '',
           goods_skus: [
             {
               id: 0,
@@ -331,7 +331,8 @@
         isWeight: 1,
         showLoading: false,
         picNum: 5,
-        uploadImg: ''
+        uploadImg: '',
+        isSelectStock: true
       }
     },
     created() {
@@ -415,13 +416,6 @@
           return
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
-          return
-        } else if (
-          +this.msg.commission_rate < 0 ||
-          +this.msg.commission_rate > 100 ||
-          this.msg.commission_rate.length === 0
-        ) {
-          this.$toast.show('成员佣金比率区间在0与100之间')
           return
         } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
           this.$toast.show('请输入正确商品库存')
@@ -553,15 +547,41 @@
         this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
       },
       _setSort() {
-        console.log(this.msg.goods_banner_images)
       },
-      async _addPic(type, e) {
+      _addPic(type, length, e) {
         this.uploadImg = type
+        let arr = Array.from(e.target.files)
+        if (arr.length < 1) return
+        if (this.msg[type].length) {
+          arr = arr.slice(0, length - this.msg[type].length)
+        } else {
+          arr = arr.slice(0, length)
+        }
         this.showLoading = true
-        let param = this._infoImage(e.target.files[0])
-        e.target.value = ''
-        await this._upImage(param)
+        this.$cos.uploadFiles(this.$cosFileType.IMAGE_TYPE, arr).then((resArr) => {
+          this.showLoading = false
+          let imagesArr = []
+          resArr.forEach(item => {
+            if (item.error !== this.$ERR_OK) {
+              return this.$toast.show(item.message)
+            }
+            let obj = {
+              id: 0,
+              image_id: item.data.id,
+              image_url: item.data.url
+            }
+            imagesArr.push(obj)
+          })
+          this.$set(this.msg, type, this.msg[type].concat(imagesArr))
+        })
       },
+      // async _addPic(type, e) {
+      //   this.uploadImg = type
+      //   this.showLoading = true
+      //   let param = this._infoImage(e.target.files[0])
+      //   e.target.value = ''
+      //   await this._upImage(param)
+      // },
       // 格式化图片流
       _infoImage(file) {
         let param = new FormData() // 创建form对象
