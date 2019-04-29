@@ -26,7 +26,7 @@
         <div class="list">
           <div v-if="adjustOrderDetail.length">
             <div v-for="(item, index) in adjustOrderDetail" :key="index" class="list-content list-box">
-              <div class="list-item">{{item.id}}</div>
+              <div class="list-item">{{index + 1}}</div>
               <div class="list-item list-double-row">
                 <div class="item-dark">{{item.goods_name}}</div>
                 <div class="item-sub">{{item.goods_sku_encoding}}</div>
