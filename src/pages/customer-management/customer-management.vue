@@ -147,4 +147,7 @@
       &:last-child
         padding: 0
         max-width: 140px
+      .list-img
+        width: 36px
+        height: 36px
 </style>
