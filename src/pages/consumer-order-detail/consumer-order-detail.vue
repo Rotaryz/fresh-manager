@@ -20,7 +20,8 @@
         <template v-if="consumerDetail.detail.details.length">
           <div v-for="(row, key) in consumerDetail.detail.details" :key="key" class="list-content list-box">
             <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
-              <div :class="{red:item.key==='status_str'&& row.status || item.key==='sale_out_of_num'&& row.is_lack}">
+              <!--:class="{red:item.key==='status_str'&& row.status || item.key==='sale_out_of_num'&& row.is_lack}" -->
+              <div :class="{[item.innerClass]: row[item.innerkey]}">
                 {{row[item.key]}}
               </div>
             </div>
@@ -52,8 +53,8 @@
           {title: '会员名称', key: 'nickname', flex: 1},
           {title: '下单数量', key: 'sale_num', flex: 1},
           {title: '配货数量', key: 'sale_wait_pick_num', flex: 1},
-          {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
-          {title: '处理结果', key: 'status_str', flex: 1, class: "last-child"}
+          {title: '缺货数量', key: 'sale_out_of_num', flex: 1,innerClass:'red',innerkey:'is_lack'},
+          {title: '处理结果', key: 'status_str', flex: 1, class: "last-child",innerClass:'red',innerkey:'status'}
         ],
         topListTilte: [{
           name: '商品名称：', key: 'goods_name'
