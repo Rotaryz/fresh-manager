@@ -366,7 +366,7 @@ export const beginnerGuideComputed = {
 }
 // 拓展团队详情
 export const outreachGroupDetailComputed = {
-  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData'])
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData', 'staffId'])
 }
 export const outreachGroupDetailMethods = {
   ...mapActions('outreachGroup', [
@@ -405,7 +405,8 @@ export const outreachGroupComputed = {
     teamData: (state) => state.teamData,
     pageDetail: (state) => state.pageDetail,
     page: (state) => state.page
-  })
+  }),
+  ...mapGetters('outreachGroup', ['showContent'])
 }
 
 export const outreachGroupMethods = {
@@ -414,14 +415,16 @@ export const outreachGroupMethods = {
     'showModal',
     'groupListAddChildren',
     'getOutreachList',
-    'getTaskDetail'
+    'getTaskDetail',
+    'setContent',
+    'setStaffId'
   ]),
   ...mapMutations('oGModal', [MODAL.SHOW_MODAL, MODAL.SET_NAME, MODAL.SUBMIT, MODAL.CANCEL, MODAL.SET_MOBILE]),
   ...mapMutations('oGTools', [TOOLS.SET_POSITION, TOOLS.SHOW_TOOLS, TOOLS.UPDATE_IS_ENTER]),
   ...mapMutations('oGTab', [TAB.SET_ADD_POSITION, TAB.SET_DEL_POSITION, TAB.SET_EDIT_POSITION, TAB.SET_MOVE_POSITION]),
   ...mapActions('oGTab', ['addDepartment', 'changeTab', 'deleteDepartment', 'editDepartment', 'moveDepartment']),
   ...mapMutations('oGContent', [CONTENT.SET_CURRENT_STAFF, CONTENT.CLEAR_STAFF_LIST, CONTENT.RESET_PAGE]),
-  ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff'])
+  ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff', 'setPage'])
 }
 
 // 设置权限
