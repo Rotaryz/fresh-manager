@@ -156,6 +156,7 @@
       .list-manager-box-active
         .adjustment-list
           opacity: 1
+          display: block
         .list-icon
           transform-origin: 50% 0
           transform: rotate(180deg) translateY(-50%)
@@ -182,6 +183,7 @@
     transition: opacity .4s
     z-index: 100
     background: $color-white
+    display: none
     &:after
       position: absolute
       top: -4px
