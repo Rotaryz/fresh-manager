@@ -160,7 +160,16 @@
       }
       this.select = obj
       this.statusArray.push(obj)
-      this.changeTab({current: this.groupList[0]})
+      if (this.groupList[0].list.length) {
+        this.groupList[0].list.forEach(item => {
+          this.statusArray.push({
+            currentId: item.id,
+            parentId: item.parent_id
+          })
+        })
+
+      }
+      this.changeTab({current: this.groupList[0], parentObj: this.groupList[0]})
     },
     methods: {
       ...outreachGroupMethods,
