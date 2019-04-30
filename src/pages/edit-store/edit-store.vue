@@ -198,7 +198,11 @@
             allprice += item.select_out_num * item.price
           }
         })
-        this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
+        if (number * 1 === 0) {
+          this.storeList[this.curIndex].price = ''
+        } else {
+          this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
+        }
         this.storeList[this.curIndex].all_price = allprice.toFixed(2)
         this.$forceUpdate()
         this.$refs.modalBox.cancel()
