@@ -105,6 +105,9 @@
     },
     methods: {
       ...outreachGroupMethods,
+      beginPage() {
+        this.$refs.pages.beginPage()
+      },
       showTip(index) {
         clearTimeout(this.timer)
         this.tipShow = index

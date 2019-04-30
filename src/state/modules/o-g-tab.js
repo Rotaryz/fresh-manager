@@ -176,7 +176,8 @@ export const actions = {
   },
   changeTab({commit, state, dispatch, rootState}, args) {
     commit(TAB.CHANGE_TAB_STATUS, args)
-    dispatch(`oGContent/reqStaffList`, {}, {root: true})
+    dispatch(`oGContent/setPage`, 1, {root: true})
+    // dispatch(`oGContent/reqStaffList`, {}, {root: true})
     // if (state.isLastDepartment) {
     //   dispatch(`oGContent/reqStaffList`, {}, {root: true})
     // } else {

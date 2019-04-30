@@ -2,8 +2,8 @@
   <div class="outreach-group">
     <group-header></group-header>
     <section class="container">
-      <group-tab></group-tab>
-      <group-content v-if="showContent"></group-content>
+      <group-tab @beginPage="beginPage"></group-tab>
+      <group-content ref="content" v-if="showContent"></group-content>
       <group-staff v-else></group-staff>
     </section>
     <change-model></change-model>
@@ -39,7 +39,10 @@
       ...outreachGroupComputed
     },
     methods: {
-      ...outreachGroupMethods
+      ...outreachGroupMethods,
+      beginPage() {
+        this.$refs.content.beginPage()
+      }
     },
     page: {
       title: TITLE
