@@ -93,7 +93,7 @@
   import {storeComputed, storeMethods, authComputed} from '@state/helpers'
 
   const PAGE_NAME = 'STOREHOUSE_MANAGEMENT'
-  const TITLE = '库位管理'
+  const TITLE = '库存管理'
   const COMMODITIES_LIST = ['商品', '分类', '总库存', '锁定库存', '可用库存', '总库存货值', '库存均价', '库位', '操作']
   const ENTRY_STORE_EXPORT = '/scm/api/backend/stock/warehouse-stock-export'
   export default {
