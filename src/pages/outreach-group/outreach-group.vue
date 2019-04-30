@@ -3,7 +3,7 @@
     <group-header></group-header>
     <section class="container">
       <group-tab @beginPage="beginPage"></group-tab>
-      <group-content ref="content" v-show="showContent"></group-content>
+      <group-content v-show="showContent" ref="content"></group-content>
       <group-staff v-show="!showContent"></group-staff>
     </section>
     <change-model></change-model>
