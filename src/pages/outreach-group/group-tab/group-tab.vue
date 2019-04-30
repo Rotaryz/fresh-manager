@@ -189,7 +189,6 @@
         this.handleModal({isShow: true, title: '添加公司', useType: 'addDepartment', modalType: 'addDepartment', maxLength: 8})
       },
       handleChangeStatus(args) {
-        this.$emit('beginPage')
         let flag = false
         const {current, parentObj, grade, isLastDepartment} = args
         let parentId = grade === 'company' ? 0 : parentObj.id
@@ -250,6 +249,7 @@
         }
 
         if (flag && this.showContent) return
+        this.$emit('beginPage')
         this.setContent(true) // 隐藏成员详情，显示成员列表
         this.changeTab({current, isLastDepartment, parentObj})
       },
