@@ -122,7 +122,6 @@
               this.$toast.show(res.message)
               return
             }
-            console.log(res.data)
             this.statusTab = res.data.map((item, index) => {
               return {
                 name: item.status_str,

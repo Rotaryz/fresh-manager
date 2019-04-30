@@ -116,7 +116,7 @@
       },
       addPage(page) {
         this.setPage(page)
-        this.reqStaffList({page})
+        // this.reqStaffList()
       },
       showStaff(id) {
         this.setContent(false) // 显示详情，隐藏成员列表
