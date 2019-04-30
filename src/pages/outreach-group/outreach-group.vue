@@ -3,8 +3,8 @@
     <group-header></group-header>
     <section class="container">
       <group-tab @beginPage="beginPage"></group-tab>
-      <group-content ref="content" v-if="showContent"></group-content>
-      <group-staff v-else></group-staff>
+      <group-content ref="content" v-show="showContent"></group-content>
+      <group-staff v-show="!showContent"></group-staff>
     </section>
     <change-model></change-model>
     <group-tab-tools></group-tab-tools>
