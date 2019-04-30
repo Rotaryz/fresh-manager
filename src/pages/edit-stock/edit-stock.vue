@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <div class="big-list">
+      <div class="big-list-max">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
