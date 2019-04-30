@@ -228,36 +228,16 @@
         this.$refs.confirm.show(text)
       },
       _getConfirmResult() {
-        if (this.confirmType === 1) {
-          // 补货
-          this._setBatchReplenishment()
-        } else {
-          // 退款
-          this._setBatchRefund()
-        }
+        this._setBacth(this.confirmType === 1 ? 'batchReplenishment':'batchRefund')
       },
-      // 补货
-      _setBatchReplenishment() {
-        API.AfterSalesOrder.batchReplenishment(this.selectIds).then((res) => {
+      _setBacth(method='batchReplenishment'){
+        API.AfterSalesOrder[method](this.selectIds).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
+          this.$toast.show('批量处理成功')
           this._hideModal()
-          this.getAfterSalesOrderList()
-        }).catch(() => {
-          return false
-        })
-          .finally(() => {
-            this.$loading.hide()
-          })
-      },
-      // 退款
-      _setBatchRefund() {
-        API.AfterSalesOrder.batchRefund(this.selectIds).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return false
-          }
-          this._hideModal()
+          this._getStatusData()
           this.getAfterSalesOrderList()
         }).catch(() => {
           return false
