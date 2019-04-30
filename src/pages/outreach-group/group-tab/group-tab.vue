@@ -213,12 +213,12 @@
         case 'department':
           if (hasIn) {
             this.statusArray = this.statusArray.filter((item) => {
-              return !(+item.currentId === +current.id || +item.parentId === +current.id)
+              return +item.currentId !== +current.id
             })
           } else {
-            this.statusArray = this.statusArray.filter((item) => {
-              return +item.parentId !== +parentId
-            })
+            // this.statusArray = this.statusArray.filter((item) => {
+            //   return +item.parentId !== +parentId
+            // })
             this.statusArray.push({currentId: current.id, parentId})
           }
           if (this.select.currentId !== current.id) {
