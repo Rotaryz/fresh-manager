@@ -240,4 +240,6 @@
   .tip
     margin: 0 2px
     font-size: $font-size-14
+  .procurement-task
+    padding-bottom: 80px
 </style>
