@@ -7,7 +7,7 @@
         <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
       </div>
       <div class="down-item">
-        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>
+        <base-date-select :width="292" dataPickerType="datetimerange" :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
