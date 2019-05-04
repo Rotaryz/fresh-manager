@@ -327,8 +327,7 @@
           return item !== 'false'
         })
         return result
-      },
-      /**
+      }, /**
        * 设置默认数据 -> 编辑状态
        * @private
        */
