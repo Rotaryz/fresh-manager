@@ -82,7 +82,7 @@
 
     <!--佣金设置-->
     <div class="content-header">
-      <div class="content-title">佣金设置<span class="text">（佣金比例范围是5%-25%）</span></div>
+      <div class="content-title">佣金设置<span class="text"></span></div>
     </div>
     <div class="activity-box">
       <div class="activity-tab">
@@ -148,6 +148,7 @@
   const PAGE_NAME = 'EDIT_LEADER'
   const TITLE = '新建团长'
   const NUM = /^(([1-9][0-9]*)|([1-9][0-9]*\.\d{1,2}))$/
+  const REG_NUM = /^(([1-9][0-9]*)|([1-9][0-9]*\.\d{1,2})|([0-9])|([0-9]*\.\d{1,2}))$/
 
   export default {
     name: PAGE_NAME,
@@ -301,14 +302,14 @@
           if ((index > 0 && +this.leaderData.commission_type === 2) && (!item.money || item.money < 0 || !NUM.test(item.money) || +item.money.split('.')[1] > 0)) {
             this.$toast.show('请输入正整数销售金额')
             return 'false'
-          } else if (+this.leaderData.commission_type === 2 && (!NUM.test(item.rate) || +item.rate.split('.')[1] > 0)) {
-            this.$toast.show('请输入5%-25%之间的佣金值')
+          } else if (+this.leaderData.commission_type === 2 && !REG_NUM.test(item.rate)) {
+            this.$toast.show('请输入0%-100%之间的佣金值,保留2位小数。')
             return 'false'
-          } else if (+this.leaderData.commission_type === 2 && item.rate > 25) {
-            this.$toast.show('请输入5%-25%之间的佣金值')
+          } else if (+this.leaderData.commission_type === 2 && item.rate > 100) {
+            this.$toast.show('请输入0%-100%之间的佣金值')
             return 'false'
-          } else if (+this.leaderData.commission_type === 2 && item.rate < 5) {
-            this.$toast.show('请输入5%-25%之间的佣金值')
+          } else if (+this.leaderData.commission_type === 2 && item.rate < 0) {
+            this.$toast.show('请输入0%-100%之间的佣金值')
             return 'false'
           }
         })
@@ -362,14 +363,14 @@
         } else if (!this.leaderData.address) {
           this.$toast.show('请输入正确的详情地址')
           return
-        } else if ((!NUM.test(this.leaderData.fixed_rate) || this.leaderData.fixed_rate.split('.')[1] > 0) && +this.leaderData.commission_type === 1) {
-          this.$toast.show('请输入5%-25%之间的佣金比例')
+        } else if ((!REG_NUM.test(this.leaderData.fixed_rate) && +this.leaderData.commission_type === 1)) {
+          this.$toast.show('请输入0%-100%之间的佣金比例，保留2位小数')
           return
-        } else if (+this.leaderData.fixed_rate < 5 && +this.leaderData.commission_type === 1) {
-          this.$toast.show('请输入5%-25%之间的佣金比例')
+        } else if (+this.leaderData.fixed_rate < 0 && +this.leaderData.commission_type === 1) {
+          this.$toast.show('请输入0%-100%之间的佣金比例')
           return
-        } else if (+this.leaderData.fixed_rate > 25 && +this.leaderData.commission_type === 1) {
-          this.$toast.show('请输入5%-25%之间的佣金比例')
+        } else if (+this.leaderData.fixed_rate > 100 && +this.leaderData.commission_type === 1) {
+          this.$toast.show('请输入0%-100%之间的佣金比例')
           return
         }
         return true
