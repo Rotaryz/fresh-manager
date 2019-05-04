@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vue-cli-service serve --mode development",
-    "release": "vue-cli-service serve --mode production",
+    "release": "vue-cli-service serve --mode release",
     "prod": "vue-cli-service serve --mode production",
     "build": "vue-cli-service build --modern",
     "build:dev": "vue-cli-service build --mode development",

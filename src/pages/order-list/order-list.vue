@@ -163,6 +163,9 @@
       this._getShopList()
       this.getOrderStatus()
     },
+    beforeDestroy() {
+      this.setTime(['', ''])
+    },
     methods: {
       ...orderMethods,
       changeTab(selectStatus) {
@@ -172,7 +175,7 @@
         API.Order.getOrderStatus({
           source: this.status,
           start_time: this.startTime,
-          end_time: this.startTime,
+          end_time: this.endTime,
           shop_id: this.shopId,
           keyword: this.keyword,
         }).then(res => {
