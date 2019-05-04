@@ -33,7 +33,7 @@
         <div class="list">
           <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
             <div class="list-item">
-              <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+              <img class="pic-box" :src="item.goods_cover_image" alt="">
             </div>
             <div class="list-item list-item-double">{{item.name}}</div>
             <div class="list-item">{{item.goods_sku_code}}</div>
@@ -340,9 +340,6 @@
   .pic-box
     height: 40px
     width: 40px
-    overflow: hidden
     border-radius: 2px
-    background-repeat: no-repeat
-    background-size: cover
-    background-position: center
+    object-fit :cover
 </style>

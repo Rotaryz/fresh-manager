@@ -60,7 +60,8 @@
         <div class="image-box">
           <div class="edit-image">
             <draggable v-model="msg.goods_banner_images" class="draggable" @update="_setSort()">
-              <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+              <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand">
+                <img class="img" :src="item.image_url" alt="">
                 <span class="close" @click="delPic(index)"></span>
               </div>
             </draggable>
@@ -83,7 +84,8 @@
         <div class="image-box">
           <div class="edit-image">
             <draggable v-model="msg.goods_detail_images" class="draggable" @update="_setSort()">
-              <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+              <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand">
+                <img class="img" :src="item.image_url" alt="">
                 <span class="close" @click="delPic2(index)"></span>
               </div>
             </draggable>
@@ -609,6 +611,12 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
+
+  .img
+    width :100%
+    height :@width
+    display :block
+    object-fit :cover
 
   .edit-leader
     position: relative
