@@ -87,7 +87,7 @@ export const mutations = {
 
 export const actions = {
   getOrderList({commit, state}) {
-    const {page, startTime, endTime, status, shopId, keyword, orderStatus} = state
+    let {page, startTime, endTime, status, shopId, keyword, orderStatus} = state
     let data = {
       status: orderStatus,
       page,

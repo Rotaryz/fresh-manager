@@ -102,7 +102,7 @@
           this.menuList = this.menuList.sort((a, b) => {
             return a.sort - b.sort
           })
-          console.log(this.menuList)
+          // console.log(this.menuList)
           storage.set('menu', this.menuList)
           storage.set('permissions', this.permissionsList)
           this.$router.push(this.menuList[0].sub_menu[0].sub_menu[0].front_url || 'home')

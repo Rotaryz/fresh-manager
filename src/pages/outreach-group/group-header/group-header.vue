@@ -53,7 +53,7 @@
         })
       },
       exportExcel() {
-        console.log(this.ex)
+        // console.log(this.ex)
         window.open(this.exportUrl, '_blank')
       }
     }

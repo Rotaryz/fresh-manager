@@ -67,7 +67,6 @@
     methods: {
       _getTime(time) {
         // console.log(this.disabledDate)
-        console.log(time)
         this.$emit('getTime', time)
       }
     }

@@ -24,7 +24,7 @@
     },
     methods: {
       _batchAddition(list) {
-        console.log(list)
+        // console.log(list)
       },
       deleteGoods() {
         this.$refs.addg._delGoods(160)
