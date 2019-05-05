@@ -116,10 +116,10 @@
         }
         let data = []
         for (let i in this.stockListNow) {
-          if (!this.stockListNow[i].warehouse_position_id) {
-            this.$toast.show(`请选择批次号${this.stockListNow[i].batch_num}的存放库位`)
-            return
-          }
+          // if (!this.stockListNow[i].warehouse_position_id) {
+          //   this.$toast.show(`请选择批次号${this.stockListNow[i].batch_num}的存放库位`)
+          //   return
+          // }
           data.push({batch_num: this.stockListNow[i].batch_num, warehouse_position_id: this.stockListNow[i].warehouse_position_id, shelf_life: this.stockListNow[i].shelf_life})
         }
         this.isChange = false
