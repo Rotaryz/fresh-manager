@@ -1,7 +1,12 @@
 <template>
   <div class="base-date-select">
-    <date-picker :placeholder="placeHolder" :options="disabledDate" type="daterange" :value="dateInfo" :style="{'height': '28px'}"
-                 :clearable="clearable" @on-change="_getTime"
+    <date-picker :placeholder="placeHolder"
+                 :options="disabledDate"
+                 :type="dataPickerType"
+                 :value="dateInfo"
+                 :style="{height: `${height}px`, width: `${width}px`}"
+                 :clearable="clearable"
+                 @on-change="_getTime"
     ></date-picker>
   </div>
 </template>
@@ -17,6 +22,18 @@
       DatePicker
     },
     props: {
+      height: {
+        type: Number,
+        default: 28
+      },
+      width: {
+        type: Number,
+        default: 187
+      },
+      dataPickerType: {
+        type: String,
+        default: 'daterange'
+      },
       placeHolder: {
         type: String,
         default: '选择申请日期'
@@ -61,7 +78,7 @@
   .base-date-select
     .ivu-date-picker
       height: 100%
-      width: 187px
+      width: 100%
       .ivu-date-picker-cells-cell,.ivu-date-picker-header-label
         color: $color-text-main
       .ivu-date-picker-rel, .ivu-input-wrapper, .ivu-input

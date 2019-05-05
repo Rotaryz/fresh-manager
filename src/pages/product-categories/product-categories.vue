@@ -20,7 +20,9 @@
         <div class="big-box-main">
           <div class="big-main-left hand" @click="openList(index)">
             <div class="icon" :class="item.select ? 'open' : ''"></div>
-            <div class="img" :style="{'background-image': 'url(' +item.image_url+ ')'}"></div>
+            <div class="img">
+              <img class="img-icon" :src="item.image_url" alt="">
+            </div>
             <div class="text">{{item.name}} <span class="tip">({{item.list && item.list.length}}个子类)</span></div>
           </div>
           <div class="big-main-right">
@@ -320,6 +322,13 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
+  .img-icon
+    width :100%
+    height @width
+    display block
+    object-fit :cover
+
   .product-top
     layout(row)
     align-items: center
@@ -377,7 +386,7 @@
             border-radius: 2px
             border: 0.5px solid $color-line
             margin: 0 10px
-            background-size: cover
+            overflow :hidden
           .text
             font-size: $font-size-14
             line-height: 1

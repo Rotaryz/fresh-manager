@@ -188,6 +188,16 @@ export default {
   getLeaderStatus(data, loading = false) {
     let url = '/social-shopping/api/backend/shop-manager-status'
     return request.get(url, data, loading)
+  },
+
+  /**
+   * 团长可使用帐号
+   * @param loading
+   * @returns {*}
+   */
+  getTopData(data, loading = false) {
+    let url = '/social-shopping/api/backend/shop-manager-account-summary'
+    return request.get(url, data, loading)
   }
 
 }

@@ -25,7 +25,7 @@
           <div v-for="(item, index) in outreachList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+                {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount' || val.value === 'repurchase_num') ? (item[val.value] || '0') : (item[val.value] || '---')}}
               </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
                 <p class="item-dark">{{item.start_at}}</p>
@@ -45,7 +45,7 @@
                   <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
                   <transition name="fade">
                     <div v-if="tipShow === index" class="tip-content">
-                      <span class="text">比昨天{{item.rise && _textHandle(item.rise)}}{{item.rise.split('-').length > 1 ? item.rise.split('-')[1] : item.rise}}</span>
+                      <span class="text">第{{item.days}}天复购,比昨天{{item.rise && _textHandle(item.rise)}}{{item.rise.split('-').length > 1 ? item.rise.split('-')[1] : item.rise}}</span>
                       <img v-if="+(item.rise && item.rise.split('%')[0]) > 0" :src="require('./'+ iconArr[0] +'@2x.png')" alt="" class="tip-icon">
                       <img v-if="+(item.rise && item.rise.split('%')[0]) < 0" :src="require('./'+ iconArr[1] +'@2x.png')" alt="" class="tip-icon down">
                       <img v-if="+(item.rise && item.rise.split('%')[0]) === 0" :src="require('./'+ iconArr[2] +'@2x.png')" alt="" class="tip-icon equal">
@@ -80,15 +80,16 @@
   const PAGE_NAME = 'OUTREACH_ACTIVITY'
   const TITLE = '拓展任务'
   const ACTIVITI_TITLE = [
-    {name: '拓展任务', flex: 1.2, value: 'activity_name', type: 6},
-    {name: '拓展社区', flex: 1.2, value: 'social_name', type: 6},
-    {name: '拓展时间', flex: 1.2, value: 'start_at', type: 2},
+    {name: '拓展任务', flex: 1.3, value: 'activity_name', type: 6},
+    {name: '拓展社区', flex: 1.3, value: 'social_name', type: 6},
+    {name: '拓展时间', flex: 1.3, value: 'start_at', type: 2},
     {name: '订单', flex: 1, value: 'pay_num', type: 1},
     {name: '交易金额', flex: 1, value: 'pay_amount', type: 1},
+    {name: '复购数', flex: 1, value: 'repurchase_num', type: 1},
     {name: '复购率(15天)', flex: 1, value: 'repeat_rate', type: 4},
     {name: '状态', flex: 1, value: 'status', type: 3},
     // {name: '二维码', flex: 1, value: '', type: 4},
-    {name: '操作', flex: 1.2, value: '', type: 5}
+    {name: '操作', flex: 1.4, value: '', type: 5}
   ]
   // const OUTREACH_LIST = [
   //   {activity_name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', group: '白云花园社区', sale_count: 20, total: 100, order_count: '30', status: 1}
@@ -256,9 +257,9 @@
             height: 2px
       .tip-content
         position: absolute
-        right: -144px
+        right: -192px
         top: -8px
-        width: 150px
+        width: 198px
         height: 32px
         border-radius: 4px
         padding-left: 10px

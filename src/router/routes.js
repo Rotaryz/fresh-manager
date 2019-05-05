@@ -17,7 +17,7 @@ export default [
     meta: {
       beforeResolve(routeTo, routeFrom, next) {
         // 判断用户是否已经登录
-        console.log(storage.get('losePermissions'))
+        // console.log(storage.get('losePermissions'))
         if (store.getters['auth/loggedIn'] && storage.get('losePermissions') !== 1) {
           next({name: 'new-data'})
         } else {

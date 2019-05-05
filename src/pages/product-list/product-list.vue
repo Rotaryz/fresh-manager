@@ -500,8 +500,8 @@
   .pic-box
     height: 40px
     width: 40px
-    overflow: hidden
     border-radius: 2px
+    object-fit :cover
     background-repeat: no-repeat
     background-size: cover
     background-position: center

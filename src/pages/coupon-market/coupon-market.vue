@@ -191,12 +191,10 @@
           }
           this.statusArr = this.statusArr.map((item, ind) => {
             if (index === ind) {
-              console.log(index, ind, status)
               item = status
             }
             return item
           })
-          console.log(this.statusArr)
           // this.getMarketList({page: this.page, status: this.status})
           this.getMarketStatus()
         })
@@ -279,16 +277,21 @@
         .text
           margin-top: 10px
           display: block
+          transition: all 0.3s
         &:first-child
           width: 60px
         &:hover
+          .icon
+            opacity: 0.9
           .icon-0
-            box-shadow: 0 2px 4px 0 rgba(159,213,198,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159,213,198,0.40)
           .icon-1
-            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
           .icon-2
-            box-shadow: 0 2px 4px 0 rgba(199,159,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(199,159,213,0.40)
           .icon-3
-            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
+          .text
+            text-decoration: underline
 
 </style>
