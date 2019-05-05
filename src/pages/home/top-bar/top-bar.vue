@@ -51,7 +51,6 @@
   .top-bar
     z-index: 600
     background: #fff
-    border-bottom-1px($color-line)
     position: fixed
     top: 0
     left: 210px
