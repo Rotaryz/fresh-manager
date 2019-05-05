@@ -189,9 +189,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  goodsNewInto(data, loading = false) {
+  goodsNewInto(data, loading = false, timeout) {
     let url = `/social-shopping/api/backend/goods-manage/import-create-goods`
-    return request.post(url, data, loading)
+    return request.post(url, data, loading, timeout)
   },
   /**
    * 商品编辑模板
@@ -199,9 +199,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  goodsNewEdit(data, loading = false) {
+  goodsNewEdit(data, loading = false, timeout) {
     let url = `/social-shopping/api/backend/goods-manage/import-update-goods`
-    return request.post(url, data, loading)
+    return request.post(url, data, loading, timeout)
   },
   /**
    * 检查切换库存类型

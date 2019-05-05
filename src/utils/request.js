@@ -101,12 +101,13 @@ function requestException(res) {
 }
 
 export default {
-  post(url, data, loading = false) {
+  post(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'post',
       url,
-      data // post 请求时带的参数
+      data, // post 请求时带的参数
+      timeout
     })
       .then((response) => {
         return checkStatus(response)
@@ -115,12 +116,13 @@ export default {
         return checkCode(res)
       })
   },
-  get(url, params, loading = false) {
+  get(url, params, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'get',
       url,
-      params // get 请求时带的参数
+      params, // get 请求时带的参数
+      timeout
     })
       .then((response) => {
         return checkStatus(response)
@@ -129,12 +131,13 @@ export default {
         return checkCode(res)
       })
   },
-  put(url, data, loading = false) {
+  put(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'put',
       url,
-      data // put 请求时带的参数
+      data, // put 请求时带的参数
+      timeout
     })
       .then((response) => {
         return checkStatus(response)
@@ -143,12 +146,13 @@ export default {
         return checkCode(res)
       })
   },
-  delete(url, data, loading = false) {
+  delete(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'delete',
       url,
-      data // put 请求时带的参数
+      data, // put 请求时带的参数
+      timeout
     })
       .then((response) => {
         return checkStatus(response)

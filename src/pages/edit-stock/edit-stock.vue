@@ -118,7 +118,7 @@
       async importStock(e) {
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
-        let res = await API.Store.importStock(param)
+        let res = await API.Store.importStock(param, true, 60000)
         this.$loading.hide()
         this.blankList = res.error === this.$ERR_OK ? res.data : []
         this.$toast.show(res.message)

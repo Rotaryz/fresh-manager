@@ -277,9 +277,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  importStock(data, loading = false) {
+  importStock(data, loading = false, timeout) {
     let url = `/scm/api/backend/stock/warehouse-stock-list-import`
-    return request.post(url, data, loading)
+    return request.post(url, data, loading, timeout)
   },
   /**
    * 库存清单调整
