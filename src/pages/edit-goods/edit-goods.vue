@@ -480,14 +480,21 @@
         } else if (this.goods_skus.presale_usable_stock.includes('.') && this.goods_skus.is_presale * 1 === 1) {
           this.$toast.show('请输入正确的预售库存')
           return
+        } else if (
+          this.msg.init_sale_count === 'undefined' ||
+          this.msg.init_sale_count.includes('.') ||
+          +this.msg.init_sale_count < 0
+        ) {
+          this.$toast.show('请输入正确初始销量')
+          return
+        } else if (this.goods_skus.supplier_id <= 0) {
+          this.$toast.show('请选择供应商')
+          return
         } else if (this.goods_skus.base_purchase_rate.length === 0) {
           this.$toast.show('请输入采购规格')
           return
         } else if (this.goods_skus.base_purchase_rate <= 0) {
           this.$toast.show('请输入采购规格大于零')
-          return
-        } else if (this.goods_skus.supplier_id <= 0) {
-          this.$toast.show('请选择供应商')
           return
         } else if (this.goods_skus.purchase_unit === '') {
           this.$toast.show('请选择采购单位')
@@ -501,13 +508,6 @@
           this.goods_skus.damage_rate.length === 0
         ) {
           this.$toast.show('损耗比区间在0与100之间')
-          return
-        } else if (
-          !this.msg.init_sale_count ||
-          this.msg.init_sale_count.includes('.') ||
-          +this.msg.init_sale_count < 0
-        ) {
-          this.$toast.show('请输入正确初始销量')
           return
         }
         if (this.goods_skus.is_presale * 1 === 0 && !this.id) {
