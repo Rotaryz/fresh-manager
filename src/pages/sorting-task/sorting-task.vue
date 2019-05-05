@@ -176,11 +176,15 @@
       // 分类数据
       _getClassifyList(params) {
         return API.Sorting.getClassifyList(params).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
           return res
         })
       },
       _getFristList() {
         this._getClassifyList().then(res => {
+          if(!res) return false
           this.filterTaskFrist.data = [{name: '全部', id: ''},...res.data]
         })
       },
@@ -189,6 +193,7 @@
         this._getClassifyList({
           'parent_id': item.id,
         }).then(res => {
+          if(!res) return false
           this.filterTaskSecond.content = '全部'
           this.filterTaskSecond.data = [{name: '全部', id: item.id},...res.data]
         })

@@ -12,7 +12,7 @@
         </div>
       </div>
       <!--列表部分-->
-      <div style="display: flex;width:100%">
+      <div class="concat-table-wrap">
         <div class="sort-table-box">
           <div class="list-header list-box">
             <div v-for="(item,index) in commodities1" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
@@ -27,7 +27,7 @@
             </div>
           </div>
         </div>
-        <div style="flex:1">
+        <div class="drag-wrap">
           <div class="list-header list-box">
             <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
           </div>
@@ -276,10 +276,16 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  .sort-table-box .list-box .list-item
-    padding-right:0px
-    text-align: center
-
+  .concat-table-wrap
+    display: flex
+    width:100%
+    .sort-table-box
+      flex-shrink 0
+      .list-box .list-item
+        padding-right:0px
+        text-align: center
+    .drag-wrap
+      flex:1
   .list-box.drag-box
     cursor pointer
     background: #f7faf5

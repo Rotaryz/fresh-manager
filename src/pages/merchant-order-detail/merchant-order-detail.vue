@@ -21,7 +21,7 @@
           <div v-for="(row, key) in merchantDetail.details" :key="key" class="list-content list-box">
             <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" :class="['list-item',item.class]">
               <template v-if="item.key" name="name">
-                <div v-if="isLine && item.line" style="border-top:1px solid #333;width:30px;">
+                <div v-if="isLine && item.line" class="line-empty">
                 </div>
                 <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
                   {{row[item.key]}}
@@ -109,6 +109,9 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .line-empty
+    border-top:1px solid #333
+    width:30px
   .operate
     max-width: 100px
 

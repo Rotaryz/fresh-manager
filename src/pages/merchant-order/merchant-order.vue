@@ -203,6 +203,9 @@
       },
       _getMergeOrderslist() {
         API.MerchantOrder.getMergeOrderslist(this.merger.filter).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
           this.merger.list = res.data
         }).catch(() => {
           return false
@@ -243,6 +246,9 @@
           type: this.merchantFilter.type,
         }
         API.MerchantOrder.getStausData(params).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
           this.dispatchSelect = res.data.map(item => {
             return {
               name: item.status_str,
