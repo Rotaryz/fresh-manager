@@ -55,6 +55,7 @@
     top: 0
     left: 210px
     right: 0
+    border-bottom-1px($color-line)
     .userInfo-content
       layout(row)
       align-items: center
