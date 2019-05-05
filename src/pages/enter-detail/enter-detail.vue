@@ -133,11 +133,11 @@
       submitFn() {
         let arr = []
         for (let i in this.enterDetailList) {
-          if (!this.enterDetailList[i].warehouse_position_id) {
-            // 库位必填
-            this.$toast.show(`请选择批次号${this.enterDetailList[i].batch_num}的存放库位`)
-            return
-          }
+          // if (!this.enterDetailList[i].warehouse_position_id) {
+          //   // 库位必填
+          //   this.$toast.show(`请选择批次号${this.enterDetailList[i].batch_num}的存放库位`)
+          //   return
+          // }
           let obj = {
             id: this.enterDetailList[i].id,
             base_num: this.enterDetailList[i].base_num,
