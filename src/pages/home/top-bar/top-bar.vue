@@ -51,11 +51,11 @@
   .top-bar
     z-index: 600
     background: #fff
+    border-bottom-1px($color-line)
     position: fixed
     top: 0
     left: 210px
     right: 0
-    border-bottom-1px($color-line)
     .userInfo-content
       layout(row)
       align-items: center
