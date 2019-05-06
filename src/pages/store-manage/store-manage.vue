@@ -280,8 +280,7 @@
     .store-flex
       min-width: 25%
       max-width: 25%
-      height: 40px
-      padding-right: 30px
+      padding:0 30px 20px 0
       .store-title
         width: 100%
         height:60px
