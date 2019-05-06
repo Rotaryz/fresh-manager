@@ -132,7 +132,7 @@
       ...authComputed,
       ...sortingMethods,
       // 更新列表
-      _updateList(params, noUpdataStatus) {
+      _updateList(params={}, noUpdataStatus) {
         this.SET_PARAMS(params)
         this.getSortingTaskList()
         if (!noUpdataStatus) {
@@ -230,8 +230,8 @@
       },
       // 导出配送单
       _exportDeliveryOrder() {
-        this._getUrl()
         API.Sorting.exportDeliveryOrder(this._getUrl())
+        this._updateList({page:1})
       },
       _getMoreList(page) {
         this._updateList({page})
