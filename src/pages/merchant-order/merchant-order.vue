@@ -146,7 +146,9 @@
           list: [],
           filter: {
             start_time: "",
-            end_time: ""
+            end_time: "",
+            page: 1,
+            limit:10
           }
         }
       }
@@ -190,11 +192,6 @@
         }
       },
       _updateMergerList(params = {}) {
-        let defautFilter = {
-          start_time: "",
-          end_time: ""
-        }
-        params = {...defautFilter, ...params}
         this.merger.filter = {...this.merger.filter, ...params}
         this._getMergeOrderslist()
         if (params.page === 1) {
@@ -203,7 +200,15 @@
       },
       _getMergeOrderslist() {
         API.MerchantOrder.getMergeOrderslist(this.merger.filter).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
           this.merger.list = res.data
+          this.merger.pageTotal = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
         }).catch(() => {
           return false
         })
@@ -213,7 +218,7 @@
       },
       // 时间选择器
       _changeTimeMerger(timeArr) {
-        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1]})
+        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1],page:1})
       },
       // 页面更改
       _setMergerPage(page) {
@@ -243,6 +248,9 @@
           type: this.merchantFilter.type,
         }
         API.MerchantOrder.getStausData(params).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
           this.dispatchSelect = res.data.map(item => {
             return {
               name: item.status_str,

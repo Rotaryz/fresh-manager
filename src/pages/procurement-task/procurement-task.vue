@@ -476,7 +476,7 @@
         await this._statistic()
       },
       async _sendPublish() {
-        if (this.status !== 1) return
+        if (this.status * 1 !== 1) return
         let selectArr = []
         this.purchaseTaskList.forEach((item) => {
           if (item.select) {
@@ -511,7 +511,7 @@
         await this._statistic()
       },
       async _createPublish() {
-        if (this.status !== 2) return
+        if (this.status * 1 !== 2) return
         let selectArr = []
         this.purchaseTaskList.forEach((item) => {
           if (item.select) {
@@ -555,7 +555,11 @@
         this.$router.push('/home/procurement-task/edit-task')
       },
       async _createNewPublish() {
-        if (this.status !== 2) return
+        if (this.status * 1 !== 2) return
+        if (this.purchaseTaskList.length === 0) {
+          this.$toast.show('暂无任务可生成')
+          return
+        }
         let res = await API.Supply.getSortSupplier({
           keyword: this.keyword,
           start_time: this.startTime,
