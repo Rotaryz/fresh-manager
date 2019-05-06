@@ -38,12 +38,12 @@ export default {
   // √ 导出分拣单
   exportPickingOrder(paramsStr) {
     let url = '/scm/api/backend/sorting/picking-order-export'
-    window.open(url + paramsStr, '_blank')
+    window.open(url + paramsStr, '_parent')
   },
   // √ 导出配货单
-  exportDeliveryOrder(paramsStr) {
+  async exportDeliveryOrder(paramsStr) {
     let url = '/scm/api/backend/sorting/allocation-export'
-    window.open(url + paramsStr, '_blank')
+    return window.open(url + paramsStr, '_parent')
   },
   // √ 配货位列表 √
   getAllocationList(loading = true) {
@@ -70,10 +70,10 @@ export default {
     return request.post(url, {data: dataArr}, loading)
   },
 
-  //  √ 导出配货单
+  //  √ 导出配货位
   exportAllocationList(paramsStr) {
     let url = "/scm/api/backend/sorting/allocation-position-export"
-    window.open(url + paramsStr, '_blank')
+    window.open(url + paramsStr, '_parent')
 
   }
 }

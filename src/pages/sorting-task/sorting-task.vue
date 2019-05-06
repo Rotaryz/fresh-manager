@@ -229,9 +229,11 @@
         API.Sorting.exportPickingOrder(this._getUrl())
       },
       // 导出配送单
-      _exportDeliveryOrder() {
-        API.Sorting.exportDeliveryOrder(this._getUrl())
-        this._updateList({page:1})
+      async _exportDeliveryOrder() {
+        await API.Sorting.exportDeliveryOrder(this._getUrl())
+        setTimeout(()=>{
+          this._updateList({page:1})
+        },500)
       },
       _getMoreList(page) {
         this._updateList({page})
