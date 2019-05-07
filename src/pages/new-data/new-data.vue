@@ -102,7 +102,8 @@
               <p class="identification-name">社区排行</p>
             </div>
             <div class="function-btn">
-              <base-option-box :infoTab="2" :arrTitle="rankTime" @checkTime="_managerMore"></base-option-box>
+              <!--<base-option-box :infoTab="2" :arrTitle="rankTime" @checkTime="_managerMore"></base-option-box>-->
+              <base-option-box :infoTab="2" :disabledDate="disabledDate" @checkTime="_managerMore"></base-option-box>
               <a class="educe-btn" :href="downUrl" target="_blank">导出</a>
             </div>
           </div>
@@ -245,6 +246,9 @@
         shopTime: 'week',
         shopStartTime: '',
         shopEndTime: '',
+        managerTime: 'week',
+        managerStartTime: '',
+        managerEndTime: '',
         downUrl: '',
         shopDownUrl: '',
         drawX: [],
@@ -269,7 +273,7 @@
       this.getShopTaskData()
       this.getEchartData()
       this.getGoodsRank('', '', 'week', false)
-      this.getManagerRank('week', false)
+      this.getManagerRank('', '', 'week', false)
       this._getUrl()
       this._getShopUrl()
     },
@@ -520,27 +524,33 @@
           `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
       },
       // 社区排行
-      getManagerRank(time, loading) {
-        API.Data.managerData({time: time, start_time: '', end_time: ''}, loading).then((res) => {
+      getManagerRank(startTime, endTime, time, loading) {
+        this.managerTime = time
+        this.managerStartTime = startTime
+        this.managerEndTime = endTime
+        API.Data.managerData({time: time, start_time: startTime, end_time: endTime}, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
             this.managerList = res.data
+            this._getUrl()
           } else {
             this.$toast.show(res.message)
           }
         })
       },
       _managerMore(value) {
-        this.time = value
-        this._getUrl()
-        this.getManagerRank(value, true)
+        if (typeof value === 'string') {
+          this.getManagerRank('', '', value, true)
+          return
+        }
+        this.getManagerRank(value[0], value[1], '', true)
       },
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=&end_time=&time=${this.time}`
+        let params = `access_token=${token.access_token}&start_time=${this.managerStartTime}&end_time=${this.managerEndTime}&time=${this.managerTime}`
         this.downUrl =
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`

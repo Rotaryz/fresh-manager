@@ -301,6 +301,14 @@
         })
       },
       switchBtn(item, index) {
+        if (item.goods_sku_encoding.length === 0 && item.is_online * 1 === 0) {
+          this.$toast.show('请先补充商品编码再上架')
+          return
+        }
+        if (item.goods_category_id <= 0 && item.is_online * 1 === 0) {
+          this.$toast.show('请先补充分类再上架')
+          return
+        }
         let data = {
           goods_id: item.id,
           is_online: item.is_online * 1 === 1 ? 0 : 1
