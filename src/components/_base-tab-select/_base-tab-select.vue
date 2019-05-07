@@ -88,7 +88,7 @@
     position: fixed
     top: 39px
     left: 210px
-    z-index: 501
+    z-index: 700
     width: 100%
     user-select: none
     background: $color-white
