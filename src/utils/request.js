@@ -17,8 +17,8 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
-    config.url = resetUrl(config.url)
-    // config.url = config.url.replace('/social-shopping', '/social-shopping/v2') // todo
+    // config.url = resetUrl(config.url)
+    config.url = config.url.replace('/social-shopping', '/social-shopping/v2') // todo
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }

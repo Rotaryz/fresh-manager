@@ -1733,6 +1733,10 @@ export default [
 function lazyLoadView(AsyncView) {
   const AsyncHandler = () => ({
     component: AsyncView
+    // loading: require('@pages/_loading/_loading').default,
+    // delay: 400,
+    // error: require('@pages/_timeout/_timeout').default,
+    // timeout: 10000
   })
 
   return Promise.resolve({
