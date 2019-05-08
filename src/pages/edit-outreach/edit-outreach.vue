@@ -376,7 +376,7 @@
       testEndDate() {
         // 结束时间规则判断
         return (
-          Date.parse(this.essInformation.end_at + ' 00:00') > Date.parse('' + this.essInformation.start_at + ' 00:00')
+          Date.parse(this.essInformation.end_at.replace(/-/g, '/') + ' 00:00') > Date.parse('' + this.essInformation.start_at.replace(/-/g, '/') + ' 00:00')
         )
       },
       testGroup() {
@@ -813,6 +813,8 @@
     padding-bottom: 20px
     position: relative
     flex: 1
+  .content-header
+    justify-content: flex-start
   .margin-top
     margin-top: 24px
   .outreach-time
