@@ -8,7 +8,7 @@
         </div>
         <!--<div class="function-btn"></div>-->
       </div>
-      <div class="big-list">
+      <div class="big-list" :class="stockListNow.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
