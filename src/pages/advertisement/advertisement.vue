@@ -26,7 +26,7 @@
           <transition-group>
             <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
               <div class="advertisement-msg">
-                <div class="img-box hand" :style="{'background-image': 'url(' + (banner.image_url || banner.add_icon) + ')'}">
+                <div class="img-box hand" :style="{'background-image': 'url(\'' + (banner.image_url || banner.add_icon) + '\')'}">
                   <div v-if="banner.showLoading" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
@@ -98,7 +98,7 @@
                   <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
                     <span class="after"></span>
                   </div>
-                  <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+                  <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
                   <div class="goods-msg">
                     <div class="goods-name">{{item.name}}</div>
                     <div class="goods-money">¥{{item.original_price}}</div>

@@ -2,7 +2,7 @@
   <div>
     <div v-if="fileType === 'image'" class="edit-image">
       <draggable v-model="picList" class="draggable" @update="_setSort()">
-        <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+        <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
           <span v-if="isEdit" class="close" @click="_del(index)"></span>
         </div>
       </draggable>

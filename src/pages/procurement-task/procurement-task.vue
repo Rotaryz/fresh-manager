@@ -135,7 +135,7 @@
                 <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
                   <span class="after"></span>
                 </div>
-                <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+                <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
                 <div class="goods-msg">
                   <div class="goods-name">{{item.goods_name}}</div>
                   <div class="goods-money">{{item.goods_sku_encoding}}</div>
