@@ -153,7 +153,7 @@ export const actions = {
         }
         commit('SET_WAREHOUSE_DETAIL_LIST', arr)
         commit('SET_DETAIL_PAGE_TOTAL', pageTotal)
-        return true
+        return res
       })
       .catch(() => {
         return false
@@ -170,7 +170,7 @@ export const actions = {
         }
         let arr = res.data
         commit('SET_STOCK_LIST', arr)
-        return true
+        return res
       })
       .catch(() => {
         return false

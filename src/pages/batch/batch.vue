@@ -4,7 +4,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-out_stock@2x.png" class="identification-icon">
-          <p class="identification-name">{{title}}</p>
+          <p class="identification-name">{{goodsMsg.goods_name}}{{goodsMsg.goods_sku_encoding ? `(${goodsMsg.goods_sku_encoding})` : ''}}</p>
         </div>
         <!--<div class="function-btn"></div>-->
       </div>
@@ -69,6 +69,17 @@
     components: {
       DatePicker,
       DefaultStore
+    },
+    props: {
+      goodsMsg: {
+        type: Object,
+        default: () => {
+          return {
+            goods_name: '',
+            goods_sku_encoding: ''
+          }
+        }
+      }
     },
     data() {
       return {

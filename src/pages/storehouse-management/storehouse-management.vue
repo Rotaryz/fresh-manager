@@ -60,7 +60,7 @@
               <div class="list-item">
                 <router-link
                   tag="div"
-                  :to="`storehouse-detail?code=${item.goods_sku_code}&name=${item.goods_name}${item.goods_sku_encoding ? '(' + item.goods_sku_encoding + ')' : ''}`"
+                  :to="`storehouse-detail?code=${item.goods_sku_code}`"
                   append
                   class="list-operation"
                 >
@@ -68,7 +68,7 @@
                 </router-link>
                 <router-link
                   tag="div"
-                  :to="`batch?code=${item.goods_sku_code}&name=${item.goods_name}${item.goods_sku_encoding ? '(' + item.goods_sku_encoding + ')' : ''}`"
+                  :to="`batch?code=${item.goods_sku_code}`"
                   append
                   class="list-operation"
                 >
