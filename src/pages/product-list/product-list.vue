@@ -64,7 +64,7 @@
           <div v-if="goodsList.length">
             <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
               <div class="list-item">
-                <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+                <div class="pic-box" :style="{'background-image': 'url(' + '\'' + item.goods_cover_image + '\'' + ')'}"></div>
               </div>
               <div class="list-item list-double-row">
                 <div class="item-dark">{{item.name}}</div>
