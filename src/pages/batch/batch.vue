@@ -4,11 +4,11 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-out_stock@2x.png" class="identification-icon">
-          <p class="identification-name">{{title}}</p>
+          <p class="identification-name">{{goodsMsg.goods_name}}{{goodsMsg.goods_sku_encoding ? `(${goodsMsg.goods_sku_encoding})` : ''}}</p>
         </div>
         <!--<div class="function-btn"></div>-->
       </div>
-      <div class="big-list">
+      <div class="big-list" :class="stockListNow.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
@@ -69,6 +69,17 @@
     components: {
       DatePicker,
       DefaultStore
+    },
+    props: {
+      goodsMsg: {
+        type: Object,
+        default: () => {
+          return {
+            goods_name: '',
+            goods_sku_encoding: ''
+          }
+        }
+      }
     },
     data() {
       return {

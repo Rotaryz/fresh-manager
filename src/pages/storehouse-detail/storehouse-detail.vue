@@ -15,7 +15,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-warehouse_goods@2x.png" class="identification-icon">
-          <p class="identification-name">{{title}}</p>
+          <p class="identification-name">{{goodsMsg.goods_name}}{{goodsMsg.goods_sku_encoding ? `(${goodsMsg.goods_sku_encoding})` : ''}}</p>
         </div>
         <div class="function-btn">
         </div>
@@ -59,7 +59,18 @@
   export default {
     name: PAGE_NAME,
     page: {
-      title: TITLE
+      title: TITLE,
+    },
+    props: {
+      goodsMsg: {
+        type: Object,
+        default: () => {
+          return {
+            goods_name: '',
+            goods_sku_encoding: ''
+          }
+        }
+      }
     },
     data() {
       return {

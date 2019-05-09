@@ -28,7 +28,7 @@
 <script type="text/ecmascript-6">
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'BUSINESS_DATA'
-  const TAB_ARR = ['营收金额', 'equal', '主力客户', 'multiply', '复购数', 'multiply', '笔单价']
+  const TAB_ARR = ['营收金额', 'equal', '主力客户', 'multiply', '复购率', 'multiply', '笔单价']
   export default{
     name: COMPONENT_NAME,
     props: {

@@ -23,7 +23,7 @@
         <div class="rush-goods-list">
           <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
             <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-            <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+            <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
             <div class="goods-msg">
               <div class="goods-name">{{item.goods_name}}</div>
               <div class="goods-money">{{item.goods_sku_encoding}}</div>

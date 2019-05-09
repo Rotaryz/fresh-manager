@@ -51,6 +51,7 @@
         <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
         <div :class="{'time-no-change':disable}"></div>
       </div>
+      <!--<p @click="test">测试</p>-->
     </div>
 
     <div class="content-header">
@@ -120,7 +121,7 @@
           <div class="rush-goods-list">
             <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+              <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
               <div class="goods-msg">
                 <!--<div class="goods-name">{{item.usable_stock}}</div>-->
                 <div class="goods-name">{{item.name}}</div>
@@ -253,14 +254,14 @@
       },
       testStartDate() {
         // 开始时间规则判断
-        return Date.parse('' + this.msg.start_at) > new Date() - 360000
+        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 360000
       },
       testEndTime() {
         return this.msg.end_at
       },
       testEndTimeReg() {
         // 结束时间规则判断
-        return Date.parse('' + this.msg.end_at) > Date.parse('' + this.msg.start_at)
+        return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
       }
     },
     watch: {},
@@ -537,13 +538,16 @@
           this._back()
         }, 1000)
       },
+      test() {
+        console.log(this.testStartDate, this.testEndTimeReg)
+      },
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
           {value: this.testStartTime, txt: '请选择活动开始时间'},
-          {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
+          // {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
           {value: this.testEndTime, txt: '请选择活动结束时间'},
-          {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
+          // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -574,7 +578,8 @@
     position: relative
     font-family: $font-family-regular
     flex: 1
-
+  .content-header
+    justify-content: flex-start
   .rush-time
     margin-bottom: 27px
 

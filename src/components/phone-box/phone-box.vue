@@ -16,7 +16,7 @@
                           @on-change="_getBanner"
                 >
                   <carousel-item v-for="(item, index) in bannerList" :key="index">
-                    <div class="carousel" :class="{'carousel-active' :bannerIndex === index, 'carousel-none': !item.image_url}" :style="{'background-image': 'url(' + item.image_url + ')'}">
+                    <div class="carousel" :class="{'carousel-active' :bannerIndex === index, 'carousel-none': !item.image_url}" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
                       <img v-if="!item.image_url" src="./icon-picmr@2x.png" class="none-img">
                     </div>
                   </carousel-item>

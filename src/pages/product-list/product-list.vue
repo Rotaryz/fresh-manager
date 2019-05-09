@@ -64,7 +64,7 @@
           <div v-if="goodsList.length">
             <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
               <div class="list-item">
-                <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+                <div class="pic-box" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
               </div>
               <div class="list-item list-double-row">
                 <div class="item-dark">{{item.name}}</div>
@@ -301,6 +301,14 @@
         })
       },
       switchBtn(item, index) {
+        if (item.goods_sku_encoding.length === 0 && item.is_online * 1 === 0) {
+          this.$toast.show('请先补充商品编码再上架')
+          return
+        }
+        if (item.goods_category_id <= 0 && item.is_online * 1 === 0) {
+          this.$toast.show('请先补充分类再上架')
+          return
+        }
         let data = {
           goods_id: item.id,
           is_online: item.is_online * 1 === 1 ? 0 : 1

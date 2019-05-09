@@ -1145,7 +1145,7 @@ export default [
         path: 'merchant-order/merchant-order-detail/:id',
         name: 'merchant-order-detail',
         meta: {
-          titles: ['供应链', '订单','商户订单', '商品明细'],
+          titles: ['供应链', '订单', '商户订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getMerchantOrderDetail', routeTo.params).then((res) => {
               if (!res) {
@@ -1165,7 +1165,7 @@ export default [
         path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code/:id',
         name: 'consumer-order-detail',
         meta: {
-          titles: ['供应链', '订单','商户订单', '商品明细', '消费者明细'],
+          titles: ['供应链', '订单', '商户订单', '商品明细', '消费者明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getConsumerDetails', routeTo.params).then((res) => {
               if (!res) {
@@ -1185,7 +1185,7 @@ export default [
         path: 'merchant-order/merger-order-detail/:mergeOrderId',
         name: 'merger-order-detail',
         meta: {
-          titles: ['供应链', '订单','商品汇总单', '商品明细'],
+          titles: ['供应链', '订单', '商品汇总单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('merchantOrder/getMergerOrderDetail', routeTo.params).then((res) => {
               if (!res) {
@@ -1589,13 +1589,13 @@ export default [
           titles: ['供应链', '分拣', '分拣任务'],
           beforeResolve(routeTo, routeFrom, next) {
             store.commit('sorting/SET_PARAMS', {
-                goods_category_id: '',
-                page: 1,
-                limit: 10,
-                start_time: '',
-                end_time: '',
-                keyword: "",
-                status: 0   // 待分拣
+              goods_category_id: '',
+              page: 1,
+              limit: 10,
+              start_time: '',
+              end_time: '',
+              keyword: "",
+              status: 0   // 待分拣
             })
             store.dispatch('sorting/getSortingTaskList').then((res) => {
               if (!res) {
@@ -1688,13 +1688,15 @@ export default [
                 if (!res) {
                   return next({name: '404'})
                 }
+                routeTo.params.goodsMsg = res.goods
                 return next()
               })
               .catch(() => {
                 return next({name: '404'})
               })
           }
-        }
+        },
+        props: (route) => ({goodsMsg: route.params.goodsMsg})
       },
       // 批次
       {
@@ -1711,13 +1713,15 @@ export default [
                 if (!res) {
                   return next({name: '404'})
                 }
+                routeTo.params.goodsMsg = res.goods
                 return next()
               })
               .catch(() => {
                 return next({name: '404'})
               })
           }
-        }
+        },
+        props: (route) => ({goodsMsg: route.params.goodsMsg})
       },
       // 库存盘点
       {
@@ -2031,14 +2035,13 @@ export default [
     redirect: '404'
   }
 ]
-
+// loading: require('@pages/_loading/_loading').default,
+// delay: 400,
+// error: require('@pages/_timeout/_timeout').default,
+// timeout: 10000
 function lazyLoadView(AsyncView) {
   const AsyncHandler = () => ({
     component: AsyncView
-    // loading: require('@pages/_loading/_loading').default,
-    // delay: 400,
-    // error: require('@pages/_timeout/_timeout').default,
-    // timeout: 10000
   })
 
   return Promise.resolve({
