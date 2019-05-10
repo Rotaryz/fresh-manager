@@ -100,6 +100,7 @@
           endTime: '',
           status: '',
           page: 1,
+          loading: false
         },
         infoTabIndex: 0
       }

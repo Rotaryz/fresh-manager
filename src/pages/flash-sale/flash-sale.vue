@@ -113,7 +113,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: selectStatus.value
+          status: selectStatus.value,
+          loading: false
         })
       },
       getSaleStatus() {
@@ -141,7 +142,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
         this.getSaleStatus()
       },
@@ -151,7 +153,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       },
       _deleteActivity(id) {
@@ -172,7 +175,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       }
     }
