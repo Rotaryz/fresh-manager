@@ -14,7 +14,7 @@
           <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
+          <router-link tag="div" to="new-collage" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
@@ -36,9 +36,9 @@
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="+item.status === 1 ? 'status-success' : +item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
+                <router-link tag="span" :to="'new-collage?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
-                <router-link tag="span" :to="'new-sale?editId=' + (item.id || 0)" append class="list-operation">复制活动</router-link>
+                <router-link tag="span" :to="'new-collage?editId=' + (item.id || 0)" append class="list-operation">复制活动</router-link>
               </div>
             </div>
           </div>
@@ -64,7 +64,7 @@
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '状态', flex: 1, value: 'status', type: 4},
     {name: '创建时间', flex: 1.5, value: 'start_at', type: 1},
-    {name: '操作', flex: 1.4, value: '', type: 5}
+    {name: '操作', flex: 1.6, value: '', type: 5}
   ]
   export default {
     components: {

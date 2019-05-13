@@ -225,13 +225,13 @@ export default [
           }
         }
       },
-      // 限时抢购
+      // 活动管理
       {
         path: 'activity-manage',
         name: 'activity-manage',
         component: () => lazyLoadView(import('@pages/activity-manage/activity-manage')),
         meta: {
-          titles: ['商城', '活动', '限时抢购'],
+          titles: ['商城', '活动', '活动管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
@@ -255,7 +255,37 @@ export default [
         name: 'new-sale',
         component: () => lazyLoadView(import('@pages/new-sale/new-sale')),
         meta: {
-          titles: ['商城', '活动', '限时抢购', '活动'],
+          titles: ['商城', '活动', '活动管理', '活动'],
+          variableIndex: 3,
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id || routeTo.query.editId
+            //  抢购详情
+            if (id) {
+              store
+                .dispatch('sale/getSaleDetail', {id})
+                .then((res) => {
+                  // if (!res) {
+                  //   next({name: '404'})
+                  // }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
+        }
+      },
+      // 新建拼团活动
+      {
+        path: 'activity-manage/new-collage',
+        name: 'new-collage',
+        component: () => lazyLoadView(import('@pages/new-collage/new-collage')),
+        meta: {
+          titles: ['商城', '活动', '活动管理', '活动'],
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
