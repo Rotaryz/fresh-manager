@@ -65,7 +65,7 @@
       children: [
         {
           title: '活动管理',
-          url: '/home/flash-sale',
+          url: '/home/activity-manage',
           isLight: false
         },
         {

@@ -1,18 +1,10 @@
 <template>
-  <div class="flash-sale table">
-    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
-    <div class="down-content">
-      <span class="down-tip">活动时间</span>
-      <div class="down-item">
-        <base-date-select placeHolder="选择日期" @getTime="_setTime"></base-date-select>
-      </div>
-    </div>
+  <div class="data-content">
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-today_rob@2x.png" class="identification-icon">
-          <p class="identification-name">限时抢购</p>
-          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <p class="identification-name">新人特惠</p>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
@@ -54,12 +46,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {saleComputed, saleMethods} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
-  const PAGE_NAME = 'FLASH_SALE'
-  const TITLE = '限时抢购'
   const SALE_TITLE = [
     {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
@@ -69,88 +59,26 @@
     {name: '状态', flex: 1, value: 'status', type: 4},
     {name: '操作', flex: 1.4, value: '', type: 5}
   ]
-  // const SALE_LIST = [
-  //   {name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', pay_num: 20, pay_amount: 100, status: 1}
-  // ]
   export default {
-    name: PAGE_NAME,
-    page: {
-      title: TITLE
-    },
     components: {
       DefaultConfirm
     },
     data() {
       return {
-        statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
-          {name: '进行中', value: 1, key: 'success', num: 0},
-          {name: '已结束', value: 1, key: 'success', num: 0}
-        ],
         saleTitle: SALE_TITLE,
         startTime: '',
         endTime: '',
         page: 1,
         delId: 0,
-        status: ''
       }
     },
     computed: {
       ...saleComputed,
-      infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
-      }
     },
     created() {
-      this.defaultIndex = this.$route.query.status * 1 || 0
-      this.getSaleStatus()
     },
-    mounted() {},
     methods: {
       ...saleMethods,
-      async changeStatus(selectStatus) {
-        this.status = selectStatus.value
-        this.$refs.pages.beginPage()
-        this.page = 1
-        await this.getSaleList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: selectStatus.value,
-          loading: false
-        })
-      },
-      getSaleStatus() {
-        API.Sale.getSaleStatus({activity_type: 'fixed', start_at: this.startTime,end_at: this.endTime})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                value: item.status,
-                num: item.statistic
-              }
-            })
-          })
-      },
-      async _setTime(arr) {
-        this.$refs.pages.beginPage()
-        this.page = 1
-        this.startTime = arr[0]
-        this.endTime = arr[1]
-        await this.getSaleList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
-        this.getSaleStatus()
-      },
       addPage(page) {
         this.page = page
         this.getSaleList({
@@ -187,8 +115,11 @@
   }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+<style scoped lang="stylus"  rel="stylesheet/stylus">
+  .data-content
+    flex: 1
+    display: flex
+    flex-direction: column
   .list-box
     .list-item:last-child
       max-width: 150px
@@ -220,7 +151,6 @@
       .list-double-row
         .item-sub
           color: #333
-
   .btn-main
     margin-right: 10px
 </style>

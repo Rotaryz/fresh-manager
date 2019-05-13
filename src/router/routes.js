@@ -227,9 +227,9 @@ export default [
       },
       // 限时抢购
       {
-        path: 'flash-sale',
-        name: 'flash-sale',
-        component: () => lazyLoadView(import('@pages/flash-sale/flash-sale')),
+        path: 'activity-manage',
+        name: 'activity-manage',
+        component: () => lazyLoadView(import('@pages/activity-manage/activity-manage')),
         meta: {
           titles: ['商城', '活动', '限时抢购'],
           beforeResolve(routeTo, routeFrom, next) {
@@ -251,7 +251,7 @@ export default [
       },
       // 新建查看限时抢购
       {
-        path: 'flash-sale/new-sale',
+        path: 'activity-manage/new-sale',
         name: 'new-sale',
         component: () => lazyLoadView(import('@pages/new-sale/new-sale')),
         meta: {
