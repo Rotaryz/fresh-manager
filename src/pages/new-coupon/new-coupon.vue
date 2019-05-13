@@ -388,7 +388,7 @@
           type: 'default',
           data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定商品', id: 3}] // 格式：{title: '55'}}
         },
-        parentId: 0,
+        parentId: '',
         goodsPage: {
           total: 1,
           per_page: 10,

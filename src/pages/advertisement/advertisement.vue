@@ -209,7 +209,7 @@
         choiceGoods: [],
         goodsPage: {total: 1, per_page: 10, total_page: 1},
         choicePage: 1,
-        parentId: 0,
+        parentId: '',
         keyword: '',
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
@@ -286,7 +286,7 @@
         API.Advertisement.getGoodsList({
           is_online: 1,
           keyword: '',
-          goods_category_id: 0,
+          goods_category_id: '',
           limit: 10,
           page: 1
         }).then((res) => {
