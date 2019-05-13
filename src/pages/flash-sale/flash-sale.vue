@@ -1,5 +1,6 @@
 <template>
   <div class="flash-sale table">
+    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
     <div class="down-content">
       <span class="down-tip">活动时间</span>
       <div class="down-item">
@@ -96,7 +97,10 @@
       }
     },
     computed: {
-      ...saleComputed
+      ...saleComputed,
+      infoTabIndex() {
+        return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
+      }
     },
     created() {
       this.defaultIndex = this.$route.query.status * 1 || 0

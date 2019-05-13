@@ -61,16 +61,21 @@
       ]
     },
     {
-      title: '活动',
+      title: '营销',
       children: [
-        // {
-        //   title: '今日抢购',
-        //   url: '/home/rush-purchase',
-        //   isLight: false
-        // },
         {
-          title: '限时抢购',
+          title: '活动管理',
           url: '/home/flash-sale',
+          isLight: false
+        },
+        {
+          title: '优惠券',
+          url: '/home/coupon-manage',
+          isLight: false
+        },
+        {
+          title: '营销计划',
+          url: '/home/coupon-market',
           isLight: false
         }
       ]
@@ -86,21 +91,6 @@
         {
           title: '拓展团队',
           url: '/home/outreach-group',
-          isLight: false
-        }
-      ]
-    },
-    {
-      title: '营销',
-      children: [
-        {
-          title: '优惠券',
-          url: '/home/coupon-manage',
-          isLight: false
-        },
-        {
-          title: '营销计划',
-          url: '/home/coupon-market',
           isLight: false
         }
       ]
