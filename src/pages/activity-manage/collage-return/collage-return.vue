@@ -33,7 +33,7 @@
               </div>
 
               <!--状态-->
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="+item.status === 1 ? 'status-success' : +item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
@@ -58,12 +58,12 @@
   import API from '@api'
 
   const SALE_TITLE = [
-    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
-    {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
-    {name: '商品', flex: 1.4, value: 'goods_count', type: 1},
+    {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
+    {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
+    {name: '活动商品数', flex: 1, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
-    {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
     {name: '状态', flex: 1, value: 'status', type: 4},
+    {name: '创建时间', flex: 1.5, value: 'start_at', type: 1},
     {name: '操作', flex: 1.4, value: '', type: 5}
   ]
   export default {
@@ -73,10 +73,10 @@
     data() {
       return {
         statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
-          {name: '进行中', value: 1, key: 'success', num: 0},
-          {name: '已结束', value: 1, key: 'success', num: 0}
+          {name: '全部', value: '', num: 0},
+          {name: '未开始', value: '', num: 0},
+          {name: '进行中', value: '', num: 0},
+          {name: '已结束', value: '', num: 0}
         ],
         saleTitle: SALE_TITLE,
         startTime: '',
@@ -174,6 +174,7 @@
 </script>
 
 <style scoped lang="stylus"  rel="stylesheet/stylus">
+  @import "~@design"
   .data-content
     flex: 1
     display: flex

@@ -175,6 +175,7 @@
 </script>
 
 <style scoped lang="stylus"  rel="stylesheet/stylus">
+  @import "~@design"
   .data-content
     flex: 1
     display: flex
