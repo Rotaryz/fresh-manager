@@ -786,7 +786,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
-              .dispatch('leader/getDeliveryOrder', {page: 1, shopId: ''})
+              .dispatch('leader/getDeliveryOrder', {page: 1, shopId: '', startTime: '', endTime: ''})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
