@@ -120,7 +120,7 @@
                      @blur="numBlur(index)"
               >
               <img src="./icon-ride@2x.png" alt="" class="icon">
-              <span class="text">大于等于</span>
+              <span class="text">大于{{index === 0 ? '等于' : ''}}</span>
             </div>
             <div class="right">
               <input v-model="item.rate" type="text" class="right-input" @blur="rateBlur(index)">
