@@ -285,7 +285,7 @@ export default [
         name: 'new-collage',
         component: () => lazyLoadView(import('@pages/new-collage/new-collage')),
         meta: {
-          titles: ['商城', '活动', '活动管理', '活动'],
+          titles: ['商城', '活动', '活动管理', '拼团'],
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {

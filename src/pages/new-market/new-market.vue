@@ -749,19 +749,11 @@
       // 翻页
       async _getMoreGroup(page) {
         this.page = page
-        if (this.modalType === 'coupon') {
-          await this._getCouponList()
-        } else {
-          await this._getGroupList()
-        }
+        await this._getGroupList()
       },
       async _getMoreCoupon(page) {
         this.page = page
-        if (this.modalType === 'coupon') {
-          await this._getCouponList()
-        } else {
-          await this._getGroupList()
-        }
+        await this._getCouponList()
       },
       // 保存优惠券数据
       _saveActivity() {
