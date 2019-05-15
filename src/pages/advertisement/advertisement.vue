@@ -636,15 +636,31 @@
     overflow: hidden
     padding-bottom: 40px
     .content-header
+      border-bottom-1px($color-line)
       display: flex
       align-items: center
+      height: 60px
+      position: relative
+      box-sizing: border-box
+      text-indent: 13px
+      &:before
+        content: ''
+        position: absolute
+        width: 3px
+        height: 14px
+        background: $color-main
+        border-radius: 2px
+        col-center()
+        left: 0
       .content-title
-        font-size: 16px
-      .content-sub
-        font-size: 14px
-        margin-left: 10px
-        color: #acacac
+        color: $color-text-main
         font-family: $font-family-regular
+        font-size: $font-size-16
+      .content-sub
+        color: $color-text-assist
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        text-indent: 10px
     .advertisement-btn
       margin: 50px 0 0 0
       display: flex

@@ -9,22 +9,96 @@
               <div class="banner">
                 <carousel :autoplaySpeed="3000"
                           arrow="never"
-                          :height="104"
+                          :height="117"
                           :autoplay="true"
                           :radiusDot="true"
                           dots="none"
                           @on-change="_getBanner"
                 >
                   <carousel-item v-for="(item, index) in bannerList" :key="index">
-                    <div class="carousel" :class="{'carousel-active' :bannerIndex === index, 'carousel-none': !item.image_url}" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
-                      <img v-if="!item.image_url" src="./icon-picmr@2x.png" class="none-img">
-                    </div>
+                    <!--                    <div class="carousel" :class="{'carousel-active' :bannerIndex === index, 'carousel-none': !item.image_url}" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">-->
+                    <!--                      <img v-if="!item.image_url" src="./icon-picmr@2x.png" class="none-img">-->
+                    <!--                    </div>-->
+                    <img v-if="item.image_url" class="carousel" :src="item.image_url" alt="">
+                    <img v-else src="./icon-picmr@2x.png" class="carousel">
                   </carousel-item>
                 </carousel>
               </div>
             </div>
           </div>
-
+          <!--商品分类-->
+          <ul v-if="cmsIdx === 0" class="goods-classify-wrapper">
+            <li v-for="(item, index) in 9"
+                :key="index"
+                class="classify-item"
+                :class="{'next-row': index > 4}"
+            >
+              <img src="" alt="">
+              <p>实力蔬菜</p>
+            </li>
+          </ul>
+          <!--          限时抢购-->
+          <section v-if="cms.module_name === 'activity_fixed'"
+                   class="flash-wrapper un-touch"
+                   :class="{'touch': comType === cms.module_name}"
+                   @click="_setType(cms)"
+          >
+            <nav class="tab-wrapper">
+              <img class="logo" src="./pic-qgtitle@2x.png" alt="">
+              <template v-for="(val, ind) in cms.content_data.list">
+                <div
+                  v-if="ind < 2"
+                  :key="ind"
+                  class="button-wrapper active"
+                  :class="{active: ind === 0}"
+                >
+                  <p class="title">{{val.at}}</p>
+                  <p class="date">{{val.at_str}}</p>
+                </div>
+              </template>
+              <div class="more-wrapper">
+                <p>更多</p>
+                <img src="./icon-pressed@2x.png" alt="">
+              </div>
+            </nav>
+            <ul v-if="activityGoodsList && activityGoodsList.length"
+                class="goods-list-wrapper"
+            >
+              <template v-for="(item, index) in activityGoodsList">
+                <li :key="index"
+                    class="goods-item-wrapper"
+                >
+                  <div class="goods-image">
+                    <img v-if="item.goods_cover_image"
+                         class="goods-img"
+                         :src="item.goods_cover_image"
+                         alt=""
+                    >
+                    <img class="label" src="./pic-label_qg@2x.png" alt="">
+                  </div>
+                  <p class="title">超值特新鲜柠</p>
+                  <div class="money-wrapper">
+                    <p class="m-int">10</p>
+                    <p class="m-dot">.8</p>
+                    <p class="m-unit">元</p>
+                    <p class="m-origin">12元</p>
+                  </div>
+                </li>
+              </template>
+            </ul>
+            <ul v-else
+                class="goods-list-wrapper"
+            >
+              <template v-for="(item, index) in 4">
+                <li :key="index"
+                    class="goods-item-wrapper empty"
+                >
+                  <img class="goods-image empty" src="./icon-picmr@2x.png" alt="">
+                  <p class="empty-text">未添加活动</p>
+                </li>
+              </template>
+            </ul>
+          </section>
           <!--限时抢购-->
           <div v-if="cms.module_name === 'activity_fixed'" class="goods-big-box">
             <div :class="{'touch': comType === cms.module_name}" class="goods-small-box hand" @click="_setType(cms)">
@@ -61,64 +135,6 @@
                       <img src="./icon-picmr@2x.png" class="none-img">
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!--分类-->
-          <div v-if="cms.module_name === 'goods_cate'" class="nav-box">
-            <div class="nav-content no-line">
-              <div v-if="cms.content_data && cms.content_data.list && cms.content_data.list.length" class="nav-list">
-                <div v-for="(item, index) in cms.content_data.list" :key="index" class="nav-item"><img class="img" :src="item.image_url || require('./icon-all@2x.png')" alt=""><span class="text">{{item.name}}</span></div>
-              </div>
-
-              <div v-for="(item, index) in cateGoods" :key="index" class="pro-list">
-                <div class="goods-left">
-                  <div class="goods-left-img">
-                    <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
-                    <img v-else src="./icon-picmr@2x.png" class="item-img goods-none">
-                  </div>
-                  <div class="goods-left-icon">
-                    <img class="item-img" src="./icon-label@2x.png">
-                  </div>
-                </div>
-                <div class="goods-right">
-                  <div class="goods-right-top">
-                    <div class="title">{{item.name}}</div>
-                    <div v-if="item.describe" class="text-sub">{{item.describe}}</div>
-                  </div>
-                  <div class="add-box">
-                    <div class="add-box-left">
-                      <section class="left">
-                        <img src="./pic-price_bg@2x.png" class="text-group">
-                      </section>
-                      <div class="price-box">
-                        <div class="money">{{item.trade_price || 0}}</div>
-                        <div class="unit">元</div>
-                        <div class="lineation">{{item.original_price || 0}}元</div>
-                      </div>
-                    </div>
-                    <section v-if="item.usable_stock * 1 > 0" class="add-box-right">
-                      <div class="add-goods-btn">
-                        <img src="./icon-jia@2x.png" alt="" class="add-cart-icon">
-                        <span class="add-text">购物车</span>
-                      </div>
-                      <span class="sale-count">已售{{item.sale_count}}{{item.sale_unit || '斤'}}</span>
-                    </section>
-                    <div v-if="item.usable_stock * 1 <= 0" class="add-box-right" @click.stop>
-                      <div class="add-goods-btn add-goods-btn-active">
-                        <span class="add-text">已抢完</span>
-                      </div>
-                      <span class="sale-count">已售{{item.sale_count}}{{item.sale_unit || '斤'}}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="!cateGoods.length" class="no-goods">
-                <div v-for="(item) in [0, 1, 2]" :key="item" class="no-goods-item">
-                  <img src="./icon-picmr@2x.png" class="none-img">
                 </div>
               </div>
             </div>
@@ -178,7 +194,7 @@
       activityGoodsList: {
         type: Array,
         default: () => {
-          return []
+          return new Array(4).fill({})
         }
       }
     },
@@ -233,7 +249,152 @@
         max-height: 532px
         overflow-x: hidden
         &::-webkit-scrollbar
-          width: 0px
+          width: 0
+  // 商品分类
+  .goods-classify-wrapper
+    padding :17.5px 9.4px
+    display :flex
+    flex-direction :row
+    flex-wrap :wrap
+    .classify-item
+      width :20%
+      display :flex
+      flex-direction column
+      align-items :center
+      overflow :hidden
+      &.next-row
+        padding-top :9.6px
+      img
+        display inline-block
+        width :39.2px
+        background :#ccc
+        height :@width
+        text-align :center
+      p
+        width :100%
+        box-sizing :border-box
+        padding :0 1px
+        padding-top :7.9px
+        font-family: $font-family-regular
+        font-size: 9.41px;
+        color: #333333;
+        text-align: center;
+        line-height: 1
+        no-wrap()
+  // 限时抢购
+  .flash-wrapper
+    padding :0 9.4px
+    margin-bottom :20px
+    .goods-list-wrapper
+      height :134.8px
+      box-sizing :border-box
+      border:7px solid #FFE359
+      display :flex
+      flex-wrap :nowrap
+      overflow :hidden
+      .goods-item-wrapper
+        height :100%
+        margin-left :5.5px
+        width :71px
+        position :relative
+        &.empty
+          background :#f5f5f5
+          .goods-image
+            object-fit :contain
+          .empty-text
+            font-size :10px
+            text-align :center
+        .goods-image
+          margin-top :7.8px
+          width :71px
+          height :@width
+          object-fit :cover
+          position :relative
+          .goods-img
+            width :100%
+            height :@width
+            border-radius: 2.35px;
+          .label
+            width :20px
+            height :12.2px
+            position :absolute
+            left :0
+            bottom :@left
+        .title
+          padding-top :5px
+          width :100%
+          font-family: $font-family-regular
+          font-size: 10.19px;
+          color: #111111;
+          transform :scale(0.9)
+          no-wrap()
+        .money-wrapper
+          width :100%
+          display :flex
+          font-family: $font-family-medium
+          color:#FA7500
+          overflow :hidden
+          .m-int
+            font-size: 15px
+            transform :scale(0.8)
+            position :relative
+            bottom :3px
+          .m-dot, .m-unit
+            position :relative
+            font-size: 10px;
+            bottom :1px
+          .m-dot
+            transform :scale(.9)
+          .m-unit
+            transform :scale(0.8)
+          .m-origin
+            font-family: $font-family-regular
+            font-size: 10px;
+            transform :scale(0.8)
+            color: #B7B7B7;
+            text-decoration :line-through
+    .tab-wrapper
+      display :flex
+      height :35.3px
+      align-items :center
+      background :#F7F9FA
+      .logo
+        width :60px
+        height :14.8px
+        margin-right :11px
+        margin-left :7.8px
+      .more-wrapper
+        flex: 1
+        display :flex
+        height :100%
+        align-items :center
+        justify-content :flex-end
+        padding-right :9.8px
+        p
+          font-family: $font-family-regular
+          font-size: 10.98px;
+          color: #111111;
+          transform scale(0.8)
+        img
+          width :4.3px
+          height :8.2px
+      .button-wrapper
+        width :64.3px
+        height :100%
+        color: #1D2023;
+        font-family: $font-family-medium
+        text-align :center
+        &.active
+          background :#FFE359
+        .title
+          padding-top :8px
+          font-size: 12.54px;
+          transform scale(1)
+          line-height :0.8
+        .date
+          font-size: 7.84px;
+          transform scale(0.6)
+          line-height :1
 
   .banner-box
     margin-top: 3px
@@ -252,33 +413,22 @@
       height: 100%
       box-sizing: border-box
     .banner
-      width: 293px
-      height: 104px
+      height: 117px
       .carousel
-        margin-left: 2px
-        margin-top: 5px
         border-radius: 2px
-        width: 289px
-        height: 94.6px
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-image: url('./icon-picmr@2x.png')
-      .carousel-active
-        margin-top: 0
-        height: 104px
-      .carousel-none
-        display: flex
-        align-items: center
-        justify-content: center
-        background: #F5F5F5
-        .none-img
-          width: 60px
+        width: 100%
+        height: 100%
+        object-fit :cover
 
   .touch
     overflow: hidden
     position: relative
     border: 2px solid $color-main !important
+
+  .un-touch
+    transition: all 0.2s
+    background-clip: padding-box
+    border: 2px dashed #D9D9D9
 
   .nav-content
     overflow: hidden
@@ -506,7 +656,6 @@
           background: #b7b7b7
   .goods-big-box
     border-radius: 6px
-    margin-top: 13px
   .goods-title-box
     box-sizing: border-box
     height: 46.6px
