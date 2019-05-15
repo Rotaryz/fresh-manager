@@ -162,7 +162,7 @@
         this.$refs.pages.beginPage()
         this.page = 1
         this.status = item.id
-        this.getDeliveryOrder({page: this.page, shopId: this.status, loading: false})
+        this.getDeliveryOrder({page: this.page, shopId: this.status, startTime: this.startTime, endTime: this.endTime, loading: false})
       },
       _selectFileType(index) {
         let arr = _.cloneDeep(this.deliveryOrder)
@@ -183,7 +183,7 @@
       },
       _addPage(page) {
         this.page = page
-        this.getDeliveryOrder({page: this.page, shopId: this.status, loading: false})
+        this.getDeliveryOrder({page: this.page, shopId: this.status, startTime: this.startTime, endTime: this.endTime, loading: false})
       }
     }
   }
