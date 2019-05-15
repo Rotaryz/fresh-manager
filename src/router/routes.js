@@ -309,6 +309,36 @@ export default [
           }
         }
       },
+      // 编辑新人特惠
+      {
+        path: 'activity-manage/edit-preference',
+        name: 'edit-preference',
+        component: () => lazyLoadView(import('@pages/edit-preference/edit-preference')),
+        meta: {
+          titles: ['商城', '活动', '活动管理', '编辑活动'],
+          variableIndex: 2,
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id || routeTo.query.editId
+            //  抢购详情
+            if (id) {
+              store
+                .dispatch('sale/getSaleDetail', {id})
+                .then((res) => {
+                  // if (!res) {
+                  //   next({name: '404'})
+                  // }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
+        }
+      },
       // 拓展活动
       {
         path: 'outreach-activity',
@@ -417,7 +447,8 @@ export default [
         name: 'edit-outreach',
         component: () => lazyLoadView(import('@pages/edit-outreach/edit-outreach')),
         meta: {
-          titles: ['商城', '拓展', '拓展活动', '新建活动'],
+          titles: ['商城', '拓展', '拓展活动', '活动'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -469,7 +500,8 @@ export default [
         name: 'new-coupon',
         component: () => lazyLoadView(import('@pages/new-coupon/new-coupon')),
         meta: {
-          titles: ['商城', '营销', '优惠券', '新建优惠券'],
+          titles: ['商城', '营销', '优惠券', '优惠券'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -521,7 +553,8 @@ export default [
         name: 'new-market',
         component: () => lazyLoadView(import('@pages/new-market/new-market')),
         meta: {
-          titles: ['商城', '营销', '营销计划', '新建营销计划'],
+          titles: ['商城', '营销', '营销计划', '营销计划'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id

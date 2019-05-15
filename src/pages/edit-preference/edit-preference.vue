@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{disable ? '查看活动' : '新建活动'}}</p>
+        <p class="identification-name">编辑活动</p>
       </div>
       <div class="function-btn">
       </div>
@@ -18,38 +18,9 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input">
+          <input value="新人特惠" type="text" readonly class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          活动时间
-        </div>
-        <date-picker
-          v-model="msg.start_at"
-          :editable="false"
-          class="edit-input-box"
-          type="datetime"
-          placeholder="开始时间"
-          style="width: 240px;height: 40px;border-radius: 1px"
-          valueFormat="yyyy-MM-dd HH:mm:ss"
-          @change="_getStartTime"
-        ></date-picker>
-        <div class="tip">至</div>
-        <date-picker
-          v-model="msg.end_at"
-          :editable="false"
-          class="edit-input-box"
-          type="datetime"
-          placeholder="结束时间"
-          style="width: 240px;height: 40px;border-radius: 1px"
-          valueFormat="yyyy-MM-dd HH:mm:ss"
-          @change="_getEndTime"
-        ></date-picker>
-        <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
-        <div :class="{'time-no-change':disable}"></div>
       </div>
       <!--<p @click="test">测试</p>-->
     </div>
@@ -64,7 +35,7 @@
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加商品
           </div>
-          <div class="remind">商品数量一共可添加10个</div>
+          <!--<div class="remind">商品数量一共可添加10个</div>-->
         </div>
         <div v-if="goodsList.length" class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
@@ -157,8 +128,6 @@
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {saleComputed, saleMethods} from '@state/helpers'
   import API from '@api'
-  import _ from 'lodash'
-  import {DatePicker} from 'element-ui'
 
   const PAGE_NAME = 'EDIT_RUSH'
   const TITLE = '新建查看今日抢购'
@@ -180,8 +149,7 @@
     },
     components: {
       DefaultModal,
-      DefaultConfirm,
-      DatePicker
+      DefaultConfirm
     },
     data() {
       return {
@@ -219,60 +187,20 @@
         disable: false,
         goodsList: [],
         msg: {
+          activity_name: '新人特惠',
           activity_type: 'fixed'
         },
         isSubmit: false
       }
     },
     computed: {
-      ...saleComputed,
-      testName() {
-        return this.msg.activity_name
-      },
-      testStartTime() {
-        return this.msg.start_at
-      },
-      testStartDate() {
-        // 开始时间规则判断
-        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 360000
-      },
-      testEndTime() {
-        return this.msg.end_at
-      },
-      testEndTimeReg() {
-        // 结束时间规则判断
-        return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
-      }
+      ...saleComputed
     },
-    watch: {},
     created() {
-      this.disable = this.$route.query.id
-      this.id = this.$route.query.id || this.$route.query.editId || null
-      if (this.id) {
-        let obj = _.cloneDeep(this.saleDetail)
-        this.goodsList = obj.activity_goods
-        if (this.goodsList) {
-          this.selectGoodsId = obj.activity_goods.map((item) => {
-            return item.goods_id
-          })
-        }
-        this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
-      }
       this._getFirstAssortment()
-
-    // this._getGoodsList()
-    },
-    async mounted() {
-    // this.classifyIndex = 0
     },
     methods: {
       ...saleMethods,
-      _getStartTime(time) {
-        this.msg.start_at = time
-      },
-      _getEndTime(time) {
-        this.msg.end_at = time
-      },
       // 选择商品
       async _getGoodsList() {
         let res = await API.Sale.getGoodsList({
@@ -360,10 +288,10 @@
         }
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 10) {
-            this.$toast.show('选择商品数量不能超过10个')
-            return
-          }
+          // if (this.selectGoodsId.length === 10) {
+          //   this.$toast.show('选择商品数量不能超过10个')
+          //   return
+          // }
           this.choeesGoods[index].selected = 2
           item.all_stock = item.usable_stock
           this.selectGoods.push(item)
@@ -417,10 +345,10 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过10个')
-          return
-        }
+        // if (this.selectGoodsId.length === 10 && item.selected !== 2) {
+        //   this.$toast.show('选择商品数量不能超过10个')
+        //   return
+        // }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         item.all_stock = item.usable_stock
@@ -465,8 +393,6 @@
       //  保存
       async _saveActivity() {
         if (this.disable || this.isSubmit) return
-        let checkForm = this.checkForm()
-        if (!checkForm) return
         let list = this.goodsList
         if (!list.length) {
           this.$toast.show('请添加商品')
@@ -508,9 +434,7 @@
           this.isSubmit = false
         }, 2000)
       },
-      test() {
-        console.log(this.testStartDate, this.testEndTimeReg)
-      },
+
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},

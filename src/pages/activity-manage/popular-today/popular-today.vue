@@ -7,7 +7,7 @@
           <p class="identification-name">今日爆款</p>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
+          <div class="btn-main">添加商品<span class="add-icon"></span></div>
         </div>
       </div>
       <div class="big-list">
@@ -29,9 +29,7 @@
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
-                <router-link tag="span" :to="'new-sale?editId=' + (item.id || 0)" append class="list-operation">复制活动</router-link>
               </div>
             </div>
           </div>
@@ -51,13 +49,16 @@
   import API from '@api'
 
   const SALE_TITLE = [
-    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
-    {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
-    {name: '商品', flex: 1.4, value: 'goods_count', type: 1},
-    {name: '销量', flex: 1, value: 'sale_count', type: 1},
-    {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
-    {name: '状态', flex: 1, value: 'status', type: 4},
-    {name: '操作', flex: 1.4, value: '', type: 5}
+    {name: '商品图片', flex: 1.5, value: 'activity_name', type: 1},
+    {name: '商品名称', flex: 1.5, value: 'start_at', type: 2},
+    {name: '商品编码', flex: 1.2, value: 'goods_count', type: 1},
+    {name: '商品分类', flex: 1, value: 'sale_count', type: 1},
+    {name: '基本单位', flex: 1, value: 'pay_amount', type: 3},
+    {name: '销售规格', flex: 1, value: 'status', type: 4},
+    {name: '销售单价', flex: 1, value: '', type: 5},
+    {name: '销售库存', flex: 1, value: '', type: 5},
+    {name: '活动库存', flex: 1, value: '', type: 5},
+    {name: '操作', flex: 1, value: '', type: 5}
   ]
   export default {
     components: {
@@ -123,14 +124,14 @@
     flex-direction: column
   .list-box
     .list-item:last-child
-      max-width: 150px
+      max-width: 30px
       padding-right: 0
   .list
     flex: 1
     .list-item
       font-size: $font-size-14
       &:last-child
-        max-width: 150px
+        max-width: 30px
         padding-right: 0
       .item
         text-overflow: ellipsis

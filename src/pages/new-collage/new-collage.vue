@@ -437,19 +437,6 @@
       _getEndTime(time) {
         this.msg.end_at = time
       },
-      _initDay() {
-        let arr = new Array(24).fill(1)
-        arr = arr.map((item, index) => {
-          return {
-            name: index + 1 + '小时',
-            id: index + 5
-          }
-        })
-        arr = [{name: '1分钟', id: 1}, {name: '5分钟', id: 2}, {name: '15分钟', id: 3}, {name: '30分钟', id: 4}].concat(
-          arr
-        )
-        this.duration.data = arr
-      },
       // 初始化数据
       _initData() {
         this.page = 1
@@ -769,6 +756,9 @@
         setTimeout(() => {
           this._back()
         }, 1000)
+        setTimeout(() => {
+          this.isSubmit = false
+        }, 2000)
       },
       test() {
         console.log(this.testStartDate, this.testEndTimeReg)
