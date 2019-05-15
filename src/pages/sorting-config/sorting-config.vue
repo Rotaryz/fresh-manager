@@ -170,7 +170,6 @@
         this.isChange = true
         let trueChange = false
         let data = this.dragList.map((item, idx) => {
-          console.log(item.sort,this.sortingConfig.list[idx].sort)
           if(item.sort !== this.sortingConfig.list[idx].sort){
             trueChange = true
           }
