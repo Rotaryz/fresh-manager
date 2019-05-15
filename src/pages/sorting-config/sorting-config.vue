@@ -4,7 +4,7 @@
       <!--列表tab工具栏-->
       <div class="identification">
         <div class="identification-page">
-          <img src="icon-warehousing@2x.png" class="identification-icon">
+          <img src="./icon-order_list2@2x.png" class="identification-icon">
           <p class="identification-name">配货位列表</p>
         </div>
         <div class="function-btn">
@@ -32,7 +32,7 @@
             <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
           </div>
           <template v-if="dragList.length">
-            <slick-list v-model="dragList" :distance="10" lockAxis="y" class="list drag-list" helperClass="list-content list-box drag-box"
+            <slick-list v-model="dragList" :distance="30" lockAxis="y" class="list drag-list" helperClass="list-content list-box drag-box"
                         @input="sortEndInput"
             >
               <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="list-content list-box">
@@ -168,13 +168,22 @@
       sortEndInput() {
         if (this.isChange) return
         this.isChange = true
+        let trueChange = false
         let data = this.dragList.map((item, idx) => {
+          console.log(item.sort,this.sortingConfig.list[idx].sort)
+          if(item.sort !== this.sortingConfig.list[idx].sort){
+            trueChange = true
+          }
           return {
             id: item.id,
             sort: this.sortingConfig.list[idx].sort
           }
         })
-        this._changeAllocationPostion(data)
+        if(trueChange){
+          this._changeAllocationPostion(data)
+        }else{
+          this.isChange = false
+        }
       },
       // 更新托拽列表
       updateList() {
