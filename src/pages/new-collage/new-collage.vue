@@ -18,7 +18,7 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input">
+          <input v-model="msg.activity_name" type="text" placeholder="请输入活动名称" class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -58,8 +58,11 @@
           <span class="start">*</span>
           成团有效时间
         </div>
+        <!--<div class="edit-input-box">
+          <input v-model="msg.activity_name" type="text" placeholder="选择时间" class="edit-input">
+        </div>-->
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input">
+          <base-drop-down :width="400" :height="40" :select="usefulTime" @setValue="_selectUsefulTime"></base-drop-down>
         </div>
         <span class="tip">小时</span>
         <div :class="{'text-no-change':disable}"></div>
@@ -71,7 +74,7 @@
           成团人数
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input">
+          <input v-model="msg.activity_name" type="number" placeholder="默认最低2人，请输入2~5人" class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -85,8 +88,8 @@
           <div class="checkbox">
             <p class="check-item" @click="changeCheck(2)"><span :class="['item-icon', {'checked': +msg.preferential_type === 2}]"></span>开启</p>
             <p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>关闭</p>
+            <span class="description">注：成团有效期失效前30分钟后如无论是否成团，系统均按成团处理</span>
           </div>
-          <span class="description">注：成团有效期失效前30分钟后如无论是否成团，系统均按成团处理</span>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -141,7 +144,7 @@
               <img class="icon" src="./icon-add@2x.png" alt="">
               添加商品
             </div>
-            <!--<div class="remind">商品数量一共可添加10个</div>-->
+            <div class="remind">添加商品数量{{goodsList.length}}/20个</div>
           </div>
           <div v-if="goodsList.length" class="rush-list-box">
             <div class="commodities-list-header com-list-box commodities-list-top">
@@ -314,6 +317,8 @@
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1, value: 'time'},
   ]
+
+  const COUNT = /[2-5]/
   export default {
     name: PAGE_NAME,
     page: {
@@ -354,6 +359,13 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
+        usefulTime: {
+          check: false,
+          show: false,
+          content: '请选择时间',
+          type: 'default',
+          data: [{name: '3'}, {name: '4'}, {name: '5'}] // 格式：{title: '55'}}
+        },
         parentId: 0,
         goodsPage: {
           total: 1,
@@ -380,6 +392,10 @@
         goodsList: [],
         msg: {
           activity_name: '',
+          start_at: '',
+          end_at: '',
+          useful_time: '',
+          count: '',
           activity_type: 'fixed',
           preferential_type: 2,
           coupon_id: ''
@@ -406,6 +422,12 @@
       testEndTimeReg() {
         // 结束时间规则判断
         return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
+      },
+      testUsefulTime() {
+        return this.msg.useful_time
+      },
+      testCount() {
+        return COUNT.test(this.msg.count)
       }
     },
     watch: {},
@@ -420,7 +442,20 @@
             return item.goods_id
           })
         }
-        this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
+        if (+obj.useful_time === 3) {
+          this.$set(this.usefulTime, 'content', '3')
+        } else if (+obj.useful_time === 4) {
+          this.$set(this.usefulTime, 'content', '4')
+        } else if (+obj.useful_time === 5) {
+          this.$set(this.usefulTime, 'content', '5')
+        }
+        this.msg = {
+          start_at: obj.start_at,
+          end_at: obj.end_at,
+          activity_name: obj.activity_name,
+          count: obj.count,
+          group_type: obj.group_type
+        }
       }
       this._getFirstAssortment()
 
@@ -436,6 +471,9 @@
       },
       _getEndTime(time) {
         this.msg.end_at = time
+      },
+      _selectUsefulTime(item) {
+        this.msg.useful_time = item.name
       },
       // 初始化数据
       _initData() {
@@ -724,6 +762,7 @@
           this.$toast.show('请添加商品')
           return
         }
+        this.msg.coupon_id = this.couponSelectItem.id
         for (let i in list) {
           if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
             this.$toast.show(`${list[i].name}信息不全`)
@@ -862,27 +901,15 @@
         width: 16px
         height: 16px
         border: 1px solid #E1E1E1
-        display: block
-        position: relative
-        margin-right: 5px
         border-radius: 50%
+        margin-right: 5px
         transition: all 0.3s
-        &:after
-          content: ""
-          border-radius: 50%
-          position: absolute
-          left: 50%
-          top: 50%
-          margin-left: -4px
-          margin-top: -4px
-          width: 8px
-          height: 8px
-          background: #FFF
-          transition: all 0.3s
+        display: flex
+        justify-content: center
+        align-items: center
       .checked
-        border: 1px solid $color-main
-        &:after
-          background: $color-main
+        border: 5px solid $color-main
+
     .edit-input-right
       margin-left: 14px
     .tip
@@ -900,6 +927,7 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
+      margin-left: 20px
     .time-no-change, .text-no-change
       position: absolute
       left: 103px

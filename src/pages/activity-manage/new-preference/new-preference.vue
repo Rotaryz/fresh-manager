@@ -3,9 +3,9 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-today_rob@2x.png" class="identification-icon">
+          <img src="./icon-new_people@2x.png" class="identification-icon">
           <p class="identification-name">新人特惠</p>
-          <p class="tip">（新人定义：从未在站点成功下过单的用户【不包括拓展活动订单】）</p>
+          <p class="tip">新人定义：从未在站点成功下过单的用户(不包括拓展活动订单)</p>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-preference" append class="btn-main">编辑活动<span class="add-icon"></span></router-link>
@@ -125,6 +125,7 @@
     flex-direction: column
   .identification-page .tip
     font-size: $font-size-14
+    margin-left: 10px
     font-family: $font-family-regular
     color: $color-text-assist
   .list-box
@@ -159,5 +160,18 @@
         .item-sub
           color: #333
   .btn-main
-    margin-right: 10px
+    &:hover
+      .add-icon
+        background-image: url('./icon-edit_activity2@2x.png')
+    .add-icon
+      width: 9px
+      height: 9px
+      background-image: url('./icon-edit_activity@2x.png')
+      background-repeat: no-repeat
+      background-size: 100% 100%
+      transition: all 0.3s
+
+      &:before,&:after
+        display: none
+
 </style>

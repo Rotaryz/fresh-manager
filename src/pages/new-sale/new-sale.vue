@@ -18,7 +18,7 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input">
+          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input" :class="{'disable-input': disable}">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -594,6 +594,9 @@
           color: $color-text-assist
           font-family: $font-family-regular
           font-size: $font-size-12
+      .disable-input
+        background: #F5F5F5
+        color: #ACACAC
     .edit-input-right
       margin-left: 14px
     .tip

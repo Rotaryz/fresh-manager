@@ -211,6 +211,4 @@
       .list-double-row
         .item-sub
           color: #333
-  .btn-main
-    margin-right: 10px
 </style>

@@ -3,7 +3,7 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-today_rob@2x.png" class="identification-icon">
+          <img src="./icon-today_hot@2x.png" class="identification-icon">
           <p class="identification-name">今日爆款</p>
         </div>
         <div class="function-btn">
@@ -96,8 +96,8 @@
   import API from '@api'
 
   const SALE_TITLE = [
-    {name: '商品图片', flex: 1.5, value: 'activity_name', type: 1},
-    {name: '商品名称', flex: 1.5, value: 'start_at', type: 2},
+    {name: '商品图片', flex: 0.8, value: 'activity_name', type: 1},
+    {name: '商品名称', flex: 1.6, value: 'start_at', type: 2},
     {name: '商品编码', flex: 1.2, value: 'goods_count', type: 1},
     {name: '商品分类', flex: 1, value: 'sale_count', type: 1},
     {name: '基本单位', flex: 1, value: 'pay_amount', type: 3},
@@ -398,8 +398,6 @@
       .list-double-row
         .item-sub
           color: #333
-  .btn-main
-    margin-right: 10px
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
