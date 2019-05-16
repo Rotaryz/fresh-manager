@@ -235,7 +235,9 @@
         }
         this.getMerchantOrderList()
         if (params.page === 1) {
-          this.$refs.paginationMerchant.beginPage()
+          this.$nextTick(function(){
+            this.$refs.paginationMerchant.beginPage()
+          })
         }
       },
       // 状态数据
