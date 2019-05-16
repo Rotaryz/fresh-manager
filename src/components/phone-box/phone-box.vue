@@ -16,9 +16,6 @@
                           @on-change="_getBanner"
                 >
                   <carousel-item v-for="(item, index) in bannerList" :key="index">
-                    <!--                    <div class="carousel" :class="{'carousel-active' :bannerIndex === index, 'carousel-none': !item.image_url}" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">-->
-                    <!--                      <img v-if="!item.image_url" src="./icon-picmr@2x.png" class="none-img">-->
-                    <!--                    </div>-->
                     <img v-if="item.image_url" class="carousel" :src="item.image_url" alt="">
                     <img v-else src="./icon-picmr@2x.png" class="carousel">
                   </carousel-item>
@@ -37,108 +34,218 @@
               <p>实力蔬菜</p>
             </li>
           </ul>
-          <!--          限时抢购-->
           <section v-if="cms.module_name === 'activity_fixed'"
-                   class="flash-wrapper un-touch"
+                   class="un-touch"
                    :class="{'touch': comType === cms.module_name}"
                    @click="_setType(cms)"
           >
-            <nav class="tab-wrapper">
-              <img class="logo" src="./pic-qgtitle@2x.png" alt="">
-              <template v-for="(val, ind) in cms.content_data.list">
+            <!--          限时抢购-->
+            <article class="flash-wrapper">
+              <nav class="tab-wrapper">
+                <img class="logo" src="./pic-qgtitle@2x.png" alt="">
+                <template v-for="(val, ind) in cms.content_data.list">
+                  <div
+                    v-if="ind < 2"
+                    :key="ind"
+                    class="button-wrapper active"
+                    :class="{active: ind === 0}"
+                  >
+                    <p class="title">{{val.at}}</p>
+                    <p class="date">{{val.at_str}}</p>
+                  </div>
+                </template>
+                <div class="more-wrapper">
+                  <p>更多</p>
+                  <img src="./icon-pressed@2x.png" alt="">
+                </div>
+              </nav>
+              <ul v-if="activityGoodsList && activityGoodsList.length"
+                  class="goods-list-wrapper"
+              >
+                <template v-for="(item, index) in activityGoodsList">
+                  <li :key="index"
+                      class="goods-item-wrapper"
+                  >
+                    <div class="goods-image">
+                      <img v-if="item.goods_cover_image"
+                           class="goods-img"
+                           :src="item.goods_cover_image"
+                           alt=""
+                      >
+                      <img class="label" src="./pic-label_qg@2x.png" alt="">
+                    </div>
+                    <p class="title">超值特新鲜柠</p>
+                    <div class="money-wrapper">
+                      <p class="m-int">10</p>
+                      <p class="m-dot">.8</p>
+                      <p class="m-unit">元</p>
+                      <p class="m-origin">12元</p>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+              <ul v-else
+                  class="goods-list-wrapper"
+              >
+                <template v-for="(item, index) in 4">
+                  <li :key="index"
+                      class="goods-item-wrapper empty"
+                  >
+                    <img class="goods-image empty" src="./icon-picmr@2x.png" alt="">
+                    <p class="empty-text">未添加活动</p>
+                  </li>
+                </template>
+              </ul>
+            </article>
+            <article class="active-wrapper">
+              <!--          tab-->
+              <ul class="tab-wrapper">
+                <li
+                  v-for="(item,index) in 5"
+                  :key="index"
+                  class="tab-item"
+                  :class="{active: !index}"
+                >
+                  <p>新人特惠</p>
+                  <div class="sub">
+                    <span>专属特权</span>
+                  </div>
+                </li>
+              </ul>
+<!--              团购-->
+              <nav class="panel">
+                <img class="banner-img" src="./pic-ptfx.png" alt="">
                 <div
-                  v-if="ind < 2"
-                  :key="ind"
-                  class="button-wrapper active"
-                  :class="{active: ind === 0}"
+                  v-for="(item, index) in 5"
+                  :key="index"
+                  class="goods-item-wrapper"
                 >
-                  <p class="title">{{val.at}}</p>
-                  <p class="date">{{val.at_str}}</p>
+                  <article class="goods-wrapper">
+                    <figure class="left">
+                      <img class="goods-image" src="./pic-ptfx.png" alt="">
+                      <img class="label" src="./icon-label@1x.png" alt="">
+                    </figure>
+                    <section class="right">
+                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
+                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
+                      <div class="money-wrapper">
+                        <p class="int">10</p>
+                        <p class="dot">.8</p>
+                        <p class="unit">元</p>
+                        <p class="origin">12元</p>
+                      </div>
+                      <p class="type-icon group">拼团价</p>
+                      <div class="button-group">
+                        <div class="button-wrapper">
+                          <p>去拼团</p>
+                        </div>
+                        <p class="number">已售3303斤</p>
+                      </div>
+                    </section>
+                  </article>
                 </div>
-              </template>
-              <div class="more-wrapper">
-                <p>更多</p>
-                <img src="./icon-pressed@2x.png" alt="">
-              </div>
-            </nav>
-            <ul v-if="activityGoodsList && activityGoodsList.length"
-                class="goods-list-wrapper"
-            >
-              <template v-for="(item, index) in activityGoodsList">
-                <li :key="index"
-                    class="goods-item-wrapper"
+              </nav>
+<!--              今日爆破-->
+              <nav class="panel">
+                <img class="banner-img" src="./pic-jrbk.png" alt="">
+                <div
+                  v-for="(item, index) in 5"
+                  :key="index"
+                  class="goods-item-wrapper"
                 >
-                  <div class="goods-image">
-                    <img v-if="item.goods_cover_image"
-                         class="goods-img"
-                         :src="item.goods_cover_image"
-                         alt=""
-                    >
-                    <img class="label" src="./pic-label_qg@2x.png" alt="">
-                  </div>
-                  <p class="title">超值特新鲜柠</p>
-                  <div class="money-wrapper">
-                    <p class="m-int">10</p>
-                    <p class="m-dot">.8</p>
-                    <p class="m-unit">元</p>
-                    <p class="m-origin">12元</p>
-                  </div>
-                </li>
-              </template>
-            </ul>
-            <ul v-else
-                class="goods-list-wrapper"
-            >
-              <template v-for="(item, index) in 4">
-                <li :key="index"
-                    class="goods-item-wrapper empty"
+                  <article class="goods-wrapper">
+                    <figure class="left">
+                      <img class="goods-image" src="./pic-ptfx.png" alt="">
+                      <img class="label" src="./icon-label@1x.png" alt="">
+                    </figure>
+                    <section class="right">
+                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
+                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
+                      <div class="money-wrapper">
+                        <p class="int">10</p>
+                        <p class="dot">.8</p>
+                        <p class="unit">元</p>
+                        <p class="origin">12元</p>
+                      </div>
+                      <p class="type-icon group">爆款价</p>
+                      <div class="button-group">
+                        <div class="button-wrapper">
+                          <p>+购物车</p>
+                        </div>
+                        <p class="number">已售3303斤</p>
+                      </div>
+                    </section>
+                  </article>
+                </div>
+              </nav>
+              <!--              新人特惠-->
+              <nav class="panel">
+                <img class="banner-img" src="./pic-xrth.png" alt="">
+                <div
+                  v-for="(item, index) in 5"
+                  :key="index"
+                  class="goods-item-wrapper"
                 >
-                  <img class="goods-image empty" src="./icon-picmr@2x.png" alt="">
-                  <p class="empty-text">未添加活动</p>
-                </li>
-              </template>
-            </ul>
+                  <article class="goods-wrapper">
+                    <figure class="left">
+                      <img class="goods-image" src="./pic-ptfx.png" alt="">
+                      <img class="label" src="./icon-label@1x.png" alt="">
+                    </figure>
+                    <section class="right">
+                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
+                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
+                      <div class="money-wrapper">
+                        <p class="int">10</p>
+                        <p class="dot">.8</p>
+                        <p class="unit">元</p>
+                        <p class="origin">12元</p>
+                      </div>
+                      <p class="type-icon group">新人价</p>
+                      <div class="button-group">
+                        <div class="button-wrapper">
+                          <p>+购物车</p>
+                        </div>
+                        <p class="number">已售3303斤</p>
+                      </div>
+                    </section>
+                  </article>
+                </div>
+              </nav>
+              <!--              猜你喜欢-->
+              <nav class="panel guess">
+<!--                <img class="banner-img" src="./pic-jrbk.png" alt="">-->
+                <div
+                  v-for="(item, index) in 5"
+                  :key="index"
+                  class="goods-item-wrapper"
+                >
+                  <article class="goods-wrapper">
+                    <figure class="left">
+                      <img class="goods-image" src="./pic-ptfx.png" alt="">
+                      <img class="label" src="./icon-label@1x.png" alt="">
+                    </figure>
+                    <section class="right">
+                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
+                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
+                      <div class="money-wrapper">
+                        <p class="int">10</p>
+                        <p class="dot">.8</p>
+                        <p class="unit">元</p>
+                        <p class="origin">12元</p>
+                      </div>
+                      <p class="type-icon group">团购价</p>
+                      <div class="button-group guess">
+                        <div class="button-wrapper">
+                          <p>+购物车</p>
+                        </div>
+                        <p class="number">已售3303斤</p>
+                      </div>
+                    </section>
+                  </article>
+                </div>
+              </nav>
+            </article>
           </section>
-          <!--限时抢购-->
-          <div v-if="cms.module_name === 'activity_fixed'" class="goods-big-box">
-            <div :class="{'touch': comType === cms.module_name}" class="goods-small-box hand" @click="_setType(cms)">
-              <!--title-->
-              <div class="goods-title-box">
-                <div class="goods-title-main">
-                  <div class="goods-title-left">
-                    <img src="./pic-time_qg@2x.png" class="logo">
-                  </div>
-                  <div class="goods-title-right">
-                    <div v-for="(val, ind) in cms.content_data.list" :key="ind" class="sale">
-                      <span class="time">{{val.at}}</span>
-                      <span class="text">{{val.at_str}}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="goods-box hand" :class="{'no-radius':cms.content_data.list.length === 1}">
-                <div v-if="activityGoodsList.length" class="content">
-                  <div v-for="(item, index) in activityGoodsList" :key="index" class="goods-list">
-                    <img src="./icon-qiang@2x.png" alt="" class="tag">
-                    <img v-if="item.goods_cover_image" class="item-img" :src="item.goods_cover_image">
-                    <img v-else src="./icon-picmr@2x.png" class="item-img goods-none">
-                    <div class="title">{{item.name}}</div>
-                    <div class="bottom">
-                      <span class="price">{{item.trade_price}}<em class="unit">元</em><del class="grey">{{item.original_price}}元</del></span>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="!activityGoodsList.length" class="none-content">
-                  <div v-for="(item, index) in new Array(4).fill(1)" :key="index" class="goods-none">
-                    <div class="none-box">
-                      <img src="./icon-picmr@2x.png" class="none-img">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -223,11 +330,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  .add-box-right
-    col-center()
-    text-align: center
-    right : 10PX
 
+  // 结构布局
   .phone-box
     margin: 0 76px 0 71px
     box-sizing: border-box
@@ -250,6 +354,172 @@
         overflow-x: hidden
         &::-webkit-scrollbar
           width: 0
+  // 活动tab
+  .active-wrapper
+    padding-top :10px
+    background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 100%)
+    // 各个活动
+    .panel
+      position :relative
+      padding: 47px 9px 0
+      &.guess
+        padding :0 9px 0
+      .banner-img
+        position absolute
+        left :0
+        top:0
+        width :100%
+      .goods-item-wrapper
+        padding-bottom :10px
+        .goods-wrapper
+          height :102px
+          display :flex
+          border-radius: 3px
+          position :relative
+          align-items :center
+          padding :0 8px
+          background :#FFFFFF
+          .right
+            flex: 1
+            overflow :hidden
+            padding-left :8px
+            height :100%
+            position :relative
+            background :#FFFFFF
+            .button-group
+              font-family: $font-family-regular
+              position absolute
+              right :0
+              bottom :5px
+              &.guess
+                .button-wrapper
+                  background: #73C200
+              &.group
+                .button-wrapper
+                  background: #FF8506
+              .button-wrapper
+                height :22px
+                padding :0 13px
+                background: #FF8506
+                border-radius: 22px
+                font-size: 10px;
+                display :flex
+                align-items :center
+                justify-content :center
+                color: #FFFFFF
+                transform :scale(0.9)
+              .number
+                position :relative
+                top: -2px
+                font-size: 10px
+                transform :scale(0.7)
+                color: #808080;
+                text-align :center
+            .type-icon
+              position absolute
+              left :8px
+              bottom :30px
+              height :18.5px
+              line-height :8.5px
+              border-radius: 12.5px
+              padding :4px 5px
+              font-family: $font-family-regular
+              font-size: 10px;
+              transform scale(0.8)
+              border: 1px solid transparent
+              &.group
+                background: rgba(250,117,0,0.10)
+                color: #FA7500;
+                border: 1px solid #FA7500
+            .title
+              width :100%
+              padding-top :10px
+              font-family: $font-family-medium
+              font-size: 12px
+              color: #111111
+              no-wrap()
+            .sub-title
+              width :100%
+              padding-top :0px
+              font-family: $font-family-regular
+              font-size: 10px;
+              color: #808080;
+              no-wrap()
+            .money-wrapper
+              display :flex
+              font-family: $font-family-medium
+              color: #FA7500;
+              padding-top :24px
+              .int
+                font-size: 19px
+              .dot
+                position :relative
+                top:7px
+                font-size :12px
+              .unit
+                padding-left :1px
+                position :relative
+                top:6px
+                font-size :10px
+                transform :scale(0.8)
+                font-family: $font-family-regular
+              .origin
+                padding-left :2px
+                position :relative
+                top:6px
+                font-family: $font-family-regular
+                font-size :10px
+                color: #B7B7B7
+                transform :scale(0.8)
+                text-decoration :line-through
+          .left
+            width :86px
+            height :@width
+            position :relative
+            .goods-image
+              width: 100%
+              height: 100%
+              object-fit :cover
+              background :#f5f5f5
+              border-radius :1px
+            .label
+              position :absolute
+              display :block
+              top:-1px
+              left :@top
+              width :25px
+              height :@width
+    // tab
+    .tab-wrapper
+      overflow :hidden
+      height :46px
+      padding :0 5px
+      .tab-item
+        display :inline-block
+        p
+          padding-top :7px
+          font-family: $font-family-medium
+          font-size: 12px;
+          color: #1D2023;
+          text-align: center;
+        .sub
+          display :block
+          font-family: $font-family-regular;
+          font-size: 10px;
+          color: #808080;
+          text-align: center;
+          line-height :14px
+          height :16px
+          border-radius :14px
+          transform :scale(0.7)
+          padding :2px 5px
+        &.active
+          p
+            color: #73C200
+          .sub
+            background : #73C200
+            color: #fff
+
   // 商品分类
   .goods-classify-wrapper
     padding :17.5px 9.4px
@@ -284,7 +554,6 @@
   // 限时抢购
   .flash-wrapper
     padding :0 9.4px
-    margin-bottom :20px
     .goods-list-wrapper
       height :134.8px
       box-sizing :border-box
@@ -308,11 +577,11 @@
           margin-top :7.8px
           width :71px
           height :@width
-          object-fit :cover
           position :relative
           .goods-img
             width :100%
             height :@width
+            object-fit :cover
             border-radius: 2.35px;
           .label
             width :20px
@@ -396,6 +665,7 @@
           transform scale(0.6)
           line-height :1
 
+  // 轮播图
   .banner-box
     margin-top: 3px
     background: $color-white
@@ -420,378 +690,16 @@
         height: 100%
         object-fit :cover
 
+  // 选中
   .touch
     overflow: hidden
     position: relative
     border: 2px solid $color-main !important
 
+  // 未选中
   .un-touch
     transition: all 0.2s
     background-clip: padding-box
     border: 2px dashed #D9D9D9
 
-  .nav-content
-    overflow: hidden
-    position: relative
-    margin-top: 15px
-    &:after
-      content: ''
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      transition: all 0.2s
-      box-sizing: border-box
-      border: 2px dashed #D9D9D9
-  .no-line:after
-    border:0
-    width: 0
-    height: 0
-
-  .goods-small-box
-    padding-bottom: 12px
-    background: #FFE359
-    overflow: hidden
-    position: relative
-    transition: all 0.2s
-    background-clip: padding-box
-    border: 2px dashed #D9D9D9
-  .nav-list
-    box-sizing: border-box
-    background: $color-white
-    width: 400%
-    height: 65px
-    border-bottom: 0.5px solid #E6E6E6
-    .nav-item
-      width: 50px
-      float: left
-      height: 65px
-      margin-right: 10px
-      text-align: center
-      position: relative
-      font-size: 11px
-      color: #111
-      font-family: $font-family-regular
-      &:first-child
-        font-size: 12.5px
-        font-family: $font-family-medium
-      &:first-child:before
-        content: ""
-        width: 24px
-        height: 2px
-        border-radius: 1px
-        background: #73C200
-        position: absolute
-        bottom: 0
-        row-center()
-      .img
-        width: 35px
-        height: 35px
-        margin-bottom: 5px
-        object-fit: cover
-        border-radius: 50%
-        display: block
-        margin: 0 auto
-      .text
-        margin-top: 4px
-        font-size: 12px
-        transform: scale(0.92)
-        display: block
-      .nav-top-box
-        width: 47px
-        height: @width
-        margin: 0 auto 5px
-        background: #F5F5F5
-        border-radius: 50%
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-      .nav-top-text
-        height: 12px
-        font-size: $font-size-12
-        font-family: $font-family-regular
-        color: #333
-        text-align: center
-
-  .no-goods
-    .no-goods-item
-      width: 270px
-      height: 85px
-      background: #F5F5F5
-      margin: 10px auto 0
-      display: flex
-      align-items: center
-      justify-content: center
-      &:last-child
-        margin-bottom: 10px
-    .none-img
-      width: 36px
-      height: 29px
-  .pro-list
-    height: 111px
-    layout(row)
-    border-bottom-1px(#e6e6e6)
-    align-items: center
-    &:last-child
-      border-none()
-    .goods-left
-      margin-left: 5px
-      position: relative
-      width: 86.7px
-      height: @width
-      margin-right: 12px
-      .goods-left-img
-        width: 100%
-        height: 100%
-        border-radius: 3px
-        .item-img
-          width: 100%
-          height: 100%
-          border-radius: 3px
-          display: block
-          object-fit: cover
-        .goods-none
-          width: 80px
-          height: 86px
-          object-fit: contain
-      .goods-left-icon
-        width: 28px
-        position: absolute
-        left: -3px
-        top: -3px
-        img
-          display: block
-          width: 28px
-          object-fit: cover
-    .goods-right
-      flex: 1
-      overflow: hidden
-      layout()
-      justify-content: space-between
-      min-height: 86.7px
-      .goods-right-top
-        width: 100%
-      .title
-        font-size: $font-size-13
-        font-family: $font-family-regular
-        color: $color-text-main
-        min-height: $font-size-13
-        line-height: 1.1
-        no-wrap()
-      .text-sub
-        font-size: $font-size-10
-        font-family: $font-family-regular
-        color: $color-text-sub
-        margin-bottom: 4px
-        no-wrap()
-        padding-right: 10px
-        box-sizing: border-box
-      .text-sales-box
-        layout(row)
-        .text-sales
-          font-size: $font-size-12
-          font-family: $font-family-regular
-          color: #808080
-          margin-bottom: 9px
-          border-radius: 10px
-          height: 15px
-          line-height: 14px
-          box-sizing: border-box
-          border-1px(#808080, 10px)
-          padding: 0 5px
-      .add-box
-        layout(row)
-        justify-content: space-between
-        align-items: center
-        position :relative
-        .left
-          layout(row)
-          .text-group
-            height: 17px
-        .price-box
-          layout(row)
-          align-items: flex-end
-          .money
-            font-family: $font-family-regular
-            color: #FF8300
-            font-size: $font-size-20
-            line-height: 1
-          .unit
-            font-family: $font-family-regular
-            color: #FF8300
-            font-size: $font-size-12
-            line-height: 1
-            margin-right: 2px
-            padding-bottom: 2.5px
-          .lineation
-            font-family: $font-family-regular
-            color: #B7B7B7
-            font-size: $font-size-12
-            text-decoration line-through
-            padding-bottom: 1px
-            line-height: 1
-            margin-left: 3.6px
-        .add-goods-btn
-          width: 60px
-          height: 20px
-          background: #73C200
-          display: flex
-          justify-content: center
-          align-items: center
-          border-radius: 20px
-          .add-cart-icon
-            width: 10px
-            height: 10px
-            object-fit: cover
-            margin-right: 2px
-          .add-text
-            font-size: $font-size-10
-            font-family: $font-family-regular
-            color: #fff
-        .sale-count
-          font-size: 10px
-          color: $color-text-assist
-        .add-goods-btn-active
-          background: #b7b7b7
-  .goods-big-box
-    border-radius: 6px
-  .goods-title-box
-    box-sizing: border-box
-    height: 46.6px
-    .goods-title-main
-      display: flex
-      justify-content: space-between
-      height: 45px
-      padding: 5px 7px
-      .goods-title-left
-        margin-top: 7px
-        width: 100px
-        display: flex
-        flex-direction: column
-        justify-content: center
-        line-height: 1.2
-        .logo
-          width: 74px
-          object-fit: cover
-      .goods-title-right
-        width: 165px
-        height: 41px
-        display: flex
-        align-items: center
-        justify-content: flex-end
-        .sale
-          font-size: $font-size-14
-          font-family: $font-family-medium
-          width: 55px
-          height: 39px
-          border-top-left-radius: 3px
-          border-top-right-radius: 3px
-          color: #1D2023
-          text-align: center
-          margin-top: 4px
-          padding: 5px 0
-          box-sizing: border-box
-        .time
-          display: block
-          height: 14px
-          line-height: 14px
-          margin: 0 auto
-        .text
-          display: block
-          font-family: $font-family-regular
-          font-size: 10px
-          line-height: 14px
-          transform: scale(0.8)
-        .sale:first-child
-          background: #FFF
-          background-size: 100% 100%
-  .goods-box
-    box-sizing: border-box
-    overflow: hidden
-    margin: 0 7px
-    border-radius: 5px
-    .content
-      background: #FFF
-      width: 200%
-      height: 140px
-      overflow: hidden
-    .goods-list
-      float: left
-      width: 72px
-      padding: 7.9px 0 10px 7.9px
-      height: 126px
-      box-sizing: content-box
-      align-items: center
-      position: relative
-      &:first-child
-        padding-left: 5.7px
-      .tag
-        width: 16px
-        height: 16px
-        position: absolute
-        left: 5.9px
-        top: 5.9px
-      .item-img
-        width: 71px
-        height: 71px
-        object-fit: cover
-        border-radius: 2.5px
-      .goods-none
-        object-fit: contain
-      .title
-        color: #111
-        font-size: 10.26px
-        overflow: hidden
-        white-space: nowrap
-        text-overflow: ellipsis
-        margin-top: 10px
-      .bottom
-        color: #FF8506
-        font-family: $font-family-medium
-        font-size: 13.42px
-        margin-top: 2px
-        .price
-          .unit
-            font-style: normal
-            font-size: 8px
-        .grey
-          color: #B7B7B7
-          display: inline-block
-          margin-left: 3.6px
-          font-size: 12px
-          vertical-align: bottom
-          transform: scale(0.8)
-      .add
-        width: 18.2px
-        height: 18.2px
-        icon-image(icon-shopcart)
-
-  .no-radius
-    border-top-right-radius: 0
-  .none-content
-    width: 400%
-    height:106px
-    .goods-none
-      float: left
-      margin-right: 5px
-      width: 83px
-      height: 83px
-      padding: 8.5px 0 15px
-      box-sizing: content-box
-      align-items: center
-      box-sizing: content-box
-      align-items: center
-      border-radius: 3px
-      .none-box
-        background: #F5F5F5
-        height: 100%
-        display: flex
-        align-items: center
-        justify-content: center
-      .none-img
-        width: 36px
-  .line
-    height: 7.9px
-    background #F7F7F7
 </style>

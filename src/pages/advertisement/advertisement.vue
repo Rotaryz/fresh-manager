@@ -56,12 +56,12 @@
           <div class="content-title">限时抢购</div>
         </div>
         <div>
-          <div class="edit-item edit-flex">
+          <nav v-for="(item, index) in 5" :key="index" class="edit-item edit-flex">
             <div class="left">显示活动<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
             <div class="switch" @click="switchBtn()">
               <base-switch :status="activityStatus" confirmText="开启" cancelText="关闭"></base-switch>
             </div>
-          </div>
+          </nav>
           <div class="submit-activity advertisement-btn">
             <div class="submit-activity-btn hand" @click="_editActivity()">保存并发布</div>
           </div>
