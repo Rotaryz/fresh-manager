@@ -155,7 +155,6 @@
                 <div class="com-list-item">{{item.name}}</div>
                 <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
                 <div class="com-list-item">¥{{item.original_price}}</div>
-                <div class="com-list-item">{{item.sale_count || 0}}</div>
                 <div class="com-list-item">
                   <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
                   <span v-if="item.original_price" class="small-money">¥</span>
@@ -163,9 +162,11 @@
                 <div class="com-list-item">
                   <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
                 </div>
+                <div class="com-list-item">{{item.usable_stock || 0}}</div>
                 <div class="com-list-item">
                   <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
                 </div>
+                <div class="com-list-item">{{item.sale_count || 0}}</div>
                 <div class="com-list-item">
                   <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
                 </div>
@@ -293,11 +294,12 @@
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
-    '原售价(元)',
-    '销量',
-    '抢购价(元)',
+    '划线价',
+    '拼团价',
     '每人限购',
-    '可用库存',
+    '商品库存',
+    '活动库存',
+    '销量',
     '排序',
     '操作'
   ]
@@ -401,7 +403,8 @@
           coupon_id: ''
         },
         isSubmit: false,
-        confirmType: ''
+        confirmType: '',
+        defaultCount: 2
       }
     },
     computed: {
@@ -414,7 +417,7 @@
       },
       testStartDate() {
         // 开始时间规则判断
-        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 360000
+        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 600000
       },
       testEndTime() {
         return this.msg.end_at
@@ -587,10 +590,10 @@
         }
         switch (item.selected) {
         case 0:
-          // if (this.selectGoodsId.length === 10) {
-          //   this.$toast.show('选择商品数量不能超过10个')
-          //   return
-          // }
+          if (this.selectGoodsId.length === 20) {
+            this.$toast.show('选择商品数量不能超过20个')
+            return
+          }
           this.choeesGoods[index].selected = 2
           item.all_stock = item.usable_stock
           this.selectGoods.push(item)
@@ -648,10 +651,10 @@
         if (item.selected === 1) {
           return
         }
-        // if (this.selectGoodsId.length === 10 && item.selected !== 2) {
-        //   this.$toast.show('选择商品数量不能超过10个')
-        //   return
-        // }
+        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
+          this.$toast.show('选择商品数量不能超过20个')
+          return
+        }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         item.all_stock = item.usable_stock
@@ -806,9 +809,11 @@
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
           {value: this.testStartTime, txt: '请选择活动开始时间'},
-          // {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
+          {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
           {value: this.testEndTime, txt: '请选择活动结束时间'},
-          // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
+          {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'},
+          {value: this.testUsefulTime, txt: '请选择成团有效时间'},
+          {value: this.testCount, txt: '请输入2~5人成团人数'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {

@@ -54,6 +54,7 @@
               <div class="com-list-item">
                 <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
+              <div class="com-list-item">{{item.usable_stock || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
               </div>
@@ -138,6 +139,7 @@
     '划线价',
     '新人价',
     '每日限购',
+    '商品库存',
     '活动库存',
     '销量',
     '排序',
@@ -289,10 +291,10 @@
         }
         switch (item.selected) {
         case 0:
-          // if (this.selectGoodsId.length === 10) {
-          //   this.$toast.show('选择商品数量不能超过10个')
-          //   return
-          // }
+          if (this.selectGoodsId.length === 20) {
+            this.$toast.show('选择商品数量不能超过20个')
+            return
+          }
           this.choeesGoods[index].selected = 2
           item.all_stock = item.usable_stock
           this.selectGoods.push(item)
@@ -346,10 +348,10 @@
         if (item.selected === 1) {
           return
         }
-        // if (this.selectGoodsId.length === 10 && item.selected !== 2) {
-        //   this.$toast.show('选择商品数量不能超过10个')
-        //   return
-        // }
+        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
+          this.$toast.show('选择商品数量不能超过20个')
+          return
+        }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         item.all_stock = item.usable_stock
