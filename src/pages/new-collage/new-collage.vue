@@ -74,7 +74,7 @@
           成团人数
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="number" placeholder="默认最低2人，请输入2~5人" class="edit-input">
+          <input v-model="msg.count" type="number" placeholder="默认最低2人，请输入2~5人" class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -93,7 +93,6 @@
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
-      <!--<p @click="test">测试</p>-->
     </div>
 
     <div class="add-list">
@@ -180,7 +179,7 @@
         </div>
       </div>
     </div>
-
+    <p @click="test">测试</p>
     <!-- 选择优惠券弹窗-->
     <default-modal ref="couponModal">
       <div slot="content" class="shade-box">
@@ -431,6 +430,10 @@
       },
       testCount() {
         return COUNT.test(this.msg.count)
+      },
+      testCouponList() {
+        let length = this.selectCouponList.length
+        return length > 0
       }
     },
     watch: {},
@@ -803,7 +806,23 @@
         }, 2000)
       },
       test() {
-        console.log(this.testStartDate, this.testEndTimeReg)
+        let list = this.goodsList
+        for (let i in list) {
+          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].person_all_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.') ||
+            +list[i].sort < 0
+          ) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
+            return
+          }
+        }
+        console.log(this.checkForm())
       },
       checkForm() {
         let arr = [
@@ -813,7 +832,8 @@
           {value: this.testEndTime, txt: '请选择活动结束时间'},
           {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'},
           {value: this.testUsefulTime, txt: '请选择成团有效时间'},
-          {value: this.testCount, txt: '请输入2~5人成团人数'}
+          {value: this.testCount, txt: '请输入2~5人成团人数'},
+          {value: this.testCouponList, txt: '请添加优惠券'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
