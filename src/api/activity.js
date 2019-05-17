@@ -1,0 +1,85 @@
+import request from '@utils/request'
+
+export default {
+  /**
+   * 今日爆款列表
+   * @param data
+   * @returns {*}
+   */
+  getPopularList(loading = true) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 今日爆款添加商品
+   * @param data
+   * @returns {*}
+   */
+  addPopular(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.put(url, data, loading)
+  },
+  /**
+   * 删除今日爆款
+   * @param data
+   * @returns {*}
+   */
+  delPopular(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.delete(url, data, loading)
+  },
+  /**
+   * 新人特惠活动列表
+   * @param data
+   * @returns {*}
+   */
+  getPreferenceGoods(loading = true) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 编辑新人特惠
+   * @param data
+   * @returns {*}
+   */
+  editPreference(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.post(url, data, loading)
+  },
+  /**
+   * 删除新人特惠
+   * @param data
+   * @returns {*}
+   */
+  delPreference(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.delete(url, data, loading)
+  },
+  /**
+   * 拼团列表
+   * @param data
+   * @returns {*}
+   */
+  getCollageList(data, loading = true) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 新建拼团活动
+   * @param data
+   * @returns {*}
+   */
+  newCollage(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.post(url, data, loading)
+  },
+  /**
+   * 删除拼团活动
+   * @param data
+   * @returns {*}
+   */
+  delCollage(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.delete(url, data, loading)
+  },
+}

@@ -36,9 +36,9 @@
           </div>
         </div>
       </div>
-      <div class="pagination-box">
+      <!--<div class="pagination-box">
         <base-pagination ref="pages" :pageDetail="salePage" @addPage="addPage"></base-pagination>
-      </div>
+      </div>-->
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
   </div>
@@ -81,16 +81,6 @@
     },
     methods: {
       ...saleMethods,
-      addPage(page) {
-        this.page = page
-        this.getSaleList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
-      },
       _deleteActivity(id) {
         this.delId = id
         this.$refs.confirm.show('确定删除该活动？')

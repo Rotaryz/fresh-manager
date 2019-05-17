@@ -35,9 +35,9 @@
           </div>
         </div>
       </div>
-      <div class="pagination-box">
+      <!--<div class="pagination-box">
         <base-pagination ref="pages" :pageDetail="salePage" @addPage="addPage"></base-pagination>
-      </div>
+      </div>-->
     </div>
 
     <!-- 选择商品弹窗-->
@@ -91,7 +91,7 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
-  import {saleComputed, saleMethods} from '@state/helpers'
+  import {activityComputed, activityMethods, saleComputed, saleMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
@@ -146,28 +146,19 @@
         selectGoodsId: [], // 所有选择的商品id
         goodsDelId: 0,
         goodsDelIndex: 0,
-        selectDelId: [],
-        goodsList: []
+        selectDelId: []
       }
     },
     computed: {
       ...saleComputed,
+      ...activityComputed
     },
     created() {
       this._getFirstAssortment()
     },
     methods: {
       ...saleMethods,
-      addPage(page) {
-        this.page = page
-        this.getSaleList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
-      },
+      ...activityMethods,
       _deleteActivity(id) {
         this.delId = id
         this.$refs.confirm.show('确定删除该活动？')
@@ -218,6 +209,9 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
+        this.selectGoodsId = this.popularList.map(item => {
+          return item.id
+        })
         this.choeesGoods = res.data.map((item, index) => {
           item.selected = 0
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
@@ -325,7 +319,7 @@
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         item.all_stock = item.usable_stock
-        this.goodsList.push(item)
+        // this.goodsList.push(item)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)
@@ -341,7 +335,7 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.goodsList = this.goodsList.concat(this.selectGoods)
+        // this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
         this._hideGoods()
       },

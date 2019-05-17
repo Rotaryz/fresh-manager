@@ -161,7 +161,7 @@
                 <div class="com-list-item">
                   <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
                 </div>
-                <div class="com-list-item">{{item.usable_stock || 0}}</div>
+                <div class="com-list-item">{{item.all_stock || 0}}</div>
                 <div class="com-list-item">
                   <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
                 </div>
@@ -179,7 +179,7 @@
         </div>
       </div>
     </div>
-    <p @click="test">测试</p>
+    <!--<p @click="test">测试</p>-->
     <!-- 选择优惠券弹窗-->
     <default-modal ref="couponModal">
       <div slot="content" class="shade-box">

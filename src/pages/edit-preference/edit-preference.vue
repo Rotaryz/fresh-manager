@@ -54,7 +54,7 @@
               <div class="com-list-item">
                 <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
-              <div class="com-list-item">{{item.usable_stock || 0}}</div>
+              <div class="com-list-item">{{item.all_stock || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
               </div>
@@ -128,7 +128,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {saleComputed, saleMethods} from '@state/helpers'
+  import {saleComputed, activityComputed, saleMethods, activityMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'EDIT_RUSH'
@@ -193,17 +193,22 @@
           activity_name: '新人特惠',
           activity_type: 'fixed'
         },
-        isSubmit: false
+        isSubmit: false,
+        used_goods: []
       }
     },
     computed: {
-      ...saleComputed
+      ...saleComputed,
+      ...activityComputed
     },
     created() {
       this._getFirstAssortment()
+      this._getPreferenceGoods()
+      this.used_goods = this.goodsList
     },
     methods: {
       ...saleMethods,
+      ...activityMethods,
       // 选择商品
       async _getGoodsList() {
         let res = await API.Sale.getGoodsList({

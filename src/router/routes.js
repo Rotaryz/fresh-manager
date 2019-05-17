@@ -288,25 +288,25 @@ export default [
           titles: ['商城', '活动', '活动管理', '拼团'],
           variableIndex: 3,
           marginBottom: 80,
-          beforeResolve(routeTo, routeFrom, next) {
-            let id = routeTo.query.id || routeTo.query.editId
-            //  抢购详情
-            if (id) {
-              store
-                .dispatch('sale/getSaleDetail', {id})
-                .then((res) => {
-                  // if (!res) {
-                  //   next({name: '404'})
-                  // }
-                  next()
-                })
-                .catch(() => {
-                  next({name: '404'})
-                })
-            } else {
-              next()
-            }
-          }
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   let id = routeTo.query.id || routeTo.query.editId
+          //   //  抢购详情
+          //   if (id) {
+          //     store
+          //       .dispatch('activity/getCollageDetail', {id})
+          //       .then((res) => {
+          //         // if (!res) {
+          //         //   next({name: '404'})
+          //         // }
+          //         next()
+          //       })
+          //       .catch(() => {
+          //         next({name: '404'})
+          //       })
+          //   } else {
+          //     next()
+          //   }
+          // }
         }
       },
       // 编辑新人特惠
@@ -317,26 +317,7 @@ export default [
         meta: {
           titles: ['商城', '活动', '活动管理', '编辑活动'],
           variableIndex: 2,
-          marginBottom: 80,
-          beforeResolve(routeTo, routeFrom, next) {
-            let id = routeTo.query.id || routeTo.query.editId
-            //  抢购详情
-            if (id) {
-              store
-                .dispatch('sale/getSaleDetail', {id})
-                .then((res) => {
-                  // if (!res) {
-                  //   next({name: '404'})
-                  // }
-                  next()
-                })
-                .catch(() => {
-                  next({name: '404'})
-                })
-            } else {
-              next()
-            }
-          }
+          marginBottom: 80
         }
       },
       // 拓展活动

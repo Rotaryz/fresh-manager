@@ -79,6 +79,13 @@ export const saleComputed = {
 
 export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', 'setSaleList'])
 
+// 活动管理
+export const activityComputed = {
+  ...mapGetters('activity', ['popularList', 'preferenceList', 'collageList', 'popularPage', 'preferencePage', 'collagePage'])
+}
+
+export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList'])
+
 // 拓展活动
 export const outreachComputed = {
   ...mapGetters('outreach', [
