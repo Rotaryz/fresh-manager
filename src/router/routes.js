@@ -1610,10 +1610,56 @@ export default [
         },
         component: () => lazyLoadView(import('@pages/sorting-task/sorting-task'))
       },
+      // 分拣任务
+      {
+        path: 'sorting-task/print-list/:id',
+        name: 'sorting-task-print-list',
+        meta: {
+          titles: ['供应链', '分拣', '分拣任务','打印列表'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('sorting/getSortingPrintList',routeFrom.params).then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/print-list/print-list'))
+      },
+      // 按订单  分拣任务明细
+      {
+        path: 'sorting-task/sorting-task-detail/order/:id',
+        name: 'sorting-task-detail-by-order',
+        meta: {
+          titles: ['供应链', '分拣', '分拣任务', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.commit('sorting/SET_PARAMS', {
+              ...routeTo.params,
+              type:'sortingTaskDetailByOrder',
+              page: 1,
+              limit: 10
+            })
+            store.dispatch('sorting/getSortingTaskDetailByOrder').then((res) => {
+              if (!res) {
+                return next({name: '404'})
+              }
+              return next()
+            })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/sorting-task-detail/sorting-task-detail-by-order'))
+      },
       // 分拣任务明细
       {
-        path: 'sorting-task/sorting-task-detail/:id/:goods_sku_code',
-        name: 'sorting-task-detail',
+        path: 'sorting-task/sorting-task-detail/goods/:id/:goods_sku_code',
+        name: 'sorting-task-detail-by-goods',
         meta: {
           titles: ['供应链', '分拣', '分拣任务', '配货明细'],
           beforeResolve(routeTo, routeFrom, next) {

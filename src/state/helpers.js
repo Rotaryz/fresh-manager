@@ -458,13 +458,14 @@ export const storeMethods = {
 }
 // todo 分拣任务
 export const sortingComputed = {
-  ...mapGetters('sorting', ['sortingTask', 'sortingConfig','sortingTaskDetail'])
+  ...mapGetters('sorting', ['sortingTask', 'sortingConfig','sortingTaskDetail','sortingTaskDetailByOrder','printList'])
 }
 
 export const sortingMethods = {
   ...mapActions('sorting', [
     'getSortingTaskList',
     'getSortingTaskDetail',
+    'getSortingDetailByOrderList',
     'getSortingConfigList'
   ]),
   ...mapMutations('sorting', ['SET_PARAMS']),

@@ -28,13 +28,43 @@ export const state = {
   sortingTaskDetail: {
     pickingDetail: {
       goods_name: "",
-      goods_sku_encoding:'',
+      goods_sku_encoding: '',
       position_name: '',
       merchant_num: '',
       wait_allocation_num: '',
-      sale_unit:''
+      sale_unit: ''
     },
     deliveryDetail: []
+  },
+  // TODO
+  sortingTaskDetailByOrder: {
+    filter: {
+      goods_category_id: '',
+      page: 1,
+      limit: 10,
+      start_time: '',
+      end_time: '',
+      keyword: "",
+      status: ""   // 待分拣
+    },
+    pageTotal: {
+      // 页码详情
+      total: 1,
+      per_page: 10,
+      total_page: 1
+    },
+    list: [],
+    pickingDetail: {
+      goods_name: "",
+      goods_sku_encoding: '',
+      position_name: '',
+      merchant_num: '',
+      wait_allocation_num: '',
+      sale_unit: ''
+    }
+  },
+  printList:{
+    list:[]
   }
 }
 
@@ -47,11 +77,18 @@ export const getters = {
   },
   sortingTaskDetail(state) {
     return state.sortingTaskDetail
-  }
+  },
+  sortingTaskDetailByOrder(state) {
+    return state.sortingTaskDetailByOrder
+  },
+  printList(state) {
+  return state.printList
+},
 }
 
 export const mutations = {
   SET_PARAMS(state, {type = 'sortingTask', ...params}) {
+    console.log(state[type])
     state[type].filter = {...state[type].filter, ...params}
   },
   SET_TASK_DETAIL(state, {type = 'deliveryDetail', value}) {
@@ -68,10 +105,11 @@ export const mutations = {
 
 export const actions = {
   // 拣货列表 √
-  getSortingTaskList({state, commit, dispatch}) {
-    return API.Sorting.getSortingTaskList(state.sortingTask.filter)
+  getSortingTaskList({state, commit, dispatch}, moudleName) {
+    let methodsName = moudleName === 'order' ? 'getSortingTaskList' : 'getSortingTaskList'
+    console.log('我是按' + moudleName)
+    return API.Sorting[methodsName](state.sortingTask.filter)
       .then((res) => {
-
         if (res.error !== app.$ERR_OK) {
           return false
         }
@@ -92,10 +130,35 @@ export const actions = {
         app.$loading.hide()
       })
   },
+  getSortingPrintList({state, commit, dispatch},params){
+    return API.Sorting.getSortingTaskList({
+      goods_category_id: '',
+      page: 1,
+      limit: 10,
+      start_time: '',
+      end_time: '',
+      keyword: "",
+      status: ""
+    })
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        commit('SET_LIST', {list: arr,type:'printList'})
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
   // 详情
-  getSortingTaskDetail({commit}, {id,...params}) {
+  getSortingTaskDetail({commit}, {id, ...params}) {
     return Promise.all([
-      API.Sorting.getSortingDeliveryDetail(id,params),
+      API.Sorting.getSortingDeliveryDetail(id, params),
       API.Sorting.getSortingPickingDetail(id)
     ]).then(res => {
       if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
@@ -112,9 +175,58 @@ export const actions = {
         app.$loading.hide()
       })
   },
+  // 按订单分拣详情
+  getSortingTaskDetailByOrder({state, commit}) {
+    // TODO
+    return Promise.all([
+      API.Sorting.getSortingPickingDetail(state.sortingTaskDetailByOrder.filter.id),
+      API.Sorting.getSortingTaskList(state.sortingTaskDetailByOrder.filter,state.sortingTaskDetailByOrder.filter.id)
+
+    ]).then(res => {
+      if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
+        return false
+      }
+      console.log(res,9999999999999999)
+      let pageTotal = {
+        total: res[1].meta.total || 0,
+        per_page: res[1].meta.per_page || 1,
+        total_page: res[1].meta.last_page || 1
+      }
+      commit('SET_PAGE_TOTAL', {pageTotal,type:'sortingTaskDetailByOrder'})
+      commit('SET_LIST', {list: res[1].data, type: 'sortingTaskDetailByOrder'})
+      return true
+    })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  // 分页
+  getSortingDetailByOrderList({commit},page) {
+    API.Sorting.getSortingTaskList({...state.sortingTaskDetailByOrder.filter,page}).then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        return false
+      }
+      let pageTotal = {
+        total: res.meta.total || 0,
+        per_page: res.meta.per_page || 1,
+        total_page: res.meta.last_page || 1
+      }
+      commit('SET_PAGE_TOTAL', {pageTotal,type:'sortingTaskDetailByOrder'})
+      commit('SET_LIST', {list: res.data, type: 'sortingTaskDetailByOrder'})
+      return true
+    }).catch(() => {
+      return false
+    })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
   // 配置列表
-  getSortingConfigList({state, commit, dispatch},{loading=true}) {
-    return API.Sorting.getAllocationList(state.sortingTask.filter,loading)
+  getSortingConfigList({state, commit, dispatch}, {loading = true}) {
+    return API.Sorting.getAllocationList(state.sortingTask.filter, loading)
       .then((res) => {
 
         if (res.error !== app.$ERR_OK) {
