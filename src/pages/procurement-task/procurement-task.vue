@@ -570,15 +570,7 @@
           this.$toast.show(res.message)
           return
         }
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
-        this.supplierSortList.push(...res.data)
+        this.supplierSortList = res.data
         this.$refs.selectSupplier.showModal()
       },
       async jumpTaskList(item) {
