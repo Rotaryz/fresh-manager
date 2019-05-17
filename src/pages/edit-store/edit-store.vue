@@ -74,7 +74,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import AddGoods from '@components/add-goods/add-goods'
+// import AddGoods from '@components/add-goods/add-goods'
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'

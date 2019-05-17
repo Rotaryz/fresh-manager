@@ -78,7 +78,13 @@
     methods: {
       ...storeMethods,
       _getAdjustOrder() {
-        this.getAdjustOrder({page: this.page, startTime: this.startTime, endTime: this.endTime, keyword: this.keyword, loading: false})
+        this.getAdjustOrder({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          loading: false
+        })
       },
       setTime(value) {
         this.startTime = value[0]

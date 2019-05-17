@@ -48,24 +48,36 @@
     },
     data() {
       return {
-        topListTilte: [{
-          name: '商品名称：', id: 'goods_name'
-        }, {
-          name: '商品编码：', id: 'goods_sku_encoding'
-        }, {
-          name: '存放库位：', id: 'position_name'
-        }, {
-          name: '配给商户数：', id: 'merchant_num'
-        }, {
-          name: '待配货数：', id: 'wait_allocation_num', type: 'number', after: 'sale_unit'
-        }]
+        topListTilte: [
+          {
+            name: '商品名称：',
+            id: 'goods_name'
+          },
+          {
+            name: '商品编码：',
+            id: 'goods_sku_encoding'
+          },
+          {
+            name: '存放库位：',
+            id: 'position_name'
+          },
+          {
+            name: '配给商户数：',
+            id: 'merchant_num'
+          },
+          {
+            name: '待配货数：',
+            id: 'wait_allocation_num',
+            type: 'number',
+            after: 'sale_unit'
+          }
+        ]
       }
     },
     computed: {
       ...sortingComputed
     },
-    created() {
-    }
+    created() {}
   }
 </script>
 

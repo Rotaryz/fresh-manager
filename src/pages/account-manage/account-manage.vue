@@ -136,7 +136,6 @@
     {title: '授权人员数量', key: 'sale_order_sn', flex: 0.4}
   ]
 
-
   export default {
     name: PAGE_NAME,
     page: {
@@ -212,7 +211,7 @@
           this.mobile = item.username
           this.isChange = true
           this.password = ''
-          this.roleList.forEach(roleItem => {
+          this.roleList.forEach((roleItem) => {
             item.admin_role_name.forEach((nameItem) => {
               if (roleItem.name === nameItem) {
                 roleItem.selected = true
@@ -227,7 +226,7 @@
       createRoad() {
         if (this.enterAccount) return
         let arr = []
-        this.roleList.forEach(item => {
+        this.roleList.forEach((item) => {
           if (item.selected) {
             arr.push(item.name)
           }
@@ -263,7 +262,7 @@
         this.enterAccount = true
         switch (this.accountType) {
         case 0:
-          API.Account.createAccount(data).then(res => {
+          API.Account.createAccount(data).then((res) => {
             this.$loading.hide()
             if (res.error !== this.$ERR_OK) {
               this.enterAccount = false
@@ -277,7 +276,7 @@
           })
           break
         case 1:
-          API.Account.editAccount(this.curItem.id, data).then(res => {
+          API.Account.editAccount(this.curItem.id, data).then((res) => {
             this.$loading.hide()
             if (res.error !== this.$ERR_OK) {
               this.enterAccount = false

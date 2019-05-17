@@ -615,8 +615,7 @@
       switchBtn() {
         this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
       },
-      _setSort() {
-      },
+      _setSort() {},
       _addPic(type, length, e) {
         this.uploadImg = type
         let arr = Array.from(e.target.files)
@@ -630,7 +629,7 @@
         this.$cos.uploadFiles(this.$cosFileType.IMAGE_TYPE, arr).then((resArr) => {
           this.showLoading = false
           let imagesArr = []
-          resArr.forEach(item => {
+          resArr.forEach((item) => {
             if (item.error !== this.$ERR_OK) {
               return this.$toast.show(item.message)
             }

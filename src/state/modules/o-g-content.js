@@ -141,4 +141,3 @@ function reqList({commit, state, rootState}, args) {
       app.$loading.hide()
     })
 }
-

@@ -78,12 +78,13 @@
     {tilte: '生成时间', key: 'created_at', flex: '1.5'},
     {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
-    {tilte: '下单数', key: 'sale_num', after: "sale_unit"},
-    {tilte: '待拣货数', key: 'sale_wait_pick_num', after: "sale_unit"},
-    {tilte: '缺货数', key: 'sale_out_of_num', after: "sale_unit"},
+    {tilte: '下单数', key: 'sale_num', after: 'sale_unit'},
+    {tilte: '待拣货数', key: 'sale_wait_pick_num', after: 'sale_unit'},
+    {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '操作', key: 'id', type: "operate", replace: "明细", class: 'operate'}]
+    {tilte: '操作', key: 'id', type: 'operate', replace: '明细', class: 'operate'}
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -91,7 +92,7 @@
     },
     data() {
       return {
-        datePlaceHolder: "选择生成日期",
+        datePlaceHolder: '选择生成日期',
         commodities: COMMODITIES_LIST,
         filterTaskFrist: {
           check: false,
@@ -108,14 +109,14 @@
           data: [{name: '全部', id: ''}]
         },
         // 拣货任务列表
-        statusTab: 1,  // 待分拣
+        statusTab: 1, // 待分拣
         statusList: [
           {name: '全部', value: '', num: 0},
           {name: '待分拣', value: 0, num: 0},
           {name: '已分拣', value: 1, num: 0}
         ],
         activeStatus: '',
-        exportUrl: ""
+        exportUrl: ''
       }
     },
     computed: {
@@ -132,7 +133,7 @@
       ...authComputed,
       ...sortingMethods,
       // 更新列表
-      _updateList(params={}, noUpdataStatus) {
+      _updateList(params = {}, noUpdataStatus) {
         this.SET_PARAMS(params)
         this.getSortingTaskList()
         if (!noUpdataStatus) {
@@ -158,12 +159,12 @@
           goods_category_id: this.sortingTask.filter.goods_category_id,
           keyword: this.sortingTask.filter.keyword
         }
-        API.Sorting.getStausData(params).then(res => {
+        API.Sorting.getStausData(params).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
           let data = res.data
-          let resData = data.map(item => {
+          let resData = data.map((item) => {
             return {name: item.status_str, value: item.status, num: item.statistic}
           })
           this.statusList = resData
@@ -175,7 +176,7 @@
       },
       // 分类数据
       _getClassifyList(params) {
-        return API.Sorting.getClassifyList(params).then(res => {
+        return API.Sorting.getClassifyList(params).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
@@ -183,19 +184,19 @@
         })
       },
       _getFristList() {
-        this._getClassifyList().then(res => {
-          if(!res) return false
-          this.filterTaskFrist.data = [{name: '全部', id: ''},...res.data]
+        this._getClassifyList().then((res) => {
+          if (!res) return false
+          this.filterTaskFrist.data = [{name: '全部', id: ''}, ...res.data]
         })
       },
       _setValueFrist(item) {
         this._updateList({goods_category_id: item.id || '', page: 1})
         this._getClassifyList({
-          'parent_id': item.id,
-        }).then(res => {
-          if(!res) return false
+          parent_id: item.id
+        }).then((res) => {
+          if (!res) return false
           this.filterTaskSecond.content = '全部'
-          this.filterTaskSecond.data = [{name: '全部', id: item.id},...res.data]
+          this.filterTaskSecond.data = [{name: '全部', id: item.id}, ...res.data]
         })
       },
       _setValueSecond(item) {
@@ -231,13 +232,13 @@
       // 导出配送单
       async _exportDeliveryOrder() {
         await API.Sorting.exportDeliveryOrder(this._getUrl())
-        setTimeout(()=>{
-          this._updateList({page:1})
-        },500)
+        setTimeout(() => {
+          this._updateList({page: 1})
+        }, 500)
       },
       _getMoreList(page) {
         this._updateList({page})
-      },
+      }
     }
   }
 </script>

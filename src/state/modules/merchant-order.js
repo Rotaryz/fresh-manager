@@ -11,13 +11,13 @@ export const state = {
     },
     list: [],
     detail: {
-      buyer_name: "",
-      order_sn: "",
-      created_at: "",
-      status: "",
-      status_str: "",
-      type_str: "",
-      parent_order_id: "",
+      buyer_name: '',
+      order_sn: '',
+      created_at: '',
+      status: '',
+      status_str: '',
+      type_str: '',
+      parent_order_id: '',
       details: []
     },
     filter: {
@@ -26,8 +26,8 @@ export const state = {
       start_time: '',
       end_time: '',
       status: 0,
-      keyword: ""
-    },
+      keyword: ''
+    }
   },
   consumerDetail: {
     pageTotal: {
@@ -39,17 +39,17 @@ export const state = {
     filter: {
       page: 1,
       limit: 10,
-      goods_sku_code: "",
-      parent_order_id: ""
+      goods_sku_code: '',
+      parent_order_id: ''
     },
     detail: {
       baseData: {
-        goods_name: "",
-        goods_sku_code: "",
-        goods_category: "",
-        sale_out_of_num: "",
-        sale_wait_pick_num: "",
-        sale_num: ""
+        goods_name: '',
+        goods_sku_code: '',
+        goods_category: '',
+        sale_out_of_num: '',
+        sale_wait_pick_num: '',
+        sale_num: ''
       },
       details: []
     }
@@ -80,8 +80,7 @@ export const getters = {
   },
   mergerDetail(state) {
     return state.mergerDetail
-  },
-
+  }
 }
 
 export const mutations = {
@@ -139,7 +138,8 @@ export const actions = {
         }
         commit('SET_MERCHANT_DETAIL', {value: res.data})
         return true
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
       })
       .finally(() => {
@@ -155,20 +155,21 @@ export const actions = {
     return Promise.all([
       API.MerchantOrder.getConsumerDetails(state.consumerDetail.filter),
       API.MerchantOrder.getConsumerDetailBase(params.id)
-    ]).then(res => {
-      if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
-        return false
-      }
-      commit('SET_CONSUMER_DETAIL', {details: res[0].data, baseData: res[1].data})
+    ])
+      .then((res) => {
+        if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
+          return false
+        }
+        commit('SET_CONSUMER_DETAIL', {details: res[0].data, baseData: res[1].data})
 
-      let pageTotal = {
-        total: res[0].meta.total,
-        per_page: res[0].meta.per_page,
-        total_page: res[0].meta.last_page
-      }
-      commit('SET_PAGE_TOTAL', {key: 'consumerDetail', pageTotal})
-      return true
-    })
+        let pageTotal = {
+          total: res[0].meta.total,
+          per_page: res[0].meta.per_page,
+          total_page: res[0].meta.last_page
+        }
+        commit('SET_PAGE_TOTAL', {key: 'consumerDetail', pageTotal})
+        return true
+      })
       .catch(() => {
         return false
       })
@@ -177,12 +178,11 @@ export const actions = {
       })
   },
   getConsumerDetailBase({state, commit}, {id}) {
-    return API.MerchantOrder.getConsumerDetailBase({id})
-      .then((res) => {
-        if (res.error !== app.$ERR_OK) {
-          return false
-        }
-      })
+    return API.MerchantOrder.getConsumerDetailBase({id}).then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        return false
+      }
+    })
   },
   getMergerOrderDetail({state, commit}, params) {
     return API.MerchantOrder.getMergerOrderDetail(params)
@@ -192,7 +192,8 @@ export const actions = {
         }
         commit('SET_MERGER_DETAIL', {value: res.data})
         return true
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
       })
       .finally(() => {

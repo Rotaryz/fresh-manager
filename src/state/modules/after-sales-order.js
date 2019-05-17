@@ -10,23 +10,23 @@ export const state = {
   },
   afterSalesList: [],
   afterSalesDetail: {
-    data:{
-      buyer_name: "",
-      order_sn: "",
-      created_at: "",
-      type_count: "",
-      status_str: "",
-      details:[]
+    data: {
+      buyer_name: '',
+      order_sn: '',
+      created_at: '',
+      type_count: '',
+      status_str: '',
+      details: []
     }
   },
   afterSalesFilter: {
     start_time: '',
     end_time: '',
-    keyword: "",
-    status: "",
-    page:1,
-    limit:10
-  },
+    keyword: '',
+    status: '',
+    page: 1,
+    limit: 10
+  }
 }
 
 export const getters = {
@@ -84,7 +84,7 @@ export const actions = {
         app.$loading.hide()
       })
   },
-// 详情
+  // 详情
   getAfterSalesOrderDetail({state, commit}, {id}) {
     return API.AfterSalesOrder.getAfterSalesOrderDetail({id})
       .then((res) => {
@@ -94,7 +94,8 @@ export const actions = {
 
         commit('SET_DETAIL', {value: res.data})
         return true
-      }).catch(() => {
+      })
+      .catch(() => {
         return false
       })
       .finally(() => {

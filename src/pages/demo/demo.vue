@@ -12,29 +12,18 @@
           <!--<div class="money">售价：12：00</div>-->
           <!--</div>-->
           <!--<img src="./2-140412125945415.jpg" alt="" class="img">-->
-          <img v-if="true" id="barcode" class="barcodes">
+          <img v-if="false" id="barcode" class="barcodes">
         </div>
-        <!--<div>-->
-        <!--<p class="name">巧克力饼干</p>-->
-        <!--<div class="msg">-->
-        <!--<div class="content">原味</div>-->
-        <!--<div class="money">售价：30：00</div>-->
-        <!--</div>-->
-        <!--<img :src="img" class="barcodes">-->
-        <!--</div>-->
-        <!--<p>锄禾日当午</p>-->
-        <!--<p>汗滴禾下土 </p>-->
-        <!--<p>谁知盘中餐</p>-->
-        <!--<p>粒粒皆辛苦</p>-->
-        <!--<img src="http://img.atobo.com/ProductImg/EWM/UWeb/2/3/8/1/5693/23815693/1.gif" class="img">-->
       </div>
     </div>
     <button v-print="'#printTest'">打印</button>
+
     <!--<section ref="print">-->
     <!--打印内容-->
     <!--<div class="no-print">不要打印我</div>-->
     <!--</section>-->
     <!--<button @click="printAll">打印</button>-->
+    <div></div>
   </div>
 </template>
 
@@ -43,6 +32,7 @@
   import JsBarcode from 'jsbarcode'
 
   const PAGE_NAME = 'DEMO'
+
   const TITLE = '模板'
   export default {
     name: PAGE_NAME,

@@ -17,8 +17,8 @@ export const state = {
       limit: 10,
       start_time: '',
       end_time: '',
-      keyword: "",
-      status: 0   // 待分拣
+      keyword: '',
+      status: 0 // 待分拣
     }
   },
   sortingConfig: {
@@ -27,12 +27,12 @@ export const state = {
   },
   sortingTaskDetail: {
     pickingDetail: {
-      goods_name: "",
-      goods_sku_encoding:'',
+      goods_name: '',
+      goods_sku_encoding: '',
       position_name: '',
       merchant_num: '',
       wait_allocation_num: '',
-      sale_unit:''
+      sale_unit: ''
     },
     deliveryDetail: []
   }
@@ -71,7 +71,6 @@ export const actions = {
   getSortingTaskList({state, commit, dispatch}) {
     return API.Sorting.getSortingTaskList(state.sortingTask.filter)
       .then((res) => {
-
         if (res.error !== app.$ERR_OK) {
           return false
         }
@@ -93,18 +92,16 @@ export const actions = {
       })
   },
   // 详情
-  getSortingTaskDetail({commit}, {id,...params}) {
-    return Promise.all([
-      API.Sorting.getSortingDeliveryDetail(id,params),
-      API.Sorting.getSortingPickingDetail(id)
-    ]).then(res => {
-      if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
-        return false
-      }
-      commit('SET_TASK_DETAIL', {value: res[0].data})// 配送
-      commit('SET_TASK_DETAIL', {value: res[1].data, type: 'pickingDetail'})// 拣货
-      return true
-    })
+  getSortingTaskDetail({commit}, {id, ...params}) {
+    return Promise.all([API.Sorting.getSortingDeliveryDetail(id, params), API.Sorting.getSortingPickingDetail(id)])
+      .then((res) => {
+        if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
+          return false
+        }
+        commit('SET_TASK_DETAIL', {value: res[0].data}) // 配送
+        commit('SET_TASK_DETAIL', {value: res[1].data, type: 'pickingDetail'}) // 拣货
+        return true
+      })
       .catch(() => {
         return false
       })
@@ -113,10 +110,9 @@ export const actions = {
       })
   },
   // 配置列表
-  getSortingConfigList({state, commit, dispatch},{loading=true}) {
-    return API.Sorting.getAllocationList(state.sortingTask.filter,loading)
+  getSortingConfigList({state, commit, dispatch}, {loading = true}) {
+    return API.Sorting.getAllocationList(state.sortingTask.filter, loading)
       .then((res) => {
-
         if (res.error !== app.$ERR_OK) {
           return false
         }

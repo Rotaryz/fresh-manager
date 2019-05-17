@@ -153,13 +153,11 @@
         this._setDownUrl(item, DISS_EXPORT)
       },
       async _statistic() {
-        let res = await API.Store.entryOrdersStatistic(
-          {
-            tart_time: this.time[0],
-            end_time: this.time[1],
-            keyword: this.keyWord
-          }
-        )
+        let res = await API.Store.entryOrdersStatistic({
+          tart_time: this.time[0],
+          end_time: this.time[1],
+          keyword: this.keyWord
+        })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
         for (let key in this.statistic) {
           let index = this.dispatchSelect.findIndex((item) => item.key === key)

@@ -57,7 +57,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import {DatePicker} from 'iview'
+// import {DatePicker} from 'iview'
   import _ from 'lodash'
   import API from '@api'
   import {productComputed} from '@state/helpers'

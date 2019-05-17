@@ -161,13 +161,12 @@
       this.select = obj
       this.statusArray.push(obj)
       if (this.groupList[0].list.length) {
-        this.groupList[0].list.forEach(item => {
+        this.groupList[0].list.forEach((item) => {
           this.statusArray.push({
             currentId: item.id,
             parentId: item.parent_id
           })
         })
-
       }
       this.changeTab({current: this.groupList[0], parentObj: this.groupList[0]})
     },
@@ -186,7 +185,13 @@
       },
       handleAddDepartment(position) {
         this.setAddPosition({position})
-        this.handleModal({isShow: true, title: '添加公司', useType: 'addDepartment', modalType: 'addDepartment', maxLength: 8})
+        this.handleModal({
+          isShow: true,
+          title: '添加公司',
+          useType: 'addDepartment',
+          modalType: 'addDepartment',
+          maxLength: 8
+        })
       },
       handleChangeStatus(args) {
         let flag = false

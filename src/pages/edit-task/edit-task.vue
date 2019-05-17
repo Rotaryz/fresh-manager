@@ -79,8 +79,9 @@
       this.supplier_name = this.taskList[0] ? this.taskList[0].supplier : ''
       this.supplier_id = this.taskList[0] ? this.taskList[0].supplier_id : ''
       this.taskList.forEach((item) => {
-        item.purchase_num = (item.plan_num - item.finish_num) > 0 ? (item.plan_num - item.finish_num).toFixed(2) : 0
-        item.base_num = (item.plan_base_num - item.finish_base_num) > 0 ? (item.plan_base_num - item.finish_base_num).toFixed(2) : 0
+        item.purchase_num = item.plan_num - item.finish_num > 0 ? (item.plan_num - item.finish_num).toFixed(2) : 0
+        item.base_num =
+          item.plan_base_num - item.finish_base_num > 0 ? (item.plan_base_num - item.finish_base_num).toFixed(2) : 0
         item.total = (item.purchase_num * item.purchase_price).toFixed(2)
       })
     },

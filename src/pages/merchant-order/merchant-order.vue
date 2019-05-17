@@ -105,15 +105,18 @@
     {title: '品类数', key: 'type_count', flex: 0.6, after: 'is_lack'},
     {title: '状态', key: 'status_str', flex: 0.6},
     // {title: '类型', key: 'type_str', flex: 0.8},
-    {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
+    {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
   ]
   const COMMODITIES_LIST2 = [
     {title: '下单时间', key: 'created_at', flex: 3},
     {title: '汇总订单号', key: 'order_sn', flex: 3},
     {title: '品类数', key: 'type_count', flex: 1},
-    {title: '操作', key: '', operation: '详情', flex: 1, class: "operate"}
+    {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
   ]
-  const ORDERSTATUS = [{text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')}, {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}]
+  const ORDERSTATUS = [
+    {text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')},
+    {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -123,9 +126,9 @@
       return {
         tabStatus: ORDERSTATUS,
         commodities: COMMODITIES_LIST,
-        datePlaceHolder: "选择下单日期",
+        datePlaceHolder: '选择下单日期',
         tabIndex: 0,
-        orderKeyword: "",
+        orderKeyword: '',
         signItem: {},
         dispatchSelect: [
           {name: '全部', value: '', num: 0},
@@ -134,8 +137,8 @@
           {name: '待配送', value: 2, num: 0},
           {name: '已完成', value: 3, num: 0}
         ],
-        statusTab: 2,// 待调度
-        datePlaceHolderMerger: "选择下单日期",
+        statusTab: 2, // 待调度
+        datePlaceHolderMerger: '选择下单日期',
         merger: {
           pageTotal: {
             // 页码详情
@@ -145,10 +148,10 @@
           },
           list: [],
           filter: {
-            start_time: "",
-            end_time: "",
+            start_time: '',
+            end_time: '',
             page: 1,
-            limit:10
+            limit: 10
           }
         }
       }
@@ -183,9 +186,9 @@
             limit: 10,
             start_time: '',
             end_time: '',
-            type: "",
+            type: '',
             status: 0,
-            keyword: ""
+            keyword: ''
           })
         } else {
           this._updateMergerList()
@@ -199,26 +202,28 @@
         }
       },
       _getMergeOrderslist() {
-        API.MerchantOrder.getMergeOrderslist(this.merger.filter).then(res => {
-          if (res.error !== this.$ERR_OK) {
+        API.MerchantOrder.getMergeOrderslist(this.merger.filter)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return false
+            }
+            this.merger.list = res.data
+            this.merger.pageTotal = {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+          })
+          .catch(() => {
             return false
-          }
-          this.merger.list = res.data
-          this.merger.pageTotal = {
-            total: res.meta.total,
-            per_page: res.meta.per_page,
-            total_page: res.meta.last_page
-          }
-        }).catch(() => {
-          return false
-        })
+          })
           .finally(() => {
             this.$loading.hide()
           })
       },
       // 时间选择器
       _changeTimeMerger(timeArr) {
-        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1],page:1})
+        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})
       },
       // 页面更改
       _setMergerPage(page) {
@@ -245,13 +250,13 @@
           start_time: this.merchantFilter.start_time,
           end_time: this.merchantFilter.end_time,
           keyword: this.merchantFilter.keyword,
-          type: this.merchantFilter.type,
+          type: this.merchantFilter.type
         }
-        API.MerchantOrder.getStausData(params).then(res => {
+        API.MerchantOrder.getStausData(params).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
-          this.dispatchSelect = res.data.map(item => {
+          this.dispatchSelect = res.data.map((item) => {
             return {
               name: item.status_str,
               value: item.status,
@@ -262,9 +267,12 @@
       },
       // 翻页
       setOrderPage(page) {
-        this._updateMerchantOrderList({
-          page
-        }, true)
+        this._updateMerchantOrderList(
+          {
+            page
+          },
+          true
+        )
       },
       // 时间
       changeTime(timeArr = ['', '']) {
@@ -276,10 +284,13 @@
       },
       // 状态
       setValue(item) {
-        this._updateMerchantOrderList({
-          status: item.value,
-          page: 1
-        }, true)
+        this._updateMerchantOrderList(
+          {
+            status: item.value,
+            page: 1
+          },
+          true
+        )
       },
       // 搜索按钮
       changeKeyword(keyword) {
@@ -287,7 +298,7 @@
           keyword,
           page: 1
         })
-      },
+      }
     }
   }
 </script>

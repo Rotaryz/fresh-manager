@@ -130,7 +130,10 @@
         this.codeIndex = index
         this.loadImg = true
         this.$refs.codeModal.showModal()
-        let res = await API.Outreach.getQrCode({path: `pages/recommend?s=${item.shop_id}&m=${item.activity_id}&e=${item.member_id}`, is_hyaline: false})
+        let res = await API.Outreach.getQrCode({
+          path: `pages/recommend?s=${item.shop_id}&m=${item.activity_id}&e=${item.member_id}`,
+          is_hyaline: false
+        })
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return
@@ -140,7 +143,7 @@
       },
       _close() {
         this.$refs.codeModal.hideModal()
-      },
+      }
     }
   }
 </script>

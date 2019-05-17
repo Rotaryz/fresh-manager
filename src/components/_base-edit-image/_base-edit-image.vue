@@ -66,9 +66,7 @@
       }
     },
     methods: {
-      _setSort() {
-
-      },
+      _setSort() {},
       _del(index) {
         if (!this.isEdit) {
           return
@@ -97,28 +95,28 @@
         this.$emit('getPic', res.data)
       },
       _addVideo(e) {
-        // this.showLoading = true
-        // let arr = Array.from(e.target.files)
-        // e.target.value = ''
-        // let size = (arr[0].size / 1024 / 1024)
-        // console.log(size)
-        // if (size > 30) {
-        //   this.showLoading = false
-        //   this.$emit('failFile', '视频大小不能超过30M')
-        //   return
-        // }
-        // this.$vod.uploadFiles(arr[0], curr => {
-        // }).then(res => {
-        //   this.showLoading = false
-        //   if (res.error !== ERR_OK) {
-        //     this.$emit('failFile', res.message)
-        //     return
-        //   }
-        //   this.$emit('successVideo', res.data)
-        // }).catch(err => {
-        //   this.showLoading = false
-        //   this.$emit('failFile', err)
-        // })
+      // this.showLoading = true
+      // let arr = Array.from(e.target.files)
+      // e.target.value = ''
+      // let size = (arr[0].size / 1024 / 1024)
+      // console.log(size)
+      // if (size > 30) {
+      //   this.showLoading = false
+      //   this.$emit('failFile', '视频大小不能超过30M')
+      //   return
+      // }
+      // this.$vod.uploadFiles(arr[0], curr => {
+      // }).then(res => {
+      //   this.showLoading = false
+      //   if (res.error !== ERR_OK) {
+      //     this.$emit('failFile', res.message)
+      //     return
+      //   }
+      //   this.$emit('successVideo', res.data)
+      // }).catch(err => {
+      //   this.showLoading = false
+      //   this.$emit('failFile', err)
+      // })
       }
     }
   }

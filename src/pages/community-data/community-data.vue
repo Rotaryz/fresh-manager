@@ -108,21 +108,21 @@
       _getData(value) {
         this.request.day_type = value
         this.getAllData()
-        // this.$refs.qualityData.drawLine()
-        // this.$refs.businessData.drawLine()
-        // this.$refs.groupData.drawLine()
+      // this.$refs.qualityData.drawLine()
+      // this.$refs.businessData.drawLine()
+      // this.$refs.groupData.drawLine()
       },
       // 切换质量数据tab栏
       changeQuality(item) {
-        // this.getQualityData(this.request)
+      // this.getQualityData(this.request)
       },
       // 切换运营数据tab栏
       changeBusiness(item) {
-        // this.getBusinessData(this.request)
+      // this.getBusinessData(this.request)
       },
       // 切换用户分组tab栏
       changeGroup(item) {
-        // this.getGroupData(this.request)
+      // this.getGroupData(this.request)
       },
       // 切换左侧tab栏
       changeCommunity(index, item) {
@@ -140,7 +140,7 @@
       async editGroup(item) {
         this.editGroupItem = item
         this.$refs.editModal.show(item)
-        // groupAccount帐号  groupName群名  personNumber群人数 id//
+      // groupAccount帐号  groupName群名  personNumber群人数 id//
       },
       async confirm(data) {
         this.name = data.name
@@ -150,7 +150,6 @@
           return
         }
         this.getCommunityList({page: 1})
-
       },
       getAllData() {
         this.getQualityData(this.request)

@@ -131,7 +131,11 @@
           //   this.$toast.show(`请选择批次号${this.stockListNow[i].batch_num}的存放库位`)
           //   return
           // }
-          data.push({batch_num: this.stockListNow[i].batch_num, warehouse_position_id: this.stockListNow[i].warehouse_position_id, shelf_life: this.stockListNow[i].shelf_life})
+          data.push({
+            batch_num: this.stockListNow[i].batch_num,
+            warehouse_position_id: this.stockListNow[i].warehouse_position_id,
+            shelf_life: this.stockListNow[i].shelf_life
+          })
         }
         this.isChange = false
         let res = await API.Store.editWarehouseBatch(this.$route.query.code, {batch: data})
