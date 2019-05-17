@@ -157,7 +157,7 @@
       <div slot="content" class="supplier-box">
         <div class="title-box">
           <div class="title">
-            选择供应商
+            生成采购单
           </div>
           <span class="close hand" @click="supplierCancel"></span>
         </div>
