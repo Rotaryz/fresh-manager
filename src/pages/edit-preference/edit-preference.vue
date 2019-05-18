@@ -131,7 +131,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'EDIT_RUSH'
-  const TITLE = '新建查看今日抢购'
+  const TITLE = '编辑新人特惠'
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
@@ -200,9 +200,9 @@
       ...saleComputed,
       ...activityComputed
     },
-    created() {
+    async created() {
       this._getFirstAssortment()
-      this.getPreferenceList()
+      await this.getPreferenceList()
       this.used_goods = this.goodsList
     },
     methods: {
@@ -231,6 +231,7 @@
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
+          let find = this.used_goods.find((val) => val.id === item.id)
           if (delIndex !== -1) {
             item.selected = 0
           }
@@ -239,6 +240,11 @@
           }
           if (goodsIndex !== -1) {
             item.selected = 2
+          }
+          if (find) { // 重置库存
+            item.all_stock = find.usable_stock + item.usable_stock
+          } else {
+            item.all_stock = item.usable_stock
           }
           item.trade_price = ''
           item.sort = 0
@@ -358,7 +364,16 @@
         }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
-        item.all_stock = item.usable_stock
+        // 判断选过的商品，总库存重置
+        // let find = this.used_goods.find(goods => goods.id === item.id)
+        // if (find) {
+        //   item.all_stock = find.usable_stock + item.usable_stock
+        // } else {
+        //   item.all_stock = item.usable_stock
+        // }
+        item.usable_stock = 0
+
+        this.addPreferenceList([item])
         this.goodsList.push(item)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
@@ -375,6 +390,19 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
+        // 判断选过的商品，总库存重置
+        // this.selectGoods = this.selectGoods.map(item => {
+        //   let find = this.used_goods.find(val => {
+        //     return item.id === val.id
+        //   })
+        //   item.all_stock = find.usable_stock + item.usable_stock
+        //   item.usable_stock = 0
+        // })
+        this.selectGoods = this.selectGoods.map(item => {
+          item.usable_stock = 0
+          return item
+        })
+        this.addPreferenceList(this.selectGoods)
         this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
         this._hideGoods()

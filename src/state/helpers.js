@@ -84,7 +84,7 @@ export const activityComputed = {
   ...mapGetters('activity', ['popularList', 'preferenceList', 'collageList', 'popularPage', 'preferencePage', 'collagePage'])
 }
 
-export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList'])
+export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList', 'addPreferenceList'])
 
 // 拓展活动
 export const outreachComputed = {

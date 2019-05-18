@@ -74,7 +74,7 @@
           成团人数
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.count" type="number" placeholder="默认最低2人，请输入2~5人" class="edit-input">
+          <input v-model="msg.count" type="number" placeholder="请输入2~5人" class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -288,8 +288,8 @@
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
 
-  const PAGE_NAME = 'EDIT_RUSH'
-  const TITLE = '拼团'
+  const PAGE_NAME = 'NEW_COLLAGE'
+  const TITLE = '新建拼团'
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
@@ -735,7 +735,8 @@
           coupon_name: this.keyword,
           page: this.page,
           limit: 6,
-          status: 1
+          status: 1,
+          preferential_type: 2
         }
         API.Coupon.getCouponList(data, false)
           .then(res => {
