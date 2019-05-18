@@ -1,6 +1,6 @@
 <template>
   <div class="procurement-task table">
-    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
+    <base-tab-select v-model="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
@@ -29,7 +29,8 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">拣货任务列表</p>
-          <base-status-tab :statusList="statusList" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
+          <base-status-nav :statusList="statusList" :value="sortingTask.filter.status"
+                           valueKey="status" labelKey="status_str" numKey="statistic" @change="_setStatus"></base-status-nav>
         </div>
         <div class="function-btn">
           <template v-if="!tabIndex">
@@ -123,7 +124,7 @@
     {tilte: '配货数量', key: 'sale_wait_pick_num', after: "sale_unit"},
     {tilte: '订单数量 ', key: 'sale_wait_pick_num', after: "sale_unit"},
     {tilte: '状态', key: 'sale_out_of_num'},
-    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id','goods_sku_code':'goods_sku_code'}, routerName: 'sorting-task-detail-by-order'}]
+    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id'}, routerName: 'sorting-task-detail-by-order'}]
   const COMMODITIES_LIST = [
     {tilte: '生成时间', key: 'created_at', flex: '1.5'},
     {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
@@ -139,7 +140,6 @@
     let year = nowDate.getFullYear()
     let month = nowDate.getMonth()+1
     let date = nowDate.getDate()
-
     return `${year}-${month}-${date}`
   }
   export default {
@@ -224,6 +224,7 @@
       }
     },
     created() {
+      this.tabIndex =  this.$route.params.tabIndex || 0
       this._getFristList()
       this._getStatusData()
     },
@@ -261,10 +262,10 @@
           start_time: '',
           end_time: '',
           goods_category_id: "",
-          status: 1,
+          status: 0,
           keyword: "",
         }
-        this.statusTab = 0
+        this.statusTab = 1
         this._updateList(params)
       },
       _getRouterUrl(item, row){
@@ -284,9 +285,7 @@
         if (!noUpdataStatus) {
           this._getStatusData()
         }
-        if(!params.keywords){
-          this.$refs.research._setText('')
-        }
+
         if (params.page === 1) {
           this.$refs.pagination.beginPage()
         }
@@ -314,15 +313,12 @@
             return false
           }
           let data = res.data
-          let resData = data.map(item => {
-            return {name: item.status_str, value: item.status, num: item.statistic}
-          })
-          this.statusList = resData
+          this.statusList = data
         })
       },
       // 列表状态栏选择
-      _setStatus(item) {
-        this._updateList({status: item.value, page: 1}, true)
+      _setStatus(val) {
+        this._updateList({status: val, page: 1}, true)
       },
       // 分类数据
       _getClassifyList(params) {

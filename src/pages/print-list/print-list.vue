@@ -16,14 +16,13 @@
     </div>
     <div class="back btn-group-wrap">
       <div class="back-cancel back-btn hand" @click="backBtn">返回</div>
-      <div class="back-btn back-submit hand" @click="printBtn">打印</div>
+      <div class="back-btn back-submit hand" v-print="'#list-content'">打印</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {sortingComputed} from '@state/helpers'
-  import printJS from 'print-js'
   const PAGE_NAME = 'PRINT_LSIT'
   const TITLE = '打印列表'
   export default {
@@ -41,18 +40,12 @@
     },
     methods: {
       backBtn() {
-        this.$router.go(-1)
-      },
-      printBtn() {
-        window.print()
-        printJS('list-content','html')
-        // printJS({
-        //   documentTitle:' ',
-        //   modalMessage:' ',
-        //   printable: ['https://printjs.crabbly.com/images/print-03.jpg', 'https://printjs.crabbly.com/images/print-03.jpg'],
-        //   type: 'image',
-        //   imageStyle:'50%;margin-bottom:20px;'
-        // })
+        this.$router.replace({
+          name:'sorting-task',
+          params:{
+            tabIndex:1
+          }
+        })
       }
     }
   }

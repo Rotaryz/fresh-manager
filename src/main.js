@@ -4,11 +4,12 @@ import router from '@router'
 import store from '@state/store'
 import '@components/_globals'
 import {Plugins} from '@utils/plugins'
+import Print from 'vue-print-nb'
 import 'iview/dist/styles/iview.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './design/date-picker.css'
-
 Vue.use(Plugins)
+Vue.use(Print)
 Vue.config.productionTip = process.env.NODE_ENV === 'production'
 
 if (window.Cypress) {
