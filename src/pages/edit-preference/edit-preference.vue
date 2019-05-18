@@ -430,7 +430,7 @@
         let list = this.goodsList
         if (!list.length) {
           this.$toast.show('请添加商品')
-          return
+          return false
         }
         for (let i in list) {
           if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
