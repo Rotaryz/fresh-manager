@@ -18,7 +18,7 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入活动名称" class="edit-input">
+          <input v-model="msg.activity_name" type="text" placeholder="请输入活动名称" maxlength="25" class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -391,7 +391,7 @@
           useful_time: '',
           count: '',
           activity_type: 'fixed',
-          preferential_type: 2,
+          preferential_type: 0,
           coupon_id: ''
         },
         isSubmit: false,
