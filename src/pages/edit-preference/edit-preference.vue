@@ -22,7 +22,6 @@
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
-      <!--<p @click="test">测试</p>-->
     </div>
 
     <div class="content-header">
@@ -68,9 +67,9 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
+    <!--<p @click="test">测试</p>-->
 
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModel">
@@ -203,7 +202,7 @@
     },
     created() {
       this._getFirstAssortment()
-      this._getPreferenceGoods()
+      this.getPreferenceList()
       this.used_goods = this.goodsList
     },
     methods: {
@@ -401,34 +400,15 @@
       //  保存
       async _saveActivity() {
         if (this.disable || this.isSubmit) return
-        let list = this.goodsList
-        if (!list.length) {
-          this.$toast.show('请添加商品')
-          return
-        }
-        for (let i in list) {
-          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
-            this.$toast.show(`${list[i].name}信息不全`)
-            return
-          } else if (
-            +list[i].trade_price < 0 ||
-            +list[i].person_all_buy_limit <= 0 ||
-            +list[i].usable_stock < 0 ||
-            (list[i].usable_stock + '').includes('.') ||
-            +list[i].sort < 0
-          ) {
-            this.$toast.show(`${list[i].name}输入数据有误`)
-            return
-          }
-        }
-        list.map((item) => {
+        if (!this.testGoods()) return
+        let list = this.goodsList.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
         })
-        let data = Object.assign({}, this.msg, {activity_goods: list})
-        let res = null
+
         this.isSubmit = true
-        res = await API.Sale.storeSale(data, true)
+        let data = Object.assign({}, this.msg, {activity_goods: list})
+        let res = await API.Sale.storeSale(data, true)
         this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
@@ -442,24 +422,33 @@
           this.isSubmit = false
         }, 2000)
       },
-
-      checkForm() {
-        let arr = [
-          {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testStartTime, txt: '请选择活动开始时间'},
-          // {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
-          {value: this.testEndTime, txt: '请选择活动结束时间'},
-          // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
-        ]
-        for (let i = 0, j = arr.length; i < j; i++) {
-          if (!arr[i].value) {
-            this.$toast.show(arr[i].txt)
+      test() {
+        console.log(this.testData())
+      },
+      // 测试已选择商品列表
+      testGoods() {
+        let list = this.goodsList
+        if (!list.length) {
+          this.$toast.show('请添加商品')
+          return
+        }
+        for (let i in list) {
+          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return false
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].trade_price > +list[i].original_price ||
+            +list[i].person_all_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.') ||
+            +list[i].sort < 0
+          ) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
             return false
           }
-          if (i === j - 1 && arr[i].value) {
-            return true
-          }
         }
+        return true
       },
       echangBase(item, index) {
         if (item.usable_stock > item.all_stock && !this.disable) {

@@ -49,7 +49,7 @@
           valueFormat="yyyy-MM-dd HH:mm:ss"
           @change="_getEndTime"
         ></date-picker>
-        <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
+        <!--<div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>-->
         <div :class="{'time-no-change':disable}"></div>
       </div>
 
@@ -81,7 +81,7 @@
 
       <div class="edit-item">
         <div class="edit-title">
-          <span class="start">*</span>
+          <!--<span class="start">*</span>-->
           模拟成团
         </div>
         <div class="edit-input-box">
@@ -339,13 +339,6 @@
         id: null,
         page: 1,
         choeesGoods: [],
-        duration: {
-          check: false,
-          show: false,
-          content: '选择时间',
-          type: 'default',
-          data: [] // 格式：{title: '55'}}
-        },
         assortment: {
           check: false,
           show: false,
@@ -363,7 +356,7 @@
         usefulTime: {
           check: false,
           show: false,
-          content: '请选择时间',
+          content: '选择时间',
           type: 'default',
           data: [{name: '3'}, {name: '4'}, {name: '5'}] // 格式：{title: '55'}}
         },
@@ -661,6 +654,7 @@
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         item.all_stock = item.usable_stock
+        item.usable_stock = 0
         this.goodsList.push(item)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
@@ -675,6 +669,7 @@
       _batchAddition() {
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
+          item.usable_stock = 0
           return item
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
@@ -709,20 +704,18 @@
         }
 
       },
-
       async _showGoodsModal() {
         if (this.disable) return
-        // this.groupSelectItem = []
         if (this.modalType === 'coupon') {
           this._initData()
           this.modalType = ''
-          // this.groupList = []
-        }
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModel.showModal()
-        if (this.modalType === 'coupon') {
+          await this._getGoodsList()
+          // 展示添加商品弹窗
+          this.$refs.goodsModel.showModal()
           this.$refs.goodsSearch.infoTextMethods()
+        } else {
+          await this._getGoodsList()
+          this.$refs.goodsModel.showModal()
         }
       },
       _cancelModal() {
@@ -761,37 +754,18 @@
       //  保存
       async _saveActivity() {
         if (this.disable || this.isSubmit) return
-        let checkForm = this.checkForm()
-        if (!checkForm) return
-        let list = this.goodsList
-        if (!list.length) {
-          this.$toast.show('请添加商品')
-          return
-        }
+        if (!this.checkForm()) return
+        if (!this.testGoods()) return
+
         this.msg.coupon_id = this.couponSelectItem.id
-        for (let i in list) {
-          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
-            this.$toast.show(`${list[i].name}信息不全`)
-            return
-          } else if (
-            +list[i].trade_price < 0 ||
-            +list[i].person_all_buy_limit <= 0 ||
-            +list[i].usable_stock < 0 ||
-            (list[i].usable_stock + '').includes('.') ||
-            +list[i].sort < 0
-          ) {
-            this.$toast.show(`${list[i].name}输入数据有误`)
-            return
-          }
-        }
-        list.map((item) => {
+        let list = this.goodsList.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
         })
-        let data = Object.assign({}, this.msg, {activity_goods: list})
-        let res = null
+
         this.isSubmit = true
-        res = await API.Sale.storeSale(data, true)
+        let data = Object.assign({}, this.msg, {activity_goods: list})
+        let res = await API.Sale.storeSale(data, true)
         this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
@@ -805,24 +779,33 @@
           this.isSubmit = false
         }, 2000)
       },
-      test() {
+      // 测试已选择商品列表
+      testGoods() {
         let list = this.goodsList
+        if (!list.length) {
+          this.$toast.show('请添加商品')
+          return
+        }
         for (let i in list) {
           if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
             this.$toast.show(`${list[i].name}信息不全`)
-            return
+            return false
           } else if (
             +list[i].trade_price < 0 ||
+            +list[i].trade_price > +list[i].original_price ||
             +list[i].person_all_buy_limit <= 0 ||
             +list[i].usable_stock < 0 ||
             (list[i].usable_stock + '').includes('.') ||
             +list[i].sort < 0
           ) {
             this.$toast.show(`${list[i].name}输入数据有误`)
-            return
+            return false
           }
         }
-        console.log(this.checkForm())
+        return true
+      },
+      test() {
+        console.log(this.testGoods())
       },
       checkForm() {
         let arr = [
@@ -880,7 +863,7 @@
       font-size: $font-size-14
       font-family: $font-family-regular
       white-space: nowrap
-      text-align: left
+      text-align: right
       margin-top: 7.5px
       min-width: 96px
     .start
