@@ -86,8 +86,8 @@
         </div>
         <div class="edit-input-box">
           <div class="checkbox">
-            <p class="check-item" @click="changeCheck(2)"><span :class="['item-icon', {'checked': +msg.preferential_type === 2}]"></span>开启</p>
-            <p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>关闭</p>
+            <p class="check-item"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>开启</p>
+            <!--<p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>关闭</p>-->
             <span class="description">注：成团有效期失效前30分钟后如无论是否成团，系统均按成团处理</span>
           </div>
         </div>
@@ -391,7 +391,7 @@
           useful_time: '',
           count: '',
           activity_type: 'fixed',
-          preferential_type: 0,
+          preferential_type: 1,
           coupon_id: ''
         },
         isSubmit: false,
@@ -494,7 +494,8 @@
           goods_category_id: this.parentId,
           shelf_id: this.id,
           limit: 7,
-          page: this.page
+          page: this.page,
+          activity_type: 'groupon'
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -905,7 +906,6 @@
           margin-right: 20px
           display: flex
           align-items: center
-          cursor: pointer
       .item-icon
         width: 16px
         height: 16px

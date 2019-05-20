@@ -12,7 +12,9 @@ export const state = {
     total: 1,
     per_page: 10,
     total_page: 1
-  }
+  },
+  // 记录活动管理tab栏
+  activityTab: 0
 }
 
 export const getters = {
@@ -29,6 +31,9 @@ export const getters = {
   collagePage: (state) => {
     return state.collagePage
   },
+  activityTab: (state) => {
+    return state.activityTab
+  }
 }
 
 export const mutations = {
@@ -46,8 +51,10 @@ export const mutations = {
   },
   SET_COLLAGE_PAGE(state, page) {
     state.collagePage = page
+  },
+  SET_ACTIVITY_TYPE(state, index) {
+    state.activityTab = index
   }
-
 }
 
 export const actions = {
@@ -123,5 +130,9 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  // 设置活动管理tab栏
+  setActivityTab({commit}, index) {
+    commit('SET_ACTIVITY_TYPE', index)
   }
 }

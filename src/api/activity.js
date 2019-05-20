@@ -7,7 +7,7 @@ export default {
    * @returns {*}
    */
   getPopularList(loading = true) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/goods-manage/goods-hot-tag'
     return request.get(url, {}, loading)
   },
   /**
@@ -16,8 +16,8 @@ export default {
    * @returns {*}
    */
   addPopular(data, loading = false) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
-    return request.put(url, data, loading)
+    let url = '/social-shopping/api/backend/goods-manage/goods-hot-tag'
+    return request.post(url, data, loading)
   },
   /**
    * 删除今日爆款
@@ -25,7 +25,7 @@ export default {
    * @returns {*}
    */
   delPopular(data, loading = false) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/goods-manage/goods-hot-tag'
     return request.delete(url, data, loading)
   },
   /**
@@ -34,7 +34,16 @@ export default {
    * @returns {*}
    */
   getPreferenceGoods(loading = true) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/activity-manage/activity-new-client/goods-sku'
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 新人特惠活动详情
+   * @param data
+   * @returns {*}
+   */
+  getPreferenceDetail(loading = true) {
+    let url = '/social-shopping/api/backend/activity-manage/activity-new-client'
     return request.get(url, {}, loading)
   },
   /**
@@ -43,7 +52,7 @@ export default {
    * @returns {*}
    */
   editPreference(data, loading = false) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/activity-manage/activity-new-client'
     return request.post(url, data, loading)
   },
   /**
@@ -52,7 +61,7 @@ export default {
    * @returns {*}
    */
   delPreference(data, loading = false) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/activity-manage/activity-new-client'
     return request.delete(url, data, loading)
   },
   /**

@@ -13,6 +13,7 @@
   import PopularToday from './popular-today/popular-today'
   import NewPreference from './new-preference/new-preference'
   import CollageReturn from './collage-return/collage-return'
+  import { activityMethods, activityComputed } from '@state/helpers'
 
   const PAGE_NAME = 'ACTIVITY_MANAGE'
   const TITLE = '活动管理'
@@ -41,17 +42,19 @@
       }
     },
     computed: {
+      ...activityComputed,
       infoTabIndex() {
         return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
       }
     },
     created() {
+      this.defaultStatus = this.tabStatus[this.activityTab].status
     },
-    mounted() {},
     methods: {
+      ...activityMethods,
       changeTab(selectStatus) {
         this.defaultStatus = selectStatus.status
-        // this.$refs.pages.beginPage()
+        this.setActivityTab(this.infoTabIndex)
       },
     }
   }

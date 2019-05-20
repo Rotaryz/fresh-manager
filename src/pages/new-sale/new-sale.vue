@@ -281,7 +281,8 @@
           goods_category_id: this.parentId,
           shelf_id: this.id,
           limit: 7,
-          page: this.page
+          page: this.page,
+          activity_type: 'fixed'
         })
         if (res.error !== this.$ERR_OK) {
           return

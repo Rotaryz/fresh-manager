@@ -53,7 +53,7 @@
               <div class="com-list-item">
                 <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
-              <div class="com-list-item">{{item.all_stock || 0}}</div>
+              <div class="com-list-item">{{item.goods_usable_stock || item.all_stock || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
               </div>
@@ -127,7 +127,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {saleComputed, activityComputed, saleMethods, activityMethods} from '@state/helpers'
+  import {activityComputed, activityMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'EDIT_RUSH'
@@ -188,27 +188,32 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        msg: {
-          activity_name: '新人特惠',
-          activity_type: 'fixed'
-        },
         isSubmit: false,
-        used_goods: []
+        usedGoods: []
       }
     },
     computed: {
-      ...saleComputed,
       ...activityComputed
     },
     async created() {
       this._getFirstAssortment()
-      await this.getPreferenceList()
-      this.used_goods = this.goodsList
+      this.getPreferenceDetail()
     },
     methods: {
-      ...saleMethods,
       ...activityMethods,
       // 选择商品
+      getPreferenceDetail() {
+        API.Activity.getPreferenceDetail()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            // this.setPreferenceList(res.data)
+            this.usedGoods = res.data.activity_goods
+            this.goodsList = res.data.activity_goods
+          })
+      },
       async _getGoodsList() {
         let res = await API.Sale.getGoodsList({
           is_online: 1,
@@ -216,7 +221,8 @@
           goods_category_id: this.parentId,
           shelf_id: this.id,
           limit: 7,
-          page: this.page
+          page: this.page,
+          activity_type: 'new_client'
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -226,12 +232,15 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
+        this.selectGoodsId = this.goodsList.map(item => {
+          return item.goods_sku_id
+        })
         this.choeesGoods = res.data.map((item, index) => {
           item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          let find = this.used_goods.find((val) => val.id === item.id)
+          let idx = this.selectGoodsId.findIndex((id) => id === item.goods_sku_id)
+          let goodsIndex = this.selectGoods.findIndex((items) => items.goods_sku_id === item.goods_sku_id)
+          let delIndex = this.selectDelId.findIndex((id) => id === item.goods_sku_id)
+          let find = this.usedGoods.find((val) => val.goods_sku_id === item.goods_sku_id)
           if (delIndex !== -1) {
             item.selected = 0
           }
@@ -295,10 +304,10 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
+        // if (item.usable_stock <= 0) {
+        //   this.$toast.show('该商品库存为0，不能选择')
+        //   return
+        // }
         switch (item.selected) {
         case 0:
           if (this.selectGoodsId.length === 20) {
@@ -308,12 +317,12 @@
           this.choeesGoods[index].selected = 2
           item.all_stock = item.usable_stock
           this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
+          this.selectGoodsId.push(item.goods_sku_id)
           break
         case 2:
           this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let idx = this.selectGoods.findIndex((items) => items.goods_sku_id === item.goods_sku_id)
+          let idIdx = this.selectGoodsId.findIndex((id) => id === item.goods_sku_id)
           if (idx !== -1) {
             this.selectGoods.splice(idx, 1)
           }
@@ -328,7 +337,7 @@
         if (this.disable) {
           return
         }
-        this.goodsDelId = item.goods_id
+        this.goodsDelId = item.goods_sku_id
         this.goodsDelIndex = index
         this.$refs.confirm.show('是否确定删除该商品？')
       },
@@ -341,8 +350,8 @@
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
-          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
-          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          let idx = this.choeesGoods.findIndex((items) => items.goods_sku_id === item.goods_sku_id)
+          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_sku_id)
           this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
           this.selectGoodsId.splice(delIdx, 1)
         })
@@ -351,10 +360,10 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
+        // if (item.usable_stock <= 0) {
+        //   this.$toast.show('该商品库存为0，不能选择')
+        //   return
+        // }
         if (item.selected === 1) {
           return
         }
@@ -362,22 +371,24 @@
           this.$toast.show('选择商品数量不能超过20个')
           return
         }
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
+        if (item.selected !== 2) this.selectGoodsId.push(item.goods_sku_id)
         this.choeesGoods[index].selected = 1
         // 判断选过的商品，总库存重置
-        // let find = this.used_goods.find(goods => goods.id === item.id)
+        // let find = this.usedGoods.find(goods => goods.id === item.id)
         // if (find) {
         //   item.all_stock = find.usable_stock + item.usable_stock
         // } else {
         //   item.all_stock = item.usable_stock
         // }
-        item.usable_stock = 0
+        // item.usable_stock = 0
+        let goods = Object.assign({}, item)
+        goods.usable_stock = ''
 
-        this.addPreferenceList([item])
-        this.goodsList.push(item)
+        // this.addPreferenceList([item])
+        this.goodsList.push(goods)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+            let idx = this.selectGoods.findIndex((child) => child.goods_sku_id === item.goods_sku_id)
             if (idx !== -1) {
               this.selectGoods.splice(idx, 1)
             }
@@ -392,7 +403,7 @@
         })
         // 判断选过的商品，总库存重置
         // this.selectGoods = this.selectGoods.map(item => {
-        //   let find = this.used_goods.find(val => {
+        //   let find = this.usedGoods.find(val => {
         //     return item.id === val.id
         //   })
         //   item.all_stock = find.usable_stock + item.usable_stock
@@ -432,12 +443,15 @@
         let list = this.goodsList.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
+          return item
         })
-
         this.isSubmit = true
-        let data = Object.assign({}, this.msg, {activity_goods: list})
-        let res = await API.Sale.storeSale(data, true)
+        let data = Object.assign({}, {activity_goods: list})
+        let res = await API.Activity.editPreference(data, true)
         this.$loading.hide()
+        setTimeout(() => {
+          this.isSubmit = false
+        }, 2000)
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
           this.isSubmit = false
@@ -446,9 +460,7 @@
         setTimeout(() => {
           this._back()
         }, 1000)
-        setTimeout(() => {
-          this.isSubmit = false
-        }, 2000)
+
       },
       test() {
         console.log(this.testData())

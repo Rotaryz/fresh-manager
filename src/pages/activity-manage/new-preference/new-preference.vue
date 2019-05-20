@@ -13,24 +13,17 @@
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+          <div v-for="(item,index) in preferenceTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in saleList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-              <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
-                {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
+          <div v-for="(item, index) in preferenceList" :key="index" class="list-content list-box">
+            <div v-for="(val, ind) in preferenceTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+              <div v-if="+val.type === 1 || +val.type === 2" :style="{flex: val.flex}" class="item">
+                {{+val.type === 2 ? '¥' : ''}}{{item[val.value] || '0'}}
               </div>
-              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
-                <p class="item-dark">{{item.start_at}}</p>
-                <p class="item-sub">{{item.end_at}}</p>
-              </div>
-
-              <!--状态-->
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
-
-              <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
+              <img v-if="+val.type === 3" :src="item.goods_cover_image" alt="" class="img">
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-operation-box item">
+                <span class="list-operation" @click="_deleteActivity(item.activity_id)">删除</span>
               </div>
             </div>
           </div>
@@ -45,21 +38,21 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {saleComputed, saleMethods} from '@state/helpers'
+  import {activityComputed, activityMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
-  const SALE_TITLE = [
-    {name: '商品图片', flex: 1, value: 'activity_name', type: 1},
-    {name: '商品名称', flex: 1.3, value: 'start_at', type: 2},
-    {name: '商品编码', flex: 1.4, value: 'goods_count', type: 1},
-    {name: '商品分类', flex: 1, value: 'sale_count', type: 1},
-    {name: '基本单位', flex: 1, value: 'pay_amount', type: 3},
-    {name: '销售规格', flex: 1, value: 'status', type: 1},
-    {name: '销售单价', flex: 1, value: 'status', type: 1},
-    {name: '销售库存', flex: 1, value: 'status', type: 1},
-    {name: '活动库存', flex: 1, value: 'status', type: 1},
-    {name: '操作', flex: 1.4, value: '', type: 5}
+  const PREFERENCE_TITLE = [
+    {name: '商品图片', flex: 1, value: 'goods_cover_image', type: 3},
+    {name: '商品名称', flex: 1.3, value: 'name', type: 1},
+    {name: '商品编码', flex: 1.4, value: 'goods_sku_encoding', type: 1},
+    {name: '商品分类', flex: 1, value: 'goods_category_name', type: 1},
+    {name: '基本单位', flex: 1, value: 'base_unit', type: 1},
+    {name: '销售规格', flex: 1, value: 'base_sale_rate', type: 1},
+    {name: '销售单价', flex: 1, value: 'trade_price', type: 2},
+    {name: '销售库存', flex: 1, value: 'goods_usable_stock', type: 1},
+    {name: '活动库存', flex: 1, value: 'usable_stock', type: 1},
+    {name: '操作', flex: 1, value: '', type: 4}
   ]
   export default {
     components: {
@@ -67,7 +60,7 @@
     },
     data() {
       return {
-        saleTitle: SALE_TITLE,
+        preferenceTitle: PREFERENCE_TITLE,
         startTime: '',
         endTime: '',
         page: 1,
@@ -75,18 +68,19 @@
       }
     },
     computed: {
-      ...saleComputed,
+      ...activityComputed,
     },
     created() {
+      this.getPreferenceList()
     },
     methods: {
-      ...saleMethods,
+      ...activityMethods,
       _deleteActivity(id) {
         this.delId = id
-        this.$refs.confirm.show('确定删除该活动？')
+        this.$refs.confirm.show('确定删除该商品？')
       },
       async _sureConfirm() {
-        let res = await API.Sale.saleDelete(this.delId)
+        let res = await API.Activity.delPreference({ids: [this.delId]})
 
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
@@ -94,14 +88,7 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getSaleStatus()
-        this.getSaleList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
+        this.getPreferenceList()
       }
     }
   }
@@ -129,6 +116,9 @@
       &:last-child
         max-width: 30px
         padding-right: 0
+      .img
+        width: 40px
+        height: 40px
       .item
         text-overflow: ellipsis
         overflow: hidden

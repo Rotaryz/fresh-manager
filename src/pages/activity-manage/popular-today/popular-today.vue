@@ -12,23 +12,16 @@
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+          <div v-for="(item,index) in popularTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in saleList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-              <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
-                {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
+          <div v-for="(item, index) in popularList" :key="index" class="list-content list-box">
+            <div v-for="(val, ind) in popularTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+              <div v-if="+val.type === 1 || +val.type === 2" :style="{flex: val.flex}" class="item">
+                {{+val.type === 2 ? '¥' : ''}}{{item[val.value] || '0'}}
               </div>
-              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
-                <p class="item-dark">{{item.start_at}}</p>
-                <p class="item-sub">{{item.end_at}}</p>
-              </div>
-
-              <!--状态-->
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
-
-              <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
+              <img v-if="+val.type === 3" :src="item.goods_cover_image" alt="" class="img">
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-operation-box item">
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
               </div>
             </div>
@@ -91,21 +84,20 @@
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
-  import {activityComputed, activityMethods, saleComputed, saleMethods} from '@state/helpers'
+  import {activityComputed, activityMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
   const SALE_TITLE = [
-    {name: '商品图片', flex: 0.8, value: 'activity_name', type: 1},
-    {name: '商品名称', flex: 1.6, value: 'start_at', type: 2},
-    {name: '商品编码', flex: 1.2, value: 'goods_count', type: 1},
-    {name: '商品分类', flex: 1, value: 'sale_count', type: 1},
-    {name: '基本单位', flex: 1, value: 'pay_amount', type: 3},
-    {name: '销售规格', flex: 1, value: 'status', type: 4},
-    {name: '销售单价', flex: 1, value: '', type: 5},
-    {name: '销售库存', flex: 1, value: '', type: 5},
-    {name: '活动库存', flex: 1, value: '', type: 5},
-    {name: '操作', flex: 1, value: '', type: 5}
+    {name: '商品图片', flex: 0.8, value: 'goods_cover_image', type: 3},
+    {name: '商品名称', flex: 1.6, value: 'name', type: 1},
+    {name: '商品编码', flex: 1.2, value: 'goods_sku_encoding', type: 1},
+    {name: '商品分类', flex: 1, value: 'goods_category_name', type: 1},
+    {name: '基本单位', flex: 1, value: 'base_unit', type: 1},
+    {name: '销售规格', flex: 1, value: 'sale_unit', type: 1},
+    {name: '销售单价', flex: 1, value: 'trade_price', type: 2},
+    {name: '销售库存', flex: 1, value: 'usable_stock', type: 1},
+    {name: '操作', flex: 1, value: '', type: 4}
   ]
   export default {
     components: {
@@ -114,7 +106,7 @@
     },
     data() {
       return {
-        saleTitle: SALE_TITLE,
+        popularTitle: SALE_TITLE,
         startTime: '',
         endTime: '',
         page: 1,
@@ -150,21 +142,20 @@
       }
     },
     computed: {
-      ...saleComputed,
       ...activityComputed
     },
     created() {
       this._getFirstAssortment()
+      this.getPopularList()
     },
     methods: {
-      ...saleMethods,
       ...activityMethods,
       _deleteActivity(id) {
         this.delId = id
-        this.$refs.confirm.show('确定删除该活动？')
+        this.$refs.confirm.show('确定删除该商品？')
       },
       async _sureConfirm() {
-        let res = await API.Sale.saleDelete(this.delId)
+        let res = await API.Activity.delPopular({ids: [this.delId]})
 
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
@@ -172,19 +163,12 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getSaleStatus()
-        this.getSaleList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
+        this.getPopularList()
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
-          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
-          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          let idx = this.choeesGoods.findIndex((items) => items.goods_sku_id === item.goods_sku_id)
+          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_sku_id)
           this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
           this.selectGoodsId.splice(delIdx, 1)
         })
@@ -199,7 +183,8 @@
           goods_category_id: this.parentId,
           shelf_id: this.id,
           limit: 7,
-          page: this.page
+          page: this.page,
+          activity_type: 'hot_tag'
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -210,13 +195,13 @@
           total_page: res.meta.last_page
         }
         this.selectGoodsId = this.popularList.map(item => {
-          return item.id
+          return item.goods_sku_id
         })
         this.choeesGoods = res.data.map((item, index) => {
           item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
+          let idx = this.selectGoodsId.findIndex((id) => id === item.goods_sku_id)
+          let goodsIndex = this.selectGoods.findIndex((items) => items.goods_sku_id === item.goods_sku_id)
+          let delIndex = this.selectDelId.findIndex((id) => id === item.goods_sku_id)
           if (delIndex !== -1) {
             item.selected = 0
           }
@@ -275,25 +260,25 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
+        // if (item.usable_stock <= 0) {
+        //   this.$toast.show('该商品库存为0，不能选择')
+        //   return
+        // }
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 10) {
-            this.$toast.show('选择商品数量不能超过10个')
+          if (this.selectGoodsId.length === 20) {
+            this.$toast.show('选择商品数量不能超过20个')
             return
           }
           this.choeesGoods[index].selected = 2
           item.all_stock = item.usable_stock
           this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
+          this.selectGoodsId.push(item.goods_sku_id)
           break
         case 2:
           this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let idx = this.selectGoods.findIndex((items) => items.goods_sku_id === item.goods_sku_id)
+          let idIdx = this.selectGoodsId.findIndex((id) => id === item.goods_sku_id)
           if (idx !== -1) {
             this.selectGoods.splice(idx, 1)
           }
@@ -305,29 +290,39 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
+        // if (item.usable_stock <= 0) {
+        //   this.$toast.show('该商品库存为0，不能选择')
+        //   return
+        // }
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过10个')
+        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
+          this.$toast.show('选择商品数量不能超过20个')
           return
         }
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
+        if (item.selected !== 2) this.selectGoodsId.push(item.goods_sku_id)
         this.choeesGoods[index].selected = 1
         item.all_stock = item.usable_stock
         // this.goodsList.push(item)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+            let idx = this.selectGoods.findIndex((child) => child.goods_sku_id === item.goods_sku_id)
             if (idx !== -1) {
               this.selectGoods.splice(idx, 1)
             }
           }
         })
+
+        API.Activity.addPopular({goods_sku_ids: [item.goods_sku_id]})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$toast.show('添加成功')
+            this.getPopularList()
+          })
       },
       // 批量添加
       _batchAddition() {
@@ -335,6 +330,18 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
+        let idArr = this.selectGoods.map(item => {
+          return item.goods_sku_id
+        })
+        API.Activity.addPopular({goods_sku_ids: idArr})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$toast.show('添加成功')
+            this.getPopularList()
+          })
         // this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
         this._hideGoods()
@@ -372,6 +379,9 @@
       &:last-child
         max-width: 30px
         padding-right: 0
+      .img
+        width: 40px
+        height: 40px
       .item
         text-overflow: ellipsis
         overflow: hidden
