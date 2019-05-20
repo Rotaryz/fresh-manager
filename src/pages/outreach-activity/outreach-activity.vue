@@ -144,7 +144,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
         this.getOutreachStatus()
       },
@@ -156,7 +157,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: selectStatus.status
+          status: selectStatus.status,
+          loading: false
         })
       },
       getOutreachStatus() {
@@ -190,7 +192,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       },
       _deleteActivity(id) {
@@ -211,7 +214,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       },
       _textHandle(num) {

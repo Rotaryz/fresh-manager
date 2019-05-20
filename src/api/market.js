@@ -7,7 +7,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getMarketList(data, loading = false) {
+  getMarketList(data, loading = true) {
     let url = '/social-shopping/api/backend/coupon-activity-manage/coupon-activity'
     return request.get(url, data, loading)
   },

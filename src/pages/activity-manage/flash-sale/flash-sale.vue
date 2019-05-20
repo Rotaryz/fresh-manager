@@ -1,5 +1,5 @@
 <template>
-  <div class="flash-sale table">
+  <div class="data-content">
     <div class="down-content">
       <span class="down-tip">活动时间</span>
       <div class="down-item">
@@ -53,12 +53,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {saleComputed, saleMethods} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
-  const PAGE_NAME = 'FLASH_SALE'
-  const TITLE = '限时抢购'
   const SALE_TITLE = [
     {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
@@ -68,14 +66,7 @@
     {name: '状态', flex: 1, value: 'status', type: 4},
     {name: '操作', flex: 1.4, value: '', type: 5}
   ]
-  // const SALE_LIST = [
-  //   {name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', pay_num: 20, pay_amount: 100, status: 1}
-  // ]
   export default {
-    name: PAGE_NAME,
-    page: {
-      title: TITLE
-    },
     components: {
       DefaultConfirm
     },
@@ -92,17 +83,17 @@
         endTime: '',
         page: 1,
         delId: 0,
-        status: ''
+        status: '',
+        defaultIndex: 0
       }
     },
     computed: {
-      ...saleComputed
+      ...saleComputed,
     },
     created() {
       this.defaultIndex = this.$route.query.status * 1 || 0
       this.getSaleStatus()
     },
-    mounted() {},
     methods: {
       ...saleMethods,
       async changeStatus(selectStatus) {
@@ -113,7 +104,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: selectStatus.value
+          status: selectStatus.value,
+          loading: false
         })
       },
       getSaleStatus() {
@@ -141,7 +133,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
         this.getSaleStatus()
       },
@@ -151,7 +144,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       },
       _deleteActivity(id) {
@@ -172,15 +166,20 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       }
     }
   }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus"  rel="stylesheet/stylus">
   @import "~@design"
+  .data-content
+    flex: 1
+    display: flex
+    flex-direction: column
   .list-box
     .list-item:last-child
       max-width: 150px
@@ -212,7 +211,4 @@
       .list-double-row
         .item-sub
           color: #333
-
-  .btn-main
-    margin-right: 10px
 </style>

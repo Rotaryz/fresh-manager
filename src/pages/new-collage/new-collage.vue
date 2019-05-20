@@ -18,14 +18,15 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input" :class="{'disable-input': disable}">
+          <input v-model="msg.activity_name" type="text" placeholder="请输入活动名称" maxlength="25" class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
+
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          活动时间
+          拼团活动时间
         </div>
         <date-picker
           v-model="msg.start_at"
@@ -48,63 +49,188 @@
           valueFormat="yyyy-MM-dd HH:mm:ss"
           @change="_getEndTime"
         ></date-picker>
-        <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
+        <!--<div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>-->
         <div :class="{'time-no-change':disable}"></div>
       </div>
-      <!--<p @click="test">测试</p>-->
+
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          成团有效时间
+        </div>
+        <!--<div class="edit-input-box">
+          <input v-model="msg.activity_name" type="text" placeholder="选择时间" class="edit-input">
+        </div>-->
+        <div class="edit-input-box">
+          <base-drop-down :width="400" :height="40" :select="usefulTime" @setValue="_selectUsefulTime"></base-drop-down>
+        </div>
+        <span class="tip">小时</span>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          成团人数
+        </div>
+        <div class="edit-input-box">
+          <input v-model="msg.count" type="number" placeholder="请输入2~5人" class="edit-input">
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
+      <div class="edit-item">
+        <div class="edit-title">
+          <!--<span class="start">*</span>-->
+          模拟成团
+        </div>
+        <div class="edit-input-box">
+          <div class="checkbox">
+            <p class="check-item"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>开启</p>
+            <!--<p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>关闭</p>-->
+            <span class="description">注：成团有效期失效前30分钟后如无论是否成团，系统均按成团处理</span>
+          </div>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
     </div>
 
-    <div class="content-header">
-      <div class="content-title">活动商品</div>
-    </div>
-    <div class="activity-box">
-      <div class="activity-list">
-        <div class="activity-tab">
-          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
-            <img class="icon" src="./icon-add@2x.png" alt="">
-            添加商品
+    <div class="add-list">
+      <div class="content-header">
+        <div class="content-title">活动返券</div>
+      </div>
+      <div class="activity-box">
+        <div class="activity-list">
+          <div class="activity-tab">
+            <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showCouponModal">
+              <img class="icon" src="./icon-add@2x.png" alt="">
+              添加优惠券
+            </div>
+            <div class="remind">优惠券只可添加一种</div>
           </div>
-          <div class="remind">商品数量一共可添加10个</div>
+          <div v-if="selectCouponList.length" class="rush-list-box">
+            <div class="commodities-list-header com-list-box commodities-list-top">
+              <div v-for="(item, index) in selectCouponTitle" :key="index" class="com-list-item" :style="{flex: item.flex}">{{item.name}}</div>
+            </div>
+            <div class="big-box">
+              <div v-for="(item, index) in selectCouponList" :key="index" class="com-list-box com-list-content">
+                <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="com-list-item" :style="{flex: val.flex}">
+                  <div v-if="val.value === 'time'" class="main">
+                    <p>{{item.start_at}}</p>
+                    <p>{{item.end_at}}</p>
+                  </div>
+                  <p v-else-if="val.value === ''" class="list-operation" :class="{'list-operation-disable': disable}" @click="_showDelItem('coupon', index, item)">删除</p>
+                  <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                  <p v-else class="main">{{item[val.value]}}</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
-        <div v-if="goodsList.length" class="rush-list-box">
-          <div class="commodities-list-header com-list-box commodities-list-top">
-            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+      </div>
+    </div>
+
+    <div class="add-list">
+      <div class="content-header">
+        <div class="content-title">活动商品</div>
+      </div>
+      <div class="activity-box">
+        <div class="activity-list">
+          <div class="activity-tab">
+            <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoodsModal">
+              <img class="icon" src="./icon-add@2x.png" alt="">
+              添加商品
+            </div>
+            <div class="remind">添加商品数量{{goodsList.length}}/20个</div>
           </div>
-          <div class="big-box">
-            <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.original_price}}</div>
-              <div class="com-list-item">{{item.sale_count || 0}}</div>
-              <div class="com-list-item">
-                <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
-                <span v-if="item.original_price" class="small-money">¥</span>
+          <div v-if="goodsList.length" class="rush-list-box">
+            <div class="commodities-list-header com-list-box commodities-list-top">
+              <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+            </div>
+            <div class="big-box">
+              <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
+                <div class="com-list-item">{{item.name}}</div>
+                <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
+                <div class="com-list-item">¥{{item.original_price}}</div>
+                <div class="com-list-item">
+                  <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
+                  <span v-if="item.original_price" class="small-money">¥</span>
+                </div>
+                <div class="com-list-item">
+                  <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
+                </div>
+                <div class="com-list-item">{{item.all_stock || 0}}</div>
+                <div class="com-list-item">
+                  <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
+                </div>
+                <div class="com-list-item">{{item.sale_count || 0}}</div>
+                <div class="com-list-item">
+                  <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
+                </div>
+                <div class="com-list-item">
+                  <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelItem('goods', item, index)">删除</span>
+                </div>
               </div>
-              <div class="com-list-item">
-                <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
-              </div>
-              <div class="com-list-item">
-                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
-              </div>
-              <div class="com-list-item">
-                <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
-              </div>
-              <div class="com-list-item">
-                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!--<p @click="test">测试</p>-->
+    <!-- 选择优惠券弹窗-->
+    <default-modal ref="couponModal">
+      <div slot="content" class="shade-box">
+        <div class="title-box">
+          <div class="title">
+            选择优惠券
+          </div>
+          <span class="close hand" @click="_cancelModal"></span>
+        </div>
+        <!--搜索-->
+        <div class="shade-tab">
+          <div class="tab-item">
+            <base-search ref="couponSearch" placeHolder="请输入优惠券名称" @search="_searchData"></base-search>
+          </div>
+        </div>
+        <!--列表-->
+        <div class="coupon-content">
+          <div class="title">
+            <span v-for="(item, index) in couponTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
+          </div>
+          <div class="outreach-group-list">
+            <div v-for="(item, index) in couponList" :key="index" class="group-item" @click="_selectCoupon(item, index)">
+              <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
+                <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
+                <div v-else-if="val.value === 'time'" class="main">
+                  <p>{{item.start_at}}</p>
+                  <p>{{item.end_at}}</p>
+                </div>
+                <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                <span v-else class="title-item">{{item[val.value]}}</span>
               </div>
             </div>
           </div>
         </div>
-
+        <!--翻页器-->
+        <div class="page-box">
+          <base-pagination ref="paginationCoupon" :pageDetail="couponPage" @addPage="_getMore"></base-pagination>
+        </div>
+        <div class="back">
+          <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
+          <div class="back-btn back-submit hand" @click="_additionCoupon">确定</div>
+        </div>
       </div>
-    </div>
+    </default-modal>
 
     <!-- 选择商品弹窗-->
     <default-modal ref="goodsModel">
       <div slot="content" class="shade-box">
         <div class="title-box">
           <div class="title">选择商品</div>
-          <span class="close hand" @click="_cancelGoods"></span>
+          <span class="close hand" @click="_cancelModal"></span>
         </div>
         <div class="shade-tab">
           <div class="tab-item">
@@ -114,7 +240,7 @@
             <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchData"></base-search>
           </div>
         </div>
         <div class="goods-content">
@@ -135,7 +261,7 @@
           </div>
         </div>
         <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+          <base-pagination ref="paginationGoods" :pageDetail="goodsPage" @addPage="_getMore"></base-pagination>
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
@@ -143,6 +269,8 @@
         </div>
       </div>
     </default-modal>
+
+
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -160,19 +288,38 @@
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
 
-  const PAGE_NAME = 'EDIT_RUSH'
-  const TITLE = '新建查看今日抢购'
+  const PAGE_NAME = 'NEW_COLLAGE'
+  const TITLE = '新建拼团'
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
-    '原售价(元)',
-    '销量',
-    '抢购价(元)',
+    '划线价',
+    '拼团价',
     '每人限购',
-    '可用库存',
+    '商品库存',
+    '活动库存',
+    '销量',
     '排序',
     '操作'
   ]
+  const SELECT_COUPON_TITLE = [
+    {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
+    {name: '类型', flex: 1, value: 'preferential_str'},
+    {name: '面值', flex: 1, value: 'denomination'},
+    {name: '剩余', flex: 1, value: 'usable_stock'},
+    {name: '有效期', flex: 1.6, value: 'time'},
+    {name: '操作', flex: 0.7, value: ''},
+  ]
+  const COUPON_TITLE = [
+    {name: '选择', flex: 0.4, value: ''},
+    {name: '优惠券名称', flex: 1.8, value: 'coupon_name'},
+    {name: '类型', flex: 1, value: 'preferential_str'},
+    {name: '面值', flex: 1, value: 'denomination'},
+    {name: '剩余数量', flex: 1, value: 'usable_stock'},
+    {name: '有效期', flex: 1, value: 'time'},
+  ]
+
+  const COUNT = /[2-5]/
   export default {
     name: PAGE_NAME,
     page: {
@@ -185,6 +332,8 @@
     },
     data() {
       return {
+        couponTitle: COUPON_TITLE, // 优惠券弹窗title
+        selectCouponTitle: SELECT_COUPON_TITLE, // 选择的优惠券列表title
         commodities: COMMODITIES_LIST,
         classifyIndex: 0,
         id: null,
@@ -204,8 +353,20 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
-        parentId: '',
+        usefulTime: {
+          check: false,
+          show: false,
+          content: '选择时间',
+          type: 'default',
+          data: [{name: '3'}, {name: '4'}, {name: '5'}] // 格式：{title: '55'}}
+        },
+        parentId: 0,
         goodsPage: {
+          total: 1,
+          per_page: 10,
+          total_page: 1
+        },
+        couponPage: {
           total: 1,
           per_page: 10,
           total_page: 1
@@ -213,15 +374,29 @@
         keyword: '',
         selectGoods: [], // 单次选择的商品
         selectGoodsId: [], // 所有选择的商品id
-        goodsDelId: 0,
-        goodsDelIndex: 0,
+        couponCheckItem: {}, // 选中的优惠券
+        couponSelectItem: {},
+        selectCouponList: [],
+        modalType: '',
+        couponList: [],
+        willDelId: 0,
+        willDelIndex: 0,
         selectDelId: [],
         disable: false,
         goodsList: [],
         msg: {
-          activity_type: 'fixed'
+          activity_name: '',
+          start_at: '',
+          end_at: '',
+          useful_time: '',
+          count: '',
+          activity_type: 'fixed',
+          preferential_type: 1,
+          coupon_id: ''
         },
-        isSubmit: false
+        isSubmit: false,
+        confirmType: '',
+        defaultCount: 2
       }
     },
     computed: {
@@ -234,7 +409,7 @@
       },
       testStartDate() {
         // 开始时间规则判断
-        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 360000
+        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 600000
       },
       testEndTime() {
         return this.msg.end_at
@@ -242,6 +417,16 @@
       testEndTimeReg() {
         // 结束时间规则判断
         return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
+      },
+      testUsefulTime() {
+        return this.msg.useful_time
+      },
+      testCount() {
+        return COUNT.test(this.msg.count)
+      },
+      testCouponList() {
+        let length = this.selectCouponList.length
+        return length > 0
       }
     },
     watch: {},
@@ -256,7 +441,20 @@
             return item.goods_id
           })
         }
-        this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
+        if (+obj.useful_time === 3) {
+          this.$set(this.usefulTime, 'content', '3')
+        } else if (+obj.useful_time === 4) {
+          this.$set(this.usefulTime, 'content', '4')
+        } else if (+obj.useful_time === 5) {
+          this.$set(this.usefulTime, 'content', '5')
+        }
+        this.msg = {
+          start_at: obj.start_at,
+          end_at: obj.end_at,
+          activity_name: obj.activity_name,
+          count: obj.count,
+          group_type: obj.group_type
+        }
       }
       this._getFirstAssortment()
 
@@ -273,6 +471,21 @@
       _getEndTime(time) {
         this.msg.end_at = time
       },
+      _selectUsefulTime(item) {
+        this.msg.useful_time = item.name
+      },
+      // 初始化数据
+      _initData() {
+        this.page = 1
+        this.keyword = ''
+        this.modalType = ''
+        this.parentId = ''
+        this.$refs.paginationGroup && this.$refs.paginationGroup.beginPage()
+        this.$refs.paginationCoupon && this.$refs.paginationCoupon.beginPage()
+      },
+      changeCheck(num) {
+        this.msg.preferential_type = num
+      },
       // 选择商品
       async _getGoodsList() {
         let res = await API.Sale.getGoodsList({
@@ -282,7 +495,7 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_type: 'fixed'
+          activity_type: 'groupon'
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -312,9 +525,17 @@
         })
       },
       // 获取分页商品列表
-      async _getMoreGoods(page) {
+      async _getMore(page) {
         this.page = page
-        await this._getGoodsList()
+        if (this.modalType === 'coupon') {
+          await this._getCouponList()
+        } else {
+          await this._getGoodsList()
+        }
+
+      },
+      _selectCoupon(item, index) {
+        this.couponCheckItem = item
       },
       // 选择一级分类
       async _secondAssortment(item) {
@@ -329,14 +550,14 @@
         }
         this.secondAssortment.content = '选择二级分类'
         this.page = 1
-        this.$refs.pagination.beginPage()
+        this.$refs.paginationGoods.beginPage()
         await this._getGoodsList()
       },
       // 选择二级分类
       async _choessSecondAssortment(item) {
         this.parentId = item.id
         this.page = 1
-        this.$refs.pagination.beginPage()
+        this.$refs.paginationGoods.beginPage()
         await this._getGoodsList()
       },
       // 获取一级分类
@@ -346,12 +567,17 @@
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
       },
-      // 搜索商品
-      async _searchGoods(text) {
+      // 搜索
+      async _searchData(text) {
         this.keyword = text
         this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
+        if (this.modalType === 'coupon') {
+          this.$refs.paginationCoupon.beginPage()
+          await this._getCouponList()
+        } else {
+          this.$refs.paginationGoods.beginPage()
+          await this._getGoodsList()
+        }
       },
       // 勾选商品
       _selectGoods(item, index) {
@@ -361,8 +587,8 @@
         }
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 10) {
-            this.$toast.show('选择商品数量不能超过10个')
+          if (this.selectGoodsId.length === 20) {
+            this.$toast.show('选择商品数量不能超过20个')
             return
           }
           this.choeesGoods[index].selected = 2
@@ -384,20 +610,24 @@
         }
       },
       // 删除商品
-      _showDelGoods(item, index) {
-        if (this.disable) {
-          return
-        }
-        this.goodsDelId = item.goods_id
-        this.goodsDelIndex = index
-        this.$refs.confirm.show('是否确定删除该商品？')
+      _showDelItem(type, item, index) {
+        if (this.disable) return
+        this.willDelId = item.goods_id || 0
+        this.willDelIndex = index
+        this.confirmType = type
+        this.$refs.confirm.show(`是否确定删除该${type === 'coupon' ? '优惠券' : '商品'}？`)
       },
       // 删除商品弹窗
       _delGoods() {
-        // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-        this.selectGoodsId.splice(this.goodsDelIndex, 1)
-        this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(this.goodsDelId)
+        if (this.confirmType === 'coupon') {
+          this.selectCouponList.splice(this.willDelIndex, 1)
+          this.couponSelectItem = {}
+          this.couponCheckItem = {}
+        } else {
+          this.selectGoodsId.splice(this.willDelIndex, 1)
+          this.goodsList.splice(this.willDelIndex, 1)
+          this.selectDelId.push(this.willDelId)
+        }
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
@@ -407,7 +637,7 @@
           this.selectGoodsId.splice(delIdx, 1)
         })
         this.selectGoods = []
-        this._hideGoods()
+        this._cancelModal()
       },
       // 单个添加
       _additionOne(item, index) {
@@ -418,13 +648,14 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过10个')
+        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
+          this.$toast.show('选择商品数量不能超过20个')
           return
         }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         item.all_stock = item.usable_stock
+        item.usable_stock = 0
         this.goodsList.push(item)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
@@ -439,22 +670,58 @@
       _batchAddition() {
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
+          item.usable_stock = 0
           return item
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
-        this._hideGoods()
+        this._cancelModal()
       },
-      async _showGoods() {
-        if (this.disable) {
-          return
+
+      _additionCoupon() {
+        this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
+        if (this.couponCheckItem.id) {
+          let arr = []
+          arr.push(this.couponSelectItem)
+          this.selectCouponList = arr
         }
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModel.showModal()
+        this._cancelModal()
       },
-      _hideGoods() {
-        this.$refs.goodsModel.hideModal()
+
+      // 优惠券弹窗
+      async _showCouponModal() {
+        if (this.disable) return
+        this.couponCheckItem = {}
+        if (this.modalType !== 'coupon') {
+          this._initData()
+          this.modalType = 'coupon'
+          this.couponList = []
+          await this._getCouponList()
+          this.$refs.couponModal.showModal()
+          this.$refs.couponSearch.infoTextMethods()
+        } else {
+          await this._getCouponList()
+          this.$refs.couponModal.showModal()
+        }
+
+      },
+      async _showGoodsModal() {
+        if (this.disable) return
+        if (this.modalType === 'coupon') {
+          this._initData()
+          this.modalType = ''
+          await this._getGoodsList()
+          // 展示添加商品弹窗
+          this.$refs.goodsModel.showModal()
+          this.$refs.goodsSearch.infoTextMethods()
+        } else {
+          await this._getGoodsList()
+          this.$refs.goodsModel.showModal()
+        }
+      },
+      _cancelModal() {
+        this.$refs.couponModal && this.$refs.couponModal.hideModal()
+        this.$refs.goodsModel && this.$refs.goodsModel.hideModal()
       },
       // 切换分类
       _setClassify(index, item) {
@@ -463,39 +730,44 @@
       _back() {
         this.$router.back()
       },
+
+      _getCouponList() {
+        let data = {
+          coupon_name: this.keyword,
+          page: this.page,
+          limit: 6,
+          status: 1,
+          preferential_type: 2
+        }
+        API.Coupon.getCouponList(data, false)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.couponPage = {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+            this.couponList = res.data
+          })
+      },
       //  保存
       async _saveActivity() {
         if (this.disable || this.isSubmit) return
-        let checkForm = this.checkForm()
-        if (!checkForm) return
-        let list = this.goodsList
-        if (!list.length) {
-          this.$toast.show('请添加商品')
-          return
-        }
-        for (let i in list) {
-          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
-            this.$toast.show(`${list[i].name}信息不全`)
-            return
-          } else if (
-            +list[i].trade_price < 0 ||
-            +list[i].person_all_buy_limit <= 0 ||
-            +list[i].usable_stock < 0 ||
-            (list[i].usable_stock + '').includes('.') ||
-            +list[i].sort < 0
-          ) {
-            this.$toast.show(`${list[i].name}输入数据有误`)
-            return
-          }
-        }
-        list.map((item) => {
+        if (!this.checkForm()) return
+        if (!this.testGoods()) return
+
+        this.msg.coupon_id = this.couponSelectItem.id
+        let list = this.goodsList.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
         })
-        let data = Object.assign({}, this.msg, {activity_goods: list})
-        let res = null
+
         this.isSubmit = true
-        res = await API.Sale.storeSale(data, true)
+        let data = Object.assign({}, this.msg, {activity_goods: list})
+        let res = await API.Sale.storeSale(data, true)
         this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
@@ -509,16 +781,44 @@
           this.isSubmit = false
         }, 2000)
       },
+      // 测试已选择商品列表
+      testGoods() {
+        let list = this.goodsList
+        if (!list.length) {
+          this.$toast.show('请添加商品')
+          return false
+        }
+        for (let i in list) {
+          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return false
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].trade_price > +list[i].original_price ||
+            +list[i].person_all_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.') ||
+            +list[i].sort < 0
+          ) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
+            return false
+          }
+        }
+        return true
+      },
       test() {
-        console.log(this.testStartDate, this.testEndTimeReg)
+        console.log(this.testGoods())
       },
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
           {value: this.testStartTime, txt: '请选择活动开始时间'},
-          // {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
+          {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
           {value: this.testEndTime, txt: '请选择活动结束时间'},
-          // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
+          {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'},
+          {value: this.testUsefulTime, txt: '请选择成团有效时间'},
+          {value: this.testCount, txt: '请输入2~5人成团人数'},
+          {value: this.testCouponList, txt: '请添加优惠券'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -549,6 +849,8 @@
     position: relative
     font-family: $font-family-regular
     flex: 1
+  .add-list
+    padding-bottom: 40px
   .content-header
     justify-content: flex-start
   .rush-time
@@ -558,14 +860,14 @@
     display: flex
     color: #2A2A2A
     margin-top: 24px
-    align-items: center
     position: relative
     .edit-title
       font-size: $font-size-14
       font-family: $font-family-regular
       white-space: nowrap
-      text-align: left
-      min-width: 64px
+      text-align: right
+      margin-top: 7.5px
+      min-width: 96px
     .start
       display: inline-block
       margin-right: -2px
@@ -595,9 +897,28 @@
           color: $color-text-assist
           font-family: $font-family-regular
           font-size: $font-size-12
-      .disable-input
-        background: #F5F5F5
-        color: #ACACAC
+      .checkbox
+        height: 24px
+        margin-top: 7.5px
+        margin-bottom: 10px
+        .check-item
+          float: left
+          margin-right: 20px
+          display: flex
+          align-items: center
+      .item-icon
+        width: 16px
+        height: 16px
+        border: 1px solid #E1E1E1
+        border-radius: 50%
+        margin-right: 5px
+        transition: all 0.3s
+        display: flex
+        justify-content: center
+        align-items: center
+      .checked
+        border: 5px solid $color-main
+
     .edit-input-right
       margin-left: 14px
     .tip
@@ -611,6 +932,11 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
+    .description
+      font-size: $font-size-12
+      font-family: $font-family-regular
+      color: $color-text-assist
+      margin-left: 20px
     .time-no-change, .text-no-change
       position: absolute
       left: 103px
@@ -687,7 +1013,6 @@
         .com-list-item
           &:nth-child(1)
             flex: 2
-
   .history-record
     box-sizing: border-box
     padding: 0 20px
@@ -1088,6 +1413,89 @@
         background: $color-line
         color: $color-text-assist
         border: none
+
+  .coupon-content
+    border-radius: 2px
+    height: 407px
+    .title
+      display: flex
+      height: 45px
+      line-height: 45px
+      font-family: $font-family-regular
+      background: #F5F7FA
+      border: 0.5px solid #E9ECEE
+      align-items: center
+      padding: 0 20px
+      .title-item
+        display: -webkit-box
+        overflow: hidden
+        -webkit-line-clamp: 2
+        -webkit-box-orient: vertical
+        padding-right: 20px
+    .outreach-group-list
+      font-size: $font-size-14
+      color: #333
+      font-family: $font-family-regular
+      .group-item
+        height: 60px
+        line-height: 18px
+        display: flex
+        align-items: center
+        border-bottom: 0.5px solid #E9ECEE
+        border-right: 0.5px solid #E9ECEE
+        border-left: 0.5px solid #E9ECEE
+        padding: 0 20px
+        &:first-child
+          border-top: none
+        &:nth-child(2n)
+          background: #F5F7FA
+        .radio
+          width: 16px
+          height: 16px
+          border: 1px solid #E1E1E1
+          border-radius: 50%
+          transition: all 0.3s
+          display: flex
+          justify-content: center
+          align-items: center
+        .checked
+          border: 5px solid $color-main
+        .check
+          width: 16px
+          height: 16px
+          border: 1px solid #E1E1E1
+          transition: all 0.3s
+          display: flex
+          justify-content: center
+          align-items: center
+          &:before
+            content: ""
+            width: 14px
+            height: 14px
+            icon-image(icon-check)
+            display: block
+            opacity: 0
+            transition: all 0.3s
+        .checked
+          border-color: #4DBD65
+          &:before
+            opacity: 1
+        .right
+          border-color: #E1E1E1
+          &:before
+            opacity: 1
+            icon-image(icon-check_ash)
+        .title-item
+          padding-right: 20px
+          display: block
+          overflow: hidden
+          span
+            display: -webkit-box
+            overflow: hidden
+            -webkit-line-clamp: 2
+            -webkit-box-orient: vertical
+
+
   .page-box
     box-sizing: border-box
     height: 76px

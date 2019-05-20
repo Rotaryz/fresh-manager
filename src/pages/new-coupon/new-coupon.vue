@@ -715,7 +715,7 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
+        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
           this.$toast.show('选择商品数量不能超过十个')
           return
         }
