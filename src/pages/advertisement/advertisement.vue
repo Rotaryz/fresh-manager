@@ -14,6 +14,7 @@
         :cmsArray="infoBannerList.modules"
         :newClientList="newClientList"
         :todayHotList="todayHotList"
+        :comType="cmsType"
         @setType="handleChangeType"
       ></phone-box>
       <!--广告-->
@@ -139,6 +140,7 @@
     <!--<div class="back">-->
     <!--<div class="back-btn btn-main">保存并发布</div>-->
     <!--</div>-->
+    <default-confirm ref="saveMsg" @confirm="handleSaveConfirm"></default-confirm>
   </div>
 </template>
 
@@ -193,6 +195,7 @@
       title: TITLE
     },
     data() {
+      this._isSave = false // 是否保存当前数据
       return {
         actName: ACT_NAME,
         typeList: TYPE_LIST,
@@ -253,19 +256,48 @@
     },
     async created() {
       this.currentModule = this.infoBannerList.modules[0] || {}
+      this._currentCms = this.currentModule
       this.cmsId = this.currentModule ? this.currentModule.id : ''
       this.cmsModuleId = this.currentModule ? this.currentModule.module_id : ''
       this.$loading.show()
       await this._getModuleMsg(this.currentModule.module_name, this.cmsId, this.cmsModuleId)
-      // await this._getFirstAssortment()
-      // await this._getGoodsList()
-      // await this._getActivityGoods()
       this._getAllActivityData()
       this._getFirstAssortment()
       this.$loading.hide()
     },
     methods: {
       ...adverMethods,
+      // 切换保存选项
+      async handleSaveConfirm() {
+        switch (this.cmsType) {
+        case 'bannar':
+          this._editBanner(() => {
+            this._actionToChangeModule()
+            if (this._isRouting) {
+              this._next()
+            }
+          })
+          break
+        case 'activity':
+          this._editActivity(() => {
+            this._actionToChangeModule()
+            if (this._isRouting) {
+              this._next()
+            }
+          })
+          break
+        default:
+          break
+        }
+      },
+      _actionToChangeModule() {
+        let cms = this._currentCms
+        this.cmsType = cms.module_name
+        this.cmsId = cms.id
+        this.cmsModuleId = cms.module_id
+        this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+        this._isSave = false
+      },
       // 获取所有活动数据
       _getAllActivityData() {
         this._getActivityGoods()
@@ -300,7 +332,7 @@
         }
         switch (type) {
         case 'bannar':
-          this.bannerList = res.data.length ? res.data : this.bannerList
+          // this.bannerList = res.data.length ? res.data : this.bannerList
           this.temporaryBannar = _.cloneDeep(res.data)
           break
         case 'activity_fixed':
@@ -322,13 +354,11 @@
         if (module.list) {
           module = module.list.find(val => val.module_name === 'activity_fixed') || {}
           if (module) {
-            console.log(module)
             API.Advertisement.getActivityGoods(module.id).then((res) => {
               if (res.error !== this.$ERR_OK) {
                 return
               }
               this.activityGoodsList = res.data
-              console.log(res.data)
             })
           }
         }
@@ -356,10 +386,20 @@
       },
       // cms的类型
       async handleChangeType(cms) {
-        this.cmsType = cms.module_name
-        this.cmsId = cms.id
-        this.cmsModuleId = cms.module_id
-        await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+        // if ('' + this._oldMoudleData === '' + cms) {
+        //   console.log(123)
+        // }
+        // console.log(this._oldMoudleData, cms)
+        this._currentCms = cms
+        if (!this._isSave) {
+          this.$refs.saveMsg.show('是否需要保存')
+        } else {
+          this._actionToChangeModule()
+        }
+        // this.cmsType = cms.module_name
+        // this.cmsId = cms.id
+        // this.cmsModuleId = cms.module_id
+        // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -524,7 +564,7 @@
         this[this.dataName][this.upIndex].image_id = res.data.id
       },
       // 新建banner
-      async _editBanner() {
+      async _editBanner(success) {
         if (!this.temporaryBannar.length) {
           this.$toast.show('轮播图不能为空', 1500)
           return
@@ -543,22 +583,37 @@
           delete item.add_icon
           return {page_module_id: this.cmsId, ext_json: item}
         })
-        await this._editCms(data)
+        // await this._editCms(data, success)
+        let res = await API.Advertisement.saveModuleMsg({data})
+        if (res.error === this.$ERR_OK) {
+          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+          this._isSave = true
+          success && success()
+        }
+        this.$loading.hide()
+        this.$toast.show(res.message)
       },
       // 新建活动
-      async _editActivity() {
+      async _editActivity(success) {
         let arr = this.activityList.map(item => {
           return {
-            is_close: !item.is_close ? 1 : 0
+            is_close: !item.is_close ? 1 : 0,
+            id: item.id
           }
         })
         let data = [
           {
+            id: this.cmsId,
             page_module_id: this.cmsId,
             config_data: arr
           }
         ]
         let res = await API.Advertisement.saveModuleData({data})
+        if (res.error === this.$ERR_OK) {
+          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+          this._isSave = true
+          success && success()
+        }
         // if (res.error === this.$ERR_OK) {
         //   await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
         // }
@@ -566,14 +621,16 @@
         this.$toast.show(res.message)
       },
       // 保存模块数据
-      async _editCms(data) {
-        let res = await API.Advertisement.saveModuleMsg({data})
-        if (res.error === this.$ERR_OK) {
-          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-        }
-        this.$loading.hide()
-        this.$toast.show(res.message)
-      },
+      // async _editCms(data, success) {
+      //   let res = await API.Advertisement.saveModuleMsg({data})
+      //   if (res.error === this.$ERR_OK) {
+      //     await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+      //     this._isSave = true
+      //     success && success()
+      //   }
+      //   this.$loading.hide()
+      //   this.$toast.show(res.message)
+      // },
       // 展示商品弹窗
       _showGoods(index, id) {
         this.bannerIndex = index

@@ -165,7 +165,8 @@
           </template>
         </div>
         <article class="active-wrapper">
-          <nav class="panel guess">
+          <nav class="panel">
+            <img class="banner-img" src="./pic-cnxh.png" alt="">
             <div
               v-for="(item, index) in 5"
               :key="index"
@@ -243,7 +244,7 @@
       CarouselItem
     },
     props: {
-      infoType: {
+      comType: {
         type: String,
         default: 'bannar'
       },
@@ -271,7 +272,7 @@
     data() {
       return {
         bannerIndex: 0,
-        comType: this.infoType,
+        // comType: this.infoType,
         activeConfig: TAB_ARR_CONFIG,
         serverList: [
           {
@@ -317,17 +318,17 @@
         return arr
       }
     },
-    watch: {
-      infoType(news) {
-        this.comType = news
-      }
-    },
+    // watch: {
+    //   infoType(news) {
+    //     this.comType = news
+    //   }
+    // },
     methods: {
       _getBanner(oldValue, value) {
         this.bannerIndex = value
       },
       _setType(cms) {
-        this.comType = cms.module_name
+        // this.comType = cms.module_name
         this.$emit('setType', cms)
       },
       iconText(key) {
