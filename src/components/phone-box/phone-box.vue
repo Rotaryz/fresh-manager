@@ -2,7 +2,7 @@
   <div class="phone-box">
     <div class="phone">
       <div class="content-box">
-        <div v-for="(cms, cmsIdx) in cmsMsg" :key="cmsIdx">
+        <div v-for="(cms, cmsIdx) in cmsArray" :key="cmsIdx">
           <!-- 轮播图-->
           <div v-if="cms.module_name === 'bannar'" class="banner-box hand" :class="{'touch': comType === cms.module_name}" @click="_setType(cms)">
             <div class="big-box hand">
@@ -15,7 +15,7 @@
                           dots="none"
                           @on-change="_getBanner"
                 >
-                  <carousel-item v-for="(item, index) in bannerList" :key="index">
+                  <carousel-item v-for="(item, index) in cms.list" :key="index">
                     <img v-if="item.image_url" class="carousel" :src="item.image_url" alt="">
                     <img v-else src="./icon-picmr@2x.png" class="carousel">
                   </carousel-item>
@@ -23,230 +23,180 @@
               </div>
             </div>
           </div>
+          <!-- icon  -->
+          <ul v-if="cmsIdx === 0" class="server-book-wrapper">
+            <li v-for="(item, index) in serverList" :key="index" class="serve-wrapper">
+              <img :src="item.icon" alt="">
+              <span>{{item.text}}</span>
+            </li>
+          </ul>
           <!--商品分类-->
-          <ul v-if="cmsIdx === 0" class="goods-classify-wrapper">
-            <li v-for="(item, index) in 9"
-                :key="index"
+          <ul v-if="cms.module_name === 'goods_cate'" class="goods-classify-wrapper">
+            <li v-for="(item, index) in cms.list"
+                :key="item.id"
                 class="classify-item"
                 :class="{'next-row': index > 4}"
             >
-              <img src="" alt="">
-              <p>实力蔬菜</p>
+              <img :src="item.image_url" alt="">
+              <p>{{item.name}}</p>
             </li>
           </ul>
-          <section v-if="cms.module_name === 'activity_fixed'"
-                   class="un-touch"
-                   :class="{'touch': comType === cms.module_name}"
-                   @click="_setType(cms)"
-          >
-            <!--          限时抢购-->
-            <article class="flash-wrapper">
-              <nav class="tab-wrapper">
-                <img class="logo" src="./pic-qgtitle@2x.png" alt="">
-                <template v-for="(val, ind) in cms.content_data.list">
-                  <div
-                    v-if="ind < 2"
-                    :key="ind"
-                    class="button-wrapper active"
-                    :class="{active: ind === 0}"
-                  >
-                    <p class="title">{{val.at}}</p>
-                    <p class="date">{{val.at_str}}</p>
-                  </div>
-                </template>
-                <div class="more-wrapper">
-                  <p>更多</p>
-                  <img src="./icon-pressed@2x.png" alt="">
-                </div>
-              </nav>
-              <ul v-if="activityGoodsList && activityGoodsList.length"
-                  class="goods-list-wrapper"
-              >
-                <template v-for="(item, index) in activityGoodsList">
-                  <li :key="index"
-                      class="goods-item-wrapper"
-                  >
-                    <div class="goods-image">
-                      <img v-if="item.goods_cover_image"
-                           class="goods-img"
-                           :src="item.goods_cover_image"
-                           alt=""
+          <template v-if="cms.module_name === 'activity'">
+            <section class="un-touch"
+                     :class="{'touch': comType === cms.module_name}"
+                     @click="_setType(cms)"
+            >
+              <template v-for="(child, idx) in cms.list">
+                <!--          限时抢购-->
+                <article v-if="child.module_name === 'activity_fixed'" :key="idx + 'flash'" class="flash-wrapper">
+                  <nav class="tab-wrapper">
+                    <img class="logo" src="./pic-qgtitle@2x.png" alt="">
+                    <template v-for="(val, ind) in child.list">
+                      <div
+                        v-if="ind < 2"
+                        :key="ind"
+                        class="button-wrapper active"
+                        :class="{active: ind === 0}"
                       >
-                      <img class="label" src="./pic-label_qg@2x.png" alt="">
+                        <p class="title">{{val.at}}</p>
+                        <p class="date">{{val.at_str}}</p>
+                      </div>
+                    </template>
+                    <div class="more-wrapper">
+                      <p>更多</p>
+                      <img src="./icon-pressed@2x.png" alt="">
                     </div>
-                    <p class="title">超值特新鲜柠</p>
-                    <div class="money-wrapper">
-                      <p class="m-int">10</p>
-                      <p class="m-dot">.8</p>
-                      <p class="m-unit">元</p>
-                      <p class="m-origin">12元</p>
-                    </div>
-                  </li>
-                </template>
-              </ul>
-              <ul v-else
-                  class="goods-list-wrapper"
-              >
-                <template v-for="(item, index) in 4">
-                  <li :key="index"
-                      class="goods-item-wrapper empty"
+                  </nav>
+                  <ul v-if="activityGoodsList && activityGoodsList.length"
+                      class="goods-list-wrapper"
                   >
-                    <img class="goods-image empty" src="./icon-picmr@2x.png" alt="">
-                    <p class="empty-text">未添加活动</p>
-                  </li>
-                </template>
-              </ul>
-            </article>
-            <article class="active-wrapper">
-              <!--          tab-->
-              <ul class="tab-wrapper">
-                <li
-                  v-for="(item,index) in 5"
-                  :key="index"
-                  class="tab-item"
-                  :class="{active: !index}"
-                >
-                  <p>新人特惠</p>
-                  <div class="sub">
-                    <span>专属特权</span>
-                  </div>
-                </li>
-              </ul>
-<!--              团购-->
-              <nav class="panel">
-                <img class="banner-img" src="./pic-ptfx.png" alt="">
-                <div
-                  v-for="(item, index) in 5"
-                  :key="index"
-                  class="goods-item-wrapper"
-                >
-                  <article class="goods-wrapper">
-                    <figure class="left">
-                      <img class="goods-image" src="./pic-ptfx.png" alt="">
-                      <img class="label" src="./icon-label@1x.png" alt="">
-                    </figure>
-                    <section class="right">
-                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
-                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
-                      <div class="money-wrapper">
-                        <p class="int">10</p>
-                        <p class="dot">.8</p>
-                        <p class="unit">元</p>
-                        <p class="origin">12元</p>
-                      </div>
-                      <p class="type-icon group">拼团价</p>
-                      <div class="button-group">
-                        <div class="button-wrapper">
-                          <p>去拼团</p>
+                    <template v-for="(item, index) in activityGoodsList">
+                      <li :key="index"
+                          class="goods-item-wrapper"
+                      >
+                        <div class="goods-image">
+                          <img v-if="item.goods_cover_image"
+                               class="goods-img"
+                               :src="item.goods_cover_image"
+                               alt=""
+                          >
+                          <img class="label" src="./pic-label_qg@2x.png" alt="">
                         </div>
-                        <p class="number">已售3303斤</p>
-                      </div>
-                    </section>
-                  </article>
-                </div>
-              </nav>
-<!--              今日爆破-->
-              <nav class="panel">
-                <img class="banner-img" src="./pic-jrbk.png" alt="">
-                <div
-                  v-for="(item, index) in 5"
-                  :key="index"
-                  class="goods-item-wrapper"
-                >
-                  <article class="goods-wrapper">
-                    <figure class="left">
-                      <img class="goods-image" src="./pic-ptfx.png" alt="">
-                      <img class="label" src="./icon-label@1x.png" alt="">
-                    </figure>
-                    <section class="right">
-                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
-                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
-                      <div class="money-wrapper">
-                        <p class="int">10</p>
-                        <p class="dot">.8</p>
-                        <p class="unit">元</p>
-                        <p class="origin">12元</p>
-                      </div>
-                      <p class="type-icon group">爆款价</p>
-                      <div class="button-group">
-                        <div class="button-wrapper">
-                          <p>+购物车</p>
+                        <p class="title">超值特新鲜柠</p>
+                        <div class="money-wrapper">
+                          <p class="m-int">10</p>
+                          <p class="m-dot">.8</p>
+                          <p class="m-unit">元</p>
+                          <p class="m-origin">12元</p>
                         </div>
-                        <p class="number">已售3303斤</p>
+                      </li>
+                    </template>
+                  </ul>
+                  <ul v-else
+                      class="goods-list-wrapper"
+                  >
+                    <template v-for="(item, index) in 4">
+                      <li :key="index"
+                          class="goods-item-wrapper empty"
+                      >
+                        <img class="goods-image empty" src="./icon-picmr@2x.png" alt="">
+                        <p class="empty-text">未添加活动</p>
+                      </li>
+                    </template>
+                  </ul>
+                </article>
+                <article v-if="idx === 0" :key="idx + 'other'" class="active-wrapper">
+                  <!-- tab-->
+                  <ul class="tab-wrapper">
+                    <li
+                      v-for="(item,index) in tabActiveList"
+                      :key="index"
+                      class="tab-item"
+                      :class="{active: !index}"
+                    >
+                      <p>{{item.tabTitle.title}}</p>
+                      <div class="sub">
+                        <span>{{item.tabTitle.subTitle}}</span>
                       </div>
-                    </section>
-                  </article>
-                </div>
-              </nav>
-              <!--              新人特惠-->
-              <nav class="panel">
-                <img class="banner-img" src="./pic-xrth.png" alt="">
-                <div
-                  v-for="(item, index) in 5"
-                  :key="index"
-                  class="goods-item-wrapper"
-                >
-                  <article class="goods-wrapper">
-                    <figure class="left">
-                      <img class="goods-image" src="./pic-ptfx.png" alt="">
-                      <img class="label" src="./icon-label@1x.png" alt="">
-                    </figure>
-                    <section class="right">
-                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
-                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
-                      <div class="money-wrapper">
-                        <p class="int">10</p>
-                        <p class="dot">.8</p>
-                        <p class="unit">元</p>
-                        <p class="origin">12元</p>
-                      </div>
-                      <p class="type-icon group">新人价</p>
-                      <div class="button-group">
-                        <div class="button-wrapper">
-                          <p>+购物车</p>
+                    </li>
+                  </ul>
+                  <template v-for="(active) in otherActiveList">
+                    <!--              今日爆破-->
+                    <nav :key="active.id" v-if="active.dataArray" class="panel">
+                      <img v-if="active.module_name === 'groupon'" class="banner-img" src="./pic-ptfx.png" alt="">
+                      <img v-if="active.module_name === 'goods_hot_tag'" class="banner-img" src="./pic-jrbk.png" alt="">
+                      <img v-if="active.module_name === 'new_client'" class="banner-img" src="./pic-xrth.png" alt="">
+                      <template  v-if="active.dataArray">
+                        <div v-for="(item, index) in active.dataArray"
+                             :key="index"
+                             class="goods-item-wrapper"
+                        >
+                          <article class="goods-wrapper">
+                            <figure class="left">
+                              <img v-if="item.goods_cover_image" class="goods-image" :src="item.goods_cover_image" alt="">
+                              <img v-else class="goods-image empty" src="./icon-picmr@2x.png" alt="">
+                              <img class="label" src="./icon-label@1x.png" alt="">
+                            </figure>
+                            <section class="right">
+                              <p class="title">{{item.name}}</p>
+                              <p class="sub-title">{{'缺'}}</p>
+                              <div class="money-wrapper">
+                                <p class="int">{{item.tradePrice && item.tradePrice.int || ''}}</p>
+                                <p class="dot">{{item.tradePrice && item.tradePrice.dec || ''}}</p>
+                                <p class="unit">元</p>
+                                <p class="origin">{{'缺'}}{{item.sale_unit}}</p>
+                              </div>
+                              <p class="type-icon group">{{iconText(active.module_name)}}</p>
+                              <div class="button-group">
+                                <div class="button-wrapper">
+                                  <p>{{buttonText(active.module_name)}}</p>
+                                </div>
+                                <p class="number">已售{{'缺'}}斤</p>
+                              </div>
+                            </section>
+                          </article>
                         </div>
-                        <p class="number">已售3303斤</p>
-                      </div>
-                    </section>
-                  </article>
-                </div>
-              </nav>
-              <!--              猜你喜欢-->
-              <nav class="panel guess">
-<!--                <img class="banner-img" src="./pic-jrbk.png" alt="">-->
-                <div
-                  v-for="(item, index) in 5"
-                  :key="index"
-                  class="goods-item-wrapper"
-                >
-                  <article class="goods-wrapper">
-                    <figure class="left">
-                      <img class="goods-image" src="./pic-ptfx.png" alt="">
-                      <img class="label" src="./icon-label@1x.png" alt="">
-                    </figure>
-                    <section class="right">
-                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
-                      <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
-                      <div class="money-wrapper">
-                        <p class="int">10</p>
-                        <p class="dot">.8</p>
-                        <p class="unit">元</p>
-                        <p class="origin">12元</p>
-                      </div>
-                      <p class="type-icon group">团购价</p>
-                      <div class="button-group guess">
-                        <div class="button-wrapper">
-                          <p>+购物车</p>
-                        </div>
-                        <p class="number">已售3303斤</p>
-                      </div>
-                    </section>
-                  </article>
-                </div>
-              </nav>
-            </article>
-          </section>
+                      </template>
+                    </nav>
+                  </template>
+                </article>
+              </template>
+            </section>
+          </template>
         </div>
+        <article class="active-wrapper">
+          <nav class="panel guess">
+            <div
+              v-for="(item, index) in 5"
+              :key="index"
+              class="goods-item-wrapper"
+            >
+              <article class="goods-wrapper">
+                <figure class="left">
+                  <img class="goods-image" :class="{empty: true}" src="./icon-picmr@2x.png" alt="">
+                  <img class="label" src="./icon-label@1x.png" alt="">
+                </figure>
+                <section class="right">
+                  <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
+                  <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
+                  <div class="money-wrapper">
+                    <p class="int">10</p>
+                    <p class="dot">.8</p>
+                    <p class="unit">元</p>
+                    <p class="origin">12元</p>
+                  </div>
+                  <p class="type-icon group">团购价</p>
+                  <div class="button-group guess">
+                    <div class="button-wrapper">
+                      <p>+购物车</p>
+                    </div>
+                    <p class="number">已售3303斤</p>
+                  </div>
+                </section>
+              </article>
+            </div>
+          </nav>
+        </article>
       </div>
     </div>
   </div>
@@ -255,6 +205,36 @@
 <script type="text/ecmascript-6">
   import {Carousel, CarouselItem} from 'iview'
 
+  const TAB_ARR_CONFIG = {
+    'new_client': {
+      title: '新人特惠',
+      subTitle: '专属特权',
+      iconText: '新人价',
+      buttonText: '+购物车',
+      dataArray: 'newClientList'
+    },
+    'goods_hot_tag': {
+      title: '今日爆款',
+      subTitle: '火爆推荐',
+      iconText: '爆款价',
+      buttonText: '+购物车',
+      dataArray: 'todayHotList'
+    },
+    'groupon': {
+      title: '拼团返现',
+      subTitle: '成团有礼',
+      iconText: '拼团价',
+      buttonText: '去拼团',
+      dataArray: ''
+    },
+    'guess': {
+      title: '猜你喜欢',
+      subTitle: '为你优选',
+      iconText: '团购价',
+      buttonText: '+购物车',
+      dataArray: ''
+    },
+  }
   const COMPONENT_NAME = 'PHONE_BOX'
   export default {
     name: COMPONENT_NAME,
@@ -267,32 +247,7 @@
         type: String,
         default: 'bannar'
       },
-      cmsMsg: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
-      bannerList: {
-        type: Array,
-        default: () => {
-          return [
-            {
-              content: {id: '', url: ''},
-              image_id: '',
-              image_url: '',
-              type: 'mini_goods'
-            }
-          ]
-        }
-      },
-      navList: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
-      cateGoods: {
+      cmsArray: {
         type: Array,
         default: () => {
           return []
@@ -303,12 +258,63 @@
         default: () => {
           return new Array(4).fill({})
         }
-      }
+      },
+      newClientList: {
+        type: Array,
+        default: () => []
+      },
+      todayHotList: {
+        type: Array,
+        default: () => []
+      },
     },
     data() {
       return {
         bannerIndex: 0,
-        comType: this.infoType
+        comType: this.infoType,
+        activeConfig: TAB_ARR_CONFIG,
+        serverList: [
+          {
+            text: '次日送达',
+            icon: require('./icon-lightning@2x.png')
+          },
+          {
+            text: '品控质检',
+            icon: require('./icon-ok@2x.png')
+          },
+          {
+            text: '100%售后服务',
+            icon: require('./icon-ok@2x.png')
+          },
+          {
+            text: '原产地直采',
+            icon: require('./icon-ok@2x.png')
+          },
+        ]
+      }
+    },
+    computed: {
+      otherActiveList() {
+        let arr = []
+        let module = this.cmsArray.find(val => val.module_name === 'activity')
+        if (module && module.list) {
+          module.list.forEach(item => {
+            if (item.module_name !== 'activity_fixed'){
+              let key = TAB_ARR_CONFIG[item.module_name].dataArray
+              item.dataArray = this[key] || []
+              arr.push(item)
+            }
+          })
+        }
+        return arr
+      },
+      tabActiveList() {
+        let arr = []
+        this.otherActiveList.forEach(item => {
+          arr.push({tabTitle: TAB_ARR_CONFIG[item.module_name]})
+        })
+        arr.push({tabTitle: TAB_ARR_CONFIG['guess']})
+        return arr
       }
     },
     watch: {
@@ -323,6 +329,12 @@
       _setType(cms) {
         this.comType = cms.module_name
         this.$emit('setType', cms)
+      },
+      iconText(key) {
+        return TAB_ARR_CONFIG[key].iconText || ''
+      },
+      buttonText(key) {
+        return TAB_ARR_CONFIG[key].buttonText || ''
       }
     }
   }
@@ -330,6 +342,26 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
+  // 服务说明
+  .server-book-wrapper
+    display :flex
+    padding :8px 12.5px 10px
+    .serve-wrapper
+      font-family: $font-family-regular
+      color: #54990F
+      display :flex
+      align-self :center
+      justify-content :center
+      img
+        width :11px
+        height :@width
+      span
+        transform :scale(0.8)
+        font-size: 10px
+        line-height :11px
+        margin-left :-1px
+        white-space :nowrap
 
   // 结构布局
   .phone-box
@@ -357,11 +389,42 @@
   // 活动tab
   .active-wrapper
     padding-top :10px
-    background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 100%)
+    background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 5%)
+    // tab
+    .tab-wrapper
+      overflow :hidden
+      height :46px
+      padding :0 5px
+      .tab-item
+        display :inline-block
+        p
+          padding-top :7px
+          font-family: $font-family-medium
+          font-size: 12px;
+          color: #1D2023;
+          text-align: center;
+        .sub
+          display :block
+          font-family: $font-family-regular;
+          font-size: 10px;
+          color: #808080;
+          text-align: center;
+          line-height :14px
+          height :16px
+          border-radius :14px
+          transform :scale(0.7)
+          padding :2px 5px
+        &.active
+          p
+            color: #73C200
+          .sub
+            background : #73C200
+            color: #fff
     // 各个活动
     .panel
       position :relative
       padding: 47px 9px 0
+      min-height :90px
       &.guess
         padding :0 9px 0
       .banner-img
@@ -482,6 +545,8 @@
               object-fit :cover
               background :#f5f5f5
               border-radius :1px
+              &.empty
+                object-fit :contain
             .label
               position :absolute
               display :block
@@ -489,40 +554,10 @@
               left :@top
               width :25px
               height :@width
-    // tab
-    .tab-wrapper
-      overflow :hidden
-      height :46px
-      padding :0 5px
-      .tab-item
-        display :inline-block
-        p
-          padding-top :7px
-          font-family: $font-family-medium
-          font-size: 12px;
-          color: #1D2023;
-          text-align: center;
-        .sub
-          display :block
-          font-family: $font-family-regular;
-          font-size: 10px;
-          color: #808080;
-          text-align: center;
-          line-height :14px
-          height :16px
-          border-radius :14px
-          transform :scale(0.7)
-          padding :2px 5px
-        &.active
-          p
-            color: #73C200
-          .sub
-            background : #73C200
-            color: #fff
 
   // 商品分类
   .goods-classify-wrapper
-    padding :17.5px 9.4px
+    padding :0 9.4px 17.5px
     display :flex
     flex-direction :row
     flex-wrap :wrap

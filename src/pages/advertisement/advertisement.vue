@@ -10,11 +10,11 @@
     </div>
     <div class="advertisement-small">
       <phone-box
-        :bannerList="bannerList"
-        :cateGoods="cateGoods"
         :activityGoodsList="activityGoodsList"
-        :cmsMsg="infoBannerList.modules"
-        @setType="_changeType"
+        :cmsArray="infoBannerList.modules"
+        :newClientList="newClientList"
+        :todayHotList="todayHotList"
+        @setType="handleChangeType"
       ></phone-box>
       <!--广告-->
       <div v-if="cmsType === 'bannar'" class="advertisement-content">
@@ -41,7 +41,6 @@
                 <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
               </div>
             </div>
-
           </transition-group>
         </draggable>
         <div class="advertisement-btn">
@@ -50,16 +49,16 @@
         </div>
       </div>
 
-      <!--限时抢购-->
-      <div v-if="cmsType === 'activity_fixed'" class="advertisement-content">
+      <!--活动类目设置-->
+      <div v-if="cmsType === 'activity'" class="advertisement-content">
         <div class="content-header">
-          <div class="content-title">限时抢购</div>
+          <div class="content-title">活动类目设置</div>
         </div>
         <div>
-          <nav v-for="(item, index) in 5" :key="index" class="edit-item edit-flex">
-            <div class="left">显示活动<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
-            <div class="switch" @click="switchBtn()">
-              <base-switch :status="activityStatus" confirmText="开启" cancelText="关闭"></base-switch>
+          <nav v-for="(item, index) in activityList" :key="index" class="edit-item edit-flex">
+            <div class="left">{{item.module_title}}<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
+            <div class="switch" @click="switchBtn(item)">
+              <base-switch :status="!item.is_close ? 1 : 0" confirmText="开启" cancelText="关闭"></base-switch>
             </div>
           </nav>
           <div class="submit-activity advertisement-btn">
@@ -152,6 +151,7 @@
   import {adverComputed, adverMethods} from '@state/helpers'
   import _ from 'lodash'
   import Draggable from 'vuedraggable'
+  import {formatCouponMoney} from '@utils/common'
 
   const PAGE_NAME = 'ADVERTISEMENT'
   const TITLE = '轮播广告'
@@ -167,7 +167,9 @@
     navigation: '导航栏设置',
     navigationIcon: require('./icon-nav_settings@2x.png'),
     activity_fixed: '限时抢购',
-    activity_fixedIcon: require('./icon-time@2x.png')
+    activity_fixedIcon: require('./icon-time@2x.png'),
+    activity: '活动类目',
+    activityIcon: require('./icon-activity_category@2x.png')
   }
   const TEMPLATE_OBJ = {
     id: '',
@@ -234,7 +236,11 @@
         activityItem: {},
         activityStatus: 0,
         activityGoodsList: [],
-        cateGoods: []
+        cateGoods: [],
+        currentModule: {},
+        activityList: [], // 活动列表
+        newClientList: [], // 新人特惠列表
+        todayHotList: [], // 今日爆品
       }
     },
     computed: {
@@ -246,22 +252,46 @@
       }
     },
     async created() {
-      this.cmsId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].id : ''
-      this.cmsModuleId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].module_id : ''
+      this.currentModule = this.infoBannerList.modules[0] || {}
+      this.cmsId = this.currentModule ? this.currentModule.id : ''
+      this.cmsModuleId = this.currentModule ? this.currentModule.module_id : ''
       this.$loading.show()
-      this.infoBannerList.modules.forEach(async (item) => {
-        await this._getModuleMsg(item.module_name, item.id, item.module_id)
-      })
-      await this._getFirstAssortment()
-      await this._getGoodsList()
-      await this._getActivityGoods()
-      await this._getCateGoods()
+      await this._getModuleMsg(this.currentModule.module_name, this.cmsId, this.cmsModuleId)
+      // await this._getFirstAssortment()
+      // await this._getGoodsList()
+      // await this._getActivityGoods()
+      this._getAllActivityData()
+      this._getFirstAssortment()
       this.$loading.hide()
     },
     methods: {
       ...adverMethods,
-      switchBtn() {
-        this.activityStatus = this.activityStatus ? 0 : 1
+      // 获取所有活动数据
+      _getAllActivityData() {
+        this._getActivityGoods()
+        API.Advertisement.getNewClientList().then(res => {
+          if (res.data) {
+            this.newClientList = this._formatListData(res.data)
+          }
+        })
+        API.Advertisement.getTodayList().then(res => {
+          if (res.data) {
+            this.todayHotList = this._formatListData(res.data)
+          }
+        })
+      },
+      _formatListData(arr = []) {
+        return arr.map(item => {
+          return {
+            ...item,
+            tradePrice: formatCouponMoney(item.trade_price)
+          }
+        })
+      },
+      // 按钮
+      switchBtn(item) {
+        item.is_close = !item.is_close
+        // this.activityStatus = this.activityStatus ? 0 : 1
       },
       async _getModuleMsg(type, id, moduleId) {
         let res = await API.Advertisement.getModuleMsg({id: id, module_id: moduleId})
@@ -279,40 +309,44 @@
         case 'goods_cate':
           // this.temporaryNavigation = _.cloneDeep(res.data)
           break
+        case 'activity':
+          this.activityList = res.data || []
+          break
+        default:
+          break
         }
-      },
-      // 获取分类商品列表
-      _getCateGoods() {
-        API.Advertisement.getGoodsList({
-          is_online: 1,
-          keyword: '',
-          goods_category_id: '',
-          limit: 10,
-          page: 1
-        }).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return
-          }
-          this.cateGoods = res.data
-        })
       },
       // 获取限时抢购商品列表
       _getActivityGoods() {
-        this.infoBannerList.modules.forEach((item) => {
-          if (
-            item.module_name === 'activity_fixed' &&
-            item.content_data &&
-            item.content_data.list &&
-            item.content_data.list.length > 0
-          ) {
-            API.Advertisement.getActivityGoods(item.content_data.list[0].id).then((res) => {
+        let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
+        if (module.list) {
+          module = module.list.find(val => val.module_name === 'activity_fixed') || {}
+          if (module) {
+            console.log(module)
+            API.Advertisement.getActivityGoods(module.id).then((res) => {
               if (res.error !== this.$ERR_OK) {
                 return
               }
               this.activityGoodsList = res.data
+              console.log(res.data)
             })
           }
-        })
+        }
+        // this.infoBannerList.modules.forEach((item) => {
+        //   if (
+        //     item.module_name === 'activity_fixed' &&
+        //     item.content_data &&
+        //     item.content_data.list &&
+        //     item.content_data.list.length > 0
+        //   ) {
+        //     API.Advertisement.getActivityGoods(item.content_data.list[0].id).then((res) => {
+        //       if (res.error !== this.$ERR_OK) {
+        //         return
+        //       }
+        //       this.activityGoodsList = res.data
+        //     })
+        //   }
+        // })
       },
       _setSort() {},
       _setLinkType(index, e) {
@@ -321,7 +355,7 @@
         this.outLink = this.typeList[index].status
       },
       // cms的类型
-      async _changeType(cms) {
+      async handleChangeType(cms) {
         this.cmsType = cms.module_name
         this.cmsId = cms.id
         this.cmsModuleId = cms.module_id
@@ -513,13 +547,18 @@
       },
       // 新建活动
       async _editActivity() {
+        let arr = this.activityList.map(item => {
+          return {
+            is_close: !item.is_close ? 1 : 0
+          }
+        })
         let data = [
           {
             page_module_id: this.cmsId,
-            config_data: {is_close: this.activityStatus === 1 ? 0 : 1}
+            config_data: arr
           }
         ]
-        let res = await API.Advertisement.saveFlashSale({data})
+        let res = await API.Advertisement.saveModuleData({data})
         // if (res.error === this.$ERR_OK) {
         //   await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
         // }
