@@ -122,11 +122,11 @@
                   </ul>
                   <template v-for="(active) in otherActiveList">
                     <!--              今日爆破-->
-                    <nav :key="active.id" v-if="active.dataArray" class="panel">
+                    <nav v-if="active.dataArray && active.dataArray.length" :key="active.id" class="panel">
                       <img v-if="active.module_name === 'groupon'" class="banner-img" src="./pic-ptfx.png" alt="">
                       <img v-if="active.module_name === 'goods_hot_tag'" class="banner-img" src="./pic-jrbk.png" alt="">
                       <img v-if="active.module_name === 'new_client'" class="banner-img" src="./pic-xrth.png" alt="">
-                      <template  v-if="active.dataArray">
+                      <template v-if="active.dataArray">
                         <div v-for="(item, index) in active.dataArray"
                              :key="index"
                              class="goods-item-wrapper"
