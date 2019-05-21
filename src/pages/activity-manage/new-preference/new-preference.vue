@@ -23,7 +23,7 @@
               </div>
               <img v-if="+val.type === 3" :src="item.goods_cover_image" alt="" class="img">
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-operation-box item">
-                <span class="list-operation" @click="_deleteActivity(item.activity_id)">删除</span>
+                <span class="list-operation" @click="_deleteActivity(item.activity_new_client_goods_sku_id)">删除</span>
               </div>
             </div>
           </div>
@@ -96,6 +96,10 @@
 
 <style scoped lang="stylus"  rel="stylesheet/stylus">
   @import "~@design"
+  .table .table-content
+    padding-bottom: 20px
+  .big-list
+    max-height: none
   .data-content
     flex: 1
     display: flex
