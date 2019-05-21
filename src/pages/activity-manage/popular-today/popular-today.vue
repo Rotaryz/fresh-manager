@@ -364,6 +364,10 @@
 
 <style scoped lang="stylus"  rel="stylesheet/stylus">
   @import "~@design"
+  .table .table-content
+    padding-bottom: 20px
+  .big-list
+    max-height: none
   .data-content
     flex: 1
     display: flex
