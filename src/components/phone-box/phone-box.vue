@@ -139,19 +139,19 @@
                             </figure>
                             <section class="right">
                               <p class="title">{{item.name}}</p>
-                              <p class="sub-title">{{'缺'}}</p>
+                              <p class="sub-title">{{item.describe}}</p>
                               <div class="money-wrapper">
                                 <p class="int">{{item.tradePrice && item.tradePrice.int || ''}}</p>
                                 <p class="dot">{{item.tradePrice && item.tradePrice.dec || ''}}</p>
                                 <p class="unit">元</p>
-                                <p class="origin">{{'缺'}}{{item.sale_unit}}</p>
+                                <p class="origin">{{item.original_price}}元</p>
                               </div>
                               <p class="type-icon group">{{iconText(active.module_name)}}</p>
                               <div class="button-group">
                                 <div class="button-wrapper">
                                   <p>{{buttonText(active.module_name)}}</p>
                                 </div>
-                                <p class="number">已售{{'缺'}}斤</p>
+                                <p class="number">已售{{item.sale_count}}{{item.sale_unit}}</p>
                               </div>
                             </section>
                           </article>
@@ -168,7 +168,7 @@
           <nav class="panel">
             <img class="banner-img" src="./pic-cnxh.png" alt="">
             <div
-              v-for="(item, index) in 5"
+              v-for="(item, index) in 0"
               :key="index"
               class="goods-item-wrapper"
             >
@@ -178,20 +178,20 @@
                   <img class="label" src="./icon-label@1x.png" alt="">
                 </figure>
                 <section class="right">
-                  <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
-                  <p class="sub-title">味道香甜可做各式味道香甜可做各式</p>
+                  <p class="title">{{item.name}}</p>
+                  <p class="sub-title">{{item.describe}}</p>
                   <div class="money-wrapper">
-                    <p class="int">10</p>
-                    <p class="dot">.8</p>
+                    <p class="int">{{item.tradePrice && item.tradePrice.int || ''}}</p>
+                    <p class="dot">{{item.tradePrice && item.tradePrice.dec || ''}}</p>
                     <p class="unit">元</p>
-                    <p class="origin">12元</p>
+                    <p class="origin">{{item.original_price}}元</p>
                   </div>
                   <p class="type-icon group">团购价</p>
                   <div class="button-group guess">
                     <div class="button-wrapper">
                       <p>+购物车</p>
                     </div>
-                    <p class="number">已售3303斤</p>
+                    <p class="number">已售{{item.sale_count}}{{item.sale_unit}}</p>
                   </div>
                 </section>
               </article>

@@ -2,11 +2,10 @@ import {getCorpId} from '@utils/tool'
 
 export default {
   beforeRouteLeave(to, from, next) {
-    // console.log(from, this._isSave)
-    if (from.path === '/home/advertisement' && !this._isSave) {
+    if (to.path !== '/login' && from.path === '/home/advertisement' && !this._isSave) {
       this._isRouting = true
       this._next = next
-      this.handleChangeType(this._currentCms)
+      this.handleChangeType && this.handleChangeType(this._currentCms)
     } else {
       next()
     }

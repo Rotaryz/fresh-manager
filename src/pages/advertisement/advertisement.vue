@@ -140,7 +140,7 @@
     <!--<div class="back">-->
     <!--<div class="back-btn btn-main">保存并发布</div>-->
     <!--</div>-->
-    <default-confirm ref="saveMsg" @confirm="handleSaveConfirm" @cancel="handleCancleConfirm"></default-confirm>
+    <default-confirm ref="saveMsg" @confirm="handleSaveConfirm" @cancel="handleCancelConfirm"></default-confirm>
   </div>
 </template>
 
@@ -290,8 +290,9 @@
           break
         }
       },
-      handleCancleConfirm() {
+      handleCancelConfirm() {
         if (this._isRouting) {
+          console.log(this._next)
           this._next()
         } else {
           this._actionToChangeModule()
@@ -361,7 +362,9 @@
         if (module.list) {
           module = module.list.find(val => val.module_name === 'activity_fixed') || {}
           if (module) {
-            API.Advertisement.getActivityGoods(module.id).then((res) => {
+            let id = module.list && module.list[0] && module.list[0].id
+            if (!id) return
+            API.Advertisement.getActivityGoods(id).then((res) => {
               if (res.error !== this.$ERR_OK) {
                 return
               }
