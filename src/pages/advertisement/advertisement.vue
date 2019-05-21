@@ -140,7 +140,7 @@
     <!--<div class="back">-->
     <!--<div class="back-btn btn-main">保存并发布</div>-->
     <!--</div>-->
-    <default-confirm ref="saveMsg" @confirm="handleSaveConfirm"></default-confirm>
+    <default-confirm ref="saveMsg" @confirm="handleSaveConfirm" @cancel="handleCancleConfirm"></default-confirm>
   </div>
 </template>
 
@@ -288,6 +288,13 @@
           break
         default:
           break
+        }
+      },
+      handleCancleConfirm() {
+        if (this._isRouting) {
+          this._next()
+        } else {
+          this._actionToChangeModule()
         }
       },
       _actionToChangeModule() {
@@ -595,19 +602,27 @@
       },
       // 新建活动
       async _editActivity(success) {
-        let arr = this.activityList.map(item => {
+        // let arr = this.activityList.map(item => {
+        //   return {
+        //     is_close: !item.is_close ? 1 : 0,
+        //     id: item.id
+        //   }
+        // })
+        // let data = [
+        //   {
+        //     id: this.cmsId,
+        //     page_module_id: this.cmsId,
+        //     config_data: arr
+        //   }
+        // ]
+        let data = this.activityList.map(item => {
           return {
-            is_close: !item.is_close ? 1 : 0,
-            id: item.id
+            id: item.id,
+            config_data: {
+              is_close: !item.is_close ? 0 : 1
+            }
           }
         })
-        let data = [
-          {
-            id: this.cmsId,
-            page_module_id: this.cmsId,
-            config_data: arr
-          }
-        ]
         let res = await API.Advertisement.saveModuleData({data})
         if (res.error === this.$ERR_OK) {
           await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
