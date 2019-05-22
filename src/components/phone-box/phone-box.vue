@@ -32,14 +32,16 @@
           </ul>
           <!--商品分类-->
           <ul v-if="cms.module_name === 'goods_cate'" class="goods-classify-wrapper">
-            <li v-for="(item, index) in cms.list"
-                :key="item.id"
-                class="classify-item"
-                :class="{'next-row': index > 4}"
-            >
-              <img :src="item.image_url" alt="">
-              <p>{{item.name}}</p>
-            </li>
+            <template v-for="(item, index) in cms.list">
+              <li v-if="index < 10"
+                  :key="item.id"
+                  class="classify-item"
+                  :class="{'next-row': index > 4}"
+              >
+                <img :src="item.image_url" alt="">
+                <p>{{item.name}}</p>
+              </li>
+            </template>
           </ul>
           <template v-if="cms.module_name === 'activity'">
             <section class="un-touch"
