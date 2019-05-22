@@ -80,12 +80,12 @@ export default {
     return request.post(url, data, loading)
   },
   /**
-   * 保存限时抢购
+   * 保存活动模块数据
    * @param data
    * @param id
    * @returns {*|AxiosPromise<any>|IDBRequest|Promise<void>}
    */
-  saveFlashSale(data, loading = true) {
+  saveModuleData(data, loading = true) {
     let url = `/social-shopping/api/backend/cms/save-module-config-data`
     return request.post(url, data, loading)
   },
@@ -118,5 +118,15 @@ export default {
   getGoodsList(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
-  }
+  },
+  // 新人特惠活动商品列表[v2.4]
+  getNewClientList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-new-client/goods-sku`
+    return request.get(url, data, loading)
+  },
+  // 今日爆款商品列表[v2.4]
+  getTodayList(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods-hot-tag`
+    return request.get(url, data, loading)
+  },
 }
