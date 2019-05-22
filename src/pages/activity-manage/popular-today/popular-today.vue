@@ -184,7 +184,7 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_type: 'hot_tag'
+          activity_type: ''
         })
         if (res.error !== this.$ERR_OK) {
           return
