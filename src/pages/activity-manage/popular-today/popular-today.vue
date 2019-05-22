@@ -5,6 +5,7 @@
         <div class="identification-page">
           <img src="./icon-today_hot@2x.png" class="identification-icon">
           <p class="identification-name">今日爆款</p>
+          <p class="tip">只能添加20个商品({{popularPage.total}}/20)</p>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="_showGoods">添加商品<span class="add-icon"></span></div>
@@ -28,9 +29,9 @@
           </div>
         </div>
       </div>
-      <!--<div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="salePage" @addPage="addPage"></base-pagination>
-      </div>-->
+      <div class="pagination-box">
+        <base-pagination ref="pages" :pageDetail="popularPage" @addPage="addPage"></base-pagination>
+      </div>
     </div>
 
     <!-- 选择商品弹窗-->
@@ -146,7 +147,7 @@
     },
     created() {
       this._getFirstAssortment()
-      this.getPopularList()
+      this.getPopularList(1)
     },
     methods: {
       ...activityMethods,
@@ -163,7 +164,7 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getPopularList()
+        this.getPopularList(this.page)
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
@@ -174,6 +175,10 @@
         })
         this.selectGoods = []
         this._hideGoods()
+      },
+      addPage(page) {
+        this.page = page
+        this.getPopularList(this.page)
       },
       // 选择商品
       async _getGoodsList() {
@@ -321,7 +326,7 @@
               return
             }
             this.$toast.show('添加成功')
-            this.getPopularList()
+            this.getPopularList(this.page)
           })
       },
       // 批量添加
@@ -340,7 +345,7 @@
               return
             }
             this.$toast.show('添加成功')
-            this.getPopularList()
+            this.getPopularList(this.page)
           })
         // this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
@@ -364,10 +369,11 @@
 
 <style scoped lang="stylus"  rel="stylesheet/stylus">
   @import "~@design"
-  .table .table-content
-    padding-bottom: 20px
-  .big-list
-    max-height: none
+  .identification-page .tip
+    font-size: $font-size-14
+    margin-left: 10px
+    font-family: $font-family-regular
+    color: $color-text-assist
   .data-content
     flex: 1
     display: flex

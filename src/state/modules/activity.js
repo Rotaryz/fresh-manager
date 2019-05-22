@@ -4,8 +4,18 @@ import app from '@src/main'
 export const state = {
   // 今日爆款
   popularList: [],
+  popularPage: {
+    total: 1,
+    per_page: 10,
+    total_page: 1
+  },
   // 新人特惠
   preferenceList: [],
+  preferencePage: {
+    total: 1,
+    per_page: 10,
+    total_page: 1
+  },
   // 拼团返现
   collageList: [],
   collageDetail: {},
@@ -22,9 +32,14 @@ export const getters = {
   popularList: (state) => {
     return state.popularList
   },
-
+  popularPage: (state) => {
+    return state.popularPage
+  },
   preferenceList: (state) => {
     return state.preferenceList
+  },
+  preferencePage: (state) => {
+    return state.preferencePage
   },
   collageList: (state) => {
     return state.collageList
@@ -44,8 +59,14 @@ export const mutations = {
   SET_POPULAR_LIST(state, list) {
     state.popularList = list
   },
+  SET_POPULAR_PAGE(state, page) {
+    state.popularPage = page
+  },
   SET_PREFERENCE_LIST(state, list) {
     state.preferenceList = list
+  },
+  SET_PREFERENCE_PAGE(state, page) {
+    state.preferencePage = page
   },
   ADD_PREFERENCE_LIST(state, arr) {
     state.preferenceList = state.preferenceList.concat(arr)
@@ -58,7 +79,6 @@ export const mutations = {
   },
   SET_COLLAGE_DETAIL(state, data) {
     state.collageDetail = data
-    console.log(state.collageDetail)
   },
   SET_ACTIVITY_TYPE(state, index) {
     state.activityTab = index
@@ -67,15 +87,22 @@ export const mutations = {
 
 export const actions = {
   // 获取今日爆款列表
-  getPopularList({commit}, loading) {
-    return API.Activity.getPopularList(loading)
+  getPopularList({commit}, page) {
+    return API.Activity.getPopularList({page, limit: 10})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
           return
         }
         let list = res.data
+        let pages = res.meta
+        let pageDetail = {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        }
         commit('SET_POPULAR_LIST', list)
+        commit('SET_POPULAR_PAGE', pageDetail)
         return true
       })
       .catch(() => {
@@ -86,15 +113,22 @@ export const actions = {
       })
   },
   // 获取新人特惠列表
-  getPreferenceList({commit}, loading) {
-    return API.Activity.getPreferenceGoods(loading)
+  getPreferenceList({commit}, page) {
+    return API.Activity.getPreferenceGoods({page, limit: 10})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
           return
         }
         let list = res.data
+        let pages = res.meta
+        let pageDetail = {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        }
         commit('SET_PREFERENCE_LIST', list)
+        commit('SET_PREFERENCE_PAGE', pageDetail)
         return true
       })
       .catch(() => {
