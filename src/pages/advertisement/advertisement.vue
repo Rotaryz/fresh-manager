@@ -305,6 +305,7 @@
         this.cmsModuleId = cms.module_id
         this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
         this._isSave = false
+        this._getAllActivityData()
       },
       // 获取所有活动数据
       _getAllActivityData() {
