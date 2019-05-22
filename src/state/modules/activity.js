@@ -8,6 +8,7 @@ export const state = {
   preferenceList: [],
   // 拼团返现
   collageList: [],
+  collageDetail: {},
   collagePage: {
     total: 1,
     per_page: 10,
@@ -31,6 +32,9 @@ export const getters = {
   collagePage: (state) => {
     return state.collagePage
   },
+  collageDetail: (state) => {
+    return state.collageDetail
+  },
   activityTab: (state) => {
     return state.activityTab
   }
@@ -51,6 +55,10 @@ export const mutations = {
   },
   SET_COLLAGE_PAGE(state, page) {
     state.collagePage = page
+  },
+  SET_COLLAGE_DETAIL(state, data) {
+    state.collageDetail = data
+    console.log(state.collageDetail)
   },
   SET_ACTIVITY_TYPE(state, index) {
     state.activityTab = index
@@ -100,14 +108,17 @@ export const actions = {
     commit('ADD_PREFERENCE_LIST', arr)
   },
   // 获取拼团列表
-  getCollageList({commit}, {page, startAt, endAt, loading}) {
-    let data = {
+  getCollageList({commit}, data) {
+    let {page, startAt, endAt, status, activityType, loading} = data
+    let msg = {
       page,
       limit: 10,
       start_at: startAt,
-      end_at: endAt
+      end_at: endAt,
+      status,
+      activity_type: activityType
     }
-    return API.Activity.getCollageList(data, loading)
+    return API.Activity.getCollageList(msg, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
@@ -131,6 +142,24 @@ export const actions = {
         app.$loading.hide()
       })
   },
+  getCollageDetail({state, commit, dispatch}, id) {
+    commit('SET_COLLAGE_DETAIL', {})
+    return API.Activity.getCollageDetail(id, true)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        commit('SET_COLLAGE_DETAIL', res.data)
+        return res.data
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+
   // 设置活动管理tab栏
   setActivityTab({commit}, index) {
     commit('SET_ACTIVITY_TYPE', index)

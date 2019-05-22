@@ -79,16 +79,25 @@ export default {
    * @returns {*}
    */
   newCollage(data, loading = false) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
+    let url = '/social-shopping/api/backend/activity-manage/activity-groupon'
     return request.post(url, data, loading)
+  },
+  /**
+   * 拼团活动详情
+   * @param data
+   * @returns {*}
+   */
+  getCollageDetail(id, loading = true) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-groupon/${id}`
+    return request.get(url, {}, loading)
   },
   /**
    * 删除拼团活动
    * @param data
    * @returns {*}
    */
-  delCollage(data, loading = false) {
-    let url = '/social-shopping/api/backend/activity-manage/activity'
-    return request.delete(url, data, loading)
+  delCollage(id, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
+    return request.delete(url, {}, loading)
   },
 }

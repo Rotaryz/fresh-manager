@@ -81,10 +81,10 @@ export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', '
 
 // 活动管理
 export const activityComputed = {
-  ...mapGetters('activity', ['popularList', 'preferenceList', 'collageList', 'popularPage', 'preferencePage', 'collagePage', 'activityTab'])
+  ...mapGetters('activity', ['popularList', 'preferenceList', 'collageList', 'collageDetail', 'popularPage', 'preferencePage', 'collagePage', 'activityTab'])
 }
 
-export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList', 'addPreferenceList', 'setActivityTab'])
+export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList', 'getCollageDetail', 'addPreferenceList', 'setActivityTab'])
 
 // 拓展活动
 export const outreachComputed = {
