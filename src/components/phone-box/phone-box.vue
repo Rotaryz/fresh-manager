@@ -498,7 +498,10 @@
                 border: 1px solid #FA7500
             .title
               width :100%
-              padding-top :10px
+              height: 18px
+              line-height: 18px
+              box-sizing: border-box
+              margin-top :10px
               font-family: $font-family-medium
               font-size: 12px
               color: #111111
