@@ -1610,6 +1610,26 @@ export default [
           titles: ['供应链', '仓库', '基础设置', '打印条码']
         }
       },
+      // 仓库人员管理
+      {
+        path: 'foundation-setup/warehouse-personnel',
+        name: 'warehouse-personnel',
+        component: () => lazyLoadView(import('@pages/warehouse-personnel/warehouse-personnel')),
+        meta: {
+          titles: ['供应链', '仓库', '基础设置', '仓库人员管理']
+        }
+      },
+      // 仓库人员
+      {
+        path: 'foundation-setup/edit-warehouse',
+        name: 'edit-warehouse',
+        component: () => lazyLoadView(import('@pages/edit-warehouse/edit-warehouse')),
+        meta:{
+          titles: ['供应链', '仓库', '基础设置', '仓库人员'],
+          variableIndex: 3,
+          marginBottom: 80
+        }
+      },
       // 分拣任务
       {
         path: 'sorting-task',

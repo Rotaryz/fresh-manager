@@ -36,6 +36,11 @@
       url: 'store-manage'
     },
     {
+      className: 'warehouse',
+      name: '仓库人员管理',
+      url: 'warehouse-personnel'
+    },
+    {
       className: 'bar-code',
       name: '打印条形码',
       url: 'bar-code'
@@ -86,6 +91,8 @@
         icon-image('icon-library_manage')
       .bar-code
         icon-image('icon-print_barcode')
+      .warehouse
+        icon-image('icon-warehouse_manager')
       &:hover
         border-1px(rgba(0, 0, 0, 0), 4px)
         background: #9FD5C6
@@ -95,4 +102,6 @@
           icon-image('icon-library_manage2')
         .bar-code
           icon-image('icon-print_barcode2')
+        .warehouse
+          icon-image('icon-warehouse_manager2')
 </style>
