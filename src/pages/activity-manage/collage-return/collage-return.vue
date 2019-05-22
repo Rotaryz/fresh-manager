@@ -9,7 +9,7 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-today_rob@2x.png" class="identification-icon">
+          <img src="./icon-group_return@2x.png" class="identification-icon">
           <p class="identification-name">拼团返现</p>
           <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>

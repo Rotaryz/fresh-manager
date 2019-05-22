@@ -260,10 +260,10 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        // if (item.usable_stock <= 0) {
-        //   this.$toast.show('该商品库存为0，不能选择')
-        //   return
-        // }
+        if (item.usable_stock <= 0) {
+          this.$toast.show('该商品库存为0，不能选择')
+          return
+        }
         switch (item.selected) {
         case 0:
           if (this.selectGoodsId.length === 20) {
@@ -290,10 +290,10 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        // if (item.usable_stock <= 0) {
-        //   this.$toast.show('该商品库存为0，不能选择')
-        //   return
-        // }
+        if (item.usable_stock <= 0) {
+          this.$toast.show('该商品库存为0，不能选择')
+          return
+        }
         if (item.selected === 1) {
           return
         }

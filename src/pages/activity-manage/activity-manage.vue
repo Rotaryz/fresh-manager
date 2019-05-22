@@ -13,7 +13,7 @@
   import PopularToday from './popular-today/popular-today'
   import NewPreference from './new-preference/new-preference'
   import CollageReturn from './collage-return/collage-return'
-  import { activityMethods, activityComputed } from '@state/helpers'
+  import { activityMethods, activityComputed, saleMethods } from '@state/helpers'
 
   const PAGE_NAME = 'ACTIVITY_MANAGE'
   const TITLE = '活动管理'
@@ -52,9 +52,13 @@
     },
     methods: {
       ...activityMethods,
+      ...saleMethods,
       changeTab(selectStatus) {
         this.defaultStatus = selectStatus.status
         this.setActivityTab(this.infoTabIndex)
+        if (selectStatus.status === 'one') {
+          this.getSaleList({page: 1, status: ''})
+        }
       },
     }
   }
