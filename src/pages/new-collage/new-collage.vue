@@ -74,7 +74,7 @@
           成团人数
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.count" type="number" placeholder="请输入2~5人" class="edit-input">
+          <input v-model="msg.person_limit" type="number" placeholder="请输入2~5人" class="edit-input">
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -86,12 +86,12 @@
         </div>
         <div class="edit-input-box">
           <div class="checkbox">
-            <p class="check-item"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>开启</p>
+            <p class="check-item"><span :class="['item-icon', 'checked']"></span>开启</p>
             <!--<p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>关闭</p>-->
             <span class="description">注：成团有效期失效前30分钟后如无论是否成团，系统均按成团处理</span>
           </div>
         </div>
-        <div :class="{'text-no-change':disable}"></div>
+        <!--<div :class="{'text-no-change':disable}"></div>-->
       </div>
     </div>
 
@@ -161,7 +161,7 @@
                 <div class="com-list-item">
                   <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
                 </div>
-                <div class="com-list-item">{{item.all_stock || 0}}</div>
+                <div class="com-list-item">{{item.goods_usable_stock || item.all_stock || 0}}</div>
                 <div class="com-list-item">
                   <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
                 </div>
@@ -201,7 +201,7 @@
             <span v-for="(item, index) in couponTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
           </div>
           <div class="outreach-group-list">
-            <div v-for="(item, index) in couponList" :key="index" class="group-item" @click="_selectCoupon(item, index)">
+            <div v-for="(item, index) in couponList" :key="index" class="group-item hand" @click="_selectCoupon(item, index)">
               <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
@@ -283,7 +283,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {saleComputed, saleMethods} from '@state/helpers'
+  import {activityComputed, activityMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
@@ -388,10 +388,9 @@
           activity_name: '',
           start_at: '',
           end_at: '',
-          useful_time: '',
-          count: '',
-          activity_type: 'fixed',
-          preferential_type: 1,
+          effective_time: '',
+          person_limit: '',
+          // preferential_type: 1,
           coupon_id: ''
         },
         isSubmit: false,
@@ -400,7 +399,7 @@
       }
     },
     computed: {
-      ...saleComputed,
+      ...activityComputed,
       testName() {
         return this.msg.activity_name
       },
@@ -419,10 +418,10 @@
         return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
       },
       testUsefulTime() {
-        return this.msg.useful_time
+        return this.msg.effective_time
       },
       testCount() {
-        return COUNT.test(this.msg.count)
+        return COUNT.test(this.msg.person_limit)
       },
       testCouponList() {
         let length = this.selectCouponList.length
@@ -434,25 +433,26 @@
       this.disable = this.$route.query.id
       this.id = this.$route.query.id || this.$route.query.editId || null
       if (this.id) {
-        let obj = _.cloneDeep(this.saleDetail)
+        let obj = _.cloneDeep(this.collageDetail)
         this.goodsList = obj.activity_goods
         if (this.goodsList) {
           this.selectGoodsId = obj.activity_goods.map((item) => {
             return item.goods_id
           })
         }
-        if (+obj.useful_time === 3) {
+        if (+obj.effective_time === 3) {
           this.$set(this.usefulTime, 'content', '3')
-        } else if (+obj.useful_time === 4) {
+        } else if (+obj.effective_time === 4) {
           this.$set(this.usefulTime, 'content', '4')
-        } else if (+obj.useful_time === 5) {
+        } else if (+obj.effective_time === 5) {
           this.$set(this.usefulTime, 'content', '5')
         }
+        this.selectCouponList = [obj.coupon]
         this.msg = {
           start_at: obj.start_at,
           end_at: obj.end_at,
           activity_name: obj.activity_name,
-          count: obj.count,
+          person_limit: obj.person_limit,
           group_type: obj.group_type
         }
       }
@@ -464,7 +464,7 @@
     // this.classifyIndex = 0
     },
     methods: {
-      ...saleMethods,
+      ...activityMethods,
       _getStartTime(time) {
         this.msg.start_at = time
       },
@@ -472,7 +472,7 @@
         this.msg.end_at = time
       },
       _selectUsefulTime(item) {
-        this.msg.useful_time = item.name
+        this.msg.effective_time = item.name
       },
       // 初始化数据
       _initData() {
@@ -519,6 +519,7 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
+          item.all_stock = item.usable_stock
           item.trade_price = ''
           item.sort = 0
           return item
@@ -592,7 +593,7 @@
             return
           }
           this.choeesGoods[index].selected = 2
-          item.all_stock = item.usable_stock
+          // item.all_stock = item.usable_stock
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
           break
@@ -654,9 +655,12 @@
         }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
-        item.all_stock = item.usable_stock
-        item.usable_stock = 0
-        this.goodsList.push(item)
+        // item.all_stock = item.usable_stock
+        let goods = Object.assign({}, item)
+        goods.usable_stock = ''
+        this.goodsList.push(goods)
+        console.log(this.goodsList)
+
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)
@@ -763,11 +767,12 @@
         let list = this.goodsList.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
+          return item
         })
 
         this.isSubmit = true
         let data = Object.assign({}, this.msg, {activity_goods: list})
-        let res = await API.Sale.storeSale(data, true)
+        let res = await API.Activity.newCollage(data, true)
         this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
@@ -807,7 +812,11 @@
         return true
       },
       test() {
-        console.log(this.testGoods())
+        let list = this.goodsList.map((item) => {
+          delete item.person_day_buy_limit
+          item.goods_id = item.id || item.goods_id
+        })
+        console.log(list)
       },
       checkForm() {
         let arr = [
@@ -939,7 +948,7 @@
       margin-left: 20px
     .time-no-change, .text-no-change
       position: absolute
-      left: 103px
+      left: 134px
       top: 0
       width: 402px
       height: 40px

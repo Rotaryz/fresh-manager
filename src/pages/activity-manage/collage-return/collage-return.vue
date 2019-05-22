@@ -19,11 +19,11 @@
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+          <div v-for="(item,index) in collageTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in saleList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+          <div v-for="(item, index) in collageList" :key="index" class="list-content list-box">
+            <div v-for="(val, ind) in collageTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
               <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
                 {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
               </div>
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="salePage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="collagePage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -53,11 +53,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {saleComputed, saleMethods} from '@state/helpers'
+  import {saleComputed, saleMethods, activityComputed, activityMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
-  const SALE_TITLE = [
+  const COLLAGE_TITLE = [
     {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
     {name: '活动商品数', flex: 1, value: 'goods_count', type: 1},
@@ -78,7 +78,7 @@
           {name: '进行中', value: '', num: 0},
           {name: '已结束', value: '', num: 0}
         ],
-        saleTitle: SALE_TITLE,
+        collageTitle: COLLAGE_TITLE,
         startTime: '',
         endTime: '',
         page: 1,
@@ -89,26 +89,37 @@
     },
     computed: {
       ...saleComputed,
+      ...activityComputed
     },
     created() {
-      this.getSaleStatus()
+      this.getCollageStatus()
+      this.getCollageList({
+        page: this.page,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        status: this.status,
+        activityType: 'groupon',
+        loading: false
+      })
     },
     methods: {
       ...saleMethods,
+      ...activityMethods,
       async changeStatus(selectStatus) {
         this.status = selectStatus.value
         this.$refs.pages.beginPage()
         this.page = 1
-        await this.getSaleList({
+        await this.getCollageList({
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
           status: selectStatus.value,
+          activityType: 'groupon',
           loading: false
         })
       },
-      getSaleStatus() {
-        API.Sale.getSaleStatus({activity_type: 'fixed', start_at: this.startTime,end_at: this.endTime})
+      getCollageStatus() {
+        API.Sale.getSaleStatus({activity_type: 'groupon', start_at: this.startTime,end_at: this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -125,11 +136,12 @@
       },
       addPage(page) {
         this.page = page
-        this.getSaleList({
+        this.getCollageList({
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
           status: this.status,
+          activity_type: 'groupon',
           loading: false
         })
       },
@@ -145,14 +157,14 @@
           status: this.status,
           loading: false
         })
-        this.getSaleStatus()
+        this.getCollageStatus()
       },
       _deleteActivity(id) {
         this.delId = id
         this.$refs.confirm.show('确定删除该活动？')
       },
       async _sureConfirm() {
-        let res = await API.Sale.saleDelete(this.delId)
+        let res = await API.Activity.delCollage(this.delId)
 
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
@@ -160,12 +172,13 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getSaleStatus()
-        this.getSaleList({
+        this.getCollageStatus()
+        this.getCollageList({
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
           status: this.status,
+          activityType: 'groupon',
           loading: false
         })
       }
