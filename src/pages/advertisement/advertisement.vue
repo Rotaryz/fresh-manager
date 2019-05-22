@@ -15,6 +15,8 @@
         :newClientList="newClientList"
         :todayHotList="todayHotList"
         :comType="cmsType"
+        :guessList="guessList"
+        :groupList="groupList"
         @setType="handleChangeType"
       ></phone-box>
       <!--广告-->
@@ -244,6 +246,8 @@
         activityList: [], // 活动列表
         newClientList: [], // 新人特惠列表
         todayHotList: [], // 今日爆品
+        guessList: [],
+        groupList: []
       }
     },
     computed: {
@@ -304,7 +308,7 @@
         this.cmsId = cms.id
         this.cmsModuleId = cms.module_id
         this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-        this._isSave = false
+        // this._isSave = false
         this._getAllActivityData()
       },
       // 获取所有活动数据
@@ -318,6 +322,16 @@
         API.Advertisement.getTodayList().then(res => {
           if (res.data) {
             this.todayHotList = this._formatListData(res.data)
+          }
+        })
+        API.Advertisement.getGuessList().then(res => {
+          if (res.data) {
+            this.guessList = this._formatListData(res.data)
+          }
+        })
+        API.Advertisement.getGroupList().then(res => {
+          if(res.data) {
+            this.groupList = this._formatListData(res.data)
           }
         })
       },
@@ -401,12 +415,14 @@
         //   console.log(123)
         // }
         // console.log(this._oldMoudleData, cms)
+        // this._currentCms = cms
+        // if (!this._isSave) {
+        //   this.$refs.saveMsg.show('是否需要保存')
+        // } else {
+        //   this._actionToChangeModule()
+        // }
         this._currentCms = cms
-        if (!this._isSave) {
-          this.$refs.saveMsg.show('是否需要保存')
-        } else {
-          this._actionToChangeModule()
-        }
+        this._actionToChangeModule()
         // this.cmsType = cms.module_name
         // this.cmsId = cms.id
         // this.cmsModuleId = cms.module_id

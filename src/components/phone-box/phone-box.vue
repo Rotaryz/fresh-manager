@@ -168,7 +168,7 @@
           <nav class="panel">
             <img class="banner-img" src="./pic-cnxh.png" alt="">
             <div
-              v-for="(item, index) in 0"
+              v-for="(item, index) in guessList"
               :key="index"
               class="goods-item-wrapper"
             >
@@ -226,14 +226,14 @@
       subTitle: '成团有礼',
       iconText: '拼团价',
       buttonText: '去拼团',
-      dataArray: ''
+      dataArray: 'groupList'
     },
     'guess': {
       title: '猜你喜欢',
       subTitle: '为你优选',
       iconText: '团购价',
       buttonText: '+购物车',
-      dataArray: ''
+      dataArray: 'guessList'
     },
   }
   const COMPONENT_NAME = 'PHONE_BOX'
@@ -268,11 +268,18 @@
         type: Array,
         default: () => []
       },
+      guessList: {
+        type: Array,
+        default: () => []
+      },
+      groupList: {
+        type: Array,
+        default: () => []
+      },
     },
     data() {
       return {
         bannerIndex: 0,
-        // comType: this.infoType,
         activeConfig: TAB_ARR_CONFIG,
         serverList: [
           {
@@ -318,11 +325,6 @@
         return arr
       }
     },
-    // watch: {
-    //   infoType(news) {
-    //     this.comType = news
-    //   }
-    // },
     methods: {
       _getBanner(oldValue, value) {
         this.bannerIndex = value
