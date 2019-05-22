@@ -360,7 +360,7 @@
           type: 'default',
           data: [{name: '3'}, {name: '4'}, {name: '5'}] // 格式：{title: '55'}}
         },
-        parentId: 0,
+        parentId: '',
         goodsPage: {
           total: 1,
           per_page: 10,

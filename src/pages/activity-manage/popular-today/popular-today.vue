@@ -132,7 +132,7 @@
           per_page: 10,
           total_page: 1
         },
-        parentId: 0,
+        parentId: '',
         keyword: '',
         selectGoods: [], // 单次选择的商品
         selectGoodsId: [], // 所有选择的商品id
