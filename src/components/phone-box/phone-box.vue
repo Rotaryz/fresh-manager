@@ -476,8 +476,9 @@
                 position :relative
                 top: -2px
                 font-size: 10px
+                height: 18.6px
                 transform :scale(0.7)
-                color: #808080;
+                color: #808080
                 text-align :center
             .type-icon
               position absolute
@@ -505,6 +506,8 @@
             .sub-title
               width :100%
               padding-top :0px
+              height: 18px
+              line-height: 18px
               font-family: $font-family-regular
               font-size: 10px;
               color: #808080;
