@@ -32,14 +32,16 @@
           </ul>
           <!--商品分类-->
           <ul v-if="cms.module_name === 'goods_cate'" class="goods-classify-wrapper">
-            <li v-for="(item, index) in cms.list"
-                :key="item.id"
-                class="classify-item"
-                :class="{'next-row': index > 4}"
-            >
-              <img :src="item.image_url" alt="">
-              <p>{{item.name}}</p>
-            </li>
+            <template v-for="(item, index) in cms.list">
+              <li v-if="index < 10"
+                  :key="item.id"
+                  class="classify-item"
+                  :class="{'next-row': index > 4}"
+              >
+                <img :src="item.image_url" alt="">
+                <p>{{item.name}}</p>
+              </li>
+            </template>
           </ul>
           <template v-if="cms.module_name === 'activity'">
             <section class="un-touch"
@@ -168,7 +170,7 @@
           <nav class="panel">
             <img class="banner-img" src="./pic-cnxh.png" alt="">
             <div
-              v-for="(item, index) in 0"
+              v-for="(item, index) in guessList"
               :key="index"
               class="goods-item-wrapper"
             >
@@ -226,14 +228,14 @@
       subTitle: '成团有礼',
       iconText: '拼团价',
       buttonText: '去拼团',
-      dataArray: ''
+      dataArray: 'groupList'
     },
     'guess': {
       title: '猜你喜欢',
       subTitle: '为你优选',
       iconText: '团购价',
       buttonText: '+购物车',
-      dataArray: ''
+      dataArray: 'guessList'
     },
   }
   const COMPONENT_NAME = 'PHONE_BOX'
@@ -268,11 +270,18 @@
         type: Array,
         default: () => []
       },
+      guessList: {
+        type: Array,
+        default: () => []
+      },
+      groupList: {
+        type: Array,
+        default: () => []
+      },
     },
     data() {
       return {
         bannerIndex: 0,
-        // comType: this.infoType,
         activeConfig: TAB_ARR_CONFIG,
         serverList: [
           {
@@ -318,11 +327,6 @@
         return arr
       }
     },
-    // watch: {
-    //   infoType(news) {
-    //     this.comType = news
-    //   }
-    // },
     methods: {
       _getBanner(oldValue, value) {
         this.bannerIndex = value

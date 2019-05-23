@@ -129,4 +129,14 @@ export default {
     let url = `/social-shopping/api/backend/goods-manage/goods-hot-tag`
     return request.get(url, data, loading)
   },
+  // 猜你喜欢列表[v2.4]
+  getGuessList(data, loading = false) {
+    let url = `/social-shopping/api/backend/recommend/goods`
+    return request.get(url, data, loading)
+  },
+  // 拼团商品列表[v2.4.1.2]
+  getGroupList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity/activity-groupon-goods`
+    return request.get(url, data, loading)
+  },
 }
