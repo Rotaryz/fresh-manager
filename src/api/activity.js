@@ -6,9 +6,9 @@ export default {
    * @param data
    * @returns {*}
    */
-  getPopularList(loading = true) {
+  getPopularList(data, loading = false) {
     let url = '/social-shopping/api/backend/goods-manage/goods-hot-tag'
-    return request.get(url, {}, loading)
+    return request.get(url, data, loading)
   },
   /**
    * 今日爆款添加商品
@@ -33,9 +33,9 @@ export default {
    * @param data
    * @returns {*}
    */
-  getPreferenceGoods(loading = true) {
+  getPreferenceGoods(data, loading = false) {
     let url = '/social-shopping/api/backend/activity-manage/activity-new-client/goods-sku'
-    return request.get(url, {}, loading)
+    return request.get(url, data, loading)
   },
   /**
    * 新人特惠活动详情

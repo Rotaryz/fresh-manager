@@ -29,9 +29,9 @@
           </div>
         </div>
       </div>
-      <!--<div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="salePage" @addPage="addPage"></base-pagination>
-      </div>-->
+      <div class="pagination-box">
+        <base-pagination ref="pages" :pageDetail="preferencePage" @addPage="addPage"></base-pagination>
+      </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
   </div>
@@ -71,7 +71,7 @@
       ...activityComputed,
     },
     created() {
-      this.getPreferenceList()
+      this.getPreferenceList(1)
     },
     methods: {
       ...activityMethods,
@@ -88,7 +88,11 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getPreferenceList()
+        this.getPreferenceList(this.page)
+      },
+      addPage(page) {
+        this.page = page
+        this.getPreferenceList(page)
       }
     }
   }
@@ -96,10 +100,6 @@
 
 <style scoped lang="stylus"  rel="stylesheet/stylus">
   @import "~@design"
-  .table .table-content
-    padding-bottom: 20px
-  .big-list
-    max-height: none
   .data-content
     flex: 1
     display: flex
