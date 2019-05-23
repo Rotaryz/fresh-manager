@@ -448,12 +448,14 @@
           this.$set(this.usefulTime, 'content', '5')
         }
         this.selectCouponList = [obj.coupon]
+        this.couponSelectItem = obj.coupon
         this.msg = {
           start_at: obj.start_at,
           end_at: obj.end_at,
           activity_name: obj.activity_name,
           person_limit: obj.person_limit,
-          group_type: obj.group_type
+          effective_time: obj.effective_time,
+          coupon_id: 34
         }
       }
       this._getFirstAssortment()
@@ -760,6 +762,7 @@
       //  保存
       async _saveActivity() {
         if (this.disable || this.isSubmit) return
+        console.log(this.msg)
         if (!this.checkForm()) return
         if (!this.testGoods()) return
 
