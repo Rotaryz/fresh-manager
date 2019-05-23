@@ -661,7 +661,6 @@
         let goods = Object.assign({}, item)
         goods.usable_stock = ''
         this.goodsList.push(goods)
-        console.log(this.goodsList)
 
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
@@ -762,7 +761,6 @@
       //  保存
       async _saveActivity() {
         if (this.disable || this.isSubmit) return
-        console.log(this.msg)
         if (!this.checkForm()) return
         if (!this.testGoods()) return
 
