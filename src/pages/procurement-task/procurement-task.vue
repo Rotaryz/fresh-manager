@@ -157,7 +157,7 @@
       <div slot="content" class="supplier-box">
         <div class="title-box">
           <div class="title">
-            选择供应商
+            生成采购单
           </div>
           <span class="close hand" @click="supplierCancel"></span>
         </div>
@@ -166,7 +166,7 @@
           <div class="list-header list-box-supplier list-box">
             <div v-for="(item,index) in supplierList" :key="index" class="list-item">{{item}}</div>
           </div>
-          <div class="list">
+          <div class="list supplier-box-sort">
             <div v-for="(item, index) in supplierSortList" :key="index" class="list-content list-box-supplier list-box">
               <div class="list-item">{{item.supplier_name}}</div>
               <div class="list-item">{{item.task_count}}</div>
@@ -1070,7 +1070,7 @@
     width: 1000px
     min-height: 650px
     border-radius: 3px
-    padding: 0 20px
+    padding: 0 20px 24px
     .title-box
       display: flex
       box-sizing: border-box
@@ -1109,7 +1109,27 @@
       width: 0
       height: 0
       border-radius: 50%
+  .supplier-box-sort
+    height: 540px
+    overflow: auto
+    white-space: nowrap
+    transition: all 0.2s
 
+    &::-webkit-scrollbar
+      width: 0
+      height: 0
+      transition: all 0.2s
+
+    &::-webkit-scrollbar-thumb
+      background-color: rgba(0, 0, 0, .15)
+      border-radius: 10px
+
+    &::-webkit-scrollbar-thumb:hover
+      background-color: rgba(0, 0, 0, .3)
+
+    &::-webkit-scrollbar-track
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
+      border-radius: 10px
   .select-icon-active
     border: 5px solid $color-main
 </style>

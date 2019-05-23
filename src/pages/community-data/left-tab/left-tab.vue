@@ -3,7 +3,7 @@
     <div ref="leftBox" class="left-box">
       <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0, {id: ''})">
         <div class="left">
-          <span class="name">全部群数据({{communityList.length}})</span>
+          <span class="name all-data">全部群数据({{communityList.length}})</span>
         </div>
         <div v-if="+tabIndex === 0" class="right">
           <div class="btn">
@@ -181,6 +181,8 @@
           -webkit-line-clamp: 2
           -webkit-box-orient: vertical
           word-break: break-all
+        .all-data
+          width: 130px
       .right
         width: 24px
         height: 48px
