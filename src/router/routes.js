@@ -1255,7 +1255,9 @@ export default [
               start_time: '',
               end_time: '',
               keyword: "",
-              status: 0
+              status: 0,
+              page:1,
+              limit:10
             })
             store.dispatch('afterSalesOrder/getAfterSalesOrderList')
               .then((res) => {

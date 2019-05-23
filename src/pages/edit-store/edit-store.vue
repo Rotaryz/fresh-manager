@@ -49,8 +49,10 @@
             <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
             <transition name="fade">
               <div v-show="showIndex === index && item.select_batch.length !== 0" class="batches-box">
-                <div v-for="(item1, index1) in item.select_batch" :key="index1" class="batches-box-item">
-                  {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                <div v-for="(item1, index1) in item.select_batch" :key="index1">
+                  <div v-if="item1.select_out_num * 1 > 0" class="batches-box-item">
+                    {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                  </div>
                 </div>
               </div>
             </transition>
