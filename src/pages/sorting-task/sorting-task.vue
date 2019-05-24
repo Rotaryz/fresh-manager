@@ -51,7 +51,7 @@
         <div class="list">
           <template v-if="sortingTask.list.length">
             <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
-              <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" :class="['list-item',item.class]">
+              <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :class="['list-item',item.class]">
                 <template v-if="item.type==='operate'" name="operation">
                   <router-link class="list-operation no-right" :to="_getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
                   <button v-if="item.afterBtn" class="after-btn" @click="printTag(row)">{{item.afterBtn}}</button>
