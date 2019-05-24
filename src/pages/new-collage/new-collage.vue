@@ -764,7 +764,7 @@
         if (!this.checkForm()) return
         if (!this.testGoods()) return
 
-        this.msg.coupon_id = this.couponSelectItem.id
+        this.msg.coupon_id = this.couponSelectItem.id || 0
         let list = this.goodsList.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
@@ -828,7 +828,7 @@
           {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'},
           {value: this.testUsefulTime, txt: '请选择成团有效时间'},
           {value: this.testCount, txt: '请输入2~5人成团人数'},
-          {value: this.testCouponList, txt: '请添加优惠券'}
+          // {value: this.testCouponList, txt: '请添加优惠券'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
