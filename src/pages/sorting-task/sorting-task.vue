@@ -41,7 +41,7 @@
         <div class="list">
           <template v-if="sortingTask.list.length">
             <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
-              <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" :class="['list-item',item.class]">
+              <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :class="['list-item',item.class]">
                 <template v-if="item.type==='operate'">
                   <router-link class="list-operation" :to="{name:'sorting-task-detail',params:{id:row.id,goods_sku_code:row.goods_sku_code}}">{{item.replace}}</router-link>
                 </template>
