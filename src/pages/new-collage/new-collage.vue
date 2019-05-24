@@ -74,8 +74,11 @@
           成团人数
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.person_limit" type="number" placeholder="请输入2~5人" class="edit-input">
+          <base-drop-down :width="400" :height="40" :select="usefulPerson" @setValue="_selectPerson"></base-drop-down>
         </div>
+        <!--<div class="edit-input-box">
+          <input v-model="msg.person_limit" type="number" placeholder="请输入2~5人" class="edit-input">
+        </div>-->
         <div :class="{'text-no-change':disable}"></div>
       </div>
 
@@ -360,6 +363,13 @@
           type: 'default',
           data: [{name: '3'}, {name: '4'}, {name: '5'}] // 格式：{title: '55'}}
         },
+        usefulPerson: {
+          check: false,
+          show: false,
+          content: '选择成团人数',
+          type: 'default',
+          data: [{name: '2'}, {name: '3'}, {name: '4'}, {name: '5'}] // 格式：{title: '55'}}
+        },
         parentId: '',
         goodsPage: {
           total: 1,
@@ -434,6 +444,7 @@
       this.id = this.$route.query.id || this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.collageDetail)
+        console.log(obj)
         this.goodsList = obj.activity_goods
         if (this.goodsList) {
           this.selectGoodsId = obj.activity_goods.map((item) => {
@@ -447,7 +458,21 @@
         } else if (+obj.effective_time === 5) {
           this.$set(this.usefulTime, 'content', '5')
         }
-        this.selectCouponList = [obj.coupon]
+        switch (+obj.person_limit) {
+        case 2:
+          this.$set(this.usefulPerson, 'content', '2')
+          break
+        case 3:
+          this.$set(this.usefulPerson, 'content', '3')
+          break
+        case 4:
+          this.$set(this.usefulPerson, 'content', '4')
+          break
+        case 5:
+          this.$set(this.usefulPerson, 'content', '5')
+          break
+        }
+        this.selectCouponList = obj.coupon.coupon_id ? [obj.coupon] : []
         this.couponSelectItem = obj.coupon
         this.msg = {
           start_at: obj.start_at,
@@ -475,6 +500,9 @@
       },
       _selectUsefulTime(item) {
         this.msg.effective_time = item.name
+      },
+      _selectPerson(item) {
+        this.msg.person_limit = item.name
       },
       // 初始化数据
       _initData() {
@@ -764,7 +792,7 @@
         if (!this.checkForm()) return
         if (!this.testGoods()) return
 
-        this.msg.coupon_id = this.couponSelectItem.id || 0
+        this.msg.coupon_id = this.couponSelectItem.id || this.couponSelectItem.coupon_id || 0
         let list = this.goodsList.map((item) => {
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
