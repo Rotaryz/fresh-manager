@@ -444,7 +444,6 @@
       this.id = this.$route.query.id || this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.collageDetail)
-        console.log(obj)
         this.goodsList = obj.activity_goods
         if (this.goodsList) {
           this.selectGoodsId = obj.activity_goods.map((item) => {
