@@ -1616,7 +1616,21 @@ export default [
         name: 'warehouse-personnel',
         component: () => lazyLoadView(import('@pages/warehouse-personnel/warehouse-personnel')),
         meta: {
-          titles: ['供应链', '仓库', '基础设置', '仓库人员管理']
+          titles: ['供应链', '仓库', '基础设置', '仓库人员管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('warehouse/infoSetKeyWord')
+            store
+              .dispatch('warehouse/getPurchaseUser')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       // 仓库人员
@@ -1627,7 +1641,24 @@ export default [
         meta:{
           titles: ['供应链', '仓库', '基础设置', '仓库人员'],
           variableIndex: 3,
-          marginBottom: 80
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('warehouse/getPurchaseUserDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
         }
       },
       // 分拣任务

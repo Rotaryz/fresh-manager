@@ -558,3 +558,12 @@ export const accountComputed = {
 export const accountMethods = {
   ...mapActions('account', ['setTabIndex', 'getAccountList', 'setKeyword', 'setAccount', 'getPermissionsList'])
 }
+
+// 仓库人员
+export const warehouseComputed = {
+  ...mapGetters('warehouse', ['list', 'pageDetail', 'detail', 'keyword', 'page'])
+}
+
+export const warehouseMethods = {
+  ...mapActions('warehouse', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
+}

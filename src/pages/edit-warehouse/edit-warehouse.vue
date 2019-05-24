@@ -59,6 +59,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import {warehouseComputed} from '@state/helpers'
   const PAGE_NAME = 'EDIT_WAREHOUSE'
   const TITLE = '仓库人员'
   const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
@@ -79,6 +81,14 @@
         mobile: '',
         isSubmit: false
       }
+    },
+    computed: {
+      ...warehouseComputed
+    },
+    created() {
+      this.username = this.id && (this.detail.true_name || '')
+      this.name = this.id && (this.detail.true_name || '')
+      this.mobile = this.id && (this.detail.mobile || '')
     },
     methods: {
       changeType() {
@@ -116,7 +126,34 @@
         if (!this.checkDataValidate()) {
           return
         }
-        console.log('保存')
+        let data = {
+          true_name: this.name,
+          mobile: this.mobile,
+          password: this.password
+        }
+        if (this.isSubmit) return
+        this.isSubmit = true
+        if (this.id) {
+          API.Store.editPurchaseUser(this.id, data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              this.isSubmit = false
+              return
+            }
+            this.back()
+          })
+        } else {
+          API.Store.addPurchaseUser(data).then((res) => {
+            this.$loading.hide()
+            this.$toast.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              this.isSubmit = false
+              return
+            }
+            this.back()
+          })
+        }
       }
     }
   }

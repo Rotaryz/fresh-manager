@@ -320,5 +320,46 @@ export default {
   stopAllocationStock(loading = false) {
     let url = `/scm/api/backend/oms/stop-allocation-stock`
     return request.get(url, {}, loading)
+  },
+  /**
+   * 获取仓库员列表[v1.2]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getPurchaseUser(data, loading = true) {
+    let url = '/scm/api/backend/warehouse/warehouse-keeper'
+    return request.get(url, data)
+  },
+  /**
+   * 获取仓库员详情[v1.2]
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getPurchaseUserDetail(id, loading = true) {
+    let url = `/scm/api/backend/warehouse/warehouse-keeper/${id}`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 新增仓库员[v1.2]
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  addPurchaseUser(data, loading = true) {
+    let url = `/scm/api/backend/warehouse/warehouse-keeper-store`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 编辑仓库员[v1.2]
+   * @param id
+   * @param data
+   * @param loading
+   * @returns {*|AxiosPromise<any>|IDBRequest<IDBValidKey>|Promise<void>}
+   */
+  editPurchaseUser(id, data, loading = true) {
+    let url = `/scm/api/backend/warehouse/warehouse-keeper/${id}`
+    return request.put(url, data, loading)
   }
 }
