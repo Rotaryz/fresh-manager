@@ -61,7 +61,6 @@
     },
     watch: {
       disabledDate(news) {
-      // console.log(news)
       }
     },
     methods: {

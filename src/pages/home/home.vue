@@ -5,11 +5,9 @@
       <div class="home">
         <top-bar></top-bar>
         <div :class="{'container-routine': isRoutine}" class="container" :style="{'margin-bottom': marginBottom + 'px'}">
-          <!--<keep-alive>-->
           <div class="container-small">
             <router-view :key="$route.fullPath" @setRoutine="setRoutine"></router-view>
           </div>
-          <!--</keep-alive>-->
         </div>
       </div>
     </div>

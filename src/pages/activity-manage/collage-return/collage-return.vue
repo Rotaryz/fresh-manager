@@ -14,7 +14,7 @@
           <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="new-collage" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
+          <router-link tag="div" to="new-collage" append class="btn-main" @click="window.$$tabIndex=3">新建活动<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">

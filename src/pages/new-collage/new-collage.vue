@@ -440,8 +440,8 @@
     },
     watch: {},
     created() {
-      this.disable = this.$route.query.id
-      this.id = this.$route.query.id || this.$route.query.editId || null
+      this.disable = +this.$route.query.id
+      this.id = +this.$route.query.id || +this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.collageDetail)
         this.goodsList = obj.activity_goods

@@ -1,71 +1,303 @@
 <template>
   <div class="activity-manage table">
-    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
-<!--    <flash-sale v-if="+infoTabIndex === 0"></flash-sale>-->
-<!--    <popular-today v-else-if="+infoTabIndex === 1"></popular-today>-->
-<!--    <new-preference v-else-if="+infoTabIndex === 2"></new-preference>-->
-    <collage-return v-if="+infoTabIndex === 3"></collage-return>
-    <flash-sale v-else></flash-sale>
+    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
+<!--    <collage-return v-if="+tabIndex === 3"></collage-return>-->
+    <article class="data-content">
+      <div class="down-content">
+        <span class="down-tip">活动时间</span>
+        <div class="down-item">
+          <base-date-select :dateInfo="dateInfo" placeHolder="选择日期" @getTime="_setTime"></base-date-select>
+        </div>
+      </div>
+      <div class="table-content">
+        <div class="identification">
+          <div class="identification-page">
+            <img :src="currentTab.icon" class="identification-icon">
+            <p class="identification-name">{{currentTab.text}}</p>
+            <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          </div>
+          <div class="function-btn">
+            <div class="btn-main" @click="handleNav">新建活动<span class="add-icon"></span></div>
+<!--            <span class="add-icon"></span>-->
+<!--            <router-link tag="div" :to="'new-sale?activity_theme=' + currentTab.activity_theme" append class="btn-main">新建活动<span class="add-icon"></span></router-link>-->
+          </div>
+        </div>
+        <div class="big-list">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+          </div>
+          <div class="list">
+            <div v-for="(item, index) in activeList" :key="index" class="list-content list-box">
+              <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+                <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
+                  {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
+                </div>
+                <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
+                  <p class="item-dark">{{item.start_at}}</p>
+                  <p class="item-sub">{{item.end_at}}</p>
+                </div>
+
+                <!--状态-->
+                <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
+
+                <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
+                  <span class="list-operation" @click="handleNav(item, 'id')">查看</span>
+                  <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
+                  <span class="list-operation" @click="handleNav(item, 'editId')">复制活动</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pagination-box">
+          <base-pagination ref="pages" :pageDetail="activePage" @addPage="addPage"></base-pagination>
+        </div>
+      </div>
+      <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
+    </article>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import FlashSale from './flash-sale/flash-sale'
+  // import FlashSale from './flash-sale/flash-sale'
   // import PopularToday from './popular-today/popular-today'
   // import NewPreference from './new-preference/new-preference'
-  import CollageReturn from './collage-return/collage-return'
+  // import CollageReturn from './collage-return/collage-return'
+  import {saleComputed, saleMethods} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import API from '@api'
+  import {TAB_STATUS} from './config'
   // import { activityMethods, activityComputed, saleMethods } from '@state/helpers'
 
   const PAGE_NAME = 'ACTIVITY_MANAGE'
   const TITLE = '活动管理'
-
-  const TAB_STATUS = [
-    {text: '限时抢购', status: 'one'},
-    {text: '今日爆款', status: 'two'},
-    {text: '新人特惠', status: 'three'},
-    {text: '拼团返现', status: 'four'},
+  const SALE_TITLE = [
+    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
+    {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
+    {name: '商品', flex: 1.4, value: 'goods_count', type: 1},
+    {name: '销量', flex: 1, value: 'sale_count', type: 1},
+    {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
+    {name: '状态', flex: 1, value: 'status', type: 4},
+    {name: '操作', flex: 1.4, value: '', type: 5}
   ]
+  const COLLAGE_TITLE = [
+    {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
+    {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
+    {name: '活动商品数', flex: 1, value: 'goods_count', type: 1},
+    {name: '销量', flex: 1, value: 'sale_count', type: 1},
+    {name: '状态', flex: 1, value: 'status', type: 4},
+    {name: '创建时间', flex: 1.5, value: 'start_at', type: 1},
+    {name: '操作', flex: 1.6, value: '', type: 5}
+  ]
+  // export const TAB_STATUS = [
+  //   {text: '限时抢购', icon: require('./icon-today_rob@2x.png') ,status: 'one', activity_theme: 'fixed'},
+  //   {text: '今日爆款', icon: require('./icon-today_hot@2x.png'), status: 'two', activity_theme: 'hot_tag'},
+  //   {text: '新人特惠', icon: require('./icon-new_people@2x.png'), status: 'three', activity_theme: 'new_client'},
+  //   {text: '拼团返现', icon: require('./icon-group_return@2x.png'), status: 'four', activity_theme: 'groupon'},
+  // ]
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
     components: {
-      FlashSale,
-      // PopularToday,
-      // NewPreference,
-      CollageReturn
+      // CollageReturn,
+      DefaultConfirm
     },
     data() {
-      console.log(this.$route.meta.params)
+      const params = this.$route.meta.params
       return {
         tabStatus: TAB_STATUS,
-        defaultStatus: 'one'
+        defaultStatus: 'one',
+        activeList: params.dataInfo,
+        activePage: params.pageInfo,
+        statusTab: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
+          {name: '进行中', value: 1, key: 'success', num: 0},
+          {name: '已结束', value: 1, key: 'success', num: 0}
+        ],
+        saleTitle: SALE_TITLE,
+        startTime: '',
+        endTime: '',
+        page: 1,
+        delId: 0,
+        status: '',
+        defaultIndex: 0,
+        tabIndex: +window.$$tabIndex || 0,
+        dateInfo: []
       }
     },
     computed: {
-      // ...activityComputed,
-      infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
+      ...saleComputed,
+      // infoTabIndex() {
+      //   return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
+      // },
+      currentTab() {
+        return TAB_STATUS[this.tabIndex]
+      }
+    },
+    watch: {
+      currentTab(val) {
+        if (val.activity_theme === 'groupon') {
+          this.saleTitle = COLLAGE_TITLE
+        } else {
+          this.saleTitle = SALE_TITLE
+        }
       }
     },
     created() {
-      this.defaultStatus = this.tabStatus[this.activityTab].status
+      // this.defaultIndex = this.$route.query.status * 1 || 0
+      this._getActiveStatus()
+    },
+    mounted() {
+      window.$$tabIndex = undefined
     },
     methods: {
-      // ...activityMethods,
-      // ...saleMethods,
-      changeTab(selectStatus) {
-        this.defaultStatus = selectStatus.status
-        this.setActivityTab(this.infoTabIndex)
-        if (selectStatus.status === 'one') {
-          this.getSaleList({page: 1, status: ''})
+      ...saleMethods,
+      handleNav(item = {}, key = 'id') {
+        const path = this.currentTab.activity_theme === 'groupon' ? 'new-collage' : 'new-sale'
+        const url = `${this.$route.path}/${path}?${key}=${item.id || 0}&activity_theme=${this.currentTab.activity_theme}`
+        window.$$tabIndex = this.tabIndex
+        this.$router.push(url)
+      },
+      async _getActiveStatus() {
+        try {
+          const res = await API.Activity.getActiveStatus({
+            start_at: this.startTime,
+            end_at: this.endTime,
+            activity_theme: this.currentTab.activity_theme
+          })
+          if (res.error !== this.$ERR_OK) {
+            // this.$toast.show(res.message) todo
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              value: item.status,
+              num: item.statistic
+            }
+          })
+        } catch (e) {
+          console.warn(e)
         }
       },
+      async _getActiveList() {
+        try {
+          const res = await API.Activity.getActiveList({
+            page: this.page,
+            status: this.status,
+            activity_theme: this.currentTab.activity_theme,
+            start_at: this.startTime,
+            end_at: this.endTime,
+          })
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.activeList = res.data
+          this.activePage = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+        } catch (e) {
+          console.warn(e)
+        }
+      },
+      _resetPage() {
+        this.$refs.pages && this.$refs.pages.beginPage()
+      },
+      changeTab(tab, index) {
+        this.tabIndex = index
+        this.page = 1
+        this.startTime = ''
+        this.endTime = ''
+        this.status = ''
+        this.defaultIndex = 0
+        this.dateInfo = []
+        // if (tab.activity_theme === 'groupon') return
+        this._getActiveList()
+        this._getActiveStatus()
+        this._resetPage()
+      },
+      async changeStatus(selectStatus) {
+        this._resetPage()
+        this.status = selectStatus.value
+        this.page = 1
+        this._getActiveList()
+        this._getActiveStatus()
+      },
+      async _setTime(arr) {
+        this.startTime = arr[0]
+        this.endTime = arr[1]
+        this.page = 1
+        this._getActiveList()
+        this._getActiveStatus()
+        this._resetPage()
+      },
+      addPage(page) {
+        this.page = page
+        this._getActiveList()
+        this._getActiveStatus()
+      },
+      _deleteActivity(id) {
+        this.delId = id
+        this.$refs.confirm.show('确定删除该活动？')
+      },
+      async _sureConfirm() {
+        let res = await API.Sale.saleDelete(this.delId)
+
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+          return
+        } else {
+          this.$toast.show('删除成功')
+        }
+        this._getActiveList()
+        this._getActiveStatus()
+      }
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
+  .data-content
+    flex: 1
+    display: flex
+    flex-direction: column
+  .list-box
+    .list-item:last-child
+      max-width: 150px
+      padding-right: 0
+  .list
+    flex: 1
+    .list-item
+      font-size: $font-size-14
+      &:last-child
+        max-width: 150px
+        padding-right: 0
+      .item
+        text-overflow: ellipsis
+        overflow: hidden
+        white-space: nowrap
+        font-size: 14px
+      .status-item:before
+        content: ""
+        display: inline-block
+        width: 9px
+        height: 9px
+        border-radius: 50%
+        margin-right: 6px
+        background: $color-negative
+      .status-fail:before
+        background: #E1E1E1
+      .status-success:before
+        background: $color-positive
+      .list-double-row
+        .item-sub
+          color: #333
 </style>

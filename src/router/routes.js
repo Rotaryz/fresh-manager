@@ -3,6 +3,7 @@ import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
 import API from '@api'
 import {ERR_OK} from '@utils/config'
+import {TAB_STATUS} from '../pages/activity-manage/config'
 
 export default [
   // 模板
@@ -237,7 +238,8 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
-            API.Activity.getActiveList({page: 1, status, activity_theme: 'fixed'})
+            console.log(window.$$tabIndex)
+            API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme})
             .then((res) => {
               if (res.error !== ERR_OK) {
                 return next({name: '404'})

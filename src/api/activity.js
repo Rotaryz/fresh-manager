@@ -105,4 +105,9 @@ export default {
     let url = '/social-shopping/api/backend/activity-manage/activity'
     return request.get(url, data, loading)
   },
+  // 活动状态统计[v2.3.4]
+  getActiveStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity-status'
+    return request.get(url, data, loading)
+  },
 }

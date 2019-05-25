@@ -25,7 +25,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach((routeTo, routeFrom, next) => {
-  console.log(0)
   // 判断不是初始页面开始加载进度条
   if (routeFrom.name !== null) {
     NProgress.start()
@@ -90,7 +89,6 @@ const ADD_TEXT = '新建'
 const EDIT_TEXT = '编辑'
 
 router.afterEach((routeTo, routeFrom, next) => {
-  console.log(routeTo, next)
   // 动态添加页面标题
   const name = routeTo.params.name
   const marginBottom = routeTo.meta.marginBottom || 0

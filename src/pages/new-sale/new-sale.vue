@@ -64,7 +64,7 @@
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加商品
           </div>
-          <div class="remind">商品数量一共可添加10个</div>
+          <div class="remind">商品数量一共可添加({{goodsList.length}}/{{personAllBuyLimit}})个</div>
         </div>
         <div v-if="goodsList.length" class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
@@ -173,6 +173,7 @@
     '排序',
     '操作'
   ]
+  const PERSON_ALL_BUY_LIMIT = 20
   export default {
     name: PAGE_NAME,
     page: {
@@ -221,7 +222,8 @@
         msg: {
           activity_type: 'fixed'
         },
-        isSubmit: false
+        isSubmit: false,
+        personAllBuyLimit: PERSON_ALL_BUY_LIMIT
       }
     },
     computed: {
@@ -246,8 +248,11 @@
     },
     watch: {},
     created() {
-      this.disable = this.$route.query.id
-      this.id = this.$route.query.id || this.$route.query.editId || null
+      this.disable = +this.$route.query.id
+      this.id = +this.$route.query.id || +this.$route.query.editId || null
+      if (this.$route.query.activity_theme === 'fixed') {
+        this.personAllBuyLimit = 10
+      }
       if (this.id) {
         let obj = _.cloneDeep(this.saleDetail)
         this.goodsList = obj.activity_goods
@@ -361,8 +366,8 @@
         }
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 10) {
-            this.$toast.show('选择商品数量不能超过10个')
+          if (this.selectGoodsId.length === this.personAllBuyLimit) {
+            this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
             return
           }
           this.choeesGoods[index].selected = 2
@@ -418,8 +423,8 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过10个')
+        if (this.selectGoodsId.length === this.personAllBuyLimit && item.selected !== 2) {
+          this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
           return
         }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
@@ -492,7 +497,7 @@
           delete item.person_day_buy_limit
           item.goods_id = item.id || item.goods_id
         })
-        let data = Object.assign({}, this.msg, {activity_goods: list})
+        let data = Object.assign({}, this.msg, {activity_goods: list, activity_theme: this.$route.query.activity_theme})
         let res = null
         this.isSubmit = true
         res = await API.Sale.storeSale(data, true)
@@ -508,9 +513,6 @@
         setTimeout(() => {
           this.isSubmit = false
         }, 2000)
-      },
-      test() {
-        console.log(this.testStartDate, this.testEndTimeReg)
       },
       checkForm() {
         let arr = [

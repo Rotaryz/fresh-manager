@@ -22,7 +22,7 @@
           <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in saleList" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in activeList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
               <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
                 {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
@@ -69,6 +69,16 @@
   export default {
     components: {
       DefaultConfirm
+    },
+    props: {
+      activeList: {
+        type: Array,
+        default: () => []
+      },
+      activePage: {
+        type: Object,
+        default: () => {}
+      }
     },
     data() {
       return {
