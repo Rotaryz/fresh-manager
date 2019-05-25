@@ -1918,6 +1918,29 @@ export default [
           }
         }
       },
+      // 商品数据
+      {
+        path: 'goods-data',
+        name: 'goods-data',
+        component: () => lazyLoadView(import('@pages/goods-data/goods-data')),
+        meta: {
+          titles: ['统计', '商品数据'],
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   //  社群列表
+          //   store
+          //     .dispatch('community/getCommunityList', {page: 1})
+          //     .then((res) => {
+          //       if (!res) {
+          //         return next({name: '404'})
+          //       }
+          //       return next()
+          //     })
+          //     .catch(() => {
+          //       return next({name: '404'})
+          //     })
+          // }
+        }
+      },
       // 调度管理
       {
         path: 'supply-list/supply-detail/:id',
