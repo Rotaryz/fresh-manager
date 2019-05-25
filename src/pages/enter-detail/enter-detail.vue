@@ -13,9 +13,9 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div v-if="enterMsg.status === 0" class="function-btn" @click="submitFn">
-          <div class="btn-main">提交入库单<span class="add-icon"></span></div>
-        </div>
+        <!--<div v-if="enterMsg.status === 0" class="function-btn" @click="submitFn">-->
+        <!--<div class="btn-main">提交入库单<span class="add-icon"></span></div>-->
+        <!--</div>-->
       </div>
       <div class="big-list" :class="enterDetailList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -24,17 +24,20 @@
         <div class="list">
           <div v-for="(item, index) in enterDetailList" :key="index" class="list-content list-box">
             <div class="list-item">{{item.batch_num}}</div>
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <p class="item-dark">{{item.goods_name}}</p>
+              <p class="item-sub">{{item.goods_sku_encoding}}</p>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
               <div v-if="enterMsg.status === 1">{{item.base_num}}</div>
-              <div>{{item.base_unit}}</div>
+              <div :class="{'base-unit': enterMsg.status === 1}">{{item.base_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
               <div v-if="enterMsg.status === 1">{{item.purchase_num}}</div>
-              <div>{{item.purchase_unit}}</div>
+              <div :class="{'base-unit': enterMsg.status === 1}">{{item.purchase_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <div>{{item.price}}</div>
@@ -47,6 +50,7 @@
                 class="edit-input-box" type="date"
                 placeholder="保质时间"
                 style="width: 110px;height: 34px;border-radius: 2px"
+                :value="item.shelf_life"
                 @on-change="changeStartTime($event, index)"
               ></date-picker>
               <div v-if="enterMsg.status === 1">{{item.shelf_life || '--------'}}</div>
@@ -57,7 +61,7 @@
                 <div v-if="!item.warehouse_position" class="select-time-name">请选择</div>
                 <!--<div class="select-time-icon"></div>-->
               </div>
-              <div v-if="enterMsg.status === 1">
+              <div v-if="enterMsg.status === 1" class="list-item">
                 {{item.warehouse_position|| '--------'}}
               </div>
             </div>
@@ -65,6 +69,10 @@
         </div>
       </div>
       <default-store ref="modalBox" @confirm="confirm"></default-store>
+    </div>
+    <div v-if="enterMsg.status === 0" class="back">
+      <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+      <div class="back-btn back-submit hand" @click="submitFn">确认提交</div>
     </div>
   </div>
 </template>
@@ -115,19 +123,30 @@
       this.id = this.$route.params.id || null
       this.enterDetailList = _.cloneDeep(this.enterDetail.data)
       this.enterMsg = _.cloneDeep(this.enterDetail.entry_order)
+      let marginBottom = this.enterMsg.status === 0 ? 80 : 0
+      this.$store.commit('global/SET_MARGIN_BOTTOM', marginBottom)
     },
     methods: {
+      cancel() {
+        this.$router.back()
+      },
       submitFn() {
         let arr = []
-        this.enterDetailList.forEach((item) => {
-          let obj = {}
-          obj.id = item.id
-          obj.base_num = item.base_num
-          obj.purchase_num = item.purchase_num
-          obj.shelf_life = item.shelf_life
-          obj.warehouse_position_id = item.warehouse_position_id || ''
+        for (let i in this.enterDetailList) {
+          // if (!this.enterDetailList[i].warehouse_position_id) {
+          //   // 库位必填
+          //   this.$toast.show(`请选择批次号${this.enterDetailList[i].batch_num}的存放库位`)
+          //   return
+          // }
+          let obj = {
+            id: this.enterDetailList[i].id,
+            base_num: this.enterDetailList[i].base_num,
+            purchase_num: this.enterDetailList[i].purchase_num,
+            shelf_life: this.enterDetailList[i].shelf_life,
+            warehouse_position_id: this.enterDetailList[i].warehouse_position_id || ''
+          }
           arr.push(obj)
-        })
+        }
         if (this.isSubmit) return
         this.isSubmit = true
         API.Store.putEnterSubmit(this.id, {details: arr}).then((res) => {
@@ -147,6 +166,7 @@
       },
       setStoreFn(idnex) {
         this.curIndex = idnex
+        this.$refs.modalBox.getStoreList()
         this.$refs.modalBox.show()
       },
       confirm(id, text) {
@@ -186,17 +206,24 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .base-unit
+    no-wrap()
+    width: 38px
   .procurement-task
     .list-box
       .list-item
-        padding-right: 14px
         align-items: center
-        white-space: nowrap
-        &:last-child
-          flex: 1
-        &:nth-child(4), &:nth-child(5), &:nth-child(8), &:nth-child(9)
+        &:nth-child(4), &:nth-child(5)
+          max-width: 150px
           min-width: 150px
+          flex-wrap: nowrap
+        &:nth-child(8)
+          max-width: 130px
+          min-width: 130px
+        &:nth-child(9)
+          padding: 0
+          min-width: 110px
+          flex: 1.2
         &:nth-child(2), &:nth-child(6)
           flex: 1.3
   .list-item-layout

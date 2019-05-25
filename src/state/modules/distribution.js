@@ -22,7 +22,7 @@ export const state = {
   driverPage: 1,
   driverStartTime: '',
   driverEndTime: '',
-  orderStatus: '',
+  orderStatus: 1,
   start: '',
   end: ''
 }
@@ -114,29 +114,19 @@ export const mutations = {
   },
   SET_DRIVER_END_TIME(state, time) {
     state.driverEndTime = time
-  },
-  SET_START(state, time) {
-    state.start = time
-  },
-  SET_end(state, time) {
-    state.end = time
   }
 }
 
 export const actions = {
-  infoOrderTime({state, commit, dispatch}, {startTime, endTime, start, end, status}) {
+  infoOrderTime({state, commit, dispatch}, {startTime, endTime, status}) {
     commit('SET_ORDER_START_TIME', startTime)
     commit('SET_ORDER_END_TIME', endTime)
-    commit('SET_START', start)
-    commit('SET_end', end)
     commit('SET_ORDER_KEYWORD', '')
     commit('SET_ORDER_STATUS', status)
   },
-  infoDriverTime({state, commit, dispatch}, {startTime, endTime, start, end}) {
+  infoDriverTime({state, commit, dispatch}, {startTime, endTime}) {
     commit('SET_DRIVER_START_TIME', startTime)
     commit('SET_DRIVER_END_TIME', endTime)
-    commit('SET_START', start)
-    commit('SET_end', end)
   },
   setTabIndex({commit, dispatch, state}, index) {
     commit('SET_TAB_INDEX', index)
@@ -147,14 +137,11 @@ export const actions = {
     }
   },
   getOrderList({commit, state}, loading = true) {
-    const {orderStartTime, orderEndTime, orderKeyword, orderPage, orderStatus, start, end} = state
-    let starts = orderStartTime && orderStartTime.length < 11 ? `${orderStartTime} ${start}` : orderStartTime
-    let ends = orderEndTime && orderEndTime.length < 11 ? `${orderEndTime} ${end}` : orderEndTime
-    commit('SET_ORDER_START_TIME', starts)
-    commit('SET_ORDER_END_TIME', ends)
+    const {orderStartTime, orderEndTime, orderKeyword, orderPage, orderStatus} = state
+
     let data = {
-      start_time: starts,
-      end_time: ends,
+      start_time: orderStartTime,
+      end_time: orderEndTime,
       keyword: orderKeyword,
       page: orderPage,
       status: orderStatus
@@ -182,13 +169,9 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  setOrderStartTime({commit, dispatch}, startTime) {
-    commit('SET_ORDER_START_TIME', startTime)
-    commit('SET_ORDER_PAGE', 1)
-    dispatch('getOrderList')
-  },
-  setOrderEndTime({commit, dispatch}, endTime) {
-    commit('SET_ORDER_END_TIME', endTime)
+  setOrderTime({commit, dispatch}, value) {
+    commit('SET_ORDER_START_TIME', value[0])
+    commit('SET_ORDER_END_TIME', value[1])
     commit('SET_ORDER_PAGE', 1)
     dispatch('getOrderList')
   },
@@ -206,14 +189,10 @@ export const actions = {
     dispatch('getOrderList')
   },
   getDriverList({commit, state}, loading = true) {
-    const {driverStartTime, driverEndTime, driverPage, start, end} = state
-    let starts = driverStartTime && driverStartTime.length < 11 ? `${driverStartTime} ${start}` : driverStartTime
-    let ends = driverEndTime && driverEndTime.length < 11 ? `${driverEndTime} ${end}` : driverEndTime
-    commit('SET_DRIVER_START_TIME', starts)
-    commit('SET_DRIVER_END_TIME', ends)
+    const {driverStartTime, driverEndTime, driverPage} = state
     let data = {
-      start_time: starts,
-      end_time: ends,
+      start_time: driverStartTime,
+      end_time: driverEndTime,
       page: driverPage
     }
     return API.Delivery.getDeliveryDriver(data, loading)
@@ -239,13 +218,9 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  setDriverStartTime({commit, dispatch}, startTime) {
-    commit('SET_DRIVER_START_TIME', startTime)
-    commit('SET_DRIVER_PAGE', 1)
-    dispatch('getDriverList')
-  },
-  setDriverEndTime({commit, dispatch}, endTime) {
-    commit('SET_DRIVER_END_TIME', endTime)
+  setDriverTime({commit, dispatch}, value) {
+    commit('SET_DRIVER_START_TIME', value[0])
+    commit('SET_DRIVER_END_TIME', value[1])
     commit('SET_DRIVER_PAGE', 1)
     dispatch('getDriverList')
   },

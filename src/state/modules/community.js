@@ -96,7 +96,7 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['profit', 'e_customer', 'e_customer_order', 'per_order']
+        let arr = ['profit', 'e_customer', 'e_order_avg', 'per_order']
         let data = dataHandle(arr, res.data)
         commit('SET_BUSINESS_DATA', data)
         return true

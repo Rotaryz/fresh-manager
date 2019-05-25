@@ -247,8 +247,12 @@
       title: '订单',
       children: [
         {
-          title: '订单列表',
-          url: '/home/supply-list',
+          title: '商戶订单',
+          url: '/home/merchant-order',
+          isLight: false
+        },{
+          title: '售后订单',
+          url: '/home/after-sales-order',
           isLight: false
         }
       ]
@@ -292,8 +296,33 @@
           isLight: false
         },
         {
+          title: '库存管理',
+          url: '/home/storehouse-management',
+          isLight: false
+        },
+        {
+          title: '库存盘点',
+          url: '/home/stock-taking',
+          isLight: false
+        },
+        {
           title: '库位管理',
           url: '/home/store-manage',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '分拣',
+      children: [
+        {
+          title: '分拣任务',
+          url: '/home/sorting-task',
+          isLight: false
+        },
+        {
+          title: '分拣配置',
+          url: '/home/sorting-config',
           isLight: false
         }
       ]
@@ -358,7 +387,7 @@
       icon: require('./icon-supply_chain@2x.png'),
       isLight: false,
       second: SUPPLY,
-      url: '/home/supply-list'
+      url: '/home/merchant-order'
     },
     {
       name: '统计',

@@ -5,7 +5,9 @@
         <div class="identification-page">
           <img src="./icon-bandit_list@2x.png" class="identification-icon">
           <p class="identification-name">团长列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <!--<base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
+          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <p class="header-text">团长可使用账号数量为{{topData.total}}个，当前剩余{{topData.usable}}个</p>
         </div>
         <div class="function-btn">
           <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
@@ -18,23 +20,22 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.mobile}}</div>
-            <div class="list-item">{{item.nickname}}</div>
-            <div class="list-item">{{item.wx_account}}</div>
-            <div class="list-item">{{item.social_name}}</div>
-            <div class="list-item">{{item.name}}</div>
-            <div class="list-item">{{item.address}}</div>
-            <div class="list-item">{{item.created_at}}</div>
-            <div class="list-item">{{item.is_freeze_str}}</div>
+            <div class="list-item">{{item.mobile || '---'}}</div>
+            <div class="list-item">{{item.nickname || '---'}}</div>
+            <div class="list-item">{{item.wx_account || '---'}}</div>
+            <div class="list-item">{{item.social_name || '---'}}</div>
+            <div class="list-item">{{item.name || '---'}}</div>
+            <div class="list-item">{{item.address || '---'}}</div>
+            <div class="list-item">{{item.created_at || '---'}}</div>
+            <!--<div class="list-item">{{item.is_freeze_str}}</div>-->
             <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
-            <!--状态-->
-            <!--<div class="list-item" @click="_showFreeze(item.is_freeze, item.id)">
-              <base-switch :status="item.is_freeze === 0 ? 1 : 0" confirmText="正常" cancelText="禁用"></base-switch>
-            </div>-->
+            <div class="list-item" @click="_showFreeze(item, index)">
+              <base-switch :status="statusHandle(item, index)" confirmText="正常" cancelText="禁用"></base-switch>
+            </div>
             <div class="list-item list-operation-box">
               <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
               <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
-              <span class="list-operation" @click="_showFreeze(item.is_freeze, item.id)">{{item.is_freeze ? '解冻' : '冻结'}}</span>
+              <!--<span class="list-operation" @click="_showFreeze(item.is_freeze, item.id)">{{item.is_freeze ? '解冻' : '冻结'}}</span>-->
             </div>
           </div>
         </div>
@@ -102,13 +103,22 @@
         loadImg: true,
         codeUrl: '',
         freezeId: 0,
-        imgIndex: 0
+        imgIndex: 0,
+        defaultIndex: 0,
+        freezeItem: {},
+        freezeIndex: '',
+        topData: {},
+        statusArr: new Array(10).fill(undefined)
       }
     },
     computed: {
       ...leaderComputed
     },
     created() {
+      if (this.$route.query.status * 1 === 0) {
+        this.defaultIndex = 1
+      }
+      this.getTopData()
       this.getLeaderStatus()
     },
     methods: {
@@ -133,6 +143,7 @@
         this.status = selectStatus.status
         this.$refs.pagination.beginPage()
         this.page = 1
+        this.statusArr = new Array(10).fill(undefined)
         this.getLeaderList({page: this.page, status: selectStatus.status, loading: false})
       },
       async _syncLeader() {
@@ -145,8 +156,19 @@
           this.getLeaderList({page: this.page, status: this.status, loading: false})
         }
       },
+      getTopData() {
+        API.Leader.getTopData()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.topData = res.data.store
+          })
+      },
       _getMore(page) {
         this.page = page
+        this.statusArr = new Array(10).fill(undefined)
         this.getLeaderList({page: this.page, status: this.status, loading: false})
       },
       _close() {
@@ -164,19 +186,47 @@
         this.loadImg = false
         this.codeUrl = res.data.image_url
       },
-      _showFreeze(status, id) {
-        this.freezeId = id
-        let title = status ? '确定解冻该团长？' : '确定冻结该团长？'
+      statusHandle(item, index) {
+        let status = 0
+        if (typeof(this.statusArr[index]) === 'number') {
+          status = this.statusArr[index]
+        } else {
+          status = item.is_freeze ? 0 : 1
+        }
+        return status
+      },
+      _showFreeze(item, index) {
+        this.freezeItem = item
+        this.freezeIndex = index
+        let status = 1
+        if (typeof(this.statusArr[index]) === 'number') {
+          status = this.statusArr[index]
+        } else {
+          status = item.is_freeze ? 0 : 1
+        }
+        let title = status ? '确定冻结该团长？' : '确定解冻该团长？'
         this.$refs.confirm.show(title)
       },
       async _freeze() {
-        let res = await API.Leader.shopToggleFrozen({shop_id: this.freezeId})
+        let res = await API.Leader.shopToggleFrozen({shop_id: this.freezeItem.id})
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
           return
         }
+        this.statusArr = this.statusArr.map((item, ind) => {
+          if (this.freezeIndex === ind) {
+            if (typeof(item) === 'number') {
+              item = item ? 0 : 1
+            } else {
+              item = this.freezeItem.is_freeze
+            }
+
+          }
+          return item
+        })
+        this.getTopData()
         this.getLeaderStatus()
-        this.getLeaderList({page: this.page, status: this.status, loading: false})
+        // this.getLeaderList({page: this.page, status: this.status, loading: false})
         this.$refs.confirm.hide()
       }
     }
@@ -193,6 +243,11 @@
     align-items: center
     box-sizing: border-box
 
+  .header-text
+    color: $color-text-assist
+    font-size: $font-size-14
+    margin-left: 20px
+    font-family: $font-family-regular
   .list-box
     .list-item
       box-sizing: border-box
@@ -201,10 +256,10 @@
       &:nth-child(6), &:nth-child(7)
         flex: 1.5
       &:nth-child(8)
-        flex: 0.7
+        flex: 0.9
       &:last-child
         padding: 0
-        max-width: 140px
+        max-width: 90px
         flex: 1.8
 
   .pop-main

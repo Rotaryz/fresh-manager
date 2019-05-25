@@ -124,7 +124,7 @@
     {
       name: '社区订单',
       imgName: 'order',
-      routerName: 'supply-list',
+      routerName: 'merchant-order',
       positions: [PAGE_TWO_LEFT_SECOND, PAGE_TWO_TOP_FRIST]
     },
     {
@@ -302,7 +302,7 @@
     computed: {
       activeFlow() {
         let data = this.flowData[this.active]
-        console.log(this.active, data)
+        // console.log(this.active, data)
         return (data && data.data) || []
       }
     },

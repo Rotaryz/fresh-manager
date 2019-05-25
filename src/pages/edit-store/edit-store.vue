@@ -35,19 +35,24 @@
       <div class="list">
         <div v-for="(item, index) in storeList" :key="index" class="list-content list-box">
           <div class="list-item">{{index + 1}}</div>
-          <div class="list-item">{{item.goods_name}}</div>
+          <div class="list-item list-double-row">
+            <p class="item-dark">{{item.goods_name}}</p>
+            <p class="item-sub">{{item.goods_sku_encoding}}</p>
+          </div>
           <div class="list-item">{{item.goods_category}}</div>
           <div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>
           <div class="list-item list-item-layout">
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
-            <div v-if="item.base_unit">{{item.base_unit}}</div>
+            <div v-if="item.base_unit" class="base-unit">{{item.base_unit}}</div>
           </div>
           <div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
             <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
             <transition name="fade">
               <div v-show="showIndex === index && item.select_batch.length !== 0" class="batches-box">
                 <div v-for="(item1, index1) in item.select_batch" :key="index1">
-                  {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                  <div v-if="item1.select_out_num * 1 > 0" class="batches-box-item">
+                    {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
+                  </div>
                 </div>
               </div>
             </transition>
@@ -71,7 +76,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-// import AddGoods from '@components/add-goods/add-goods'
+  // import AddGoods from '@components/add-goods/add-goods'
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'
@@ -195,7 +200,11 @@
             allprice += item.select_out_num * item.price
           }
         })
-        this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
+        if (number * 1 === 0) {
+          this.storeList[this.curIndex].price = ''
+        } else {
+          this.storeList[this.curIndex].price = (allprice / number).toFixed(2)
+        }
         this.storeList[this.curIndex].all_price = allprice.toFixed(2)
         this.$forceUpdate()
         this.$refs.modalBox.cancel()
@@ -258,7 +267,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
-
+  .base-unit
+    no-wrap()
+    width: 38px
   .list-box
     .list-item
       box-sizing: border-box
@@ -269,6 +280,7 @@
       &:nth-child(3)
         flex: 1.5
       &:nth-child(5)
+        flex-wrap: nowrap
         min-width: 150px
       &:nth-child(6)
         .list-operation
@@ -353,17 +365,43 @@
       top: 21px
       left: 0
       box-sizing: border-box
-      padding: 12px 37px 12px 12px
-      background: rgba(51, 51, 51, 9)
+      padding: 12px 37px 0 12px
+      background: rgba(51, 51, 51, .8)
       font-size: $font-size-14
       font-family: $font-family-regular
       color: $color-white
       z-index: 99
       margin-bottom: 8px
+      max-height: 300px
+      overflow: auto
+      &::-webkit-scrollbar
+        width: 0
+        height: 0
+        transition: all 0.2s
+
+      &::-webkit-scrollbar-thumb
+        background-color: rgba(255, 255, 255, .5)
+        border-radius: 10px
+
+      &::-webkit-scrollbar-thumb:hover
+        background-color: rgba(255, 255, 255, .8)
+
+      &::-webkit-scrollbar-track
+        box-shadow: inset 0 0 6px rgba(255, 255, 255, .5)
+        border-radius: 10px
       &.fade-enter, &.fade-leave-to
         opacity: 0
       &.fade-enter-to, &.fade-leave-to
         transition: all .3s ease-in-out
       &:last-child
         margin-bottom: 0
+      &::-webkit-scrollbar
+        transition: all 0.2s
+        width: 6px
+        height: 8px
+      .batches-box-item
+        margin-bottom: 12px
+        height: 15px
+        line-height: 15px
+
 </style>

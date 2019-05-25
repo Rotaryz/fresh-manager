@@ -102,7 +102,8 @@
               <p class="identification-name">社区排行</p>
             </div>
             <div class="function-btn">
-              <base-option-box :infoTab="2" :arrTitle="rankTime" @checkTime="_managerMore"></base-option-box>
+              <!--<base-option-box :infoTab="2" :arrTitle="rankTime" @checkTime="_managerMore"></base-option-box>-->
+              <base-option-box :infoTab="2" :disabledDate="disabledDate" @checkTime="_managerMore"></base-option-box>
               <a class="educe-btn" :href="downUrl" target="_blank">导出</a>
             </div>
           </div>
@@ -163,8 +164,8 @@
   ]
   const BASELIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
-    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale', permissions: 'activity'},
-    {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list', permissions: 'shop-manager'},
+    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale?status=1', permissions: 'activity'},
+    {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list?status=0', permissions: 'shop-manager'},
     {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier', permissions: 'supplier'},
     {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},
     {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management', permissions: 'driver'}
@@ -175,7 +176,7 @@
       subText: '待发布采购任务',
       key: 'publish_task_count',
       number: 0,
-      url: '/home/procurement-task?status=1&timeNull=1',
+      url: '/home/procurement-task?status=1',
       permissions: 'purchase-task'
     },
     {
@@ -183,7 +184,7 @@
       subText: '待采购任务',
       key: 'purchase_task_count',
       number: 0,
-      url: '/home/procurement-task?status=2&timeNull=1',
+      url: '/home/procurement-task?status=2',
       permissions: 'purchase-task'
     },
     {
@@ -191,11 +192,11 @@
       subText: '待入库任务',
       key: 'entry_order_count',
       number: 0,
-      url: '/home/product-enter?status=0&timeNull=1',
+      url: '/home/product-enter?status=0',
       permissions: 'entry-orders'
     },
     {
-      text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0&timeNull=1',
+      text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0',
       permissions: 'out-orders'
     },
     {
@@ -203,7 +204,7 @@
       subText: '待配送任务',
       key: 'delivery_count',
       number: 0,
-      url: '/home/distribution-task?status=1&timeNull=1',
+      url: '/home/distribution-task?status=1',
       permissions: 'delivery'
     },
     {
@@ -245,6 +246,9 @@
         shopTime: 'week',
         shopStartTime: '',
         shopEndTime: '',
+        managerTime: 'week',
+        managerStartTime: '',
+        managerEndTime: '',
         downUrl: '',
         shopDownUrl: '',
         drawX: [],
@@ -269,7 +273,7 @@
       this.getShopTaskData()
       this.getEchartData()
       this.getGoodsRank('', '', 'week', false)
-      this.getManagerRank('week', false)
+      this.getManagerRank('', '', 'week', false)
       this._getUrl()
       this._getShopUrl()
     },
@@ -520,27 +524,33 @@
           `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
       },
       // 社区排行
-      getManagerRank(time, loading) {
-        API.Data.managerData({time: time, start_time: '', end_time: ''}, loading).then((res) => {
+      getManagerRank(startTime, endTime, time, loading) {
+        this.managerTime = time
+        this.managerStartTime = startTime
+        this.managerEndTime = endTime
+        API.Data.managerData({time: time, start_time: startTime, end_time: endTime}, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
             this.managerList = res.data
+            this._getUrl()
           } else {
             this.$toast.show(res.message)
           }
         })
       },
       _managerMore(value) {
-        this.time = value
-        this._getUrl()
-        this.getManagerRank(value, true)
+        if (typeof value === 'string') {
+          this.getManagerRank('', '', value, true)
+          return
+        }
+        this.getManagerRank(value[0], value[1], '', true)
       },
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=&end_time=&time=${this.time}`
+        let params = `access_token=${token.access_token}&start_time=${this.managerStartTime}&end_time=${this.managerEndTime}&time=${this.managerTime}`
         this.downUrl =
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`

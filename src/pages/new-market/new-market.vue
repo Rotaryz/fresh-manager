@@ -445,7 +445,7 @@
       },
       testNewEndTimeReg() { // 结束时间规则判断
         if (+this.marketIndex === 0 && this.msg.config_json.way === 'between_days') {
-          return Date.parse(this.msg.config_json.end_day + ' 00:00') > Date.parse('' + this.msg.config_json.start_day + ' 00:00')
+          return Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') > Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
         } else {
           return true
         }

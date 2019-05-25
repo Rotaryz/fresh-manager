@@ -53,15 +53,19 @@
     props: {
       batchList: {
         type: Array,
-        default: function() {
+        default: function () {
           return []
         }
       },
       curItem: {
         type: Object,
-        default: function() {
-          return []
+        default: function () {
+          return {}
         }
+      },
+      isOnZero: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -72,11 +76,13 @@
         changeNumber: 0
       }
     },
-    created() {},
+    created() {
+    },
     methods: {
-      show(index) {
+      show(index, item) {
+        let value = item || this.curItem
         this.numberBatch = index.toFixed(2)
-        this.changeNumber = ((this.curItem.base_num * 10 - this.numberBatch * 10) / 10).toFixed(2)
+        this.changeNumber = ((value.base_num * 10 - this.numberBatch * 10) / 10).toFixed(2)
         this.$refs.modal && this.$refs.modal.showModal()
       },
       cancel() {
@@ -85,6 +91,14 @@
       confirm() {
         if (this.curItem.base_num - this.numberBatch !== 0) {
           this.$toast.show('请分配完出库数')
+          return
+        }
+        if (this.isOnZero) {
+          let list = this.batchList.map((item) => {
+            item.select_out_num = item.out_count
+            return item
+          })
+          this.$emit('confirm', list)
           return
         }
         let arr = []

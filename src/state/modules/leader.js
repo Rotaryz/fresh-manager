@@ -207,8 +207,8 @@ export const actions = {
       })
   },
   // 配送订单列表
-  getDeliveryOrder({commit}, {page, shopId, loading = true}) {
-    return API.Leader.getDeliveryOrder({page, shop_id: shopId}, loading)
+  getDeliveryOrder({commit}, {page, shopId, startTime, endTime, loading = true}) {
+    return API.Leader.getDeliveryOrder({page, shop_id: shopId, start_time: startTime, end_time: endTime}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

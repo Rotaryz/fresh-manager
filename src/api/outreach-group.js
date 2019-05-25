@@ -40,7 +40,6 @@ export default {
   // 获取成员列表
   getStaffList(data, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/department-offline-members/${data.id}`
-    data = ''
     return request.get(url, data, loading)
   },
   // 删除成员

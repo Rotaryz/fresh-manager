@@ -229,7 +229,7 @@
           <div class="outreach-goods-list">
             <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+              <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
               <div class="goods-msg">
                 <div class="goods-name">{{item.name}}</div>
                 <div class="goods-money">¥{{item.original_price}}</div>
@@ -313,7 +313,7 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
-        parentId: 0,
+        parentId: '',
         goodsPage: {
           total: 1,
           per_page: 10,
@@ -376,7 +376,7 @@
       testEndDate() {
         // 结束时间规则判断
         return (
-          Date.parse(this.essInformation.end_at + ' 00:00') > Date.parse('' + this.essInformation.start_at + ' 00:00')
+          Date.parse(this.essInformation.end_at.replace(/-/g, '/') + ' 00:00') > Date.parse('' + this.essInformation.start_at.replace(/-/g, '/') + ' 00:00')
         )
       },
       testGroup() {
@@ -813,6 +813,8 @@
     padding-bottom: 20px
     position: relative
     flex: 1
+  .content-header
+    justify-content: flex-start
   .margin-top
     margin-top: 24px
   .outreach-time

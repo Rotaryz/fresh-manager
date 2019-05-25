@@ -7,12 +7,22 @@
         <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
       </div>
       <div class="down-item">
-        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>
+        <!--<base-date-select :width="292" dataPickerType="datetimerange" :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>-->
+        <!--  eslint-disable -->
+        <date-picker
+          v-model="timeDatePicker"
+          type="datetimerange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          size="mini"
+        >
+        </date-picker>
+        <!--  eslint-disable-end -->
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
-
       </div>
     </div>
     <div class="table-content">
@@ -41,7 +51,7 @@
             </div>
             <div class="list-item list-text">￥{{item.price}}</div>
             <div class="list-item list-text">￥{{item.total}}</div>
-            <div class="list-item list-text">{{item.delivery_at}}</div>
+            <!--<div class="list-item list-text">{{item.delivery_at}}</div>-->
             <div class="list-item list-text list-item-double" :title="item.social_name">{{item.social_name}}</div>
             <div class="list-item list-text">{{item.status_text}}</div>
             <div class="list-item list-use">
@@ -59,7 +69,9 @@
 
 <script type="text/ecmascript-6">
   import API from '@api'
-  import {authComputed, orderComputed, orderMethods} from '@state/helpers'
+  import { DatePicker } from 'element-ui'
+  import { authComputed, orderComputed, orderMethods } from '@state/helpers'
+  import moment from 'moment'
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '订单列表'
@@ -67,23 +79,27 @@
   const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员手机'
   const EXCEL_URL = '/social-shopping/api/backend/order-excel'
 
-  const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
+  // const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
+  const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [
     {text: '商城订单', status: 'c_shop'},
-    {text: '拓展订单', status: 'c_offline'}
+    {text: '拓展订单', status: 'c_offline'},
   ]
   const SOCIAL_SELECT = {
     check: false,
     show: false,
     content: '全部社区',
     type: 'default',
-    data: []
+    data: [],
   }
 
   export default {
     name: PAGE_NAME,
     page: {
-      title: TITLE
+      title: TITLE,
+    },
+    components: {
+      DatePicker,
     },
     data() {
       return {
@@ -97,10 +113,10 @@
           {name: '待付款', value: 1, key: 'wait_submit', num: 0},
           {name: '待提货', value: 1, key: 'success', num: 0},
           {name: '已完成', value: 1, key: 'success', num: 0},
-          {name: '已关闭', value: 1, key: 'success', num: 0}
+          {name: '已关闭', value: 1, key: 'success', num: 0},
         ],
         downUrl: '',
-        defaultStatus: 'c_shop'
+        defaultStatus: 'c_shop',
       }
     },
     computed: {
@@ -120,18 +136,36 @@
           shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
-          keyword: this.keyword
+          keyword: this.keyword,
         }
         let search = []
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
         return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
-      }
+      },
+      timeDatePicker: {
+        get() {
+          return this.time
+        },
+        set(val) {
+          if (!val) {
+            val = ['', '']
+          }
+          let time = val.map((item) => {
+            return item ? moment(item).format('YYYY-MM-DD HH:mm:ss') : ''
+          })
+          this.changeTime(time)
+          return time
+        },
+      },
     },
     created() {
       this._getShopList()
       this.getOrderStatus()
+    },
+    beforeDestroy() {
+      this.setTime(['', ''])
     },
     methods: {
       ...orderMethods,
@@ -144,21 +178,20 @@
           start_time: this.startTime,
           end_time: this.endTime,
           shop_id: this.shopId,
-          keyword: this.keyword
-        })
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+          keyword: this.keyword,
+        }).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              status: item.status,
+              num: item.statistic,
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                status: item.status,
-                num: item.statistic
-              }
-            })
           })
+        })
       },
       _getShopList() {
         API.Leader.shopDropdownList().then((res) => {
@@ -197,24 +230,28 @@
         this.setKeyword(keyword)
         this.getOrderStatus()
         this.$refs.pagination.beginPage()
-      }
-    }
+      },
+    },
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  @import "../../design/date-picker.css"
 
   .search-warp
     layout(row)
     height: 80px
     align-items: center
     justify-content: space-between
+
     .ac-tab
       layout(row)
       align-items: center
+
       .base-date-select
         padding: 0 10px
+
     .excel
       display: block
       height: 28px
@@ -237,12 +274,16 @@
     .list-item
       box-sizing: border-box
       flex: 1
+
       &:nth-child(1)
         flex: 1.2
+
       &:nth-child(6), &:nth-child(5)
         flex: 1.2
+
       &:nth-child(7)
         flex: 0.7
+
       &:last-child
         padding: 0
         max-width: 28px

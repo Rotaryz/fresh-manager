@@ -16,6 +16,9 @@ export const globalComputed = {
     marginBottom: (state) => state.marginBottom
   })
 }
+export const globalMethods= {
+  ...mapMutations('global',['SET_CURRENT_TITLES'])
+}
 
 // 团长
 export const leaderComputed = {
@@ -99,7 +102,7 @@ export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDe
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'pageDetail', 'marketDetail'])
+  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail'])
 }
 
 export const marketMethods = {
@@ -149,7 +152,7 @@ export const orderMethods = {
 
 // 退货
 export const returnsComputed = {
-  ...mapGetters('returns', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page'])
+  ...mapGetters('returns', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page', 'tabIndex', 'socialName'])
 }
 
 export const returnsMethods = {
@@ -160,7 +163,8 @@ export const returnsMethods = {
     'setKeyword',
     'setStatus',
     'setPage',
-    'infoStatus'
+    'infoStatus',
+    'infoTab'
   ])
 }
 
@@ -238,13 +242,15 @@ export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurcha
 
 // 采购任务
 export const proTaskComputed = {
-  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd'])
+  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd', 'goBackNumber'])
 }
 
 export const proTaskMethods = mapActions('proTask', [
   'getPurchaseTaskList',
   'selectPurchase',
   'setTaskList',
+  'setGoBackNumber',
+  'setGoBackNumberSub',
   'infoTaskTime'
 ])
 
@@ -280,14 +286,12 @@ export const distributionMethods = {
   ...mapActions('distribution', [
     'setTabIndex',
     'getOrderList',
-    'setOrderStartTime',
-    'setOrderEndTime',
+    'setOrderTime',
     'setOrderKeyword',
     'setOrderPage',
     'setOrderStatus',
     'getDriverList',
-    'setDriverStartTime',
-    'setDriverEndTime',
+    'setDriverTime',
     'setDriverPage',
     'infoOrderTime',
     'infoDriverTime'
@@ -326,7 +330,7 @@ export const productComputed = {
 }
 
 export const productMethods = {
-  ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData'])
+  ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData', 'setOutList'])
 }
 
 // 财务管理
@@ -366,7 +370,7 @@ export const beginnerGuideComputed = {
 }
 // 拓展团队详情
 export const outreachGroupDetailComputed = {
-  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData'])
+  ...mapGetters('outreachGroup', ['groupList', 'taskDetail', 'taskPage', 'taskData', 'staffId'])
 }
 export const outreachGroupDetailMethods = {
   ...mapActions('outreachGroup', [
@@ -405,7 +409,8 @@ export const outreachGroupComputed = {
     teamData: (state) => state.teamData,
     pageDetail: (state) => state.pageDetail,
     page: (state) => state.page
-  })
+  }),
+  ...mapGetters('outreachGroup', ['showContent'])
 }
 
 export const outreachGroupMethods = {
@@ -414,14 +419,100 @@ export const outreachGroupMethods = {
     'showModal',
     'groupListAddChildren',
     'getOutreachList',
-    'getTaskDetail'
+    'getTaskDetail',
+    'setContent',
+    'setStaffId'
   ]),
   ...mapMutations('oGModal', [MODAL.SHOW_MODAL, MODAL.SET_NAME, MODAL.SUBMIT, MODAL.CANCEL, MODAL.SET_MOBILE]),
   ...mapMutations('oGTools', [TOOLS.SET_POSITION, TOOLS.SHOW_TOOLS, TOOLS.UPDATE_IS_ENTER]),
   ...mapMutations('oGTab', [TAB.SET_ADD_POSITION, TAB.SET_DEL_POSITION, TAB.SET_EDIT_POSITION, TAB.SET_MOVE_POSITION]),
   ...mapActions('oGTab', ['addDepartment', 'changeTab', 'deleteDepartment', 'editDepartment', 'moveDepartment']),
   ...mapMutations('oGContent', [CONTENT.SET_CURRENT_STAFF, CONTENT.CLEAR_STAFF_LIST, CONTENT.RESET_PAGE]),
-  ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff'])
+  ...mapActions('oGContent', ['reqStaffList', 'addStaff', 'editorStaff', 'setPage'])
+}
+/**
+ * 仓库-库存
+ */
+export const storeComputed = {
+  ...mapGetters('store', [
+    'warehouseList',
+    'warehousePageTotal',
+    'warehouseDetailList',
+    'detailPageTotal',
+    'stockPageTotal',
+    'stockList',
+    'adjustOrder',
+    'adjustPageTotal',
+    'adjustOrderDetail',
+    'adjustDetailPageTotal'
+  ])
+}
+export const storeMethods = {
+  ...mapActions('store', [
+    'getWarehouseList',
+    'getWarehouseDetailList',
+    'getStockList',
+    'getAdjustOrder',
+    'getAdjustOrderDetail'
+  ])
+}
+// todo 分拣任务
+export const sortingComputed = {
+  ...mapGetters('sorting', ['sortingTask', 'sortingConfig','sortingTaskDetail'])
+}
+
+export const sortingMethods = {
+  ...mapActions('sorting', [
+    'getSortingTaskList',
+    'getSortingTaskDetail',
+    'getSortingConfigList'
+  ]),
+  ...mapMutations('sorting', ['SET_PARAMS']),
+}
+// 商户订单
+export const merchantOrderComputed={
+  ...mapGetters('merchantOrder',[
+    'pageTotal',
+    'orderList',
+    'mergerDetail',
+    'merchantDetail',
+    'merchantFilter',
+    'consumerDetailTotal',
+    'consumerDetail',
+    'mergerDetail'])
+}
+export const merchantOrderMethods ={
+  ...mapActions('merchantOrder', [
+    'getMerchantOrderList',
+    'getMerchantOrderDetail',
+    'getConsumerOrderDetail',
+    'getMergerOrderDetail'
+  ]),
+  ...mapMutations('merchantOrder', [
+    'SET_PARAMS',
+    'SET_PAGE_TOTAL'
+  ])
+}
+// 售后订单
+export const afterSalesOrderComputed={
+  ...mapGetters('afterSalesOrder',['pageTotal','afterSalesList','afterSalesDetail','afterSalesFilter'])
+}
+export const afterSalesOrderMethods ={
+  ...mapActions('afterSalesOrder', [
+    'getAfterSalesOrderList',
+    'getAfterSalesOrderDetail',
+  ]),
+  ...mapMutations('afterSalesOrder', [
+    'SET_PARAMS',
+    'SET_KEYWORD',
+    'SET_PAGE',
+    'SET_TIME',
+    'SET_PAGE_TOTAL',
+    'SET_LIST',
+    'SET_DETAIL',
+    'SET_STATUS',
+    'SET_DETAIL_PAGE'
+  ])
 }
 
 // 设置权限

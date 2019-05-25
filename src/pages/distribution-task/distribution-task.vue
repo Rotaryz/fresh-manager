@@ -3,29 +3,13 @@
     <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="changeStatus"></base-tab-select>
     <div class="down-content">
       <span class="down-tip">建单时间</span>
-      <div class="down-time-box">
-        <date-picker
-          class="edit-input-box" type="date"
-          placeholder="选择下单日期"
-          style="width: 187px;height: 28px;border-radius: 2px"
-          :value="tabIndex === 0 ? orderStartTime : driverStartTime"
-          @on-change="changeStartTime"
-        ></date-picker>
-        <div v-if="orderStartTime && tabIndex === 0" class="down-time-text">{{accurateStart}}</div>
-        <div v-if="driverStartTime && tabIndex === 1" class="down-time-text">{{accurateStart}}</div>
-      </div>
-      <div class="time-tip">~</div>
-      <div class="down-item down-time-box">
-        <date-picker
-          class="edit-input-box edit-input-right"
-          type="date"
-          placeholder="选择下单日期"
-          style="width: 187px;height: 28px;border-radius: 2px"
-          :value="tabIndex === 0 ? orderEndTime : driverEndTime"
-          @on-change="changeEndTime"
-        ></date-picker>
-        <div v-if="orderEndTime && tabIndex === 0" class="down-time-text">{{accurateEnd}}</div>
-        <div v-if="driverEndTime && tabIndex === 1" class="down-time-text">{{accurateEnd}}</div>
+      <div class="down-item">
+        <base-date-select
+          placeHolder="请选择建单时间"
+          :dateInfo="tabIndex === 0 ? orderTime : driverTime"
+          @getTime="changeStartTime"
+        >
+        </base-date-select>
       </div>
       <div v-if="tabIndex === 0" class="distribution-down">
         <span class="down-tip">搜索</span>
@@ -42,6 +26,9 @@
           <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
+          <div class="btn-main" @click="deliveryExcel">导出配送单</div>
+          <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': orderStatus !==1 || (orderStatus === 1 && !orderList.length)}" @click="signIn('all')">批量签收</div>
         </div>
       </div>
       <div class="big-list">
@@ -50,31 +37,37 @@
         </div>
         <div class="list">
           <div v-if="tabIndex === 0">
-            <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
-              <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
-              <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
-              <div class="list-item" :style="{flex: commodities[2].flex}">
-                <router-link tag="a" target="_blank" :to="{path: `supply-list/supply-detail/${item.source_order_id}`}" class="list-operation">{{item.sale_order_sn}}</router-link>
-              </div>
-              <div class="list-item" :style="{flex: commodities[3].flex}">{{item.road_name}}</div>
-              <div class="list-item" :style="{flex: commodities[4].flex}">{{item.receiver}}</div>
-              <div class="list-item" :style="{flex: commodities[5].flex}">{{item.receive_address}}</div>
-              <div class="list-item" :style="{flex: commodities[6].flex}">{{item.delivery_date}}</div>
-              <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
-              <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
-              <div class="list-item" :style="{flex: commodities[9].flex}">
-                <span class="list-operation" @click="handleOperation(item)">导出</span>
-                <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
+            <div v-if="orderList.length">
+              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
+                <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
+                <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
+                <div class="list-item" :style="{flex: commodities[2].flex}">
+                  <router-link tag="a" target="_blank" :to="{path: `merchant-order/merchant-order-detail/${item.source_order_id}`}" class="list-operation">{{item.sale_order_sn}}</router-link>
+                </div>
+                <div class="list-item" :style="{flex: commodities[3].flex}">{{item.road_name}}</div>
+                <div class="list-item" :style="{flex: commodities[4].flex}">{{item.receiver}}</div>
+                <div class="list-item" :style="{flex: commodities[5].flex}">{{item.receive_address}}</div>
+                <div class="list-item" :style="{flex: commodities[6].flex}">{{item.delivery_date}}</div>
+                <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
+                <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
+                <div class="list-item" :style="{flex: commodities[9].flex}">
+                  <span class="list-operation" @click="handleOperation(item)">导出</span>
+                  <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
+                </div>
               </div>
             </div>
+            <base-blank v-else></base-blank>
           </div>
           <div v-else-if="tabIndex === 1">
-            <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
-              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
-                {{item.operation ? '' : driver[item.key]}}
-                <div v-if="item.operation" class="list-operation" @click="handleOperation(driver)">{{item.operation}}</div>
+            <div v-if="orderList.length">
+              <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
+                <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
+                  {{item.operation ? '' : driver[item.key]}}
+                  <div v-if="item.operation" class="list-operation" @click="handleOperation(driver)">{{item.operation}}</div>
+                </div>
               </div>
             </div>
+            <base-blank v-else></base-blank>
           </div>
         </div>
       </div>
@@ -83,12 +76,12 @@
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="confirmSign"></default-confirm>
+    <default-confirm ref="signMore" @confirm="signMore"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {authComputed, distributionComputed, distributionMethods} from '@state/helpers'
-  import {DatePicker} from 'iview'
   import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
@@ -104,26 +97,27 @@
     {title: '收货时间', key: 'delivery_date', flex: 0.8},
     {title: '司机', key: 'driver_name', flex: 0.6},
     {title: '状态', key: 'status_str', flex: 0.6},
-    {title: '操作', key: '', operation: '导出', flex: 0.7}
+    {title: '操作', key: '', operation: '导出', flex: 1}
   ]
   const COMMODITIES_LIST2 = [
     {title: '司机', key: 'driver_name', flex: 1},
     {title: '线路名称', key: 'road_name', flex: 1},
     {title: '配送商户数', key: 'buyer_count', flex: 1},
     {title: '订单数', key: 'order_count', flex: 1},
-    {title: '操作', key: '', operation: '导出', flex: 0.32}
+    {title: '操作', key: '', operation: '导出', flex: 0.36}
   ]
   const ORDERSTATUS = [{text: '订单任务列表', status: ''}, {text: '司机任务列表', status: 0}]
   const ORDER_EXCEL_URL = '/scm/api/backend/delivery/delivery-export/'
   const USER_ORDER_EXCEL_URL = '/scm/api/backend/delivery/download-order-excel/'
   const DRIVER_EXCEL_URL = '/scm/api/backend/delivery/delivery-driver-tasks-export/'
+  const DOWNLOAD_ORDER_EXCEL = '/scm/api/backend/delivery/download-order-excels'
+  const DELIVERY_ORDER_EXCEL = '/scm/api/backend/delivery/delivery-exports'
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
     components: {
-      DatePicker,
       DefaultConfirm
     },
     data() {
@@ -143,12 +137,18 @@
         ],
         accurateStart: '',
         accurateEnd: '',
-        statusTab: 0
+        statusTab: 1
       }
     },
     computed: {
       ...authComputed,
       ...distributionComputed,
+      orderTime() {
+        return [this.orderStartTime, this.orderEndTime]
+      },
+      driverTime() {
+        return [this.driverStartTime, this.driverEndTime]
+      },
       orderExportUrl() {
         let currentId = this.getCurrentId()
         let data = {
@@ -195,10 +195,6 @@
       }
     },
     async created() {
-      this.startTime = this.$route.params.start
-      this.endTime = this.$route.params.end
-      this.accurateStart = this.$route.params.accurateStart
-      this.accurateEnd = this.$route.params.accurateEnd
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1
@@ -207,7 +203,45 @@
     },
     methods: {
       ...distributionMethods,
+      orderExcel() {
+        window.open(this._getUrl(DOWNLOAD_ORDER_EXCEL))
+      },
+      deliveryExcel() {
+        window.open(this._getUrl(DELIVERY_ORDER_EXCEL))
+      },
+      _getUrl(url) {
+        let currentId = this.getCurrentId()
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          start_time: this.orderStartTime || '',
+          end_time: this.orderEndTime || '',
+          keyword: this.orderKeyword,
+          status: this.orderStatus
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_SCM_API + url + '?' + search.join('&')
+      },
+      async signMore() {
+        let res = await API.Delivery.batchDeliverySign(true)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          await this._statistic()
+          this.getOrderList()
+        }
+      },
       signIn(item) {
+        if (item === 'all') {
+          if (this.orderList.length && this.orderStatus === 1) {
+            this.$refs.signMore.show('确定批量签收配送单？')
+          }
+          return
+        }
         this.signItem = item
         this.$refs.confirm.show('确定签收该配送单？')
       },
@@ -215,6 +249,7 @@
         let res = await API.Delivery.deliverySign(this.signItem.id)
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
+          await this._statistic()
           this.getOrderList()
         }
       },
@@ -236,28 +271,6 @@
       },
       changeStatus(item, index) {
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
-        switch (index) {
-        case 0:
-          if (!this.orderStartTime && !this.orderEndTime) {
-            this.infoOrderTime({
-              startTime: this.startTime,
-              endTime: this.endTime,
-              start: this.accurateStart,
-              end: this.accurateEnd
-            })
-          }
-          break
-        case 1:
-          if (!this.driverStartTime && !this.driverEndTime) {
-            this.infoDriverTime({
-              startTime: this.startTime,
-              endTime: this.endTime,
-              start: this.accurateStart,
-              end: this.accurateEnd
-            })
-          }
-          break
-        }
         this.setTabIndex(index)
       },
       async changeKeyword(keyword) {
@@ -267,35 +280,10 @@
       },
       async changeStartTime(value) {
         if (this.tabIndex === 0) {
-          this.setOrderStartTime(value)
-          if (Date.parse(value) > Date.parse(this.endTime)) {
-            this.$toast.show('结束时间不能小于开始时间')
-            return
-          }
+          this.setOrderTime(value)
           await this._statistic()
         } else if (this.tabIndex === 1) {
-          if (Date.parse(value) > Date.parse(this.endTime)) {
-            this.$toast.show('结束时间不能小于开始时间')
-            return
-          }
-          this.setDriverStartTime(value)
-        }
-        this.$refs.pagination.beginPage()
-      },
-      async changeEndTime(value) {
-        if (this.tabIndex === 0) {
-          if (Date.parse(this.startTime) > Date.parse(value)) {
-            this.$toast.show('结束时间不能小于开始时间')
-            return
-          }
-          this.setOrderEndTime(value)
-          await this._statistic()
-        } else if (this.tabIndex === 1) {
-          if (Date.parse(this.startTime) > Date.parse(value)) {
-            this.$toast.show('结束时间不能小于开始时间')
-            return
-          }
-          this.setDriverEndTime(value)
+          this.setDriverTime(value)
         }
         this.$refs.pagination.beginPage()
       },
@@ -327,8 +315,8 @@
         min-width: 200px
       &:nth-child(3)
         min-width: 200px
-      &:nth-child(6)
-        white-space: normal
-      &:nth-child(10)
-        max-width: 105px
+      &:last-child
+        padding: 0
+        min-width: 80px
+        max-width: 80px
 </style>

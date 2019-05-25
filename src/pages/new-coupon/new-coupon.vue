@@ -145,7 +145,7 @@
         </div>
         <div :class="{'check-no-change':disable}"></div>
       </div>
-
+      <!--<p @click="test">测试</p>-->
       <!--使用范围-->
       <div class="edit-item">
         <div class="edit-title">
@@ -303,7 +303,7 @@
           <div class="category-list">
             <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+              <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
               <div class="goods-msg">
                 <div class="goods-name">{{item.name}}</div>
                 <div class="goods-money">¥{{item.trade_price}}</div>
@@ -388,7 +388,7 @@
           type: 'default',
           data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定商品', id: 3}] // 格式：{title: '55'}}
         },
-        parentId: 0,
+        parentId: '',
         goodsPage: {
           total: 1,
           per_page: 10,
@@ -495,7 +495,7 @@
       },
       testEndDate() {
         // 结束时间规则判断
-        return Date.parse(this.msg.end_at + ' 00:00') > Date.parse('' + this.msg.start_at + ' 00:00')
+        return Date.parse(this.msg.end_at.replace(/-/g, '/') + ' 00:00') > Date.parse('' + this.msg.start_at.replace(/-/g, '/') + ' 00:00')
       },
       testDescription() {
         return this.msg.description
@@ -556,6 +556,9 @@
       },
       _getEndTime(time) {
         this.msg.end_at = time
+      },
+      test() {
+        console.log(this.testEndDate, 11)
       },
       // 选择商品
       async _getGoodsList() {
@@ -870,6 +873,8 @@
     flex: 1
     font-family: $font-family-regular
     font-size: $font-size-14
+  .content-header
+    justify-content: flex-start
   .admin-select-box
     color: #333 !important
   .margin-top
@@ -895,7 +900,7 @@
     .checkbox
       height: 24px
       margin-top: 7.5px
-      margin-bottom: 20px
+      margin-bottom: 10px
       .check-item
         float: left
         margin-right: 20px
@@ -943,6 +948,8 @@
         justify-content: space-between
         border: 1px solid $color-line
         transition: all 0.3s
+        -moz-appearance: textfield
+
         &:hover
           border-color: #ACACAC
         &:focus

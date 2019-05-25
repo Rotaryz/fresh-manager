@@ -60,13 +60,14 @@
         <div class="image-box">
           <div class="edit-image">
             <draggable v-model="msg.goods_banner_images" class="draggable" @update="_setSort()">
-              <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+              <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand">
+                <img class="img" :src="item.image_url" alt="">
                 <span class="close" @click="delPic(index)"></span>
               </div>
             </draggable>
             <div v-if="msg.goods_banner_images.length < picNum" class="add-image hand">
-              <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic1', $event)">
-              <div v-if="showLoading && uploadImg === 'pic1'" class="loading-mask">
+              <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_banner_images', picNum, $event)">
+              <div v-if="showLoading && uploadImg === 'goods_banner_images'" class="loading-mask">
                 <img src="./loading.gif" class="loading">
               </div>
             </div>
@@ -83,13 +84,14 @@
         <div class="image-box">
           <div class="edit-image">
             <draggable v-model="msg.goods_detail_images" class="draggable" @update="_setSort()">
-              <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand" :style="{'background-image': 'url(' + item.image_url + ')'}">
+              <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand">
+                <img class="img" :src="item.image_url" alt="">
                 <span class="close" @click="delPic2(index)"></span>
               </div>
             </draggable>
             <div v-if="msg.goods_detail_images.length < 15" class="add-image hand">
-              <input type="file" class="sendImage hand" accept="image/*" @change="_addPic('pic2', $event)">
-              <div v-if="showLoading && uploadImg === 'pic2'" class="loading-mask">
+              <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_detail_images', 15, $event)">
+              <div v-if="showLoading && uploadImg === 'goods_detail_images'" class="loading-mask">
                 <img src="./loading.gif" class="loading">
               </div>
             </div>
@@ -103,6 +105,15 @@
       <div class="content-title">销售信息</div>
     </div>
     <div class="leader-box">
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          商品编码
+        </div>
+        <div class="edit-input-box">
+          <input v-model="goods_skus.goods_sku_encoding" type="text" class="edit-input" maxlength="20">
+        </div>
+      </div>
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -135,7 +146,7 @@
         </div>
         <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
       </div>
-      <div class="edit-item">
+      <!--<div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           团长佣金
@@ -144,14 +155,24 @@
           <input v-model="msg.commission_rate" type="number" class="edit-input" maxlength="3">
         </div>
         <div class="edit-pla">实际以成交价为准(%)</div>
-      </div>
+      </div>-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           销售库存
         </div>
-        <div class="edit-input-box">
-          <input v-model="msg.usable_stock" type="number" class="edit-input">
+        <div class="edit-input-box goods-select-box">
+          <div class="goods-select-left" @click="selectStock(1)">
+            <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
+            <div class="goods-select-text">预售库存</div>
+          </div>
+          <input v-model="goods_skus.presale_usable_stock" type="number" class="edit-input edit-input-select" :disabled="goods_skus.is_presale * 1 !== 1">
+          <div class="stock-box-text">{{goods_skus.sale_unit}}</div>
+          <div class="goods-select-left" @click="selectStock(0)">
+            <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
+            <div class="goods-select-text">仓库库存</div>
+          </div>
+          <div v-if="id" class="stock-box-text current-stock">当前可用库存<span class="stock-color">{{goods_skus.warehouse_usable_stock}}</span>件</div>
         </div>
       </div>
       <div class="edit-item">
@@ -189,6 +210,16 @@
           <base-drop-down :height="40" :width="133" :select="purchaseSelect" :isUse="!id" @setValue="purchaseSelectValue"></base-drop-down>
         </div>
         <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          采购单价
+        </div>
+        <div class="edit-input-box">
+          <input v-model="goods_skus.purchase_price" type="number" class="edit-input" maxlength="10">
+        </div>
+        <div v-if="goods_skus.purchase_unit" class="edit-pla">元/{{goods_skus.purchase_unit}}</div>
       </div>
       <div class="edit-item">
         <div class="edit-title">
@@ -250,20 +281,21 @@
           describe: '',
           goods_banner_images: [],
           goods_detail_images: [],
-          goods_units: '',
           trade_price: '',
           is_online: 1,
           is_multi_specs: 0,
           goods_category_id: 0,
           original_price: '',
+          purchase_price: '',
+          // commission_rate: '',
           usable_stock: '',
-          commission_rate: '',
           goods_skus: [
             {
               id: 0,
               trade_price: 0,
               original_price: 0,
-              usable_stock: 0,
+              goods_sku_encoding: '',
+              purchase_price: '',
               image_id: '',
               specs: '',
               is_weight: 1
@@ -323,14 +355,20 @@
           base_unit: '',
           sale_unit: '',
           purchase_unit: '',
+          goods_sku_encoding: '',
+          presale_usable_stock: '',
+          warehouse_usable_stock: 0,
+          purchase_price: '',
           damage_rate: '',
           supplier_id: 0,
-          is_weight: 1
+          is_weight: 1,
+          is_presale: 1
         },
         isWeight: 1,
         showLoading: false,
         picNum: 5,
-        uploadImg: ''
+        uploadImg: '',
+        isSelectStock: true
       }
     },
     created() {
@@ -359,6 +397,21 @@
       _back() {
         this.$router.back()
       },
+      selectStock(index) {
+        if (!this.id) {
+          this.goods_skus.is_presale = index
+        } else {
+          API.Product.checkStockType(this.id, false).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              if (res.data.is_allow_change * 1 === 1) {
+                this.goods_skus.is_presale = index
+              }
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+        }
+      },
       getPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
         this.msg.goods_banner_images.push(item)
@@ -380,8 +433,8 @@
         if (this.isSubmit) {
           return
         }
-        this.msg.usable_stock += ''
         this.msg.init_sale_count += ''
+        this.goods_skus.presale_usable_stock += ''
         if (this.msg.name.length === 0 || this.msg.name.length >= 30) {
           this.$toast.show('请选择输入商品名称且小于30字')
           return
@@ -400,6 +453,9 @@
         } else if (this.goods_skus.base_sale_rate.length === 0) {
           this.$toast.show('请输入销售规格')
           return
+        } else if (this.goods_skus.goods_sku_encoding.length === 0) {
+          this.$toast.show('请输入商品编码')
+          return
         } else if (this.goods_skus.base_sale_rate <= 0) {
           this.$toast.show('请输入销售规格大于零')
           return
@@ -415,15 +471,24 @@
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
           return
-        } else if (
-          +this.msg.commission_rate < 0 ||
-          +this.msg.commission_rate > 100 ||
-          this.msg.commission_rate.length === 0
-        ) {
-          this.$toast.show('成员佣金比率区间在0与100之间')
+        } else if (this.goods_skus.presale_usable_stock.length === 0 && this.goods_skus.is_presale * 1 === 1) {
+          this.$toast.show('请输入预售库存')
           return
-        } else if (!this.msg.usable_stock || this.msg.usable_stock.includes('.') || +this.msg.usable_stock < 0) {
-          this.$toast.show('请输入正确商品库存')
+        } else if (this.goods_skus.presale_usable_stock < 0 && this.goods_skus.is_presale * 1 === 1) {
+          this.$toast.show('请输入预售库存大于零')
+          return
+        } else if (this.goods_skus.presale_usable_stock.includes('.') && this.goods_skus.is_presale * 1 === 1) {
+          this.$toast.show('请输入正确的预售库存')
+          return
+        } else if (
+          this.msg.init_sale_count === 'undefined' ||
+          this.msg.init_sale_count.includes('.') ||
+          +this.msg.init_sale_count < 0
+        ) {
+          this.$toast.show('请输入正确初始销量')
+          return
+        } else if (this.goods_skus.supplier_id <= 0) {
+          this.$toast.show('请选择供应商')
           return
         } else if (this.goods_skus.base_purchase_rate.length === 0) {
           this.$toast.show('请输入采购规格')
@@ -431,11 +496,11 @@
         } else if (this.goods_skus.base_purchase_rate <= 0) {
           this.$toast.show('请输入采购规格大于零')
           return
-        } else if (this.goods_skus.supplier_id <= 0) {
-          this.$toast.show('请选择供应商')
-          return
         } else if (this.goods_skus.purchase_unit === '') {
           this.$toast.show('请选择采购单位')
+          return
+        } else if (this.goods_skus.purchase_price.length === 0) {
+          this.$toast.show('请输入采购单价')
           return
         } else if (
           +this.goods_skus.damage_rate < 0 ||
@@ -444,18 +509,17 @@
         ) {
           this.$toast.show('损耗比区间在0与100之间')
           return
-        } else if (
-          !this.msg.init_sale_count ||
-          this.msg.init_sale_count.includes('.') ||
-          +this.msg.init_sale_count <= 0
-        ) {
-          this.$toast.show('请输入正确初始销量')
-          return
+        }
+        if (this.goods_skus.is_presale * 1 === 0 && !this.id) {
+          this.goods_skus.presale_usable_stock = 0
+          this.goods_skus.warehouse_usable_stock = 0
+        }
+        if (this.goods_skus.is_presale * 1 === 0) {
+          this.goods_skus.presale_usable_stock = 0
         }
         this.msg.goods_skus[0] = this.goods_skus
         this.msg.goods_skus[0].trade_price = this.msg.trade_price
         this.msg.goods_skus[0].original_price = this.msg.original_price
-        this.msg.goods_skus[0].usable_stock = this.msg.usable_stock
         this.isSubmit = true
         if (this.id) {
           API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
@@ -552,15 +616,41 @@
         this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
       },
       _setSort() {
-        console.log(this.msg.goods_banner_images)
       },
-      async _addPic(type, e) {
+      _addPic(type, length, e) {
         this.uploadImg = type
+        let arr = Array.from(e.target.files)
+        if (arr.length < 1) return
+        if (this.msg[type].length) {
+          arr = arr.slice(0, length - this.msg[type].length)
+        } else {
+          arr = arr.slice(0, length)
+        }
         this.showLoading = true
-        let param = this._infoImage(e.target.files[0])
-        e.target.value = ''
-        await this._upImage(param)
+        this.$cos.uploadFiles(this.$cosFileType.IMAGE_TYPE, arr).then((resArr) => {
+          this.showLoading = false
+          let imagesArr = []
+          resArr.forEach(item => {
+            if (item.error !== this.$ERR_OK) {
+              return this.$toast.show(item.message)
+            }
+            let obj = {
+              id: 0,
+              image_id: item.data.id,
+              image_url: item.data.url
+            }
+            imagesArr.push(obj)
+          })
+          this.$set(this.msg, type, this.msg[type].concat(imagesArr))
+        })
       },
+      // async _addPic(type, e) {
+      //   this.uploadImg = type
+      //   this.showLoading = true
+      //   let param = this._infoImage(e.target.files[0])
+      //   e.target.value = ''
+      //   await this._upImage(param)
+      // },
       // 格式化图片流
       _infoImage(file) {
         let param = new FormData() // 创建form对象
@@ -579,7 +669,6 @@
         } else {
           this.getPic2(res.data)
         }
-
       }
     }
   }
@@ -588,6 +677,12 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
+
+  .img
+    width :100%
+    height :@width
+    display :block
+    object-fit :cover
 
   .edit-leader
     position: relative
@@ -797,6 +892,46 @@
 
   .image-box
     margin-left: 40.9px
+  .goods-select-box
+    layout(row)
+    align-items: center
+    height: 44px
+    .goods-select-left
+      height: 44px
+      layout(row)
+      align-items: center
+      cursor: pointer
+      .goods-select-icon
+        width: 18px
+        height: @width
+        border: 1px solid #E1E1E1
+        background: #F9F9F9
+        border-radius: 50%
+        margin-right: 10px
+      .goods-select-icon-active
+        border: 0 solid transparent
+        background-size: @width
+        icon-image(icon-single_election)
+      .goods-select-text
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+        margin-right: 10px
+    .edit-input-select
+      width: 148px !important
+    .stock-box-text
+      width: 74px
+      height: 44px
+      line-height: 44px
+      font-family: $font-family-regular
+      color: $color-text-main
+      font-size: $font-size-14
+      padding-left: 14px
+    .current-stock
+      width: auto
+      padding-left: 0
+      .stock-color
+        color: $color-negative
   .edit-image
     flex-wrap: wrap
     display: flex

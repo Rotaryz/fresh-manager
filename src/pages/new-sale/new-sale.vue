@@ -51,6 +51,7 @@
         <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
         <div :class="{'time-no-change':disable}"></div>
       </div>
+      <!--<p @click="test">测试</p>-->
     </div>
 
     <div class="content-header">
@@ -83,7 +84,7 @@
                 <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
-                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small">
+                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
               </div>
               <div class="com-list-item">
                 <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
@@ -120,10 +121,14 @@
           <div class="rush-goods-list">
             <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+              <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
               <div class="goods-msg">
+                <!--<div class="goods-name">{{item.usable_stock}}</div>-->
                 <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.original_price}}</div>
+                <div class="goods-money">
+                  <div class="goods-money-text">{{item.usable_stock}}</div>
+                  <div class="goods-money-text">¥{{item.original_price}}</div>
+                </div>
               </div>
               <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
@@ -219,7 +224,7 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
-        parentId: 0,
+        parentId: '',
         goodsPage: {
           total: 1,
           per_page: 10,
@@ -249,14 +254,14 @@
       },
       testStartDate() {
         // 开始时间规则判断
-        return Date.parse('' + this.msg.start_at) > new Date() - 360000
+        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 360000
       },
       testEndTime() {
         return this.msg.end_at
       },
       testEndTimeReg() {
         // 结束时间规则判断
-        return Date.parse('' + this.msg.end_at) > Date.parse('' + this.msg.start_at)
+        return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
       }
     },
     watch: {},
@@ -334,7 +339,6 @@
             item.selected = 2
           }
           item.trade_price = ''
-          item.usable_stock = ''
           item.sort = 0
           return item
         })
@@ -383,6 +387,10 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
+        if (item.usable_stock <= 0) {
+          this.$toast.show('该商品库存为0，不能选择')
+          return
+        }
         switch (item.selected) {
         case 0:
           if (this.selectGoodsId.length === 10) {
@@ -390,6 +398,7 @@
             return
           }
           this.choeesGoods[index].selected = 2
+          item.all_stock = item.usable_stock
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
           break
@@ -434,6 +443,10 @@
       },
       // 单个添加
       _additionOne(item, index) {
+        if (item.usable_stock <= 0) {
+          this.$toast.show('该商品库存为0，不能选择')
+          return
+        }
         if (item.selected === 1) {
           return
         }
@@ -443,6 +456,7 @@
         }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
+        item.all_stock = item.usable_stock
         this.goodsList.push(item)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
@@ -524,13 +538,16 @@
           this._back()
         }, 1000)
       },
+      test() {
+        console.log(this.testStartDate, this.testEndTimeReg)
+      },
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
           {value: this.testStartTime, txt: '请选择活动开始时间'},
-          {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
+          // {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
           {value: this.testEndTime, txt: '请选择活动结束时间'},
-          {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
+          // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -540,6 +557,12 @@
           if (i === j - 1 && arr[i].value) {
             return true
           }
+        }
+      },
+      echangBase(item, index) {
+        if (item.usable_stock > item.all_stock && !this.disable) {
+          item.usable_stock = item.all_stock
+          this.$forceUpdate()
         }
       }
     }
@@ -555,7 +578,8 @@
     position: relative
     font-family: $font-family-regular
     flex: 1
-
+  .content-header
+    justify-content: flex-start
   .rush-time
     margin-bottom: 27px
 
@@ -1067,6 +1091,11 @@
           no-wrap()
         .goods-name, .goods-money
           line-height: 1
+        .goods-money
+          flex: 1
+          layout(row)
+          .goods-money-text
+            width: 50%
       .add-btn
         border-radius: 2px
         margin-left: 88px

@@ -94,6 +94,8 @@
     padding: 0 20px
     .title-item
       padding-right: 20px
+      &:last-child
+        padding-right: 0
   .padding
     padding-right: 26px
   .list
@@ -137,6 +139,8 @@
         height: 36px
         border-radius: 2px
         border: 0.5px solid $color-line
+    .item-data:last-child
+      padding-right: 0
   .rate
     max-width: 70px
 </style>

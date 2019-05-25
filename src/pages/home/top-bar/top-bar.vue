@@ -49,7 +49,7 @@
   $menu-width = 200px
 
   .top-bar
-    z-index: 500
+    z-index: 600
     background: #fff
     border-bottom-1px($color-line)
     position: fixed
