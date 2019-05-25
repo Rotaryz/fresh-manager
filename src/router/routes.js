@@ -1,6 +1,8 @@
 import store from '@state/store'
 import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
+import API from '@api'
+import {ERR_OK} from '@utils/config'
 
 export default [
   // 模板
@@ -235,17 +237,22 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
-            store
-              .dispatch('sale/getSaleList', {page: 1, status})
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
+            API.Activity.getActiveList({page: 1, status, activity_theme: 'fixed'})
+            .then((res) => {
+              if (res.error !== ERR_OK) {
+                return next({name: '404'})
+              }
+              let dataInfo = res.data
+              let pageInfo = {
+                total: res.meta.total,
+                per_page: res.meta.per_page,
+                total_page: res.meta.last_page
+              }
+              next({params: {dataInfo, pageInfo}})
+            })
+            .catch(e => {
+              next({name: '404'})
+            })
           }
         }
       },

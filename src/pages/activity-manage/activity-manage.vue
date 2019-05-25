@@ -1,24 +1,25 @@
 <template>
   <div class="activity-manage table">
     <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
-    <flash-sale v-if="+infoTabIndex === 0"></flash-sale>
-    <popular-today v-else-if="+infoTabIndex === 1"></popular-today>
-    <new-preference v-else-if="+infoTabIndex === 2"></new-preference>
-    <collage-return v-else-if="+infoTabIndex === 3"></collage-return>
+<!--    <flash-sale v-if="+infoTabIndex === 0"></flash-sale>-->
+<!--    <popular-today v-else-if="+infoTabIndex === 1"></popular-today>-->
+<!--    <new-preference v-else-if="+infoTabIndex === 2"></new-preference>-->
+    <collage-return v-if="+infoTabIndex === 3"></collage-return>
+    <flash-sale v-else></flash-sale>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import FlashSale from './flash-sale/flash-sale'
-  import PopularToday from './popular-today/popular-today'
-  import NewPreference from './new-preference/new-preference'
+  // import PopularToday from './popular-today/popular-today'
+  // import NewPreference from './new-preference/new-preference'
   import CollageReturn from './collage-return/collage-return'
-  import { activityMethods, activityComputed, saleMethods } from '@state/helpers'
+  // import { activityMethods, activityComputed, saleMethods } from '@state/helpers'
 
   const PAGE_NAME = 'ACTIVITY_MANAGE'
   const TITLE = '活动管理'
 
-  const ORDERSTATUS = [
+  const TAB_STATUS = [
     {text: '限时抢购', status: 'one'},
     {text: '今日爆款', status: 'two'},
     {text: '新人特惠', status: 'three'},
@@ -31,18 +32,19 @@
     },
     components: {
       FlashSale,
-      PopularToday,
-      NewPreference,
+      // PopularToday,
+      // NewPreference,
       CollageReturn
     },
     data() {
+      console.log(this.$route.meta.params)
       return {
-        tabStatus: ORDERSTATUS,
+        tabStatus: TAB_STATUS,
         defaultStatus: 'one'
       }
     },
     computed: {
-      ...activityComputed,
+      // ...activityComputed,
       infoTabIndex() {
         return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
       }
@@ -51,8 +53,8 @@
       this.defaultStatus = this.tabStatus[this.activityTab].status
     },
     methods: {
-      ...activityMethods,
-      ...saleMethods,
+      // ...activityMethods,
+      // ...saleMethods,
       changeTab(selectStatus) {
         this.defaultStatus = selectStatus.status
         this.setActivityTab(this.infoTabIndex)

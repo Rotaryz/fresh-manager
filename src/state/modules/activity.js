@@ -88,7 +88,7 @@ export const mutations = {
 export const actions = {
   // 获取今日爆款列表
   getPopularList({commit}, page) {
-    return API.Activity.getPopularList({page, limit: 10})
+    return API.Activity.getActiveList({page, limit: 10, activity_theme: 'hot_tag'})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)

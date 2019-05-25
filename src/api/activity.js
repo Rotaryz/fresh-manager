@@ -100,4 +100,9 @@ export default {
     let url = `/social-shopping/api/backend/activity-manage/activity/${id}`
     return request.delete(url, {}, loading)
   },
+  // 活动列表[v2.3.4]
+  getActiveList(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/activity'
+    return request.get(url, data, loading)
+  },
 }
