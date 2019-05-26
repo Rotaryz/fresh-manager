@@ -84,12 +84,12 @@
                           >
                           <img class="label" src="./pic-label_qg@2x.png" alt="">
                         </div>
-                        <p class="title">超值特新鲜柠</p>
+                        <p class="title">{{item.name}}</p>
                         <div class="money-wrapper">
-                          <p class="m-int">10</p>
-                          <p class="m-dot">.8</p>
+                          <p class="m-int">{{item.tradePrice && item.tradePrice.int}}</p>
+                          <p class="m-dot">{{item.tradePrice && item.tradePrice.dec}}</p>
                           <p class="m-unit">元</p>
-                          <p class="m-origin">12元</p>
+                          <p class="m-origin">{{item.original_price}}元</p>
                         </div>
                       </li>
                     </template>
@@ -207,37 +207,8 @@
 
 <script type="text/ecmascript-6">
   import {Carousel, CarouselItem} from 'iview'
+  import {TAB_ARR_CONFIG} from '../config'
 
-  const TAB_ARR_CONFIG = {
-    'new_client': {
-      title: '新人特惠',
-      subTitle: '专属特权',
-      iconText: '新人价',
-      buttonText: '+购物车',
-      dataArray: 'newClientList'
-    },
-    'goods_hot_tag': {
-      title: '今日爆款',
-      subTitle: '火爆推荐',
-      iconText: '爆款价',
-      buttonText: '+购物车',
-      dataArray: 'todayHotList'
-    },
-    'groupon': {
-      title: '拼团返现',
-      subTitle: '成团有礼',
-      iconText: '拼团价',
-      buttonText: '去拼团',
-      dataArray: 'groupList'
-    },
-    'guess': {
-      title: '猜你喜欢',
-      subTitle: '为你优选',
-      iconText: '团购价',
-      buttonText: '+购物车',
-      dataArray: 'guessList'
-    },
-  }
   const COMPONENT_NAME = 'PHONE_BOX'
   export default {
     name: COMPONENT_NAME,

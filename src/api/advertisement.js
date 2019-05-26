@@ -139,4 +139,9 @@ export default {
     let url = `/social-shopping/api/backend/activity/activity-groupon-goods`
     return request.get(url, data, loading)
   },
+  // 活动商品列表[v2.1]
+  getActivityGoodsList(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-fixed-goods`
+    return request.get(url, data, loading)
+  }
 }

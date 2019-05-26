@@ -1,7 +1,6 @@
 <template>
   <div class="activity-manage table">
     <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
-<!--    <collage-return v-if="+tabIndex === 3"></collage-return>-->
     <article class="data-content">
       <div class="down-content">
         <span class="down-tip">活动时间</span>
@@ -18,8 +17,6 @@
           </div>
           <div class="function-btn">
             <div class="btn-main" @click="handleNav">新建活动<span class="add-icon"></span></div>
-<!--            <span class="add-icon"></span>-->
-<!--            <router-link tag="div" :to="'new-sale?activity_theme=' + currentTab.activity_theme" append class="btn-main">新建活动<span class="add-icon"></span></router-link>-->
           </div>
         </div>
         <div class="big-list">

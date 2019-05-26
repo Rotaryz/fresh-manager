@@ -149,14 +149,16 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import PhoneBox from '@components/phone-box/phone-box'
+  import PhoneBox from './phone-box/phone-box'
   import API from '@api'
   import ADD_IMAGE from './pic-add_img@2x.png'
   import {adverComputed, adverMethods} from '@state/helpers'
   import _ from 'lodash'
   import Draggable from 'vuedraggable'
   import {formatCouponMoney} from '@utils/common'
-
+  import {TAB_ARR_CONFIG} from './config'
+  // import {TAB_STATUS} from '@pages/activity-manage/config'
+  // console.log(TAB_STATUS)
   const PAGE_NAME = 'ADVERTISEMENT'
   const TITLE = '轮播广告'
   const TYPE_LIST = [
@@ -313,27 +315,53 @@
       },
       // 获取所有活动数据
       _getAllActivityData() {
-        this._getActivityGoods()
-        API.Advertisement.getNewClientList().then(res => {
-          if (res.data) {
-            this.newClientList = this._formatListData(res.data)
-          }
-        })
-        API.Advertisement.getTodayList().then(res => {
-          if (res.data) {
-            this.todayHotList = this._formatListData(res.data)
-          }
-        })
+        let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
+        if (module.list) {
+          module.list.forEach(item => {
+            API.Advertisement.getActivityGoodsList({activity_id: item.id}).then(res => {
+              if (!res || !res.data) {
+                return
+              }
+              if (item.module_name === 'activity_fixed') {
+                this.activityGoodsList = this._formatListData(res.data)
+              } else {
+                let key = (TAB_ARR_CONFIG[item.module_name] || {}).dataArray
+                if (this[key]) {
+                  this[key] = this._formatListData(res.data)
+                }
+              }
+            })
+          })
+        }
         API.Advertisement.getGuessList().then(res => {
           if (res.data) {
             this.guessList = this._formatListData(res.data)
           }
         })
-        API.Advertisement.getGroupList().then(res => {
-          if(res.data) {
-            this.groupList = this._formatListData(res.data)
-          }
-        })
+        // this._getActivityGoods()
+        // API.Advertisement.getNewClientList().then(res => {
+        //   if (res.data) {
+        //     this.newClientList = this._formatListData(res.data)
+        //   }
+        // })
+        // API.Advertisement.getTodayList().then(res => {
+        //   if (res.data) {
+        //     this.todayHotList = this._formatListData(res.data)
+        //   }
+        // })
+        // API.Advertisement.getGuessList().then(res => {
+        //   if (res.data) {
+        //     this.guessList = this._formatListData(res.data)
+        //   }
+        // })
+        // API.Advertisement.getGroupList().then(res => {
+        //   if(res.data) {
+        //     this.groupList = this._formatListData(res.data)
+        //   }
+        // })
+        // TAB_STATUS.forEach(item => {
+        //   API.
+        // })
       },
       _formatListData(arr = []) {
         return arr.map(item => {
@@ -383,7 +411,8 @@
               if (res.error !== this.$ERR_OK) {
                 return
               }
-              this.activityGoodsList = res.data
+              this.activityGoodsList = this._formatListData(res.data)
+              console.log(this.activityGoodsList)
             })
           }
         }

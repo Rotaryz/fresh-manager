@@ -246,7 +246,11 @@
         return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
       }
     },
-    watch: {},
+    watch: {
+      $router(to, from) {
+        console.log(to)
+      }
+    },
     created() {
       this.disable = +this.$route.query.id
       this.id = +this.$route.query.id || +this.$route.query.editId || null
@@ -266,6 +270,9 @@
       this._getFirstAssortment()
 
     // this._getGoodsList()
+    },
+    beforeRouteLeave() {
+      console.log(1)
     },
     async mounted() {
     // this.classifyIndex = 0

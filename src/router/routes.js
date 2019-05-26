@@ -238,7 +238,6 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
-            console.log(window.$$tabIndex)
             API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme})
             .then((res) => {
               if (res.error !== ERR_OK) {
