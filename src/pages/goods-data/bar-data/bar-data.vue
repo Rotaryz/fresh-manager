@@ -241,7 +241,7 @@
           yAxis: {
             minInterval: 1,
             type: 'category',
-            offset: 10.5,
+            data: xAxisData,
             splitLine: {
               show: false,
               lineStyle: {
@@ -258,7 +258,7 @@
             },
             axisLabel: {
               show: true,
-              formatter: '{category}',
+              formatter: '{value}',
               color: '#666'
             },
             axisLine: {
@@ -294,7 +294,7 @@
               },
               emphasis: {
                 itemStyle: {
-                  color: '#F5F6F9'
+                  // color: '#F5F6F9'
                 }
               },
               label: {
