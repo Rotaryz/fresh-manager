@@ -33,7 +33,7 @@
                 <span class="show-big-icon hand"></span>
               </div>
             </div>
-            <bar-data></bar-data>
+            <bar-data ref="bar1"></bar-data>
           </section>
         </div>
         <div class="bottom-sec">
@@ -47,7 +47,7 @@
                 <span class="show-big-icon hand"></span>
               </div>
             </div>
-
+            <pie-data></pie-data>
           </section>
           <section class="data-sec">
             <div class="sec-title">
@@ -59,7 +59,7 @@
                 <span class="show-big-icon hand"></span>
               </div>
             </div>
-
+            <bar-data ref="bar2"></bar-data>
           </section>
         </div>
       </div>
@@ -75,6 +75,7 @@
   import LeftTab from './left-tab/left-tab'
   import EditModal from './edit-modal/edit-modal'
   import BarData from './bar-data/bar-data'
+  import PieData from './pie-data/pie-data'
 
   import API from '@api'
   const ARR_TITLE = [
@@ -114,7 +115,8 @@
       EditModal,
       StatusTab,
       GoodsList,
-      BarData
+      BarData,
+      PieData
     },
     data() {
       return {
@@ -147,6 +149,10 @@
     },
     created() {
       // this.getAllData()
+    },
+    mounted() {
+      this.$refs.bar1.drawBar({x: [], series: []}, '时令水果', 'dataBar1')
+      this.$refs.bar2.drawBar1({x: [], series: []}, '时令水果', 'dataBar2')
     },
     methods: {
       ...goodsDataMethods,
