@@ -43,22 +43,24 @@
       changeTab(data, name) {
         this.drawBar(data, name)
       },
-      drawBar(data, name, chartName) {
-        this.chartId = chartName
+      // 纵向柱状图（name为表名称，chartId为表父元素标签ID名）
+      drawBar(data, name, chartId) {
+        this.chartId = chartId
         this.$nextTick(() => {
           let xAxisData = data.x.length > 0 ? data.x : this.data.x
           let seriesData = data.series.length > 0 ? data.series : this.data.series
-          let myChart = this.$echarts.init(document.getElementById(chartName))
+          let myChart = this.$echarts.init(document.getElementById(chartId))
           myChart.setOption(this.createBarData(xAxisData, seriesData))
         })
       },
-      drawBar1(data, name, chartName) {
-        this.chartId = chartName
+      // 横向柱状图
+      drawBar1(data, name, chartId) {
+        this.chartId = chartId
         this.$nextTick(() => {
           let xAxisData = data.x.length > 0 ? data.x : this.data.x1
           let seriesData1 = data.series.length > 0 ? data.series : this.data.series1
           let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
-          let myChart = this.$echarts.init(document.getElementById(chartName))
+          let myChart = this.$echarts.init(document.getElementById(chartId))
           myChart.setOption(this.createBar(xAxisData, seriesData1, seriesData2))
         })
       },

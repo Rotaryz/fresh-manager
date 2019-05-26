@@ -21,7 +21,7 @@
                 <span class="export-btn hand">导出Excel</span>
               </div>
             </div>
-            <goods-list></goods-list>
+            <goods-list v-if="false"></goods-list>
           </section>
           <section class="data-sec">
             <div class="sec-title">
@@ -64,6 +64,7 @@
         </div>
       </div>
     </div>
+
     <edit-modal ref="editModal" @confirm="confirm"></edit-modal>
   </div>
 </template>
