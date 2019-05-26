@@ -19,7 +19,11 @@
 
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'E_CHART_LINE'
-  const COLOR_ARR = ['#6081E3', '#8859E8', '#F7C136', '#6AE1FF']
+  const CHART_COLOR = {
+    line: ['#6081E3', '#8859E8', '#F7C136', '#6AE1FF'],
+    axle: '#F0F3F5',
+    label: '#999999'
+  }
 
   export default {
     name: COMPONENT_NAME,
@@ -77,7 +81,7 @@
           grid: {
             left: '20',
             right: '30',
-            bottom: '36',
+            bottom: '52',
             top: '20',
             containLabel: true
           },
@@ -115,16 +119,17 @@
           showSymbol: item.rate.length <= 7,
           itemStyle: {
             normal: {
-              color: COLOR_ARR[i],
+              color: CHART_COLOR.line[i],
               borderWidth: 1,
               lineStyle: {
-                color: COLOR_ARR[i],
+                color: CHART_COLOR.line[i],
                 width: 2
               }
             }
           }
         }
-        if (chartConfig.lineShadow) {
+        if (chartConfig.label.length <= 2 || chartConfig.lineShadow) {
+          let color = ['rgba(96,129,227,0.28)','rgba(136,89,232,0.28)','rgba(247,193,54,0.28)','rgba(106,225,255,0.28)']
           seriesConfig.areaStyle = {
             color: {
               type: 'linear',
@@ -132,11 +137,11 @@
               colorStops: [
                 {
                   offset: 0,
-                  color: 'rgba(96,129,227,0.28)'
+                  color: color[i]
                 },
                 {
                   offset: 1,
-                  color: 'rgba(96,129,227,0)'
+                  color: 'rgba(250,250,250,0)'
                 }
               ],
               globalCoord: false
@@ -150,16 +155,17 @@
           type: 'category',
           boundaryGap: false,
           data: data,
+          offset: 10,
           splitLine: {
             show: true,
             lineStyle: {
-              color: '#F0F3F5',
+              color: CHART_COLOR.axle,
               width: 0.5,
               type: "doted"
             }
           },
           axisLabel: {
-            color: '#666',
+            color: CHART_COLOR.label,
             fontSize: 12,
             align: 'center'
           },
@@ -180,7 +186,7 @@
           splitLine: {
             show: true,
             lineStyle: {
-              color: '#F0F3F5',
+              color: CHART_COLOR.axle,
               width: 0.5
             }
           },
@@ -188,20 +194,20 @@
           axisTick: {
             show: false,
             lineStyle: {
-              color: '#F0F3F5',
+              color: CHART_COLOR.axle,
               width: 0.5
             }
           },
           // 坐标值
           axisLabel: {
             formatter: '{value}',
-            color: '#666'
+            color: CHART_COLOR.label
           },
           // 坐标轴
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#F0F3F5',
+              color: CHART_COLOR.axle,
               width: 0.5
             }
           }
@@ -218,20 +224,20 @@
             axisTick: {
               show: false,
               lineStyle: {
-                color: '#F0F3F5',
+                color: CHART_COLOR.axle,
                 width: 0.5
               }
             },
             // 坐标值
             axisLabel: {
               formatter: '{value}',
-              color: '#666'
+              color: CHART_COLOR.label
             },
             // 坐标轴
             axisLine: {
               show: true,
               lineStyle: {
-                color: '#F0F3F5',
+                color: CHART_COLOR.axle,
                 width: 0.5
               }
             }
@@ -239,6 +245,22 @@
           return [yAxis, secondY]
         }
         return [yAxis]
+      },
+      _setDataZoom(tab,tabIdx) {
+        return {
+          end: 30,// 数据窗口范围的结束百分比
+          type: 'slider',
+          bottom: '26px',
+          show: true,
+          height: 8,
+          xAxisIndex: [0],
+          borderColor: "rgba(250,250,250,0)",
+          fillerColor: CHART_COLOR.label,
+          borderRadius: 4,
+          showDataShadow: false,// 是否显示数据阴影 默认auto
+          showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
+          realtime: true, // 是否实时更新
+        }
       },
       _switchTab(tab,tabIdx) {
         this.tabIndex = tabIdx
