@@ -1,50 +1,104 @@
 <template>
-  <div class="chart-line-con">
-    <div class="title-bar">
-      <div class="left-box">
-        <p class="title">{{chartConfig.title}}</p>
-        <ul v-if="chartConfig.tab" class="tab">
-          <li v-for="(tab, tabIdx) in chartConfig.tab" :key="tabIdx" class="tab-item" @click="_switchTab(tab,tabIdx)">{{tab.name}}</li>
-          <li class="tab-item tab-active" :style="{'transform':'translateX('+tabIndex*84+'px)'}">{{chartConfig.tab[tabIndex].name}}</li>
-        </ul>
-      </div>
-      <a v-if="chartConfig.excel" class="excel-btn">导出Excel</a>
+  <div class="bar-data">
+    <div class="data-content">
+      <div :id="chartId" style="width: 100%; height: 100%" @click="clickChart"></div>
     </div>
-    <div class="label-bar">
-      <p v-for="(label, labelIdx) in chartConfig.label" :key="labelIdx" class="label" :style="{'max-width':100/chartConfig.label.length+'%'}">{{label}} <span class="label-val">{{chartData.totalArr[labelIdx]}}</span></p>
-    </div>
-    <div :id="chartId" class="chart-con"></div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  const COMPONENT_NAME = 'E_CHART_LINE'
-  const COLOR_ARR = ['#6081E3', '#8859E8', '#F7C136', '#6AE1FF']
+  const COMPONENT_NAME = 'BAR_DATA'
 
-  export default {
+  export default{
     name: COMPONENT_NAME,
     props: {
       chartId: {
         type: String,
-        default: ''
+        default: 'line'
       }
     },
     data() {
       return {
-        chartConfig: {},
-        chartData: {},
-        tabIndex: 0
+        tabIndex: 0,
+        colorObj: [
+          {
+            name: '订单数',
+            color: '#6081E3',
+            colorStops0: 'rgba(89,223,120,0.55)',
+            colorStops1: 'rgba(89,223,120,0.05)'
+          },
+          {
+            name: '交易金额',
+            color: '#8859E8',
+            colorStops0: 'rgba(116,149,255,0.55)',
+            colorStops1: 'rgba(116,149,255,0.05)'
+          },
+          {
+            name: '交易金额',
+            color: '#F7C136',
+            colorStops0: 'rgba(116,149,255,0.55)',
+            colorStops1: 'rgba(116,149,255,0.05)'
+          },
+          {
+            name: '交易金额',
+            color: '#6AE1FF',
+            colorStops0: 'rgba(116,149,255,0.55)',
+            colorStops1: 'rgba(116,149,255,0.05)'
+          }
+        ],
+        data: {
+          x: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"],
+          series: ["10", "20", "5", "40", "15", "14", "44", "34", "20"]
+        },
+        op: {
+          'label': ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品"],
+          'data': {
+            'totalArr': ['940.30', '1539', '0.69', '16.74'],
+            'data': [{
+              'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
+              'rate': ['178.94', '799.35', '792.39', '947.58', '940.30', '0.00', '0.00']
+            }, {
+              'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
+              'rate': ['1499', '1578', '1612', '1622', '1594', '1570', '1539']
+            }, {
+              'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
+              'rate': ['0.13', '0.26', '0.19', '0.10', '0.00', '0.00', '0.00']
+            }, {
+              'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
+              'rate': ['19.22', '12.49', '15.59', '26.88', '0.00', '0.00', '0.00']
+            }]
+          },
+          'showSecondY': false,
+          'lineShadow': true
+        }
       }
     },
+    computed: {
+    },
+    watch: {
+    },
+    mounted() {
+      // this.drawBar(this.data, '退货数')
+    },
     methods: {
-      _setData(chartConfig) {
-        console.log(JSON.stringify(chartConfig))
-        this.chartConfig = chartConfig
-        this.tabIndex = chartConfig.tabIndex
-        this.chartData = chartConfig.data
-        let option = this._setOption(chartConfig)
-        let myChart = this.$echarts.init(document.getElementById(chartConfig.id));
-        myChart.setOption(option);
+      clickChart(e) {
+        console.log(e, 111)
+      },
+      setTab(num) {
+        this.tabIndex = 0
+      },
+      changeTab(data) {
+        this.drawLine(data)
+      },
+      // 纵向柱状图（name为表名称，chartId为表父元素标签ID名）
+      drawLine(data) {
+        this.$nextTick(() => {
+          // let xAxisData = data.x.length > 0 ? data.x : this.data.x
+          // let seriesData = data.series.length > 0 ? data.series : this.data.series
+          let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          let option = this._setOption(this.op)
+          myChart.setOption(option)
+        })
       },
       _setOption(chartConfig) {
         let option = {
@@ -115,10 +169,10 @@
           showSymbol: item.rate.length <= 7,
           itemStyle: {
             normal: {
-              color: COLOR_ARR[i],
+              color: this.colorObj[i].color,
               borderWidth: 1,
               lineStyle: {
-                color: COLOR_ARR[i],
+                color: this.colorObj[i].color,
                 width: 2
               }
             }
@@ -240,9 +294,6 @@
         }
         return [yAxis]
       },
-      _switchTab(tab,tabIdx) {
-        this.tabIndex = tabIdx
-      }
     }
   }
 </script>
@@ -250,86 +301,14 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .chart-line-con
-    background: #ffffff
-    /*width: 530px*/
-    height: 414px
-    box-sizing: border-box
-    /*border: 0.5px solid #E6EAED*/
-    border-1px(#E6EAED, 0)
-    .title-bar
-      padding: 0 20px
-      box-sizing: border-box
-      height: 60px
-      line-height: 60px
-      color: $color-text-main
-      font-size: $font-size-16
-      font-family: $font-family-medium
-      border-bottom-1px(#E6EAED)
-      layout(row)
-      justify-content: space-between
-      align-items: center
-      .left-box
-        layout(row)
-        align-items: center
-        .title
-          margin-right: 30px
-        .tab
-          position: relative
-          height: 24px
-          background: #F6F6F6
-          layout(row)
-          border-radius: 12px
-          font-family: $font-family-regular
-          cursor: pointer
-          .tab-item
-            box-sizing: border-box
-            padding: 0 18px
-            min-width: 84px
-            height: 24px
-            line-height: @height
-            color: #666666
-            text-align: center
-            font-size: $font-size-12
-          .tab-active
-            position: absolute
-            top: 0
-            left: 0
-            z-index: 0
-            background: #6EBA6E
-            color: $color-white
-            border-radius: 12px
-            transition: all 0.3s
-      .excel-btn
-        display: block
-        width: 80px
-        height: 28px
-        line-height: 28px
-        text-align: center
-        color: $color-main
-        font-size: $font-size-12
-        font-family: $font-family-regular
-        border: .5px solid $color-main
-        border-radius: 14px
-    .label-bar
-      padding: 0 10px 0 20px
+  .bar-data
+    width: 100%
+    flex: 1
+    display: flex
+    flex-direction: column
+  .data-content
+    flex: 1
+    #barData
       width: 100%
-      height: 60px
-      line-height: 60px
-      layout(row,'',nowrap)
-      overflow: hidden
-      color: $color-text-main
-      font-family: $font-family-regular
-      .label
-        max-width: 25%
-        margin-right: 5%
-        font-size: $font-size-12
-        no-wrap-plus(1)
-        .label-val
-          font-size: $font-size-18
-          font-family: $font-family-bold
-
-    .chart-con
-      width: 100%
-      height: 274px
+      height: 100%
 </style>

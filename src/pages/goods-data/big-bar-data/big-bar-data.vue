@@ -73,9 +73,9 @@
         let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
         return {
           grid: {
-            left: '20',
-            right: '30',
-            bottom: '25',
+            left: '50',
+            right: '60',
+            bottom: '80',
             top: '35',
             containLabel: true
           },
@@ -85,11 +85,7 @@
             data: xAxisData,
             offset: 12,
             splitLine: {
-              show: false,
-              lineStyle: {
-                color: '#E6E6E6',
-                width: 0.5
-              }
+              show: false
             },
             axisLabel: {
               color: '#666',
@@ -97,24 +93,16 @@
               align: 'center'
             },
             axisTick: {
-              show: false,
-              lineStyle: {
-                color: '#ccc',
-                width: 0.5
-              }
+              show: false
             },
             axisLine: {
-              show: false,
-              lineStyle: {
-                color: '#ccc',
-                width: 0.5
-              }
+              show: false
             }
           },
           yAxis: {
             minInterval: 1,
             type: 'value',
-            offset: 10.5,
+            offset: 0,
             splitLine: {
               show: true,
               lineStyle: {
@@ -123,22 +111,15 @@
               }
             },
             axisTick: {
-              show: false,
-              lineStyle: {
-                color: '#c4c4c4',
-                width: 0.5
-              }
+              show: false
             },
             axisLabel: {
               formatter: '{value}',
-              color: '#666'
+              color: '#666',
+              margin: 40
             },
             axisLine: {
-              show: false,
-              trigger: 'axis',
-              axisPointer: {
-                type: 'shadow'
-              }
+              show: false
             }
           },
           tooltip: {
@@ -153,6 +134,20 @@
               return `${prams[1].name}：${prams[1].value}`
             }
           },
+          dataZoom: [{
+            end: 50,// 数据窗口范围的结束百分比
+            type: 'slider',
+            bottom: '26px',
+            show: true,
+            height: 8,
+            xAxisIndex: [0],
+            borderColor: "rgba(250,250,250,0)",
+            fillerColor: '#999999',
+            borderRadius: 4,
+            showDataShadow: false,// 是否显示数据阴影 默认auto
+            showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
+            realtime: true, // 是否实时更新
+          }],
           series: [
             { // For shadow
               type: 'bar',
@@ -164,7 +159,7 @@
               },
               emphasis: {
                 itemStyle: {
-                  color: '#F5F6F9'
+                  show: false
                 }
               },
               barGap: '-100%',
@@ -177,7 +172,7 @@
             {
               type: 'bar',
               data: seriesData,
-              barWidth: '20px',
+              barWidth: '40px',
               zlevel: 12,
               itemStyle: {
                 normal: {
@@ -187,13 +182,6 @@
                     var num = color.length;
                     return color[params.dataIndex % num]
                   }
-                  // color: new this.$echarts.graphic.LinearGradient(
-                  //   0, 0, 0, 1,
-                  //   [
-                  //     {offset: 1, color: '#BE85FD'},
-                  //     {offset: 0, color: '#A08FF6'}
-                  //   ]
-                  // )
                 }
               }
             }

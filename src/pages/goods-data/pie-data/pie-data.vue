@@ -1,7 +1,7 @@
 <template>
   <div class="pie-data">
     <div class="data-content">
-      <div id="pieData" @click="clickChart"></div>
+      <div :id="chartId" style="width: 100%; height: 100%" @click="clickChart"></div>
     </div>
   </div>
 </template>
@@ -12,6 +12,10 @@
   export default{
     name: COMPONENT_NAME,
     props: {
+      chartId: {
+        type: String,
+        default: 'pie'
+      }
     },
     data() {
       return {
@@ -37,7 +41,7 @@
     watch: {
     },
     mounted() {
-      this.drawPie(this.data, '商品SPU数')
+      this.drawPie(this.data)
     },
     methods: {
       clickChart(e) {
@@ -46,12 +50,12 @@
       setTab(num) {
         this.tabIndex = 0
       },
-      changeTab(data, name) {
-        this.drawPie(data, name)
+      changeTab(data) {
+        this.drawPie(data)
       },
-      drawPie(data, name) {
+      drawPie(data) {
         let seriesData = data.series.length > 0 ? data.series : this.data.series
-        let myChart = this.$echarts.init(document.getElementById('pieData'))
+        let myChart = this.$echarts.init(document.getElementById(this.chartId))
         myChart.setOption(this.createPieData(seriesData))
       },
       createPieData(seriesData) {

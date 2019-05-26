@@ -22,6 +22,8 @@
               </div>
             </div>
             <goods-list v-if="false"></goods-list>
+            <line-data class="chart-box" ref="line1" chartId="line1"></line-data>
+
           </section>
           <section class="data-sec">
             <div class="sec-title">
@@ -30,10 +32,10 @@
                 <status-tab :statusList="server" @setStatus="changeServe"></status-tab>
               </div>
               <div class="title-right">
-                <span class="show-big-icon hand"></span>
+                <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
-            <bar-data ref="bar1"></bar-data>
+            <bar-data ref="bar1" chartId="bar1"></bar-data>
           </section>
         </div>
         <div class="bottom-sec">
@@ -44,10 +46,10 @@
                 <status-tab :statusList="purchase" @setStatus="changePurchase"></status-tab>
               </div>
               <div class="title-right">
-                <span class="show-big-icon hand"></span>
+                <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
-            <pie-data></pie-data>
+            <pie-data chartId="pie"></pie-data>
           </section>
           <section class="data-sec">
             <div class="sec-title">
@@ -56,15 +58,24 @@
                 <status-tab :statusList="supply" @setStatus="changeSupply"></status-tab>
               </div>
               <div class="title-right">
-                <span class="show-big-icon hand"></span>
+                <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
-            <bar-data ref="bar2"></bar-data>
+            <bar-data ref="bar2" chartId="bar2"></bar-data>
           </section>
         </div>
       </div>
     </div>
-
+    <div v-show="bigDataShow" class="big-data">
+      <div class="big-head">
+        <span class="chart-name">商品售后</span>
+        <img src="./icon-del_2@2x.png" class="big-close hand" @click="closeBigData">
+      </div>
+      <p class="big-data-name">退货率 <span class="data">18.9%</span></p>
+      <div class="big-chart">
+        <big-bar-data ref="bigBar" chartId="big-bar"></big-bar-data>
+      </div>
+    </div>
     <edit-modal ref="editModal" @confirm="confirm"></edit-modal>
   </div>
 </template>
@@ -76,6 +87,8 @@
   import LeftTab from './left-tab/left-tab'
   import EditModal from './edit-modal/edit-modal'
   import BarData from './bar-data/bar-data'
+  import LineData from './line-data/line-data'
+  import BigBarData from './big-bar-data/big-bar-data'
   import PieData from './pie-data/pie-data'
 
   import API from '@api'
@@ -117,7 +130,9 @@
       StatusTab,
       GoodsList,
       BarData,
-      PieData
+      PieData,
+      BigBarData,
+      LineData
     },
     data() {
       return {
@@ -129,6 +144,7 @@
         categoryIndex: 0, // 选择类
         goodsIndex: 0, // 选择商品
         selectType: true, // false类，true商品
+        bigDataShow: false,
         request1: {
           day_type: 'week'
         },
@@ -152,8 +168,9 @@
       // this.getAllData()
     },
     mounted() {
-      this.$refs.bar1.drawBar({x: [], series: []}, '时令水果', 'dataBar1')
-      this.$refs.bar2.drawBar1({x: [], series: []}, '时令水果', 'dataBar2')
+      this.$refs.bar1.drawBar({x: [], series: []})
+      this.$refs.bar2.drawBar1({x: [], series: []})
+      this.$refs.line1.drawLine()
     },
     methods: {
       ...goodsDataMethods,
@@ -161,7 +178,13 @@
         this.request1.day_type = value
         // this.getAllData()
       },
-
+      showBigData() {
+        this.bigDataShow = true
+        this.$refs.bigBar.drawBar({x: [], series: []})
+      },
+      closeBigData() {
+        this.bigDataShow = false
+      },
       // 切换左侧tab栏
       changeTab(categoryIndex, goodsIndex, type, item) {
         this.leftTabItem = item
@@ -214,6 +237,7 @@
 
   .community-data
     overflow: hidden
+    position: relative
     flex: 1
     display: flex
     box-sizing: border-box
@@ -305,4 +329,41 @@
       height: 0
 
 
+  .big-data
+    z-index: 10
+    position: absolute
+    width: 100%
+    height: 100%
+    background: #FFF
+    display: flex
+    flex-direction: column
+    .big-head
+      height: 60px
+      display: flex
+      align-items: center
+      justify-content: space-between
+      padding: 0 20px
+      border-bottom: 0.5px solid $color-line
+    .chart-name
+      font-family: $font-family-medium
+      color: #333
+      font-size: $font-size-16
+    .big-close
+      width: 30px
+      height: 30px
+    .big-chart
+      flex: 1
+      overflow: hidden
+      display: flex
+    .big-data-name
+      padding: 30px 20px 0
+      font-family: $font-family-regular
+      font-size: $font-size-12
+      color: $color-text-main
+      .data
+        font-family: $font-family-din-bold
+        font-size: $font-size-18
+        color: $color-text-main
+    .chart
+      width: 20px;
 </style>
