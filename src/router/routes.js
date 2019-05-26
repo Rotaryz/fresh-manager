@@ -1941,6 +1941,15 @@ export default [
           // }
         }
       },
+      // 运营数据
+      {
+        path: 'operation-data',
+        name: 'operation-data',
+        component: () => lazyLoadView(import('@pages/operation-data/operation-data')),
+        meta: {
+          titles: ['统计', '运营数据']
+        }
+      },
       // 调度管理
       {
         path: 'supply-list/supply-detail/:id',
