@@ -5,7 +5,7 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">商品数据</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" :infoTab="2" :tabActive="2" @checkTime="_getData"></base-option-box>
+      <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
       <left-tab @changeCategory="changeTab"></left-tab>
@@ -33,7 +33,7 @@
                 <span class="show-big-icon hand"></span>
               </div>
             </div>
-
+            <bar-data></bar-data>
           </section>
         </div>
         <div class="bottom-sec">
@@ -74,13 +74,14 @@
   import GoodsList from './goods-list/goods-list'
   import LeftTab from './left-tab/left-tab'
   import EditModal from './edit-modal/edit-modal'
+  import BarData from './bar-data/bar-data'
 
   import API from '@api'
   const ARR_TITLE = [
-    {title: '今天', status: 'today'},
-    {title: '昨天', status: 'yesterday'},
-    {title: '7天', status: 'week'},
-    {title: '30天', status: 'month'}
+    {title: '7天', status: 'today'},
+    {title: '15天', status: 'yesterday'},
+    {title: '30天', status: 'month'},
+    {title: '自定义', status: 'custom'}
   ]
   const SALE = [
     {name: '商品结构', type: ''},
@@ -112,7 +113,8 @@
       LeftTab,
       EditModal,
       StatusTab,
-      GoodsList
+      GoodsList,
+      BarData
     },
     data() {
       return {
@@ -149,7 +151,7 @@
     methods: {
       ...goodsDataMethods,
       _getData(value) {
-        this.request.day_type = value
+        this.request1.day_type = value
         // this.getAllData()
       },
 
