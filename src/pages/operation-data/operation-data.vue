@@ -1,6 +1,6 @@
 <template>
   <div class="operation-data">
-    <base-tab-select :infoTabIndex="topTabIndex" :tabStatus="topTab" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
+    <base-tab-select :infoTabIndex="topTabIndex" :tabStatus="topTab" :lineWidth="64" @getStatusTab="_changeStatusTab"></base-tab-select>
     <section class="content">
       <div class="con-top-bar">
         <div class="title-box">
@@ -82,8 +82,7 @@
       title: '效益',
       label: ['动销率'],
       data: [],
-      showSecondY: false,
-      lineShadow: true
+      showSecondY: false
     },
     {
       id: 'servicesChart',
