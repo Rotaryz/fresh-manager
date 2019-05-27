@@ -1697,7 +1697,7 @@ export default [
         path: 'sorting-task/print-preview/:id',
         name: 'sorting-task-preview',
         meta: {
-          titles: ['供应链', '分拣', '分拣任务','打印列表'],
+          titles: ['供应链', '分拣', '分拣任务','打印预览'],
           beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('sorting/getBarCodePreviewInfo',routeTo.params).then((res) => {
               console.log(res, 99999999999)

@@ -53,7 +53,6 @@
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
           </template>
-
         </div>
       </div>
       <!--列表部分-->
@@ -67,7 +66,9 @@
               <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :class="['list-item',item.class]">
                 <template v-if="item.type==='operate'" name="operation">
                   <router-link class="list-operation no-right" :to="getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
-                  <button v-if="item.afterBtn" class="after-btn" @click="printTagBtn(row)">{{item.afterBtn}}</button>
+                  <router-link v-if="item.afterBtn" class="list-operation no-right" :to="{name: 'sorting-task-preview',params: {id:item.id}}">
+                    <button class="after-btn" @click="printTagBtn(row)">{{item.afterBtn}}</button>
+                  </router-link>
                 </template>
                 <template v-else>
                   {{row[item.key]}}
@@ -89,41 +90,10 @@
         <base-pagination ref="pagination" :pageDetail="sortingTask.pageTotal" @addPage="pageChange"></base-pagination>
       </div>
     </div>
-    <default-modal ref="modal">
-      <div slot="content" class="model-wrap">
-        <div class="top">
-          <div class="title"> 设置打印标签</div>
-          <div class="close" @click.stop="hideModal">
-          </div>
-        </div>
-        <div class="model-content">
-          <div v-for="item in setting" :key="item.id" class="form-item">
-            <label class="right">{{item.label}}</label>
-            <input v-if="item.type==='input'" v-model="item.value" :label="item.label" class="ivu-input" type="text">
-            <date-picker
-              v-else-if="item.type==='date'"
-              type="date"
-              class="large"
-              :value="item.value"
-              :clearable="false"
-              size="large"
-              @on-change="handleDateChange"
-            ></date-picker>
-            <div v-else>{{item.value}}</div>
-          </div>
-        </div>
-        <div class="back btn-group-wrap">
-          <div class="back-cancel back-btn hand" @click="hideModal">取消</div>
-          <div class="back-btn back-submit hand" @click="_sureTagInfo">确认</div>
-        </div>
-      </div>
-    </default-modal>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {DatePicker} from 'iview'
-  import DefaultModal from '@components/default-modal/default-modal'
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import API from '@api'
   const ORDERSTATUS = [{text: '按订单分拣', status: 0,id:'order'}, {text: '按商品分拣', status: 1,id:'goods'}]
@@ -148,52 +118,20 @@
     {tilte: '待配商户数', key: 'merchant_num'},
     {tilte: '状态', key: 'status_str'},
     {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate add-btn", params: {id: 'id','goods_sku_code':'goods_sku_code'}, routerName: 'sorting-task-detail-by-goods',afterBtn:'打印标签'}]
-  function getDateNow(){
-    let nowDate = new Date()
-    let year = nowDate.getFullYear()
-    let month = nowDate.getMonth()+1
-    let date = nowDate.getDate()
-    return `${year}-${month}-${date}`
-  }
+
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
-    components: {
-      DatePicker,
-      DefaultModal
-    },
+
     data() {
       return {
         currentPrint:{
 
         },
-        setting:[{
-          label:'商品名称',
-          type:'text',
-          id:'goods_name',
-          value:''
-        },{
-          label:'保质期',
-          type:'input',
-          id:'goods_date',
-          value:''
-        },{
-          label:'包装日期',
-          type:'date',
-          id:'page_time',
-          value:getDateNow()
-        },{
-          label:'重量',
-          type:'input',
-          id:'zl',
-          value:''
-        }],
         tabStatus: ORDERSTATUS,
-        // tabIndex: 0,
         datePlaceHolder: "选择生成日期",
-        // commodities: COMMODITIES_LIST,
         filterTaskFrist: {
           check: false,
           show: false,
@@ -263,33 +201,10 @@
             this.$loading.hide()
           })
       },
-      // 打印彈框   日期選擇
-      handleDateChange(val){
-        console.log(this.setting[2].value)
-        this.setting[2].value=val
-      },
-      hideModal(){
-        this.$refs.modal.hideModal()
-      },
-      _sureTagInfo(){
-        API.Sorting.getPrintData().then((res)=>{
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return false
-          }
-          this.$router.push({name:"sorting-task-print-list",params:{id:res.data.id}})
-        }).catch((err) => {
-          this.$toast.show(err.message)
-        }).finally(() => {
-          this.$loading.hide()
-        })
 
-      },
       // 打印标签按鈕
       printTagBtn(row){
-        this.setting[0].value = row.goods_name
-        this.$refs.modal.showModal()
-        this.currentPrint = row
+        this.$router.push({name:"perview",params:{id:row.id}})
       },
       // 顶部tab切换
       tabChange(val) {
@@ -474,64 +389,6 @@
 
   .down-content .down-group-item
     margin-right: 10px
-  .model-wrap
-    position:relative
-    width:534px
-    background-color #fff
-    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
-    .top
-      height: 59.5px
-      align-items: center
-      justify-content: space-between
-      padding: 0 20px
-      flex-shrink 0
-      layout(row)
 
-      .title
-        font-family: $font-family-medium
-        font-size: $font-size-16
-        color: $color-text-main
-
-      .close
-        width: 12px
-        height: 12px
-        cursor pointer
-        icon-image(icon-close)
-
-    .model-content
-      padding: 10px 20px 6px
-    .btn-group-wrap
-      layout(row)
-      height: auto
-      align-items: center
-      justify-content: flex-end
-      background: #fff
-      position: relative
-      left: 0
-      padding: 20px
-      &::before
-        border-top-width:0px
-  .form-item
-    display: flex
-    align-items: center
-    font-size :14px
-    margin-bottom:24px
-    height:40px
-    label
-      font-family:$font-family-regular
-      margin-right:20px
-      width:84px
-      flex-shrink: 0
-      &.right
-        text-align right
-    .ivu-date-picker
-      flex:1
-    input
-      height: 40px
-      width:410px
-      border:1px solid #D3D8DC
-      border-radius: 2px
-      padding:20px
-      color:#333
 
 </style>
