@@ -11,6 +11,8 @@
       <left-tab @changeCategory="changeTab"></left-tab>
       <div class="right-data">
         <div class="top-sec">
+
+          <!--模块1-->
           <section class="data-sec">
             <div class="sec-title">
               <div class="title-left">
@@ -21,13 +23,44 @@
                 <span class="export-btn hand">导出Excel</span>
               </div>
             </div>
-            <div class="name-text">
-              <p class="item">浏览量(pv) <span class="data"></span>200</p>
+            <div v-if="+leftTab === 3 && topTab === 1" class="name-text">
+              <p class="item">商品结构 <span class="name">爆品</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
             </div>
-            <goods-list v-if="false"></goods-list>
-            <line-data class="chart-box" ref="line1" chartId="line1"></line-data>
+
+            <div v-if="(+leftTab === 1 || +leftTab === 2) && topTab === 0" class="name-text">
+              <p class="item">{{allMsg[0].name}}<span class="data">{{allMsg[0].data}}</span></p>
+            </div>
+
+            <div v-if="+leftTab === 3 && topTab === 0" class="goods-structor">
+              <div class="goods-msg">
+                <img src="./goods.png" alt="" class="goods-image">
+                <div class="goods-detail">
+                  <p class="title">{{allMsg[0].goods_name}}</p>
+                  <p class="price">¥ {{allMsg[0].sale}}</p>
+                </div>
+              </div>
+              <div class="data-list">
+                <div class="view">
+                  <p class="text">浏览量 <img src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="num">{{allMsg[0].view_data}}</p>
+                </div>
+                <div class="view">
+                  <p class="text">销售数量 <img src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="num">{{allMsg[0].sale_data}}</p>
+                </div>
+                <div class="view">
+                  <p class="text">销售额(元)</p>
+                  <p class="num">{{allMsg[0].sale_price}}</p>
+                </div>
+              </div>
+            </div>
+            <goods-list v-if="+leftTab !== 3 && topTab === 1"></goods-list>
+            <bar-data v-if="+leftTab !== 3 && topTab !== 1" ref="bar1" chartId="bar1"></bar-data>
+            <line-data v-if="+leftTab === 3 && topTab !== 0" class="chart-box" ref="line1" chartId="line1"></line-data>
 
           </section>
+
+          <!--模块2-->
           <section class="data-sec">
             <div class="sec-title">
               <div class="title-left">
@@ -38,28 +71,39 @@
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
-            <div class="name-text">
-              <p class="item">浏览量(pv) <span class="data"></span>200</p>
+            <div v-if="(+leftTab === 1 || +leftTab === 2) && topTab === 1" class="name-text">
+              <p class="item">{{allMsg[1].name}}<span class="data">{{allMsg[1].data}}</span></p>
             </div>
-            <bar-data ref="bar1" chartId="bar1"></bar-data>
+
+            <bar-data v-if="+leftTab !== 3" ref="bar2" chartId="bar2"></bar-data>
+            <line-data v-if="+leftTab === 3" class="chart-box" ref="line2" chartId="line2"></line-data>
           </section>
         </div>
+
         <div class="bottom-sec">
+
+          <!--模块3-->
           <section class="data-sec">
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品采购</p>
-                <status-tab :statusList="purchase" @setStatus="changePurchase"></status-tab>
+                <status-tab :statusList="+leftTab === 1 ? purchase : purchase2" @setStatus="changePurchase"></status-tab>
               </div>
               <div class="title-right">
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
             <div class="name-text">
-              <p class="item">浏览量(pv) <span class="data"></span>200</p>
+              <p class="item">{{allMsg[2].name}}<span class="data">{{allMsg[2].data}}</span></p>
             </div>
-            <pie-data chartId="pie"></pie-data>
+
+            <bar-data v-if="+leftTab === 2 && topTab === 1" ref="bar3" chartId="bar3"></bar-data>
+            <bar-data v-if="topTab === 0 || topTab === 2" ref="bar3" chartId="bar3"></bar-data>
+            <pie-data v-if="+leftTab === 1 && topTab === 1" chartId="pie3"></pie-data>
+            <line-data v-if="+leftTab === 3" class="chart-box" ref="line3" chartId="line3"></line-data>
           </section>
+
+          <!--模块4-->
           <section class="data-sec">
             <div class="sec-title">
               <div class="title-left">
@@ -70,14 +114,19 @@
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
-            <div class="name-text">
-              <p class="item">浏览量(pv) <span class="data"></span>200</p>
+            <div v-if="(+leftTab === 1 || +leftTab === 2) && leftTab === 1" class="name-text">
+              <p class="item">{{allMsg[3].name}}<span class="data">{{allMsg[3].data}}</span></p>
             </div>
-            <bar-data ref="bar2" chartId="bar2"></bar-data>
+
+            <bar-data v-if="true" ref="bar2" chartId="bar2"></bar-data>
+            <goods-list v-if="+leftTab !== 3 && topTab === 0"></goods-list>
+            <line-data v-if="+leftTab === 3" class="chart-box" ref="line4" chartId="line4"></line-data>
           </section>
         </div>
       </div>
     </div>
+
+    <!--大图表-->
     <div v-show="bigDataShow" class="big-data">
       <div class="big-head">
         <span class="chart-name">商品售后</span>
@@ -88,7 +137,6 @@
         <big-bar-data ref="bigBar" chartId="big-bar"></big-bar-data>
       </div>
     </div>
-    <edit-modal ref="editModal" @confirm="confirm"></edit-modal>
   </div>
 </template>
 
@@ -97,7 +145,6 @@
   import StatusTab from './status-tab/status-tab'
   import GoodsList from './goods-list/goods-list'
   import LeftTab from './left-tab/left-tab'
-  import EditModal from './edit-modal/edit-modal'
   import BarData from './bar-data/bar-data'
   import LineData from './line-data/line-data'
   import BigBarData from './big-bar-data/big-bar-data'
@@ -122,12 +169,25 @@
   ]
   const PURCHASE = [
     {name: '采购匹配度', type: ''},
+    {name: '商品SKU数', type: ''},
+    {name: '毛利率', type: ''}
+  ]
+  const PURCHASE2 = [
+    {name: '采购匹配度', type: ''},
     {name: '毛利率', type: ''}
   ]
   const SUPPLY = [
-    {name: '退货数', type: ''},
-    {name: '退货率', type: ''}
+    {name: '库存排行', type: ''},
+    {name: '库存周转率', type: ''}
   ]
+
+
+  // const ALL_DATA = [
+  //   {
+  //     tab: 'all',
+  //     secShow: 'all'
+  //   }
+  // ]
 
   const PAGE_NAME = 'GOODS-DATA'
   const TITLE = '商品数据'
@@ -138,7 +198,6 @@
     },
     components: {
       LeftTab,
-      EditModal,
       StatusTab,
       GoodsList,
       BarData,
@@ -151,26 +210,49 @@
         sale: SALE,
         server: SERVER,
         purchase: PURCHASE,
+        purchase2: PURCHASE2,
         supply: SUPPLY,
         arrTitle: ARR_TITLE,
-        categoryIndex: 0, // 选择类
-        goodsIndex: 0, // 选择商品
+        // categoryIndex: 0, // 选择类
+        // goodsIndex: 0, // 选择商品
         selectType: true, // false类，true商品
         bigDataShow: false,
         request1: {
-          day_type: 'week'
         },
         request2: {
-          day_type: 'week'
         },
         request3: {
-          day_type: 'week'
         },
         request4: {
-          day_type: 'week'
         },
-        editGroupItem: {},
-        leftTabItem: {}
+        requestPub: {
+          day_type: 'week',
+          goods_id: ''
+        },
+        leftTabItem: {},
+        allMsg: [
+          {
+            name: '商品结构',
+            data: '2000',
+            goods_name: '台湾柑橘',
+            sale: '88/箱',
+            view_data: 1000,
+            sale_data: 400,
+            sale_price: '2000.00'
+          },{
+            name: '退货数',
+            data: '2000'
+          },{
+            name: '毛利率',
+            data: '2000'
+          },{
+            name: '库存周转率',
+            data: '2000'
+          }
+
+        ],
+        leftTab: 1, // 1全部商品 2分类 3商品
+        topTab: 0
       }
     },
     computed: {
@@ -180,46 +262,53 @@
       // this.getAllData()
     },
     mounted() {
-      this.$refs.bar1.drawBar({x: [], series: []})
-      this.$refs.bar2.drawBar1({x: [], series: []})
-      this.$refs.line1.drawLine()
+      this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
+      this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
+      //
+      // this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
+      // this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
+      // this.$refs.bar4 && this.$refs.bar4.drawBar1({x: [], series: []})
+      // this.$refs.line1.drawLine()
     },
     methods: {
       ...goodsDataMethods,
       _getData(value) {
-        this.request1.day_type = value
+        this.requestPub.day_type = value
         // this.getAllData()
       },
       showBigData() {
         this.bigDataShow = true
-        this.$refs.bigBar.drawBar({x: [], series: []})
+        this.$refs.bigBar.drawBar1({x: [], series: []})
       },
       closeBigData() {
         this.bigDataShow = false
       },
       // 切换左侧tab栏
-      changeTab(categoryIndex, goodsIndex, type, item) {
+      changeTab(item, type, code) {
         this.leftTabItem = item
-        this.categoryIndex = categoryIndex
-        this.goodsIndex = goodsIndex
         this.selectType = type
+        this.controler.leftTab = code
         this.request.wx_group_id = item.id
         // this.$refs.qualityData.setTab()
         // this.$refs.businessData.setTab()
         // this.$refs.groupData.setTab()
         // this.getAllData()
       },
-      changeSale(obj) {
-        console.log(obj)
+      changeSale(obj, index) {
+        this.request1.goods_id = obj.id
+        this.controler.topTab = index
       },
-      changeServe(obj) {
-        console.log(obj)
+      changeServe(obj, index) {
+        this.request2.goods_id = obj.id
+        this.controler.topTab = index
       },
-      changePurchase(obj) {
-        console.log(obj)
+      changePurchase(obj, index) {
+        this.request3.goods_id = obj.id
+        this.controler.topTab = index
       },
-      changeSupply(obj) {
-        console.log(obj)
+      changeSupply(obj, index) {
+        this.request4.goods_id = obj.id
+        this.controler.topTab = index
       },
       showDescription(type) {
         this.$refs.description.show(type)
@@ -234,11 +323,13 @@
         this.getCommunityList({page: 1})
 
       },
-      getAllData() {
-        this.getSecData1(this.request1)
-        this.getSecData2(this.request2)
-        this.getSecData3(this.request3)
-        this.getSecData4(this.request4)
+      async getAllData() {
+        await this.getSecData1(Object.assign(this.requestPub, this.request1))
+        // this.$refs.bar1.drawBar({x: [], series: []})
+        // this.$refs.line1.drawLine()
+        await this.getSecData2(Object.assign(this.requestPub, this.request2))
+        await this.getSecData3(Object.assign(this.requestPub, this.request3))
+        await this.getSecData4(Object.assign(this.requestPub, this.request4))
       }
     }
   }
@@ -341,7 +432,7 @@
       .name-text
         display: flex
         align-items: center
-        padding: 20px 20px 10px
+        padding: 18px 20px 10px
         .item
           font-size: $font-size-12
           font-family: $font-family-regular
@@ -349,8 +440,70 @@
           margin-right: 10px
           .data
             font-family: $font-family-din-bold
-            font-size: $font-size-18
+            font-size: 18px
+            line-height: 18px
+            display: inline-block
+            margin-left: 6px
+            vertical-align: text-bottom
             color: $color-text-main
+          .name
+            font-family: $font-family-din-bold
+            font-size: 18px
+            line-height: 18px
+            display: inline-block
+            margin-left: 2px
+            color: $color-text-main
+          .icon
+            width: 14px
+            height: 14px
+            margin-left: 10px
+            display: inline-block
+            vertical-align: text-top
+
+      .goods-structor
+        margin-top: 30px
+      .goods-msg
+        border: 0.5px solid #6081E3
+        padding: 20px
+        box-sizing: border-box
+        height: 110px
+        margin: 0 30px 30px 20px
+        display: flex
+        align-items: center
+        .goods-image
+          width: 70px
+          height: 70px
+        .goods-detail
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          color: $color-text-main
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          .title
+            line-height: 18px
+          .price
+            line-height: 18px
+      .data-list
+        display: flex
+        align-items: center
+        margin: 0 40px 0 40px
+        .view
+          margin-right: 50px
+        .text
+          display: flex
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          color: #666
+        .icon
+          width: 16px
+          height: 15px
+        .num
+          font-family: $font-family-din-bold
+          color: $color-text-main
+          font-size: 15px
+          margin-top: 14px
+          line-height: 15px
     .bottom
       height: 0
 

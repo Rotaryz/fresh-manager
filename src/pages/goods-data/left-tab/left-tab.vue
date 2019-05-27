@@ -1,10 +1,10 @@
 <template>
   <div ref="leftTab" class="left-tab">
     <div ref="leftBox" class="left-box">
-      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory(0, {id: ''})">
+      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory({id: ''}, 1)">
         <div class="left-tab-main">
           <div class="left">
-            <img src="./icon-v1@2x.png" alt="" class="category-image">
+            <img src="./icon-all_green@2x.png" alt="" class="category-image all-image">
             <span class="name all-data">全部商品({{categoryList.length}})</span>
           </div>
         </div>
@@ -14,23 +14,23 @@
         :key="index"
         class="category-item hand"
         :class="[{'active': (+categoryIndex === index+1 && !selectGoods)},{'open': (+categoryIndex === index+1 && selectGoods)}]"
-        @click="changeCategory(index+1, item)"
+        @click="changeCategory(item, 2)"
       >
         <div class="left-tab-main">
           <div class="left">
-            <img src="./icon-v1@2x.png" alt="" class="category-image">
+            <img src="./goods.png" alt="" class="category-image">
             <span class="name">{{item.name}}</span>
           </div>
-          <img class="right-icon" :class="{'current': +categoryIndex === index+1}">
+          <div class="right-icon" :class="{'current': +categoryIndex === index+1}"></div>
         </div>
         <div class="goods-list" :style="{height: +categoryIndex === index+1 ? 48*item.goods.length + 'px' : 0}">
           <div v-for="(goods, ind) in item.goods"
                :key="ind"
                class="goods-item"
                :class="{'select': (+goodsIndex === ind && selectGoods)}"
-               @click.stop="changeGoods(ind, goods)"
+               @click.stop="changeGoods(goods, 3)"
           >
-            <img src="./icon-v1@2x.png" alt="" class="goods-image">
+            <img src="./goods.png" alt="" class="goods-image">
             <span class="title">{{goods.name}}</span>
           </div>
         </div>
@@ -65,16 +65,16 @@
       ...goodsDataComputed
     },
     methods: {
-      changeCategory(index, item) {
-        this.categoryIndex = index
+      changeCategory(item, code) {
+        // this.categoryIndex = index
         this.goodsIndex = ''
         this.selectGoods = false
-        this.$emit('changeTab', index, 0, false, item)
+        this.$emit('changeTab', item, false, code) // item, selectGoods
       },
-      changeGoods(index, goods) {
-        this.goodsIndex = index
+      changeGoods(goods, code) {
+        // this.goodsIndex = index
         this.selectGoods = true
-        this.$emit('changeTab', this.categoryIndex, index, true, goods)
+        this.$emit('changeTab', goods, true, code)
       }
     }
   }
@@ -136,6 +136,10 @@
           height: 28px
           margin-right: 8px
           border-radius: 1px
+        .all-image
+          width: 18px
+          height: 18px
+          margin: 8px
         .category-image
           border-radius: 2px
           border: 0.5px solid #E9ECEE
@@ -152,6 +156,9 @@
         height: 16px
         margin-left: 6px
         margin-right: 8px
+        background-image: url('./icon-arrow_lower@2x.png')
+        background-size: 100% 100%
+        transition: all 0.3s
       .current
         width: 12px
         height: 12px
@@ -160,8 +167,7 @@
         background-size: cover
         margin-right: 10px
         display: block
-        transition: all 0.3s
-        background-image: url("./icon-right_greed@2x.png")
+        background-image: url("./icon-arrow_up@2x.png")
     .last
       border-bottom: 0
       min-height: 80px

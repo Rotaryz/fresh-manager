@@ -191,9 +191,9 @@
       createBar(xAxisData, seriesData1, seriesData2) {
         return {
           grid: {
-            left: '20',
-            right: '30',
-            bottom: '25',
+            left: '50',
+            right: '60',
+            bottom: '80',
             top: '35',
             containLabel: true
           },
@@ -297,14 +297,14 @@
                   fontSize: '12px',
                 }
               },
-              barWidth: '10px',
+              barWidth: '20px',
               animation: false,
               zlevel: 11
             },
             {
               type: 'bar',
               data: seriesData2,
-              barWidth: '10px',
+              barWidth: '20px',
               zlevel: 12,
               label: {
                 normal: {

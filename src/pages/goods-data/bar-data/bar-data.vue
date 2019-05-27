@@ -25,7 +25,9 @@
           series: ["10", "20", "5", "40", "15", "14", "44", "34", "20"],
           x1: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
           series1: ["10", "20", "5", "40", "15", "14"],
-          series2: ["12", "18", "10", "50", "10", "20"]
+          series2: ["12", "18", "10", "50", "10", "20"],
+          x2: ['利润品', '引流品', '粘性品', '爆款品', '其他'],
+          series3: [20, 50, 30, 60, 10]
         }
       }
     },
@@ -37,8 +39,8 @@
       // this.drawBar(this.data, '退货数')
     },
     methods: {
-      clickChart(e) {
-        console.log(e, 111)
+      clickChart(params) {
+        console.log(params, 111)
       },
       setTab(num) {
         this.tabIndex = 0
@@ -52,7 +54,7 @@
           let xAxisData = data.x.length > 0 ? data.x : this.data.x
           let seriesData = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          myChart.setOption(this.createBarData(xAxisData, seriesData))
+          myChart.setOption(this.createBar1(xAxisData, seriesData))
         })
       },
       // 横向柱状图
@@ -62,10 +64,18 @@
           let seriesData1 = data.series.length > 0 ? data.series : this.data.series1
           let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          myChart.setOption(this.createBar(xAxisData, seriesData1, seriesData2))
+          myChart.setOption(this.createBar2(xAxisData, seriesData1, seriesData2))
         })
       },
-      createBarData(xAxisData, seriesData) {
+      drawBar2(data) {
+        this.$nextTick(() => {
+          let xAxisData = data.x.length > 0 ? data.x : this.data.x2
+          let seriesData3 = data.series.length > 0 ? data.series : this.data.series3
+          let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          myChart.setOption(this.createBar3(xAxisData, seriesData3))
+        })
+      },
+      createBar1(xAxisData, seriesData) {
         let dataShadow = new Array(9).fill(1000)
         dataShadow = dataShadow.map((item, index) => {
           return Math.max(seriesData[0], 1)
@@ -200,14 +210,23 @@
           ]
         }
       },
-      createBar(xAxisData, seriesData1, seriesData2) {
+      createBar2(xAxisData, seriesData1, seriesData2) {
         return {
           grid: {
             left: '20',
             right: '30',
-            bottom: '25',
+            bottom: '30',
             top: '0',
             containLabel: true
+          },
+          legend: {
+            data: ['销售', '采购'],
+            icon: "rect", //  这个字段控制形状  类型包括 circle 圆形，rect 正方形，roundRect，triangle，diamond，pin，arrow，none
+            itemWidth: 11,
+            itemHeight: 11,
+            bottom: 10,
+            left: 'center',
+            itemGap: 60
           },
           xAxis: {
             type: 'value',
@@ -287,6 +306,7 @@
           series: [
             { // For shadow
               type: 'bar',
+              name: '销售',
               data: seriesData1,
               barGap: 0,
               itemStyle: {
@@ -315,6 +335,7 @@
             },
             {
               type: 'bar',
+              name: '采购',
               data: seriesData2,
               barWidth: '10px',
               zlevel: 12,
@@ -344,7 +365,142 @@
             }
           ]
         }
-      }
+      },
+      createBar3(xAxisData, seriesData) {
+        let dataShadow = new Array(9).fill(1000)
+        dataShadow = dataShadow.map((item, index) => {
+          return Math.max(seriesData[0], 1)
+        })
+        let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
+        return {
+          grid: {
+            left: '20',
+            right: '30',
+            bottom: '25',
+            top: '20',
+            containLabel: true
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxisData,
+            offset: 12,
+            splitLine: {
+              show: false,
+              lineStyle: {
+                color: '#E6E6E6',
+                width: 0.5
+              }
+            },
+            axisLabel: {
+              color: '#666',
+              fontSize: 12,
+              align: 'center'
+            },
+            axisTick: {
+              show: false,
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: '#ccc',
+                width: 0.5
+              }
+            }
+          },
+          yAxis: {
+            minInterval: 1,
+            type: 'value',
+            offset: 10.5,
+            splitLine: {
+              show: true,
+              lineStyle: {
+                color: '#F0F3F5',
+                width: 0.5
+              }
+            },
+            axisTick: {
+              show: false,
+              lineStyle: {
+                color: '#c4c4c4',
+                width: 0.5
+              }
+            },
+            axisLabel: {
+              formatter: '{value}',
+              color: '#666'
+            },
+            axisLine: {
+              show: false,
+              trigger: 'axis',
+              axisPointer: {
+                type: 'shadow'
+              }
+            }
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow',
+              shadowStyle: {
+                opacity: 0
+              }
+            },
+            formatter(prams) {
+              return `${prams[1].name}：${prams[1].value}`
+            }
+          },
+          series: [
+            { // For shadow
+              type: 'bar',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  color: 'rgba(0,0,0,0)'
+                }
+              },
+              emphasis: {
+                itemStyle: {
+                  color: '#F5F6F9'
+                }
+              },
+              barGap: '-100%',
+              // barCategoryGap: '80%',
+              barWidth: '20px',
+              data: dataShadow,
+              animation: false,
+              zlevel: 11
+            },
+            {
+              type: 'bar',
+              data: seriesData,
+              barWidth: '20px',
+              zlevel: 12,
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  // color: '#8DC6F6',
+                  color: function(params) {
+                    var num = color.length;
+                    return color[params.dataIndex % num]
+                  }
+                  // color: new this.$echarts.graphic.LinearGradient(
+                  //   0, 0, 0, 1,
+                  //   [
+                  //     {offset: 1, color: '#BE85FD'},
+                  //     {offset: 0, color: '#A08FF6'}
+                  //   ]
+                  // )
+                }
+              }
+            }
+          ]
+        }
+      },
     }
   }
 </script>

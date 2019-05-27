@@ -81,8 +81,8 @@
       // this.drawBar(this.data, '退货数')
     },
     methods: {
-      clickChart(e) {
-        console.log(e, 111)
+      clickChart(params) {
+        console.log(params, 111)
       },
       setTab(num) {
         this.tabIndex = 0
@@ -93,8 +93,6 @@
       // 纵向柱状图（name为表名称，chartId为表父元素标签ID名）
       drawLine(data) {
         this.$nextTick(() => {
-          // let xAxisData = data.x.length > 0 ? data.x : this.data.x
-          // let seriesData = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           let option = this._setOption(this.op)
           myChart.setOption(option)
