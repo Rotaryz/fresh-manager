@@ -290,7 +290,7 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_type: this.$route.query.activity_theme
+          activity_theme: this.$route.query.activity_theme
         })
         if (res.error !== this.$ERR_OK) {
           return
