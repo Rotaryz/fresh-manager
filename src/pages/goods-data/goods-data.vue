@@ -21,6 +21,9 @@
                 <span class="export-btn hand">导出Excel</span>
               </div>
             </div>
+            <div class="name-text">
+              <p class="item">浏览量(pv) <span class="data"></span>200</p>
+            </div>
             <goods-list v-if="false"></goods-list>
             <line-data class="chart-box" ref="line1" chartId="line1"></line-data>
 
@@ -34,6 +37,9 @@
               <div class="title-right">
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
+            </div>
+            <div class="name-text">
+              <p class="item">浏览量(pv) <span class="data"></span>200</p>
             </div>
             <bar-data ref="bar1" chartId="bar1"></bar-data>
           </section>
@@ -49,6 +55,9 @@
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
+            <div class="name-text">
+              <p class="item">浏览量(pv) <span class="data"></span>200</p>
+            </div>
             <pie-data chartId="pie"></pie-data>
           </section>
           <section class="data-sec">
@@ -60,6 +69,9 @@
               <div class="title-right">
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
+            </div>
+            <div class="name-text">
+              <p class="item">浏览量(pv) <span class="data"></span>200</p>
             </div>
             <bar-data ref="bar2" chartId="bar2"></bar-data>
           </section>
@@ -299,6 +311,7 @@
           font-size: $font-size-16
           font-family: $font-family-medium
           color: $color-text-main
+          white-space: nowrap
         .title-right
           .export-btn
             display: block
@@ -325,6 +338,19 @@
             transition: all 0.3s
             &:hover
               background-image: url("./icon-enlarge_hover@2x.png")
+      .name-text
+        display: flex
+        align-items: center
+        padding: 20px 20px 10px
+        .item
+          font-size: $font-size-12
+          font-family: $font-family-regular
+          color: $color-text-main
+          margin-right: 10px
+          .data
+            font-family: $font-family-din-bold
+            font-size: $font-size-18
+            color: $color-text-main
     .bottom
       height: 0
 

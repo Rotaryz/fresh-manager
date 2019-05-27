@@ -76,7 +76,7 @@
             left: '20',
             right: '30',
             bottom: '25',
-            top: '35',
+            top: '20',
             containLabel: true
           },
           xAxis: {
@@ -206,7 +206,7 @@
             left: '20',
             right: '30',
             bottom: '25',
-            top: '35',
+            top: '0',
             containLabel: true
           },
           xAxis: {

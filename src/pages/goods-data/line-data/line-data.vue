@@ -178,7 +178,8 @@
             }
           }
         }
-        if (chartConfig.lineShadow) {
+        if (chartConfig.label.length <= 2) {
+          let color = ['rgba(96,129,227,0.28)', 'rgba(136,89,232,0.28)', 'rgba(247,193,54,0.28)', 'rgba(106,225,255,0.28)']
           seriesConfig.areaStyle = {
             color: {
               type: 'linear',
@@ -186,11 +187,11 @@
               colorStops: [
                 {
                   offset: 0,
-                  color: 'rgba(96,129,227,0.28)'
+                  color: color[i]
                 },
                 {
                   offset: 1,
-                  color: 'rgba(96,129,227,0)'
+                  color: 'rgba(250,250,250,0)'
                 }
               ],
               globalCoord: false
