@@ -78,6 +78,7 @@
               <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
+<!--                <span v-if="item.original_price && activityTheme === 'hot_tag'" class="small-money">¥{{item.trade_price}}</span>-->
                 <span v-if="item.original_price" class="small-money">¥</span>
               </div>
               <div class="com-list-item">
@@ -223,7 +224,8 @@
           activity_theme: this.$route.query.activity_theme
         },
         isSubmit: false,
-        personAllBuyLimit: PERSON_ALL_BUY_LIMIT
+        personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
+        activityTheme: ''
       }
     },
     computed: {
@@ -246,14 +248,10 @@
         return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
       }
     },
-    watch: {
-      $router(to, from) {
-        console.log(to)
-      }
-    },
     created() {
       this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
+      this.activityTheme = this.$route.query.activity_theme
       if (this.$route.query.activity_theme === 'fixed') {
         this.personAllBuyLimit = 10
       }
@@ -314,7 +312,9 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
-          item.trade_price = ''
+          if (this.activityTheme !== 'hot_tag') {
+            item.trade_price = ''
+          }
           item.sort = 0
           return item
         })
