@@ -48,7 +48,7 @@
         }
       },
       _setText(text) {
-        this.searchText = text
+        this.searchText = text || ''
       }
     }
   }

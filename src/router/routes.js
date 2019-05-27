@@ -1694,23 +1694,24 @@ export default [
       },
       // 分拣任务
       {
-        path: 'sorting-task/print-list/:id',
-        name: 'sorting-task-print-list',
+        path: 'sorting-task/print-preview/:id',
+        name: 'sorting-task-preview',
         meta: {
           titles: ['供应链', '分拣', '分拣任务','打印列表'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('sorting/getSortingPrintList',routeFrom.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
+            store.dispatch('sorting/getBarCodePreviewInfo',routeTo.params).then((res) => {
+              console.log(res, 99999999999)
+              // if (!res) {
+              //   return next({name: '404'})
+              // }
               return next()
             })
               .catch(() => {
-                return next({name: '404'})
+                // return next({name: '404'})
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/print-list/print-list'))
+        component: () => lazyLoadView(import('@pages/preview/preview'))
       },
       // 按订单  分拣任务明细
       {

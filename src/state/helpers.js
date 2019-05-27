@@ -502,7 +502,7 @@ export const storeMethods = {
 }
 // todo 分拣任务
 export const sortingComputed = {
-  ...mapGetters('sorting', ['sortingTask', 'sortingConfig', 'sortingTaskDetail'])
+  ...mapGetters('sorting', ['sortingTask', 'sortingConfig', 'sortingTaskDetail', 'sortingTaskDetailByOrder','barCodePreviewInfo'])
 }
 
 export const sortingMethods = {

@@ -1,7 +1,9 @@
 <template>
-  <div class="tab-wrap">
-    <ul class="tab-list">
-      <li v-for="(flow,idx) in tabList" :key="flow.text" :ref="'activeTab'+idx" :class="['tab-item', defaultTab===getId(flow,idx) ?'tab-item-active':'']" :style="{color:defaultColor}"
+  <div :class="['tab-wrap',tabAlign]">
+    <ul :class="['tab-list',tabAlign]">
+      <li v-for="(flow,idx) in tabList" :key="flow.text" :ref="'activeTab'+idx"
+          :class="['tab-item', defaultTab===getId(flow,idx) ?'tab-item-active':'']"
+          :style="{color:defaultColor,padding:padding,margin:margin}"
           @click.capture="changeTab(getId(flow,idx),$event)"
       >
         <span v-if="isShowMark" class="idx-mark">{{idx +1}}</span>
@@ -16,6 +18,18 @@
   export default {
     name: COMPONENT_NAME,
     props: {
+      padding:{
+        type: String,
+        default: '20px 69px'
+      },
+      margin:{
+        type: String,
+        default: '0px'
+      },
+      tabAlign:{
+        type: String,
+        default: 'center'
+      },
       defaultTab: {
         type: [Number, String],
         default: 0
@@ -85,15 +99,19 @@
     width: 100%
     border-bottom 1px solid #E9ECEE
     display: flex;
-    justify-content: center;
+    justify-content: center
+    background-color :$color-white
+    &.center
+      justify-content: center
+    &.left
+      justify-content: flex-start
+    &.right
+      justify-content: flex-end
   .tab-list
     display inline-block
     display: flex
     align-items: center
     position: relative
-    justify-content: center;
-
-
     .tab-active-line {
       transition: all .3s
       background: $color-positive
@@ -110,12 +128,11 @@
       padding: 20px 69px
       text-align: center
       cursor: pointer
-
+      color: $tabs-default-color
       .text
         display: inline-block
         font-size: $font-size-16
         font-family: $font-family-medium
-        color: $tabs-default-color
 
       .idx-mark
         display: inline-block

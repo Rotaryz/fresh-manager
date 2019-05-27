@@ -45,6 +45,16 @@ export default {
     let url = '/scm/api/backend/sorting/allocation-export'
     return window.open(url + paramsStr, '_parent')
   },
+  // 批量完成分拣
+  batchFinishSorting(data,loading = true){
+    let url = '/scm/api/backend/sorting/batch-finish-sorting'
+    return request.post(url,data,loading)
+
+  },
+  getPrintData(id,loading = true){
+    let url = '/scm/api/backend/sorting/batch-finish-sorting/'+id
+    return request.get(url,{},loading)
+  },
   // √ 配货位列表 √
   getAllocationList(loading = true) {
     // let url = '/mock/sortingConfigList.json'

@@ -6,6 +6,8 @@
                  :value="dateInfo"
                  :style="{height: `${height}px`, width: `${width}px`}"
                  :clearable="clearable"
+                 :format="format"
+                 :editable="editable"
                  @on-change="_getTime"
     ></date-picker>
   </div>
@@ -22,6 +24,14 @@
       DatePicker
     },
     props: {
+      editable:{
+        type: Boolean,
+        default: true
+      },
+      format:{
+        type: String,
+        default: 'yyyy-MM-dd'
+      },
       height: {
         type: Number,
         default: 28

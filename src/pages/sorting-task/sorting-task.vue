@@ -1,26 +1,37 @@
 <template>
   <div class="procurement-task table">
-    <base-tab-select v-model="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
+    <div class="empty-50">
+      <base-tabs :tabList="tabStatus"
+                 :defaultTab="sortingTask.filter.sorting_mode"
+                 :isShowMark="false"
+                 tabAlign="left"
+                 padding="12px 5px"
+                 margin="0 10px"
+                 defaultColor="#333333"
+                 class="tab-top"
+                 @tab-change="tabChange"
+      ></base-tabs>
+    </div>
     <div class="down-content">
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
       <div class="down-item">
-        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
+        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" :editable="false" @getTime="changeTime"></base-date-select>
       </div>
       <!--下拉选择-->
-      <template v-if="tabIndex===1">
+      <template v-if="sortingTask.filter.sorting_mode===1">
         <span class="down-tip">分类筛选</span>
         <div class="down-item down-group-item">
-          <base-drop-down :select="filterTaskFrist" @setValue="_setValueFrist"></base-drop-down>
+          <base-drop-down :select="filterTaskFrist" @setValue="setValueFrist"></base-drop-down>
         </div>
         <div class="down-item">
-          <base-drop-down :select="filterTaskSecond" @setValue="_setValueSecond"></base-drop-down>
+          <base-drop-down :select="filterTaskSecond" @setValue="setValueSecond"></base-drop-down>
         </div>
       </template>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" :placeHolder="tabIndex?'商品名称或商品编码':'按订单号/团长点'" @search="_search"></base-search>
+        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'按订单号/团长点':'商品名称或商品编码'" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -29,12 +40,13 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">分拣任务</p>
-          <base-status-nav :statusList="statusList" :value="sortingTask.filter.status"
-                           valueKey="status" labelKey="status_str" numKey="statistic" @change="_setStatus"></base-status-nav>
+          <base-status-nav :statusList="statusList" :value="sortingTask.filter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                           @change="setStatus"
+          ></base-status-nav>
         </div>
         <div class="function-btn">
-          <div class="btn-main g-btn-item" @click="_exportBatch">批量完成分拣</div>
-          <template v-if="!tabIndex">
+          <div class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
+          <template v-if="sortingTask.filter.sorting_mode===0">
             <div class="btn-main g-btn-item" @click="_exportByOrder">导出</div>
           </template>
           <template v-else>
@@ -54,8 +66,8 @@
             <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
               <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :class="['list-item',item.class]">
                 <template v-if="item.type==='operate'" name="operation">
-                  <router-link class="list-operation no-right" :to="_getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
-                  <button v-if="item.afterBtn" class="after-btn" @click="printTag(row)">{{item.afterBtn}}</button>
+                  <router-link class="list-operation no-right" :to="getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
+                  <button v-if="item.afterBtn" class="after-btn" @click="printTagBtn(row)">{{item.afterBtn}}</button>
                 </template>
                 <template v-else>
                   {{row[item.key]}}
@@ -74,14 +86,14 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="sortingTask.pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="sortingTask.pageTotal" @addPage="pageChange"></base-pagination>
       </div>
     </div>
     <default-modal ref="modal">
       <div slot="content" class="model-wrap">
         <div class="top">
           <div class="title"> 设置打印标签</div>
-          <div class="close" @click.stop="_hideModal">
+          <div class="close" @click.stop="hideModal">
           </div>
         </div>
         <div class="model-content">
@@ -101,8 +113,8 @@
           </div>
         </div>
         <div class="back btn-group-wrap">
-          <div class="back-cancel back-btn hand" @click="_hideModal">取消</div>
-          <div class="back-btn back-submit hand" @click="sureBtn">确认</div>
+          <div class="back-cancel back-btn hand" @click="hideModal">取消</div>
+          <div class="back-btn back-submit hand" @click="_sureTagInfo">确认</div>
         </div>
       </div>
     </default-modal>
@@ -119,15 +131,14 @@
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '拣货任务列表'
   const COMMODITIES_LIST1 = [
-    {tilte: '建单时间', key: 'created_at', flex: '2',},
-    {tilte: '关联订单号', key: 'goods_category',type: "operate", params: {id: 'id','goods_sku_code':'goods_sku_code'}, routerName: 'merchant-order-detail', flex: '2'},
-    {tilte: '商戶名称', key: 'sale_num'},
-    {tilte: '配货数量', key: 'sale_wait_pick_num', after: "sale_unit"},
-    {tilte: '订单数量 ', key: 'sale_wait_pick_num', after: "sale_unit"},
-    {tilte: '状态', key: 'sale_out_of_num'},
+    {tilte: '建单时间', key: 'created_at', flex: '1.5'},
+    {tilte: '订单号', key: 'out_order_sn',type: "operate", params: {id: 'out_order_id'}, routerName: 'merchant-order-detail', flex: '2'},
+    {tilte: '商户名称', key: 'merchant_name', flex: '2'},
+    {tilte: '订单数', key: 'order_num', after: "sale_unit"},
+    {tilte: '配货数', key: 'allocation_num', after: "sale_unit"},
+    {tilte: '状态', key: 'status_str'},
     {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id'}, routerName: 'sorting-task-detail-by-order'}]
-  const COMMODITIES_LIST = [
-    {tilte: '生成时间', key: 'created_at', flex: '1.5'},
+  const COMMODITIES_LIST2 = [
     {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
     {tilte: '下单数', key: 'sale_num', after: "sale_unit"},
@@ -135,7 +146,7 @@
     {tilte: '缺货数', key: 'sale_out_of_num', after: "sale_unit"},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'sale_out_of_num'},
+    {tilte: '状态', key: 'status_str'},
     {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate add-btn", params: {id: 'id','goods_sku_code':'goods_sku_code'}, routerName: 'sorting-task-detail-by-goods',afterBtn:'打印标签'}]
   function getDateNow(){
     let nowDate = new Date()
@@ -162,7 +173,7 @@
           label:'商品名称',
           type:'text',
           id:'goods_name',
-          value:'1111111111'
+          value:''
         },{
           label:'保质期',
           type:'input',
@@ -178,15 +189,9 @@
           type:'input',
           id:'zl',
           value:''
-        },{
-          label:'打印数量',
-          type:'input',
-          id:'num',
-          test:/^[1-9]{1}[\d]*$/,
-          value:'1'
         }],
         tabStatus: ORDERSTATUS,
-        tabIndex: 1,
+        // tabIndex: 0,
         datePlaceHolder: "选择生成日期",
         // commodities: COMMODITIES_LIST,
         filterTaskFrist: {
@@ -204,7 +209,6 @@
           data: [{name: '全部', id: ''}]
         },
         // 拣货任务列表
-        statusTab: 1,  // 待分拣
         statusList: [
           {name: '全部', value: '', num: 0},
           {name: '待分拣', value: 0, num: 0},
@@ -218,50 +222,80 @@
     },
     computed: {
       ...sortingComputed,
-      commodities(){
-        return this.tabIndex ? COMMODITIES_LIST :COMMODITIES_LIST1
+      commodities() {
+        console.log(this.sortingTask.filter.sorting_mode, 'this.sortingTask.filter.sorting_mode')
+        return this.sortingTask.filter.sorting_mode === 1 ? COMMODITIES_LIST2 :COMMODITIES_LIST1
       },
       timeArr() {
         return [this.sortingTask.filter.start_time, this.sortingTask.filter.end_time]
       }
     },
     created() {
-      this.tabIndex =  this.$route.params.tabIndex || 0
-      this._getFristList()
+      this.$route.params.tabIndex && this.SET_PARAMS({sorting_mode:this.$route.params.tabIndex})
+      this.getFristList()
       this._getStatusData()
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
-      _exportBatch(){
-
+      initBaseDropDown(first,second){
+        if(first){
+          this.filterTaskFrist.data = [{name: '全部', id: ''}]
+          this.filterTaskFrist.content = '一级分类'
+        }
+        if(second){
+          this.filterTaskSecond.data = [{name: '全部', id: ''}]
+          this.filterTaskFrist.content = '二级分类'
+        }
+      },
+      _batchFinishSorting(){
+        API.Sorting.batchFinishSorting(this.sortingTask.filter).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return false
+          }
+          let data = res.data
+          this.statusList = data
+        }).catch((err) => {
+          this.$toast.show(err.message)
+        })
+          .finally(() => {
+            this.$loading.hide()
+          })
       },
       // 打印彈框   日期選擇
       handleDateChange(val){
         console.log(this.setting[2].value)
         this.setting[2].value=val
       },
-      _hideModal(){
+      hideModal(){
         this.$refs.modal.hideModal()
       },
-      sureBtn(){
-        console.log(this.setting[4].value)
-        if(!this.setting[4].value){
-          return this.$toast.show('请输入打印数量')
-        }else if(!this.setting[4].test.test(this.setting[4].value)){
-          return this.$toast.show('请输入正确的打印数量')
-        }
-        this.$router.push({name:"sorting-task-print-list",params:{id:this.currentPrint.id}})
+      _sureTagInfo(){
+        API.Sorting.getPrintData().then((res)=>{
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return false
+          }
+          this.$router.push({name:"sorting-task-print-list",params:{id:res.data.id}})
+        }).catch((err) => {
+          this.$toast.show(err.message)
+        }).finally(() => {
+          this.$loading.hide()
+        })
+
       },
       // 打印标签按鈕
-      printTag(row){
+      printTagBtn(row){
+        this.setting[0].value = row.goods_name
         this.$refs.modal.showModal()
         this.currentPrint = row
       },
       // 顶部tab切换
-      _changeStatusTab(item, index) {
-        this.tabIndex = index
+      tabChange(val) {
+        this.initBaseDropDown()
         let params ={
+          sorting_mode:val,
           page: 1,
           limit: 10,
           start_time: '',
@@ -270,10 +304,11 @@
           status: 0,
           keyword: "",
         }
-        this.statusTab = 1
+        this.$refs.research._setText()
         this._updateList(params)
       },
-      _getRouterUrl(item, row){
+      // 表格跳转路由获取
+      getRouterUrl(item, row){
         let res = {}
         for (let i in item.params) {
           res[i] = row [item.params[i]]
@@ -286,16 +321,15 @@
       // 更新列表
       _updateList({...params}, noUpdataStatus) {
         this.SET_PARAMS(params)
-        this.getSortingTaskList(this.tabStatus[this.tabIndex].id)
+        this.getSortingTaskList()
         if (!noUpdataStatus) {
           this._getStatusData()
         }
-
         if (params.page === 1) {
           this.$refs.pagination.beginPage()
         }
       },
-      //  事件选择器
+      // 时间选择器
       changeTime(timeArr) {
         this._updateList({
           start_time: timeArr[0],
@@ -309,38 +343,44 @@
           start_time: this.sortingTask.filter.start_time,
           end_time: this.sortingTask.filter.end_time,
           goods_category_id: this.sortingTask.filter.goods_category_id,
-          keyword: this.sortingTask.filter.keyword
+          keyword: this.sortingTask.filter.keyword,
+          sorting_mode:this.sortingTask.filter.sorting_mode
         }
         // todo
-        let type= this.tabIndex ? 'getStausData' : 'getStausData'
-        API.Sorting[type](params).then(res => {
+        API.Sorting.getStausData(params).then(res => {
           if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
             return false
           }
-          let data = res.data
-          this.statusList = data
+          this.statusList =  res.data.status
+        }).catch((err) => {
+          this.$toast.show(err.message)
         })
       },
       // 列表状态栏选择
-      _setStatus(val) {
+      setStatus(val) {
         this._updateList({status: val, page: 1}, true)
       },
       // 分类数据
       _getClassifyList(params) {
         return API.Sorting.getClassifyList(params).then(res => {
           if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
             return false
           }
           return res
+        }).catch((err) => {
+          this.$toast.show(err.message)
         })
       },
-      _getFristList() {
+      getFristList() {
         this._getClassifyList().then(res => {
           if(!res) return false
           this.filterTaskFrist.data = [{name: '全部', id: ''},...res.data]
         })
       },
-      _setValueFrist(item) {
+      // 分类选择
+      setValueFrist(item) {
         this._updateList({goods_category_id: item.id || '', page: 1})
         this._getClassifyList({
           'parent_id': item.id,
@@ -350,16 +390,18 @@
           this.filterTaskSecond.data = [{name: '全部', id: item.id},...res.data]
         })
       },
-      _setValueSecond(item) {
+      setValueSecond(item) {
         if (!item.id) {
           return
         }
         this._updateList({goods_category_id: item.id, page: 1})
       },
-      _search(keyword) {
+      // 搜索按钮
+      searchBtn(keyword) {
         this._updateList({keyword, page: 1})
       },
-      _getUrl() {
+      // 导出路径
+      getUrl() {
         let obj = this.sortingTask.filter
         let data = {
           current_corp: this.getCurrentId(),
@@ -368,7 +410,8 @@
           start_time: obj.start_time,
           end_time: obj.end_time,
           keyword: obj.keyword,
-          status: obj.status
+          status: obj.status,
+          sorting_mode:obj.sorting_mode
         }
         let search = []
         for (let key in data) {
@@ -379,20 +422,20 @@
       // 按订单分拣 导出
       _exportByOrder(){
         // todo
-        API.Sorting.exportPickingOrder(this._getUrl())
+        API.Sorting.exportPickingOrder(this.getUrl())
       },
       // 导出分拣单
       _exportPickingOrder() {
-        API.Sorting.exportPickingOrder(this._getUrl())
+        API.Sorting.exportPickingOrder(this.getUrl())
       },
       // 导出配送单
       async _exportDeliveryOrder() {
-        await API.Sorting.exportDeliveryOrder(this._getUrl())
+        await API.Sorting.exportDeliveryOrder(this.getUrl())
         setTimeout(()=>{
           this._updateList({page:1})
         },500)
       },
-      _getMoreList(page) {
+      pageChange(page) {
         this._updateList({page})
       },
     }
@@ -401,6 +444,16 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .home .container
+    padding: 0px !important
+  .tab-top
+    position:fixed
+    top: 38px
+    left: 210px
+    z-index: 700
+    margin-bottom: 20px
+  .empty-50
+    height:50px
   .operate
     max-width: 50px
     &.add-btn
@@ -423,7 +476,7 @@
     margin-right: 10px
   .model-wrap
     position:relative
-    /*width:534px*/
+    width:534px
     background-color #fff
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
     .top

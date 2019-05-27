@@ -18,7 +18,8 @@ export const state = {
       start_time: '',
       end_time: '',
       keyword: "",
-      status: 0   // 待分拣
+      status: 0,   // 待分拣
+      sorting_mode:0
     }
   },
   sortingConfig: {
@@ -63,12 +64,18 @@ export const state = {
       sale_unit: ''
     }
   },
-  printList:{
-    list:[]
+  barCodePreviewInfo:{
+    goods_name:"自然生长240克 鲜百合",
+    standard: "100kg + 10kg",
+    code: 12132132132323,
+    package_time: "2012-12-22"
   }
 }
 
 export const getters = {
+  barCodePreviewInfo(){
+    return state.barCodePreviewInfo
+  },
   sortingConfig(state) {
     return state.sortingConfig
   },
@@ -80,10 +87,7 @@ export const getters = {
   },
   sortingTaskDetailByOrder(state) {
     return state.sortingTaskDetailByOrder
-  },
-  printList(state) {
-  return state.printList
-},
+  }
 }
 
 export const mutations = {
@@ -99,16 +103,17 @@ export const mutations = {
   },
   SET_LIST(state, {list, type = 'sortingTask'}) {
     state[type].list = list
+  },
+  SET_BARCODE_PERVIEW_INFO(state,value){
+    state.barCodePreviewInfo= value || {}
   }
 }
 // export const
 
 export const actions = {
   // 拣货列表 √
-  getSortingTaskList({state, commit, dispatch}, moudleName) {
-    let methodsName = moudleName === 'order' ? 'getSortingTaskList' : 'getSortingTaskList'
-    console.log('我是按' + moudleName)
-    return API.Sorting[methodsName](state.sortingTask.filter)
+  getSortingTaskList({state, commit, dispatch}) {
+    return API.Sorting.getSortingTaskList(state.sortingTask.filter)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -118,8 +123,7 @@ export const actions = {
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        let arr = res.data
-        commit('SET_LIST', {list: arr})
+        commit('SET_LIST', {list: res.data})
         commit('SET_PAGE_TOTAL', {pageTotal})
         return true
       })
@@ -130,30 +134,22 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSortingPrintList({state, commit, dispatch},params){
-    return API.Sorting.getSortingTaskList({
-      goods_category_id: '',
-      page: 1,
-      limit: 10,
-      start_time: '',
-      end_time: '',
-      keyword: "",
-      status: ""
-    })
-      .then((res) => {
-        if (res.error !== app.$ERR_OK) {
-          return false
-        }
-        let arr = res.data
-        commit('SET_LIST', {list: arr,type:'printList'})
-        return true
-      })
-      .catch(() => {
-        return false
-      })
-      .finally(() => {
-        app.$loading.hide()
-      })
+  getBarCodePreviewInfo({state, commit, dispatch},params){
+    return true
+    // return API.Sorting.getPrintData(params.id)
+    //   .then((res) => {
+    //     if (res.error !== app.$ERR_OK) {
+    //       return false
+    //     }
+    //     commit('SET_BARCODE_PERVIEW_INFO', res.data)
+    //     return true
+    //   })
+    //   .catch(() => {
+    //     return false
+    //   })
+    //   .finally(() => {
+    //     app.$loading.hide()
+    //   })
   },
   // 详情
   getSortingTaskDetail({commit}, {id, ...params}) {
