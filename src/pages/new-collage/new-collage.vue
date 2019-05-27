@@ -401,7 +401,8 @@
           effective_time: '',
           person_limit: '',
           // preferential_type: 1,
-          coupon_id: ''
+          coupon_id: '',
+          activity_theme: this.$route.query.activity_theme
         },
         isSubmit: false,
         confirmType: '',
@@ -479,7 +480,8 @@
           activity_name: obj.activity_name,
           person_limit: obj.person_limit,
           effective_time: obj.effective_time,
-          coupon_id: 34
+          coupon_id: 0,
+          activity_theme: this.$route.query.activity_theme
         }
       }
       this._getFirstAssortment()
@@ -524,7 +526,7 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_type: 'groupon'
+          activity_theme: this.$route.query.activity_theme
         })
         if (res.error !== this.$ERR_OK) {
           return

@@ -220,7 +220,7 @@
         disable: false,
         goodsList: [],
         msg: {
-          activity_type: 'fixed'
+          activity_theme: this.$route.query.activity_theme
         },
         isSubmit: false,
         personAllBuyLimit: PERSON_ALL_BUY_LIMIT
@@ -257,6 +257,7 @@
       if (this.$route.query.activity_theme === 'fixed') {
         this.personAllBuyLimit = 10
       }
+      // this.msg.activity_theme = this.$route.query.activity_theme
       if (this.id) {
         let obj = _.cloneDeep(this.saleDetail)
         this.goodsList = obj.activity_goods
@@ -265,14 +266,9 @@
             return item.goods_id
           })
         }
-        this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name}
+        this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name, activity_theme: this.$route.query.activity_theme}
       }
       this._getFirstAssortment()
-
-    // this._getGoodsList()
-    },
-    beforeRouteLeave() {
-      console.log(1)
     },
     async mounted() {
     // this.classifyIndex = 0
@@ -294,7 +290,7 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_type: 'fixed'
+          activity_type: this.$route.query.activity_theme
         })
         if (res.error !== this.$ERR_OK) {
           return
