@@ -8,7 +8,7 @@
       <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
-      <left-tab @changeCategory="changeTab"></left-tab>
+      <left-tab @changeTab="changeTab"></left-tab>
       <div class="right-data">
         <div class="top-sec">
 
@@ -17,21 +17,21 @@
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品销售</p>
-                <status-tab :statusList="sale" @setStatus="changeSale"></status-tab>
+                <status-tab ref="statusTab1" :statusList="sale" @setStatus="changeSale"></status-tab>
               </div>
               <div class="title-right">
                 <span class="export-btn hand">导出Excel</span>
               </div>
             </div>
-            <div v-if="+leftTab === 3 && topTab === 1" class="name-text">
+            <div v-if="+leftTab === 3 && topTab[0] === 0" class="name-text">
               <p class="item">商品结构 <span class="name">爆品</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
             </div>
 
-            <div v-if="(+leftTab === 1 || +leftTab === 2) && topTab === 0" class="name-text">
+            <div v-if="+leftTab === 1 || +leftTab === 2" class="name-text">
               <p class="item">{{allMsg[0].name}}<span class="data">{{allMsg[0].data}}</span></p>
             </div>
 
-            <div v-if="+leftTab === 3 && topTab === 0" class="goods-structor">
+            <div v-if="+leftTab === 3 && topTab[0] === 0" class="goods-structor">
               <div class="goods-msg">
                 <img src="./goods.png" alt="" class="goods-image">
                 <div class="goods-detail">
@@ -54,9 +54,9 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="+leftTab !== 3 && topTab === 1"></goods-list>
-            <bar-data v-if="+leftTab !== 3 && topTab !== 1" ref="bar1" chartId="bar1"></bar-data>
-            <line-data v-if="+leftTab === 3 && topTab !== 0" class="chart-box" ref="line1" chartId="line1"></line-data>
+            <goods-list v-if="+leftTab !== 3 && topTab[0] === 1"></goods-list>
+            <bar-data v-if="+leftTab !== 3 && topTab[0] !== 1" ref="bar1" chartId="bar1"></bar-data>
+            <line-data v-if="+leftTab === 3 && topTab[0] !== 0" ref="line1" chartId="line1" class="chart-box"></line-data>
 
           </section>
 
@@ -65,18 +65,18 @@
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品售后</p>
-                <status-tab :statusList="server" @setStatus="changeServe"></status-tab>
+                <status-tab ref="statusTab2" :statusList="server" @setStatus="changeServe"></status-tab>
               </div>
               <div class="title-right">
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
-            <div v-if="(+leftTab === 1 || +leftTab === 2) && topTab === 1" class="name-text">
+            <div class="name-text">
               <p class="item">{{allMsg[1].name}}<span class="data">{{allMsg[1].data}}</span></p>
             </div>
 
             <bar-data v-if="+leftTab !== 3" ref="bar2" chartId="bar2"></bar-data>
-            <line-data v-if="+leftTab === 3" class="chart-box" ref="line2" chartId="line2"></line-data>
+            <line-data v-if="+leftTab === 3" ref="line2" chartId="line2" class="chart-box"></line-data>
           </section>
         </div>
 
@@ -87,7 +87,7 @@
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品采购</p>
-                <status-tab :statusList="+leftTab === 1 ? purchase : purchase2" @setStatus="changePurchase"></status-tab>
+                <status-tab ref="statusTab3" :statusList="+leftTab === 1 ? purchase : purchase2" @setStatus="changePurchase"></status-tab>
               </div>
               <div class="title-right">
                 <span class="show-big-icon hand" @click="showBigData"></span>
@@ -96,11 +96,12 @@
             <div class="name-text">
               <p class="item">{{allMsg[2].name}}<span class="data">{{allMsg[2].data}}</span></p>
             </div>
+            {{leftTab}}{{topTab[2]}}
+            <bar-data v-if="+leftTab === 2 && topTab[2] === 1" ref="bar3" chartId="bar3"></bar-data>
 
-            <bar-data v-if="+leftTab === 2 && topTab === 1" ref="bar3" chartId="bar3"></bar-data>
-            <bar-data v-if="topTab === 0 || topTab === 2" ref="bar3" chartId="bar3"></bar-data>
-            <pie-data v-if="+leftTab === 1 && topTab === 1" chartId="pie3"></pie-data>
-            <line-data v-if="+leftTab === 3" class="chart-box" ref="line3" chartId="line3"></line-data>
+            <bar-data v-if="+leftTab !== 3 && (topTab[2] === 0 || topTab[2] === 2)" ref="bar3" chartId="bar3"></bar-data>
+            <pie-data v-if="+leftTab === 1 && topTab[2] === 1" ref="pie3" chartId="pie3"></pie-data>
+            <line-data v-if="+leftTab === 3" class="chart-box" chartId="line3" ref="line3"></line-data>
           </section>
 
           <!--模块4-->
@@ -108,19 +109,18 @@
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">供应链</p>
-                <status-tab :statusList="supply" @setStatus="changeSupply"></status-tab>
+                <status-tab ref="statusTab4" :statusList="supply" @setStatus="changeSupply"></status-tab>
               </div>
               <div class="title-right">
                 <span class="show-big-icon hand" @click="showBigData"></span>
               </div>
             </div>
-            <div v-if="(+leftTab === 1 || +leftTab === 2) && leftTab === 1" class="name-text">
+            <div class="name-text">
               <p class="item">{{allMsg[3].name}}<span class="data">{{allMsg[3].data}}</span></p>
             </div>
-
-            <bar-data v-if="true" ref="bar2" chartId="bar2"></bar-data>
-            <goods-list v-if="+leftTab !== 3 && topTab === 0"></goods-list>
-            <line-data v-if="+leftTab === 3" class="chart-box" ref="line4" chartId="line4"></line-data>
+            <goods-list v-if="+leftTab !== 3 && topTab[3] === 0"></goods-list>
+            <bar-data v-if="+leftTab === 1 && topTab[3] === 1" ref="bar4" chartId="bar4"></bar-data>
+            <line-data v-if="+leftTab === 3" ref="line4" chartId="line4" class="chart-box"></line-data>
           </section>
         </div>
       </div>
@@ -180,14 +180,6 @@
     {name: '库存排行', type: ''},
     {name: '库存周转率', type: ''}
   ]
-
-
-  // const ALL_DATA = [
-  //   {
-  //     tab: 'all',
-  //     secShow: 'all'
-  //   }
-  // ]
 
   const PAGE_NAME = 'GOODS-DATA'
   const TITLE = '商品数据'
@@ -251,8 +243,8 @@
           }
 
         ],
-        leftTab: 1, // 1全部商品 2分类 3商品
-        topTab: 0
+        leftTab: 1, // 左侧tab栏 1全部商品 2分类 3商品
+        topTab: [0, 0, 0, 0]  // 每个模块顶部tab栏
       }
     },
     computed: {
@@ -264,7 +256,7 @@
     mounted() {
       this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
       this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
-      //
+      this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
       // this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
       // this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
       // this.$refs.bar4 && this.$refs.bar4.drawBar1({x: [], series: []})
@@ -287,8 +279,24 @@
       changeTab(item, type, code) {
         this.leftTabItem = item
         this.selectType = type
-        this.controler.leftTab = code
-        this.request.wx_group_id = item.id
+        this.leftTab = code
+        this.$nextTick(() => {
+          if (+code === 1 || +code === 2) {
+            this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
+            this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
+            this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
+          } else if (+code === 3) {
+            this.$refs.line2 && this.$refs.line2.drawLine()
+            this.$refs.line3 && this.$refs.line3.drawLine()
+            this.$refs.line4 && this.$refs.line4.drawLine()
+
+          }
+        })
+        this.$refs.statusTab1.checkStatus(0, this.sale[0])
+        this.$refs.statusTab2.checkStatus(0, this.server[0])
+        this.$refs.statusTab3.checkStatus(0, this.purchase[0])
+        this.$refs.statusTab4.checkStatus(0, this.supply[0])
+        // this.request.wx_group_id = item.id
         // this.$refs.qualityData.setTab()
         // this.$refs.businessData.setTab()
         // this.$refs.groupData.setTab()
@@ -296,19 +304,41 @@
       },
       changeSale(obj, index) {
         this.request1.goods_id = obj.id
-        this.controler.topTab = index
+        this.topTab.splice(0,1,index)
+        this.$nextTick(() => {
+          this.$refs.bar1 && this.$refs.bar1.drawBar({x: [], series: []})
+          this.$refs.line1 && this.$refs.line1.drawLine({x: [], series: []})
+        })
       },
       changeServe(obj, index) {
         this.request2.goods_id = obj.id
-        this.controler.topTab = index
+        this.topTab.splice(1,1,index)
+        this.$nextTick(() => {
+          this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
+          this.$refs.line2 && this.$refs.line2.drawLine({x: [], series: []})
+        })
       },
       changePurchase(obj, index) {
         this.request3.goods_id = obj.id
-        this.controler.topTab = index
+        this.topTab.splice(2,1,index)
+        // this.topTab[2] = index
+        this.$nextTick(() => {
+          if (index === 0) {
+            this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
+          } else {
+            this.$refs.bar3 && this.$refs.bar3.drawBar({x: [], series: []})
+            this.$refs.pie3 && this.$refs.pie3.drawPie({x: [], series: []})
+            this.$refs.line3 && this.$refs.line3.drawLine({x: [], series: []})
+          }
+        })
       },
       changeSupply(obj, index) {
         this.request4.goods_id = obj.id
-        this.controler.topTab = index
+        this.topTab.splice(3,1,index)
+        this.$nextTick(() => {
+          this.$refs.line4 && this.$refs.line4.drawLine({x: [], series: []})
+          this.$refs.bar4 && this.$refs.bar4.drawBar({x: [], series: []})
+        })
       },
       showDescription(type) {
         this.$refs.description.show(type)
@@ -402,7 +432,7 @@
           font-size: $font-size-16
           font-family: $font-family-medium
           color: $color-text-main
-          white-space: nowrap
+          overflow: hidden
         .title-right
           .export-btn
             display: block
@@ -432,7 +462,7 @@
       .name-text
         display: flex
         align-items: center
-        padding: 18px 20px 10px
+        padding: 18px 20px 20px
         .item
           font-size: $font-size-12
           font-family: $font-family-regular
@@ -461,7 +491,7 @@
             vertical-align: text-top
 
       .goods-structor
-        margin-top: 30px
+        margin-top: 20px
       .goods-msg
         border: 0.5px solid #6081E3
         padding: 20px
@@ -477,6 +507,8 @@
           font-size: $font-size-14
           font-family: $font-family-regular
           color: $color-text-main
+          margin-left: 16px
+          height: 65px
           display: flex
           flex-direction: column
           justify-content: space-between
@@ -489,9 +521,12 @@
         align-items: center
         margin: 0 40px 0 40px
         .view
-          margin-right: 50px
+          margin-right: 10%
+          &:last-child
+            margin-right: 0
         .text
           display: flex
+          align-items:center
           font-size: $font-size-14
           font-family: $font-family-regular
           color: #666
@@ -501,9 +536,9 @@
         .num
           font-family: $font-family-din-bold
           color: $color-text-main
-          font-size: 15px
-          margin-top: 14px
-          line-height: 15px
+          font-size: 30px
+          margin-top: 12px
+          line-height: 30px
     .bottom
       height: 0
 

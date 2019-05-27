@@ -174,7 +174,6 @@
               },
               emphasis: {
                 itemStyle: {
-                  color: '#F5F6F9'
                 }
               },
               barGap: '-100%',
@@ -465,7 +464,6 @@
               },
               emphasis: {
                 itemStyle: {
-                  color: '#F5F6F9'
                 }
               },
               barGap: '-100%',

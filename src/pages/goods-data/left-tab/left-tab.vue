@@ -1,7 +1,7 @@
 <template>
   <div ref="leftTab" class="left-tab">
     <div ref="leftBox" class="left-box">
-      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory({id: ''}, 1)">
+      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory({id: ''}, 0, 1)">
         <div class="left-tab-main">
           <div class="left">
             <img src="./icon-all_green@2x.png" alt="" class="category-image all-image">
@@ -14,7 +14,7 @@
         :key="index"
         class="category-item hand"
         :class="[{'active': (+categoryIndex === index+1 && !selectGoods)},{'open': (+categoryIndex === index+1 && selectGoods)}]"
-        @click="changeCategory(item, 2)"
+        @click="changeCategory(item, index+1, 2)"
       >
         <div class="left-tab-main">
           <div class="left">
@@ -28,7 +28,7 @@
                :key="ind"
                class="goods-item"
                :class="{'select': (+goodsIndex === ind && selectGoods)}"
-               @click.stop="changeGoods(goods, 3)"
+               @click.stop="changeGoods(goods, ind, 3)"
           >
             <img src="./goods.png" alt="" class="goods-image">
             <span class="title">{{goods.name}}</span>
@@ -65,14 +65,14 @@
       ...goodsDataComputed
     },
     methods: {
-      changeCategory(item, code) {
-        // this.categoryIndex = index
+      changeCategory(item, index, code) {
+        this.categoryIndex = index
         this.goodsIndex = ''
         this.selectGoods = false
         this.$emit('changeTab', item, false, code) // item, selectGoods
       },
-      changeGoods(goods, code) {
-        // this.goodsIndex = index
+      changeGoods(goods, index, code) {
+        this.goodsIndex = index
         this.selectGoods = true
         this.$emit('changeTab', goods, true, code)
       }

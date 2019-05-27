@@ -64,7 +64,7 @@
   @import "~@design"
 
   .status-tab
-    margin-left: 2.7vh
+    margin-left: 2.5vh
     display: flex
     background: #F6F6F6
     border-radius: 100px
