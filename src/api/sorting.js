@@ -22,12 +22,12 @@ export default {
   // √ 分类列表
   getClassifyList(params = {}) {
     let defautParams = {
-      'parent_id': 0,
-      'goods_id': 0
+      parent_id: 0,
+      goods_id: 0
     }
     params = {...defautParams, ...params}
     let url = '/scm/api/backend/goods/goods-category'
-    return request.get(url,params)
+    return request.get(url, params)
   },
   //  √ 状态数据
   getStausData(params) {
@@ -51,7 +51,7 @@ export default {
     let url = '/scm/api/backend/sorting/allocation-position'
     return request.get(url, {page: ''}, loading)
   },
-//  √ 线路列表
+  //  √ 线路列表
   getRoadList() {
     // let url = '/mock/roadList.json'
     let url = '/scm/api/backend/delivery/road'
@@ -72,8 +72,7 @@ export default {
 
   //  √ 导出配货位
   exportAllocationList(paramsStr) {
-    let url = "/scm/api/backend/sorting/allocation-position-export"
+    let url = '/scm/api/backend/sorting/allocation-position-export'
     window.open(url + paramsStr, '_parent')
-
   }
 }

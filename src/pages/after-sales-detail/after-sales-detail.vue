@@ -48,19 +48,30 @@
           {title: '商品', key: 'goods_name', flex: 1.3},
           {title: '分类', key: 'goods_category', flex: 1},
           {title: '缺货数量', key: 'sale_out_of_num', flex: 1},
-          {title: '状态', key: 'status_str', flex: 1,class:'last-td'},
+          {title: '状态', key: 'status_str', flex: 1, class: 'last-td'}
         ],
-        topListTilte: [{
-          name: '商户名称：', key: 'buyer_name'
-        }, {
-          name: '售后订单：', key: 'order_sn'
-        }, {
-          name: '创建时间：', key: 'created_at'
-        }, {
-          name: '缺货品类数：', key: 'type_count'
-        }, {
-          name: '状态：', key: 'status_str'
-        }]
+        topListTilte: [
+          {
+            name: '商户名称：',
+            key: 'buyer_name'
+          },
+          {
+            name: '售后订单：',
+            key: 'order_sn'
+          },
+          {
+            name: '创建时间：',
+            key: 'created_at'
+          },
+          {
+            name: '缺货品类数：',
+            key: 'type_count'
+          },
+          {
+            name: '状态：',
+            key: 'status_str'
+          }
+        ]
       }
     },
 

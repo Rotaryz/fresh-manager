@@ -35,9 +35,21 @@
           search.push(`${key}=${data[key]}`)
         }
         if (this.showContent) {
-          return process.env.VUE_APP_API + '/social-shopping/api/backend/activity-manage/department-offline-members-excel/' + this.current.id + '?' + search.join('&')
+          return (
+            process.env.VUE_APP_API +
+            '/social-shopping/api/backend/activity-manage/department-offline-members-excel/' +
+            this.current.id +
+            '?' +
+            search.join('&')
+          )
         } else {
-          return process.env.VUE_APP_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.staffId + '?' + search.join('&')
+          return (
+            process.env.VUE_APP_API +
+            '/social-shopping/api/backend/activity-manage/member-activity-excel/' +
+            this.staffId +
+            '?' +
+            search.join('&')
+          )
         }
       }
     },

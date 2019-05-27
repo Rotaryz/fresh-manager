@@ -103,7 +103,7 @@
       }
     },
     computed: {
-      ...productComputed,
+      ...productComputed
     },
     created() {
       this.id = this.$route.params.id || null
@@ -181,12 +181,11 @@
         let number = 0
         this.batchList = this.batchList.map((item) => {
           item.out_count = !item.out_count ? item.select_out_num : item.out_count
-          number += (item.out_count * 1)
+          number += item.out_count * 1
           return item
         })
         this.$refs.modalBox.show(number, item)
-      }
-      ,
+      },
       confirm(arr) {
         let allprice = 0
         let number = 0

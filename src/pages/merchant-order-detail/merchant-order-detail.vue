@@ -51,7 +51,7 @@
     {title: '商品', key: 'goods_name', flex: 2, afterBr: 'goods_sku_encoding'},
     {title: '分类', key: 'goods_category', flex: 1},
     {title: '下单数量', key: 'sale_num', flex: 1},
-    {title: '配货数量', key: 'sale_wait_pick_num', flex: 1, line: true},// 待配送 已完成
+    {title: '配货数量', key: 'sale_wait_pick_num', flex: 1, line: true}, // 待配送 已完成
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, line: true},
     {title: '操作', key: '', operation: '消费者明细', flex: 1, class: 'operate'}
   ]
@@ -63,17 +63,28 @@
     data() {
       return {
         commodities: commodities,
-        topListTilte: [{
-          name: '商户名称：', key: 'buyer_name'
-        }, {
-          name: '订单号：', key: 'order_sn'
-        }, {
-          name: '下单时间：', key: 'created_at'
-        }, {
-          name: '状态：', key: 'status_str'
-        }, {
-          name: '品类数：', key: 'type_count'
-        }]
+        topListTilte: [
+          {
+            name: '商户名称：',
+            key: 'buyer_name'
+          },
+          {
+            name: '订单号：',
+            key: 'order_sn'
+          },
+          {
+            name: '下单时间：',
+            key: 'created_at'
+          },
+          {
+            name: '状态：',
+            key: 'status_str'
+          },
+          {
+            name: '品类数：',
+            key: 'type_count'
+          }
+        ]
       }
     },
 

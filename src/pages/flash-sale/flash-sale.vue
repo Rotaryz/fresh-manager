@@ -117,20 +117,19 @@
         })
       },
       getSaleStatus() {
-        API.Sale.getSaleStatus({activity_type: 'fixed', start_at: this.startTime,end_at: this.endTime})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Sale.getSaleStatus({activity_type: 'fixed', start_at: this.startTime, end_at: this.endTime}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              value: item.status,
+              num: item.statistic
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                value: item.status,
-                num: item.statistic
-              }
-            })
           })
+        })
       },
       async _setTime(arr) {
         this.$refs.pages.beginPage()

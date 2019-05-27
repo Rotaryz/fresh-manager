@@ -5,6 +5,9 @@
       <div class="enter-title">供应商：{{enterMsg.supplier}}</div>
       <div class="enter-title">入库时间：{{enterMsg.entry_time || '--------'}}</div>
       <div class="enter-title">状态：{{enterMsg.status === 0 ? '待入库' : '已完成'}}</div>
+      <div class="enter-title">到货时间：{{enterMsg.arrival_time || '--------'}}</div>
+      <div class="enter-title">理货时间：{{enterMsg.tally_time || '--------'}}</div>
+      <div class="enter-title">上架时间：{{enterMsg.shelf_time || '--------'}}</div>
       <div class="enter-title">入库金额：<span v-if="enterMsg.status === 1" class="enter-title-money">￥{{enterMsg.total}}</span></div>
     </div>
     <div class="table-content">
@@ -30,13 +33,13 @@
             </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item list-item-layout">
-              <input v-if="enterMsg.status === 0" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
-              <div v-if="enterMsg.status === 1">{{item.base_num}}</div>
+              <input v-if="enterMsg.status === 0 || enterMsg.status === 2" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
+              <div v-else>{{item.base_num}}</div>
               <div :class="{'base-unit': enterMsg.status === 1}">{{item.base_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
-              <input v-if="enterMsg.status === 0" v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
-              <div v-if="enterMsg.status === 1">{{item.purchase_num}}</div>
+              <input v-if="enterMsg.status === 0 || enterMsg.status === 2" v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
+              <div v-else>{{item.purchase_num}}</div>
               <div :class="{'base-unit': enterMsg.status === 1}">{{item.purchase_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
@@ -46,22 +49,22 @@
             <div class="list-item">￥{{item.total}}</div>
             <div class="list-item time-content">
               <date-picker
-                v-if="enterMsg.status === 0"
+                v-if="enterMsg.status === 0 || enterMsg.status === 2 || enterMsg.status === 3"
                 class="edit-input-box" type="date"
                 placeholder="保质时间"
                 style="width: 110px;height: 34px;border-radius: 2px"
                 :value="item.shelf_life"
                 @on-change="changeStartTime($event, index)"
               ></date-picker>
-              <div v-if="enterMsg.status === 1">{{item.shelf_life || '--------'}}</div>
+              <div v-else>{{item.shelf_life || '--------'}}</div>
             </div>
             <div class="list-item">
-              <div v-if="enterMsg.status === 0" class="select-time" @click="setStoreFn(index)">
+              <div v-if="enterMsg.status === 0 || enterMsg.status === 2 || enterMsg.status === 3" class="select-time" @click="setStoreFn(index)">
                 <div v-if="item.warehouse_position" class="select-time-name">{{item.warehouse_position}}</div>
                 <div v-if="!item.warehouse_position" class="select-time-name">请选择</div>
                 <!--<div class="select-time-icon"></div>-->
               </div>
-              <div v-if="enterMsg.status === 1" class="list-item">
+              <div v-else class="list-item">
                 {{item.warehouse_position|| '--------'}}
               </div>
             </div>
@@ -70,7 +73,7 @@
       </div>
       <default-store ref="modalBox" @confirm="confirm"></default-store>
     </div>
-    <div v-if="enterMsg.status === 0" class="back">
+    <div v-if="enterMsg.status === 0 || enterMsg.status === 2 || enterMsg.status === 3" class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
       <div class="back-btn back-submit hand" @click="submitFn">确认提交</div>
     </div>

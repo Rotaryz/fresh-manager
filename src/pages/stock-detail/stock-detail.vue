@@ -58,7 +58,17 @@
 
   const PAGE_NAME = 'STOCK_DETAIL'
   const TITLE = '盘点详情'
-  const COMMODITIES_LIST = ['序号', '商品', '分类', '基本单位', '库存数量', '盘点数量', '差异数量', '差异金额(元)', '调整类型']
+  const COMMODITIES_LIST = [
+    '序号',
+    '商品',
+    '分类',
+    '基本单位',
+    '库存数量',
+    '盘点数量',
+    '差异数量',
+    '差异金额(元)',
+    '调整类型'
+  ]
   const ADJUST_ORDER_DETAIL = '/scm/api/backend/stock/adjust-order-detail-export/'
 
   export default {
@@ -92,7 +102,7 @@
         let data = {
           current_corp: currentId,
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
-          access_token: this.currentUser.access_token,
+          access_token: this.currentUser.access_token
         }
         let search = []
         for (let key in data) {

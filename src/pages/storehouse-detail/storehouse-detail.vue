@@ -59,7 +59,7 @@
   export default {
     name: PAGE_NAME,
     page: {
-      title: TITLE,
+      title: TITLE
     },
     props: {
       goodsMsg: {
@@ -126,15 +126,13 @@
         this._getWarehouseDetailList()
       },
       _getWarehouseDetailList() {
-        this.getWarehouseDetailList(
-          {
-            code: this.$route.query.code,
-            page: this.page,
-            type: this.type,
-            orderSn: this.orderSn,
-            loading: false
-          }
-        )
+        this.getWarehouseDetailList({
+          code: this.$route.query.code,
+          page: this.page,
+          type: this.type,
+          orderSn: this.orderSn,
+          loading: false
+        })
       },
       searchDetail(orderSn) {
         this.page = 1

@@ -126,16 +126,33 @@
     data() {
       return {
         items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8'],
-        commodities1: [{
-          title: '配货位', key: 'sort', noShow: true, class: 'sort'
-        }],
-        commodities2: [{
-          title: '商户名称', key: 'name', flex: '2'
-        }, {
-          title: '线路', key: 'road_name', replaceText: '設置路綫', flex: '1'
-        }, {
-          title: '操作 ', key: 'road_id', type: "operate", class: 'operate'
-        }],
+        commodities1: [
+          {
+            title: '配货位',
+            key: 'sort',
+            noShow: true,
+            class: 'sort'
+          }
+        ],
+        commodities2: [
+          {
+            title: '商户名称',
+            key: 'name',
+            flex: '2'
+          },
+          {
+            title: '线路',
+            key: 'road_name',
+            replaceText: '設置路綫',
+            flex: '1'
+          },
+          {
+            title: '操作 ',
+            key: 'road_id',
+            type: 'operate',
+            class: 'operate'
+          }
+        ],
         dragList: [],
         road: {
           check: false,
@@ -148,20 +165,18 @@
           road_name: '',
           road_id: ''
         },
-        settingId: "",
+        settingId: '',
         isChange: false
       }
     },
     computed: {
       ...authComputed,
-      ...sortingComputed,
+      ...sortingComputed
     },
     created() {
       this.dragList = _.cloneDeep(this.sortingConfig.list)
     },
-    mounted() {
-
-    },
+    mounted() {},
     methods: {
       ...sortingMethods,
       // 托拽结束后
@@ -170,7 +185,7 @@
         this.isChange = true
         let trueChange = false
         let data = this.dragList.map((item, idx) => {
-          if(item.sort !== this.sortingConfig.list[idx].sort){
+          if (item.sort !== this.sortingConfig.list[idx].sort) {
             trueChange = true
           }
           return {
@@ -178,15 +193,15 @@
             sort: this.sortingConfig.list[idx].sort
           }
         })
-        if(trueChange){
+        if (trueChange) {
           this._changeAllocationPostion(data)
-        }else{
+        } else {
           this.isChange = false
         }
       },
       // 更新托拽列表
       updateList() {
-        this.getSortingConfigList({loading: false}).then(res => {
+        this.getSortingConfigList({loading: false}).then((res) => {
           if (res) {
             this.dragList = _.cloneDeep(this.sortingConfig.list)
             this.$nextTick(() => {
@@ -198,35 +213,36 @@
       // 托拽
       _changeAllocationPostion(arr) {
         this.$loading.show('修改配货位')
-        API.Sorting.changeAllocationPostion(arr).then(res => {
-          if (res.error === this.$ERR_OK) {
-            this.$toast.show('修改配货位成功')
-            this.isChange = false
-          } else {
-            this.$toast.show('修改配货位失败')
-          }
-        })
+        API.Sorting.changeAllocationPostion(arr)
+          .then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('修改配货位成功')
+              this.isChange = false
+            } else {
+              this.$toast.show('修改配货位失败')
+            }
+          })
           .finally(() => {
             this.updateList()
           })
       },
       _getRoadList() {
-        return API.Sorting.getRoadList().then(res => {
+        return API.Sorting.getRoadList().then((res) => {
           let resData = res.data || []
-          this.road.data = resData.map(item => {
+          this.road.data = resData.map((item) => {
             return {name: item.road_name, id: item.road_id}
           })
         })
       },
       //  显示弹框
       _showSettingModel(id) {
-        this.road.content = ""
+        this.road.content = ''
         this.selectRoad = {
-          road_name: "",
-          road_id: ""
+          road_name: '',
+          road_id: ''
         }
         this.settingId = id
-        this._getRoadList().finally(res => {
+        this._getRoadList().finally((res) => {
           this.$refs.modal.showModal()
         })
       },
@@ -249,17 +265,19 @@
           road_id: this.selectRoad.id
         }
         this.$loading.show('设置线路')
-        API.Sorting.setRoad(this.settingId, params).then(res => {
-          if (res.error === this.$ERR_OK) {
-            this.$toast.show('线路设置成功')
-            this._hideModal()
-            this.updateList()
-          } else {
-            this.$toast.show(res.message)
-          }
-        }).finally(() => {
-          this.$loading.hide()
-        })
+        API.Sorting.setRoad(this.settingId, params)
+          .then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('线路设置成功')
+              this._hideModal()
+              this.updateList()
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+          .finally(() => {
+            this.$loading.hide()
+          })
       },
       // 导出
       _getUrl() {

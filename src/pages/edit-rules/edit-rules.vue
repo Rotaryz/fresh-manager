@@ -126,7 +126,7 @@
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1, value: 'time'},
+    {name: '有效期', flex: 1, value: 'time'}
   ]
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name'},
@@ -134,7 +134,7 @@
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1.2, value: 'time'},
-    {name: '操作', flex: 0.4, value: ''},
+    {name: '操作', flex: 0.4, value: ''}
   ]
   export default {
     name: PAGE_NAME,
@@ -226,7 +226,11 @@
           return
         }
         this.isAdditionGroup = false
-        let res = await API.Order.addCouponActivity({title: this.rulesTitle, type: this.rulesId, coupon_id: this.couponSelectItem.id})
+        let res = await API.Order.addCouponActivity({
+          title: this.rulesTitle,
+          type: this.rulesId,
+          coupon_id: this.couponSelectItem.id
+        })
         this.$toast.show(res.message, 600)
         if (res.error !== this.$ERR_OK) {
           this.isAdditionGroup = true
@@ -271,19 +275,18 @@
           limit: 6,
           status: 1
         }
-        API.Coupon.getCouponList(data, false)
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.couponPage = {
-              total: res.meta.total,
-              per_page: res.meta.per_page,
-              total_page: res.meta.last_page
-            }
-            this.couponList = res.data
-          })
+        API.Coupon.getCouponList(data, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.couponPage = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+          this.couponList = res.data
+        })
       },
       // 弹窗
       showCouponModal() {

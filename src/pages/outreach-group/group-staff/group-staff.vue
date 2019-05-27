@@ -70,7 +70,7 @@
         page: 1,
         status: 0,
         codeShow: '',
-        qrUrl: process.env.VUE_APP_API,
+        qrUrl: process.env.VUE_APP_API
       }
     },
     computed: {
@@ -88,7 +88,13 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.staffId + '?' + search.join('&')
+        return (
+          process.env.VUE_APP_API +
+          '/social-shopping/api/backend/activity-manage/member-activity-excel/' +
+          this.staffId +
+          '?' +
+          search.join('&')
+        )
       }
     },
     created() {},
