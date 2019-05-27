@@ -318,7 +318,7 @@
         let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
         if (module.list) {
           module.list.forEach(item => {
-            API.Advertisement.getActivityGoodsList({activity_id: item.id}).then(res => {
+            API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then(res => {
               if (!res || !res.data) {
                 return
               }

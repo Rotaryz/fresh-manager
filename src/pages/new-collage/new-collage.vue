@@ -440,7 +440,7 @@
     },
     watch: {},
     created() {
-      this.disable = +this.$route.query.id
+      this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.collageDetail)

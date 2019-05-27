@@ -252,7 +252,7 @@
       }
     },
     created() {
-      this.disable = +this.$route.query.id
+      this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       if (this.$route.query.activity_theme === 'fixed') {
         this.personAllBuyLimit = 10
