@@ -1,7 +1,7 @@
 <template>
   <div class="pie-data">
     <div class="data-content">
-      <div :id="chartId" style="width: 100%; height: 100%" @click="clickChart"></div>
+      <div :id="chartId" style="width: 100%; height: 100%"></div>
     </div>
   </div>
 </template>
@@ -41,12 +41,9 @@
     watch: {
     },
     mounted() {
-      this.drawPie(this.data)
+      // this.drawPie(this.data)
     },
     methods: {
-      clickChart(e) {
-        console.log(e, 111)
-      },
       setTab(num) {
         this.tabIndex = 0
       },

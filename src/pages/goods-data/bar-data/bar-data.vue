@@ -1,7 +1,7 @@
 <template>
   <div class="bar-data">
     <div class="data-content">
-      <div :id="chartId" style="width: 100%; height: 100%" @click="clickChart"></div>
+      <div :id="chartId" style="width: 100%; height: 100%"></div>
     </div>
   </div>
 </template>
@@ -39,9 +39,6 @@
       // this.drawBar(this.data, '退货数')
     },
     methods: {
-      clickChart(params) {
-        console.log(params, 111)
-      },
       setTab(num) {
         this.tabIndex = 0
       },
@@ -54,6 +51,9 @@
           let xAxisData = data.x.length > 0 ? data.x : this.data.x
           let seriesData = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          myChart.on('click', function (params) {
+            console.log(params)
+          })
           myChart.setOption(this.createBar1(xAxisData, seriesData))
         })
       },
@@ -64,6 +64,9 @@
           let seriesData1 = data.series.length > 0 ? data.series : this.data.series1
           let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          myChart.on('click', function (params) {
+            console.log(params)
+          })
           myChart.setOption(this.createBar2(xAxisData, seriesData1, seriesData2))
         })
       },
@@ -72,6 +75,9 @@
           let xAxisData = data.x.length > 0 ? data.x : this.data.x2
           let seriesData3 = data.series.length > 0 ? data.series : this.data.series3
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          myChart.on('click', function (params) {
+            console.log(params)
+          })
           myChart.setOption(this.createBar3(xAxisData, seriesData3))
         })
       },

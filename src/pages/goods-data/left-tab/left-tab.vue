@@ -1,7 +1,7 @@
 <template>
   <div ref="leftTab" class="left-tab">
     <div ref="leftBox" class="left-box">
-      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory({id: ''}, 0, 1)">
+      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory({id: ''}, 0, 'all')">
         <div class="left-tab-main">
           <div class="left">
             <img src="./icon-all_green@2x.png" alt="" class="category-image all-image">
@@ -14,7 +14,7 @@
         :key="index"
         class="category-item hand"
         :class="[{'active': (+categoryIndex === index+1 && !selectGoods)},{'open': (+categoryIndex === index+1 && selectGoods)}]"
-        @click="changeCategory(item, index+1, 2)"
+        @click="changeCategory(item, index+1, 'category')"
       >
         <div class="left-tab-main">
           <div class="left">
@@ -28,7 +28,7 @@
                :key="ind"
                class="goods-item"
                :class="{'select': (+goodsIndex === ind && selectGoods)}"
-               @click.stop="changeGoods(goods, ind, 3)"
+               @click.stop="changeGoods(goods, ind, 'goods')"
           >
             <img src="./goods.png" alt="" class="goods-image">
             <span class="title">{{goods.name}}</span>
