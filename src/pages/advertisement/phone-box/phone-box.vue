@@ -230,7 +230,7 @@
       activityGoodsList: {
         type: Array,
         default: () => {
-          return new Array(4).fill({})
+          return []
         }
       },
       newClientList: {

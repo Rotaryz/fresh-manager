@@ -318,19 +318,27 @@
         let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
         if (module.list) {
           module.list.forEach(item => {
-            API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then(res => {
-              if (!res || !res.data) {
-                return
-              }
-              if (item.module_name === 'activity_fixed') {
-                this.activityGoodsList = this._formatListData(res.data)
-              } else {
-                let key = (TAB_ARR_CONFIG[item.module_name] || {}).dataArray
-                if (this[key]) {
-                  this[key] = this._formatListData(res.data)
+            if (item.starting_point_id > 0) {
+              API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then(res => {
+                if (!res || !res.data) {
+                  return
                 }
-              }
-            })
+                if (item.module_name === 'activity_fixed') {
+                  this.activityGoodsList = this._formatListData(res.data)
+                } else if(item.module_name === 'groupon'){
+                  API.Advertisement.getGroupList().then(res => {
+                    if(res.data) {
+                      this.groupList = this._formatListData(res.data)
+                    }
+                  })
+                } else {
+                  let key = (TAB_ARR_CONFIG[item.module_name] || {}).dataArray
+                  if (this[key]) {
+                    this[key] = this._formatListData(res.data)
+                  }
+                }
+              })
+            }
           })
         }
         API.Advertisement.getGuessList().then(res => {
@@ -338,30 +346,6 @@
             this.guessList = this._formatListData(res.data)
           }
         })
-        // this._getActivityGoods()
-        // API.Advertisement.getNewClientList().then(res => {
-        //   if (res.data) {
-        //     this.newClientList = this._formatListData(res.data)
-        //   }
-        // })
-        // API.Advertisement.getTodayList().then(res => {
-        //   if (res.data) {
-        //     this.todayHotList = this._formatListData(res.data)
-        //   }
-        // })
-        // API.Advertisement.getGuessList().then(res => {
-        //   if (res.data) {
-        //     this.guessList = this._formatListData(res.data)
-        //   }
-        // })
-        // API.Advertisement.getGroupList().then(res => {
-        //   if(res.data) {
-        //     this.groupList = this._formatListData(res.data)
-        //   }
-        // })
-        // TAB_STATUS.forEach(item => {
-        //   API.
-        // })
       },
       _formatListData(arr = []) {
         return arr.map(item => {
@@ -400,38 +384,22 @@
         }
       },
       // 获取限时抢购商品列表
-      _getActivityGoods() {
-        let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
-        if (module.list) {
-          module = module.list.find(val => val.module_name === 'activity_fixed') || {}
-          if (module) {
-            let id = module.list && module.list[0] && module.list[0].id
-            if (!id) return
-            API.Advertisement.getActivityGoods(id).then((res) => {
-              if (res.error !== this.$ERR_OK) {
-                return
-              }
-              this.activityGoodsList = this._formatListData(res.data)
-              console.log(this.activityGoodsList)
-            })
-          }
-        }
-        // this.infoBannerList.modules.forEach((item) => {
-        //   if (
-        //     item.module_name === 'activity_fixed' &&
-        //     item.content_data &&
-        //     item.content_data.list &&
-        //     item.content_data.list.length > 0
-        //   ) {
-        //     API.Advertisement.getActivityGoods(item.content_data.list[0].id).then((res) => {
-        //       if (res.error !== this.$ERR_OK) {
-        //         return
-        //       }
-        //       this.activityGoodsList = res.data
-        //     })
-        //   }
-        // })
-      },
+      // _getActivityGoods() {
+      //   let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
+      //   if (module.list) {
+      //     module = module.list.find(val => val.module_name === 'activity_fixed') || {}
+      //     if (module) {
+      //       let id = module.list && module.list[0] && module.list[0].id
+      //       if (!id) return
+      //       API.Advertisement.getActivityGoods(id).then((res) => {
+      //         if (res.error !== this.$ERR_OK) {
+      //           return
+      //         }
+      //         this.activityGoodsList = this._formatListData(res.data)
+      //       })
+      //     }
+      //   }
+      // },
       _setSort() {},
       _setLinkType(index, e) {
         this.tabIndex = index

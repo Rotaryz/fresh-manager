@@ -238,7 +238,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
-            API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme})
+            API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
             .then((res) => {
               if (res.error !== ERR_OK) {
                 return next({name: '404'})

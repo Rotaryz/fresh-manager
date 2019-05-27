@@ -144,6 +144,7 @@
       }
     },
     created() {
+      this.$loading.hide()
       // this.defaultIndex = this.$route.query.status * 1 || 0
       this._getActiveStatus()
     },
@@ -166,7 +167,7 @@
             activity_theme: this.currentTab.activity_theme
           })
           if (res.error !== this.$ERR_OK) {
-            // this.$toast.show(res.message) todo
+            this.$toast.show(res.message)
             return
           }
           this.statusTab = res.data.map((item, index) => {
