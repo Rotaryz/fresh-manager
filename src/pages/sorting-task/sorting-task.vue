@@ -28,16 +28,17 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
-          <p class="identification-name">拣货任务列表</p>
+          <p class="identification-name">分拣任务</p>
           <base-status-nav :statusList="statusList" :value="sortingTask.filter.status"
                            valueKey="status" labelKey="status_str" numKey="statistic" @change="_setStatus"></base-status-nav>
         </div>
         <div class="function-btn">
+          <div class="btn-main g-btn-item" @click="_exportBatch">批量完成分拣</div>
           <template v-if="!tabIndex">
-            <div class="btn-main" @click="_exportByOrder">导出</div>
+            <div class="btn-main g-btn-item" @click="_exportByOrder">导出</div>
           </template>
           <template v-else>
-            <div class="btn-main" @click="_exportPickingOrder">导出拣货单</div>
+            <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
           </template>
 
@@ -134,6 +135,7 @@
     {tilte: '缺货数', key: 'sale_out_of_num', after: "sale_unit"},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
+    {tilte: '状态', key: 'sale_out_of_num'},
     {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate add-btn", params: {id: 'id','goods_sku_code':'goods_sku_code'}, routerName: 'sorting-task-detail-by-goods',afterBtn:'打印标签'}]
   function getDateNow(){
     let nowDate = new Date()
@@ -231,6 +233,9 @@
     methods: {
       ...authComputed,
       ...sortingMethods,
+      _exportBatch(){
+
+      },
       // 打印彈框   日期選擇
       handleDateChange(val){
         console.log(this.setting[2].value)
