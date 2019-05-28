@@ -200,13 +200,9 @@
         }
       },
       _batchFinishSorting(){
-        API.Sorting.batchFinishSorting(this.sortingTask.filter).then(res => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return false
-          }
-          let data = res.data
-          this.statusList = data
+        API.Sorting.batchFinishSorting(this.sortingTask.filter,true).then(res => {
+          this.$toast.show(res.message)
+
         }).catch((err) => {
           this.$toast.show(err.message)
         })
@@ -350,15 +346,15 @@
       // 按订单分拣 导出
       _exportByOrder(){
         // todo
-        API.Sorting.exportPickingOrder(this.getUrl())
+        API.Sorting.exportDistributionOrder(`?current_corp=${this.getCurrentId()}&access_token=${this.currentUser().access_token}`)
       },
       // 导出分拣单
       _exportPickingOrder() {
         API.Sorting.exportPickingOrder(this.getUrl())
       },
-      // 导出配送单
+      // 导出配货单
       async _exportDeliveryOrder() {
-        await API.Sorting.exportDeliveryOrder(this.getUrl())
+        await API.Sorting.exportAllocationOrder(this.getUrl())
         setTimeout(()=>{
           this._updateList({page:1})
         },500)

@@ -53,9 +53,14 @@ export default {
     window.open(url + paramsStr, '_parent')
   },
   // √ 导出配货单
-  async exportDeliveryOrder(paramsStr) {
+  async exportAllocationOrder(paramsStr) {
     let url = '/scm/api/backend/sorting/allocation-export'
     return window.open(url + paramsStr, '_parent')
+  },
+  // √ 导出配送单
+  exportDistributionOrder(paramsStr) {
+    let url = '/scm/api/backend/delivery/delivery-exports'
+    window.open(url + paramsStr, '_parent')
   },
   // 批量完成分拣
   batchFinishSorting(data,loading = true){
