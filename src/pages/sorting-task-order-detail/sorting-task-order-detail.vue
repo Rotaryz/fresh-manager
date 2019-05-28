@@ -3,8 +3,8 @@
     <ul class="top-wrap">
       <li v-for="item in topListTilte" :key="item.id">
         <span>{{item.name}}</span>
-        <span :class="{number:item.type === 'number'}">{{sortingTaskDetailByOrder.pickingDetail[item.id]}}</span>
-        <span v-if="item.after">{{sortingTaskDetailByOrder.pickingDetail[item.after]}}</span>
+        <span :class="{number:item.type === 'number'}">{{sortingTaskDetailByOrder.details[item.id]}}</span>
+        <span v-if="item.after">{{sortingTaskDetailByOrder.details[item.after]}}</span>
       </li>
     </ul>
     <div class="table-content">
@@ -22,18 +22,7 @@
           <template v-if="sortingTaskDetailByOrder.list.length">
             <div v-for="(row, index) in sortingTaskDetailByOrder.list" :key="index" class="list-content list-box">
               <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :title="row[item.key]" :class="['list-item',item.class]">
-                <template v-if="item.type==='operate'" name="operation">
-                  <router-link class="list-operation" :to="_getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
-                </template>
-                <template v-else>
-                  {{row[item.key]}}
-                  <template v-if="item.after">
-                    {{row[item.after]}}
-                  </template>
-                  <div v-if="item.afterBr">
-                    {{row[item.afterBr]}}
-                  </div>
-                </template>
+                {{row[item.key]}}
               </div>
             </div>
           </template>
@@ -48,8 +37,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  // import API from '@api'
   import {sortingComputed,sortingMethods} from '@state/helpers'
-
   const PAGE_NAME = 'SORTING_TASK_DETAIL'
   const TITLE = '分拣任务明细'
   export default {
@@ -60,21 +49,21 @@
     data() {
       return {
         topListTilte: [{
-          name: '商户名称：', id: 'goods_name'
+          name: '商户名称：', id: 'merchant_name'
         }, {
-          name: '订单号：', id: 'goods_sku_encoding'
+          name: '订单号：', id: 'order_sn'
         }, {
-          name: '下单时间：', id: 'position_name'
+          name: '下单时间：', id: 'build_time'
         }, {
-          name: '状态：', id: 'merchant_num'
+          name: '状态：', id: 'status_str'
         }, {
-          name: '销售金额：', id: 'wait_allocation_num', type: 'number', before: '¥'
+          name: '销售金额：', id: 'sale_price', type: 'number', before: '¥'
         }],
         commodities:[
           {tilte: '商品', key: 'goods_name', flex: '2',afterBr: 'goods_sku_encoding'},
           {tilte: '分类', key: 'goods_category'},
-          {tilte: '订单数量 ', key: 'sale_num', after: "sale_unit"},
-          {tilte: '配货数量', key: 'sale_wait_pick_num', after: "sale_unit"},
+          {tilte: '订单数量 ', key: 'order_num', after: "sale_unit"},
+          {tilte: '配货数量', key: 'allocation_num', after: "sale_unit"},
           {tilte: '存放库位', key: 'position_name', flex: '2'}]
       }
     },
@@ -84,7 +73,8 @@
     methods:{
       ...sortingMethods,
       _getMoreList(page){
-        this.getSortingDetailByOrderList(page)
+        this.SET_PARAMS({page,type:'sortingTaskDetailByOrder'})
+        this.getSortingTaskGoodsDetails(this.$route.params)
       }
     }
   }

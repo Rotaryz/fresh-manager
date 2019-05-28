@@ -7,17 +7,29 @@ export default {
     // let url = '/mock/sortingTaskList.json'
     return request.get(url, data, loading)
   },
-  // √  配貨明細 下
+  // √ 商品分拣任务明细--- 配貨明細
   getSortingDeliveryDetail(id, params, loading = true) {
     // let url = '/mock/sortingTaskDetail.json'
     let url = `/scm/api/backend/sorting/allocation-detail/${id}`
     return request.get(url, params, loading)
   },
-  // √  拣货明细
+  // √  商品分拣任务明细--- 拣货明细
   getSortingPickingDetail(id, loading = false) {
     // let url = '/mock/sortingPickDetail.json'
     let url = `/scm/api/backend/sorting/picking-order-detail/${id}`
     return request.get(url, {}, loading)
+  },
+  // √ 订单分拣任务明细--- 配貨明細
+  getSortingOrderDetail(id, loading = true) {
+    // let url = '/mock/sortingTaskDetail.json'
+    let url = `/scm/api/backend/sorting/order-sorting/${id}`
+    return request.get(url, {}, loading)
+  },
+  // √  订单分拣任务明细--- 列表
+  getSortingOrderGoodsList(orderId,params, loading = false) {
+    // let url = '/mock/sortingPickDetail.json'
+    let url = `/scm/api/backend/sorting/order-sorting-details/${orderId}`
+    return request.get(url, params, loading)
   },
   // √ 分类列表
   getClassifyList(params = {}) {

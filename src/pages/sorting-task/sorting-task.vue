@@ -108,7 +108,7 @@
     {tilte: '订单数', key: 'order_num', after: "sale_unit"},
     {tilte: '配货数', key: 'allocation_num', after: "sale_unit"},
     {tilte: '状态', key: 'status_str'},
-    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id'}, routerName: 'sorting-task-detail-by-order'}]
+    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id',order_id:'order_id'}, routerName: 'sorting-task-order-detail'}]
   const COMMODITIES_LIST2 = [
     {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
     {tilte: '分类', key: 'goods_category', flex: '2'},

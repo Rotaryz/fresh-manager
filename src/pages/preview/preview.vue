@@ -62,7 +62,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import API from '@api'
   import {DatePicker} from 'iview'
   import JsBarcode from 'jsbarcode'
   import {sortingComputed, sortingMethods} from '@state/helpers'

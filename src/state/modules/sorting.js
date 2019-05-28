@@ -27,7 +27,7 @@ export const state = {
     detail: {}
   },
   sortingTaskDetail: {
-    pickingDetail: {
+    details: {
       goods_name: "",
       goods_sku_encoding: '',
       position_name: '',
@@ -35,18 +35,13 @@ export const state = {
       wait_allocation_num: '',
       sale_unit: ''
     },
-    deliveryDetail: []
+    list: []
   },
   // TODO
   sortingTaskDetailByOrder: {
     filter: {
-      goods_category_id: '',
       page: 1,
       limit: 10,
-      start_time: '',
-      end_time: '',
-      keyword: "",
-      status: ""   // 待分拣
     },
     pageTotal: {
       // 页码详情
@@ -55,13 +50,12 @@ export const state = {
       total_page: 1
     },
     list: [],
-    pickingDetail: {
-      goods_name: "",
-      goods_sku_encoding: '',
-      position_name: '',
-      merchant_num: '',
-      wait_allocation_num: '',
-      sale_unit: ''
+    details: {
+      merchant_name: "",
+      order_sn: '',
+      build_time: '',
+      status_str: '',
+      sale_price: '',
     }
   },
   barCodePreviewInfo:{
@@ -92,9 +86,9 @@ export const mutations = {
   SET_PARAMS(state, {type = 'sortingTask', ...params}) {
     state[type].filter = {...state[type].filter, ...params}
   },
-  SET_TASK_DETAIL(state, {type = 'deliveryDetail', value}) {
-    state.sortingTaskDetail[type] = value
-  },
+  SET_TASK_DETAILS(state, {type = 'sortingTaskDetailByOrder', details}) {
+  state[type].details = details
+},
   SET_PAGE_TOTAL(state, {pageTotal, type = 'sortingTask'}) {
     state[type].pageTotal = pageTotal
   },
@@ -132,6 +126,7 @@ export const actions = {
         app.$loading.hide()
       })
   },
+  // 条码打印预览
   getBarCodePreviewInfo({state, commit, dispatch},params){
     return API.Sorting.getSortingPickingDetail(params.id)
       .then((res) => {
@@ -157,8 +152,8 @@ export const actions = {
       if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
         return false
       }
-      commit('SET_TASK_DETAIL', {value: res[0].data})// 配送
-      commit('SET_TASK_DETAIL', {value: res[1].data, type: 'pickingDetail'})// 拣货
+      commit('SET_LIST', {list:res[0].data, type: 'sortingTaskDetail'})// 配送
+      commit('SET_TASK_DETAILS', {details: res[1].data, type: 'sortingTaskDetail'})// 拣货
       return true
     })
       .catch(() => {
@@ -169,23 +164,23 @@ export const actions = {
       })
   },
   // 按订单分拣详情
-  getSortingTaskDetailByOrder({state, commit}) {
+  getSortingTaskDetailByOrder({state, commit,dispatch},params) {
     // TODO
     return Promise.all([
-      API.Sorting.getSortingPickingDetail(state.sortingTaskDetailByOrder.filter.id),
-      API.Sorting.getSortingTaskList(state.sortingTaskDetailByOrder.filter,state.sortingTaskDetailByOrder.filter.id)
-
+      API.Sorting.getSortingOrderDetail(params.id),
+      dispatch('getSortingTaskGoodsDetails',params)
     ]).then(res => {
       if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
         return false
       }
-      let pageTotal = {
-        total: res[1].meta.total || 0,
-        per_page: res[1].meta.per_page || 1,
-        total_page: res[1].meta.last_page || 1
-      }
-      commit('SET_PAGE_TOTAL', {pageTotal,type:'sortingTaskDetailByOrder'})
-      commit('SET_LIST', {list: res[1].data, type: 'sortingTaskDetailByOrder'})
+      // let pageTotal = {
+      //   total: res[1].meta.total || 0,
+      //   per_page: res[1].meta.per_page || 1,
+      //   total_page: res[1].meta.last_page || 1
+      // }
+      commit('SET_TASK_DETAILS', {details:res[0].data})// 详情
+      // commit('SET_PAGE_TOTAL', {pageTotal,type:'sortingTaskDetailByOrder'})
+      // commit('SET_LIST', {list: res[1].data, type: 'sortingTaskDetailByOrder'})
       return true
     })
       .catch(() => {
@@ -196,22 +191,19 @@ export const actions = {
       })
   },
   // 分页
-  getSortingDetailByOrderList({commit},page) {
-    API.Sorting.getSortingTaskList({...state.sortingTaskDetailByOrder.filter,page}).then((res) => {
-      if (res.error !== app.$ERR_OK) {
-        return false
-      }
-      let pageTotal = {
-        total: res.meta.total || 0,
-        per_page: res.meta.per_page || 1,
-        total_page: res.meta.last_page || 1
-      }
-      commit('SET_PAGE_TOTAL', {pageTotal,type:'sortingTaskDetailByOrder'})
-      commit('SET_LIST', {list: res.data, type: 'sortingTaskDetailByOrder'})
-      return true
-    }).catch(() => {
-      return false
-    })
+  getSortingTaskGoodsDetails({commit},params) {
+     return  API.Sorting.getSortingOrderGoodsList(params.order_id, state.sortingTaskDetailByOrder.filter,true).then((res) => {
+        let pageTotal = {
+          total: res.meta.total || 0,
+          per_page: res.meta.per_page || 1,
+          total_page: res.meta.last_page || 1
+        }
+        commit('SET_PAGE_TOTAL', {pageTotal,type:'sortingTaskDetailByOrder'})
+        commit('SET_LIST', {list: res.data, type: 'sortingTaskDetailByOrder'})
+       return res
+     }).catch((err) => {
+        return err
+      })
       .finally(() => {
         app.$loading.hide()
       })

@@ -3,8 +3,8 @@
     <ul class="top-wrap">
       <li v-for="item in topListTilte" :key="item.id">
         <span>{{item.name}}</span>
-        <span :class="{number:item.type === 'number'}">{{sortingTaskDetail.pickingDetail[item.id]}}</span>
-        <span v-if="item.after">{{sortingTaskDetail.pickingDetail[item.after]}}</span>
+        <span :class="{number:item.type === 'number'}">{{sortingTaskDetail.details[item.id]}}</span>
+        <span v-if="item.after">{{sortingTaskDetail.details[item.after]}}</span>
       </li>
     </ul>
     <div class="table-content">
@@ -15,7 +15,7 @@
         </div>
       </div>
       <ul class="content-wrap">
-        <li v-for="(item,index) in sortingTaskDetail.deliveryDetail" :key="index" class="item-wrap">
+        <li v-for="(item,index) in sortingTaskDetail.list" :key="index" class="item-wrap">
           <div class="index">{{item.sort|format}}</div>
           <div class="name">{{item.name}}</div>
           <div class="num">{{item.num}}{{item.unit}}</div>

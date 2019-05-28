@@ -1713,18 +1713,17 @@ export default [
       },
       // 按订单  分拣任务明细
       {
-        path: 'sorting-task/sorting-task-detail/order/:id',
-        name: 'sorting-task-detail-by-order',
+        path: 'sorting-task/sorting-task-detail/order/:id/:order_id',
+        name: 'sorting-task-order-detail',
         meta: {
           titles: ['供应链', '分拣', '分拣任务', '商品明细'],
           beforeResolve(routeTo, routeFrom, next) {
             store.commit('sorting/SET_PARAMS', {
-              ...routeTo.params,
               type:'sortingTaskDetailByOrder',
               page: 1,
               limit: 10
             })
-            store.dispatch('sorting/getSortingTaskDetailByOrder').then((res) => {
+            store.dispatch('sorting/getSortingTaskDetailByOrder', routeTo.params).then((res) => {
               if (!res) {
                 return next({name: '404'})
               }
@@ -1735,7 +1734,7 @@ export default [
               })
           }
         },
-        component: () => lazyLoadView(import('@pages/sorting-task-detail/sorting-task-detail-by-order'))
+        component: () => lazyLoadView(import('@pages/sorting-task-order-detail/sorting-task-order-detail'))
       },
       // 分拣任务明细
       {
