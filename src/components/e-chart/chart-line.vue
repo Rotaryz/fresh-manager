@@ -4,14 +4,22 @@
       <div class="left-box">
         <p class="title">{{chartConfig.title}}</p>
         <ul v-if="chartConfig.tab" class="tab">
-          <li v-for="(tab, tabIdx) in chartConfig.tab" :key="tabIdx" class="tab-item" @click="_switchTab(tab,tabIdx)">{{tab.name}}</li>
-          <li class="tab-item tab-active" :style="{'transform':'translateX('+tabIndex*84+'px)'}">{{chartConfig.tab[tabIndex].name}}</li>
+          <li v-for="(tab, tabIdx) in chartConfig.tab" :key="tabIdx" class="tab-item" @click="_switchTab(tab,tabIdx)">
+            {{tab.name}}
+          </li>
+          <li :style="{'transform':'translateX('+tabIndex*84+'px)'}" class="tab-item tab-active">
+            {{chartConfig.tab[tabIndex].name}}
+          </li>
         </ul>
       </div>
       <a v-if="chartConfig.excel" class="excel-btn">导出Excel</a>
     </div>
     <div class="label-bar">
-      <p v-for="(label, labelIdx) in chartConfig.label" :key="labelIdx" class="label" :style="{'max-width':100/chartConfig.label.length+'%'}">{{label}} <span class="label-val">{{chartData.totalArr[labelIdx]}}</span></p>
+      <p v-for="(label, labelIdx) in chartConfig.label" :key="labelIdx"
+         :style="{'max-width':100/chartConfig.label.length+'%'}" class="label"
+      >
+        {{label}} <span class="label-val">{{chartData.totalArr[labelIdx]}}</span>
+      </p>
     </div>
     <div :id="chartId" class="chart-con"></div>
   </div>
@@ -21,8 +29,7 @@
   const COMPONENT_NAME = 'E_CHART_LINE'
   const CHART_COLOR = {
     line: ['#6081E3', '#8859E8', '#F7C136', '#6AE1FF'],
-    axle: '#F0F3F5',
-    label: '#999999'
+    axle: '#F0F3F5', label: '#999999'
   }
 
   export default {
@@ -37,24 +44,49 @@
       return {
         chartConfig: {},
         chartData: {},
-        tabIndex: 0
+        tabIndex: 0,
+        myChart: ''
       }
     },
+    beforeDestroy() {
+      this._resetData()
+    },
     methods: {
-      _setData(chartConfig) {
-        console.log(JSON.stringify(chartConfig))
-        this.chartConfig = chartConfig
+      _resetData() {
+        this.chartConfig = {}
+        this.chartData = {}
+        this.tabIndex = 0
+        this.myChart = ''
+      },
+      _setChart(chartConfig, first) {
+        this._resetData()
         this.tabIndex = chartConfig.tabIndex
+        this.chartConfig = chartConfig
         this.chartData = chartConfig.data
         let option = this._setOption(chartConfig)
-        let myChart = this.$echarts.init(document.getElementById(chartConfig.id));
-        myChart.setOption(option);
+        let myChart = this.myChart
+        if (first || !myChart) {
+          let el = document.getElementById(chartConfig.id)
+          this.$echarts.dispose(el)// 销毁之前的实例
+          myChart = this.$echarts.init(el)
+          this.myChart = myChart
+        }
+        myChart.setOption(option)
+        return myChart
       },
       _setOption(chartConfig) {
         let option = {
+          // 浮窗
           tooltip: {
             trigger: 'axis',
             // formatter: '{a0}: {c0}',
+            formatter: function (params) {
+              let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
+              params.forEach(function (item) {
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}:${item.value}</span></p>`;
+              });
+              return result;
+            },
             backgroundColor: 'rgba(51,51,51,0.8)',
             textStyle: {
               color: '#ffffff',
@@ -68,8 +100,9 @@
                 width: 0.5
               }
             },
-            padding: [5, 10, 5, 10]
+            padding: [5, 10, 7, 10]
           },
+          // 底部每条折线的label，控制显示隐藏
           legend: {
             data: [],
             bottom: 0,
@@ -78,6 +111,7 @@
             itemHeight: 11,
             itemGap: 40
           },
+          // canvas位置
           grid: {
             left: '20',
             right: '30',
@@ -85,34 +119,43 @@
             top: '20',
             containLabel: true
           },
+          // x轴
           xAxis: [],
+          // y轴
           yAxis: [],
+          // 图表类型样式,及数据
           series: []
         }
-
         let data = chartConfig.data.data
         let legendData = []
         let series = []
-        let length = chartConfig.label.length
-        for (let i = 0; i < length; i++) {
-          let item = data[i]
-          item.name = chartConfig.label[i]
-          legendData.push(item.name)
-          series.push(this._setSeries(chartConfig,item,i))
+        // 如果没有配置label或dataLabel，取其中一个
+        if (!chartConfig.label) {
+          chartConfig.label = chartConfig.dataLabel
         }
-        chartConfig.showSecondY && (option.grid.right = '20')
-        option.legend.data = legendData
+        if (!chartConfig.dataLabel) {
+          chartConfig.dataLabel = chartConfig.label
+        }
+        // 遍历label为每条折线图设置series
+        for (let i = 0; i < chartConfig.dataLabel.length; i++) {
+          let item = data[i]
+          item.name = chartConfig.dataLabel[i]
+          legendData.push(item.name)
+          series.push(this._setSeries(chartConfig, item, i))
+        }
+        chartConfig.showSecondY && (option.grid.right = '20')// 如果有两条y轴，调整canvas的右边间距
+        option.legend.data = legendData// 设置底部每条折线的label
         option.series = series
         option.xAxis = this._setXAxis(data[0].x)
         option.yAxis = this._setYAxis(chartConfig.showSecondY)
         return option
       },
-      _setSeries(chartConfig,item,i) {
+      _setSeries(chartConfig, item, i) {
         let seriesConfig = {
           name: item.name,
           type: 'line',
-          data: item.rate,
-          yAxisIndex: chartConfig.showSecondY && i > 1 ? 1 : 0,
+          data: item.rate,// 每条折线的数据
+          yAxisIndex: chartConfig.showSecondY && i > 1 ? 1 : 0,// 设置参照哪个y轴
           smooth: false,
           hoverAnimation: true,
           symbolSize: 5,
@@ -128,8 +171,9 @@
             }
           }
         }
-        if (chartConfig.label.length <= 2 || chartConfig.lineShadow) {
-          let color = ['rgba(96,129,227,0.28)','rgba(136,89,232,0.28)','rgba(247,193,54,0.28)','rgba(106,225,255,0.28)']
+        if (chartConfig.dataLabel.length <= 2 || chartConfig.lineShadow) {
+          // 低于两条或者设置了lineShadow的设置区域阴影
+          let color = ['rgba(96,129,227,0.28)', 'rgba(136,89,232,0.28)', 'rgba(247,193,54,0.28)', 'rgba(106,225,255,0.28)']
           seriesConfig.areaStyle = {
             color: {
               type: 'linear',
@@ -151,6 +195,7 @@
         return seriesConfig
       },
       _setXAxis(data) {
+        // 刻度线：splitLine，坐标刻度：axisTick，坐标值：axisLabel，坐标轴：axisLine
         let xAxis = {
           type: 'category',
           boundaryGap: false,
@@ -178,49 +223,21 @@
         }
         return xAxis
       },
-      _setYAxis(showSecondY) {
-        let yAxis = {
-          minInterval: 1,
-          type: 'value',
-          // 刻度线
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: CHART_COLOR.axle,
-              width: 0.5
-            }
-          },
-          // 坐标刻度
-          axisTick: {
-            show: false,
-            lineStyle: {
-              color: CHART_COLOR.axle,
-              width: 0.5
-            }
-          },
-          // 坐标值
-          axisLabel: {
-            formatter: '{value}',
-            color: CHART_COLOR.label
-          },
-          // 坐标轴
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: CHART_COLOR.axle,
-              width: 0.5
-            }
-          }
-        }
-        if (showSecondY) {
-          let secondY = {
+      _setYAxis(showSecondY = false) {
+        // 刻度线：splitLine，坐标刻度：axisTick，坐标值：axisLabel，坐标轴：axisLine
+        let length = showSecondY ? 2 : 1
+        let yAxis = []
+        for (let i = 1; i <= length; i++) {
+          yAxis.push({
             minInterval: 1,
             type: 'value',
-            // 刻度线
             splitLine: {
-              show: false
+              show: i !== 2,// 第二天Y轴不显示刻度线
+              lineStyle: {
+                color: CHART_COLOR.axle,
+                width: 0.5
+              }
             },
-            // 坐标刻度
             axisTick: {
               show: false,
               lineStyle: {
@@ -228,12 +245,10 @@
                 width: 0.5
               }
             },
-            // 坐标值
             axisLabel: {
               formatter: '{value}',
               color: CHART_COLOR.label
             },
-            // 坐标轴
             axisLine: {
               show: true,
               lineStyle: {
@@ -241,12 +256,12 @@
                 width: 0.5
               }
             }
-          }
-          return [yAxis, secondY]
+          })
         }
-        return [yAxis]
+        return yAxis
       },
-      _setDataZoom(tab,tabIdx) {
+      _setDataZoom() {
+        // 设置缩放区域
         return {
           end: 30,// 数据窗口范围的结束百分比
           type: 'slider',
@@ -262,7 +277,7 @@
           realtime: true, // 是否实时更新
         }
       },
-      _switchTab(tab,tabIdx) {
+      _switchTab(tab, tabIdx) {
         this.tabIndex = tabIdx
       }
     }
@@ -271,14 +286,35 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  $border-color = #E6EAED
 
   .chart-line-con
     background: #ffffff
-    /*width: 530px*/
     height: 414px
     box-sizing: border-box
-    /*border: 0.5px solid #E6EAED*/
-    border-1px(#E6EAED, 0)
+    position: relative
+
+    &:after
+      content: ""
+      pointer-events: none // 解决iphone上的点击无效Bug
+      display: block
+      position: absolute
+      left: 0
+      top: 0
+      transform-origin: 0 0
+      border: 1px solid $border-color
+      box-sizing border-box
+      width 100%
+      height 100%
+      @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2)
+        width: 200%
+        height: 200%
+        transform: scale(.5) translateZ(0)
+      @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+        width: 300%
+        height: 300%
+        transform: scale(1 / 3) translateZ(0)
+
     .title-bar
       padding: 0 20px
       box-sizing: border-box
@@ -287,15 +323,18 @@
       color: $color-text-main
       font-size: $font-size-16
       font-family: $font-family-medium
-      border-bottom-1px(#E6EAED)
+      border-bottom-1px($border-color)
       layout(row)
       justify-content: space-between
       align-items: center
+
       .left-box
         layout(row)
         align-items: center
+
         .title
           margin-right: 30px
+
         .tab
           position: relative
           height: 24px
@@ -304,6 +343,7 @@
           border-radius: 12px
           font-family: $font-family-regular
           cursor: pointer
+
           .tab-item
             box-sizing: border-box
             padding: 0 18px
@@ -313,6 +353,7 @@
             color: #666666
             text-align: center
             font-size: $font-size-12
+
           .tab-active
             position: absolute
             top: 0
@@ -322,6 +363,7 @@
             color: $color-white
             border-radius: 12px
             transition: all 0.3s
+
       .excel-btn
         display: block
         width: 80px
@@ -333,20 +375,23 @@
         font-family: $font-family-regular
         border: .5px solid $color-main
         border-radius: 14px
+
     .label-bar
       padding: 0 10px 0 20px
       width: 100%
       height: 60px
       line-height: 60px
-      layout(row,'',nowrap)
+      layout(row, '', nowrap)
       overflow: hidden
       color: $color-text-main
       font-family: $font-family-regular
+
       .label
         max-width: 25%
         margin-right: 5%
         font-size: $font-size-12
         no-wrap-plus(1)
+
         .label-val
           font-size: $font-size-18
           font-family: $font-family-bold
