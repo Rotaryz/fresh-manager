@@ -49,7 +49,7 @@
               <div v-if="setting[2].value" class="info-text">包装日期：{{setting[2].value}}</div>
               <!--</div>-->
               <div class="line"></div>
-              <img ref="code" :src="codeImg" alt="" width="330">
+              <img ref="code" :src="codeImg">
             </div>
           </div>
           <div class="generate">
@@ -346,4 +346,10 @@
     color: #000
     margin: 3mm
     size: auto A4 landscape
+  @media print
+    #print
+      width: 70mm
+      height: 50mm
+      .print-img
+        width: 60mm
 </style>
