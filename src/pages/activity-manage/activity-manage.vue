@@ -13,7 +13,7 @@
           <div class="identification-page">
             <img :src="currentTab.icon" class="identification-icon">
             <p class="identification-name">{{currentTab.text}}</p>
-            <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+            <base-status-tab ref="statusTab" :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
           </div>
           <div class="function-btn">
             <div class="btn-main" @click="handleNav">新建活动<span class="add-icon"></span></div>
@@ -215,7 +215,7 @@
         this.status = ''
         this.defaultIndex = 0
         this.dateInfo = []
-        // if (tab.activity_theme === 'groupon') return
+        this.$refs.statusTab && this.$refs.statusTab._resetTo()
         this._getActiveList()
         this._getActiveStatus()
         this._resetPage()

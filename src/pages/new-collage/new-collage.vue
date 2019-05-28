@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{disable ? '查看活动' : '新建活动'}}</p>
+        <p class="identification-name">{{disable ? '查看' : '新建'}}拼团返现</p>
       </div>
       <div class="function-btn">
       </div>
@@ -704,7 +704,7 @@
       _batchAddition() {
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
-          item.usable_stock = 0
+          item.usable_stock = ''
           return item
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)

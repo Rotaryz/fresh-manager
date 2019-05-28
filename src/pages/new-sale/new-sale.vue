@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{disable ? '查看活动' : '新建活动'}}</p>
+        <p class="identification-name">{{disable ? '查看' : '新建'}}{{this.pageConfig.title}}</p>
       </div>
       <div class="function-btn">
       </div>
@@ -84,6 +84,9 @@
                 <input v-model="item.person_all_buy_limit" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
+                <span>{{item.goods_usable_stock || item.all_stock || 0}}</span>
+              </div>
+              <div class="com-list-item">
                 <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
               </div>
               <div class="com-list-item">
@@ -159,9 +162,10 @@
   import API from '@api'
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
+  import {objDeepCopy} from '@utils/common'
 
   const PAGE_NAME = 'EDIT_RUSH'
-  const TITLE = '新建查看今日抢购'
+  // const TITLE = '新建查看今日抢购'
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
@@ -169,15 +173,29 @@
     '销量',
     '抢购价(元)',
     '每人限购',
-    '可用库存',
+    '商品库存',
+    '活动库存',
     '排序',
     '操作'
   ]
+  const PAGE_CONFIG = {
+    'hot_tag': {
+      title: '今日爆品'
+    },
+    'fixed': {
+      title: '限时抢购'
+    },
+    'new_client': {
+      title: '新人特惠'
+    }
+  }
   const PERSON_ALL_BUY_LIMIT = 20
   export default {
     name: PAGE_NAME,
     page: {
-      title: TITLE
+      title (param) {
+        return '编辑活动'
+      }
     },
     components: {
       DefaultModal,
@@ -224,7 +242,8 @@
         },
         isSubmit: false,
         personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
-        activityTheme: ''
+        activityTheme: '',
+        pageConfig: {}
       }
     },
     computed: {
@@ -246,11 +265,15 @@
         // 结束时间规则判断
         return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
       }
+      // pageConfig() {
+      //   return PAGE_CONFIG[this.$route.query.activity_theme] || {}
+      // }
     },
     created() {
       this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       this.activityTheme = this.$route.query.activity_theme
+      this.pageConfig = PAGE_CONFIG[this.$route.query.activity_theme] || {}
       if (this.$route.query.activity_theme === 'fixed') {
         this.personAllBuyLimit = 10
       }
@@ -431,8 +454,10 @@
         }
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
-        item.all_stock = item.usable_stock
-        this.goodsList.push(item)
+        let goodsItem = objDeepCopy(item)
+        goodsItem.all_stock = item.usable_stock
+        goodsItem.usable_stock = ''
+        this.goodsList.push(goodsItem)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
             let idx = this.selectGoods.findIndex((child) => child.id === item.id)
@@ -444,8 +469,10 @@
       },
       // 批量添加
       _batchAddition() {
+        // const list = objDeepCopy(this.choeesGoods)
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
+          item.usable_stock = ''
           return item
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
