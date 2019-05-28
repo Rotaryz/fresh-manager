@@ -3,7 +3,6 @@
     <base-tab-select :infoTabIndex="topTabIndex" :tabStatus="topTab" :lineWidth="64"
                      @getStatusTab="_changeStatusTab"
     >
-
     </base-tab-select>
     <section class="content">
       <div class="con-top-bar">

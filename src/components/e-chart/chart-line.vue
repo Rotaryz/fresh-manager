@@ -83,7 +83,7 @@
             formatter: function (params) {
               let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
               params.forEach(function (item) {
-                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}:${item.value}</span></p>`;
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}</span></p>`;
               });
               return result;
             },
@@ -109,7 +109,8 @@
             icon: "rect", //  这个字段控制形状  类型包括 circle 圆形，rect 正方形，roundRect，triangle，diamond，pin，arrow，none
             itemWidth: 11,
             itemHeight: 11,
-            itemGap: 40
+            itemGap: 40,
+            borderWidth: 0
           },
           // canvas位置
           grid: {
@@ -334,6 +335,7 @@
 
         .title
           margin-right: 30px
+          font-family: $font-family-bold
 
         .tab
           position: relative
