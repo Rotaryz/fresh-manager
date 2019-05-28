@@ -119,7 +119,7 @@
         })
       },
       getCollageStatus() {
-        API.Sale.getSaleStatus({activity_type: 'groupon', start_at: this.startTime,end_at: this.endTime})
+        API.Sale.getSaleStatus({activity_type: 'groupon', activity_theme: 'groupon', start_at: this.startTime,end_at: this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -142,6 +142,7 @@
           endTime: this.endTime,
           status: this.status,
           activity_type: 'groupon',
+          activity_theme: 'groupon',
           loading: false
         })
       },

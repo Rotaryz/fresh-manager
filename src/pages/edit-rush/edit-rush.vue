@@ -291,7 +291,7 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        essInformation: {activity_type: 'fixed'},
+        essInformation: {activity_type: 'fixed', activity_theme: 'fixed'},
         isSubmit: false
       }
     },

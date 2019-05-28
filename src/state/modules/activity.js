@@ -150,7 +150,8 @@ export const actions = {
       start_at: startAt,
       end_at: endAt,
       status,
-      activity_type: activityType
+      activity_type: activityType,
+      activity_theme: activityType
     }
     return API.Activity.getCollageList(msg, loading)
       .then((res) => {

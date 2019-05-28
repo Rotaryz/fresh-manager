@@ -222,7 +222,8 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_type: 'new_client'
+          activity_type: 'new_client',
+          activity_theme: 'new_client'
         })
         if (res.error !== this.$ERR_OK) {
           return

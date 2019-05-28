@@ -189,7 +189,8 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_type: ''
+          activity_type: '',
+          activity_theme: ''
         })
         if (res.error !== this.$ERR_OK) {
           return
