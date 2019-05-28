@@ -217,8 +217,8 @@
         {name: '退货率', type: 'line'}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar'},
-        {name: '毛利率', type: 'bar'}
+        {name: '采购匹配度', type: 'line'},
+        {name: '毛利率', type: 'line'}
       ],
       supply: [
         {name: '库存排行', type: 'line'},
@@ -348,11 +348,11 @@
         this.leftTab = code
         this.getGoodsList({goods_category_id: item.id, is_online: 1, keyword: ''})
         this.$nextTick(() => {
-          if (+code === 'all' || +code === 'category') {
+          if (code === 'all' || code === 'category') {
             this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
             this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
             this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
-          } else if (+code === 'goods') {
+          } else if (code === 'goods') {
             this.$refs.line2 && this.$refs.line2.drawLine()
             this.$refs.line3 && this.$refs.line3.drawLine()
             this.$refs.line4 && this.$refs.line4.drawLine()
