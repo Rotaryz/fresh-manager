@@ -49,7 +49,6 @@ export default {
   getMergeOrderslist(params, loading = false) {
     let url = '/scm/api/backend/oms/merge-orders'
     // let url = '/mock/mergeOrderslist.json'
-    console.log(url, params)
     return request.get(url, params, loading)
   },
   //  √ 汇总详情  √

@@ -14,7 +14,7 @@
             <div class="bar-content">
               <div class="form-item">
                 <label class="right">商品名称：</label>
-                <div>{{barCodePreviewInfo.goods_name}}</div>
+                <div>{{barCodePreviewInfo.goodsName}}</div>
               </div>
               <div v-for="item in setting" :key="item.id" class="form-item">
                 <label class="right">{{item.label}}：</label>
@@ -31,7 +31,7 @@
               </div>
             </div>
             <div class="generate">
-              <button class="generate-btn hand" @click="_sureTagInfo">生成条码</button>
+              <button class="generate-btn hand" @click="_sureTagInfo">刷新条码</button>
             </div>
           </div>
         </div>
@@ -42,12 +42,12 @@
         <div class="bar-code-content">
           <div class="bar-code-content-box">
             <div id="print" class="print-item">
-              <div>
-                <h3 class="goods-name">商品名称：<span>{{barCodePreviewInfo.goods_name}}</span></h3>
-                <div v-if="setting[0].value" class="standard-wrap">规格：{{setting[0].value}}</div>
-                <div v-if="setting[1].value" class="standard-wrap">保质期：{{setting[1].value}}</div>
-                <div v-if="setting[2].value" class="standard-wrap">包装日期：{{setting[2].value}}</div>
-              </div>
+              <!--<div>-->
+              <h3 class="goods-name">商品名称：{{barCodePreviewInfo.goodsName}}</h3>
+              <div v-if="setting[0].value" class="info-text">规格：{{setting[0].value}}</div>
+              <div v-if="setting[1].value" class="info-text">保质期：{{setting[1].value}}</div>
+              <div v-if="setting[2].value" class="info-text">包装日期：{{setting[2].value}}</div>
+              <!--</div>-->
               <div class="line"></div>
               <img ref="code" :src="codeImg" alt="" width="330">
             </div>
@@ -65,7 +65,7 @@
   import API from '@api'
   import {DatePicker} from 'iview'
   import JsBarcode from 'jsbarcode'
-  import {sortingComputed} from '@state/helpers'
+  import {sortingComputed, sortingMethods} from '@state/helpers'
   const PAGE_NAME = 'PERVIEW'
   const TITLE = '打印预览'
   function getDateNow(){
@@ -112,24 +112,17 @@
       this.initCode()
     },
     methods: {
+      ...sortingMethods,
       // 打印彈框   日期選擇
       handleDateChange(val){
-        console.log(this.setting[2].value)
         this.setting[2].value=val
       },
       _sureTagInfo(){
-        API.Sorting.getPrintData().then((res)=>{
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return false
-          }
-          this.$router.push({name:"sorting-task-print-list",params:{id:res.data.id}})
-        }).catch((err) => {
-          this.$toast.show(err.message)
-        }).finally(() => {
+        this.$loading.show()
+        this.getBarCodePreviewInfo(this.$route.params).then(res=>{
+          res && this.initCode()
           this.$loading.hide()
         })
-
       },
       initCode() {
         let options = {
@@ -139,7 +132,7 @@
           margin: 0,
           lineColor: "#000000"
         }
-        JsBarcode(this.$refs.code, this.barCodePreviewInfo.code || 11111, options)
+        JsBarcode(this.$refs.code, this.barCodePreviewInfo.code || '空', options)
       },
       backBtn() {
         this.$router.replace({
@@ -335,6 +328,12 @@
     font-size:$font-size-15
     .goods-name
       font-size :$font-size-16
+      font-family :$font-family-medium
+      font-weight :bold
+      color: #33333
+    .info-text
+      color: #33333
+      font-size:$font-size-15
     .line
       border:1px solid #333
   .back
@@ -344,5 +343,8 @@
 
     &::before
       border-top-width: 0px
-
+  @page
+    color: #000
+    margin: 3mm
+    size: auto A4 landscape
 </style>

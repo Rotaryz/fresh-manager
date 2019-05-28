@@ -66,8 +66,9 @@
               <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :class="['list-item',item.class]">
                 <template v-if="item.type==='operate'" name="operation">
                   <router-link class="list-operation no-right" :to="getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
-                  <router-link v-if="item.afterBtn" class="list-operation no-right" :to="{name: 'sorting-task-preview',params: {id:item.id}}">
-                    <button class="after-btn" @click="printTagBtn(row)">{{item.afterBtn}}</button>
+                  <router-link v-if="item.afterBtn" class="after-btn" :to="getRouterUrl(item.afterBtn,row)">
+                    {{item.afterBtn.operateText}}
+                    <!--<button class="">{{item.afterBtn.operateText}}</button>-->
                   </router-link>
                 </template>
                 <template v-else>
@@ -117,7 +118,20 @@
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
     {tilte: '状态', key: 'status_str'},
-    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate add-btn", params: {id: 'id','goods_sku_code':'goods_sku_code'}, routerName: 'sorting-task-detail-by-goods',afterBtn:'打印标签'}]
+    {
+      tilte: '操作', key: '',
+      type: 'operate',
+      operateText: '明细',
+      flex: 1,
+      class: "operate add-btn",
+      params: {id: 'id','goods_sku_code':'goods_sku_code'},
+      routerName: 'sorting-task-detail-by-goods',
+      afterBtn:{
+        routerName:'sorting-task-preview',
+        params: {id: 'id'},
+        operateText: '打印标签',
+      }
+    }]
 
   export default {
     name: PAGE_NAME,
@@ -161,7 +175,6 @@
     computed: {
       ...sortingComputed,
       commodities() {
-        console.log(this.sortingTask.filter.sorting_mode, 'this.sortingTask.filter.sorting_mode')
         return this.sortingTask.filter.sorting_mode === 1 ? COMMODITIES_LIST2 :COMMODITIES_LIST1
       },
       timeArr() {
@@ -372,13 +385,14 @@
   .operate
     max-width: 50px
     &.add-btn
-      min-width 125px
+      min-width 130px
     .after-btn
+      display: inline-block
       cursor:pointer
       color:#4D77BD
       border:1px solid #4D77BD
       border-radius: 2px
-      width:76px
+      width:80px
       text-align: center
       line-height:22px
       &:hover

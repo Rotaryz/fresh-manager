@@ -47,12 +47,9 @@
     },
     watch:{
       value(val){
-        console.log(val)
-
         this.getStyle()
       },
       statusList(val,old){
-        console.log(val,old)
         this.getStyle()
       }
     },

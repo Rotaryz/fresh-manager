@@ -506,7 +506,7 @@ export const sortingComputed = {
 }
 
 export const sortingMethods = {
-  ...mapActions('sorting', ['getSortingTaskList', 'getSortingTaskDetail', 'getSortingConfigList']),
+  ...mapActions('sorting', ['getSortingTaskList', 'getSortingTaskDetail','getBarCodePreviewInfo', 'getSortingConfigList']),
   ...mapMutations('sorting', ['SET_PARAMS'])
 }
 // 商户订单

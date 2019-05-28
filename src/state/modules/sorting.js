@@ -65,10 +65,8 @@ export const state = {
     }
   },
   barCodePreviewInfo:{
-    goods_name:"自然生长240克 鲜百合",
-    standard: "100kg + 10kg",
-    code: 12132132132323,
-    package_time: "2012-12-22"
+    goodsName:"",
+    code: '',
   }
 }
 
@@ -92,7 +90,6 @@ export const getters = {
 
 export const mutations = {
   SET_PARAMS(state, {type = 'sortingTask', ...params}) {
-    console.log(state[type])
     state[type].filter = {...state[type].filter, ...params}
   },
   SET_TASK_DETAIL(state, {type = 'deliveryDetail', value}) {
@@ -105,7 +102,8 @@ export const mutations = {
     state[type].list = list
   },
   SET_BARCODE_PERVIEW_INFO(state,value){
-    state.barCodePreviewInfo= value || {}
+    state.barCodePreviewInfo.goodsName= value.goods_name || '无定义名'
+    state.barCodePreviewInfo.code= value.goods_sku_encoding || ""
   }
 }
 // export const
@@ -135,21 +133,20 @@ export const actions = {
       })
   },
   getBarCodePreviewInfo({state, commit, dispatch},params){
-    return true
-    // return API.Sorting.getPrintData(params.id)
-    //   .then((res) => {
-    //     if (res.error !== app.$ERR_OK) {
-    //       return false
-    //     }
-    //     commit('SET_BARCODE_PERVIEW_INFO', res.data)
-    //     return true
-    //   })
-    //   .catch(() => {
-    //     return false
-    //   })
-    //   .finally(() => {
-    //     app.$loading.hide()
-    //   })
+    return API.Sorting.getSortingPickingDetail(params.id)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        commit('SET_BARCODE_PERVIEW_INFO', res.data)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
   },
   // 详情
   getSortingTaskDetail({commit}, {id, ...params}) {
@@ -182,7 +179,6 @@ export const actions = {
       if (res[0].error !== app.$ERR_OK && res[1].error !== app.$ERR_OK) {
         return false
       }
-      console.log(res,9999999999999999)
       let pageTotal = {
         total: res[1].meta.total || 0,
         per_page: res[1].meta.per_page || 1,

@@ -761,7 +761,6 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             let status = routeTo.query.status || ''
-            console.log(status)
             store
               .dispatch('leader/getLeaderList', {page: 1, status})
               .then((res) => {
@@ -1700,14 +1699,13 @@ export default [
           titles: ['供应链', '分拣', '分拣任务','打印预览'],
           beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('sorting/getBarCodePreviewInfo',routeTo.params).then((res) => {
-              console.log(res, 99999999999)
-              // if (!res) {
-              //   return next({name: '404'})
-              // }
+              if (!res) {
+                return next({name: '404'})
+              }
               return next()
             })
               .catch(() => {
-                // return next({name: '404'})
+                return next({name: '404'})
               })
           }
         },

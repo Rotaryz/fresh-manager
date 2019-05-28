@@ -79,7 +79,6 @@
     },
     methods: {
       mouseLeave(){
-        console.log('離開上方')
         if(this.trigger==='hover'){
           this.setTime && clearTimeout(this.setTime)
           this.setTime = setTimeout(()=>{
@@ -88,7 +87,6 @@
         }
       },
       mouseEnter(){
-        console.log('已經上方')
         if(this.trigger==='hover'){
           this.setTime && clearTimeout(this.setTime)
           this.select.check = true
@@ -98,12 +96,10 @@
         this.select.check = false
       },
       endShow() {
-        console.log('已經下方')
         this.setTime && clearTimeout(this.setTime)
         this.select.check = true
       },
       leaveHide() {
-        console.log('離開下方')
         this.setTime = setTimeout(() => {
           this.clickHide()
         }, 1500)
