@@ -78,7 +78,6 @@
               <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
-<!--                <span v-if="item.original_price && activityTheme === 'hot_tag'" class="small-money">¥{{item.trade_price}}</span>-->
                 <span v-if="item.original_price" class="small-money">¥</span>
               </div>
               <div class="com-list-item">
