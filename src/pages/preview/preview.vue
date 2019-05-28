@@ -41,7 +41,7 @@
         </div>
         <div class="bar-code-content">
           <div class="bar-code-content-box">
-            <div id="print" class="print-item">
+            <div class="print-item">
               <!--<div>-->
               <h3 class="goods-name">商品名称：{{barCodePreviewInfo.goodsName}}</h3>
               <div v-if="setting[0].value" class="info-text">规格：{{setting[0].value}}</div>
@@ -49,11 +49,22 @@
               <div v-if="setting[2].value" class="info-text">包装日期：{{setting[2].value}}</div>
               <!--</div>-->
               <div class="line"></div>
-              <img ref="code" :src="codeImg">
+              <img ref="code">
             </div>
           </div>
           <div class="generate">
             <div v-print="'#print'" class="generate-btn hand">打印</div>
+            <div class="back-btn hand" @click="backBtn">返回</div>
+          </div>
+          <div v-show="false">
+            <div id="print" class="print-item">
+              <h3 class="goods-name">商品名称：{{barCodePreviewInfo.goodsName}}</h3>
+              <div v-if="setting[0].value" class="info-text">规格：{{setting[0].value}}</div>
+              <div v-if="setting[1].value" class="info-text">保质期：{{setting[1].value}}</div>
+              <div v-if="setting[2].value" class="info-text">包装日期：{{setting[2].value}}</div>
+              <div class="line"></div>
+              <img ref="printCode" :src="codeImg" class="print-img">
+            </div>
           </div>
         </div>
       </div>
@@ -123,7 +134,7 @@
           this.$loading.hide()
         })
       },
-      initCode() {
+      initCode(height=70) {
         let options = {
           format: 'CODE128',
           textAlign: 'left',
@@ -132,6 +143,7 @@
           lineColor: "#000000"
         }
         JsBarcode(this.$refs.code, this.barCodePreviewInfo.code || '空', options)
+        this.codeImg = this.$refs.code.src
       },
       backBtn() {
         this.$router.replace({
@@ -239,44 +251,6 @@
       display flex
       align-content center
       align-items center
-    .bar-code-small
-      overflow-y: auto
-      padding: 1px
-      &::-webkit-scrollbar
-        width: 4px
-        height: 0
-        transition: all 0.2s
-      &::-webkit-scrollbar-thumb
-        background-color: rgba(153, 153, 153, .8)
-        border-radius: 10px
-
-      &::-webkit-scrollbar-thumb:hover
-        background-color: #999999
-
-      &::-webkit-scrollbar-track
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
-        border-radius: 10px
-      .bar-code-items-box
-        display: flex
-        flex-wrap: wrap
-        padding-top: 2.2%
-      .bar-code-items
-        border-radius: 2px
-        border: 1px solid $color-text-main
-        width: 23.125%
-        height: 179px
-        margin: 0 0 2.2% 1.5%
-        background: $color-white
-        box-sizing: border-box
-        display: flex
-        align-items: center
-        justify-content: center
-        .barcode
-          width: 79.7%
-      .bar-code-items-one
-        opacity: 0
-        position: absolute
-
   .generate
     box-sizing: border-box
     padding-top: 20px
@@ -286,6 +260,7 @@
       color: $color-text-assist
       margin-left: 10px
     .generate-btn
+      display:inline-block
       text-align: center
       line-height: 40px
       background: $color-main
@@ -293,24 +268,20 @@
       color: $color-white
       border-radius: 2px
       height: 40px
-      width: 104px
+      width: 96px
       transition: all 0.2s
       &:hover
         opacity: 0.9
-
-  .print-box
-    width: 300px
-    background: $color-white
-    height: 205px
-    display: flex
-    justify-content: center
-    align-items: center
-    .print-box-small
-      margin-top: -7%
-    .print-img
-      display: block
-      margin: auto
-      width: 79.7%
+     .back-btn
+        display:inline-block
+        width: 96px
+        height:40px
+        line-height: 40px
+        text-align: center
+        margin-left:20px
+        border: 1px solid #E6EAED
+        border-radius 4px
+        background-color: #FFF
 
   .print-item
     width:420px
@@ -334,14 +305,8 @@
       color: #33333
       font-size:$font-size-15
     .line
-      border:1px solid #333
-  .back
-    position relative
-    left: 0
-    background-color: #F8FBFD
+      border-bottom:2px solid #333
 
-    &::before
-      border-top-width: 0px
   @page
     color: #000
     margin: 3mm
@@ -350,6 +315,19 @@
     #print
       width: 70mm
       height: 50mm
+    .print-item
+      padding:3mm
+      .line
+        margin-bottom:1mm
       .print-img
-        width: 60mm
+        flex:1
+        max-height:19mm
+    .goods-name
+      font-size :$font-size-14
+      font-family :$font-family-medium
+      font-weight :bold
+      color: #33333
+      .info-text
+        color: #33333
+        font-size:$font-size-12
 </style>
