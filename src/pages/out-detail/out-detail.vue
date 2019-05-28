@@ -30,8 +30,29 @@
               <p class="item-sub">{{item.goods_sku_encoding}}</p>
             </div>
             <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
-            <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
+            <div class="list-item">{{item.order_num}}</div>
+            <div class="list-item">{{item.allocation_num}}</div>
+            <div class="list-item">
+              <template v-if="outMsg.status===2">
+                <input v-model="item.sale_num" class="ivu-input input-num" type="number" @input="saleNumChange(item, index)">
+              </template>
+              <template v-else>
+                {{item.sale_num}}
+              </template>
+              {{item.sale_unit}}
+            </div>
+            <div class="list-item">
+              <template v-if="outMsg.status===2">
+                <input v-model="item.base_num" class="ivu-input input-num" type="number" @input="baseNumChange(item, index)">
+              </template>
+              <template v-else>
+                {{item.base_num}}
+              </template>
+              {{item.base_unit}}
+            </div>
+            <div class="list-item">
+              {{item.diff_num}}
+            </div>
             <div class="list-item list-item-batches hand" @mouseenter="_showTip(index)" @mouseleave="_hideTip" @click="outFn(item, index)">
               <transition name="fade">
                 <div v-show="showIndex === index && item.status !== 0 && item.out_batches.length" class="batches-box">
@@ -50,15 +71,20 @@
               <span class="list-operation">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
             </div>
             <div class="list-item">{{item.out_cost_price ? '￥' + item.out_cost_price : '￥0.00'}}/{{item.base_unit}}</div>
-            <div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>
+            <!--<div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>-->
           </div>
         </div>
       </div>
     </div>
+    <default-confirm ref="confirm" cancelText="不调整" sureText="调整" @confirm="sureAdjust"></default-confirm>
     <default-batch ref="modalBox" :batchList="batchList" :curItem.sync="curItem" :isOnZero="true" @confirm="confirm"></default-batch>
     <div v-if="outMsg.status === 0" class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
       <div class="back-btn back-submit hand" @click="submitOutFn">确认提交</div>
+    </div>
+    <div v-if="outMsg.status === 2" class="back">
+      <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+      <div class="back-btn back-submit hand" @click="submitRecheck">复核完成</div>
     </div>
   </div>
 </template>
@@ -68,6 +94,8 @@
   import API from '@api'
   import {productComputed, productMethods} from '@state/helpers'
   import DefaultBatch from '@components/default-batch/default-batch'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
+
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
@@ -75,11 +103,14 @@
     '序号',
     '商品',
     '分类',
+    '订单数量(销售单位)',
+    '配货数量',
     '出库数量(销售单位)',
     '出库数量(基本单位)',
+    '差异数',
     '出库批次',
     '出库单价',
-    '出库金额'
+    // '出库金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -87,7 +118,8 @@
       title: TITLE
     },
     components: {
-      DefaultBatch
+      DefaultBatch,
+      DefaultConfirm
     },
     data() {
       return {
@@ -99,7 +131,8 @@
         curIndex: 0,
         curItem: {},
         showIndex: null,
-        isSubmit: false
+        isSubmit: false,
+        sureAdjustData:null
       }
     },
     computed: {
@@ -112,6 +145,59 @@
     },
     methods: {
       ...productMethods,
+      saleNumChange(item, index){
+        if (item.sale_num < 0) {
+          item.base_num = item.sale_num * -1
+        }
+        let number = item.sale_num / item.base_purchase_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.base_num = number.toFixed(2)
+      },
+      baseNumChange(item, index){
+        if (item.base_num < 0) {
+          item.sale_num = item.base_num * -1
+        }
+        let number = item.base_num * item.base_purchase_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.sale_num = number.toFixed(2)
+      },
+      sureAdjust(){
+        API.Store.sureAdjust(this.sureAdjustData).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$refs.confirm.hide()
+          } else {
+            this.$toast.show(res.message)
+          }
+        }).catch((err) => {
+          this.$toast.show(err.message)
+          return false
+        })
+          .finally(() => {
+            this.$loading.hide()
+          })
+      },
+      submitRecheck(){
+        this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
+
+        API.Store.recheckFinish(this.$route.params.id,this.outDetailList).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.sureAdjustData = res.data || null
+            res.data && this.$refs.confirm.show()
+          } else {
+            this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
+          }
+        }).catch((err) => {
+          this.$toast.show(err.message)
+          return false
+        })
+          .finally(() => {
+            this.$loading.hide()
+          })
+      },
       cancel() {
         this.$router.back()
       },
@@ -277,4 +363,7 @@
   .tip
     margin: 0 2px
     font-size: $font-size-14
+  .input-num
+    border-radius: 0
+    width:93px
 </style>

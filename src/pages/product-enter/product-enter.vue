@@ -18,9 +18,9 @@
           <p class="identification-name">入库列表</p>
           <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
-        <div class="function-btn">
-          <div v-if="status === 0" class="btn-main" @click="allocationStock">完成当日收货</div>
-        </div>
+        <!--<div class="function-btn">-->
+          <!--<div v-if="status === 0" class="btn-main" @click="allocationStock">完成当日收货</div>-->
+        <!--</div>-->
       </div>
       <div class="big-list">
         <div class="list-header list-box">
@@ -116,13 +116,13 @@
     },
     methods: {
       // 完成单日收货
-      async allocationStock() {
-        if (this.productEnterList.length) {
-          this.$refs.confirm.show('有入库单还未完成入库，是否确认完成收货')
-          return
-        }
-        await this.sendAllocationStock()
-      },
+      // async allocationStock() {
+      //   if (this.productEnterList.length) {
+      //     this.$refs.confirm.show('有入库单还未完成入库，是否确认完成收货')
+      //     return
+      //   }
+      //   await this.sendAllocationStock()
+      // },
       async sendAllocationStock() {
         let res = await API.Store.stopAllocationStock()
         this.$toast.show(res.message, 600)
