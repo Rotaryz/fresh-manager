@@ -133,6 +133,7 @@
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
           {name: '待配送', value: 1, key: 'wait_delivery', num: 0},
+          {name: '待签收', value: 3, key: 'wait_sign', num: 0},
           {name: '配送完成', value: 2, key: 'success_delivery', num: 0}
         ],
         accurateStart: '',
