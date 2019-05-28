@@ -72,6 +72,13 @@
           tooltip: {
             trigger: 'axis',
             // formatter: '{a0}: {c0}',
+            formatter: function (params) {
+              let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
+              params.forEach(function (item) {
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}</span></p>`;
+              });
+              return result;
+            },
             backgroundColor: 'rgba(51,51,51,0.8)',
             textStyle: {
               color: '#ffffff',
