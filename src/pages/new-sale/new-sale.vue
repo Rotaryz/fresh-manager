@@ -192,9 +192,9 @@
   const PERSON_ALL_BUY_LIMIT = 20
   export default {
     name: PAGE_NAME,
-    page: {
-      title (param) {
-        return '编辑活动'
+    page() {
+      return {
+        title: this.pageConfig.title
       }
     },
     components: {
