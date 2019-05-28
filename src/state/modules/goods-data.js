@@ -3,52 +3,7 @@ import app from '@src/main'
 
 export const state = {
   // 分类列表
-  categoryList: [
-    {
-      name: '时令水果',
-      goods: [
-        {
-          name: '苹果'
-        }
-      ]
-    },{
-      name: '时令水果',
-      goods: [
-        {
-          name: '苹果'
-        },{
-          name: '苹果'
-        }
-      ]
-    },{
-      name: '时令水果',
-      goods: [
-        {
-          name: '苹果'
-        },{
-          name: '苹果'
-        }
-      ]
-    },{
-      name: '时令水果',
-      goods: [
-        {
-          name: '苹果'
-        },{
-          name: '苹果'
-        }
-      ]
-    },{
-      name: '时令水果',
-      goods: [
-        {
-          name: '苹果'
-        },{
-          name: '苹果'
-        }
-      ]
-    }
-  ],
+  categoryList: [],
   // sec1
   secData1: {
     titleData: [],
@@ -108,14 +63,38 @@ export const mutations = {
 }
 
 export const actions = {
-  getCategoryList({commit}, {page}, loading = false) {
-    return API.GoodsData.getCategoryList({page}, loading)
+  getCategoryList({commit}, data) {
+    return API.GoodsData.getCategoryList(data)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
         let arr = res.data
         commit('SET_CATEGORY_LIST', arr)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  getGoodsList({state, commit}, data, loading = false) {
+    return API.GoodsData.getGoodsList(data, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = res.data
+        let categoryArr = state.categoryList.map(item => {
+          let val = JSON.parse(JSON.stringify(item))
+          if (val.id === data.goods_category_id) {
+            val.list = arr
+          }
+          return val
+        })
+        commit('SET_CATEGORY_LIST', categoryArr)
         return true
       })
       .catch(() => {

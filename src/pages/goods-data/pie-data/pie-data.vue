@@ -31,7 +31,12 @@
             {name: '酒饮冲调', value: 14},
             {name: '面包糕点', value: 44},
             {name: '网红零食', value: 34},
-            {name: '粤式早点', value: 20}
+            {name: '粤式早点', value: 20},
+            {name: '粤式早点', value: 20},
+            {name: '粤式早点', value: 20},
+            {name: '粤式早点', value: 20},
+            {name: '粤式早点', value: 20},
+            {name: '粤式早点', value: 20},
           ]
         }
       }
@@ -54,12 +59,11 @@
         let seriesData = data.series.length > 0 ? data.series : this.data.series
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
         myChart.setOption(this.createPieData(seriesData))
+        window.addEventListener('resize', function() {
+          myChart.resize()
+        })
       },
       createPieData(seriesData) {
-        const colorObj = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
-        let colorArr = seriesData.map((item, index) => {
-          return colorObj[index]
-        })
         return {
           legend: {
             show: false,
@@ -78,14 +82,23 @@
           },
           tooltip: {
             trigger: 'item',
+            padding: [5, 10],
             formatter: '{b} : {c} ({d}%)'
           },
-          color: colorArr,
+          color: function(params) {
+            let min = 129
+            let maxOpacity = 110
+            min = min + 5*params.dataIndex
+            maxOpacity = maxOpacity - 10*params.dataIndex
+            if (maxOpacity <= 30) maxOpacity = 30
+            if (min >= 254) min = 254
+            return `rgba(87, ${min}, 235, ${maxOpacity})`
+          },
           series: [
             {
               name: '',
               type: 'pie',
-              radius: ['30%', '50%'],
+              radius: ['35%', '55%'],
               center: ['50%', '45%'],
               avoidLabelOverlap: false,
               data: seriesData,
@@ -106,7 +119,7 @@
               },
               itemStyle: {
                 normal: {
-                  borderWidth: 3,
+                  borderWidth: 1,
                   borderColor: '#ffffff'
                 },
                 emphasis: {

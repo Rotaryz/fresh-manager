@@ -14,11 +14,12 @@
       </div>
     </div>
     <div class="list">
-      <div v-for="(item, index) in goods" :key="index" class="list-item">
+      <div v-for="(item, index) in goods" :key="index" class="list-item" :class="{'no-border': index > 5}">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
           <img v-if="val.value === 'img'" class="img" :src="item.goods && item.goods.cover_image" alt="">
           <p v-else-if="val.value === 'name'" class="main">{{item.goods && item.goods[val.value]}}</p>
           <p v-else-if="val.value === 'salePrice'" class="main">¥{{item[val.value]}}</p>
+          <p v-else-if="val.value === 'stock_price'" class="main">¥{{item[val.value]}}</p>
           <p v-else class="main">{{item[val.value]}}</p>
         </div>
       </div>
@@ -30,17 +31,25 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
-    {name: '', flex: 0.4, value: 'img', active: '0'},
-    {name: '品类名称', flex: 1, value: 'name', active: '0'},
+    {name: '', flex: 0.5, value: 'img', active: '0'},
+    {name: '品类名称', flex: 1.4, value: 'name', active: '0'},
     {name: '销量', flex: 1, value: 'sales', active: '0', type: 'saleCount', rank: ['', 'down', 'up']},
-    {name: '销售额(元)', flex: 1, value: 'salePrice', active: '0', type: 'salePrice', rank: ['', 'down', 'up']},
+    {name: '销售额(元)', flex: 1.2, value: 'salePrice', active: '0', type: 'salePrice', rank: ['', 'down', 'up']},
     {name: '利润(元)', flex: 1, value: 'earn', active: '0', type: 'earn', rank: ['', 'down', 'up']}
+  ]
+  const TITLE2 = [
+    {name: '', flex: 0.5, value: 'img', active: '0'},
+    {name: '品类名称', flex: 1.4, value: 'name', active: '0'},
+    {name: '库存', flex: 1, value: 'stock', active: '0', type: 'stock', rank: ['', 'down', 'up']},
+    {name: '库存金额', flex: 1, value: 'stock_price', active: '0', type: 'stockPrice', rank: ['', 'down', 'up']}
   ]
   const GOOD = [
     {
       "sales": 30,
       "salePrice": 200,
       "earn": 100,
+      "stock": 50,
+      "stock_price": 100,
       "goods": {
         "id": 399,
         "name": "时令水果",
@@ -52,6 +61,8 @@
       "sales": 30,
       "salePrice": 200,
       "earn": 100,
+      "stock": 50,
+      "stock_price": 100,
       "goods": {
         "id": 399,
         "name": "时令水果",
@@ -64,14 +75,14 @@
   export default{
     name: COMPONENT_NAME,
     props: {
-      time: {
+      type: {
         type: String,
-        default: ''
+        default: 'sales'
       }
     },
     data() {
       return {
-        titleArr: TITLE,
+        titleArr: this.type === 'sales' ? TITLE : TITLE2,
         goods: GOOD,
         activeIndex: 0
       }
@@ -90,42 +101,6 @@
         }
         let type = this.titleArr[index].type
         let rank = this.titleArr[index].rank[index]
-
-        // switch (index) {
-        // case 2:
-        //   type = 'count'
-        //   switch (this.titleArr[index]) {
-        //   case 0:
-        //     rank = ''; break
-        //   case 1:
-        //     rank = 'down'; break
-        //   case 2:
-        //     rank = 'up'; break
-        //   }
-        //   break
-        // case 3:
-        //   type = 'rate'
-        //   switch (this.titleArr[index]) {
-        //   case 0:
-        //     rank = ''; break
-        //   case 1:
-        //     rank = 'down'; break
-        //   case 2:
-        //     rank = 'up'; break
-        //   }
-        //   break
-        // case 4:
-        //   type = 'earn'
-        //   switch (this.titleArr[index]) {
-        //   case 0:
-        //     rank = ''; break
-        //   case 1:
-        //     rank = 'down'; break
-        //   case 2:
-        //     rank = 'up'; break
-        //   }
-        // }
-
         this.$emit('changeGoodsRank', type, rank)
       }
     }
@@ -154,6 +129,11 @@
       &:last-child
         padding-right: 0
       .item-main
+        -webkit-user-select: none
+        -moz-user-select: none
+        -ms-user-select: none
+        -khtml-user-select: none
+        user-select: none
         .name
           position: relative
           &:before,&:after
@@ -183,8 +163,6 @@
           border-top: 5px solid transparent
           border-right: 4px solid transparent
           border-left: 4px solid transparent
-
-
   .padding
     padding-right: 26px
   .list
@@ -212,8 +190,6 @@
     box-sizing: border-box
     display: flex
     align-items: center
-    &:last-child
-      border-bottom: 0
     .item-data
       overflow: hidden
       height: 36px
@@ -228,8 +204,11 @@
         height: 36px
         border-radius: 2px
         border: 0.5px solid $color-line
+
     .item-data:last-child
       padding-right: 0
+  .no-border:last-child
+    border-bottom: 0
   .rate
     max-width: 70px
 </style>

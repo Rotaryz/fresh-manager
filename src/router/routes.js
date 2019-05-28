@@ -1925,20 +1925,20 @@ export default [
         component: () => lazyLoadView(import('@pages/goods-data/goods-data')),
         meta: {
           titles: ['统计', '商品数据'],
-          // beforeResolve(routeTo, routeFrom, next) {
-          //   //  社群列表
-          //   store
-          //     .dispatch('community/getCommunityList', {page: 1})
-          //     .then((res) => {
-          //       if (!res) {
-          //         return next({name: '404'})
-          //       }
-          //       return next()
-          //     })
-          //     .catch(() => {
-          //       return next({name: '404'})
-          //     })
-          // }
+          beforeResolve(routeTo, routeFrom, next) {
+            //  社群列表
+            store
+              .dispatch('goodsData/getCategoryList', {parent_id: 0, page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 运营数据

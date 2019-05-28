@@ -19,12 +19,12 @@
         <div class="left-tab-main">
           <div class="left">
             <img src="./goods.png" alt="" class="category-image">
-            <span class="name">{{item.name}}</span>
+            <span class="name">{{item.name}}{{item.list.length}}</span>
           </div>
           <div class="right-icon" :class="{'current': +categoryIndex === index+1}"></div>
         </div>
-        <div class="goods-list" :style="{height: +categoryIndex === index+1 ? 48*item.goods.length + 'px' : 0}">
-          <div v-for="(goods, ind) in item.goods"
+        <div class="goods-list" :style="{height: +categoryIndex === index+1 ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
+          <div v-for="(goods, ind) in item.list"
                :key="ind"
                class="goods-item"
                :class="{'select': (+goodsIndex === ind && selectGoods)}"
@@ -75,6 +75,9 @@
         this.goodsIndex = index
         this.selectGoods = true
         this.$emit('changeTab', goods, true, code)
+      },
+      height(item) {
+        return (48*item.length)
       }
     }
   }

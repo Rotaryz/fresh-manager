@@ -1,7 +1,7 @@
 <template>
   <div class="bar-data">
     <div class="data-content">
-      <div :id="chartId" style="width: 100%; height: 100%" @click="clickChart"></div>
+      <div :id="chartId" style="width: 100%; height: 100%"></div>
     </div>
   </div>
 </template>
@@ -21,8 +21,8 @@
       return {
         tabIndex: 0,
         data: {
-          x: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"],
-          series: ["10", "20", "5", "40", "15", "14", "44", "34", "20"],
+          x: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点", "时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点", "时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点", "时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"],
+          series: ["10", "20", "5", "40", "15", "14", "44", "34", "20", "10", "20", "5", "40", "15", "14", "44", "34", "20", "10", "20", "5", "40", "15", "14", "44", "34", "20", "10", "20", "5", "40", "15", "14", "44", "34", "20"],
           x1: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
           series1: ["10", "20", "5", "40", "15", "14"],
           series2: ["12", "18", "10", "50", "10", "20"]
@@ -52,7 +52,13 @@
           let xAxisData = data.x.length > 0 ? data.x : this.data.x
           let seriesData = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          myChart.on('click', function(e) {
+            console.log(e)
+          })
           myChart.setOption(this.createBarData(xAxisData, seriesData))
+          window.addEventListener('resize', function() {
+            myChart.resize()
+          })
         })
       },
       // 横向柱状图
@@ -62,15 +68,17 @@
           let seriesData1 = data.series.length > 0 ? data.series : this.data.series1
           let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          myChart.on('click', e => {
+            console.log(e)
+          })
           myChart.setOption(this.createBar(xAxisData, seriesData1, seriesData2))
+          window.addEventListener('resize', function() {
+            myChart.resize()
+          })
         })
       },
       createBarData(xAxisData, seriesData) {
-        let dataShadow = new Array(9).fill(1000)
-        dataShadow = dataShadow.map((item, index) => {
-          return Math.max(seriesData[0], 1)
-        })
-        let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
+        // let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
         return {
           grid: {
             left: '50',
@@ -124,6 +132,7 @@
           },
           tooltip: {
             trigger: 'axis',
+            padding: [5, 10],
             axisPointer: {
               type: 'shadow',
               shadowStyle: {
@@ -131,11 +140,11 @@
               }
             },
             formatter(prams) {
-              return `${prams[1].name}：${prams[1].value}`
+              return `${prams[0].name}：${prams[0].value}`
             }
           },
           dataZoom: [{
-            end: 50,// 数据窗口范围的结束百分比
+            end: 60,// 数据窗口范围的结束百分比
             type: 'slider',
             bottom: '26px',
             show: true,
@@ -149,26 +158,6 @@
             realtime: true, // 是否实时更新
           }],
           series: [
-            { // For shadow
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  barBorderRadius: 0,
-                  color: 'rgba(0,0,0,0)'
-                }
-              },
-              emphasis: {
-                itemStyle: {
-                  show: false
-                }
-              },
-              barGap: '-100%',
-              // barCategoryGap: '80%',
-              barWidth: '20px',
-              data: dataShadow,
-              animation: false,
-              zlevel: 11
-            },
             {
               type: 'bar',
               data: seriesData,
@@ -178,9 +167,18 @@
                 normal: {
                   barBorderRadius: 0,
                   // color: '#8DC6F6',
+                  // color: function(params) {
+                  //   var num = color.length;
+                  //   return color[params.dataIndex % num]
+                  // }
                   color: function(params) {
-                    var num = color.length;
-                    return color[params.dataIndex % num]
+                    let min = 129
+                    let maxOpacity = 110
+                    min = min + 5*params.dataIndex
+                    maxOpacity = maxOpacity - 10*params.dataIndex
+                    if (maxOpacity <= 30) maxOpacity = 30
+                    if (min >= 254) min = 254
+                    return `rgba(87, ${min}, 235, ${maxOpacity})`
                   }
                 }
               }
@@ -260,8 +258,22 @@
               }
             }
           },
+          dataZoom: [{
+            end: 50,// 数据窗口范围的结束百分比
+            type: 'slider',
+            left: '30px',
+            show: true,
+            width: 8,
+            yAxisIndex: [0],
+            borderColor: "rgba(250,250,250,0)",
+            fillerColor: '#999',
+            showDataShadow: false,// 是否显示数据阴影 默认auto
+            showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
+            realtime: true // 是否实时更新
+          }],
           tooltip: {
             trigger: 'axis',
+            padding: [5, 10],
             axisPointer: {
               type: 'shadow',
               shadowStyle: {
@@ -269,7 +281,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[1].name}：${prams[1].value}`
+              return `${prams[0].name}：${prams[0].value}<br />${prams[1].name}：${prams[1].value}`
             }
           },
           series: [
@@ -294,7 +306,7 @@
                   position: 'right',
                   verticalAlign: 'middle',
                   color: '#333',
-                  fontSize: '12px',
+                  fontSize: '14',
                 }
               },
               barWidth: '20px',
@@ -313,20 +325,13 @@
                   offset: [0, 2],
                   verticalAlign: 'middle',
                   color: '#333',
-                  fontSize: '12px',
+                  fontSize: '14',
                 }
               },
               itemStyle: {
                 normal: {
                   barBorderRadius: 0,
                   color: '#59C6E8'
-                  // color: new this.$echarts.graphic.LinearGradient(
-                  //   0, 0, 0, 1,
-                  //   [
-                  //     {offset: 1, color: '#BE85FD'},
-                  //     {offset: 0, color: '#A08FF6'}
-                  //   ]
-                  // )
                 }
               }
             }

@@ -1,5 +1,5 @@
 <template>
-  <div class="community-data">
+  <div class="goods-data">
     <div class="data-caption data-caption-line">
       <div class="content-title">
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
@@ -20,15 +20,15 @@
                 <status-tab ref="statusTab1" :statusList="configObj[leftTab].sale" @setStatus="changeSale"></status-tab>
               </div>
               <div class="title-right">
-                <span class="show-big-icon hand" @click="showBigData(1)"></span>
-                <span class="export-btn hand" @click="exportExcel(1)">导出Excel</span>
+                <span v-if="selectMsg.sale.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.sale.type)"></span>
+                <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click="exportExcel()">导出Excel</span>
               </div>
             </div>
-            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text">
+            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text hand" @click="showDescription()">
               <p class="item">商品结构 <span class="name">爆品</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
             </div>
 
-            <div v-if="selectMsg.sale.type !== 'goodsDetail'" class="name-text">
+            <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail'" class="name-text">
               <p class="item">{{allMsg[0].name}}<span class="data">{{allMsg[0].data}}</span></p>
             </div>
 
@@ -55,7 +55,7 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="selectMsg.sale.type === 'goods'"></goods-list>
+            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1"></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
 
@@ -69,7 +69,8 @@
                 <status-tab ref="statusTab2" :statusList="configObj[leftTab].serve" @setStatus="changeServe"></status-tab>
               </div>
               <div class="title-right">
-                <span class="show-big-icon hand" @click="showBigData"></span>
+                <span v-if="selectMsg.serve.big" class="show-big-icon hand" @click="showBigData(selectMsg.serve.type)"></span>
+                <span v-if="selectMsg.serve.excel" class="export-btn hand" @click="exportExcel()">导出Excel</span>
               </div>
             </div>
             <div class="name-text">
@@ -90,17 +91,18 @@
                 <status-tab ref="statusTab3" :statusList="configObj[leftTab].purchase" @setStatus="changePurchase"></status-tab>
               </div>
               <div class="title-right">
-                <span class="show-big-icon hand" @click="showBigData"></span>
+                <span v-if="selectMsg.purchase.big" class="show-big-icon hand" @click="showBigData(selectMsg.purchase.type)"></span>
+                <span v-if="selectMsg.purchase.excel" class="export-btn hand" @click="exportExcel()">导出Excel</span>
               </div>
             </div>
             <div class="name-text">
               <p class="item">{{allMsg[2].name}}<span class="data">{{allMsg[2].data}}</span></p>
             </div>
-            <bar-data v-if="selectMsg.purchase.type === 'bar'" ref="bar3" chartId="bar3"></bar-data>
 
-            <!--<bar-data v-if="+leftTab !== 3 && (topTab[2] === 0 || topTab[2] === 2)" ref="bar3" chartId="bar3"></bar-data>-->
+            <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3"></bar-data>
+            <bar-data v-if="selectMsg.purchase.type === 'bar1'" :key="2" ref="bar3" chartId="bar3"></bar-data>
             <pie-data v-if="selectMsg.purchase.type === 'pie'" ref="pie3" chartId="pie3"></pie-data>
-            <line-data v-if="selectMsg.purchase.type === 'line'" class="chart-box" chartId="line3" ref="line3"></line-data>
+            <line-data v-if="selectMsg.purchase.type === 'line'" ref="line3" class="chart-box" chartId="line3"></line-data>
           </section>
 
           <!--模块4-->
@@ -111,13 +113,14 @@
                 <status-tab ref="statusTab4" :statusList="configObj[leftTab].supply" @setStatus="changeSupply"></status-tab>
               </div>
               <div class="title-right">
-                <span class="show-big-icon hand" @click="showBigData"></span>
+                <span v-if="selectMsg.supply.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.supply.type)"></span>
+                <span v-if="selectMsg.supply.excel" :key="2" class="export-btn hand" @click="exportExcel()">导出Excel</span>
               </div>
             </div>
-            <div class="name-text">
+            <div v-if="selectMsg.supply.type !== 'goods'" class="name-text">
               <p class="item">{{allMsg[3].name}}<span class="data">{{allMsg[3].data}}</span></p>
             </div>
-            <goods-list v-if="selectMsg.supply.type === 'goods'"></goods-list>
+            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock"></goods-list>
             <bar-data v-if="selectMsg.supply.type === 'bar'" ref="bar4" chartId="bar4"></bar-data>
             <line-data v-if="selectMsg.supply.type === 'line'" ref="line4" chartId="line4" class="chart-box"></line-data>
           </section>
@@ -125,8 +128,10 @@
       </div>
     </div>
 
+    <description-modal ref="description" :desIndex="0"></description-modal>
+
     <!--大图表-->
-    <div v-show="bigDataShow" class="big-data">
+    <div v-if="bigDataShow" class="big-data">
       <div class="big-head">
         <span class="chart-name">商品售后</span>
         <img src="./icon-del_2@2x.png" class="big-close hand" @click="closeBigData">
@@ -148,78 +153,56 @@
   import LineData from './line-data/line-data'
   import BigBarData from './big-bar-data/big-bar-data'
   import PieData from './pie-data/pie-data'
+  import DescriptionModal from './description-modal/description-modal'
 
   import API from '@api'
+
   const ARR_TITLE = [
     {title: '7天', status: 'today'},
     {title: '15天', status: 'yesterday'},
     {title: '30天', status: 'month'},
     {title: '自定义', status: 'custom'}
   ]
-  const SALE = [
-    {name: '商品结构', type: ''},
-    {name: '销量排行榜', type: ''},
-    {name: '动销率', type: ''},
-    {name: '售罄率', type: ''}
-  ]
-  const SERVER = [
-    {name: '退货数', type: ''},
-    {name: '退货率', type: ''}
-  ]
-  const PURCHASE = [
-    {name: '采购匹配度', type: ''},
-    {name: '商品SKU数', type: ''},
-    {name: '毛利率', type: ''}
-  ]
-  const PURCHASE2 = [
-    {name: '采购匹配度', type: ''},
-    {name: '毛利率', type: ''}
-  ]
-  const SUPPLY = [
-    {name: '库存排行', type: 'goods'},
-    {name: '库存周转率', type: 'bar'}
-  ]
-
   const ALL_DATA = {
     all: {
       sale: [
-        {name: '商品结构', type: 'bar'},
-        {name: '销量排行榜', type: 'goods'},
-        {name: '动销率', type: 'bar'},
-        {name: '售罄率', type: 'bar'}
+        {name: '商品结构', type: 'bar', excel: true, word: 'goods'},
+        {name: '销量排行榜', type: 'goods', excel: true},
+        {name: '动销率', type: 'bar', big: true, word: 'goods'},
+        {name: '售罄率', type: 'bar', big: true, word: 'goods'}
       ],
       serve: [
-        {name: '退货数', type: 'bar'},
-        {name: '退货率', type: 'bar'}
+        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true},
+        {name: '退货率', type: 'bar', big: true, word: 'goods'}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar'},
-        {name: '商品SKU数', type: 'pie'},
-        {name: '毛利率', type: 'bar'}
+        {name: '采购匹配度', type: 'bar1', big: true, word: 'goods', excel: true},
+        {name: '商品SPU数', type: 'pie', big: true, word: 'goods', excel: true},
+        {name: '毛利率', type: 'bar', big: true, word: 'goods'}
       ],
       supply: [
-        {name: '库存排行', type: 'goods'},
-        {name: '库存周转率', type: 'bar'}
+        {name: '库存排行', type: 'goods', excel: true},
+        {name: '库存周转率', type: 'bar', big: true, word: 'goods'}
       ]
     },
     category: {
       sale: [
-        {name: '商品结构', type: 'bar'},
-        {name: '销量排行榜', type: 'goods'},
-        {name: '动销率', type: 'bar'},
-        {name: '售罄率', type: 'bar'}
+        {name: '商品结构', type: 'bar', excel: true, word: 'goods'},
+        {name: '销量排行榜', type: 'goods', excel: true, word: 'goods'},
+        {name: '动销率', type: 'bar', big: true, word: 'goods'},
+        {name: '售罄率', type: 'bar', big: true, word: 'goods'}
       ],
       serve: [
-        {name: '退货数', type: 'bar'},
-        {name: '退货率', type: 'bar'}
+        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true},
+        {name: '退货率', type: 'bar', big: true, word: 'goods'}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar'},
-        {name: '毛利率', type: 'bar'}
+        {name: '采购匹配度', type: 'bar1', big: true, word: 'goods', excel: true},
+        {name: '毛利率', type: 'bar', big: true, word: 'goods'}
       ],
       supply: [
-        {name: '库存排行', type: 'goods'},
-        {name: '库存周转率', type: 'bar'}
+        {name: '库存排行', type: 'goods', excel: true},
+        {name: '库存周转率', type: 'bar', big: true, word: 'goods'}
       ]
     },
     goods: {
@@ -259,16 +242,12 @@
       BarData,
       PieData,
       BigBarData,
-      LineData
+      LineData,
+      DescriptionModal
     },
     data() {
       return {
         configObj: ALL_DATA,
-        sale: SALE,
-        server: SERVER,
-        purchase: PURCHASE,
-        purchase2: PURCHASE2,
-        supply: SUPPLY,
         arrTitle: ARR_TITLE,
         // categoryIndex: 0, // 选择类
         // goodsIndex: 0, // 选择商品
@@ -346,9 +325,15 @@
         this.requestPub.day_type = value
         // this.getAllData()
       },
-      showBigData() {
+      showBigData(type) {
         this.bigDataShow = true
-        this.$refs.bigBar.drawBar({x: [], series: []})
+        this.$nextTick(() => {
+          if (type === 'bar1') {
+            this.$refs.bigBar && this.$refs.bigBar.drawBar1({x: [], series: []})
+          } else {
+            this.$refs.bigBar && this.$refs.bigBar.drawBar({x: [], series: []})
+          }
+        })
       },
       closeBigData() {
         this.bigDataShow = false
@@ -361,6 +346,7 @@
         this.leftTabItem = item
         this.selectType = type
         this.leftTab = code
+        this.getGoodsList({goods_category_id: item.id, is_online: 1, keyword: ''})
         this.$nextTick(() => {
           if (+code === 'all' || +code === 'category') {
             this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
@@ -395,8 +381,12 @@
         this.request1.goods_id = obj.id
         // this.topTab.splice(0,1,index)
         this.$nextTick(() => {
-          this.$refs.bar1 && this.$refs.bar1.drawBar({x: [], series: []})
-          this.$refs.line1 && this.$refs.line1.drawLine({x: [], series: []})
+          if (index === 0) {
+            this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
+          } else {
+            this.$refs.bar1 && this.$refs.bar1.drawBar({x: [], series: []})
+            this.$refs.line1 && this.$refs.line1.drawLine({x: [], series: []})
+          }
         })
       },
       changeServe(obj, index) {
@@ -434,8 +424,8 @@
       exportExcel(index) {
         console.log(index)
       },
-      showDescription(type) {
-        this.$refs.description.show(type)
+      showDescription() {
+        this.$refs.description.show()
       },
       async confirm(data) {
         this.name = data.name
@@ -462,7 +452,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .community-data
+  .goods-data
     overflow: hidden
     position: relative
     flex: 1
@@ -471,6 +461,7 @@
     flex-direction: column
     background: #FFF
     border: 0.5px solid $color-line
+    min-width: 1240px
   .data-caption
     padding: 20px
     display: flex
@@ -537,6 +528,7 @@
             line-height: 28px
             color: $color-main
             border-radius: 30px
+            margin-left: 10px
             border-1px($color-main, 30px)
             text-align: center
             font-size: $font-size-12
@@ -549,7 +541,6 @@
             width: 16px
             height: 16px
             display: block
-            margin-right: 10px
             background-image: url("./icon-enlarge_default@2x.png")
             background-repeat: no-repeat
             background-size: 100% 100%

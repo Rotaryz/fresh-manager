@@ -54,7 +54,11 @@
           myChart.on('click', function (params) {
             console.log(params)
           })
-          myChart.setOption(this.createBar1(xAxisData, seriesData))
+          let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
+          myChart.setOption(this.createBar1(xAxisData, seriesData, color))
+          window.addEventListener('resize', function() {
+            myChart.resize()
+          })
         })
       },
       // 横向柱状图
@@ -68,6 +72,9 @@
             console.log(params)
           })
           myChart.setOption(this.createBar2(xAxisData, seriesData1, seriesData2))
+          window.addEventListener('resize', function() {
+            myChart.resize()
+          })
         })
       },
       drawBar2(data) {
@@ -78,20 +85,19 @@
           myChart.on('click', function (params) {
             console.log(params)
           })
-          myChart.setOption(this.createBar3(xAxisData, seriesData3))
+          let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
+          myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
+          window.addEventListener('resize', function() {
+            myChart.resize()
+          })
         })
       },
-      createBar1(xAxisData, seriesData) {
-        let dataShadow = new Array(9).fill(1000)
-        dataShadow = dataShadow.map((item, index) => {
-          return Math.max(seriesData[0], 1)
-        })
-        let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
+      createBar1(xAxisData, seriesData, color) {
         return {
           grid: {
-            left: '20',
+            left: '40',
             right: '30',
-            bottom: '25',
+            bottom: '30',
             top: '20',
             containLabel: true
           },
@@ -99,16 +105,17 @@
             type: 'category',
             boundaryGap: false,
             data: xAxisData,
-            offset: 12,
+            offset: 15,
+            nameGap: 20,
             splitLine: {
               show: false,
               lineStyle: {
-                color: '#E6E6E6',
+                color: '#F0F3F5',
                 width: 0.5
               }
             },
             axisLabel: {
-              color: '#666',
+              color: '#999',
               fontSize: 12,
               align: 'center'
             },
@@ -147,7 +154,7 @@
             },
             axisLabel: {
               formatter: '{value}',
-              color: '#666'
+              color: '#999'
             },
             axisLine: {
               show: false,
@@ -159,6 +166,7 @@
           },
           tooltip: {
             trigger: 'axis',
+            padding: [5, 10],
             axisPointer: {
               type: 'shadow',
               shadowStyle: {
@@ -166,29 +174,10 @@
               }
             },
             formatter(prams) {
-              return `${prams[1].name}：${prams[1].value}`
+              return `${prams[0].name}：${prams[0].value}`
             }
           },
           series: [
-            { // For shadow
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  barBorderRadius: 0,
-                  color: 'rgba(0,0,0,0)'
-                }
-              },
-              emphasis: {
-                itemStyle: {
-                }
-              },
-              barGap: '-100%',
-              // barCategoryGap: '80%',
-              barWidth: '20px',
-              data: dataShadow,
-              animation: false,
-              zlevel: 11
-            },
             {
               type: 'bar',
               data: seriesData,
@@ -230,6 +219,10 @@
             itemWidth: 11,
             itemHeight: 11,
             bottom: 10,
+            textStyle: {
+              color: '#333',
+              fontFamily: 'PingFangSC-Regular'
+            },
             left: 'center',
             itemGap: 60
           },
@@ -286,7 +279,7 @@
             axisLabel: {
               show: true,
               formatter: '{value}',
-              color: '#666'
+              color: '#999'
             },
             axisLine: {
               show: false,
@@ -298,6 +291,7 @@
           },
           tooltip: {
             trigger: 'axis',
+            padding: [5, 10],
             axisPointer: {
               type: 'shadow',
               shadowStyle: {
@@ -305,7 +299,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[1].name}：${prams[1].value}`
+              return `${prams[0].name}：${prams[0].value}<br />${prams[1].name}：${prams[1].value}`
             }
           },
           series: [
@@ -330,8 +324,8 @@
                   show: true,
                   position: 'right',
                   verticalAlign: 'middle',
-                  color: '#333',
-                  fontSize: '12px',
+                  color: '#999',
+                  fontSize: '12',
                 }
               },
               barWidth: '10px',
@@ -350,148 +344,14 @@
                   position: 'right',
                   offset: [0, 2],
                   verticalAlign: 'middle',
-                  color: '#333',
-                  fontSize: '12px',
+                  color: '#999',
+                  fontSize: '12',
                 }
               },
               itemStyle: {
                 normal: {
                   barBorderRadius: 0,
                   color: '#59C6E8'
-                  // color: new this.$echarts.graphic.LinearGradient(
-                  //   0, 0, 0, 1,
-                  //   [
-                  //     {offset: 1, color: '#BE85FD'},
-                  //     {offset: 0, color: '#A08FF6'}
-                  //   ]
-                  // )
-                }
-              }
-            }
-          ]
-        }
-      },
-      createBar3(xAxisData, seriesData) {
-        let dataShadow = new Array(9).fill(1000)
-        dataShadow = dataShadow.map((item, index) => {
-          return Math.max(seriesData[0], 1)
-        })
-        let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
-        return {
-          grid: {
-            left: '20',
-            right: '30',
-            bottom: '25',
-            top: '20',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: xAxisData,
-            offset: 12,
-            splitLine: {
-              show: false,
-              lineStyle: {
-                color: '#E6E6E6',
-                width: 0.5
-              }
-            },
-            axisLabel: {
-              color: '#666',
-              fontSize: 12,
-              align: 'center'
-            },
-            axisTick: {
-              show: false,
-              lineStyle: {
-                color: '#ccc',
-                width: 0.5
-              }
-            },
-            axisLine: {
-              show: false,
-              lineStyle: {
-                color: '#ccc',
-                width: 0.5
-              }
-            }
-          },
-          yAxis: {
-            minInterval: 1,
-            type: 'value',
-            offset: 10.5,
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: '#F0F3F5',
-                width: 0.5
-              }
-            },
-            axisTick: {
-              show: false,
-              lineStyle: {
-                color: '#c4c4c4',
-                width: 0.5
-              }
-            },
-            axisLabel: {
-              formatter: '{value}',
-              color: '#666'
-            },
-            axisLine: {
-              show: false,
-              trigger: 'axis',
-              axisPointer: {
-                type: 'shadow'
-              }
-            }
-          },
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow',
-              shadowStyle: {
-                opacity: 0
-              }
-            },
-            formatter(prams) {
-              return `${prams[1].name}：${prams[1].value}`
-            }
-          },
-          series: [
-            { // For shadow
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  barBorderRadius: 0,
-                  color: 'rgba(0,0,0,0)'
-                }
-              },
-              emphasis: {
-                itemStyle: {
-                }
-              },
-              barGap: '-100%',
-              // barCategoryGap: '80%',
-              barWidth: '20px',
-              data: dataShadow,
-              animation: false,
-              zlevel: 11
-            },
-            {
-              type: 'bar',
-              data: seriesData,
-              barWidth: '20px',
-              zlevel: 12,
-              itemStyle: {
-                normal: {
-                  barBorderRadius: 0,
-                  // color: '#8DC6F6',
-                  color: function(params) {
-                    var num = color.length;
-                    return color[params.dataIndex % num]
-                  }
                   // color: new this.$echarts.graphic.LinearGradient(
                   //   0, 0, 0, 1,
                   //   [

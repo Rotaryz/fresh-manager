@@ -1,13 +1,13 @@
 <template>
   <div class="bar-data">
     <div class="data-content">
-      <div :id="chartId" style="width: 100%; height: 100%" @click="clickChart"></div>
+      <div :id="chartId" style="width: 100%; height: 100%"></div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  const COMPONENT_NAME = 'BAR_DATA'
+  const COMPONENT_NAME = 'LINE_DATA'
 
   export default{
     name: COMPONENT_NAME,
@@ -26,24 +26,6 @@
             color: '#6081E3',
             colorStops0: 'rgba(89,223,120,0.55)',
             colorStops1: 'rgba(89,223,120,0.05)'
-          },
-          {
-            name: '交易金额',
-            color: '#8859E8',
-            colorStops0: 'rgba(116,149,255,0.55)',
-            colorStops1: 'rgba(116,149,255,0.05)'
-          },
-          {
-            name: '交易金额',
-            color: '#F7C136',
-            colorStops0: 'rgba(116,149,255,0.55)',
-            colorStops1: 'rgba(116,149,255,0.05)'
-          },
-          {
-            name: '交易金额',
-            color: '#6AE1FF',
-            colorStops0: 'rgba(116,149,255,0.55)',
-            colorStops1: 'rgba(116,149,255,0.05)'
           }
         ],
         op: {
@@ -68,9 +50,6 @@
       // this.drawBar(this.data, '退货数')
     },
     methods: {
-      clickChart(params) {
-        console.log(params, 111)
-      },
       setTab(num) {
         this.tabIndex = 0
       },
@@ -83,6 +62,9 @@
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           let option = this._setOption(this.op)
           myChart.setOption(option)
+          window.addEventListener('resize', function() {
+            myChart.resize()
+          })
         })
       },
       _setOption(chartConfig) {
@@ -103,7 +85,7 @@
                 width: 0.5
               }
             },
-            padding: [5, 10, 5, 10]
+            padding: [5, 10, 7, 10]
           },
           legend: {
             data: [],
@@ -116,7 +98,7 @@
           grid: {
             left: '20',
             right: '30',
-            bottom: '40',
+            bottom: '60',
             top: '20',
             containLabel: true
           },
@@ -128,13 +110,10 @@
         let data = chartConfig.data.data
         let legendData = []
         let series = []
-        let length = chartConfig.label.length
-        for (let i = 0; i < length; i++) {
-          let item = data[i]
-          item.name = chartConfig.label[i]
-          legendData.push(item.name)
-          series.push(this._setSeries(chartConfig,item,i))
-        }
+        let item = data[0]
+        item.name = chartConfig.label[0]
+        legendData.push(item.name)
+        series.push(this._setSeries(chartConfig, item))
         chartConfig.showSecondY && (option.grid.right = '20')
         option.legend.data = legendData
         option.series = series
@@ -142,22 +121,22 @@
         option.yAxis = this._setYAxis(chartConfig.showSecondY)
         return option
       },
-      _setSeries(chartConfig,item,i) {
+      _setSeries(chartConfig,item) {
         let seriesConfig = {
           name: item.name,
           type: 'line',
           data: item.rate,
-          yAxisIndex: chartConfig.showSecondY && i > 1 ? 1 : 0,
+          yAxisIndex: 0,
           smooth: false,
           hoverAnimation: true,
           symbolSize: 5,
           showSymbol: item.rate.length <= 7,
           itemStyle: {
             normal: {
-              color: this.colorObj[i].color,
+              color: this.colorObj[0].color,
               borderWidth: 1,
               lineStyle: {
-                color: this.colorObj[i].color,
+                color: this.colorObj[0].color,
                 width: 2
               }
             }
@@ -172,7 +151,7 @@
               colorStops: [
                 {
                   offset: 0,
-                  color: color[i]
+                  color: color[0]
                 },
                 {
                   offset: 1,
@@ -190,6 +169,7 @@
           type: 'category',
           boundaryGap: false,
           data: data,
+          offset: 10,
           splitLine: {
             show: true,
             lineStyle: {
@@ -199,7 +179,7 @@
             }
           },
           axisLabel: {
-            color: '#666',
+            color: '#999',
             fontSize: 12,
             align: 'center'
           },

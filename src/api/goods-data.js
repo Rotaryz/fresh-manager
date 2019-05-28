@@ -5,7 +5,14 @@ export default {
    * 商品分类列表
    */
   getCategoryList(data, loading = true) {
-    let url = '/social-shopping/api/backend/community/groups'
+    let url = '/social-shopping/api/backend/goods-manage/goods-category'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 分类下商品列表
+   */
+  getGoodsList(data, loading = false) {
+    let url = '/social-shopping/api/backend/goods-manage/goods'
     return request.get(url, data, loading)
   },
   // ----------------模块1各项数据接口-------------------
