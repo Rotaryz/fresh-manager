@@ -51,7 +51,7 @@
         topListTilte: [{
           name: '商户名称：', id: 'merchant_name'
         }, {
-          name: '订单号：', id: 'order_sn'
+          name: '订单号：', id: 'out_order_sn'
         }, {
           name: '下单时间：', id: 'build_time'
         }, {

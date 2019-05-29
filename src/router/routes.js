@@ -1713,7 +1713,7 @@ export default [
       },
       // 按订单  分拣任务明细
       {
-        path: 'sorting-task/sorting-task-detail/order/:id/:order_id',
+        path: 'sorting-task/sorting-task-order-detail/:id/:order_id',
         name: 'sorting-task-order-detail',
         meta: {
           titles: ['供应链', '分拣', '分拣任务', '商品明细'],
@@ -1738,7 +1738,7 @@ export default [
       },
       // 分拣任务明细
       {
-        path: 'sorting-task/sorting-task-detail/goods/:id/:goods_sku_code',
+        path: 'sorting-task/sorting-task-detail/:id/:goods_sku_code',
         name: 'sorting-task-detail-by-goods',
         meta: {
           titles: ['供应链', '分拣', '分拣任务', '配货明细'],

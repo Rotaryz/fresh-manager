@@ -310,11 +310,11 @@
   @page
     color: #000
     margin: 3mm
-    size: auto A4 landscape
+    /*size: auto A4 landscape*/
   @media print
     #print
-      width: 70mm
-      height: 50mm
+      width:61mm
+      height:45mm
     .print-item
       padding:3mm
       .line
