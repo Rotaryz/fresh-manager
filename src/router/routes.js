@@ -1658,6 +1658,20 @@ export default [
           }
         }
       },
+      // 物流监控
+      {
+        path: 'logistics-monitoring',
+        name: 'logistics-monitoring',
+        component: () => lazyLoadView(import('@pages/logistics-monitoring/logistics-monitoring')),
+        meta: {
+          titles: ['概况', '物流监控'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            let time = await getCurrentTime()
+            routeTo.params.time = time
+            next()
+          }
+        }
+      },
       // 账号管理
       {
         path: 'account-manage',
