@@ -16,7 +16,7 @@
     </div>
     <div class="label-bar">
       <template v-for="(label, labelIdx) in chartConfig.label">
-        <p :key="labelIdx" v-if="label.tabIdx === tabIndex" :style="{'max-width':100/chartConfig.label.length+'%'}" class="label">
+        <p v-if="label.tabIdx === tabIndex" :key="labelIdx" :style="{'max-width':100/chartConfig.label.length+'%'}" class="label">
           {{label.name}} <span class="label-val">{{label.total}}</span>
         </p>
       </template>
