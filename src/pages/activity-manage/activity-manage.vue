@@ -45,7 +45,7 @@
               </div>
             </div>
           </div>
-          <base-blank v-else blackStyle="margin-top:150px"></base-blank>
+          <base-blank v-else blackStyle="margin-top:15%"></base-blank>
         </div>
         <div class="pagination-box">
           <base-pagination ref="pages" :pageDetail="activePage" @addPage="addPage"></base-pagination>
