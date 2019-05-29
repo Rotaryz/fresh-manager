@@ -74,7 +74,7 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-              <div class="com-list-item">¥{{id ? item.goods_trade_price : item.trade_price_show}}</div>
+              <div class="com-list-item">¥{{id > 0 ? item.goods_trade_price : item.trade_price_show}}</div>
               <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
@@ -455,8 +455,8 @@
         let goodsItem = objDeepCopy(item)
         goodsItem.all_stock = item.usable_stock
         goodsItem.usable_stock = ''
+        goodsItem.trade_price_show = item.trade_price
         if (this.activityTheme !== 'hot_tag') {
-          goodsItem.trade_price_show = item.trade_price
           goodsItem.trade_price = ''
         }
         this.goodsList.push(goodsItem)
@@ -475,8 +475,8 @@
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           item.usable_stock = ''
+          item.trade_price_show = item.trade_price
           if (this.activityTheme !== 'hot_tag') {
-            item.trade_price_show = item.trade_price
             item.trade_price = ''
           }
           return item
