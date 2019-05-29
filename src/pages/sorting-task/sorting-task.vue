@@ -205,7 +205,7 @@
       _batchFinishSorting(){
         API.Sorting.batchFinishSorting(this.sortingTask.filter,true).then(res => {
           this.$toast.show(res.message)
-
+          this._updateData({page:1})
         }).catch((err) => {
           this.$toast.show(err.message)
         })
@@ -232,7 +232,7 @@
           keyword: "",
         }
         this.$refs.research._setText()
-        this._updateList(params)
+        this._updateData(params)
       },
       // 表格跳转路由获取
       getRouterUrl(item, row){
@@ -246,7 +246,7 @@
         }
       },
       // 更新列表
-      _updateList({...params}, noUpdataStatus) {
+      _updateData({...params}, noUpdataStatus) {
         this.SET_PARAMS(params)
         this.getSortingTaskList()
         if (!noUpdataStatus) {
@@ -258,7 +258,7 @@
       },
       // 时间选择器
       changeTime(timeArr) {
-        this._updateList({
+        this._updateData({
           start_time: timeArr[0],
           end_time: timeArr[1],
           page: 1
@@ -286,7 +286,7 @@
       },
       // 列表状态栏选择
       setStatus(val) {
-        this._updateList({status: val, page: 1}, true)
+        this._updateData({status: val, page: 1}, true)
       },
       // 分类数据
       _getClassifyList(params) {
@@ -308,7 +308,7 @@
       },
       // 分类选择
       setValueFrist(item) {
-        this._updateList({goods_category_id: item.id || '', page: 1})
+        this._updateData({goods_category_id: item.id || '', page: 1})
         this._getClassifyList({
           'parent_id': item.id,
         }).then(res => {
@@ -321,11 +321,11 @@
         if (!item.id) {
           return
         }
-        this._updateList({goods_category_id: item.id, page: 1})
+        this._updateData({goods_category_id: item.id, page: 1})
       },
       // 搜索按钮
       searchBtn(keyword) {
-        this._updateList({keyword, page: 1})
+        this._updateData({keyword, page: 1})
       },
       // 导出路径
       getUrl() {
@@ -359,11 +359,11 @@
       async _exportDeliveryOrder() {
         await API.Sorting.exportAllocationOrder(this.getUrl())
         setTimeout(()=>{
-          this._updateList({page:1})
+          this._updateData({page:1})
         },500)
       },
       pageChange(page) {
-        this._updateList({page})
+        this._updateData({page})
       },
     }
   }
