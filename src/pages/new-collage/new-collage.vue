@@ -109,7 +109,7 @@
               <img class="icon" src="./icon-add@2x.png" alt="">
               添加优惠券
             </div>
-            <div class="remind">优惠券只可添加一种</div>
+            <div class="remind">优惠券只可添加一种（只能选择满减券）</div>
           </div>
           <div v-if="selectCouponList.length" class="rush-list-box">
             <div class="commodities-list-header com-list-box commodities-list-top">
@@ -156,7 +156,7 @@
               <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
                 <div class="com-list-item">{{item.name}}</div>
                 <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-                <div class="com-list-item">¥{{item.original_price}}</div>
+                <div class="com-list-item">¥{{id ? item.goods_trade_price : item.trade_price_show}}</div>
                 <div class="com-list-item">
                   <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
                   <span v-if="item.original_price" class="small-money">¥</span>
@@ -256,7 +256,7 @@
                 <div class="goods-name">{{item.name}}</div>
                 <div class="goods-money">
                   <div class="goods-money-text">{{item.usable_stock}}</div>
-                  <div class="goods-money-text">¥{{item.original_price}}</div>
+                  <div class="goods-money-text">¥{{item.trade_price}}</div>
                 </div>
               </div>
               <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
@@ -296,7 +296,7 @@
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
-    '划线价',
+    '销售价',
     '拼团价',
     '每人限购',
     '商品库存',
@@ -551,7 +551,7 @@
             item.selected = 2
           }
           item.all_stock = item.usable_stock
-          item.trade_price = ''
+          // item.trade_price = ''
           item.sort = 0
           return item
         })
@@ -689,6 +689,8 @@
         // item.all_stock = item.usable_stock
         let goods = Object.assign({}, item)
         goods.usable_stock = ''
+        goods.trade_price_show = item.trade_price
+        goods.trade_price = ''
         this.goodsList.push(goods)
 
         this.choeesGoods.forEach((item) => {
@@ -705,6 +707,8 @@
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           item.usable_stock = ''
+          item.trade_price_show = item.trade_price
+          item.trade_price = ''
           return item
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)

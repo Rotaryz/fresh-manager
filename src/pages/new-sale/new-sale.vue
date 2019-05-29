@@ -74,8 +74,8 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.original_price}}</div>
-              <div class="com-list-item">{{item.sale_count || 0}}</div>
+              <div class="com-list-item">¥{{id ? item.goods_trade_price : item.trade_price_show}}</div>
+              <div class="com-list-item">{{item.sale_count || 0}}</div>`
               <div class="com-list-item">
                 <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
                 <span v-if="item.original_price" class="small-money">¥</span>
@@ -130,7 +130,7 @@
                 <div class="goods-name">{{item.name}}</div>
                 <div class="goods-money">
                   <div class="goods-money-text">{{item.usable_stock}}</div>
-                  <div class="goods-money-text">¥{{item.original_price}}</div>
+                  <div class="goods-money-text">¥{{item.trade_price}}</div>
                 </div>
               </div>
               <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
@@ -169,7 +169,7 @@
   const COMMODITIES_LIST = [
     '商品名称',
     '单位',
-    '原售价(元)',
+    '销售价(元)',
     '销量',
     '抢购价(元)',
     '每人限购',
@@ -334,9 +334,6 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
-          if (this.activityTheme !== 'hot_tag') {
-            item.trade_price = ''
-          }
           item.sort = 0
           return item
         })
@@ -457,6 +454,10 @@
         let goodsItem = objDeepCopy(item)
         goodsItem.all_stock = item.usable_stock
         goodsItem.usable_stock = ''
+        if (this.activityTheme !== 'hot_tag') {
+          goodsItem.trade_price_show = item.trade_price
+          goodsItem.trade_price = ''
+        }
         this.goodsList.push(goodsItem)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
@@ -473,6 +474,10 @@
         this.choeesGoods = this.choeesGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           item.usable_stock = ''
+          if (this.activityTheme !== 'hot_tag') {
+            item.trade_price_show = item.trade_price
+            item.trade_price = ''
+          }
           return item
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
@@ -485,7 +490,7 @@
         }
         await this._getGoodsList()
         // 展示添加商品弹窗
-        this.$refs.goodsModel.showModal()
+        this.$refs.goodsModel && this.$refs.goodsModel.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModel.hideModal()
