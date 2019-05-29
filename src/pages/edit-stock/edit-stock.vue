@@ -127,7 +127,7 @@
       // 格式化文件
       _infoFile(file) {
         let param = new FormData() // 创建form对象
-        param.append('file', file, file.name)// 通过append向form对象添加数据
+        param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
       }
     }

@@ -37,7 +37,6 @@
     methods: {
       infoTextMethods() {
         this.searchText = ''
-        console.log(this.searchText,'searchText')
       },
       _search() {
         this.$emit('search', this.searchText)
@@ -48,7 +47,7 @@
         }
       },
       _setText(text) {
-        this.searchText = text
+        this.searchText = text || ''
       }
     }
   }

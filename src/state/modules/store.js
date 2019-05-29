@@ -9,29 +9,33 @@ export const state = {
   }, // 库存页码信息
   warehouseList: [], // 库存列表
   warehouseDetailList: [], // 库存详情列表
-  detailPageTotal: { // 库存详情页码
+  detailPageTotal: {
+    // 库存详情页码
     total: 1,
     per_page: 10,
     total_page: 1
   },
-  stockPageTotal: { // 库存批次页码
+  stockPageTotal: {
+    // 库存批次页码
     total: 1,
     per_page: 10,
     total_page: 1
   },
   stockList: [],
   adjustOrder: [],
-  adjustPageTotal: { // 盘点列表页码
+  adjustPageTotal: {
+    // 盘点列表页码
     total: 1,
     per_page: 10,
     total_page: 1
   },
   adjustOrderDetail: [],
-  adjustDetailPageTotal: { // 盘点详情页码
+  adjustDetailPageTotal: {
+    // 盘点详情页码
     total: 1,
     per_page: 10,
     total_page: 1
-  },
+  }
 }
 
 export const getters = {
@@ -66,8 +70,7 @@ export const getters = {
   },
   adjustDetailPageTotal(state) {
     return state.adjustDetailPageTotal
-  },
-
+  }
 }
 
 export const mutations = {
@@ -231,5 +234,4 @@ export const actions = {
         app.$loading.hide()
       })
   }
-
 }

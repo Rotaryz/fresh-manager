@@ -40,8 +40,8 @@
     data() {
       return {
         bannerIndex: 0,
-        imageArr: IMAGE_ARR,
-        // bannerList: [`${require('./pic-address_book@2x.png')}`]
+        imageArr: IMAGE_ARR
+      // bannerList: [`${require('./pic-address_book@2x.png')}`]
       }
     },
     computed: {
@@ -52,9 +52,7 @@
         return arr
       }
     },
-    created() {
-
-    },
+    created() {},
     methods: {
       _changeBanner(index) {
         this.bannerIndex = index
@@ -63,8 +61,7 @@
         this.bannerIndex = value
         this.$emit('bannerChange', value)
       },
-      _setType(cms) {
-      }
+      _setType(cms) {}
     }
   }
 </script>

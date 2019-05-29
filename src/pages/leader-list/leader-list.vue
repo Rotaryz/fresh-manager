@@ -124,20 +124,19 @@
     methods: {
       ...leaderMethods,
       getLeaderStatus() {
-        API.Leader.getLeaderStatus()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Leader.getLeaderStatus().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              status: item.status,
+              num: item.statistic
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                status: item.status,
-                num: item.statistic
-              }
-            })
           })
+        })
       },
       changeStatus(selectStatus) {
         this.status = selectStatus.status
@@ -157,14 +156,13 @@
         }
       },
       getTopData() {
-        API.Leader.getTopData()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.topData = res.data.store
-          })
+        API.Leader.getTopData().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.topData = res.data.store
+        })
       },
       _getMore(page) {
         this.page = page
@@ -188,7 +186,7 @@
       },
       statusHandle(item, index) {
         let status = 0
-        if (typeof(this.statusArr[index]) === 'number') {
+        if (typeof this.statusArr[index] === 'number') {
           status = this.statusArr[index]
         } else {
           status = item.is_freeze ? 0 : 1
@@ -199,7 +197,7 @@
         this.freezeItem = item
         this.freezeIndex = index
         let status = 1
-        if (typeof(this.statusArr[index]) === 'number') {
+        if (typeof this.statusArr[index] === 'number') {
           status = this.statusArr[index]
         } else {
           status = item.is_freeze ? 0 : 1
@@ -215,12 +213,11 @@
         }
         this.statusArr = this.statusArr.map((item, ind) => {
           if (this.freezeIndex === ind) {
-            if (typeof(item) === 'number') {
+            if (typeof item === 'number') {
               item = item ? 0 : 1
             } else {
               item = this.freezeItem.is_freeze
             }
-
           }
           return item
         })

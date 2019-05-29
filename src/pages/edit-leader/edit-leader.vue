@@ -196,7 +196,7 @@
       if (this.id) {
         this.leaderData = _.cloneDeep(this.detail)
         this.ladder_rules = this.leaderData.ladder_rules
-        if(this.ladder_rules.length < 2) {
+        if (this.ladder_rules.length < 2) {
           this.ladder_rules = [{money: '0', rate: ''}, {money: '', rate: ''}]
         }
         if (+this.leaderData.commission_type === 2) {
@@ -221,8 +221,8 @@
       },
       numBlur(index) {
         if (this.ladder_rules[index].rate && index > 1) {
-          for (let i=0; i<this.ladder_rules.length; i++) {
-            for (let j=i+1; j<this.ladder_rules.length; j++) {
+          for (let i = 0; i < this.ladder_rules.length; i++) {
+            for (let j = i + 1; j < this.ladder_rules.length; j++) {
               if (+this.ladder_rules[i].money > +this.ladder_rules[j].money) {
                 let obj = this.ladder_rules[i]
                 this.$set(this.ladder_rules, i, this.ladder_rules[j])
@@ -234,8 +234,8 @@
       },
       rateBlur(index) {
         if (this.ladder_rules[index].money && index > 1) {
-          for (let i=0; i<this.ladder_rules.length; i++) {
-            for (let j=i+1; j<this.ladder_rules.length; j++) {
+          for (let i = 0; i < this.ladder_rules.length; i++) {
+            for (let j = i + 1; j < this.ladder_rules.length; j++) {
               if (+this.ladder_rules[i].money > +this.ladder_rules[j].money) {
                 let obj = this.ladder_rules[i]
                 this.$set(this.ladder_rules, i, this.ladder_rules[j])
@@ -299,7 +299,11 @@
       },
       testRateData() {
         let testArr = this.ladder_rules.map((item, index) => {
-          if ((index > 0 && +this.leaderData.commission_type === 2) && (!item.money || item.money < 0 || !NUM.test(item.money) || +item.money.split('.')[1] > 0)) {
+          if (
+            index > 0 &&
+            +this.leaderData.commission_type === 2 &&
+            (!item.money || item.money < 0 || !NUM.test(item.money) || +item.money.split('.')[1] > 0)
+          ) {
             this.$toast.show('请输入正整数销售金额')
             return 'false'
           } else if (+this.leaderData.commission_type === 2 && !REG_NUM.test(item.rate)) {
@@ -313,8 +317,8 @@
             return 'false'
           }
         })
-        let repeat = this.ladder_rules.map(item => {
-          let findArr = this.ladder_rules.filter(val => {
+        let repeat = this.ladder_rules.map((item) => {
+          let findArr = this.ladder_rules.filter((val) => {
             return item.money === val.money
           })
           if (findArr.length > 1) {
@@ -323,14 +327,15 @@
           }
         })
         testArr = testArr.concat(repeat)
-        let result = testArr.every(item => {
+        let result = testArr.every((item) => {
           return item !== 'false'
         })
         return result
-      }, /**
-       * 设置默认数据 -> 编辑状态
-       * @private
-       */
+      }
+    /**
+     * 设置默认数据 -> 编辑状态
+     * @private
+     */,
       _setData() {
         if (!_.isEmpty(this.detail)) {
           this.$refs.city.infoCity([this.detail.province, this.detail.city, this.detail.district])
@@ -362,7 +367,7 @@
         } else if (!this.leaderData.address) {
           this.$toast.show('请输入正确的详情地址')
           return
-        } else if ((!REG_NUM.test(this.leaderData.fixed_rate) && +this.leaderData.commission_type === 1)) {
+        } else if (!REG_NUM.test(this.leaderData.fixed_rate) && +this.leaderData.commission_type === 1) {
           this.$toast.show('请输入0%-100%之间的佣金比例，保留2位小数')
           return
         } else if (+this.leaderData.fixed_rate < 0 && +this.leaderData.commission_type === 1) {

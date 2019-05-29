@@ -96,7 +96,13 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/api/backend/activity-manage/member-activity-excel/' + this.id + '?' + search.join('&')
+        return (
+          process.env.VUE_APP_API +
+          '/social-shopping/api/backend/activity-manage/member-activity-excel/' +
+          this.id +
+          '?' +
+          search.join('&')
+        )
       }
     },
     created() {

@@ -18,9 +18,9 @@
           <p class="identification-name">入库列表</p>
           <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
-        <div class="function-btn">
-          <div v-if="status === 0" class="btn-main" @click="allocationStock">完成当日收货</div>
-        </div>
+        <!--<div class="function-btn">-->
+          <!--<div v-if="status === 0" class="btn-main" @click="allocationStock">完成当日收货</div>-->
+        <!--</div>-->
       </div>
       <div class="big-list">
         <div class="list-header list-box">
@@ -37,8 +37,8 @@
               <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
-                <div v-if="item.status === 0" class="list-operation" @click="entryOrdersExport(item)">导出</div>
-                <router-link v-if="item.status === 0" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
+                <div v-if="item.status === 0 || item.status === 2 || item.status === 3" class="list-operation" @click="entryOrdersExport(item)">导出</div>
+                <router-link v-if="item.status === 0 || item.status === 2 || item.status === 3" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
                 <div v-if="item.status === 1" class="list-operation" @click="difference(item)">差异报告</div>
               </div>
             </div>
@@ -85,7 +85,9 @@
         goodsPage: 1,
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
-          {name: '待入库', value: 0, key: 'wait_submit', num: 0},
+          {name: '待进库', value: 0, key: 'wait_submit', num: 0},
+          {name: '待理货', value: 1, key: 'success', num: 0},
+          {name: '待上架', value: 1, key: 'success', num: 0},
           {name: '已完成', value: 1, key: 'success', num: 0}
         ],
         statistic: {
@@ -114,13 +116,13 @@
     },
     methods: {
       // 完成单日收货
-      async allocationStock() {
-        if (this.productEnterList.length) {
-          this.$refs.confirm.show('有入库单还未完成入库，是否确认完成收货')
-          return
-        }
-        await this.sendAllocationStock()
-      },
+      // async allocationStock() {
+      //   if (this.productEnterList.length) {
+      //     this.$refs.confirm.show('有入库单还未完成入库，是否确认完成收货')
+      //     return
+      //   }
+      //   await this.sendAllocationStock()
+      // },
       async sendAllocationStock() {
         let res = await API.Store.stopAllocationStock()
         this.$toast.show(res.message, 600)
@@ -153,17 +155,18 @@
         this._setDownUrl(item, DISS_EXPORT)
       },
       async _statistic() {
-        let res = await API.Store.entryOrdersStatistic(
-          {
-            tart_time: this.time[0],
-            end_time: this.time[1],
-            keyword: this.keyWord
-          }
-        )
-        this.statistic = res.error === this.$ERR_OK ? res.data : {}
-        for (let key in this.statistic) {
-          let index = this.dispatchSelect.findIndex((item) => item.key === key)
-          this.dispatchSelect[index].num = this.statistic[key]
+        let res = await API.Store.entryOrdersStatistic({
+          tart_time: this.time[0],
+          end_time: this.time[1],
+          keyword: this.keyWord
+        })
+        if (res.error === this.$ERR_OK) {
+          this.dispatchSelect = res.data.status.map((item) => {
+            item.name = item.status_str
+            item.num = item.statistic
+            item.value = item.status
+            return item
+          })
         }
       },
       getProductListData() {
@@ -203,9 +206,10 @@
         this.getProductListData()
         this.$refs.pagination.beginPage()
       },
-      setValue(item) {
+      async setValue(item) {
         this.status = item.value
         this.goodsPage = 1
+        await this._statistic()
         this.getProductListData()
         this.$refs.pagination.beginPage()
       },

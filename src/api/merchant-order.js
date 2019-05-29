@@ -16,10 +16,10 @@ export default {
   // √ 状态
   getStausData(params = {}) {
     let defaultParams = {
-      start_time: "",
-      end_time: "",
-      keyword: "",
-      type: ""
+      start_time: '',
+      end_time: '',
+      keyword: '',
+      type: ''
     }
     defaultParams = {...defaultParams, ...params}
     // let url = '/mock/StausData.json'
@@ -49,13 +49,12 @@ export default {
   getMergeOrderslist(params, loading = false) {
     let url = '/scm/api/backend/oms/merge-orders'
     // let url = '/mock/mergeOrderslist.json'
-    console.log(url,params)
     return request.get(url, params, loading)
   },
   //  √ 汇总详情  √
   getMergerOrderDetail({mergeOrderId}, loading = true) {
     let url = `/scm/api/backend/oms/merge-orders/${mergeOrderId}`
     // let url = '/mock/mergerDetail.json'
-    return request.get(url,{}, loading)
+    return request.get(url, {}, loading)
   }
 }

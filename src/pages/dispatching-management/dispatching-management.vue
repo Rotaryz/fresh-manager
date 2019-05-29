@@ -83,6 +83,7 @@
             <div class="text">司机名字</div>
             <div class="text">手机号</div>
             <div class="text">车牌号</div>
+            <div class="text">密码</div>
             <div class="text">线路名称</div>
           </div>
           <div class="main-right">
@@ -94,6 +95,17 @@
             </div>
             <div class="main-input-big">
               <input v-model="driverForm.plate_number" type="text" class="main-input-box" placeholder="请输入车牌号" maxlength="10">
+            </div>
+            <div class="main-input-big">
+              <input
+                v-if="!driverForm.driver_id || (driverForm.driver_id && changePass)"
+                v-model="driverForm.password"
+                type="password"
+                class="main-input-box"
+                placeholder="请输入密码"
+                maxlength="6"
+              >
+              <div v-else class="list-operation edit-change" @click="changePass = true">修改密码</div>
             </div>
             <div class="main-input-big">
               <base-drop-down :width="333" :height="44" :select="roadSelect" @setValue="setRoadSelect"></base-drop-down>
@@ -207,14 +219,16 @@
           true_name: '',
           mobile: '',
           plate_number: '',
-          road_id: ''
+          road_id: '',
+          password: ''
         },
         roadSelect: ROAD_SELECT,
         handleDriverType: ADD_DRIVER,
         handleRoadType: ADD_ROAD,
         deliveryAddress: [],
         isRoadSubmit: false,
-        isDriverSubmit: false
+        isDriverSubmit: false,
+        changePass: false
       }
     },
     computed: {
@@ -252,9 +266,11 @@
             true_name: '',
             mobile: '',
             plate_number: '',
-            road_id: ''
+            road_id: '',
+            password: ''
           }
           this.roadSelect.content = '请选择'
+          this.changePass = false
           this.$refs.driver.showModal()
         }
       },
@@ -286,14 +302,16 @@
             mobile,
             plate_number: plateNumber,
             road_id: roadId,
-            road_name: roadName
+            road_name: roadName,
+            password
           } = detail
           this.driverForm = {
             driver_id: driverId,
             true_name: trueName,
             mobile,
             plate_number: plateNumber,
-            road_id: roadId
+            road_id: roadId,
+            password: password || ''
           }
           this.roadSelect.content = roadName
           this.$refs.driver.showModal()
@@ -314,6 +332,9 @@
         } else if (this.tabIndex === 1) {
           this.$refs.driver.hideModal()
         }
+        setTimeout(() => {
+          this.changePass = false
+        }, 300)
       },
       handleRoad() {
         if (this.handleRoadType === ADD_ROAD) {
@@ -387,6 +408,9 @@
         } else if (!data.plate_number) {
           this.$toast.show('请输入车牌号')
           return
+        } else if ((data.driver_id && this.changePass && !data.password) || (!data.driver_id && !data.password)) {
+          this.$toast.show('请输入密码')
+          return
         } else if (!data.road_id) {
           this.$toast.show('请选择线路名称')
           return
@@ -394,6 +418,7 @@
         return true
       },
       handleDriver() {
+        console.log(this.driverForm)
         if (!this.checkDriverValidate()) {
           return
         }
@@ -561,57 +586,61 @@
             background: #ACACAC
             transition: all 0.3s
 
-    .main-left
-      min-width: 60px
-      margin-right: 20px
-      display: flex
-      flex-direction: column
-      .text
-        line-height: 44px
-        color: #666
-        font-size: $font-size-14
-        font-family: $font-family-regular
-        position: relative
+      .edit-change
         margin-bottom: 20px
-        &:after
-          content: '*'
-          left: -7px
-          position: absolute
-          margin-right: -2px
-          color: #F52424
+        height: 44px
+        line-height: 44px
+  .main-left
+    min-width: 60px
+    margin-right: 20px
+    display: flex
+    flex-direction: column
+    .text
+      line-height: 44px
+      color: #666
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      position: relative
+      margin-bottom: 20px
+      &:after
+        content: '*'
+        left: -7px
+        position: absolute
+        margin-right: -2px
+        color: #F52424
 
-    .main-model-box
-      layout(row)
-      align-items: center
-      margin-bottom: 24px
+  .main-model-box
+    layout(row)
+    align-items: center
+    margin-bottom: 24px
 
-    .btn-group
-      text-align: center
-      display: flex
-      justify-content: flex-end
-      user-select: none
-      .btn
-        width: 96px
-        height: 40px
-        line-height: 40px
-        border-radius: 2px
-        border: 1px solid $color-text-D9
-        cursor: pointer
-        transition: all 0.3s
-      .cancel
-        border: 1px solid $color-line
-        &:hover
-          color: $color-text-sub
-          border-color: $color-text-sub
-      .confirm
-        border: 1px solid $color-main
-        background: $color-main
-        color: $color-white
-        margin-left: 20px
-        &:hover
-          opacity: 0.8
-      .one-btn
-        margin-left: 0
+  .btn-group
+    text-align: center
+    display: flex
+    justify-content: flex-end
+    user-select: none
+    .btn
+      width: 96px
+      height: 40px
+      line-height: 40px
+      border-radius: 2px
+      border: 1px solid $color-text-D9
+      cursor: pointer
+      transition: all 0.3s
+    .cancel
+      border: 1px solid $color-line
+      &:hover
+        color: $color-text-sub
+        border-color: $color-text-sub
+    .confirm
+      border: 1px solid $color-main
+      background: $color-main
+      color: $color-white
+      margin-left: 20px
+      &:hover
+        opacity: 0.8
+    .one-btn
+      margin-left: 0
 
 
   .title-box
