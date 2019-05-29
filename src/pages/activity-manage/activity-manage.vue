@@ -23,7 +23,7 @@
           <div class="list-header list-box">
             <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
           </div>
-          <div class="list">
+          <div v-if="activeList.length" class="list">
             <div v-for="(item, index) in activeList" :key="index" class="list-content list-box">
               <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
                 <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
@@ -45,6 +45,7 @@
               </div>
             </div>
           </div>
+          <base-blank v-else blackStyle="margin-top:150px"></base-blank>
         </div>
         <div class="pagination-box">
           <base-pagination ref="pages" :pageDetail="activePage" @addPage="addPage"></base-pagination>
@@ -212,10 +213,10 @@
         this.page = 1
         this.startTime = ''
         this.endTime = ''
-        this.status = ''
+        // this.status = ''
         this.defaultIndex = 0
         this.dateInfo = []
-        this.$refs.statusTab && this.$refs.statusTab._resetTo()
+        // this.$refs.statusTab && this.$refs.statusTab._resetTo()
         this._getActiveList()
         this._getActiveStatus()
         this._resetPage()
