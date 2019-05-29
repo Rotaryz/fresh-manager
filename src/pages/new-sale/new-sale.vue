@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{disable ? '查看' : '新建'}}{{this.pageConfig.title}}</p>
+        <p class="identification-name">{{disable ? '查看' : '新建'}}{{pageConfig.title}}</p>
       </div>
       <div class="function-btn">
       </div>
