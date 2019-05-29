@@ -15,11 +15,11 @@
       <a v-if="chartConfig.excel" class="excel-btn">导出Excel</a>
     </div>
     <div class="label-bar">
-      <p v-for="(label, labelIdx) in chartConfig.label" :key="labelIdx"
-         :style="{'max-width':100/chartConfig.label.length+'%'}" class="label"
-      >
-        {{label}} <span class="label-val">{{chartData.totalArr[labelIdx]}}</span>
-      </p>
+      <template v-for="(label, labelIdx) in chartConfig.label">
+        <p :key="labelIdx" v-if="label.tabIdx === tabIndex" :style="{'max-width':100/chartConfig.label.length+'%'}" class="label">
+          {{label.name}} <span class="label-val">{{label.total}}</span>
+        </p>
+      </template>
     </div>
     <div :id="chartId" class="chart-con"></div>
   </div>
@@ -43,7 +43,6 @@
     data() {
       return {
         chartConfig: {},
-        chartData: {},
         tabIndex: 0,
         myChart: ''
       }
@@ -54,23 +53,22 @@
     methods: {
       _resetData() {
         this.chartConfig = {}
-        this.chartData = {}
         this.tabIndex = 0
         this.myChart = ''
       },
-      _setChart(chartConfig, first) {
-        this._resetData()
-        this.tabIndex = chartConfig.tabIndex
-        this.chartConfig = chartConfig
-        this.chartData = chartConfig.data
-        let option = this._setOption(chartConfig)
+      _setChart(chartConfig, initChart = false) {
         let myChart = this.myChart
-        if (first || !myChart) {
+        if (initChart || !myChart) {
+          // 第一次初始化或者没有myChart才重新初始化
+          // this._resetData()
+          // this.tabIndex = chartConfig.tabIndex || 0
           let el = document.getElementById(chartConfig.id)
           this.$echarts.dispose(el)// 销毁之前的实例
-          myChart = this.$echarts.init(el)
+          myChart = this.$echarts.init(el)// 初始化chart
           this.myChart = myChart
         }
+        this.chartConfig = chartConfig
+        let option = this._setOption(chartConfig)
         myChart.setOption(option)
         return myChart
       },
@@ -127,27 +125,27 @@
           // 图表类型样式,及数据
           series: []
         }
-        let data = chartConfig.data.data
         let legendData = []
         let series = []
-        // 如果没有配置label或dataLabel，取其中一个
-        if (!chartConfig.label) {
-          chartConfig.label = chartConfig.dataLabel
-        }
-        if (!chartConfig.dataLabel) {
-          chartConfig.dataLabel = chartConfig.label
-        }
         // 遍历label为每条折线图设置series
-        for (let i = 0; i < chartConfig.dataLabel.length; i++) {
-          let item = data[i]
-          item.name = chartConfig.dataLabel[i]
-          legendData.push(item.name)
-          series.push(this._setSeries(chartConfig, item, i))
+        let arrIdxCount = 0// 代表实际的index，用于设置参照哪个y轴和颜色
+        for (let i = 0; i < chartConfig.dataArr.length; i++) {
+          let item = chartConfig.dataArr[i]
+          if (chartConfig.tab && item.tabIdx !== this.tabIndex) {
+            continue
+          } else {
+            arrIdxCount++
+          }
+          legendData.push(item.name)// 设置底部每条折线的label
+          series.push(this._setSeries(chartConfig, item, arrIdxCount-1))// 设图表类型样式,及数据
+          if (item.yAxisIdx === 1 && chartConfig.showSecondY) {
+            option.grid.right = '20'// 如果有两条y轴，调整canvas的右边间距
+          }
         }
-        chartConfig.showSecondY && (option.grid.right = '20')// 如果有两条y轴，调整canvas的右边间距
-        option.legend.data = legendData// 设置底部每条折线的label
+        // chartConfig.showSecondY && (option.grid.right = '20')// 如果有两条y轴，调整canvas的右边间距
+        option.legend.data = legendData
         option.series = series
-        option.xAxis = this._setXAxis(data[0].x)
+        option.xAxis = this._setXAxis(chartConfig.xAxleData)
         option.yAxis = this._setYAxis(chartConfig.showSecondY)
         return option
       },
@@ -155,12 +153,12 @@
         let seriesConfig = {
           name: item.name,
           type: 'line',
-          data: item.rate,// 每条折线的数据
-          yAxisIndex: chartConfig.showSecondY && i > 1 ? 1 : 0,// 设置参照哪个y轴
+          data: item.data,// 每条折线的数据
+          yAxisIndex: item.yAxisIdx||0,// 根据i设置参照哪个y轴，2、3参照第二条y轴
           smooth: false,
           hoverAnimation: true,
           symbolSize: 5,
-          showSymbol: item.rate.length <= 7,
+          showSymbol: item.data.length <= 7,// 数据量大于7默认不显示圈圈
           itemStyle: {
             normal: {
               color: CHART_COLOR.line[i],
@@ -172,8 +170,8 @@
             }
           }
         }
-        if (chartConfig.dataLabel.length <= 2 || chartConfig.lineShadow) {
-          // 低于两条或者设置了lineShadow的设置区域阴影
+        // 低于两条或者设置了lineShadow的设置区域阴影
+        if (chartConfig.dataArr.length <= 2 || chartConfig.lineShadow) {
           let color = ['rgba(96,129,227,0.28)', 'rgba(136,89,232,0.28)', 'rgba(247,193,54,0.28)', 'rgba(106,225,255,0.28)']
           seriesConfig.areaStyle = {
             color: {
@@ -279,7 +277,9 @@
         }
       },
       _switchTab(tab, tabIdx) {
+        if (this.tabIndex === tabIdx) return
         this.tabIndex = tabIdx
+        this._setChart(this.chartConfig, true)
       }
     }
   }
