@@ -45,7 +45,7 @@
           ></base-status-nav>
         </div>
         <div class="function-btn">
-          <div class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
+          <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
           <template v-if="sortingTask.filter.sorting_mode===0">
             <div class="btn-main g-btn-item" @click="_exportByOrder">导出</div>
           </template>
@@ -71,6 +71,9 @@
                     <!--<button class="">{{item.afterBtn.operateText}}</button>-->
                   </router-link>
                 </template>
+                <tempalte v-else-if="item.key==='allocation_num'&&sortingTask.filter.status===0">
+                  <div class="fill-line"></div>
+                </tempalte>
                 <template v-else>
                   {{row[item.key]}}
                   <template v-if="item.after">
@@ -368,6 +371,9 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .fill-line
+    width:28px
+    border-top:1px solid #333
   .home .container
     padding: 0px !important
   .tab-top
