@@ -74,7 +74,7 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-              <div class="com-list-item">¥{{id > 0 ? item.goods_trade_price : item.trade_price_show}}</div>
+              <div class="com-list-item">¥{{item.goods_trade_price || item.trade_price_show}}</div>
               <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
@@ -515,6 +515,7 @@
         }
         for (let i in list) {
           if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
+            console.log(list[i])
             this.$toast.show(`${list[i].name}信息不全`)
             return
           } else if (
