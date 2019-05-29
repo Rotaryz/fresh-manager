@@ -63,7 +63,7 @@
               <div v-if="setting[1].value" class="info-text">保质期：{{setting[1].value}}</div>
               <div v-if="setting[2].value" class="info-text">包装日期：{{setting[2].value}}</div>
               <div class="line"></div>
-              <img ref="printCode" :src="codeImg" class="print-img">
+              <img :src="codeImg" class="print-img">
             </div>
           </div>
         </div>
@@ -306,22 +306,16 @@
       font-size:$font-size-15
     .line
       border-bottom:2px solid #333
-
-  @page
-    color: #000
-    margin: 3mm
-    /*size: auto A4 landscape*/
-  @media print
-    #print
-      width:61mm
-      height:45mm
-    .print-item
-      padding:3mm
+  #print
+    width:61mm
+    height:45mm
+    &.print-item
+      padding:2mm
       .line
         margin-bottom:1mm
       .print-img
         flex:1
-        max-height:19mm
+        max-height:18mm
     .goods-name
       font-size :$font-size-14
       font-family :$font-family-medium
@@ -330,4 +324,7 @@
       .info-text
         color: #33333
         font-size:$font-size-12
+  @page
+    color: #000
+    margin: 3mm
 </style>
