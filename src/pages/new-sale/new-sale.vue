@@ -75,7 +75,7 @@
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
               <div class="com-list-item">¥{{id ? item.goods_trade_price : item.trade_price_show}}</div>
-              <div class="com-list-item">{{item.sale_count || 0}}</div>`
+              <div class="com-list-item">{{item.sale_count || 0}}</div>
               <div class="com-list-item">
                 <input v-model="item.trade_price" type="number" :readonly="disable" class="com-edit">
                 <span v-if="item.original_price" class="small-money">¥</span>
@@ -278,7 +278,7 @@
         this.personAllBuyLimit = 10
       }
       // this.msg.activity_theme = this.$route.query.activity_theme
-      if (this.id) {
+      if (this.id > 0) {
         let obj = _.cloneDeep(this.saleDetail)
         this.goodsList = obj.activity_goods
         if (this.goodsList) {
@@ -303,6 +303,7 @@
       },
       // 选择商品
       async _getGoodsList() {
+        // if (!this.id) return
         let res = await API.Sale.getGoodsList({
           is_online: 1,
           keyword: this.keyword,

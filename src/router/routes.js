@@ -269,7 +269,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id || routeTo.query.editId
             //  抢购详情
-            if (id) {
+            if (id > 0) {
               store
                 .dispatch('sale/getSaleDetail', {id})
                 .then((res) => {
@@ -299,7 +299,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id || routeTo.query.editId
             //  抢购详情
-            if (id) {
+            if (id > 0) {
               store
                 .dispatch('activity/getCollageDetail', id)
                 .then((res) => {

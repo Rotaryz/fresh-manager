@@ -519,6 +519,7 @@
       },
       // 选择商品
       async _getGoodsList() {
+        // if (!this.id) return
         let res = await API.Sale.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
