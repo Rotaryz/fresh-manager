@@ -3,7 +3,7 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-inventory@2x.png" class="identification-icon">
+          <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务导入</p>
         </div>
         <div class="btn-main">
@@ -79,7 +79,7 @@
           return
         }
         this.isSubmit = false
-        let res = await API.Store.createLeadTask({data: this.blankList})
+        let res = await API.Supply.createLeadTask({data: this.blankList})
         this.$toast.show(res.message, 600)
         if (res.error !== this.$ERR_OK) {
           this.isSubmit = true
@@ -124,7 +124,9 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:nth-child(1)
+        &:nth-child(1), &:nth-child(5)
+          flex: 0.3
+        &:nth-child(2)
           flex: 1.2
         &:nth-child(3), &:nth-child(4), &:nth-child(5)
           flex-wrap: nowrap
