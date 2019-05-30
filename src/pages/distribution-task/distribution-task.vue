@@ -54,8 +54,8 @@
                   <div v-if="item.order_status !== 2" class="list-item-img"></div>
                 </div>
                 <div class="list-item" :style="{flex: commodities[9].flex}">
-                  <span class="list-operation" @click="handleOperation(item)">导出</span>
-                  <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
+                  <span class="list-operation list-ok" @click="handleOperation(item)">导出</span>
+                  <span v-if="(item.status === 1 && item.order_status === 2) || item.status === 3" class="list-operation list-ok" @click="signIn(item)">签收</span>
                 </div>
               </div>
             </div>
@@ -240,9 +240,6 @@
         }
       },
       signIn(item) {
-        if (item.order_status !== 2) {
-          return
-        }
         if (item === 'all') {
           if (this.orderList.length && this.orderStatus === 1) {
             this.$refs.signMore.show('确定批量签收配送单？')
@@ -295,9 +292,6 @@
         this.$refs.pagination.beginPage()
       },
       handleOperation(data) {
-        if (data.order_status !== 2) {
-          return
-        }
         if (this.tabIndex === 0) {
           this.exportOrderId = data.id
           window.open(this.orderExportUrl, '_blank')
@@ -329,6 +323,10 @@
         padding: 0
         min-width: 80px
         max-width: 80px
+  .list-lock
+    .list-item
+      .list-ok
+        color: #4d77bd !important
   .list-item-img
     icon-image('icon-lock')
     width: 16px
