@@ -28,7 +28,13 @@
         <div class="function-btn">
           <div class="btn-main" @click="deliveryExcel">导出配送单</div>
           <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
-          <div class="btn-main g-btn-item" :class="{'btn-disable-store': orderStatus !==1 || (orderStatus === 1 && !orderList.length)}" @click="signIn('all')">批量签收</div>
+          <div
+            class="btn-main g-btn-item"
+            :class="{'btn-disable-store': (orderStatus !==1 && orderStatus !==3) || (orderStatus === 3 && !orderList.length) || (orderStatus === 1 && !orderList.length)}"
+            @click="signIn('all')"
+          >
+            批量签收
+          </div>
         </div>
       </div>
       <div class="big-list">
@@ -231,7 +237,7 @@
         return process.env.VUE_APP_SCM_API + url + '?' + search.join('&')
       },
       async signMore() {
-        let res = await API.Delivery.batchDeliverySign(true)
+        let res = await API.Delivery.batchDeliverySign({status: this.orderStatus})
         this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
