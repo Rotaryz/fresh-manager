@@ -192,8 +192,8 @@
               this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
               return
             }
+            this.$toast.show(res.message)
             if (res.error === this.$ERR_OK) {
-              this.$toast.show(res.message)
               setTimeout(() => {
                 this.$router.back()
               }, 500)
