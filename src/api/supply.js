@@ -221,6 +221,16 @@ export default {
    */
   leadTask(data, loading = false) {
     let url = '/scm/api/backend/purchase/purchase-task-import'
-    return request.get(url, data, loading)
+    return request.post(url, data, loading)
+  },
+  /**
+   * 批量新增采购任务[v1.3]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  createLeadTask(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-tasks-create'
+    return request.post(url, data, loading)
   }
 }

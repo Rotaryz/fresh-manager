@@ -15,17 +15,20 @@
           >
         </div>
       </div>
-      <div class="big-list" :class="taskList.length > 10 ? 'big-list-max' : ''">
+      <div class="big-list" :class="blankList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
-        <div v-if="taskList.length !== 0" class="list">
-          <div v-for="(item, index) in taskList" :key="index" class="list-content list-box">
-            <!--<div class="list-item list-double-row">-->
-            <!--<div class="item-dark">{{item.goods_name}}</div>-->
-            <!--<div class="item-dark">{{item.goods_sku_encoding}}</div>-->
-            <!--</div>-->
-            <div class="list-item">ssswe</div>
+        <div v-if="blankList.length !== 0" class="list">
+          <div v-for="(item, index) in blankList" :key="index" class="list-content list-box">
+            <div class="list-item">{{item.num}}</div>
+            <div class="list-item list-double-row">
+              <div class="item-dark">{{item.goods_name}}</div>
+              <div class="item-dark">{{item.goods_sku_encoding}}</div>
+            </div>
+            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.supplier_name}}</div>
+            <div class="list-item">{{item.plan_num}}</div>
           </div>
         </div>
         <base-blank v-else></base-blank>
@@ -35,10 +38,12 @@
         <div class="back-btn back-submit hand" @click="submitSure">确认提交</div>
       </div>
     </div>
+    <default-confirm ref="confirm" @confirm="confirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
@@ -49,17 +54,41 @@
     page: {
       title: TITLE
     },
+    components: {
+      DefaultConfirm
+    },
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        taskList: [],
-        isSubmit: false
+        blankList: [],
+        isSubmit: true
       }
     },
     created() {
     },
     methods: {
-      submitSure() {},
+      submitSure() {
+        if (!this.blankList.length) {
+          this.$toast.show('导入采购任务单不能为空')
+          return
+        }
+        this.$refs.confirm.show('是否批量导入采购任务单？')
+      },
+      async confirm() {
+        if (!this.isSubmit) {
+          return
+        }
+        this.isSubmit = false
+        let res = await API.Store.createLeadTask({data: this.blankList})
+        this.$toast.show(res.message, 600)
+        if (res.error !== this.$ERR_OK) {
+          this.isSubmit = true
+          return
+        }
+        setTimeout(() => {
+          this.$router.back()
+        }, 800)
+      },
       _back() {
         this.$router.back()
       },
@@ -69,6 +98,7 @@
         this.$loading.show('上传中...')
         let res = await API.Supply.leadTask(param, true, 60000)
         this.$loading.hide()
+        this.blankList = res.error === this.$ERR_OK ? res.data : []
         console.log(res)
         e.target.value = ''
       },

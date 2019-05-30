@@ -90,11 +90,6 @@
         this.blankIndex = -1
       },
       addition() {
-        if (!this.blankList.length) {
-          this.$toast.show('库存清单不能为空')
-          return
-        }
-        this.$refs.confirm.show('是否进行盘点库存调整？')
       },
       cancel() {
         this.$router.back()
