@@ -169,7 +169,7 @@
         item.sale_num = number.toFixed(2)
       },
       sureAdjust() {
-        API.Store.sureAdjust(this.sureAdjustData)
+        API.Store.sureAdjust({data: this.sureAdjustData})
           .then((res) => {
             if (res.error === this.$ERR_OK) {
               this.$refs.confirm.hide()
@@ -197,7 +197,7 @@
               setTimeout(() => {
                 this.$router.back()
               }, 500)
-              // this.sureAdjustData = res.data || null
+              this.sureAdjustData = res.data || null
               // res.data && this.$refs.confirm.show()
             }
           })
