@@ -109,7 +109,7 @@
     '差异数',
     '出库批次',
     '出库单价'
-  // '出库金额'
+    // '出库金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -182,13 +182,19 @@
           })
       },
       submitRecheck() {
-        this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
-
         API.Store.recheckFinish(this.$route.params.id, this.outDetailList)
           .then((res) => {
+            if (res.data) {
+              this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
+              return
+            }
             if (res.error === this.$ERR_OK) {
-              this.sureAdjustData = res.data || null
-              res.data && this.$refs.confirm.show()
+              this.$toast.show(res.message)
+              setTimeout(() => {
+                this.$router.back()
+              }, 500)
+              // this.sureAdjustData = res.data || null
+              // res.data && this.$refs.confirm.show()
             } else {
               this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
             }
@@ -368,5 +374,5 @@
     font-size: $font-size-14
   .input-num
     border-radius: 0
-    width:93px
+    width: 93px
 </style>
