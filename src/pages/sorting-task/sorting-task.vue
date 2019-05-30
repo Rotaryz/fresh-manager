@@ -285,7 +285,7 @@
       },
       // 列表状态栏选择
       setStatus(val) {
-        this._updateData({status: val, page: 1}, true)
+        this._updateData({status: val, page: 1})
       },
       // 分类数据
       _getClassifyList(params) {
