@@ -186,7 +186,7 @@
           })
       },
       submitRecheck() {
-        API.Store.recheckFinish(this.$route.params.id, this.outDetailList)
+        API.Store.recheckFinish(this.$route.params.id, {details: this.outDetailList})
           .then((res) => {
             if (res.data) {
               this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
@@ -199,8 +199,6 @@
               }, 500)
               // this.sureAdjustData = res.data || null
               // res.data && this.$refs.confirm.show()
-            } else {
-              this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
             }
           })
           .catch((err) => {

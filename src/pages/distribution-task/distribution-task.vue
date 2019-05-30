@@ -38,7 +38,7 @@
         <div class="list">
           <div v-if="tabIndex === 0">
             <div v-if="orderList.length">
-              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box" :class="{'list-lock': item.is_blocked}">
+              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box" :class="{'list-lock': item.order_status !== 2}">
                 <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
                 <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
                 <div class="list-item" :style="{flex: commodities[2].flex}">
@@ -51,7 +51,7 @@
                 <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
                 <div class="list-item" :style="{flex: commodities[8].flex}">
                   {{item.status_str}}
-                  <div v-if="item.is_blocked" class="list-item-img"></div>
+                  <div v-if="item.order_status !== 2" class="list-item-img"></div>
                 </div>
                 <div class="list-item" :style="{flex: commodities[9].flex}">
                   <span class="list-operation" @click="handleOperation(item)">导出</span>
@@ -240,7 +240,7 @@
         }
       },
       signIn(item) {
-        if (item.is_blocked) {
+        if (item.order_status !== 2) {
           return
         }
         if (item === 'all') {
@@ -295,7 +295,7 @@
         this.$refs.pagination.beginPage()
       },
       handleOperation(data) {
-        if (data.is_blocked) {
+        if (data.order_status !== 2) {
           return
         }
         if (this.tabIndex === 0) {
