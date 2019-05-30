@@ -71,9 +71,9 @@
                     <!--<button class="">{{item.afterBtn.operateText}}</button>-->
                   </router-link>
                 </template>
-                <template v-else-if="item.key==='allocation_num'&&sortingTask.filter.status===0">
-                  <div class="fill-line"></div>
-                </template>
+                <!--<template v-else-if="item.key==='allocation_num'&&sortingTask.filter.status===0">-->
+                  <!--<div class="fill-line"></div>-->
+                <!--</template>-->
                 <template v-else>
                   {{row[item.key]}}
                   <template v-if="item.after">
