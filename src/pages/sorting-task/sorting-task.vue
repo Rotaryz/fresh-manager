@@ -72,7 +72,7 @@
                   </router-link>
                 </template>
                 <!--<template v-else-if="item.key==='allocation_num'&&sortingTask.filter.status===0">-->
-                  <!--<div class="fill-line"></div>-->
+                <!--<div class="fill-line"></div>-->
                 <!--</template>-->
                 <template v-else>
                   {{row[item.key]}}
@@ -100,18 +100,19 @@
 <script type="text/ecmascript-6">
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import API from '@api'
-  const ORDERSTATUS = [{text: '按订单分拣', status: 0,id:'order'}, {text: '按商品分拣', status: 1,id:'goods'}]
+
+  const ORDERSTATUS = [{text: '按订单分拣', status: 0, id: 'order'}, {text: '按商品分拣', status: 1, id: 'goods'}]
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '拣货任务列表'
   const COMMODITIES_LIST1 = [
     {tilte: '建单时间', key: 'created_at', flex: '1.5'},
-    {tilte: '订单号', key: 'out_order_sn',type: "operate", params: {id: 'out_order_id'}, routerName: 'merchant-order-detail', flex: '2'},
+    {tilte: '订单号', key: 'out_order_sn', type: "operate", params: {id: 'out_order_id'}, routerName: 'merchant-order-detail', flex: '2'},
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
     {tilte: '订单数', key: 'order_num', after: "sale_unit"},
     {tilte: '配货数', key: 'allocation_num', after: "sale_unit"},
     {tilte: '状态', key: 'status_str'},
-    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id',order_id:'order_id'}, routerName: 'sorting-task-order-detail'}]
+    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id', order_id: 'order_id'}, routerName: 'sorting-task-order-detail'}]
   const COMMODITIES_LIST2 = [
     {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
@@ -127,10 +128,10 @@
       operateText: '明细',
       flex: 1,
       class: "operate add-btn",
-      params: {id: 'id','goods_sku_code':'goods_sku_code'},
+      params: {id: 'id', 'goods_sku_code': 'goods_sku_code'},
       routerName: 'sorting-task-detail-by-goods',
-      afterBtn:{
-        routerName:'sorting-task-preview',
+      afterBtn: {
+        routerName: 'sorting-task-preview',
         params: {id: 'id'},
         operateText: '打印标签',
       }
@@ -144,9 +145,7 @@
 
     data() {
       return {
-        currentPrint:{
-
-        },
+        currentPrint: {},
         tabStatus: ORDERSTATUS,
         datePlaceHolder: "选择生成日期",
         filterTaskFrist: {
@@ -167,8 +166,8 @@
         statusList: [
           {name: '全部', value: '', num: 0},
           {name: '待分拣', value: 0, num: 0},
-          {name:'拣货中', value: 2, num: 0},
-          {name:'待配货', value: 3, num: 0},
+          {name: '拣货中', value: 2, num: 0},
+          {name: '待配货', value: 3, num: 0},
           {name: '已完成', value: 1, num: 0}
         ],
         activeStatus: '',
@@ -178,34 +177,34 @@
     computed: {
       ...sortingComputed,
       commodities() {
-        return this.sortingTask.filter.sorting_mode === 1 ? COMMODITIES_LIST2 :COMMODITIES_LIST1
+        return this.sortingTask.filter.sorting_mode === 1 ? COMMODITIES_LIST2 : COMMODITIES_LIST1
       },
       timeArr() {
         return [this.sortingTask.filter.start_time, this.sortingTask.filter.end_time]
       }
     },
     created() {
-      this.$route.params.tabIndex && this.SET_PARAMS({sorting_mode:this.$route.params.tabIndex})
+      this.$route.params.tabIndex && this.SET_PARAMS({sorting_mode: this.$route.params.tabIndex})
       this.getFristList()
       this._getStatusData()
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
-      initBaseDropDown(first,second){
-        if(first){
+      initBaseDropDown(first, second) {
+        if (first) {
           this.filterTaskFrist.data = [{name: '全部', id: ''}]
           this.filterTaskFrist.content = '一级分类'
         }
-        if(second){
+        if (second) {
           this.filterTaskSecond.data = [{name: '全部', id: ''}]
           this.filterTaskFrist.content = '二级分类'
         }
       },
-      _batchFinishSorting(){
-        API.Sorting.batchFinishSorting(this.sortingTask.filter,true).then(res => {
+      _batchFinishSorting() {
+        API.Sorting.batchFinishSorting(this.sortingTask.filter, true).then(res => {
           this.$toast.show(res.message)
-          this._updateData({page:1})
+          this._updateData({page: 1})
         }).catch((err) => {
           this.$toast.show(err.message)
         })
@@ -215,14 +214,14 @@
       },
 
       // 打印标签按鈕
-      printTagBtn(row){
-        this.$router.push({name:"perview",params:{id:row.id}})
+      printTagBtn(row) {
+        this.$router.push({name: "perview", params: {id: row.id}})
       },
       // 顶部tab切换
       tabChange(val) {
         this.initBaseDropDown()
-        let params ={
-          sorting_mode:val,
+        let params = {
+          sorting_mode: val,
           page: 1,
           limit: 10,
           start_time: '',
@@ -235,7 +234,7 @@
         this._updateData(params)
       },
       // 表格跳转路由获取
-      getRouterUrl(item, row){
+      getRouterUrl(item, row) {
         let res = {}
         for (let i in item.params) {
           res[i] = row [item.params[i]]
@@ -271,7 +270,7 @@
           end_time: this.sortingTask.filter.end_time,
           goods_category_id: this.sortingTask.filter.goods_category_id,
           keyword: this.sortingTask.filter.keyword,
-          sorting_mode:this.sortingTask.filter.sorting_mode
+          sorting_mode: this.sortingTask.filter.sorting_mode
         }
         // todo
         API.Sorting.getStausData(params).then(res => {
@@ -279,7 +278,7 @@
             this.$toast.show(res.message)
             return false
           }
-          this.statusList =  res.data.status
+          this.statusList = res.data.status
         }).catch((err) => {
           this.$toast.show(err.message)
         })
@@ -302,8 +301,8 @@
       },
       getFristList() {
         this._getClassifyList().then(res => {
-          if(!res) return false
-          this.filterTaskFrist.data = [{name: '全部', id: ''},...res.data]
+          if (!res) return false
+          this.filterTaskFrist.data = [{name: '全部', id: ''}, ...res.data]
         })
       },
       // 分类选择
@@ -312,9 +311,9 @@
         this._getClassifyList({
           'parent_id': item.id,
         }).then(res => {
-          if(!res) return false
+          if (!res) return false
           this.filterTaskSecond.content = '全部'
-          this.filterTaskSecond.data = [{name: '全部', id: item.id},...res.data]
+          this.filterTaskSecond.data = [{name: '全部', id: item.id}, ...res.data]
         })
       },
       setValueSecond(item) {
@@ -338,7 +337,7 @@
           end_time: obj.end_time,
           keyword: obj.keyword,
           status: obj.status,
-          sorting_mode:obj.sorting_mode
+          sorting_mode: obj.sorting_mode
         }
         let search = []
         for (let key in data) {
@@ -347,7 +346,7 @@
         return '?' + search.join('&')
       },
       // 按订单分拣 导出
-      _exportByOrder(){
+      _exportByOrder() {
         // todo
         API.Sorting.exportDistributionOrder(`?current_corp=${this.getCurrentId()}&access_token=${this.currentUser().access_token}`)
       },
@@ -358,9 +357,9 @@
       // 导出配货单
       async _exportDeliveryOrder() {
         await API.Sorting.exportAllocationOrder(this.getUrl())
-        setTimeout(()=>{
-          this._updateData({page:1})
-        },500)
+        setTimeout(() => {
+          this._updateData({page: 1})
+        }, 500)
       },
       pageChange(page) {
         this._updateData({page})
@@ -372,33 +371,33 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .fill-line
-    width:28px
-    border-top:1px solid #333
+    width: 28px
+    border-top: 1px solid #333
   .home .container
     padding: 0px !important
   .tab-top
-    position:fixed
+    position: fixed
     top: 38px
     left: 210px
     z-index: 700
     margin-bottom: 20px
   .empty-50
-    height:50px
+    height: 50px
   .operate
     max-width: 50px
     &.add-btn
       min-width 130px
     .after-btn
       display: inline-block
-      cursor:pointer
-      color:#4D77BD
-      border:1px solid #4D77BD
+      cursor: pointer
+      color: #4D77BD
+      border: 1px solid #4D77BD
       border-radius: 2px
-      width:80px
+      width: 80px
       text-align: center
-      line-height:22px
+      line-height: 22px
       &:hover
-        border:1px solid #06397e
+        border: 1px solid #06397e
         color: #06397e
   .list-operation
     text-decoration: underline

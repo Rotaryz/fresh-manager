@@ -189,6 +189,7 @@
         API.Store.recheckFinish(this.$route.params.id, {details: this.outDetailList})
           .then((res) => {
             if (res.data) {
+              this.sureAdjustData = res.error === this.$ERR_OK ? res.data : null
               this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
               return
             }
@@ -197,7 +198,6 @@
               setTimeout(() => {
                 this.$router.back()
               }, 500)
-              this.sureAdjustData = res.data || null
               // res.data && this.$refs.confirm.show()
             }
           })
@@ -375,7 +375,7 @@
         height: 15px
         line-height: 15px
         &:first-child
-          margin-top: 12px
+          margin: 12px
 
   .tip
     margin: 0 2px
