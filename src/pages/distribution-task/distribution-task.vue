@@ -275,11 +275,12 @@
           this.dispatchSelect[index].num = this.statistic[key]
         }
       },
-      setValue(item) {
+      async setValue(item) {
         this.setOrderStatus(item.value)
+        await this._statistic(false)
         this.$refs.pagination.beginPage()
       },
-      changeStatus(item, index) {
+      async changeStatus(item, index) {
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
         this.setTabIndex(index)
       },
