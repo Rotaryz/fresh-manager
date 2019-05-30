@@ -331,17 +331,16 @@
           return item !== 'false'
         })
         return result
-      }
+      },
     /**
      * 设置默认数据 -> 编辑状态
      * @private
-     */,
-      _setData() {
-        if (!_.isEmpty(this.detail)) {
-          this.$refs.city.infoCity([this.detail.province, this.detail.city, this.detail.district])
-          this.leaderData = this.detail
-        }
-      },
+     */ _setData() {
+      if (!_.isEmpty(this.detail)) {
+        this.$refs.city.infoCity([this.detail.province, this.detail.city, this.detail.district])
+        this.leaderData = this.detail
+      }
+    },
       _isDataValidate() {
         if (!this.leaderData.mobile || this.leaderData.mobile.length !== 11) {
           this.$toast.show('请输入正确的团长账号')

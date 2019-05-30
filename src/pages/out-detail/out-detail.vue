@@ -100,7 +100,6 @@
   import DefaultBatch from '@components/default-batch/default-batch'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
-
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
@@ -108,13 +107,13 @@
     '商品',
     '分类',
     '订单数量(销售单位)',
-    '配货数量',
+    '配货数量(销售单位)',
     '出库数量(销售单位)',
     '出库数量(基本单位)',
     '差异数',
     '出库批次',
-    '出库单价',
-    // '出库金额'
+    '出库单价'
+  // '出库金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -136,7 +135,7 @@
         curItem: {},
         showIndex: null,
         isSubmit: false,
-        sureAdjustData:null
+        sureAdjustData: null
       }
     },
     computed: {
@@ -149,7 +148,7 @@
     },
     methods: {
       ...productMethods,
-      saleNumChange(item, index){
+      saleNumChange(item, index) {
         if (item.sale_num < 0) {
           item.base_num = item.sale_num * -1
         }
@@ -159,7 +158,7 @@
         }
         item.base_num = number.toFixed(2)
       },
-      baseNumChange(item, index){
+      baseNumChange(item, index) {
         if (item.base_num < 0) {
           item.sale_num = item.base_num * -1
         }
@@ -169,35 +168,39 @@
         }
         item.sale_num = number.toFixed(2)
       },
-      sureAdjust(){
-        API.Store.sureAdjust(this.sureAdjustData).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.$refs.confirm.hide()
-          } else {
-            this.$toast.show(res.message)
-          }
-        }).catch((err) => {
-          this.$toast.show(err.message)
-          return false
-        })
+      sureAdjust() {
+        API.Store.sureAdjust(this.sureAdjustData)
+          .then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$refs.confirm.hide()
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+            return false
+          })
           .finally(() => {
             this.$loading.hide()
           })
       },
-      submitRecheck(){
+      submitRecheck() {
         this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
 
-        API.Store.recheckFinish(this.$route.params.id,this.outDetailList).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.sureAdjustData = res.data || null
-            res.data && this.$refs.confirm.show()
-          } else {
-            this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
-          }
-        }).catch((err) => {
-          this.$toast.show(err.message)
-          return false
-        })
+        API.Store.recheckFinish(this.$route.params.id, this.outDetailList)
+          .then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.sureAdjustData = res.data || null
+              res.data && this.$refs.confirm.show()
+            } else {
+              this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
+            }
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+            return false
+          })
           .finally(() => {
             this.$loading.hide()
           })

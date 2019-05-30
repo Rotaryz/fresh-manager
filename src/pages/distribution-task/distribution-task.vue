@@ -38,7 +38,7 @@
         <div class="list">
           <div v-if="tabIndex === 0">
             <div v-if="orderList.length">
-              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
+              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box" :class="{'list-lock': item.is_blocked}">
                 <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
                 <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
                 <div class="list-item" :style="{flex: commodities[2].flex}">
@@ -49,7 +49,10 @@
                 <div class="list-item" :style="{flex: commodities[5].flex}">{{item.receive_address}}</div>
                 <div class="list-item" :style="{flex: commodities[6].flex}">{{item.delivery_date}}</div>
                 <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
-                <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
+                <div class="list-item" :style="{flex: commodities[8].flex}">
+                  {{item.status_str}}
+                  <div v-if="item.is_blocked" class="list-item-img"></div>
+                </div>
                 <div class="list-item" :style="{flex: commodities[9].flex}">
                   <span class="list-operation" @click="handleOperation(item)">导出</span>
                   <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
@@ -237,6 +240,9 @@
         }
       },
       signIn(item) {
+        if (item.is_blocked) {
+          return
+        }
         if (item === 'all') {
           if (this.orderList.length && this.orderStatus === 1) {
             this.$refs.signMore.show('确定批量签收配送单？')
@@ -289,6 +295,9 @@
         this.$refs.pagination.beginPage()
       },
       handleOperation(data) {
+        if (data.is_blocked) {
+          return
+        }
         if (this.tabIndex === 0) {
           this.exportOrderId = data.id
           window.open(this.orderExportUrl, '_blank')
@@ -320,4 +329,11 @@
         padding: 0
         min-width: 80px
         max-width: 80px
+  .list-item-img
+    icon-image('icon-lock')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>

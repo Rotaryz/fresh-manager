@@ -1637,7 +1637,7 @@ export default [
         path: 'foundation-setup/edit-warehouse',
         name: 'edit-warehouse',
         component: () => lazyLoadView(import('@pages/edit-warehouse/edit-warehouse')),
-        meta:{
+        meta: {
           titles: ['供应链', '仓库', '基础设置', '仓库人员'],
           variableIndex: 3,
           marginBottom: 80,
@@ -1696,14 +1696,16 @@ export default [
         path: 'sorting-task/print-preview/:id',
         name: 'sorting-task-preview',
         meta: {
-          titles: ['供应链', '分拣', '分拣任务','打印预览'],
+          titles: ['供应链', '分拣', '分拣任务', '打印预览'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('sorting/getBarCodePreviewInfo',routeTo.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
+            store
+              .dispatch('sorting/getBarCodePreviewInfo', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
               .catch(() => {
                 return next({name: '404'})
               })
@@ -1719,16 +1721,18 @@ export default [
           titles: ['供应链', '分拣', '分拣任务', '商品明细'],
           beforeResolve(routeTo, routeFrom, next) {
             store.commit('sorting/SET_PARAMS', {
-              type:'sortingTaskDetailByOrder',
+              type: 'sortingTaskDetailByOrder',
               page: 1,
               limit: 10
             })
-            store.dispatch('sorting/getSortingTaskDetailByOrder', routeTo.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
+            store
+              .dispatch('sorting/getSortingTaskDetailByOrder', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
               .catch(() => {
                 return next({name: '404'})
               })

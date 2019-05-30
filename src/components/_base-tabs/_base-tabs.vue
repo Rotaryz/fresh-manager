@@ -18,15 +18,15 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      padding:{
+      padding: {
         type: String,
         default: '20px 69px'
       },
-      margin:{
+      margin: {
         type: String,
         default: '0px'
       },
-      tabAlign:{
+      tabAlign: {
         type: String,
         default: 'center'
       },

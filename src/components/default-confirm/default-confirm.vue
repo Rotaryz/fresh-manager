@@ -30,11 +30,11 @@
     name: COMPONENT_NAME,
     components: {DefaultModal},
     props: {
-      cancelText:{
+      cancelText: {
         type: String,
         default: '取消'
       },
-      sureText:{
+      sureText: {
         type: String,
         default: '确认'
       },
