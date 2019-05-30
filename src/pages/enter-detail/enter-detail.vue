@@ -3,8 +3,8 @@
     <div class="down-content">
       <div class="enter-title">入库单号：{{enterMsg.order_sn}}</div>
       <div class="enter-title">供应商：{{enterMsg.supplier}}</div>
-      <div class="enter-title">入库时间：{{enterMsg.entry_time || '--------'}}</div>
       <div class="enter-title">状态：{{enterMsg.status === 0 ? '待入库' : '已完成'}}</div>
+      <div class="enter-title">建单时间：{{enterMsg.build_time || '--------'}}</div>
       <div class="enter-title">到货时间：{{enterMsg.arrival_time || '--------'}}</div>
       <div class="enter-title">理货时间：{{enterMsg.tally_time || '--------'}}</div>
       <div class="enter-title">上架时间：{{enterMsg.shelf_time || '--------'}}</div>
