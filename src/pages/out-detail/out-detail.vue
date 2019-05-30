@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-    <default-confirm ref="confirm" cancelText="不调整" sureText="调整" @confirm="sureAdjust"></default-confirm>
+    <default-confirm ref="confirm" cancelText="不调整" sureText="调整" @confirm="sureAdjust" @cancel="backPage"></default-confirm>
     <default-batch ref="modalBox" :batchList="batchList" :curItem.sync="curItem" :isOnZero="true" @confirm="confirm"></default-batch>
     <div v-if="outMsg.status === 0" class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
@@ -148,6 +148,9 @@
     },
     methods: {
       ...productMethods,
+      backPage() {
+        this.$router.back()
+      },
       saleNumChange(item, index) {
         if (item.sale_num < 0) {
           item.base_num = item.sale_num * -1
