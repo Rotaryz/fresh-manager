@@ -248,16 +248,6 @@
           flex: 0.7
         &:nth-child(2), &:nth-child(3)
           flex: 1.5
-    .list-lock
-      background: #E9ECEE !important
-      .list-item
-        color: #CCCCCC
-        .list-operation
-          color: #CCCCCC
-        .list-operation-strong
-          color: #CCCCCC
-          border-color: #CCCCCC
-
   .list-item-progress
     display: flex
     align-items: flex-end
