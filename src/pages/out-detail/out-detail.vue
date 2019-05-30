@@ -292,7 +292,11 @@
             allprice += item.select_out_num * item.price
           }
         })
-        this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        if (number * 1 === 0) {
+          this.outDetailList[this.curIndex].out_cost_price = 0
+        } else {
+          this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        }
         this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
         this.outDetailList[this.curIndex].select_batch = arr
         this.$refs.modalBox.cancel()
