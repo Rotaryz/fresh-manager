@@ -290,8 +290,7 @@
           {
             status: item.value,
             page: 1
-          },
-          true
+          }
         )
       },
       // 搜索按钮
