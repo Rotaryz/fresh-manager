@@ -171,7 +171,7 @@
         })
         this.dispatchSelect = res.data.status || []
       },
-      getProductListData() {
+      async getProductListData() {
         let data = {
           status: this.status,
           page: this.goodsPage,
@@ -193,19 +193,18 @@
             this.$toast.show(res.message)
           }
         })
+        await this._statistic()
       },
       async changeKeyword(keyword) {
         this.keyWord = keyword
         this.goodsPage = 1
         this.getProductListData()
-        await this._statistic()
         this.$refs.pagination.beginPage()
       },
       async changeStartTime(value) {
         this.time = value
         this.goodsPage = 1
         this.getProductListData()
-        await this._statistic()
         this.$refs.pagination.beginPage()
       },
       async changeEndTime(value) {
@@ -216,16 +215,15 @@
         }
         this.goodsPage = 1
         this.getProductListData()
-        await this._statistic()
         this.$refs.pagination.beginPage()
       },
-      setValue(val) {
+      async setValue(val) {
         this.status = val
         this.goodsPage = 1
         this.getProductListData()
         this.$refs.pagination.beginPage()
       },
-      addPage(page) {
+      async addPage(page) {
         this.goodsPage = page
         this.getProductListData()
       }
