@@ -339,7 +339,7 @@
       top: 21px
       left: 0
       box-sizing: border-box
-      padding: 12px 37px 0 12px
+      padding: 0 37px 0 12px
       background: rgba(51, 51, 51, .8)
       font-size: $font-size-14
       font-family: $font-family-regular
@@ -374,6 +374,8 @@
         margin-bottom: 12px
         height: 15px
         line-height: 15px
+        &:first-child
+          margin-top: 12px
 
   .tip
     margin: 0 2px
