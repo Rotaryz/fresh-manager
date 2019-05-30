@@ -25,17 +25,17 @@
 <script type="text/ecmascript-6">
   export default {
     props: {
-      trigger:{
-        type:String,
-        default:'click'
+      trigger: {
+        type: String,
+        default: 'click'
       },
-      isButtonDropdown:{
-        type:Boolean,
-        default:false
+      isButtonDropdown: {
+        type: Boolean,
+        default: false
       },
-      labelKey:{
-        type:String,
-        default:'name'
+      labelKey: {
+        type: String,
+        default: 'name'
       },
       select: {
         type: Object,
@@ -78,16 +78,16 @@
       }
     },
     methods: {
-      mouseLeave(){
-        if(this.trigger==='hover'){
+      mouseLeave() {
+        if (this.trigger === 'hover') {
           this.setTime && clearTimeout(this.setTime)
-          this.setTime = setTimeout(()=>{
+          this.setTime = setTimeout(() => {
             this.clickHide()
-          },1000)
+          }, 1000)
         }
       },
-      mouseEnter(){
-        if(this.trigger==='hover'){
+      mouseEnter() {
+        if (this.trigger === 'hover') {
           this.setTime && clearTimeout(this.setTime)
           this.select.check = true
         }
@@ -117,7 +117,7 @@
       setValue(value, index) {
         this.select.check = false
         this.selectIdx = index
-        if(!this.isButtonDropdown){
+        if (!this.isButtonDropdown) {
           this.select.content = value.name
         }
         this.$emit('setValue', value, index)

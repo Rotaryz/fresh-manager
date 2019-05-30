@@ -131,13 +131,13 @@ export default {
     let url = `/scm/api/backend/warehouse/out-details/${id}`
     return request.post(url, data, loading)
   },
-  recheckFinish( id,data, loading = true){
+  recheckFinish(id, data, loading = true) {
     let url = `/scm/api/backend/warehouse/finish-checked/${id}`
     return request.post(url, data, loading)
   },
-  sureAdjust(data,loading=false){
+  sureAdjust(data, loading = false) {
     let url = `/scm/api/backend/stock/warehouse-stock-list`
-    return request.post(url,data,loading)
+    return request.post(url, data, loading)
   },
   /**
    * 入库单提交

@@ -33,7 +33,7 @@
         </div>
         <div class="list">
           <div v-if="productOutList.length">
-            <div v-for="(item, index) in productOutList" :key="index" class="list-content list-box">
+            <div v-for="(item, index) in productOutList" :key="index" :class="{'list-lock': item.show_sorting}" class="list-content list-box">
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">
@@ -44,11 +44,15 @@
               <div class="list-item">{{item.order_num}}</div>
               <div class="list-item">{{item.out_num}}</div>
               <div class="list-item">￥{{item.total}}</div>
-              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
+              <div class="list-item">
+                <span class="list-status" :class="{'list-status-success': item.status === 1,'list-status-warn': item.status === 2 }"></span>
+                {{item.status_str}}
+                <div v-if="item.show_sorting" class="list-item-img"></div>
+              </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
                 <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
-                <router-link v-if="item.status === 2" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">复核</router-link>
+                <span v-if="item.status === 2" class="list-operation-strong" @click="goDetail(item)">复核</span>
               </div>
             </div>
           </div>
@@ -64,7 +68,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-// import {DatePicker} from 'iview'
+  // import {DatePicker} from 'iview'
   import _ from 'lodash'
   import API from '@api'
   import {productComputed} from '@state/helpers'
@@ -72,7 +76,17 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品出库'
-  const COMMODITIES_LIST = ['建单时间', '出库单号', '关联订单号', '商户名称','订单数量','出库数量', '出库金额', '状态', '操作']
+  const COMMODITIES_LIST = [
+    '建单时间',
+    '出库单号',
+    '关联订单号',
+    '商户名称',
+    '订单数量',
+    '出库数量',
+    '出库金额',
+    '状态',
+    '操作'
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -114,10 +128,16 @@
       await this._statistic()
     },
     methods: {
-      async sureSubmit(){
+      goDetail(item) {
+        if (item.show_sorting) {
+          return
+        }
+        this.$router.push(`/home/product-out/out-detail/${item.out_order_id}`)
+      },
+      async sureSubmit() {
         let type = 'batchOut'
-        if(this.status===2){
-          type='batchRecheck'
+        if (this.status === 2) {
+          type = 'batchRecheck'
         }
         let res = await API.Store[type]()
         this.$toast.show(res.message)
@@ -136,7 +156,7 @@
         }
         this.$refs.confirm.show('是否确认批量出库？')
       },
-      showBatchRecheck(){
+      showBatchRecheck() {
         if (!this.productOutList.length) {
           this.$toast.show('暂无待复核')
           return
@@ -228,6 +248,15 @@
           flex: 0.7
         &:nth-child(2), &:nth-child(3)
           flex: 1.5
+    .list-lock
+      background: #E9ECEE !important
+      .list-item
+        color: #CCCCCC
+        .list-operation
+          color: #CCCCCC
+        .list-operation-strong
+          color: #CCCCCC
+          border-color: #CCCCCC
 
   .list-item-progress
     display: flex
@@ -262,4 +291,11 @@
   .tip
     margin: 0 2px
     font-size: $font-size-14
+  .list-item-img
+    icon-image('icon-lock')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>

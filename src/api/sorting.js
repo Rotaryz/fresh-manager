@@ -26,7 +26,7 @@ export default {
     return request.get(url, {}, loading)
   },
   // √  订单分拣任务明细--- 列表
-  getSortingOrderGoodsList(orderId,params, loading = false) {
+  getSortingOrderGoodsList(orderId, params, loading = false) {
     // let url = '/mock/sortingPickDetail.json'
     let url = `/scm/api/backend/sorting/order-sorting-details/${orderId}`
     return request.get(url, params, loading)
@@ -63,14 +63,13 @@ export default {
     window.open(url + paramsStr, '_parent')
   },
   // 批量完成分拣
-  batchFinishSorting(data,loading = true){
+  batchFinishSorting(data, loading = true) {
     let url = '/scm/api/backend/sorting/batch-finish-sorting'
-    return request.post(url,data,loading)
-
+    return request.post(url, data, loading)
   },
-  getPrintData(id,loading = true){
-    let url = '/scm/api/backend/sorting/batch-finish-sorting/'+id
-    return request.get(url,{},loading)
+  getPrintData(id, loading = true) {
+    let url = '/scm/api/backend/sorting/batch-finish-sorting/' + id
+    return request.get(url, {}, loading)
   },
   // √ 配货位列表 √
   getAllocationList(loading = true) {

@@ -135,7 +135,7 @@
               textAlign: 'left',
               height: 70,
               margin: 0,
-              lineColor: "#000000"
+              lineColor: '#000000'
             }
             if (i === 'length') {
               return

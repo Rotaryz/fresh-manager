@@ -78,10 +78,10 @@
   import {sortingComputed, sortingMethods} from '@state/helpers'
   const PAGE_NAME = 'PERVIEW'
   const TITLE = '打印预览'
-  function getDateNow(){
+  function getDateNow() {
     let nowDate = new Date()
     let year = nowDate.getFullYear()
-    let month = nowDate.getMonth()+1
+    let month = nowDate.getMonth() + 1
     let date = nowDate.getDate()
     return `${year}-${month}-${date}`
   }
@@ -95,24 +95,28 @@
     },
     data() {
       return {
-        setting:[{
-          label:'重量',
-          type:'input',
-          id:'zl',
-          value:''
-        },{
-          label:'保质期',
-          type:'input',
-          id:'goods_date',
-          value:''
-        },{
-          label:'包装日期',
-          type:'date',
-          id:'page_time',
-          value:getDateNow()
-        }],
+        setting: [
+          {
+            label: '重量',
+            type: 'input',
+            id: 'zl',
+            value: ''
+          },
+          {
+            label: '保质期',
+            type: 'input',
+            id: 'goods_date',
+            value: ''
+          },
+          {
+            label: '包装日期',
+            type: 'date',
+            id: 'page_time',
+            value: getDateNow()
+          }
+        ],
         printStatus: true,
-        codeImg:''
+        codeImg: ''
       }
     },
     computed: {
@@ -124,32 +128,32 @@
     methods: {
       ...sortingMethods,
       // 打印彈框   日期選擇
-      handleDateChange(val){
-        this.setting[2].value=val
+      handleDateChange(val) {
+        this.setting[2].value = val
       },
-      _sureTagInfo(){
+      _sureTagInfo() {
         this.$loading.show()
-        this.getBarCodePreviewInfo(this.$route.params).then(res=>{
+        this.getBarCodePreviewInfo(this.$route.params).then((res) => {
           res && this.initCode()
           this.$loading.hide()
         })
       },
-      initCode(height=70) {
+      initCode(height = 70) {
         let options = {
           format: 'CODE128',
           textAlign: 'left',
           height: 70,
           margin: 0,
-          lineColor: "#000000"
+          lineColor: '#000000'
         }
         JsBarcode(this.$refs.code, this.barCodePreviewInfo.code || '空', options)
         this.codeImg = this.$refs.code.src
       },
       backBtn() {
         this.$router.replace({
-          name:'sorting-task',
-          params:{
-            tabIndex:1
+          name: 'sorting-task',
+          params: {
+            tabIndex: 1
           }
         })
       }

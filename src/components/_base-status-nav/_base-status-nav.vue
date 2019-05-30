@@ -18,47 +18,46 @@
       statusList: {
         type: Array,
         default: () => {
-          return [
-            {label: '全部', value: '', num: 0}
-          ]
+          return [{label: '全部', value: '', num: 0}]
         }
       },
-      value:{
-        type: [String,Number],
+      value: {
+        type: [String, Number],
         default: ''
       },
       valueKey: {
         type: String,
         default: 'value'
       },
-      labelKey:{
+      labelKey: {
         type: String,
         default: 'label'
       },
-      numKey:{
+      numKey: {
         type: String,
         default: 'num'
       }
     },
     data() {
       return {
-        style:{}
+        style: {}
       }
     },
-    watch:{
-      value(val){
+    watch: {
+      value(val) {
         this.getStyle()
       },
-      statusList(val,old){
+      statusList(val, old) {
         this.getStyle()
       }
     },
     methods: {
-      getStyle(){
-        this.statusList.length>0 && this.$nextTick(()=> {
-          let el = this.$refs['tab-item'+ this.value][0]
-          this.style = `left: ${el.offsetLeft}px; width: ${el.offsetWidth}px`
-        })
+      getStyle() {
+        this.statusList.length > 0 &&
+          this.$nextTick(() => {
+            let el = this.$refs['tab-item' + this.value][0]
+            this.style = `left: ${el.offsetLeft}px; width: ${el.offsetWidth}px`
+          })
       },
       checkStatus(index, item) {
         this.$emit('change', item[this.valueKey])
