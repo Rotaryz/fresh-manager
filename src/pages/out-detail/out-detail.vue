@@ -171,10 +171,12 @@
       sureAdjust() {
         API.Store.sureAdjust({data: this.sureAdjustData})
           .then((res) => {
+            this.$toast.show(res.message)
             if (res.error === this.$ERR_OK) {
               this.$refs.confirm.hide()
-            } else {
-              this.$toast.show(res.message)
+              setTimeout(() => {
+                this.$router.back()
+              }, 500)
             }
           })
           .catch((err) => {
