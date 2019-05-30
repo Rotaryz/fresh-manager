@@ -173,7 +173,7 @@
           .then((res) => {
             this.$toast.show(res.message)
             if (res.error === this.$ERR_OK) {
-              this.$refs.confirm.hide()
+              // this.$refs.confirm.hide()
               setTimeout(() => {
                 this.$router.back()
               }, 500)
