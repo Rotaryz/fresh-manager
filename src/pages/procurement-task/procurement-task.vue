@@ -27,7 +27,24 @@
         <div class="function-btn">
           <div class="btn-main" :class="{'btn-disable-store': status * 1 !== 1}" @click="_sendPublish">发布给采购员</div>
           <div class="btn-main g-btn-item" :class="{'btn-disable-store': status * 1 !== 2}" @click="_createNewPublish">生成采购单</div>
-          <div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>
+          <!--<div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>-->
+          <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
+            <div class="show-more-text">
+              <div class="show-text">新建采购任务</div>
+              <div class="show-icon"></div>
+            </div>
+            <div v-show="showIndex" class="big-hide-box"></div>
+            <transition name="fade">
+              <div v-show="showIndex" class="show-hide-box">
+                <div class="show-all-item">
+                  <div class="show-hide-item" @click="_addTask">
+                    手工建单
+                  </div>
+                  <router-link tag="div" to="procurement-lead" append class="show-hide-item">批量导入</router-link>
+                </div>
+              </div>
+            </transition>
+          </div>
           <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出</a>
         </div>
       </div>
@@ -243,7 +260,8 @@
         statusTab: 2,
         downUrl: '',
         taskTime: ['', ''],
-        supplierSortList: []
+        supplierSortList: [],
+        showIndex: false
       }
     },
     computed: {
@@ -692,6 +710,12 @@
           }
         })
         this.dispatchSelect = selectData
+      },
+      _showTip() {
+        this.showIndex = true
+      },
+      _hideTip() {
+        this.showIndex = false
       }
     }
   }
@@ -1133,4 +1157,86 @@
       border-radius: 10px
   .select-icon-active
     border: 5px solid $color-main
+  .show-more-box
+    position: relative
+    cursor: pointer
+
+    .big-hide-box
+      position: absolute
+      z-index: 1
+      width: 106px
+      height: 20px
+      right: 0
+
+    .show-more-text
+      width: 106px
+      height: 28px
+      line-height: 28px
+      color: $color-white
+      border-1px($color-main)
+      layout(row)
+      align-items: center
+      justify-content: center
+
+      .show-text
+        font-size: $font-size-12
+        color: $color-main
+        font-family: $font-family-regular
+
+      .show-icon
+        width: 8px
+        height: 6px
+        margin-left: 6px
+        position: relative
+        transform: translateY(-1px) rotate(0deg)
+        transition: all 0.4s
+
+        &:after
+          content: ''
+          position: absolute
+          z-index: 99
+          top: 0
+          right: 0
+          width: 0
+          height: 0
+          border-left: 4px solid transparent
+          border-right: 4px solid transparent
+          border-top: 6px solid $color-main
+    .show-hide-box
+      position: absolute
+      width: 106px
+      top: 38px
+      right: 0
+      z-index: 11
+      color: $color-text-main
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      background: $color-white
+      box-shadow: 0 0 8px 0 #EBEBEB
+      border-radius: 4px
+
+      .show-hide-item
+        height: 50px
+        line-height: 50px
+        color: $color-text-main
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        padding-left: 16px
+        display: block
+        position: relative
+        border-bottom-1px($color-line)
+
+    .show-hide-item:hover
+      color: $color-main
+
+
+  .show-more-active
+    .show-more-text
+      background: $color-main
+      .show-text
+        color: $color-white
+      .show-icon
+        transform: translateY(-1px) rotate(180deg)
+        &:after
+          border-top: 6px solid $color-white
 </style>

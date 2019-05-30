@@ -3,6 +3,12 @@ import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
 
 export default [
+  // 采购任务导入
+  {
+    path: '/procurement-lead',
+    name: 'procurement-lead',
+    component: () => lazyLoadView(import('@pages/procurement-lead/procurement-lead'))
+  },
   // 模板
   {
     path: '/demo',
@@ -1303,6 +1309,18 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-task/edit-task')),
         meta: {
           titles: ['供应链', '采购', '采购任务', '生成采购单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 生成采购任务
+      {
+        path: 'procurement-task/procurement-lead',
+        name: 'procurement-lead',
+        component: () => lazyLoadView(import('@pages/procurement-lead/procurement-lead')),
+        meta: {
+          titles: ['供应链', '采购', '采购任务', '采购任务导入'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }
