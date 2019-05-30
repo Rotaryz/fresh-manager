@@ -65,6 +65,9 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
               if (routeFrom.name === args[0].name) {
                 NProgress.done()
               }
+              if (args[0].params) {
+                Object.assign(route.meta, args[0])
+              }
               next(...args)
               reject(new Error('Redirected'))
             } else {
@@ -85,7 +88,7 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
 const ADD_TEXT = '新建'
 const EDIT_TEXT = '编辑'
 
-router.afterEach((routeTo, routeFrom) => {
+router.afterEach((routeTo, routeFrom, next) => {
   // 动态添加页面标题
   const name = routeTo.params.name
   const marginBottom = routeTo.meta.marginBottom || 0

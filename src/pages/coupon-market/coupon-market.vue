@@ -144,7 +144,7 @@
         this.$refs.pages.beginPage()
         this.page = 1
         this.statusArr = new Array(10).fill(undefined)
-        this.getMarketList({page: this.page, status: selectStatus.status})
+        this.getMarketList({page: this.page, status: selectStatus.status, loading: false})
       },
       getMarketStatus() {
         API.Market.getMarketStatus().then((res) => {
@@ -163,7 +163,7 @@
       },
       addPage(page) {
         this.page = page
-        this.getMarketList({page: this.page, status: this.status})
+        this.getMarketList({page: this.page, status: this.status, loading: false})
       },
       statusHandle(item, index) {
         let status = 0
@@ -212,7 +212,7 @@
         }
         this.$toast.show('删除成功')
         this.getMarketStatus()
-        this.getMarketList({page: this.page, status: this.status})
+        this.getMarketList({page: this.page, status: this.status, loading: false})
       }
     }
   }

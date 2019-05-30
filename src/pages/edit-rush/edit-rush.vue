@@ -277,7 +277,7 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
-        parentId: 0,
+        parentId: '',
         goodsPage: {
           total: 1,
           per_page: 10,
@@ -291,7 +291,7 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        essInformation: {activity_type: 'fixed'},
+        essInformation: {activity_type: 'fixed', activity_theme: 'fixed'},
         isSubmit: false
       }
     },

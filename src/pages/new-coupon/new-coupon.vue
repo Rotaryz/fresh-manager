@@ -98,7 +98,7 @@
           <div class="description" @click="changeFull()">
             <span :class="['item-icon', {'checked': +msg.support_activity === 1}]"></span>
             <span>支持活动商品使用</span>
-            <span class="tip">(不勾选此项时，活动商品不能叠加使用该优惠券)</span>
+            <span class="tip">(勾选此项时，活动商品可以叠加使用该优惠券。新人特惠、拼团返现活动不参与)</span>
           </div>
         </div>
         <div :class="{'check-no-change':disable}"></div>
@@ -718,7 +718,7 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 10 && item.selected !== 2) {
+        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
           this.$toast.show('选择商品数量不能超过十个')
           return
         }
