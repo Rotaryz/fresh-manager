@@ -21,7 +21,7 @@
               </div>
               <div class="title-right">
                 <span v-if="selectMsg.sale.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.sale.type)"></span>
-                <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click="exportExcel()">导出Excel</span>
+                <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click="exportExcel('sale')">导出Excel</span>
               </div>
             </div>
             <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text hand" @click="showDescription()">
@@ -55,7 +55,7 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="secData1" @changeGoodsRank="changeGoodsRank"></goods-list>
+            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleData.list" @changeGoodsRank="changeGoodsRank"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1"></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
 
@@ -70,11 +70,11 @@
               </div>
               <div class="title-right">
                 <span v-if="selectMsg.serve.big" class="show-big-icon hand" @click="showBigData(selectMsg.serve.type)"></span>
-                <span v-if="selectMsg.serve.excel" class="export-btn hand" @click="exportExcel()">导出Excel</span>
+                <span v-if="selectMsg.serve.excel" class="export-btn hand" @click="exportExcel('serve')">导出Excel</span>
               </div>
             </div>
             <div class="name-text">
-              <p class="item">{{selectMsg.serve.name}}<span class="data">{{allMsg[1].data}}</span></p>
+              <p class="item">{{selectMsg.serve.name}}<span class="data">{{serveData.returns_num_total}}{{selectMsg.rate && '%'}}</span></p>
             </div>
             <bar-data v-if="selectMsg.serve.type === 'bar'" ref="bar2" chartId="bar2"></bar-data>
             <line-data v-if="selectMsg.serve.type === 'line'" ref="line2" chartId="line2" class="chart-box"></line-data>
@@ -92,7 +92,7 @@
               </div>
               <div class="title-right">
                 <span v-if="selectMsg.purchase.big" class="show-big-icon hand" @click="showBigData(selectMsg.purchase.type)"></span>
-                <span v-if="selectMsg.purchase.excel" class="export-btn hand" @click="exportExcel()">导出Excel</span>
+                <span v-if="selectMsg.purchase.excel" class="export-btn hand" @click="exportExcel('purchase')">导出Excel</span>
               </div>
             </div>
             <div class="name-text">
@@ -114,7 +114,7 @@
               </div>
               <div class="title-right">
                 <span v-if="selectMsg.supply.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.supply.type)"></span>
-                <span v-if="selectMsg.supply.excel" :key="2" class="export-btn hand" @click="exportExcel()">导出Excel</span>
+                <span v-if="selectMsg.supply.excel" :key="2" class="export-btn hand" @click="exportExcel('supply')">导出Excel</span>
               </div>
             </div>
             <div v-if="selectMsg.supply.type !== 'goods'" class="name-text">
@@ -163,42 +163,48 @@
     {title: '30天', status: 'month'}
     // {title: '自定义', status: 'custom'}
   ]
+  const EXPORT_URL = {
+    sale: ['', 'sale-rank-excel'],
+    serve: ['after-server-excel'],
+    purchase: ['sale-rank-excel', 'sale-rank-excel'],
+    aupply: ['sale-rank-excel']
+  }
   const ALL_DATA = {
     all: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, word: 'goods', code: ''},
+        {name: '商品结构', type: 'bar', excel: true, code: ''},
         {name: '销量排行榜', type: 'goods', excel: true, code: 'num'},
-        {name: '动销率', type: 'bar', big: true, word: 'goods', rate: true},
-        {name: '售罄率', type: 'bar', big: true, word: 'goods', rate: true}
+        {name: '动销率', type: 'bar', big: true, rate: true},
+        {name: '售罄率', type: 'bar', big: true, rate: true}
       ],
       serve: [
-        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true, code: 'returns_num'},
-        {name: '退货率', type: 'bar', big: true, word: 'goods', code: 'rate', rate: true}
+        {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
+        {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar1', big: true, word: 'goods', excel: true},
-        {name: '商品SPU数', type: 'pie', big: true, word: 'goods', excel: true},
-        {name: '毛利率', type: 'bar', big: true, word: 'goods', rate: true}
+        {name: '采购匹配度', type: 'bar1', big: true, word: 'purchase_num', excel: true, code: 'purchase_num', rate: true},
+        {name: '商品SPU数', type: 'pie', big: true, word: 'sku_num', excel: true, code: 'sku_num'},
+        {name: '毛利率', type: 'bar', big: true, word: 'purchase_num', rate: true, code: 'rate'}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true},
-        {name: '库存周转率', type: 'bar', big: true, word: 'goods', rate: true}
+        {name: '库存周转率', type: 'bar', big: true, rate: true}
       ]
     },
     category: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, word: 'goods'},
-        {name: '销量排行榜', type: 'goods', excel: true, word: 'goods', code: 'num'},
-        {name: '动销率', type: 'bar', big: true, word: 'goods', rate: true},
-        {name: '售罄率', type: 'bar', big: true, word: 'goods', rate: true}
+        {name: '商品结构', type: 'bar', excel: true },
+        {name: '销量排行榜', type: 'goods', excel: true, code: 'num'},
+        {name: '动销率', type: 'bar', big: true, rate: true},
+        {name: '售罄率', type: 'bar', big: true, rate: true}
       ],
       serve: [
-        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true, code: 'returns_num'},
-        {name: '退货率', type: 'bar', big: true, word: 'goods', code: 'rate', rate: true}
+        {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
+        {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar1', big: true, word: 'goods', excel: true},
-        {name: '毛利率', type: 'bar', big: true, word: 'goods', rate: true}
+        {name: '采购匹配度', type: 'bar1', big: true, word: 'purchase_num', excel: true, code: 'purchase_num', rate: true},
+        {name: '毛利率', type: 'bar', big: true, word: 'sales_num', rate: true, code: 'rate'}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true},
@@ -217,8 +223,8 @@
         {name: '退货率', type: 'line', code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'line'},
-        {name: '毛利率', type: 'line', rate: true}
+        {name: '采购匹配度', type: 'line', word: 'purchase_num', code: 'purchase_num', rate: true},
+        {name: '毛利率', type: 'line', rate: true, word: 'sales_num', code: 'rate'}
       ],
       supply: [
         {name: '库存排行', type: 'line'},
@@ -257,10 +263,12 @@
           limit: 10
         },
         requestServe: {
-          order_by: ''
+          order_by: 'returns_num',
+          limit: 10
         },
         requestPurchase: {
-          order_by: ''
+          order_by: 'purchase_num',
+          limit: 6
         },
         requestSupply: {
           order_by: ''
@@ -269,7 +277,6 @@
           date_type: 'week',
           group_by: 'cate'
         },
-        leftTabItem: {},
         allMsg: [
           {
             name: '商品结构',
@@ -302,7 +309,16 @@
             return date.valueOf() > Date.now() - 86400000
           }
         },
-        leftTab: 'all', // 左侧tab栏 all全部商品 category分类 goods商品
+        tabIndexControl: {
+          sale: 0,
+          serve: 0,
+          purchase: 0,
+          supply: 0
+        },
+        leftTabItem: {},
+        leftTab: 'all', // 左侧tab栏 all全部商品 category分类 goods商品,
+        exportUrlArr: EXPORT_URL,
+        excelType: ''
       }
     },
     computed: {
@@ -312,10 +328,14 @@
       this._initSelect()
       // this.getAllData()
     },
-    mounted() {
-      this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
-      this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
-      this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
+    async mounted() {
+      this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
+      let data2 = Object.assign(this.requestPub, this.requestServe)
+      await this.getServeData(data2)
+      this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData, 'name', this.selectMsg.serve.code))
+      let data3 = Object.assign(this.requestPub, this.requestPurchase)
+      await this.getPurchaseData(data3)
+      this.$refs.bar3 && this.$refs.bar3.drawBar1({xAx: [], series: []}, true)
     },
     methods: {
       ...goodsDataMethods,
@@ -343,9 +363,9 @@
         this.bigDataShow = true
         this.$nextTick(() => {
           if (type === 'bar1') {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar1({x: [], series: []})
+            this.$refs.bigBar && this.$refs.bigBar.drawBar1({xAx: [], series: []})
           } else {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar({x: [], series: []})
+            this.$refs.bigBar && this.$refs.bigBar.drawBar({xAx: [], series: []})
           }
         })
       },
@@ -357,7 +377,7 @@
       },
       // 切换左侧tab栏
       changeTab(item, type, code) {
-        if (this.leftTab === code) return
+        if (this.leftTabItem.id === item.id) return
         switch (code) {
         case 'all':
           this.requestPub.cate = ''
@@ -380,9 +400,9 @@
         this.getGoodsList({goods_category_id: item.id, is_online: 1, keyword: ''})
         this.$nextTick(() => {
           if (code === 'all' || code === 'category') {
-            this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
-            this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
-            this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
+            this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
+            this.$refs.bar2 && this.$refs.bar2.drawBar({xAx: [], series: []})
+            this.$refs.bar3 && this.$refs.bar3.drawBar1({xAx: [], series: []})
           } else if (code === 'goods') {
             this.$refs.line2 && this.$refs.line2.drawLine()
             this.$refs.line3 && this.$refs.line3.drawLine()
@@ -409,54 +429,81 @@
       // 切换商品销售模块（模块1）
       async changeSale(obj, index) {
         this.selectMsg.sale = this.deepCopy(obj)
+        this.$set(this.tabIndexControl, 'sale', index)
         this.requestSale.order_by = obj.code
         let data = Object.assign(this.requestPub, this.requestSale)
         await this.getSaleData({data, index})
         this.$nextTick(() => {
           if (index === 0) {
-            this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
+            this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
           } else {
-            this.$refs.bar1 && this.$refs.bar1.drawBar({x: [], series: []}, obj.rate)
-            this.$refs.line1 && this.$refs.line1.drawLine({x: [], series: []}, obj.rate)
+            this.$refs.bar1 && this.$refs.bar1.drawBar({xAx: [], series: []}, obj.rate)
+            this.$refs.line1 && this.$refs.line1.drawLine({xAx: [], series: []}, obj.rate)
           }
         })
       },
       // 切换商品售后模块（模块2）
       async changeServe(obj, index) {
         this.selectMsg.serve = obj
+        this.$set(this.tabIndexControl, 'serve', index)
         this.requestServe.order_by = obj.code
         let data = Object.assign(this.requestPub, this.requestServe)
-        await this.getServeData({data, index})
+        await this.getServeData(data)
         this.$nextTick(() => {
-          this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []}, obj.rate)
-          this.$refs.line2 && this.$refs.line2.drawLine({x: [], series: []}, obj.rate)
+          this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData, 'name', obj.code), obj.rate)
+          this.$refs.line2 && this.$refs.line2.drawLine(this.dataHandle(this.serveData, 'name', obj.code), obj.rate)
         })
       },
       // 切换商品采购模块（模块3）
       changePurchase(obj, index) {
         this.selectMsg.purchase = obj
+        this.$set(this.tabIndexControl, 'purchase', index)
         this.requestPurchase.order_by = obj.code
         this.$nextTick(() => {
           if (index === 0) {
-            this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
+            this.$refs.bar3 && this.$refs.bar3.drawBar1({xAx: [], series: []}, obj.rate)
           } else {
-            this.$refs.bar3 && this.$refs.bar3.drawBar({x: [], series: []}, obj.rate)
-            this.$refs.pie3 && this.$refs.pie3.drawPie({x: [], series: []})
-            this.$refs.line3 && this.$refs.line3.drawLine({x: [], series: []}, obj.rate)
+            this.$refs.bar3 && this.$refs.bar3.drawBar({xAx: [], series: []}, obj.rate)
+            this.$refs.pie3 && this.$refs.pie3.drawPie({xAx: [], series: []})
+            this.$refs.line3 && this.$refs.line3.drawLine({xAx: [], series: []}, obj.rate)
           }
         })
       },
       // 切换供应链模块（模块4）
       changeSupply(obj, index) {
         this.selectMsg.supply = obj
+        this.$set(this.tabIndexControl, 'supply', index)
         this.requestSupply.order_by = obj.code
         this.$nextTick(() => {
-          this.$refs.line4 && this.$refs.line4.drawLine({x: [], series: []}, obj.rate)
-          this.$refs.bar4 && this.$refs.bar4.drawBar({x: [], series: []}, obj.rate)
+          this.$refs.line4 && this.$refs.line4.drawLine({xAx: [], series: []}, obj.rate)
+          this.$refs.bar4 && this.$refs.bar4.drawBar({xAx: [], series: []}, obj.rate)
         })
       },
-      exportExcel() {
-        console.log(222)
+      exportExcel(type) {
+        this.excelType = type
+        window.open(this.exportUrl(), '_blank')
+      },
+      exportUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let msg = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token
+        }
+        // this[this.excelType[0].toUpperCase()]
+        let data = Object.assign(msg, this.requestPub, this['request' + this.firstUppercase(this.excelType)])
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        let url = this.exportUrlArr[this.excelType][this.tabIndexControl[this.excelType]]
+        console.log(url)
+        return process.env.VUE_APP_API + '/social-shopping/api/backend/data-center/goods/' + url + '?' + search.join('&')
+      },
+      firstUppercase(str) {
+        let first = str[0].toUpperCase()
+        return first+str.slice(1)
       },
       showDescription() {
         this.$refs.description.show()
@@ -476,6 +523,40 @@
         await this.getServeData(Object.assign(this.requestPub, this.requestServe))
         await this.getPurchaseData(Object.assign(this.requestPub, this.requestPurchase))
         await this.getSupplyData(Object.assign(this.requestPub, this.requestSupply))
+      },
+      dataHandle(data, x, y1) {
+        console.log(data, 'echartData')
+        if (!data) return {xAx: [], series: []}
+        let xAx = data.map(val => {
+          return val[x]
+        })
+        let series = data.map(val => {
+          return val[y1]
+        })
+        return {
+          xAx,
+          series
+        }
+      },
+      purchaseHandle(data, x, y1, y2) {
+        if (!data) return {xAx: [], series: []}
+        let xAx = data.map(val => {
+          return val[x]
+        })
+        let series = data.map(val => {
+          return val[y1]
+        })
+        let series2 = []
+        if (y2) {
+          series2 = data.map(val => {
+            return val[y2]
+          })
+        }
+        return {
+          xAx,
+          series,
+          series2
+        }
       }
     }
   }

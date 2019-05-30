@@ -18,7 +18,7 @@
       >
         <div class="left-tab-main">
           <div class="left">
-            <img :src="item.goods_cover_image" alt="" class="category-image">
+            <img :src="item.image_url" alt="" class="category-image">
             <span class="name">{{item.name}}({{item.list.length}})</span>
           </div>
           <div class="right-icon" :class="{'current': +categoryIndex === index+1}"></div>
@@ -30,7 +30,7 @@
                :class="{'select': (+goodsIndex === ind && selectGoods)}"
                @click.stop="changeGoods(goods, ind, 'goods')"
           >
-            <img src="./goods.png" alt="" class="goods-image">
+            <img :src="goods.goods_cover_image" alt="" class="goods-image">
             <span class="title">{{goods.name}}</span>
           </div>
         </div>
@@ -109,6 +109,7 @@
       width: 170px
       border-bottom: 0.5px solid $color-line
       border-right: 0.5px solid $color-line
+      position: relative
       transition: all 0.3s
       flex: 0 0 auto
     .left-tab-main
@@ -116,6 +117,7 @@
       width: 170px
       display: flex
       align-items: center
+      position: relative
       justify-content: space-between
       padding-left: 12px
       color: $color-text-main
@@ -217,6 +219,7 @@
       .left-tab-main
         background: rgba(77,189,101,0.10)
         color: $color-positive
+        position: relative
         &:before
           background-color: $color-positive
     .open

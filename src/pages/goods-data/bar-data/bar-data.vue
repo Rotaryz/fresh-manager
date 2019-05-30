@@ -49,34 +49,43 @@
         this.drawBar(data)
       },
       // 纵向柱状图
-      drawBar(data) {
+      drawBar(data, rate) {
+        console.log(data)
         this.$nextTick(() => {
           let x = ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"]
           let series = this.random(9, 50)
-          let xAxisData = data.x.length > 0 ? data.x : x
+          let xAxisData = data.xAx.length > 0 ? data.xAx : x
           let seriesData = data.series.length > 0 ? data.series : series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', function (params) {
             console.log(1)
           })
+          let axisLabel = {
+            formatter: '{value}' + (rate ? '%' : ''),
+            color: '#999'
+          }
           let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
-          myChart.setOption(this.createBar1(xAxisData, seriesData, color))
+          myChart.setOption(this.createBar1(xAxisData, seriesData, color, axisLabel))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
       // 横向柱状图
-      drawBar1(data) {
+      drawBar1(data, rate) {
         this.$nextTick(() => {
-          let xAxisData = data.x.length > 0 ? data.x : this.data.x1
-          let seriesData1 = data.series.length > 0 ? data.series : this.data.series1
-          let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
+          let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x1
+          let seriesData1 = (data.series && data.series.length) > 0 ? data.series : this.data.series1
+          let seriesData2 = (data.series2 && data.series2.length) > 0 ? data.series2 : this.data.series2
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', function (params) {
             console.log(2)
           })
-          myChart.setOption(this.createBar2(xAxisData, seriesData1, seriesData2))
+          let axisLabel = {
+            formatter: '{value}' + (rate ? '%' : ''),
+            color: '#999'
+          }
+          myChart.setOption(this.createBar2(xAxisData, seriesData1, seriesData2, axisLabel))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
@@ -84,20 +93,24 @@
       },
       drawBar2(data) {
         this.$nextTick(() => {
-          let xAxisData = data.x.length > 0 ? data.x : this.data.x2
+          let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2
           let seriesData3 = data.series.length > 0 ? data.series : this.data.series3
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', function (params) {
             console.log(3)
           })
+          let axisLabel = {
+            formatter: '{value}',
+            color: '#999'
+          }
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
-          myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
+          myChart.setOption(this.createBar1(xAxisData, seriesData3, color, axisLabel))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
-      createBar1(xAxisData, seriesData, color) {
+      createBar1(xAxisData, seriesData, color, axisLabel) {
         return {
           grid: {
             left: '40',
@@ -157,10 +170,7 @@
                 width: 0.5
               }
             },
-            axisLabel: {
-              formatter: '{value}',
-              color: '#999'
-            },
+            axisLabel,
             axisLine: {
               show: false,
               trigger: 'axis',
@@ -209,7 +219,7 @@
           ]
         }
       },
-      createBar2(xAxisData, seriesData1, seriesData2) {
+      createBar2(xAxisData, seriesData1, seriesData2, axisLabel) {
         return {
           grid: {
             left: '20',
@@ -281,11 +291,7 @@
                 width: 0.5
               }
             },
-            axisLabel: {
-              show: true,
-              formatter: '{value}',
-              color: '#999'
-            },
+            axisLabel,
             axisLine: {
               show: false,
               trigger: 'axis',
