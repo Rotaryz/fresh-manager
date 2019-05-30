@@ -116,7 +116,7 @@
     {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
     {tilte: '分类', key: 'goods_category', flex: '2'},
     {tilte: '下单数', key: 'sale_num', after: "sale_unit"},
-    {tilte: '配货数', key: 'allocation_num', after: "sale_unit"},
+    {tilte: '配货数', key: 'sale_wait_pick_num', after: "sale_unit"},
     {tilte: '缺货数', key: 'sale_out_of_num', after: "sale_unit"},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
