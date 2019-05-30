@@ -308,7 +308,7 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:last-child, &:nth-child(1)
+        &:nth-child(1)
           flex: 0.5
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
           flex: 1.5
