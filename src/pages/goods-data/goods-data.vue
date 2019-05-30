@@ -5,7 +5,7 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">商品数据</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" @checkTime="_getData"></base-option-box>
+      <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
       <left-tab @changeTab="changeTab"></left-tab>
@@ -29,7 +29,7 @@
             </div>
 
             <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail'" class="name-text">
-              <p class="item">{{allMsg[0].name}}<span class="data">{{allMsg[0].data}}</span></p>
+              <p class="item">{{selectMsg.sale.name}}<span class="data">{{allMsg[0].data}}</span></p>
             </div>
 
             <div v-if="selectMsg.sale.type === 'goodsDetail'" class="goods-structor">
@@ -55,7 +55,7 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales"></goods-list>
+            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="secData1" @changeGoodsRank="changeGoodsRank"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1"></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
 
@@ -74,7 +74,7 @@
               </div>
             </div>
             <div class="name-text">
-              <p class="item">{{allMsg[1].name}}<span class="data">{{allMsg[1].data}}</span></p>
+              <p class="item">{{selectMsg.serve.name}}<span class="data">{{allMsg[1].data}}</span></p>
             </div>
             <bar-data v-if="selectMsg.serve.type === 'bar'" ref="bar2" chartId="bar2"></bar-data>
             <line-data v-if="selectMsg.serve.type === 'line'" ref="line2" chartId="line2" class="chart-box"></line-data>
@@ -96,7 +96,7 @@
               </div>
             </div>
             <div class="name-text">
-              <p class="item">{{allMsg[2].name}}<span class="data">{{allMsg[2].data}}</span></p>
+              <p class="item">{{selectMsg.purchase.name}}<span class="data">{{allMsg[2].data}}</span></p>
             </div>
 
             <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3"></bar-data>
@@ -118,7 +118,7 @@
               </div>
             </div>
             <div v-if="selectMsg.supply.type !== 'goods'" class="name-text">
-              <p class="item">{{allMsg[3].name}}<span class="data">{{allMsg[3].data}}</span></p>
+              <p class="item">{{selectMsg.supply.name}}<span class="data">{{allMsg[3].data}}</span></p>
             </div>
             <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock"></goods-list>
             <bar-data v-if="selectMsg.supply.type === 'bar'" ref="bar4" chartId="bar4"></bar-data>
@@ -158,75 +158,74 @@
   import API from '@api'
 
   const ARR_TITLE = [
-    {title: '7天', status: 'today'},
-    {title: '15天', status: 'yesterday'},
-    {title: '30天', status: 'month'},
-    {title: '自定义', status: 'custom'}
+    {title: '7天', status: 'yesterday'},
+    {title: '15天', status: '15'},
+    {title: '30天', status: 'month'}
+    // {title: '自定义', status: 'custom'}
   ]
   const ALL_DATA = {
     all: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, word: 'goods'},
-        {name: '销量排行榜', type: 'goods', excel: true},
-        {name: '动销率', type: 'bar', big: true, word: 'goods'},
-        {name: '售罄率', type: 'bar', big: true, word: 'goods'}
+        {name: '商品结构', type: 'bar', excel: true, word: 'goods', code: ''},
+        {name: '销量排行榜', type: 'goods', excel: true, code: 'num'},
+        {name: '动销率', type: 'bar', big: true, word: 'goods', rate: true},
+        {name: '售罄率', type: 'bar', big: true, word: 'goods', rate: true}
       ],
       serve: [
-        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true},
-        {name: '退货率', type: 'bar', big: true, word: 'goods'}
+        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true, code: 'returns_num'},
+        {name: '退货率', type: 'bar', big: true, word: 'goods', code: 'rate', rate: true}
       ],
       purchase: [
         {name: '采购匹配度', type: 'bar1', big: true, word: 'goods', excel: true},
         {name: '商品SPU数', type: 'pie', big: true, word: 'goods', excel: true},
-        {name: '毛利率', type: 'bar', big: true, word: 'goods'}
+        {name: '毛利率', type: 'bar', big: true, word: 'goods', rate: true}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true},
-        {name: '库存周转率', type: 'bar', big: true, word: 'goods'}
+        {name: '库存周转率', type: 'bar', big: true, word: 'goods', rate: true}
       ]
     },
     category: {
       sale: [
         {name: '商品结构', type: 'bar', excel: true, word: 'goods'},
-        {name: '销量排行榜', type: 'goods', excel: true, word: 'goods'},
-        {name: '动销率', type: 'bar', big: true, word: 'goods'},
-        {name: '售罄率', type: 'bar', big: true, word: 'goods'}
+        {name: '销量排行榜', type: 'goods', excel: true, word: 'goods', code: 'num'},
+        {name: '动销率', type: 'bar', big: true, word: 'goods', rate: true},
+        {name: '售罄率', type: 'bar', big: true, word: 'goods', rate: true}
       ],
       serve: [
-        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true},
-        {name: '退货率', type: 'bar', big: true, word: 'goods'}
+        {name: '退货数', type: 'bar', big: true, word: 'goods', excel: true, code: 'returns_num'},
+        {name: '退货率', type: 'bar', big: true, word: 'goods', code: 'rate', rate: true}
       ],
       purchase: [
         {name: '采购匹配度', type: 'bar1', big: true, word: 'goods', excel: true},
-        {name: '毛利率', type: 'bar', big: true, word: 'goods'}
+        {name: '毛利率', type: 'bar', big: true, word: 'goods', rate: true}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true},
-        {name: '库存周转率', type: 'bar', big: true, word: 'goods'}
+        {name: '库存周转率', type: 'bar', big: true, word: 'goods', rate: true}
       ]
     },
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
         {name: '销量排行榜', type: 'line'},
-        {name: '动销率', type: 'line'},
-        {name: '售罄率', type: 'line'}
+        {name: '动销率', type: 'line', rate: true},
+        {name: '售罄率', type: 'line', rate: true}
       ],
       serve: [
-        {name: '退货数', type: 'line'},
-        {name: '退货率', type: 'line'}
+        {name: '退货数', type: 'line', code: 'returns_num'},
+        {name: '退货率', type: 'line', code: 'rate', rate: true}
       ],
       purchase: [
         {name: '采购匹配度', type: 'line'},
-        {name: '毛利率', type: 'line'}
+        {name: '毛利率', type: 'line', rate: true}
       ],
       supply: [
         {name: '库存排行', type: 'line'},
-        {name: '库存周转率', type: 'line'}
+        {name: '库存周转率', type: 'line', rate: true}
       ]
     }
   }
-
 
   const PAGE_NAME = 'GOODS-DATA'
   const TITLE = '商品数据'
@@ -253,17 +252,22 @@
         // goodsIndex: 0, // 选择商品
         selectType: true, // false类，true商品
         bigDataShow: false,
-        request1: {
+        requestSale: {
+          order_by: '',
+          limit: 10
         },
-        request2: {
+        requestServe: {
+          order_by: ''
         },
-        request3: {
+        requestPurchase: {
+          order_by: ''
         },
-        request4: {
+        requestSupply: {
+          order_by: ''
         },
         requestPub: {
-          day_type: 'week',
-          goods_id: ''
+          date_type: 'week',
+          group_by: 'cate'
         },
         leftTabItem: {},
         allMsg: [
@@ -292,20 +296,17 @@
           purchase: {},
           supply: {}
         },
-        leftTab: 'all', // 左侧tab栏 1全部商品 2分类 3商品
-        topTab: [0, 0, 0, 0]  // 每个模块顶部tab栏
+        dateOption: {
+          disabledDate(date) {
+            // 自定义日期必须小于今天
+            return date.valueOf() > Date.now() - 86400000
+          }
+        },
+        leftTab: 'all', // 左侧tab栏 all全部商品 category分类 goods商品
       }
     },
     computed: {
-      ...goodsDataComputed,
-      // secChartName1() {
-      //   if (+this.leftTab !== 3 && this.topTab[0] !== 1) {
-      //     return ['bar1', 'drawBar']
-      //   } else if (+this.leftTab === 3 && this.topTab[0] !== 0) {
-      //     return ['line1', 'drawLine']
-      //   }
-      //   return []
-      // }
+      ...goodsDataComputed
     },
     created() {
       this._initSelect()
@@ -318,12 +319,25 @@
     },
     methods: {
       ...goodsDataMethods,
-      show() {
-        return true
-      },
       _getData(value) {
-        this.requestPub.day_type = value
+        if (typeof value === 'string') {
+          this.requestPub.date_type = value
+        } else {
+          this.start_at = value[0]
+          this.end_at = value[1]
+          console.log(new Date(Number(value[0])) - new Date(Number(value[1])))
+          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
+            this.$toast.show('选择时间范围不能小于两天')
+            return
+          }
+        }
+        console.log(value)
         // this.getAllData()
+      },
+      changeGoodsRank(type) {
+        this.requestSale.order_by = type
+        let data = Object.assign(this.requestPub, this.requestSale)
+        this.getSaleData({data, index: 1})
       },
       showBigData(type) {
         this.bigDataShow = true
@@ -343,6 +357,23 @@
       },
       // 切换左侧tab栏
       changeTab(item, type, code) {
+        if (this.leftTab === code) return
+        switch (code) {
+        case 'all':
+          this.requestPub.cate = ''
+          this.requestPub.spu = ''
+          this.requestPub.group_by = 'cate'
+          break
+        case 'category':
+          this.requestPub.cate = item.id
+          this.requestPub.spu = ''
+          this.requestPub.group_by = 'spu'
+          break
+        default:
+          this.requestPub.cate = ''
+          this.requestPub.spu = item.id
+          this.requestPub.group_by = ''
+        }
         this.leftTabItem = item
         this.selectType = type
         this.leftTab = code
@@ -356,7 +387,6 @@
             this.$refs.line2 && this.$refs.line2.drawLine()
             this.$refs.line3 && this.$refs.line3.drawLine()
             this.$refs.line4 && this.$refs.line4.drawLine()
-
           }
         })
         this._initSelect()
@@ -376,53 +406,57 @@
         this.$refs.statusTab3 && this.$refs.statusTab3.checkStatus(0, this.configObj[this.leftTab].purchase[0])
         this.$refs.statusTab4 && this.$refs.statusTab4.checkStatus(0, this.configObj[this.leftTab].supply[0])
       },
-      changeSale(obj, index) {
-        this.selectMsg.sale = obj
-        this.request1.goods_id = obj.id
-        // this.topTab.splice(0,1,index)
+      // 切换商品销售模块（模块1）
+      async changeSale(obj, index) {
+        this.selectMsg.sale = this.deepCopy(obj)
+        this.requestSale.order_by = obj.code
+        let data = Object.assign(this.requestPub, this.requestSale)
+        await this.getSaleData({data, index})
         this.$nextTick(() => {
           if (index === 0) {
             this.$refs.bar1 && this.$refs.bar1.drawBar2({x: [], series: []})
           } else {
-            this.$refs.bar1 && this.$refs.bar1.drawBar({x: [], series: []})
-            this.$refs.line1 && this.$refs.line1.drawLine({x: [], series: []})
+            this.$refs.bar1 && this.$refs.bar1.drawBar({x: [], series: []}, obj.rate)
+            this.$refs.line1 && this.$refs.line1.drawLine({x: [], series: []}, obj.rate)
           }
         })
       },
-      changeServe(obj, index) {
+      // 切换商品售后模块（模块2）
+      async changeServe(obj, index) {
         this.selectMsg.serve = obj
-        this.request2.goods_id = obj.id
-        this.topTab.splice(1,1,index)
+        this.requestServe.order_by = obj.code
+        let data = Object.assign(this.requestPub, this.requestServe)
+        await this.getServeData({data, index})
         this.$nextTick(() => {
-          this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []})
-          this.$refs.line2 && this.$refs.line2.drawLine({x: [], series: []})
+          this.$refs.bar2 && this.$refs.bar2.drawBar({x: [], series: []}, obj.rate)
+          this.$refs.line2 && this.$refs.line2.drawLine({x: [], series: []}, obj.rate)
         })
       },
+      // 切换商品采购模块（模块3）
       changePurchase(obj, index) {
         this.selectMsg.purchase = obj
-        this.request3.goods_id = obj.id
-        this.topTab.splice(2,1,index)
+        this.requestPurchase.order_by = obj.code
         this.$nextTick(() => {
           if (index === 0) {
             this.$refs.bar3 && this.$refs.bar3.drawBar1({x: [], series: []})
           } else {
-            this.$refs.bar3 && this.$refs.bar3.drawBar({x: [], series: []})
+            this.$refs.bar3 && this.$refs.bar3.drawBar({x: [], series: []}, obj.rate)
             this.$refs.pie3 && this.$refs.pie3.drawPie({x: [], series: []})
-            this.$refs.line3 && this.$refs.line3.drawLine({x: [], series: []})
+            this.$refs.line3 && this.$refs.line3.drawLine({x: [], series: []}, obj.rate)
           }
         })
       },
+      // 切换供应链模块（模块4）
       changeSupply(obj, index) {
         this.selectMsg.supply = obj
-        this.request4.goods_id = obj.id
-        this.topTab.splice(3,1,index)
+        this.requestSupply.order_by = obj.code
         this.$nextTick(() => {
-          this.$refs.line4 && this.$refs.line4.drawLine({x: [], series: []})
-          this.$refs.bar4 && this.$refs.bar4.drawBar({x: [], series: []})
+          this.$refs.line4 && this.$refs.line4.drawLine({x: [], series: []}, obj.rate)
+          this.$refs.bar4 && this.$refs.bar4.drawBar({x: [], series: []}, obj.rate)
         })
       },
-      exportExcel(index) {
-        console.log(index)
+      exportExcel() {
+        console.log(222)
       },
       showDescription() {
         this.$refs.description.show()
@@ -438,12 +472,10 @@
 
       },
       async getAllData() {
-        await this.getSecData1(Object.assign(this.requestPub, this.request1))
-        // this.$refs.bar1.drawBar({x: [], series: []})
-        // this.$refs.line1.drawLine()
-        await this.getSecData2(Object.assign(this.requestPub, this.request2))
-        await this.getSecData3(Object.assign(this.requestPub, this.request3))
-        await this.getSecData4(Object.assign(this.requestPub, this.request4))
+        await this.getSaleData(Object.assign(this.requestPub, this.requestSale))
+        await this.getServeData(Object.assign(this.requestPub, this.requestServe))
+        await this.getPurchaseData(Object.assign(this.requestPub, this.requestPurchase))
+        await this.getSupplyData(Object.assign(this.requestPub, this.requestSupply))
       }
     }
   }
