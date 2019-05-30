@@ -4,23 +4,25 @@ import app from '@src/main'
 export const state = {
   // 分类列表
   categoryList: [],
+  saleRankList: [],
+  stockRankList: [],
   // sec1
-  secData1: {
+  saleData: {
     titleData: [],
     data: []
   },
   // sec2
-  secData2: {
+  serveData: {
     titleData: [],
     data: []
   },
   // sec3
-  secData3: {
+  purchaseData: {
     titleData: [],
     data: []
   },
   // sec4
-  secData4: {
+  supplyData: {
     titleData: [],
     data: []
   }
@@ -30,39 +32,52 @@ export const getters = {
   categoryList(state) {
     return state.categoryList
   },
-  secData1(state) {
-    return state.secData1
+  saleRankList(state) {
+    return state.saleRankList
   },
-  secData2(state) {
-    return state.secData2
+  stockRankList(state) {
+    return state.stockRankList
   },
-  secData3(state) {
-    return state.secData3
+  saleData(state) {
+    return state.saleData
   },
-  secData4(state) {
-    return state.secData4
+  serveData(state) {
+    return state.serveData
+  },
+  purchaseData(state) {
+    return state.purchaseData
+  },
+  supplyData(state) {
+    return state.supplyData
   },
 }
 
 export const mutations = {
-  SET_CATEGORY_LIST(state, data) {
-    state.categoryList = data
+  SET_CATEGORY_LIST(state, list) {
+    state.categoryList = list
   },
-  SET_SEC_DATA_1(state, data) {
-    state.secData1 = data
+  SALE_RANK_LIST(state, list) {
+    state.saleRankList = list
   },
-  SET_SEC_DATA_2(state, data) {
-    state.secData2 = data
+  STOCK_RANK_LIST(state, list) {
+    state.stockRankList = list
   },
-  SET_SEC_DATA_3(state, data) {
-    state.secData3 = data
+  SET_SALE_DATA(state, data) {
+    state.saleData = data
   },
-  SET_SEC_DATA_4(state, data) {
-    state.secData4 = data
+  SET_SERVE_DATA(state, data) {
+    state.serveData = data
+  },
+  SET_PURCHASE_DATA(state, data) {
+    state.purchaseData = data
+  },
+  SET_SUPPLY_DATA(state, data) {
+    state.supplyData = data
   }
 }
 
 export const actions = {
+  // 分类列表
   getCategoryList({commit}, data) {
     return API.GoodsData.getCategoryList(data)
       .then((res) => {
@@ -80,8 +95,9 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getGoodsList({state, commit}, data, loading = false) {
-    return API.GoodsData.getGoodsList(data, loading)
+  // 分类下商品列表
+  getGoodsList({state, commit}, data) {
+    return API.GoodsData.getGoodsList(data, false)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -104,17 +120,14 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSecData1({commit}, data, loading = false) {
-    let apiArr = ['getStructure', 'getRank', 'getSellRatio', 'getSellOut']
-    let api = apiArr[data.index]
-    return API.GoodsData[api]({}, loading)
+  getSaleRank({commit}, data, loading = false) {
+    return API.GoodsData.getSaleRank(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['pv', 'e_customer', 'order']
-        let data = dataHandle(arr, res.data)
-        commit('SET_SEC_DATA_1', data)
+        let data = res.data
+        commit('SALE_RANK_LIST', data)
         return true
       })
       .catch(() => {
@@ -124,17 +137,14 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSecData2({commit}, data, loading = false) {
-    let apiArr = ['getReturnGoods', 'getReturnRatio']
-    let api = apiArr[data.index]
-    return API.GoodsData[api]({}, loading)
+  getStockRank({commit}, data, loading = false) {
+    return API.GoodsData.getStockRank(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['pv', 'e_customer', 'order']
-        let data = dataHandle(arr, res.data)
-        commit('SET_SEC_DATA_2', data)
+        let data = res.data
+        commit('STOCK_RANK_LIST', data)
         return true
       })
       .catch(() => {
@@ -144,7 +154,51 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSecData3({commit}, data, loading = false) {
+  getSaleData({commit}, msg) {
+    let {data, index} = msg
+    let apiArr = ['getStructure', 'getSaleRank', 'getSellRatio', 'getSellOut']
+    let api = apiArr[index]
+    return API.GoodsData[api](data, false)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        if (index === 1) {
+          commit('SET_SALE_DATA', res.data)
+          return true
+        }
+        let arr = ['pv', 'e_customer', 'order']
+        let data = dataHandle(arr, res.data)
+        commit('SET_SALE_DATA', data)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  getServeData({commit}, msg) {
+    let {data, index} = msg
+    return API.GoodsData.getAfterServe(data, false)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let arr = ['pv', 'e_customer', 'order']
+        let data = dataHandle(arr, res.data, index)
+        commit('SET_SERVE_DATA', data)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  getPurchaseData({commit}, data, loading = false) {
     let apiArr = ['getMatch', 'getSKU', 'getRate', 'getPurchase']
     let api = apiArr[data.index]
     return API.GoodsData[api]({}, loading)
@@ -154,7 +208,7 @@ export const actions = {
         }
         let arr = ['pv', 'e_customer', 'order']
         let data = dataHandle(arr, res.data)
-        commit('SET_SEC_DATA_3', data)
+        commit('SET_PURCHASE_DATA', data)
         return true
       })
       .catch(() => {
@@ -164,17 +218,17 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSecData4({commit}, data, loading = false) {
+  getSupplyData({commit}, data) {
     let apiArr = ['getStockRank', 'getStockRatio']
     let api = apiArr[data.index]
-    return API.GoodsData[api]({}, loading)
+    return API.GoodsData[api](data, false)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
         let arr = ['pv', 'e_customer', 'order']
         let data = dataHandle(arr, res.data)
-        commit('SET_SEC_DATA_4', data)
+        commit('SET_SUPPLY_DATA', data)
         return true
       })
       .catch(() => {
@@ -189,12 +243,8 @@ export const actions = {
 }
 
 const dataHandle = (arr, data)=> {
-  let titleData = arr.map(item => {
-    return data[item].total
-  })
   let dataArr = arr.map(item => {
-    let time = []
-    time = data[item].data.map(val => {
+    let time = data[item].data.map(val => {
       return val.at.split('-').slice(1).join('/')
     })
     let valueArr = data[item].data.map(val => {
@@ -209,9 +259,5 @@ const dataHandle = (arr, data)=> {
       rate: valueArr
     }
   })
-  let resultData = {
-    titleData,
-    data: dataArr
-  }
-  return resultData
+  return dataArr
 }

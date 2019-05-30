@@ -18,8 +18,8 @@
       >
         <div class="left-tab-main">
           <div class="left">
-            <img src="./goods.png" alt="" class="category-image">
-            <span class="name">{{item.name}}{{item.list.length}}</span>
+            <img :src="item.goods_cover_image" alt="" class="category-image">
+            <span class="name">{{item.name}}({{item.list.length}})</span>
           </div>
           <div class="right-icon" :class="{'current': +categoryIndex === index+1}"></div>
         </div>

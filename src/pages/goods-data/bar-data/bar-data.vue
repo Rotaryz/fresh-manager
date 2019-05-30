@@ -21,8 +21,6 @@
       return {
         tabIndex: 0,
         data: {
-          x: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"],
-          series: ["10", "20", "5", "40", "15", "14", "44", "34", "20"],
           x1: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
           series1: ["10", "20", "5", "40", "15", "14"],
           series2: ["12", "18", "10", "50", "10", "20"],
@@ -39,6 +37,11 @@
       // this.drawBar(this.data, '退货数')
     },
     methods: {
+      random(itemNumber, max) {
+        return new Array(itemNumber).fill(1).map((item, index) => {
+          return Math.ceil(Math.random() * (max))
+        })
+      },
       setTab(num) {
         this.tabIndex = 0
       },
@@ -48,11 +51,13 @@
       // 纵向柱状图
       drawBar(data) {
         this.$nextTick(() => {
-          let xAxisData = data.x.length > 0 ? data.x : this.data.x
-          let seriesData = data.series.length > 0 ? data.series : this.data.series
+          let x = ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"]
+          let series = this.random(9, 50)
+          let xAxisData = data.x.length > 0 ? data.x : x
+          let seriesData = data.series.length > 0 ? data.series : series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', function (params) {
-            console.log(params)
+            console.log(1)
           })
           let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
           myChart.setOption(this.createBar1(xAxisData, seriesData, color))
@@ -69,7 +74,7 @@
           let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', function (params) {
-            console.log(params)
+            console.log(2)
           })
           myChart.setOption(this.createBar2(xAxisData, seriesData1, seriesData2))
           window.addEventListener('resize', function() {
@@ -83,7 +88,7 @@
           let seriesData3 = data.series.length > 0 ? data.series : this.data.series3
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', function (params) {
-            console.log(params)
+            console.log(3)
           })
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
           myChart.setOption(this.createBar1(xAxisData, seriesData3, color))

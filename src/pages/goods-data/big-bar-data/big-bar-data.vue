@@ -37,14 +37,30 @@
       // this.drawBar(this.data, '退货数')
     },
     methods: {
-      clickChart(e) {
-        console.log(e, 111)
-      },
       setTab(num) {
         this.tabIndex = 0
       },
       changeTab(data) {
         this.drawBar(data)
+      },
+      countNum(length, ratio) {
+        return 100 / length * ratio
+      },
+      countNum1(length) {
+        // if (x <= 10) {
+        //   return 5
+        // } else if (x > 10 && x <= 25) {
+        //   return (x - 10) < 0 ? 50 : 50 + Math.ceil((x - 10) / 5) * 5
+        // } else if (x > 25 && x <= 50) {
+        //   return (x - 25) < 0 ? 70 : 70 + Math.ceil((x - 30) / 10) * 5
+        // } else if (x > 50 && x <= 100) {
+        //   return 90
+        // } else if (x > 100 && x <= 150) {
+        //   return 95
+        // } else if (x > 150) {
+        //   return 98
+        // }
+        return 100 - 100 / length * 8
       },
       // 纵向柱状图
       drawBar(data) {
@@ -55,29 +71,36 @@
           myChart.on('click', function(e) {
             console.log(e)
           })
-          myChart.setOption(this.createBarData(xAxisData, seriesData))
+          // let x = new Array(15).fill(1)
+          // let y = new Array(15).fill(81)
+          let ratio = Math.floor((window.innerWidth - 230) / 85)
+          myChart.setOption(this.createBarData(xAxisData, seriesData, ratio))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
+
       // 横向柱状图
       drawBar1(data) {
         this.$nextTick(() => {
-          let xAxisData = data.x.length > 0 ? data.x : this.data.x1
+          let xAxisData1 = data.x.length > 0 ? data.x : this.data.x1
           let seriesData1 = data.series.length > 0 ? data.series : this.data.series1
           let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', e => {
             console.log(e)
           })
-          myChart.setOption(this.createBar(xAxisData, seriesData1, seriesData2))
+          // let x = new Array(200).fill(1)
+          // let y1 = new Array(200).fill(81)
+          // let y2 = new Array(200).fill(81)
+          myChart.setOption(this.createBar(xAxisData1, seriesData1, seriesData2))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
-      createBarData(xAxisData, seriesData) {
+      createBarData(xAxisData, seriesData, ratio) {
         // let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
         return {
           grid: {
@@ -144,7 +167,7 @@
             }
           },
           dataZoom: [{
-            end: 60,// 数据窗口范围的结束百分比
+            end: this.countNum(xAxisData.length, ratio),// 数据窗口范围的结束百分比
             type: 'slider',
             bottom: '26px',
             show: true,
@@ -186,7 +209,7 @@
           ]
         }
       },
-      createBar(xAxisData, seriesData1, seriesData2) {
+      createBar(xAxisData, seriesData1, seriesData2, ratio) {
         return {
           grid: {
             left: '50',
@@ -259,7 +282,7 @@
             }
           },
           dataZoom: [{
-            end: 50,// 数据窗口范围的结束百分比
+            start: this.countNum1(xAxisData.length),// 数据窗口范围的结束百分比
             type: 'slider',
             left: '30px',
             show: true,
