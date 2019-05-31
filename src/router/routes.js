@@ -1740,7 +1740,8 @@ export default [
               start_time: '',
               end_time: '',
               keyword: '',
-              status: 0 // 待分拣
+              status: 0, // 待分拣
+              sorting_mode: 0
             })
             store
               .dispatch('sorting/getSortingTaskList')
