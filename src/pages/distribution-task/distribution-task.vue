@@ -44,7 +44,7 @@
         <div class="list">
           <div v-if="tabIndex === 0">
             <div v-if="orderList.length">
-              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box" :class="{'list-lock': item.order_status !== 2}">
+              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box" :class="{'list-lock': item.is_blocked}">
                 <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
                 <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
                 <div class="list-item" :style="{flex: commodities[2].flex}">
@@ -57,11 +57,11 @@
                 <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
                 <div class="list-item" :style="{flex: commodities[8].flex}">
                   {{item.status_str}}
-                  <div v-if="item.order_status !== 2" class="list-item-img"></div>
+                  <div v-if="item.is_blocked" class="list-item-img"></div>
                 </div>
                 <div class="list-item" :style="{flex: commodities[9].flex}">
                   <span class="list-operation list-ok" @click="handleOperation(item)">导出</span>
-                  <span v-if="(item.status === 1 && item.order_status === 2) || item.status === 3" class="list-operation list-ok" @click="signIn(item)">签收</span>
+                  <span v-if="(item.status === 1 && !item.is_blocked) || item.status === 3" class="list-operation list-ok" @click="signIn(item)">签收</span>
                 </div>
               </div>
             </div>
