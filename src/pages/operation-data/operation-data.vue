@@ -339,18 +339,12 @@
       //   console.log(url)
       //   return process.env.VUE_APP_API + '/social-shopping/api/backend/data-center/goods/' + url + '?' + search.join('&')
       // },
-      _formatExcelData(index = 0) {
-        // todo
+      _formatExcelData() {
         let currentId = this.getCurrentId()
-        let token = this.$storage.get('auth.currentUser', '')
+        let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
         let currentShop = process.env.VUE_APP_CURRENT_SHOP
-        let _dType = this.requestParam.date_type === 'half_month' ? 'month' : this.requestParam.date_type
-        // let msg = {
-        //   current_corp: currentId,
-        //   current_shop: process.env.VUE_APP_CURRENT_SHOP,
-        //   access_token: token.access_token
-        // }
-        return `${process.env.VUE_APP_API}/social-shopping/api/backend/data-center/goods/todo?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&day_type=${_dType}`
+        let _dType = this.requestParam.date_type
+        return `${process.env.VUE_APP_API}/social-shopping/api/backend/data-center/operation/after-server-data-excel?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&date_type=${_dType}`
       },
       _changeStatusTab(item, index) {
         if (this.topTabIndex === index) return
