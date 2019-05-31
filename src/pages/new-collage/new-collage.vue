@@ -776,7 +776,8 @@
           page: this.page,
           limit: 6,
           status: 1,
-          preferential_type: 2
+          preferential_type: 2,
+          has_stock: 1
         }
         API.Coupon.getCouponList(data, false)
           .then(res => {
