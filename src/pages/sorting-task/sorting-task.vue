@@ -31,7 +31,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号':'商品名称或商品编码'" @search="searchBtn"></base-search>
+        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
