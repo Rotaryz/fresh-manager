@@ -12,7 +12,7 @@
           </li>
         </ul>
       </div>
-      <a v-if="chartConfig.excel" class="excel-btn">导出Excel</a>
+      <a v-if="chartConfig.excel" :href="chartConfig.excel" target="_blank" class="excel-btn">导出Excel</a>
     </div>
     <div class="label-bar">
       <template v-for="(label, labelIdx) in chartConfig.label">
@@ -275,7 +275,7 @@
         this.tabIndex = tabIdx
         this._setChart(this.chartConfig, true, true)
         // console.log(tab, tabIdx)
-        this.$emit('switchTab', tab, tabIdx)
+        // this.$emit('switchTab', tab, tabIdx)
       }
     }
   }
