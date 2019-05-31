@@ -642,7 +642,8 @@
           coupon_name: this.keyword,
           page: this.page,
           limit: 6,
-          status: 1
+          status: 1,
+          has_stock: 1
         }
         API.Coupon.getCouponList(data, false)
           .then(res => {
