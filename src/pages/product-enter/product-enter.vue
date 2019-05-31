@@ -18,9 +18,6 @@
           <p class="identification-name">入库列表</p>
           <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
-        <!--<div class="function-btn">-->
-          <!--<div v-if="status === 0" class="btn-main" @click="allocationStock">完成当日收货</div>-->
-        <!--</div>-->
       </div>
       <div class="big-list">
         <div class="list-header list-box">
