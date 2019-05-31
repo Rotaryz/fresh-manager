@@ -274,6 +274,8 @@
         if (this.tabIndex === tabIdx) return
         this.tabIndex = tabIdx
         this._setChart(this.chartConfig, true, true)
+        // console.log(tab, tabIdx)
+        this.$emit('switchTab', tab, tabIdx)
       }
     }
   }

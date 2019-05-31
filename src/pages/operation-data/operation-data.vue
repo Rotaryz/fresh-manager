@@ -21,7 +21,7 @@
           <chart-line ref="orderChart" chartId="orderChart" class="chart-box"></chart-line>
           <chart-line ref="userChart" chartId="userChart" class="chart-box"></chart-line>
           <chart-line ref="benefitChart" chartId="benefitChart" class="chart-box"></chart-line>
-          <chart-line ref="servicesChart" chartId="servicesChart" class="chart-box"></chart-line>
+          <chart-line ref="servicesChart" chartId="servicesChart" class="chart-box" @switchTab="handleChangeTab"></chart-line>
         </template>
         <template v-if="topTabIndex === 1">
           <chart-line ref="merchantChart" chartId="merchantChart" class="chart-box"></chart-line>
@@ -309,6 +309,9 @@
       this._getData(true)
     },
     methods: {
+      handleChangeTab(tab, tabIndex) {
+        console.log(tab, tabIndex)
+      },
       _changeStatusTab(item, index) {
         if (this.topTabIndex === index) return
         this.curChartConfig = this.chartConfig[index]
@@ -346,7 +349,11 @@
             }
             getSuccess = true
           }).finally(() => {
-            this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
+            let currentChart = this.$refs[curChart.id]
+            if (currentChart) {
+              this.chartArr.push(currentChart._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
+            }
+            // this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
             this.getFinish = i === (this.curChartConfig.length - 1)// 设置请求完
             loading && this.$loading.hide()
           })
@@ -357,7 +364,7 @@
         let _that = this
         window.onresize = function () {
           for (let i = 0; i < _that.chartArr.length; i++) {
-            _that.chartArr[i].resize()
+            _that.chartArr[i] && _that.chartArr[i].resize()
           }
         }
       },
