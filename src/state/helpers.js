@@ -201,6 +201,13 @@ export const communityComputed = {
 
 export const communityMethods = mapActions('community', ['getCommunityList', 'getQualityData', 'getBusinessData', 'getGroupData', 'getGoodsList'])
 
+// 商品数据
+export const goodsDataComputed = {
+  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList'])
+}
+
+export const goodsDataMethods = mapActions('goodsData', ['getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData'])
+
 // 交易记录
 export const tradeComputed = {
   ...mapGetters('trade', ['trades', 'pageDetail', 'page', 'date', 'keyword', 'type'])
