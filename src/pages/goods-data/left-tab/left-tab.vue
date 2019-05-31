@@ -23,7 +23,7 @@
           </div>
           <div class="right-icon" :class="{'current': +categoryIndex === index+1}"></div>
         </div>
-        <div class="goods-list" :style="{height: +categoryIndex === index+1 ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
+        <div class="goods-list" :style="{height: (+categoryIndex === index+1 && openCategory) ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
           <div v-for="(goods, ind) in item.list"
                :key="ind"
                class="goods-item"
@@ -58,14 +58,20 @@
         categoryIndex: 0,
         goodsIndex: 0,
         getMore: false,
-        selectGoods: false
+        selectGoods: false,
+        openCategory: false
       }
     },
     computed: {
       ...goodsDataComputed
     },
     methods: {
-      changeCategory(item, index, code) {
+      changeCategory(item, index, code, bool) {
+        if (index === this.categoryIndex && !bool) {
+          this.openCategory = false
+        } else {
+          this.openCategory = true
+        }
         this.categoryIndex = index
         this.goodsIndex = ''
         this.selectGoods = false
@@ -78,6 +84,30 @@
       },
       height(item) {
         return (48*item.length)
+      },
+      selectList(categoryIndex, goodsIndex) {
+        // let code = categoryIndex > 0 ? 'category' : 'all'
+        // this.changeCategory(this.categoryList[categoryIndex], categoryIndex, code, true)
+        // let goodsCode = goodsIndex ? 'goods' : ''
+        // if (goodsIndex) {
+        //   this.changeGoods(this.categoryList[categoryIndex].list[goodsIndex], goodsCode)
+        //   return
+        // }
+        // this.goodsIndex = ''
+        let item = {}
+        let code = ''
+        if (goodsIndex) {
+          code = 'goods'
+          this.goodsIndex = goodsIndex
+          item = this.categoryList[categoryIndex].list[goodsIndex]
+        } else {
+          code = 'category'
+          this.goodsIndex = ''
+          item = this.categoryList[categoryIndex]
+        }
+        this.openCategory = true
+        this.selectGoods = goodsIndex
+        this.$emit('changeTab', item, this.selectGoods, code)
       }
     }
   }

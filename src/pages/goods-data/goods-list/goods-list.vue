@@ -18,7 +18,6 @@
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
           <img v-if="val.value === 'img'" class="img" :src="item.image_url" alt="">
           <p v-else-if="val.value === 'amount'" class="main">¥{{item[val.value]}}</p>
-          <p v-else-if="val.value === 'stock_price'" class="main">¥{{item[val.value]}}</p>
           <p v-else class="main">{{item[val.value]}}</p>
         </div>
       </div>
@@ -39,8 +38,8 @@
   const TITLE2 = [
     {name: '', flex: 0.5, value: 'img'},
     {name: '品类名称', flex: 1.4, value: 'name'},
-    {name: '库存', flex: 1, value: 'stock'},
-    {name: '库存金额', flex: 1, value: 'stock_price'}
+    {name: '库存', flex: 1, value: 'num'},
+    {name: '库存金额', flex: 1, value: 'amount'}
   ]
   const GOOD = [
     {

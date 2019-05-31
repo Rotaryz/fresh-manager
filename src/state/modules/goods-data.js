@@ -8,9 +8,9 @@ export const state = {
   stockRankList: [],
   // sec1
   saleData: {
-    list: [],
     xAx: [],
-    series: []
+    series: [],
+    list: []
   },
   // sec2
   serveData: {
@@ -25,7 +25,8 @@ export const state = {
   // sec4
   supplyData: {
     xAx: [],
-    series: []
+    series: [],
+    list: []
   }
 }
 
@@ -77,7 +78,10 @@ export const mutations = {
   },
   SET_SUPPLY_DATA(state, data) {
     state.supplyData = data
-  }
+  },
+  SET_SUPPLY_DATA_GOODS(state, data) {
+    state.supplyData.list = data
+  },
 }
 
 export const actions = {
@@ -160,20 +164,30 @@ export const actions = {
       })
   },
   getSaleData({commit}, msg) {
-    let {data, index} = msg
+    let {dataSale, index} = msg
     let apiArr = ['getStructure', 'getSaleRank', 'getSellRatio', 'getSellOut']
     let api = apiArr[index]
-    return API.GoodsData[api](data, false)
+    return API.GoodsData[api](dataSale, false)
       .then((res) => {
+        let data = res
         if (res.error !== app.$ERR_OK) {
           return false
         }
         if (index === 1) {
-          commit('SET_SALE_DATA_GOODS', res.data)
+          commit('SALE_RANK_LIST', res.data)
           return true
+        } else if (index === 0) {
+          data = {
+            b: res.data.b,
+            l: res.data.l,
+            n: res.data.n,
+            o: res.data.o,
+            y: res.data.y,
+            t: res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
+          }
         }
-        let arr = ['pv', 'e_customer', 'order']
-        let data = dataHandle(arr, res.data)
+        // let arr = ['pv', 'e_customer', 'order']
+        // let data = dataHandle(arr, res.data)
         commit('SET_SALE_DATA', data)
         return true
       })
@@ -190,10 +204,9 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let data = res.data
         // let arr = ['sales_num', 'rate', 'order']
         // let data = dataHandle(arr, res.data, index)
-        commit('SET_SERVE_DATA', data)
+        commit('SET_SERVE_DATA', res)
         return true
       })
       .catch(() => {
@@ -209,9 +222,7 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['pv', 'e_customer', 'order']
-        let data = dataHandle(arr, res.data)
-        commit('SET_PURCHASE_DATA', data)
+        commit('SET_PURCHASE_DATA', res)
         return true
       })
       .catch(() => {
@@ -221,17 +232,20 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSupplyData({commit}, data) {
-    let apiArr = ['getStockRank', 'getStockRatio']
-    let api = apiArr[data.index]
-    return API.GoodsData[api](data, false)
+  getSupplyData({commit}, msg) {
+    let {dataSupply, index} = msg
+    return API.GoodsData.getStockData(dataSupply, false)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['pv', 'e_customer', 'order']
-        let data = dataHandle(arr, res.data)
-        commit('SET_SUPPLY_DATA', data)
+        if (index === 0) {
+          commit('STOCK_RANK_LIST', res.data)
+          return true
+        }
+        // let arr = ['pv', 'e_customer', 'order']
+        // let data = dataHandle(arr, res.data)
+        commit('SET_SUPPLY_DATA', res)
         return true
       })
       .catch(() => {
@@ -241,26 +255,4 @@ export const actions = {
         app.$loading.hide()
       })
   },
-
-
-}
-
-const dataHandle = (arr, data)=> {
-  let dataArr = arr.map(item => {
-    let time = data[item].data.map(val => {
-      return val.at.split('-').slice(1).join('/')
-    })
-    let valueArr = data[item].data.map(val => {
-      if (typeof(val.value) === 'string') {
-        return val.value.replace(',', '')
-      } else {
-        return val.value || 0
-      }
-    })
-    return {
-      x: time,
-      series: valueArr
-    }
-  })
-  return dataArr
 }

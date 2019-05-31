@@ -20,7 +20,7 @@ export default {
    * 商品结构
    */
   getStructure(data, loading = false) {
-    let url = `/social-shopping/api/backend/community/groups`
+    let url = `/social-shopping/api/backend/data-center/goods/goods-structure`
     return request.get(url, data, loading)
   },
   /**
@@ -31,25 +31,17 @@ export default {
     return request.get(url, data, loading)
   },
   /**
-   * 导出商品列表
-   */
-  exportGoodsList(data, loading = false) {
-    let url = `/social-shopping/api/backend/data-center/goods/sale-rank-excel`
-    return request.get(url, data, loading)
-  },
-
-  /**
    * 动销率
    */
   getSellRatio(data, loading = false) {
-    let url = `/social-shopping/api/backend/community/groups`
+    let url = `/social-shopping/api/backend/data-center/goods/pin-sold-out-rate`
     return request.get(url, data, loading)
   },
   /**
    * 售罄率
    */
   getSellOut(data, loading = false) {
-    let url = `/social-shopping/api/backend/community/groups`
+    let url = `/social-shopping/api/backend/data-center/goods/pin-sold-out-rate`
     return request.get(url, data, loading)
   },
   // ----------------模块2各项数据接口-------------------
@@ -98,10 +90,10 @@ export default {
   },
   // ----------------模块4各项数据接口-------------------
   /**
-   * 库存排行
+   * 库存数据（供应链）
    */
-  getStockRank(data, loading = false) {
-    let url = `/social-shopping/api/backend/community/groups`
+  getStockData(data, loading = false) {
+    let url = `/social-shopping/api/backend/data-center/goods/sku-stock-data`
     return request.get(url, data, loading)
   },
   /**

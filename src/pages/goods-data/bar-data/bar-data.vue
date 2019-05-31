@@ -22,10 +22,8 @@
         tabIndex: 0,
         data: {
           x1: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
-          series1: ["10", "20", "5", "40", "15", "14"],
-          series2: ["12", "18", "10", "50", "10", "20"],
-          x2: ['利润品', '引流品', '粘性品', '爆款品', '其他'],
-          series3: [20, 50, 30, 60, 10]
+          series: [10, 10, 10, 10, 10, 10],
+          x2: ['利润品', '引流品', '粘性品', '爆款品', '其他']
         }
       }
     },
@@ -42,23 +40,16 @@
           return Math.ceil(Math.random() * (max))
         })
       },
-      setTab(num) {
-        this.tabIndex = 0
-      },
-      changeTab(data) {
-        this.drawBar(data)
-      },
       // 纵向柱状图
       drawBar(data, rate) {
-        console.log(data)
         this.$nextTick(() => {
-          let x = ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"]
-          let series = this.random(9, 50)
-          let xAxisData = data.xAx.length > 0 ? data.xAx : x
-          let seriesData = data.series.length > 0 ? data.series : series
+          let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x1
+          let seriesData = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          let that = this
           myChart.on('click', function (params) {
-            console.log(1)
+            console.log(params)
+            that.$emit('clickChart', params.dataIndex)
           })
           let axisLabel = {
             formatter: '{value}' + (rate ? '%' : ''),
@@ -72,33 +63,31 @@
         })
       },
       // 横向柱状图
-      drawBar1(data, rate) {
-        this.$nextTick(() => {
-          let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x1
-          let seriesData1 = (data.series && data.series.length) > 0 ? data.series : this.data.series1
-          let seriesData2 = (data.series2 && data.series2.length) > 0 ? data.series2 : this.data.series2
-          let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          myChart.on('click', function (params) {
-            console.log(2)
-          })
-          let axisLabel = {
-            formatter: '{value}' + (rate ? '%' : ''),
-            color: '#999'
-          }
-          myChart.setOption(this.createBar2(xAxisData, seriesData1, seriesData2, axisLabel))
-          window.addEventListener('resize', function() {
-            myChart.resize()
-          })
+      drawBar1(data) {
+        let msg = {
+          xAxisData: data.xAx.length ? data.xAx : this.data.x1,
+          seriesData1: data.salesNum.length ? data.salesNum : this.data.series,
+          seriesData2: data.purchaseNum.length ? data.purchaseNum : this.data.series,
+          salesNumAll: data.salesNumAll,
+          purchaseNumAll: data.purchaseNumAll
+        }
+        let myChart = this.$echarts.init(document.getElementById(this.chartId))
+        myChart.on('click', function (params) {
+          console.log(params)
+        })
+        myChart.setOption(this.createBar2(msg))
+        window.addEventListener('resize', function() {
+          myChart.resize()
         })
       },
       drawBar2(data) {
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2
-          let seriesData3 = data.series.length > 0 ? data.series : this.data.series3
+          let seriesData3 = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          myChart.on('click', function (params) {
-            console.log(3)
-          })
+          // myChart.on('click', function (params) {
+          //   console.log(params)
+          // })
           let axisLabel = {
             formatter: '{value}',
             color: '#999'
@@ -219,7 +208,7 @@
           ]
         }
       },
-      createBar2(xAxisData, seriesData1, seriesData2, axisLabel) {
+      createBar2(series) {
         return {
           grid: {
             left: '20',
@@ -244,7 +233,7 @@
           xAxis: {
             type: 'value',
             boundaryGap: false,
-            data: xAxisData,
+            data: series.xAxisData,
             offset: 12,
             splitLine: {
               show: false,
@@ -276,7 +265,7 @@
           yAxis: {
             minInterval: 1,
             type: 'category',
-            data: xAxisData,
+            data: series.xAxisData,
             splitLine: {
               show: false,
               lineStyle: {
@@ -291,7 +280,10 @@
                 width: 0.5
               }
             },
-            axisLabel,
+            axisLabel: {
+              formatter: '{value}',
+              color: '#999'
+            },
             axisLine: {
               show: false,
               trigger: 'axis',
@@ -317,7 +309,7 @@
             { // For shadow
               type: 'bar',
               name: '销售',
-              data: seriesData1,
+              data: series.seriesData1,
               barGap: 0,
               itemStyle: {
                 normal: {
@@ -334,6 +326,12 @@
                 normal: {
                   show: true,
                   position: 'right',
+                  formatter: function(data) {
+                    if (series.purchaseNumAll === 0) {
+                      return '0%'
+                    }
+                    return data.value/series.purchaseNumAll+ '%'
+                  },
                   verticalAlign: 'middle',
                   color: '#999',
                   fontSize: '12',
@@ -346,13 +344,19 @@
             {
               type: 'bar',
               name: '采购',
-              data: seriesData2,
+              data: series.seriesData2,
               barWidth: '10px',
               zlevel: 12,
               label: {
                 normal: {
                   show: true,
                   position: 'right',
+                  formatter: function(data) {
+                    if (series.purchaseNumAll === 0) {
+                      return '0%'
+                    }
+                    return data.value/series.purchaseNumAll+ '%'
+                  },
                   offset: [0, 2],
                   verticalAlign: 'middle',
                   color: '#999',
@@ -363,13 +367,6 @@
                 normal: {
                   barBorderRadius: 0,
                   color: '#59C6E8'
-                  // color: new this.$echarts.graphic.LinearGradient(
-                  //   0, 0, 0, 1,
-                  //   [
-                  //     {offset: 1, color: '#BE85FD'},
-                  //     {offset: 0, color: '#A08FF6'}
-                  //   ]
-                  // )
                 }
               }
             }

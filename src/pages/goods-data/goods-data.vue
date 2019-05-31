@@ -8,7 +8,7 @@
       <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>
     </div>
     <div class="data-content">
-      <left-tab @changeTab="changeTab"></left-tab>
+      <left-tab ref="goodsTab" @changeTab="changeTab"></left-tab>
       <div class="right-data">
         <div class="top-sec">
 
@@ -29,7 +29,7 @@
             </div>
 
             <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail'" class="name-text">
-              <p class="item">{{selectMsg.sale.name}}<span class="data">{{allMsg[0].data}}</span></p>
+              <p class="item">{{selectMsg.sale.name}}<span class="data">{{saleData[selectMsg.sale.code + '_total'] || saleData[selectMsg.sale.code] || 0}}{{selectMsg.sale.rate && '%'}}</span></p>
             </div>
 
             <div v-if="selectMsg.sale.type === 'goodsDetail'" class="goods-structor">
@@ -55,7 +55,7 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleData.list" @changeGoodsRank="changeGoodsRank"></goods-list>
+            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" @changeGoodsRank="changeGoodsRank"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1"></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
 
@@ -74,9 +74,9 @@
               </div>
             </div>
             <div class="name-text">
-              <p class="item">{{selectMsg.serve.name}}<span class="data">{{serveData.returns_num_total}}{{selectMsg.rate && '%'}}</span></p>
+              <p class="item">{{selectMsg.serve.name}}<span class="data">{{serveData[selectMsg.serve.code + '_total'] || serveData[selectMsg.serve.code] || 0}}{{selectMsg.serve.rate && '%'}}</span></p>
             </div>
-            <bar-data v-if="selectMsg.serve.type === 'bar'" ref="bar2" chartId="bar2"></bar-data>
+            <bar-data v-if="selectMsg.serve.type === 'bar'" ref="bar2" chartId="bar2" @click="setClickChart('purchase')" @clickChart="clickChart"></bar-data>
             <line-data v-if="selectMsg.serve.type === 'line'" ref="line2" chartId="line2" class="chart-box"></line-data>
           </section>
         </div>
@@ -96,7 +96,7 @@
               </div>
             </div>
             <div class="name-text">
-              <p class="item">{{selectMsg.purchase.name}}<span class="data">{{allMsg[2].data}}</span></p>
+              <p class="item">{{selectMsg.purchase.name}}<span class="data">{{purchaseData[selectMsg.purchase.code + '_total'] || purchaseData[selectMsg.purchase.code] || 0}}{{selectMsg.purchase.rate && '%'}}</span></p>
             </div>
 
             <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3"></bar-data>
@@ -118,9 +118,9 @@
               </div>
             </div>
             <div v-if="selectMsg.supply.type !== 'goods'" class="name-text">
-              <p class="item">{{selectMsg.supply.name}}<span class="data">{{allMsg[3].data}}</span></p>
+              <p class="item">{{selectMsg.supply.name}}<span class="data">{{supplyData[selectMsg.supply.code + '_total'] || supplyData[selectMsg.supply.code] || 0}}{{selectMsg.supply.rate && '%'}}</span></p>
             </div>
-            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock"></goods-list>
+            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList"></goods-list>
             <bar-data v-if="selectMsg.supply.type === 'bar'" ref="bar4" chartId="bar4"></bar-data>
             <line-data v-if="selectMsg.supply.type === 'line'" ref="line4" chartId="line4" class="chart-box"></line-data>
           </section>
@@ -160,75 +160,75 @@
   const ARR_TITLE = [
     {title: '7天', status: 'yesterday'},
     {title: '15天', status: '15'},
-    {title: '30天', status: 'month'}
-    // {title: '自定义', status: 'custom'}
+    {title: '30天', status: 'month'},
+    {title: '自定义', status: 'custom'}
   ]
   const EXPORT_URL = {
     sale: ['', 'sale-rank-excel'],
     serve: ['after-server-excel'],
-    purchase: ['sale-rank-excel', 'sale-rank-excel'],
+    purchase: ['purchase-data-excel', 'purchase-data-sku-excel'],
     aupply: ['sale-rank-excel']
   }
   const ALL_DATA = {
     all: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, code: ''},
+        {name: '商品结构', type: 'bar', excel: true, code: 't'},
         {name: '销量排行榜', type: 'goods', excel: true, code: 'num'},
-        {name: '动销率', type: 'bar', big: true, rate: true},
-        {name: '售罄率', type: 'bar', big: true, rate: true}
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate'},
+        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate'}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar1', big: true, word: 'purchase_num', excel: true, code: 'purchase_num', rate: true},
-        {name: '商品SPU数', type: 'pie', big: true, word: 'sku_num', excel: true, code: 'sku_num'},
-        {name: '毛利率', type: 'bar', big: true, word: 'purchase_num', rate: true, code: 'rate'}
+        {name: '采购匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
+        {name: '商品SPU数', type: 'pie', big: true, excel: true, code: 'sku_num'},
+        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true},
-        {name: '库存周转率', type: 'bar', big: true, rate: true}
+        {name: '库存排行', type: 'goods', excel: true, code: 'num'},
+        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate'}
       ]
     },
     category: {
       sale: [
         {name: '商品结构', type: 'bar', excel: true },
         {name: '销量排行榜', type: 'goods', excel: true, code: 'num'},
-        {name: '动销率', type: 'bar', big: true, rate: true},
-        {name: '售罄率', type: 'bar', big: true, rate: true}
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate'},
+        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate'}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar1', big: true, word: 'purchase_num', excel: true, code: 'purchase_num', rate: true},
-        {name: '毛利率', type: 'bar', big: true, word: 'sales_num', rate: true, code: 'rate'}
+        {name: '采购匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
+        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true},
-        {name: '库存周转率', type: 'bar', big: true, word: 'goods', rate: true}
+        {name: '库存排行', type: 'goods', excel: true, code: 'num'},
+        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate'}
       ]
     },
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
         {name: '销量排行榜', type: 'line'},
-        {name: '动销率', type: 'line', rate: true},
-        {name: '售罄率', type: 'line', rate: true}
+        {name: '动销率', type: 'line', rate: true, code: 'pin_rate'},
+        {name: '售罄率', type: 'line', rate: true, code: 'out_rate'}
       ],
       serve: [
         {name: '退货数', type: 'line', code: 'returns_num'},
         {name: '退货率', type: 'line', code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'line', word: 'purchase_num', code: 'purchase_num', rate: true},
-        {name: '毛利率', type: 'line', rate: true, word: 'sales_num', code: 'rate'}
+        {name: '采购数量', type: 'line', code: 'purchase_num'},
+        {name: '毛利率', type: 'line', rate: true, code: 'rate'}
       ],
       supply: [
-        {name: '库存排行', type: 'line'},
-        {name: '库存周转率', type: 'line', rate: true}
+        {name: '库存', type: 'line', code: 'num'},
+        {name: '库存周转率', type: 'line', rate: true, code: 'rate'}
       ]
     }
   }
@@ -260,18 +260,19 @@
         bigDataShow: false,
         requestSale: {
           order_by: '',
-          limit: 10
+          limit: 6
         },
         requestServe: {
           order_by: 'returns_num',
-          limit: 10
+          limit: 6
         },
         requestPurchase: {
           order_by: 'purchase_num',
           limit: 6
         },
         requestSupply: {
-          order_by: ''
+          order_by: 'purchase_num',
+          limit: 6
         },
         requestPub: {
           date_type: 'week',
@@ -318,7 +319,9 @@
         leftTabItem: {},
         leftTab: 'all', // 左侧tab栏 all全部商品 category分类 goods商品,
         exportUrlArr: EXPORT_URL,
-        excelType: ''
+        excelType: '',
+        clickSec: '',
+        clickChartIndex: ''
       }
     },
     computed: {
@@ -329,13 +332,17 @@
       // this.getAllData()
     },
     async mounted() {
-      this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
-      let data2 = Object.assign(this.requestPub, this.requestServe)
-      await this.getServeData(data2)
-      this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData, 'name', this.selectMsg.serve.code))
-      let data3 = Object.assign(this.requestPub, this.requestPurchase)
-      await this.getPurchaseData(data3)
-      this.$refs.bar3 && this.$refs.bar3.drawBar1({xAx: [], series: []}, true)
+      let dataSale = Object.assign(this.requestPub, this.requestSupply)
+      await this.getSaleData({dataSale, index: 0})
+      this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData))
+      let dataServe = Object.assign(this.requestPub, this.requestServe)
+      await this.getServeData(dataServe)
+      this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, 'name', this.selectMsg.serve.code))
+      let dataPurchase = Object.assign(this.requestPub, this.requestPurchase)
+      await this.getPurchaseData(dataPurchase)
+      this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
+      let dataSupply = Object.assign(this.requestPub, this.requestSupply)
+      this.getSupplyData({dataSupply, index: 0})
     },
     methods: {
       ...goodsDataMethods,
@@ -359,11 +366,24 @@
         let data = Object.assign(this.requestPub, this.requestSale)
         this.getSaleData({data, index: 1})
       },
+      setClickChart(index) {
+        console.log(index)
+        this.clickSec = index
+      },
+      clickChart(index) {
+        console.log(12)
+        this.clickChartIndex = index
+        // let arr = ['sale', 'serve', 'purchase', 'supply']
+        // let id = this.selectMsg
+        // if (this.leftType === 'all') {
+        //   // this.$refs.goodsTab.selectList(index, goodsIndex)
+        // }
+      },
       showBigData(type) {
         this.bigDataShow = true
         this.$nextTick(() => {
           if (type === 'bar1') {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar1({xAx: [], series: []})
+            this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.purchaseData))
           } else {
             this.$refs.bigBar && this.$refs.bigBar.drawBar({xAx: [], series: []})
           }
@@ -376,7 +396,7 @@
         return JSON.parse(JSON.stringify(obj))
       },
       // 切换左侧tab栏
-      changeTab(item, type, code) {
+      async changeTab(item, type, code) {
         if (this.leftTabItem.id === item.id) return
         switch (code) {
         case 'all':
@@ -398,11 +418,13 @@
         this.selectType = type
         this.leftTab = code
         this.getGoodsList({goods_category_id: item.id, is_online: 1, keyword: ''})
+        let data = Object.assign(this.requestPub, this.requestPurchase)
+        await this.getPurchaseData(data)
         this.$nextTick(() => {
           if (code === 'all' || code === 'category') {
             this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
             this.$refs.bar2 && this.$refs.bar2.drawBar({xAx: [], series: []})
-            this.$refs.bar3 && this.$refs.bar3.drawBar1({xAx: [], series: []})
+            this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
           } else if (code === 'goods') {
             this.$refs.line2 && this.$refs.line2.drawLine()
             this.$refs.line3 && this.$refs.line3.drawLine()
@@ -431,13 +453,16 @@
         this.selectMsg.sale = this.deepCopy(obj)
         this.$set(this.tabIndexControl, 'sale', index)
         this.requestSale.order_by = obj.code
-        let data = Object.assign(this.requestPub, this.requestSale)
-        await this.getSaleData({data, index})
+        let dataSale = Object.assign(this.requestPub, this.requestSale)
+        if (index === 1) {
+          dataSale.limit = 10
+        }
+        await this.getSaleData({dataSale, index})
         this.$nextTick(() => {
           if (index === 0) {
             this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
           } else {
-            this.$refs.bar1 && this.$refs.bar1.drawBar({xAx: [], series: []}, obj.rate)
+            this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, 'name', obj.code), obj.rate)
             this.$refs.line1 && this.$refs.line1.drawLine({xAx: [], series: []}, obj.rate)
           }
         })
@@ -450,33 +475,37 @@
         let data = Object.assign(this.requestPub, this.requestServe)
         await this.getServeData(data)
         this.$nextTick(() => {
-          this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData, 'name', obj.code), obj.rate)
-          this.$refs.line2 && this.$refs.line2.drawLine(this.dataHandle(this.serveData, 'name', obj.code), obj.rate)
+          this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, 'name', obj.code), obj.rate)
+          this.$refs.line2 && this.$refs.line2.drawLine(this.dataHandle(this.serveData.data, 'name', obj.code), obj.rate)
         })
       },
       // 切换商品采购模块（模块3）
-      changePurchase(obj, index) {
+      async changePurchase(obj, index) {
         this.selectMsg.purchase = obj
         this.$set(this.tabIndexControl, 'purchase', index)
         this.requestPurchase.order_by = obj.code
+        let data = Object.assign(this.requestPub, this.requestPurchase)
+        await this.getPurchaseData(data)
         this.$nextTick(() => {
           if (index === 0) {
-            this.$refs.bar3 && this.$refs.bar3.drawBar1({xAx: [], series: []}, obj.rate)
+            this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
           } else {
-            this.$refs.bar3 && this.$refs.bar3.drawBar({xAx: [], series: []}, obj.rate)
-            this.$refs.pie3 && this.$refs.pie3.drawPie({xAx: [], series: []})
-            this.$refs.line3 && this.$refs.line3.drawLine({xAx: [], series: []}, obj.rate)
+            this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
+            this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData))
+            this.$refs.line3 && this.$refs.line3.drawLine(this.purchaseHandle(this.purchaseData), obj.rate)
           }
         })
       },
       // 切换供应链模块（模块4）
-      changeSupply(obj, index) {
+      async changeSupply(obj, index) {
         this.selectMsg.supply = obj
         this.$set(this.tabIndexControl, 'supply', index)
         this.requestSupply.order_by = obj.code
+        // let dataSupply = Object.assign(this.requestPub, this.requestSupply)
+        // await this.getSupplyData({dataSupply, index})
         this.$nextTick(() => {
-          this.$refs.line4 && this.$refs.line4.drawLine({xAx: [], series: []}, obj.rate)
-          this.$refs.bar4 && this.$refs.bar4.drawBar({xAx: [], series: []}, obj.rate)
+          this.$refs.line4 && this.$refs.line4.drawLine(this.dataHandle(this.supplyData.data, 'name', obj.code), obj.rate)
+          this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, 'name', obj.code), obj.rate)
         })
       },
       exportExcel(type) {
@@ -524,9 +553,42 @@
         await this.getPurchaseData(Object.assign(this.requestPub, this.requestPurchase))
         await this.getSupplyData(Object.assign(this.requestPub, this.requestSupply))
       },
+      saleHandle(data) {
+        let arr = [
+          {
+            name: '利润品',
+            type: 'l'
+          },
+          {
+            name: '引流品',
+            type: 'y'
+          },
+          {
+            name: '粘性品',
+            type: 'n'
+          },
+          {
+            name: '爆款品',
+            type: 'b'
+          },
+          {
+            name: '其他',
+            type: 'q'
+          }
+        ]
+        let xAx = arr.map(item => {
+          return item.name
+        })
+        let series = arr.map(item => {
+          return data[item.type]
+        })
+        return {
+          xAx,
+          series
+        }
+      },
       dataHandle(data, x, y1) {
-        console.log(data, 'echartData')
-        if (!data) return {xAx: [], series: []}
+        if (!data.length) return {xAx: [], series: []}
         let xAx = data.map(val => {
           return val[x]
         })
@@ -538,25 +600,59 @@
           series
         }
       },
-      purchaseHandle(data, x, y1, y2) {
-        if (!data) return {xAx: [], series: []}
-        let xAx = data.map(val => {
-          return val[x]
-        })
-        let series = data.map(val => {
-          return val[y1]
-        })
-        let series2 = []
-        if (y2) {
-          series2 = data.map(val => {
-            return val[y2]
-          })
+      purchaseHandle(data) {
+        let dataArr = data.data
+        if (!dataArr.length) {
+          return {
+            xAx: [],
+            series: [],
+            salesNum: [],
+            purchaseNum: [],
+            salesNumAll: 0,
+            purchaseNumAll: 0
+          }
         }
+        let xAx = dataArr.map(item => {
+          return item.name
+        })
+        // 毛利率
+        let series = dataArr.map(item => {
+          return item.rate
+        })
+        // 销售数
+        let salesNum = dataArr.map(item => {
+          return item.sales_num
+        })
+        // 采购数
+        let purchaseNum = dataArr.map(item => {
+          return item.purchase_num
+        })
+        let salesNumAll = data.sales_num
+        let purchaseNumAll = data.purchase_num
         return {
           xAx,
           series,
-          series2
+          salesNum,
+          purchaseNum,
+          salesNumAll,
+          purchaseNumAll
         }
+      },
+      pieHandle(data) {
+        if (!data.length) return {
+          name: '',
+          value: ''
+        }
+        let series = data.map(item => {
+          return {
+            name: item.name,
+            value: item.sku_num
+          }
+        })
+        return series
+      },
+      lineHandle() {
+
       }
     }
   }

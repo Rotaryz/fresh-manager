@@ -196,7 +196,7 @@ export const communityMethods = mapActions('community', ['getCommunityList', 'ge
 
 // 商品数据
 export const goodsDataComputed = {
-  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData'])
+  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList'])
 }
 
 export const goodsDataMethods = mapActions('goodsData', ['getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData'])

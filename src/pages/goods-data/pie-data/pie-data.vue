@@ -20,30 +20,17 @@
     data() {
       return {
         tabIndex: 0,
-        data: {
-          x: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"],
-          series: [
-            {name: '时令水果', value: 10},
-            {name: '应季蔬菜', value: 20},
-            {name: '肉蛋家禽', value: 5},
-            {name: '海鲜冻品', value: 40},
-            {name: '粮油百货', value: 15},
-            {name: '酒饮冲调', value: 14},
-            {name: '面包糕点', value: 44},
-            {name: '网红零食', value: 34},
-            {name: '粤式早点', value: 20},
-            {name: '粤式早点', value: 20},
-            {name: '粤式早点', value: 20},
-            {name: '粤式早点', value: 20},
-            {name: '粤式早点', value: 20},
-            {name: '粤式早点', value: 20},
-          ]
-        }
+        data: [
+          {name: '时令水果', value: 0},
+          {name: '应季蔬菜', value: 0},
+          {name: '肉蛋家禽', value: 0},
+          {name: '海鲜冻品', value: 0},
+          {name: '粮油百货', value: 0},
+          {name: '酒饮冲调', value: 0},
+          {name: '面包糕点', value: 0},
+          {name: '网红零食', value: 0}
+        ]
       }
-    },
-    computed: {
-    },
-    watch: {
     },
     mounted() {
       // this.drawPie(this.data)
@@ -52,11 +39,9 @@
       setTab(num) {
         this.tabIndex = 0
       },
-      changeTab(data) {
-        this.drawPie(data)
-      },
       drawPie(data) {
-        let seriesData = data.series.length > 0 ? data.series : this.data.series
+        console.log(data)
+        let seriesData = data.length > 0 ? data : this.data
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
         myChart.setOption(this.createPieData(seriesData))
         window.addEventListener('resize', function() {
