@@ -37,7 +37,7 @@
                 <img :src="saleData.data.image_url" alt="" class="goods-image">
                 <div class="goods-detail">
                   <p class="title">{{saleData.data.name}}</p>
-                  <p class="price">¥ {{saleData.data.sales_num}}</p>
+                  <p class="price">¥ {{saleData.data.trade_price}}</p>
                 </div>
               </div>
               <div class="data-list">
@@ -359,8 +359,11 @@
         if (typeof value === 'string') {
           this.requestPub.date_type = value
         } else {
-          this.start_at = value[0]
-          this.end_at = value[1]
+          // this.start_at = value[0]
+          // this.end_at = value[1]
+          this.requestPub.date_type = 'cust-date'
+          this.requestPub.start_date = value[0]
+          this.requestPub.end_date = value[1]
           console.log(new Date(Number(value[0])) - new Date(Number(value[1])))
           if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
             this.$toast.show('选择时间范围不能小于两天')
