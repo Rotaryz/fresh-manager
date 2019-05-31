@@ -8,6 +8,7 @@ export default {
    * @returns {*}
    */
   getCouponList(data, loading = true) {
+    data = Object.assign({has_stock: 1}, data)
     let url = '/social-shopping/api/backend/coupon-manage/coupon'
     return request.get(url, data, loading)
   },
