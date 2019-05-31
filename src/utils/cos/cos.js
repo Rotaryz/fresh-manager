@@ -87,7 +87,7 @@ export function uploadFiles(fileType, files, showProcess, processCallBack) {
           }
           xhr.onload = function() {
             if (xhr.status === 200 || xhr.status === 206) {
-              _saveFile({path: '/' + info.pathname, type: 'image'}).then((resp) => {
+              _saveFile({path: '/' + encodeURIComponent(info.pathname), type: 'image'}).then((resp) => {
                 resolve(resp)
               })
             } else {

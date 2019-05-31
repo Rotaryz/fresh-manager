@@ -100,7 +100,6 @@
   import DefaultBatch from '@components/default-batch/default-batch'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
-
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
   const COMMODITIES_LIST = [
@@ -108,12 +107,12 @@
     '商品',
     '分类',
     '订单数量(销售单位)',
-    '配货数量',
+    '配货数量(销售单位)',
     '出库数量(销售单位)',
     '出库数量(基本单位)',
     '差异数',
     '出库批次',
-    '出库单价',
+    '出库单价'
     // '出库金额'
   ]
   export default {
@@ -136,7 +135,7 @@
         curItem: {},
         showIndex: null,
         isSubmit: false,
-        sureAdjustData:null
+        sureAdjustData: null
       }
     },
     computed: {
@@ -149,7 +148,7 @@
     },
     methods: {
       ...productMethods,
-      saleNumChange(item, index){
+      saleNumChange(item, index) {
         if (item.sale_num < 0) {
           item.base_num = item.sale_num * -1
         }
@@ -159,7 +158,7 @@
         }
         item.base_num = number.toFixed(2)
       },
-      baseNumChange(item, index){
+      baseNumChange(item, index) {
         if (item.base_num < 0) {
           item.sale_num = item.base_num * -1
         }
@@ -169,35 +168,43 @@
         }
         item.sale_num = number.toFixed(2)
       },
-      sureAdjust(){
-        API.Store.sureAdjust(this.sureAdjustData).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.$refs.confirm.hide()
-          } else {
-            this.$toast.show(res.message)
-          }
-        }).catch((err) => {
-          this.$toast.show(err.message)
-          return false
-        })
+      sureAdjust() {
+        API.Store.sureAdjust({data: this.sureAdjustData})
+          .then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$refs.confirm.hide()
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+            return false
+          })
           .finally(() => {
             this.$loading.hide()
           })
       },
-      submitRecheck(){
-        this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
-
-        API.Store.recheckFinish(this.$route.params.id,this.outDetailList).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.sureAdjustData = res.data || null
-            res.data && this.$refs.confirm.show()
-          } else {
-            this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
-          }
-        }).catch((err) => {
-          this.$toast.show(err.message)
-          return false
-        })
+      submitRecheck() {
+        API.Store.recheckFinish(this.$route.params.id, {details: this.outDetailList})
+          .then((res) => {
+            if (res.data) {
+              this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
+              return
+            }
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              setTimeout(() => {
+                this.$router.back()
+              }, 500)
+              this.sureAdjustData = res.data || null
+              // res.data && this.$refs.confirm.show()
+            }
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+            return false
+          })
           .finally(() => {
             this.$loading.hide()
           })
@@ -285,7 +292,11 @@
             allprice += item.select_out_num * item.price
           }
         })
-        this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        if (number * 1 === 0) {
+          this.outDetailList[this.curIndex].out_cost_price = 0
+        } else {
+          this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        }
         this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
         this.outDetailList[this.curIndex].select_batch = arr
         this.$refs.modalBox.cancel()
@@ -301,7 +312,7 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:last-child, &:nth-child(1)
+        &:nth-child(1)
           flex: 0.5
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
           flex: 1.5
@@ -369,5 +380,5 @@
     font-size: $font-size-14
   .input-num
     border-radius: 0
-    width:93px
+    width: 93px
 </style>

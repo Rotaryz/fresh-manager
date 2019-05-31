@@ -79,6 +79,13 @@ export const saleComputed = {
 
 export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', 'setSaleList'])
 
+// 活动管理
+export const activityComputed = {
+  ...mapGetters('activity', ['popularList', 'preferenceList', 'collageList', 'collageDetail', 'popularPage', 'preferencePage', 'collagePage', 'activityTab'])
+}
+
+export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList', 'getCollageDetail', 'addPreferenceList', 'setActivityTab'])
+
 // 拓展活动
 export const outreachComputed = {
   ...mapGetters('outreach', [
@@ -502,11 +509,23 @@ export const storeMethods = {
 }
 // todo 分拣任务
 export const sortingComputed = {
-  ...mapGetters('sorting', ['sortingTask', 'sortingConfig', 'sortingTaskDetail', 'sortingTaskDetailByOrder','barCodePreviewInfo'])
+  ...mapGetters('sorting', [
+    'sortingTask',
+    'sortingConfig',
+    'sortingTaskDetail',
+    'sortingTaskDetailByOrder',
+    'barCodePreviewInfo'
+  ])
 }
 
 export const sortingMethods = {
-  ...mapActions('sorting', ['getSortingTaskList', 'getSortingTaskDetail','getSortingTaskGoodsDetails','getBarCodePreviewInfo', 'getSortingConfigList']),
+  ...mapActions('sorting', [
+    'getSortingTaskList',
+    'getSortingTaskDetail',
+    'getSortingTaskGoodsDetails',
+    'getBarCodePreviewInfo',
+    'getSortingConfigList'
+  ]),
   ...mapMutations('sorting', ['SET_PARAMS'])
 }
 // 商户订单

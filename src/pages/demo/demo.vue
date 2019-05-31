@@ -28,7 +28,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import AddGoods from '@components/add-goods/add-goods'
+// import AddGoods from '@components/add-goods/add-goods'
   import JsBarcode from 'jsbarcode'
 
   const PAGE_NAME = 'DEMO'
@@ -40,7 +40,7 @@
       title: TITLE
     },
     components: {
-      // AddGoods
+    // AddGoods
     },
     data() {
       return {
@@ -48,7 +48,7 @@
       }
     },
     mounted() {
-      // this.barcode()
+    // this.barcode()
     },
     methods: {
       barcode() {

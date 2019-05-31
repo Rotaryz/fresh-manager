@@ -1,5 +1,5 @@
 <template>
-  <div class="base-blank">
+  <div class="base-blank" :style="blackStyle">
     <img src="./pic-zanwu@2x.png" class="blank-img">
     <p class="blank-text">暂无数据</p>
   </div>
@@ -10,6 +10,12 @@
 
   export default {
     name: COMPONENT_NAME,
+    props: {
+      blackStyle: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {}
     }

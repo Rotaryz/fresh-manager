@@ -53,11 +53,8 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSaleList({state, commit, dispatch}, {page, startTime = '', endTime = '', status = '', loading = false}) {
-    return API.Sale.getSaleList(
-      {page: page, start_at: startTime, end_at: endTime, activity_type: 'fixed', status},
-      loading
-    )
+  getSaleList({state, commit, dispatch}, {page, startTime = '', endTime = '', status = '', loading}) {
+    return API.Sale.getSaleList({page: page, start_at: startTime, end_at: endTime, activity_type: 'fixed', activity_theme: 'fixed', status}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

@@ -37,8 +37,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import API from '@api'
-  import {sortingComputed,sortingMethods} from '@state/helpers'
+// import API from '@api'
+  import {sortingComputed, sortingMethods} from '@state/helpers'
   const PAGE_NAME = 'SORTING_TASK_DETAIL'
   const TITLE = '分拣任务明细'
   export default {
@@ -48,32 +48,46 @@
     },
     data() {
       return {
-        topListTilte: [{
-          name: '商户名称：', id: 'merchant_name'
-        }, {
-          name: '订单号：', id: 'out_order_sn'
-        }, {
-          name: '下单时间：', id: 'build_time'
-        }, {
-          name: '状态：', id: 'status_str'
-        }, {
-          name: '销售金额：', id: 'sale_price', type: 'number', before: '¥'
-        }],
-        commodities:[
-          {tilte: '商品', key: 'goods_name', flex: '2',afterBr: 'goods_sku_encoding'},
+        topListTilte: [
+          {
+            name: '商户名称：',
+            id: 'merchant_name'
+          },
+          {
+            name: '订单号：',
+            id: 'out_order_sn'
+          },
+          {
+            name: '下单时间：',
+            id: 'build_time'
+          },
+          {
+            name: '状态：',
+            id: 'status_str'
+          },
+          {
+            name: '销售金额：',
+            id: 'sale_price',
+            type: 'number',
+            before: '¥'
+          }
+        ],
+        commodities: [
+          {tilte: '商品', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
           {tilte: '分类', key: 'goods_category'},
-          {tilte: '订单数量 ', key: 'order_num', after: "sale_unit"},
-          {tilte: '配货数量', key: 'allocation_num', after: "sale_unit"},
-          {tilte: '存放库位', key: 'position_name', flex: '2'}]
+          {tilte: '订单数量 ', key: 'order_num', after: 'sale_unit'},
+          {tilte: '配货数量', key: 'allocation_num', after: 'sale_unit'},
+          {tilte: '存放库位', key: 'position_name', flex: '2'}
+        ]
       }
     },
     computed: {
       ...sortingComputed
     },
-    methods:{
+    methods: {
       ...sortingMethods,
-      _getMoreList(page){
-        this.SET_PARAMS({page,type:'sortingTaskDetailByOrder'})
+      _getMoreList(page) {
+        this.SET_PARAMS({page, type: 'sortingTaskDetailByOrder'})
         this.getSortingTaskGoodsDetails(this.$route.params)
       }
     }

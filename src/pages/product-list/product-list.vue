@@ -23,7 +23,7 @@
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
           <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
-          <div class="show-more-box g-btn-item" @mouseenter="_showTip" @mouseleave="_hideTip">
+          <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
             <div class="show-more-text">
               <div class="show-text">更多</div>
               <div class="show-icon"></div>
@@ -448,14 +448,14 @@
       height: 28px
       line-height: 28px
       color: $color-white
-      background: $color-main
+      border-1px($color-main)
       layout(row)
       align-items: center
       justify-content: center
 
       .show-text
         font-size: $font-size-12
-        color: $color-white
+        color: $color-main
         font-family: $font-family-regular
 
       .show-icon
@@ -463,6 +463,8 @@
         height: 6px
         margin-left: 6px
         position: relative
+        transform: translateY(-1px) rotate(0deg)
+        transition: all 0.4s
 
         &:after
           content: ''
@@ -474,8 +476,7 @@
           height: 0
           border-left: 4px solid transparent
           border-right: 4px solid transparent
-          border-top: 6px solid $color-white
-
+          border-top: 6px solid $color-main
     .show-hide-box
       position: absolute
       width: 106px
@@ -539,6 +540,15 @@
     background-size: cover
     background-position: center
 
+  .show-more-active
+    .show-more-text
+      background: $color-main
+      .show-text
+        color: $color-white
+      .show-icon
+        transform: translateY(-1px) rotate(180deg)
+        &:after
+          border-top: 6px solid $color-white
   .stock-file
     position: absolute
     top: 0

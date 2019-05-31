@@ -37,7 +37,7 @@ export const mutations = {
 
 export const actions = {
   getCouponList({commit}, msg) {
-    let {startTime, endTime, status, page} = msg
+    let {startTime, endTime, status, page, loading} = msg
     let data = {
       status,
       page,
@@ -45,7 +45,7 @@ export const actions = {
       created_start_at: startTime,
       created_end_at: endTime
     }
-    return API.Coupon.getCouponList(data)
+    return API.Coupon.getCouponList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)

@@ -212,5 +212,25 @@ export default {
   getPurchaseOrderStatistic(data, loading = false) {
     let url = '/scm/api/backend/purchase/purchase-order-statistic'
     return request.get(url, data, loading)
+  },
+  /**
+   * 批量导入采购任务[v1.3]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  leadTask(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-task-import'
+    return request.post(url, data, loading)
+  },
+  /**
+   * 批量新增采购任务[v1.3]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  createLeadTask(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-tasks-create'
+    return request.post(url, data, loading)
   }
 }

@@ -164,7 +164,7 @@
   ]
   const BASELIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
-    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/flash-sale?status=1', permissions: 'activity'},
+    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/activity-manage?status=1', permissions: 'activity'},
     {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list?status=0', permissions: 'shop-manager'},
     {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier', permissions: 'supplier'},
     {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},

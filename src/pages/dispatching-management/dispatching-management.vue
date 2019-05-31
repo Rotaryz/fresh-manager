@@ -91,7 +91,9 @@
               <input v-model="driverForm.true_name" type="text" class="main-input-box" placeholder="请输入司机名字" maxlength="6">
             </div>
             <div class="main-input-big">
-              <input v-model="driverForm.mobile" type="text" class="main-input-box" placeholder="请输入手机号" maxlength="11">
+              <input v-model="driverForm.mobile" type="text" class="main-input-box" placeholder="请输入手机号" maxlength="11"
+                     :disabled="driverForm.driver_id.length !== 0"
+              >
             </div>
             <div class="main-input-big">
               <input v-model="driverForm.plate_number" type="text" class="main-input-box" placeholder="请输入车牌号" maxlength="10">

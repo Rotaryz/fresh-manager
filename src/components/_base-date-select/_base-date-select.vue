@@ -24,11 +24,11 @@
       DatePicker
     },
     props: {
-      editable:{
+      editable: {
         type: Boolean,
         default: true
       },
-      format:{
+      format: {
         type: String,
         default: 'yyyy-MM-dd'
       },
@@ -71,7 +71,6 @@
     },
     watch: {
       disabledDate(news) {
-      // console.log(news)
       }
     },
     methods: {

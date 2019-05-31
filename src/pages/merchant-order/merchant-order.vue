@@ -240,7 +240,7 @@
         }
         this.getMerchantOrderList()
         if (params.page === 1) {
-          this.$nextTick(function(){
+          this.$nextTick(function() {
             this.$refs.paginationMerchant.beginPage()
           })
         }

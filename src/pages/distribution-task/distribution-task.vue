@@ -28,7 +28,13 @@
         <div class="function-btn">
           <div class="btn-main" @click="deliveryExcel">导出配送单</div>
           <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
-          <div class="btn-main g-btn-item" :class="{'btn-disable-store': orderStatus !==1 || (orderStatus === 1 && !orderList.length)}" @click="signIn('all')">批量签收</div>
+          <div
+            class="btn-main g-btn-item"
+            :class="{'btn-disable-store': (orderStatus !==1 && orderStatus !==3) || (orderStatus === 3 && !orderList.length) || (orderStatus === 1 && !orderList.length)}"
+            @click="signIn('all')"
+          >
+            批量签收
+          </div>
         </div>
       </div>
       <div class="big-list">
@@ -38,7 +44,7 @@
         <div class="list">
           <div v-if="tabIndex === 0">
             <div v-if="orderList.length">
-              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box">
+              <div v-for="(item, index) in orderList" :key="index" class="list-content list-box" :class="{'list-lock': item.order_status !== 2}">
                 <div class="list-item" :style="{flex: commodities[0].flex}">{{item.created_at}}</div>
                 <div class="list-item" :style="{flex: commodities[1].flex}">{{item.order_sn}}</div>
                 <div class="list-item" :style="{flex: commodities[2].flex}">
@@ -49,10 +55,13 @@
                 <div class="list-item" :style="{flex: commodities[5].flex}">{{item.receive_address}}</div>
                 <div class="list-item" :style="{flex: commodities[6].flex}">{{item.delivery_date}}</div>
                 <div class="list-item" :style="{flex: commodities[7].flex}">{{item.driver_name}}</div>
-                <div class="list-item" :style="{flex: commodities[8].flex}">{{item.status_str}}</div>
+                <div class="list-item" :style="{flex: commodities[8].flex}">
+                  {{item.status_str}}
+                  <div v-if="item.order_status !== 2" class="list-item-img"></div>
+                </div>
                 <div class="list-item" :style="{flex: commodities[9].flex}">
-                  <span class="list-operation" @click="handleOperation(item)">导出</span>
-                  <span v-if="item.status === 1" class="list-operation" @click="signIn(item)">签收</span>
+                  <span class="list-operation list-ok" @click="handleOperation(item)">导出</span>
+                  <span v-if="(item.status === 1 && item.order_status === 2) || item.status === 3" class="list-operation list-ok" @click="signIn(item)">签收</span>
                 </div>
               </div>
             </div>
@@ -134,7 +143,7 @@
           {name: '全部', value: '', key: 'all', num: 0},
           {name: '待配送', value: 1, key: 'wait_delivery', num: 0},
           {name: '待签收', value: 3, key: 'wait_sign', num: 0},
-          {name: '配送完成', value: 2, key: 'success_delivery', num: 0}
+          {name: '已完成', value: 2, key: 'success_delivery', num: 0}
         ],
         accurateStart: '',
         accurateEnd: '',
@@ -228,7 +237,7 @@
         return process.env.VUE_APP_SCM_API + url + '?' + search.join('&')
       },
       async signMore() {
-        let res = await API.Delivery.batchDeliverySign(true)
+        let res = await API.Delivery.batchDeliverySign({status: this.orderStatus})
         this.$loading.hide()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
@@ -320,4 +329,15 @@
         padding: 0
         min-width: 80px
         max-width: 80px
+  .list-lock
+    .list-item
+      .list-ok
+        color: #4d77bd !important
+  .list-item-img
+    icon-image('icon-lock')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>
