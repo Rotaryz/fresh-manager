@@ -247,7 +247,7 @@
       },
       signIn(item) {
         if (item === 'all') {
-          if (this.orderList.length && this.orderStatus === 1) {
+          if ((this.orderList.length && this.orderStatus === 1) || (this.orderList.length && this.orderStatus === 3)) {
             this.$refs.signMore.show('确定批量签收配送单？')
           }
           return
