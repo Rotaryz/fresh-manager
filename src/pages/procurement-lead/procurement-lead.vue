@@ -83,6 +83,7 @@
         this.$toast.show(res.message, 600)
         if (res.error !== this.$ERR_OK) {
           this.isSubmit = true
+          this.$toast.show(res.message)
           return
         }
         setTimeout(() => {
@@ -101,6 +102,9 @@
         this.blankList = res.error === this.$ERR_OK ? res.data : []
         console.log(res)
         e.target.value = ''
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+        }
       },
       // 格式化文件
       _infoFile(file) {
