@@ -5,6 +5,7 @@
       <div class="enter-title">关联订单号：{{outMsg.out_order_sn}}</div>
       <div class="enter-title">商户名称：{{outMsg.merchant_name}}</div>
       <div class="enter-title">出库时间：{{outMsg.out_time || '--------'}}</div>
+      <div class="enter-title">复核时间：{{outMsg.checked_time || '--------'}}</div>
       <div class="enter-title">状态：{{outMsg.status === 0 ? '待出库' : '已完成'}}</div>
       <div class="enter-title">出库金额：<span class="enter-title-money">￥{{outMsg.total}}</span></div>
     </div>
