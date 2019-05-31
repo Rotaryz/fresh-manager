@@ -105,6 +105,7 @@ export const mutations = {
 export const actions = {
   // 拣货列表 √
   getSortingTaskList({state, commit, dispatch}) {
+    commit('SET_LIST', {list: []})
     return API.Sorting.getSortingTaskList(state.sortingTask.filter)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {

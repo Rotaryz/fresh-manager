@@ -49,9 +49,9 @@
           <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportByOrder">导出</div>
           </template>
-          <template v-if="sortingTask.filter.sorting_mode===1">
-            <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
-            <div v-if="sortingTask.filter.status===0 || sortingTask.filter.status===2" class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
+          <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
+            <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
+            <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
           </template>
         </div>
       </div>
@@ -168,7 +168,6 @@
           {name:'待配货', value: 3, num: 0},
           {name: '已完成', value: 1, num: 0}
         ],
-        activeStatus: '',
         exportUrl: ""
       }
     },
@@ -228,6 +227,7 @@
           status: 0,
           keyword: "",
         }
+
         this.$refs.research._setText()
         this._updateData(params)
       },
