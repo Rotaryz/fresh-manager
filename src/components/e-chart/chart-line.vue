@@ -273,7 +273,7 @@
       _switchTab(tab, tabIdx) {
         if (this.tabIndex === tabIdx) return
         this.tabIndex = tabIdx
-        this._setChart(this.chartConfig, true)
+        this._setChart(this.chartConfig, true, true)
       }
     }
   }
