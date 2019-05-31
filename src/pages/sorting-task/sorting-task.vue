@@ -325,28 +325,17 @@
         this._updateData({keyword, page: 1})
       },
       // 导出路径
-      getUrl(isOrder) {
+      getUrl() {
         let obj = this.sortingTask.filter
-        let data = {}
-        if(isOrder){
-          data = {
-            type:1 ,
-            current_corp: this.getCurrentId(),
-            access_token: this.currentUser().access_token,
-            start_time: obj.start_time,
-            end_time: obj.end_time,
-          }
-        }else{
-          data = {
-            current_corp: this.getCurrentId(),
-            access_token: this.currentUser().access_token,
-            goods_category_id: obj.goods_category_id,
-            start_time: obj.start_time,
-            end_time: obj.end_time,
-            keyword: obj.keyword,
-            status: obj.status,
-            sorting_mode:obj.sorting_mode
-          }
+        let  data = {
+          current_corp: this.getCurrentId(),
+          access_token: this.currentUser().access_token,
+          goods_category_id: obj.goods_category_id,
+          start_time: obj.start_time,
+          end_time: obj.end_time,
+          keyword: obj.keyword,
+          status: obj.status,
+          sorting_mode:obj.sorting_mode
         }
         let search = []
         for (let key in data) {
@@ -357,7 +346,7 @@
       // 按订单分拣 导出
       _exportByOrder(){
         // todo
-        API.Sorting.exportDistributionOrder(this.getUrl(true))
+        API.Sorting.exportDistributionOrder(this.getUrl())
       },
       // 导出分拣单
       _exportPickingOrder() {

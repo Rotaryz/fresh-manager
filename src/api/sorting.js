@@ -59,7 +59,7 @@ export default {
   },
   // √ 导出配送单
   exportDistributionOrder(paramsStr) {
-    let url = '/scm/api/backend/delivery/delivery-exports'
+    let url = '/scm/api/backend/sorting/picking-order-delivery-export'
     window.open(url + paramsStr, '_parent')
   },
   // 批量完成分拣
