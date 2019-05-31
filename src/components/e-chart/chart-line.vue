@@ -12,11 +12,11 @@
           </li>
         </ul>
       </div>
-      <a v-if="chartConfig.excel" class="excel-btn">导出Excel</a>
+      <a v-if="chartConfig.excel" :href="chartConfig.excel" target="_blank" class="excel-btn">导出Excel</a>
     </div>
     <div class="label-bar">
       <template v-for="(label, labelIdx) in chartConfig.label">
-        <p v-if="label.tabIdx === tabIndex" :key="labelIdx" :style="{'max-width':100/chartConfig.label.length+'%'}" class="label">
+        <p v-if="!(chartConfig.tab && label.tabIdx !== tabIndex)" :key="labelIdx" :style="{'max-width':100/chartConfig.label.length+'%'}" class="label">
           {{label.name}} <span class="label-val">{{label.total}}</span>
         </p>
       </template>
@@ -48,26 +48,21 @@
       }
     },
     beforeDestroy() {
-      this._resetData()
+      this.chartConfig = {}
+      this.tabIndex = 0
+      this.myChart = ''
     },
     methods: {
-      _resetData() {
-        this.chartConfig = {}
-        this.tabIndex = 0
-        this.myChart = ''
-      },
-      _setChart(chartConfig, initChart = false) {
+      _setChart(chartConfig, initChart = false, hasData = false) {
         let myChart = this.myChart
         if (initChart || !myChart) {
-          // 第一次初始化或者没有myChart才重新初始化
-          // this._resetData()
-          // this.tabIndex = chartConfig.tabIndex || 0
           let el = document.getElementById(chartConfig.id)
           this.$echarts.dispose(el)// 销毁之前的实例
           myChart = this.$echarts.init(el)// 初始化chart
           this.myChart = myChart
         }
         this.chartConfig = chartConfig
+        if (!hasData) return false// 没有数据不设置option
         let option = this._setOption(chartConfig)
         myChart.setOption(option)
         return myChart
@@ -142,7 +137,6 @@
             option.grid.right = '20'// 如果有两条y轴，调整canvas的右边间距
           }
         }
-        // chartConfig.showSecondY && (option.grid.right = '20')// 如果有两条y轴，调整canvas的右边间距
         option.legend.data = legendData
         option.series = series
         option.xAxis = this._setXAxis(chartConfig.xAxleData)
@@ -158,7 +152,7 @@
           smooth: false,
           hoverAnimation: true,
           symbolSize: 5,
-          showSymbol: item.data.length <= 7,// 数据量大于7默认不显示圈圈
+          showSymbol: item.data.length <= 15,// 数据量大于15默认不显示圈圈
           itemStyle: {
             normal: {
               color: CHART_COLOR.line[i],
@@ -279,7 +273,9 @@
       _switchTab(tab, tabIdx) {
         if (this.tabIndex === tabIdx) return
         this.tabIndex = tabIdx
-        this._setChart(this.chartConfig, true)
+        this._setChart(this.chartConfig, true, true)
+        // console.log(tab, tabIdx)
+        // this.$emit('switchTab', tab, tabIdx)
       }
     }
   }

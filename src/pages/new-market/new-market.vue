@@ -642,7 +642,8 @@
           coupon_name: this.keyword,
           page: this.page,
           limit: 6,
-          status: 1
+          status: 1,
+          has_stock: 1
         }
         API.Coupon.getCouponList(data, false)
           .then(res => {
@@ -749,19 +750,11 @@
       // 翻页
       async _getMoreGroup(page) {
         this.page = page
-        if (this.modalType === 'coupon') {
-          await this._getCouponList()
-        } else {
-          await this._getGroupList()
-        }
+        await this._getGroupList()
       },
       async _getMoreCoupon(page) {
         this.page = page
-        if (this.modalType === 'coupon') {
-          await this._getCouponList()
-        } else {
-          await this._getGroupList()
-        }
+        await this._getCouponList()
       },
       // 保存优惠券数据
       _saveActivity() {

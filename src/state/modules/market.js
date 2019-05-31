@@ -37,7 +37,7 @@ export const mutations = {
 
 export const actions = {
   getMarketList({commit, state}, data) {
-    return API.Market.getMarketList(data)
+    return API.Market.getMarketList(data, data.loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)

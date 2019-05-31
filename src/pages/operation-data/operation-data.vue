@@ -10,7 +10,7 @@
           <img src="./icon-qundata@3x.png" alt="" class="title-icon">
           <div class="title">{{topTab[topTabIndex].conTitle}}</div>
         </div>
-        <base-option-box :arrTitle="dateSelector" :infoTab="2" :tabActive="2"
+        <base-option-box :arrTitle="dateSelector" :infoTab="0"
                          @checkTime="_selectDate"
         ></base-option-box>
       </div>
@@ -51,9 +51,8 @@
     {text: '拓展视窗', status: 2, conTitle: '拓展数据'}
   ]
   const DATE_SELECTOR = [
-    {title: '今天', status: 'today'},
-    {title: '昨天', status: 'yesterday'},
     {title: '7天', status: 'week'},
+    {title: '15天', status: 'half_month'},
     {title: '30天', status: 'month'}
   ]
   /** chart配置，id：chart组件id，label：上面部分的数据名称，dataArr-name：图表内部、折线的label, dataArr-key：接口key，dataArr-data：接口数据
@@ -130,10 +129,6 @@
       ],
       xAxleData: [],
       showSecondY: false,
-      // tab: [
-      //   {name: '用户数量'},
-      //   {name: '用户效率'}
-      // ],
       tabIndex: 1
     },
     {
@@ -172,7 +167,7 @@
         {name: '退货率'}
       ],
       tabIndex: 0,
-      excel: true
+      excel: 'https://www.baidu.com'
     }
   ]
   const MANAGER_CONFIG = [
@@ -291,11 +286,12 @@
         topTab: TAB_CONFIG,
         topTabIndex: 0,
         dateSelector: DATE_SELECTOR,
-        day_type: 'week',
         chartConfig: [OPERATION_CONFIG, MANAGER_CONFIG, EXPAND_CONFIG],
         curChartConfig: [],// 当前tab的所有chart
         chartArr: [],// 存储chart对象数组
-        getFinish: false
+        getFinish: false,
+        disabledDate: {},
+        requestParam: {date_type: 'week'}
       }
     },
     watch: {
@@ -313,6 +309,43 @@
       this._getData(true)
     },
     methods: {
+      // handleChangeTab(tab, tabIndex) {
+      //   console.log(tab, tabIndex)
+      // },
+      // exportExcel(type) {
+      //   this.excelType = type
+      //   window.open(this.exportUrl(), '_blank')
+      // },
+      // firstUppercase(str) {
+      //   let first = str[0].toUpperCase()
+      //   return first+str.slice(1)
+      // },
+      // exportUrl() {
+      //   // todo
+      //   let currentId = this.getCurrentId()
+      //   let token = this.$storage.get('auth.currentUser', '')
+      //   let msg = {
+      //     current_corp: currentId,
+      //     current_shop: process.env.VUE_APP_CURRENT_SHOP,
+      //     access_token: token.access_token
+      //   }
+      //   // this[this.excelType[0].toUpperCase()]
+      //   let data = Object.assign(msg, this.requestPub, this['request' + this.firstUppercase(this.excelType)])
+      //   let search = []
+      //   for (let key in data) {
+      //     search.push(`${key}=${data[key]}`)
+      //   }
+      //   let url = this.exportUrlArr[this.excelType][this.tabIndexControl[this.excelType]]
+      //   console.log(url)
+      //   return process.env.VUE_APP_API + '/social-shopping/api/backend/data-center/goods/' + url + '?' + search.join('&')
+      // },
+      _formatExcelData() {
+        let currentId = this.getCurrentId()
+        let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
+        let currentShop = process.env.VUE_APP_CURRENT_SHOP
+        let _dType = this.requestParam.date_type
+        return `${process.env.VUE_APP_API}/social-shopping/api/backend/data-center/operation/after-server-data-excel?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&date_type=${_dType}`
+      },
       _changeStatusTab(item, index) {
         if (this.topTabIndex === index) return
         this.curChartConfig = this.chartConfig[index]
@@ -320,32 +353,46 @@
         this._getData(true)
       },
       _selectDate(value) {
-        this.day_type = value
+        this.requestParam = {date_type: value}
         this._getData()
       },
       _getData(first = false) {
         this.chartArr = []
         for (let i = 0; i < this.curChartConfig.length; i++) {
           let loading = first && i === 0
+          let getSuccess = false
           let curChart = this.curChartConfig[i]
-          let _param = {date_type: this.day_type}
           // 用户接口的传参字段和别的不一样
+          let _param = {}
           if (curChart.id === 'userChart') {
-            _param = {day_type: this.day_type}
+            let _dType = this.requestParam.date_type === 'half_month' ? 'month' : this.requestParam.date_type
+            _param = {day_type: _dType}
+          } else {
+            _param = this.requestParam
           }
           API.Operation[curChart.apiFun](_param, loading).then((res) => {
             if (res.error !== app.$ERR_OK) {
               return false
             }
-            // 用户接口的格式化和别的不一样
-            if (curChart.id === 'userChart') {
-              this.formatUserResData(res, curChart)
-            } else {
-              curChart = this.formatResData(res, curChart)// 格式化接口返回的数据
+            if (curChart.id === 'servicesChart') {
+              // console.log(111) todo
+              curChart.excel = this._formatExcelData()
             }
-            this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first))// 设chart并把返回的chart对象存起来
-            this.getFinish = i === (this.curChartConfig.length - 1)// 设置请求完
+            // 格式化接口返回的数据
+            if (curChart.id === 'userChart') {
+              // 用户接口的格式化和别的不一样
+              curChart = this.formatUserResData(res, curChart)
+            } else {
+              curChart = this.formatResData(res, curChart)
+            }
+            getSuccess = true
           }).finally(() => {
+            let currentChart = this.$refs[curChart.id]
+            if (currentChart) {
+              this.chartArr.push(currentChart._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
+            }
+            // this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
+            this.getFinish = i === (this.curChartConfig.length - 1)// 设置请求完
             loading && this.$loading.hide()
           })
         }
@@ -355,7 +402,7 @@
         let _that = this
         window.onresize = function () {
           for (let i = 0; i < _that.chartArr.length; i++) {
-            _that.chartArr[i].resize()
+            _that.chartArr[i] && _that.chartArr[i].resize()
           }
         }
       },
@@ -372,10 +419,10 @@
           for (let i = 0; i < result.data.length; i++) {
             let _resData = result.data[i]
             // 测试数据
-            let rd = (Math.random() * 1000).toFixed(2)
-            _chartData.data.push(_resData[_key]+rd)
+            // let rd = (Math.random() * 1000).toFixed(2)
+            // _chartData.data.push(_resData[_key]+rd)
             // 测试数据
-            // _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
+            _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.date
@@ -391,17 +438,13 @@
         for (let j = 0; j < curChart.dataArr.length; j++) {
           let _chartData = curChart.dataArr[j]
           let _key = _chartData.key// 对应接口每个值的key
-          let _item = result.data[_key]
           let _curLabel = curChart.label[j]
+          let _item = result.data[_key]
           _curLabel.total = _item.total// 配置的label数组,用于设置每个图表上面的总计
           _chartData.data = []// 重置data
           for (let i = 0; i < _item.data.length; i++) {
             let _resData = _item.data[i]
-            // 测试数据
-            let rd = (Math.random() * 10).toFixed(2)
-            _chartData.data.push(_resData.value+rd)
-            // 测试数据
-            // _chartData.data.push(_resData.value)// 通过key取出接口返回的值并push进数组
+            _chartData.data.push(_resData.value)// 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.at.split('-').slice(1).join('/')
