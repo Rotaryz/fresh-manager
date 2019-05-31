@@ -156,7 +156,7 @@
         if (item.sale_num < 0) {
           item.base_num = item.sale_num * -1
         }
-        let number = item.sale_num / item.base_sale_rate
+        let number = item.sale_num * item.base_sale_rate
         if (number < 0) {
           number = 0
         }
@@ -166,7 +166,7 @@
         if (item.base_num < 0) {
           item.sale_num = item.base_num * -1
         }
-        let number = item.base_num * item.base_sale_rate
+        let number = item.base_num / item.base_sale_rate
         if (number < 0) {
           number = 0
         }
