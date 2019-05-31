@@ -26,29 +26,31 @@
 
   const COMPONENT_NAME = 'SESCRIPTION_MODAL'
   const DES = [
-    ['高订单量(支付订单)', '商品浏览量(PV)', '利润率0至1%'],
-    ['商品浏览量(PV)', '利润率0至1%'],
-    ['高销售量', '利润率0至1%'],
-    ['销售金额']
+    ['高销售量：占全部商品总销售量的20%', '高销售额：占全部商品总销售额的10%', '高浏览数：占全部商品总浏览数的20%', '必须满足其中两个条件'],
+    ['定义高浏览数：占全部商品总浏览数的20%'],
+    ['定义高销售量：占全部商品总销售量的20%'],
+    ['定义高销售额：占全部商品总销售额的10%'],
+    ['定义为商品都不满足其它三个品的条件']
   ]
 
   export default {
     name: COMPONENT_NAME,
     components: {DefaultModal},
     props: {
-      desIndex: {
-        type: Number,
-        default: 0
-      }
     },
     data() {
       return {
-        des: ['爆款品', '引流品', '粘性品', '利润品'],
-        desText: DES
+        des: ['爆款品', '引流品', '粘性品', '利润品', '其他'],
+        desText: DES,
+        desIndex: 0
       }
     },
     methods: {
-      show() {
+      show(type) {
+        let index = this.des.findIndex(item => {
+          return item === type
+        })
+        this.desIndex = index > 0 ? index : 0
         this.$refs.modal && this.$refs.modal.showModal()
       },
       hide() {

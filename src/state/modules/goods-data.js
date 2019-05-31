@@ -169,22 +169,14 @@ export const actions = {
     let api = apiArr[index]
     return API.GoodsData[api](dataSale, false)
       .then((res) => {
-        let data = res
+        let data = JSON.parse(JSON.stringify(res))
         if (res.error !== app.$ERR_OK) {
           return false
         }
         if (index === 1) {
           commit('SALE_RANK_LIST', res.data)
-          return true
         } else if (index === 0) {
-          data = {
-            b: res.data.b,
-            l: res.data.l,
-            n: res.data.n,
-            o: res.data.o,
-            y: res.data.y,
-            t: res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
-          }
+          data.data.t = res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
         }
         // let arr = ['pv', 'e_customer', 'order']
         // let data = dataHandle(arr, res.data)
@@ -241,7 +233,6 @@ export const actions = {
         }
         if (index === 0) {
           commit('STOCK_RANK_LIST', res.data)
-          return true
         }
         // let arr = ['pv', 'e_customer', 'order']
         // let data = dataHandle(arr, res.data)

@@ -24,8 +24,8 @@
                 <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click="exportExcel('sale')">导出Excel</span>
               </div>
             </div>
-            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text hand" @click="showDescription()">
-              <p class="item">商品结构 <span class="name">爆品</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
+            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text hand" @click="showDescription(saleData.data.type_name)">
+              <p class="item">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
             </div>
 
             <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail'" class="name-text">
@@ -34,24 +34,24 @@
 
             <div v-if="selectMsg.sale.type === 'goodsDetail'" class="goods-structor">
               <div class="goods-msg">
-                <img src="./goods.png" alt="" class="goods-image">
+                <img :src="saleData.data.image_url" alt="" class="goods-image">
                 <div class="goods-detail">
-                  <p class="title">{{allMsg[0].goods_name}}</p>
-                  <p class="price">¥ {{allMsg[0].sale}}</p>
+                  <p class="title">{{saleData.data.name}}</p>
+                  <p class="price">¥ {{saleData.data.sales_num}}</p>
                 </div>
               </div>
               <div class="data-list">
                 <div class="view">
                   <p class="text">浏览量 <img src="./icon-high@2x.png" alt="" class="icon"></p>
-                  <p class="num">{{allMsg[0].view_data}}</p>
+                  <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
                   <p class="text">销售数量 <img src="./icon-high@2x.png" alt="" class="icon"></p>
-                  <p class="num">{{allMsg[0].sale_data}}</p>
+                  <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
                   <p class="text">销售额(元)</p>
-                  <p class="num">{{allMsg[0].sale_price}}</p>
+                  <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
             </div>
@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <description-modal ref="description" :desIndex="0"></description-modal>
+    <description-modal ref="description"></description-modal>
 
     <!--大图表-->
     <div v-if="bigDataShow" class="big-data">
@@ -163,8 +163,9 @@
     {title: '30天', status: 'month'},
     {title: '自定义', status: 'custom'}
   ]
+  // 导出接口
   const EXPORT_URL = {
-    sale: ['', 'sale-rank-excel'],
+    sale: ['goods-structure-excel', 'sale-rank-excel'],
     serve: ['after-server-excel'],
     purchase: ['purchase-data-excel', 'purchase-data-sku-excel'],
     aupply: ['sale-rank-excel']
@@ -214,7 +215,7 @@
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
-        {name: '销量排行榜', type: 'line'},
+        {name: '销量', type: 'line'},
         {name: '动销率', type: 'line', rate: true, code: 'pin_rate'},
         {name: '售罄率', type: 'line', rate: true, code: 'out_rate'}
       ],
@@ -332,15 +333,20 @@
       // this.getAllData()
     },
     async mounted() {
+      // 商品销售模块
       let dataSale = Object.assign(this.requestPub, this.requestSupply)
       await this.getSaleData({dataSale, index: 0})
-      this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData))
+      // this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
+      // 商品售后模块
       let dataServe = Object.assign(this.requestPub, this.requestServe)
       await this.getServeData(dataServe)
-      this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, 'name', this.selectMsg.serve.code))
+      // this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, 'name', this.selectMsg.serve.code))
+      // 商品采购模块
       let dataPurchase = Object.assign(this.requestPub, this.requestPurchase)
       await this.getPurchaseData(dataPurchase)
-      this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
+      // this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
+      this._initDraw()
+      // 供应链模块
       let dataSupply = Object.assign(this.requestPub, this.requestSupply)
       this.getSupplyData({dataSupply, index: 0})
     },
@@ -417,26 +423,24 @@
         this.leftTabItem = item
         this.selectType = type
         this.leftTab = code
+        this._initSelect()
         this.getGoodsList({goods_category_id: item.id, is_online: 1, keyword: ''})
         let data = Object.assign(this.requestPub, this.requestPurchase)
         await this.getPurchaseData(data)
         this.$nextTick(() => {
           if (code === 'all' || code === 'category') {
-            this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
-            this.$refs.bar2 && this.$refs.bar2.drawBar({xAx: [], series: []})
-            this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
+            this._initDraw()
           } else if (code === 'goods') {
-            this.$refs.line2 && this.$refs.line2.drawLine()
-            this.$refs.line3 && this.$refs.line3.drawLine()
-            this.$refs.line4 && this.$refs.line4.drawLine()
+            this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
+            this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
+            this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
           }
         })
-        this._initSelect()
-        // this.request.wx_group_id = item.id
-        // this.$refs.qualityData.setTab()
-        // this.$refs.businessData.setTab()
-        // this.$refs.groupData.setTab()
-        // this.getAllData()
+      },
+      _initDraw() {
+        this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
+        this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data,  this.selectMsg.serve.code))
+        this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
       },
       _initSelect() {
         this.$set(this.selectMsg, 'sale', this.configObj[this.leftTab].sale[0])
@@ -460,10 +464,10 @@
         await this.getSaleData({dataSale, index})
         this.$nextTick(() => {
           if (index === 0) {
-            this.$refs.bar1 && this.$refs.bar1.drawBar2({xAx: [], series: []})
+            this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
           } else {
-            this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, 'name', obj.code), obj.rate)
-            this.$refs.line1 && this.$refs.line1.drawLine({xAx: [], series: []}, obj.rate)
+            this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, obj.code), obj.rate)
+            this.$refs.line1 && this.$refs.line1.drawLine(this.lineHandle(this.saleData.data, obj.code, obj.name), obj.rate)
           }
         })
       },
@@ -475,8 +479,8 @@
         let data = Object.assign(this.requestPub, this.requestServe)
         await this.getServeData(data)
         this.$nextTick(() => {
-          this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, 'name', obj.code), obj.rate)
-          this.$refs.line2 && this.$refs.line2.drawLine(this.dataHandle(this.serveData.data, 'name', obj.code), obj.rate)
+          this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, obj.code), obj.rate)
+          this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, obj.code, obj.name), obj.rate)
         })
       },
       // 切换商品采购模块（模块3）
@@ -492,7 +496,7 @@
           } else {
             this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
             this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData))
-            this.$refs.line3 && this.$refs.line3.drawLine(this.purchaseHandle(this.purchaseData), obj.rate)
+            this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
           }
         })
       },
@@ -501,11 +505,12 @@
         this.selectMsg.supply = obj
         this.$set(this.tabIndexControl, 'supply', index)
         this.requestSupply.order_by = obj.code
-        // let dataSupply = Object.assign(this.requestPub, this.requestSupply)
-        // await this.getSupplyData({dataSupply, index})
+        let dataSupply = Object.assign(this.requestPub, this.requestSupply)
+        await this.getSupplyData({dataSupply, index})
         this.$nextTick(() => {
-          this.$refs.line4 && this.$refs.line4.drawLine(this.dataHandle(this.supplyData.data, 'name', obj.code), obj.rate)
-          this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, 'name', obj.code), obj.rate)
+          console.log(this.supplyData, 1123)
+          this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
+          this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, obj.code), obj.rate)
         })
       },
       exportExcel(type) {
@@ -534,8 +539,8 @@
         let first = str[0].toUpperCase()
         return first+str.slice(1)
       },
-      showDescription() {
-        this.$refs.description.show()
+      showDescription(type) {
+        this.$refs.description.show(type)
       },
       async confirm(data) {
         this.name = data.name
@@ -587,10 +592,11 @@
           series
         }
       },
-      dataHandle(data, x, y1) {
+      dataHandle(data, y1) {
+        console.log(data)
         if (!data.length) return {xAx: [], series: []}
         let xAx = data.map(val => {
-          return val[x]
+          return val.name
         })
         let series = data.map(val => {
           return val[y1]
@@ -651,8 +657,23 @@
         })
         return series
       },
-      lineHandle() {
-
+      lineHandle(data, code, type) {
+        let label = type
+        let x = data.map(item => {
+          return item.date.split('-').slice(1).join('/')
+        })
+        let rate = data.map(item => {
+          return item[code]
+        })
+        return {
+          label,
+          data: [
+            {
+              x,
+              rate
+            }
+          ]
+        }
       }
     }
   }

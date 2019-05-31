@@ -21,7 +21,7 @@
             <img :src="item.image_url" alt="" class="category-image">
             <span class="name">{{item.name}}({{item.list.length}})</span>
           </div>
-          <div class="right-icon" :class="{'current': +categoryIndex === index+1}"></div>
+          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]"></div>
         </div>
         <div class="goods-list" :style="{height: (+categoryIndex === index+1 && openCategory) ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
           <div v-for="(goods, ind) in item.list"
@@ -67,7 +67,7 @@
     },
     methods: {
       changeCategory(item, index, code, bool) {
-        if (index === this.categoryIndex && !bool) {
+        if (index === this.categoryIndex && this.openCategory && !bool) {
           this.openCategory = false
         } else {
           this.openCategory = true
@@ -202,7 +202,10 @@
         background-size: cover
         margin-right: 10px
         display: block
+        transform: rotate(180deg)
         background-image: url("./icon-arrow_up@2x.png")
+      .open
+        transform: rotate(0)
     .last
       border-bottom: 0
       min-height: 80px
