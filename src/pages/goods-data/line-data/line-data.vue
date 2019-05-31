@@ -49,17 +49,17 @@
         this.tabIndex = 0
       },
       // 纵向柱状图（name为表名称，chartId为表父元素标签ID名）
-      drawLine(data) {
+      drawLine(data, rate) {
         this.$nextTick(() => {
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          let option = this._setOption(data)
+          let option = this._setOption(data, rate)
           myChart.setOption(option)
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
-      _setOption(chartConfig) {
+      _setOption(chartConfig, rate) {
         let option = {
           tooltip: {
             trigger: 'axis',
@@ -67,7 +67,7 @@
             formatter: function (params) {
               let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
               params.forEach(function (item) {
-                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}</span></p>`;
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}${rate ? '%' : ''}</span></p>`;
               });
               return result;
             },

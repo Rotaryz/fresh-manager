@@ -47,25 +47,12 @@
         return 100 / length * ratio
       },
       countNum1(length) {
-        // if (x <= 10) {
-        //   return 5
-        // } else if (x > 10 && x <= 25) {
-        //   return (x - 10) < 0 ? 50 : 50 + Math.ceil((x - 10) / 5) * 5
-        // } else if (x > 25 && x <= 50) {
-        //   return (x - 25) < 0 ? 70 : 70 + Math.ceil((x - 30) / 10) * 5
-        // } else if (x > 50 && x <= 100) {
-        //   return 90
-        // } else if (x > 100 && x <= 150) {
-        //   return 95
-        // } else if (x > 150) {
-        //   return 98
-        // }
         return 100 - 100 / length * 8
       },
       // 纵向柱状图
-      drawBar(data) {
+      drawBar(data, rate) {
         this.$nextTick(() => {
-          let xAxisData = data.x.length > 0 ? data.x : this.data.x
+          let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x
           let seriesData = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', function(e) {
@@ -84,9 +71,13 @@
       // 横向柱状图
       drawBar1(data) {
         this.$nextTick(() => {
-          let xAxisData1 = data.x.length > 0 ? data.x : this.data.x1
-          let seriesData1 = data.series.length > 0 ? data.series : this.data.series1
-          let seriesData2 = data.series.length > 0 ? data.series : this.data.series2
+          let msg = {
+            xAxisData: data.xAx.length ? data.xAx : this.data.x1,
+            seriesData1: data.salesNum.length ? data.salesNum : this.data.series,
+            seriesData2: data.purchaseNum.length ? data.purchaseNum : this.data.series,
+            salesNumAll: data.salesNumAll,
+            purchaseNumAll: data.purchaseNumAll
+          }
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           myChart.on('click', e => {
             console.log(e)
@@ -94,7 +85,7 @@
           // let x = new Array(200).fill(1)
           // let y1 = new Array(200).fill(81)
           // let y2 = new Array(200).fill(81)
-          myChart.setOption(this.createBar(xAxisData1, seriesData1, seriesData2))
+          myChart.setOption(this.createBar(msg))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
@@ -209,7 +200,7 @@
           ]
         }
       },
-      createBar(xAxisData, seriesData1, seriesData2, ratio) {
+      createBar(series, ratio) {
         return {
           grid: {
             left: '50',
@@ -221,7 +212,7 @@
           xAxis: {
             type: 'value',
             boundaryGap: false,
-            data: xAxisData,
+            data: series.xAxisData,
             offset: 12,
             splitLine: {
               show: false,
@@ -253,7 +244,7 @@
           yAxis: {
             minInterval: 1,
             type: 'category',
-            data: xAxisData,
+            data: series.xAxisData,
             splitLine: {
               show: false,
               lineStyle: {
@@ -282,7 +273,7 @@
             }
           },
           dataZoom: [{
-            start: this.countNum1(xAxisData.length),// 数据窗口范围的结束百分比
+            start: this.countNum1(series.xAxisData.length),// 数据窗口范围的结束百分比
             type: 'slider',
             left: '30px',
             show: true,
@@ -310,7 +301,8 @@
           series: [
             { // For shadow
               type: 'bar',
-              data: seriesData1,
+              name: '销售',
+              data: series.seriesData1,
               barGap: 0,
               itemStyle: {
                 normal: {
@@ -327,6 +319,12 @@
                 normal: {
                   show: true,
                   position: 'right',
+                  formatter: function(data) {
+                    if (series.purchaseNumAll === 0) {
+                      return '0%'
+                    }
+                    return data.value/series.purchaseNumAll+ '%'
+                  },
                   verticalAlign: 'middle',
                   color: '#333',
                   fontSize: '14',
@@ -338,13 +336,20 @@
             },
             {
               type: 'bar',
-              data: seriesData2,
+              name: '采购',
+              data: series.seriesData2,
               barWidth: '20px',
               zlevel: 12,
               label: {
                 normal: {
                   show: true,
                   position: 'right',
+                  formatter: function(data) {
+                    if (series.purchaseNumAll === 0) {
+                      return '0%'
+                    }
+                    return data.value/series.purchaseNumAll+ '%'
+                  },
                   offset: [0, 2],
                   verticalAlign: 'middle',
                   color: '#333',

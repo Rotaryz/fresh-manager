@@ -1,15 +1,17 @@
 <template>
   <div class="goods-list">
-    <div class="goods-title" :class="{'padding': list.length > 5}">
-      <div v-for="(item, index) in titleArr"
-           :key="index"
-           class="title-item"
-           :class="item.class"
-           :style="{flex: item.flex}"
-      >
-        <div v-if="index < 2" class="item-main">{{item.name}}</div>
-        <div v-else class="item-main" :class="[{'hand': saleTrue}, {'active': activeIndex === index && saleTrue}]" @click="changeRank(index)">
-          <span :class="{'active': item.active}">{{item.name}}</span>
+    <div v-if="list.length">
+      <div class="goods-title" :class="{'padding': list.length > 5}">
+        <div v-for="(item, index) in titleArr"
+             :key="index"
+             class="title-item"
+             :class="item.class"
+             :style="{flex: item.flex}"
+        >
+          <div v-if="index < 2" class="item-main">{{item.name}}</div>
+          <div v-else class="item-main" :class="[{'hand': saleTrue}, {'active': activeIndex === index && saleTrue}]" @click="changeRank(index)">
+            <span :class="{'active': item.active}">{{item.name}}</span>
+          </div>
         </div>
       </div>
     </div>

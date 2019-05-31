@@ -203,7 +203,7 @@ export const communityMethods = mapActions('community', ['getCommunityList', 'ge
 
 // 商品数据
 export const goodsDataComputed = {
-  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList'])
+  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList', 'bigChartData'])
 }
 
 export const goodsDataMethods = mapActions('goodsData', ['getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData'])

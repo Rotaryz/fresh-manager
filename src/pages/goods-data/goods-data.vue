@@ -20,7 +20,7 @@
                 <status-tab ref="statusTab1" :statusList="configObj[leftTab].sale" @setStatus="changeSale"></status-tab>
               </div>
               <div class="title-right">
-                <span v-if="selectMsg.sale.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.sale.type)"></span>
+                <span v-if="selectMsg.sale.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.sale.type, 'sale', )"></span>
                 <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click="exportExcel('sale')">导出Excel</span>
               </div>
             </div>
@@ -62,21 +62,21 @@
           </section>
 
           <!--模块2-->
-          <section class="data-sec">
+          <section class="data-sec" @click="setClickChart('purchase')">
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品售后</p>
                 <status-tab ref="statusTab2" :statusList="configObj[leftTab].serve" @setStatus="changeServe"></status-tab>
               </div>
               <div class="title-right">
-                <span v-if="selectMsg.serve.big" class="show-big-icon hand" @click="showBigData(selectMsg.serve.type)"></span>
-                <span v-if="selectMsg.serve.excel" class="export-btn hand" @click="exportExcel('serve')">导出Excel</span>
+                <span v-if="selectMsg.serve.big" class="show-big-icon hand" @click.stop="showBigData(selectMsg.serve.type, 'serve')"></span>
+                <span v-if="selectMsg.serve.excel" class="export-btn hand" @click.stop="exportExcel('serve')">导出Excel</span>
               </div>
             </div>
             <div class="name-text">
               <p class="item">{{selectMsg.serve.name}}<span class="data">{{serveData[selectMsg.serve.code + '_total'] || serveData[selectMsg.serve.code] || 0}}{{selectMsg.serve.rate && '%'}}</span></p>
             </div>
-            <bar-data v-if="selectMsg.serve.type === 'bar'" ref="bar2" chartId="bar2" @click="setClickChart('purchase')" @clickChart="clickChart"></bar-data>
+            <bar-data v-if="selectMsg.serve.type === 'bar'" ref="bar2" chartId="bar2" @clickChart="clickChart"></bar-data>
             <line-data v-if="selectMsg.serve.type === 'line'" ref="line2" chartId="line2" class="chart-box"></line-data>
           </section>
         </div>
@@ -91,8 +91,8 @@
                 <status-tab ref="statusTab3" :statusList="configObj[leftTab].purchase" @setStatus="changePurchase"></status-tab>
               </div>
               <div class="title-right">
-                <span v-if="selectMsg.purchase.big" class="show-big-icon hand" @click="showBigData(selectMsg.purchase.type)"></span>
-                <span v-if="selectMsg.purchase.excel" class="export-btn hand" @click="exportExcel('purchase')">导出Excel</span>
+                <span v-if="selectMsg.purchase.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.purchase.type, 'purchase')"></span>
+                <span v-if="selectMsg.purchase.excel" key="2" class="export-btn hand" @click="exportExcel('purchase')">导出Excel</span>
               </div>
             </div>
             <div class="name-text">
@@ -113,7 +113,7 @@
                 <status-tab ref="statusTab4" :statusList="configObj[leftTab].supply" @setStatus="changeSupply"></status-tab>
               </div>
               <div class="title-right">
-                <span v-if="selectMsg.supply.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.supply.type)"></span>
+                <span v-if="selectMsg.supply.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.supply.type, 'supply')"></span>
                 <span v-if="selectMsg.supply.excel" :key="2" class="export-btn hand" @click="exportExcel('supply')">导出Excel</span>
               </div>
             </div>
@@ -133,10 +133,10 @@
     <!--大图表-->
     <div v-if="bigDataShow" class="big-data">
       <div class="big-head">
-        <span class="chart-name">商品售后</span>
+        <span class="chart-name">{{allName[bigBarIndex]}}</span>
         <img src="./icon-del_2@2x.png" class="big-close hand" @click="closeBigData">
       </div>
-      <p class="big-data-name">退货率 <span class="data">18.9%</span></p>
+      <p class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{[bigBarType+ 'Data'][selectMsg[bigBarType].code + '_total'] || [bigBarType+ 'Data'][selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
       <div class="big-chart">
         <big-bar-data ref="bigBar" chartId="big-bar"></big-bar-data>
       </div>
@@ -168,7 +168,7 @@
     sale: ['goods-structure-excel', 'sale-rank-excel'],
     serve: ['after-server-excel'],
     purchase: ['purchase-data-excel', 'purchase-data-sku-excel'],
-    aupply: ['sale-rank-excel']
+    supply: ['sku-stock-data-excel']
   }
   const ALL_DATA = {
     all: {
@@ -184,7 +184,7 @@
       ],
       purchase: [
         {name: '采购匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
-        {name: '商品SPU数', type: 'pie', big: true, excel: true, code: 'sku_num'},
+        {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
       ],
       supply: [
@@ -322,7 +322,10 @@
         exportUrlArr: EXPORT_URL,
         excelType: '',
         clickSec: '',
-        clickChartIndex: ''
+        clickChartIndex: '',
+        allName: ['商品销售', '商品售后', '商品采购', '供应链'],
+        bigBarIndex: 0,
+        bigBarType: ''
       }
     },
     computed: {
@@ -364,34 +367,65 @@
             return
           }
         }
-        console.log(value)
-        // this.getAllData()
+        this.getAllData()
       },
       changeGoodsRank(type) {
         this.requestSale.order_by = type
         let data = Object.assign(this.requestPub, this.requestSale)
         this.getSaleData({data, index: 1})
       },
-      setClickChart(index) {
-        console.log(index)
-        this.clickSec = index
+      setClickChart(type) {
+        this.clickSec = type
       },
       clickChart(index) {
-        console.log(12)
         this.clickChartIndex = index
+        setTimeout(() => {
+          console.log(this.clickSec, this[this.clickSec + 'Data'])
+          let id =  this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].spu
+
+        })
+
+        // this[this.clickSec+ 'Data'].data[index].cate
         // let arr = ['sale', 'serve', 'purchase', 'supply']
         // let id = this.selectMsg
         // if (this.leftType === 'all') {
         //   // this.$refs.goodsTab.selectList(index, goodsIndex)
         // }
       },
-      showBigData(type) {
+      async showBigData(type, sec) {
         this.bigDataShow = true
+        this.bigBarType = sec
+        let index = this.tabIndexControl[sec]
+        switch (sec) {
+        case 'sale':
+          this.bigBarIndex = 0
+          let dataSale = Object.assign(this.requestPub, this.requestSupply)
+          dataSale.limit = 0
+          await this.getSaleData({dataSale, index: index})
+          break
+        case 'serve':
+          this.bigBarIndex = 1
+          let dataServe = Object.assign(this.requestPub, this.requestServe)
+          dataServe.limit = 0
+          await this.getServeData(dataServe)
+          break
+        case 'purchase':
+          this.bigBarIndex = 2
+          let dataPurchase = Object.assign(this.requestPub, this.requestPurchase)
+          dataPurchase.limit = 0
+          await this.getPurchaseData(dataPurchase)
+          break
+        case 'supply':
+          this.bigBarIndex = 3
+          let dataSupply = Object.assign(this.requestPub, this.requestSupply)
+          dataSupply.limit = 0
+          await this.getSupplyData({dataSupply, index})
+        }
         this.$nextTick(() => {
           if (type === 'bar1') {
             this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.purchaseData))
           } else {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar({xAx: [], series: []})
+            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData, this.selectMsg[sec].code), this.selectMsg[sec].rate)
           }
         })
       },
@@ -508,7 +542,6 @@
         let dataSupply = Object.assign(this.requestPub, this.requestSupply)
         await this.getSupplyData({dataSupply, index})
         this.$nextTick(() => {
-          console.log(this.supplyData, 1123)
           this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
           this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, obj.code), obj.rate)
         })
@@ -553,10 +586,10 @@
 
       },
       async getAllData() {
-        await this.getSaleData(Object.assign(this.requestPub, this.requestSale))
-        await this.getServeData(Object.assign(this.requestPub, this.requestServe))
-        await this.getPurchaseData(Object.assign(this.requestPub, this.requestPurchase))
-        await this.getSupplyData(Object.assign(this.requestPub, this.requestSupply))
+        this.$refs.statusTab1 && this.$refs.statusTab1.checkStatus(this.tabIndexControl['sale'], this.configObj[this.leftTab].sale[this.tabIndexControl['sale']])
+        this.$refs.statusTab2 && this.$refs.statusTab2.checkStatus(this.tabIndexControl['serve'], this.configObj[this.leftTab].serve[this.tabIndexControl['serve']])
+        this.$refs.statusTab3 && this.$refs.statusTab3.checkStatus(this.tabIndexControl['purchase'], this.configObj[this.leftTab].purchase[this.tabIndexControl['purchase']])
+        this.$refs.statusTab4 && this.$refs.statusTab4.checkStatus(this.tabIndexControl['supply'], this.configObj[this.leftTab].supply[this.tabIndexControl['supply']])
       },
       saleHandle(data) {
         let arr = [
@@ -594,6 +627,7 @@
       },
       dataHandle(data, y1) {
         console.log(data)
+        console.log(data.length, 1111111)
         if (!data.length) return {xAx: [], series: []}
         let xAx = data.map(val => {
           return val.name

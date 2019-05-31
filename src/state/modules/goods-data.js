@@ -27,7 +27,8 @@ export const state = {
     xAx: [],
     series: [],
     list: []
-  }
+  },
+  bigChartData: {}
 }
 
 export const getters = {
@@ -52,6 +53,9 @@ export const getters = {
   supplyData(state) {
     return state.supplyData
   },
+  bigChartData(state) {
+    return state.bigChartData
+  }
 }
 
 export const mutations = {
@@ -82,6 +86,10 @@ export const mutations = {
   SET_SUPPLY_DATA_GOODS(state, data) {
     state.supplyData.list = data
   },
+  SET_BIG_CHART_DATA(state, data) {
+    console.log(data, 222)
+    state.bigChartData = data
+  }
 }
 
 export const actions = {
@@ -173,6 +181,10 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
+        if (!dataSale.limit) {
+          commit('SET_BIG_CHART_DATA', res.data)
+          return true
+        }
         if (index === 1) {
           commit('SALE_RANK_LIST', res.data)
         } else if (index === 0) {
@@ -198,6 +210,10 @@ export const actions = {
         }
         // let arr = ['sales_num', 'rate', 'order']
         // let data = dataHandle(arr, res.data, index)
+        if (!data.limit) {
+          commit('SET_BIG_CHART_DATA', res.data)
+          return true
+        }
         commit('SET_SERVE_DATA', res)
         return true
       })
@@ -213,6 +229,10 @@ export const actions = {
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
+        }
+        if (!data.limit) {
+          commit('SET_BIG_CHART_DATA', res.data)
+          return true
         }
         commit('SET_PURCHASE_DATA', res)
         return true
@@ -230,6 +250,10 @@ export const actions = {
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
+        }
+        if (!dataSupply.limit) {
+          commit('SET_BIG_CHART_DATA', res.data)
+          return true
         }
         if (index === 0) {
           commit('STOCK_RANK_LIST', res.data)
