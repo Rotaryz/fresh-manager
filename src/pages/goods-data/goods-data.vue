@@ -13,18 +13,18 @@
         <div class="top-sec">
 
           <!--模块1-->
-          <section class="data-sec">
+          <section class="data-sec" @click="setClickChart('sale')">
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品销售</p>
                 <status-tab ref="statusTab1" :statusList="configObj[leftTab].sale" @setStatus="changeSale"></status-tab>
               </div>
               <div class="title-right">
-                <span v-if="selectMsg.sale.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.sale.type, 'sale', )"></span>
-                <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click="exportExcel('sale')">导出Excel</span>
+                <span v-if="selectMsg.sale.big" :key="1" class="show-big-icon hand" @click.stop="showBigData(selectMsg.sale.type, 'sale', )"></span>
+                <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click.stop="exportExcel('sale')">导出Excel</span>
               </div>
             </div>
-            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text hand" @click="showDescription(saleData.data.type_name)">
+            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text hand" @click.stop="showDescription(saleData.data.type_name)">
               <p class="item">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
             </div>
 
@@ -56,13 +56,13 @@
               </div>
             </div>
             <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" @changeGoodsRank="changeGoodsRank"></goods-list>
-            <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1"></bar-data>
+            <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1" @clickChart="clickChart"></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
 
           </section>
 
           <!--模块2-->
-          <section class="data-sec" @click="setClickChart('purchase')">
+          <section class="data-sec" @click="setClickChart('serve')">
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品售后</p>
@@ -84,44 +84,44 @@
         <div class="bottom-sec">
 
           <!--模块3-->
-          <section class="data-sec">
+          <section class="data-sec" @click="setClickChart('purchase')">
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">商品采购</p>
                 <status-tab ref="statusTab3" :statusList="configObj[leftTab].purchase" @setStatus="changePurchase"></status-tab>
               </div>
               <div class="title-right">
-                <span v-if="selectMsg.purchase.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.purchase.type, 'purchase')"></span>
-                <span v-if="selectMsg.purchase.excel" key="2" class="export-btn hand" @click="exportExcel('purchase')">导出Excel</span>
+                <span v-if="selectMsg.purchase.big" :key="1" class="show-big-icon hand" @click.stop="showBigData(selectMsg.purchase.type, 'purchase')"></span>
+                <span v-if="selectMsg.purchase.excel" key="2" class="export-btn hand" @click.stop="exportExcel('purchase')">导出Excel</span>
               </div>
             </div>
             <div class="name-text">
               <p class="item">{{selectMsg.purchase.name}}<span class="data">{{purchaseData[selectMsg.purchase.code + '_total'] || purchaseData[selectMsg.purchase.code] || 0}}{{selectMsg.purchase.rate && '%'}}</span></p>
             </div>
 
-            <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3"></bar-data>
-            <bar-data v-if="selectMsg.purchase.type === 'bar1'" :key="2" ref="bar3" chartId="bar3"></bar-data>
+            <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3" @clickChart="clickChart"></bar-data>
+            <bar-data v-if="selectMsg.purchase.type === 'bar1'" :key="2" ref="bar3" chartId="bar3" @clickChart="clickChart"></bar-data>
             <pie-data v-if="selectMsg.purchase.type === 'pie'" ref="pie3" chartId="pie3"></pie-data>
             <line-data v-if="selectMsg.purchase.type === 'line'" ref="line3" class="chart-box" chartId="line3"></line-data>
           </section>
 
           <!--模块4-->
-          <section class="data-sec">
+          <section class="data-sec" @click="setClickChart('supply')">
             <div class="sec-title">
               <div class="title-left">
                 <p class="text">供应链</p>
                 <status-tab ref="statusTab4" :statusList="configObj[leftTab].supply" @setStatus="changeSupply"></status-tab>
               </div>
               <div class="title-right">
-                <span v-if="selectMsg.supply.big" :key="1" class="show-big-icon hand" @click="showBigData(selectMsg.supply.type, 'supply')"></span>
-                <span v-if="selectMsg.supply.excel" :key="2" class="export-btn hand" @click="exportExcel('supply')">导出Excel</span>
+                <span v-if="selectMsg.supply.big" :key="1" class="show-big-icon hand" @click.stop="showBigData(selectMsg.supply.type, 'supply')"></span>
+                <span v-if="selectMsg.supply.excel" :key="2" class="export-btn hand" @click.stop="exportExcel('supply')">导出Excel</span>
               </div>
             </div>
             <div v-if="selectMsg.supply.type !== 'goods'" class="name-text">
               <p class="item">{{selectMsg.supply.name}}<span class="data">{{supplyData[selectMsg.supply.code + '_total'] || supplyData[selectMsg.supply.code] || 0}}{{selectMsg.supply.rate && '%'}}</span></p>
             </div>
             <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList"></goods-list>
-            <bar-data v-if="selectMsg.supply.type === 'bar'" ref="bar4" chartId="bar4"></bar-data>
+            <bar-data v-if="selectMsg.supply.type === 'bar'" ref="bar4" chartId="bar4" @clickChart="clickChart"></bar-data>
             <line-data v-if="selectMsg.supply.type === 'line'" ref="line4" chartId="line4" class="chart-box"></line-data>
           </section>
         </div>
@@ -183,7 +183,7 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
         {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
       ],
@@ -204,7 +204,7 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
       ],
       supply: [
@@ -255,9 +255,6 @@
       return {
         configObj: ALL_DATA,
         arrTitle: ARR_TITLE,
-        // categoryIndex: 0, // 选择类
-        // goodsIndex: 0, // 选择商品
-        selectType: true, // false类，true商品
         bigDataShow: false,
         requestSale: {
           order_by: '',
@@ -364,7 +361,6 @@
           this.requestPub.date_type = 'cust-date'
           this.requestPub.start_date = value[0]
           this.requestPub.end_date = value[1]
-          console.log(new Date(Number(value[0])) - new Date(Number(value[1])))
           if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
             this.$toast.show('选择时间范围不能小于两天')
             return
@@ -382,18 +378,19 @@
       },
       clickChart(index) {
         this.clickChartIndex = index
+        // this.$refs.goodsTab.selectList('', 3507)
         setTimeout(() => {
-          console.log(this.clickSec, this[this.clickSec + 'Data'])
-          let id =  this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].spu
-
+          // console.log(this.clickSec, this[this.clickSec + 'Data'].data)
+          if (!this[this.clickSec + 'Data'].data || !this[this.clickSec + 'Data'].data.length) return
+          // 找到分类ID 或商品ID
+          if (this.leftTab === 'all') {
+            let chartCateId =  this[this.clickSec + 'Data'].data[index].cate
+            this.$refs.goodsTab.selectList(chartCateId)
+          } else {
+            let chartGoodsId = this[this.clickSec + 'Data'].data[index].spu
+            this.$refs.goodsTab.selectList('', chartGoodsId)
+          }
         })
-
-        // this[this.clickSec+ 'Data'].data[index].cate
-        // let arr = ['sale', 'serve', 'purchase', 'supply']
-        // let id = this.selectMsg
-        // if (this.leftType === 'all') {
-        //   // this.$refs.goodsTab.selectList(index, goodsIndex)
-        // }
       },
       async showBigData(type, sec) {
         this.bigDataShow = true
@@ -439,8 +436,8 @@
         return JSON.parse(JSON.stringify(obj))
       },
       // 切换左侧tab栏
-      async changeTab(item, type, code) {
-        if (this.leftTabItem.id === item.id) return
+      async changeTab(itemId, code) {
+        if (this.leftTabItem.id === itemId) return
         switch (code) {
         case 'all':
           this.requestPub.cate = ''
@@ -448,20 +445,19 @@
           this.requestPub.group_by = 'cate'
           break
         case 'category':
-          this.requestPub.cate = item.id
+          this.requestPub.cate = itemId
           this.requestPub.spu = ''
           this.requestPub.group_by = 'spu'
           break
         default:
           this.requestPub.cate = ''
-          this.requestPub.spu = item.id
+          this.requestPub.spu = itemId
           this.requestPub.group_by = ''
         }
-        this.leftTabItem = item
-        this.selectType = type
+        this.leftTabItem = itemId
         this.leftTab = code
         this._initSelect()
-        this.getGoodsList({goods_category_id: item.id, is_online: 1, keyword: ''})
+        this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: ''})
         let data = Object.assign(this.requestPub, this.requestPurchase)
         await this.getPurchaseData(data)
         this.$nextTick(() => {
@@ -474,11 +470,13 @@
           }
         })
       },
+      // 初始绘制图表
       _initDraw() {
         this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
         this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data,  this.selectMsg.serve.code))
         this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
       },
+      // 初始选择项
       _initSelect() {
         this.$set(this.selectMsg, 'sale', this.configObj[this.leftTab].sale[0])
         this.$set(this.selectMsg, 'serve', this.configObj[this.leftTab].serve[0])
@@ -629,8 +627,6 @@
         }
       },
       dataHandle(data, y1) {
-        console.log(data)
-        console.log(data.length, 1111111)
         if (!data.length) return {xAx: [], series: []}
         let xAx = data.map(val => {
           return val.name

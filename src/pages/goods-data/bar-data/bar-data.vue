@@ -48,7 +48,6 @@
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           let that = this
           myChart.on('click', function (params) {
-            console.log(params)
             that.$emit('clickChart', params.dataIndex)
           })
           let axisLabel = {
@@ -72,14 +71,16 @@
           purchaseNumAll: data.purchaseNumAll
         }
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
+        let that = this
         myChart.on('click', function (params) {
-          console.log(params)
+          that.$emit('clickChart', params.dataIndex)
         })
         myChart.setOption(this.createBar2(msg))
         window.addEventListener('resize', function() {
           myChart.resize()
         })
       },
+      // 纵向柱状图
       drawBar2(data) {
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2
@@ -99,6 +100,7 @@
           })
         })
       },
+      // 纵向柱状图
       createBar1(xAxisData, seriesData, color, axisLabel) {
         return {
           grid: {
@@ -208,6 +210,7 @@
           ]
         }
       },
+      // 横向柱状图
       createBar2(series) {
         return {
           grid: {
@@ -263,6 +266,7 @@
             }
           },
           yAxis: {
+            inverse: true,
             minInterval: 1,
             type: 'category',
             data: series.xAxisData,
