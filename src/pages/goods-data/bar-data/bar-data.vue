@@ -218,7 +218,7 @@
         return {
           grid: {
             left: '20',
-            right: '30',
+            right: '45',
             bottom: '30',
             top: '0',
             containLabel: true
@@ -336,10 +336,7 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.salesNumAll === 0) {
-                      return '0%'
-                    }
-                    return (data.value/series.salesNumAll).toFixed(2)+ '%'
+                    return data.value + '%'
                   },
                   verticalAlign: 'middle',
                   color: '#999',
@@ -361,10 +358,7 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.purchaseNumAll === 0) {
-                      return '0%'
-                    }
-                    return (data.value/series.purchaseNumAll).toFixed(2)+ '%'
+                    return data.value + '%'
                   },
                   offset: [0, 2],
                   verticalAlign: 'middle',

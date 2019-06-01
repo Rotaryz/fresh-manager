@@ -134,7 +134,7 @@
     {
       id: 'benefitChart',
       apiFun: 'getOperationBenefitData',
-      title: '效益',
+      title: '效率',
       label: [
         {name: '动销率', key: 'rate', total: ''}
       ],

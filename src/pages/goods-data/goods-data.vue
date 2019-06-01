@@ -37,7 +37,7 @@
                 <img :src="saleData.data.image_url" alt="" class="goods-image">
                 <div class="goods-detail">
                   <p class="title">{{saleData.data.name}}</p>
-                  <p class="price">¥ {{saleData.data.trade_price}}</p>
+                  <p class="price">¥ {{saleData.data.trade_price}}/{{saleData.data.goods_units}}</p>
                 </div>
               </div>
               <div class="data-list">
@@ -381,7 +381,7 @@
         this.clickChartIndex = index
         // this.$refs.goodsTab.selectList('', 3507)
         setTimeout(() => {
-          // console.log(this.clickSec, this[this.clickSec + 'Data'].data)
+          console.log(index, this.clickSec, this[this.clickSec + 'Data'].data)
           if (!this[this.clickSec + 'Data'].data || !this[this.clickSec + 'Data'].data.length) return
           // 找到分类ID 或商品ID
           if (this.leftTab === 'all') {
@@ -473,7 +473,9 @@
         this.leftTabItem = itemId
         this.leftTab = code
         this._initSelect()
-        this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: ''})
+        if (code !== 'goods') {
+          this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+        }
         // let data = Object.assign(this.requestPub, this.requestPurchase)
         // await this.getPurchaseData(data)
         this.$nextTick(() => {
@@ -547,7 +549,7 @@
             this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
           } else {
             this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
-            this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData))
+            this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData.data))
             this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
           }
         })
@@ -682,11 +684,11 @@
         })
         // 销售数
         let salesNum = dataArr.map(item => {
-          return item.sales_num
+          return (item.sales_num / data.sales_num * 100).toFixed(2)
         })
         // 采购数
         let purchaseNum = dataArr.map(item => {
-          return item.purchase_num
+          return (item.purchase_num / data.purchase_num * 100).toFixed(2)
         })
         let salesNumAll = data.sales_num
         let purchaseNumAll = data.purchase_num
@@ -710,6 +712,7 @@
             value: item.sku_num
           }
         })
+        console.log(series)
         return series
       },
       lineHandle(data, code, type) {
