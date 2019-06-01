@@ -126,7 +126,10 @@
             axisLabel: {
               color: '#999',
               fontSize: 12,
-              align: 'center'
+              align: 'center',
+              formatter: function(value) {
+                return value.slice(0, 4)
+              }
             },
             axisTick: {
               show: false,
@@ -285,7 +288,9 @@
               }
             },
             axisLabel: {
-              formatter: '{value}',
+              formatter: function(value) {
+                return value.slice(0, 4)
+              },
               color: '#999'
             },
             axisLine: {

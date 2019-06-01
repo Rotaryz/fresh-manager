@@ -158,8 +158,8 @@
   import API from '@api'
 
   const ARR_TITLE = [
-    {title: '7天', status: 'yesterday'},
-    {title: '15天', status: '15'},
+    {title: '7天', status: 'week'},
+    {title: '15天', status: 'half_month'},
     {title: '30天', status: 'month'},
     {title: '自定义', status: 'custom'}
   ]
@@ -174,9 +174,9 @@
     all: {
       sale: [
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
-        {name: '销量排行榜', type: 'goods', excel: true, code: 'num'},
-        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate'},
-        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate'}
+        {name: '销量排行榜', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 6},
+        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 6}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
@@ -188,16 +188,16 @@
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num'},
-        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate'}
+        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 6}
       ]
     },
     category: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true },
-        {name: '销量排行榜', type: 'goods', excel: true, code: 'num'},
-        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate'},
-        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate'}
+        {name: '商品结构', type: 'bar', excel: true, code: 't'},
+        {name: '销量排行榜', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 6},
+        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 6}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
@@ -208,16 +208,16 @@
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num'},
-        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate'}
+        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 6}
       ]
     },
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
-        {name: '销量', type: 'line'},
-        {name: '动销率', type: 'line', rate: true, code: 'pin_rate'},
-        {name: '售罄率', type: 'line', rate: true, code: 'out_rate'}
+        {name: '销量', type: 'line', limit: 6},
+        {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 6},
+        {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 6}
       ],
       serve: [
         {name: '退货数', type: 'line', code: 'returns_num'},
@@ -228,8 +228,8 @@
         {name: '毛利率', type: 'line', rate: true, code: 'rate'}
       ],
       supply: [
-        {name: '库存', type: 'line', code: 'num'},
-        {name: '库存周转率', type: 'line', rate: true, code: 'rate'}
+        {name: '库存', type: 'line', code: 'num', limit: 6},
+        {name: '库存周转率', type: 'line', rate: true, code: 'rate', limit: 6}
       ]
     }
   }
@@ -256,10 +256,7 @@
         configObj: ALL_DATA,
         arrTitle: ARR_TITLE,
         bigDataShow: false,
-        requestSale: {
-          order_by: '',
-          limit: 6
-        },
+        requestSale: {},
         requestServe: {
           order_by: 'returns_num',
           limit: 6
@@ -270,7 +267,7 @@
         },
         requestSupply: {
           order_by: 'purchase_num',
-          limit: 6
+          limit: 10
         },
         requestPub: {
           date_type: 'week',
@@ -329,25 +326,25 @@
       ...goodsDataComputed
     },
     created() {
-      this._initSelect()
+      // this._initSelect()
       // this.getAllData()
     },
     async mounted() {
       // 商品销售模块
-      let dataSale = Object.assign(this.requestPub, this.requestSupply)
+      let dataSale = Object.assign({}, this.requestSale, this.requestPub)
       await this.getSaleData({dataSale, index: 0})
       // this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
       // 商品售后模块
-      let dataServe = Object.assign(this.requestPub, this.requestServe)
+      let dataServe = Object.assign({}, this.requestServe, this.requestPub)
       await this.getServeData(dataServe)
       // this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, 'name', this.selectMsg.serve.code))
       // 商品采购模块
-      let dataPurchase = Object.assign(this.requestPub, this.requestPurchase)
+      let dataPurchase = Object.assign({}, this.requestPurchase, this.requestPub)
       await this.getPurchaseData(dataPurchase)
       // this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
       this._initDraw() // 初始绘图
       // 供应链模块
-      let dataSupply = Object.assign(this.requestPub, this.requestSupply)
+      let dataSupply = Object.assign({}, this.requestSupply, this.requestPub)
       this.getSupplyData({dataSupply, index: 0})
     },
     methods: {
@@ -370,8 +367,8 @@
       },
       changeGoodsRank(type) {
         this.requestSale.order_by = type
-        let data = Object.assign(this.requestPub, this.requestSale)
-        this.getSaleData({data, index: 1})
+        let dataSale = Object.assign({}, this.requestSale, this.requestPub)
+        this.getSaleData({dataSale, index: 1})
       },
       setClickChart(type) {
         this.clickSec = type
@@ -414,25 +411,25 @@
         switch (sec) {
         case 'sale':
           this.bigBarIndex = 0
-          let dataSale = Object.assign(this.requestPub, this.requestSupply)
+          let dataSale = Object.assign({}, this.requestSale, this.requestPub)
           dataSale.limit = 0
           await this.getSaleData({dataSale, index: index})
           break
         case 'serve':
           this.bigBarIndex = 1
-          let dataServe = Object.assign(this.requestPub, this.requestServe)
+          let dataServe = Object.assign({}, this.requestServe, this.requestPub)
           dataServe.limit = 0
           await this.getServeData(dataServe)
           break
         case 'purchase':
           this.bigBarIndex = 2
-          let dataPurchase = Object.assign(this.requestPub, this.requestPurchase)
+          let dataPurchase = Object.assign({}, this.requestPurchase, this.requestPub)
           dataPurchase.limit = 0
           await this.getPurchaseData(dataPurchase)
           break
         case 'supply':
           this.bigBarIndex = 3
-          let dataSupply = Object.assign(this.requestPub, this.requestSupply)
+          let dataSupply = Object.assign({}, this.requestSupply, this.requestPub)
           dataSupply.limit = 0
           await this.getSupplyData({dataSupply, index})
         }
@@ -473,8 +470,8 @@
         this.leftTab = code
         this._initSelect()
         this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: ''})
-        let data = Object.assign(this.requestPub, this.requestPurchase)
-        await this.getPurchaseData(data)
+        // let data = Object.assign(this.requestPub, this.requestPurchase)
+        // await this.getPurchaseData(data)
         this.$nextTick(() => {
           if (code === 'all' || code === 'category') {
             this._initDraw()
@@ -506,11 +503,12 @@
       async changeSale(obj, index) {
         this.selectMsg.sale = this.deepCopy(obj)
         this.$set(this.tabIndexControl, 'sale', index)
-        this.requestSale.order_by = obj.code
-        let dataSale = Object.assign(this.requestPub, this.requestSale)
-        if (index === 1) {
-          dataSale.limit = 10
+        obj.code ? this.$set(this.requestSale, 'order_by', obj.code) : this.$delete(this.requestSale, 'order_by')
+        obj.limit ? this.$set(this.requestSale, 'limit', obj.limit) : this.$delete(this.requestSale, 'limit')
+        if (index === 0) {
+          this.$delete(this.requestSale, 'order_by')
         }
+        let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
         this.$nextTick(() => {
           if (index === 0) {
@@ -526,7 +524,7 @@
         this.selectMsg.serve = obj
         this.$set(this.tabIndexControl, 'serve', index)
         this.requestServe.order_by = obj.code
-        let data = Object.assign(this.requestPub, this.requestServe)
+        let data = Object.assign({}, this.requestPub, this.requestServe)
         await this.getServeData(data)
         this.$nextTick(() => {
           this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, obj.code), obj.rate)
@@ -538,7 +536,7 @@
         this.selectMsg.purchase = obj
         this.$set(this.tabIndexControl, 'purchase', index)
         this.requestPurchase.order_by = obj.code
-        let data = Object.assign(this.requestPub, this.requestPurchase)
+        let data = Object.assign({}, this.requestPub, this.requestPurchase)
         await this.getPurchaseData(data)
         this.$nextTick(() => {
           if (index === 0) {
@@ -554,8 +552,9 @@
       async changeSupply(obj, index) {
         this.selectMsg.supply = obj
         this.$set(this.tabIndexControl, 'supply', index)
-        this.requestSupply.order_by = obj.code
-        let dataSupply = Object.assign(this.requestPub, this.requestSupply)
+        obj.code ? this.$set(this.requestSupply, 'order_by', obj.code) : this.$delete(this.requestSupply, 'order_by')
+        obj.limit ? this.$set(this.requestSupply, 'limit', obj.limit) : this.$delete(this.requestSupply, 'limit')
+        let dataSupply = Object.assign({}, this.requestPub, this.requestSupply)
         await this.getSupplyData({dataSupply, index})
         this.$nextTick(() => {
           this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
@@ -575,13 +574,15 @@
           access_token: token.access_token
         }
         // this[this.excelType[0].toUpperCase()]
-        let data = Object.assign(msg, this.requestPub, this['request' + this.firstUppercase(this.excelType)])
+        let data = Object.assign({}, msg, this.requestPub, this['request' + this.firstUppercase(this.excelType)])
+        if (this.excelType.type === 'sale' && +this.tabIndexControl['sale'] === 0){
+          delete data.order_by
+        }
         let search = []
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
         let url = this.exportUrlArr[this.excelType][this.tabIndexControl[this.excelType]]
-        console.log(url)
         return process.env.VUE_APP_API + '/social-shopping/api/backend/data-center/goods/' + url + '?' + search.join('&')
       },
       firstUppercase(str) {
@@ -609,7 +610,7 @@
         this.$refs.statusTab4 && this.$refs.statusTab4.checkStatus(this.tabIndexControl['supply'], this.configObj[this.leftTab].supply[this.tabIndexControl['supply']])
       },
       saleHandle(data) {
-        if (!data.length) return {xAx: [], series: []}
+        if (!data || !data.length) return {xAx: [], series: []}
         let arr = [
           {
             name: '利润品',
@@ -644,9 +645,9 @@
         }
       },
       dataHandle(data, y1) {
-        if (!data.length) return {xAx: [], series: []}
+        if (!data || !data.length) return {xAx: [], series: []}
         let xAx = data.map(val => {
-          return val.name && val.name.slice(0, 4)
+          return val.name
         })
         let series = data.map(val => {
           return val[y1]
@@ -669,7 +670,7 @@
           }
         }
         let xAx = dataArr.map(item => {
-          return item.name && item.name.slice(0, 4)
+          return item.name
         })
         // 毛利率
         let series = dataArr.map(item => {
@@ -695,7 +696,7 @@
         }
       },
       pieHandle(data) {
-        if (!data.length) return {
+        if (!data || !data.length) return {
           name: '',
           value: ''
         }
