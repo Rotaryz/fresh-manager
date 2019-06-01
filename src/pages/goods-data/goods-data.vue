@@ -609,6 +609,7 @@
         this.$refs.statusTab4 && this.$refs.statusTab4.checkStatus(this.tabIndexControl['supply'], this.configObj[this.leftTab].supply[this.tabIndexControl['supply']])
       },
       saleHandle(data) {
+        if (!data.length) return {xAx: [], series: []}
         let arr = [
           {
             name: '利润品',
@@ -645,7 +646,7 @@
       dataHandle(data, y1) {
         if (!data.length) return {xAx: [], series: []}
         let xAx = data.map(val => {
-          return val.name
+          return val.name && val.name.slice(0, 4)
         })
         let series = data.map(val => {
           return val[y1]
@@ -668,7 +669,7 @@
           }
         }
         let xAx = dataArr.map(item => {
-          return item.name
+          return item.name && item.name.slice(0, 4)
         })
         // 毛利率
         let series = dataArr.map(item => {
@@ -709,7 +710,7 @@
       lineHandle(data, code, type) {
         let label = type
         let x = data.map(item => {
-          return item.date.split('-').slice(1).join('/')
+          return item.date ? item.date.split('-').slice(1).join('/') : ''
         })
         let rate = data.map(item => {
           return item[code]

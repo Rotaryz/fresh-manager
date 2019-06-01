@@ -322,10 +322,10 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.purchaseNumAll === 0) {
+                    if (series.salesNumAll === 0) {
                       return '0%'
                     }
-                    return data.value/series.purchaseNumAll+ '%'
+                    return (data.value/series.salesNumAll).toFixed(2)+ '%'
                   },
                   verticalAlign: 'middle',
                   color: '#333',
@@ -350,7 +350,7 @@
                     if (series.purchaseNumAll === 0) {
                       return '0%'
                     }
-                    return data.value/series.purchaseNumAll+ '%'
+                    return (data.value/series.purchaseNumAll).toFixed(2)+ '%'
                   },
                   offset: [0, 2],
                   verticalAlign: 'middle',
