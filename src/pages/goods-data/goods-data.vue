@@ -326,7 +326,7 @@
       ...goodsDataComputed
     },
     created() {
-      // this._initSelect()
+      this._initSelect()
       // this.getAllData()
     },
     async mounted() {
