@@ -55,8 +55,9 @@
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x
           let seriesData = data.series.length > 0 ? data.series : this.data.series
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          myChart.on('click', function(e) {
-            console.log(e)
+          let that = this
+          myChart.on('click', function(params) {
+            that.$emit('clickBigChart', params.dataIndex)
           })
           // let x = new Array(15).fill(1)
           // let y = new Array(15).fill(81)
@@ -79,8 +80,9 @@
             purchaseNumAll: data.purchaseNumAll
           }
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          myChart.on('click', e => {
-            console.log(e)
+          let that = this
+          myChart.on('click', function(params) {
+            that.$emit('clickBigChart', params.dataIndex)
           })
           // let x = new Array(200).fill(1)
           // let y1 = new Array(200).fill(81)
