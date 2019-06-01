@@ -47,7 +47,7 @@
         return 100 / length * ratio
       },
       countNum1(length) {
-        return 100 - 100 / length * 8
+        return 100 / length * 9
       },
       // 纵向柱状图
       drawBar(data, rate) {
@@ -87,7 +87,6 @@
           // let x = new Array(200).fill(1)
           // let y1 = new Array(200).fill(81)
           // let y2 = new Array(200).fill(81)
-          console.log(msg, 3333)
           myChart.setOption(this.createBar(msg))
           window.addEventListener('resize', function() {
             myChart.resize()
@@ -277,7 +276,7 @@
             }
           },
           dataZoom: [{
-            start: this.countNum1(series.xAxisData.length),// 数据窗口范围的结束百分比
+            end: this.countNum1(series.xAxisData.length),// 数据窗口范围的结束百分比
             type: 'slider',
             left: '30px',
             show: true,

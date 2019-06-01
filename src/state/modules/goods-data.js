@@ -233,7 +233,7 @@ export const actions = {
           return false
         }
         if (+data.limit === 0) {
-          commit('SET_BIG_CHART_DATA', res.data)
+          commit('SET_BIG_CHART_DATA', res)
           return true
         }
         commit('SET_PURCHASE_DATA', res)

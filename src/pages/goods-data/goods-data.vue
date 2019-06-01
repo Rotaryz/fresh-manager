@@ -96,7 +96,7 @@
               </div>
             </div>
             <div class="name-text">
-              <p class="item">{{selectMsg.purchase.name}}<span class="data">{{purchaseData[selectMsg.purchase.code + '_total'] || purchaseData[selectMsg.purchase.code] || 0}}{{selectMsg.purchase.rate && '%'}}</span></p>
+              <p class="item">{{selectMsg.purchase.name}}<span class="data">{{purchaseData[selectMsg.purchase.word] || 0}}{{selectMsg.purchase.rate && '%'}}</span></p>
             </div>
 
             <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3" @clickChart="clickChart"></bar-data>
@@ -183,9 +183,9 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
-        {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num'},
-        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total'},
+        {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num', word: 'sku_num_total'},
+        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate'}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
@@ -204,8 +204,8 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num'},
-        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate'}
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'sku_num_total'},
+        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate'}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
@@ -224,8 +224,8 @@
         {name: '退货率', type: 'line', code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购数量', type: 'line', code: 'purchase_num'},
-        {name: '毛利率', type: 'line', rate: true, code: 'rate'}
+        {name: '采购数量', type: 'line', code: 'purchase_num', word: 'purchase_num'},
+        {name: '毛利率', type: 'line', rate: true, code: 'rate', word: 'rate'}
       ],
       supply: [
         {name: '库存', type: 'line', code: 'num', limit: 6},
@@ -381,7 +381,6 @@
         this.clickChartIndex = index
         // this.$refs.goodsTab.selectList('', 3507)
         setTimeout(() => {
-          console.log(index, this.clickSec, this[this.clickSec + 'Data'].data)
           if (!this[this.clickSec + 'Data'].data || !this[this.clickSec + 'Data'].data.length) return
           // 找到分类ID 或商品ID
           if (this.leftTab === 'all') {
@@ -439,7 +438,7 @@
         }
         this.$nextTick(() => {
           if (type === 'bar1') {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.purchaseData))
+            this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
           } else {
             this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData, this.selectMsg[sec].code), this.selectMsg[sec].rate)
           }
@@ -712,7 +711,6 @@
             value: item.sku_num
           }
         })
-        console.log(series)
         return series
       },
       lineHandle(data, code, type) {

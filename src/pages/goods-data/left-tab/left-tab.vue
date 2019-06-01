@@ -103,7 +103,7 @@
           }
         } else if (goodsId) {
           let itemIndex = this.categoryList[this.categoryIndex - 1].list.findIndex(item => {
-            return item.id === goodsId
+            return +item.id === +goodsId
           })
           if (itemIndex > -1) {
             code = 'goods'
