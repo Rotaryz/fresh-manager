@@ -120,7 +120,7 @@ export const actions = {
         let arr = res.data
         let categoryArr = state.categoryList.map(item => {
           let val = JSON.parse(JSON.stringify(item))
-          if (val.id === data.goods_category_id) {
+          if (+val.id === +data.goods_category_id) {
             val.total = res.meta.total
             val.list = arr
           }
@@ -175,6 +175,9 @@ export const actions = {
     let apiArr = ['getStructure', 'getSaleRank', 'getSellRatio', 'getSellOut']
     let api = apiArr[index]
     let data = JSON.parse(JSON.stringify(dataSale))
+    if (index === 0) {
+      delete data.group_by
+    }
     return API.GoodsData[api](data, false)
       .then((res) => {
         let data = JSON.parse(JSON.stringify(res))
