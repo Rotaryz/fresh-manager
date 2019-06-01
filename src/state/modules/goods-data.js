@@ -175,16 +175,13 @@ export const actions = {
     let apiArr = ['getStructure', 'getSaleRank', 'getSellRatio', 'getSellOut']
     let api = apiArr[index]
     let data = JSON.parse(JSON.stringify(dataSale))
-    if (index === 0) {
-      data.limit = 0
-    }
     return API.GoodsData[api](data, false)
       .then((res) => {
         let data = JSON.parse(JSON.stringify(res))
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        if (!dataSale.limit) {
+        if (+dataSale.limit === 0) {
           commit('SET_BIG_CHART_DATA', res.data)
           return true
         }
@@ -195,7 +192,7 @@ export const actions = {
         }
         // let arr = ['pv', 'e_customer', 'order']
         // let data = dataHandle(arr, res.data)
-        commit('SET_SALE_DATA', data)
+        commit('SET_SALE_DATA', res)
         return true
       })
       .catch(() => {
@@ -213,7 +210,7 @@ export const actions = {
         }
         // let arr = ['sales_num', 'rate', 'order']
         // let data = dataHandle(arr, res.data, index)
-        if (!data.limit) {
+        if (data.limit === 0) {
           commit('SET_BIG_CHART_DATA', res.data)
           return true
         }
@@ -233,7 +230,7 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        if (!data.limit) {
+        if (+data.limit === 0) {
           commit('SET_BIG_CHART_DATA', res.data)
           return true
         }
@@ -254,7 +251,7 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        if (!dataSupply.limit) {
+        if (+dataSupply.limit === 0) {
           commit('SET_BIG_CHART_DATA', res.data)
           return true
         }
