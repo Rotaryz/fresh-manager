@@ -19,7 +19,7 @@
         <div class="left-tab-main">
           <div class="left">
             <img :src="item.image_url" alt="" class="category-image">
-            <span class="name">{{item.name}}({{item.list.length}})</span>
+            <span class="name">{{item.name}}({{item.goods_count}})</span>
           </div>
           <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]"></div>
         </div>

@@ -1980,7 +1980,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  社群列表
             store
-              .dispatch('goodsData/getCategoryList', {parent_id: 0, page: 1})
+              .dispatch('goodsData/getCategoryList', {parent_id: 0, get_goods_count: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

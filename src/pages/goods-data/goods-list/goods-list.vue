@@ -125,6 +125,8 @@
       padding-right: 20px
       &:last-child
         padding-right: 0
+      &:first-child
+        max-width: 50px
       .item-main
         -webkit-user-select: none
         -moz-user-select: none
@@ -177,6 +179,8 @@
         height: 36px
         border-radius: 2px
         border: 0.5px solid $color-line
+      &:first-child
+        max-width: 50px
 
     .item-data:last-child
       padding-right: 0

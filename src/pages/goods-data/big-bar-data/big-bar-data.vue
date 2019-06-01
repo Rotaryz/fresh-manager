@@ -87,6 +87,7 @@
           // let x = new Array(200).fill(1)
           // let y1 = new Array(200).fill(81)
           // let y2 = new Array(200).fill(81)
+          console.log(msg, 3333)
           myChart.setOption(this.createBar(msg))
           window.addEventListener('resize', function() {
             myChart.resize()
@@ -245,6 +246,7 @@
           },
           yAxis: {
             minInterval: 1,
+            inverse: true,
             type: 'category',
             data: series.xAxisData,
             splitLine: {
@@ -322,10 +324,7 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.salesNumAll === 0) {
-                      return '0%'
-                    }
-                    return (data.value/series.salesNumAll).toFixed(2)+ '%'
+                    return data.value + '%'
                   },
                   verticalAlign: 'middle',
                   color: '#333',
@@ -347,10 +346,7 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.purchaseNumAll === 0) {
-                      return '0%'
-                    }
-                    return (data.value/series.purchaseNumAll).toFixed(2)+ '%'
+                    return data.value + '%'
                   },
                   offset: [0, 2],
                   verticalAlign: 'middle',
