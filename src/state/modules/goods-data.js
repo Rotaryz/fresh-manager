@@ -175,6 +175,9 @@ export const actions = {
     let apiArr = ['getStructure', 'getSaleRank', 'getSellRatio', 'getSellOut']
     let api = apiArr[index]
     let data = JSON.parse(JSON.stringify(dataSale))
+    if (index === 0) {
+      delete data.group_by
+    }
     return API.GoodsData[api](data, false)
       .then((res) => {
         let data = JSON.parse(JSON.stringify(res))

@@ -464,6 +464,7 @@
 
   .operation-data
     width: 100%
+    min-width: 1200px
 
   .content
     min-height: calc(100vh - 130px)

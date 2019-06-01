@@ -271,7 +271,11 @@
         },
         requestPub: {
           date_type: 'week',
-          group_by: 'cate'
+          start_date: '',
+          end_date: '',
+          group_by: 'cate',
+          cate: '',
+          spu: ''
         },
         allMsg: [
           {
@@ -610,7 +614,7 @@
         this.$refs.statusTab4 && this.$refs.statusTab4.checkStatus(this.tabIndexControl['supply'], this.configObj[this.leftTab].supply[this.tabIndexControl['supply']])
       },
       saleHandle(data) {
-        if (!data || !data.length) return {xAx: [], series: []}
+        // if (!data || !data.length) return {xAx: [], series: []}
         let arr = [
           {
             name: '利润品',
