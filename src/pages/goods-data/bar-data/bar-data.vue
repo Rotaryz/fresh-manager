@@ -50,12 +50,8 @@
           myChart.on('click', function (params) {
             that.$emit('clickChart', params.dataIndex)
           })
-          let axisLabel = {
-            formatter: '{value}' + (rate ? '%' : ''),
-            color: '#999'
-          }
           let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
-          myChart.setOption(this.createBar1(xAxisData, seriesData, color, axisLabel))
+          myChart.setOption(this.createBar1(xAxisData, seriesData, color, rate))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
@@ -89,23 +85,19 @@
           // myChart.on('click', function (params) {
           //   console.log(params)
           // })
-          let axisLabel = {
-            formatter: '{value}',
-            color: '#999'
-          }
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
-          myChart.setOption(this.createBar1(xAxisData, seriesData3, color, axisLabel))
+          myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
       // 纵向柱状图
-      createBar1(xAxisData, seriesData, color, axisLabel) {
+      createBar1(xAxisData, seriesData, color, rate) {
         return {
           grid: {
             left: '40',
-            right: '30',
+            right: '40',
             bottom: '30',
             top: '20',
             containLabel: true
@@ -164,7 +156,12 @@
                 width: 0.5
               }
             },
-            axisLabel,
+            axisLabel: {
+              formatter: function(data) {
+                return data + (rate ? '%' : '')
+              },
+              color: '#999'
+            },
             axisLine: {
               show: false,
               trigger: 'axis',
@@ -183,7 +180,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}`
+              return `${prams[0].name}：${prams[0].value}${rate ? '%' : ''}`
             }
           },
           series: [
@@ -311,7 +308,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}<br />销售数：${prams[0].value}<br />采购数：${prams[1].value}`
+              return `${prams[0].name}<br />销售额占比：${prams[0].value}%<br />采购额占比：${prams[1].value}%`
             }
           },
           series: [

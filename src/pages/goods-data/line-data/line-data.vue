@@ -32,7 +32,7 @@
           'label': '',
           'data': [{
             'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
-            'rate': ['178.94', '799.35', '792.39', '947.58', '940.30', '0.00', '0.00']
+            'rate': ['0', '0', '0', '0', '0', '0', '0']
           }]
         }
       }
@@ -42,13 +42,12 @@
     watch: {
     },
     mounted() {
-      // this.drawBar(this.data, '退货数')
     },
     methods: {
       setTab(num) {
         this.tabIndex = 0
       },
-      // 纵向柱状图（name为表名称，chartId为表父元素标签ID名）
+      // 折线图
       drawLine(data, rate) {
         this.$nextTick(() => {
           let myChart = this.$echarts.init(document.getElementById(this.chartId))

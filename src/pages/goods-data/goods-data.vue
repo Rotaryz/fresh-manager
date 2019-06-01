@@ -136,7 +136,7 @@
         <span class="chart-name">{{allName[bigBarIndex]}}</span>
         <img src="./icon-del_2@2x.png" class="big-close hand" @click="closeBigData">
       </div>
-      <p class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{[bigBarType+ 'Data'][selectMsg[bigBarType].code + '_total'] || [bigBarType+ 'Data'][selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
+      <p class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{bigChartData[selectMsg[bigBarType].code + '_total'] || bigChartData[selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
       <div class="big-chart">
         <big-bar-data ref="bigBar" chartId="big-bar" @clickBigChart="clickBigChart"></big-bar-data>
       </div>
@@ -440,7 +440,8 @@
           if (type === 'bar1') {
             this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
           } else {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+            // console.log(this.bigChartData,this.selectMsg[this.bigBarType].code, 444)
+            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
           }
         })
       },
@@ -475,8 +476,8 @@
         if (code !== 'goods') {
           this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
         }
-        // let data = Object.assign(this.requestPub, this.requestPurchase)
-        // await this.getPurchaseData(data)
+        let data = Object.assign({}, this.requestPurchase, this.requestPub)
+        await this.getPurchaseData(data)
         this.$nextTick(() => {
           if (code === 'all' || code === 'category') {
             this._initDraw()
@@ -578,8 +579,13 @@
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: token.access_token
         }
-        // this[this.excelType[0].toUpperCase()]
-        let data = Object.assign({}, msg, this.requestPub, this['request' + this.firstUppercase(this.excelType)])
+        let word = JSON.parse(JSON.stringify(this['request' + this.firstUppercase(this.excelType)]))
+        if ((this.excelType === 'sale' && +this.tabIndexControl.sale === 1) || (this.excelType === 'supply' && +this.tabIndexControl.supply === 0)) {
+          word.limit = 10
+        } else {
+          word.limit = 0
+        }
+        let data = Object.assign({}, msg, this.requestPub, word)
         if (this.excelType.type === 'sale' && +this.tabIndexControl['sale'] === 0){
           delete data.order_by
         }

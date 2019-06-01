@@ -184,7 +184,7 @@ export const actions = {
           return false
         }
         if (+dataSale.limit === 0) {
-          commit('SET_BIG_CHART_DATA', res.data)
+          commit('SET_BIG_CHART_DATA', res)
           return true
         }
         if (index === 1) {
@@ -213,7 +213,7 @@ export const actions = {
         // let arr = ['sales_num', 'rate', 'order']
         // let data = dataHandle(arr, res.data, index)
         if (data.limit === 0) {
-          commit('SET_BIG_CHART_DATA', res.data)
+          commit('SET_BIG_CHART_DATA', res)
           return true
         }
         commit('SET_SERVE_DATA', res)
@@ -254,7 +254,7 @@ export const actions = {
           return false
         }
         if (+dataSupply.limit === 0) {
-          commit('SET_BIG_CHART_DATA', res.data)
+          commit('SET_BIG_CHART_DATA', res)
           return true
         }
         if (index === 0) {

@@ -156,7 +156,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}`
+              return `${prams[0].name}：${prams[0].value}${ratio ? '%': ''}`
             }
           },
           dataZoom: [{
@@ -298,7 +298,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}<br />销售数：${prams[0].value}<br />采购数：${prams[1].value}`
+              return `${prams[0].name}<br />销售额占比：${prams[0].value}%<br />采购额占比：${prams[1].value}%`
             }
           },
           series: [
