@@ -87,7 +87,6 @@ export const mutations = {
     state.supplyData.list = data
   },
   SET_BIG_CHART_DATA(state, data) {
-    console.log(data, 222)
     state.bigChartData = data
   }
 }
@@ -175,7 +174,11 @@ export const actions = {
     let {dataSale, index} = msg
     let apiArr = ['getStructure', 'getSaleRank', 'getSellRatio', 'getSellOut']
     let api = apiArr[index]
-    return API.GoodsData[api](dataSale, false)
+    let data = JSON.parse(JSON.stringify(dataSale))
+    if (index === 0) {
+      data.limit = 0
+    }
+    return API.GoodsData[api](data, false)
       .then((res) => {
         let data = JSON.parse(JSON.stringify(res))
         if (res.error !== app.$ERR_OK) {

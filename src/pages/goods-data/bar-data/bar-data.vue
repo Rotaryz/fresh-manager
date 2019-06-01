@@ -22,7 +22,7 @@
         tabIndex: 0,
         data: {
           x1: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
-          series: [10, 10, 10, 10, 10, 10],
+          series: [0, 0, 0, 0, 0, 0],
           x2: ['利润品', '引流品', '粘性品', '爆款品', '其他']
         }
       }
@@ -331,10 +331,10 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.purchaseNumAll === 0) {
+                    if (series.salesNumAll === 0) {
                       return '0%'
                     }
-                    return data.value/series.purchaseNumAll+ '%'
+                    return (data.value/series.salesNumAll).toFixed(2)+ '%'
                   },
                   verticalAlign: 'middle',
                   color: '#999',
@@ -359,7 +359,7 @@
                     if (series.purchaseNumAll === 0) {
                       return '0%'
                     }
-                    return data.value/series.purchaseNumAll+ '%'
+                    return (data.value/series.purchaseNumAll).toFixed(2)+ '%'
                   },
                   offset: [0, 2],
                   verticalAlign: 'middle',

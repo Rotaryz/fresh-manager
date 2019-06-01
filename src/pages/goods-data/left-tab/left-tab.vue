@@ -67,8 +67,8 @@
     },
     methods: {
       // index用于记录选中哪个， code
-      changeCategory(itemId, index, code, bool) {
-        if (index === this.categoryIndex && this.openCategory && !bool) {
+      changeCategory(itemId, index, code) {
+        if (index === this.categoryIndex && this.openCategory) {
           this.openCategory = false
         } else {
           this.openCategory = true
@@ -77,7 +77,7 @@
         this.goodsIndex = ''
         this.selectGoods = false
         // boolean判断选中的是否是商品，code区分选中的类型
-        if (!this.openCategory) return
+        // if (!this.openCategory) return
         this.$emit('changeTab', itemId, code) // item, selectGoods
       },
       changeGoods(itemId, index, code) {
