@@ -388,6 +388,7 @@
         max-width: 25%
         margin-right: 5%
         font-size: $font-size-12
+        no-wrap-plus(1)
 
         .label-val
           font-size: $font-size-18
