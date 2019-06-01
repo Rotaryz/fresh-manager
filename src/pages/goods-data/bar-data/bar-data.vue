@@ -311,7 +311,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}<br />${prams[1].name}：${prams[1].value}`
+              return `${prams[0].name}<br />销售数：${prams[0].value}<br />采购数：${prams[1].value}`
             }
           },
           series: [
