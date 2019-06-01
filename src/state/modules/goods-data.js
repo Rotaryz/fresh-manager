@@ -190,11 +190,11 @@ export const actions = {
         if (index === 1) {
           commit('SALE_RANK_LIST', res.data)
         } else if (index === 0) {
-          data.data.t = res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
+          data.t = res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
         }
         // let arr = ['pv', 'e_customer', 'order']
         // let data = dataHandle(arr, res.data)
-        commit('SET_SALE_DATA', res)
+        commit('SET_SALE_DATA', data)
         return true
       })
       .catch(() => {
