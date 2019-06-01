@@ -77,6 +77,7 @@
         this.goodsIndex = ''
         this.selectGoods = false
         // boolean判断选中的是否是商品，code区分选中的类型
+        if (!this.openCategory) return
         this.$emit('changeTab', itemId, code) // item, selectGoods
       },
       changeGoods(itemId, index, code) {

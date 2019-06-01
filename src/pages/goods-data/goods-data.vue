@@ -138,7 +138,7 @@
       </div>
       <p class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{[bigBarType+ 'Data'][selectMsg[bigBarType].code + '_total'] || [bigBarType+ 'Data'][selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
       <div class="big-chart">
-        <big-bar-data ref="bigBar" chartId="big-bar"></big-bar-data>
+        <big-bar-data ref="bigBar" chartId="big-bar" @clickBigChart="clickBigChart"></big-bar-data>
       </div>
     </div>
   </div>
@@ -314,15 +314,15 @@
           purchase: 0,
           supply: 0
         },
-        leftTabItem: {},
+        leftTabItem: '', // 左侧被选中tab栏id
         leftTab: 'all', // 左侧tab栏 all全部商品 category分类 goods商品,
         exportUrlArr: EXPORT_URL,
-        excelType: '',
-        clickSec: '',
-        clickChartIndex: '',
-        allName: ['商品销售', '商品售后', '商品采购', '供应链'],
-        bigBarIndex: 0,
-        bigBarType: ''
+        excelType: '', // excel表格类型
+        clickSec: '', // 被点击图表的块名称sale serve purchase supply
+        clickChartIndex: '', // 点击的柱状图下标值
+        allName: ['商品销售', '商品售后', '商品采购', '供应链'], // 每个块的名称
+        bigBarIndex: 0, // 大图表所属第几块下标
+        bigBarType: '' // 大图表所属第几块名称
       }
     },
     computed: {
@@ -345,7 +345,7 @@
       let dataPurchase = Object.assign(this.requestPub, this.requestPurchase)
       await this.getPurchaseData(dataPurchase)
       // this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
-      this._initDraw()
+      this._initDraw() // 初始绘图
       // 供应链模块
       let dataSupply = Object.assign(this.requestPub, this.requestSupply)
       this.getSupplyData({dataSupply, index: 0})
@@ -392,6 +392,21 @@
           }
         })
       },
+      clickBigChart(index) {
+        this.clickChartIndex = index
+        this.bigDataShow = false
+        // this.$refs.goodsTab.selectList('', 42624)
+        // console.log(this.bigBarType, this[this.bigBarType + 'Data'])
+        if (!this[this.bigBarType + 'Data'].data || !this[this.bigBarType + 'Data'].data.length) return
+        // 找到分类ID 或商品ID
+        if (this.leftTab === 'all') {
+          let chartCateId =  this[this.bigBarType + 'Data'].data[index].cate
+          this.$refs.goodsTab.selectList(chartCateId)
+        } else {
+          let chartGoodsId = this[this.bigBarType + 'Data'].data[index].spu
+          this.$refs.goodsTab.selectList('', chartGoodsId)
+        }
+      },
       async showBigData(type, sec) {
         this.bigDataShow = true
         this.bigBarType = sec
@@ -437,7 +452,7 @@
       },
       // 切换左侧tab栏
       async changeTab(itemId, code) {
-        if (this.leftTabItem.id === itemId) return
+        if (this.leftTabItem === itemId) return
         switch (code) {
         case 'all':
           this.requestPub.cate = ''
@@ -586,6 +601,7 @@
         this.getCommunityList({page: 1})
 
       },
+      // 切换时间时，通过改变每个块顶部tab栏的方式，获取当前所有模块的数据，并且重绘图表
       async getAllData() {
         this.$refs.statusTab1 && this.$refs.statusTab1.checkStatus(this.tabIndexControl['sale'], this.configObj[this.leftTab].sale[this.tabIndexControl['sale']])
         this.$refs.statusTab2 && this.$refs.statusTab2.checkStatus(this.tabIndexControl['serve'], this.configObj[this.leftTab].serve[this.tabIndexControl['serve']])
@@ -612,7 +628,7 @@
           },
           {
             name: '其他',
-            type: 'q'
+            type: 'o'
           }
         ]
         let xAx = arr.map(item => {

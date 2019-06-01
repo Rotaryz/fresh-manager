@@ -85,7 +85,7 @@
                   <div class="list-item">
                     <img :src="item.image_url" class="data-list-img">
                   </div>
-                  <div class="list-item">{{item.goods_name}}</div>
+                  <div class="list-item">{{item.goods_name || item.goods.name}}</div>
                   <div class="list-item">{{item.sale_count_sum}}</div>
                   <div class="list-item">￥{{item.sale_total_sum}}</div>
                 </div>
