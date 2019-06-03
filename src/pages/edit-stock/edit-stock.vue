@@ -90,6 +90,11 @@
         this.blankIndex = -1
       },
       addition() {
+        if (!this.blankList.length) {
+          this.$toast.show('导入库存清单不能为空')
+          return
+        }
+        this.$refs.confirm.show('是否批量导入库存清单？')
       },
       cancel() {
         this.$router.back()
