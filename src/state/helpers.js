@@ -79,6 +79,13 @@ export const saleComputed = {
 
 export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', 'setSaleList'])
 
+// 活动管理
+export const activityComputed = {
+  ...mapGetters('activity', ['popularList', 'preferenceList', 'collageList', 'collageDetail', 'popularPage', 'preferencePage', 'collagePage', 'activityTab'])
+}
+
+export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList', 'getCollageDetail', 'addPreferenceList', 'setActivityTab'])
+
 // 拓展活动
 export const outreachComputed = {
   ...mapGetters('outreach', [
@@ -193,6 +200,13 @@ export const communityComputed = {
 }
 
 export const communityMethods = mapActions('community', ['getCommunityList', 'getQualityData', 'getBusinessData', 'getGroupData', 'getGoodsList'])
+
+// 商品数据
+export const goodsDataComputed = {
+  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList'])
+}
+
+export const goodsDataMethods = mapActions('goodsData', ['getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData'])
 
 // 交易记录
 export const tradeComputed = {

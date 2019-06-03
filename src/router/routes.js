@@ -1,6 +1,9 @@
 import store from '@state/store'
 import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
+import API from '@api'
+import {ERR_OK} from '@utils/config'
+import {TAB_STATUS} from '../pages/activity-manage/config'
 
 export default [
   // 模板
@@ -225,43 +228,48 @@ export default [
           }
         }
       },
-      // 限时抢购
+      // 活动管理
       {
-        path: 'flash-sale',
-        name: 'flash-sale',
-        component: () => lazyLoadView(import('@pages/flash-sale/flash-sale')),
+        path: 'activity-manage',
+        name: 'activity-manage',
+        component: () => lazyLoadView(import('@pages/activity-manage/activity-manage')),
         meta: {
-          titles: ['商城', '活动', '限时抢购'],
+          titles: ['商城', '活动', '活动管理'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
-            store
-              .dispatch('sale/getSaleList', {page: 1, status})
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
+            API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
+            .then((res) => {
+              if (res.error !== ERR_OK) {
+                return next({name: '404'})
+              }
+              let dataInfo = res.data
+              let pageInfo = {
+                total: res.meta.total,
+                per_page: res.meta.per_page,
+                total_page: res.meta.last_page
+              }
+              next({params: {dataInfo, pageInfo}})
+            })
+            .catch(e => {
+              next({name: '404'})
+            })
           }
         }
       },
       // 新建查看限时抢购
       {
-        path: 'flash-sale/new-sale',
+        path: 'activity-manage/new-sale',
         name: 'new-sale',
         component: () => lazyLoadView(import('@pages/new-sale/new-sale')),
         meta: {
-          titles: ['商城', '活动', '限时抢购', '活动'],
+          titles: ['商城', '活动', '活动管理', '活动'],
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id || routeTo.query.editId
             //  抢购详情
-            if (id) {
+            if (id > 0) {
               store
                 .dispatch('sale/getSaleDetail', {id})
                 .then((res) => {
@@ -277,6 +285,47 @@ export default [
               next()
             }
           }
+        }
+      },
+      // 新建拼团活动
+      {
+        path: 'activity-manage/new-collage',
+        name: 'new-collage',
+        component: () => lazyLoadView(import('@pages/new-collage/new-collage')),
+        meta: {
+          titles: ['商城', '活动', '活动管理', '拼团'],
+          variableIndex: 3,
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id || routeTo.query.editId
+            //  抢购详情
+            if (id > 0) {
+              store
+                .dispatch('activity/getCollageDetail', id)
+                .then((res) => {
+                  // if (!res) {
+                  //   next({name: '404'})
+                  // }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
+        }
+      },
+      // 编辑新人特惠
+      {
+        path: 'activity-manage/edit-preference',
+        name: 'edit-preference',
+        component: () => lazyLoadView(import('@pages/edit-preference/edit-preference')),
+        meta: {
+          titles: ['商城', '活动', '活动管理', '编辑活动'],
+          variableIndex: 2,
+          marginBottom: 80
         }
       },
       // 拓展活动
@@ -387,7 +436,8 @@ export default [
         name: 'edit-outreach',
         component: () => lazyLoadView(import('@pages/edit-outreach/edit-outreach')),
         meta: {
-          titles: ['商城', '拓展', '拓展活动', '新建活动'],
+          titles: ['商城', '拓展', '拓展活动', '活动'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -439,7 +489,8 @@ export default [
         name: 'new-coupon',
         component: () => lazyLoadView(import('@pages/new-coupon/new-coupon')),
         meta: {
-          titles: ['商城', '营销', '优惠券', '新建优惠券'],
+          titles: ['商城', '营销', '优惠券', '优惠券'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -491,7 +542,8 @@ export default [
         name: 'new-market',
         component: () => lazyLoadView(import('@pages/new-market/new-market')),
         meta: {
-          titles: ['商城', '营销', '营销计划', '新建营销计划'],
+          titles: ['商城', '营销', '营销计划', '营销计划'],
+          variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
@@ -1906,6 +1958,29 @@ export default [
             //  社群列表
             store
               .dispatch('community/getCommunityList', {page: 1})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 商品数据
+      {
+        path: 'goods-data',
+        name: 'goods-data',
+        component: () => lazyLoadView(import('@pages/goods-data/goods-data')),
+        meta: {
+          titles: ['统计', '商品数据'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  社群列表
+            store
+              .dispatch('goodsData/getCategoryList', {parent_id: 0, page: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

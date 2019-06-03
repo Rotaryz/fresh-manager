@@ -167,7 +167,7 @@
         {name: '退货率'}
       ],
       tabIndex: 0,
-      excel: true
+      excel: 'https://www.baidu.com'
     }
   ]
   const MANAGER_CONFIG = [
@@ -309,6 +309,43 @@
       this._getData(true)
     },
     methods: {
+      // handleChangeTab(tab, tabIndex) {
+      //   console.log(tab, tabIndex)
+      // },
+      // exportExcel(type) {
+      //   this.excelType = type
+      //   window.open(this.exportUrl(), '_blank')
+      // },
+      // firstUppercase(str) {
+      //   let first = str[0].toUpperCase()
+      //   return first+str.slice(1)
+      // },
+      // exportUrl() {
+      //   // todo
+      //   let currentId = this.getCurrentId()
+      //   let token = this.$storage.get('auth.currentUser', '')
+      //   let msg = {
+      //     current_corp: currentId,
+      //     current_shop: process.env.VUE_APP_CURRENT_SHOP,
+      //     access_token: token.access_token
+      //   }
+      //   // this[this.excelType[0].toUpperCase()]
+      //   let data = Object.assign(msg, this.requestPub, this['request' + this.firstUppercase(this.excelType)])
+      //   let search = []
+      //   for (let key in data) {
+      //     search.push(`${key}=${data[key]}`)
+      //   }
+      //   let url = this.exportUrlArr[this.excelType][this.tabIndexControl[this.excelType]]
+      //   console.log(url)
+      //   return process.env.VUE_APP_API + '/social-shopping/api/backend/data-center/goods/' + url + '?' + search.join('&')
+      // },
+      _formatExcelData() {
+        let currentId = this.getCurrentId()
+        let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
+        let currentShop = process.env.VUE_APP_CURRENT_SHOP
+        let _dType = this.requestParam.date_type
+        return `${process.env.VUE_APP_API}/social-shopping/api/backend/data-center/operation/after-server-data-excel?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&date_type=${_dType}`
+      },
       _changeStatusTab(item, index) {
         if (this.topTabIndex === index) return
         this.curChartConfig = this.chartConfig[index]
@@ -337,6 +374,10 @@
             if (res.error !== app.$ERR_OK) {
               return false
             }
+            if (curChart.id === 'servicesChart') {
+              // console.log(111) todo
+              curChart.excel = this._formatExcelData()
+            }
             // 格式化接口返回的数据
             if (curChart.id === 'userChart') {
               // 用户接口的格式化和别的不一样
@@ -346,7 +387,11 @@
             }
             getSuccess = true
           }).finally(() => {
-            this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
+            let currentChart = this.$refs[curChart.id]
+            if (currentChart) {
+              this.chartArr.push(currentChart._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
+            }
+            // this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
             this.getFinish = i === (this.curChartConfig.length - 1)// 设置请求完
             loading && this.$loading.hide()
           })
@@ -357,7 +402,7 @@
         let _that = this
         window.onresize = function () {
           for (let i = 0; i < _that.chartArr.length; i++) {
-            _that.chartArr[i].resize()
+            _that.chartArr[i] && _that.chartArr[i].resize()
           }
         }
       },

@@ -143,6 +143,9 @@
           this.content.area = ''
           break
         case 1:
+          if (!this.cityIndex) {
+            this.cityIndex = bigIndex + 1
+          }
           let idx = regionArr[this.cityIndex].sub.findIndex((child) => child.name === value.name)
           if (value.name !== this.content.city || idx === 0) {
             this.content.area = ''

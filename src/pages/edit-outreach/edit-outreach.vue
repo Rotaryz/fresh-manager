@@ -329,6 +329,7 @@
         goodsList: [],
         essInformation: {
           activity_type: 'offline',
+          activity_theme: 'offline',
           activity_name: '',
           activity_cover_image: '',
           start_at: '',

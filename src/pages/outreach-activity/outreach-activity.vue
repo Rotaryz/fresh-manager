@@ -144,7 +144,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
         this.getOutreachStatus()
       },
@@ -156,11 +157,12 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: selectStatus.status
+          status: selectStatus.status,
+          loading: false
         })
       },
       getOutreachStatus() {
-        API.Outreach.getOutreachStatus({activity_type: 'offline', start_at: this.startTime, end_at: this.endTime})
+        API.Outreach.getOutreachStatus({activity_theme: 'offline', start_at: this.startTime, end_at: this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -190,7 +192,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       },
       _deleteActivity(id) {
@@ -211,7 +214,8 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
       },
       _textHandle(num) {

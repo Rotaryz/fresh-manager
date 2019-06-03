@@ -1,5 +1,5 @@
 <template>
-  <div class="flash-sale table">
+  <div class="data-content">
     <div class="down-content">
       <span class="down-tip">活动时间</span>
       <div class="down-item">
@@ -9,21 +9,21 @@
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-today_rob@2x.png" class="identification-icon">
-          <p class="identification-name">限时抢购</p>
+          <img src="./icon-group_return@2x.png" class="identification-icon">
+          <p class="identification-name">拼团返现</p>
           <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="new-sale" append class="btn-main">新建活动<span class="add-icon"></span></router-link>
+          <router-link tag="div" to="new-collage" append class="btn-main" @click="window.$$tabIndex=3">新建活动<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in saleTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+          <div v-for="(item,index) in collageTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in saleList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in saleTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+          <div v-for="(item, index) in collageList" :key="index" class="list-content list-box">
+            <div v-for="(val, ind) in collageTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
               <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
                 {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
               </div>
@@ -33,19 +33,19 @@
               </div>
 
               <!--状态-->
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="+item.status === 1 ? 'status-success' : +item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
 
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'new-sale?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
+                <router-link tag="span" :to="'new-collage?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
-                <router-link tag="span" :to="'new-sale?editId=' + (item.id || 0)" append class="list-operation">复制活动</router-link>
+                <router-link tag="span" :to="'new-collage?editId=' + (item.id || 0)" append class="list-operation">复制活动</router-link>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="salePage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="collagePage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -53,71 +53,73 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {saleComputed, saleMethods, activityComputed, activityMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import {saleComputed, saleMethods} from '@state/helpers'
   import API from '@api'
 
-  const PAGE_NAME = 'FLASH_SALE'
-  const TITLE = '限时抢购'
-  const SALE_TITLE = [
-    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
-    {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
-    {name: '商品', flex: 1.4, value: 'goods_count', type: 1},
+  const COLLAGE_TITLE = [
+    {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
+    {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
+    {name: '活动商品数', flex: 1, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
-    {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
     {name: '状态', flex: 1, value: 'status', type: 4},
-    {name: '操作', flex: 1.4, value: '', type: 5}
+    {name: '创建时间', flex: 1.5, value: 'start_at', type: 1},
+    {name: '操作', flex: 1.6, value: '', type: 5}
   ]
-  // const SALE_LIST = [
-  //   {name: '名称', start_at: '2019-03-01', end_at: '2019-03-05', pay_num: 20, pay_amount: 100, status: 1}
-  // ]
   export default {
-    name: PAGE_NAME,
-    page: {
-      title: TITLE
-    },
     components: {
       DefaultConfirm
     },
     data() {
       return {
         statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '未开始', value: 1, key: 'wait_submit', num: 0},
-          {name: '进行中', value: 1, key: 'success', num: 0},
-          {name: '已结束', value: 1, key: 'success', num: 0}
+          {name: '全部', value: '', num: 0},
+          {name: '未开始', value: '', num: 0},
+          {name: '进行中', value: '', num: 0},
+          {name: '已结束', value: '', num: 0}
         ],
-        saleTitle: SALE_TITLE,
+        collageTitle: COLLAGE_TITLE,
         startTime: '',
         endTime: '',
         page: 1,
         delId: 0,
-        status: ''
+        status: '',
+        defaultIndex: 0
       }
     },
     computed: {
-      ...saleComputed
+      ...saleComputed,
+      ...activityComputed
     },
     created() {
-      this.defaultIndex = this.$route.query.status * 1 || 0
-      this.getSaleStatus()
+      this.getCollageStatus()
+      this.getCollageList({
+        page: this.page,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        status: this.status,
+        activityType: 'groupon',
+        loading: false
+      })
     },
-    mounted() {},
     methods: {
       ...saleMethods,
+      ...activityMethods,
       async changeStatus(selectStatus) {
         this.status = selectStatus.value
         this.$refs.pages.beginPage()
         this.page = 1
-        await this.getSaleList({
+        await this.getCollageList({
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: selectStatus.value
+          status: selectStatus.value,
+          activityType: 'groupon',
+          loading: false
         })
       },
-      getSaleStatus() {
-        API.Sale.getSaleStatus({activity_type: 'fixed', start_at: this.startTime,end_at: this.endTime})
+      getCollageStatus() {
+        API.Sale.getSaleStatus({activity_type: 'groupon', activity_theme: 'groupon', start_at: this.startTime,end_at: this.endTime})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -132,6 +134,18 @@
             })
           })
       },
+      addPage(page) {
+        this.page = page
+        this.getCollageList({
+          page: this.page,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          status: this.status,
+          activity_type: 'groupon',
+          activity_theme: 'groupon',
+          loading: false
+        })
+      },
       async _setTime(arr) {
         this.$refs.pages.beginPage()
         this.page = 1
@@ -141,25 +155,17 @@
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          loading: false
         })
-        this.getSaleStatus()
-      },
-      addPage(page) {
-        this.page = page
-        this.getSaleList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status
-        })
+        this.getCollageStatus()
       },
       _deleteActivity(id) {
         this.delId = id
         this.$refs.confirm.show('确定删除该活动？')
       },
       async _sureConfirm() {
-        let res = await API.Sale.saleDelete(this.delId)
+        let res = await API.Activity.delCollage(this.delId)
 
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
@@ -167,20 +173,26 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this.getSaleStatus()
-        this.getSaleList({
+        this.getCollageStatus()
+        this.getCollageList({
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
-          status: this.status
+          status: this.status,
+          activityType: 'groupon',
+          loading: false
         })
       }
     }
   }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus"  rel="stylesheet/stylus">
   @import "~@design"
+  .data-content
+    flex: 1
+    display: flex
+    flex-direction: column
   .list-box
     .list-item:last-child
       max-width: 150px
@@ -212,7 +224,4 @@
       .list-double-row
         .item-sub
           color: #333
-
-  .btn-main
-    margin-right: 10px
 </style>
