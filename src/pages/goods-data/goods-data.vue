@@ -456,7 +456,12 @@
         this.bigDataShow = false
       },
       noData(secIndex) {
-        this.hideText[secIndex] = false
+        this.hideText = this.hideText.map((item, index) => {
+          if (index === +secIndex) {
+            item = false
+          }
+          return item
+        })
       },
       hasData(secIndex) {
         this.hideText[secIndex] = true
