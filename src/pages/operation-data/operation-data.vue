@@ -178,14 +178,12 @@
       label: [
         {name: '送货金额(元)', key: 'amount_total', total: '', tabIdx: 0},
         {name: '送货数量', key: 'delivery_num_total', total: '', tabIdx: 0, yAxisIdx: 1},
-        {name: '订单满足率', key: 'rate', total: '', tabIdx: 1, unit:'%'},
-        {name: '准时交货率', key: 'sale_num_total', total: '', tabIdx: 1, unit:'%'}
+        {name: '订单满足率', key: 'rate', total: '', tabIdx: 1, unit:'%'}
       ],
       dataArr: [
         {name: '送货金额', key: 'amount', data:[], tabIdx: 0},
         {name: '送货数量', key: 'delivery_num', data:[], tabIdx: 0, yAxisIdx: 1},
-        {name: '订单满足率', key: 'rate', data:[], tabIdx: 1, unit:'%'},
-        {name: '准时交货率', key: 'sale_num', data:[], tabIdx: 1, unit:'%'}
+        {name: '订单满足率', key: 'rate', data:[], tabIdx: 1, unit:'%'}
       ],
       xAxleData: [],
       showSecondY: true,
@@ -309,36 +307,6 @@
       this._getData(true)
     },
     methods: {
-      // handleChangeTab(tab, tabIndex) {
-      //   console.log(tab, tabIndex)
-      // },
-      // exportExcel(type) {
-      //   this.excelType = type
-      //   window.open(this.exportUrl(), '_blank')
-      // },
-      // firstUppercase(str) {
-      //   let first = str[0].toUpperCase()
-      //   return first+str.slice(1)
-      // },
-      // exportUrl() {
-      //   // todo
-      //   let currentId = this.getCurrentId()
-      //   let token = this.$storage.get('auth.currentUser', '')
-      //   let msg = {
-      //     current_corp: currentId,
-      //     current_shop: process.env.VUE_APP_CURRENT_SHOP,
-      //     access_token: token.access_token
-      //   }
-      //   // this[this.excelType[0].toUpperCase()]
-      //   let data = Object.assign(msg, this.requestPub, this['request' + this.firstUppercase(this.excelType)])
-      //   let search = []
-      //   for (let key in data) {
-      //     search.push(`${key}=${data[key]}`)
-      //   }
-      //   let url = this.exportUrlArr[this.excelType][this.tabIndexControl[this.excelType]]
-      //   console.log(url)
-      //   return process.env.VUE_APP_API + '/social-shopping/api/backend/data-center/goods/' + url + '?' + search.join('&')
-      // },
       _formatExcelData() {
         let currentId = this.getCurrentId()
         let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
