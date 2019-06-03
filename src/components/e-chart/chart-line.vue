@@ -141,13 +141,10 @@
           // }
         }
         this.labelArrCount = labelArrCount
-        if (labelArrCount === 1) {
-          option.grid.left = '22'// 如果有y轴，调整canvas的左边间距
-        }
         option.legend.data = legendData
         option.series = series
         option.xAxis = this._setXAxis(chartConfig.xAxleData)
-        option.yAxis = this._setYAxis(chartConfig.showSecondY, labelArrCount === 1)// 只有一条数据的时候才显示Y轴
+        option.yAxis = this._setYAxis(chartConfig.showSecondY, false)// 不显示Y轴
         return option
       },
       _setSeries(chartConfig, item, i) {
@@ -197,7 +194,7 @@
       },
       _setXAxis(data) {
         // 刻度线：splitLine，坐标刻度：axisTick，坐标值：axisLabel，坐标轴：axisLine
-        let xAxis = {
+        return {
           type: 'category',
           boundaryGap: false,
           data: data,
@@ -215,7 +212,9 @@
           axisLabel: {
             color: CHART_COLOR.label,
             fontSize: 12,
-            align: 'center'
+            align: 'center',
+            showMinLabel: true,
+            showMaxLabel: true
           },
           axisTick: {
             show: false
@@ -229,7 +228,6 @@
             }
           }
         }
-        return xAxis
       },
       _setYAxis(showSecondY = false, show = true) {
         // 刻度线：splitLine，坐标刻度：axisTick，坐标值：axisLabel，坐标轴：axisLine
