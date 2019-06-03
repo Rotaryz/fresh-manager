@@ -114,7 +114,12 @@
             axisLabel: {
               color: '#666',
               fontSize: 12,
-              align: 'center'
+              rotate: 30,
+              interval: 0,
+              formatter: function (value) {
+                let txt = value.substring(0,7)
+                return txt + (value.length > 7 ? '...' : '')
+              }
             },
             axisTick: {
               show: false
@@ -147,7 +152,7 @@
             }
           },
           tooltip: {
-            trigger: 'axis',
+            trigger: 'item',
             padding: [5, 10],
             axisPointer: {
               type: 'shadow',
@@ -156,11 +161,12 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}${ratio ? '%': ''}`
+              return `${prams.name}：${prams.value}${ratio ? '%': ''}`
             }
           },
           dataZoom: [{
-            end: this.countNum(xAxisData.length, ratio),// 数据窗口范围的结束百分比
+            // end: this.countNum(xAxisData.length, ratio),// 数据窗口范围的结束百分比
+            endValue: xAxisData[15],// 数据窗口范围
             type: 'slider',
             bottom: '26px',
             show: true,

@@ -110,8 +110,8 @@
           },
           // canvas位置
           grid: {
-            left: '20',
-            right: '30',
+            left: '38',
+            right: '38',
             bottom: '52',
             top: '20',
             containLabel: true
@@ -136,15 +136,18 @@
           }
           legendData.push(item.name)// 设置底部每条折线的label
           series.push(this._setSeries(chartConfig, item, labelArrCount-1))// 设图表类型样式,及数据
-          if (item.yAxisIdx === 1 && chartConfig.showSecondY) {
-            option.grid.right = '20'// 如果有两条y轴，调整canvas的右边间距
-          }
+          // if (item.yAxisIdx === 1 && chartConfig.showSecondY) {
+          //   option.grid.right = '20'// 如果有两条y轴，调整canvas的右边间距
+          // }
         }
         this.labelArrCount = labelArrCount
+        if (labelArrCount === 1) {
+          option.grid.left = '22'// 如果有y轴，调整canvas的左边间距
+        }
         option.legend.data = legendData
         option.series = series
         option.xAxis = this._setXAxis(chartConfig.xAxleData)
-        option.yAxis = this._setYAxis(chartConfig.showSecondY)
+        option.yAxis = this._setYAxis(chartConfig.showSecondY, labelArrCount === 1)// 只有一条数据的时候才显示Y轴
         return option
       },
       _setSeries(chartConfig, item, i) {
@@ -152,7 +155,8 @@
           name: item.name,
           type: 'line',
           data: item.data,// 每条折线的数据
-          yAxisIndex: item.yAxisIdx||0,// 根据i设置参照哪个y轴，2、3参照第二条y轴
+          // yAxisIndex: item.yAxisIdx||0,// 根据i设置参照哪个y轴，2、3参照第二条y轴
+          yAxisIndex: 0,
           smooth: false,
           hoverAnimation: true,
           symbolSize: 5,
@@ -198,10 +202,8 @@
           boundaryGap: false,
           data: data,
           offset: 10,
-          // max: 'dataMax',
-          // min: 'dataMin',
-          max: data[data.length],
-          min: data[0],
+          max: 'dataMax',
+          min: 'dataMin',
           splitLine: {
             show: true,
             lineStyle: {
@@ -219,46 +221,50 @@
             show: false
           },
           axisLine: {
-            show: false
+            show: true,
+            lineStyle: {
+              color: CHART_COLOR.axle,
+              width: 0.5,
+              type: "doted"
+            }
           }
         }
         return xAxis
       },
-      _setYAxis(showSecondY = false) {
+      _setYAxis(showSecondY = false, show = true) {
         // 刻度线：splitLine，坐标刻度：axisTick，坐标值：axisLabel，坐标轴：axisLine
-        let length = showSecondY ? 2 : 1
-        let yAxis = []
-        for (let i = 1; i <= length; i++) {
-          yAxis.push({
-            minInterval: 1,
-            type: 'value',
-            splitLine: {
-              show: i !== 2,// 第二天Y轴不显示刻度线
-              lineStyle: {
-                color: CHART_COLOR.axle,
-                width: 0.5
-              }
-            },
-            axisTick: {
-              show: false,
-              lineStyle: {
-                color: CHART_COLOR.axle,
-                width: 0.5
-              }
-            },
-            axisLabel: {
-              formatter: '{value}',
-              color: CHART_COLOR.label
-            },
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: CHART_COLOR.axle,
-                width: 0.5
-              }
+        // let length = showSecondY ? 2 : 1
+        let yAxis = [{
+          show: show,
+          minInterval: 1,
+          type: 'value',
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: CHART_COLOR.axle,
+              width: 0.5
             }
-          })
-        }
+          },
+          axisTick: {
+            show: false,
+            lineStyle: {
+              color: CHART_COLOR.axle,
+              width: 0.5
+            }
+          },
+          axisLabel: {
+            show: show,
+            formatter: '{value}',
+            color: CHART_COLOR.label
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: CHART_COLOR.axle,
+              width: 0.5
+            }
+          }
+        }]
         return yAxis
       },
       _setDataZoom() {
