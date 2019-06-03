@@ -531,6 +531,8 @@
         obj.limit ? this.$set(this.requestSale, 'limit', obj.limit) : this.$delete(this.requestSale, 'limit')
         if (index === 0) {
           this.$delete(this.requestSale, 'order_by')
+        } else if (index === 1) {
+          this.initSaleRankList()
         }
         let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
@@ -580,6 +582,9 @@
         this.$set(this.tabIndexControl, 'supply', index)
         obj.code ? this.$set(this.requestSupply, 'order_by', obj.code) : this.$delete(this.requestSupply, 'order_by')
         obj.limit ? this.$set(this.requestSupply, 'limit', obj.limit) : this.$delete(this.requestSupply, 'limit')
+        if (index === 0) {
+          this.initStockRankList()
+        }
         let dataSupply = Object.assign({}, this.requestPub, this.requestSupply)
         await this.getSupplyData({dataSupply, index})
         this.loaded = true

@@ -47,29 +47,6 @@
     {name: '库存', flex: 1, value: 'num'},
     {name: '库存金额', flex: 1, value: 'amount', type: 'money'}
   ]
-  const GOOD = [
-    {
-      "num": "2",
-      "amount": "20.00",
-      "profit": "18.00",
-      "spu": "1",
-      "name": "苹果",
-      "stock": 50,
-      "stock_price": 100,
-      "image_url": "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/20/154528653880037.png"
-    },
-    {
-      "num": "2",
-      "amount": "20.00",
-      "profit": "18.00",
-      "spu": "1",
-      "name": "苹果",
-      "stock": 50,
-      "stock_price": 100,
-      "image_url": "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/20/154528653880037.png"
-    }
-
-  ]
   export default{
     name: COMPONENT_NAME,
     props: {
@@ -91,7 +68,6 @@
     data() {
       return {
         titleArr: this.type === 'sales' ? TITLE : TITLE2,
-        goods: GOOD,
         activeIndex: 1
       }
     },

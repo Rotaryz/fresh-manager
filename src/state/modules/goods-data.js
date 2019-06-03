@@ -9,8 +9,7 @@ export const state = {
   // sec1
   saleData: {
     xAx: [],
-    series: [],
-    list: []
+    series: []
   },
   // sec2
   serveData: {
@@ -25,8 +24,7 @@ export const state = {
   // sec4
   supplyData: {
     xAx: [],
-    series: [],
-    list: []
+    series: []
   },
   bigChartData: {}
 }
@@ -282,4 +280,11 @@ export const actions = {
         app.$loading.hide()
       })
   },
+  initSaleRankList({commit}) {
+    commit('SALE_RANK_LIST', [])
+  },
+  initStockRankList({commit}) {
+    commit('STOCK_RANK_LIST', [])
+  },
+
 }
