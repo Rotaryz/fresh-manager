@@ -18,7 +18,9 @@
       >
         <div class="left-tab-main">
           <div class="left">
-            <img :src="item.image_url" alt="" class="category-image">
+            <div class="image-box">
+              <img :src="item.image_url" alt="" class="category-image">
+            </div>
             <span class="name">{{item.name}}({{item.goods_count}})</span>
           </div>
           <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]"></div>
@@ -30,7 +32,9 @@
                :class="{'select': (+goodsIndex === ind && selectGoods)}"
                @click.stop="changeGoods(goods.id, ind, 'goods')"
           >
-            <img :src="goods.goods_cover_image" alt="" class="goods-image">
+            <div class="image-box">
+              <img :src="goods.goods_cover_image" alt="" class="goods-image">
+            </div>
             <span class="title">{{goods.name}}</span>
           </div>
         </div>
@@ -178,13 +182,17 @@
           height: 28px
           margin-right: 8px
           border-radius: 1px
+        .image-box
+          width: 28px
+          height: 28px
+          margin-right: 8px
+          border-1px(#E9ECEE, 4px)
         .all-image
           width: 18px
           height: 18px
           margin: 8px
         .category-image
           border-radius: 2px
-          border: 0.5px solid #E9ECEE
         .name
           line-height: 18px
           width: 90px
@@ -229,12 +237,16 @@
         color: $color-text-main
         font-family: $font-family-regular
         font-size: $font-size-14
+        .image-box
+          width: 28px
+          height: 28px
+          margin-right: 8px
+          border-1px(#E9ECEE, 4px)
         .goods-image
           width: 28px
           height: 28px
           margin-right: 8px
           border-radius: 2px
-          border: 0.5px solid #E9ECEE
         .title
           line-height: 18px
           width: 90px

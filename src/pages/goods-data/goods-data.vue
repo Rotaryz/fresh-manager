@@ -42,15 +42,15 @@
               </div>
               <div class="data-list">
                 <div class="view">
-                  <p class="text">浏览量 <img v-if="false" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">浏览量 <img v-if="saleData.data.views_rate > 20" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售数量 <img v-if="false" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售数量 <img v-if="saleData.data.num_rate > 20" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售额(元) <img v-if="false" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate > 10" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
@@ -136,7 +136,7 @@
         <span class="chart-name">{{allName[bigBarIndex]}}</span>
         <img src="./icon-del_2@2x.png" class="big-close hand" @click="closeBigData">
       </div>
-      <p class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{bigChartData[selectMsg[bigBarType].code + '_total'] || bigChartData[selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
+      <p class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{bigChartData[selectMsg[bigBarType].word + '_total'] || bigChartData[selectMsg[bigBarType].word] || bigChartData[selectMsg[bigBarType].code + '_total'] || bigChartData[selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
       <div class="big-chart">
         <big-bar-data ref="bigBar" chartId="big-bar" @clickBigChart="clickBigChart"></big-bar-data>
       </div>
@@ -174,7 +174,7 @@
     all: {
       sale: [
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
-        {name: '销量排行榜', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 6},
         {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 6}
       ],
@@ -195,7 +195,7 @@
     category: {
       sale: [
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
-        {name: '销量排行榜', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 6},
         {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 6}
       ],
@@ -440,7 +440,6 @@
           if (type === 'bar1') {
             this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
           } else {
-            // console.log(this.bigChartData,this.selectMsg[this.bigBarType].code, 444)
             this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
           }
         })
@@ -521,8 +520,8 @@
             this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
           } else {
             this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, obj.code), obj.rate)
-            this.$refs.line1 && this.$refs.line1.drawLine(this.lineHandle(this.saleData.data, obj.code, obj.name), obj.rate)
           }
+          this.$refs.line1 && this.$refs.line1.drawLine(this.lineHandle(this.saleData.data, obj.code, obj.name), obj.rate)
         })
       },
       // 切换商品售后模块（模块2）
@@ -549,9 +548,9 @@
             this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
           } else {
             this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
-            this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData.data))
-            this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
           }
+          this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData.data))
+          this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
         })
       },
       // 切换供应链模块（模块4）
@@ -657,10 +656,13 @@
       },
       dataHandle(data, y1) {
         if (!data || !data.length) return {xAx: [], series: []}
-        let xAx = data.map(val => {
+        let newData = data.filter(item => {
+          return item[y1] > 0
+        })
+        let xAx = newData.map(val => {
           return val.name
         })
-        let series = data.map(val => {
+        let series = newData.map(val => {
           return val[y1]
         })
         return {

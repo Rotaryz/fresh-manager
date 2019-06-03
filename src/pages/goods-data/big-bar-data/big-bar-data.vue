@@ -21,11 +21,11 @@
       return {
         tabIndex: 0,
         data: {
-          x: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点", "时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点", "时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点", "时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调", "面包糕点", "网红零食", "粤式早点"],
-          series: ["10", "20", "5", "40", "15", "14", "44", "34", "20", "10", "20", "5", "40", "15", "14", "44", "34", "20", "10", "20", "5", "40", "15", "14", "44", "34", "20", "10", "20", "5", "40", "15", "14", "44", "34", "20"],
+          x: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
+          series: [0, 0, 0, 0, 0, 0],
           x1: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
-          series1: ["10", "20", "5", "40", "15", "14"],
-          series2: ["12", "18", "10", "50", "10", "20"]
+          series1: [0, 0, 0, 0, 0, 0],
+          series2: [0, 0, 0, 0, 0, 0]
         }
       }
     },
@@ -62,7 +62,7 @@
           // let x = new Array(15).fill(1)
           // let y = new Array(15).fill(81)
           let ratio = Math.floor((window.innerWidth - 230) / 85)
-          myChart.setOption(this.createBarData(xAxisData, seriesData, ratio))
+          myChart.setOption(this.createBarData(xAxisData, seriesData, ratio, rate))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
@@ -93,7 +93,7 @@
           })
         })
       },
-      createBarData(xAxisData, seriesData, ratio) {
+      createBarData(xAxisData, seriesData, ratio, rate) {
         // let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
         return {
           grid: {
@@ -156,7 +156,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}${ratio ? '%': ''}`
+              return `${prams[0].name}：${prams[0].value}${rate ? '%': ''}`
             }
           },
           dataZoom: [{

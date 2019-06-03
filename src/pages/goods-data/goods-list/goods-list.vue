@@ -18,7 +18,9 @@
     <div class="list">
       <div v-for="(item, index) in list" :key="index" class="list-item" :class="{'no-border': index > 5}">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
-          <img v-if="val.value === 'img'" class="img" :src="item.image_url" alt="">
+          <div v-if="val.value === 'img'" class="image-box">
+            <img class="img" :src="item.image_url" alt="">
+          </div>
           <p v-else-if="val.type === 'money'" class="main">¥{{item[val.value]}}</p>
           <p v-else class="main">{{item[val.value]}}</p>
         </div>
@@ -170,6 +172,10 @@
       height: 36px
       line-height: 36px
       padding-right: 20px
+      .image-box
+        width: 36px
+        height: 36px
+        border-1px($color-line, 4px)
       .main
         overflow: hidden
         text-overflow: ellipsis
@@ -178,7 +184,6 @@
         width: 36px
         height: 36px
         border-radius: 2px
-        border: 0.5px solid $color-line
       &:first-child
         max-width: 50px
 
