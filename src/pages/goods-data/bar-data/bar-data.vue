@@ -335,7 +335,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}<br />销售额占比：${prams[0].value}%<br />采购额占比：${prams[1].value}%`
+              return `${prams[0].name}<br />${prams[0] ? prams[0].seriesName + '额占比：' + prams[0].value + '%<br />' : ''}${prams[1] ? prams[1].seriesName + '额占比：' + prams[1].value + '%<br />' : ''}`
             }
           },
           series: [
