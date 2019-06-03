@@ -55,7 +55,7 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" @changeGoodsRank="changeGoodsRank"></goods-list>
+            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" :loaded="loaded" @changeGoodsRank="changeGoodsRank"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1" @clickChart="clickChart"></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
           </section>
@@ -119,7 +119,7 @@
             <div v-if="selectMsg.supply.type !== 'goods'" class="name-text">
               <p class="item">{{selectMsg.supply.name}}<span class="data">{{supplyData[selectMsg.supply.code + '_total'] || supplyData[selectMsg.supply.code] || 0}}{{selectMsg.supply.rate && '%'}}</span></p>
             </div>
-            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList"></goods-list>
+            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList" :loaded="loaded"></goods-list>
             <bar-data v-if="selectMsg.supply.type === 'bar'" ref="bar4" chartId="bar4" @clickChart="clickChart"></bar-data>
             <line-data v-if="selectMsg.supply.type === 'line'" ref="line4" chartId="line4" class="chart-box"></line-data>
           </section>
@@ -322,7 +322,8 @@
         clickChartIndex: '', // 点击的柱状图下标值
         allName: ['商品销售', '商品售后', '商品采购', '供应链'], // 每个块的名称
         bigBarIndex: 0, // 大图表所属第几块下标
-        bigBarType: '' // 大图表所属第几块名称
+        bigBarType: '', // 大图表所属第几块名称
+        loaded: false
       }
     },
     computed: {
@@ -502,6 +503,7 @@
       },
       // 切换商品销售模块（模块1）
       async changeSale(obj, index) {
+        this.loaded = false
         this.selectMsg.sale = this.deepCopy(obj)
         this.$set(this.tabIndexControl, 'sale', index)
         obj.code ? this.$set(this.requestSale, 'order_by', obj.code) : this.$delete(this.requestSale, 'order_by')
@@ -511,6 +513,7 @@
         }
         let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
+        this.loaded = true
         if (index === 0 && this.leftTab !== 'goods') {
           this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
         } else {

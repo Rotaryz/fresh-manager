@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div v-if="!list.length" class="no-data">暂无数据</div>
+    <div v-if="!list.length && loaded" class="no-data">暂无数据</div>
   </div>
 </template>
 
@@ -76,6 +76,10 @@
       type: {
         type: String,
         default: 'sales'
+      },
+      loaded: {
+        type: Boolean,
+        default: false
       },
       list: {
         type: Array,

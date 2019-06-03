@@ -1,8 +1,8 @@
 <template>
   <div class="bar-data">
     <div class="data-content">
-      <div v-if="!hideChart" :id="chartId" style="width: 100%; height: 100%"></div>
-      <div v-else class="no-data">暂无数据</div>
+      <div v-show="!hideChart" :id="chartId" style="width: 100%; height: 100%"></div>
+      <div v-show="hideChart" class="no-data">暂无数据</div>
     </div>
   </div>
 </template>
@@ -48,6 +48,7 @@
           this.hideChart = true
           return
         }
+        this.hideChart = false
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x1
           let seriesData = data.series.length > 0 ? data.series : this.data.series
@@ -69,6 +70,7 @@
           this.hideChart = true
           return
         }
+        this.hideChart = false
         let msg = {
           xAxisData: data.xAx.length ? data.xAx : this.data.x1,
           seriesData1: data.salesNum.length ? data.salesNum : this.data.series,
@@ -88,6 +90,7 @@
       },
       // 纵向柱状图
       drawBar2(data) {
+        this.hideChart = false
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2
           let seriesData3 = data.series.length > 0 ? data.series : this.data.series
