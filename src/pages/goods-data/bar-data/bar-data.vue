@@ -418,7 +418,8 @@
     display: flex
     flex-direction: column
   .data-content
-    flex: 1
+    width: 100%
+    height: 100%
     #barData
       width: 100%
       height: 100%

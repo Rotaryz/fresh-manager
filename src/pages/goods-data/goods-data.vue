@@ -491,6 +491,7 @@
         this.leftTabItem = itemId
         this.leftTab = code
         this._initSelect()
+        this.hideText = [true, true, true, true]
         let data = Object.assign({}, this.requestPurchase, this.requestPub)
         if (code !== 'goods') {
           this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
@@ -525,7 +526,7 @@
       // 切换商品销售模块（模块1）
       async changeSale(obj, index) {
         this.loaded = false
-        this.selectMsg.sale = this.deepCopy(obj)
+        this.$set(this.selectMsg, 'sale', this.deepCopy(obj))
         this.$set(this.tabIndexControl, 'sale', index)
         obj.code ? this.$set(this.requestSale, 'order_by', obj.code) : this.$delete(this.requestSale, 'order_by')
         obj.limit ? this.$set(this.requestSale, 'limit', obj.limit) : this.$delete(this.requestSale, 'limit')
@@ -537,16 +538,19 @@
         let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
         this.loaded = true
-        if (index === 0 && this.leftTab !== 'goods') {
-          this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
-        } else {
-          this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, obj.code), obj.rate)
+        if (this.leftTab !== 'goods') {
+          if (index === 0) {
+            this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
+          } else {
+            this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, obj.code), obj.rate)
+          }
         }
         this.$refs.line1 && this.$refs.line1.drawLine(this.lineHandle(this.saleData.data, obj.code, obj.name), obj.rate)
       },
       // 切换商品售后模块（模块2）
       async changeServe(obj, index) {
-        this.selectMsg.serve = obj
+        // this.selectMsg.serve = obj
+        this.$set(this.selectMsg, 'serve', obj)
         this.$set(this.tabIndexControl, 'serve', index)
         this.requestServe.order_by = obj.code
         let data = Object.assign({}, this.requestPub, this.requestServe)
@@ -556,7 +560,7 @@
       },
       // 切换商品采购模块（模块3）
       async changePurchase(obj, index) {
-        this.selectMsg.purchase = obj
+        this.$set(this.selectMsg, 'purchase', obj)
         this.$set(this.tabIndexControl, 'purchase', index)
         obj.code ? this.$set(this.requestPurchase, 'order_by', obj.code) : this.$delete(this.requestPurchase, 'order_by')
         obj.limit ? this.$set(this.requestPurchase, 'limit', obj.limit) : this.$delete(this.requestPurchase, 'limit')
@@ -578,7 +582,7 @@
       // 切换供应链模块（模块4）
       async changeSupply(obj, index) {
         this.loaded = false
-        this.selectMsg.supply = obj
+        this.$set(this.selectMsg, 'supply', obj)
         this.$set(this.tabIndexControl, 'supply', index)
         obj.code ? this.$set(this.requestSupply, 'order_by', obj.code) : this.$delete(this.requestSupply, 'order_by')
         obj.limit ? this.$set(this.requestSupply, 'limit', obj.limit) : this.$delete(this.requestSupply, 'limit')
