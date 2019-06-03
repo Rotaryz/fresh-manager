@@ -16,8 +16,8 @@
     </div>
     <div class="label-bar">
       <template v-for="(label, labelIdx) in chartConfig.label">
-        <p v-if="!(chartConfig.tab && label.tabIdx !== tabIndex)" :key="labelIdx" :style="{'max-width':100/chartConfig.label.length+'%'}" class="label">
-          {{label.name}} <span class="label-val">{{label.total}}</span>
+        <p v-if="!(chartConfig.tab && label.tabIdx !== tabIndex)" :key="labelIdx" :style="{'max-width':100/labelArrCount+'%'}" class="label">
+          {{label.name}} <span class="label-val" :title="label.total">{{label.total}}</span>
         </p>
       </template>
     </div>
@@ -44,7 +44,8 @@
       return {
         chartConfig: {},
         tabIndex: 0,
-        myChart: ''
+        myChart: '',
+        labelArrCount: 0
       }
     },
     beforeDestroy() {
@@ -123,20 +124,21 @@
         let legendData = []
         let series = []
         // 遍历label为每条折线图设置series
-        let arrIdxCount = 0// 代表实际的index，用于设置参照哪个y轴和颜色
+        let labelArrCount = 0// 代表实际的index，用于设置参照哪个y轴和颜色
         for (let i = 0; i < chartConfig.dataArr.length; i++) {
           let item = chartConfig.dataArr[i]
           if (chartConfig.tab && item.tabIdx !== this.tabIndex) {
             continue
           } else {
-            arrIdxCount++
+            labelArrCount++
           }
           legendData.push(item.name)// 设置底部每条折线的label
-          series.push(this._setSeries(chartConfig, item, arrIdxCount-1))// 设图表类型样式,及数据
+          series.push(this._setSeries(chartConfig, item, labelArrCount-1))// 设图表类型样式,及数据
           if (item.yAxisIdx === 1 && chartConfig.showSecondY) {
             option.grid.right = '20'// 如果有两条y轴，调整canvas的右边间距
           }
         }
+        this.labelArrCount = labelArrCount
         option.legend.data = legendData
         option.series = series
         option.xAxis = this._setXAxis(chartConfig.xAxleData)
