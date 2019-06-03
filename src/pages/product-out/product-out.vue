@@ -101,7 +101,7 @@
         commodities: COMMODITIES_LIST,
         productOutList: [],
         pageTotal: {},
-        status: 0,
+        status: 2,
         startTime: '',
         endTime: '',
         keyWord: '',

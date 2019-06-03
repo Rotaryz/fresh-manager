@@ -1585,7 +1585,7 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = routeTo.query.status || 0
+            let status = routeTo.query.status || 2
             store
               .dispatch('product/getOutData', {startTime: '', endTime: '', status, page: 1})
               .then((res) => {
