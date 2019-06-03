@@ -24,8 +24,8 @@
                 <span v-if="selectMsg.sale.excel" :key="2" class="export-btn hand" @click.stop="exportExcel('sale')">导出Excel</span>
               </div>
             </div>
-            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text hand" @click.stop="showDescription(saleData.data.type_name)">
-              <p class="item">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
+            <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text">
+              <p class="item hand" @click.stop="showDescription(saleData.data.type_name)">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
             </div>
 
             <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail'" class="name-text">
@@ -58,7 +58,6 @@
             <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" @changeGoodsRank="changeGoodsRank"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1" @clickChart="clickChart"></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
-
           </section>
 
           <!--模块2-->

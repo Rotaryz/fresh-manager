@@ -29,6 +29,7 @@
         </div>
       </div>
     </div>
+    <div v-if="!list.length" class="no-data">暂无数据</div>
   </div>
 </template>
 
@@ -115,6 +116,15 @@
     flex: 1
     display: flex
     flex-direction: column
+    .no-data
+      width: 100%
+      height: 100%
+      display: flex
+      align-items: center
+      justify-content: center
+      color: #666
+      font-size: $font-size-14
+      font-family: $font-family-regular
   .goods-title
     height: 45px
     line-height: 45px
