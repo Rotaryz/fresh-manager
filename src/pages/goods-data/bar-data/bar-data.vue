@@ -44,10 +44,13 @@
       },
       // 纵向柱状图
       drawBar(data, rate) {
+        let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
+          this.$emit('noData', sec -1)
           return
         }
+        this.$emit('hasData', sec -1)
         this.hideChart = false
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x1
@@ -66,10 +69,13 @@
       },
       // 横向柱状图
       drawBar1(data) {
+        let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
+          this.$emit('noData', sec -1)
           return
         }
+        this.$emit('hasData', sec -1)
         this.hideChart = false
         let msg = {
           xAxisData: data.xAx.length ? data.xAx : this.data.x1,
@@ -90,11 +96,13 @@
       },
       // 纵向柱状图
       drawBar2(data) {
-        console.log(data, 1111)
+        let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
+          this.$emit('noData', sec -1)
           return
         }
+        this.$emit('hasData', sec -1)
         this.hideChart = false
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2

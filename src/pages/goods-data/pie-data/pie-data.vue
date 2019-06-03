@@ -1,7 +1,8 @@
 <template>
   <div class="pie-data">
     <div class="data-content">
-      <div :id="chartId" style="width: 100%; height: 100%"></div>
+      <div v-show="!hideChart" :id="chartId" style="width: 100%; height: 100%"></div>
+      <div v-show="hideChart" class="no-data">暂无数据</div>
     </div>
   </div>
 </template>
@@ -20,6 +21,7 @@
     data() {
       return {
         tabIndex: 0,
+        hideChart: false,
         data: [
           {name: '时令水果', value: 0},
           {name: '应季蔬菜', value: 0},
@@ -40,6 +42,14 @@
         this.tabIndex = 0
       },
       drawPie(data) {
+        let sec = this.chartId.slice(3)
+        if (!data.length) {
+          this.hideChart = true
+          this.$emit('noData', sec -1)
+          return
+        }
+        this.$emit('hasData', sec -1)
+        this.hideChart = false
         let seriesData = data.length > 0 ? data : this.data
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
         let that = this
@@ -137,6 +147,15 @@
     flex-direction: column
   .data-content
     flex: 1
+    .no-data
+      width: 100%
+      height: 100%
+      display: flex
+      align-items: center
+      justify-content: center
+      color: #666
+      font-size: $font-size-14
+      font-family: $font-family-regular
     #pieData
       width: 100%
       height: 100%

@@ -28,7 +28,7 @@
               <p class="item hand" @click.stop="showDescription(saleData.data.type_name)">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
             </div>
 
-            <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail'" class="name-text">
+            <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail' && hideText[0]" class="name-text">
               <p class="item">{{selectMsg.sale.name}}<span class="data">{{saleData[selectMsg.sale.code + '_total'] || saleData[selectMsg.sale.code] || 0}}{{selectMsg.sale.rate && '%'}}</span></p>
             </div>
 
@@ -56,7 +56,12 @@
               </div>
             </div>
             <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" :loaded="loaded" @changeGoodsRank="changeGoodsRank"></goods-list>
-            <bar-data v-if="selectMsg.sale.type === 'bar'" ref="bar1" chartId="bar1" @clickChart="clickChart"></bar-data>
+            <bar-data v-if="selectMsg.sale.type === 'bar'"
+                      ref="bar1" chartId="bar1"
+                      @clickChart="clickChart"
+                      @noData="noData"
+                      @hasData="hasData"
+            ></bar-data>
             <line-data v-if="selectMsg.sale.type === 'line'" ref="line1" chartId="line1" class="chart-box"></line-data>
           </section>
 
@@ -72,10 +77,16 @@
                 <span v-if="selectMsg.serve.excel" class="export-btn hand" @click.stop="exportExcel('serve')">导出Excel</span>
               </div>
             </div>
-            <div class="name-text">
+            <div v-if="hideText[1]" class="name-text">
               <p class="item">{{selectMsg.serve.name}}<span class="data">{{serveData[selectMsg.serve.code + '_total'] || serveData[selectMsg.serve.code] || 0}}{{selectMsg.serve.rate && '%'}}</span></p>
             </div>
-            <bar-data v-if="selectMsg.serve.type === 'bar'" ref="bar2" chartId="bar2" @clickChart="clickChart"></bar-data>
+            <bar-data v-if="selectMsg.serve.type === 'bar'"
+                      ref="bar2"
+                      chartId="bar2"
+                      @clickChart="clickChart"
+                      @noData="noData"
+                      @hasData="hasData"
+            ></bar-data>
             <line-data v-if="selectMsg.serve.type === 'line'" ref="line2" chartId="line2" class="chart-box"></line-data>
           </section>
         </div>
@@ -94,12 +105,25 @@
                 <span v-if="selectMsg.purchase.excel" key="2" class="export-btn hand" @click.stop="exportExcel('purchase')">导出Excel</span>
               </div>
             </div>
-            <div class="name-text">
+            <div v-if="hideText[2]" class="name-text">
               <p class="item">{{selectMsg.purchase.name}}<span class="data">{{purchaseData[selectMsg.purchase.word] || 0}}{{selectMsg.purchase.rate && '%'}}</span></p>
             </div>
 
-            <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3" @clickChart="clickChart"></bar-data>
-            <bar-data v-if="selectMsg.purchase.type === 'bar1'" :key="2" ref="bar3" chartId="bar3" @clickChart="clickChart"></bar-data>
+            <bar-data v-if="selectMsg.purchase.type === 'bar'"
+                      :key="1"
+                      ref="bar3"
+                      chartId="bar3"
+                      @clickChart="clickChart"
+                      @noData="noData"
+                      @hasData="hasData"
+            ></bar-data>
+            <bar-data v-if="selectMsg.purchase.type === 'bar1'"
+                      :key="2" ref="bar3"
+                      chartId="bar3"
+                      @clickChart="clickChart"
+                      @noData="noData"
+                      @hasData="hasData"
+            ></bar-data>
             <pie-data v-if="selectMsg.purchase.type === 'pie'" ref="pie3" chartId="pie3" @clickChart="clickChart"></pie-data>
             <line-data v-if="selectMsg.purchase.type === 'line'" ref="line3" class="chart-box" chartId="line3"></line-data>
           </section>
@@ -116,11 +140,16 @@
                 <span v-if="selectMsg.supply.excel" :key="2" class="export-btn hand" @click.stop="exportExcel('supply')">导出Excel</span>
               </div>
             </div>
-            <div v-if="selectMsg.supply.type !== 'goods'" class="name-text">
+            <div v-if="selectMsg.supply.type !== 'goods' && hideText[3]" class="name-text">
               <p class="item">{{selectMsg.supply.name}}<span class="data">{{supplyData[selectMsg.supply.code + '_total'] || supplyData[selectMsg.supply.code] || 0}}{{selectMsg.supply.rate && '%'}}</span></p>
             </div>
             <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList" :loaded="loaded"></goods-list>
-            <bar-data v-if="selectMsg.supply.type === 'bar'" ref="bar4" chartId="bar4" @clickChart="clickChart"></bar-data>
+            <bar-data v-if="selectMsg.supply.type === 'bar'"
+                      ref="bar4" chartId="bar4"
+                      @clickChart="clickChart"
+                      @noData="noData"
+                      @hasData="hasData"
+            ></bar-data>
             <line-data v-if="selectMsg.supply.type === 'line'" ref="line4" chartId="line4" class="chart-box"></line-data>
           </section>
         </div>
@@ -135,7 +164,7 @@
         <span class="chart-name">{{allName[bigBarIndex]}}</span>
         <img src="./icon-del_2@2x.png" class="big-close hand" @click="closeBigData">
       </div>
-      <p class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{bigChartData[selectMsg[bigBarType].word + '_total'] || bigChartData[selectMsg[bigBarType].word] || bigChartData[selectMsg[bigBarType].code + '_total'] || bigChartData[selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
+      <p v-if="hideText[secName[bigBarType]]" class="big-data-name">{{selectMsg[bigBarType].name}} <span class="data">{{bigChartData[selectMsg[bigBarType].word + '_total'] || bigChartData[selectMsg[bigBarType].word] || bigChartData[selectMsg[bigBarType].code + '_total'] || bigChartData[selectMsg[bigBarType].code] || 0}}{{selectMsg[bigBarType].rate ? '%' : ''}}</span></p>
       <div class="big-chart">
         <big-bar-data ref="bigBar" chartId="big-bar" @clickBigChart="clickBigChart"></big-bar-data>
       </div>
@@ -276,26 +305,6 @@
           cate: '',
           spu: ''
         },
-        allMsg: [
-          {
-            name: '商品结构',
-            data: '2000',
-            goods_name: '台湾柑橘',
-            sale: '88/箱',
-            view_data: 1000,
-            sale_data: 400,
-            sale_price: '2000.00'
-          },{
-            name: '退货数',
-            data: '2000'
-          },{
-            name: '毛利率',
-            data: '2000'
-          },{
-            name: '库存周转率',
-            data: '2000'
-          }
-        ],
         selectMsg: {
           sale: {},
           serve: {},
@@ -321,9 +330,11 @@
         clickSec: '', // 被点击图表的块名称sale serve purchase supply
         clickChartIndex: '', // 点击的柱状图下标值
         allName: ['商品销售', '商品售后', '商品采购', '供应链'], // 每个块的名称
+        secName: {sale: 0, serve: 1, purchase: 2, supply: 3},
         bigBarIndex: 0, // 大图表所属第几块下标
         bigBarType: '', // 大图表所属第几块名称
-        loaded: false
+        loaded: false,
+        hideText: [true, true, true, true]
       }
     },
     computed: {
@@ -396,7 +407,6 @@
         this.clickChartIndex = index
         this.bigDataShow = false
         // this.$refs.goodsTab.selectList('', 42624)
-        // console.log(this.bigBarType, this[this.bigBarType + 'Data'])
         if (!this[this.bigBarType + 'Data'].data || !this[this.bigBarType + 'Data'].data.length) return
         // 找到分类ID 或商品ID
         if (this.leftTab === 'all') {
@@ -444,6 +454,12 @@
       },
       closeBigData() {
         this.bigDataShow = false
+      },
+      noData(secIndex) {
+        this.hideText[secIndex] = false
+      },
+      hasData(secIndex) {
+        this.hideText[secIndex] = true
       },
       deepCopy(obj) {
         return JSON.parse(JSON.stringify(obj))
@@ -713,10 +729,7 @@
         }
       },
       pieHandle(data) {
-        if (!data || !data.length) return [{
-          name: '',
-          value: ''
-        }]
+        if (!data || !data.length) return []
         let series = data.map(item => {
           return {
             name: item.name,
