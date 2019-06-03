@@ -90,6 +90,11 @@
       },
       // 纵向柱状图
       drawBar2(data) {
+        console.log(data, 1111)
+        if (!data.xAx.length) {
+          this.hideChart = true
+          return
+        }
         this.hideChart = false
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2

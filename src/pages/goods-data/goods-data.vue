@@ -554,12 +554,14 @@
       },
       // 切换供应链模块（模块4）
       async changeSupply(obj, index) {
+        this.loaded = false
         this.selectMsg.supply = obj
         this.$set(this.tabIndexControl, 'supply', index)
         obj.code ? this.$set(this.requestSupply, 'order_by', obj.code) : this.$delete(this.requestSupply, 'order_by')
         obj.limit ? this.$set(this.requestSupply, 'limit', obj.limit) : this.$delete(this.requestSupply, 'limit')
         let dataSupply = Object.assign({}, this.requestPub, this.requestSupply)
         await this.getSupplyData({dataSupply, index})
+        this.loaded = true
         this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
         this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, obj.code), obj.rate)
       },
@@ -636,6 +638,15 @@
             type: 'o'
           }
         ]
+        let newArr = arr.some(item => {
+          return data[item.type]
+        })
+        if (!newArr) {
+          return {
+            xAx: [],
+            series: []
+          }
+        }
         let xAx = arr.map(item => {
           return item.name
         })

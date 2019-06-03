@@ -1,6 +1,6 @@
 <template>
   <div class="goods-list">
-    <div v-if="list.length">
+    <div v-show="list.length">
       <div class="goods-title" :class="{'padding': list.length > 5}">
         <div v-for="(item, index) in titleArr"
              :key="index"
@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div v-if="!list.length && loaded" class="no-data">暂无数据</div>
+    <div v-show="!list.length && loaded" class="no-data">暂无数据</div>
   </div>
 </template>
 
