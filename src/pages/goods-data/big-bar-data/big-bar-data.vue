@@ -161,8 +161,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}${rate ? '%': ''}`
-              return `${prams.name}：${prams.value}${ratio ? '%': ''}`
+              return `${prams.name}：${prams.value}${rate ? '%': ''}`
             }
           },
           dataZoom: [{
