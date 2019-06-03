@@ -384,7 +384,7 @@
           if (!this[this.clickSec + 'Data'].data || !this[this.clickSec + 'Data'].data.length) return
           // 找到分类ID 或商品ID
           if (this.leftTab === 'all') {
-            let chartCateId =  this[this.clickSec + 'Data'].data[index].cate
+            let chartCateId =  this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].id
             this.$refs.goodsTab.selectList(chartCateId)
           } else {
             let chartGoodsId = this[this.clickSec + 'Data'].data[index].spu
@@ -574,11 +574,7 @@
           access_token: token.access_token
         }
         let word = JSON.parse(JSON.stringify(this['request' + this.firstUppercase(this.excelType)]))
-        if ((this.excelType === 'sale' && +this.tabIndexControl.sale === 1) || (this.excelType === 'supply' && +this.tabIndexControl.supply === 0)) {
-          word.limit = 10
-        } else {
-          word.limit = 0
-        }
+        word.limit = 0
         let data = Object.assign({}, msg, this.requestPub, word)
         if (this.excelType.type === 'sale' && +this.tabIndexControl['sale'] === 0){
           delete data.order_by

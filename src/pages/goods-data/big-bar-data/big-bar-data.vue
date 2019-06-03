@@ -143,7 +143,9 @@
               show: false
             },
             axisLabel: {
-              formatter: '{value}',
+              formatter: function(data) {
+                return data + (rate ? '%' : '')
+              },
               color: '#666',
               margin: 40
             },
