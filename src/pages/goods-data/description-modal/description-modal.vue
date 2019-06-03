@@ -7,7 +7,7 @@
       </div>
       <div class="main-data">
         <div v-for="(item, index) in desText" :key="index" class="text-box">
-          <p class="text-title">{{item.title}}</p>
+          <p class="text-title">{{item.title}}<span v-if="index === 0" class="tip">(满足其中两个条件)</span></p>
           <p class="main-text">
             <span v-for="(val, ind) in item.text" :key="ind" class="text">{{val}}</span>
           </p>
@@ -27,7 +27,7 @@
   const DES = [
     {
       title: '爆款品',
-      text: ['高销售量：占全部商品总销售量的20%', '高销售额：占全部商品总销售额的10%', '高浏览数：占全部商品总浏览数的20%', '必须满足其中两个条件'],
+      text: ['高销售量：占全部商品总销售量的20%', '高销售额：占全部商品总销售额的10%', '高浏览数：占全部商品总浏览数的20%'],
     },{
       title: '引流品',
       text: ['高浏览数：占全部商品总浏览数的20%'],
@@ -39,7 +39,7 @@
       text: ['高销售额：占全部商品总销售额的10%'],
     },{
       title: '其它',
-      text: ['为商品都不满足其它三个品的条件']
+      text: ['商品都不满足其它四个品(爆款品、引流品、粘性品、利润品)的条件']
     }
   ]
 
@@ -89,14 +89,19 @@
         height: @width
         icon-image('icon-close')
     .main-data
-      padding: 0 0 30px
+      padding: 0 0 12px
       .text-box
-        margin-bottom: 20px
+        margin-bottom: 28px
         fonts-zie: $font-size-14
-        color: #2A2A2A
+        color: #666
+      .tip
+        font-family: $font-family-regular
+        color: #666
       .text-title
+        color: #333
         font-family: $font-family-medium
       .main-text
+        color: #666
         font-family: $font-family-regular
         .text
           word-break: break-all

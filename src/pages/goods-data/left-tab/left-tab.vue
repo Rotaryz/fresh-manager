@@ -23,8 +23,8 @@
             </div>
             <span class="name">{{item.name}}</span>
           </div>
-          <div class="right-icon">
-            <span class="icon-image" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]" @click.stop="clickTag(item.id, index+1, 'category')"></span>
+          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open':  +categoryIndex === index+1 && openCategory}]">
+            <span class="icon-image" @click.stop="clickTag(item.id, index+1, 'category')"></span>
           </div>
         </div>
         <div class="goods-list" :style="{height: (+categoryIndex === index+1 && openCategory) ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
@@ -203,6 +203,7 @@
           height: 18px
           margin: 8px
         .category-image
+          object-fit: cover
           border-radius: 2px
         .name
           line-height: 18px
@@ -215,25 +216,26 @@
       .right-icon
         width: 16px
         height: 16px
-        margin-left: 6px
-        margin-right: 8px
-        background-size: 100% 100%
+        padding: 20px 8px 20px 6px
         transition: all 0.3s
+        box-sizing: content-box
         .icon-image
+          width: 16px
+          height: 16px
+          display: block
+          background-repeat: no-repeat
+          background-position: center
+          background-size: 100% 100%
           background-image: url('./icon-arrow_lower@2x.png')
       .current
-        width: 12px
-        height: 12px
-        background-repeat: no-repeat
-        background-position: center
-        background-size: cover
-        margin-right: 10px
         display: block
-        transform: rotate(180deg)
         .icon-image
+          transform: rotate(180deg)
           background-image: url("./icon-arrow_up@2x.png")
       .open
-        transform: rotate(0)
+        .icon-image
+          transform: rotate(0)
+          background-image: url("./icon-arrow_up@2x.png")
     .last
       border-bottom: 0
       min-height: 80px
@@ -246,6 +248,7 @@
         height: 48px
         display: flex
         align-items: center
+        position: relative
         padding: 0 12px 0 24px
         color: $color-text-main
         font-family: $font-family-regular
@@ -260,6 +263,7 @@
           height: 28px
           margin-right: 8px
           border-radius: 2px
+          object-fit: cover
         .title
           line-height: 18px
           width: 90px

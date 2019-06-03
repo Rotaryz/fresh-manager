@@ -215,7 +215,7 @@
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
-        {name: '销量', type: 'line', limit: 6},
+        {name: '销量', type: 'line', code: 'amount', limit: 6},
         {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 6},
         {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 6}
       ],
@@ -517,7 +517,7 @@
         let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
         this.$nextTick(() => {
-          if (index === 0) {
+          if (index === 0 && this.leftTab !== 'goods') {
             this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
           } else {
             this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, obj.code), obj.rate)
@@ -727,6 +727,15 @@
         return series
       },
       lineHandle(data, code, type) {
+        if (!data.length) return {
+          label: '',
+          data: [
+            {
+              x: [],
+              rate: []
+            }
+          ]
+        }
         let label = type
         let x = data.map(item => {
           return item.date ? item.date.split('-').slice(1).join('/') : ''
@@ -800,6 +809,7 @@
       border-1px($color-line, 0)
       height: 405px
       display: flex
+      overflow: hidden
       flex-direction: column
       .sec-title
         height: 60px
@@ -890,6 +900,7 @@
         .goods-image
           width: 70px
           height: 70px
+          object-fit: cover
         .goods-detail
           font-size: $font-size-14
           font-family: $font-family-regular

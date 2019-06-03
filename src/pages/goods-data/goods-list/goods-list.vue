@@ -18,8 +18,11 @@
     <div class="list">
       <div v-for="(item, index) in list" :key="index" class="list-item" :class="{'no-border': index > 5}">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
-          <div v-if="val.value === 'img'" class="image-box">
-            <img class="img" :src="item.image_url" alt="">
+          <div v-if="val.value === 'img'" class="main">
+            <div class="image-box">
+              <img class="img" :src="item.image_url" alt="">
+            </div>
+            <span class="name">{{item.name}}</span>
           </div>
           <p v-else-if="val.type === 'money'" class="main">¥{{item[val.value]}}</p>
           <p v-else class="main">{{item[val.value]}}</p>
@@ -33,15 +36,13 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
-    {name: '', flex: 0.5, value: 'img'},
-    {name: '品类名称', flex: 1.4, value: 'name'},
+    {name: '品类', flex: 1.4, value: 'img'},
     {name: '销量', flex: 1, value: 'num', active: false},
     {name: '销售额(元)', flex: 1.2, value: 'amount', active: false},
     {name: '利润(元)', flex: 1, value: 'profit', active: false}
   ]
   const TITLE2 = [
-    {name: '', flex: 0.5, value: 'img'},
-    {name: '品类名称', flex: 1.4, value: 'name'},
+    {name: '品类', flex: 1.4, value: 'img'},
     {name: '库存', flex: 1, value: 'num'},
     {name: '库存金额', flex: 1, value: 'amount', type: 'money'}
   ]
@@ -127,8 +128,6 @@
       padding-right: 20px
       &:last-child
         padding-right: 0
-      &:first-child
-        max-width: 50px
       .item-main
         -webkit-user-select: none
         -moz-user-select: none
@@ -175,17 +174,22 @@
       .image-box
         width: 36px
         height: 36px
+        margin-right: 10px
         border-1px($color-line, 4px)
       .main
+        display: flex
+        align-items: center
         overflow: hidden
         text-overflow: ellipsis
         white-space: nowrap
+      .name
+        text-overflow: ellipsis
+        overflow: hidden
       .img
         width: 36px
         height: 36px
         border-radius: 2px
-      &:first-child
-        max-width: 50px
+        object-fit: cover
 
     .item-data:last-child
       padding-right: 0
