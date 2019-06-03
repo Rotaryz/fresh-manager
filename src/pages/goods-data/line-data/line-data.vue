@@ -177,7 +177,9 @@
           axisLabel: {
             color: '#999',
             fontSize: 12,
-            align: 'center'
+            align: 'center',
+            showMinLabel: true,
+            showMaxLabel: true
           },
           axisTick: {
             show: false
