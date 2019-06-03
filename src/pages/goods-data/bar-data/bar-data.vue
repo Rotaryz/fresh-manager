@@ -104,7 +104,7 @@
           },
           xAxis: {
             type: 'category',
-            boundaryGap: false,
+            boundaryGap: xAxisData.length<=5,
             data: xAxisData,
             offset: 15,
             nameGap: 20,

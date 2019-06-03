@@ -105,7 +105,7 @@
           },
           xAxis: {
             type: 'category',
-            boundaryGap: false,
+            boundaryGap: xAxisData.length<=7,
             data: xAxisData,
             offset: 12,
             splitLine: {
