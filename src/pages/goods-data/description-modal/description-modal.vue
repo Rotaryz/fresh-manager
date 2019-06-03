@@ -2,7 +2,7 @@
   <default-modal ref="modal">
     <div slot="content" class="default-input">
       <div class="title-box">
-        <div class="title">商品属性说明</div>
+        <div class="title">商品结构说明</div>
         <span class="close hand" @click="hide"></span>
       </div>
       <div class="main-data">

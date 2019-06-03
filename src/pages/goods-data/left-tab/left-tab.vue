@@ -23,7 +23,9 @@
             </div>
             <span class="name">{{item.name}}({{item.goods_count}})</span>
           </div>
-          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]"></div>
+          <div class="right-icon">
+            <span class="icon-image" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]" @click.stop="clickTag(item.id, index+1, 'category')"></span>
+          </div>
         </div>
         <div class="goods-list" :style="{height: (+categoryIndex === index+1 && openCategory) ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
           <div v-for="(goods, ind) in item.list"
@@ -72,8 +74,10 @@
     methods: {
       // index用于记录选中哪个， code
       changeCategory(itemId, index, code) {
-        if (index === this.categoryIndex && this.openCategory) {
-          this.openCategory = false
+        if (index === this.categoryIndex) {
+          if (!this.openCategory) {
+            this.openCategory = true
+          }
         } else {
           this.openCategory = true
         }
@@ -81,13 +85,20 @@
         this.goodsIndex = ''
         this.selectGoods = false
         // boolean判断选中的是否是商品，code区分选中的类型
-        // if (!this.openCategory) return
         this.$emit('changeTab', itemId, code) // item, selectGoods
       },
       changeGoods(itemId, index, code) {
         this.goodsIndex = index
         this.selectGoods = true
         this.$emit('changeTab', itemId, code)
+      },
+      clickTag(itemId, index, code) {
+        this.openCategory = !this.openCategory
+        this.categoryIndex = index
+        this.goodsIndex = ''
+        this.selectGoods = false
+        // boolean判断选中的是否是商品，code区分选中的类型
+        this.$emit('changeTab', itemId, code) // item, selectGoods
       },
       height(item) {
         return (48*item.length)
@@ -206,9 +217,10 @@
         height: 16px
         margin-left: 6px
         margin-right: 8px
-        background-image: url('./icon-arrow_lower@2x.png')
         background-size: 100% 100%
         transition: all 0.3s
+        .icon-image
+          background-image: url('./icon-arrow_lower@2x.png')
       .current
         width: 12px
         height: 12px
@@ -218,7 +230,8 @@
         margin-right: 10px
         display: block
         transform: rotate(180deg)
-        background-image: url("./icon-arrow_up@2x.png")
+        .icon-image
+          background-image: url("./icon-arrow_up@2x.png")
       .open
         transform: rotate(0)
     .last

@@ -472,10 +472,11 @@
         this.leftTabItem = itemId
         this.leftTab = code
         this._initSelect()
+        let data = Object.assign({}, this.requestPurchase, this.requestPub)
         if (code !== 'goods') {
           this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+          // delete data.order_by
         }
-        let data = Object.assign({}, this.requestPurchase, this.requestPub)
         await this.getPurchaseData(data)
         this.$nextTick(() => {
           if (code === 'all' || code === 'category') {
