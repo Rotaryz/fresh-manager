@@ -172,7 +172,7 @@
             }
           },
           tooltip: {
-            trigger: 'axis',
+            trigger: 'item',
             padding: [5, 10],
             axisPointer: {
               type: 'shadow',
@@ -181,7 +181,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}${rate ? '%' : ''}`
+              return `${prams.name}：${prams.value}${rate ? '%' : ''}`
             }
           },
           series: [

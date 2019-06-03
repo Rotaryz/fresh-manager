@@ -8,7 +8,7 @@
              :class="item.class"
              :style="{flex: item.flex}"
         >
-          <div v-if="index < 2" class="item-main">{{item.name}}</div>
+          <div v-if="index < 1" class="item-main">{{item.name}}</div>
           <div v-else class="item-main" :class="[{'hand': saleTrue}, {'active': activeIndex === index && saleTrue}]" @click="changeRank(index)">
             <span :class="{'active': item.active}">{{item.name}}</span>
           </div>
@@ -87,7 +87,7 @@
       return {
         titleArr: this.type === 'sales' ? TITLE : TITLE2,
         goods: GOOD,
-        activeIndex: 2
+        activeIndex: 1
       }
     },
     computed: {

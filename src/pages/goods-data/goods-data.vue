@@ -175,61 +175,61 @@
       sale: [
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
-        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 6},
-        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 6}
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
+        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
-        {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
-        {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
+        {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num', limit: 8},
+        {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true, limit: 8}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total'},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total', limit: 6},
         {name: '商品SPU数', type: 'pie', excel: true, code: 'all_count', word: 'all_count'},
-        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate'}
+        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
-        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 6}
+        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
     category: {
       sale: [
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
-        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 6},
-        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 6}
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
+        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'sku_num_total'},
-        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate'}
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'sku_num_total', limit: 6},
+        {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
         {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
-        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 6}
+        {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
-        {name: '销量', type: 'line', code: 'amount', limit: 6},
-        {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 6},
-        {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 6}
+        {name: '销量', type: 'line', code: 'amount', limit: 8},
+        {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 8},
+        {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'line', code: 'returns_num'},
         {name: '退货率', type: 'line', code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采购数量', type: 'line', code: 'purchase_num', word: 'purchase_num'},
-        {name: '毛利率', type: 'line', rate: true, code: 'rate', word: 'rate'}
+        {name: '采购数量', type: 'line', code: 'purchase_num', word: 'purchase_num', limit: 6},
+        {name: '毛利率', type: 'line', rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
-        {name: '库存', type: 'line', code: 'num', limit: 6},
-        {name: '库存周转率', type: 'line', rate: true, code: 'rate', limit: 6}
+        {name: '库存', type: 'line', code: 'num', limit: 8},
+        {name: '库存周转率', type: 'line', rate: true, code: 'rate', limit: 8}
       ]
     }
   }
@@ -259,7 +259,7 @@
         requestSale: {},
         requestServe: {
           order_by: 'returns_num',
-          limit: 6
+          limit: 8
         },
         requestPurchase: {
           order_by: 'purchase_num',
@@ -436,13 +436,11 @@
           dataSupply.limit = 0
           await this.getSupplyData({dataSupply, index})
         }
-        this.$nextTick(() => {
-          if (type === 'bar1') {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
-          } else {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
-          }
-        })
+        if (type === 'bar1') {
+          this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
+        } else {
+          this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+        }
       },
       closeBigData() {
         this.bigDataShow = false
@@ -478,15 +476,13 @@
           // delete data.order_by
         }
         await this.getPurchaseData(data)
-        this.$nextTick(() => {
-          if (code === 'all' || code === 'category') {
-            this._initDraw()
-          } else if (code === 'goods') {
-            this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
-            this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
-            this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
-          }
-        })
+        if (code === 'all' || code === 'category') {
+          this._initDraw()
+        } else if (code === 'goods') {
+          this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
+          this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
+          this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
+        }
       },
       // 初始绘制图表
       _initDraw() {
@@ -516,14 +512,12 @@
         }
         let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
-        this.$nextTick(() => {
-          if (index === 0 && this.leftTab !== 'goods') {
-            this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
-          } else {
-            this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, obj.code), obj.rate)
-          }
-          this.$refs.line1 && this.$refs.line1.drawLine(this.lineHandle(this.saleData.data, obj.code, obj.name), obj.rate)
-        })
+        if (index === 0 && this.leftTab !== 'goods') {
+          this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
+        } else {
+          this.$refs.bar1 && this.$refs.bar1.drawBar(this.dataHandle(this.saleData.data, obj.code), obj.rate)
+        }
+        this.$refs.line1 && this.$refs.line1.drawLine(this.lineHandle(this.saleData.data, obj.code, obj.name), obj.rate)
       },
       // 切换商品售后模块（模块2）
       async changeServe(obj, index) {
@@ -532,31 +526,29 @@
         this.requestServe.order_by = obj.code
         let data = Object.assign({}, this.requestPub, this.requestServe)
         await this.getServeData(data)
-        this.$nextTick(() => {
-          this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, obj.code), obj.rate)
-          this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, obj.code, obj.name), obj.rate)
-        })
+        this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, obj.code), obj.rate)
+        this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, obj.code, obj.name), obj.rate)
       },
       // 切换商品采购模块（模块3）
       async changePurchase(obj, index) {
         this.selectMsg.purchase = obj
         this.$set(this.tabIndexControl, 'purchase', index)
-        this.requestPurchase.order_by = obj.code
+        obj.code ? this.$set(this.requestPurchase, 'order_by', obj.code) : this.$delete(this.requestPurchase, 'order_by')
+        obj.limit ? this.$set(this.requestPurchase, 'limit', obj.limit) : this.$delete(this.requestPurchase, 'limit')
+        // this.requestPurchase.order_by = obj.code
         if (index === 1 && this.leftTab === 'all') {
           await this.getCategoryList({parent_id: 0, get_goods_count: 1, get_goods_online_count: 1})
         } else {
           let data = Object.assign({}, this.requestPub, this.requestPurchase)
           await this.getPurchaseData(data)
         }
-        this.$nextTick(() => {
-          if (index === 0) {
-            this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
-          } else {
-            this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
-          }
-          this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData.data))
-          this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
-        })
+        if (index === 0) {
+          this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
+        } else {
+          this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
+        }
+        this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData.data))
+        this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
       },
       // 切换供应链模块（模块4）
       async changeSupply(obj, index) {
@@ -566,10 +558,8 @@
         obj.limit ? this.$set(this.requestSupply, 'limit', obj.limit) : this.$delete(this.requestSupply, 'limit')
         let dataSupply = Object.assign({}, this.requestPub, this.requestSupply)
         await this.getSupplyData({dataSupply, index})
-        this.$nextTick(() => {
-          this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
-          this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, obj.code), obj.rate)
-        })
+        this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
+        this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, obj.code), obj.rate)
       },
       exportExcel(type) {
         this.excelType = type

@@ -84,7 +84,7 @@
               type: 'pie',
               radius: ['35%', '55%'],
               center: ['50%', '45%'],
-              avoidLabelOverlap: false,
+              avoidLabelOverlap: true,
               data: seriesData,
               label: {
                 normal: {
