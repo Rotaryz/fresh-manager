@@ -40,7 +40,6 @@
         this.tabIndex = 0
       },
       drawPie(data) {
-        console.log(data)
         let seriesData = data.length > 0 ? data : this.data
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
         myChart.setOption(this.createPieData(seriesData))
@@ -68,7 +67,7 @@
           tooltip: {
             trigger: 'item',
             padding: [5, 10],
-            formatter: '{b} : {c} ({d}%)'
+            formatter: '{b} : {c}'
           },
           color: function(params) {
             let min = 129

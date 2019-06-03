@@ -100,6 +100,16 @@ export const actions = {
           return false
         }
         let arr = res.data
+        if (data.get_goods_online_count) {
+          let data = JSON.parse(JSON.stringify(res))
+          let allCount = 0
+          data.data.map(item => {
+            allCount += item.goods_count
+          })
+          data.all_count = allCount
+          commit('SET_PURCHASE_DATA', data)
+          return true
+        }
         commit('SET_CATEGORY_LIST', arr)
         return true
       })

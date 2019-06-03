@@ -235,7 +235,7 @@ export const goodsDataComputed = {
   ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList', 'bigChartData'])
 }
 
-export const goodsDataMethods = mapActions('goodsData', ['getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData'])
+export const goodsDataMethods = mapActions('goodsData', ['getCategoryList', 'getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData'])
 
 // 交易记录
 export const tradeComputed = {

@@ -157,6 +157,7 @@
               }
             },
             axisLabel: {
+              padding: [0, 10, 0, 0],
               formatter: function(data) {
                 return data + (rate ? '%' : '')
               },

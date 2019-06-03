@@ -5,7 +5,7 @@
         <div class="left-tab-main">
           <div class="left">
             <img src="./icon-all_green@2x.png" alt="" class="category-image all-image">
-            <span class="name all-data">全部商品({{categoryList.length}})</span>
+            <span class="name all-data">全部商品</span>
           </div>
         </div>
       </div>
@@ -21,7 +21,7 @@
             <div class="image-box">
               <img :src="item.image_url" alt="" class="category-image">
             </div>
-            <span class="name">{{item.name}}({{item.goods_count}})</span>
+            <span class="name">{{item.name}}</span>
           </div>
           <div class="right-icon">
             <span class="icon-image" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]" @click.stop="clickTag(item.id, index+1, 'category')"></span>

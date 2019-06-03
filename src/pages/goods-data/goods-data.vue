@@ -184,7 +184,7 @@
       ],
       purchase: [
         {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total'},
-        {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num', word: 'sku_num_total'},
+        {name: '商品SPU数', type: 'pie', excel: true, code: 'all_count', word: 'all_count'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate'}
       ],
       supply: [
@@ -542,8 +542,12 @@
         this.selectMsg.purchase = obj
         this.$set(this.tabIndexControl, 'purchase', index)
         this.requestPurchase.order_by = obj.code
-        let data = Object.assign({}, this.requestPub, this.requestPurchase)
-        await this.getPurchaseData(data)
+        if (index === 1 && this.leftTab === 'all') {
+          await this.getCategoryList({parent_id: 0, get_goods_count: 1, get_goods_online_count: 1})
+        } else {
+          let data = Object.assign({}, this.requestPub, this.requestPurchase)
+          await this.getPurchaseData(data)
+        }
         this.$nextTick(() => {
           if (index === 0) {
             this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
@@ -710,14 +714,14 @@
         }
       },
       pieHandle(data) {
-        if (!data || !data.length) return {
+        if (!data || !data.length) return [{
           name: '',
           value: ''
-        }
+        }]
         let series = data.map(item => {
           return {
             name: item.name,
-            value: item.sku_num
+            value: item.goods_count
           }
         })
         return series
