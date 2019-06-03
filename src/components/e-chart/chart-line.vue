@@ -197,7 +197,7 @@
       },
       _setXAxis(data) {
         // 刻度线：splitLine，坐标刻度：axisTick，坐标值：axisLabel，坐标轴：axisLine
-        let xAxis = {
+        return {
           type: 'category',
           boundaryGap: false,
           data: data,
@@ -215,7 +215,9 @@
           axisLabel: {
             color: CHART_COLOR.label,
             fontSize: 12,
-            align: 'center'
+            align: 'center',
+            showMinLabel: true,
+            showMaxLabel: true
           },
           axisTick: {
             show: false
@@ -229,7 +231,6 @@
             }
           }
         }
-        return xAxis
       },
       _setYAxis(showSecondY = false, show = true) {
         // 刻度线：splitLine，坐标刻度：axisTick，坐标值：axisLabel，坐标轴：axisLine
