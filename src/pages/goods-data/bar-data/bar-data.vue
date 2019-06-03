@@ -335,7 +335,12 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}<br />${prams[0] ? prams[0].seriesName + '额占比：' + prams[0].value + '%<br />' : ''}${prams[1] ? prams[1].seriesName + '额占比：' + prams[1].value + '%<br />' : ''}`
+              let result = `<p style="color:#ffffff;font-size:12px">${prams[0].axisValue}</p>`;
+              prams.forEach(function (item) {
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}%</span></p>`;
+              });
+              return result
+              // return `${prams[0].name}<br />${prams[0] ? prams[0].seriesName + '额占比：' + prams[0].value + '%<br />' : ''}${prams[1] ? prams[1].seriesName + '额占比：' + prams[1].value + '%<br />' : ''}`
             }
           },
           series: [
