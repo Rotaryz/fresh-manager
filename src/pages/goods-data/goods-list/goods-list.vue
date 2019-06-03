@@ -37,15 +37,15 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
-    {name: '品类', flex: 1.4, value: 'img'},
-    {name: '销量', flex: 1, value: 'num', active: false},
-    {name: '销售额(元)', flex: 1.2, value: 'amount', active: false},
-    {name: '利润(元)', flex: 1, value: 'profit', active: false}
+    {name: '品类', flex: 2, value: 'img'},
+    {name: '销量', flex: 0.6, value: 'num', active: false},
+    {name: '销售额(元)', flex: 0.8, value: 'amount', active: false},
+    {name: '利润(元)', flex: 0.8, value: 'profit', active: false}
   ]
   const TITLE2 = [
-    {name: '品类', flex: 1.4, value: 'img'},
-    {name: '库存', flex: 1, value: 'num'},
-    {name: '库存金额', flex: 1, value: 'amount', type: 'money'}
+    {name: '品类', flex: 1.6, value: 'img'},
+    {name: '库存', flex: 0.6, value: 'num'},
+    {name: '库存金额', flex: 0.6, value: 'amount', type: 'money'}
   ]
   export default{
     name: COMPONENT_NAME,
