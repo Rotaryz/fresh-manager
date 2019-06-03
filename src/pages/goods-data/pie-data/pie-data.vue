@@ -84,7 +84,8 @@
               type: 'pie',
               radius: ['35%', '55%'],
               center: ['50%', '45%'],
-              avoidLabelOverlap: true,
+              avoidLabelOverlap: true, // 防止标签覆盖
+              minAngle: 10, // 最小扇区的最小值，0-360
               data: seriesData,
               label: {
                 normal: {
