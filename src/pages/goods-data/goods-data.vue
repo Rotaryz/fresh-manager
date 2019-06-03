@@ -124,7 +124,13 @@
                       @noData="noData"
                       @hasData="hasData"
             ></bar-data>
-            <pie-data v-if="selectMsg.purchase.type === 'pie'" ref="pie3" chartId="pie3" @clickChart="clickChart"></pie-data>
+            <pie-data v-if="selectMsg.purchase.type === 'pie'"
+                      ref="pie3"
+                      chartId="pie3"
+                      @clickChart="clickChart"
+                      @noData="noData"
+                      @hasData="hasData"
+            ></pie-data>
             <line-data v-if="selectMsg.purchase.type === 'line'" ref="line3" class="chart-box" chartId="line3"></line-data>
           </section>
 
@@ -464,7 +470,12 @@
         })
       },
       hasData(secIndex) {
-        this.hideText[secIndex] = true
+        this.hideText = this.hideText.map((item, index) => {
+          if (index === +secIndex) {
+            item = true
+          }
+          return item
+        })
       },
       deepCopy(obj) {
         return JSON.parse(JSON.stringify(obj))
