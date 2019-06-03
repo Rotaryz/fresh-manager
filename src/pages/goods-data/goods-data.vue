@@ -101,7 +101,7 @@
 
             <bar-data v-if="selectMsg.purchase.type === 'bar'" :key="1" ref="bar3" chartId="bar3" @clickChart="clickChart"></bar-data>
             <bar-data v-if="selectMsg.purchase.type === 'bar1'" :key="2" ref="bar3" chartId="bar3" @clickChart="clickChart"></bar-data>
-            <pie-data v-if="selectMsg.purchase.type === 'pie'" ref="pie3" chartId="pie3"></pie-data>
+            <pie-data v-if="selectMsg.purchase.type === 'pie'" ref="pie3" chartId="pie3" @clickChart="clickChart"></pie-data>
             <line-data v-if="selectMsg.purchase.type === 'line'" ref="line3" class="chart-box" chartId="line3"></line-data>
           </section>
 

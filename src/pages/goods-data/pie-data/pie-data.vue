@@ -42,6 +42,10 @@
       drawPie(data) {
         let seriesData = data.length > 0 ? data : this.data
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
+        let that = this
+        myChart.on('click', function (params) {
+          that.$emit('clickChart', params.dataIndex)
+        })
         myChart.setOption(this.createPieData(seriesData))
         window.addEventListener('resize', function() {
           myChart.resize()
