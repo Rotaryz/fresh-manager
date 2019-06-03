@@ -17,7 +17,8 @@
     <div class="label-bar">
       <template v-for="(label, labelIdx) in chartConfig.label">
         <p v-if="!(chartConfig.tab && label.tabIdx !== tabIndex)" :key="labelIdx" :style="{'max-width':100/labelArrCount+'%', 'margin-right':labelArrCount===4?'2%':'5%'}" class="label">
-          {{label.name}} <span :style="{'font-size':labelArrCount===4?'17px':'18px'}" class="label-val" :title="label.total">{{label.total}}</span>
+          {{label.name}}
+          <span class="label-val" :title="label.total">{{label.total}}<template v-if="label.unit">{{label.unit}}</template></span>
         </p>
       </template>
     </div>
@@ -77,7 +78,8 @@
             formatter: function (params) {
               let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
               params.forEach(function (item) {
-                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}</span></p>`;
+                let hasUnit = item.seriesName.includes('率')?'%':''
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}${hasUnit}</span></p>`;
               });
               return result;
             },
@@ -196,6 +198,10 @@
           boundaryGap: false,
           data: data,
           offset: 10,
+          // max: 'dataMax',
+          // min: 'dataMin',
+          max: data[data.length],
+          min: data[0],
           splitLine: {
             show: true,
             lineStyle: {
@@ -276,8 +282,6 @@
         if (this.tabIndex === tabIdx) return
         this.tabIndex = tabIdx
         this._setChart(this.chartConfig, true, true)
-        // console.log(tab, tabIdx)
-        // this.$emit('switchTab', tab, tabIdx)
       }
     }
   }
@@ -393,8 +397,8 @@
         no-wrap-plus(1)
 
         .label-val
-          font-size: $font-size-18
-          font-family: $font-family-bold
+          font-size: $font-size-16
+          font-family: $font-family-din-bold
 
     .chart-con
       width: 100%

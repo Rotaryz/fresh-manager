@@ -136,10 +136,10 @@
       apiFun: 'getOperationBenefitData',
       title: '效率',
       label: [
-        {name: '动销率', key: 'rate', total: ''}
+        {name: '动销率', key: 'rate', total: '', unit:'%'}
       ],
       dataArr: [
-        {name: '动销率', key: 'rate', data:[]}
+        {name: '动销率', key: 'rate', data:[], unit:'%'}
       ],
       xAxleData: [],
       showSecondY: false
@@ -152,13 +152,13 @@
         {name: '退货金额(元)', key: 'amount_total', total: '', tabIdx: 0},
         {name: '退货数量', key: 'num_total', total: '', tabIdx: 0},
         {name: '退货用户数', key: 'user_count_total', total: '', tabIdx: 0},
-        {name: '退货率', key: 'rate', total: '', tabIdx: 1}
+        {name: '退货率', key: 'rate', total: '', tabIdx: 1, unit:'%'}
       ],
       dataArr: [
         {name: '退货金额', key: 'amount', data:[], tabIdx: 0},
         {name: '退货数量', key: 'num', data:[], tabIdx: 0, yAxisIdx: 1},
         {name: '退货用户数', key: 'user_count', data:[], tabIdx: 0, yAxisIdx: 1},
-        {name: '退货率', key: 'rate', data:[], tabIdx: 1}
+        {name: '退货率', key: 'rate', data:[], tabIdx: 1, unit:'%'}
       ],
       xAxleData: [],
       showSecondY: true,
@@ -178,14 +178,14 @@
       label: [
         {name: '送货金额(元)', key: 'amount_total', total: '', tabIdx: 0},
         {name: '送货数量', key: 'delivery_num_total', total: '', tabIdx: 0, yAxisIdx: 1},
-        {name: '订单满足率', key: 'rate', total: '', tabIdx: 1},
-        {name: '准时交货率', key: 'sale_num_total', total: '', tabIdx: 1}
+        {name: '订单满足率', key: 'rate', total: '', tabIdx: 1, unit:'%'},
+        {name: '准时交货率', key: 'sale_num_total', total: '', tabIdx: 1, unit:'%'}
       ],
       dataArr: [
         {name: '送货金额', key: 'amount', data:[], tabIdx: 0},
         {name: '送货数量', key: 'delivery_num', data:[], tabIdx: 0, yAxisIdx: 1},
-        {name: '订单满足率', key: 'rate', data:[], tabIdx: 1},
-        {name: '准时交货率', key: 'sale_num', data:[], tabIdx: 1}
+        {name: '订单满足率', key: 'rate', data:[], tabIdx: 1, unit:'%'},
+        {name: '准时交货率', key: 'sale_num', data:[], tabIdx: 1, unit:'%'}
       ],
       xAxleData: [],
       showSecondY: true,
@@ -216,10 +216,10 @@
       apiFun: 'getWarehouseData',
       title: '仓库',
       label: [
-        {name: '库存周转率', key: 'rate', total: ''}
+        {name: '库存周转率', key: 'rate', total: '', unit:'%'}
       ],
       dataArr: [
-        {name: '库存周转率', key: 'rate', data:[]}
+        {name: '库存周转率', key: 'rate', data:[], unit:'%'}
       ],
       xAxleData: [],
       showSecondY: true
