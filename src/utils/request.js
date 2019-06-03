@@ -16,10 +16,7 @@ const http = axios.create({
 
 http.interceptors.request.use(
   (config) => {
-    // config.url = resetUrl(config.url)
     // 请求数据前的拦截
-    config.url = resetUrl(config.url)
-    // config.url = config.url.replace('/social-shopping', '/social-shopping/v2') // todo
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
@@ -103,13 +100,12 @@ function requestException(res) {
 }
 
 export default {
-  post(url, data, loading = false, timeout = 10000) {
+  post(url, data, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'post',
       url,
-      data, // post 请求时带的参数
-      timeout
+      data // post 请求时带的参数
     })
       .then((response) => {
         return checkStatus(response)
@@ -118,13 +114,12 @@ export default {
         return checkCode(res)
       })
   },
-  get(url, params, loading = false, timeout = 10000) {
+  get(url, params, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'get',
       url,
-      params, // get 请求时带的参数
-      timeout
+      params // get 请求时带的参数
     })
       .then((response) => {
         return checkStatus(response)
@@ -133,13 +128,12 @@ export default {
         return checkCode(res)
       })
   },
-  put(url, data, loading = false, timeout = 10000) {
+  put(url, data, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'put',
       url,
-      data, // put 请求时带的参数
-      timeout
+      data // put 请求时带的参数
     })
       .then((response) => {
         return checkStatus(response)
@@ -148,13 +142,12 @@ export default {
         return checkCode(res)
       })
   },
-  delete(url, data, loading = false, timeout = 10000) {
+  delete(url, data, loading = false) {
     Utils.showLoading(loading)
     return http({
       method: 'delete',
       url,
-      data, // put 请求时带的参数
-      timeout
+      data // put 请求时带的参数
     })
       .then((response) => {
         return checkStatus(response)
