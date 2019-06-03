@@ -164,21 +164,27 @@
               return `${prams.name}：${prams.value}${rate ? '%': ''}`
             }
           },
-          dataZoom: [{
-            // end: this.countNum(xAxisData.length, ratio),// 数据窗口范围的结束百分比
-            endValue: xAxisData[15],// 数据窗口范围
-            type: 'slider',
-            bottom: '26px',
-            show: true,
-            height: 8,
-            xAxisIndex: [0],
-            borderColor: "rgba(250,250,250,0)",
-            fillerColor: '#999999',
-            borderRadius: 4,
-            showDataShadow: false,// 是否显示数据阴影 默认auto
-            showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
-            realtime: true, // 是否实时更新
-          }],
+          dataZoom: [
+            {
+              // end: this.countNum(xAxisData.length, ratio),// 数据窗口范围的结束百分比
+              endValue: xAxisData[15],// 数据窗口范围
+              type: 'slider',
+              bottom: '26px',
+              show: true,
+              handleSize: '0',
+              height: 12,
+              xAxisIndex: [0],
+              borderColor: "rgba(250,250,250,0)",
+              fillerColor: '#999999',
+              borderRadius: 6,
+              showDataShadow: false,// 是否显示数据阴影 默认auto
+              showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
+              realtime: true, // 是否实时更新
+            },
+            {
+              type: 'inside',// 滚动缩放，拖拽拉动
+            }
+          ],
           series: [
             {
               type: 'bar',
@@ -281,19 +287,27 @@
               }
             }
           },
-          dataZoom: [{
-            end: this.countNum1(series.xAxisData.length),// 数据窗口范围的结束百分比
-            type: 'slider',
-            left: '30px',
-            show: true,
-            width: 8,
-            yAxisIndex: [0],
-            borderColor: "rgba(250,250,250,0)",
-            fillerColor: '#999',
-            showDataShadow: false,// 是否显示数据阴影 默认auto
-            showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
-            realtime: true // 是否实时更新
-          }],
+          dataZoom: [
+            {
+              end: this.countNum1(series.xAxisData.length),// 数据窗口范围的结束百分比
+              type: 'slider',
+              left: '30px',
+              show: true,
+              width: 12,
+              handleSize: '0',
+              yAxisIndex: [0],
+              borderColor: "rgba(250,250,250,0)",
+              fillerColor: '#999',
+              showDataShadow: false,// 是否显示数据阴影 默认auto
+              showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
+              realtime: true // 是否实时更新
+            },
+            {
+              type: 'inside',
+              yAxisIndex: [0],
+              zoomLock: true
+            }
+          ],
           tooltip: {
             trigger: 'axis',
             padding: [5, 10],
