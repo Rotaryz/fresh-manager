@@ -16,10 +16,14 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">出库列表</p>
-          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
+          <base-status-nav :statusList="dispatchSelect" :value="status" valueKey="status" labelKey="status_str" numKey="statistic"
+                           @change="setValue"
+          ></base-status-nav>
+          <!--<base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>-->
         </div>
         <div class="function-btn">
-          <div class="btn-main" @click="showBatchOut">批量出库</div>
+          <div v-if="status===0" class="btn-main" @click="showBatchOut">批量出库</div>
+          <div v-if="status===2" class="btn-main" @click="showBatchRecheck">批量复核</div>
           <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main g-btn-item">新建出库单<span class="add-icon"></span></router-link>
         </div>
       </div>
@@ -29,7 +33,7 @@
         </div>
         <div class="list">
           <div v-if="productOutList.length">
-            <div v-for="(item, index) in productOutList" :key="index" class="list-content list-box">
+            <div v-for="(item, index) in productOutList" :key="index" :class="{'list-lock': item.show_sorting}" class="list-content list-box">
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">
@@ -37,11 +41,18 @@
               </div>
               <!--<div class="list-item">{{item.out_order_sn}}</div>-->
               <div class="list-item">{{item.merchant_name}}</div>
+              <div class="list-item">{{item.order_num}}</div>
+              <div class="list-item">{{item.out_num}}</div>
               <div class="list-item">￥{{item.total}}</div>
-              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
+              <div class="list-item">
+                <span class="list-status" :class="{'list-status-success': item.status === 1,'list-status-warn': item.status === 2 }"></span>
+                {{item.status_str}}
+                <div v-if="item.show_sorting" class="list-item-img"></div>
+              </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
                 <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
+                <span v-if="item.status === 2" class="list-operation-strong" @click="goDetail(item)">复核</span>
               </div>
             </div>
           </div>
@@ -52,7 +63,7 @@
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
-    <default-confirm ref="confirm" @confirm="batchOut"></default-confirm>
+    <default-confirm ref="confirm" @confirm="sureSubmit"></default-confirm>
   </div>
 </template>
 
@@ -65,7 +76,17 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品出库'
-  const COMMODITIES_LIST = ['建单时间', '出库单号', '关联订单号', '商户名称', '出库金额', '状态', '操作']
+  const COMMODITIES_LIST = [
+    '建单时间',
+    '出库单号',
+    '关联订单号',
+    '商户名称',
+    '订单数量',
+    '出库数量',
+    '出库金额',
+    '状态',
+    '操作'
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -90,12 +111,7 @@
           {name: '待出库', value: 0, key: 'wait_out', num: 0},
           {name: '已完成', value: 1, key: 'success', num: 0}
         ],
-        statistic: {
-          all: 0,
-          wait_out: 0,
-          success: 0
-        },
-        statusTab: 1,
+        // statusTab: 1,
         time: ['', '']
       }
     },
@@ -104,7 +120,7 @@
     },
     async created() {
       if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1 + 1
+        // this.statusTab = this.$route.query.status * 1 + 1
         this.status = this.$route.query.status * 1
       }
       this.productOutList = _.cloneDeep(this.outList)
@@ -112,15 +128,25 @@
       await this._statistic()
     },
     methods: {
-      // 批量出库
-      async batchOut() {
-        let res = await API.Store.batchOut()
+      goDetail(item) {
+        if (item.show_sorting) {
+          return
+        }
+        this.$router.push(`/home/product-out/out-detail/${item.out_order_id}`)
+      },
+      async sureSubmit() {
+        let type = 'batchOut'
+        if (this.status === 2) {
+          type = 'batchRecheck'
+        }
+        let res = await API.Store[type]()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
           this.goodsPage = 1
           this.getProductListData()
           await this._statistic()
           this.$refs.pagination.beginPage()
+          this.$refs.confirm.hide()
         }
       },
       showBatchOut() {
@@ -130,19 +156,22 @@
         }
         this.$refs.confirm.show('是否确认批量出库？')
       },
+      showBatchRecheck() {
+        if (!this.productOutList.length) {
+          this.$toast.show('暂无待复核')
+          return
+        }
+        this.$refs.confirm.show('是否确认批量复核？')
+      },
       async _statistic() {
         let res = await API.Store.outOrdersStatistic({
           start_time: this.time[0],
           end_time: this.time[1],
           keyword: this.keyWord
         })
-        this.statistic = res.error === this.$ERR_OK ? res.data : {}
-        for (let key in this.statistic) {
-          let index = this.dispatchSelect.findIndex((item) => item.key === key)
-          this.dispatchSelect[index].num = this.statistic[key]
-        }
+        this.dispatchSelect = res.data.status || []
       },
-      getProductListData() {
+      async getProductListData() {
         let data = {
           status: this.status,
           page: this.goodsPage,
@@ -164,19 +193,18 @@
             this.$toast.show(res.message)
           }
         })
+        await this._statistic()
       },
       async changeKeyword(keyword) {
         this.keyWord = keyword
         this.goodsPage = 1
         this.getProductListData()
-        await this._statistic()
         this.$refs.pagination.beginPage()
       },
       async changeStartTime(value) {
         this.time = value
         this.goodsPage = 1
         this.getProductListData()
-        await this._statistic()
         this.$refs.pagination.beginPage()
       },
       async changeEndTime(value) {
@@ -187,16 +215,15 @@
         }
         this.goodsPage = 1
         this.getProductListData()
-        await this._statistic()
         this.$refs.pagination.beginPage()
       },
-      setValue(item) {
-        this.status = item.value
+      async setValue(val) {
+        this.status = val
         this.goodsPage = 1
         this.getProductListData()
         this.$refs.pagination.beginPage()
       },
-      addPage(page) {
+      async addPage(page) {
         this.goodsPage = page
         this.getProductListData()
       }
@@ -219,7 +246,6 @@
           flex: 0.7
         &:nth-child(2), &:nth-child(3)
           flex: 1.5
-
   .list-item-progress
     display: flex
     align-items: flex-end
@@ -253,4 +279,11 @@
   .tip
     margin: 0 2px
     font-size: $font-size-14
+  .list-item-img
+    icon-image('icon-lock')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>

@@ -27,7 +27,8 @@ export const state = {
     xAx: [],
     series: [],
     list: []
-  }
+  },
+  bigChartData: {}
 }
 
 export const getters = {
@@ -52,6 +53,9 @@ export const getters = {
   supplyData(state) {
     return state.supplyData
   },
+  bigChartData(state) {
+    return state.bigChartData
+  }
 }
 
 export const mutations = {
@@ -82,6 +86,9 @@ export const mutations = {
   SET_SUPPLY_DATA_GOODS(state, data) {
     state.supplyData.list = data
   },
+  SET_BIG_CHART_DATA(state, data) {
+    state.bigChartData = data
+  }
 }
 
 export const actions = {
@@ -113,8 +120,7 @@ export const actions = {
         let arr = res.data
         let categoryArr = state.categoryList.map(item => {
           let val = JSON.parse(JSON.stringify(item))
-          if (val.id === data.goods_category_id) {
-            val.total = res.meta.total
+          if (+val.id === +data.goods_category_id) {
             val.list = arr
           }
           return val
@@ -167,24 +173,24 @@ export const actions = {
     let {dataSale, index} = msg
     let apiArr = ['getStructure', 'getSaleRank', 'getSellRatio', 'getSellOut']
     let api = apiArr[index]
-    return API.GoodsData[api](dataSale, false)
+    let data = JSON.parse(JSON.stringify(dataSale))
+    if (index === 0) {
+      delete data.group_by
+    }
+    return API.GoodsData[api](data, false)
       .then((res) => {
-        let data = res
+        let data = JSON.parse(JSON.stringify(res))
         if (res.error !== app.$ERR_OK) {
           return false
         }
+        if (+dataSale.limit === 0) {
+          commit('SET_BIG_CHART_DATA', res)
+          return true
+        }
         if (index === 1) {
           commit('SALE_RANK_LIST', res.data)
-          return true
         } else if (index === 0) {
-          data = {
-            b: res.data.b,
-            l: res.data.l,
-            n: res.data.n,
-            o: res.data.o,
-            y: res.data.y,
-            t: res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
-          }
+          data.t = res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
         }
         // let arr = ['pv', 'e_customer', 'order']
         // let data = dataHandle(arr, res.data)
@@ -206,6 +212,10 @@ export const actions = {
         }
         // let arr = ['sales_num', 'rate', 'order']
         // let data = dataHandle(arr, res.data, index)
+        if (data.limit === 0) {
+          commit('SET_BIG_CHART_DATA', res)
+          return true
+        }
         commit('SET_SERVE_DATA', res)
         return true
       })
@@ -221,6 +231,10 @@ export const actions = {
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
+        }
+        if (+data.limit === 0) {
+          commit('SET_BIG_CHART_DATA', res)
+          return true
         }
         commit('SET_PURCHASE_DATA', res)
         return true
@@ -239,9 +253,12 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
+        if (+dataSupply.limit === 0) {
+          commit('SET_BIG_CHART_DATA', res)
+          return true
+        }
         if (index === 0) {
           commit('STOCK_RANK_LIST', res.data)
-          return true
         }
         // let arr = ['pv', 'e_customer', 'order']
         // let data = dataHandle(arr, res.data)

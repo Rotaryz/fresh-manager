@@ -23,7 +23,7 @@
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
           <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
-          <div class="show-more-box g-btn-item" @mouseenter="_showTip" @mouseleave="_hideTip">
+          <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
             <div class="show-more-text">
               <div class="show-text">更多</div>
               <div class="show-icon"></div>
@@ -103,7 +103,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { goodsComputed } from '@state/helpers'
+  import {goodsComputed} from '@state/helpers'
   import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
@@ -120,16 +120,16 @@
     '销售单价',
     '销售库存',
     '状态',
-    '操作',
+    '操作'
   ]
 
   export default {
     name: PAGE_NAME,
     page: {
-      title: TITLE,
+      title: TITLE
     },
     components: {
-      DefaultConfirm,
+      DefaultConfirm
     },
     data() {
       return {
@@ -139,26 +139,22 @@
           show: false,
           content: '全部状态',
           type: 'default',
-          data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}],
+          data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
         },
-        statusTab: [
-          {name: '全部', num: 0, key: ''},
-          {name: '已上架', num: 0, key: 1},
-          {name: '已下架', num: 0, key: 0},
-        ],
+        statusTab: [{name: '全部', num: 0, key: ''}, {name: '已上架', num: 0, key: 1}, {name: '已下架', num: 0, key: 0}],
         stairSelect: {
           check: false,
           show: false,
           content: '一级分类',
           type: 'default',
-          data: [],
+          data: []
         },
         secondSelect: {
           check: false,
           show: false,
           content: '二级分类',
           type: 'default',
-          data: [],
+          data: []
         },
         goodsList: [],
         pageTotal: {},
@@ -170,11 +166,11 @@
         oneBtn: false,
         categoryId: '',
         showIndex: false,
-        defaultIndex: 0,
+        defaultIndex: 0
       }
     },
     computed: {
-      ...goodsComputed,
+      ...goodsComputed
     },
     created() {
       this._getUrl()
@@ -218,14 +214,16 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${this.keyWord}&current_corp=${currentId}&goods_category_id=${this.categoryId}`
+        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
+          this.keyWord
+        }&current_corp=${currentId}&goods_category_id=${this.categoryId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsStatus() {
         API.Product.getGoodsStatus({
           keyword: this.keyWord,
-          goods_category_id: this.categoryId,
-        }).then(res => {
+          goods_category_id: this.categoryId
+        }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
@@ -234,9 +232,9 @@
             return {
               name: item.status_str,
               value: item.status,
-              num: item.statistic,
+              num: item.statistic
             }
-            // this.$set(this.statusTab[index], 'num', item.statistic)
+          // this.$set(this.statusTab[index], 'num', item.statistic)
           })
         })
       },
@@ -246,7 +244,7 @@
           page: this.goodsPage,
           limit: 10,
           keyword: this.keyWord,
-          goods_category_id: this.categoryId,
+          goods_category_id: this.categoryId
         }
         API.Product.getGoodsList(data, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -254,7 +252,7 @@
             let statePageTotal = {
               total: res.meta.total,
               per_page: res.meta.per_page,
-              total_page: res.meta.last_page,
+              total_page: res.meta.last_page
             }
             this.pageTotal = statePageTotal
           } else {
@@ -311,7 +309,7 @@
         }
         let data = {
           goods_id: item.id,
-          is_online: item.is_online * 1 === 1 ? 0 : 1,
+          is_online: item.is_online * 1 === 1 ? 0 : 1
         }
         API.Product.upDownGoods(data).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -356,7 +354,10 @@
       async importStock(e, index) {
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
-        let res = index === 1 ? await API.Product.goodsNewInto(param, true, 60000) : await API.Product.goodsNewEdit(param, true, 60000)
+        let res =
+          index === 1
+            ? await API.Product.goodsNewInto(param, true, 60000)
+            : await API.Product.goodsNewEdit(param, true, 60000)
         this.$loading.hide()
         this.goodsPage = 1
         this.$refs.pagination.beginPage()
@@ -368,10 +369,10 @@
       // 格式化文件
       _infoFile(file) {
         let param = new FormData() // 创建form对象
-        param.append('file', file, file.name)// 通过append向form对象添加数据
+        param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
-      },
-    },
+      }
+    }
   }
 </script>
 
@@ -447,14 +448,14 @@
       height: 28px
       line-height: 28px
       color: $color-white
-      background: $color-main
+      border-1px($color-main)
       layout(row)
       align-items: center
       justify-content: center
 
       .show-text
         font-size: $font-size-12
-        color: $color-white
+        color: $color-main
         font-family: $font-family-regular
 
       .show-icon
@@ -462,6 +463,8 @@
         height: 6px
         margin-left: 6px
         position: relative
+        transform: translateY(-1px) rotate(0deg)
+        transition: all 0.4s
 
         &:after
           content: ''
@@ -473,8 +476,7 @@
           height: 0
           border-left: 4px solid transparent
           border-right: 4px solid transparent
-          border-top: 6px solid $color-white
-
+          border-top: 6px solid $color-main
     .show-hide-box
       position: absolute
       width: 106px
@@ -538,6 +540,15 @@
     background-size: cover
     background-position: center
 
+  .show-more-active
+    .show-more-text
+      background: $color-main
+      .show-text
+        color: $color-white
+      .show-icon
+        transform: translateY(-1px) rotate(180deg)
+        &:after
+          border-top: 6px solid $color-white
   .stock-file
     position: absolute
     top: 0

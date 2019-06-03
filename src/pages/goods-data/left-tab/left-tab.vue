@@ -1,7 +1,7 @@
 <template>
   <div ref="leftTab" class="left-tab">
     <div ref="leftBox" class="left-box">
-      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory({id: ''}, 0, 'all')">
+      <div class="category-item hand category-all" :class="{'active': +categoryIndex === 0}" @click="changeCategory('', 0, 'all')">
         <div class="left-tab-main">
           <div class="left">
             <img src="./icon-all_green@2x.png" alt="" class="category-image all-image">
@@ -14,21 +14,21 @@
         :key="index"
         class="category-item hand"
         :class="[{'active': (+categoryIndex === index+1 && !selectGoods)},{'open': (+categoryIndex === index+1 && selectGoods)}]"
-        @click="changeCategory(item, index+1, 'category')"
+        @click="changeCategory(item.id, index+1, 'category')"
       >
         <div class="left-tab-main">
           <div class="left">
             <img :src="item.image_url" alt="" class="category-image">
-            <span class="name">{{item.name}}({{item.list.length}})</span>
+            <span class="name">{{item.name}}({{item.goods_count}})</span>
           </div>
-          <div class="right-icon" :class="{'current': +categoryIndex === index+1}"></div>
+          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': openCategory}]"></div>
         </div>
         <div class="goods-list" :style="{height: (+categoryIndex === index+1 && openCategory) ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
           <div v-for="(goods, ind) in item.list"
                :key="ind"
                class="goods-item"
                :class="{'select': (+goodsIndex === ind && selectGoods)}"
-               @click.stop="changeGoods(goods, ind, 'goods')"
+               @click.stop="changeGoods(goods.id, ind, 'goods')"
           >
             <img :src="goods.goods_cover_image" alt="" class="goods-image">
             <span class="title">{{goods.name}}</span>
@@ -66,8 +66,9 @@
       ...goodsDataComputed
     },
     methods: {
-      changeCategory(item, index, code, bool) {
-        if (index === this.categoryIndex && !bool) {
+      // index用于记录选中哪个， code
+      changeCategory(itemId, index, code) {
+        if (index === this.categoryIndex && this.openCategory) {
           this.openCategory = false
         } else {
           this.openCategory = true
@@ -75,39 +76,45 @@
         this.categoryIndex = index
         this.goodsIndex = ''
         this.selectGoods = false
-        this.$emit('changeTab', item, false, code) // item, selectGoods
+        // boolean判断选中的是否是商品，code区分选中的类型
+        // if (!this.openCategory) return
+        this.$emit('changeTab', itemId, code) // item, selectGoods
       },
-      changeGoods(goods, index, code) {
+      changeGoods(itemId, index, code) {
         this.goodsIndex = index
         this.selectGoods = true
-        this.$emit('changeTab', goods, true, code)
+        this.$emit('changeTab', itemId, code)
       },
       height(item) {
         return (48*item.length)
       },
-      selectList(categoryIndex, goodsIndex) {
-        // let code = categoryIndex > 0 ? 'category' : 'all'
-        // this.changeCategory(this.categoryList[categoryIndex], categoryIndex, code, true)
-        // let goodsCode = goodsIndex ? 'goods' : ''
-        // if (goodsIndex) {
-        //   this.changeGoods(this.categoryList[categoryIndex].list[goodsIndex], goodsCode)
-        //   return
-        // }
-        // this.goodsIndex = ''
-        let item = {}
+      selectList(categoryId, goodsId) {
         let code = ''
-        if (goodsIndex) {
-          code = 'goods'
-          this.goodsIndex = goodsIndex
-          item = this.categoryList[categoryIndex].list[goodsIndex]
+        let itemId = categoryId || goodsId
+        if (categoryId) {
+          let itemIndex = this.categoryList.findIndex(item => {
+            return +item.id === +categoryId
+          })
+          if (itemIndex > -1) {
+            code = 'category'
+            this.categoryIndex = itemIndex + 1
+            this.goodsIndex = ''
+            this.selectGoods = false
+          }
+        } else if (goodsId) {
+          let itemIndex = this.categoryList[this.categoryIndex - 1].list.findIndex(item => {
+            return +item.id === +goodsId
+          })
+          if (itemIndex > -1) {
+            code = 'goods'
+            this.goodsIndex = itemIndex
+            this.selectGoods = true
+          }
         } else {
-          code = 'category'
-          this.goodsIndex = ''
-          item = this.categoryList[categoryIndex]
+          return
         }
         this.openCategory = true
-        this.selectGoods = goodsIndex
-        this.$emit('changeTab', item, this.selectGoods, code)
+        this.$emit('changeTab', itemId, code)
       }
     }
   }
@@ -202,7 +209,10 @@
         background-size: cover
         margin-right: 10px
         display: block
+        transform: rotate(180deg)
         background-image: url("./icon-arrow_up@2x.png")
+      .open
+        transform: rotate(0)
     .last
       border-bottom: 0
       min-height: 80px

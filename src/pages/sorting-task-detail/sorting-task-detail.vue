@@ -3,19 +3,19 @@
     <ul class="top-wrap">
       <li v-for="item in topListTilte" :key="item.id">
         <span>{{item.name}}</span>
-        <span :class="{number:item.type === 'number'}">{{sortingTaskDetail.pickingDetail[item.id]}}</span>
-        <span v-if="item.after">{{sortingTaskDetail.pickingDetail[item.after]}}</span>
+        <span :class="{number:item.type === 'number'}">{{sortingTaskDetail.details[item.id]}}</span>
+        <span v-if="item.after">{{sortingTaskDetail.details[item.after]}}</span>
       </li>
     </ul>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="icon-inventory@2x.png" class="identification-icon">
+          <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">配货明细</p>
         </div>
       </div>
       <ul class="content-wrap">
-        <li v-for="(item,index) in sortingTaskDetail.deliveryDetail" :key="index" class="item-wrap">
+        <li v-for="(item,index) in sortingTaskDetail.list" :key="index" class="item-wrap">
           <div class="index">{{item.sort|format}}</div>
           <div class="name">{{item.name}}</div>
           <div class="num">{{item.num}}{{item.unit}}</div>
@@ -48,24 +48,36 @@
     },
     data() {
       return {
-        topListTilte: [{
-          name: '商品名称：', id: 'goods_name'
-        }, {
-          name: '商品编码：', id: 'goods_sku_encoding'
-        }, {
-          name: '存放库位：', id: 'position_name'
-        }, {
-          name: '配给商户数：', id: 'merchant_num'
-        }, {
-          name: '待配货数：', id: 'wait_allocation_num', type: 'number', after: 'sale_unit'
-        }]
+        topListTilte: [
+          {
+            name: '商品名称：',
+            id: 'goods_name'
+          },
+          {
+            name: '商品编码：',
+            id: 'goods_sku_encoding'
+          },
+          {
+            name: '存放库位：',
+            id: 'position_name'
+          },
+          {
+            name: '配给商户数：',
+            id: 'merchant_num'
+          },
+          {
+            name: '待配货数：',
+            id: 'wait_allocation_num',
+            type: 'number',
+            after: 'sale_unit'
+          }
+        ]
       }
     },
     computed: {
       ...sortingComputed
     },
-    created() {
-    }
+    created() {}
   }
 </script>
 

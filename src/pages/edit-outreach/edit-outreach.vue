@@ -377,7 +377,8 @@
       testEndDate() {
         // 结束时间规则判断
         return (
-          Date.parse(this.essInformation.end_at.replace(/-/g, '/') + ' 00:00') > Date.parse('' + this.essInformation.start_at.replace(/-/g, '/') + ' 00:00')
+          Date.parse(this.essInformation.end_at.replace(/-/g, '/') + ' 00:00') >
+          Date.parse('' + this.essInformation.start_at.replace(/-/g, '/') + ' 00:00')
         )
       },
       testGroup() {
@@ -639,7 +640,6 @@
         //   return
         // }
 
-
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
@@ -759,7 +759,7 @@
         list.map((item) => {
           item.goods_id = item.id
         })
-        let members = this.selectMembers.map(item => {
+        let members = this.selectMembers.map((item) => {
           return item.id
         })
         let data = Object.assign({}, this.essInformation, {activity_goods: list, member_ids: members})

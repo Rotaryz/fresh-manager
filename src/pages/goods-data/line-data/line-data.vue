@@ -29,16 +29,11 @@
           }
         ],
         op: {
-          'label': ["时令水果"],
-          'data': {
-            'totalArr': ['940.30', '1539', '0.69', '16.74'],
-            'data': [{
-              'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
-              'rate': ['178.94', '799.35', '792.39', '947.58', '940.30', '0.00', '0.00']
-            }]
-          },
-          'showSecondY': false,
-          'lineShadow': true
+          'label': '',
+          'data': [{
+            'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
+            'rate': ['0', '0', '0', '0', '0', '0', '0']
+          }]
         }
       }
     },
@@ -47,27 +42,23 @@
     watch: {
     },
     mounted() {
-      // this.drawBar(this.data, '退货数')
     },
     methods: {
       setTab(num) {
         this.tabIndex = 0
       },
-      changeTab(data) {
-        this.drawLine(data)
-      },
-      // 纵向柱状图（name为表名称，chartId为表父元素标签ID名）
-      drawLine(data) {
+      // 折线图
+      drawLine(data, rate) {
         this.$nextTick(() => {
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          let option = this._setOption(this.op)
+          let option = this._setOption(data, rate)
           myChart.setOption(option)
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
-      _setOption(chartConfig) {
+      _setOption(chartConfig, rate) {
         let option = {
           tooltip: {
             trigger: 'axis',
@@ -75,7 +66,7 @@
             formatter: function (params) {
               let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
               params.forEach(function (item) {
-                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}</span></p>`;
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}${rate ? '%' : ''}</span></p>`;
               });
               return result;
             },
@@ -114,21 +105,21 @@
           series: []
         }
 
-        let data = chartConfig.data.data
+        let data = chartConfig.data
         let legendData = []
         let series = []
         let item = data[0]
-        item.name = chartConfig.label[0]
+        item.name = chartConfig.label
         legendData.push(item.name)
         series.push(this._setSeries(chartConfig, item))
-        chartConfig.showSecondY && (option.grid.right = '20')
+        // chartConfig.showSecondY && (option.grid.right = '20')
         option.legend.data = legendData
         option.series = series
         option.xAxis = this._setXAxis(data[0].x)
-        option.yAxis = this._setYAxis(chartConfig.showSecondY)
+        option.yAxis = this._setYAxis()
         return option
       },
-      _setSeries(chartConfig,item) {
+      _setSeries(chartConfig, item) {
         let seriesConfig = {
           name: item.name,
           type: 'line',
@@ -149,24 +140,22 @@
             }
           }
         }
-        if (chartConfig.label.length <= 2) {
-          let color = ['rgba(96,129,227,0.28)', 'rgba(136,89,232,0.28)', 'rgba(247,193,54,0.28)', 'rgba(106,225,255,0.28)']
-          seriesConfig.areaStyle = {
-            color: {
-              type: 'linear',
-              x: 0, x2: 0, y: 0, y2: 1,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: color[0]
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(250,250,250,0)'
-                }
-              ],
-              globalCoord: false
-            }
+        let color = ['rgba(96,129,227,0.28)', 'rgba(136,89,232,0.28)', 'rgba(247,193,54,0.28)', 'rgba(106,225,255,0.28)']
+        seriesConfig.areaStyle = {
+          color: {
+            type: 'linear',
+            x: 0, x2: 0, y: 0, y2: 1,
+            colorStops: [
+              {
+                offset: 0,
+                color: color[0]
+              },
+              {
+                offset: 1,
+                color: 'rgba(250,250,250,0)'
+              }
+            ],
+            globalCoord: false
           }
         }
         return seriesConfig
@@ -199,7 +188,7 @@
         }
         return xAxis
       },
-      _setYAxis(showSecondY) {
+      _setYAxis() {
         let yAxis = {
           minInterval: 1,
           type: 'value',
@@ -232,38 +221,6 @@
               width: 0.5
             }
           }
-        }
-        if (showSecondY) {
-          let secondY = {
-            minInterval: 1,
-            type: 'value',
-            // 刻度线
-            splitLine: {
-              show: false
-            },
-            // 坐标刻度
-            axisTick: {
-              show: false,
-              lineStyle: {
-                color: '#F0F3F5',
-                width: 0.5
-              }
-            },
-            // 坐标值
-            axisLabel: {
-              formatter: '{value}',
-              color: '#666'
-            },
-            // 坐标轴
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: '#F0F3F5',
-                width: 0.5
-              }
-            }
-          }
-          return [yAxis, secondY]
         }
         return [yAxis]
       },

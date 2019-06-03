@@ -16,8 +16,8 @@ export const globalComputed = {
     marginBottom: (state) => state.marginBottom
   })
 }
-export const globalMethods= {
-  ...mapMutations('global',['SET_CURRENT_TITLES'])
+export const globalMethods = {
+  ...mapMutations('global', ['SET_CURRENT_TITLES'])
 }
 
 // 团长
@@ -150,7 +150,19 @@ export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])
 
 // 订单
 export const orderComputed = {
-  ...mapGetters('order', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page', 'orderStatus', 'startTime', 'endTime'])
+  ...mapGetters('order', [
+    'list',
+    'pageDetail',
+    'detail',
+    'shopId',
+    'time',
+    'keyword',
+    'status',
+    'page',
+    'orderStatus',
+    'startTime',
+    'endTime'
+  ])
 }
 
 export const orderMethods = {
@@ -159,7 +171,18 @@ export const orderMethods = {
 
 // 退货
 export const returnsComputed = {
-  ...mapGetters('returns', ['list', 'pageDetail', 'detail', 'shopId', 'time', 'keyword', 'status', 'page', 'tabIndex', 'socialName'])
+  ...mapGetters('returns', [
+    'list',
+    'pageDetail',
+    'detail',
+    'shopId',
+    'time',
+    'keyword',
+    'status',
+    'page',
+    'tabIndex',
+    'socialName'
+  ])
 }
 
 export const returnsMethods = {
@@ -199,11 +222,17 @@ export const communityComputed = {
   ...mapGetters('community', ['communityList', 'qualityData', 'businessData', 'groupData', 'goodsList'])
 }
 
-export const communityMethods = mapActions('community', ['getCommunityList', 'getQualityData', 'getBusinessData', 'getGroupData', 'getGoodsList'])
+export const communityMethods = mapActions('community', [
+  'getCommunityList',
+  'getQualityData',
+  'getBusinessData',
+  'getGroupData',
+  'getGoodsList'
+])
 
 // 商品数据
 export const goodsDataComputed = {
-  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList'])
+  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList', 'bigChartData'])
 }
 
 export const goodsDataMethods = mapActions('goodsData', ['getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData'])
@@ -256,7 +285,15 @@ export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurcha
 
 // 采购任务
 export const proTaskComputed = {
-  ...mapGetters('proTask', ['pageTotal', 'purchaseTaskList', 'select', 'editTaskList', 'timeStart', 'timeEnd', 'goBackNumber'])
+  ...mapGetters('proTask', [
+    'pageTotal',
+    'purchaseTaskList',
+    'select',
+    'editTaskList',
+    'timeStart',
+    'timeEnd',
+    'goBackNumber'
+  ])
 }
 
 export const proTaskMethods = mapActions('proTask', [
@@ -344,7 +381,14 @@ export const productComputed = {
 }
 
 export const productMethods = {
-  ...mapActions('product', ['getStore', 'getEnterData', 'getOutData', 'getEnterDetailData', 'getOutDetailData', 'setOutList'])
+  ...mapActions('product', [
+    'getStore',
+    'getEnterData',
+    'getOutData',
+    'getEnterDetailData',
+    'getOutDetailData',
+    'setOutList'
+  ])
 }
 
 // 财务管理
@@ -472,20 +516,28 @@ export const storeMethods = {
 }
 // todo 分拣任务
 export const sortingComputed = {
-  ...mapGetters('sorting', ['sortingTask', 'sortingConfig','sortingTaskDetail'])
+  ...mapGetters('sorting', [
+    'sortingTask',
+    'sortingConfig',
+    'sortingTaskDetail',
+    'sortingTaskDetailByOrder',
+    'barCodePreviewInfo'
+  ])
 }
 
 export const sortingMethods = {
   ...mapActions('sorting', [
     'getSortingTaskList',
     'getSortingTaskDetail',
+    'getSortingTaskGoodsDetails',
+    'getBarCodePreviewInfo',
     'getSortingConfigList'
   ]),
-  ...mapMutations('sorting', ['SET_PARAMS']),
+  ...mapMutations('sorting', ['SET_PARAMS'])
 }
 // 商户订单
-export const merchantOrderComputed={
-  ...mapGetters('merchantOrder',[
+export const merchantOrderComputed = {
+  ...mapGetters('merchantOrder', [
     'pageTotal',
     'orderList',
     'mergerDetail',
@@ -493,29 +545,24 @@ export const merchantOrderComputed={
     'merchantFilter',
     'consumerDetailTotal',
     'consumerDetail',
-    'mergerDetail'])
+    'mergerDetail'
+  ])
 }
-export const merchantOrderMethods ={
+export const merchantOrderMethods = {
   ...mapActions('merchantOrder', [
     'getMerchantOrderList',
     'getMerchantOrderDetail',
     'getConsumerOrderDetail',
     'getMergerOrderDetail'
   ]),
-  ...mapMutations('merchantOrder', [
-    'SET_PARAMS',
-    'SET_PAGE_TOTAL'
-  ])
+  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL'])
 }
 // 售后订单
-export const afterSalesOrderComputed={
-  ...mapGetters('afterSalesOrder',['pageTotal','afterSalesList','afterSalesDetail','afterSalesFilter'])
+export const afterSalesOrderComputed = {
+  ...mapGetters('afterSalesOrder', ['pageTotal', 'afterSalesList', 'afterSalesDetail', 'afterSalesFilter'])
 }
-export const afterSalesOrderMethods ={
-  ...mapActions('afterSalesOrder', [
-    'getAfterSalesOrderList',
-    'getAfterSalesOrderDetail',
-  ]),
+export const afterSalesOrderMethods = {
+  ...mapActions('afterSalesOrder', ['getAfterSalesOrderList', 'getAfterSalesOrderDetail']),
   ...mapMutations('afterSalesOrder', [
     'SET_PARAMS',
     'SET_KEYWORD',
@@ -536,4 +583,13 @@ export const accountComputed = {
 
 export const accountMethods = {
   ...mapActions('account', ['setTabIndex', 'getAccountList', 'setKeyword', 'setAccount', 'getPermissionsList'])
+}
+
+// 仓库人员
+export const warehouseComputed = {
+  ...mapGetters('warehouse', ['list', 'pageDetail', 'detail', 'keyword', 'page'])
+}
+
+export const warehouseMethods = {
+  ...mapActions('warehouse', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
 }

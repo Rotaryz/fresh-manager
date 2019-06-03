@@ -495,7 +495,10 @@
       },
       testEndDate() {
         // 结束时间规则判断
-        return Date.parse(this.msg.end_at.replace(/-/g, '/') + ' 00:00') > Date.parse('' + this.msg.start_at.replace(/-/g, '/') + ' 00:00')
+        return (
+          Date.parse(this.msg.end_at.replace(/-/g, '/') + ' 00:00') >
+          Date.parse('' + this.msg.start_at.replace(/-/g, '/') + ' 00:00')
+        )
       },
       testDescription() {
         return this.msg.description

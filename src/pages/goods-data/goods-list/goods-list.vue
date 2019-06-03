@@ -1,15 +1,17 @@
 <template>
   <div class="goods-list">
-    <div class="goods-title" :class="{'padding': list.length > 5}">
-      <div v-for="(item, index) in titleArr"
-           :key="index"
-           class="title-item"
-           :class="item.class"
-           :style="{flex: item.flex}"
-      >
-        <div v-if="index < 2" class="item-main">{{item.name}}</div>
-        <div v-else class="item-main" :class="[{'hand': saleTrue}, {'active': activeIndex === index && saleTrue}]" @click="changeRank(index)">
-          <span :class="{'active': item.active}">{{item.name}}</span>
+    <div v-if="list.length">
+      <div class="goods-title" :class="{'padding': list.length > 5}">
+        <div v-for="(item, index) in titleArr"
+             :key="index"
+             class="title-item"
+             :class="item.class"
+             :style="{flex: item.flex}"
+        >
+          <div v-if="index < 2" class="item-main">{{item.name}}</div>
+          <div v-else class="item-main" :class="[{'hand': saleTrue}, {'active': activeIndex === index && saleTrue}]" @click="changeRank(index)">
+            <span :class="{'active': item.active}">{{item.name}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -17,7 +19,7 @@
       <div v-for="(item, index) in list" :key="index" class="list-item" :class="{'no-border': index > 5}">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
           <img v-if="val.value === 'img'" class="img" :src="item.image_url" alt="">
-          <p v-else-if="val.value === 'amount'" class="main">¥{{item[val.value]}}</p>
+          <p v-else-if="val.type === 'money'" class="main">¥{{item[val.value]}}</p>
           <p v-else class="main">{{item[val.value]}}</p>
         </div>
       </div>
@@ -39,7 +41,7 @@
     {name: '', flex: 0.5, value: 'img'},
     {name: '品类名称', flex: 1.4, value: 'name'},
     {name: '库存', flex: 1, value: 'num'},
-    {name: '库存金额', flex: 1, value: 'amount'}
+    {name: '库存金额', flex: 1, value: 'amount', type: 'money'}
   ]
   const GOOD = [
     {
@@ -123,6 +125,8 @@
       padding-right: 20px
       &:last-child
         padding-right: 0
+      &:first-child
+        max-width: 50px
       .item-main
         -webkit-user-select: none
         -moz-user-select: none
@@ -175,6 +179,8 @@
         height: 36px
         border-radius: 2px
         border: 0.5px solid $color-line
+      &:first-child
+        max-width: 50px
 
     .item-data:last-child
       padding-right: 0

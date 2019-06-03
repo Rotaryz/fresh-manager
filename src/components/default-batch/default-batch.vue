@@ -53,13 +53,13 @@
     props: {
       batchList: {
         type: Array,
-        default: function () {
+        default: function() {
           return []
         }
       },
       curItem: {
         type: Object,
-        default: function () {
+        default: function() {
           return {}
         }
       },
@@ -76,8 +76,7 @@
         changeNumber: 0
       }
     },
-    created() {
-    },
+    created() {},
     methods: {
       show(index, item) {
         let value = item || this.curItem

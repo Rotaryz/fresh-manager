@@ -148,7 +148,6 @@ export const actions = {
   },
   // 设置显示隐藏成员详情
   setContent({commit}, type) {
-
     commit('SET_CONTENT', type)
   },
   // 成员id

@@ -61,5 +61,4 @@ export default {
     let url = `/social-shopping/api/backend/community/statistic/customers`
     return request.get(url, data, loading)
   }
-
 }

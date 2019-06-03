@@ -115,9 +115,31 @@
     {title: '售后订单号  ', key: 'order_sn', flex: 2},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
     {title: '缺货品类数', key: 'type_count', flex: 1, class: 'sale_out_of_num'},
-    {title: '原订单号 ', key: 'source_order_sn', flex: 2, type: 'operate', params: {id: 'source_order_id'}, routerName: 'merchant-order-detail'},
-    {title: '订单状态', key: 'status_str', flex: 0.6, before: 'status', beforeClass: ['list-status', 'list-status-success']},
-    {title: '操作', key: '', type: 'operate', operateText: '详情', flex: 1, class: "operate", params: {id: 'id'}, routerName: 'after-sales-detail'}
+    {
+      title: '原订单号 ',
+      key: 'source_order_sn',
+      flex: 2,
+      type: 'operate',
+      params: {id: 'source_order_id'},
+      routerName: 'merchant-order-detail'
+    },
+    {
+      title: '订单状态',
+      key: 'status_str',
+      flex: 0.6,
+      before: 'status',
+      beforeClass: ['list-status', 'list-status-success']
+    },
+    {
+      title: '操作',
+      key: '',
+      type: 'operate',
+      operateText: '详情',
+      flex: 1,
+      class: 'operate',
+      params: {id: 'id'},
+      routerName: 'after-sales-detail'
+    }
   ]
   const COMMODITIES_LIST2 = [
     {title: '', type: 'check', key: '', flex: 3, class: 'row-check'},
@@ -125,7 +147,7 @@
     {title: '供应商', key: 'supplier_name', flex: 3},
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: 'sale_out_of_num'},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str'},
+    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str'}
   ]
   export default {
     name: PAGE_NAME,
@@ -139,7 +161,7 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        datePlaceHolder: "选择创建日期",
+        datePlaceHolder: '选择创建日期',
         dispatchSelect: [
           {name: '全部', value: '', num: 0},
           {name: '待处理', value: 5, num: 0},
@@ -150,7 +172,7 @@
         batchCommodities: COMMODITIES_LIST2,
         checkAllStatus: false,
         selectIds: [],
-        confirmType: 1,// 1  补货，2 退款
+        confirmType: 1 // 1  补货，2 退款
       }
     },
     computed: {
@@ -173,7 +195,7 @@
       _getRouterUrl(item, row) {
         let res = {}
         for (let i in item.params) {
-          res[i] = row [item.params[i]]
+          res[i] = row[item.params[i]]
         }
         return {
           name: item.routerName,
@@ -182,7 +204,7 @@
       },
       // ------弹框
       _isCheck(id) {
-        return this.selectIds.some(item => item === id)
+        return this.selectIds.some((item) => item === id)
       },
       // 每行选择
       _itemCheckChange(item) {
@@ -194,18 +216,20 @@
       // 批量选择
       _selectAllChange() {
         this.checkAllStatus = !this.checkAllStatus
-        this.selectIds = this.checkAllStatus ? this.batchendList.map(item => item.goods_sku_code) : []
+        this.selectIds = this.checkAllStatus ? this.batchendList.map((item) => item.goods_sku_code) : []
       },
       // 弹框数据
       _getBatchList(val) {
-        API.AfterSalesOrder.getBatchList({keyword: val || ''}).then((res) => {
-          if (res.error !== this.$ERR_OK) {
+        API.AfterSalesOrder.getBatchList({keyword: val || ''})
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return false
+            }
+            this.batchendList = res.data
+          })
+          .catch(() => {
             return false
-          }
-          this.batchendList = res.data
-        }).catch(() => {
-          return false
-        })
+          })
           .finally(() => {
             this.$loading.hide()
           })
@@ -228,20 +252,22 @@
         this.$refs.confirm.show(text)
       },
       _getConfirmResult() {
-        this._setBacth(this.confirmType === 1 ? 'batchReplenishment':'batchRefund')
+        this._setBacth(this.confirmType === 1 ? 'batchReplenishment' : 'batchRefund')
       },
-      _setBacth(method='batchReplenishment'){
-        API.AfterSalesOrder[method](this.selectIds).then((res) => {
-          if (res.error !== this.$ERR_OK) {
+      _setBacth(method = 'batchReplenishment') {
+        API.AfterSalesOrder[method](this.selectIds)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return false
+            }
+            this.$toast.show('批量处理成功')
+            this._hideModal()
+            this._getStatusData()
+            this.getAfterSalesOrderList()
+          })
+          .catch(() => {
             return false
-          }
-          this.$toast.show('批量处理成功')
-          this._hideModal()
-          this._getStatusData()
-          this.getAfterSalesOrderList()
-        }).catch(() => {
-          return false
-        })
+          })
           .finally(() => {
             this.$loading.hide()
           })
@@ -265,8 +291,8 @@
           end_time: this.afterSalesFilter.end_time,
           keyword: this.afterSalesFilter.keyword
         }
-        API.AfterSalesOrder.getStausData(defaultParams).then(res => {
-          this.dispatchSelect = res.data.map(item => {
+        API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
+          this.dispatchSelect = res.data.map((item) => {
             return {
               name: item.status_str,
               value: item.status,
@@ -285,10 +311,12 @@
       },
       // 状态
       _setValue(item) {
-        this._updateList({
-          status: item.value,
-          page: 1
-        }, true)
+        this._updateList(
+          {
+            status: item.value,
+            page: 1
+          }
+        )
       },
       // 搜索按钮
       _changeKeyword(keyword) {

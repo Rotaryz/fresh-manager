@@ -18,7 +18,9 @@
           手机号
         </div>
         <div class="edit-input-box">
-          <input v-model="mobile" type="number" class="edit-input" maxlength="11" placeholder="请输入手机号">
+          <input v-model="mobile" type="number" class="edit-input" maxlength="11" placeholder="请输入手机号"
+                 :disabled="id"
+          >
         </div>
       </div>
       <div class="edit-item">

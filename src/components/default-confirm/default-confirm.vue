@@ -13,8 +13,8 @@
           <span class="btn confirm one-btn" @click="cancel">确定</span>
         </div>
         <div v-else class="btn-group">
-          <span class="btn cancel" @click="cancel">取消</span>
-          <span class="btn confirm" @click="confirm">确定</span>
+          <span class="btn cancel" @click="cancel">{{cancelText}}</span>
+          <span class="btn confirm" @click="confirm">{{sureText}}</span>
         </div>
       </div>
     </div>
@@ -30,6 +30,14 @@
     name: COMPONENT_NAME,
     components: {DefaultModal},
     props: {
+      cancelText: {
+        type: String,
+        default: '取消'
+      },
+      sureText: {
+        type: String,
+        default: '确认'
+      },
       oneBtn: {
         type: Boolean,
         default: false

@@ -106,7 +106,7 @@
         commodities: COMMODITIES_LIST,
         assortment: {check: false, show: false, content: '一级分类', type: 'default', data: []}, // 格式：{name: '55'
         secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{name: '55'}}
-        store: {check: false, show: false, content: '库区名', type: 'default', data: []},// 格式：{name: '55'}}
+        store: {check: false, show: false, content: '库区名', type: 'default', data: []}, // 格式：{name: '55'}}
         secondStore: {check: false, show: false, content: '货架名', type: 'default', data: []}, // 格式：{name: '55'}}
         warehousePositionId: '',
         goodsCategoryId: '',
@@ -143,15 +143,13 @@
       ...storeMethods,
       // 获取列表
       _getWarehouseList() {
-        this.getWarehouseList(
-          {
-            page: this.page,
-            goodsCategoryId: this.goodsCategoryId,
-            keyword: this.keyword,
-            warehousePositionId: this.warehousePositionId,
-            loading: false
-          }
-        )
+        this.getWarehouseList({
+          page: this.page,
+          goodsCategoryId: this.goodsCategoryId,
+          keyword: this.keyword,
+          warehousePositionId: this.warehousePositionId,
+          loading: false
+        })
       },
       // 选择一级分类
       async setSecondAssortment(item) {

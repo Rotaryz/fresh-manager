@@ -145,13 +145,7 @@
     '退货单状态',
     '操作'
   ]
-  const RULES_LIST = [
-    '规则名称',
-    '发放数',
-    '使用数',
-    '状态',
-    '操作'
-  ]
+  const RULES_LIST = ['规则名称', '发放数', '使用数', '状态', '操作']
   const SELECT = {
     check: false,
     show: false,

@@ -555,8 +555,8 @@
           {value: this.testName, txt: '请输入活动名称'},
           {value: this.testStartTime, txt: '请选择活动开始时间'},
           // {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
-          {value: this.testEndTime, txt: '请选择活动结束时间'},
-          // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
+          {value: this.testEndTime, txt: '请选择活动结束时间'}
+        // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {

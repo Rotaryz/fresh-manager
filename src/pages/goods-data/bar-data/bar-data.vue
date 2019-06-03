@@ -22,7 +22,7 @@
         tabIndex: 0,
         data: {
           x1: ["时令水果", "应季蔬菜", "肉蛋家禽", "海鲜冻品", "粮油百货", "酒饮冲调"],
-          series: [10, 10, 10, 10, 10, 10],
+          series: [0, 0, 0, 0, 0, 0],
           x2: ['利润品', '引流品', '粘性品', '爆款品', '其他']
         }
       }
@@ -48,15 +48,10 @@
           let myChart = this.$echarts.init(document.getElementById(this.chartId))
           let that = this
           myChart.on('click', function (params) {
-            console.log(params)
             that.$emit('clickChart', params.dataIndex)
           })
-          let axisLabel = {
-            formatter: '{value}' + (rate ? '%' : ''),
-            color: '#999'
-          }
           let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
-          myChart.setOption(this.createBar1(xAxisData, seriesData, color, axisLabel))
+          myChart.setOption(this.createBar1(xAxisData, seriesData, color, rate))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
@@ -72,14 +67,16 @@
           purchaseNumAll: data.purchaseNumAll
         }
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
+        let that = this
         myChart.on('click', function (params) {
-          console.log(params)
+          that.$emit('clickChart', params.dataIndex)
         })
         myChart.setOption(this.createBar2(msg))
         window.addEventListener('resize', function() {
           myChart.resize()
         })
       },
+      // 纵向柱状图
       drawBar2(data) {
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2
@@ -88,22 +85,19 @@
           // myChart.on('click', function (params) {
           //   console.log(params)
           // })
-          let axisLabel = {
-            formatter: '{value}',
-            color: '#999'
-          }
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
-          myChart.setOption(this.createBar1(xAxisData, seriesData3, color, axisLabel))
+          myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
           window.addEventListener('resize', function() {
             myChart.resize()
           })
         })
       },
-      createBar1(xAxisData, seriesData, color, axisLabel) {
+      // 纵向柱状图
+      createBar1(xAxisData, seriesData, color, rate) {
         return {
           grid: {
             left: '40',
-            right: '30',
+            right: '40',
             bottom: '30',
             top: '20',
             containLabel: true
@@ -124,7 +118,10 @@
             axisLabel: {
               color: '#999',
               fontSize: 12,
-              align: 'center'
+              align: 'center',
+              formatter: function(value) {
+                return value.slice(0, 4)
+              }
             },
             axisTick: {
               show: false,
@@ -159,7 +156,12 @@
                 width: 0.5
               }
             },
-            axisLabel,
+            axisLabel: {
+              formatter: function(data) {
+                return data + (rate ? '%' : '')
+              },
+              color: '#999'
+            },
             axisLine: {
               show: false,
               trigger: 'axis',
@@ -178,7 +180,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}`
+              return `${prams[0].name}：${prams[0].value}${rate ? '%' : ''}`
             }
           },
           series: [
@@ -208,11 +210,12 @@
           ]
         }
       },
+      // 横向柱状图
       createBar2(series) {
         return {
           grid: {
             left: '20',
-            right: '30',
+            right: '45',
             bottom: '30',
             top: '0',
             containLabel: true
@@ -263,6 +266,7 @@
             }
           },
           yAxis: {
+            inverse: true,
             minInterval: 1,
             type: 'category',
             data: series.xAxisData,
@@ -281,7 +285,9 @@
               }
             },
             axisLabel: {
-              formatter: '{value}',
+              formatter: function(value) {
+                return value.slice(0, 4)
+              },
               color: '#999'
             },
             axisLine: {
@@ -302,7 +308,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}：${prams[0].value}<br />${prams[1].name}：${prams[1].value}`
+              return `${prams[0].name}<br />销售额占比：${prams[0].value}%<br />采购额占比：${prams[1].value}%`
             }
           },
           series: [
@@ -327,10 +333,7 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.purchaseNumAll === 0) {
-                      return '0%'
-                    }
-                    return data.value/series.purchaseNumAll+ '%'
+                    return data.value + '%'
                   },
                   verticalAlign: 'middle',
                   color: '#999',
@@ -352,10 +355,7 @@
                   show: true,
                   position: 'right',
                   formatter: function(data) {
-                    if (series.purchaseNumAll === 0) {
-                      return '0%'
-                    }
-                    return data.value/series.purchaseNumAll+ '%'
+                    return data.value + '%'
                   },
                   offset: [0, 2],
                   verticalAlign: 'middle',

@@ -126,8 +126,8 @@ export default {
    * @param loading
    * @returns {*}
    */
-  batchDeliverySign(loading = true) {
+  batchDeliverySign(data, loading = true) {
     let url = `/scm/api/backend/delivery/batch-delivery-sign`
-    return request.get(url, false, loading)
+    return request.get(url, data, loading)
   }
 }

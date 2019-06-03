@@ -69,8 +69,8 @@
 
 <script type="text/ecmascript-6">
   import API from '@api'
-  import { DatePicker } from 'element-ui'
-  import { authComputed, orderComputed, orderMethods } from '@state/helpers'
+  import {DatePicker} from 'element-ui'
+  import {authComputed, orderComputed, orderMethods} from '@state/helpers'
   import moment from 'moment'
 
   const PAGE_NAME = 'ORDER_LIST'
@@ -81,25 +81,22 @@
 
   // const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '社区名称', '订单状态', '操作']
-  const ORDERSTATUS = [
-    {text: '商城订单', status: 'c_shop'},
-    {text: '拓展订单', status: 'c_offline'},
-  ]
+  const ORDERSTATUS = [{text: '商城订单', status: 'c_shop'}, {text: '拓展订单', status: 'c_offline'}]
   const SOCIAL_SELECT = {
     check: false,
     show: false,
     content: '全部社区',
     type: 'default',
-    data: [],
+    data: []
   }
 
   export default {
     name: PAGE_NAME,
     page: {
-      title: TITLE,
+      title: TITLE
     },
     components: {
-      DatePicker,
+      DatePicker
     },
     data() {
       return {
@@ -113,10 +110,10 @@
           {name: '待付款', value: 1, key: 'wait_submit', num: 0},
           {name: '待提货', value: 1, key: 'success', num: 0},
           {name: '已完成', value: 1, key: 'success', num: 0},
-          {name: '已关闭', value: 1, key: 'success', num: 0},
+          {name: '已关闭', value: 1, key: 'success', num: 0}
         ],
         downUrl: '',
-        defaultStatus: 'c_shop',
+        defaultStatus: 'c_shop'
       }
     },
     computed: {
@@ -136,7 +133,7 @@
           shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
-          keyword: this.keyword,
+          keyword: this.keyword
         }
         let search = []
         for (let key in data) {
@@ -157,8 +154,8 @@
           })
           this.changeTime(time)
           return time
-        },
-      },
+        }
+      }
     },
     created() {
       this._getShopList()
@@ -178,8 +175,8 @@
           start_time: this.startTime,
           end_time: this.endTime,
           shop_id: this.shopId,
-          keyword: this.keyword,
-        }).then(res => {
+          keyword: this.keyword
+        }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
@@ -188,7 +185,7 @@
             return {
               name: item.status_str,
               status: item.status,
-              num: item.statistic,
+              num: item.statistic
             }
           })
         })
@@ -230,8 +227,8 @@
         this.setKeyword(keyword)
         this.getOrderStatus()
         this.$refs.pagination.beginPage()
-      },
-    },
+      }
+    }
   }
 </script>
 

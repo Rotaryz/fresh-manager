@@ -240,7 +240,8 @@
           title: '商戶订单',
           url: '/home/merchant-order',
           isLight: false
-        },{
+        },
+        {
           title: '售后订单',
           url: '/home/after-sales-order',
           isLight: false
@@ -296,8 +297,8 @@
           isLight: false
         },
         {
-          title: '库位管理',
-          url: '/home/store-manage',
+          title: '基础设置',
+          url: '/home/foundation-setup',
           isLight: false
         }
       ]

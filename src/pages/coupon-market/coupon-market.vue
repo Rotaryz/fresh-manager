@@ -69,36 +69,38 @@
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
-  const TOP_BTN = [{
-    name: '平台发放',
-    child: [
-      {
-        name: '新客有礼',
-        value: 0,
-        icon: 'icon-new_courtesy'
-      },
-      {
-        name: '复购有礼',
-        value: 1,
-        icon: 'icon-complex_courtesy'
-      },
-      {
-        name: '唤醒流失客户',
-        value: 2,
-        icon: 'icon-awaken'
-      }
-
-    ]
-  },{
-    name: '团长发放',
-    child: [
-      {
-        name: '社群福利券',
-        value: 3,
-        icon: 'icon-group'
-      }
-    ]
-  }]
+  const TOP_BTN = [
+    {
+      name: '平台发放',
+      child: [
+        {
+          name: '新客有礼',
+          value: 0,
+          icon: 'icon-new_courtesy'
+        },
+        {
+          name: '复购有礼',
+          value: 1,
+          icon: 'icon-complex_courtesy'
+        },
+        {
+          name: '唤醒流失客户',
+          value: 2,
+          icon: 'icon-awaken'
+        }
+      ]
+    },
+    {
+      name: '团长发放',
+      child: [
+        {
+          name: '社群福利券',
+          value: 3,
+          icon: 'icon-group'
+        }
+      ]
+    }
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -145,20 +147,19 @@
         this.getMarketList({page: this.page, status: selectStatus.status, loading: false})
       },
       getMarketStatus() {
-        API.Market.getMarketStatus()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Market.getMarketStatus().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              status: item.status,
+              num: item.statistic
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                status: item.status,
-                num: item.statistic
-              }
-            })
           })
+        })
       },
       addPage(page) {
         this.page = page
@@ -166,7 +167,7 @@
       },
       statusHandle(item, index) {
         let status = 0
-        if (typeof(this.statusArr[index]) === 'number') {
+        if (typeof this.statusArr[index] === 'number') {
           status = this.statusArr[index]
         } else {
           status = item.status
@@ -175,7 +176,7 @@
       },
       switchBtn(item, index) {
         let status = 1
-        if (typeof(this.statusArr[index]) === 'number') {
+        if (typeof this.statusArr[index] === 'number') {
           status = +this.statusArr[index] === 0 ? 1 : 0
         } else {
           status = item.status ? 0 : 1

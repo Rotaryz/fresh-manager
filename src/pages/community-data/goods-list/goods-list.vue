@@ -33,29 +33,31 @@
   ]
   const GOOD = [
     {
-      "wx_group_id": 2,
-      "sales": 30,
-      "conversion": "76.93%",
-      "goods": {
-        "id": 399,
-        "name": "欧家新鲜",
-        "cover_image_id": 5210,
-        "cover_image": "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/18/155288050414670.png?imageView2/3/w/400/h/400/q/90"
+      wx_group_id: 2,
+      sales: 30,
+      conversion: '76.93%',
+      goods: {
+        id: 399,
+        name: '欧家新鲜',
+        cover_image_id: 5210,
+        cover_image:
+          'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/18/155288050414670.png?imageView2/3/w/400/h/400/q/90'
       }
     },
     {
-      "wx_group_id": 1,
-      "sales": 13,
-      "conversion": "59.10%",
-      "goods": {
-        "id": 400,
-        "name": "大米",
-        "cover_image_id": 6111,
-        "cover_image": "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/26/155358548164093.png?imageView2/3/w/400/h/400/q/90"
+      wx_group_id: 1,
+      sales: 13,
+      conversion: '59.10%',
+      goods: {
+        id: 400,
+        name: '大米',
+        cover_image_id: 6111,
+        cover_image:
+          'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/26/155358548164093.png?imageView2/3/w/400/h/400/q/90'
       }
     }
   ]
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       time: {
@@ -72,9 +74,7 @@
     computed: {
       ...communityComputed
     },
-    methods: {
-
-    }
+    methods: {}
   }
 </script>
 

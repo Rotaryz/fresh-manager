@@ -813,7 +813,6 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             let status = routeTo.query.status || ''
-            console.log(status)
             store
               .dispatch('leader/getLeaderList', {page: 1, status})
               .then((res) => {
@@ -1175,16 +1174,18 @@ export default [
               limit: 10,
               start_time: '',
               end_time: '',
-              type: "",
-              status: 0,// 待调度
-              keyword: ""
+              type: '',
+              status: 0, // 待调度
+              keyword: ''
             })
-            store.dispatch('merchantOrder/getMerchantOrderList').then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              next()
-            })
+            store
+              .dispatch('merchantOrder/getMerchantOrderList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
               .catch(() => {
                 next({name: '404'})
               })
@@ -1199,12 +1200,14 @@ export default [
         meta: {
           titles: ['供应链', '订单', '商户订单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('merchantOrder/getMerchantOrderDetail', routeTo.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              next()
-            })
+            store
+              .dispatch('merchantOrder/getMerchantOrderDetail', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
               .catch(() => {
                 next({name: '404'})
               })
@@ -1219,12 +1222,14 @@ export default [
         meta: {
           titles: ['供应链', '订单', '商户订单', '商品明细', '消费者明细'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('merchantOrder/getConsumerDetails', routeTo.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              next()
-            })
+            store
+              .dispatch('merchantOrder/getConsumerDetails', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
               .catch(() => {
                 next({name: '404'})
               })
@@ -1239,12 +1244,14 @@ export default [
         meta: {
           titles: ['供应链', '订单', '商品汇总单', '商品明细'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('merchantOrder/getMergerOrderDetail', routeTo.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              next()
-            })
+            store
+              .dispatch('merchantOrder/getMergerOrderDetail', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
               .catch(() => {
                 next({name: '404'})
               })
@@ -1267,7 +1274,8 @@ export default [
               page:1,
               limit:10
             })
-            store.dispatch('afterSalesOrder/getAfterSalesOrderList')
+            store
+              .dispatch('afterSalesOrder/getAfterSalesOrderList')
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1288,12 +1296,14 @@ export default [
         meta: {
           titles: ['供应链', '订单', '售后订单', '商品明细'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('afterSalesOrder/getAfterSalesOrderDetail', routeTo.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              next()
-            })
+            store
+              .dispatch('afterSalesOrder/getAfterSalesOrderDetail', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
               .catch(() => {
                 next({name: '404'})
               })
@@ -1347,6 +1357,18 @@ export default [
         component: () => lazyLoadView(import('@pages/edit-task/edit-task')),
         meta: {
           titles: ['供应链', '采购', '采购任务', '生成采购单'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
+      // 生成采购任务
+      {
+        path: 'procurement-task/procurement-lead',
+        name: 'procurement-lead',
+        component: () => lazyLoadView(import('@pages/procurement-lead/procurement-lead')),
+        meta: {
+          titles: ['供应链', '采购', '采购任务', '采购任务导入'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
           }
@@ -1613,13 +1635,22 @@ export default [
           }
         }
       },
+      // 基础设置
+      {
+        path: 'foundation-setup',
+        name: 'foundation-setup',
+        component: () => lazyLoadView(import('@pages/foundation-setup/foundation-setup')),
+        meta: {
+          titles: ['供应链', '仓库', '基础设置']
+        }
+      },
       // 库位管理
       {
-        path: 'store-manage',
+        path: 'foundation-setup/store-manage',
         name: 'store-manage',
         component: () => lazyLoadView(import('@pages/store-manage/store-manage')),
         meta: {
-          titles: ['供应链', '仓库', '库位管理'],
+          titles: ['供应链', '仓库', '基础设置', '库位管理'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('product/getStore')
@@ -1631,6 +1662,66 @@ export default [
               })
               .catch(() => {
                 return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 打印条码
+      {
+        path: 'foundation-setup/bar-code',
+        name: 'bar-code',
+        component: () => lazyLoadView(import('@pages/bar-code/bar-code')),
+        meta: {
+          titles: ['供应链', '仓库', '基础设置', '打印条码']
+        }
+      },
+      // 仓库人员管理
+      {
+        path: 'foundation-setup/warehouse-personnel',
+        name: 'warehouse-personnel',
+        component: () => lazyLoadView(import('@pages/warehouse-personnel/warehouse-personnel')),
+        meta: {
+          titles: ['供应链', '仓库', '基础设置', '仓库人员管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('warehouse/infoSetKeyWord')
+            store
+              .dispatch('warehouse/getPurchaseUser')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        }
+      },
+      // 仓库人员
+      {
+        path: 'foundation-setup/edit-warehouse',
+        name: 'edit-warehouse',
+        component: () => lazyLoadView(import('@pages/edit-warehouse/edit-warehouse')),
+        meta: {
+          titles: ['供应链', '仓库', '基础设置', '仓库人员'],
+          variableIndex: 3,
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('warehouse/getPurchaseUserDetail', routeTo.query.id)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
               })
           }
         }
@@ -1648,15 +1739,18 @@ export default [
               limit: 10,
               start_time: '',
               end_time: '',
-              keyword: "",
-              status: 0   // 待分拣
+              keyword: '',
+              status: 0, // 待分拣
+              sorting_mode: 0
             })
-            store.dispatch('sorting/getSortingTaskList').then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
+            store
+              .dispatch('sorting/getSortingTaskList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
               .catch(() => {
                 return next({name: '404'})
               })
@@ -1664,19 +1758,70 @@ export default [
         },
         component: () => lazyLoadView(import('@pages/sorting-task/sorting-task'))
       },
+      // 分拣任务
+      {
+        path: 'sorting-task/print-preview/:id',
+        name: 'sorting-task-preview',
+        meta: {
+          titles: ['供应链', '分拣', '分拣任务', '打印预览'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('sorting/getBarCodePreviewInfo', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/preview/preview'))
+      },
+      // 按订单  分拣任务明细
+      {
+        path: 'sorting-task/sorting-task-order-detail/:id/:order_id',
+        name: 'sorting-task-order-detail',
+        meta: {
+          titles: ['供应链', '分拣', '分拣任务', '商品明细'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store.commit('sorting/SET_PARAMS', {
+              type: 'sortingTaskDetailByOrder',
+              page: 1,
+              limit: 10
+            })
+            store
+              .dispatch('sorting/getSortingTaskDetailByOrder', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        },
+        component: () => lazyLoadView(import('@pages/sorting-task-order-detail/sorting-task-order-detail'))
+      },
       // 分拣任务明细
       {
         path: 'sorting-task/sorting-task-detail/:id/:goods_sku_code',
-        name: 'sorting-task-detail',
+        name: 'sorting-task-detail-by-goods',
         meta: {
           titles: ['供应链', '分拣', '分拣任务', '配货明细'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('sorting/getSortingTaskDetail', routeTo.params).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
+            store
+              .dispatch('sorting/getSortingTaskDetail', routeTo.params)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
               .catch(() => {
                 return next({name: '404'})
               })
@@ -1691,14 +1836,16 @@ export default [
         meta: {
           titles: ['供应链', '分拣', '分拣配置'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('sorting/getSortingConfigList', {
-              page: 1
-            }).then((res) => {
-              if (!res) {
-                return next({name: '404'})
-              }
-              return next()
-            })
+            store
+              .dispatch('sorting/getSortingConfigList', {
+                page: 1
+              })
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
               .catch(() => {
                 return next({name: '404'})
               })
@@ -1980,7 +2127,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  社群列表
             store
-              .dispatch('goodsData/getCategoryList', {parent_id: 0, page: 1})
+              .dispatch('goodsData/getCategoryList', {parent_id: 0, get_goods_count: 1})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2096,7 +2243,6 @@ export default [
           titles: ['设置', '账号', '操作日记']
         }
       }
-
     ]
   },
   {

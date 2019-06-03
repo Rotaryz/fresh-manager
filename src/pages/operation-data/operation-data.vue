@@ -134,7 +134,7 @@
     {
       id: 'benefitChart',
       apiFun: 'getOperationBenefitData',
-      title: '效益',
+      title: '效率',
       label: [
         {name: '动销率', key: 'rate', total: ''}
       ],
@@ -464,6 +464,7 @@
 
   .operation-data
     width: 100%
+    min-width: 1200px
 
   .content
     min-height: calc(100vh - 130px)

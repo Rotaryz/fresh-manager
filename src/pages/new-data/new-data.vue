@@ -196,7 +196,11 @@
       permissions: 'entry-orders'
     },
     {
-      text: '出', subText: '待出库任务', key: 'out_order_count', number: 0, url: '/home/product-out?status=0',
+      text: '出',
+      subText: '待出库任务',
+      key: 'out_order_count',
+      number: 0,
+      url: '/home/product-out?status=0',
       permissions: 'out-orders'
     },
     {
@@ -208,7 +212,11 @@
       permissions: 'delivery'
     },
     {
-      text: '运', subText: '待售后订单', key: 'after_sale_count', number: 0, url: '/home/returns-management?status=0',
+      text: '运',
+      subText: '待售后订单',
+      key: 'after_sale_count',
+      number: 0,
+      url: '/home/returns-management?status=0',
       permissions: 'after-sale-orders'
     }
   ]
@@ -261,7 +269,7 @@
     mounted() {
       let time = this.$route.params.time
       this.disabledDate = {
-        disabledDate (date) {
+        disabledDate(date) {
           return date && (date.valueOf() <= time.timestamp - 2592000 * 1000 || date.valueOf() >= time.timestamp)
         }
       }
@@ -518,7 +526,9 @@
       _getShopUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.shopStartTime}&end_time=${this.shopEndTime}&time=${this.shopTime}`
+        let params = `access_token=${token.access_token}&start_time=${this.shopStartTime}&end_time=${
+          this.shopEndTime
+        }&time=${this.shopTime}`
         this.shopDownUrl =
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
@@ -550,7 +560,9 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.managerStartTime}&end_time=${this.managerEndTime}&time=${this.managerTime}`
+        let params = `access_token=${token.access_token}&start_time=${this.managerStartTime}&end_time=${
+          this.managerEndTime
+        }&time=${this.managerTime}`
         this.downUrl =
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`

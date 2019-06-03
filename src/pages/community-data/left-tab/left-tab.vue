@@ -41,7 +41,7 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'LEFT-TAB'
   const LV_ARR = ['icon-v0', 'icon-v1', 'icon-v2', 'icon-v3', 'icon-v4']
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       tabArr: {
@@ -71,21 +71,20 @@
         this.$emit('editGroup', item)
       },
       tabScroll() {
-        // let leftBoxHeight = this.$refs.leftBox.offsetHeight
-        // let leftTabHeight = this.$refs.leftTab.offsetHeight
-        // let scrollTop = this.$refs.leftTab.scrollTop
-        // if (leftBoxHeight > leftTabHeight && (scrollTop >= leftBoxHeight - leftTabHeight)) {
-        //   if (this.getMore) return
-        //   this.getMore = true
-        //   this.groupArr.push(new Array(10).fill(1))
-        //   setTimeout(() => {
-        //     this.getMore = false
-        //   }, 200)
-        // }
+      // let leftBoxHeight = this.$refs.leftBox.offsetHeight
+      // let leftTabHeight = this.$refs.leftTab.offsetHeight
+      // let scrollTop = this.$refs.leftTab.scrollTop
+      // if (leftBoxHeight > leftTabHeight && (scrollTop >= leftBoxHeight - leftTabHeight)) {
+      //   if (this.getMore) return
+      //   this.getMore = true
+      //   this.groupArr.push(new Array(10).fill(1))
+      //   setTimeout(() => {
+      //     this.getMore = false
+      //   }, 200)
+      // }
       }
     }
   }
-
 </script>
 
 

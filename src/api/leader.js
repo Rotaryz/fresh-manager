@@ -199,5 +199,4 @@ export default {
     let url = '/social-shopping/api/backend/shop-manager-account-summary'
     return request.get(url, data, loading)
   }
-
 }

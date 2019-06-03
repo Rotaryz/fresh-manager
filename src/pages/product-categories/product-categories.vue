@@ -72,10 +72,7 @@
     },
     data() {
       return {
-        statusTab: [
-          {name: '一级类目', num: 0},
-          {name: '二级类目', num: 0}
-        ],
+        statusTab: [{name: '一级类目', num: 0}, {name: '二级类目', num: 0}],
         categoryType: 0,
         categoryNewName: '',
         categoryChild: '',
@@ -98,20 +95,19 @@
     methods: {
       ...categoriesMethods,
       getCategoryStatus() {
-        API.Product.getCategoryStatus()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Product.getCategoryStatus().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              num: item.statistic
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                num: item.statistic
-              }
-              // this.$set(this.statusTab[index], 'num', item.statistic)
-            })
+          // this.$set(this.statusTab[index], 'num', item.statistic)
           })
+        })
       },
       newBigCate() {
         // this.$refs.bigModel.show('新建商品分类', this.categoryNewName)

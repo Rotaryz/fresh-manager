@@ -5,6 +5,7 @@
       <div class="enter-title">关联订单号：{{outMsg.out_order_sn}}</div>
       <div class="enter-title">商户名称：{{outMsg.merchant_name}}</div>
       <div class="enter-title">出库时间：{{outMsg.out_time || '--------'}}</div>
+      <div class="enter-title">复核时间：{{outMsg.checked_time || '--------'}}</div>
       <div class="enter-title">状态：{{outMsg.status === 0 ? '待出库' : '已完成'}}</div>
       <div class="enter-title">出库金额：<span class="enter-title-money">￥{{outMsg.total}}</span></div>
     </div>
@@ -30,8 +31,29 @@
               <p class="item-sub">{{item.goods_sku_encoding}}</p>
             </div>
             <div class="list-item">{{item.goods_category}}</div>
-            <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
-            <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
+            <div class="list-item">{{item.order_num}}</div>
+            <div class="list-item">{{item.allocation_num}}</div>
+            <div class="list-item">
+              <template v-if="outMsg.status===2">
+                <input v-model="item.sale_num" class="ivu-input input-num" type="number" @input="saleNumChange(item, index)">
+              </template>
+              <template v-else>
+                {{item.sale_num}}
+              </template>
+              {{item.sale_unit}}
+            </div>
+            <div class="list-item">
+              <template v-if="outMsg.status===2">
+                <input v-model="item.base_num" class="ivu-input input-num" type="number" @input="baseNumChange(item, index)">
+              </template>
+              <template v-else>
+                {{item.base_num}}
+              </template>
+              {{item.base_unit}}
+            </div>
+            <div class="list-item">
+              {{item.diff_num}}
+            </div>
             <div class="list-item list-item-batches hand" @mouseenter="_showTip(index)" @mouseleave="_hideTip" @click="outFn(item, index)">
               <transition name="fade">
                 <div v-show="showIndex === index && item.status !== 0 && item.out_batches.length" class="batches-box">
@@ -54,15 +76,20 @@
               <span class="list-operation">{{item.status !== 0 ? '查看批次' : '默认批次'}}</span>
             </div>
             <div class="list-item">{{item.out_cost_price ? '￥' + item.out_cost_price : '￥0.00'}}/{{item.base_unit}}</div>
-            <div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>
+            <!--<div class="list-item">{{item.cost_total ? '￥' + item.cost_total : '￥0.00'}}</div>-->
           </div>
         </div>
       </div>
     </div>
+    <default-confirm ref="confirm" cancelText="不调整" sureText="调整" @confirm="sureAdjust" @cancel="backPage"></default-confirm>
     <default-batch ref="modalBox" :batchList="batchList" :curItem.sync="curItem" :isOnZero="true" @confirm="confirm"></default-batch>
     <div v-if="outMsg.status === 0" class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
       <div class="back-btn back-submit hand" @click="submitOutFn">确认提交</div>
+    </div>
+    <div v-if="outMsg.status === 2" class="back">
+      <div class="back-cancel back-btn hand" @click="cancel">取消</div>
+      <div class="back-btn back-submit hand" @click="submitRecheck">复核完成</div>
     </div>
   </div>
 </template>
@@ -72,6 +99,7 @@
   import API from '@api'
   import {productComputed, productMethods} from '@state/helpers'
   import DefaultBatch from '@components/default-batch/default-batch'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
@@ -79,11 +107,14 @@
     '序号',
     '商品',
     '分类',
+    '订单数量(销售单位)',
+    '配货数量(销售单位)',
     '出库数量(销售单位)',
     '出库数量(基本单位)',
+    '差异数',
     '出库批次',
-    '出库单价',
-    '出库金额'
+    '出库单价'
+    // '出库金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -91,7 +122,8 @@
       title: TITLE
     },
     components: {
-      DefaultBatch
+      DefaultBatch,
+      DefaultConfirm
     },
     data() {
       return {
@@ -103,11 +135,12 @@
         curIndex: 0,
         curItem: {},
         showIndex: null,
-        isSubmit: false
+        isSubmit: false,
+        sureAdjustData: null
       }
     },
     computed: {
-      ...productComputed,
+      ...productComputed
     },
     created() {
       this.id = this.$route.params.id || null
@@ -116,6 +149,72 @@
     },
     methods: {
       ...productMethods,
+      backPage() {
+        this.$router.back()
+      },
+      saleNumChange(item, index) {
+        if (item.sale_num < 0) {
+          item.base_num = item.sale_num * -1
+        }
+        let number = item.sale_num * item.base_sale_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.base_num = number.toFixed(2)
+      },
+      baseNumChange(item, index) {
+        if (item.base_num < 0) {
+          item.sale_num = item.base_num * -1
+        }
+        let number = item.base_num / item.base_sale_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.sale_num = number.toFixed(2)
+      },
+      sureAdjust() {
+        API.Store.sureAdjust({data: this.sureAdjustData})
+          .then((res) => {
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              // this.$refs.confirm.hide()
+              setTimeout(() => {
+                this.$router.back()
+              }, 500)
+            }
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+            return false
+          })
+          .finally(() => {
+            this.$loading.hide()
+          })
+      },
+      submitRecheck() {
+        API.Store.recheckFinish(this.$route.params.id, {details: this.outDetailList})
+          .then((res) => {
+            if (res.data) {
+              this.sureAdjustData = res.error === this.$ERR_OK ? res.data : null
+              this.$refs.confirm.show('温馨提示：商品存在差异，是否进行报损调整？')
+              return
+            }
+            this.$toast.show(res.message)
+            if (res.error === this.$ERR_OK) {
+              setTimeout(() => {
+                this.$router.back()
+              }, 500)
+              // res.data && this.$refs.confirm.show()
+            }
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+            return false
+          })
+          .finally(() => {
+            this.$loading.hide()
+          })
+      },
       cancel() {
         this.$router.back()
       },
@@ -185,12 +284,11 @@
         let number = 0
         this.batchList = this.batchList.map((item) => {
           item.out_count = !item.out_count ? item.select_out_num : item.out_count
-          number += (item.out_count * 1)
+          number += item.out_count * 1
           return item
         })
         this.$refs.modalBox.show(number, item)
-      }
-      ,
+      },
       confirm(arr) {
         let allprice = 0
         let number = 0
@@ -200,7 +298,11 @@
             allprice += item.select_out_num * item.price
           }
         })
-        this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        if (number * 1 === 0) {
+          this.outDetailList[this.curIndex].out_cost_price = 0
+        } else {
+          this.outDetailList[this.curIndex].out_cost_price = (allprice / number).toFixed(2)
+        }
         this.outDetailList[this.curIndex].cost_total = allprice.toFixed(2)
         this.outDetailList[this.curIndex].select_batch = arr
         this.$refs.modalBox.cancel()
@@ -216,7 +318,7 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:last-child, &:nth-child(1)
+        &:nth-child(1)
           flex: 0.5
         &:nth-child(4), &:nth-child(2), &:nth-child(5), &:nth-child(6)
           flex: 1.5
@@ -243,7 +345,7 @@
       top: 21px
       left: 0
       box-sizing: border-box
-      padding: 12px 37px 0 12px
+      padding: 0 37px 0 12px
       background: rgba(51, 51, 51, .8)
       font-size: $font-size-14
       font-family: $font-family-regular
@@ -278,8 +380,13 @@
         margin-bottom: 12px
         height: 15px
         line-height: 15px
+        &:first-child
+          margin: 12px
 
   .tip
     margin: 0 2px
     font-size: $font-size-14
+  .input-num
+    border-radius: 0
+    width: 93px
 </style>
