@@ -239,21 +239,21 @@ export default [
             //  抢购列表
             let status = routeTo.query.status || ''
             API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
-            .then((res) => {
-              if (res.error !== ERR_OK) {
-                return next({name: '404'})
-              }
-              let dataInfo = res.data
-              let pageInfo = {
-                total: res.meta.total,
-                per_page: res.meta.per_page,
-                total_page: res.meta.last_page
-              }
-              next({params: {dataInfo, pageInfo}})
-            })
-            .catch(e => {
-              next({name: '404'})
-            })
+              .then((res) => {
+                if (res.error !== ERR_OK) {
+                  return next({name: '404'})
+                }
+                let dataInfo = res.data
+                let pageInfo = {
+                  total: res.meta.total,
+                  per_page: res.meta.per_page,
+                  total_page: res.meta.last_page
+                }
+                next({params: {dataInfo, pageInfo}})
+              })
+              .catch(e => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -1271,8 +1271,8 @@ export default [
               end_time: '',
               keyword: "",
               status: 0,
-              page:1,
-              limit:10
+              page: 1,
+              limit: 10
             })
             store
               .dispatch('afterSalesOrder/getAfterSalesOrderList')
@@ -1987,16 +1987,20 @@ export default [
           titles: ['供应链', '配送', '配送任务'],
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
+            if (typeof (routeTo.query.status) !== 'undefined') {
+              store.dispatch('distribution/setTabIndex', 0)
+            }
             let tabIndex = store.state.distribution.tabIndex
             store.dispatch('distribution/infoOrderTime', {
               startTime: '',
               endTime: '',
-              status: 1
+              status: routeTo.query.status || 1
             })
             store.dispatch('distribution/infoDriverTime', {
               startTime: '',
               endTime: ''
             })
+            // store.mutations.SET_TAB_INDEX(0)
             if (tabIndex === 0) {
               store
                 .dispatch('distribution/getOrderList')
