@@ -124,6 +124,8 @@
             code = 'goods'
             this.goodsIndex = itemIndex
             this.selectGoods = true
+          } else {
+            this.$toast.show('该商品已下架')
           }
         } else {
           return

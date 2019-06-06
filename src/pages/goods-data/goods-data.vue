@@ -404,6 +404,7 @@
             let chartCateId =  this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].id
             this.$refs.goodsTab.selectList(chartCateId)
           } else {
+
             let chartGoodsId = this[this.clickSec + 'Data'].data[index].spu
             this.$refs.goodsTab.selectList('', chartGoodsId)
           }
@@ -413,13 +414,13 @@
         this.clickChartIndex = index
         this.bigDataShow = false
         // this.$refs.goodsTab.selectList('', 42624)
-        if (!this[this.bigBarType + 'Data'].data || !this[this.bigBarType + 'Data'].data.length) return
+        if (!this.bigChartData.data || !this.bigChartData.data.length) return
         // 找到分类ID 或商品ID
         if (this.leftTab === 'all') {
-          let chartCateId =  this[this.bigBarType + 'Data'].data[index].cate
+          let chartCateId =  this.bigChartData.data[index].cate
           this.$refs.goodsTab.selectList(chartCateId)
         } else {
-          let chartGoodsId = this[this.bigBarType + 'Data'].data[index].spu
+          let chartGoodsId = this.bigChartData.data[index].spu
           this.$refs.goodsTab.selectList('', chartGoodsId)
         }
       },
@@ -455,7 +456,11 @@
         if (type === 'bar1') {
           this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
         } else {
-          this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+          if (sec === 'serve') {
+            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.data2Handle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+          } else {
+            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+          }
         }
       },
       closeBigData() {
