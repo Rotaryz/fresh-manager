@@ -501,13 +501,13 @@
         }
         this.leftTabItem = itemId
         this.leftTab = code
-        this._initSelect()
-        this.hideText = [true, true, true, true]
         let data = Object.assign({}, this.requestPurchase, this.requestPub)
         if (code !== 'goods') {
-          this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+          await this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
           // delete data.order_by
         }
+        this._initSelect()
+        this.hideText = [true, true, true, true]
         await this.getPurchaseData(data)
         if (code === 'all' || code === 'category') {
           this._initDraw()
@@ -737,12 +737,12 @@
         // 销售数
         let salesNum = dataArr.map(item => {
           let num = (item.sales_num / data.sales_num * 100).toFixed(2)
-          return Number.isFinite(Number(num))?num:0
+          return Number.isFinite(Number(num))?num:'0.00'
         })
         // 采购数
         let purchaseNum = dataArr.map(item => {
           let num = (item.purchase_num / data.purchase_num * 100).toFixed(2)
-          return Number.isFinite(Number(num))?num:0
+          return Number.isFinite(Number(num)) ? num : '0.00'
         })
         let salesNumAll = data.sales_num
         let purchaseNumAll = data.purchase_num
