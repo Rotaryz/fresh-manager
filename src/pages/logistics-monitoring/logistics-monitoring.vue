@@ -259,7 +259,7 @@
         purchase: {
           all_count: 0,
           finish_count: 0,
-          result_status: 0,
+          result_status: '',
           exception_count: 0,
           status: [
             {status: 1, status_str: "待发布", statistic: 0},
@@ -270,7 +270,7 @@
         entry: {
           all_count: 0,
           finish_count: 0,
-          result_status: 0,
+          result_status: '',
           exception_count: 0,
           status: [
             {status: 0, status_str: "待进库", statistic: 0},
@@ -282,7 +282,7 @@
         picking: {
           all_count: 0,
           finish_count: 0,
-          result_status: 0,
+          result_status: '',
           exception_count: 0,
           status: [
             {status: 0, status_str: "待分拣", statistic: 0},
@@ -293,7 +293,7 @@
         out: {
           all_count: 0,
           finish_count: 0,
-          result_status: 0,
+          result_status: '',
           exception_count: 0,
           status: [
             {status: 2, status_str: "待复核", statistic: 0},
@@ -304,7 +304,7 @@
         delivery: {
           all_count: 0,
           finish_count: 0,
-          result_status: 0,
+          result_status: '',
           exception_count: 0,
           status: [
             {status: 1, status_str: "待配送", statistic: 0},
@@ -315,7 +315,7 @@
         afterSale: {
           all_count: 0,
           finish_count: 0,
-          result_status: 0,
+          result_status: '',
           exception_count: 0,
           status: [
             {status: 1, status_str: "待处理", statistic: 0},
