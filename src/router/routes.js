@@ -1540,9 +1540,13 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = routeTo.query.status || 0
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+            let startTime = routeTo.query.startTime || ''
+            let endTime = routeTo.query.endTime || ''
             store
-              .dispatch('product/getEnterData', {startTime: '', endTime: '', status, page: 1})
+              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1585,9 +1589,13 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = routeTo.query.status || 2
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
+            let startTime = routeTo.query.startTime || ''
+            let endTime = routeTo.query.endTime || ''
             store
-              .dispatch('product/getOutData', {startTime: '', endTime: '', status, page: 1})
+              .dispatch('product/getOutData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
