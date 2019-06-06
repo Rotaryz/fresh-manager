@@ -593,3 +593,11 @@ export const warehouseComputed = {
 export const warehouseMethods = {
   ...mapActions('warehouse', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
 }
+// 配置
+export const allocationComputed = {
+  ...mapGetters('allocation', ['allocationList'])
+}
+
+export const allocationMethods = {
+  ...mapActions('allocation', ['getAllocationList', 'setAllocationList'])
+}
