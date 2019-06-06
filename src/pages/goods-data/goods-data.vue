@@ -736,11 +736,11 @@
         })
         // 销售数
         let salesNum = dataArr.map(item => {
-          return (item.sales_num / data.sales_num * 100).toFixed(2)
+          return +data.sales_num === 0 ? 0 : (item.sales_num / data.sales_num * 100).toFixed(2)
         })
         // 采购数
         let purchaseNum = dataArr.map(item => {
-          return (item.purchase_num / data.purchase_num * 100).toFixed(2)
+          return +data.purchase_num === 0 ? 0 : (item.purchase_num / data.purchase_num * 100).toFixed(2)
         })
         let salesNumAll = data.sales_num
         let purchaseNumAll = data.purchase_num
