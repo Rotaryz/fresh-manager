@@ -105,7 +105,7 @@
         font-family: $font-family-regular
         .text
           word-break: break-all
-          margin-right: 15px
+          margin-right: 24px
           &:nth-child(2)
             margin-right: 0
 </style>

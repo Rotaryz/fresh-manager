@@ -231,7 +231,7 @@
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
-        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
+        // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
@@ -251,7 +251,7 @@
         {name: '商品结构', type: 'goodsDetail'},
         {name: '销量', type: 'line', code: 'num', limit: 8},
         {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 8},
-        {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
+        // {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'line', code: 'returns_num'},
