@@ -4,7 +4,7 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime" :dateInfo="dateInfo"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
       </div>
       <span class="down-tip">异常状态</span>
       <div class="down-item">
@@ -83,8 +83,8 @@
         productEnterList: [],
         pageTotal: {},
         status: 0,
-        startTime: this.$route.query.startTime || '',
-        endTime: this.$route.query.endTime || '',
+        startTime: this.$route.query.start_time || '',
+        endTime: this.$route.query.end_time || '',
         exceptionStatus: this.$route.query.exception_status || '',
         keyWord: '',
         goodsPage: 1,

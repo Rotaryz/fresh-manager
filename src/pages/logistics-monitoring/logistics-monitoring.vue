@@ -406,10 +406,32 @@
             start_time: this.start,
             end_time: this.end,
             exception_status: exceptionStatus,
-            status
+            status: exceptionStatus && this._getFinishStatus(name) || status
           }
         })
-        console.log(href)
+        window.open(href, '_blank')
+      },
+      _getFinishStatus(name) {
+        switch (name) {
+        case 'procurement-task':
+          return this._findFinishStatus(this.purchase.status)
+        case 'product-enter':
+          return this._findFinishStatus(this.entry.status)
+        case 'sorting-task':
+          return this._findFinishStatus(this.picking.status)
+        case 'product-out':
+          return this._findFinishStatus(this.out.status)
+        case 'distribution-task':
+          return this._findFinishStatus(this.delivery.status)
+        case 'after-sales-order':
+          return this._findFinishStatus(this.afterSale.status)
+        default:
+          return ''
+        }
+      },
+      _findFinishStatus(array) {
+        let finish = array.find((res) => res.status_str === '已完成' || res.status_str === '已处理')
+        return finish.status
       }
     }
   }
