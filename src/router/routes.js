@@ -239,21 +239,21 @@ export default [
             //  抢购列表
             let status = routeTo.query.status || ''
             API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
-            .then((res) => {
-              if (res.error !== ERR_OK) {
-                return next({name: '404'})
-              }
-              let dataInfo = res.data
-              let pageInfo = {
-                total: res.meta.total,
-                per_page: res.meta.per_page,
-                total_page: res.meta.last_page
-              }
-              next({params: {dataInfo, pageInfo}})
-            })
-            .catch(e => {
-              next({name: '404'})
-            })
+              .then((res) => {
+                if (res.error !== ERR_OK) {
+                  return next({name: '404'})
+                }
+                let dataInfo = res.data
+                let pageInfo = {
+                  total: res.meta.total,
+                  per_page: res.meta.per_page,
+                  total_page: res.meta.last_page
+                }
+                next({params: {dataInfo, pageInfo}})
+              })
+              .catch(e => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -1271,8 +1271,8 @@ export default [
               end_time: '',
               keyword: "",
               status: 0,
-              page:1,
-              limit:10
+              page: 1,
+              limit: 10
             })
             store
               .dispatch('afterSalesOrder/getAfterSalesOrderList')
@@ -1540,9 +1540,13 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = routeTo.query.status || 0
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+            let startTime = routeTo.query.startTime || ''
+            let endTime = routeTo.query.endTime || ''
             store
-              .dispatch('product/getEnterData', {startTime: '', endTime: '', status, page: 1})
+              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1585,9 +1589,13 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = routeTo.query.status || 2
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
+            let startTime = routeTo.query.startTime || ''
+            let endTime = routeTo.query.endTime || ''
             store
-              .dispatch('product/getOutData', {startTime: '', endTime: '', status, page: 1})
+              .dispatch('product/getOutData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1852,6 +1860,37 @@ export default [
           }
         },
         component: () => lazyLoadView(import('@pages/sorting-config/sorting-config'))
+      },
+      // 配货设置
+      {
+        path: 'matching-setting',
+        name: 'matching-setting',
+        component: () => lazyLoadView(import('@pages/matching-setting/matching-setting')),
+        meta: {
+          titles: ['供应链', '设置', '配货设置'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('allocation/getAllocationList', true)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 运营时间配置
+      {
+        path: 'operation-allocation',
+        name: 'operation-allocation',
+        component: () => lazyLoadView(import('@pages/operation-allocation/operation-allocation')),
+        meta: {
+          titles: ['供应链', '设置', '运营时间配置']
+        }
       },
       // 库存管理
       {

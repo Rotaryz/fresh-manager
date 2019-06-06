@@ -4,7 +4,11 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime" :dateInfo="dateInfo"></base-date-select>
+      </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -102,8 +106,9 @@
         productOutList: [],
         pageTotal: {},
         status: 2,
-        startTime: '',
-        endTime: '',
+        startTime: this.$route.query.startTime || '',
+        endTime: this.$route.query.endTime || '',
+        exceptionStatus: this.$route.query.exception_status || '',
         keyWord: '',
         goodsPage: 1,
         dispatchSelect: [
@@ -112,22 +117,43 @@
           {name: '已完成', value: 1, key: 'success', num: 0}
         ],
         // statusTab: 1,
-        time: ['', '']
+        time: ['', ''],
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        }
       }
     },
     computed: {
-      ...productComputed
+      ...productComputed,
+      dateInfo() {
+        return [this.startTime, this.endTime]
+      }
     },
     async created() {
-      if (this.$route.query.status) {
-        // this.statusTab = this.$route.query.status * 1 + 1
-        this.status = this.$route.query.status * 1
-      }
+      this._setErrorStatus()
       this.productOutList = _.cloneDeep(this.outList)
       this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
+      if (this.$route.query.status) {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.status * 1 === this.$route.query.status * 1)
+        this.status = this.$route.query.status * 1
+      }
     },
     methods: {
+      async checkErr(item) {
+        this.exceptionStatus = item.status
+        this.goodsPage = 1
+        this.getProductListData()
+        this.$refs.pagination.beginPage()
+      },
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
+      },
       goDetail(item) {
         if (item.show_sorting) {
           return
@@ -167,7 +193,8 @@
         let res = await API.Store.outOrdersStatistic({
           start_time: this.time[0],
           end_time: this.time[1],
-          keyword: this.keyWord
+          keyword: this.keyWord,
+          exception_status: this.exceptionStatus
         })
         this.dispatchSelect = res.data.status || []
       },
@@ -178,7 +205,8 @@
           limit: 10,
           start_time: this.time[0],
           end_time: this.time[1],
-          keyword: this.keyWord
+          keyword: this.keyWord,
+          exception_status: this.exceptionStatus
         }
         API.Store.getOutList(data, false).then((res) => {
           if (res.error === this.$ERR_OK) {
