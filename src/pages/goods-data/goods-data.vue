@@ -249,7 +249,7 @@
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
-        {name: '销量', type: 'line', code: 'amount', limit: 8},
+        {name: '销量', type: 'line', code: 'num', limit: 8},
         {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 8},
         {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
       ],
