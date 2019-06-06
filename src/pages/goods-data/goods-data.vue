@@ -501,26 +501,26 @@
         }
         this.leftTabItem = itemId
         this.leftTab = code
-        let data = Object.assign({}, this.requestPurchase, this.requestPub)
         if (code !== 'goods') {
-          await this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+          this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
           // delete data.order_by
         }
         this._initSelect()
         this.hideText = [true, true, true, true]
-        await this.getPurchaseData(data)
-        if (code === 'all' || code === 'category') {
-          this._initDraw()
-        } else if (code === 'goods') {
-          this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
-          this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
-          this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
-        }
+        // let data = Object.assign({}, this.requestPurchase, this.requestPub)
+        // await this.getPurchaseData(data)
+        // if (code === 'all' || code === 'category') {
+        //   this._initDraw()
+        // } else if (code === 'goods') {
+        //   this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
+        //   this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
+        //   this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
+        // }
       },
       // 初始绘制图表
       _initDraw() {
         this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
-        this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data,  this.selectMsg.serve.code))
+        this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data,  this.selectMsg.serve.code))
         this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
       },
       // 初始选择项
@@ -566,7 +566,7 @@
         this.requestServe.order_by = obj.code
         let data = Object.assign({}, this.requestPub, this.requestServe)
         await this.getServeData(data)
-        this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, obj.code), obj.rate)
+        this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data, obj.code), obj.rate)
         this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, obj.code, obj.name), obj.rate)
       },
       // 切换商品采购模块（模块3）
@@ -700,6 +700,22 @@
         }
       },
       dataHandle(data, y1) {
+        let newData = data.filter(item => {
+          return item[y1] > 0
+        })
+        if (!data || !data.length || !newData.length) return {xAx: [], series: []}
+        let xAx = data.map(val => {
+          return val.name
+        })
+        let series = data.map(val => {
+          return val[y1]
+        })
+        return {
+          xAx,
+          series
+        }
+      },
+      data2Handle(data, y1) {
         if (!data || !data.length) return {xAx: [], series: []}
         let newData = data.filter(item => {
           return item[y1] > 0
