@@ -25,7 +25,8 @@
           <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main" :class="{'btn-disable-store': status * 1 !== 1}" @click="_sendPublish">发布给采购员</div>
+          <router-link tag="div" to="procurement-suggest" append class="btn-main">查看预采建议单</router-link>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status * 1 !== 1}" @click="_sendPublish">发布给采购员</div>
           <div class="btn-main g-btn-item" :class="{'btn-disable-store': status * 1 !== 2}" @click="_createNewPublish">生成采购单</div>
           <!--<div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>-->
           <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">

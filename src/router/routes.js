@@ -1374,6 +1374,18 @@ export default [
           }
         }
       },
+      // 预采建议
+      {
+        path: 'procurement-task/procurement-suggest',
+        name: 'procurement-suggest',
+        component: () => lazyLoadView(import('@pages/procurement-suggest/procurement-suggest')),
+        meta: {
+          titles: ['供应链', '采购', '采购任务', '预采建议'],
+          beforeResolve(routeTo, routeFrom, next) {
+            next()
+          }
+        }
+      },
       // 采购员
       {
         path: 'buyer',
