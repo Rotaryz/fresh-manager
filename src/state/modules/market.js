@@ -3,7 +3,7 @@ import app from '@src/main'
 
 export const state = {
   marketList: [],
-  pageDetail: {
+  marketPageDetail: {
     total: 1,
     per_page: 10,
     total_page: 1
@@ -15,8 +15,8 @@ export const getters = {
   marketList(state) {
     return state.marketList
   },
-  pageDetail(state) {
-    return state.pageDetail
+  marketPageDetail(state) {
+    return state.marketPageDetail
   },
   marketDetail(state) {
     return state.marketDetail
@@ -27,8 +27,8 @@ export const mutations = {
   SET_MARKET_LIST(state, marketList) {
     state.marketList = marketList
   },
-  SET_MARKET_PAGE(state, pageDetail) {
-    state.pageDetail = pageDetail
+  SET_MARKET_PAGE(state, marketPageDetail) {
+    state.marketPageDetail = marketPageDetail
   },
   SET_MARKET_DETAIL(state, detail) {
     state.marketDetail = detail
@@ -37,7 +37,7 @@ export const mutations = {
 
 export const actions = {
   getMarketList({commit, state}, data) {
-    return API.Market.getMarketList(data)
+    return API.Market.getMarketList(data, data.loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)

@@ -18,11 +18,7 @@
       statusList: {
         type: Array,
         default: () => {
-          return [
-            {name: '全部', value: '', num: 0},
-            {name: '待提交', value: 0, num: 0},
-            {name: '已完成', value: 1, num: 0}
-          ]
+          return [{name: '全部', value: '', num: 0}]
         }
       },
       infoTabIndex: {
@@ -43,6 +39,7 @@
     },
     watch: {
       infoTabIndex(newVal) {
+        // console.log(newVal)
         this.statusIndex = newVal
       }
     },
@@ -52,9 +49,15 @@
     },
     methods: {
       checkStatus(index, item) {
+        let el = document.querySelectorAll('.status-tab-item')
         this.statusIndex = index
-        this.style = `left: ${this.el[index].offsetLeft}px; width: ${this.el[this.statusIndex].offsetWidth}px`
+        this.style = `left: ${el[index].offsetLeft}px; width: ${el[this.statusIndex].offsetWidth}px`
         this.$emit('setStatus', item, index)
+      },
+      _resetTo(index = 0) {
+        let el = document.querySelectorAll('.status-tab-item')
+        this.statusIndex = index
+        this.style = `left: ${el[index].offsetLeft}px; width: ${el[this.statusIndex].offsetWidth}px`
       }
     }
   }

@@ -117,6 +117,7 @@
     },
     created() {
       this.cancel()
+    // todo
     },
     beforeDestroy() {
       this.cancel()

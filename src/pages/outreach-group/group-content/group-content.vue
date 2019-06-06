@@ -15,14 +15,14 @@
         <div v-for="(item, index) in staffList" :key="index" class="list-content list-box">
           <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 4}">
             <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-              {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+              {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount' || val.value === 'repurchase_num') ? (item[val.value] || '0') : (item[val.value] || '---')}}
             </div>
             <div v-if="+val.type === 2" :style="{flex: val.flex}" class="list-double-row item">
               <p class="item-dark">{{item.start_at}}</p>
               <p class="item-sub-time">{{item.end_at}}</p>
             </div>
             <div v-if="+val.type === 6" :style="{flex: val.flex}" class="list-item-double">
-              {{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+              {{item[val.value] || '---'}}
             </div>
             <!--状态-->
             <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
@@ -42,7 +42,7 @@
             </div>
 
             <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-              <router-link tag="a" :to="'/home/outreach-group/outreach-group-staff?id=' + (item.id || 0)" class="list-operation">详情</router-link>
+              <span class="list-operation" @click="showStaff(item.id)">详情</span>
               <!--              <router-link tag="span" :to="'/home/outreach-activity/outreach-activity-staff?id=' + (item.id || 0)" class="list-operation">编辑</router-link>-->
               <p class="list-operation" @click="handleEditor(item)">编辑</p>
               <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
@@ -76,10 +76,11 @@
     {name: '所属团队', flex: 1.2, value: 'department_name', type: 1},
     {name: '订单', flex: 1, value: 'order_counts', type: 1},
     {name: '交易额(元)', flex: 1, value: 'total_sum', type: 1},
+    {name: '复购数', flex: 1, value: 'repurchase_num', type: 1},
     {name: '复购率', flex: 1, value: 'rate', type: 4},
     // {name: '状态', flex: 1, value: 'status', type: 3},
     // {name: '二维码', flex: 1, value: '', type: 4},
-    {name: '操作', flex: 1, value: '', type: 5}
+    {name: '操作', flex: 1.5, value: '', type: 5}
   ]
   export default {
     name: COMPONENT_NAME,
@@ -104,6 +105,9 @@
     },
     methods: {
       ...outreachGroupMethods,
+      beginPage() {
+        this.$refs.pages.beginPage()
+      },
       showTip(index) {
         clearTimeout(this.timer)
         this.tipShow = index
@@ -115,7 +119,12 @@
       },
       addPage(page) {
         this.setPage(page)
-        this.reqStaffList({page})
+      // this.reqStaffList()
+      },
+      showStaff(id) {
+        this.setContent(false) // 显示详情，隐藏成员列表
+        this.setStaffId(id)
+        this.getTaskDetail({id, page: 1})
       },
       handleEditor(item) {
         this.setCurrentStaff(item)

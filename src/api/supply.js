@@ -174,6 +174,16 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 按不同供应商任务数排序
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getSortSupplier(data, loading = false) {
+    let url = '/scm/api/backend/purchase/task-list-supplier'
+    return request.get(url, data, loading)
+  },
+  /**
    * 采购单列表
    * @param data
    * @param loading
@@ -202,5 +212,25 @@ export default {
   getPurchaseOrderStatistic(data, loading = false) {
     let url = '/scm/api/backend/purchase/purchase-order-statistic'
     return request.get(url, data, loading)
+  },
+  /**
+   * 批量导入采购任务[v1.3]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  leadTask(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-task-import'
+    return request.post(url, data, loading)
+  },
+  /**
+   * 批量新增采购任务[v1.3]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  createLeadTask(data, loading = false) {
+    let url = '/scm/api/backend/purchase/purchase-tasks-create'
+    return request.post(url, data, loading)
   }
 }

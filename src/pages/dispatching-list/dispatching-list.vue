@@ -5,6 +5,10 @@
       <div class="down-item">
         <base-drop-down :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
       </div>
+      <span class="down-tip">筛选</span>
+      <div class="down-item">
+        <base-date-select placeHolder="选择配送日期" @getTime="_selectTime"></base-date-select>
+      </div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -13,6 +17,8 @@
           <p class="identification-name">团长配送单</p>
         </div>
         <div class="function-btn">
+          <div class="btn-main" @click="deliveryExcel">导出配送单</div>
+          <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
         </div>
       </div>
       <div class="big-list">
@@ -63,6 +69,8 @@
   const TITLE = '团长配送单'
   const DISPATCHING_LIST = ['配送单号', '社区名称', '团长名称', '配送金额', '配送日期', '操作']
   const TYPE_LIST = ['团长配送订单', '消费者订单']
+  const DOWNLOAD_ORDER_EXCEL = '/social-shopping/api/backend/user-order-exports'
+  const DELIVERY_ORDER_EXCEL = '/social-shopping/api/backend/store-delivery-exports'
 
   export default {
     name: PAGE_NAME,
@@ -83,7 +91,9 @@
         page: 1,
         orderSn: '',
         status: '',
-        excelParams: ''
+        excelParams: '',
+        startTime: '',
+        endTime: ''
       }
     },
     computed: {
@@ -97,6 +107,43 @@
     },
     methods: {
       ...leaderMethods,
+      orderExcel() {
+        window.open(this._getUrl(DOWNLOAD_ORDER_EXCEL))
+      },
+      deliveryExcel() {
+        window.open(this._getUrl(DELIVERY_ORDER_EXCEL))
+      },
+      _selectTime(value) {
+        this.$refs.pages.beginPage()
+        this.page = 1
+        this.startTime = value[0]
+        this.endTime = value[1]
+        this.getDeliveryOrder({
+          page: this.page,
+          shopId: this.status,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          loading: false
+        })
+      },
+      _getUrl(url) {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token,
+          start_time: this.startTime || '',
+          end_time: this.endTime || '',
+          shop_id: this.status,
+          order_sn: ''
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + url + '?' + search.join('&')
+      },
       _hideAllDownBox() {
         let arr = _.cloneDeep(this.deliveryOrder)
         arr = arr.map((item) => {
@@ -121,7 +168,13 @@
         this.$refs.pages.beginPage()
         this.page = 1
         this.status = item.id
-        this.getDeliveryOrder({page: this.page, shopId: this.status, loading: false})
+        this.getDeliveryOrder({
+          page: this.page,
+          shopId: this.status,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          loading: false
+        })
       },
       _selectFileType(index) {
         let arr = _.cloneDeep(this.deliveryOrder)
@@ -142,7 +195,13 @@
       },
       _addPage(page) {
         this.page = page
-        this.getDeliveryOrder({page: this.page, shopId: this.status, loading: false})
+        this.getDeliveryOrder({
+          page: this.page,
+          shopId: this.status,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          loading: false
+        })
       }
     }
   }

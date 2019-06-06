@@ -22,7 +22,37 @@
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
-          <a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>
+          <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
+          <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
+            <div class="show-more-text">
+              <div class="show-text">更多</div>
+              <div class="show-icon"></div>
+            </div>
+            <div v-show="showIndex" class="big-hide-box"></div>
+            <transition name="fade">
+              <div v-show="showIndex" class="show-hide-box">
+                <div class="show-all-item">
+                  <a :href="downUrl" class="show-hide-item" target="_blank">商品导出</a>
+                  <div class="show-hide-item">
+                    批量新建
+                    <input
+                      type="file"
+                      class="stock-file hand"
+                      @change="importStock($event, 1)"
+                    >
+                  </div>
+                  <div class="show-hide-item">
+                    批量修改
+                    <input
+                      type="file"
+                      class="stock-file hand"
+                      @change="importStock($event, 0)"
+                    >
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </div>
           <!--<div class="btn-main g-btn-item" @click="_syncGoods">同步</div>-->
         </div>
       </div>
@@ -31,27 +61,37 @@
           <div v-for="(item, index) in productTitleList" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
-            <div class="list-item">
-              <div class="pic-box" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
-            </div>
-            <div class="list-item list-item-double">{{item.name}}</div>
-            <div class="list-item">{{item.goods_sku_code}}</div>
-            <div class="list-item">{{item.goods_category_name}}</div>
-            <div class="list-item">{{item.base_unit}}</div>
-            <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
-            <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
-            <div class="list-item">{{item.usable_stock}}{{item.sale_unit}}</div>
-            <div class="list-item">
-              <div class="list-item-btn" @click="switchBtn(item, index)">
-                <base-switch :status="item.is_online"></base-switch>
+          <div v-if="goodsList.length">
+            <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
+              <div class="list-item">
+                <!--                <div class="pic-box" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>-->
+                <img class="pic-box" :src="item.goods_cover_image" alt="">
+              </div>
+              <div class="list-item list-double-row">
+                <div class="item-dark">{{item.name}}</div>
+                <div class="item-dark">{{item.goods_sku_encoding}}</div>
+              </div>
+              <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
+              <div class="list-item">{{item.goods_category_name}}</div>
+              <div class="list-item">{{item.base_unit}}</div>
+              <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
+              <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
+              <div class="list-item list-item-layout">
+                {{item.usable_stock}}{{item.sale_unit}}
+                <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
+              </div>
+              <div class="list-item">
+                <div class="list-item-btn" @click="switchBtn(item, index)">
+                  <base-switch :status="item.is_online"></base-switch>
+                </div>
+              </div>
+              <div class="list-item list-operation-box">
+                <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
+                <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
-            <div class="list-item list-operation-box">
-              <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
-              <span class="list-operation" @click.stop="delGoods(item)">删除</span>
-            </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
       <div class="pagination-box">
@@ -73,7 +113,7 @@
   const PRODUCT_TITLE_LIST = [
     '图片',
     '商品名称',
-    '商品编码',
+    // '商品编码',
     '分类',
     '基本单位',
     '销售规格',
@@ -101,11 +141,7 @@
           type: 'default',
           data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
         },
-        statusTab: [
-          {name: '全部', num: 0, key: ''},
-          {name: '已上架', num: 0, key: 1},
-          {name: '已下架', num: 0, key: 0}
-        ],
+        statusTab: [{name: '全部', num: 0, key: ''}, {name: '已上架', num: 0, key: 1}, {name: '已下架', num: 0, key: 0}],
         stairSelect: {
           check: false,
           show: false,
@@ -129,6 +165,7 @@
         downUrl: '',
         oneBtn: false,
         categoryId: '',
+        showIndex: false,
         defaultIndex: 0
       }
     },
@@ -140,7 +177,7 @@
       this.goodsList = _.cloneDeep(this.productList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
       this.isOnline = this.$route.query.online || ''
-      this.defaultIndex = this.$route.query.online
+      this.defaultIndex = this.$route.query.online * 1 || 0
       if (this.$route.query.online * 1 === 1) {
         this.dispatchSelect.content = '上架'
       }
@@ -148,6 +185,12 @@
       this.getGoodsStatus()
     },
     methods: {
+      _showTip() {
+        this.showIndex = true
+      },
+      _hideTip() {
+        this.showIndex = false
+      },
       async _syncGoods() {
         let res = await API.Product.syncGoodsInfo()
         this.$loading.hide()
@@ -171,28 +214,29 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${this.keyWord}&current_corp=${currentId}&goods_category_id=${this.categoryId}`
+        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
+          this.keyWord
+        }&current_corp=${currentId}&goods_category_id=${this.categoryId}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       getGoodsStatus() {
         API.Product.getGoodsStatus({
           keyword: this.keyWord,
           goods_category_id: this.categoryId
-        })
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              value: item.status,
+              num: item.statistic
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                value: item.status,
-                num: item.statistic
-              }
-              // this.$set(this.statusTab[index], 'num', item.statistic)
-            })
+          // this.$set(this.statusTab[index], 'num', item.statistic)
           })
+        })
       },
       getGoodsListData() {
         let data = {
@@ -255,6 +299,14 @@
         })
       },
       switchBtn(item, index) {
+        if (item.goods_sku_encoding.length === 0 && item.is_online * 1 === 0) {
+          this.$toast.show('请先补充商品编码再上架')
+          return
+        }
+        if (item.goods_category_id <= 0 && item.is_online * 1 === 0) {
+          this.$toast.show('请先补充分类再上架')
+          return
+        }
         let data = {
           goods_id: item.id,
           is_online: item.is_online * 1 === 1 ? 0 : 1
@@ -297,6 +349,28 @@
         this._getUrl()
         this.getGoodsListData()
         this.getGoodsStatus()
+      },
+      //  导入商品新建模板
+      async importStock(e, index) {
+        let param = this._infoFile(e.target.files[0])
+        this.$loading.show('上传中...')
+        let res =
+          index === 1
+            ? await API.Product.goodsNewInto(param, true, 60000)
+            : await API.Product.goodsNewEdit(param, true, 60000)
+        this.$loading.hide()
+        this.goodsPage = 1
+        this.$refs.pagination.beginPage()
+        this.getGoodsListData()
+        this.getGoodsStatus()
+        this.$toast.show(res.message)
+        e.target.value = ''
+      },
+      // 格式化文件
+      _infoFile(file) {
+        let param = new FormData() // 创建form对象
+        param.append('file', file, file.name) // 通过append向form对象添加数据
+        return param
       }
     }
   }
@@ -309,13 +383,17 @@
     align-items: center
     justify-content: space-between
     height: 80px
+
     .product-left
       layout(row)
       align-items: center
+
     .btn-main
       margin-right: 10px
+
       &:hover
         color: $color-white
+
     .search-left
       margin-left: 10px
 
@@ -323,12 +401,16 @@
     .list-item
       box-sizing: border-box
       flex: 1
+
       &:nth-child(1)
         flex: 0.55
+
       &:nth-child(2)
         flex: 1.5
-      &:nth-child(4)
+
+      &:nth-child(3)
         flex: 1.1
+
       &:last-child
         padding: 5px
         max-width: 80px
@@ -337,12 +419,142 @@
   .list-item-btn
     display: inline-block
 
+  .list-item-img
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
+
+    &.icon-libray
+      bg-image(icon-library)
+
+    &.icon-pre
+      bg-image(icon-pre)
+
+  .show-more-box
+    position: relative
+    cursor: pointer
+
+    .big-hide-box
+      position: absolute
+      z-index: 1
+      width: 106px
+      height: 20px
+      right: 0
+
+    .show-more-text
+      width: 80px
+      height: 28px
+      line-height: 28px
+      color: $color-white
+      border-1px($color-main)
+      layout(row)
+      align-items: center
+      justify-content: center
+
+      .show-text
+        font-size: $font-size-12
+        color: $color-main
+        font-family: $font-family-regular
+
+      .show-icon
+        width: 8px
+        height: 6px
+        margin-left: 6px
+        position: relative
+        transform: translateY(-1px) rotate(0deg)
+        transition: all 0.4s
+
+        &:after
+          content: ''
+          position: absolute
+          z-index: 99
+          top: 0
+          right: 0
+          width: 0
+          height: 0
+          border-left: 4px solid transparent
+          border-right: 4px solid transparent
+          border-top: 6px solid $color-main
+    .show-hide-box
+      position: absolute
+      width: 106px
+      top: 38px
+      right: 0
+      z-index: 11
+      color: $color-text-main
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      background: $color-white
+      box-shadow: 0 0 8px 0 #EBEBEB
+      border-radius: 4px
+
+      .show-hide-item
+        height: 50px
+        line-height: 50px
+        color: $color-text-main
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        padding-left: 16px
+        display: block
+        position: relative
+        border-bottom-1px($color-line)
+
+    .show-hide-item:hover
+      color: $color-main
+
+  .show-all-item
+    position: relative
+
+    &:after
+      content: ''
+      position: absolute
+      z-index: 99
+      top: -6px
+      right: 33px
+      width: 0
+      height: 0
+      border-left: 3px solid transparent
+      border-right: 3px solid transparent
+      border-bottom: 6px solid $color-white
+
+    &:before
+      content: ''
+      position: absolute
+      z-index: 99
+      top: -8px
+      right: 32px
+      width: 0
+      height: 0
+      border-left: 4px solid transparent
+      border-right: 4px solid transparent
+      border-bottom: 8px solid #EBEBEB
+
   .pic-box
     height: 40px
     width: 40px
-    overflow: hidden
     border-radius: 2px
+    object-fit: cover
     background-repeat: no-repeat
     background-size: cover
     background-position: center
+
+  .show-more-active
+    .show-more-text
+      background: $color-main
+      .show-text
+        color: $color-white
+      .show-icon
+        transform: translateY(-1px) rotate(180deg)
+        &:after
+          border-top: 6px solid $color-white
+  .stock-file
+    position: absolute
+    top: 0
+    left: 0
+    font-size: 0
+    opacity: 0
+    height: 100%
+    width: 100%
 </style>

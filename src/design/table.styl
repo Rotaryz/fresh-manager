@@ -101,6 +101,7 @@
       border-radius: 50%
 
 .list
+  position: relative
   flex: 1
   .list-content
     font-family: $font-family-regular
@@ -117,24 +118,36 @@
     .list-double-row
       .item-sub
         no-wrap()
-        line-height: 1
+        line-height: 1.2
         margin-top: 6px
         font-size: $font-size-14
         color: $color-text-assist
       .item-dark
         no-wrap()
+        line-height: 1.2
         font-size: $font-size-14
-        line-height: 1
       .item-sub-time
         no-wrap()
         margin-top: 6px
         font-size: $font-size-14
-        line-height: 1
+        line-height: 1.2
     .list-item-double
       white-space: normal
       line-height: 18px
       no-wrap-plus()
+    .list-item-layout
+      layout(row)
+      align-items: center
 
+
+  .list-lock
+    .list-item
+      color: #acacac
+      .list-operation
+        color: #acacac
+      .list-operation-strong
+        color: #acacac
+        border-color: #acacac
 
 .pagination-box
   height: 60px
@@ -260,6 +273,8 @@
   .down-item-text
     margin: 20px 80px 0 0
     color: $color-text-main
+    &:last-child
+      margin-right: 0
     .down-text
       font-size: $font-size-12
       color: $color-text-main
@@ -413,7 +428,6 @@
           .detail-icon
             width: 16px
             height: 16px
-
 
 
 // 弹窗按钮样式

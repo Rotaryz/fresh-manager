@@ -3,7 +3,7 @@
     <div ref="leftBox" class="left-box">
       <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0, {id: ''})">
         <div class="left">
-          <span class="name">全部群数据({{communityList.length}})</span>
+          <span class="name all-data">全部群数据({{communityList.length}})</span>
         </div>
         <div v-if="+tabIndex === 0" class="right">
           <div class="btn">
@@ -41,7 +41,7 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'LEFT-TAB'
   const LV_ARR = ['icon-v0', 'icon-v1', 'icon-v2', 'icon-v3', 'icon-v4']
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       tabArr: {
@@ -71,21 +71,20 @@
         this.$emit('editGroup', item)
       },
       tabScroll() {
-        // let leftBoxHeight = this.$refs.leftBox.offsetHeight
-        // let leftTabHeight = this.$refs.leftTab.offsetHeight
-        // let scrollTop = this.$refs.leftTab.scrollTop
-        // if (leftBoxHeight > leftTabHeight && (scrollTop >= leftBoxHeight - leftTabHeight)) {
-        //   if (this.getMore) return
-        //   this.getMore = true
-        //   this.groupArr.push(new Array(10).fill(1))
-        //   setTimeout(() => {
-        //     this.getMore = false
-        //   }, 200)
-        // }
+      // let leftBoxHeight = this.$refs.leftBox.offsetHeight
+      // let leftTabHeight = this.$refs.leftTab.offsetHeight
+      // let scrollTop = this.$refs.leftTab.scrollTop
+      // if (leftBoxHeight > leftTabHeight && (scrollTop >= leftBoxHeight - leftTabHeight)) {
+      //   if (this.getMore) return
+      //   this.getMore = true
+      //   this.groupArr.push(new Array(10).fill(1))
+      //   setTimeout(() => {
+      //     this.getMore = false
+      //   }, 200)
+      // }
       }
     }
   }
-
 </script>
 
 
@@ -181,6 +180,8 @@
           -webkit-line-clamp: 2
           -webkit-box-orient: vertical
           word-break: break-all
+        .all-data
+          width: 130px
       .right
         width: 24px
         height: 48px

@@ -22,7 +22,7 @@
           <div v-for="(item, index) in memberList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in activityTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about': val.type === 2}">
               <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount') ? (item[val.value] || '0') : (item[val.value] || '---')}}
+                {{val.value === 'pay_amount' ? '¥' : ''}}{{(val.value === 'pay_num' || val.value === 'pay_amount' || val.value === 'repurchase_num') ? (item[val.value] || '0') : (item[val.value] || '---')}}
               </div>
 
               <!--二维码-->
@@ -73,6 +73,7 @@
     {name: '手机号', flex: 1.2, value: 'member_mobile', type: 1},
     {name: '订单', flex: 1.2, value: 'pay_num', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 1},
+    {name: '复购数', flex: 1, value: 'repurchase_num', type: 1},
     {name: '复购率(15天)', flex: 1, value: 'repeat_rate', type: 1},
     {name: '二维码', flex: 1, value: 'qrcode_url', type: 2}
   ]
@@ -129,7 +130,10 @@
         this.codeIndex = index
         this.loadImg = true
         this.$refs.codeModal.showModal()
-        let res = await API.Outreach.getQrCode({path: `pages/recommend?s=${item.shop_id}&m=${item.activity_id}&e=${item.member_id}`, is_hyaline: false})
+        let res = await API.Outreach.getQrCode({
+          path: `pages/recommend?s=${item.shop_id}&m=${item.activity_id}&e=${item.member_id}`,
+          is_hyaline: false
+        })
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return
@@ -139,7 +143,7 @@
       },
       _close() {
         this.$refs.codeModal.hideModal()
-      },
+      }
     }
   }
 </script>

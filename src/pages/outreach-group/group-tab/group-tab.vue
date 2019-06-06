@@ -14,6 +14,7 @@
         :key="cIdx"
         class="item-wrapper"
       >
+        <!--一级菜单（公司名）-->
         <section
           class="common-item"
           @click.stop="handleChangeStatus({
@@ -53,6 +54,7 @@
           :class="{'bottom-line': checkItemStatus(company)}"
           :style="formatStyle(company)"
         >
+          <!--二级名称-->
           <dt
             class="common-item second"
             @click.stop="handleChangeStatus({
@@ -84,6 +86,7 @@
                :class="{'active' : select.currentId === department.id}"
             >{{department.name}}</p>
           </dt>
+          <!--三级-->
           <dd
             v-for="(team, tIdx) in department.list"
             :key="tIdx"
@@ -157,6 +160,15 @@
       }
       this.select = obj
       this.statusArray.push(obj)
+      if (this.groupList[0].list.length) {
+        this.groupList[0].list.forEach((item) => {
+          this.statusArray.push({
+            currentId: item.id,
+            parentId: item.parent_id
+          })
+        })
+      }
+      this.changeTab({current: this.groupList[0], parentObj: this.groupList[0]})
     },
     methods: {
       ...outreachGroupMethods,
@@ -173,7 +185,13 @@
       },
       handleAddDepartment(position) {
         this.setAddPosition({position})
-        this.handleModal({isShow: true, title: '添加公司', useType: 'addDepartment', modalType: 'addDepartment', maxLength: 8})
+        this.handleModal({
+          isShow: true,
+          title: '添加公司',
+          useType: 'addDepartment',
+          modalType: 'addDepartment',
+          maxLength: 8
+        })
       },
       handleChangeStatus(args) {
         let flag = false
@@ -189,29 +207,29 @@
               return +item.currentId !== +current.id
             })
           } else {
-            this.statusArray = [{currentId: current.id, parentId}]
+            this.statusArray.push({currentId: current.id, parentId})
           }
-          if (this.select.currentId === current.id || hasIn) {
-            this.select = {currentId: '', parentId: ''}
-          } else {
+          if (this.select.currentId !== current.id) {
             this.select = {currentId: current.id, parentId}
+          } else {
+            flag = true
           }
           break
         case 'department':
           if (hasIn) {
             this.statusArray = this.statusArray.filter((item) => {
-              return !(+item.currentId === +current.id || +item.parentId === +current.id)
+              return +item.currentId !== +current.id
             })
           } else {
-            this.statusArray = this.statusArray.filter((item) => {
-              return +item.parentId !== +parentId
-            })
+            // this.statusArray = this.statusArray.filter((item) => {
+            //   return +item.parentId !== +parentId
+            // })
             this.statusArray.push({currentId: current.id, parentId})
           }
-          if (this.select.currentId === current.id || hasIn) {
-            this.select = {currentId: '', parentId: ''}
-          } else {
+          if (this.select.currentId !== current.id) {
             this.select = {currentId: current.id, parentId}
+          } else {
+            flag = true
           }
           break
         case 'team':
@@ -219,19 +237,25 @@
             // this.statusArray = this.statusArray.filter((item) => {
             //   return +item.currentId !== +current.id
             // })
-            flag = true
           } else {
             this.statusArray = this.statusArray.filter((item) => {
               return +item.parentId !== +parentId
             })
             this.statusArray.push({currentId: current.id, parentId})
           }
-          this.select = {currentId: current.id, parentId}
+          if (this.select.currentId !== current.id) {
+            this.select = {currentId: current.id, parentId}
+          } else {
+            flag = true
+          }
           break
         default:
           break
         }
-        if (flag) return
+
+        if (flag && this.showContent) return
+        this.$emit('beginPage')
+        this.setContent(true) // 隐藏成员详情，显示成员列表
         this.changeTab({current, isLastDepartment, parentObj})
       },
       handleChecked(args) {

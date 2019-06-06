@@ -182,7 +182,35 @@ export default {
   getCategoryStatus(data, loading = false) {
     let url = '/social-shopping/api/backend/goods-manage/goods-category-status'
     return request.get(url, data, loading)
+  },
+  /**
+   * 商品新建模板导入
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  goodsNewInto(data, loading = false, timeout) {
+    let url = `/social-shopping/api/backend/goods-manage/import-create-goods`
+    return request.post(url, data, loading, timeout)
+  },
+  /**
+   * 商品编辑模板
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  goodsNewEdit(data, loading = false, timeout) {
+    let url = `/social-shopping/api/backend/goods-manage/import-update-goods`
+    return request.post(url, data, loading, timeout)
+  },
+  /**
+   * 检查切换库存类型
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  checkStockType(id, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods-change-stock/${id}`
+    return request.get(url, loading)
   }
-
-
 }

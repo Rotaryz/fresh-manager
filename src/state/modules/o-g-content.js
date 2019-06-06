@@ -112,6 +112,10 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  setPage({commit, dispatch, state}, page) {
+    commit('setPage', page)
+    dispatch(`reqStaffList`)
   }
 }
 

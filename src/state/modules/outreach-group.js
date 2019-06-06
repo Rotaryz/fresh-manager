@@ -6,6 +6,8 @@ export const state = {
   outreachList: [],
   outreachDetail: {},
   taskDetail: [], // 成员任务详情
+  showContent: true,
+  staffId: '',
   taskData: {
     order_counts: 0,
     total_sum: 0,
@@ -30,7 +32,9 @@ export const getters = {
   outreachPage: (state) => state.outreachPage,
   taskDetail: (state) => state.taskDetail,
   taskPage: (state) => state.taskPage,
-  taskData: (state) => state.taskData
+  taskData: (state) => state.taskData,
+  showContent: (state) => state.showContent,
+  staffId: (state) => state.staffId
 }
 
 export const mutations = {
@@ -57,6 +61,12 @@ export const mutations = {
   },
   SET_TASK_PAGE(state, taskPage) {
     state.taskPage = taskPage
+  },
+  SET_CONTENT(state, type) {
+    state.showContent = type
+  },
+  SET_STAFF_ID(state, id) {
+    state.staffId = id
   }
 }
 
@@ -79,7 +89,7 @@ export const actions = {
   },
   getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', loading = false}) {
     return API.Outreach.getOutreachList(
-      {page: page, start_at: startTime, end_at: endTime, activity_type: 'offline'},
+      {page: page, start_at: startTime, end_at: endTime, activity_theme: 'offline'},
       loading
     )
       .then((res) => {
@@ -135,5 +145,13 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  // 设置显示隐藏成员详情
+  setContent({commit}, type) {
+    commit('SET_CONTENT', type)
+  },
+  // 成员id
+  setStaffId({commit}, id) {
+    commit('SET_STAFF_ID', id)
   }
 }

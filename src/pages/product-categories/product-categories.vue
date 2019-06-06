@@ -20,7 +20,9 @@
         <div class="big-box-main">
           <div class="big-main-left hand" @click="openList(index)">
             <div class="icon" :class="item.select ? 'open' : ''"></div>
-            <div class="img" :style="{'background-image': 'url(' +item.image_url+ ')'}"></div>
+            <div class="img">
+              <img class="img-icon" :src="item.image_url" alt="">
+            </div>
             <div class="text">{{item.name}} <span class="tip">({{item.list && item.list.length}}个子类)</span></div>
           </div>
           <div class="big-main-right">
@@ -70,10 +72,7 @@
     },
     data() {
       return {
-        statusTab: [
-          {name: '一级类目', num: 0},
-          {name: '二级类目', num: 0}
-        ],
+        statusTab: [{name: '一级类目', num: 0}, {name: '二级类目', num: 0}],
         categoryType: 0,
         categoryNewName: '',
         categoryChild: '',
@@ -96,20 +95,19 @@
     methods: {
       ...categoriesMethods,
       getCategoryStatus() {
-        API.Product.getCategoryStatus()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Product.getCategoryStatus().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              num: item.statistic
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                num: item.statistic
-              }
-              // this.$set(this.statusTab[index], 'num', item.statistic)
-            })
+          // this.$set(this.statusTab[index], 'num', item.statistic)
           })
+        })
       },
       newBigCate() {
         // this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
@@ -320,6 +318,13 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
+  .img-icon
+    width :100%
+    height @width
+    display block
+    object-fit :cover
+
   .product-top
     layout(row)
     align-items: center
@@ -377,7 +382,7 @@
             border-radius: 2px
             border: 0.5px solid $color-line
             margin: 0 10px
-            background-size: cover
+            overflow :hidden
           .text
             font-size: $font-size-14
             line-height: 1

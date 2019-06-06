@@ -96,7 +96,7 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['profit', 'e_customer', 'e_customer_order', 'per_order']
+        let arr = ['profit', 'e_customer', 'e_order_avg', 'per_order']
         let data = dataHandle(arr, res.data)
         commit('SET_BUSINESS_DATA', data)
         return true
@@ -146,17 +146,24 @@ export const actions = {
   }
 }
 
-const dataHandle = (arr, data)=> {
-  let titleData = arr.map(item => {
+const dataHandle = (arr, data) => {
+  let titleData = arr.map((item) => {
     return data[item].total
   })
-  let dataArr = arr.map(item => {
+  let dataArr = arr.map((item) => {
     let time = []
-    time = data[item].data.map(val => {
-      return val.at.split('-').slice(1).join('/')
+    time = data[item].data.map((val) => {
+      return val.at
+        .split('-')
+        .slice(1)
+        .join('/')
     })
-    let valueArr = data[item].data.map(val => {
-      return val.value || 0
+    let valueArr = data[item].data.map((val) => {
+      if (typeof val.value === 'string') {
+        return val.value.replace(',', '')
+      } else {
+        return val.value || 0
+      }
     })
     return {
       x: time,

@@ -1,58 +1,101 @@
 <template>
   <div class="purchase-management table">
-    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>
-    <div class="down-content">
-      <span class="down-tip">订单筛选</span>
-      <div class="down-item-small">
-        <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
-      </div>
-      <div class="down-item">
-        <base-date-select :dateInfo="time" @getTime="changeTime"></base-date-select>
-      </div>
-      <span class="down-tip">搜索</span>
-      <div class="down-item">
-        <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
-      </div>
-    </div>
-    <div class="table-content">
-      <div class="identification">
-        <div class="identification-page">
-          <img src="./icon-return_goods@2x.png" class="identification-icon">
-          <p class="identification-name">退货管理</p>
+    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" @getStatusTab="changeList"></base-tab-select>
+    <div v-if="tabIndex === 0" class="purchase-order">
+      <div class="down-content">
+        <span class="down-tip">申请时间</span>
+        <div class="down-item">
+          <base-date-select :dateInfo="time" @getTime="changeTime"></base-date-select>
         </div>
-        <div class="function-btn">
-          <div class="btn-main hand" @click="exportExcel">导出Excel</div>
-        </div>
-      </div>
-      <div class="big-list">
-        <div class="list-header list-box">
-          <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
-        </div>
-        <div class="list">
-          <div v-for="(item, index) in list" :key="index" class="list-content list-box">
-            <div class="list-item list-double-row">
-              <p class="item-dark">{{item.after_sale_order_sn}}</p>
-              <p class="item-sub">{{item.created_at}}</p>
-            </div>
-            <div class="list-item list-text">
-              <div class="list-text-name">{{item.nickname}}</div>
-            </div>
-            <div class="list-item list-text">{{item.goods_name}}</div>
-            <div class="list-item list-text">￥{{item.total}}</div>
-            <div class="list-item list-text">{{item.order_sn}}</div>
-            <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
-            <div class="list-item list-text">{{item.remark}}</div>
-            <div class="list-item list-text">{{item.status_str}}</div>
-            <div class="list-item list-use">
-              <span v-if="item.after_sale_status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
-              <router-link tag="span" :to="`refund-detail/${item.id}`" append class="list-operation">详情</router-link>
-            </div>
+        <span class="down-tip">搜索</span>
+        <div class="down-item">
+          <input v-model="keywords" type="text" class="with-search" placeholder="订单号/会员名称/会员手机">
+          <input v-model="socialNames" type="text" class="with-search" placeholder="社区名称">
+          <div class="search-icon-box hand" @click="changeKeyword">
+            搜索
           </div>
         </div>
       </div>
-      <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+      <div class="table-content">
+        <div class="identification">
+          <div class="identification-page">
+            <img src="./icon-return_goods@2x.png" class="identification-icon">
+            <p class="identification-name">退货管理</p>
+            <base-status-tab :statusList="statusList" :infoTabIndex="infoTabIndex" @setStatus="changeStatus"></base-status-tab>
+          </div>
+          <div class="function-btn">
+            <div class="btn-main hand" @click="exportExcel">导出Excel</div>
+          </div>
+        </div>
+        <div class="big-list">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in listTitle" :key="index" class="list-item">{{item}}</div>
+          </div>
+          <div class="list">
+            <div v-if="list.length">
+              <div v-for="(item, index) in list" :key="index" class="list-content list-box">
+                <div class="list-item list-double-row">
+                  <p class="item-dark">{{item.after_sale_order_sn}}</p>
+                  <p class="item-sub">{{item.created_at}}</p>
+                </div>
+                <div class="list-item list-text">
+                  <div class="list-text-name">{{item.nickname}}</div>
+                </div>
+                <div class="list-item list-text">{{item.goods_name}}</div>
+                <div class="list-item list-text">￥{{item.total}}</div>
+                <div class="list-item list-text">{{item.order_sn}}</div>
+                <div class="list-item list-text" :title="item.social_name">{{item.social_name}}</div>
+                <div class="list-item list-text">{{item.remark}}</div>
+                <div class="list-item list-text">{{item.status_str}}</div>
+                <div class="list-item list-use">
+                  <span v-if="item.after_sale_status === 0 || item.after_sale_status === 2" class="list-operation" @click="checkApply(item.id)">审核</span>
+                  <router-link tag="span" :to="`refund-detail/${item.id}`" append class="list-operation">详情</router-link>
+                </div>
+              </div>
+            </div>
+            <base-blank v-else></base-blank>
+          </div>
+        </div>
+        <div class="pagination-box">
+          <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
+        </div>
       </div>
+    </div>
+    <div v-if="tabIndex === 1" class="purchase-order">
+      <div class="table-content">
+        <div class="identification">
+          <div class="identification-page">
+            <img src="./icon-return_goods@2x.png" class="identification-icon">
+            <p class="identification-name">规则列表</p>
+          </div>
+          <div class="function-btn">
+            <router-link to="edit-rules" append class="btn-main hand">新建规则<span class="add-icon"></span></router-link>
+          </div>
+        </div>
+        <div class="big-list">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in rulesList" :key="index" class="list-item">{{item}}</div>
+          </div>
+          <div class="list">
+            <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
+              <div class="list-item list-text">{{item.title}}</div>
+              <div class="list-item list-text">{{item.take_count}}</div>
+              <div class="list-item list-text">{{item.used_count}}</div>
+              <div class="list-item list-text" @click="open(item, index)">
+                <base-switch confirmText="开启" cancelText="关闭" :status="item.status"></base-switch>
+              </div>
+              <div class="list-item list-use">
+                <router-link tag="span" :to="`edit-rules?id=${item.id}`" append class="list-operation">查看</router-link>
+                <span class="list-operation" @click="delRules(item.id)">删除</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pagination-box">
+          <base-pagination ref="pagination" :pageDetail="marketPageDetail" @addPage="setMarketPage"></base-pagination>
+        </div>
+      </div>
+
     </div>
     <default-modal ref="modal">
       <div slot="content">
@@ -76,13 +119,15 @@
         </div>
       </div>
     </default-modal>
+    <default-confirm ref="confirm" @confirm="confirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
-  import {authComputed, returnsMethods, returnsComputed} from '@state/helpers'
+  import {authComputed, returnsMethods, returnsComputed, marketComputed, marketMethods} from '@state/helpers'
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '退货管理'
@@ -100,7 +145,7 @@
     '退货单状态',
     '操作'
   ]
-  const TAB_STATUS = [{text: '全部', status: ''}, {text: '待处理', status: 0}]
+  const RULES_LIST = ['规则名称', '发放数', '使用数', '状态', '操作']
   const SELECT = {
     check: false,
     show: false,
@@ -108,31 +153,47 @@
     type: 'default',
     data: []
   }
+  const TAB_STATUS = [{text: '售后订单'}, {text: '售后补偿'}]
   export default {
     name: PAGE_NAME,
     components: {
-      DefaultModal
+      DefaultModal,
+      DefaultConfirm
     },
     page: {
       title: TITLE
     },
     data() {
       return {
-        tabStatus: TAB_STATUS,
+        statusList: [
+          {name: '全部', status: '', key: 'all', num: 0},
+          {name: '待处理', status: 0, key: 'wait_release', num: 0},
+          {name: '退款成功', status: 0, key: 'wait_release', num: 0},
+          {name: '退款失败', status: 0, key: 'wait_release', num: 0},
+          {name: '已取消', status: 0, key: 'wait_release', num: 0}
+        ],
         listTitle: LIST_TITLE,
         searchPlaceHolder: SEARCH_PLACE_HOLDER,
         checkId: '',
         remark: '',
         socialSelect: SELECT,
-        infoTabIndex: 0
+        infoTabIndex: 0,
+        tabStatus: TAB_STATUS,
+        rulesList: RULES_LIST,
+        keywords: '',
+        socialNames: '',
+        marketPage: 1,
+        delId: ''
       }
     },
     computed: {
       ...authComputed,
       ...returnsComputed,
+      ...marketComputed,
       // infoTabIndex() {
       //   return this.tabStatus.findIndex((item) => item.status === this.status)
       // },
+      // 导出售后订单
       returnsExportUrl() {
         let currentId = this.getCurrentId()
         let data = {
@@ -140,7 +201,6 @@
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: this.currentUser.access_token,
           status: this.status,
-          shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
           keyword: this.keyword
@@ -152,30 +212,82 @@
         return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
       }
     },
-    created() {
+    watch: {
+      keyword(value) {
+        this.keywords = value
+      },
+      socialName(value) {
+        this.socialNames = value
+      }
+    },
+    async created() {
       if (this.$route.query.status) {
         this.infoTabIndex = this.$route.query.status * 1 + 1
       }
-      this._getShopList()
+      this.keywords = this.keyword
+      this.socialNames = this.socialName
+      await this._statistic()
     },
     methods: {
       ...returnsMethods,
-      _getShopList() {
-        API.Leader.shopDropdownList().then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return
-          }
-          let selectData = res.data.map((item) => {
-            item.name = item.social_name
-            return item
-          })
-          selectData.unshift({name: '全部社区', id: ''})
-          this.socialSelect.data = selectData
+      ...marketMethods,
+      async open(item, index) {
+        let res = await API.Order.openActivity(item.id, item.status === 0 ? 1 : 0)
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this.getMarketList({page: this.marketPage, source_type: 2})
+        }
+      },
+      delRules(id) {
+        this.delId = id
+        this.$refs.confirm.show('是否删除该规则？')
+      },
+      async confirm() {
+        let res = await API.Order.delCouponActivity(this.delId)
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this.getMarketList({page: this.marketPage, source_type: 2})
+        }
+        this.$refs.confirm.hide()
+      },
+      // 获取状态
+      async _statistic() {
+        let res = await API.Order.afterSaleOrdersStatus({
+          start_time: this.time[0],
+          end_time: this.time[1],
+          keyword: this.keyword,
+          social_name: this.socialName
         })
+        if (res.error !== this.$ERR_OK) {
+          console.warn('获取交易状态类型失败')
+          return
+        }
+        let selectData = res.data
+        this.statusList = selectData.map((item) => {
+          item.num = item.statistic
+          item.name = item.status_str
+          return item
+        })
+      },
+      changeList(item, index) {
+        switch (index) {
+        case 0:
+          this.getReturnsList()
+          break
+        case 1:
+          this.getMarketList({page: this.marketPage, source_type: 2})
+          break
+        }
+        this.infoTab(index)
+      },
+      setMarketPage(page) {
+        this.marketPage = page
+        this.getMarketList({page: this.marketPage, source_type: 2})
       },
       exportExcel() {
         window.open(this.returnsExportUrl, '_blank')
       },
+      // 审核
       auditing(isAgree) {
         let data = {
           id: this.checkId,
@@ -199,6 +311,7 @@
             this.$loading.hide()
           })
       },
+      // 删除规则
       checkApply(id) {
         this.checkId = id
         this.$refs.modal.showModal()
@@ -214,12 +327,14 @@
         this.setShopId(shop)
         this.$refs.pagination.beginPage()
       },
-      changeTime(time) {
+      async changeTime(time) {
         this.setTime(time)
+        await this._statistic()
         this.$refs.pagination.beginPage()
       },
-      changeKeyword(keyword) {
-        this.setKeyword(keyword)
+      async changeKeyword() {
+        this.setKeyword([this.keywords, this.socialNames])
+        await this._statistic()
         this.$refs.pagination.beginPage()
       }
     }
@@ -228,7 +343,41 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .purchase-order
+    flex: 1
+    display: flex
+    flex-direction: column
+  .with-search
+    height: 28px
+    width: 187px
+    margin-right: 10px
+    color: $color-text-main
+    font-family: $font-family-regular
+    font-size: $font-size-12
+    box-sizing: border-box
+    border: 0.5px solid $color-line
+    border-radius: 2px
+    padding-left: 14px
+    transition: all 0.2s
+    &:hover
+      border: 1px solid #ACACAC
+    &::placeholder
+      font-family: $font-family-regular
+      color: $color-text-assist
+    &:focus
+      border: 0.5px solid $color-main !important
+  .search-icon-box
+    overflow: hidden
+    height: 28px
+    width: 47px
+    border-radius: 2px
+    background: $color-main
+    text-align: center
+    line-height: 28px
+    font-size: $font-size-12
+    color: $color-white
+    &:hover
+      opacity: 0.8
   textarea::-webkit-input-placeholder
     font-size: $font-size-14
     color: #ACACAC

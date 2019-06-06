@@ -13,9 +13,6 @@
           <img src="./icon-inventory@2x.png" class="identification-icon">
           <p class="identification-name">商品明细</p>
         </div>
-        <div class="function-btn">
-          <div class="btn-main" @click="submitSure">确认提交</div>
-        </div>
       </div>
       <div class="big-list" :class="taskList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -23,23 +20,30 @@
         </div>
         <div class="list">
           <div v-for="(item, index) in taskList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item list-double-row">
+              <div class="item-dark">{{item.goods_name}}</div>
+              <div class="item-dark">{{item.goods_sku_encoding}}</div>
+            </div>
             <div class="list-item">{{item.goods_category}}</div>
             <div class="list-item list-item-layout">
               <input v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
-              <div>{{item.purchase_unit}}</div>
+              <div class="base-unit">{{item.purchase_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <input v-model="item.base_num" type="number" class="edit-input" @input="echangBase(item, index)">
-              <div>{{item.base_unit}}</div>
+              <div class="base-unit">{{item.base_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <input v-model="item.purchase_price" type="number" class="edit-input" @input="echangPrice(item, index)">
-              <div>元/{{item.purchase_unit}}</div>
+              <div class="base-big-unit">元/{{item.purchase_unit}}</div>
             </div>
             <div class="list-item">{{item.total ? '￥' + item.total : '￥0.00'}}</div>
           </div>
         </div>
+      </div>
+      <div class="back">
+        <div class="back-cancel back-btn hand" @click="_back">返回</div>
+        <div class="back-btn back-submit hand" @click="submitSure">确认提交</div>
       </div>
     </div>
   </div>
@@ -47,7 +51,7 @@
 
 <script type="text/ecmascript-6">
   import API from '@api'
-  import {proTaskComputed} from '@state/helpers'
+  import {proTaskComputed, proTaskMethods} from '@state/helpers'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
@@ -72,15 +76,17 @@
     },
     created() {
       this.taskList = JSON.parse(JSON.stringify(this.editTaskList))
-      this.supplier_name = this.taskList[0].supplier
-      this.supplier_id = this.taskList[0].supplier_id
+      this.supplier_name = this.taskList[0] ? this.taskList[0].supplier : ''
+      this.supplier_id = this.taskList[0] ? this.taskList[0].supplier_id : ''
       this.taskList.forEach((item) => {
-        item.purchase_num = item.plan_num
-        item.base_num = (item.plan_num * item.purchase_base_rate).toFixed(2)
-        item.purchase_price = 0
+        item.purchase_num = item.plan_num - item.finish_num > 0 ? (item.plan_num - item.finish_num).toFixed(2) : 0
+        item.base_num =
+          item.plan_base_num - item.finish_base_num > 0 ? (item.plan_base_num - item.finish_base_num).toFixed(2) : 0
+        item.total = (item.purchase_num * item.purchase_price).toFixed(2)
       })
     },
     methods: {
+      ...proTaskMethods,
       async submitSure() {
         for (let i = 0; i < this.taskList.length; i++) {
           if (!this.taskList[i].purchase_num) {
@@ -118,7 +124,12 @@
           this.isSubmit = false
           return
         }
-        this.$router.push('/home/purchase-order')
+        this.setGoBackNumberSub()
+        if (this.goBackNumber > 0) {
+          this.$router.back()
+        } else {
+          this.$router.push('/home/purchase-order')
+        }
       },
       echangBase(item, index) {
         if (item.base_num < 0) {
@@ -155,6 +166,9 @@
         }
         this.$forceUpdate()
       },
+      _back() {
+        this.$router.back()
+      },
       echangPrice(item, index) {
         if (item.purchase_price < 0) {
           item.purchase_price = item.purchase_price * -1
@@ -171,13 +185,22 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .base-unit
+    no-wrap()
+    width: 32px
+  .base-big-unit
+    no-wrap()
+    width: 60px
   .procurement-task
     .list-box
       .list-item
         padding-right: 14px
         &:nth-child(1)
           flex: 1.2
+        &:nth-child(3), &:nth-child(4), &:nth-child(5)
+          flex-wrap: nowrap
+        &:nth-child(6)
+          max-width: 110px
 
   .down-content
     align-items: flex-start
@@ -193,27 +216,6 @@
     .enter-title-money
       color: #F84E3C
 
-  .list-item-batches
-    position: relative
-    overflow: inherit !important
-    .batches-box
-      position: absolute
-      top: 21px
-      left: 0
-      box-sizing: border-box
-      padding: 12px 37px 12px 12px
-      background: rgba(51, 51, 51, 9)
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: $color-white
-      z-index: 99
-      margin-bottom: 8px
-      &.fade-enter, &.fade-leave-to
-        opacity: 0
-      &.fade-enter-to, &.fade-leave-to
-        transition: all .3s ease-in-out
-      &:last-child
-        margin-bottom: 0
 
   .list-item-layout
     layout(row)
@@ -239,4 +241,6 @@
   .tip
     margin: 0 2px
     font-size: $font-size-14
+  .procurement-task
+    padding-bottom: 80px
 </style>

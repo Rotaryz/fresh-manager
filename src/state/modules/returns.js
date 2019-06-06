@@ -14,7 +14,9 @@ export const state = {
   startTime: '',
   endTime: '',
   keyword: '',
-  status: ''
+  status: '',
+  socialName: '',
+  tabIndex: 0
 }
 
 export const getters = {
@@ -41,6 +43,12 @@ export const getters = {
   },
   page(state) {
     return state.page
+  },
+  tabIndex(state) {
+    return state.tabIndex
+  },
+  socialName(state) {
+    return state.socialName
   }
 }
 
@@ -64,25 +72,31 @@ export const mutations = {
   SET_KEYWORD(state, keyword) {
     state.keyword = keyword
   },
+  SET_SOCIAL_NAME(state, socialName) {
+    state.socialName = socialName
+  },
   SET_STATUS(state, status) {
     state.status = status
   },
   SET_PAGE(state, page) {
     state.page = page
+  },
+  SET_TAB_INDEX(state, tabIndex) {
+    state.tabIndex = tabIndex
   }
 }
 
 export const actions = {
   getReturnsList({commit, state}) {
-    const {page, startTime, endTime, status, shopId, keyword} = state
-    console.log(status)
+    const {page, startTime, endTime, status, keyword, socialName} = state
+    // const {page, startTime, endTime, status, shopId, keyword} = state
     let data = {
       status,
       page,
       start_time: startTime,
       end_time: endTime,
-      shop_id: shopId,
-      keyword: keyword
+      keyword: keyword,
+      social_name: socialName
     }
     return API.Order.getReturnsList(data)
       .then((res) => {
@@ -138,8 +152,9 @@ export const actions = {
     commit('SET_TIME', time)
     dispatch('getReturnsList')
   },
-  setKeyword({commit, dispatch}, keyword) {
-    commit('SET_KEYWORD', keyword)
+  setKeyword({commit, dispatch}, value) {
+    commit('SET_KEYWORD', value[0])
+    commit('SET_SOCIAL_NAME', value[1])
     commit('SET_PAGE', 1)
     dispatch('getReturnsList')
   },
@@ -154,5 +169,8 @@ export const actions = {
   },
   infoStatus({commit, dispatch}, status) {
     commit('SET_STATUS', status)
+  },
+  infoTab({commit, dispatch}, tabIndex) {
+    commit('SET_TAB_INDEX', tabIndex)
   }
 }

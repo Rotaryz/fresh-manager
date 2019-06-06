@@ -2,8 +2,9 @@
   <div class="outreach-group">
     <group-header></group-header>
     <section class="container">
-      <group-tab></group-tab>
-      <group-content></group-content>
+      <group-tab @beginPage="beginPage"></group-tab>
+      <group-content v-show="showContent" ref="content"></group-content>
+      <group-staff v-show="!showContent"></group-staff>
     </section>
     <change-model></change-model>
     <group-tab-tools></group-tab-tools>
@@ -14,9 +15,10 @@
   import GroupHeader from './group-header/group-header'
   import GroupTab from './group-tab/group-tab'
   import GroupContent from './group-content/group-content'
+  import GroupStaff from './group-staff/group-staff'
   import changeModel from './change-model/change-model'
   import GroupTabTools from './group-tab-tools/group-tab-tools'
-
+  import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
   const PAGE_NAME = 'OUTREACH_GROUP'
   const TITLE = '拓展团队'
 
@@ -27,13 +29,23 @@
       GroupTab,
       GroupContent,
       changeModel,
-      GroupTabTools
-    },
-    page: {
-      title: TITLE
+      GroupTabTools,
+      GroupStaff
     },
     data() {
       return {}
+    },
+    computed: {
+      ...outreachGroupComputed
+    },
+    methods: {
+      ...outreachGroupMethods,
+      beginPage() {
+        this.$refs.content.beginPage()
+      }
+    },
+    page: {
+      title: TITLE
     }
   }
 </script>

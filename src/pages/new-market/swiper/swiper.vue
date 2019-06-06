@@ -10,7 +10,7 @@
               @on-change="_getBanner"
     >
       <carousel-item v-for="(item, index) in bannerList" :key="index">
-        <div class="carousel" :style="{'background-image': 'url(' + item + ')'}">
+        <div class="carousel" :style="{'background-image': 'url(\'' + item + '\')'}">
         </div>
       </carousel-item>
     </carousel>

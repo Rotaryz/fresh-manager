@@ -80,6 +80,9 @@
         if (!this.isUse) {
           return
         }
+        if (!this.select.data.length) {
+          return
+        }
         this.select.check = !this.select.check
         this.$emit('selectType', this.select)
       },
@@ -88,7 +91,7 @@
         this.selectIdx = index
         this.showHover = false
         this.select.content = value.name
-        this.$emit('setValue', value)
+        this.$emit('setValue', value, index)
       }
     }
   }

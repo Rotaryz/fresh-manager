@@ -1,12 +1,13 @@
 import request from '@utils/request'
 import storage from 'storage-controller'
+import {getCorpId} from '@utils/tool'
 /**
  * 数据入库
  * @param data
  * @returns {Promise.<*>}
  */
 function _saveFile(data) {
-  const url = `https://social-shopping-api.jerryf.cn/social-shopping/api/save-file`
+  const url = `/social-shopping/api/cos/save-file`
   return request.post(url, data)
 }
 
@@ -22,10 +23,12 @@ function _getAuthorization(options, callback) {
   // const pathname = key.indexOf('/') === 0 ? key : '/' + key
   const pathname = key
   const Authorization = storage.get('auth.currentUser').access_token
-  const url = '/social-shopping/api/cos/upload-sign?method=' + method + '&image=' + encodeURIComponent(pathname)
+  const url =
+    '/social-shopping/api/cos/h5-upload-image-sign?method=' + method + '&image=' + encodeURIComponent(pathname)
   const xhr = new XMLHttpRequest()
   xhr.open('GET', url, true)
   xhr.setRequestHeader('Authorization', Authorization)
+  xhr.setRequestHeader('current-corp', getCorpId())
   xhr.onload = function(e) {
     let AuthData
     try {
@@ -84,7 +87,7 @@ export function uploadFiles(fileType, files, showProcess, processCallBack) {
           }
           xhr.onload = function() {
             if (xhr.status === 200 || xhr.status === 206) {
-              _saveFile({path: '/' + info.pathname}).then((resp) => {
+              _saveFile({path: '/' + encodeURIComponent(info.pathname), type: 'image'}).then((resp) => {
                 resolve(resp)
               })
             } else {

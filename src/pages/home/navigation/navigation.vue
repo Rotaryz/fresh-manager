@@ -61,16 +61,21 @@
       ]
     },
     {
-      title: '活动',
+      title: '营销',
       children: [
-        // {
-        //   title: '今日抢购',
-        //   url: '/home/rush-purchase',
-        //   isLight: false
-        // },
         {
-          title: '限时抢购',
-          url: '/home/flash-sale',
+          title: '活动管理',
+          url: '/home/activity-manage',
+          isLight: false
+        },
+        {
+          title: '优惠券',
+          url: '/home/coupon-manage',
+          isLight: false
+        },
+        {
+          title: '营销计划',
+          url: '/home/coupon-market',
           isLight: false
         }
       ]
@@ -86,21 +91,6 @@
         {
           title: '拓展团队',
           url: '/home/outreach-group',
-          isLight: false
-        }
-      ]
-    },
-    {
-      title: '营销',
-      children: [
-        {
-          title: '优惠券',
-          url: '/home/coupon-manage',
-          isLight: false
-        },
-        {
-          title: '营销计划',
-          url: '/home/coupon-market',
           isLight: false
         }
       ]
@@ -247,8 +237,13 @@
       title: '订单',
       children: [
         {
-          title: '订单列表',
-          url: '/home/supply-list',
+          title: '商戶订单',
+          url: '/home/merchant-order',
+          isLight: false
+        },
+        {
+          title: '售后订单',
+          url: '/home/after-sales-order',
           isLight: false
         }
       ]
@@ -292,8 +287,33 @@
           isLight: false
         },
         {
-          title: '库位管理',
-          url: '/home/store-manage',
+          title: '库存管理',
+          url: '/home/storehouse-management',
+          isLight: false
+        },
+        {
+          title: '库存盘点',
+          url: '/home/stock-taking',
+          isLight: false
+        },
+        {
+          title: '基础设置',
+          url: '/home/foundation-setup',
+          isLight: false
+        }
+      ]
+    },
+    {
+      title: '分拣',
+      children: [
+        {
+          title: '分拣任务',
+          url: '/home/sorting-task',
+          isLight: false
+        },
+        {
+          title: '分拣配置',
+          url: '/home/sorting-config',
           isLight: false
         }
       ]
@@ -334,6 +354,11 @@
           title: '社群数据',
           url: '/home/community-data',
           isLight: false
+        },
+        {
+          title: '运营数据',
+          url: '/home/operation-data',
+          isLight: false
         }
       ]
     }
@@ -358,7 +383,7 @@
       icon: require('./icon-supply_chain@2x.png'),
       isLight: false,
       second: SUPPLY,
-      url: '/home/supply-list'
+      url: '/home/merchant-order'
     },
     {
       name: '统计',

@@ -10,11 +10,14 @@
     </div>
     <div class="advertisement-small">
       <phone-box
-        :bannerList="bannerList"
-        :cateGoods="cateGoods"
         :activityGoodsList="activityGoodsList"
-        :cmsMsg="infoBannerList.modules"
-        @setType="_changeType"
+        :cmsArray="infoBannerList.modules"
+        :newClientList="newClientList"
+        :todayHotList="todayHotList"
+        :comType="cmsType"
+        :guessList="guessList"
+        :groupList="groupList"
+        @setType="handleChangeType"
       ></phone-box>
       <!--广告-->
       <div v-if="cmsType === 'bannar'" class="advertisement-content">
@@ -26,7 +29,7 @@
           <transition-group>
             <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
               <div class="advertisement-msg">
-                <div class="img-box hand" :style="{'background-image': 'url(' + (banner.image_url || banner.add_icon) + ')'}">
+                <div class="img-box hand" :style="{'background-image': 'url(\'' + (banner.image_url || banner.add_icon) + '\')'}">
                   <div v-if="banner.showLoading" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
@@ -41,7 +44,6 @@
                 <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
               </div>
             </div>
-
           </transition-group>
         </draggable>
         <div class="advertisement-btn">
@@ -50,18 +52,18 @@
         </div>
       </div>
 
-      <!--限时抢购-->
-      <div v-if="cmsType === 'activity_fixed'" class="advertisement-content">
+      <!--活动类目设置-->
+      <div v-if="cmsType === 'activity'" class="advertisement-content">
         <div class="content-header">
-          <div class="content-title">限时抢购</div>
+          <div class="content-title">活动类目设置</div>
         </div>
         <div>
-          <div class="edit-item edit-flex">
-            <div class="left">显示活动<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
-            <div class="switch" @click="switchBtn()">
-              <base-switch :status="activityStatus" confirmText="开启" cancelText="关闭"></base-switch>
+          <nav v-for="(item, index) in activityList" :key="index" class="edit-item edit-flex">
+            <div class="left">{{item.module_title}}<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
+            <div class="switch" @click="switchBtn(item)">
+              <base-switch :status="!item.is_close ? 1 : 0" confirmText="开启" cancelText="关闭"></base-switch>
             </div>
-          </div>
+          </nav>
           <div class="submit-activity advertisement-btn">
             <div class="submit-activity-btn hand" @click="_editActivity()">保存并发布</div>
           </div>
@@ -98,7 +100,7 @@
                   <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
                     <span class="after"></span>
                   </div>
-                  <div class="goods-img" :style="{'background-image': 'url(' +item.goods_cover_image+ ')'}"></div>
+                  <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
                   <div class="goods-msg">
                     <div class="goods-name">{{item.name}}</div>
                     <div class="goods-money">¥{{item.original_price}}</div>
@@ -140,19 +142,23 @@
     <!--<div class="back">-->
     <!--<div class="back-btn btn-main">保存并发布</div>-->
     <!--</div>-->
+    <default-confirm ref="saveMsg" @confirm="handleSaveConfirm" @cancel="handleCancelConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import PhoneBox from '@components/phone-box/phone-box'
+  import PhoneBox from './phone-box/phone-box'
   import API from '@api'
   import ADD_IMAGE from './pic-add_img@2x.png'
   import {adverComputed, adverMethods} from '@state/helpers'
   import _ from 'lodash'
   import Draggable from 'vuedraggable'
-
+  import {formatCouponMoney} from '@utils/common'
+  import {TAB_ARR_CONFIG} from './config'
+  // import {TAB_STATUS} from '@pages/activity-manage/config'
+  // console.log(TAB_STATUS)
   const PAGE_NAME = 'ADVERTISEMENT'
   const TITLE = '轮播广告'
   const TYPE_LIST = [
@@ -167,7 +173,9 @@
     navigation: '导航栏设置',
     navigationIcon: require('./icon-nav_settings@2x.png'),
     activity_fixed: '限时抢购',
-    activity_fixedIcon: require('./icon-time@2x.png')
+    activity_fixedIcon: require('./icon-time@2x.png'),
+    activity: '活动类目',
+    activityIcon: require('./icon-activity_category@2x.png')
   }
   const TEMPLATE_OBJ = {
     id: '',
@@ -191,6 +199,7 @@
       title: TITLE
     },
     data() {
+      this._isSave = false // 是否保存当前数据
       return {
         actName: ACT_NAME,
         typeList: TYPE_LIST,
@@ -209,7 +218,7 @@
         choiceGoods: [],
         goodsPage: {total: 1, per_page: 10, total_page: 1},
         choicePage: 1,
-        parentId: 0,
+        parentId: '',
         keyword: '',
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
@@ -234,7 +243,13 @@
         activityItem: {},
         activityStatus: 0,
         activityGoodsList: [],
-        cateGoods: []
+        cateGoods: [],
+        currentModule: {},
+        activityList: [], // 活动列表
+        newClientList: [], // 新人特惠列表
+        todayHotList: [], // 今日爆品
+        guessList: [],
+        groupList: []
       }
     },
     computed: {
@@ -246,22 +261,104 @@
       }
     },
     async created() {
-      this.cmsId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].id : ''
-      this.cmsModuleId = this.infoBannerList.modules[0] ? this.infoBannerList.modules[0].module_id : ''
+      this.currentModule = this.infoBannerList.modules[0] || {}
+      this._currentCms = this.currentModule
+      this.cmsId = this.currentModule ? this.currentModule.id : ''
+      this.cmsModuleId = this.currentModule ? this.currentModule.module_id : ''
       this.$loading.show()
-      this.infoBannerList.modules.forEach(async (item) => {
-        await this._getModuleMsg(item.module_name, item.id, item.module_id)
-      })
-      await this._getFirstAssortment()
-      await this._getGoodsList()
-      await this._getActivityGoods()
-      await this._getCateGoods()
+      await this._getModuleMsg(this.currentModule.module_name, this.cmsId, this.cmsModuleId)
+      this._getAllActivityData()
+      this._getFirstAssortment()
       this.$loading.hide()
     },
     methods: {
       ...adverMethods,
-      switchBtn() {
-        this.activityStatus = this.activityStatus ? 0 : 1
+      // 切换保存选项
+      async handleSaveConfirm() {
+        switch (this.cmsType) {
+        case 'bannar':
+          this._editBanner(() => {
+            this._actionToChangeModule()
+            if (this._isRouting) {
+              this._next()
+            }
+          })
+          break
+        case 'activity':
+          this._editActivity(() => {
+            this._actionToChangeModule()
+            if (this._isRouting) {
+              this._next()
+            }
+          })
+          break
+        default:
+          break
+        }
+      },
+      handleCancelConfirm() {
+        if (this._isRouting) {
+          console.log(this._next)
+          this._next()
+        } else {
+          this._actionToChangeModule()
+        }
+      },
+      _actionToChangeModule() {
+        let cms = this._currentCms
+        this.cmsType = cms.module_name
+        this.cmsId = cms.id
+        this.cmsModuleId = cms.module_id
+        this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+        // this._isSave = false
+        this._getAllActivityData()
+      },
+      // 获取所有活动数据
+      _getAllActivityData() {
+        let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
+        if (module.list) {
+          module.list.forEach(item => {
+            if (item.starting_point_id > 0) {
+              API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then(res => {
+                if (!res || !res.data) {
+                  return
+                }
+                if (item.module_name === 'activity_fixed') {
+                  this.activityGoodsList = this._formatListData(res.data)
+                } else if(item.module_name === 'groupon'){
+                  API.Advertisement.getGroupList().then(res => {
+                    if(res.data) {
+                      this.groupList = this._formatListData(res.data)
+                    }
+                  })
+                } else {
+                  let key = (TAB_ARR_CONFIG[item.module_name] || {}).dataArray
+                  if (this[key]) {
+                    this[key] = this._formatListData(res.data)
+                  }
+                }
+              })
+            }
+          })
+        }
+        API.Advertisement.getGuessList().then(res => {
+          if (res.data) {
+            this.guessList = this._formatListData(res.data)
+          }
+        })
+      },
+      _formatListData(arr = []) {
+        return arr.map(item => {
+          return {
+            ...item,
+            tradePrice: formatCouponMoney(item.trade_price)
+          }
+        })
+      },
+      // 按钮
+      switchBtn(item) {
+        item.is_close = !item.is_close
+        // this.activityStatus = this.activityStatus ? 0 : 1
       },
       async _getModuleMsg(type, id, moduleId) {
         let res = await API.Advertisement.getModuleMsg({id: id, module_id: moduleId})
@@ -270,7 +367,7 @@
         }
         switch (type) {
         case 'bannar':
-          this.bannerList = res.data.length ? res.data : this.bannerList
+          // this.bannerList = res.data.length ? res.data : this.bannerList
           this.temporaryBannar = _.cloneDeep(res.data)
           break
         case 'activity_fixed':
@@ -279,41 +376,30 @@
         case 'goods_cate':
           // this.temporaryNavigation = _.cloneDeep(res.data)
           break
+        case 'activity':
+          this.activityList = res.data || []
+          break
+        default:
+          break
         }
       },
-      // 获取分类商品列表
-      _getCateGoods() {
-        API.Advertisement.getGoodsList({
-          is_online: 1,
-          keyword: '',
-          goods_category_id: 0,
-          limit: 10,
-          page: 1
-        }).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return
-          }
-          this.cateGoods = res.data
-        })
-      },
       // 获取限时抢购商品列表
-      _getActivityGoods() {
-        this.infoBannerList.modules.forEach((item) => {
-          if (
-            item.module_name === 'activity_fixed' &&
-            item.content_data &&
-            item.content_data.list &&
-            item.content_data.list.length > 0
-          ) {
-            API.Advertisement.getActivityGoods(item.content_data.list[0].id).then((res) => {
-              if (res.error !== this.$ERR_OK) {
-                return
-              }
-              this.activityGoodsList = res.data
-            })
-          }
-        })
-      },
+      // _getActivityGoods() {
+      //   let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
+      //   if (module.list) {
+      //     module = module.list.find(val => val.module_name === 'activity_fixed') || {}
+      //     if (module) {
+      //       let id = module.list && module.list[0] && module.list[0].id
+      //       if (!id) return
+      //       API.Advertisement.getActivityGoods(id).then((res) => {
+      //         if (res.error !== this.$ERR_OK) {
+      //           return
+      //         }
+      //         this.activityGoodsList = this._formatListData(res.data)
+      //       })
+      //     }
+      //   }
+      // },
       _setSort() {},
       _setLinkType(index, e) {
         this.tabIndex = index
@@ -321,11 +407,23 @@
         this.outLink = this.typeList[index].status
       },
       // cms的类型
-      async _changeType(cms) {
-        this.cmsType = cms.module_name
-        this.cmsId = cms.id
-        this.cmsModuleId = cms.module_id
-        await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+      async handleChangeType(cms) {
+        // if ('' + this._oldMoudleData === '' + cms) {
+        //   console.log(123)
+        // }
+        // console.log(this._oldMoudleData, cms)
+        // this._currentCms = cms
+        // if (!this._isSave) {
+        //   this.$refs.saveMsg.show('是否需要保存')
+        // } else {
+        //   this._actionToChangeModule()
+        // }
+        this._currentCms = cms
+        this._actionToChangeModule()
+        // this.cmsType = cms.module_name
+        // this.cmsId = cms.id
+        // this.cmsModuleId = cms.module_id
+        // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -490,7 +588,7 @@
         this[this.dataName][this.upIndex].image_id = res.data.id
       },
       // 新建banner
-      async _editBanner() {
+      async _editBanner(success) {
         if (!this.temporaryBannar.length) {
           this.$toast.show('轮播图不能为空', 1500)
           return
@@ -509,17 +607,45 @@
           delete item.add_icon
           return {page_module_id: this.cmsId, ext_json: item}
         })
-        await this._editCms(data)
+        // await this._editCms(data, success)
+        let res = await API.Advertisement.saveModuleMsg({data})
+        if (res.error === this.$ERR_OK) {
+          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+          this._isSave = true
+          success && success()
+        }
+        this.$loading.hide()
+        this.$toast.show(res.message)
       },
       // 新建活动
-      async _editActivity() {
-        let data = [
-          {
-            page_module_id: this.cmsId,
-            config_data: {is_close: this.activityStatus === 1 ? 0 : 1}
+      async _editActivity(success) {
+        // let arr = this.activityList.map(item => {
+        //   return {
+        //     is_close: !item.is_close ? 1 : 0,
+        //     id: item.id
+        //   }
+        // })
+        // let data = [
+        //   {
+        //     id: this.cmsId,
+        //     page_module_id: this.cmsId,
+        //     config_data: arr
+        //   }
+        // ]
+        let data = this.activityList.map(item => {
+          return {
+            id: item.id,
+            config_data: {
+              is_close: !item.is_close ? 0 : 1
+            }
           }
-        ]
-        let res = await API.Advertisement.saveFlashSale({data})
+        })
+        let res = await API.Advertisement.saveModuleData({data})
+        if (res.error === this.$ERR_OK) {
+          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+          this._isSave = true
+          success && success()
+        }
         // if (res.error === this.$ERR_OK) {
         //   await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
         // }
@@ -527,14 +653,16 @@
         this.$toast.show(res.message)
       },
       // 保存模块数据
-      async _editCms(data) {
-        let res = await API.Advertisement.saveModuleMsg({data})
-        if (res.error === this.$ERR_OK) {
-          await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-        }
-        this.$loading.hide()
-        this.$toast.show(res.message)
-      },
+      // async _editCms(data, success) {
+      //   let res = await API.Advertisement.saveModuleMsg({data})
+      //   if (res.error === this.$ERR_OK) {
+      //     await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+      //     this._isSave = true
+      //     success && success()
+      //   }
+      //   this.$loading.hide()
+      //   this.$toast.show(res.message)
+      // },
       // 展示商品弹窗
       _showGoods(index, id) {
         this.bannerIndex = index
@@ -636,15 +764,31 @@
     overflow: hidden
     padding-bottom: 40px
     .content-header
+      border-bottom-1px($color-line)
       display: flex
       align-items: center
+      height: 60px
+      position: relative
+      box-sizing: border-box
+      text-indent: 13px
+      &:before
+        content: ''
+        position: absolute
+        width: 3px
+        height: 14px
+        background: $color-main
+        border-radius: 2px
+        col-center()
+        left: 0
       .content-title
-        font-size: 16px
-      .content-sub
-        font-size: 14px
-        margin-left: 10px
-        color: #acacac
+        color: $color-text-main
         font-family: $font-family-regular
+        font-size: $font-size-16
+      .content-sub
+        color: $color-text-assist
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        text-indent: 10px
     .advertisement-btn
       margin: 50px 0 0 0
       display: flex

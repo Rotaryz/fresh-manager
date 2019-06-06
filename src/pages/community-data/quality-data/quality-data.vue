@@ -26,7 +26,7 @@
   const COMPONENT_NAME = 'QUALITY_DATA'
   const TAB_ARR = ['浏览数', '主力客户', '支付订单']
 
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       time: {
@@ -39,8 +39,8 @@
         tabArr: TAB_ARR,
         tabIndex: 0,
         data: {
-          x: ["04/03", "04/04", "04/05", "04/06", "04/07", "04/08", "04/09"],
-          series: ["0", "0", "0", "0", "0", "0", "0", "0", "0"]
+          x: ['04/03', '04/04', '04/05', '04/06', '04/07', '04/08', '04/09'],
+          series: ['0', '0', '0', '0', '0', '0', '0', '0', '0']
         }
       }
     },
@@ -95,7 +95,7 @@
               lineStyle: {
                 color: '#F0F3F5',
                 width: 0.5,
-                type: "doted"
+                type: 'doted'
               }
             },
             axisLabel: {

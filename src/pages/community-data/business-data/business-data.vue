@@ -28,8 +28,8 @@
 <script type="text/ecmascript-6">
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'BUSINESS_DATA'
-  const TAB_ARR = ['营收金额', 'equal', '主力客户', 'multiply', '复购数', 'multiply', '笔单价']
-  export default{
+  const TAB_ARR = ['营收金额', 'equal', '主力客户', 'multiply', '复购率', 'multiply', '笔单价']
+  export default {
     name: COMPONENT_NAME,
     props: {
       time: {
@@ -41,12 +41,12 @@
       return {
         tabArr: TAB_ARR,
         tabIndex: 0,
-        rate: ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
+        rate: ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
         data: {
-          x: ["04/03", "04/04", "04/05", "04/06", "04/07", "04/08", "04/09"],
-          series: ["0", "0", "0", "0", "0", "0", "0", "0", "0"]
+          x: ['04/03', '04/04', '04/05', '04/06', '04/07', '04/08', '04/09'],
+          series: ['0', '0', '0', '0', '0', '0', '0', '0', '0']
         },
-        arr : [0, 0, 1, 0, 2, 0, 3]
+        arr: [0, 0, 1, 0, 2, 0, 3]
       }
     },
     computed: {
@@ -101,7 +101,7 @@
               lineStyle: {
                 color: '#F0F3F5',
                 width: 0.5,
-                type: "doted"
+                type: 'doted'
               }
             },
             axisLabel: {

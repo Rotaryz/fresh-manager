@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import storage from 'storage-controller'
-// import AwesomePicker from 'vue-awesome-picker'
 import echarts from 'echarts'
 import base from '@mixins/base'
 import * as handle from './cos/handle'
@@ -28,4 +27,3 @@ export const Plugins = {
   }
 }
 // 使用插件
-// Vue.use(AwesomePicker) todo

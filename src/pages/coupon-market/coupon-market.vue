@@ -48,7 +48,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageDetail" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -69,36 +69,38 @@
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
-  const TOP_BTN = [{
-    name: '平台发放',
-    child: [
-      {
-        name: '新客有礼',
-        value: 0,
-        icon: 'icon-new_courtesy'
-      },
-      {
-        name: '复购有礼',
-        value: 1,
-        icon: 'icon-complex_courtesy'
-      },
-      {
-        name: '唤醒流失客户',
-        value: 2,
-        icon: 'icon-awaken'
-      }
-
-    ]
-  },{
-    name: '团长发放',
-    child: [
-      {
-        name: '社群福利券',
-        value: 3,
-        icon: 'icon-group'
-      }
-    ]
-  }]
+  const TOP_BTN = [
+    {
+      name: '平台发放',
+      child: [
+        {
+          name: '新客有礼',
+          value: 0,
+          icon: 'icon-new_courtesy'
+        },
+        {
+          name: '复购有礼',
+          value: 1,
+          icon: 'icon-complex_courtesy'
+        },
+        {
+          name: '唤醒流失客户',
+          value: 2,
+          icon: 'icon-awaken'
+        }
+      ]
+    },
+    {
+      name: '团长发放',
+      child: [
+        {
+          name: '社群福利券',
+          value: 3,
+          icon: 'icon-group'
+        }
+      ]
+    }
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -142,31 +144,30 @@
         this.$refs.pages.beginPage()
         this.page = 1
         this.statusArr = new Array(10).fill(undefined)
-        this.getMarketList({page: this.page, status: selectStatus.status})
+        this.getMarketList({page: this.page, status: selectStatus.status, loading: false})
       },
       getMarketStatus() {
-        API.Market.getMarketStatus()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Market.getMarketStatus().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              status: item.status,
+              num: item.statistic
             }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                status: item.status,
-                num: item.statistic
-              }
-            })
           })
+        })
       },
       addPage(page) {
         this.page = page
-        this.getMarketList({page: this.page, status: this.status})
+        this.getMarketList({page: this.page, status: this.status, loading: false})
       },
       statusHandle(item, index) {
         let status = 0
-        if (typeof(this.statusArr[index]) === 'number') {
+        if (typeof this.statusArr[index] === 'number') {
           status = this.statusArr[index]
         } else {
           status = item.status
@@ -175,7 +176,7 @@
       },
       switchBtn(item, index) {
         let status = 1
-        if (typeof(this.statusArr[index]) === 'number') {
+        if (typeof this.statusArr[index] === 'number') {
           status = +this.statusArr[index] === 0 ? 1 : 0
         } else {
           status = item.status ? 0 : 1
@@ -191,12 +192,10 @@
           }
           this.statusArr = this.statusArr.map((item, ind) => {
             if (index === ind) {
-              console.log(index, ind, status)
               item = status
             }
             return item
           })
-          console.log(this.statusArr)
           // this.getMarketList({page: this.page, status: this.status})
           this.getMarketStatus()
         })
@@ -213,7 +212,7 @@
         }
         this.$toast.show('删除成功')
         this.getMarketStatus()
-        this.getMarketList({page: this.page, status: this.status})
+        this.getMarketList({page: this.page, status: this.status, loading: false})
       }
     }
   }
@@ -279,16 +278,21 @@
         .text
           margin-top: 10px
           display: block
+          transition: all 0.3s
         &:first-child
           width: 60px
         &:hover
+          .icon
+            opacity: 0.9
           .icon-0
-            box-shadow: 0 2px 4px 0 rgba(159,213,198,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159,213,198,0.40)
           .icon-1
-            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
           .icon-2
-            box-shadow: 0 2px 4px 0 rgba(199,159,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(199,159,213,0.40)
           .icon-3
-            box-shadow: 0 2px 4px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
+          .text
+            text-decoration: underline
 
 </style>

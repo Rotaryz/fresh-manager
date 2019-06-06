@@ -3,23 +3,24 @@
     <div class="icon"></div>
     <p class="title">拓展团队</p>
     <div class="function-btn">
-      <div v-if="isLastDepartment" class="btn-main" @click="handleAdd">添加成员<span class="add-icon"></span></div>
+      <div v-if="showContent && isLastDepartment" class="btn-main" @click="handleAdd">添加成员<span class="add-icon"></span></div>
     </div>
     <div style="width: 20px"></div>
     <div class="function-btn">
-      <div v-if="isLastDepartment" class="btn-main" @click="exportExcel">导出Excel</div>
+      <div class="btn-main" @click="exportExcel">导出Excel</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {outreachGroupComputed, outreachGroupMethods} from '@state/helpers'
+  import {outreachGroupComputed, outreachGroupMethods, outreachGroupDetailComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GROUP_HEADER'
 
   export default {
     name: COMPONENT_NAME,
     computed: {
       ...outreachGroupComputed,
+      ...outreachGroupDetailComputed,
       exportUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
@@ -33,7 +34,23 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/api/backend/activity-manage/department-offline-members-excel/' + this.current.id + '?' + search.join('&')
+        if (this.showContent) {
+          return (
+            process.env.VUE_APP_API +
+            '/social-shopping/api/backend/activity-manage/department-offline-members-excel/' +
+            this.current.id +
+            '?' +
+            search.join('&')
+          )
+        } else {
+          return (
+            process.env.VUE_APP_API +
+            '/social-shopping/api/backend/activity-manage/member-activity-excel/' +
+            this.staffId +
+            '?' +
+            search.join('&')
+          )
+        }
       }
     },
     methods: {
@@ -48,7 +65,7 @@
         })
       },
       exportExcel() {
-        console.log(this.ex)
+        // console.log(this.ex)
         window.open(this.exportUrl, '_blank')
       }
     }
