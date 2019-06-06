@@ -412,7 +412,6 @@
       },
       clickBigChart(index) {
         this.clickChartIndex = index
-        this.bigDataShow = false
         // this.$refs.goodsTab.selectList('', 42624)
         if (!this.bigChartData.data || !this.bigChartData.data.length) return
         // 找到分类ID 或商品ID
@@ -423,6 +422,7 @@
           let chartGoodsId = this.bigChartData.data[index].spu
           this.$refs.goodsTab.selectList('', chartGoodsId)
         }
+        // this.bigDataShow = false
       },
       async showBigData(type, sec) {
         this.bigDataShow = true
@@ -487,6 +487,7 @@
       },
       // 切换左侧tab栏
       async changeTab(itemId, code) {
+        this.bigDataShow = false
         if (this.leftTabItem === itemId) return
         switch (code) {
         case 'all':

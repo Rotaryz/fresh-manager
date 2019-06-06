@@ -126,6 +126,7 @@
             this.selectGoods = true
           } else {
             this.$toast.show('该商品已下架')
+            return
           }
         } else {
           return
