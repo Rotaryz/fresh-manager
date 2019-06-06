@@ -27,7 +27,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <div v-for="(item, index) in purchase.status" :key="index" class="item-wrapper">
+              <div v-for="(item, index) in purchase.status" :key="index" class="item-wrapper" @click="checkDetail('procurement-task', '', item.status)">
                 <p class="title">{{item.status_str}}</p>
                 <p class="count">{{item.statistic}}</p>
                 <i class="icon-arrow"></i>
@@ -47,7 +47,7 @@
               <div class="detail">
                 <p class="content">异常单：{{purchase.exception_count}}</p>
               </div>
-              <i class="icon-arrow"></i>
+              <i class="icon-arrow" @click="checkDetail('procurement-task', 1)"></i>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <div v-for="(item, index) in entry.status" :key="index" class="item-wrapper">
+              <div v-for="(item, index) in entry.status" :key="index" class="item-wrapper" @click="checkDetail('product-enter', '', item.status)">
                 <p class="title">{{item.status_str}}</p>
                 <p class="count">{{item.statistic}}</p>
                 <i class="icon-arrow"></i>
@@ -84,7 +84,7 @@
               <div class="detail">
                 <p class="content">异常单：{{entry.exception_count}}</p>
               </div>
-              <i class="icon-arrow"></i>
+              <i class="icon-arrow" @click="checkDetail('product-enter', 1)"></i>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <div v-for="(item, index) in picking.status" :key="index" class="item-wrapper">
+              <div v-for="(item, index) in picking.status" :key="index" class="item-wrapper" @click="checkDetail('sorting-task', '', item.status)">
                 <p class="title">{{item.status_str}}</p>
                 <p class="count">{{item.statistic}}</p>
                 <i class="icon-arrow"></i>
@@ -121,7 +121,7 @@
               <div class="detail">
                 <p class="content">异常单：{{picking.exception_count}}</p>
               </div>
-              <i class="icon-arrow"></i>
+              <i class="icon-arrow" @click="checkDetail('sorting-task', 1)"></i>
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <div v-for="(item, index) in out.status" :key="index" class="item-wrapper">
+              <div v-for="(item, index) in out.status" :key="index" class="item-wrapper" @click="checkDetail('product-out', '', item.status)">
                 <p class="title">{{item.status_str}}</p>
                 <p class="count">{{item.statistic}}</p>
                 <i class="icon-arrow"></i>
@@ -158,7 +158,7 @@
               <div class="detail">
                 <p class="content">异常单：{{out.exception_count}}</p>
               </div>
-              <i class="icon-arrow"></i>
+              <i class="icon-arrow" @click="checkDetail('product-out', 1)"></i>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <div v-for="(item, index) in delivery.status" :key="index" class="item-wrapper">
+              <div v-for="(item, index) in delivery.status" :key="index" class="item-wrapper" @click="checkDetail('distribution-task', '', item.status)">
                 <p class="title">{{item.status_str}}</p>
                 <p class="count">{{item.statistic}}</p>
                 <i class="icon-arrow"></i>
@@ -195,7 +195,7 @@
               <div class="detail">
                 <p class="content">异常单：{{delivery.exception_count}}</p>
               </div>
-              <i class="icon-arrow"></i>
+              <i class="icon-arrow" @click="checkDetail('distribution-task', 1)"></i>
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <div v-for="(item, index) in afterSale.status" :key="index" class="item-wrapper">
+              <div v-for="(item, index) in afterSale.status" :key="index" class="item-wrapper" @click="checkDetail('after-sales-order', '', item.status)">
                 <p class="title">{{item.status_str}}</p>
                 <p class="count">{{item.statistic}}</p>
                 <i class="icon-arrow"></i>
@@ -232,7 +232,7 @@
               <div class="detail">
                 <p class="content">异常单：{{afterSale.exception_count}}</p>
               </div>
-              <i class="icon-arrow"></i>
+              <i class="icon-arrow" @click="checkDetail('after-sales-order', 1)"></i>
             </div>
           </div>
         </div>
@@ -398,6 +398,18 @@
         }
         this.time = time
         this._getInitData()
+      },
+      checkDetail(name, exceptionStatus, status) {
+        const {href} = this.$router.resolve({
+          name,
+          query: {
+            start_time: this.start,
+            end_time: this.end,
+            exception_status: exceptionStatus,
+            status
+          }
+        })
+        console.log(href)
       }
     }
   }
