@@ -354,6 +354,11 @@
           title: '社群数据',
           url: '/home/community-data',
           isLight: false
+        },
+        {
+          title: '运营数据',
+          url: '/home/operation-data',
+          isLight: false
         }
       ]
     }
