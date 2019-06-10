@@ -1,52 +1,55 @@
 <template>
   <div class="purchase-management table">
-    <!--<base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeStatus"></base-tab-select>-->
-    <div class="down-content">
-      <span class="down-tip">创建时间</span>
-      <div class="down-item">
-        <base-date-select :placeHolder="datePlaceHolder" :dateInfo="[msg.startTime, msg.endTime]" @getTime="changeTime"></base-date-select>
-      </div>
-    </div>
-    <div class="table-content">
-      <div class="identification">
-        <div class="identification-page">
-          <img src="./icon-coupon_list@2x.png" class="identification-icon">
-          <p class="identification-name">优惠券列表</p>
-          <base-status-tab :statusList="statusTab" :infoTabIndex="+infoTabIndex" @setStatus="changeStatus"></base-status-tab>
-        </div>
-        <div class="function-btn">
-          <router-link tag="div" to="new-coupon" append class="btn-main">新建优惠券<span class="add-icon"></span></router-link>
+    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
+    <div v-if="infoTabIndex === 0" class="pru-item">
+      <div class="down-content">
+        <span class="down-tip">创建时间</span>
+        <div class="down-item">
+          <base-date-select :placeHolder="datePlaceHolder" :dateInfo="[msg.startTime, msg.endTime]" @getTime="changeTime"></base-date-select>
         </div>
       </div>
-      <div class="big-list">
-        <div class="list-header list-box">
-          <div v-for="(item,index) in couponTitle" :key="index" :style="{flex: item.flex}" class="list-item">{{item.name}}</div>
+      <div class="table-content">
+        <div class="identification">
+          <div class="identification-page">
+            <img src="./icon-coupon_list@2x.png" class="identification-icon">
+            <p class="identification-name">优惠券列表</p>
+            <base-status-tab :statusList="statusTab" :infoTabIndex="+infoTabIndex" @setStatus="changeStatus"></base-status-tab>
+          </div>
+          <div class="function-btn">
+            <router-link tag="div" to="new-coupon" append class="btn-main">新建优惠券<span class="add-icon"></span></router-link>
+          </div>
         </div>
-        <div class="list">
-          <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in couponTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                {{item[val.value] || 0}}
-              </div>
-              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
-                {{item[val.value] || 0}}{{+item.preferential_type === 1 ? '折' : '元'}}
-              </div>
-              <div v-if="+val.type === 3" :style="{flex: val.flex}" class="list-double-row item">
-                <p class="item-dark">{{item.start_at}}</p>
-                <p class="item-sub">{{item.end_at}}</p>
-              </div>
-              <div v-if="+val.type === 4" class="list-item list-use">
-                <router-link tag="span" :to="'new-coupon?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
-                <span class="list-operation" @click="_deleteCoupon(item, item.id)">删除</span>
+        <div class="big-list">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in couponTitle" :key="index" :style="{flex: item.flex}" class="list-item">{{item.name}}</div>
+          </div>
+          <div class="list">
+            <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
+              <div v-for="(val, ind) in couponTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
+                <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
+                  {{item[val.value] || 0}}
+                </div>
+                <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
+                  {{item[val.value] || 0}}{{+item.preferential_type === 1 ? '折' : '元'}}
+                </div>
+                <div v-if="+val.type === 3" :style="{flex: val.flex}" class="list-double-row item">
+                  <p class="item-dark">{{item.start_at}}</p>
+                  <p class="item-sub">{{item.end_at}}</p>
+                </div>
+                <div v-if="+val.type === 4" class="list-item list-use">
+                  <router-link tag="span" :to="'new-coupon?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
+                  <span class="list-operation" @click="_deleteCoupon(item, item.id)">删除</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="msg.page" @addPage="changePage"></base-pagination>
+        <div class="pagination-box">
+          <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="msg.page" @addPage="changePage"></base-pagination>
+        </div>
       </div>
     </div>
+    <goods-coupon v-show="infoTabIndex === 1"></goods-coupon>
     <default-confirm ref="confirm" infoTitle="删除优惠券" :oneBtn="false" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
@@ -54,13 +57,14 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import GoodsCoupon from './goods-coupon/goods-coupon'
   import {couponComputed, couponMethods} from '@state/helpers'
 
   const PAGE_NAME = 'COUPON_MANAGE'
   const TITLE = '优惠券列表'
   const DATE_PLACE_HOLDER = '选择时间'
 
-  const ORDERSTATUS = [{text: '进行中', status: 1}, {text: '未开始', status: 0}, {text: '已过期', status: 2}]
+  const ORDERSTATUS = [{text: '优惠券', status: 1}, {text: '商品券', status: 0}]
   const COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name', type: 1},
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},
@@ -80,7 +84,8 @@
       title: TITLE
     },
     components: {
-      DefaultConfirm
+      DefaultConfirm,
+      GoodsCoupon
     },
     data() {
       return {
@@ -116,6 +121,9 @@
     },
     methods: {
       ...couponMethods,
+      changeTab(item, index) {
+        this.infoTabIndex = index
+      },
       getCouponStatus() {
         API.Coupon.getCouponStatus({created_start_at: this.msg.startTime, created_end_at: this.msg.endTime})
           .then(res => {
@@ -173,7 +181,10 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  .pru-item
+    display: flex
+    flex: 1
+    flex-direction: column
   .search-warp
     layout(row)
     height: 80px
@@ -200,7 +211,7 @@
         overflow: hidden
         white-space: nowrap
         font-size: 14px
-      .list-double-row>.item-sub
+      .list-double-row > .item-sub
         color: $color-text-main
 
 </style>
