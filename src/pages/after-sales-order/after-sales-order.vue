@@ -277,7 +277,6 @@
           methodsName = 'batchClose'
           break
         }
-        console.log(methodsName)
         this._setBacth(methodsName)
       },
       _setBacth(method = 'batchReplenishment') {
