@@ -47,7 +47,8 @@
         <div class="function-btn">
           <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
           <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
-            <div class="btn-main g-btn-item" @click="_exportByOrder">导出</div>
+            <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
+            <div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>
           </template>
           <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
@@ -370,6 +371,11 @@
       _exportByOrder() {
         // todo
         API.Sorting.exportDistributionOrder(this.getUrl())
+      },
+      // 按订单分拣 导出
+      _exportSortingByOrder() {
+        // todo
+        API.Sorting.exportSortingOrder(this.getUrl())
       },
       // 导出分拣单
       _exportPickingOrder() {

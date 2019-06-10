@@ -13,7 +13,8 @@ export const state = {
   editTaskList: [],
   timeStart: '',
   timeEnd: '',
-  goBackNumber: 0
+  goBackNumber: 0,
+  timeDay: ''
 }
 
 export const getters = {
@@ -37,6 +38,9 @@ export const getters = {
   },
   goBackNumber(state) {
     return state.goBackNumber
+  },
+  timeDay(state) {
+    return state.timeDay
   }
 }
 
@@ -61,6 +65,9 @@ export const mutations = {
   },
   SET_Go_Back_Number(state, goBackNumber) {
     state.goBackNumber = goBackNumber
+  },
+  SET_Time_Day(state, timeDay) {
+    state.timeDay = timeDay
   }
 }
 
@@ -68,7 +75,7 @@ export const actions = {
   // 采购列表
   async getPurchaseTaskList(
     {state, commit, dispatch},
-    {time, startTime, endTime, keyword, status, page, supplyId, loading = true}
+    {time, startTime, endTime, keyword, status, page, supplyId, isBlocked = 0, loading = true}
   ) {
     return API.Supply.purchaseTask(
       {
@@ -79,6 +86,7 @@ export const actions = {
         status,
         page,
         supplier_id: supplyId,
+        is_blocked: isBlocked,
         limit: 10
       },
       loading
@@ -98,6 +106,7 @@ export const actions = {
         })
         commit('SET_PURCHASE_TASK_LIST', arr)
         commit('SET_PAGE_TOTAL', pageTotal)
+        commit('SET_Time_Day', res.now)
         commit('SET_SELECT', false)
         return true
       })

@@ -1384,8 +1384,31 @@ export default [
         component: () => lazyLoadView(import('@pages/procurement-suggest/procurement-suggest')),
         meta: {
           titles: ['供应链', '采购', '采购任务', '预采建议'],
-          beforeResolve(routeTo, routeFrom, next) {
-            next()
+          async beforeResolve(routeTo, routeFrom, next) {
+            let status = 1
+            routeTo.params.status = status
+            store
+              .dispatch('proTask/getPurchaseTaskList', {
+                time: 'today',
+                startTime: '',
+                endTime: '',
+                keyword: '',
+                page: 1,
+                status: status,
+                supplyId: '',
+                isBlocked: 1,
+                loading: true
+              })
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },

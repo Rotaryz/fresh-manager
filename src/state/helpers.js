@@ -326,7 +326,8 @@ export const proTaskComputed = {
     'editTaskList',
     'timeStart',
     'timeEnd',
-    'goBackNumber'
+    'goBackNumber',
+    'timeDay'
   ])
 }
 
