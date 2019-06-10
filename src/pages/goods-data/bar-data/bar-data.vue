@@ -240,7 +240,7 @@
         return {
           grid: {
             left: '20',
-            right: '45',
+            right: '60',
             bottom: '30',
             top: '0',
             containLabel: true
@@ -368,6 +368,7 @@
                   formatter: function(data) {
                     return data.value + '%'
                   },
+                  offset: [0, 1],
                   verticalAlign: 'middle',
                   color: '#999',
                   fontSize: '12'

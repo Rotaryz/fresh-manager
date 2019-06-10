@@ -42,6 +42,9 @@
                   <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
                   <span class="list-operation" @click="handleNav(item, 'editId')">复制活动</span>
                 </div>
+                <div v-if="+val.type === 6" :style="{flex: val.flex}" class="item">
+                  {{item[val.value] || '0'}}/{{item[val.value2] || '0'}}
+                </div>
               </div>
             </div>
           </div>
@@ -83,6 +86,9 @@
     {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
     {name: '活动商品数', flex: 1, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
+    {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
+    {name: '成团数/模拟成团数', flex: 1.5, value: 'groupon_success_num', type: 6, value2: 'groupon_imitate_success_num'},
+    {name: '参团人员', flex: 1, value: 'groupon_all_people_num', type: 1},
     {name: '状态', flex: 1, value: 'status', type: 4},
     {name: '创建时间', flex: 1.5, value: 'start_at', type: 1},
     {name: '操作', flex: 1.6, value: '', type: 5}

@@ -17,6 +17,7 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
+    config.baseURL = resetUrl(config.baseURL)
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
@@ -27,19 +28,19 @@ http.interceptors.request.use(
   }
 )
 
-// function resetUrl(url) {
-//   const IS_PRODUCTION = process.env.NODE_ENV === 'production'
-//   if (IS_PRODUCTION) {
-//     return url
-//   }
-//   let pathname = window.location.pathname
-//   if (pathname && pathname.indexOf('/v') > -1) {
-//     let version = pathname.substr(1)
-//     url = url.split('api/').join(`${version}api/`)
-//     return url
-//   }
-//   return url
-// }
+function resetUrl(url) {
+  const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+  if (IS_PRODUCTION) {
+    return url
+  }
+  let pathname = window.location.pathname
+  if (pathname && pathname.indexOf('/v') > -1) {
+    let version = pathname.substr(1)
+    url = url.split('api/').join(`${version}api/`)
+    return url
+  }
+  return url
+}
 
 http.interceptors.response.use(
   (response) => {

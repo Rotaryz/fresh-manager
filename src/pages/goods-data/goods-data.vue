@@ -257,7 +257,7 @@
     goods: {
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
-        {name: '销量', type: 'line', code: 'amount', limit: 8},
+        {name: '销量', type: 'line', code: 'num', limit: 8},
         {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 8},
         {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
       ],
@@ -356,7 +356,7 @@
     },
     created() {
       this._initSelect()
-    // this.getAllData()
+      // this.getAllData()
     },
     async mounted() {
       // 商品销售模块
@@ -463,11 +463,7 @@
         if (type === 'bar1') {
           this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
         } else {
-          this.$refs.bigBar &&
-            this.$refs.bigBar.drawBar(
-              this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code),
-              this.selectMsg[sec].rate
-            )
+          this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
         }
       },
       closeBigData() {
@@ -513,13 +509,13 @@
         }
         this.leftTabItem = itemId
         this.leftTab = code
-        this._initSelect()
-        this.hideText = [true, true, true, true]
         let data = Object.assign({}, this.requestPurchase, this.requestPub)
         if (code !== 'goods') {
-          this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '', is_page: 0})
-        // delete data.order_by
+          await this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+          // delete data.order_by
         }
+        this._initSelect()
+        this.hideText = [true, true, true, true]
         await this.getPurchaseData(data)
         if (code === 'all' || code === 'category') {
           this._initDraw()
@@ -609,8 +605,7 @@
           this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
         }
         this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData.data))
-        this.$refs.line3 &&
-          this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
+        this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
       },
       // 切换供应链模块（模块4）
       async changeSupply(obj, index) {
@@ -671,26 +666,10 @@
       },
       // 切换时间时，通过改变每个块顶部tab栏的方式，获取当前所有模块的数据，并且重绘图表
       async getAllData() {
-        this.$refs.statusTab1 &&
-          this.$refs.statusTab1.checkStatus(
-            this.tabIndexControl['sale'],
-            this.configObj[this.leftTab].sale[this.tabIndexControl['sale']]
-          )
-        this.$refs.statusTab2 &&
-          this.$refs.statusTab2.checkStatus(
-            this.tabIndexControl['serve'],
-            this.configObj[this.leftTab].serve[this.tabIndexControl['serve']]
-          )
-        this.$refs.statusTab3 &&
-          this.$refs.statusTab3.checkStatus(
-            this.tabIndexControl['purchase'],
-            this.configObj[this.leftTab].purchase[this.tabIndexControl['purchase']]
-          )
-        this.$refs.statusTab4 &&
-          this.$refs.statusTab4.checkStatus(
-            this.tabIndexControl['supply'],
-            this.configObj[this.leftTab].supply[this.tabIndexControl['supply']]
-          )
+        this.$refs.statusTab1 && this.$refs.statusTab1.checkStatus(this.tabIndexControl['sale'], this.configObj[this.leftTab].sale[this.tabIndexControl['sale']])
+        this.$refs.statusTab2 && this.$refs.statusTab2.checkStatus(this.tabIndexControl['serve'], this.configObj[this.leftTab].serve[this.tabIndexControl['serve']])
+        this.$refs.statusTab3 && this.$refs.statusTab3.checkStatus(this.tabIndexControl['purchase'], this.configObj[this.leftTab].purchase[this.tabIndexControl['purchase']])
+        this.$refs.statusTab4 && this.$refs.statusTab4.checkStatus(this.tabIndexControl['supply'], this.configObj[this.leftTab].supply[this.tabIndexControl['supply']])
       },
       saleHandle(data) {
         // if (!data || !data.length) return {xAx: [], series: []}
@@ -772,12 +751,14 @@
           return item.rate
         })
         // 销售数
-        let salesNum = dataArr.map((item) => {
-          return ((item.sales_num / data.sales_num) * 100).toFixed(2)
+        let salesNum = dataArr.map(item => {
+          let num = (item.sales_num / data.sales_num * 100).toFixed(2)
+          return Number.isFinite(Number(num))?num:'0.00'
         })
         // 采购数
-        let purchaseNum = dataArr.map((item) => {
-          return ((item.purchase_num / data.purchase_num) * 100).toFixed(2)
+        let purchaseNum = dataArr.map(item => {
+          let num = (item.purchase_num / data.purchase_num * 100).toFixed(2)
+          return Number.isFinite(Number(num)) ? num : '0.00'
         })
         let salesNumAll = data.sales_num
         let purchaseNumAll = data.purchase_num
@@ -812,13 +793,8 @@
             ]
           }
         let label = type
-        let x = data.map((item) => {
-          return item.date
-            ? item.date
-              .split('-')
-              .slice(1)
-              .join('/')
-            : ''
+        let x = data.map(item => {
+          return item.date ? item.date.split('-').slice(1).join('/') : ''
         })
         let rate = data.map((item) => {
           return item[code]
