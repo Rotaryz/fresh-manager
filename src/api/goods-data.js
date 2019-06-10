@@ -102,5 +102,5 @@ export default {
   getStockRatio(data, loading = false) {
     let url = `/social-shopping/api/backend/community/groups`
     return request.get(url, data, loading)
-  },
+  }
 }

@@ -248,7 +248,7 @@
       groupList: {
         type: Array,
         default: () => []
-      },
+      }
     },
     data() {
       return {
@@ -270,17 +270,17 @@
           {
             text: '原产地直采',
             icon: require('./icon-ok@2x.png')
-          },
+          }
         ]
       }
     },
     computed: {
       otherActiveList() {
         let arr = []
-        let module = this.cmsArray.find(val => val.module_name === 'activity')
+        let module = this.cmsArray.find((val) => val.module_name === 'activity')
         if (module && module.list) {
-          module.list.forEach(item => {
-            if (item.module_name !== 'activity_fixed'){
+          module.list.forEach((item) => {
+            if (item.module_name !== 'activity_fixed') {
               let key = TAB_ARR_CONFIG[item.module_name].dataArray
               item.dataArray = this[key] || []
               arr.push(item)
@@ -291,7 +291,7 @@
       },
       tabActiveList() {
         let arr = []
-        this.otherActiveList.forEach(item => {
+        this.otherActiveList.forEach((item) => {
           arr.push({tabTitle: TAB_ARR_CONFIG[item.module_name]})
         })
         arr.push({tabTitle: TAB_ARR_CONFIG['guess']})

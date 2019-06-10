@@ -114,7 +114,7 @@
     '差异数',
     '出库批次',
     '出库单价'
-    // '出库金额'
+  // '出库金额'
   ]
   export default {
     name: PAGE_NAME,
@@ -204,7 +204,7 @@
               setTimeout(() => {
                 this.$router.back()
               }, 500)
-              // res.data && this.$refs.confirm.show()
+            // res.data && this.$refs.confirm.show()
             }
           })
           .catch((err) => {

@@ -179,13 +179,13 @@
     '操作'
   ]
   const PAGE_CONFIG = {
-    'hot_tag': {
+    hot_tag: {
       title: '今日爆品'
     },
-    'fixed': {
+    fixed: {
       title: '限时抢购'
     },
-    'new_client': {
+    new_client: {
       title: '新人特惠'
     }
   }
@@ -265,9 +265,9 @@
         // 结束时间规则判断
         return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
       }
-      // pageConfig() {
-      //   return PAGE_CONFIG[this.$route.query.activity_theme] || {}
-      // }
+    // pageConfig() {
+    //   return PAGE_CONFIG[this.$route.query.activity_theme] || {}
+    // }
     },
     created() {
       this.disable = +this.$route.query.id > 0
@@ -286,7 +286,12 @@
             return item.goods_id
           })
         }
-        this.msg = {start_at: obj.start_at, end_at: obj.end_at, activity_name: obj.activity_name, activity_theme: this.$route.query.activity_theme}
+        this.msg = {
+          start_at: obj.start_at,
+          end_at: obj.end_at,
+          activity_name: obj.activity_name,
+          activity_theme: this.$route.query.activity_theme
+        }
       }
       this._getFirstAssortment()
     },
