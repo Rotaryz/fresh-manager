@@ -38,8 +38,8 @@
               <div class="list-item">{{item.goods_category}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <div class="list-item">{{item.purchase_user}}</div>
-              <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
-              <div class="list-item">{{item.finish_num}}{{item.purchase_unit}}({{item.finish_base_num}}{{item.base_unit}})</div>
+              <div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>
+              <div class="list-item">{{item.usable_stock_purchase_num}}{{item.purchase_unit}}({{item.usable_stock}}{{item.base_unit}})</div>
               <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
               <div class="list-item">{{item.publish_at}}</div>
             </div>

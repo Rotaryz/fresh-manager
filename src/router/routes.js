@@ -1269,11 +1269,18 @@ export default [
         meta: {
           titles: ['供应链', '订单', '售后订单'],
           beforeResolve(routeTo, routeFrom, next) {
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
+            console.log(status, startTime, endTime, exceptionStatus)
             store.commit('afterSalesOrder/SET_PARAMS', {
-              start_time: '',
-              end_time: '',
+              start_time: startTime,
+              end_time: endTime,
+              exception_status: exceptionStatus,
               keyword: '',
-              status: 0,
+              status: status,
               page: 1,
               limit: 10
             })
@@ -1324,7 +1331,12 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             routeTo.params.start = ''
             routeTo.params.end = ''
-            let status = routeTo.query.status || 1
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            // let status = routeTo.query.status || 1
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 1
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
             if (store.getters['proTask/goBackNumber'] >= 1) {
               status = 2
             }
@@ -1332,11 +1344,12 @@ export default [
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: '',
-                startTime: '',
-                endTime: '',
+                startTime: startTime,
+                endTime: endTime,
                 keyword: '',
                 page: 1,
                 status: status,
+                exceptionStatus: exceptionStatus,
                 supplyId: '',
                 loading: true
               })
@@ -1385,8 +1398,6 @@ export default [
         meta: {
           titles: ['供应链', '采购', '采购任务', '预采建议'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = 1
-            routeTo.params.status = status
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: 'today',
@@ -1394,7 +1405,7 @@ export default [
                 endTime: '',
                 keyword: '',
                 page: 1,
-                status: status,
+                status: '',
                 supplyId: '',
                 isBlocked: 1,
                 loading: true
@@ -2077,19 +2088,19 @@ export default [
           titles: ['供应链', '配送', '配送任务'],
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
-            if (typeof (routeTo.query.status) !== 'undefined') {
-              store.dispatch('distribution/setTabIndex', 0)
-            }
             let tabIndex = store.state.distribution.tabIndex
             store.dispatch('distribution/infoOrderTime', {
-              startTime: '',
-              endTime: '',
+              startTime: routeTo.query.start_time || '',
+              endTime: routeTo.query.end_time || '',
               status: routeTo.query.status || 1
             })
             store.dispatch('distribution/infoDriverTime', {
               startTime: '',
               endTime: ''
             })
+            if (typeof (routeTo.query.status) !== 'undefined') {
+              store.dispatch('distribution/setTabIndex', 0)
+            }
             // store.mutations.SET_TAB_INDEX(0)
             if (tabIndex === 0) {
               store

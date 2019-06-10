@@ -374,6 +374,7 @@ export const distributionMethods = {
     'getOrderList',
     'setOrderTime',
     'setOrderKeyword',
+    'setExceptionStatus',
     'setOrderPage',
     'setOrderStatus',
     'getDriverList',

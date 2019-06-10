@@ -4,7 +4,11 @@
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择时间" @getTime="changeStartTime"></base-date-select>
+        <base-date-select placeHolder="请选择时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
+      </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
       <!--下拉选择-->
       <span class="down-tip">供应商</span>
@@ -78,6 +82,7 @@
               </div>
               <div class="list-item">{{item.publish_at}}</div>
               <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}</div>
+              <div v-if="item.is_exception" class="list-item-img"></div>
             </div>
           </div>
           <base-blank v-else></base-blank>
@@ -225,8 +230,8 @@
         commodities: COMMODITIES_LIST,
         supplierList: SUPPLIER_LIST,
         page: 1,
-        startTime: '',
-        endTime: '',
+        startTime: this.$route.query.start_time || '',
+        endTime: this.$route.query.end_time || '',
         keyword: '',
         time: '',
         status: '',
@@ -262,13 +267,25 @@
         downUrl: '',
         taskTime: ['', ''],
         supplierSortList: [],
-        showIndex: false
+        showIndex: false,
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
+        exceptionStatus: this.$route.query.exception_status || ''
       }
     },
     computed: {
-      ...proTaskComputed
+      ...proTaskComputed,
+      dateInfo() {
+        return [this.startTime, this.endTime]
+      }
     },
     async created() {
+      this._setErrorStatus()
       this.startTime = this.$route.params.start
       this.endTime = this.$route.params.end
       if (this.$route.query.status) {
@@ -285,6 +302,10 @@
       await this._getGoodsList()
       await this._getSupplierList()
       await this._statistic()
+      if (this.$route.query.status) {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.status * 1 === this.$route.query.status * 1)
+        this.status = this.$route.query.status * 1
+      }
       this._getUrl()
     },
     mounted() {},
@@ -299,8 +320,31 @@
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&start_time=${this.startTime}&end_time=${this.endTime}&status=${
           this.status
-        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&current_corp=${currentId}`
+        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&exception_status=${this.exceptionStatus}&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
+      },
+      async checkErr(item) {
+        this.exceptionStatus = item.status
+        this.goodsPage = 1
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
+          loading: false
+        })
+        this._getUrl()
+        await this._statistic()
+      },
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
       },
       // 获取商品列表
       async _getGoodsList() {
@@ -438,6 +482,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -454,6 +499,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -471,6 +517,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -490,6 +537,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -525,6 +573,7 @@
             status: this.status,
             page: this.page,
             supplyId: this.supplyId,
+            exceptionStatus: this.exceptionStatus,
             loading: false
           })
         }
@@ -626,6 +675,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
       },
@@ -700,6 +750,7 @@
           start_time: this.startTime,
           end_time: this.endTime,
           keyword: this.keyword,
+          exception_status: this.exceptionStatus,
           supplier_id: this.supplyId
         })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
@@ -1240,4 +1291,11 @@
         transform: translateY(-1px) rotate(180deg)
         &:after
           border-top: 6px solid $color-white
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>

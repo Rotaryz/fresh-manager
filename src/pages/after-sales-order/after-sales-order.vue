@@ -5,6 +5,10 @@
       <div class="down-item">
         <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="_changeTime"></base-date-select>
       </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
+      </div>
       <div class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
@@ -37,6 +41,7 @@
                 </template>
                 <template v-else name="name">
                   <span v-if="item.before" :class="[item.beforeClass[0],row[item.before]?item.beforeClass[1]:'']"></span>{{row[item.key]}}
+                  <div v-if="item.is_exception & item.before" class="list-item-img"></div>
                 </template>
               </div>
             </div>
@@ -170,10 +175,18 @@
         ],
         statusTab: 1,
         batchendList: [],
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
         batchCommodities: COMMODITIES_LIST2,
         checkAllStatus: false,
         selectIds: [],
-        confirmType: 1 // 1  补货，2 退款
+        confirmType: 1, // 1  补货，2 退款
+        exceptionStatus: this.$route.query.exception_status || ''
       }
     },
     computed: {
@@ -187,6 +200,7 @@
         this.statusTab = this.$route.query.status * 1
       }
       this._getStatusData()
+      this._setErrorStatus()
     },
     methods: {
       ...afterSalesOrderMethods,
@@ -314,7 +328,8 @@
         let defaultParams = {
           start_time: this.afterSalesFilter.start_time,
           end_time: this.afterSalesFilter.end_time,
-          keyword: this.afterSalesFilter.keyword
+          keyword: this.afterSalesFilter.keyword,
+          exception_status: this.afterSalesFilter.exception_status
         }
         API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
           this.dispatchSelect = res.data.map((item) => {
@@ -351,6 +366,16 @@
       // 分页
       _getMoreList(page) {
         this._updateList({page}, true)
+      },
+      checkErr(item) {
+        this._updateList({
+          exception_status: item.status,
+          page: 1
+        })
+      },
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
       }
     }
   }
@@ -455,4 +480,11 @@
     width: 300px
     margin-bottom: 20px
 
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>

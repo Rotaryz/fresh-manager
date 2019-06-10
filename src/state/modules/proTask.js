@@ -75,7 +75,7 @@ export const actions = {
   // 采购列表
   async getPurchaseTaskList(
     {state, commit, dispatch},
-    {time, startTime, endTime, keyword, status, page, supplyId, isBlocked = 0, loading = true}
+    {time, startTime, endTime, keyword, status, page, supplyId, exceptionStatus = '', isBlocked = 0, loading = true}
   ) {
     return API.Supply.purchaseTask(
       {
@@ -87,7 +87,8 @@ export const actions = {
         page,
         supplier_id: supplyId,
         is_blocked: isBlocked,
-        limit: 10
+        limit: 10,
+        exception_status: exceptionStatus
       },
       loading
     )

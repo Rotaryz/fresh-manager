@@ -12,6 +12,10 @@
         </base-date-select>
       </div>
       <div v-if="tabIndex === 0" class="distribution-down">
+        <span class="down-tip">异常状态</span>
+        <div class="down-item">
+          <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
+        </div>
         <span class="down-tip">搜索</span>
         <div class="down-item">
           <base-search :infoText="orderKeyword" placeHolder="配送单号或商户名称" @search="changeKeyword"></base-search>
@@ -58,6 +62,7 @@
                 <div class="list-item" :style="{flex: commodities[8].flex}">
                   {{item.status_str}}
                   <div v-if="item.is_blocked" class="list-item-img"></div>
+                  <div v-if="item.is_exception" class="list-item-img-unusual"></div>
                 </div>
                 <div class="list-item" :style="{flex: commodities[9].flex}">
                   <span class="list-operation list-ok" @click="handleOperation(item)">导出</span>
@@ -147,7 +152,15 @@
         ],
         accurateStart: '',
         accurateEnd: '',
-        statusTab: 1
+        statusTab: 1,
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
+        exceptionStatus: this.$route.query.exception_status || ''
       }
     },
     computed: {
@@ -195,7 +208,8 @@
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: this.currentUser.access_token,
           start_time: this.driverStartTime || '',
-          end_time: this.driverEndTime || ''
+          end_time: this.driverEndTime || '',
+          exception_status: this.exceptionStatus
         }
         let search = []
         for (let key in data) {
@@ -205,6 +219,7 @@
       }
     },
     async created() {
+      this._setErrorStatus()
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
       if (this.$route.query.status) {
         this.statusTab = this.$route.query.status * 1
@@ -213,6 +228,10 @@
     },
     methods: {
       ...distributionMethods,
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
+      },
       orderExcel() {
         window.open(this._getUrl(DOWNLOAD_ORDER_EXCEL))
       },
@@ -228,7 +247,8 @@
           start_time: this.orderStartTime || '',
           end_time: this.orderEndTime || '',
           keyword: this.orderKeyword,
-          status: this.orderStatus
+          status: this.orderStatus,
+          exception_status: this.exceptionStatus
         }
         let search = []
         for (let key in data) {
@@ -267,7 +287,8 @@
         let res = await API.Delivery.getSeliveryStatistic({
           start_time: this.orderStartTime,
           end_time: this.orderEndTime,
-          keyword: this.orderKeyword
+          keyword: this.orderKeyword,
+          exception_status: this.exceptionStatus
         })
         this.statistic = res.error === this.$ERR_OK ? res.data : {all: 0, wait_delivery: 0, success_delivery: 0}
         for (let key in this.statistic) {
@@ -307,6 +328,12 @@
           this.exportDriverId = data.id
           window.open(this.driverExportUrl, '_blank')
         }
+      },
+      async checkErr(item) {
+        this.exceptionStatus = item.status
+        this.setExceptionStatus(item.status)
+        await this._statistic()
+        this.$refs.pagination.beginPage()
       }
     }
   }
@@ -336,6 +363,13 @@
         color: #4d77bd !important
   .list-item-img
     icon-image('icon-lock')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
+  .list-item-img-unusual
+    icon-image('icon-unusual_list')
     width: 16px
     height: 15px
     margin-top: 2px
