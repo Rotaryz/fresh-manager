@@ -47,7 +47,7 @@
     {name: '库存', flex: 0.6, value: 'num'},
     {name: '库存金额', flex: 0.6, value: 'amount', type: 'money'}
   ]
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       type: {
@@ -74,7 +74,7 @@
     computed: {
       ...communityComputed,
       saleTrue() {
-        return  this.type === 'sales'
+        return this.type === 'sales'
       }
     },
     methods: {

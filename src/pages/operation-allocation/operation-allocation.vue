@@ -13,7 +13,7 @@
         <div class="content-title">当前设置</div>
       </div>
       <div class="operation-tip">
-        采购/分拣/出库/配送任务预计<span class="operation-time">23:10</span>生成。
+        采购/分拣/出库/配送任务预计<span class="operation-time">{{`${operation.hour}:${operation.minute + 10}`}}</span>生成。
       </div>
       <div class="operation-tip">
         当下单时间早于当天
@@ -36,7 +36,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-  const PAGE_NAME = 'OPERATIO_ALLOCATION'
+  import API from '@api'
+  import {allocationComputed, allocationMethods} from '@state/helpers'
+  import _ from 'lodash'
+
+  const PAGE_NAME = 'OPERATION_ALLOCATION'
   const TITLE = '运营时间配置'
   export default {
     name: PAGE_NAME,
@@ -55,30 +59,40 @@
         min: {
           check: false,
           show: false,
-          content: '00分',
+          content: '0分',
           type: 'default',
-          data: []
+          data: [{name: '0分', value: 0}, {name: '30分', value: 30}]
         }
       }
     },
+    computed: {
+      ...allocationComputed
+    },
     created() {
       this._getHour()
-      this._getMin()
+      this._infoTime()
     },
     methods: {
-      submit() {
-
-      },
-      _getHour() {
-        for (let i = 1; i < 25; i++) {
-          let item = {name: `${i}点`, status: i}
-          this.hour.data.push(item)
+      ...allocationMethods,
+      async submit() {
+        let data = {hour: this.hour.content, minute: this.min.content}
+        let res = await API.Allocation.setRunTimeConfig(data)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error === this.$ERR_OK) {
+          this.getOperation()
         }
       },
-      _getMin() {
-        for (let i = 0; i < 60; i++) {
-          let item = {name: `${i >= 10 ? i : '0' + i}分`, status: i}
-          this.min.data.push(item)
+      _infoTime() {
+        if (!_.isEmpty(this.operation)) {
+          this.hour.content = `${this.operation.hour}点`
+          this.min.content = `${this.operation.minute}分`
+        }
+      },
+      _getHour() {
+        for (let i = 12; i < 24; i++) {
+          let item = {name: `${i}点`, status: i}
+          this.hour.data.push(item)
         }
       }
     }

@@ -286,12 +286,10 @@
       },
       // 状态
       setValue(item) {
-        this._updateMerchantOrderList(
-          {
-            status: item.value,
-            page: 1
-          }
-        )
+        this._updateMerchantOrderList({
+          status: item.value,
+          page: 1
+        })
       },
       // 搜索按钮
       changeKeyword(keyword) {

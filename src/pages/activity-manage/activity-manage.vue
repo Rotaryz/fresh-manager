@@ -57,10 +57,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import FlashSale from './flash-sale/flash-sale'
-  // import PopularToday from './popular-today/popular-today'
-  // import NewPreference from './new-preference/new-preference'
-  // import CollageReturn from './collage-return/collage-return'
+// import FlashSale from './flash-sale/flash-sale'
+// import PopularToday from './popular-today/popular-today'
+// import NewPreference from './new-preference/new-preference'
+// import CollageReturn from './collage-return/collage-return'
   import {saleComputed, saleMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
@@ -189,7 +189,7 @@
             status: this.status,
             activity_theme: this.currentTab.activity_theme,
             start_at: this.startTime,
-            end_at: this.endTime,
+            end_at: this.endTime
           })
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)

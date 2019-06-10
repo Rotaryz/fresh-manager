@@ -9,7 +9,7 @@
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'LINE_DATA'
 
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       chartId: {
@@ -29,20 +29,19 @@
           }
         ],
         op: {
-          'label': '',
-          'data': [{
-            'x': ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
-            'rate': ['0', '0', '0', '0', '0', '0', '0']
-          }]
+          label: '',
+          data: [
+            {
+              x: ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
+              rate: ['0', '0', '0', '0', '0', '0', '0']
+            }
+          ]
         }
       }
     },
-    computed: {
-    },
-    watch: {
-    },
-    mounted() {
-    },
+    computed: {},
+    watch: {},
+    mounted() {},
     methods: {
       setTab(num) {
         this.tabIndex = 0
@@ -63,12 +62,16 @@
           tooltip: {
             trigger: 'axis',
             // formatter: '{a0}: {c0}',
-            formatter: function (params) {
-              let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
-              params.forEach(function (item) {
-                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}${rate ? '%' : ''}</span></p>`;
-              });
-              return result;
+            formatter: function(params) {
+              let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`
+              params.forEach(function(item) {
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${
+                  item.color
+                }"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}${
+                  rate ? '%' : ''
+                }</span></p>`
+              })
+              return result
             },
             backgroundColor: 'rgba(51,51,51,0.8)',
             textStyle: {
@@ -88,7 +91,7 @@
           legend: {
             data: [],
             bottom: 10,
-            icon: "rect", //  这个字段控制形状  类型包括 circle 圆形，rect 正方形，roundRect，triangle，diamond，pin，arrow，none
+            icon: 'rect', //  这个字段控制形状  类型包括 circle 圆形，rect 正方形，roundRect，triangle，diamond，pin，arrow，none
             itemWidth: 11,
             itemHeight: 11,
             itemGap: 40
@@ -144,7 +147,10 @@
         seriesConfig.areaStyle = {
           color: {
             type: 'linear',
-            x: 0, x2: 0, y: 0, y2: 1,
+            x: 0,
+            x2: 0,
+            y: 0,
+            y2: 1,
             colorStops: [
               {
                 offset: 0,
@@ -171,7 +177,7 @@
             lineStyle: {
               color: '#F0F3F5',
               width: 0.5,
-              type: "doted"
+              type: 'doted'
             }
           },
           axisLabel: {
@@ -225,7 +231,7 @@
           }
         }
         return [yAxis]
-      },
+      }
     }
   }
 </script>

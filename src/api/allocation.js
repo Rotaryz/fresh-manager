@@ -20,5 +20,25 @@ export default {
   setSiteConfig(data, loading = true) {
     let url = `/scm/api/backend/oms/set-site-config`
     return request.post(url, data, loading)
+  },
+  /**
+   *  配送配置详情[v1.3]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  runTimeConfig(data, loading = true) {
+    let url = `/scm/api/backend/oms/run-time-config`
+    return request.get(url, data, loading)
+  },
+  /**
+   *  编辑配送配置[v1.3]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  setRunTimeConfig(data, loading = true) {
+    let url = `/scm/api/backend/oms/set-run-time-config`
+    return request.post(url, data, loading)
   }
 }

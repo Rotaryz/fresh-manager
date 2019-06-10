@@ -58,6 +58,7 @@
       ...allocationMethods,
       async setUse(item) {
         let res = await API.Allocation.setSiteConfig({allocation_stock_config_id: item.allocation_stock_config_id})
+        this.$loading.hide()
         this.$toast.show(res.message, 2000)
         this.getAllocationList(false)
       }

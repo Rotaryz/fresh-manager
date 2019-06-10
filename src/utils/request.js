@@ -92,9 +92,9 @@ function requestException(res) {
     error.data = serviceData.data || []
   }
   switch (serviceData.code) {
-  case 13004: // 系统升级
-    error.error = 0
-    break
+    case 13004: // 系统升级
+      error.error = 0
+      break
   }
   return error
 }

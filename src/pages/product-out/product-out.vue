@@ -4,7 +4,7 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime" :dateInfo="dateInfo"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
       </div>
       <span class="down-tip">异常状态</span>
       <div class="down-item">
@@ -20,8 +20,13 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">出库列表</p>
-          <base-status-nav :statusList="dispatchSelect" :value="status" valueKey="status" labelKey="status_str" numKey="statistic"
-                           @change="setValue"
+          <base-status-nav
+            :statusList="dispatchSelect"
+            :value="status"
+            valueKey="status"
+            labelKey="status_str"
+            numKey="statistic"
+            @change="setValue"
           ></base-status-nav>
           <!--<base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>-->
         </div>

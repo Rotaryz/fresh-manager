@@ -102,13 +102,13 @@
         this.$emit('changeTab', itemId, code) // item, selectGoods
       },
       height(item) {
-        return (48 * item.length)
+        return 48 * item.length
       },
       selectList(categoryId, goodsId) {
         let code = ''
         let itemId = categoryId || goodsId
         if (categoryId) {
-          let itemIndex = this.categoryList.findIndex(item => {
+          let itemIndex = this.categoryList.findIndex((item) => {
             return +item.id === +categoryId
           })
           if (itemIndex > -1) {
@@ -118,7 +118,7 @@
             this.selectGoods = false
           }
         } else if (goodsId) {
-          let itemIndex = this.categoryList[this.categoryIndex - 1].list.findIndex(item => {
+          let itemIndex = this.categoryList[this.categoryIndex - 1].list.findIndex((item) => {
             return +item.id === +goodsId
           })
           if (itemIndex > -1) {
@@ -134,7 +134,6 @@
       }
     }
   }
-
 </script>
 
 

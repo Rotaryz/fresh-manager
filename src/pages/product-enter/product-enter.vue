@@ -4,7 +4,7 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime" :dateInfo="dateInfo"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
       </div>
       <span class="down-tip">异常状态</span>
       <div class="down-item">

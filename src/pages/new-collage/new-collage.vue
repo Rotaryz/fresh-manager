@@ -311,7 +311,7 @@
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1.6, value: 'time'},
-    {name: '操作', flex: 0.7, value: ''},
+    {name: '操作', flex: 0.7, value: ''}
   ]
   const COUPON_TITLE = [
     {name: '选择', flex: 0.4, value: ''},
@@ -319,7 +319,7 @@
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1, value: 'time'},
+    {name: '有效期', flex: 1, value: 'time'}
   ]
 
   const COUNT = /[2-5]/
@@ -565,7 +565,6 @@
         } else {
           await this._getGoodsList()
         }
-
       },
       _selectCoupon(item, index) {
         this.couponCheckItem = item
@@ -742,7 +741,6 @@
           await this._getCouponList()
           this.$refs.couponModal.showModal()
         }
-
       },
       async _showGoodsModal() {
         if (this.disable) return
@@ -779,19 +777,18 @@
           preferential_type: 2,
           has_stock: 1
         }
-        API.Coupon.getCouponList(data, false)
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.couponPage = {
-              total: res.meta.total,
-              per_page: res.meta.per_page,
-              total_page: res.meta.last_page
-            }
-            this.couponList = res.data
-          })
+        API.Coupon.getCouponList(data, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.couponPage = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+          this.couponList = res.data
+        })
       },
       //  保存
       async _saveActivity() {
@@ -862,8 +859,8 @@
           {value: this.testEndTime, txt: '请选择活动结束时间'},
           {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'},
           {value: this.testUsefulTime, txt: '请选择成团有效时间'},
-          {value: this.testCount, txt: '请输入2~5人成团人数'},
-          // {value: this.testCouponList, txt: '请添加优惠券'}
+          {value: this.testCount, txt: '请输入2~5人成团人数'}
+        // {value: this.testCouponList, txt: '请添加优惠券'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {

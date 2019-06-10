@@ -93,6 +93,7 @@
         </div>
         <div class="back btn-group-wrap">
           <div class="back-cancel back-btn hand" @click="_hideModal">取消</div>
+          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(3)">批量关闭</div>
           <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量补货</div>
           <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量退款</div>
         </div>
@@ -248,11 +249,36 @@
       _showConfirm(val) {
         if (this.selectIds.length === 0) return this.$toast.show('请选择批量处理的选项')
         this.confirmType = val
-        let text = `确定对所选商品${this.confirmType === 1 ? '批量补货' : '批量退款'}?`
+        let content = ''
+        switch (val) {
+        case 1:
+          content = '批量补货'
+          break
+        case 2:
+          content = '批量退款'
+          break
+        case 3:
+          content = '批量关闭'
+          break
+        }
+        let text = `确定对所选商品${content}?`
         this.$refs.confirm.show(text)
       },
       _getConfirmResult() {
-        this._setBacth(this.confirmType === 1 ? 'batchReplenishment' : 'batchRefund')
+        let methodsName = ''
+        switch (this.confirmType) {
+        case 1:
+          methodsName = 'batchReplenishment'
+          break
+        case 2:
+          methodsName = 'batchRefund'
+          break
+        case 3:
+          methodsName = 'batchClose'
+          break
+        }
+        console.log(methodsName)
+        this._setBacth(methodsName)
       },
       _setBacth(method = 'batchReplenishment') {
         API.AfterSalesOrder[method](this.selectIds)
@@ -311,12 +337,10 @@
       },
       // 状态
       _setValue(item) {
-        this._updateList(
-          {
-            status: item.value,
-            page: 1
-          }
-        )
+        this._updateList({
+          status: item.value,
+          page: 1
+        })
       },
       // 搜索按钮
       _changeKeyword(keyword) {

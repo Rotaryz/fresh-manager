@@ -2,18 +2,25 @@ import API from '@api'
 import app from '@src/main'
 
 export const state = {
-  allocationList: []
+  allocationList: [],
+  operation: {}
 }
 
 export const getters = {
   allocationList(state) {
     return state.allocationList
+  },
+  operation(state) {
+    return state.operation
   }
 }
 
 export const mutations = {
   SET_ALLOCATION_LIST(state, list) {
     state.allocationList = list
+  },
+  SET_OPERATION(state, operation) {
+    state.operation = operation
   }
 }
 
@@ -35,7 +42,21 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  setAllocationList({commit}, list) {
-    commit('SET_ALLOCATION_LIST', list)
+  getOperation({commit}, loading = true) {
+    return API.Allocation.runTimeConfig()
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let obj = res.data
+        commit('SET_OPERATION', obj)
+        return obj
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
   }
 }

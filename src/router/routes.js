@@ -238,7 +238,10 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
-            API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
+            API.Activity.getActiveList(
+              {page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme},
+              true
+            )
               .then((res) => {
                 if (res.error !== ERR_OK) {
                   return next({name: '404'})
@@ -251,7 +254,7 @@ export default [
                 }
                 next({params: {dataInfo, pageInfo}})
               })
-              .catch(e => {
+              .catch((e) => {
                 next({name: '404'})
               })
           }
@@ -1269,7 +1272,7 @@ export default [
             store.commit('afterSalesOrder/SET_PARAMS', {
               start_time: '',
               end_time: '',
-              keyword: "",
+              keyword: '',
               status: 0,
               page: 1,
               limit: 10
@@ -1889,7 +1892,20 @@ export default [
         name: 'operation-allocation',
         component: () => lazyLoadView(import('@pages/operation-allocation/operation-allocation')),
         meta: {
-          titles: ['供应链', '设置', '运营时间配置']
+          titles: ['供应链', '设置', '运营时间配置'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('allocation/getOperation', true)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 库存管理

@@ -315,19 +315,19 @@
       },
       // 获取所有活动数据
       _getAllActivityData() {
-        let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
+        let module = this.infoBannerList.modules.find((val) => val.module_name === 'activity') || {}
         if (module.list) {
-          module.list.forEach(item => {
+          module.list.forEach((item) => {
             if (item.starting_point_id > 0) {
-              API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then(res => {
+              API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then((res) => {
                 if (!res || !res.data) {
                   return
                 }
                 if (item.module_name === 'activity_fixed') {
                   this.activityGoodsList = this._formatListData(res.data)
-                } else if(item.module_name === 'groupon'){
-                  API.Advertisement.getGroupList().then(res => {
-                    if(res.data) {
+                } else if (item.module_name === 'groupon') {
+                  API.Advertisement.getGroupList().then((res) => {
+                    if (res.data) {
                       this.groupList = this._formatListData(res.data)
                     }
                   })
@@ -341,14 +341,14 @@
             }
           })
         }
-        API.Advertisement.getGuessList().then(res => {
+        API.Advertisement.getGuessList().then((res) => {
           if (res.data) {
             this.guessList = this._formatListData(res.data)
           }
         })
       },
       _formatListData(arr = []) {
-        return arr.map(item => {
+        return arr.map((item) => {
           return {
             ...item,
             tradePrice: formatCouponMoney(item.trade_price)
@@ -358,7 +358,7 @@
       // 按钮
       switchBtn(item) {
         item.is_close = !item.is_close
-        // this.activityStatus = this.activityStatus ? 0 : 1
+      // this.activityStatus = this.activityStatus ? 0 : 1
       },
       async _getModuleMsg(type, id, moduleId) {
         let res = await API.Advertisement.getModuleMsg({id: id, module_id: moduleId})
@@ -420,10 +420,10 @@
         // }
         this._currentCms = cms
         this._actionToChangeModule()
-        // this.cmsType = cms.module_name
-        // this.cmsId = cms.id
-        // this.cmsModuleId = cms.module_id
-        // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+      // this.cmsType = cms.module_name
+      // this.cmsId = cms.id
+      // this.cmsModuleId = cms.module_id
+      // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -632,7 +632,7 @@
         //     config_data: arr
         //   }
         // ]
-        let data = this.activityList.map(item => {
+        let data = this.activityList.map((item) => {
           return {
             id: item.id,
             config_data: {

@@ -200,7 +200,7 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.selectGoodsId = this.popularList.map(item => {
+        this.selectGoodsId = this.popularList.map((item) => {
           return item.goods_sku_id
         })
         this.choeesGoods = res.data.map((item, index) => {
@@ -320,15 +320,14 @@
           }
         })
 
-        API.Activity.addPopular({goods_sku_ids: [item.goods_sku_id]})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.$toast.show('添加成功')
-            this.getPopularList(this.page)
-          })
+        API.Activity.addPopular({goods_sku_ids: [item.goods_sku_id]}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.$toast.show('添加成功')
+          this.getPopularList(this.page)
+        })
       },
       // 批量添加
       _batchAddition() {
@@ -336,18 +335,17 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        let idArr = this.selectGoods.map(item => {
+        let idArr = this.selectGoods.map((item) => {
           return item.goods_sku_id
         })
-        API.Activity.addPopular({goods_sku_ids: idArr})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.$toast.show('添加成功')
-            this.getPopularList(this.page)
-          })
+        API.Activity.addPopular({goods_sku_ids: idArr}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.$toast.show('添加成功')
+          this.getPopularList(this.page)
+        })
         // this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
         this._hideGoods()
@@ -363,7 +361,7 @@
       // 切换分类
       _setClassify(index, item) {
         this.classifyIndex = index
-      },
+      }
     }
   }
 </script>

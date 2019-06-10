@@ -101,7 +101,7 @@ export const actions = {
         if (data.get_goods_online_count) {
           let data = JSON.parse(JSON.stringify(res))
           let allCount = 0
-          data.data.map(item => {
+          data.data.map((item) => {
             allCount += item.goods_count
           })
           data.all_count = allCount
@@ -126,7 +126,7 @@ export const actions = {
           return false
         }
         let arr = res.data
-        let categoryArr = state.categoryList.map(item => {
+        let categoryArr = state.categoryList.map((item) => {
           let val = JSON.parse(JSON.stringify(item))
           if (+val.id === +data.goods_category_id) {
             val.list = arr
@@ -285,6 +285,5 @@ export const actions = {
   },
   initStockRankList({commit}) {
     commit('STOCK_RANK_LIST', [])
-  },
-
+  }
 }
