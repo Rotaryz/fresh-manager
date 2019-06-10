@@ -50,6 +50,6 @@ export default {
    */
   batchClose(params) {
     let url = '/scm/api/backend/oms/batch-close'
-    return request.post(url, params)
+    return request.post(url, {goods_sku_codes: params})
   }
 }

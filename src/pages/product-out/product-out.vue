@@ -57,6 +57,7 @@
                 <span class="list-status" :class="{'list-status-success': item.status === 1,'list-status-warn': item.status === 2 }"></span>
                 {{item.status_str}}
                 <div v-if="item.show_sorting" class="list-item-img"></div>
+                <div v-if="item.is_exception" class="list-item-error"></div>
               </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
@@ -314,6 +315,13 @@
     font-size: $font-size-14
   .list-item-img
     icon-image('icon-lock')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
+  .list-item-error
+    icon-image('icon-unusual_list')
     width: 16px
     height: 15px
     margin-top: 2px

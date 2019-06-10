@@ -38,7 +38,10 @@
               <div class="list-item">{{item.supplier}}</div>
               <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
               <div class="list-item">￥{{item.total}}</div>
-              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
+              <div class="list-item">
+                <span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}
+                <div v-if="item.is_exception" class="list-item-img"></div>
+              </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
                 <div v-if="item.status === 0 || item.status === 2 || item.status === 3" class="list-operation" @click="entryOrdersExport(item)">导出</div>
@@ -296,4 +299,12 @@
   .tip
     margin: 0 2px
     font-size: $font-size-14
+
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>
