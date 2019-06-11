@@ -29,7 +29,7 @@
           <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="procurement-suggest" append class="btn-main">查看预采建议单</router-link>
+          <div class="btn-main" @click="_lookSuggest">查看预采建议单</div>
           <div class="btn-main g-btn-item" :class="{'btn-disable-store': status * 1 !== 1}" @click="_sendPublish">发布给采购员</div>
           <div class="btn-main g-btn-item" :class="{'btn-disable-store': status * 1 !== 2}" @click="_createNewPublish">生成采购单</div>
           <!--<div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>-->
@@ -762,6 +762,15 @@
       },
       _hideTip() {
         this.showIndex = false
+      },
+      async _lookSuggest() {
+        let supplyRes = await API.Supply.autoPurchaseTask()
+        this.$loading.hide()
+        if (supplyRes.error !== this.$ERR_OK) {
+          this.$toast.show(supplyRes.message)
+          return
+        }
+        this.$router.push('/home/procurement-task/procurement-suggest')
       }
     }
   }

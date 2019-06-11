@@ -16,7 +16,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-order_list2@2x.png" class="identification-icon">
-          <p class="identification-name">采购任务列表</p>
+          <p class="identification-name">预采建议单</p>
           <div class="identification-text">{{timeDay}}({{pageTotal.total}})</div>
         </div>
         <div class="function-btn">
