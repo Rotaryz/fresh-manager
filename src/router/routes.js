@@ -1801,7 +1801,9 @@ export default [
               exception_status:'',
               ...routeTo.query
             }
-            params.status = Number(params.status)
+            if(params.status!==''){
+              params.status = Number(params.status)
+            }
             params.sorting_mode = Number(params.sorting_mode)
             store.commit('sorting/SET_PARAMS', params)
             store

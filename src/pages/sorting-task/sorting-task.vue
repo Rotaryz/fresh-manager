@@ -175,7 +175,7 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '正常', status: 0}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
         },
         filterTaskFrist: {
           check: false,
