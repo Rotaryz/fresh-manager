@@ -106,7 +106,7 @@
         accurateStart: '',
         accurateEnd: '',
         statusTab: 1,
-        time: ['', ''],
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
         errorObj: {
           check: false,
           show: false,
@@ -186,7 +186,7 @@
       },
       async _statistic() {
         let res = await API.Store.entryOrdersStatistic({
-          tart_time: this.time[0],
+          start_time: this.time[0],
           end_time: this.time[1],
           keyword: this.keyWord,
           exception_status: this.exceptionStatus

@@ -123,7 +123,7 @@
           {name: '已完成', value: 1, key: 'success', num: 0}
         ],
         // statusTab: 1,
-        time: ['', ''],
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
         errorObj: {
           check: false,
           show: false,
