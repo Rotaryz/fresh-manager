@@ -1274,7 +1274,6 @@ export default [
             let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
             let startTime = routeTo.query.start_time || ''
             let endTime = routeTo.query.end_time || ''
-            console.log(status, startTime, endTime, exceptionStatus)
             store.commit('afterSalesOrder/SET_PARAMS', {
               start_time: startTime,
               end_time: endTime,
@@ -1592,8 +1591,8 @@ export default [
             let exceptionStatus = routeTo.query.exception_status
             exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
             let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
-            let startTime = routeTo.query.startTime || ''
-            let endTime = routeTo.query.endTime || ''
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
             store
               .dispatch('product/getEnterData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {
@@ -1641,8 +1640,8 @@ export default [
             let exceptionStatus = routeTo.query.exception_status
             exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
             let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
-            let startTime = routeTo.query.startTime || ''
-            let endTime = routeTo.query.endTime || ''
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
             store
               .dispatch('product/getOutData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {

@@ -196,11 +196,11 @@
       }
     },
     async created() {
-      if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1
-      }
-      this._getStatusData()
       this._setErrorStatus()
+      await this._getStatusData()
+      if (this.$route.query.status) {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.$route.query.status * 1)
+      }
     },
     methods: {
       ...afterSalesOrderMethods,
@@ -324,22 +324,30 @@
         }
       },
       // 状态数据
-      _getStatusData() {
+      async _getStatusData() {
         let defaultParams = {
           start_time: this.afterSalesFilter.start_time,
           end_time: this.afterSalesFilter.end_time,
           keyword: this.afterSalesFilter.keyword,
           exception_status: this.afterSalesFilter.exception_status
         }
-        API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
-          this.dispatchSelect = res.data.map((item) => {
-            return {
-              name: item.status_str,
-              value: item.status,
-              num: item.statistic
-            }
-          })
+        let res = await API.AfterSalesOrder.getStausData(defaultParams)
+        this.dispatchSelect = res.data.map((item) => {
+          return {
+            name: item.status_str,
+            value: item.status,
+            num: item.statistic
+          }
         })
+        // API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
+        //   this.dispatchSelect = res.data.map((item) => {
+        //     return {
+        //       name: item.status_str,
+        //       value: item.status,
+        //       num: item.statistic
+        //     }
+        //   })
+        // })
       },
       // 时间
       _changeTime(timeArr) {

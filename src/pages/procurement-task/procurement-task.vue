@@ -286,18 +286,6 @@
     },
     async created() {
       this._setErrorStatus()
-      this.startTime = this.$route.params.start
-      this.endTime = this.$route.params.end
-      if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1 + 1
-        this.status = this.$route.query.status
-      }
-      this.status = this.$route.params.status
-      if (this.goBackNumber > 0) {
-        this.statusTab = 3
-        this.status = 2
-        this._createNewPublish()
-      }
       await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
@@ -305,6 +293,12 @@
       if (this.$route.query.status) {
         this.statusTab = this.dispatchSelect.findIndex((item) => item.status * 1 === this.$route.query.status * 1)
         this.status = this.$route.query.status * 1
+        console.log(this.dispatchSelect)
+      }
+      if (this.goBackNumber > 0) {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.name === '待采购')
+        this.status = this.dispatchSelect[this.statusTab].status
+        this._createNewPublish()
       }
       this._getUrl()
     },
