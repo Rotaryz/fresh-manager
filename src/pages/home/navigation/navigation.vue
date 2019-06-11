@@ -139,6 +139,11 @@
           isLight: false
         },
         {
+          title: '团长分销',
+          url: '/home/leader-sales',
+          isLight: false
+        },
+        {
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false

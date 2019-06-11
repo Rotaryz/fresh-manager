@@ -827,6 +827,35 @@ export default [
           }
         }
       },
+      // 团长分销 todo
+      {
+        path: 'leader-sales',
+        name: 'leader-sales',
+        component: () => lazyLoadView(import('@pages/leader-sales/leader-sales')),
+        meta: {
+          titles: ['商城', '团长', '团长分销'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  抢购列表
+            let status = routeTo.query.status || ''
+            API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
+            .then((res) => {
+              if (res.error !== ERR_OK) {
+                return next({name: '404'})
+              }
+              let dataInfo = res.data
+              let pageInfo = {
+                total: res.meta.total,
+                per_page: res.meta.per_page,
+                total_page: res.meta.last_page
+              }
+              next({params: {dataInfo, pageInfo}})
+            })
+            .catch(e => {
+              next({name: '404'})
+            })
+          }
+        }
+      },
       // 配送单
       {
         path: 'dispatching-list',
