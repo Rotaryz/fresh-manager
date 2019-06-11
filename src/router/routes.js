@@ -1274,7 +1274,6 @@ export default [
             let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
             let startTime = routeTo.query.start_time || ''
             let endTime = routeTo.query.end_time || ''
-            console.log(status, startTime, endTime, exceptionStatus)
             store.commit('afterSalesOrder/SET_PARAMS', {
               start_time: startTime,
               end_time: endTime,
