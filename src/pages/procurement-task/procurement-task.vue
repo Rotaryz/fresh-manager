@@ -233,12 +233,12 @@
         endTime: this.$route.query.end_time || '',
         keyword: '',
         time: '',
-        status: '',
+        status: 1,
         supplyId: '',
         selectList: [],
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
-          {name: '锁定中', value: 1, key: 'wait_release', num: 0},
+          // {name: '锁定中', value: 1, key: 'wait_release', num: 0},
           {name: '待发布', value: 1, key: 'wait_release', num: 0},
           {name: '待采购', value: 2, key: 'wait_purchase', num: 0},
           {name: '已完成', value: 3, key: 'success', num: 0}
@@ -262,7 +262,7 @@
         choicePage: 1,
         oneBtn: false,
         confirmType: '',
-        statusTab: 2,
+        statusTab: 0,
         downUrl: '',
         taskTime: ['', ''],
         supplierSortList: [],
@@ -293,6 +293,10 @@
         this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.$route.query.status * 1)
         this.status = this.$route.query.status * 1
         console.log(this.dispatchSelect)
+      } else {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.name === '待发布')
+        this.status = this.dispatchSelect[this.statusTab].status
+        this._createNewPublish()
       }
       if (this.goBackNumber > 0) {
         this.statusTab = this.dispatchSelect.findIndex((item) => item.name === '待采购')
