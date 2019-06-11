@@ -101,7 +101,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <div v-for="(item, index) in picking.status" :key="index" class="item-wrapper" @click="checkDetail('sorting-task', '', item.status)">
+              <div v-for="(item, index) in picking.status" :key="index" class="item-wrapper" @click="checkDetail('sorting-task', '', item.status, item)">
                 <p class="title">{{item.status_str}}</p>
                 <p class="count">{{item.statistic}}</p>
                 <i class="icon-arrow"></i>
@@ -363,6 +363,7 @@
               return
             }
             this.picking = res.data
+            console.log(this.picking)
           })
       },
       _getOutWarehouse() {
@@ -399,13 +400,14 @@
         this.time = time
         this._getInitData()
       },
-      checkDetail(name, exceptionStatus, status) {
+      checkDetail(name, exceptionStatus, status, item) {
         const {href} = this.$router.resolve({
           name,
           query: {
             start_time: this.start,
             end_time: this.end,
             exception_status: exceptionStatus,
+            sorting_mode: this.picking.sorting_mode || '',
             status: exceptionStatus && this._getFinishStatus(name) || status
           }
         })
