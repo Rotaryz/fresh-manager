@@ -81,8 +81,7 @@
                 <div class="progress-percentage">{{item.finish_percent}}</div>
               </div>
               <div class="list-item">{{item.publish_at}}</div>
-              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}</div>
-              <div v-if="item.is_exception" class="list-item-img"></div>
+              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}<div v-if="item.is_exception" class="list-item-img"></div></div>
             </div>
           </div>
           <base-blank v-else></base-blank>
@@ -803,7 +802,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          max-width: 60px
+          max-width: 80px
           padding: 0
         /*&:nth-child(8), &:nth-child(2)*/
         &:nth-child(7), &:nth-child(1)
