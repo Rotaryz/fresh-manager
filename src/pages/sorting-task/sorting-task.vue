@@ -23,7 +23,7 @@
         <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
       <!--下拉选择-->
-      <template v-if="sortingTask.filter.sorting_mode == 1">
+      <template v-if="sortingTask.filter.sorting_mode === 1">
         <span class="down-tip">分类筛选</span>
         <div class="down-item down-group-item">
           <base-drop-down :select="filterTaskFrist" @setValue="setValueFrist"></base-drop-down>
@@ -35,7 +35,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode==0?'团长订单号/团长名称':'商品名称/商品编码'" @search="searchBtn"></base-search>
+        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -49,12 +49,12 @@
           ></base-status-nav>
         </div>
         <div class="function-btn">
-          <div v-if="sortingTask.filter.status==0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
-          <template v-if="sortingTask.filter.sorting_mode==0 && sortingTask.filter.status==0">
+          <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
+          <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>
           </template>
-          <template v-if="sortingTask.filter.sorting_mode==1 && (sortingTask.filter.status==0 || sortingTask.filter.status==2)">
+          <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
           </template>
@@ -69,7 +69,7 @@
           <template v-if="sortingTask.list.length">
             <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
               <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :class="['list-item',item.class]">
-                <template v-if="item.type==='operate'" name="operation">
+                <template v-if="item.type==='operate'">
                   <router-link class="list-operation no-right" :to="getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
                   <router-link v-if="item.afterBtn" class="after-btn" :to="getRouterUrl(item.afterBtn,row)">
                     {{item.afterBtn.operateText}}
@@ -173,7 +173,7 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+          data: [{name: '全部', status: ''}, {name: '正常', status: 0}, {name: '异常', status: '1'}] // 格式：{name: '55'}
         },
         filterTaskFrist: {
           check: false,
@@ -210,16 +210,16 @@
       }
     },
     created() {
-      this._setErrorStatus()
       this.getFristList()
       this._getStatusData()
-      console.log(this.filter)
+      this._setErrorStatus()
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.sortingTask.filter.exception_status)
+        console.log(item, this.sortingTask.filter.exception_status)
         this.errorObj.content = item.name || '全部'
       },
       async checkErr(item) {
