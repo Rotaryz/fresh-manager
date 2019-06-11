@@ -43,15 +43,15 @@
               </div>
               <div class="data-list">
                 <div class="view">
-                  <p class="text">浏览量 <img v-if="saleData.data.views_rate > 20" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">浏览量 <img v-if="saleData.data.views_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售数量 <img v-if="saleData.data.num_rate > 20" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售数量 <img v-if="saleData.data.num_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate > 10" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
@@ -223,7 +223,7 @@
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存排行', type: 'goods', excel: true, code: 'amount', limit: 10},
         {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
@@ -243,7 +243,7 @@
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存排行', type: 'goods', excel: true, code: 'amount', limit: 10},
         {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
@@ -301,7 +301,7 @@
           limit: 6
         },
         requestSupply: {
-          order_by: 'purchase_num',
+          order_by: 'amount',
           limit: 10
         },
         requestPub: {
