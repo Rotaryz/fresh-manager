@@ -291,7 +291,7 @@
       await this._getSupplierList()
       await this._statistic()
       if (this.$route.query.status) {
-        this.statusTab = this.dispatchSelect.findIndex((item) => item.status * 1 === this.$route.query.status * 1)
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.$route.query.status * 1)
         this.status = this.$route.query.status * 1
         console.log(this.dispatchSelect)
       }
