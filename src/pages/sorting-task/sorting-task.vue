@@ -267,8 +267,10 @@
           end_time: '',
           goods_category_id: '',
           status: 0,
-          keyword: ''
+          keyword: '',
+          exception_status:''
         }
+        this.errorObj.content = '全部'
         this.$refs.research._setText()
         this._updateData(params)
       },
