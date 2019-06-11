@@ -75,7 +75,10 @@
     methods: {
       ...allocationMethods,
       async submit() {
-        let data = {hour: this.hour.content, minute: this.min.content}
+        let hourarr = this.hour.content.split('点')
+        let minarr = this.min.content.split('分')
+        console.log(hourarr)
+        let data = {hour: hourarr[0], minute: minarr[0]}
         let res = await API.Allocation.setRunTimeConfig(data)
         this.$loading.hide()
         this.$toast.show(res.message)

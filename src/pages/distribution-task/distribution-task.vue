@@ -221,10 +221,12 @@
     async created() {
       this._setErrorStatus()
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
-      if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1
-      }
       await this._statistic()
+      if (this.$route.query.status) {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.$route.query.status * 1)
+        this.status = this.$route.query.status * 1
+        console.log(this.statusTab)
+      }
     },
     methods: {
       ...distributionMethods,

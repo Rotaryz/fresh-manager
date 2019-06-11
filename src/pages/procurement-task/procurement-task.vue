@@ -262,7 +262,7 @@
         choicePage: 1,
         oneBtn: false,
         confirmType: '',
-        statusTab: 0,
+        statusTab: 1,
         downUrl: '',
         taskTime: ['', ''],
         supplierSortList: [],
