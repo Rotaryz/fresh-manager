@@ -106,8 +106,7 @@
           status: '',
           page: 1,
           loading: false
-        },
-        infoTabIndex: 0
+        }
       }
     },
     computed: {
@@ -122,7 +121,7 @@
     methods: {
       ...couponMethods,
       changeTab(item, index) {
-        this.infoTabIndex = index
+        this.setInfoIndex(index)
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({created_start_at: this.msg.startTime, created_end_at: this.msg.endTime})

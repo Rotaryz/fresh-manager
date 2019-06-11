@@ -23,7 +23,7 @@
             </div>
             <span class="name">{{item.name}}</span>
           </div>
-          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open':  +categoryIndex === index+1 && openCategory}]">
+          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': +categoryIndex === index+1 && openCategory}]">
             <span class="icon-image" @click.stop="clickTag(item.id, index+1, 'category')"></span>
           </div>
         </div>
@@ -48,8 +48,9 @@
 
 <script type="text/ecmascript-6">
   import {goodsDataComputed} from '@state/helpers'
+
   const COMPONENT_NAME = 'LEFT-TAB'
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       tabArr: {
@@ -101,7 +102,7 @@
         this.$emit('changeTab', itemId, code) // item, selectGoods
       },
       height(item) {
-        return (48*item.length)
+        return (48 * item.length)
       },
       selectList(categoryId, goodsId) {
         let code = ''
@@ -191,7 +192,7 @@
       .left
         display: flex
         align-items: center
-        .category-image,.all-icon
+        .category-image, .all-icon
           width: 28px
           height: 28px
           margin-right: 8px
@@ -286,10 +287,10 @@
           transition: all 0.3s
     .category-all.active
       color: $color-positive
-      background: rgba(77,189,101,0.10)
+      background: rgba(77, 189, 101, 0.10)
     .active
       .left-tab-main
-        background: rgba(77,189,101,0.10)
+        background: rgba(77, 189, 101, 0.10)
         color: $color-positive
         position: relative
         &:before
@@ -297,7 +298,7 @@
     .open
       .select
         color: $color-positive
-        background: rgba(77,189,101,0.10)
+        background: rgba(77, 189, 101, 0.10)
         position: relative
         &:before
           background-color: $color-positive

@@ -239,21 +239,21 @@ export default [
             //  抢购列表
             let status = routeTo.query.status || ''
             API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
-            .then((res) => {
-              if (res.error !== ERR_OK) {
-                return next({name: '404'})
-              }
-              let dataInfo = res.data
-              let pageInfo = {
-                total: res.meta.total,
-                per_page: res.meta.per_page,
-                total_page: res.meta.last_page
-              }
-              next({params: {dataInfo, pageInfo}})
-            })
-            .catch(e => {
-              next({name: '404'})
-            })
+              .then((res) => {
+                if (res.error !== ERR_OK) {
+                  return next({name: '404'})
+                }
+                let dataInfo = res.data
+                let pageInfo = {
+                  total: res.meta.total,
+                  per_page: res.meta.per_page,
+                  total_page: res.meta.last_page
+                }
+                next({params: {dataInfo, pageInfo}})
+              })
+              .catch(e => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -481,6 +481,17 @@ export default [
                 return next({name: '404'})
               })
           }
+        }
+      },
+      // 新建商品券
+      {
+        path: 'coupon-manage/edit-commodity',
+        name: 'edit-commodity',
+        component: () => lazyLoadView(import('@pages/edit-commodity/edit-commodity')),
+        meta: {
+          titles: ['商城', '营销', '优惠券', '商品券'],
+          variableIndex: 3,
+          marginBottom: 80
         }
       },
       // 新建查看优惠券
@@ -1271,8 +1282,8 @@ export default [
               end_time: '',
               keyword: "",
               status: 0,
-              page:1,
-              limit:10
+              page: 1,
+              limit: 10
             })
             store
               .dispatch('afterSalesOrder/getAfterSalesOrderList')
