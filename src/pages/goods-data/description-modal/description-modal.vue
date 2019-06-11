@@ -27,25 +27,17 @@
   const DES = [
     {
       title: '爆款品',
-      text: [
-        '高销售量：占全部商品总销售量的20%',
-        '高销售额：占全部商品总销售额的10%',
-        '高浏览数：占全部商品总浏览数的20%'
-      ]
-    },
-    {
+      text: ['高销售量：占全部商品总销售量的1%', '高销售额：占全部商品总销售额的1%', '高浏览数：占全部商品总浏览数的1%'],
+    },{
       title: '引流品',
-      text: ['高浏览数：占全部商品总浏览数的20%']
-    },
-    {
+      text: ['高浏览数：占全部商品总浏览数的1%'],
+    },{
       title: '粘性品',
-      text: ['高销售量：占全部商品总销售量的20%']
-    },
-    {
+      text: ['高销售量：占全部商品总销售量的1%'],
+    },{
       title: '利润品',
-      text: ['高销售额：占全部商品总销售额的10%']
-    },
-    {
+      text: ['高销售额：占全部商品总销售额的1%'],
+    },{
       title: '其它',
       text: ['商品都不满足其它四个品(爆款品、引流品、粘性品、利润品)的条件']
     }
@@ -54,7 +46,8 @@
   export default {
     name: COMPONENT_NAME,
     components: {DefaultModal},
-    props: {},
+    props: {
+    },
     data() {
       return {
         desText: DES
@@ -112,7 +105,7 @@
         font-family: $font-family-regular
         .text
           word-break: break-all
-          margin-right: 15px
+          margin-right: 24px
           &:nth-child(2)
             margin-right: 0
 </style>

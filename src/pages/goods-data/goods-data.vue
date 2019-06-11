@@ -42,15 +42,15 @@
               </div>
               <div class="data-list">
                 <div class="view">
-                  <p class="text">浏览量 <img v-if="saleData.data.views_rate > 20" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">浏览量 <img v-if="saleData.data.views_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售数量 <img v-if="saleData.data.num_rate > 20" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售数量 <img v-if="saleData.data.num_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate > 10" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
@@ -210,27 +210,19 @@
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
-        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
+        // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num', limit: 8},
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true, limit: 8}
       ],
       purchase: [
-        {
-          name: '采销匹配度',
-          type: 'bar1',
-          big: true,
-          excel: true,
-          code: 'purchase_num',
-          word: 'cate_num_total',
-          limit: 6
-        },
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total', limit: 6},
         {name: '商品SPU数', type: 'pie', excel: true, code: 'all_count', word: 'all_count'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存排行', type: 'goods', excel: true, code: 'amount', limit: 10},
         {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
@@ -239,7 +231,7 @@
         {name: '商品结构', type: 'bar', excel: true, code: 't'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
-        {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
+        // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
@@ -250,7 +242,7 @@
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存排行', type: 'goods', excel: true, code: 'amount', limit: 10},
         {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
@@ -259,7 +251,7 @@
         {name: '商品结构', type: 'goodsDetail'},
         {name: '销量', type: 'line', code: 'num', limit: 8},
         {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 8},
-        {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
+        // {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'line', code: 'returns_num'},
@@ -308,7 +300,7 @@
           limit: 6
         },
         requestSupply: {
-          order_by: 'purchase_num',
+          order_by: 'amount',
           limit: 10
         },
         requestPub: {
@@ -409,9 +401,10 @@
           if (!this[this.clickSec + 'Data'].data || !this[this.clickSec + 'Data'].data.length) return
           // 找到分类ID 或商品ID
           if (this.leftTab === 'all') {
-            let chartCateId = this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].id
+            let chartCateId =  this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].id
             this.$refs.goodsTab.selectList(chartCateId)
           } else {
+
             let chartGoodsId = this[this.clickSec + 'Data'].data[index].spu
             this.$refs.goodsTab.selectList('', chartGoodsId)
           }
@@ -419,17 +412,17 @@
       },
       clickBigChart(index) {
         this.clickChartIndex = index
-        this.bigDataShow = false
         // this.$refs.goodsTab.selectList('', 42624)
-        if (!this[this.bigBarType + 'Data'].data || !this[this.bigBarType + 'Data'].data.length) return
+        if (!this.bigChartData.data || !this.bigChartData.data.length) return
         // 找到分类ID 或商品ID
         if (this.leftTab === 'all') {
-          let chartCateId = this[this.bigBarType + 'Data'].data[index].cate
+          let chartCateId =  this.bigChartData.data[index].cate
           this.$refs.goodsTab.selectList(chartCateId)
         } else {
-          let chartGoodsId = this[this.bigBarType + 'Data'].data[index].spu
+          let chartGoodsId = this.bigChartData.data[index].spu
           this.$refs.goodsTab.selectList('', chartGoodsId)
         }
+        // this.bigDataShow = false
       },
       async showBigData(type, sec) {
         this.bigDataShow = true
@@ -463,7 +456,11 @@
         if (type === 'bar1') {
           this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
         } else {
-          this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+          if (sec === 'serve') {
+            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.data2Handle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+          } else {
+            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+          }
         }
       },
       closeBigData() {
@@ -490,6 +487,7 @@
       },
       // 切换左侧tab栏
       async changeTab(itemId, code) {
+        this.bigDataShow = false
         if (this.leftTabItem === itemId) return
         switch (code) {
         case 'all':
@@ -509,35 +507,26 @@
         }
         this.leftTabItem = itemId
         this.leftTab = code
-        let data = Object.assign({}, this.requestPurchase, this.requestPub)
         if (code !== 'goods') {
-          await this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+          this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
           // delete data.order_by
         }
         this._initSelect()
         this.hideText = [true, true, true, true]
-        await this.getPurchaseData(data)
-        if (code === 'all' || code === 'category') {
-          this._initDraw()
-        } else if (code === 'goods') {
-          this.$refs.line2 &&
-            this.$refs.line2.drawLine(
-              this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name)
-            )
-          this.$refs.line3 &&
-            this.$refs.line3.drawLine(
-              this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name)
-            )
-          this.$refs.line4 &&
-            this.$refs.line4.drawLine(
-              this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name)
-            )
-        }
+        // let data = Object.assign({}, this.requestPurchase, this.requestPub)
+        // await this.getPurchaseData(data)
+        // if (code === 'all' || code === 'category') {
+        //   this._initDraw()
+        // } else if (code === 'goods') {
+        //   this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
+        //   this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
+        //   this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
+        // }
       },
       // 初始绘制图表
       _initDraw() {
         this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
-        this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, this.selectMsg.serve.code))
+        this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data,  this.selectMsg.serve.code))
         this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
       },
       // 初始选择项
@@ -583,7 +572,7 @@
         this.requestServe.order_by = obj.code
         let data = Object.assign({}, this.requestPub, this.requestServe)
         await this.getServeData(data)
-        this.$refs.bar2 && this.$refs.bar2.drawBar(this.dataHandle(this.serveData.data, obj.code), obj.rate)
+        this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data, obj.code), obj.rate)
         this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, obj.code, obj.name), obj.rate)
       },
       // 切换商品采购模块（模块3）
@@ -638,7 +627,7 @@
         let word = JSON.parse(JSON.stringify(this['request' + this.firstUppercase(this.excelType)]))
         word.limit = 0
         let data = Object.assign({}, msg, this.requestPub, word)
-        if (this.excelType.type === 'sale' && +this.tabIndexControl['sale'] === 0) {
+        if (this.excelType.type === 'sale' && +this.tabIndexControl['sale'] === 0){
           delete data.order_by
         }
         let search = []
@@ -650,7 +639,7 @@
       },
       firstUppercase(str) {
         let first = str[0].toUpperCase()
-        return first + str.slice(1)
+        return first+str.slice(1)
       },
       showDescription(type) {
         this.$refs.description.show(type)
@@ -663,6 +652,7 @@
           return
         }
         this.getCommunityList({page: 1})
+
       },
       // 切换时间时，通过改变每个块顶部tab栏的方式，获取当前所有模块的数据，并且重绘图表
       async getAllData() {
@@ -695,7 +685,7 @@
             type: 'o'
           }
         ]
-        let newArr = arr.some((item) => {
+        let newArr = arr.some(item => {
           return data[item.type]
         })
         if (!newArr) {
@@ -704,10 +694,10 @@
             series: []
           }
         }
-        let xAx = arr.map((item) => {
+        let xAx = arr.map(item => {
           return item.name
         })
-        let series = arr.map((item) => {
+        let series = arr.map(item => {
           return data[item.type]
         })
         return {
@@ -716,14 +706,30 @@
         }
       },
       dataHandle(data, y1) {
-        if (!data || !data.length) return {xAx: [], series: []}
-        let newData = data.filter((item) => {
+        let newData = data.filter(item => {
           return item[y1] > 0
         })
-        let xAx = newData.map((val) => {
+        if (!data || !data.length || !newData.length) return {xAx: [], series: []}
+        let xAx = data.map(val => {
           return val.name
         })
-        let series = newData.map((val) => {
+        let series = data.map(val => {
+          return val[y1]
+        })
+        return {
+          xAx,
+          series
+        }
+      },
+      data2Handle(data, y1) {
+        if (!data || !data.length) return {xAx: [], series: []}
+        let newData = data.filter(item => {
+          return item[y1] > 0
+        })
+        let xAx = newData.map(val => {
+          return val.name
+        })
+        let series = newData.map(val => {
           return val[y1]
         })
         return {
@@ -743,11 +749,11 @@
             purchaseNumAll: 0
           }
         }
-        let xAx = dataArr.map((item) => {
+        let xAx = dataArr.map(item => {
           return item.name
         })
         // 毛利率
-        let series = dataArr.map((item) => {
+        let series = dataArr.map(item => {
           return item.rate
         })
         // 销售数
@@ -773,7 +779,7 @@
       },
       pieHandle(data) {
         if (!data || !data.length) return []
-        let series = data.map((item) => {
+        let series = data.map(item => {
           return {
             name: item.name,
             value: item.goods_count
@@ -782,21 +788,20 @@
         return series
       },
       lineHandle(data, code, type) {
-        if (!data.length)
-          return {
-            label: '',
-            data: [
-              {
-                x: [],
-                rate: []
-              }
-            ]
-          }
+        if (!data.length) return {
+          label: '',
+          data: [
+            {
+              x: [],
+              rate: []
+            }
+          ]
+        }
         let label = type
         let x = data.map(item => {
           return item.date ? item.date.split('-').slice(1).join('/') : ''
         })
-        let rate = data.map((item) => {
+        let rate = data.map(item => {
           return item[code]
         })
         return {
