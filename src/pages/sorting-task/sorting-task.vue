@@ -18,8 +18,12 @@
       <div class="down-item">
         <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" :editable="false" @getTime="changeTime"></base-date-select>
       </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
+      </div>
       <!--下拉选择-->
-      <template v-if="sortingTask.filter.sorting_mode===1">
+      <template v-if="sortingTask.filter.sorting_mode == 1">
         <span class="down-tip">分类筛选</span>
         <div class="down-item down-group-item">
           <base-drop-down :select="filterTaskFrist" @setValue="setValueFrist"></base-drop-down>
@@ -31,7 +35,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" @search="searchBtn"></base-search>
+        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode==0?'团长订单号/团长名称':'商品名称/商品编码'" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -45,12 +49,12 @@
           ></base-status-nav>
         </div>
         <div class="function-btn">
-          <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
-          <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
+          <div v-if="sortingTask.filter.status==0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
+          <template v-if="sortingTask.filter.sorting_mode==0 && sortingTask.filter.status==0">
             <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>
           </template>
-          <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
+          <template v-if="sortingTask.filter.sorting_mode==1 && (sortingTask.filter.status==0 || sortingTask.filter.status==2)">
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
           </template>
@@ -164,6 +168,13 @@
         currentPrint: {},
         tabStatus: ORDERSTATUS,
         datePlaceHolder: '选择生成日期',
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
         filterTaskFrist: {
           check: false,
           show: false,
@@ -199,13 +210,21 @@
       }
     },
     created() {
-      this.$route.params.tabIndex && this.SET_PARAMS({sorting_mode: this.$route.params.tabIndex})
+      this._setErrorStatus()
       this.getFristList()
       this._getStatusData()
+      console.log(this.filter)
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.sortingTask.filter.exception_status)
+        this.errorObj.content = item.name || '全部'
+      },
+      async checkErr(item) {
+        this._updateData({exception_status:item.status,page:1})
+      },
       initBaseDropDown(first, second) {
         if (first) {
           this.filterTaskFrist.data = [{name: '全部', id: ''}]
@@ -213,7 +232,7 @@
         }
         if (second) {
           this.filterTaskSecond.data = [{name: '全部', id: ''}]
-          this.filterTaskFrist.content = '二级分类'
+          this.filterTaskSecond.content = '二级分类'
         }
       },
       _batchFinishSorting() {
@@ -236,7 +255,10 @@
       },
       // 顶部tab切换
       tabChange(val) {
-        this.initBaseDropDown()
+        if(val===1){
+          this.initBaseDropDown(true,true)
+          this.getFristList()
+        }
         let params = {
           sorting_mode: val,
           page: 1,
@@ -247,7 +269,6 @@
           status: 0,
           keyword: ''
         }
-
         this.$refs.research._setText()
         this._updateData(params)
       },

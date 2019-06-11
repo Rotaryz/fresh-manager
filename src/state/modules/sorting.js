@@ -19,7 +19,8 @@ export const state = {
       end_time: '',
       keyword: '',
       status: 0, // 待分拣
-      sorting_mode: 0
+      sorting_mode: 0,
+      exception_status:'',
     }
   },
   sortingConfig: {
