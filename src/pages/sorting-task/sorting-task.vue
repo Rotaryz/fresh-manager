@@ -84,6 +84,8 @@
                   <div v-if="item.afterBr">
                     {{row[item.afterBr]}}
                   </div>
+                  <div v-if="item.afterImg && item[item.afterImg.key]" :class="item.afterImg.class">
+                  </div>
                 </template>
 
               </div>
@@ -119,7 +121,7 @@
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
     {tilte: '订单数', key: 'order_num', after: 'sale_unit'},
     {tilte: '配货数', key: 'allocation_num', after: 'sale_unit'},
-    {tilte: '状态', key: 'status_str'},
+    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -420,6 +422,13 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
   .fill-line
     width:28px
     border-top:1px solid #333
