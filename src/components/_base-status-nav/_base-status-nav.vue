@@ -27,7 +27,7 @@
       },
       valueKey: {
         type: String,
-        default: 'status'
+        default: 'value'
       },
       labelKey: {
         type: String,
