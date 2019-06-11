@@ -1789,7 +1789,7 @@ export default [
         meta: {
           titles: ['供应链', '分拣', '分拣任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.commit('sorting/SET_PARAMS', {
+            let params = {
               goods_category_id: '',
               page: 1,
               limit: 10,
@@ -1800,7 +1800,12 @@ export default [
               sorting_mode: 0,
               exception_status:'',
               ...routeTo.query
-            })
+            }
+            if(params.status!==''){
+              params.status = Number(params.status)
+            }
+            params.sorting_mode = Number(params.sorting_mode)
+            store.commit('sorting/SET_PARAMS', params)
             store
               .dispatch('sorting/getSortingTaskList')
               .then((res) => {
