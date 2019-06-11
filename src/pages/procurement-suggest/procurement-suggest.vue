@@ -41,7 +41,7 @@
               <div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>
               <div class="list-item">{{item.usable_stock_purchase_num}}{{item.purchase_unit}}({{item.usable_stock}}{{item.base_unit}})</div>
               <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
-              <div class="list-item">{{item.publish_at}}</div>
+              <div class="list-item">{{item.created_at}}</div>
             </div>
           </div>
           <base-blank v-else></base-blank>
