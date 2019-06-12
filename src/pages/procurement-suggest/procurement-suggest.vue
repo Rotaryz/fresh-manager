@@ -165,7 +165,13 @@
           loading: false
         })
       },
-      _sendPublish() {
+      async _sendPublish() {
+        let supplyRes = await API.Supply.autoPurchaseTask()
+        this.$loading.hide()
+        if (supplyRes.error !== this.$ERR_OK) {
+          this.$toast.show(supplyRes.message)
+          return
+        }
         this.page = 1
         this.$refs.pages.beginPage()
         this.getPurchaseTaskList({

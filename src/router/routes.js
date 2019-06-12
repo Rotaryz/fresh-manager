@@ -1395,7 +1395,7 @@ export default [
         name: 'procurement-suggest',
         component: () => lazyLoadView(import('@pages/procurement-suggest/procurement-suggest')),
         meta: {
-          titles: ['供应链', '采购', '采购任务', '预采建议'],
+          titles: ['供应链', '采购', '采购任务', '预采建议单'],
           async beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('proTask/getPurchaseTaskList', {
