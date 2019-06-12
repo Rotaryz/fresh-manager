@@ -8,18 +8,35 @@
               <img src="./icon-real_time@2x.png" class="identification-icon">
               <p class="identification-name">实时总览</p>
             </div>
-            <div class="function-btn">
-              <base-option-box :infoTab="2" @checkTime="_orderMore"></base-option-box>
+            <div class="refresh-btn">
+              <div class="refresh-icon"></div>
+              刷新
             </div>
           </div>
-          <div class="real-time-box">
-            <div v-for="(item, index) in realData" :key="index" class="real-list-box">
-              <div class="real-list-box-icon" :class="item.imgUrl"></div>
-              <div class="real-text-box">
-                <div class="real-text-top">{{item.title}}</div>
-                <div class="real-text-bottom">
-                  <div class="real-text-number">{{item.curr_total}}</div>
-                  <div class="real-text-sale">{{item.subTitle}} {{item.total}}</div>
+          <div class="real-time-con">
+            <div class="real-time-chart">
+              <div class="info-con">
+                <img src="./icon-money_more@2x.png" class="info-icon">
+                <div class="info-box">
+                  <div class="info-title">支付金额(元)</div>
+                  <div class="info-val">
+                    2380.00<span class="small-text">昨日(元): 6908.00</span>
+                  </div>
+                </div>
+              </div>
+              <e-chart-line ref="realTimeChart" chartId="realTimeChart" class="chart-con"></e-chart-line>
+            </div>
+            <div class="real-time-box">
+              <div v-for="(item, index) in realData" :key="index" class="real-list-box">
+                <div class="top-box">
+                  <div class="real-list-box-icon" :class="item.imgUrl"></div>
+                  <div class="real-text">
+                    <div class="real-text-title">{{item.title}}</div>
+                    <div class="real-text-number">{{item.curr_total}}</div>
+                  </div>
+                </div>
+                <div class="bottom-box">
+                  昨日：{{item.total}}
                 </div>
               </div>
             </div>
@@ -39,9 +56,72 @@
               <div class="base-item-title">{{item.title}}</div>
               <div class="base-number-box">
                 <div class="number-left">{{item.number}}</div>
-                <div class="number-right"></div>
               </div>
+              <div class="base-list-arrow"></div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="data-board">
+      <div class="title-bar">
+        <div class="left-box">
+          <img src="./icon-7day@2x.png" class="title-icon">
+          <p class="title">数据看板</p>
+          <ul class="tab">
+            <li v-for="(item, idx) in dataBoard" :key="idx" class="tab-item" @click="_switchTab(item,idx)">
+              {{item.title}}
+            </li>
+            <li :style="{'transform':'translateX('+dataBoardIndex*84+'px)'}" class="tab-item tab-active">
+              {{dataBoard[dataBoardIndex].title}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="bottom-con">
+        <div class="label-con">
+          <div class="data-date">2019.05.01~2019.05.12</div>
+          <div v-for="(label, labelIdx) in dataBoard[dataBoardIndex].label" :key="labelIdx" class="label">
+            {{label.name}}
+            <p class="label-val" :title="label.total">
+              {{label.total}}
+              <template v-if="label.unit">{{label.unit}}</template>
+            </p>
+          </div>
+        </div>
+        <e-chart-line ref="dataBoardChart" chartId="dataBoardChart" class="chart-con"></e-chart-line>
+      </div>
+    </div>
+    <div class="rank-list">
+      <div class="identification survey-box">
+        <div class="identification-page">
+          <img src="./icon-ranking@2x.png" class="identification-icon">
+          <p class="identification-name">排行</p>
+        </div>
+      </div>
+      <div class="rank-list-content">
+        <div class="list-con">
+          <div class="title-bar">
+            <div class="left-box">
+              <p class="title">团长</p>
+            </div>
+            <a target="_blank" class="excel-btn">导出Excel</a>
+          </div>
+        </div>
+        <div class="list-con">
+          <div class="title-bar">
+            <div class="left-box">
+              <p class="title">商品</p>
+            </div>
+            <a target="_blank" class="excel-btn">导出Excel</a>
+          </div>
+        </div>
+        <div class="list-con">
+          <div class="title-bar">
+            <div class="left-box">
+              <p class="title">搜索词</p>
+            </div>
+            <a target="_blank" class="excel-btn">导出Excel</a>
           </div>
         </div>
       </div>
@@ -149,18 +229,17 @@
   import {deliveryMethods} from '@state/helpers'
 
   import API from '@api'
+  import EChartLine from '@components/e-chart/e-chart-line'
 
   const PAGE_NAME = 'NEW_DATA'
   const TITLE = '数据'
   const RANKLIST = ['图片', '商品名称', '销售数量', '销售额']
   const COMMUNITYLIST = ['社区', '销售额', '支付订单数', '佣金收益']
   const REALDATA = [
-    {imgUrl: '', title: '销售额', subTitle: '总销售额:', key: 'order', curr_total: 0, total: 0},
-    {imgUrl: 'subscriber', title: '访客数', subTitle: '总访客数:', key: 'visitor', curr_total: 0, total: 0},
-    {imgUrl: 'wallet', title: '支付转化率', subTitle: '平均支付转化率:', key: 'pay_rate', curr_total: 0, total: 0},
-    {imgUrl: 'subscriber', title: '买家数', subTitle: '总买家数:', key: 'pay_customer', curr_total: 0, total: 0},
-    {imgUrl: '', title: '客单价', subTitle: '平均客单价:', key: 'customer_price', curr_total: 0, total: 0},
-    {imgUrl: 'card', title: '复购率', subTitle: '平均复购率:', key: 'repeat_consume_rate', curr_total: 0, total: 0}
+    {imgUrl: '', title: '访客数', key: 'visitor', curr_total: 0, total: 0},
+    {imgUrl: 'users', title: '支付用户', key: 'pay_rate', curr_total: 0, total: 0},
+    {imgUrl: 'browse_volume', title: '浏览量', key: 'pay_customer', curr_total: 0, total: 0},
+    {imgUrl: 'wallet', title: '支付订单', key: 'customer_price', curr_total: 0, total: 0},
   ]
   const BASELIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
@@ -232,10 +311,101 @@
     {title: '买家数', status: '3'},
     {title: '客单价', status: '4'}
   ]
+  const REAL_TIME = {
+    apiFun: 'getOperationOrderData',
+    label: [
+      {name: '支付用户', key: 'amount_total', total: ''},
+      {name: '支付订单', key: 'num_total', total: ''}
+    ],
+    chartConfig: {
+      dataArr: [
+        {name: '支付用户', key: 'amount', data: []},
+        {name: '支付订单', key: 'num', data: []}
+      ],
+      xAxleData: [],
+      legendOnTop: true,
+      lineShadow: 'false'
+    }
+  }
+  const DATA_BOARD = [
+    {
+      apiFun: 'getOperationFlowData',
+      title: '流量',
+      label: [
+        {name: '浏览量(PV)', key: 'pv_total', total: ''},
+        {name: '访客数(UV)', key: 'uv_total', total: ''}
+      ],
+      chartConfig: {
+        dataArr: [
+          {name: '浏览量', key: 'pv', data:[]},
+          {name: '访客数', key: 'uv', data:[]}
+        ],
+        xAxleData: [],
+        lineShadow: 'false'
+      },
+    },
+    {
+      apiFun: 'getOperationBusinessData',
+      title: '成交',
+      label: [
+        {name: '支付金额(元)', key: 'amount_total', total: ''},
+        {name: '客单价(元)', key: 'per_customer_price', total: ''},
+        {name: '销售数量', key: 'num_total', total: ''}
+      ],
+      chartConfig: {
+        dataArr: [
+          {name: '支付金额', key: 'amount', data:[]},
+          {name: '客单价', key: 'per_customer_price', data:[]},
+          {name: '销售数量', key: 'num', data:[]}
+        ],
+        xAxleData: [],
+        lineShadow: 'false'
+      }
+    },
+    {
+      apiFun: 'getOperationOrderData',
+      title: '订单',
+      label: [
+        {name: '支付用户', key: 'amount_total', total: ''},
+        {name: '支付订单', key: 'num_total', total: ''},
+        {name: '支付转化率', key: 'unit_price', total: ''}
+      ],
+      chartConfig: {
+        dataArr: [
+          {name: '支付用户', key: 'amount', data:[]},
+          {name: '支付订单', key: 'num', data:[]},
+          {name: '支付转化率', key: 'unit_price', data:[]}
+        ],
+        xAxleData: [],
+        lineShadow: 'false'
+      }
+    },
+    {
+      id: 'servicesChart',
+      apiFun: 'getOperationServicesData',
+      title: '售后',
+      label: [
+        {name: '退货金额(元)', key: 'amount_total', total: ''},
+        {name: '退货数量', key: 'num_total', total: ''}
+      ],
+      chartConfig: {
+        dataArr: [
+          {name: '退货金额', key: 'amount', data:[]},
+          {name: '退货数量', key: 'num', data:[]}
+        ],
+        xAxleData: [],
+        lineShadow: 'false'
+      }
+    }
+  ]
+
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
+    },
+    components: {
+      EChartLine
     },
     data() {
       return {
@@ -263,7 +433,10 @@
         drawY: [],
         drawTitle: '',
         permissions: {},
-        disabledDate: {}
+        disabledDate: {},
+        realTimeData: REAL_TIME,
+        dataBoard: DATA_BOARD,
+        dataBoardIndex: 0
       }
     },
     mounted() {
@@ -277,6 +450,8 @@
       this.getSurveyTrade('', '', 'week', true)
       this.getScmBaseData()
       this.getShopBaseData()
+      this._getDataBoard()
+      this._getRealTimeData()
       this.getScmTaskData()
       this.getShopTaskData()
       this.getEchartData()
@@ -301,10 +476,10 @@
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
-            for (let key in res.data) {
-              let index = this.realData.findIndex((item) => item.key === key)
-              this.realData[index].curr_total = res.data[key].curr_total
-              this.realData[index].total = res.data[key].total
+            for (let i = 0; i < this.realData.length; i++) {
+              let item = this.realData[i]
+              item.curr_total = res.data[item.key].curr_total
+              item.total = res.data[item.key].total
             }
           } else {
             this.$toast.show(res.message)
@@ -606,6 +781,69 @@
           return
         }
         this.$router.push(item.url)
+      },
+      _switchTab(tab, tabIdx) {
+        if (this.dataBoardIndex === tabIdx) return
+        this.dataBoardIndex = tabIdx
+        this._getDataBoard()
+      },
+      _getRealTimeData(first = true) {
+        let curChart = this.realTimeData
+        let getSuccess = false
+        API.Operation[curChart.apiFun]({date_type: 'week'}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
+          // 格式化接口返回的数据
+          curChart = this.formatResData(res, curChart)
+          getSuccess = true
+        }).finally(() => {
+          this.$refs.realTimeChart._setChart(curChart.chartConfig, first, getSuccess)
+          // loading && this.$loading.hide()
+        })
+      },
+      _getDataBoard(first = true) {
+        let curChart = this.dataBoard[this.dataBoardIndex]
+        let getSuccess = false
+        API.Operation[curChart.apiFun]({date_type: 'month'}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
+          // 格式化接口返回的数据
+          curChart = this.formatResData(res, curChart)
+          getSuccess = true
+        }).finally(() => {
+          this.$refs.dataBoardChart._setChart(curChart.chartConfig, first, getSuccess)
+          // loading && this.$loading.hide()
+        })
+      },
+      formatResData(result, curChart) {
+        let chartConfig = curChart.chartConfig
+        chartConfig.xAxleData = []// 重置x轴数据
+        // 遍历dataArr，通过key生成新的数组
+        for (let j = 0; j < chartConfig.dataArr.length; j++) {
+          let _chartData = chartConfig.dataArr[j]
+          let _key = _chartData.key// 对应接口每个值的key
+          let _curLabel = curChart.label[j]
+          _curLabel.total = result[_curLabel.key]// 配置的label数组,用于设置每个图表上面的总计
+          _chartData.data = []// 重置data
+          // 遍历接口的data数组，通过配置的key赋值给当前的数组
+          for (let i = 0; i < result.data.length; i++) {
+            let _resData = result.data[i]
+            // 测试数据
+            let rd = (Math.random() * 1000).toFixed(2)
+            _chartData.data.push(_resData[_key]+rd)
+            // 测试数据
+            // _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
+            if (j === 0) {
+              // x轴的date指生成一个数组就行了
+              let _date = _resData.date
+              _date = _date.split('-').slice(1).join('/')
+              chartConfig.xAxleData.push(_date)
+            }
+          }
+        }
+        return curChart
       }
     }
   }
@@ -613,6 +851,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  $margin = 20px
+  $border-color = #E9ECEE
 
   .new-data
     overflow: hidden
@@ -621,91 +861,129 @@
     box-sizing: border-box
     flex-direction: column
     min-width: 1380px
+    .identification .identification-name
+      font-family: $font-family-medium
   .data-header-box
     layout(row)
     display: flex
     .data-header-left
-      width: 66.66666%
-      height: 260px
-      padding-right: 7px
+      width: 68%
+      height: 360px
+      padding-right: $margin
       box-sizing: border-box
       .header-left-box
         width: 100%
-        height: 260px
+        height: 360px
         background: $color-white
-        .real-time-box
+        .real-time-con
           layout(row)
-          .real-list-box
-            height: 100px
-            width: 33.33333%
-            border-right: 0.5px solid #E9ECEE
-            border-bottom: 0.5px solid #E9ECEE
-            padding: 0 20px 0 20px
-            box-sizing: border-box
-            layout(row)
-            align-items: center
-            .real-list-box-icon
-              width: 48px
+          .real-time-chart
+            width: 62%
+            height: 300px
+            border-right-1px($border-color)
+            layout(column)
+            .info-con
+              layout(row)
               height: 48px
-              display: block
-              margin-right: 20px
-              icon-image(icon-money_more)
-            .card
-              icon-image(icon-Repeat_purchase)
-            .subscriber
-              icon-image(icon-subscriber)
-            .wallet
-              icon-image(icon-wallet)
-            .real-text-box
-              layout()
-              display: flex
-              flex: 1
-              .real-text-top
-                font-size: $font-size-14
+              margin: 25px 20px 0
+              .info-icon
+                width: 48px
+                height: 48px
+                margin-right: 14px
+              .info-box
+                layout(column)
                 font-family: $font-family-regular
                 color: $color-text-main
-                margin-bottom: 10px
-              .real-text-bottom
+                .info-title
+                  font-size: $font-size-14
+                .info-val
+                  line-height: 30px
+                  font-size: 28px
+                  font-family: $font-family-din-bold
+                  .small-text
+                    margin-left: 20px
+                    font-size: $font-size-12
+                    color: #999999
+            .chart-con
+              width: 100%
+              height: 227px
+          .real-time-box
+            width: 38%
+            layout(row)
+            .real-list-box
+              height: 150px
+              width: 50%
+              padding: 24px $margin
+              box-sizing: border-box
+              layout(column)
+              justify-content: space-between
+              &:nth-child(odd)
+                border-right-1px($border-color)
+              &:nth-child(-n+2)
+                border-bottom-1px($border-color)
+              .top-box
+                width: 100%
                 layout(row)
-                align-items: flex-end
-                justify-content: space-between
+                .real-list-box-icon
+                  width: 48px
+                  height: 48px
+                  display: block
+                  margin-right: 14px
+                  icon-image(icon-visitor_number)
+                .users
+                  icon-image(icon-paying_users)
+                .browse_volume
+                  icon-image(icon-browse_volume)
+                .wallet
+                  icon-image(icon-wallet)
+              .real-text
+                layout()
+                display: flex
+                flex: 1
+                .real-text-title
+                  font-size: $font-size-14
+                  font-family: $font-family-regular
+                  color: $color-text-main
+                  /*margin-bottom: 4px*/
                 .real-text-number
-                  font-size: 26px
+                  font-size: 28px
                   font-family: $font-family-din-bold
                   color: $color-text-main
                   line-height: 28px
-                .real-text-sale
-                  font-size: 12px
-                  font-family: $font-family-regular
-                  color: #999
-          .real-list-box:nth-of-type(3n)
-            border-right: 0 solid #E9ECEE
-          .real-list-box:nth-of-type(4), .real-list-box:nth-of-type(5), .real-list-box:nth-of-type(6)
-            border-bottom: 0 solid #E9ECEE
+              .bottom-box
+                font-size: 12px
+                font-family: $font-family-regular
+                color: #999
+                text-align: center
+            .real-list-box:nth-of-type(3n)
+              border-right: 0 solid $border-color
+            .real-list-box:nth-of-type(4), .real-list-box:nth-of-type(5), .real-list-box:nth-of-type(6)
+              border-bottom: 0 solid $border-color
     .data-header-right
-      width: 33.33333%
-      height: 260px
-      padding-left: 13px
+      width: 32%
+      height: 360px
       box-sizing: border-box
       .base-box
         width: 100%
-        height: 260px
+        height: 360px
         background: $color-white
         .base-function-box
           layout(row)
           .base-list-item
             width: 33.3333%
-            height: 100px
-            border-right: 0.5px solid #E9ECEE
-            border-bottom: 0.5px solid #E9ECEE
-            padding: 17px 20px 0
+            height: 150px
+            padding: $margin
             cursor: pointer
+            &:nth-child(3n+2),&:nth-child(3n+1)
+              border-right-1px($border-color)
+            &:nth-child(-n+3)
+              border-bottom-1px($border-color)
             .base-item-title
               font-size: $font-size-14
               line-height: $font-size-14
               color: $color-text-main
               font-family: $font-family-regular
-              margin-bottom: 17px
+              margin-bottom: 10px
             .base-number-box
               layout(row)
               align-items: center
@@ -715,17 +993,20 @@
                 color: $color-text-main
                 line-height: 28px
                 font-family: $font-family-din-bold
-              .number-right
-                width: 20px
-                height: 20px
-                icon-image(icon-rightward_1)
+            .base-list-arrow
+              position: absolute
+              bottom: $margin
+              right: $margin
+              width: 20px
+              height: 20px
+              icon-image(icon-rightward_1)
           .base-list-item:hover
-            .number-right
+            .base-list-arrow
               icon-image(icon-rightward_2)
   .data-middle-box
     layout(row)
     display: flex
-    margin-top: 20px
+    margin-top: $margin
     .data-middle-left
       width: 66.66666%
       height: 260px
@@ -759,7 +1040,7 @@
         height: 100%
   .data-bottom-box
     layout(row)
-    margin-top: 20px
+    margin-top: $margin
     background: $color-white
     .dispose-matter-box
       layout(row)
@@ -853,10 +1134,10 @@
     height: @width
     display: block
     border-radius: 2px
-    border: 0.5px solid #E9ECEE
+    border: 0.5px solid $border-color
   .survey-box
-    padding: 0 20px
-    border-bottom-1px(#E9ECEE)
+    padding: 0 $margin
+    border-bottom-1px($border-color)
   .educe-btn
     font-size: $font-size-12
     color: $color-main
@@ -868,13 +1149,27 @@
     border: 1px solid $color-main
     border-radius: 12px
     background: $color-white
-    margin-left: 20px
+    margin-left: $margin
     cursor: pointer
   .identification
     width: 100%
-  .function-btn
+  .refresh-btn
+    height: 14px
+    line-height: 14px
     layout(row)
-    align-items: center
+    color: #666666
+    font-size: $font-size-14
+    font-family: $font-family-regular
+    cursor: pointer
+    .refresh-icon
+      width: 14px
+      height: 14px
+      margin-right: 6px
+      icon-image(icon-renovate_1)
+    &:hover
+      color: #6EBA6E
+      .refresh-icon
+        icon-image(icon-renovate_2)
   .trend-box
     #trend
       height: 345px
@@ -885,4 +1180,146 @@
       border-bottom: 0.5px solid #E6E7EB !important
   .survey-box-none
     border-none()
+
+  .data-board
+    background: #ffffff
+    height: 480px
+    position: relative
+    margin-top: $margin
+
+    .title-bar
+      padding: 0 $margin
+      height: 60px
+      line-height: 60px
+      color: $color-text-main
+      font-size: $font-size-16
+      font-family: $font-family-medium
+      border-bottom-1px($border-color)
+      layout(row)
+      justify-content: space-between
+      align-items: center
+
+      .left-box
+        layout(row)
+        align-items: center
+
+        .title-icon
+          width: 14px
+          height: 14px
+          margin-right: 5px
+        .title
+          margin-right: 30px
+          font-family: $font-family-bold
+
+        .tab
+          position: relative
+          height: 24px
+          background: #F6F6F6
+          layout(row)
+          border-radius: 12px
+          font-family: $font-family-regular
+          cursor: pointer
+
+          .tab-item
+            box-sizing: border-box
+            padding: 0 18px
+            min-width: 84px
+            height: 24px
+            line-height: @height
+            color: #666666
+            text-align: center
+            font-size: $font-size-12
+
+          .tab-active
+            position: absolute
+            top: 0
+            left: 0
+            z-index: 0
+            background: #6EBA6E
+            color: $color-white
+            border-radius: 12px
+            transition: all 0.3s
+
+    .bottom-con
+      layout(row)
+      padding: 26px 0 26px $margin
+      .label-con
+        width: 220px
+        layout()
+        color: $color-text-main
+        font-family: $font-family-regular
+        font-size: $font-size-12
+        .data-date
+          margin-bottom: 20px
+          color: #999999
+        .label
+          width: 100%
+          font-size: $font-size-12
+          .label-val
+            font-size: 32px
+            font-family: $font-family-din-bold
+
+      .chart-con
+        flex: 1
+        height: 368px
+  .rank-list
+    margin-top: $margin
+    background: #ffffff
+    .rank-list-content
+      padding: $margin 0 $margin $margin
+      layout(row)
+      .list-con
+        flex: 1
+        margin-right: $margin
+        position: relative
+        &:after
+          content: ""
+          pointer-events: none // 解决iphone上的点击无效Bug
+          display: block
+          position: absolute
+          left: 0
+          top: 0
+          transform-origin: 0 0
+          border: 1px solid $border-color
+          box-sizing border-box
+          width 100%
+          height 100%
+          @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2)
+            width: 200%
+            height: 200%
+            transform: scale(.5) translateZ(0)
+          @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+            width: 300%
+            height: 300%
+            transform: scale(1 / 3) translateZ(0)
+      .title-bar
+        padding: 0 20px
+        box-sizing: border-box
+        height: 60px
+        line-height: 60px
+        color: $color-text-main
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        border-bottom-1px($border-color)
+        layout(row)
+        justify-content: space-between
+        align-items: center
+        .left-box
+          layout(row)
+          align-items: center
+          .title
+            margin-right: 30px
+            font-family: $font-family-bold
+        .excel-btn
+          display: block
+          width: 80px
+          height: 28px
+          line-height: 28px
+          text-align: center
+          color: $color-main
+          font-size: $font-size-12
+          font-family: $font-family-regular
+          border: .5px solid $color-main
+          border-radius: 14px
+
 </style>
