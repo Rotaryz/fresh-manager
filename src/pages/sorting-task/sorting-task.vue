@@ -84,7 +84,7 @@
                   <div v-if="item.afterBr">
                     {{row[item.afterBr]}}
                   </div>
-                  <div v-if="item.afterImg && item[item.afterImg.key]" :class="item.afterImg.class">
+                  <div v-if="item.afterImg && row[item.afterImg.key]" :class="item.afterImg.class">
                   </div>
                 </template>
 
@@ -141,7 +141,7 @@
     {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'status_str'},
+    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
     {
       tilte: '操作',
       key: '',
