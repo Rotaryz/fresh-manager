@@ -44,9 +44,9 @@
         if (!hasData) return false// 没有数据不设置option
         let option = this._setOption(chartConfig)
         myChart.setOption(option)
-        window.addEventListener('resize', function() {
-          myChart.resize()
-        })
+        // window.addEventListener('resize', function() {
+        //   myChart.resize!==null && myChart.resize()
+        // })
         return myChart
       },
       _setOption(chartConfig) {

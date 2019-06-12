@@ -301,7 +301,19 @@
         realTimeData: REAL_TIME,
         dataBoard: DATA_BOARD,
         dataBoardIndex: 0,
-        rankDir: RANK_DIR
+        rankDir: RANK_DIR,
+        chartArr: [],
+        getFinish: false
+      }
+    },
+    watch: {
+      getFinish(val) {
+        if (val) {
+          // 请求完设置eChart自适应窗口变化
+          setTimeout(() => {
+            this._setResize()
+          }, 2000)
+        }
       }
     },
     mounted() {
@@ -445,7 +457,8 @@
           curChart = this.formatResData(res, curChart)
           getSuccess = true
         }).finally(() => {
-          this.$refs.realTimeChart._setChart(curChart.chartConfig, loading, getSuccess)
+          this.chartArr[0] = this.$refs.realTimeChart._setChart(curChart.chartConfig, loading, getSuccess)
+          this.getFinish = this.chartArr.length === 2
           loading && this.$loading.hide()
         })
       },
@@ -461,7 +474,8 @@
           curChart = this.formatResData(res, curChart)
           getSuccess = true
         }).finally(() => {
-          this.$refs.dataBoardChart._setChart(curChart.chartConfig, true, getSuccess)
+          this.chartArr[1] = this.$refs.dataBoardChart._setChart(curChart.chartConfig, true, getSuccess)
+          this.getFinish = this.chartArr.length === 2
           loading && this.$loading.hide()
         })
       },
@@ -498,7 +512,16 @@
         if (curPage < 1 || curPage > item.pager.pageTotal) return
         item.pager.curPage = curPage
         this[item.apiFun]()
-      }
+      },
+      _setResize() {
+        // 设置chart自适应窗口大小变化
+        let _that = this
+        window.onresize = function () {
+          for (let i = 0; i < _that.chartArr.length; i++) {
+            _that.chartArr[i] && _that.chartArr[i].resize()
+          }
+        }
+      },
     }
   }
 </script>
