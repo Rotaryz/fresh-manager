@@ -448,7 +448,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        let index = 2
+        let index = 1
         this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
         // this.getPurchaseTaskList({
         //   time: this.time,
@@ -706,7 +706,7 @@
           this.$toast.show(res.message)
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
-            let index = 3
+            let index = 2
             this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
             await this._statistic()
             // this.getPurchaseTaskList({
