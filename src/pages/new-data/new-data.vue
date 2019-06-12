@@ -8,7 +8,7 @@
               <img src="./icon-real_time@2x.png" class="identification-icon">
               <p class="identification-name">实时总览</p>
             </div>
-            <div class="refresh-btn">
+            <div @click="_getRealTimeData" class="refresh-btn">
               <div class="refresh-icon"></div>
               刷新
             </div>
@@ -89,7 +89,7 @@
             </p>
           </div>
         </div>
-        <e-chart-line ref="dataBoardChart" chartId="dataBoardChart" class="chart-con"></e-chart-line>
+        <e-chart-line ref="dataBoardChart" chartId="dataBoardChart" class="data-board-chart"></e-chart-line>
       </div>
     </div>
     <div class="rank-list">
@@ -100,124 +100,35 @@
         </div>
       </div>
       <div class="rank-list-content">
-        <div class="list-con">
+        <div v-for="(list,index) in rankDir" :key="index" class="rank-list-con">
           <div class="title-bar">
             <div class="left-box">
-              <p class="title">团长</p>
+              <p class="title">{{list.title}}</p>
             </div>
             <a target="_blank" class="excel-btn">导出Excel</a>
           </div>
-        </div>
-        <div class="list-con">
-          <div class="title-bar">
-            <div class="left-box">
-              <p class="title">商品</p>
+          <div class="big-list">
+            <div class="list-header list-box goods-list">
+              <div v-for="(th,thIdx) in list.tableHead" :key="thIdx" class="list-item">{{th}}</div>
             </div>
-            <a target="_blank" class="excel-btn">导出Excel</a>
-          </div>
-        </div>
-        <div class="list-con">
-          <div class="title-bar">
-            <div class="left-box">
-              <p class="title">搜索词</p>
-            </div>
-            <a target="_blank" class="excel-btn">导出Excel</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="data-middle-box">
-      <div class="data-middle-left">
-        <div class="middle-small-left">
-          <div class="data-list">
-            <div class="identification survey-box">
-              <div class="identification-page">
-                <img src="./icon-7day@2x.png" class="identification-icon">
-                <p class="identification-name">7日趋势</p>
-              </div>
-              <div class="function-btn">
-                <base-option-box :infoTab="0" :arrTitle="chartTime" @checkTime="_echartMore"></base-option-box>
-              </div>
-            </div>
-            <div class="trend-box">
-              <div id="trend"></div>
-            </div>
-          </div>
-        </div>
-        <div class="middle-small-right">
-          <div class="goods-rank">
-            <div class="identification survey-box survey-box-none">
-              <div class="identification-page">
-                <img src="./icon-ranking@2x.png" class="identification-icon">
-                <p class="identification-name">商品排行</p>
-              </div>
-              <div class="function-btn">
-                <base-option-box :infoTab="2" :disabledDate="disabledDate" @checkTime="_shopMore"></base-option-box>
-                <a class="educe-btn" :href="shopDownUrl" target="_blank">导出</a>
-              </div>
-            </div>
-            <div class="big-list">
-              <div class="list-header list-box goods-list">
-                <div v-for="(item,index) in rankList" :key="index" class="list-item">{{item}}</div>
-              </div>
-              <div class="list">
-                <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box goods-list">
-                  <div class="list-item">
-                    <img :src="item.image_url" class="data-list-img">
-                  </div>
-                  <div class="list-item">{{item.goods_name}}</div>
-                  <div class="list-item">{{item.sale_count_sum}}</div>
-                  <div class="list-item">￥{{item.sale_total_sum}}</div>
+            <div class="list">
+              <div v-for="(item, idx) in list.data" :key="idx" class="list-content list-box goods-list">
+                <div v-for="(key, keyIdx) in list.dataKey" :key="keyIdx" class="list-item">
+                  <template v-if="key==='index'">
+                    <div v-if="idx<3" :src="item[key]" :class="'rank-'+(idx+1)" class="rank-icon"></div>
+                    <p v-else class="list-rank-num">{{idx+1}}</p>
+                  </template>
+                  <img v-else-if="key==='image_url'" :src="item[key]" class="data-list-img">
+                  <template v-else>{{item[key]}}</template>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="data-middle-right">
-        <div class="community-rank">
-          <div class="identification survey-box survey-box-none">
-            <div class="identification-page">
-              <img src="./icon-ranking@2x.png" class="identification-icon">
-              <p class="identification-name">社区排行</p>
-            </div>
-            <div class="function-btn">
-              <!--<base-option-box :infoTab="2" :arrTitle="rankTime" @checkTime="_managerMore"></base-option-box>-->
-              <base-option-box :infoTab="2" :disabledDate="disabledDate" @checkTime="_managerMore"></base-option-box>
-              <a class="educe-btn" :href="downUrl" target="_blank">导出</a>
+            <div class="pager-bar">
+              <div @click="_changePage(list,-1)" class="page-btn btn-prev"></div>
+              <div class="page-con">{{list.pager.curPage}}/{{list.pager.pageTotal}}</div>
+              <div @click="_changePage(list,1)" class="page-btn btn-next"></div>
             </div>
           </div>
-          <div class="big-list">
-            <div class="list-header list-box community-list">
-              <div v-for="(item,index) in communityList" :key="index" class="list-item">{{item}}</div>
-            </div>
-            <div class="list">
-              <div v-for="(item,index) in managerList" :key="index" class="list-content list-box community-list">
-                <div class="list-item">{{item.social_name}}</div>
-                <div class="list-item">{{item.sale_total_sum}}</div>
-                <div class="list-item">{{item.order_count_sum}}</div>
-                <div class="list-item">{{item.commission_total_sum}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="data-bottom-box">
-      <div class="identification survey-box">
-        <div class="identification-page">
-          <img src="./icon-backlog@2x.png" class="identification-icon">
-          <p class="identification-name">待处理事项</p>
-        </div>
-      </div>
-      <div class="dispose-matter-box">
-        <div v-for="(item, index) in disposeList" :key="index" class="dispose-list-box">
-          <div class="dispose-top-item hand" @click="jumpDispose(item)">
-            <div class="dispose-text">{{item.text}}</div>
-            <div v-if="item.number !== 0 && shopShow && srmShow" class="dispose-number">{{item.number}}</div>
-            <img v-if="item.number === 0 && shopShow && srmShow" src="./icon-complete@2x.png" alt="" class="dispose-img">
-          </div>
-          <div class="dispose-name">{{item.subText}}</div>
         </div>
       </div>
     </div>
@@ -233,11 +144,9 @@
 
   const PAGE_NAME = 'NEW_DATA'
   const TITLE = '数据'
-  const RANKLIST = ['图片', '商品名称', '销售数量', '销售额']
-  const COMMUNITYLIST = ['社区', '销售额', '支付订单数', '佣金收益']
   const REALDATA = [
     {imgUrl: '', title: '访客数', key: 'visitor', curr_total: 0, total: 0},
-    {imgUrl: 'users', title: '支付用户', key: 'pay_rate', curr_total: 0, total: 0},
+    {imgUrl: 'users', title: '支付用户', key: 'order', curr_total: 0, total: 0},
     {imgUrl: 'browse_volume', title: '浏览量', key: 'pay_customer', curr_total: 0, total: 0},
     {imgUrl: 'wallet', title: '支付订单', key: 'customer_price', curr_total: 0, total: 0},
   ]
@@ -249,67 +158,11 @@
     {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},
     {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management', permissions: 'driver'}
   ]
-  const DISPOSELIST = [
-    {
-      text: '发',
-      subText: '待发布采购任务',
-      key: 'publish_task_count',
-      number: 0,
-      url: '/home/procurement-task?status=1',
-      permissions: 'purchase-task'
-    },
-    {
-      text: '采',
-      subText: '待采购任务',
-      key: 'purchase_task_count',
-      number: 0,
-      url: '/home/procurement-task?status=2',
-      permissions: 'purchase-task'
-    },
-    {
-      text: '入',
-      subText: '待入库任务',
-      key: 'entry_order_count',
-      number: 0,
-      url: '/home/product-enter?status=0',
-      permissions: 'entry-orders'
-    },
-    {
-      text: '出',
-      subText: '待出库任务',
-      key: 'out_order_count',
-      number: 0,
-      url: '/home/product-out?status=0',
-      permissions: 'out-orders'
-    },
-    {
-      text: '配',
-      subText: '待配送任务',
-      key: 'delivery_count',
-      number: 0,
-      url: '/home/distribution-task?status=1',
-      permissions: 'delivery'
-    },
-    {
-      text: '运',
-      subText: '待售后订单',
-      key: 'after_sale_count',
-      number: 0,
-      url: '/home/returns-management?status=0',
-      permissions: 'after-sale-orders'
-    }
-  ]
   const RANKTIME = [
     {title: '今天', status: 'today'},
     {title: '昨天', status: 'yesterday'},
     {title: '7天', status: 'week'},
     {title: '30天', status: 'month'}
-  ]
-  const CHARTTIME = [
-    {title: '销售额', status: '1'},
-    {title: '访客数', status: '2'},
-    {title: '买家数', status: '3'},
-    {title: '客单价', status: '4'}
   ]
   const REAL_TIME = {
     apiFun: 'getOperationOrderData',
@@ -368,7 +221,7 @@
       label: [
         {name: '支付用户', key: 'amount_total', total: ''},
         {name: '支付订单', key: 'num_total', total: ''},
-        {name: '支付转化率', key: 'unit_price', total: ''}
+        {name: '支付转化率', key: 'unit_price', total: '',unit: '%'}
       ],
       chartConfig: {
         dataArr: [
@@ -398,6 +251,35 @@
       }
     }
   ]
+  const RANK_DIR = {
+    leader: {
+      title: '团长',
+      tableHead: ['排名', '团长', '销售额', '佣金'],
+      apiFun:'getManagerRank',
+      params:{time: 'week', start_time: '', end_time: ''},
+      data: [],
+      dataKey: ['index','social_name','sale_total_sum','commission_total_sum'],
+      pager: {curPage: 1, pageTotal: 10}
+    },
+    goods: {
+      title: '商品',
+      tableHead: ['图片', '商品名称', '销量', '销售额'],
+      apiFun:'getGoodsRank',
+      params:{time: 'week', start_time: '', end_time: ''},
+      data: [],
+      dataKey: ['image_url','goods_name','sale_count_sum','sale_total_sum'],
+      pager: {curPage: 1, pageTotal: 10}
+    },
+    search: {
+      title: '搜索词',
+      tableHead: ['排名', '搜索词', '搜索次数'],
+      apiFun:'getGoodsRank',
+      params:{time: 'week', start_time: '', end_time: ''},
+      data: [],
+      dataKey: ['index','goods_name','sale_count_sum'],
+      pager: {curPage: 1, pageTotal: 10}
+    }
+  }
 
   export default {
     name: PAGE_NAME,
@@ -409,34 +291,29 @@
     },
     data() {
       return {
-        rankList: RANKLIST,
-        communityList: COMMUNITYLIST,
         realData: REALDATA,
         baseList: BASELIST,
-        disposeList: DISPOSELIST,
-        shopShow: false,
-        srmShow: false,
         rankTime: RANKTIME,
-        chartTime: CHARTTIME,
-        goodsList: [],
-        managerList: [],
-        time: 'week',
-        shopTime: 'week',
-        shopStartTime: '',
-        shopEndTime: '',
-        managerTime: 'week',
-        managerStartTime: '',
-        managerEndTime: '',
         downUrl: '',
         shopDownUrl: '',
-        drawX: [],
-        drawY: [],
-        drawTitle: '',
         permissions: {},
         disabledDate: {},
         realTimeData: REAL_TIME,
         dataBoard: DATA_BOARD,
-        dataBoardIndex: 0
+        dataBoardIndex: 0,
+        rankDir: RANK_DIR,
+        chartArr: [],
+        getFinish: false
+      }
+    },
+    watch: {
+      getFinish(val) {
+        if (val) {
+          // 请求完设置eChart自适应窗口变化
+          setTimeout(() => {
+            this._setResize()
+          }, 2000)
+        }
       }
     },
     mounted() {
@@ -450,26 +327,14 @@
       this.getSurveyTrade('', '', 'week', true)
       this.getScmBaseData()
       this.getShopBaseData()
-      this._getDataBoard()
+      this._getDataBoard(true)
       this._getRealTimeData()
-      this.getScmTaskData()
-      this.getShopTaskData()
-      this.getEchartData()
-      this.getGoodsRank('', '', 'week', false)
-      this.getManagerRank('', '', 'week', false)
-      this._getUrl()
-      this._getShopUrl()
+      this.getGoodsRank()
+      this.getManagerRank()
     },
     methods: {
       ...deliveryMethods,
       // 实时总览
-      _orderMore(value) {
-        if (typeof value === 'string') {
-          this.getSurveyTrade('', '', value, true)
-          return
-        }
-        this.getSurveyTrade(value[0], value[1], '', true)
-      },
       getSurveyTrade(startTime, endTime, time, loading) {
         API.Data.tradeData({start_time: startTime, end_time: endTime, time: time}, loading).then((res) => {
           if (loading) {
@@ -499,6 +364,7 @@
           }
         })
       },
+      // 基础功能
       getShopBaseData() {
         API.Data.getStatisticsBaseData().then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -525,178 +391,20 @@
         }
         this.$router.push(item.url)
       },
-      //  7日趋势
-      getEchartData(type = 1, loading = false) {
-        API.Data.echartData({data: 7, type: type}, loading).then((res) => {
-          if (loading) {
-            this.$loading.hide()
-          }
-          if (res.error === this.$ERR_OK) {
-            this.drawX = res.data.x
-            this.drawY = res.data.y
-            this.drawTitle = res.data.title
-            this.drawEcharLine()
-          } else {
-            this.$toast.show(res.message)
-          }
-        })
-      },
-      drawEcharLine() {
-        let myChart = this.$echarts.init(document.getElementById('trend'))
-        myChart.setOption({
-          grid: {
-            top: '45',
-            left: '15',
-            right: '30',
-            bottom: '20',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: this.drawX,
-            splitLine: {
-              show: false,
-              lineStyle: {
-                color: '#F0F3F5',
-                width: 0.5
-              }
-            },
-            axisLabel: {
-              color: '#999',
-              fontSize: 12,
-              align: 'center',
-              margin: 17
-            },
-            axisTick: {
-              show: false,
-              lineStyle: {
-                color: '#ccc',
-                width: 0.5
-              }
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#F0F3F5',
-                width: 0.5
-              }
-            }
-          },
-          tooltip: {
-            trigger: 'axis',
-            textStyle: {
-              align: 'left'
-            },
-            axisPointer: {
-              lineStyle: {
-                color: '#ccc',
-                width: 0.5
-              }
-            },
-            padding: [10, 50, 10, 20]
-          },
-          yAxis: {
-            minInterval: 1,
-            type: 'value',
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: '#F0F3F5',
-                width: 0.5
-              }
-            },
-            axisTick: {
-              show: false,
-              lineStyle: {
-                color: '#c4c4c4',
-                width: 0.5
-              }
-            },
-            axisLabel: {
-              formatter: '{value}',
-              color: '#999',
-              margin: 20
-            },
-            axisLine: {
-              show: false,
-              lineStyle: {
-                color: '#c4c4c4',
-                width: 0.5
-              }
-            }
-          },
-          series: [
-            {
-              name: this.drawTitle,
-              data: this.drawY,
-              type: 'line',
-              areaStyle: {
-                color: {
-                  type: 'linear',
-                  x: 0,
-                  x2: 0,
-                  y: 0,
-                  y2: 1,
-                  colorStops: [
-                    {
-                      offset: 0,
-                      color: 'rgba(242,242,255,1)'
-                    },
-                    {
-                      offset: 1,
-                      color: 'rgba(255,255,255,1)'
-                    }
-                  ],
-                  globalCoord: false
-                }
-              },
-              itemStyle: {
-                normal: {
-                  color: '#8283FF',
-                  borderWidth: 1,
-                  lineStyle: {
-                    color: '#8283FF',
-                    width: 2
-                  }
-                },
-                emphasis: {
-                  borderWidth: 3,
-                  borderColor: '#8283FF'
-                }
-              }
-            }
-          ]
-        })
-        window.onresize = function() {
-          myChart.resize()
-        }
-      },
-      _echartMore(value) {
-        this.getEchartData(value, true)
-      },
       // 商品排行
-      getGoodsRank(startTime, endTime, time, loading) {
-        this.shopTime = time
-        this.shopStartTime = startTime
-        this.shopEndTime = endTime
-        API.Data.goodsData({time: time, start_time: startTime, end_time: endTime}, loading).then((res) => {
+      getGoodsRank(loading=false) {
+        API.Data.goodsData(this.rankDir.goods.params, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
-            this.goodsList = res.data
-            this._getShopUrl()
+            this.rankDir.goods.data = res.data
+            this.rankDir.search.data = res.data
+            // this._getShopUrl()
           } else {
             this.$toast.show(res.message)
           }
         })
-      },
-      _shopMore(value) {
-        if (typeof value === 'string') {
-          this.getGoodsRank('', '', value, true)
-          return
-        }
-        this.getGoodsRank(value[0], value[1], '', true)
       },
       _getShopUrl() {
         let currentId = this.getCurrentId()
@@ -709,28 +417,18 @@
           `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
       },
       // 社区排行
-      getManagerRank(startTime, endTime, time, loading) {
-        this.managerTime = time
-        this.managerStartTime = startTime
-        this.managerEndTime = endTime
-        API.Data.managerData({time: time, start_time: startTime, end_time: endTime}, loading).then((res) => {
+      getManagerRank(loading=false) {
+        API.Data.managerData(this.rankDir.leader.params, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
-            this.managerList = res.data
-            this._getUrl()
+            this.rankDir.leader.data = res.data
+            // this._getUrl()
           } else {
             this.$toast.show(res.message)
           }
         })
-      },
-      _managerMore(value) {
-        if (typeof value === 'string') {
-          this.getManagerRank('', '', value, true)
-          return
-        }
-        this.getManagerRank(value[0], value[1], '', true)
       },
       _getUrl() {
         let currentId = this.getCurrentId()
@@ -742,55 +440,16 @@
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
       },
-      // 待处理事项
-      getScmTaskData() {
-        API.Data.getTaskData().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.srmShow = true
-            for (let key in res.data) {
-              let index = this.disposeList.findIndex((item) => item.key === key)
-              this.disposeList[index].number = res.data[key]
-            }
-          } else {
-            this.$toast.show(res.message)
-          }
-        })
-      },
-      getShopTaskData() {
-        API.Data.getStatisticsTaskData().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.shopShow = true
-            for (let key in res.data) {
-              let index = this.disposeList.findIndex((item) => item.key === key)
-              if (index >= 0) {
-                this.disposeList[index].number = res.data[key]
-              }
-            }
-          } else {
-            this.$toast.show(res.message)
-          }
-        })
-      },
-      jumpDispose(item) {
-        if (!this.permissions[item.permissions]) {
-          this.$toast.show('暂无权限!')
-          return
-        }
-        if (this.permissions[item.permissions].index * 1 !== 1) {
-          this.$toast.show('暂无权限!')
-          return
-        }
-        this.$router.push(item.url)
-      },
       _switchTab(tab, tabIdx) {
         if (this.dataBoardIndex === tabIdx) return
         this.dataBoardIndex = tabIdx
         this._getDataBoard()
       },
-      _getRealTimeData(first = true) {
+      // 实时总览折线图
+      _getRealTimeData(loading = false) {
         let curChart = this.realTimeData
         let getSuccess = false
-        API.Operation[curChart.apiFun]({date_type: 'week'}).then((res) => {
+        API.Operation[curChart.apiFun]({date_type: 'week'},loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
@@ -798,14 +457,16 @@
           curChart = this.formatResData(res, curChart)
           getSuccess = true
         }).finally(() => {
-          this.$refs.realTimeChart._setChart(curChart.chartConfig, first, getSuccess)
-          // loading && this.$loading.hide()
+          this.chartArr[0] = this.$refs.realTimeChart._setChart(curChart.chartConfig, loading, getSuccess)
+          this.getFinish = this.chartArr.length === 2
+          loading && this.$loading.hide()
         })
       },
-      _getDataBoard(first = true) {
+      // 数据看板
+      _getDataBoard(loading = false) {
         let curChart = this.dataBoard[this.dataBoardIndex]
         let getSuccess = false
-        API.Operation[curChart.apiFun]({date_type: 'month'}).then((res) => {
+        API.Operation[curChart.apiFun]({date_type: 'week'},loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
@@ -813,8 +474,9 @@
           curChart = this.formatResData(res, curChart)
           getSuccess = true
         }).finally(() => {
-          this.$refs.dataBoardChart._setChart(curChart.chartConfig, first, getSuccess)
-          // loading && this.$loading.hide()
+          this.chartArr[1] = this.$refs.dataBoardChart._setChart(curChart.chartConfig, true, getSuccess)
+          this.getFinish = this.chartArr.length === 2
+          loading && this.$loading.hide()
         })
       },
       formatResData(result, curChart) {
@@ -831,7 +493,7 @@
           for (let i = 0; i < result.data.length; i++) {
             let _resData = result.data[i]
             // 测试数据
-            let rd = (Math.random() * 1000).toFixed(2)
+            let rd = (Math.random() * 100).toFixed(2)
             _chartData.data.push(_resData[_key]+rd)
             // 测试数据
             // _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
@@ -844,7 +506,22 @@
           }
         }
         return curChart
-      }
+      },
+      _changePage(item,num) {
+        let curPage = item.pager.curPage + num
+        if (curPage < 1 || curPage > item.pager.pageTotal) return
+        item.pager.curPage = curPage
+        this[item.apiFun]()
+      },
+      _setResize() {
+        // 设置chart自适应窗口大小变化
+        let _that = this
+        window.onresize = function () {
+          for (let i = 0; i < _that.chartArr.length; i++) {
+            _that.chartArr[i] && _that.chartArr[i].resize()
+          }
+        }
+      },
     }
   }
 </script>
@@ -970,6 +647,7 @@
         .base-function-box
           layout(row)
           .base-list-item
+            position: relative
             width: 33.3333%
             height: 150px
             padding: $margin
@@ -1259,7 +937,7 @@
             font-size: 32px
             font-family: $font-family-din-bold
 
-      .chart-con
+      .data-board-chart
         flex: 1
         height: 368px
   .rank-list
@@ -1268,7 +946,7 @@
     .rank-list-content
       padding: $margin 0 $margin $margin
       layout(row)
-      .list-con
+      .rank-list-con
         flex: 1
         margin-right: $margin
         position: relative
@@ -1300,7 +978,6 @@
         color: $color-text-main
         font-size: $font-size-16
         font-family: $font-family-medium
-        border-bottom-1px($border-color)
         layout(row)
         justify-content: space-between
         align-items: center
@@ -1321,5 +998,50 @@
           font-family: $font-family-regular
           border: .5px solid $color-main
           border-radius: 14px
-
+          transition: all .3s
+          &:hover
+            color: $color-white
+            background: $color-main
+      .big-list
+        max-height: 695px
+        padding-bottom: 60px
+        font-size: $font-size-14
+        .list-header
+          background: $color-white
+          font-family: $font-family-medium
+        .rank-icon
+          width: 30px
+          height: 36px
+          &.rank-1
+            icon-image(icon-one)
+          &.rank-2
+            icon-image(icon-two)
+          &.rank-3
+            icon-image(icon-three)
+        .list-rank-num
+          padding-left: 12px
+          font-family: $font-family-medium
+        .pager-bar
+          position: absolute
+          left: 0
+          bottom: 0
+          width: 100%
+          height: 60px
+          layout(row)
+          justify-content: center
+          align-items: center
+          .page-con
+            margin: 0 14px
+          .page-btn
+            width: 24px
+            height: 24px
+            transition: all .3s
+            &.btn-prev
+              icon-image(icon-left_ash)
+              &:hover
+                icon-image(icon-left_green)
+            &.btn-next
+              icon-image(icon-right_ash)
+              &:hover
+                icon-image(icon-right_green)
 </style>
