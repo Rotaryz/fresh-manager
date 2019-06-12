@@ -13,7 +13,7 @@
         <!--<base-option-box :arrTitle="dateSelector" :infoTab="0"
                          @checkTime="_selectDate"
         ></base-option-box>-->
-        <base-date-picker :arrTitle="dateSelector" :infoTab="5" @checkTime="_selectDate"></base-date-picker>
+        <base-date-picker :arrTitle="dateSelector" :infoTab="0" @checkTime="_selectDate"></base-date-picker>
       </div>
       <div class="chart-container">
         <template v-if="topTabIndex === 0">
@@ -52,7 +52,7 @@
     {text: '拓展视窗', status: 2, conTitle: '拓展数据'}
   ]
   const DATE_SELECTOR = [
-    {title: '日', status: 'day'},
+    {title: '日', status: 'date'},
     {title: '周', status: 'week'},
     {title: '月', status: 'month'}
   ]

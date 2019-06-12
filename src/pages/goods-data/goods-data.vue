@@ -6,7 +6,7 @@
         <div class="data-title">商品数据</div>
       </div>
       <!--<base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>-->
-      <base-date-picker :infoTab="5" :disabledDate="dateOption" @checkTime="_getData"></base-date-picker>
+      <base-date-picker :infoTab="0" :arrTitle="arrTitle" :disabledDate="dateOption" @checkTime="_getData"></base-date-picker>
     </div>
     <div class="data-content">
       <left-tab ref="goodsTab" @changeTab="changeTab"></left-tab>
@@ -193,10 +193,9 @@
   import API from '@api'
 
   const ARR_TITLE = [
-    {title: '7天', status: 'week'},
-    {title: '15天', status: 'half_month'},
-    {title: '30天', status: 'month'},
-    {title: '自定义', status: 'custom'}
+    {title: '日', status: 'date'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
   ]
   // 导出接口
   const EXPORT_URL = {

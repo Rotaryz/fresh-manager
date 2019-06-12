@@ -1,20 +1,37 @@
 <template>
   <ul class="data-date-picker">
-    <li v-for="(item, index) in arrTitle" :key="index" class="date-item hand" :class="{'date-item-active': tabIndex === index}" @click="checkTab(index)">
+    <li v-for="(item, index) in arrTitle"
+        :key="index"
+        class="date-item hand"
+        :class="{'date-item-active': tabIndex === index}"
+        @click="checkTab(index)"
+    >
+      <date-picker :ref="item.status"
+                   v-model="date"
+                   :clearable="false"
+                   :type="item.status"
+                   :placeholder="text"
+                   class="date"
+                   :pickerOptions="pickerOptions"
+                   @change="_getDayDate"
+      ></date-picker>
       {{item.title}}
       <transition name="fade">
         <!-- v-show=""-->
         <div v-if="item.status === 'day' && tabIndex === index && showDate" class="block day">
           <!--<base-date-select :clearable="false" :disabledDate="disabledDate" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>-->
-          <date-picker v-model="date"
+          <date-picker ref="date"
+                       v-model="item.date"
                        :clearable="false"
                        type="date"
                        :placeholder="text"
+                       @mouseenter="mouseEnter"
                        @change="_getDayDate"
           ></date-picker>
         </div>
         <div v-if="item.status === 'week' && tabIndex === index && showDate" class="block week">
-          <date-picker v-model="week"
+          <date-picker ref="week"
+                       v-model="week"
                        :clearable="false"
                        type="week"
                        format="yyyy 第 WW 周"
@@ -23,7 +40,8 @@
           ></date-picker>
         </div>
         <div v-if="item.status === 'month' && tabIndex === index && showDate" class="block month">
-          <date-picker v-model="month"
+          <date-picker ref="month"
+                       v-model="month"
                        :clearable="false"
                        type="month"
                        :placeholder="text"
@@ -38,9 +56,10 @@
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'element-ui'
+  // import DatePicker from './date-picker/src/picker'
   const COMPONENT_NAME = 'BASE_OPTION_BOX'
   const NAV = [
-    {title: '日', status: 'day'},
+    {title: '日', status: 'date'},
     {title: '周', status: 'week'},
     {title: '月', status: 'month'}
   ]
@@ -77,6 +96,11 @@
     data() {
       return {
         tabIndex: this.infoTab,
+        pickerOptions: {
+          disabledDate: function(date) {
+            return date.valueOf() > Date.now() - 86400000
+          }
+        },
         showPicker: true,
         moreTime: '',
         showDate: false,
@@ -91,15 +115,23 @@
       }
     },
     methods: {
+      mouseEnter() {
+        console.log(this.$refs.date[0], 222)
+        this.$refs.date.focus()
+      },
       checkTab(index) {
         this.tabIndex = index
         // this.week = ''
         // this.month = ''
         let status = this.arrTitle[index].status
-        this.showDate = true
+        // this.showDate = true
         console.log(status)
         // this.$emit('checkTime', status)
       },
+      // dateEnter() {
+      //   console.log(this.$refs.date)
+      //   this.$refs.date.focus()
+      // },
       _getCustomTime(time) {
         this.showDate = false
 
@@ -107,22 +139,22 @@
       },
       _getDayDate(time) {
         let date = new Date(time).getDate()
-        console.log(date)
-        this.showDate = true
+        console.log(time)
+        // this.showDate = true
         // this.$emit('checkTime', time)
       },
       _getWeekDate(time) {
         let date = new Date(time).getDate()
         console.log(date)
         // this.week = time
-        this.showDate = true
+        // this.showDate = true
         // this.$emit('checkTime', time)
       },
       _getMonthDate(time) {
         let date = new Date(time).getMonth() + 1
         console.log(date)
         // this.month = time
-        this.showDate = true
+        // this.showDate = true
         // this.$emit('checkTime', date)
       }
     }
@@ -147,7 +179,13 @@
       position: relative
       transition: all 0.3s ease-out
       border-left: none
-
+      .date
+        width: 28px
+        height: 28px
+        position: absolute
+        left: 0
+        top: 0
+        opacity: 0
     .date-item-active
       color: #FFF
       background: #6EBA6E
@@ -169,9 +207,11 @@
       .el-input__inner
         font-size: $font-size-12
         line-height: 28px
+        height: 28px
         border-radius: 2px
         color: $color-text-main
         padding: 4px 32px 4px 7px
+        padding: 0
         &::placeholder
           font-family: $font-family-regular
           color: $color-text-assist
