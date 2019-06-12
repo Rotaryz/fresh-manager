@@ -75,6 +75,11 @@
                   </div>
                 </template>
                 {{item.title}}
+                <template v-if="item.type==='afterHelp'">
+                  <div class="icon-help">
+                    <div class="help-text">待处理状态下可选择进行线上退款或补货处理，如该商品已进行线下处理，则线上可进行批量关闭处理。</div>
+                  </div>
+                </template>
               </div>
             </div>
             <div class="list" :class="{'goods-list-border':batchendList.length}">
@@ -153,7 +158,7 @@
     {title: '供应商', key: 'supplier_name', flex: 3},
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: 'sale_out_of_num'},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str'}
+    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str',type:'afterHelp'}
   ]
   export default {
     name: PAGE_NAME,
@@ -392,6 +397,41 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   /*@import "@pages/supply-order/after-sales-detail/check/check.styl"*/
+  .icon-help
+    width:14px
+    height:@width
+    margin-left:4px
+    icon-image(icon-help)
+    .help-text
+      display: none
+      position:absolute
+      width:300px
+      white-space normal
+      z-index:2000
+      right:0
+      transform translate(0,-120%)
+      font-size: $font-size-12
+      color: #FFFFFF
+      line-height: 19px
+      padding:3px 11px
+      opacity: 0.8
+      background: #333333
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,0.11)
+      border-radius: 2px 2px 2px 2px
+      &:after
+        position:absolute
+        bottom:-9px
+        right:28px
+        content: ""
+        border-top:6px solid #333
+        border-left:4px solid transparent
+        border-right:4px solid transparent
+        border-bottom:4px solid transparent
+    &:hover
+      cursor pointer
+      .help-text
+        display: block
+
   .source-order-sn
     text-decoration: underline
     color: #4d77bd
@@ -464,8 +504,8 @@
       overflow auto
 
       .status_str
-        max-width 65px
-
+        max-width 80px
+        padding-right:0px
       .row-check
         max-width 60px
 
