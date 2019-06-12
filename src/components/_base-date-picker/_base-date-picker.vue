@@ -139,7 +139,7 @@
       },
       _getDayDate(time) {
         let date = new Date(time).getDate()
-        console.log(time)
+        console.log(date)
         // this.showDate = true
         // this.$emit('checkTime', time)
       },

@@ -397,7 +397,7 @@
         color: #333
         margin-top: 20px
         .item
-          margin-left: 30px
+          margin-left: 20px
           display: flex
           align-items: center
         .name
