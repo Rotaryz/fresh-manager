@@ -46,15 +46,14 @@
       }
     },
     mounted() {
-      this.el = document.querySelectorAll('.status-tab-item')
-      this.style = `left: ${this.el[this.statusIndex].offsetLeft}px; width: ${this.el[this.statusIndex].offsetWidth}px`
+      this.el = document.querySelector('.status-tab-item')
+      this.style = `left: ${this.el.offsetWidth * this.statusIndex}px; width: ${this.el.offsetWidth}px`
     },
     methods: {
       checkStatus(index, item) {
-        let el = document.querySelectorAll('.status-tab-item')
+        let el = document.querySelector('.status-tab-item')
         this.statusIndex = index
-        console.log(el, 12)
-        this.style = `left: ${el[index].offsetLeft}px; width: ${el[this.statusIndex].offsetWidth}px`
+        this.style = `left: ${this.el.offsetWidth * index}px; width: ${el.offsetWidth}px`
         this.$emit('setStatus', item, index)
       }
     }
@@ -65,7 +64,7 @@
   @import "~@design"
 
   .status-tab
-    margin-left: 2.5vh
+    margin-left: 30px
     display: flex
     background: #F6F6F6
     border-radius: 100px
@@ -74,7 +73,7 @@
     position: relative
     .status-tab-item
       border-radius: 100px
-      width: 70px
+      width: 84px
       color: #666
       line-height: 24px
       text-align: center
@@ -87,7 +86,7 @@
     .status-tab-item-active
       color: $color-white
   .status-slider
-    width: 70px
+    width: 84px
     position: absolute
     top: 0
     left: 0

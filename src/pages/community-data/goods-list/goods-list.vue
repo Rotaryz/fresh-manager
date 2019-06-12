@@ -94,6 +94,8 @@
     padding: 0 20px
     .title-item
       padding-right: 20px
+      &:first-child
+        min-width: 52px
       &:last-child
         padding-right: 0
   .padding
@@ -130,6 +132,8 @@
       height: 36px
       line-height: 36px
       padding-right: 20px
+      &:first-child
+        min-width: 52px
       .main
         overflow: hidden
         text-overflow: ellipsis

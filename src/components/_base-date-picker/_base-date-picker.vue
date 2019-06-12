@@ -5,7 +5,13 @@
       <transition name="fade">
         <!-- v-show=""-->
         <div v-if="item.status === 'day' && tabIndex === index && showDate" class="block day">
-          <base-date-select :clearable="false" :disabledDate="disabledDate" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>
+          <!--<base-date-select :clearable="false" :disabledDate="disabledDate" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>-->
+          <date-picker v-model="date"
+                       :clearable="false"
+                       type="date"
+                       :placeholder="text"
+                       @change="_getDayDate"
+          ></date-picker>
         </div>
         <div v-if="item.status === 'week' && tabIndex === index && showDate" class="block week">
           <date-picker v-model="week"
@@ -74,6 +80,7 @@
         showPicker: true,
         moreTime: '',
         showDate: false,
+        date: '',
         week: '',
         month: ''
       }
@@ -86,11 +93,11 @@
     methods: {
       checkTab(index) {
         this.tabIndex = index
+        // this.week = ''
+        // this.month = ''
         let status = this.arrTitle[index].status
         this.showDate = true
-        if (status === 'custom') {
-          return
-        }
+        console.log(status)
         // this.$emit('checkTime', status)
       },
       _getCustomTime(time) {
@@ -98,13 +105,25 @@
 
         // this.$emit('checkTime', time)
       },
+      _getDayDate(time) {
+        let date = new Date(time).getDate()
+        console.log(date)
+        this.showDate = true
+        // this.$emit('checkTime', time)
+      },
       _getWeekDate(time) {
-        this.week = time
-        this.showDate = false
+        let date = new Date(time).getDate()
+        console.log(date)
+        // this.week = time
+        this.showDate = true
+        // this.$emit('checkTime', time)
       },
       _getMonthDate(time) {
-        this.month = time
-        this.showDate = false
+        let date = new Date(time).getMonth() + 1
+        console.log(date)
+        // this.month = time
+        this.showDate = true
+        // this.$emit('checkTime', date)
       }
     }
   }
@@ -148,12 +167,25 @@
         width: 187px
         height: 28px
       .el-input__inner
+        font-size: $font-size-12
+        line-height: 28px
         border-radius: 2px
+        color: $color-text-main
+        padding: 4px 32px 4px 7px
+        &::placeholder
+          font-family: $font-family-regular
+          color: $color-text-assist
+          line-height: 24px
         &:focus
           outline: none
           border-color: 1px solid $color-main !important
         &:hover
           border: 1px solid #ACACAC
+      .el-input__prefix
+        left: auto
+        right: 2px
+      .el-input__icon
+        line-height: 2.2
     .day
       left: 170%
     .week
