@@ -45,21 +45,17 @@
     },
     watch: {
       value(val){
-        console.log(val)
         this.getStyle()
         return val
       },
       statusList(val, old) {
-        console.log(val)
         this.getStyle()
       }
     },
     methods: {
       getStyle() {
-        console.log(this.value,999)
         this.statusList.length > 0 &&
           this.$nextTick(() => {
-            console.log(this.$refs['tab-item' + this.value])
             let el = this.$refs['tab-item' + this.value][0]
             this.style = `left: ${el.offsetLeft}px; width: ${el.offsetWidth}px`
           })
