@@ -19,7 +19,6 @@
           <div class="identification-page">
             <img :src="tabStatus[0].img" class="identification-icon">
             <p class="identification-name">{{tabStatus[0].text}}</p>
-            {{merchantFilter.status}}
             <base-status-nav :statusList="dispatchSelect" :value="merchantFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
                              @change="setValue"
             ></base-status-nav>
