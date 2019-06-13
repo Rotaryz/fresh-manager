@@ -25,6 +25,8 @@
                 </div>
               </div>
               <e-chart-line ref="realTimeChart" chartId="realTimeChart" class="real-time-chart"></e-chart-line>
+<!--              <e-chart-line v-if="realTimeData.chartConfig.dataArr[0].data.length>0" ref="realTimeChart" chartId="realTimeChart" class="real-time-chart"></e-chart-line>-->
+<!--              <p v-else class="no-data-tips">暂无数据</p>-->
             </div>
             <div class="real-time-box">
               <div v-for="(item, index) in realData" :key="index" class="real-list-box">
@@ -110,28 +112,31 @@
             <a target="_blank" class="excel-btn">导出Excel</a>
           </div>
           <div class="big-list">
-            <div class="list-header">
-              <div v-for="(th,thIdx) in list.tableHead" :key="thIdx" class="list-item">{{th}}</div>
-            </div>
-            <div class="list">
-              <div v-for="(item, idx) in list.data" :key="idx" class="list-content">
-                <div v-for="(key, keyIdx) in list.dataKey" :key="keyIdx" class="list-item">
-                  <template v-if="key==='index'">
-                    <div v-if="idx<3" :src="item[key]" :class="'rank-'+(idx+1)" class="rank-icon"></div>
-                    <p v-else class="list-rank-num">{{idx+1}}</p>
-                  </template>
-                  <template v-else>
-                    <img v-if="key==='goods_name'" :src="item.image_url" class="data-list-img">
-                    <div class="list-text">{{item[key]}}</div>
-                  </template>
+            <template v-if="list.data&&list.data.length>0">
+              <div class="list-head">
+                <div v-for="(th,thIdx) in list.tableHead" :key="thIdx" class="list-item">{{th}}</div>
+              </div>
+              <div class="list">
+                <div v-for="(item, idx) in list.data" :key="idx" class="list-content">
+                  <div v-for="(key, keyIdx) in list.dataKey" :key="keyIdx" class="list-item">
+                    <template v-if="key==='index'">
+                      <div v-if="idx<3" :src="item[key]" :class="'rank-'+(idx+1)" class="rank-icon"></div>
+                      <p v-else class="list-rank-num">{{idx+1}}</p>
+                    </template>
+                    <template v-else>
+                      <img v-if="key==='goods_name'" :src="item.image_url" class="data-list-img">
+                      <div class="list-text">{{item[key]}}</div>
+                    </template>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="pager-bar">
-              <div class="page-btn btn-prev" @click="_changePage(list,-1)"></div>
-              <div class="page-con">{{list.pager.curPage}}/{{list.pager.pageTotal}}</div>
-              <div class="page-btn btn-next" @click="_changePage(list,1)"></div>
-            </div>
+              <div class="pager-bar">
+                <div class="page-btn btn-prev" @click="_changePage(list,-1)"></div>
+                <div class="page-con">{{list.pager.curPage}}/{{list.pager.pageTotal}}</div>
+                <div class="page-btn btn-next" @click="_changePage(list,1)"></div>
+              </div>
+            </template>
+            <p v-else class="no-data-tips">暂无数据</p>
           </div>
         </div>
       </div>
@@ -878,6 +883,7 @@
         layout(row)
         justify-content: space-between
         align-items: center
+        border-bottom-1px(#E9ECEE)
         .left-box
           layout(row)
           align-items: center
@@ -902,16 +908,18 @@
             color: $color-white
             background: $color-main
       .big-list
-        max-height: 695px
+        height: 695px
         padding-bottom: 60px
         font-size: $font-size-14
-        .list-header
+        .list-head
+          height: 45px
           padding: 0 20px
           box-sizing: border-box
           border-bottom-1px(#E9ECEE)
           display: flex
           align-items: center
           background: $color-white
+          color: $color-text-main
           font-family: $font-family-medium
         .list-content
           padding: 0 20px
@@ -986,4 +994,14 @@
               icon-image(icon-right_ash)
               &:hover
                 icon-image(icon-right_green)
+
+  .no-data-tips
+    width: 100%
+    height: 100%
+    layout()
+    justify-content: center
+    align-items: center
+    font-size: $font-size-14
+    font-family: $font-family-regular
+    color: #666666
 </style>
