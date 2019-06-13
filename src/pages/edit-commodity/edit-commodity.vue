@@ -12,7 +12,7 @@
       <div class="content-title">商品信息</div>
     </div>
     <div class="add-box">
-      <div class="btn-main"><span class="add-icon"></span>添加商品</div>
+      <div class="btn-main" :class="{'btn-disable': id}" @click="_showGoods"><span class="add-icon"></span>添加商品</div>
       <div class="add-tip">(只能选择一个商品)</div>
     </div>
     <div class="big-list">
@@ -20,14 +20,14 @@
         <div v-for="(item, idx) in tableTitle" :key="idx" class="list-item">{{item}}</div>
       </div>
       <div class="list">
-        <!--v-for="(item, index) in goodsCoupon" :key="index"-->
-        <div class="list-content list-box">
-          <div class="list-item">item.created_at}}</div>
-          <div class="list-item">item.social_name}}</div>
-          <div class="list-item">item.name}}</div>
-          <div class="list-item">item.total}}</div>
+        <!---->
+        <div v-for="(item, index) in goodsItem" :key="index" class="list-content list-box">
+          <div class="list-item">{{item.goods_name}}</div>
+          <div class="list-item">{{item.base_unit}}</div>
+          <div class="list-item">{{item.total_stock}}</div>
+          <div class="list-item">{{item.usable_stock}}</div>
           <div class="list-item">
-            <div class="list-operation" @click="showDel()">删除</div>
+            <div class="list-operation" :class="{'list-operation-disable': id}" @click="showDel(index)">删除</div>
           </div>
         </div>
       </div>
@@ -36,6 +36,7 @@
       <div class="content-title">基本信息</div>
     </div>
     <div class="leader-box">
+      <!--金额-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -51,7 +52,9 @@
           >
         </div>
         <div class="edit-unit">元兑换</div>
+        <div :class="{'text-no-change': id}"></div>
       </div>
+      <!--名称-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -59,16 +62,18 @@
         </div>
         <div class="edit-input-box">
           <input v-model="commodity.mobile"
-                 oninput="if(value.length > 11)value = value.slice(0, 11)"
-                 type="number"
+                 type="text"
                  class="edit-input"
                  :disabled="id"
+                 maxlength="20"
                  placeholder="请输入商品券名称"
                  @mousewheel.native.prevent
           >
+          <div class="num">{{commodity.mobile ? commodity.mobile.length : 0}}/20</div>
         </div>
-        <div class="edit-unit">元兑换</div>
+        <div :class="{'text-no-change': id}"></div>
       </div>
+      <!-- 数量-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
@@ -76,7 +81,6 @@
         </div>
         <div class="edit-input-box">
           <input v-model="commodity.mobile"
-                 oninput="if(value.length > 11)value = value.slice(0, 11)"
                  type="number"
                  class="edit-input"
                  :disabled="id"
@@ -84,14 +88,131 @@
                  @mousewheel.native.prevent
           >
         </div>
-        <div class="edit-unit">元兑换</div>
+        <div :class="{'text-no-change': id}"></div>
       </div>
-
+      <!-- 时间-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          用券时间
+        </div>
+        <div class="wrap">
+          <div class="time-select">
+            <date-picker
+              :value="commodity.start_at"
+              class="edit-input-box"
+              type="date"
+              :confirm="false"
+              :editable="false"
+              placement="bottom-end"
+              placeholder="选择开始时间"
+              style="width: 240px;height: 40px;border-radius: 1px"
+              @on-change="getStartTime"
+            ></date-picker>
+            <div class="tip-text">至</div>
+            <date-picker
+              :value="commodity.end_at"
+              class="edit-input-box edit-input-right"
+              type="date"
+              :confirm="false"
+              :editable="false"
+              placement="bottom-end"
+              placeholder="选择结束时间"
+              style="width: 240px;height: 40px"
+              @on-change="getEndTime"
+            ></date-picker>
+          </div>
+        </div>
+        <div :class="{'text-no-change': id}"></div>
+      </div>
+      <!--说明-->
+      <!--使用说明-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          使用说明
+        </div>
+        <div class="edit-input-box">
+          <div class="no-wrap">
+            <textarea v-model="commodity.description"
+                      type="text"
+                      class="edit-input edit-textarea"
+                      :readonly="id"
+                      :disabled="id"
+                      maxlength="50"
+                      :class="{'disable-input':id}"
+            >
+            </textarea>
+          </div>
+          <div class="textarea-num">{{commodity.description ? commodity.description.length : 0}}/50</div>
+        </div>
+        <div :class="{'text-no-change': id}"></div>
+      </div>
+    </div>
+    <!--商品弹窗-->
+    <default-modal ref="goods">
+      <div slot="content" class="shade-box">
+        <div class="title-box">
+          <div class="title">
+            选择商品
+          </div>
+          <span class="close hand" @click="_hideGoods"></span>
+        </div>
+        <!--<div class="shade-header">-->
+        <!--<div class="shade-title">选择商品</div>-->
+        <!--<span class="close hand" @click="_hideGoods"></span>-->
+        <!--</div>-->
+        <!--商品详情-->
+        <div>
+          <div class="shade-tab">
+            <div class="tab-item">
+              <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
+            </div>
+            <div class="tab-item">
+              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+            </div>
+            <div class="tab-item">
+              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            </div>
+          </div>
+          <div class="goods-content">
+            <div class="goods-list" :class="{'goods-list-border':choiceGoods.length}">
+              <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
+                <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                  <span class="after"></span>
+                </div>
+                <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
+                <div class="goods-msg">
+                  <div class="goods-name">{{item.goods_name}}</div>
+                  <div class="goods-money">{{item.goods_sku_encoding}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page-box">
+            <base-pagination ref="goodsPage" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+          </div>
+        </div>
+        <div class="back back-box">
+          <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
+          <div class="back-btn back-submit hand" @click="_miniGoods">确定</div>
+        </div>
+      </div>
+    </default-modal>
+    <!--按钮-->
+    <div class="back">
+      <div class="back-cancel back-btn hand" @click="back">返回</div>
+      <div class="back-btn back-submit" @click="submit">保存</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {DatePicker} from 'iview'
+  import DefaultModal from '@components/default-modal/default-modal'
+  import API from '@api'
+  import _ from 'lodash'
+
   const PAGE_NAME = 'EDIT_COMMODITY'
   const TITLE = '新建商品券'
   const TABLE_TITLE = ['商品名称', '单位', '售价(元)', '库存', '操作']
@@ -101,18 +222,172 @@
     page: {
       title: TITLE
     },
+    components: {
+      DatePicker,
+      DefaultModal
+    },
     data() {
       return {
         id: this.$route.query.id,
         tableTitle: TABLE_TITLE,
         commodity: {
-          mobile: ''
-        }
+          mobile: '',
+          start_at: '',
+          end_at: '',
+          description: ''
+        },
+        isSubmit: true,
+        goodsPage: {total: 1, per_page: 10, total_page: 1},
+        choiceGoods: [],
+        choicePage: 1,
+        goodsItem: [],
+        showSelectIndex: -1,
+        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []} // 格式：{title: '55'}}
       }
     },
+    computed: {
+      testEndDate() {
+        // 结束时间规则判断
+        return (
+          Date.parse(this.commodity.end_at.replace(/-/g, '/') + ' 00:00') >
+          Date.parse('' + this.commodity.start_at.replace(/-/g, '/') + ' 00:00')
+        )
+      },
+      testGoods() {
+        // 判断是否选择商品
+        return this.goodsItem.length
+      }
+    },
+    async created() {
+      await this._getFirstAssortment()
+      await this._getGoodsList()
+    },
     methods: {
+      getStartTime(time) {
+        this.commodity.start_at = time
+      },
+      getEndTime(time) {
+        this.commodity.end_at = time
+      },
       showDel(index) {
-
+        if (this.id) {
+          return
+        }
+        this.goodsItem.splice(index, 1)
+      },
+      back() {
+        this.$router.back()
+      },
+      checkForm() {
+        let arr = [
+          {value: this.testGoods, txt: '请选择商品'},
+          {value: this.commodity.start_at, txt: '请选择活动开始时间'},
+          {value: this.commodity.end_at, txt: '请选择活动结束时间'},
+          {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
+          {value: this.commodity.description, txt: '请输入使用说明'}
+        ]
+        for (let i = 0, j = arr.length; i < j; i++) {
+          if (!arr[i].value) {
+            this.$toast.show(arr[i].txt)
+            return false
+          }
+          if (i === j - 1 && arr[i].value) {
+            return true
+          }
+        }
+      },
+      submit() {
+        if (!this.isSubmit) {
+          return
+        }
+        if (!this.checkForm()) {
+          return
+        }
+        this.isSubmit = true
+      },
+      // 获取商品列表
+      async _getGoodsList() {
+        let res = await API.Store.getGoodsList({
+          keyword: this.text,
+          goods_category_id: this.parentId,
+          page: this.choicePage,
+          limit: 7
+        })
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.goodsPage = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        this.choiceGoods = res.data
+      },
+      // 弹窗确定选择链接
+      async _miniGoods() {
+        this.goodsItem = [this.choiceGoods[this.showSelectIndex]]
+        this._hideGoods()
+      },
+      // 获取分页商品列表
+      async _getMoreGoods(page) {
+        this.choicePage = page
+        await this._getGoodsList()
+        await this._statistic()
+      },
+      async _secondAssortment(item) {
+        this.parentId = item.id
+        if (item.id === '') {
+          this.secondAssortment.data = []
+        } else {
+          let res = await API.Store.goodsCategory({parent_id: this.parentId})
+          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        }
+        this.secondAssortment.content = '选择二级分类'
+        this.choicePage = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
+      // 选择二级分类
+      async _choessSecondAssortment(item) {
+        this.parentId = item.id
+        this.choicePage = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
+      // 获取一级分类
+      async _getFirstAssortment() {
+        let res = await API.Store.goodsCategory({parent_id: this.parentId})
+        this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
+        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
+        this.assortment.data.unshift({name: '全部', id: ''})
+      },
+      // 隐藏商品弹窗
+      _hideGoods() {
+        this.showSelectIndex = -1
+        this.text = ''
+        this.choicePage = 1
+        this.$refs.goods.hideModal()
+      },
+      _showGoods() {
+        if (this.id) {
+          return
+        }
+        this.$refs.goods.showModal()
+      },
+      // 搜索商品
+      async _searchGoods(text) {
+        this.statusTab = 4
+        this.text = text
+        this.choicePage = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+        await this._statistic()
+      },
+      // 选择商品
+      _selectGoods(item, index) {
+        this.showSelectIndex = index
       }
     }
   }
@@ -149,6 +424,7 @@
     box-sizing: border-box
     margin-bottom: 35px
     .edit-item
+      position: relative
       display: flex
       color: #2A2A2A
       min-height: 40px
@@ -166,7 +442,9 @@
         color: #F52424
       .edit-input-box
         margin-left: 40.9px
+        position: relative
       .edit-input
+        position: relative
         font-size: $font-size-14
         padding: 0 14px
         border-radius: 2px
@@ -184,6 +462,10 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
+      .edit-textarea
+        height: 94px
+        resize: none
+        padding: 4px 14px
       .edit-text
         font-size: $font-size-14
         padding: 10px 14px
@@ -211,4 +493,200 @@
         font-size: $font-size-14
         color: $color-text-main
         margin-left: 10px
+  .wrap
+    .time-select
+      display: flex
+      align-items: center
+      margin: 0
+    .select-item
+      margin-top: 20px
+      margin-left: 40px
+      display: flex
+      align-items: center
+    .day-item
+      width: 138px
+      height: 34px
+      box-sizing: border-box
+      padding: 0 10px
+      margin: 0 14px 0 10px
+      border: 1px solid $color-line
+    .tip-text
+      margin: 0 12px 0 14px
+    .edit-input-right
+      margin-left: 0 !important
+
+  .time-no-change, .text-no-change, .check-no-change
+    position: absolute
+    left: 127px
+    top: 0
+    width: 100%
+    height: 100%
+    z-index: 100
+  .text-no-change
+    cursor: not-allowed
+  .textarea-num
+    position: absolute
+    left: 360px
+    bottom: 6px
+    color: $color-text-assist
+  .num
+    col-center()
+    right: 20px
+    color: #ACACAC
+
+  //  商品弹窗
+  .shade-box
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+    border-radius: 2px
+    background: $color-white
+    height: 675px
+    max-width: 1000px
+    width: 1000px
+    position: relative
+    overflow-x: hidden
+    overflow-y: auto
+    flex-wrap: wrap
+    padding: 0 20px
+    .shade-tab
+      margin-bottom: 20px
+      align-items: center
+      box-sizing: border-box
+      display: flex
+      .tab-item
+        margin-right: 10px
+    .page-box
+      box-sizing: border-box
+      height: 76px
+      align-items: center
+      display: flex
+
+  .goods-content
+    border-radius: 4px
+    height: 420px
+    .goods-list
+      flex-wrap: wrap
+      display: flex
+    .goods-item
+      box-sizing: border-box
+      padding: 0 30px 0 20px
+      width: 100%
+      height: 60px
+      display: flex
+      align-items: center
+      position: relative
+      &:last-child
+        border-bottom-1px($color-line)
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      &:nth-child(2n - 1)
+        background: #f5f7fa
+      .goods-img
+        margin-right: 10px
+        width: 40px
+        height: @width
+        overflow: hidden
+        background-repeat: no-repeat
+        background-size: cover
+        background-position: center
+        background-color: $color-background
+      .goods-msg
+        flex: 1
+        display: flex
+        color: $color-text-main
+        font-family: $font-family-regular
+        justify-content: space-between
+        height: 100%
+        align-items: center
+        .goods-name
+          width: 500px
+          no-wrap()
+        .goods-name, .goods-money
+          line-height: 1
+          font-size: $font-size-14
+      .add-btn
+        border-radius: 2px
+        margin-left: 88px
+        padding: 5px 0
+        width: 56px
+        text-align: center
+      .add-btn-disable
+        border-radius: 2px
+        margin-left: 88px
+        padding: 5px 0
+        width: 56px
+        box-sizing: border-box
+        text-align: center
+        font-size: $font-size-14
+        line-height: 1
+        cursor: not-allowed
+        background: $color-line
+        color: $color-text-assist
+
+  .title-box
+    display: flex
+    box-sizing: border-box
+    padding: 23px 0
+    align-items: center
+    justify-content: space-between
+    .title
+      font-size: $font-size-16
+      font-family: $font-family-medium
+      line-height: 1
+      color: $color-text-main
+    .close
+      width: 12px
+      height: @width
+      icon-image('icon-close')
+  .page-box
+    padding: 0 20px
+    box-sizing: border-box
+    height: 77px
+    align-items: center
+    display: flex
+  .back-box
+    background: $color-white
+    height: 70px
+    border-top-1px($color-line)
+    justify-content: flex-end
+    position: absolute
+    left: 0
+    bottom: 0
+  //  单选框
+  .select-icon
+    width: 16px
+    height: 16px
+    border-radius: 50%
+    background: $color-white
+    border: 1px solid $color-line
+    transition: all, 0.3s
+    position: relative
+    transform-origin: 50%
+    margin-right: 20px
+    .after
+      all-center()
+      transform-origin: 50%
+      transition: all, 0.3s
+      width: 0
+      height: 0
+      border-radius: 50%
+  .select-icon-active
+    border: 5px solid $color-main
+
 </style>

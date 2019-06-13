@@ -577,6 +577,15 @@ export default [
           }
         }
       },
+      // 营销统计
+      {
+        path: 'coupon-market/marketing-statistics',
+        name: 'marketing-statistics',
+        component: () => lazyLoadView(import('@pages/marketing-statistics/marketing-statistics')),
+        meta: {
+          titles: ['商城', '营销', '营销计划', '营销统计']
+        }
+      },
       /**
        * 商城
        *

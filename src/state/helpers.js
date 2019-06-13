@@ -109,11 +109,11 @@ export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDe
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail'])
+  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaList'])
 }
 
 export const marketMethods = {
-  ...mapActions('market', ['getMarketList', 'getMarketDetail'])
+  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList'])
 }
 
 export const auxiliaryComputed = {
@@ -143,10 +143,10 @@ export const goodsMethods = mapActions('editgoods', ['getGoodsData'])
 
 // 轮播广告
 export const adverComputed = {
-  ...mapGetters('advertisement', ['infoBannerList'])
+  ...mapGetters('advertisement', ['infoBannerList', 'infoTabIndex'])
 }
 
-export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])
+export const adverMethods = mapActions('advertisement', ['getInfoBannerList', 'checkTab'])
 
 // 订单
 export const orderComputed = {

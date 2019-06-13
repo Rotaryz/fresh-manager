@@ -40,6 +40,7 @@
                 <base-switch :status="statusHandle(item, index)" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
+                <router-link tag="span" :to="'marketing-statistics?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">统计</router-link>
                 <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
@@ -87,6 +88,11 @@
           name: '唤醒流失客户',
           value: 2,
           icon: 'icon-awaken'
+        },
+        {
+          name: '邀请有礼',
+          value: 4,
+          icon: 'icon-invite_courtesy'
         }
       ]
     },
@@ -226,7 +232,7 @@
       font-size: $font-size-14
       &:last-child
         padding-right: 0
-        max-width: 75px
+        max-width: 120px
       .item
         text-overflow: ellipsis
         overflow: hidden

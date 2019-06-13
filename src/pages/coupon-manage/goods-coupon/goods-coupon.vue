@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">创建时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="选择创建时间" :dateInfo="[goodsMsg.startTime, goodsMsg.endTime]" @getTime="changeTime"></base-date-select>
+        <base-date-select placeHolder="选择创建时间" :dateInfo="[startTime, endTime]" @getTime="changeTime"></base-date-select>
       </div>
     </div>
     <div class="table-content">
@@ -21,23 +21,26 @@
           <div v-for="(item, idx) in couponTitle" :key="idx" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <!--v-for="(item, index) in goodsCoupon" :key="index"-->
-          <div class="list-content list-box">
-            <div class="list-item">item.created_at}}</div>
-            <div class="list-item">item.social_name}}</div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.total}}</div>
-            <div class="list-item">item.delivery_at}}</div>
-            <div class="list-item">item.delivery_at}}</div>
-            <div class="list-item">item.delivery_at}}</div>
-            <div class="list-item">item.delivery_at}}</div>
-            <div class="list-item">
-              <div class="list-operation">查看</div>
-              <div class="list-operation" @click="showDel()">删除</div>
+          <div v-if="goodsCoupon.length">
+            <div v-for="(item, index) in goodsCoupon" :key="index" class="list-content list-box">
+              <div class="list-item">item.created_at}}</div>
+              <div class="list-item">item.social_name}}</div>
+              <div class="list-item">item.name}}</div>
+              <div class="list-item">item.total}}</div>
+              <div class="list-item">item.delivery_at}}</div>
+              <div class="list-item">item.delivery_at}}</div>
+              <div class="list-item">item.delivery_at}}</div>
+              <div class="list-item">item.delivery_at}}</div>
+              <div class="list-item">
+                <router-link tag="div" to="edit-commodity?id=" append class="list-operation">查看</router-link>
+                <div class="list-operation" @click="showDel(item)">删除</div>
+              </div>
             </div>
           </div>
+          <base-blank v-else></base-blank>
         </div>
       </div>
+      <!---->
       <div class="pagination-box">
         <!-- :pagination="goodsCoupon.page" -->
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="changePage"></base-pagination>
@@ -72,7 +75,11 @@
     },
     data() {
       return {
-        couponTitle: COUPON_TITLE
+        couponTitle: COUPON_TITLE,
+        page: 1,
+        startTime: '',
+        endTime: '',
+        delId: null
       }
     },
     computed: {
@@ -80,17 +87,26 @@
     },
     methods: {
       ...couponMethods,
-      changeTime() {
-
+      changeTime(time) {
+        this.startTime = time[0]
+        this.endTime = time[1]
+        this.page =1
+        this._getGoodsCoupon()
+        this.$refs.pagination.beginPage()
       },
-      changePage(time) {
-
+      _getGoodsCoupon() {
+        this.getGoodsCoupon({startTime: this.startTime, endTime: this.endTime, page: this.page, loading: false})
+      },
+      changePage(page) {
+        this.page = page
+        this._getGoodsCoupon()
       },
       // 确认删除
       sureConfirm() {
 
       },
       showDel(item) {
+        this.delId = item.id
         this.$refs.confirm.show('删除后将无法查看商品券的信息，且无法恢复，谨慎操作！')
       }
     }

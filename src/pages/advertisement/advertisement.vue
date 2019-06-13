@@ -1,147 +1,183 @@
 <template>
-  <div class="advertisement normal-box">
-    <div class="identification">
-      <div class="identification-page">
-        <img :src="actName[cmsType + 'Icon']" class="identification-icon">
-        <p class="identification-name">{{actName[cmsType]}}</p>
+  <div class="advertisement ">
+    <!---->
+    <base-tab-select :tabStatus="tabStatus" :infoTabIndex="infoTabIndex" @getStatusTab="changeTab"></base-tab-select>
+    <div class="normal-box">
+      <div class="identification">
+        <div class="identification-page">
+          <img :src="actName[cmsType + 'Icon']" class="identification-icon">
+          <p class="identification-name">{{actName[cmsType]}}</p>
+        </div>
+        <div class="function-btn">
+        </div>
       </div>
-      <div class="function-btn">
+      <div v-if="infoTabIndex === 0" class="advertisement-small">
+        <phone-box
+          :activityGoodsList="activityGoodsList"
+          :cmsArray="infoBannerList.modules"
+          :newClientList="newClientList"
+          :todayHotList="todayHotList"
+          :comType="cmsType"
+          :guessList="guessList"
+          :groupList="groupList"
+          @setType="handleChangeType"
+        ></phone-box>
+        <!--广告-->
+        <div v-if="cmsType === 'bannar'" class="advertisement-content">
+          <div class="content-header">
+            <div class="content-title">轮播图设置</div>
+            <div class="content-sub">(最多添加5个广告，鼠标拖拽调整广告顺序)</div>
+          </div>
+          <draggable v-model="temporaryBannar" @update="_setSort()">
+            <transition-group>
+              <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
+                <div class="advertisement-msg">
+                  <div class="img-box hand" :style="{'background-image': 'url(\'' + (banner.image_url || banner.add_icon) + '\')'}">
+                    <div v-if="banner.showLoading" class="loading-mask">
+                      <img src="./loading.gif" class="loading">
+                    </div>
+                    <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
+                    <div v-if="banner.image_id" class="img-change-tip">更换图片</div>
+                  </div>
+                  <!--@click=""-->
+                  <div class="advertisement-link">
+                    <div class="add-link hand" @click="_showGoods(idx, banner.other_id)">添加链接</div>
+                    <p class="goods-title">{{banner.type === 'out_html' || banner.type === 'mini_link' ? banner.url : banner.name}}</p>
+                  </div>
+                  <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
+                </div>
+              </div>
+            </transition-group>
+          </draggable>
+          <div class="advertisement-btn">
+            <div class="new-advertisement hand" @click="_addMore">新建广告</div>
+            <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
+          </div>
+        </div>
+
+        <!--活动类目设置-->
+        <div v-if="cmsType === 'activity'" class="advertisement-content">
+          <div class="content-header">
+            <div class="content-title">活动类目设置</div>
+          </div>
+          <div>
+            <nav v-for="(item, index) in activityList" :key="index" class="edit-item edit-flex">
+              <div class="left">{{item.module_title}}<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
+              <div class="switch" @click="switchBtn(item)">
+                <base-switch :status="!item.is_close ? 1 : 0" confirmText="开启" cancelText="关闭"></base-switch>
+              </div>
+            </nav>
+            <div class="submit-activity advertisement-btn">
+              <div class="submit-activity-btn hand" @click="_editActivity()">保存并发布</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div v-if="infoTabIndex === 1" class="advertisement-small">
+        <mine :invitationList="temporaryInvitation"></mine>
+        <div class="advertisement-content">
+          <div class="content-header">
+            <div class="content-title">邀请有礼轮播图设置</div>
+            <div class="content-sub">(最多添加5个广告，鼠标拖拽调整广告顺序)</div>
+          </div>
+          <draggable v-model="temporaryInvitation" @update="_setSort()">
+            <transition-group>
+              <div v-for="(banner, idx) in temporaryInvitation" :key="idx" class="advertisement-item">
+                <div class="advertisement-msg">
+                  <div class="img-box hand" :style="{'background-image': 'url(\'' + (banner.image_url || banner.add_icon) + '\')'}">
+                    <div v-if="banner.showLoading" class="loading-mask">
+                      <img src="./loading.gif" class="loading">
+                    </div>
+                    <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
+                    <div v-if="banner.image_id" class="img-change-tip">更换图片</div>
+                  </div>
+                  <!--@click=""-->
+                  <div class="advertisement-link">
+                    <div class="add-link hand" @click="_showGoods(idx, banner.other_id)">添加链接</div>
+                    <p class="goods-title">{{banner.type === 'out_html' || banner.type === 'mini_link' ? banner.url : banner.name}}</p>
+                  </div>
+                  <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
+                </div>
+              </div>
+            </transition-group>
+          </draggable>
+          <div class="advertisement-btn">
+            <div class="new-advertisement hand" @click="_addMore">新建广告</div>
+            <div class="submit-activity-btn hand" @click="_editInvitation()">提交</div>
+          </div>
+        </div>
+
       </div>
     </div>
-    <div class="advertisement-small">
-      <phone-box
-        :activityGoodsList="activityGoodsList"
-        :cmsArray="infoBannerList.modules"
-        :newClientList="newClientList"
-        :todayHotList="todayHotList"
-        :comType="cmsType"
-        :guessList="guessList"
-        :groupList="groupList"
-        @setType="handleChangeType"
-      ></phone-box>
-      <!--广告-->
-      <div v-if="cmsType === 'bannar'" class="advertisement-content">
-        <div class="content-header">
-          <div class="content-title">轮播图设置</div>
-          <div class="content-sub">(最多添加5个广告，鼠标拖拽调整广告顺序)</div>
+    <!--商品弹窗-->
+    <default-modal ref="goods">
+      <div slot="content" class="shade-box">
+        <div class="shade-header">
+          <div class="shade-tab-type">
+            <div v-for="(items, index) in typeList" :key="index" :class="{'shade-tab-item-active': tabIndex === index}" class="shade-tab-item hand" @click="_setLinkType(index, $event)">{{items.title}}</div>
+            <div class="line" :style="{left: left + 'px'}"></div>
+          </div>
+          <!--<div class="shade-title">选择商品</div>-->
+          <span class="close hand" @click="_hideGoods"></span>
         </div>
-        <draggable v-model="temporaryBannar" @update="_setSort()">
-          <transition-group>
-            <div v-for="(banner, idx) in temporaryBannar" :key="idx" class="advertisement-item">
-              <div class="advertisement-msg">
-                <div class="img-box hand" :style="{'background-image': 'url(\'' + (banner.image_url || banner.add_icon) + '\')'}">
-                  <div v-if="banner.showLoading" class="loading-mask">
-                    <img src="./loading.gif" class="loading">
-                  </div>
-                  <input type="file" class="sendImage hand" accept="image/*" @change="_addPic(idx, banner, $event)">
-                  <div v-if="banner.image_id" class="img-change-tip">更换图片</div>
-                </div>
-                <!--@click=""-->
-                <div class="advertisement-link">
-                  <div class="add-link hand" @click="_showGoods(idx, banner.other_id)">添加链接</div>
-                  <p class="goods-title">{{banner.type === 'out_html' || banner.type === 'mini_link' ? banner.url : banner.name}}</p>
-                </div>
-                <p class="use hand" @click="_showConfirm(banner.id, idx)">删除</p>
-              </div>
+        <!--商品详情-->
+        <div v-if="tabIndex === 0">
+          <div class="shade-tab">
+            <div class="tab-item">
+              <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
             </div>
-          </transition-group>
-        </draggable>
-        <div class="advertisement-btn">
-          <div class="new-advertisement hand" @click="_addMore">新建广告</div>
-          <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
+            <div class="tab-item">
+              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+            </div>
+            <div class="tab-item">
+              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            </div>
+          </div>
+          <div class="goods-content">
+            <div class="goods-list">
+              <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
+                <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                  <span class="after"></span>
+                </div>
+                <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
+                <div class="goods-msg">
+                  <div class="goods-name">{{item.name}}</div>
+                  <div class="goods-money">¥{{item.original_price}}</div>
+                </div>
+              </div>
+              <!--select-icon-active-->
+            </div>
+          </div>
+          <div class="page-box">
+            <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+          </div>
+        </div>
+        <!--商品分类-->
+        <div v-if="tabIndex === 1" class="goods-cate">
+          <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
+            <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+              <span class="after"></span>
+            </div>
+            <div class="shade-goods-msg">
+              <div class="shade-goods-name">{{goods.name}}</div>
+              <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+            </div>
+          </div>
+        </div>
+        <div v-if="tabIndex === 2" class="link-text">
+          <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+        </div>
+        <div v-if="tabIndex === 3" class="link-text">
+          <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
+        </div>
+        <div class="back back-box">
+          <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
+          <div class="back-btn back-submit hand" @click="_miniGoods">确定</div>
         </div>
       </div>
-
-      <!--活动类目设置-->
-      <div v-if="cmsType === 'activity'" class="advertisement-content">
-        <div class="content-header">
-          <div class="content-title">活动类目设置</div>
-        </div>
-        <div>
-          <nav v-for="(item, index) in activityList" :key="index" class="edit-item edit-flex">
-            <div class="left">{{item.module_title}}<span class="tip-text">(开启后显示模块，关闭后隐藏模块)</span></div>
-            <div class="switch" @click="switchBtn(item)">
-              <base-switch :status="!item.is_close ? 1 : 0" confirmText="开启" cancelText="关闭"></base-switch>
-            </div>
-          </nav>
-          <div class="submit-activity advertisement-btn">
-            <div class="submit-activity-btn hand" @click="_editActivity()">保存并发布</div>
-          </div>
-        </div>
-      </div>
-
-      <!--商品弹窗-->
-      <default-modal ref="goods">
-        <div slot="content" class="shade-box">
-          <div class="shade-header">
-            <div class="shade-tab-type">
-              <div v-for="(items, index) in typeList" :key="index" :class="{'shade-tab-item-active': tabIndex === index}" class="shade-tab-item hand" @click="_setLinkType(index, $event)">{{items.title}}</div>
-              <div class="line" :style="{left: left + 'px'}"></div>
-            </div>
-            <!--<div class="shade-title">选择商品</div>-->
-            <span class="close hand" @click="_hideGoods"></span>
-          </div>
-          <!--商品详情-->
-          <div v-if="tabIndex === 0">
-            <div class="shade-tab">
-              <div class="tab-item">
-                <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
-              </div>
-              <div class="tab-item">
-                <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
-              </div>
-              <div class="tab-item">
-                <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
-              </div>
-            </div>
-            <div class="goods-content">
-              <div class="goods-list">
-                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-                  <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
-                    <span class="after"></span>
-                  </div>
-                  <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
-                  <div class="goods-msg">
-                    <div class="goods-name">{{item.name}}</div>
-                    <div class="goods-money">¥{{item.original_price}}</div>
-                  </div>
-                </div>
-                <!--select-icon-active-->
-              </div>
-            </div>
-            <div class="page-box">
-              <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
-            </div>
-          </div>
-          <!--商品分类-->
-          <div v-if="tabIndex === 1" class="goods-cate">
-            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
-                <span class="after"></span>
-              </div>
-              <div class="shade-goods-msg">
-                <div class="shade-goods-name">{{goods.name}}</div>
-                <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
-              </div>
-            </div>
-          </div>
-          <div v-if="tabIndex === 2" class="link-text">
-            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
-          </div>
-          <div v-if="tabIndex === 3" class="link-text">
-            <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
-          </div>
-          <div class="back back-box">
-            <div class="back-cancel back-btn hand" @click="_hideGoods">取消</div>
-            <div class="back-btn back-submit hand" @click="_miniGoods">确定</div>
-          </div>
-        </div>
-      </default-modal>
-      <default-confirm ref="dialog" @confirm="_delBanner"></default-confirm>
-    </div>
-    <!--<div class="back">-->
-    <!--<div class="back-btn btn-main">保存并发布</div>-->
-    <!--</div>-->
+    </default-modal>
+    <default-confirm ref="dialog" @confirm="_delBanner"></default-confirm>
     <default-confirm ref="saveMsg" @confirm="handleSaveConfirm" @cancel="handleCancelConfirm"></default-confirm>
   </div>
 </template>
@@ -150,6 +186,7 @@
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import PhoneBox from './phone-box/phone-box'
+  import Mine from './mine/mine'
   import API from '@api'
   import ADD_IMAGE from './pic-add_img@2x.png'
   import {adverComputed, adverMethods} from '@state/helpers'
@@ -175,7 +212,9 @@
     activity_fixed: '限时抢购',
     activity_fixedIcon: require('./icon-time@2x.png'),
     activity: '活动类目',
-    activityIcon: require('./icon-activity_category@2x.png')
+    activityIcon: require('./icon-activity_category@2x.png'),
+    invitation: '活动管理',
+    invitationIcon: require('./icon-carousel@2x.png')
   }
   const TEMPLATE_OBJ = {
     id: '',
@@ -187,13 +226,16 @@
     image_url: '',
     add_icon: ADD_IMAGE
   } // 模板对象
+  const ORDERSTATUS = [{text: '首页', status: 1}, {text: '我的', status: 0}]
+
   export default {
     name: PAGE_NAME,
     components: {
       DefaultModal,
       DefaultConfirm,
       PhoneBox,
-      Draggable
+      Draggable,
+      Mine
     },
     page: {
       title: TITLE
@@ -201,6 +243,7 @@
     data() {
       this._isSave = false // 是否保存当前数据
       return {
+        tabStatus: ORDERSTATUS,
         actName: ACT_NAME,
         typeList: TYPE_LIST,
         showType: false,
@@ -210,6 +253,7 @@
         goodsList: [],
         temporaryBannar: [],
         temporaryNavigation: [],
+        temporaryInvitation: [],
         upIndex: 0,
         upItem: {},
         outHtml: '',
@@ -249,7 +293,8 @@
         newClientList: [], // 新人特惠列表
         todayHotList: [], // 今日爆品
         guessList: [],
-        groupList: []
+        groupList: [],
+        currentCms: null
       }
     },
     computed: {
@@ -262,7 +307,7 @@
     },
     async created() {
       this.currentModule = this.infoBannerList.modules[0] || {}
-      this._currentCms = this.currentModule
+      this.currentCms = this.currentModule
       this.cmsId = this.currentModule ? this.currentModule.id : ''
       this.cmsModuleId = this.currentModule ? this.currentModule.module_id : ''
       this.$loading.show()
@@ -270,9 +315,32 @@
       this._getAllActivityData()
       this._getFirstAssortment()
       this.$loading.hide()
+      this.cmsType = this.infoTabIndex === 0 ? 'bannar' : 'invitation'
     },
     methods: {
       ...adverMethods,
+      // 修改提交邀请活动
+      _editInvitation() {
+        if (!this.temporaryInvitation.length) {
+          this.$toast.show('邀请有礼轮播图不能为空', 1500)
+          return
+        } else {
+          for (let i = 0; i < this.temporaryInvitation.length; i++) {
+            if (!this.temporaryInvitation[i].image_id) {
+              this.$toast.show(`第${i + 1}轮播图广告图片不能为空`, 1500)
+              return
+            } else if (!this.temporaryInvitation[i].name && !this.temporaryInvitation[i].url) {
+              this.$toast.show(`第${i + 1}轮播图链接不能为空`, 1500)
+              return
+            }
+          }
+        }
+        console.log('邀请有礼')
+      },
+      changeTab(item, index) {
+        this.cmsType = index === 1 ? 'invitation' : 'bannar'
+        this.checkTab(index)
+      },
       // 切换保存选项
       async handleSaveConfirm() {
         switch (this.cmsType) {
@@ -292,6 +360,9 @@
             }
           })
           break
+        case 'invitation':
+          // 邀请有礼
+          break
         default:
           break
         }
@@ -305,7 +376,7 @@
         }
       },
       _actionToChangeModule() {
-        let cms = this._currentCms
+        let cms = this.currentCms
         this.cmsType = cms.module_name
         this.cmsId = cms.id
         this.cmsModuleId = cms.module_id
@@ -325,9 +396,9 @@
                 }
                 if (item.module_name === 'activity_fixed') {
                   this.activityGoodsList = this._formatListData(res.data)
-                } else if(item.module_name === 'groupon'){
+                } else if (item.module_name === 'groupon') {
                   API.Advertisement.getGroupList().then(res => {
-                    if(res.data) {
+                    if (res.data) {
                       this.groupList = this._formatListData(res.data)
                     }
                   })
@@ -367,14 +438,12 @@
         }
         switch (type) {
         case 'bannar':
-          // this.bannerList = res.data.length ? res.data : this.bannerList
           this.temporaryBannar = _.cloneDeep(res.data)
           break
         case 'activity_fixed':
           this.activityStatus = res.data && +res.data.is_close === 1 ? 0 : 1
           break
         case 'goods_cate':
-          // this.temporaryNavigation = _.cloneDeep(res.data)
           break
         case 'activity':
           this.activityList = res.data || []
@@ -383,24 +452,8 @@
           break
         }
       },
-      // 获取限时抢购商品列表
-      // _getActivityGoods() {
-      //   let module = this.infoBannerList.modules.find(val => val.module_name === 'activity') || {}
-      //   if (module.list) {
-      //     module = module.list.find(val => val.module_name === 'activity_fixed') || {}
-      //     if (module) {
-      //       let id = module.list && module.list[0] && module.list[0].id
-      //       if (!id) return
-      //       API.Advertisement.getActivityGoods(id).then((res) => {
-      //         if (res.error !== this.$ERR_OK) {
-      //           return
-      //         }
-      //         this.activityGoodsList = this._formatListData(res.data)
-      //       })
-      //     }
-      //   }
-      // },
-      _setSort() {},
+      _setSort() {
+      },
       _setLinkType(index, e) {
         this.tabIndex = index
         this.left = e.target.offsetLeft + (e.target.offsetWidth - 64) / 2
@@ -408,22 +461,8 @@
       },
       // cms的类型
       async handleChangeType(cms) {
-        // if ('' + this._oldMoudleData === '' + cms) {
-        //   console.log(123)
-        // }
-        // console.log(this._oldMoudleData, cms)
-        // this._currentCms = cms
-        // if (!this._isSave) {
-        //   this.$refs.saveMsg.show('是否需要保存')
-        // } else {
-        //   this._actionToChangeModule()
-        // }
-        this._currentCms = cms
+        this.currentCms = cms
         this._actionToChangeModule()
-        // this.cmsType = cms.module_name
-        // this.cmsId = cms.id
-        // this.cmsModuleId = cms.module_id
-        // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -443,7 +482,7 @@
           return
         }
         await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-      // this.temporaryBannar.splice(this.delIndex, 1)
+        // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -476,7 +515,10 @@
           this[this.dataName][index].url = ''
           this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
           break
+        default:
+          break
         }
+        console.log(this[this.dataName])
         this._hideGoods()
       },
       // 选择商品
@@ -551,11 +593,11 @@
       },
       // 添加更多的广告
       _addMore() {
-        if (this.temporaryBannar.length >= 5) {
+        if (this[this.dataName].length >= 5) {
           this.$toast.show('最多添加五个广告')
           return
         }
-        this.temporaryBannar.push(_.cloneDeep(TEMPLATE_OBJ))
+        this[this.dataName].push(_.cloneDeep(TEMPLATE_OBJ))
         let el = document.querySelector('html')
         setTimeout(() => {
           el.scrollTop = el.scrollHeight
@@ -619,19 +661,6 @@
       },
       // 新建活动
       async _editActivity(success) {
-        // let arr = this.activityList.map(item => {
-        //   return {
-        //     is_close: !item.is_close ? 1 : 0,
-        //     id: item.id
-        //   }
-        // })
-        // let data = [
-        //   {
-        //     id: this.cmsId,
-        //     page_module_id: this.cmsId,
-        //     config_data: arr
-        //   }
-        // ]
         let data = this.activityList.map(item => {
           return {
             id: item.id,
@@ -646,31 +675,15 @@
           this._isSave = true
           success && success()
         }
-        // if (res.error === this.$ERR_OK) {
-        //   await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-        // }
         this.$loading.hide()
         this.$toast.show(res.message)
       },
-      // 保存模块数据
-      // async _editCms(data, success) {
-      //   let res = await API.Advertisement.saveModuleMsg({data})
-      //   if (res.error === this.$ERR_OK) {
-      //     await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-      //     this._isSave = true
-      //     success && success()
-      //   }
-      //   this.$loading.hide()
-      //   this.$toast.show(res.message)
-      // },
       // 展示商品弹窗
       _showGoods(index, id) {
         this.bannerIndex = index
         this.goodsId = id
-        this.showSelectIndex =
-          this.outLink === 'mini_goods' ? this.choiceGoods.findIndex((item) => item.id === this.goodsId) : -1
-        this.showCateIndex =
-          this.outLink === 'goods_cate' ? this.goodsCate.findIndex((item) => item.id === this.goodsId) : -1
+        this.showSelectIndex = this.outLink === 'mini_goods' ? this.choiceGoods.findIndex((item) => item.id === this.goodsId) : -1
+        this.showCateIndex = this.outLink === 'goods_cate' ? this.goodsCate.findIndex((item) => item.id === this.goodsId) : -1
         this.$refs.goods.showModal()
       },
       // 隐藏商品弹窗
