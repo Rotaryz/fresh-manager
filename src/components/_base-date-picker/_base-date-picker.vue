@@ -14,18 +14,18 @@
                    class="date"
                    :pickerOptions="pickerOptions"
                    @change="_getDayDate"
+                   @mouseenter="mouseEnter"
       ></date-picker>
       {{item.title}}
       <transition name="fade">
         <!-- v-show=""-->
         <div v-if="item.status === 'day' && tabIndex === index && showDate" class="block day">
           <!--<base-date-select :clearable="false" :disabledDate="disabledDate" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>-->
-          <date-picker ref="date"
+          <date-picker :ref="item.status"
                        v-model="item.date"
                        :clearable="false"
                        type="date"
                        :placeholder="text"
-                       @mouseenter="mouseEnter"
                        @change="_getDayDate"
           ></date-picker>
         </div>
@@ -116,7 +116,7 @@
     },
     methods: {
       mouseEnter() {
-        console.log(this.$refs.date[0], 222)
+        console.log(this.$refs.week, 222)
         this.$refs.date.focus()
       },
       checkTab(index) {
@@ -201,15 +201,19 @@
         height: 0
       &.fade-enter-to, &.fade-leave-to
         transition: all .3s ease-in-out
-      .el-date-editor.el-input
-        width: 187px
-        height: 28px
+    .el-date-editor.el-input
+      width: 28px
+      height: 28px
+      overflow: hidden
       .el-input__inner
         font-size: $font-size-12
         line-height: 28px
         height: 28px
+        width: 28px
         border-radius: 2px
         color: $color-text-main
+        box-sizing: border-box
+        cursor: pointer
         padding: 4px 32px 4px 7px
         padding: 0
         &::placeholder
@@ -221,15 +225,17 @@
           border-color: 1px solid $color-main !important
         &:hover
           border: 1px solid #ACACAC
-      .el-input__prefix
-        left: auto
-        right: 2px
-      .el-input__icon
-        line-height: 2.2
+  .el-input__prefix
+      left: auto
+      right: 2px
+    .el-input__icon
+      line-height: 2.2
     .day
       left: 170%
     .week
       left: -2%
     .month
       left: -174%
+  .el-popper[x-placement^='bottom']
+    margin-left: -28px
 </style>
