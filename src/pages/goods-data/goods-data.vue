@@ -5,7 +5,8 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">商品数据</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>
+      <!--<base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>-->
+      <base-date-picker :infoTab="0" :arrTitle="arrTitle" :disabledDate="dateOption" @checkTime="_getData"></base-date-picker>
     </div>
     <div class="data-content">
       <left-tab ref="goodsTab" @changeTab="changeTab"></left-tab>
@@ -42,15 +43,15 @@
               </div>
               <div class="data-list">
                 <div class="view">
-                  <p class="text">浏览量 <img v-if="saleData.data.views_rate >= 2" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">浏览量 <img v-if="saleData.data.views_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售数量 <img v-if="saleData.data.num_rate >= 2" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售数量 <img v-if="saleData.data.num_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate >= 2" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
@@ -192,10 +193,9 @@
   import API from '@api'
 
   const ARR_TITLE = [
-    {title: '7天', status: 'week'},
-    {title: '15天', status: 'half_month'},
-    {title: '30天', status: 'month'},
-    {title: '自定义', status: 'custom'}
+    {title: '日', status: 'date'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
   ]
   // 导出接口
   const EXPORT_URL = {
@@ -222,7 +222,7 @@
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存排行', type: 'goods', excel: true, code: 'amount', limit: 10},
         {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
@@ -242,7 +242,7 @@
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
-        {name: '库存排行', type: 'goods', excel: true, code: 'num', limit: 10},
+        {name: '库存排行', type: 'goods', excel: true, code: 'amount', limit: 10},
         {name: '库存周转率', type: 'bar', big: true, rate: true, code: 'rate', limit: 8}
       ]
     },
@@ -300,7 +300,7 @@
           limit: 6
         },
         requestSupply: {
-          order_by: 'purchase_num',
+          order_by: 'amount',
           limit: 10
         },
         requestPub: {

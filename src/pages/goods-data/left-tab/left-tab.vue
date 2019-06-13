@@ -23,8 +23,8 @@
             </div>
             <span class="name">{{item.name}}</span>
           </div>
-          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open':  +categoryIndex === index+1 && openCategory}]">
-            <span class="icon-image" @click.stop="clickTag(item.id, index+1, 'category')"></span>
+          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': +categoryIndex === index+1 && openCategory}]" @click.stop="clickTag(item.id, index+1, 'category')">
+            <span class="icon-image"></span>
           </div>
         </div>
         <div class="goods-list" :style="{height: (+categoryIndex === index+1 && openCategory) ? 48*(item.list ? item.list.length : 0) + 'px' : 0}">
@@ -74,12 +74,8 @@
     methods: {
       // index用于记录选中哪个， code
       changeCategory(itemId, index, code) {
-        if (index === this.categoryIndex) {
-          if (!this.openCategory) {
-            this.openCategory = true
-          }
-        } else {
-          this.openCategory = true
+        if (index !== this.categoryIndex) {
+          this.openCategory = false
         }
         this.categoryIndex = index
         this.goodsIndex = ''
@@ -93,7 +89,11 @@
         this.$emit('changeTab', itemId, code)
       },
       clickTag(itemId, index, code) {
-        this.openCategory = !this.openCategory
+        if (index !== this.categoryIndex) {
+          this.openCategory = false
+        } else {
+          this.openCategory = !this.openCategory
+        }
         this.categoryIndex = index
         this.goodsIndex = ''
         this.selectGoods = false

@@ -1,6 +1,6 @@
 <template>
   <div class="quality-data">
-    <div class="tab">
+    <!--<div class="tab">
       <div
         v-for="(item, index) in tabArr"
         :key="index"
@@ -10,7 +10,7 @@
         <span class="num">{{groupData.titleData[index] || 0}}</span>
         <span class="text">{{item}}</span>
       </div>
-    </div>
+    </div>-->
     <div class="data-content">
       <div v-show="time !== 'today' && time !== 'yesterday'" id="group"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">

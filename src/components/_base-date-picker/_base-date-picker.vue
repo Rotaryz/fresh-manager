@@ -1,0 +1,255 @@
+<template>
+  <ul class="data-date-picker">
+    <li v-for="(item, index) in arrTitle"
+        :key="index"
+        class="date-item hand"
+        :class="{'date-item-active': (tempIndex !== '' ? tempIndex === index : tabIndex === index)}"
+        @click="checkTab(index)"
+        @mouseenter="mouseEnter(item.status, index)"
+        @mouseleave="mouseLeave(item.status, index)"
+    >
+      <date-picker :ref="item.status"
+                   v-model="time[item.status]"
+                   :clearable="false"
+                   :type="item.status"
+                   :placeholder="text"
+                   class="date"
+                   :pickerOptions="pickerOptions"
+                   @change="['_get'+firstUppercase(item.status)]"
+      ></date-picker>
+      {{item.title}}
+      <transition name="fade">
+        <!-- v-show=""-->
+        <div v-if="item.status === 'day' && tabIndex === index && showDate" class="block day">
+          <!--<base-date-select :clearable="false" :disabledDate="disabledDate" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>-->
+          <date-picker :ref="item.status"
+                       v-model="item.date"
+                       :clearable="false"
+                       type="date"
+                       :placeholder="text"
+                       @change="_getDayDate"
+          ></date-picker>
+        </div>
+        <div v-if="item.status === 'week' && tabIndex === index && showDate" class="block week">
+          <date-picker ref="week"
+                       v-model="week"
+                       :clearable="false"
+                       type="week"
+                       format="yyyy 第 WW 周"
+                       :placeholder="text"
+                       @change="_getWeekDate"
+          ></date-picker>
+        </div>
+        <div v-if="item.status === 'month' && tabIndex === index && showDate" class="block month">
+          <date-picker ref="month"
+                       v-model="month"
+                       :clearable="false"
+                       type="month"
+                       :placeholder="text"
+                       @change="_getMonthDate"
+          ></date-picker>
+        </div>
+      </transition>
+    </li>
+  </ul>
+
+</template>
+
+<script type="text/ecmascript-6">
+  import {DatePicker} from 'element-ui'
+  // import DatePicker from './date-picker/src/picker'
+  const COMPONENT_NAME = 'BASE_OPTION_BOX'
+  const NAV = [
+    {title: '日', status: 'date'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
+  ]
+
+  export default {
+    name: COMPONENT_NAME,
+    components: {
+      DatePicker
+    },
+    props: {
+      arrTitle: {
+        type: Array,
+        default: () => NAV
+      },
+      newPickerOptions: {
+        type: Number,
+        default: 0
+      },
+      infoTab: {
+        type: Number,
+        default: 0
+      },
+      disabledDate: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
+      text: {
+        type: String,
+        default: '请选择时间'
+      }
+    },
+    data() {
+      return {
+        tabIndex: this.infoTab,
+        tempIndex: '',
+        pickerOptions: {
+          disabledDate: function(date) {
+            return date.valueOf() > Date.now() - 86400000
+          }
+        },
+        showPicker: true,
+        moreTime: '',
+        showDate: false,
+        enterName: '',
+        timer: '',
+        time: {
+          date: '',
+          week: '',
+          month: ''
+        }
+      }
+    },
+    watch: {
+      infoTab(news) {
+        this.tabIndex = news
+      }
+    },
+    methods: {
+      mouseEnter(name, index) {
+        // if (name !== this.enterName && this.enterName) {
+        //   this.$refs[this.enterName][0].handleClose()
+        // }
+        // clearTimeout(this.timer)
+        // this.tempIndex = index
+        // this.$refs[name][0].$refs.reference.focus()
+        // this.enterName = name
+      },
+      mouseLeave(name) {
+        // this.timer = setTimeout(() => {
+        //   this.tempIndex = ''
+        // },100)
+        // this.$refs[name][0].handleClose()
+      },
+      checkTab(index) {
+        this.tabIndex = index
+        let status = this.arrTitle[index].status
+        console.log(status)
+      },
+
+      _getCustomTime(time) {
+        this.showDate = false
+
+        // this.$emit('checkTime', time)
+      },
+      _getDate(time) {
+        let date = new Date(time).getDate()
+        console.log(date)
+        // this.showDate = true
+        // this.$emit('checkTime', time)
+      },
+      _getWeek(time) {
+        let date = new Date(time).getDate()
+        console.log(date)
+        // this.week = time
+        // this.showDate = true
+        // this.$emit('checkTime', time)
+      },
+      _getMonth(time) {
+        let date = new Date(time).getMonth() + 1
+        console.log(date)
+        // this.month = time
+        // this.showDate = true
+        // this.$emit('checkTime', date)
+      },
+      firstUppercase(str) {
+        let first = str[0].toUpperCase()
+        return first+str.slice(1)
+      },
+    }
+  }
+</script>
+
+<style lang="stylus" rel="stylesheet/stylus">
+  @import "~@design"
+  .data-date-picker
+    display: flex
+    .date-item
+      line-height: 28px
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: #666
+      margin-left: 20px
+      height: 28px
+      width: 28px
+      text-align: center
+      border-radius: 50%
+      border-1px($color-line, 50%)
+      position: relative
+      transition: all 0.3s ease-out
+      border-left: none
+      .date
+        width: 28px
+        height: 28px
+        position: absolute
+        left: 0
+        top: 0
+        opacity: 0
+    .date-item-active
+      color: #FFF
+      background: #6EBA6E
+      border-1px(#6EBA6E, 50%)
+
+    .block
+      row-center()
+      left: -80%
+      top: 34px
+      z-index: 10
+      &.fade-enter, &.fade-leave-to
+        opacity: 0
+        height: 0
+      &.fade-enter-to, &.fade-leave-to
+        transition: all .3s ease-in-out
+    .el-date-editor.el-input
+      width: 28px
+      height: 28px
+      overflow: hidden
+      .el-input__inner
+        font-size: $font-size-12
+        line-height: 28px
+        height: 28px
+        width: 28px
+        border-radius: 2px
+        color: $color-text-main
+        box-sizing: border-box
+        cursor: pointer
+        padding: 4px 32px 4px 7px
+        padding: 0
+        &::placeholder
+          font-family: $font-family-regular
+          color: $color-text-assist
+          line-height: 24px
+        &:focus
+          outline: none
+          border-color: 1px solid $color-main !important
+        &:hover
+          border: 1px solid #ACACAC
+  .el-input__prefix
+      left: auto
+      right: 2px
+    .el-input__icon
+      line-height: 2.2
+    .day
+      left: 170%
+    .week
+      left: -2%
+    .month
+      left: -174%
+  .el-popper[x-placement^='bottom']
+    margin-left: -28px
+</style>
