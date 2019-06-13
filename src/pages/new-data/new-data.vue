@@ -810,6 +810,7 @@
       .label-con
         padding-top: 6px
         width: 11.46vw
+        min-width: 190px
         layout()
         .data-date
           margin-bottom: 20px
