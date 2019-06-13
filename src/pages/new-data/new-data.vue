@@ -805,7 +805,7 @@
             transition: all 0.3s
 
     .bottom-con
-      layout(row)
+      layout(row,block,no-wrap)
       padding: $margin 0 $margin $margin
       .label-con
         padding-top: 6px
@@ -928,6 +928,7 @@
             margin-right: 8px
             display: block
             border: 0.5px solid $border-color
+            border-radius: 2px
           .list-text
             width: 100%
             no-wrap()
