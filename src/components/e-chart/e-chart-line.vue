@@ -92,10 +92,10 @@
           },
           // canvas位置
           grid: {
-            left: '38',
-            right: '38',
+            left: '20',
+            right: '30',
             bottom: chartConfig.legendOnTop?'30':'52',
-            top: '20',
+            top: chartConfig.legendOnTop?'40':'20',
             containLabel: true
           },
           // x轴
@@ -119,7 +119,7 @@
         option.legend.data = legendData
         option.series = series
         option.xAxis = this._setXAxis(chartConfig.xAxleData)
-        option.yAxis = this._setYAxis(chartConfig.showSecondY, false)// 不显示Y轴
+        option.yAxis = this._setYAxis(chartConfig.showSecondY)// 不显示Y轴
         return option
       },
       _setSeries(chartConfig, item, i) {
