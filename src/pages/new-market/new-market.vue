@@ -560,7 +560,7 @@
         type: '',
         disable: false,
         currentItem: '',
-        inviterArr: [{people: '1人'}, {people: '3人'}, {people: '6人'}],
+        inviterArr: [{people: '1人'}, {people: '3人'}, {people: '6人'}, {people: '大于6人'}],
         invitedArr: [{condition: '新人红包'}, {condition: '下单返红包'}],
         inviteTitle: INVITE_TITLE,
         invitedTitle: INVITED_TITLE,
