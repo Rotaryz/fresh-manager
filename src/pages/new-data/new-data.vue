@@ -8,7 +8,7 @@
               <img src="./icon-real_time@2x.png" class="identification-icon">
               <p class="identification-name">实时总览</p>
             </div>
-            <div @click="_getRealTimeData" class="refresh-btn">
+            <div class="refresh-btn" @click="_getRealTimeData">
               <div class="refresh-icon"></div>
               刷新
             </div>
@@ -24,7 +24,7 @@
                   </div>
                 </div>
               </div>
-              <e-chart-line ref="realTimeChart" chartId="realTimeChart" class="chart-con"></e-chart-line>
+              <e-chart-line ref="realTimeChart" chartId="realTimeChart" class="real-time-chart"></e-chart-line>
             </div>
             <div class="real-time-box">
               <div v-for="(item, index) in realData" :key="index" class="real-list-box">
@@ -124,9 +124,9 @@
               </div>
             </div>
             <div class="pager-bar">
-              <div @click="_changePage(list,-1)" class="page-btn btn-prev"></div>
+              <div class="page-btn btn-prev" @click="_changePage(list,-1)"></div>
               <div class="page-con">{{list.pager.curPage}}/{{list.pager.pageTotal}}</div>
-              <div @click="_changePage(list,1)" class="page-btn btn-next"></div>
+              <div class="page-btn btn-next" @click="_changePage(list,1)"></div>
             </div>
           </div>
         </div>
@@ -146,9 +146,9 @@
   const TITLE = '数据'
   const REALDATA = [
     {imgUrl: '', title: '访客数', key: 'visitor', curr_total: 0, total: 0},
-    {imgUrl: 'users', title: '支付用户', key: 'order', curr_total: 0, total: 0},
+    {imgUrl: 'users', title: '支付用户', key: 'visitor', curr_total: 0, total: 0},
     {imgUrl: 'browse_volume', title: '浏览量', key: 'pay_customer', curr_total: 0, total: 0},
-    {imgUrl: 'wallet', title: '支付订单', key: 'customer_price', curr_total: 0, total: 0},
+    {imgUrl: 'wallet', title: '支付订单', key: 'pay_customer', curr_total: 0, total: 0},
   ]
   const BASELIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
@@ -528,7 +528,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  $margin = 20px
+  $margin = 1.04vw
   $border-color = #E9ECEE
 
   .new-data
@@ -560,9 +560,11 @@
             border-right-1px($border-color)
             layout(column)
             .info-con
+              position: absolute
+              top: 25px
+              left: $margin
               layout(row)
               height: 48px
-              margin: 25px 20px 0
               .info-icon
                 width: 48px
                 height: 48px
@@ -581,16 +583,17 @@
                     margin-left: 20px
                     font-size: $font-size-12
                     color: #999999
-            .chart-con
+            .real-time-chart
               width: 100%
-              height: 227px
+              height: 246px
+              margin-top: 54px
           .real-time-box
             width: 38%
             layout(row)
             .real-list-box
               height: 150px
               width: 50%
-              padding: 24px $margin
+              padding: 24px .6vw 24px $margin
               box-sizing: border-box
               layout(column)
               justify-content: space-between
@@ -600,12 +603,15 @@
                 border-bottom-1px($border-color)
               .top-box
                 width: 100%
+                height: 50px
                 layout(row)
+                align-items: center
+                flex-wrap: nowrap
                 .real-list-box-icon
                   width: 48px
                   height: 48px
                   display: block
-                  margin-right: 14px
+                  margin-right: .73vw
                   icon-image(icon-visitor_number)
                 .users
                   icon-image(icon-paying_users)
@@ -617,21 +623,26 @@
                 layout()
                 display: flex
                 flex: 1
+                no-wrap()
                 .real-text-title
+                  width: 100%
                   font-size: $font-size-14
                   font-family: $font-family-regular
                   color: $color-text-main
-                  /*margin-bottom: 4px*/
                 .real-text-number
+                  width: 100%
                   font-size: 28px
                   font-family: $font-family-din-bold
                   color: $color-text-main
                   line-height: 28px
+                  no-wrap()
               .bottom-box
+                width: 100%
                 font-size: 12px
                 font-family: $font-family-regular
                 color: #999
                 text-align: center
+                no-wrap()
             .real-list-box:nth-of-type(3n)
               border-right: 0 solid $border-color
             .real-list-box:nth-of-type(4), .real-list-box:nth-of-type(5), .real-list-box:nth-of-type(6)
@@ -667,10 +678,12 @@
               align-items: center
               justify-content: space-between
               .number-left
+                width: 100%
                 font-size: 28px
                 color: $color-text-main
                 line-height: 28px
                 font-family: $font-family-din-bold
+                no-wrap()
             .base-list-arrow
               position: absolute
               bottom: $margin
@@ -920,9 +933,10 @@
 
     .bottom-con
       layout(row)
-      padding: 26px 0 26px $margin
+      padding: $margin 0 $margin $margin
       .label-con
-        width: 220px
+        padding-top: 6px
+        width: 11.46vw
         layout()
         color: $color-text-main
         font-family: $font-family-regular
@@ -932,14 +946,21 @@
           color: #999999
         .label
           width: 100%
+          margin-bottom: 30px
+          no-wrap()
           font-size: $font-size-12
           .label-val
+            width: 100%
+            line-height: 32px
+            margin-top: 6px
+            no-wrap()
             font-size: 32px
             font-family: $font-family-din-bold
 
       .data-board-chart
         flex: 1
-        height: 368px
+        height: 370px
+        margin-top: 10px
   .rank-list
     margin-top: $margin
     background: #ffffff
@@ -1009,6 +1030,9 @@
         .list-header
           background: $color-white
           font-family: $font-family-medium
+        .list-content
+          &:hover
+            background: $color-white
         .rank-icon
           width: 30px
           height: 36px
