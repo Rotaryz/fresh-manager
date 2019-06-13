@@ -704,7 +704,7 @@
       },
       // 批量添加
       _batchAddition() {
-        this.choeesGoods = this.choeesGoods.map((item) => {
+        this.selectGoods = this.selectGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           item.usable_stock = ''
           item.trade_price_show = item.trade_price
