@@ -534,7 +534,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-  $margin = 1.04vw
+  $margin = 20px
+  $margin-left = 1.04vw
   $border-color = #E9ECEE
 
   .new-data
@@ -587,7 +588,7 @@
                   font-size: 28px
                   font-family: $font-family-din-bold
                   .small-text
-                    margin-left: $margin
+                    margin-left: $margin-left
                     font-size: $font-size-12
                     font-family: $font-family-regular
                     color: #999999
@@ -601,7 +602,7 @@
             .real-list-box
               height: 150px
               width: 50%
-              padding: 24px .6vw 24px $margin
+              padding: 24px .6vw 24px $margin-left
               box-sizing: border-box
               layout(column)
               justify-content: space-between
@@ -669,7 +670,7 @@
             position: relative
             width: 33.3333%
             height: 150px
-            padding: $margin
+            padding: $margin $margin-left
             cursor: pointer
             &:nth-child(3n+2),&:nth-child(3n+1)
               border-right-1px($border-color)
