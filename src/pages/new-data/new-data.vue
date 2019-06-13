@@ -190,8 +190,8 @@
       ],
       chartConfig: {
         dataArr: [
-          {name: '浏览量', key: 'pv', data:[]},
-          {name: '访客数', key: 'uv', data:[]}
+          {name: '浏览量', key: 'pv', data: []},
+          {name: '访客数', key: 'uv', data: []}
         ],
         xAxleData: [],
         lineShadow: 'false'
@@ -207,9 +207,9 @@
       ],
       chartConfig: {
         dataArr: [
-          {name: '支付金额', key: 'amount', data:[]},
-          {name: '客单价', key: 'per_customer_price', data:[]},
-          {name: '销售数量', key: 'num', data:[]}
+          {name: '支付金额', key: 'amount', data: []},
+          {name: '客单价', key: 'per_customer_price', data: []},
+          {name: '销售数量', key: 'num', data: []}
         ],
         xAxleData: [],
         lineShadow: 'false'
@@ -221,13 +221,13 @@
       label: [
         {name: '支付用户', key: 'amount_total', total: ''},
         {name: '支付订单', key: 'num_total', total: ''},
-        {name: '支付转化率', key: 'unit_price', total: '',unit: '%'}
+        {name: '支付转化率', key: 'unit_price', total: '', unit: '%'}
       ],
       chartConfig: {
         dataArr: [
-          {name: '支付用户', key: 'amount', data:[]},
-          {name: '支付订单', key: 'num', data:[]},
-          {name: '支付转化率', key: 'unit_price', data:[]}
+          {name: '支付用户', key: 'amount', data: []},
+          {name: '支付订单', key: 'num', data: []},
+          {name: '支付转化率', key: 'unit_price', data: []}
         ],
         xAxleData: [],
         lineShadow: 'false'
@@ -243,8 +243,8 @@
       ],
       chartConfig: {
         dataArr: [
-          {name: '退货金额', key: 'amount', data:[]},
-          {name: '退货数量', key: 'num', data:[]}
+          {name: '退货金额', key: 'amount', data: []},
+          {name: '退货数量', key: 'num', data: []}
         ],
         xAxleData: [],
         lineShadow: 'false'
@@ -255,28 +255,28 @@
     leader: {
       title: '团长',
       tableHead: ['排名', '团长', '销售额', '佣金'],
-      apiFun:'getManagerRank',
-      params:{time: 'week', start_time: '', end_time: ''},
+      apiFun: 'getManagerRank',
+      params: {time: 'week', start_time: '', end_time: ''},
       data: [],
-      dataKey: ['index','social_name','sale_total_sum','commission_total_sum'],
+      dataKey: ['index', 'social_name', 'sale_total_sum', 'commission_total_sum'],
       pager: {curPage: 1, pageTotal: 10}
     },
     goods: {
       title: '商品',
       tableHead: ['图片', '商品名称', '销量', '销售额'],
-      apiFun:'getGoodsRank',
-      params:{time: 'week', start_time: '', end_time: ''},
+      apiFun: 'getGoodsRank',
+      params: {time: 'week', start_time: '', end_time: ''},
       data: [],
-      dataKey: ['image_url','goods_name','sale_count_sum','sale_total_sum'],
+      dataKey: ['image_url', 'goods_name', 'sale_count_sum', 'sale_total_sum'],
       pager: {curPage: 1, pageTotal: 10}
     },
     search: {
       title: '搜索词',
       tableHead: ['排名', '搜索词', '搜索次数'],
-      apiFun:'getGoodsRank',
-      params:{time: 'week', start_time: '', end_time: ''},
+      apiFun: 'getGoodsRank',
+      params: {time: 'week', start_time: '', end_time: ''},
       data: [],
-      dataKey: ['index','goods_name','sale_count_sum'],
+      dataKey: ['index', 'goods_name', 'sale_count_sum'],
       pager: {curPage: 1, pageTotal: 10}
     }
   }
@@ -392,7 +392,7 @@
         this.$router.push(item.url)
       },
       // 商品排行
-      getGoodsRank(loading=false) {
+      getGoodsRank(loading = false) {
         API.Data.goodsData(this.rankDir.goods.params, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
@@ -409,15 +409,13 @@
       _getShopUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.shopStartTime}&end_time=${
-          this.shopEndTime
-        }&time=${this.shopTime}`
+        let params = `access_token=${token.access_token}&start_time=${this.shopStartTime}&end_time=${this.shopEndTime}&time=${this.shopTime}`
         this.shopDownUrl =
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
       },
       // 社区排行
-      getManagerRank(loading=false) {
+      getManagerRank(loading = false) {
         API.Data.managerData(this.rankDir.leader.params, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
@@ -433,9 +431,7 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.managerStartTime}&end_time=${
-          this.managerEndTime
-        }&time=${this.managerTime}`
+        let params = `access_token=${token.access_token}&start_time=${this.managerStartTime}&end_time=${this.managerEndTime}&time=${this.managerTime}`
         this.downUrl =
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
@@ -449,7 +445,7 @@
       _getRealTimeData(loading = false) {
         let curChart = this.realTimeData
         let getSuccess = false
-        API.Operation[curChart.apiFun]({date_type: 'week'},loading).then((res) => {
+        API.Operation[curChart.apiFun]({date_type: 'week'}, loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
@@ -466,7 +462,7 @@
       _getDataBoard(loading = false) {
         let curChart = this.dataBoard[this.dataBoardIndex]
         let getSuccess = false
-        API.Operation[curChart.apiFun]({date_type: 'week'},loading).then((res) => {
+        API.Operation[curChart.apiFun]({date_type: 'week'}, loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
@@ -494,7 +490,7 @@
             let _resData = result.data[i]
             // 测试数据
             let rd = (Math.random() * 100).toFixed(2)
-            _chartData.data.push(_resData[_key]+rd)
+            _chartData.data.push(_resData[_key] + rd)
             // 测试数据
             // _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
             if (j === 0) {
@@ -507,7 +503,7 @@
         }
         return curChart
       },
-      _changePage(item,num) {
+      _changePage(item, num) {
         let curPage = item.pager.curPage + num
         if (curPage < 1 || curPage > item.pager.pageTotal) return
         item.pager.curPage = curPage
@@ -563,6 +559,7 @@
               position: absolute
               top: 25px
               left: $margin
+              z-index: 9
               layout(row)
               height: 48px
               .info-icon
@@ -580,8 +577,9 @@
                   font-size: 28px
                   font-family: $font-family-din-bold
                   .small-text
-                    margin-left: 20px
+                    margin-left: $margin
                     font-size: $font-size-12
+                    font-family: $font-family-regular
                     color: #999999
             .real-time-chart
               width: 100%
@@ -694,100 +692,6 @@
           .base-list-item:hover
             .base-list-arrow
               icon-image(icon-rightward_2)
-  .data-middle-box
-    layout(row)
-    display: flex
-    margin-top: $margin
-    .data-middle-left
-      width: 66.66666%
-      height: 260px
-      layout(row)
-      display: flex
-      padding-right: 7px
-    .middle-small-left
-      width: 50%
-      height: 405px
-      padding-right: 10px
-      .data-list
-        width: 100%
-        height: 100%
-        background: $color-white
-    .middle-small-right
-      width: 50%
-      height: 405px
-      padding-left: 10px
-      .goods-rank
-        width: 100%
-        height: 100%
-        background: $color-white
-    .data-middle-right
-      width: 33.33333%
-      height: 405px
-      padding-left: 13px
-      box-sizing: border-box
-      .community-rank
-        background: $color-white
-        width: 100%
-        height: 100%
-  .data-bottom-box
-    layout(row)
-    margin-top: $margin
-    background: $color-white
-    .dispose-matter-box
-      layout(row)
-      align-items: center
-      height: 140px
-      width: 100%
-      .dispose-list-box
-        layout()
-        align-items: center
-        justify-content: center
-        flex: 1
-        max-width: 220px
-        .dispose-top-item
-          width: 50px
-          height: @width
-          border-1px(#ccc, 500px)
-          border-radius: 50px
-          position: relative
-          .dispose-text
-            font-size: $font-size-18
-            font-family: $font-family-medium
-            color: $color-text-main
-            width: 50px
-            height: @width
-            line-height: @width
-            text-align: center
-          .dispose-number
-            min-width: 22px
-            height: 22px
-            line-height: 22px
-            padding: 0 5px
-            position: absolute
-            left: 35px
-            top: 0
-            background: #F84E3C
-            border-radius: 50px
-            color: $color-white
-            font-size: $font-size-13
-            text-align: center
-            font-family: $font-family-medium
-            z-index: 10
-          .dispose-img
-            width: 22px
-            height: @width
-            position: absolute
-            right: -10px
-            top: 0
-            border-radius: 50px
-            display: block
-            font-family: $font-family-medium
-            z-index: 11
-        .dispose-name
-          margin-top: 10px
-          font-size: $font-size-14
-          font-family: $font-family-regular
-          color: $color-text-main
   .goods-list
     .list-item
       box-sizing: border-box
@@ -798,18 +702,6 @@
       &:nth-child(2)
         flex: 1.6
       &:nth-child(3), &:nth-child(4), &:nth-child(5)
-        text-align: right
-        justify-content: flex-end
-      &:last-child
-        padding-right: 0
-  .community-list
-    .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:nth-child(1)
-        flex: 1.6
-      &:nth-child(3), &:nth-child(4), &:nth-child(2)
         text-align: right
         justify-content: flex-end
       &:last-child
@@ -900,8 +792,9 @@
           margin-right: 5px
         .title
           margin-right: 30px
-          font-family: $font-family-bold
-
+          font-family: $font-family-medium
+          color: $color-text-main
+          font-size: $font-size-16
         .tab
           position: relative
           height: 24px
@@ -938,17 +831,18 @@
         padding-top: 6px
         width: 11.46vw
         layout()
-        color: $color-text-main
-        font-family: $font-family-regular
-        font-size: $font-size-12
         .data-date
           margin-bottom: 20px
           color: #999999
+          font-size: $font-size-12
+          font-family: $font-family-regular
         .label
           width: 100%
           margin-bottom: 30px
           no-wrap()
           font-size: $font-size-12
+          font-family: $font-family-regular
+          color: $color-text-main
           .label-val
             width: 100%
             line-height: 32px
@@ -1007,7 +901,9 @@
           align-items: center
           .title
             margin-right: 30px
-            font-family: $font-family-bold
+            color: $color-text-main
+            font-size: $font-size-16
+            font-family: $font-family-medium
         .excel-btn
           display: block
           width: 80px
