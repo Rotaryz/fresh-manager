@@ -110,18 +110,20 @@
             <a target="_blank" class="excel-btn">导出Excel</a>
           </div>
           <div class="big-list">
-            <div class="list-header list-box goods-list">
+            <div class="list-header">
               <div v-for="(th,thIdx) in list.tableHead" :key="thIdx" class="list-item">{{th}}</div>
             </div>
             <div class="list">
-              <div v-for="(item, idx) in list.data" :key="idx" class="list-content list-box goods-list">
+              <div v-for="(item, idx) in list.data" :key="idx" class="list-content">
                 <div v-for="(key, keyIdx) in list.dataKey" :key="keyIdx" class="list-item">
                   <template v-if="key==='index'">
                     <div v-if="idx<3" :src="item[key]" :class="'rank-'+(idx+1)" class="rank-icon"></div>
                     <p v-else class="list-rank-num">{{idx+1}}</p>
                   </template>
-                  <img v-else-if="key==='image_url'" :src="item[key]" class="data-list-img">
-                  <template v-else>{{item[key]}}</template>
+                  <template v-else>
+                    <img v-if="key==='goods_name'" :src="item.image_url" class="data-list-img">
+                    <div class="list-text">{{item[key]}}</div>
+                  </template>
                 </div>
               </div>
             </div>
@@ -264,11 +266,11 @@
     },
     goods: {
       title: '商品',
-      tableHead: ['图片', '商品名称', '销量', '销售额'],
+      tableHead: ['排名', '商品', '销量', '销售额'],
       apiFun: 'getGoodsRank',
       params: {time: 'week', start_time: '', end_time: ''},
       data: [],
-      dataKey: ['image_url', 'goods_name', 'sale_count_sum', 'sale_total_sum'],
+      dataKey: ['index', 'goods_name', 'sale_count_sum', 'sale_total_sum'],
       pager: {curPage: 1, pageTotal: 10}
     },
     search: {
@@ -326,10 +328,10 @@
       }
       this.permissions = storage.get('permissions')
       this.getSurveyTrade('', '', 'week', true)
+      this._getRealTimeData()
       this.getScmBaseData()
       this.getShopBaseData()
-      this._getDataBoard(true)
-      this._getRealTimeData()
+      this._getDataBoard()
       this.getGoodsRank()
       this.getManagerRank()
     },
@@ -350,6 +352,23 @@
           } else {
             this.$toast.show(res.message)
           }
+        })
+      },
+      // 实时总览折线图
+      _getRealTimeData(loading = false) {
+        let curChart = this.realTimeData
+        let getSuccess = false
+        API.Operation[curChart.apiFun]({date_type: 'week'}, loading).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
+          // 格式化接口返回的数据
+          curChart = this.formatResData(res, curChart)
+          getSuccess = true
+        }).finally(() => {
+          this.chartArr[0] = this.$refs.realTimeChart._setChart(curChart.chartConfig, loading, getSuccess)
+          this.getFinish = this.chartArr.length === 2
+          loading && this.$loading.hide()
         })
       },
       // 基础功能
@@ -437,28 +456,6 @@
           process.env.VUE_APP_API +
           `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
       },
-      _switchTab(tab, tabIdx) {
-        if (this.dataBoardIndex === tabIdx) return
-        this.dataBoardIndex = tabIdx
-        this._getDataBoard()
-      },
-      // 实时总览折线图
-      _getRealTimeData(loading = false) {
-        let curChart = this.realTimeData
-        let getSuccess = false
-        API.Operation[curChart.apiFun]({date_type: 'week'}, loading).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return false
-          }
-          // 格式化接口返回的数据
-          curChart = this.formatResData(res, curChart)
-          getSuccess = true
-        }).finally(() => {
-          this.chartArr[0] = this.$refs.realTimeChart._setChart(curChart.chartConfig, loading, getSuccess)
-          this.getFinish = this.chartArr.length === 2
-          loading && this.$loading.hide()
-        })
-      },
       // 数据看板
       _getDataBoard(loading = false) {
         let curChart = this.dataBoard[this.dataBoardIndex]
@@ -504,6 +501,11 @@
         }
         return curChart
       },
+      _switchTab(tab, tabIdx) {
+        if (this.dataBoardIndex === tabIdx) return
+        this.dataBoardIndex = tabIdx
+        this._getDataBoard()
+      },
       _changePage(item, num) {
         let curPage = item.pager.curPage + num
         if (curPage < 1 || curPage > item.pager.pageTotal) return
@@ -520,31 +522,9 @@
         }
       },
       _dataBoardChangeDate(value) {
-        if (typeof value === 'string') {
-          this.requestPub.date_type = value
-        } else {
-          this.requestPub.date_type = 'cust-date'
-          this.requestPub.start_date = value[0]
-          this.requestPub.end_date = value[1]
-          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
-            this.$toast.show('选择时间范围不能小于两天')
-            return
-          }
-        }
         this._getDataBoard()
       },
       _rankListChangeDate(value) {
-        if (typeof value === 'string') {
-          this.requestPub.date_type = value
-        } else {
-          this.requestPub.date_type = 'cust-date'
-          this.requestPub.start_date = value[0]
-          this.requestPub.end_date = value[1]
-          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
-            this.$toast.show('选择时间范围不能小于两天')
-            return
-          }
-        }
         this.getGoodsRank()
         this.getManagerRank()
       }
@@ -722,32 +702,6 @@
           .base-list-item:hover
             .base-list-arrow
               icon-image(icon-rightward_2)
-  .goods-list
-    .list-item
-      box-sizing: border-box
-      padding-right: 10px
-      flex: 1
-      &:nth-child(1)
-        max-width: 56px
-      &:nth-child(2)
-        flex: 1.6
-      &:nth-child(3), &:nth-child(4), &:nth-child(5)
-        text-align: right
-        justify-content: flex-end
-      &:last-child
-        padding-right: 0
-  .new-data
-    .list-content
-      &:nth-child(2n)
-        background: $color-white
-      &:hover
-        background: #F7FAF5
-  .data-list-img
-    width: 36px
-    height: @width
-    display: block
-    border-radius: 2px
-    border: 0.5px solid $border-color
   .survey-box
     padding: 0 $margin
     border-bottom-1px($border-color)
@@ -787,10 +741,6 @@
     #trend
       height: 345px
       width: 100%
-  .list-header
-    &:after
-      border-top: 0.5px solid #E6E7EB !important
-      border-bottom: 0.5px solid #E6E7EB !important
   .survey-box-none
     border-none()
 
@@ -954,11 +904,50 @@
         padding-bottom: 60px
         font-size: $font-size-14
         .list-header
+          padding: 0 20px
+          box-sizing: border-box
+          border-bottom-1px(#E9ECEE)
+          display: flex
+          align-items: center
           background: $color-white
           font-family: $font-family-medium
         .list-content
+          padding: 0 20px
+          box-sizing: border-box
+          border-bottom-1px(#E9ECEE)
+          display: flex
+          align-items: center
+          &:nth-child(2n)
+            background: $color-white
           &:hover
             background: $color-white
+          .data-list-img
+            width: 36px
+            min-width: 36px
+            height: @width
+            margin-right: 8px
+            display: block
+            border: 0.5px solid $border-color
+          .list-text
+            width: 100%
+            no-wrap()
+        .list-item
+          height: 40px
+          layout(row, block, no-warp)
+          align-items: center
+          box-sizing: border-box
+          padding-right: 10px
+          flex: 1
+          &:nth-child(1)
+            max-width: 56px
+          &:nth-child(2)
+            flex: 3
+          &:nth-child(3), &:nth-child(4), &:nth-child(5)
+            text-align: right
+            justify-content: flex-end
+          &:last-child
+            padding-right: 0
+
         .rank-icon
           width: 30px
           height: 36px
