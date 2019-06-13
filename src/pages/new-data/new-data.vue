@@ -77,6 +77,7 @@
             </li>
           </ul>
         </div>
+        <base-date-picker :infoTab="1" :arrTitle="dateArr" @checkTime="_dataBoardChangeDate"></base-date-picker>
       </div>
       <div class="bottom-con">
         <div class="label-con">
@@ -98,6 +99,7 @@
           <img src="./icon-ranking@2x.png" class="identification-icon">
           <p class="identification-name">排行</p>
         </div>
+        <base-date-picker :infoTab="1" :arrTitle="dateArr" @checkTime="_rankListChangeDate"></base-date-picker>
       </div>
       <div class="rank-list-content">
         <div v-for="(list,index) in rankDir" :key="index" class="rank-list-con">
@@ -158,11 +160,10 @@
     {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},
     {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management', permissions: 'driver'}
   ]
-  const RANKTIME = [
-    {title: '今天', status: 'today'},
-    {title: '昨天', status: 'yesterday'},
-    {title: '7天', status: 'week'},
-    {title: '30天', status: 'month'}
+  const DATE_ARR = [
+    {title: '日', status: 'date'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
   ]
   const REAL_TIME = {
     apiFun: 'getOperationOrderData',
@@ -293,7 +294,7 @@
       return {
         realData: REALDATA,
         baseList: BASELIST,
-        rankTime: RANKTIME,
+        dateArr: DATE_ARR,
         downUrl: '',
         shopDownUrl: '',
         permissions: {},
@@ -518,6 +519,35 @@
           }
         }
       },
+      _dataBoardChangeDate(value) {
+        if (typeof value === 'string') {
+          this.requestPub.date_type = value
+        } else {
+          this.requestPub.date_type = 'cust-date'
+          this.requestPub.start_date = value[0]
+          this.requestPub.end_date = value[1]
+          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
+            this.$toast.show('选择时间范围不能小于两天')
+            return
+          }
+        }
+        this._getDataBoard()
+      },
+      _rankListChangeDate(value) {
+        if (typeof value === 'string') {
+          this.requestPub.date_type = value
+        } else {
+          this.requestPub.date_type = 'cust-date'
+          this.requestPub.start_date = value[0]
+          this.requestPub.end_date = value[1]
+          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
+            this.$toast.show('选择时间范围不能小于两天')
+            return
+          }
+        }
+        this.getGoodsRank()
+        this.getManagerRank()
+      }
     }
   }
 </script>
