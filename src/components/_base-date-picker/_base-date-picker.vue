@@ -3,18 +3,19 @@
     <li v-for="(item, index) in arrTitle"
         :key="index"
         class="date-item hand"
-        :class="{'date-item-active': tabIndex === index}"
+        :class="{'date-item-active': (tempIndex !== '' ? tempIndex === index : tabIndex === index)}"
         @click="checkTab(index)"
+        @mouseenter="mouseEnter(item.status, index)"
+        @mouseleave="mouseLeave(item.status, index)"
     >
       <date-picker :ref="item.status"
-                   v-model="date"
+                   v-model="time[item.status]"
                    :clearable="false"
                    :type="item.status"
                    :placeholder="text"
                    class="date"
                    :pickerOptions="pickerOptions"
-                   @change="_getDayDate"
-                   @mouseenter="mouseEnter"
+                   @change="['_get'+firstUppercase(item.status)]"
       ></date-picker>
       {{item.title}}
       <transition name="fade">
@@ -96,6 +97,7 @@
     data() {
       return {
         tabIndex: this.infoTab,
+        tempIndex: '',
         pickerOptions: {
           disabledDate: function(date) {
             return date.valueOf() > Date.now() - 86400000
@@ -104,9 +106,13 @@
         showPicker: true,
         moreTime: '',
         showDate: false,
-        date: '',
-        week: '',
-        month: ''
+        enterName: '',
+        timer: '',
+        time: {
+          date: '',
+          week: '',
+          month: ''
+        }
       }
     },
     watch: {
@@ -115,48 +121,56 @@
       }
     },
     methods: {
-      mouseEnter() {
-        console.log(this.$refs.week, 222)
-        this.$refs.date.focus()
+      mouseEnter(name, index) {
+        // if (name !== this.enterName && this.enterName) {
+        //   this.$refs[this.enterName][0].handleClose()
+        // }
+        // clearTimeout(this.timer)
+        // this.tempIndex = index
+        // this.$refs[name][0].$refs.reference.focus()
+        // this.enterName = name
+      },
+      mouseLeave(name) {
+        // this.timer = setTimeout(() => {
+        //   this.tempIndex = ''
+        // },100)
+        // this.$refs[name][0].handleClose()
       },
       checkTab(index) {
         this.tabIndex = index
-        // this.week = ''
-        // this.month = ''
         let status = this.arrTitle[index].status
-        // this.showDate = true
         console.log(status)
-        // this.$emit('checkTime', status)
       },
-      // dateEnter() {
-      //   console.log(this.$refs.date)
-      //   this.$refs.date.focus()
-      // },
+
       _getCustomTime(time) {
         this.showDate = false
 
         // this.$emit('checkTime', time)
       },
-      _getDayDate(time) {
+      _getDate(time) {
         let date = new Date(time).getDate()
         console.log(date)
         // this.showDate = true
         // this.$emit('checkTime', time)
       },
-      _getWeekDate(time) {
+      _getWeek(time) {
         let date = new Date(time).getDate()
         console.log(date)
         // this.week = time
         // this.showDate = true
         // this.$emit('checkTime', time)
       },
-      _getMonthDate(time) {
+      _getMonth(time) {
         let date = new Date(time).getMonth() + 1
         console.log(date)
         // this.month = time
         // this.showDate = true
         // this.$emit('checkTime', date)
-      }
+      },
+      firstUppercase(str) {
+        let first = str[0].toUpperCase()
+        return first+str.slice(1)
+      },
     }
   }
 </script>
