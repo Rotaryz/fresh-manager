@@ -40,7 +40,7 @@
                 <base-switch :status="statusHandle(item, index)" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'marketing-statistics?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">统计</router-link>
+                <router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>
                 <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
@@ -139,7 +139,8 @@
     created() {
       this.getMarketStatus()
     },
-    mounted() {},
+    mounted() {
+    },
     methods: {
       ...marketMethods,
       newMarket(index) {
@@ -291,13 +292,13 @@
           .icon
             opacity: 0.9
           .icon-0
-            box-shadow: 0 2px 8px 0 rgba(159,213,198,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159, 213, 198, 0.40)
           .icon-1
-            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159, 170, 213, 0.40)
           .icon-2
-            box-shadow: 0 2px 8px 0 rgba(199,159,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(199, 159, 213, 0.40)
           .icon-3
-            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159, 170, 213, 0.40)
           .text
             text-decoration: underline
 

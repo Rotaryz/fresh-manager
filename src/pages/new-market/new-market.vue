@@ -711,6 +711,7 @@
         this.type || this._getGroupList()
         break
       case 4:
+        this.msg.type = 7
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
         this.title = '邀请有礼'
         this._getGoodsCouponList()
