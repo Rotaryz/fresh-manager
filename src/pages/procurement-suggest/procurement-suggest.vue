@@ -57,6 +57,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import {proTaskComputed, proTaskMethods} from '@state/helpers'
+
   const PAGE_NAME = 'PROCUREMENT_SUGGEST'
   const TITLE = '预采建议'
   const COMMODITIES_LIST = ['商品', '分类', '供应商', '采购员', '商品销售数', '库存数', '建议采购数', '创建时间']
@@ -162,6 +163,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          isBlocked: 1,
           loading: false
         })
       },

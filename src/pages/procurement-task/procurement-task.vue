@@ -289,7 +289,6 @@
       if (this.$route.query.status) {
         this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.$route.query.status * 1)
         this.status = this.$route.query.status * 1
-        console.log(this.dispatchSelect)
       } else {
         this.statusTab = this.dispatchSelect.findIndex((item) => item.name === '待发布')
         this.status = this.dispatchSelect[this.statusTab].status
