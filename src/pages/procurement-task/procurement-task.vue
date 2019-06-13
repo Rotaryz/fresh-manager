@@ -284,11 +284,8 @@
       }
     },
     async created() {
-      this._setErrorStatus()
-      await this._getFirstAssortment()
-      await this._getGoodsList()
-      await this._getSupplierList()
       await this._statistic()
+      this._setErrorStatus()
       if (this.$route.query.status) {
         this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.$route.query.status * 1)
         this.status = this.$route.query.status * 1
@@ -303,6 +300,9 @@
         this.status = this.dispatchSelect[this.statusTab].status
         this._createNewPublish()
       }
+      await this._getFirstAssortment()
+      await this._getGoodsList()
+      await this._getSupplierList()
       this._getUrl()
     },
     mounted() {},
