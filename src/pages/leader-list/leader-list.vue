@@ -39,7 +39,7 @@
         <div class="list-header list-box leader-list">
           <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
         </div>
-        <div class="list">
+        <div v-if="leaderList.length" class="list">
           <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box leader-list">
             <div class="list-item">{{item.mobile || '---'}}</div>
             <div class="list-item">{{item.nickname || '---'}}</div>
@@ -60,6 +60,7 @@
             </div>
           </div>
         </div>
+        <base-blank v-else blackStyle="padding-top:15%"></base-blank>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
@@ -90,7 +91,7 @@
         <div class="list-header list-box  application-list">
           <div v-for="(item,index) in leaderApplicationTitle" :key="index" class="list-item">{{item}}</div>
         </div>
-        <div class="list">
+        <div v-if="leaderApplicationList.length" class="list">
           <div v-for="(item, index) in leaderApplicationList" :key="index" class="list-content list-box application-list">
             <div class="list-item">{{item.mobile || '---'}}</div>
             <div class="list-item">{{item.name || '---'}}</div>
@@ -108,6 +109,7 @@
             </div>
           </div>
         </div>
+        <base-blank v-else blackStyle="padding-top:15%"></base-blank>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
@@ -409,6 +411,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .big-list
+   position:relative
   .tab-top
     position:fixed
     top: 38px

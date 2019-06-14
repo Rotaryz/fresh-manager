@@ -13,32 +13,40 @@
         <div class="identification">
           <div class="identification-page">
             <img src="./icon-bandit_list@2x.png" class="identification-icon">
-            <p class="identification-name">团长邀请排行榜<span class="sub-title">(合计成功邀请 {{10}} 位团长)</span> </p>
+            <p class="identification-name">团长邀请排行榜<span class="sub-title">(合计成功邀请 {{pageInfo.total}} 位团长)</span></p>
           </div>
           <div class="switch-wrapper" @click="handleSwitchChange">
-            <base-switch :status="status" confirmText="开启" cancelText="关闭"></base-switch>
+            <base-switch :status="statusObj.status" confirmText="开启" cancelText="关闭"></base-switch>
           </div>
-          <p class="leader-status" :class="{active: status}">团长奖励比例：{{number > 0 ? number + '%' : '未设置'}}</p>
+          <p class="leader-status" :class="{active: statusObj.status}">团长奖励比例：{{statusObj.percent > 0 ? statusObj.percent + '%' : '未设置'}}</p>
         </div>
         <div class="big-list">
           <div class="list-header list-box">
             <div v-for="(item,index) in tabTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
           </div>
           <div v-if="dataArray.length" class="list">
-            <div v-for="(item, index) in dataArray" :key="index" class="list-content list-box">
-              <div v-for="(val, ind) in tabTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-                <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
-                  {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
+            <div v-for="(row, index) in dataArray" :key="index" class="list-content list-box">
+              <!--{{row}}-->
+              <div :style="{flex: tabTitle[0].flex}" class="list-item">
+                <router-link tag="span" :to="{name:'leader-list',query:{keyword:row[tabTitle[0].key]}}" append class="list-operation">
+                  {{row[tabTitle[0].key][tabTitle[0].key2]}}
+                </router-link>
+              </div>
+              <div :style="{flex: tabTitle[1].flex}" class="list-item">
+                <router-link tag="span" :to="{name:'leader-list',query:{keyword:row[tabTitle[1].key]}}" append class="list-operation">
+                  {{row[tabTitle[1].key][tabTitle[1].key2]}}
+                </router-link>
+              </div>
+              <div :style="{flex: tabTitle[2].flex}" class="list-item">{{row[tabTitle[2].key]}}个/{{row[tabTitle[2].after.key]}}元</div>
+              <div :style="{flex: tabTitle[3].flex}" class="list-item">￥{{row[tabTitle[3].key]}}</div>
+              <div :style="{flex: tabTitle[4].flex}" class="list-item">￥{{row[tabTitle[4].key]}}</div>
+              <div :style="{flex: tabTitle[5].flex}" class="list-item">￥{{row[tabTitle[5].key]}}</div>
+              <div :style="{flex: tabTitle[6].flex}" class="list-item list-operation-box">
+                <div class="list-operation" @click="showAccountModal(row)">
+                  {{tabTitle[6].operateText}}
                 </div>
-                <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
-                  <span class="list-operation">{{item[val.value] || ''}}</span>
-                </div>
-                <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                  <span class="list-operation" @click="handleAccount(item)">佣金结算</span>
-                  <span class="list-operation" @click="handleLog">结算记录</span>
-                </div>
-                <div v-if="+val.type === 6" :style="{flex: val.flex}" class="item">
-                  {{item[val.value] || '0'}}个/{{item[val.value2] || '0'}}元
+                <div class="list-operation" @click="showLogModal(row)">
+                  {{tabTitle[6].afterBtn.operateText}}
                 </div>
               </div>
             </div>
@@ -46,7 +54,7 @@
           <base-blank v-else blackStyle="padding-top:15%"></base-blank>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pages" :pageDetail="pageInfo" @addPage="addPage"></base-pagination>
+          <base-pagination ref="pagination" :pageDetail="pageInfo" @addPage="addPage"></base-pagination>
         </div>
       </section>
       <default-modal ref="modalSwitch">
@@ -58,7 +66,7 @@
           <section class="input-wrapper">
             <p class="key">团长奖励比例</p>
             <div class="edit-input-box">
-              <input v-model="number" type="text" placeholder="" class="edit-input">
+              <input v-model="inviteSetting.percent" type="number" placeholder="" class="edit-input">
             </div>
             <p>%</p>
           </section>
@@ -68,8 +76,8 @@
             <dd>福利二：被邀请的团长用户下单后团长(邀请者)可获得对应的订单分销提成</dd>
           </dl>
           <div class="btn-group">
-            <span class="btn cancel" @click="handleSwitchModalCancel">取消</span>
-            <span class="btn confirm" @click="handleSwitchModalConfirm">确认</span>
+            <span class="btn cancel" @click="hideModal('modalSwitch')">取消</span>
+            <span class="btn confirm" @click="_leaderInviteSetting">确认</span>
           </div>
         </div>
       </default-modal>
@@ -83,16 +91,17 @@
             <p class="title">请选择结算佣金时间：</p>
             <section class="date-wrapper">
               <base-date-select
+                :dateInfo="null"
                 dataPickerType="date"
-                :disabled="true"
-                :value="new Date()"
+                :disabledDate="dateOption"
+                @getTime="getTime"
               ></base-date-select>
               <span class="separator">至</span>
               <base-date-select
                 dataPickerType="date"
                 :dateInfo="null"
-                :disabledDate="dateOption"
-                @getTime="getTime"
+                :disabled="true"
+                :value="new Date()"
               ></base-date-select>
             </section>
             <p class="result">结算金额：50*3+1050*3%=1200.00元</p>
@@ -115,15 +124,11 @@
                 <div v-for="(item,index) in logTile" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
               </div>
               <div v-if="logArray.length" class="list">
-                <div v-for="(item, index) in logArray" :key="index" class="list-content list-box">
-                  <div v-for="(val, ind) in logTile" :key="ind" :style="{flex: val.flex}" class="list-item">
-                    <div v-if="+val.type === 1 || +val.type === 3" :style="{flex: val.flex}" class="item">
-                      {{+val.type === 3 ? '¥' : ''}}{{item[val.value] || '0'}}
-                    </div>
-                    <div v-if="+val.type === 6" :style="{flex: val.flex}" class="item">
-                      {{item[val.value] || '0'}}至{{item[val.value2] || '0'}}
-                    </div>
-                  </div>
+                <div v-for="(row, index) in logArray" :key="index" class="list-content list-box">
+                  <div :style="{flex: logTile[0].flex}" class="list-item">{{row[logTile[0].key]}}</div>
+                  <div :style="{flex: logTile[1].flex}" class="list-item">{{row[logTile[1].key]}}至{{row[logTile[1].key2]}}</div>
+                  <div :style="{flex: logTile[2].flex}" class="list-item">{{row[logTile[2].key]}}%</div>
+                  <div :style="{flex: logTile[3].flex}" class="list-item">{{row[logTile[3].key]}}</div>
                 </div>
               </div>
               <div v-if="logArray.length < 1" style="height: 354px"></div>
@@ -133,7 +138,9 @@
               <base-pagination ref="pages" :pageDetail="logPageInfo" @addPage="addPageLogs"></base-pagination>
             </div>
           </div>
-          <div height="10px"></div>
+          <div class="btn-group">
+            <span class="btn cancel" @click="$refs.modalLogs.hideModal()">关闭</span>
+          </div>
         </div>
       </default-modal>
     </article>
@@ -148,20 +155,52 @@
   const TITLE = '团长分销'
 
   const TAB_TITLE = [
-    {name: '社区名称', flex: 1.5, value: 'activity_name', type: 2},
-    {name: '团长名称', flex: 1.5, value: 'activity_name', type: 2},
-    {name: '邀请团长用户数/奖励', flex: 1.5, value: 'groupon_success_num', type: 6, value2: 'groupon_imitate_success_num'},
-    {name: '分销佣金', flex: 1, value: 'groupon_all_people_num', type: 3},
-    {name: '待结算佣金', flex: 1, value: 'groupon_all_people_num', type: 3},
-    {name: '已结算佣金', flex: 1.5, value: 'groupon_all_people_num', type: 3},
-    {name: '操作', flex: 1.6, value: '', type: 5}
-  ]
-
+    {
+      name: '社区名称',
+      type: 'operate',
+      operateText: '',
+      flex: 1.5,
+      key: 'shop',
+      key2: 'social_name',
+      class: "operate",
+      params: {id: 'id', 'goods_sku_code': 'goods_sku_code'},
+      routerName: 'leader-list'
+    },
+    {
+      name: '团长名称',
+      key: 'shop',
+      key2: 'name',
+      type: 'operate',
+      operateText: '',
+      flex: 1.5,
+      class: "operate",
+      params: {id: 'id', 'goods_sku_code': 'goods_sku_code'},
+      routerName: 'sorting-task-detail-by-goods',
+    },
+    {
+      name: '邀请团长用户数/奖励', flex: 1.5, key: 'invite_total_money', type: 6, after: {key: 'invite_reward_money'}
+    },
+    {name: '分销佣金', flex: 1, key: 'invite_total_money'},
+    {name: '待结算佣金', flex: 1, key: 'not_settlement_money'},
+    {name: '已结算佣金', flex: 1.5, key: 'settlement_money'},
+    {
+      name: '操作',
+      flex: 1.6,
+      key: '',
+      type: 'showModal',
+      operateText: '佣金结算',
+      modalName: 'modalAccount',
+      afterBtn: {
+        type: 'showModal',
+        modalName: 'modalLogs',
+        operateText: '结算记录',
+      }
+    }]
   const LOG_TITLE = [
-    {name: '结算时间', flex: 1.5, value: 'activity_name', type: 1},
-    {name: '结算佣金时间段', flex: 1.5, value: 'groupon_imitate_success_num', type: 6, value2: 'groupon_imitate_success_num'},
-    {name: '奖励比例', flex: 1.5, value: 'groupon_success_num', type: 1},
-    {name: '结算金额', flex: 1.5, value: 'groupon_all_people_num', type: 1},
+    {name: '结算时间', flex: 1.5, key: 'created_at', type: 1},
+    {name: '结算佣金时间段', flex: 1.5, key: 'start_at', type: 6, key2: 'end_at'},
+    {name: '奖励比例', flex: 1.5, key: 'distribution_percent', type: 1},
+    {name: '结算金额', flex: 1.5, key: 'total_money', type: 1},
   ]
   export default {
     name: PAGE_NAME,
@@ -174,43 +213,146 @@
     data() {
       const params = this.$route.meta.params
       return {
+        status: 0,
+        filter: {
+          page: 1,
+          limit: 10,
+          keyword: ''
+        },
         tabTitle: TAB_TITLE,
-        logTile: LOG_TITLE,
-        logPage: 1,
-        page: 1,
         dataArray: params.dataInfo,
+        statusObj: {
+          status: 0,
+          percent: "4.00",
+          invite_money: "50.00"
+        },
+        // 设置团长邀请注册
+        inviteSetting: {
+          status: 1,
+          percent: ''
+        },
+        currentLeader: {},
+        accountObj: {
+          invite_shop_id: '',
+          start_date: "",
+          end_date: ''
+        },
+        logTile: LOG_TITLE,
         pageInfo: params.pageInfo,
         logPageInfo: {
           total: 0,
           per_page: 1,
           total_page: 1
         },
-        status: 0,
         number: '',
-        currentNumber: '',
         dateOption: {
           disabledDate(date) {
             // 自定义日期必须小于今天
             return date.valueOf() > Date.now() - 1000 * 60 * 60 * 24 || date.valueOf() < Date.now() - 1000 * 60 * 60 * 24 * 7
           }
         },
+        logsFilter:{
+          page:1,
+          limit:10,
+          invite_shop_id:''
+        },
         logArray: []
       }
     },
-    computed: {
-    },
+    computed: {},
     created() {
+      this._getSettingStatus()
       this.$loading.hide()
     },
     mounted() {
       // this.$refs.modal && this.$refs.modal.showModal()
     },
     methods: {
-      getTime(time) {
-        console.log(time)
+      _getSettingStatus() {
+        return API.Leader.getSettingStatus()
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.error)
+              return
+            }
+            this.statusObj = res.data
+          })
+          .finally(res => {
+            this.$loading.hide()
+          })
       },
-      cancel() {
-
+      addPage(page) {
+        this.filter.page = page
+        this._getList()
+      },
+      _leaderInviteSetting() {
+        API.Leader.leaderInviteSetting(this.inviteSetting)
+          .then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this._getSettingStatus().then(res => {
+                this.hideModal('modalSwitch')
+              })
+            }
+            this.$toast.show(res.message)
+          })
+          .finally(res => {
+            this.$loading.hide()
+          })
+      },
+      handleSwitchChange() {
+        this.inviteSetting.percent = this.statusObj.percent
+        if (this.statusObj.status === 1) {
+          this.inviteSetting.status = 0
+          this._leaderInviteSetting()
+        } else {
+          this.inviteSetting.status = 1
+          this.showModal('modalSwitch')
+        }
+      },
+      handleSearch(val) {
+        if (this.filter.page !== 1) this.$refs.pagination.beginPage()
+        this.filter.keyword = val
+        this._getList()
+      },
+      _getList() {
+        API.Leader.leaderDistributionRankingList(this.filter, true)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.error)
+              return
+            }
+            this.dataArray = res.data
+            this.pageInfo = {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+          })
+          .finally(res => {
+            this.$loading.hide()
+          })
+      },
+      showModalInfo(item, name) {
+        this.currentLeader = item
+        this.showModal(name)
+      },
+      showAccountModal(row) {
+        // todo
+        this.accountObj.invite_shop_id = row.shop.id
+        API.Leader.getAccountData().then(res => {
+          this.showModal('modalAccount')
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.error)
+            return
+          }
+          this.accountObj = res.data
+        })
+      },
+      handleAccountConfirm() {
+        API.Leader.setAccountData(this.accountObj).then(res => {
+          this.$toast.show(res.error)
+          this.hideModal('modalAccount')
+        })
       },
       showModal(key) {
         this.$refs[key] && this.$refs[key].showModal()
@@ -218,64 +360,34 @@
       hideModal(key) {
         this.$refs[key] && this.$refs[key].hideModal()
       },
-      handleSwitchModalConfirm() {
-        this.status = this.status === 1 ? 0 : 1
-        this.hideModal('modalSwitch')
-      },
-      handleSwitchModalCancel() {
-        this.number = this.currentNumber
-        this.hideModal('modalSwitch')
-      },
-      handleSwitchChange() {
-        if (this.status === 1) {
-          this.status = this.status === 1 ? 0 : 1
-        } else {
-          this.currentNumber = this.number
-          this.showModal('modalSwitch')
-        }
-      },
-      handleSearch() {
 
+      getTime(time) {
+        this.accountObj.start_date = time
       },
-      handleAccount() {
-        this.showModal('modalAccount')
+      showLogModal(row){
+        this.logsFilter.invite_shop_id = row.shop.id
+        this._getLogList().then(res=>{
+          res && this.$refs.modalLogs.showModal()
+        })
       },
-      handleAccountConfirm() {
-        this.hideModal('modalAccount')
-      },
-      handleLog() {
-        this.showModal('modalLogs')
-      },
-      _deleteActivity() {
-
-      },
-      async _getList() {
-        try {
-          const res = await API.Activity.getActiveList({
-            page: this.page,
-            activity_theme: 'fixed',
-          })
+      _getLogList(){
+        return API.Leader.getLogList(this.logsFilter).then(res => {
           if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
+            this.$toast.show(res.error)
+            return false
           }
-          this.dataArray = res.data
-          this.pageInfo = {
+          this.logArray = res.data
+          this.logPageInfo = {
             total: res.meta.total,
             per_page: res.meta.per_page,
             total_page: res.meta.last_page
           }
-        } catch (e) {
-          console.warn(e)
-        }
-      },
-      addPage(page) {
-        this.page = page
-        this._getList()
+          return true
+        })
       },
       addPageLogs(page) {
-        this.logPage = page
-        // todo
+        this.logsFilter.page = page
+        this._getLogList()
       }
     }
   }
@@ -283,6 +395,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .big-list
+    position: relative
 
   .leader-sales
     width: 100%
@@ -296,71 +410,93 @@
     padding: 0 20px
     box-sizing: border-box
     position: relative
+
     &.leader-switch
-      width :534px
-      height :298px
+      width: 534px
+      height: 298px
+
     &.account
-      width :534px
-      height :262px
+      width: 534px
+      height: 262px
+
     &.logs
-      width :1000px
-      height :536px
+      width: 1000px
+      max-height: 600px
+      display flex
+      flex-direction column
+      .btn-group
+        position relative
+        margin-top:20px
+        /*justify-content: center*/
     .header
-      display :flex
+      display: flex
       font-family: $font-family-medium
       font-size: 16px;
       color: #333333;
-      padding-top :20px
-      justify-content :space-between
-      align-items :center
+      padding-top: 20px
+      justify-content: space-between
+      align-items: center
+
       .close
         extend-click()
-        width :8px
-        height :@width
-        cursor :pointer
+        width: 8px
+        height: @width
+        cursor: pointer
+
     // 佣金记录
     .logs-container
-      position :relative
-      height :476
-      padding-top :20px
-      text-align :left
+      position: relative
+      min-height:300px
+      max-height: 476px
+      padding-top: 20px
+      text-align: left
+
     // 佣金结算
     .account-container
       font-family: $font-family-regular
       font-size: 14px;
       color: #333333;
-      line-height :1
-      .result
-        text-align :left
-        padding-top :30px
-      .title
-        text-align :left
-        padding-top :20px
-        padding-bottom :14px
-      .date-wrapper
-        display :flex
-        align-items :center
-        .separator
-          padding :0 10px
+      line-height: 1
 
-  // 佣金设置
+      .result
+        text-align: left
+        padding-top: 30px
+
+      .title
+        text-align: left
+        padding-top: 20px
+        padding-bottom: 14px
+
+      .date-wrapper
+        display: flex
+        align-items: center
+
+        .separator
+          padding: 0 10px
+
+    // 佣金设置
+
     .input-wrapper
-      padding-top :30px
-      display :flex
-      align-items :center
+      padding-top: 30px
+      display: flex
+      align-items: center
       font-family: $font-family-regular
       font-size: 14px;
       color: #151515;
+
       .key
-        position :relative
+        position: relative
+
         &:before
           content: '*'
           col-center()
-          left :-6px
+          left: -6px
           font-size: 14px;
           color: #F52424;
+
       .edit-input-box
         margin: 0 10px 0 20px
+
         .edit-input
           font-size: $font-size-12
           border-radius: 2px
@@ -374,22 +510,26 @@
           color: $color-text-main
           border: 1px solid $color-line
           transition: all 0.3s
+
           &:hover
             border-color: #ACACAC
+
           &:focus
             border-color: $color-main
+
     .explain-wrapper
       font-family: $font-family-regular
       font-size: 14px;
       color: #666666;
-      text-align :left
-      line-height :1
-      dt
-        padding-top :24px
-        padding-bottom :16px
-      dd
-        padding-bottom :10px
+      text-align: left
+      line-height: 1
 
+      dt
+        padding-top: 24px
+        padding-bottom: 16px
+
+      dd
+        padding-bottom: 10px
 
 
   .distribution-down
@@ -400,40 +540,51 @@
     flex: 1
     display: flex
     flex-direction: column
+
   .identification
     .leader-status
       font-family: $font-family-regular
       font-size: 14px;
       color: #ACACAC
-      padding-left :10px
+      padding-left: 10px
+
       &.active
         color: #333333;
+
     .switch-wrapper
       flex: 1
-      display :flex
-      justify-content :flex-end
+      display: flex
+      justify-content: flex-end
+
     .sub-title
-      padding :0 5px
+      padding: 0 5px
       font-size: 14px;
       color: #333333;
+
   .big-list
-    background :#FFFFFF
+    background: #FFFFFF
+
   .list-box
     .list-item:last-child
       max-width: 150px
       padding-right: 0
+
   .list
     flex: 1
+
     .list-item
       font-size: $font-size-14
+
       &:last-child
         max-width: 150px
         padding-right: 0
+
       .item
         text-overflow: ellipsis
         overflow: hidden
         white-space: nowrap
         font-size: 14px
+
       .status-item:before
         content: ""
         display: inline-block
@@ -442,10 +593,13 @@
         border-radius: 50%
         margin-right: 6px
         background: $color-negative
+
       .status-fail:before
         background: #E1E1E1
+
       .status-success:before
         background: $color-positive
+
       .list-double-row
         .item-sub
           color: #333
