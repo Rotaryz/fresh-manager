@@ -23,7 +23,7 @@
             </div>
             <span class="name">{{item.name}}</span>
           </div>
-          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open':  +categoryIndex === index+1 && openCategory}]">
+          <div class="right-icon" :class="[{'current': +categoryIndex === index+1}, {'open': +categoryIndex === index+1 && openCategory}]">
             <span class="icon-image" @click.stop="clickTag(item.id, index+1, 'category')"></span>
           </div>
         </div>

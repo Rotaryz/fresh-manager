@@ -87,8 +87,7 @@
                 :disabled="true"
                 :value="new Date()"
               ></base-date-select>
-              <span class="separator
-">至</span>
+              <span class="separator">至</span>
               <base-date-select
                 dataPickerType="date"
                 :dateInfo="null"

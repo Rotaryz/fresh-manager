@@ -9,6 +9,12 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
+ leaderListFilter:{
+    page:1,
+    limit:10,
+    keyword:'',
+    status:''
+  },
   leaderDetail: {}, // 团长详情
   deliveryOrder: {}, // 配送订单列表
   deliveryDetail: {}, // 团长配送订单详情
@@ -40,6 +46,9 @@ export const state = {
 }
 
 export const getters = {
+  leaderListFilter(state){
+    return state.leaderListFilter
+  },
   leaderList(state) {
     return state.leaderList
   },
@@ -100,6 +109,10 @@ export const getters = {
 }
 
 export const mutations = {
+  SET_lEADER_LIST_FILTER(state,params){
+    console.log(params)
+    state.leaderListFilter = {...state.leaderListFilter, ...params}
+  },
   SET_LEADER_LIST(state, list) {
     state.leaderList = list
   },
@@ -165,8 +178,8 @@ export const mutations = {
 
 export const actions = {
   // 团长列表
-  getLeaderList({state, commit, dispatch}, {page, status = '', loading = true}) {
-    return API.Leader.getLeaderList({page, status}, loading)
+  getLeaderList({state, commit, dispatch}, loading = true) {
+    return API.Leader.getLeaderList(state.leaderListFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

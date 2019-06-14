@@ -812,9 +812,15 @@ export default [
           titles: ['商城', '团长', '团长列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
-            let status = routeTo.query.status || ''
+            store.commit('leader/SET_lEADER_LIST_FILTER',{
+              page:1,
+              limit:10,
+              keyword:'',
+              status:0,
+              ...routeTo.query
+            })
             store
-              .dispatch('leader/getLeaderList', {page: 1, status})
+              .dispatch('leader/getLeaderList')
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

@@ -186,6 +186,7 @@ export default {
    * @returns {*}
    */
   getLeaderStatus(data, loading = false) {
+    console.log(data)
     let url = '/social-shopping/api/backend/shop-manager-status'
     return request.get(url, data, loading)
   },
@@ -198,5 +199,18 @@ export default {
   getTopData(data, loading = false) {
     let url = '/social-shopping/api/backend/shop-manager-account-summary'
     return request.get(url, data, loading)
+  },
+  /**
+   * 团长申请列表
+   * @param loading
+   * @returns {*}
+   */
+  getLeaderApplicationList(data, loading = false) {
+    let url = '/social-shopping/api/backend/shop-distribution-invite-index'
+    return request.get(url, data, loading)
+  },
+  submitCheck(id,data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-invite-audit/${id}`
+    return request.post(url, data, loading)
   }
 }
