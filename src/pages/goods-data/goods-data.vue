@@ -217,7 +217,7 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true, limit: 8}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total', limit: 6},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales_num', word: 'cate_num_total', limit: 6},
         {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num', word: 'sku_total'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
@@ -238,7 +238,7 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'sku_num_total', limit: 6},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales', word: 'sku_num_total', limit: 6},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
@@ -296,7 +296,7 @@
           limit: 8
         },
         requestPurchase: {
-          order_by: 'purchase_num',
+          order_by: 'sales_num',
           limit: 6
         },
         requestSupply: {
@@ -584,6 +584,7 @@
         // this.requestPurchase.order_by = obj.code
         if (index === 1 && this.leftTab === 'all') {
           let data = Object.assign({}, this.requestPurchase, this.requestPub)
+          data.limit = 0
           await this.getSpu(data)
         } else {
           let data = Object.assign({}, this.requestPurchase, this.requestPub)
