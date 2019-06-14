@@ -81,7 +81,7 @@
   // import {DatePicker} from 'iview'
   import _ from 'lodash'
   import API from '@api'
-  import {productComputed} from '@state/helpers'
+  import {productComputed, authComputed} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -150,6 +150,30 @@
       }
     },
     methods: {
+      ...authComputed,
+      webSocketData(apiUrl) {
+        let url =  process.env.VUE_APP_WSS + '/sub'
+        let prg = apiUrl + process.env.VUE_APP_CURRENT_CORP
+        let id = this.currentUser().manager_info.store_id
+        let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
+        var ws = new WebSocket(urlPrg)
+        let that = this
+        console.log(ws)
+        ws.onmessage = function(event) {
+          var data = JSON.parse(event.data)
+          console.log(data)
+          if (data.status === 'success') {
+            that.initData()
+          }
+        }
+      },
+      initData() {
+        this.goodsPage = 1
+        this.getProductListData()
+        this._statistic()
+        this.$refs.pagination.beginPage()
+        this.$refs.confirm.hide()
+      },
       async checkErr(item) {
         this.exceptionStatus = item.status
         this.goodsPage = 1
@@ -168,31 +192,30 @@
       },
       async sureSubmit() {
         let type = 'batchOut'
+        let apiUrl = 'scm_batch_out_'
         if (this.status === 2) {
           type = 'batchRecheck'
+          apiUrl = 'scm_batch_finish_checked_'
         }
         let res = await API.Store[type]()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
-          this.goodsPage = 1
-          this.getProductListData()
-          await this._statistic()
-          this.$refs.pagination.beginPage()
-          this.$refs.confirm.hide()
+          console.log(apiUrl)
+          this.webSocketData(apiUrl)
         }
       },
       showBatchOut() {
-        if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
-          this.$toast.show('暂无出库单')
-          return
-        }
+        // if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
+        //   this.$toast.show('暂无出库单')
+        //   return
+        // }
         this.$refs.confirm.show('是否确认批量出库？')
       },
       showBatchRecheck() {
-        if (!this.productOutList.length) {
-          this.$toast.show('暂无待复核')
-          return
-        }
+        // if (!this.productOutList.length) {
+        //   this.$toast.show('暂无待复核')
+        //   return
+        // }
         this.$refs.confirm.show('是否确认批量复核？')
       },
       async _statistic() {

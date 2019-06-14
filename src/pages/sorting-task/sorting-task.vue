@@ -221,8 +221,21 @@
       ...sortingMethods,
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.sortingTask.filter.exception_status)
-        console.log(item, this.sortingTask.filter.exception_status)
         this.errorObj.content = item.name || '全部'
+      },
+      webSocketData() {
+        let url =  process.env.VUE_APP_WSS + '/sub'
+        let prg = `scm_batch_finish_sorting_` + process.env.VUE_APP_CURRENT_CORP
+        let id = this.currentUser().manager_info.store_id
+        let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
+        var ws = new WebSocket(urlPrg)
+        let that = this
+        ws.onmessage = function(event) {
+          var data = JSON.parse(event.data)
+          if (data.status === 'success') {
+            that._updateData({page: 1})
+          }
+        }
       },
       async checkErr(item) {
         this._updateData({exception_status:item.status,page:1})
@@ -241,7 +254,8 @@
         API.Sorting.batchFinishSorting(this.sortingTask.filter, true)
           .then((res) => {
             this.$toast.show(res.message)
-            this._updateData({page: 1})
+            this.webSocketData()
+            // this._updateData({page: 1})
           })
           .catch((err) => {
             this.$toast.show(err.message)
