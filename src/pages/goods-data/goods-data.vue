@@ -866,7 +866,7 @@
       width: 100%
       display: flex
     .data-sec
-      width: 50%
+      width: 48.4%
       margin-right: 20px
       margin-top: 20px
       border-1px($color-line, 0)
