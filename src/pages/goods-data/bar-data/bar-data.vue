@@ -35,6 +35,10 @@
     mounted() {
     // this.drawBar(this.data, '退货数')
     },
+    beforeDestroy() {
+      this.myChart = ''
+      window.removeEventListener('resize', this.resize) // 取消监听
+    },
     methods: {
       resize() {
         this.myChart && this.myChart.resize()
@@ -60,16 +64,14 @@
           let el = document.getElementById(this.chartId)
           this.$echarts.dispose(el) // 销毁之前的实例
           let myChart = this.$echarts.init(el)
+          this.myChart = myChart
+          window.addEventListener('resize',  this.resize) // 加监听
           let that = this
           myChart.on('click', function(params) {
             that.$emit('clickChart', params.dataIndex)
           })
           let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
           myChart.setOption(this.createBar1(xAxisData, seriesData, color, rate))
-          this.myChart = myChart
-          window.addEventListener('resize', function() {
-            myChart && myChart.resize()
-          })
         })
       },
       // 横向柱状图
@@ -93,16 +95,17 @@
         let el = document.getElementById(this.chartId)
         this.$echarts.dispose(el) // 销毁之前的实例
         let myChart = this.$echarts.init(el)
+        this.myChart = myChart
+        window.addEventListener('resize',  this.resize) // 加监听
         let that = this
         myChart.on('click', function(params) {
           that.$emit('clickChart', params.dataIndex)
         })
         myChart.setOption(this.createBar2(msg))
-        this.myChart = myChart
-        window.addEventListener('resize', this.resize)
       },
       // 纵向柱状图
       drawBar2(data) {
+        window.removeEventListener('resize', this.resize)
         let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
@@ -114,15 +117,13 @@
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2
           let seriesData3 = data.series.length > 0 ? data.series : this.data.series
-          let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          // myChart.on('click', function (params) {
-          //   console.log(params)
-          // })
+          let el = document.getElementById(this.chartId)
+          this.$echarts.dispose(el) // 销毁之前的实例
+          let myChart = this.$echarts.init(el)
+          this.myChart = myChart
+          window.addEventListener('resize',  this.resize) // 加监听
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
           myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
-          window.addEventListener('resize', function() {
-            myChart && myChart.resize()
-          })
         })
       },
       // 纵向柱状图
