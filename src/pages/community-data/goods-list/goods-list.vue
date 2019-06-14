@@ -83,9 +83,7 @@
 
   .goods-list
     width: 100%
-    flex: 1
-    display: flex
-    flex-direction: column
+    height: 345px
   .goods-title
     height: 45px
     line-height: 45px
@@ -99,7 +97,7 @@
   .padding
     padding-right: 26px
   .list
-    flex: 1
+    height: 300px
     overflow: auto
     &::-webkit-scrollbar
       width: 6px

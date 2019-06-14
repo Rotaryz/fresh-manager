@@ -218,7 +218,7 @@
       ],
       purchase: [
         {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total', limit: 6},
-        {name: '商品SPU数', type: 'pie', excel: true, code: 'num', word: 'sku_total'},
+        {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num', word: 'sku_total'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
