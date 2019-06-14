@@ -263,6 +263,7 @@ export const goodsDataComputed = {
 export const goodsDataMethods = mapActions('goodsData', [
   'getCategoryList',
   'getGoodsList',
+  'getSpu',
   'getSaleData',
   'getServeData',
   'getPurchaseData',
