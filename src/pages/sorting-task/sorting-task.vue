@@ -234,6 +234,7 @@
           var data = JSON.parse(event.data)
           if (data.status === 'success') {
             that._updateData({page: 1})
+            ws.close()
           }
         }
       },

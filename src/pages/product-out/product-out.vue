@@ -97,7 +97,7 @@
     '状态',
     '操作'
   ]
-
+  let ws = null
   export default {
     name: PAGE_NAME,
     page: {
@@ -149,6 +149,9 @@
         this.status = this.$route.query.status * 1
       }
     },
+    destory() {
+      ws = null
+    },
     methods: {
       ...authComputed,
       webSocketData(apiUrl) {
@@ -156,13 +159,13 @@
         let prg = apiUrl + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
-        var ws = new WebSocket(urlPrg)
+        ws = null
+        ws = new WebSocket(urlPrg)
         let that = this
-        console.log(ws)
         ws.onmessage = function(event) {
           var data = JSON.parse(event.data)
-          console.log(data)
           if (data.status === 'success') {
+            ws.close()
             that.initData()
           }
         }
@@ -205,17 +208,17 @@
         }
       },
       showBatchOut() {
-        // if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
-        //   this.$toast.show('暂无出库单')
-        //   return
-        // }
+        if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
+          this.$toast.show('暂无出库单')
+          return
+        }
         this.$refs.confirm.show('是否确认批量出库？')
       },
       showBatchRecheck() {
-        // if (!this.productOutList.length) {
-        //   this.$toast.show('暂无待复核')
-        //   return
-        // }
+        if (!this.productOutList.length) {
+          this.$toast.show('暂无待复核')
+          return
+        }
         this.$refs.confirm.show('是否确认批量复核？')
       },
       async _statistic() {
