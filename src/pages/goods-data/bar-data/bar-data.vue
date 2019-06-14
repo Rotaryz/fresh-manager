@@ -22,6 +22,7 @@
       return {
         tabIndex: 0,
         hideChart: false,
+        myChart: '',
         data: {
           x1: [],
           series: [0, 0, 0, 0, 0, 0],
@@ -35,6 +36,9 @@
     // this.drawBar(this.data, '退货数')
     },
     methods: {
+      resize() {
+        this.myChart && this.myChart.resize()
+      },
       random(itemNumber, max) {
         return new Array(itemNumber).fill(1).map((item, index) => {
           return Math.ceil(Math.random() * max)
@@ -53,20 +57,24 @@
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x1
           let seriesData = data.series.length > 0 ? data.series : this.data.series
-          let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          let el = document.getElementById(this.chartId)
+          this.$echarts.dispose(el) // 销毁之前的实例
+          let myChart = this.$echarts.init(el)
           let that = this
           myChart.on('click', function(params) {
             that.$emit('clickChart', params.dataIndex)
           })
           let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
           myChart.setOption(this.createBar1(xAxisData, seriesData, color, rate))
+          this.myChart = myChart
           window.addEventListener('resize', function() {
-            myChart.resize()
+            myChart && myChart.resize()
           })
         })
       },
       // 横向柱状图
       drawBar1(data) {
+        window.removeEventListener('resize', this.resize)
         let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
@@ -82,15 +90,16 @@
           salesNumAll: data.salesNumAll,
           purchaseNumAll: data.purchaseNumAll
         }
-        let myChart = this.$echarts.init(document.getElementById(this.chartId))
+        let el = document.getElementById(this.chartId)
+        this.$echarts.dispose(el) // 销毁之前的实例
+        let myChart = this.$echarts.init(el)
         let that = this
         myChart.on('click', function(params) {
           that.$emit('clickChart', params.dataIndex)
         })
         myChart.setOption(this.createBar2(msg))
-        window.addEventListener('resize', function() {
-          myChart.resize()
-        })
+        this.myChart = myChart
+        window.addEventListener('resize', this.resize)
       },
       // 纵向柱状图
       drawBar2(data) {
@@ -112,7 +121,7 @@
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
           myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
           window.addEventListener('resize', function() {
-            myChart.resize()
+            myChart && myChart.resize()
           })
         })
       },

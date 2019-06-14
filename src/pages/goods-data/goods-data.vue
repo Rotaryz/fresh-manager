@@ -207,7 +207,7 @@
   const ALL_DATA = {
     all: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, code: 't'},
+        {name: '商品结构', type: 'bar', excel: true, code: 'total'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
         // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
@@ -218,7 +218,7 @@
       ],
       purchase: [
         {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total', limit: 6},
-        {name: '商品SPU数', type: 'pie', excel: true, code: 'all_count', word: 'all_count'},
+        {name: '商品SPU数', type: 'pie', excel: true, code: 'num', word: 'sku_total'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
@@ -228,7 +228,7 @@
     },
     category: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, code: 't'},
+        {name: '商品结构', type: 'bar', excel: true, code: 'total'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
         // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
@@ -570,7 +570,7 @@
         this.$set(this.selectMsg, 'serve', obj)
         this.$set(this.tabIndexControl, 'serve', index)
         this.requestServe.order_by = obj.code
-        let data = Object.assign({}, this.requestPub, this.requestServe)
+        let data = Object.assign({}, this.requestServe, this.requestPub)
         await this.getServeData(data)
         this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data, obj.code), obj.rate)
         this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, obj.code, obj.name), obj.rate)
@@ -583,9 +583,10 @@
         obj.limit ? this.$set(this.requestPurchase, 'limit', obj.limit) : this.$delete(this.requestPurchase, 'limit')
         // this.requestPurchase.order_by = obj.code
         if (index === 1 && this.leftTab === 'all') {
-          await this.getCategoryList({parent_id: 0, get_goods_count: 1, get_goods_online_count: 1})
+          let data = Object.assign({}, this.requestPurchase, this.requestPub)
+          await this.getSpu(data)
         } else {
-          let data = Object.assign({}, this.requestPub, this.requestPurchase)
+          let data = Object.assign({}, this.requestPurchase, this.requestPub)
           await this.getPurchaseData(data)
         }
         if (index === 0) {
@@ -782,7 +783,7 @@
         let series = data.map(item => {
           return {
             name: item.name,
-            value: item.goods_count
+            value: item.sku_num
           }
         })
         return series
