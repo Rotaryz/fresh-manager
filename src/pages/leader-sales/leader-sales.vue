@@ -24,7 +24,7 @@
           <div class="list-header list-box">
             <div v-for="(item,index) in tabTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
           </div>
-          <div v-if="dataArray.length" class="list">
+          <div v-if="dataArray.length" class="list ranking-list">
             <div v-for="(row, index) in dataArray" :key="index" class="list-content list-box">
               <!--{{row}}-->
               <div :style="{flex: tabTitle[0].flex}" class="list-item">
@@ -61,7 +61,7 @@
         <div slot="content" class="default-panel leader-switch">
           <header class="header">
             <p>开启设置</p>
-            <img class="close" src="./icon-close@2x.png" alt="" @click="hideModal('modalSwitch')">
+            <img class="close" src="./icon-close@2x.png" alt="" @click="$refs.modalSwitch.hideModal()">
           </header>
           <section class="input-wrapper">
             <p class="key">团长奖励比例</p>
@@ -76,7 +76,7 @@
             <dd>福利二：被邀请的团长用户下单后团长(邀请者)可获得对应的订单分销提成</dd>
           </dl>
           <div class="btn-group">
-            <span class="btn cancel" @click="hideModal('modalSwitch')">取消</span>
+            <span class="btn cancel" @click="$refs.modalSwitch.hideModal()">取消</span>
             <span class="btn confirm" @click="_leaderInviteSetting">确认</span>
           </div>
         </div>
@@ -85,30 +85,35 @@
         <div slot="content" class="default-panel account">
           <header class="header">
             <p>佣金结算</p>
-            <img class="close" src="./icon-close@2x.png" alt="" @click="hideModal('modalAccount')">
+            <img class="close" src="./icon-close@2x.png" alt="" @click="$refs.modalAccount.hideModal()">
           </header>
           <div class="account-container">
             <p class="title">请选择结算佣金时间：</p>
             <section class="date-wrapper">
               <base-date-select
-                :dateInfo="null"
-                dataPickerType="date"
-                :disabledDate="dateOption"
-                @getTime="getTime"
-              ></base-date-select>
-              <span class="separator">至</span>
-              <base-date-select
                 dataPickerType="date"
                 :dateInfo="null"
                 :disabled="true"
-                :value="new Date()"
+                :value="accountObj.start_date"
+              ></base-date-select>
+              <span class="separator">至</span>
+              <base-date-select
+                :dateInfo="null"
+                dataPickerType="date"
+                :value="accountObj.end_date"
+                :disabledDate="disabledDate()"
+                @getTime="getTime"
               ></base-date-select>
             </section>
-            <p class="result">结算金额：50*3+1050*3%=1200.00元</p>
+            <p v-if="accountCountObj.entry_money" class="result">结算金额：{{accountCountObj.invite_reward_money}} * {{accountCountObj.invite_reward_number}} + {{accountCountObj.entry_source_money}} * {{accountCountObj.entry_percent}}%= {{accountCountObj.entry_money}}元</p>
+            <p v-else class="result">该时间段内没有产生佣金记录</p>
           </div>
-          <div class="btn-group">
-            <span class="btn cancel" @click="hideModal('modalAccount')">取消</span>
+          <div v-if="accountCountObj.entry_money" class="btn-group">
+            <span class="btn cancel" @click="$refs.modalAccount.hideModal()">取消</span>
             <span class="btn confirm" @click="handleAccountConfirm">确认</span>
+          </div>
+          <div v-else class="btn-group">
+            <span class="btn cancel" @click="$refs.modalAccount.hideModal()">关闭</span>
           </div>
         </div>
       </default-modal>
@@ -116,19 +121,19 @@
         <div slot="content" class="default-panel logs">
           <header class="header">
             <p>结算记录</p>
-            <img class="close" src="./icon-close@2x.png" alt="" @click="hideModal('modalLogs')">
+            <img class="close" src="./icon-close@2x.png" alt="" @click="$refs.modalLogs.hideModal()">
           </header>
           <div class="logs-container table">
             <div class="big-list">
               <div class="list-header list-box">
-                <div v-for="(item,index) in logTile" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+                <div v-for="(item,index) in logTile" :key="index" :class="['list-item',item.class]" :style="{flex: item.flex}">{{item.name}}</div>
               </div>
               <div v-if="logArray.length" class="list">
                 <div v-for="(row, index) in logArray" :key="index" class="list-content list-box">
                   <div :style="{flex: logTile[0].flex}" class="list-item">{{row[logTile[0].key]}}</div>
                   <div :style="{flex: logTile[1].flex}" class="list-item">{{row[logTile[1].key]}}至{{row[logTile[1].key2]}}</div>
                   <div :style="{flex: logTile[2].flex}" class="list-item">{{row[logTile[2].key]}}%</div>
-                  <div :style="{flex: logTile[3].flex}" class="list-item">{{row[logTile[3].key]}}</div>
+                  <div :style="{flex: logTile[3].flex}" class="list-item acount-money-item">{{row.invite_reward_money}} * {{row.invite_reward_number}} + {{row.invite_reward_money}} * {{row.distribution_percent}}%= {{row.distribution_money}}元</div>
                 </div>
               </div>
               <div v-if="logArray.length < 1" style="height: 354px"></div>
@@ -197,10 +202,10 @@
       }
     }]
   const LOG_TITLE = [
-    {name: '结算时间', flex: 1.5, key: 'created_at', type: 1},
-    {name: '结算佣金时间段', flex: 1.5, key: 'start_at', type: 6, key2: 'end_at'},
-    {name: '奖励比例', flex: 1.5, key: 'distribution_percent', type: 1},
-    {name: '结算金额', flex: 1.5, key: 'total_money', type: 1},
+    {name: '结算时间', flex: 1, key: 'created_at', type: 1},
+    {name: '结算佣金时间段', flex: 2, key: 'start_at', type: 6, key2: 'end_at'},
+    {name: '奖励比例', flex: 1, key: 'distribution_percent', type: 1},
+    {name: '结算金额', flex: 3, key: 'total_money', type: 1,class:'acount-money-item'},
   ]
   export default {
     name: PAGE_NAME,
@@ -237,6 +242,14 @@
           start_date: "",
           end_date: ''
         },
+        disableEndTime:'',
+        accountCountObj:{
+          "invite_reward_money": "50.00",
+          "invite_reward_number": "2",
+          "entry_source_money": "1.48",
+          "entry_percent": "4.00",
+          "entry_money": "100.06"
+        },
         logTile: LOG_TITLE,
         pageInfo: params.pageInfo,
         logPageInfo: {
@@ -245,16 +258,10 @@
           total_page: 1
         },
         number: '',
-        dateOption: {
-          disabledDate(date) {
-            // 自定义日期必须小于今天
-            return date.valueOf() > Date.now() - 1000 * 60 * 60 * 24 || date.valueOf() < Date.now() - 1000 * 60 * 60 * 24 * 7
-          }
-        },
-        logsFilter:{
-          page:1,
-          limit:10,
-          invite_shop_id:''
+        logsFilter: {
+          page: 1,
+          limit: 10,
+          invite_shop_id: ''
         },
         logArray: []
       }
@@ -268,11 +275,19 @@
       // this.$refs.modal && this.$refs.modal.showModal()
     },
     methods: {
+      disabledDate() {
+        return {
+          disabledDate:(date)=>{
+            return date.valueOf() > new Date(this.accountObj.start_date) || date.valueOf() < new Date(this.disableEndTime)
+          }
+        }
+        // 自定义日期必须小于今天
+      },
       _getSettingStatus() {
         return API.Leader.getSettingStatus()
           .then((res) => {
             if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.error)
+              this.$toast.show(res.message)
               return
             }
             this.statusObj = res.data
@@ -290,7 +305,7 @@
           .then((res) => {
             if (res.error === this.$ERR_OK) {
               this._getSettingStatus().then(res => {
-                this.hideModal('modalSwitch')
+                this.$refs.modalSwitch.hideModal()
               })
             }
             this.$toast.show(res.message)
@@ -306,7 +321,7 @@
           this._leaderInviteSetting()
         } else {
           this.inviteSetting.status = 1
-          this.showModal('modalSwitch')
+          this.$refs.modalSwitch.showModal()
         }
       },
       handleSearch(val) {
@@ -318,7 +333,7 @@
         API.Leader.leaderDistributionRankingList(this.filter, true)
           .then((res) => {
             if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.error)
+              this.$toast.show(res.message)
               return
             }
             this.dataArray = res.data
@@ -332,48 +347,50 @@
             this.$loading.hide()
           })
       },
-      showModalInfo(item, name) {
-        this.currentLeader = item
-        this.showModal(name)
-      },
+      // 佣金结算
       showAccountModal(row) {
         // todo
-        this.accountObj.invite_shop_id = row.shop.id
-        API.Leader.getAccountData().then(res => {
-          this.showModal('modalAccount')
+        this.accountObj.invite_shop_id = row.invite_shop_id
+        API.Leader.getAccountTimes({invite_shop_id:row.invite_shop_id}).then(res => {
           if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.error)
-            return
+            this.$toast.show(res.message)
+            return false
           }
-          this.accountObj = res.data
+          this.accountObj.start_date = res.data.start_date
+          this.accountObj.end_date = res.data.end_date
+          this.disableEndTime = res.data.end_date
+          return true
+        }).then( res =>{
+          res && API.Leader.getAccountData(this.accountObj).then(res => {
+            this.$refs.modalAccount.showModal()
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.accountCountObj = res.data
+          })
         })
       },
       handleAccountConfirm() {
         API.Leader.setAccountData(this.accountObj).then(res => {
-          this.$toast.show(res.error)
-          this.hideModal('modalAccount')
+          this.$toast.show(res.message)
+          this.$refs.modalAccount.hideModal()
         })
       },
-      showModal(key) {
-        this.$refs[key] && this.$refs[key].showModal()
-      },
-      hideModal(key) {
-        this.$refs[key] && this.$refs[key].hideModal()
-      },
-
       getTime(time) {
-        this.accountObj.start_date = time
+        this.accountObj.end_date = time
       },
-      showLogModal(row){
+      // 结算记录
+      showLogModal(row) {
         this.logsFilter.invite_shop_id = row.shop.id
-        this._getLogList().then(res=>{
+        this._getLogList().then(res => {
           res && this.$refs.modalLogs.showModal()
         })
       },
-      _getLogList(){
+      _getLogList() {
         return API.Leader.getLogList(this.logsFilter).then(res => {
           if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.error)
+            this.$toast.show(res.message)
             return false
           }
           this.logArray = res.data
@@ -402,7 +419,11 @@
     width: 100%
 
   // 弹窗
+  .model-active
+    max-height: 90%
+
   .default-panel
+    height:100%
     background: #fff
     border-radius: 3px
     box-shadow: 0 8px 14px 0 rgba(12, 6, 14, 0.08)
@@ -421,36 +442,38 @@
 
     &.logs
       width: 1000px
-      max-height: 600px
       display flex
       flex-direction column
       .btn-group
         position relative
-        margin-top:20px
-        /*justify-content: center*/
+        margin-top: 20px
+    /*justify-content: center*/
+
     .header
       display: flex
       font-family: $font-family-medium
-      font-size: 16px;
-      color: #333333;
       padding-top: 20px
       justify-content: space-between
       align-items: center
+      p
+        font-size: 16px
+        color: #333333
 
       .close
         extend-click()
-        width: 8px
+        width: 12px
         height: @width
         cursor: pointer
 
     // 佣金记录
     .logs-container
       position: relative
-      min-height:300px
-      max-height: 476px
+      min-height: 300px
       padding-top: 20px
       text-align: left
-
+      .big-list
+        max-height: 1000px
+        overflow auto
     // 佣金结算
     .account-container
       font-family: $font-family-regular
@@ -564,43 +587,9 @@
   .big-list
     background: #FFFFFF
 
-  .list-box
-    .list-item:last-child
+  .ranking-list .list-box .list-item:last-child
       max-width: 150px
       padding-right: 0
 
-  .list
-    flex: 1
 
-    .list-item
-      font-size: $font-size-14
-
-      &:last-child
-        max-width: 150px
-        padding-right: 0
-
-      .item
-        text-overflow: ellipsis
-        overflow: hidden
-        white-space: nowrap
-        font-size: 14px
-
-      .status-item:before
-        content: ""
-        display: inline-block
-        width: 9px
-        height: 9px
-        border-radius: 50%
-        margin-right: 6px
-        background: $color-negative
-
-      .status-fail:before
-        background: #E1E1E1
-
-      .status-success:before
-        background: $color-positive
-
-      .list-double-row
-        .item-sub
-          color: #333
 </style>

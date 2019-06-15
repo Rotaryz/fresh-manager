@@ -246,17 +246,31 @@ export default {
     return request.get(url, {}, loading)
   },
   /**
+   * 查询团长结算时间范围
+   * @param loading
+   * @returns {*}
+   */
+  getAccountTimes(data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-settlement-date`
+    return request.get(url, data, loading)
+  },
+  /**
    * 查询团长结算统计
    * @param loading
    * @returns {*}
    */
-  getAccountData(id,loading = false){
+  getAccountData(data,loading = false){
     let url = `/social-shopping/api/backend/shop-distribution-entry-count`
-    return request.get(url, {invite_shop_id:id}, loading)
+    return request.get(url, data, loading)
   },
+  /**
+   * 结算
+   * @param loading
+   * @returns {*}
+   */
   setAccountData(data,loading = false){
     let url = `/social-shopping/api/backend/shop-distribution-settlement`
-    return request.post(url, data, loading)
+    return request.get(url, data, loading)
   },
   getLogList(data,loading = false){
     let url = `/social-shopping/api/backend/shop-distribution-settlement-log-list`
