@@ -186,7 +186,6 @@ export default {
    * @returns {*}
    */
   getLeaderStatus(data, loading = false) {
-    console.log(data)
     let url = '/social-shopping/api/backend/shop-manager-status'
     return request.get(url, data, loading)
   },

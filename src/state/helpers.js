@@ -50,7 +50,7 @@ export const leaderComputed = {
 
 export const leaderMethods = {
   ...mapActions('leader', [
-    'getLeaderList',
+    'getList',
     'getDeliveryOrder',
     'getDeliveryDetail',
     'setDeliveryOrder',

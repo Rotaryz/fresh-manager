@@ -5,7 +5,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="请输入团长名称" @search="handleSearch"></base-search>
+            <base-search :infoText="filter.keyword" placeHolder="请输入团长名称" @search="handleSearch"></base-search>
           </div>
         </div>
       </section>
@@ -28,12 +28,12 @@
             <div v-for="(row, index) in dataArray" :key="index" class="list-content list-box">
               <!--{{row}}-->
               <div :style="{flex: tabTitle[0].flex}" class="list-item">
-                <router-link tag="span" :to="{name:'leader-list',query:{keyword:row[tabTitle[0].key]}}" append class="list-operation">
+                <router-link tag="span" :to="{name:'leader-list',query:{keyword:row[tabTitle[0].key][tabTitle[0].key2],model_type:1,status:'',model_type:0}}" append class="list-operation">
                   {{row[tabTitle[0].key][tabTitle[0].key2]}}
                 </router-link>
               </div>
               <div :style="{flex: tabTitle[1].flex}" class="list-item">
-                <router-link tag="span" :to="{name:'leader-list',query:{keyword:row[tabTitle[1].key]}}" append class="list-operation">
+                <router-link tag="span" :to="{name:'leader-list',query:{keyword:row[tabTitle[1].key][tabTitle[1].key2],model_type:1,status:'',model_type:0}}" append class="list-operation">
                   {{row[tabTitle[1].key][tabTitle[1].key2]}}
                 </router-link>
               </div>
@@ -383,8 +383,12 @@
       // 结算记录
       showLogModal(row) {
         this.logsFilter.invite_shop_id = row.shop.id
+        this.logsFilter.page = 1
         this._getLogList().then(res => {
-          res && this.$refs.modalLogs.showModal()
+          if(res){
+            this.$refs.modalLogs.showModal()
+            this.$refs.pages.beginPage()
+          }
         })
       },
       _getLogList() {

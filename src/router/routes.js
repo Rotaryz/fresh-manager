@@ -820,7 +820,7 @@ export default [
               ...routeTo.query
             })
             store
-              .dispatch('leader/getLeaderList')
+              .dispatch('leader/getList')
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

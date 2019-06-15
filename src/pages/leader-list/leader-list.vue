@@ -2,7 +2,7 @@
   <div class="leader-list table">
     <div class="empty-50">
       <base-tabs :tabList="tabStatus"
-                 :defaultTab="tabIndex"
+                 :defaultTab="leaderListFilter.model_type"
                  :isShowMark="false"
                  tabAlign="left"
                  padding="12px 5px"
@@ -16,11 +16,11 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" placeHolder="团长名称/社区名称" @search="searchBtn"></base-search>
+        <base-search :infoText="leaderListFilter.keyword" ref="research" placeHolder="团长名称/社区名称" @search="searchBtn"></base-search>
       </div>
     </div>
-    <div v-if="tabIndex===0" class="table-content">
-      <div class="identification">
+    <div class="table-content">
+      <div v-if="leaderListFilter.model_type===0" class="identification">
         <div class="identification-page">
           <img src="./icon-bandit_list@2x.png" class="identification-icon">
           <p class="identification-name">团长列表</p>
@@ -35,11 +35,20 @@
           <!--<div class="btn-main g-btn-item" @click="_syncLeader">关联</div>-->
         </div>
       </div>
+      <div v-if="leaderListFilter.model_type===1"  class="identification">
+        <div class="identification-page">
+          <img src="./icon-bandit_list@2x.png" class="identification-icon">
+          <p class="identification-name">团长申请表</p>
+          <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                           @change="changeStatus"
+          ></base-status-nav>
+        </div>
+      </div>
       <div class="big-list">
         <div class="list-header list-box leader-list">
           <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
         </div>
-        <div v-if="leaderList.length" class="list">
+        <div v-if="leaderList.length && leaderListFilter.model_type===0" class="list">
           <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box leader-list">
             <div class="list-item">{{item.mobile || '---'}}</div>
             <div class="list-item">{{item.nickname || '---'}}</div>
@@ -60,42 +69,8 @@
             </div>
           </div>
         </div>
-        <base-blank v-else blackStyle="padding-top:15%"></base-blank>
-      </div>
-      <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
-      </div>
-      <default-modal v-if="leaderList.length" ref="dialog">
-        <div slot="content" class="pop-main code">
-          <div class="shade-header">
-            <div class="shade-title">{{leaderList[imgIndex].social_name}}</div>
-            <!--@click="_cancelGoods"-->
-            <span class="close hand" @click="_close"></span>
-          </div>
-          <div class="img-box">
-            <img v-if="!loadImg" key="1" :src="codeUrl" alt="" class="xcx-img">
-            <img v-if="loadImg" key="2" src="./loading.gif" alt="" class="load-img">
-          </div>
-        </div>
-      </default-modal>
-      <default-confirm ref="confirm" @confirm="_freeze"></default-confirm>
-    </div>
-    <div v-if="tabIndex===1" class="table-content">
-      <div class="identification">
-        <div class="identification-page">
-          <img src="./icon-bandit_list@2x.png" class="identification-icon">
-          <p class="identification-name">团长申请表</p>
-          <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
-                           @change="changeStatus"
-          ></base-status-nav>
-        </div>
-      </div>
-      <div class="big-list">
-        <div class="list-header list-box  application-list">
-          <div v-for="(item,index) in leaderApplicationTitle" :key="index" class="list-item">{{item}}</div>
-        </div>
-        <div v-if="leaderApplicationList.length" class="list">
-          <div v-for="(item, index) in leaderApplicationList" :key="index" class="list-content list-box application-list">
+        <div v-if="leaderList.length && leaderListFilter.model_type===1" class="list">
+          <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box application-list">
             <div class="list-item">{{item.mobile || '---'}}</div>
             <div class="list-item">{{item.name || '---'}}</div>
             <div class="list-item">{{item.social_name || '---'}}</div>
@@ -112,44 +87,58 @@
             </div>
           </div>
         </div>
-        <base-blank v-else blackStyle="padding-top:15%"></base-blank>
+        <base-blank v-if="!leaderList.length" blackStyle="padding-top:15%"></base-blank>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
       </div>
-      <default-modal ref="checkDialog">
-        <div slot="content" class="pop-main code check-content">
-          <div class="top">
-            <div class="title">审核操作</div>
-            <span class="close" @click="closeCheck"></span>
-          </div>
-          <div class="body">
-            <div class="activity-tab">
-              <div v-for="item in checkList" :key="item.value" class="check-box hand" @click="checkDialogContent.status =item.value">
-                <span class="check" :class="{'checked': item.value === checkDialogContent.status}"></span>
-                <span class="text">{{item.label}}</span>
-              </div>
-            </div>
-            <div class="edit-input-box">
-              <textarea v-model="checkDialogContent.remark" class="edit-text"></textarea>
-            </div>
-          </div>
-          <div class="back">
-            <div class="back-cancel back-btn hand" @click="closeCheck">返回</div>
-            <div class="back-btn back-submit  hand" @click="_submitCheck">保存</div>
-          </div>
-        </div>
-      </default-modal>
-      <default-modal ref="imgModal">
-        <div slot="content" class="model-img-wrap">
-          <div class="top">
-            <div class="title">资质审核</div>
-            <span class="close" @click="$refs.imgModal.hideModal()"></span>
-          </div>
-          <img :src="currentImgSrc" alt="" class="big-img">
-        </div>
-      </default-modal>
     </div>
+    <default-modal v-if="leaderList.length" ref="dialog">
+      <div slot="content" class="pop-main code">
+        <div class="shade-header">
+          <div class="shade-title">{{leaderList[imgIndex].social_name}}</div>
+          <!--@click="_cancelGoods"-->
+          <span class="close hand" @click="_close"></span>
+        </div>
+        <div class="img-box">
+          <img v-if="!loadImg" key="1" :src="codeUrl" alt="" class="xcx-img">
+          <img v-if="loadImg" key="2" src="./loading.gif" alt="" class="load-img">
+        </div>
+      </div>
+    </default-modal>
+    <default-confirm ref="confirm" @confirm="_freeze"></default-confirm>
+    <default-modal ref="checkDialog">
+      <div slot="content" class="pop-main code check-content">
+        <div class="top">
+          <div class="title">审核操作</div>
+          <span class="close" @click="closeCheck"></span>
+        </div>
+        <div class="body">
+          <div class="activity-tab">
+            <div v-for="item in checkList" :key="item.value" class="check-box hand" @click="checkDialogContent.status =item.value">
+              <span class="check" :class="{'checked': item.value === checkDialogContent.status}"></span>
+              <span class="text">{{item.label}}</span>
+            </div>
+          </div>
+          <div class="edit-input-box">
+            <textarea v-model="checkDialogContent.remark" class="edit-text"></textarea>
+          </div>
+        </div>
+        <div class="back">
+          <div class="back-cancel back-btn hand" @click="closeCheck">返回</div>
+          <div class="back-btn back-submit  hand" @click="_submitCheck">保存</div>
+        </div>
+      </div>
+    </default-modal>
+    <default-modal ref="imgModal">
+      <div slot="content" class="model-img-wrap">
+        <div class="top">
+          <div class="title">资质审核</div>
+          <span class="close" @click="$refs.imgModal.hideModal()"></span>
+        </div>
+        <img :src="currentImgSrc" alt="" class="big-img">
+      </div>
+    </default-modal>
   </div>
 
 </template>
@@ -196,11 +185,8 @@
     },
     data() {
       return {
-        tabIndex:1,
         tabStatus: ORDERSTATUS,
         bigImgUrl:'',
-        leaderApplicationTitle:LEADER_APPLICATION_TILTE,
-        leaderApplicationList:[],
         currentLeader:null,
         currentImgSrc:'',
         checkList:[{
@@ -214,7 +200,6 @@
           status:1,
           remark:''
         },
-        leaderTitle: LEADER_TITLE,
         statusList: [
           {name: '全部', value: '', num: 0},
           {name: '正常', value: 0, num: 0},
@@ -231,14 +216,14 @@
       }
     },
     computed: {
-      ...leaderComputed
+      ...leaderComputed,
+      leaderTitle() {
+        return this.leaderListFilter.model_type ===0 ? LEADER_TITLE : LEADER_APPLICATION_TILTE
+      }
     },
     created() {
       this.getTopData()
       this._getLeaderStatus()
-      if(this.tabIndex){
-        this._getLeaderApplicationList()
-      }
     },
     methods: {
       ...leaderMethods,
@@ -259,45 +244,25 @@
             this.$toast.show(res.message)
             return
           }
-          this._getLeaderApplicationList(this.leaderListFilter)
-        })
-      },
-      // 团长分销列表
-      _getLeaderApplicationList(params){
-        API.Leader.getLeaderApplicationList(params).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          let pageTotal = {
-            total: res.meta.total,
-            per_page: res.meta.per_page,
-            total_page: res.meta.last_page
-          }
-          this.SET_PAGE_TOTAL(pageTotal)
-          this.leaderApplicationList = res.data
+          this._updateData()
         })
       },
       // 顶部tab切换
       tabChange(val) {
-        this.tabIndex = val
         let params = {
           page: 1,
           limit: 10,
           status: 0,
-          keyword: ""
+          keyword: "",
+          model_type:val
         }
         this.$refs.research._setText()
         this._updateData(params)
       },
       // 更新列表
-      _updateData(params, noUpdataStatus) {
+      _updateData(params={}, noUpdataStatus) {
         this.SET_lEADER_LIST_FILTER(params)
-        if(!this.tabIndex){
-          this.getLeaderList(params)
-        }else{
-          this._getLeaderApplicationList(params)
-        }
+        this.getList(params)
         if (!noUpdataStatus) {
           this._getLeaderStatus()
         }
@@ -311,7 +276,7 @@
       },
       // 状态列表
       _getLeaderStatus() {
-        let name  = this.tabIndex ?'getDistributionStatus' :'getLeaderStatus'
+        let name  = this.leaderListFilter.model_type ?'getDistributionStatus' :'getLeaderStatus'
         API.Leader[name]({keyword:this.leaderListFilter.keyword}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
