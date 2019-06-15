@@ -85,6 +85,9 @@
         <div class="identification-page">
           <img src="./icon-bandit_list@2x.png" class="identification-icon">
           <p class="identification-name">团长申请表</p>
+          <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                           @change="changeStatus"
+          ></base-status-nav>
         </div>
       </div>
       <div class="big-list">
@@ -242,7 +245,6 @@
       showBigImg(src){
         this.currentImgSrc =src
         this.$refs.imgModal.showModal()
-
       },
       showCheck(item,idx){
         this.currentLeader = item
@@ -293,11 +295,11 @@
         this.SET_lEADER_LIST_FILTER(params)
         if(!this.tabIndex){
           this.getLeaderList(params)
-          if (!noUpdataStatus) {
-            this._getLeaderStatus()
-          }
         }else{
           this._getLeaderApplicationList(params)
+        }
+        if (!noUpdataStatus) {
+          this._getLeaderStatus()
         }
         if (params.page === 1) {
           this.$refs.pagination.beginPage()
@@ -309,7 +311,8 @@
       },
       // 状态列表
       _getLeaderStatus() {
-        API.Leader.getLeaderStatus({keyword:this.leaderListFilter.keyword}).then((res) => {
+        let name  = this.tabIndex ?'getDistributionStatus' :'getLeaderStatus'
+        API.Leader[name]({keyword:this.leaderListFilter.keyword}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return

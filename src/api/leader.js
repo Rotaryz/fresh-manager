@@ -210,6 +210,16 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 团长申请表状态列表
+   * @param loading
+   * @returns {*}
+   */
+  getDistributionStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/shop-distribution-invite-status'
+    return request.get(url, data, loading)
+  },
+
+  /**
    * 团长申请审核
    * @param loading
    * @returns {*}
