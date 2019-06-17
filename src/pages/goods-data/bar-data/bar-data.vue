@@ -432,12 +432,16 @@
   .data-content
     width: 100%
     height: 100%
+    position: relative
     #barData
       width: 100%
       height: 100%
     .no-data
       width: 100%
       height: 100%
+      position: absolute
+      left: 0
+      top: 0
       display: flex
       align-items: center
       justify-content: center
