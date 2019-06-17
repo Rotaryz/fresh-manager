@@ -42,15 +42,15 @@
               </div>
               <div class="data-list">
                 <div class="view">
-                  <p class="text">浏览量 <img v-if="saleData.data.views_hight" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">浏览量 <img v-if="+saleData.data.views_hight > 0" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售数量 <img v-if="saleData.data.sales_num_hight" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售数量 <img v-if="+saleData.data.sales_num_hight > 0" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售额(元) <img v-if="saleData.data.sales_amount_hight" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售额(元) <img v-if="+saleData.data.sales_amount_hight > 0" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
