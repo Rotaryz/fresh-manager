@@ -124,7 +124,9 @@
                       <p v-else class="list-rank-num">{{idx+1}}</p>
                     </template>
                     <template v-else>
-                      <img v-if="key==='goods_name'" :src="item.image_url" class="data-list-img">
+                      <div v-if="key==='goods_name'" class="list-img">
+                        <img :src="item.image_url" class="data-list-img">
+                      </div>
                       <div class="list-text">{{item[key]}}</div>
                     </template>
                   </div>
@@ -175,13 +177,13 @@
   const REAL_TIME = {
     apiFun: 'getOperationOrderData',
     label: [
-      {name: '支付用户', key: 'amount_total', total: ''},
-      {name: '支付订单', key: 'num_total', total: ''}
+      {name: '今日', key: 'amount_total', total: ''},
+      {name: '昨日', key: 'num_total', total: ''}
     ],
     chartConfig: {
       dataArr: [
-        {name: '支付用户', key: 'amount', data: []},
-        {name: '支付订单', key: 'num', data: []}
+        {name: '今日', key: 'amount', data: []},
+        {name: '昨日', key: 'num', data: []}
       ],
       xAxleData: [],
       legendOnTop: true,
@@ -924,21 +926,24 @@
         .list-content
           padding: 0 20px
           box-sizing: border-box
-          border-bottom-1px(#E9ECEE)
+          border-bottom-1px($border-color)
           display: flex
           align-items: center
           &:nth-child(2n)
             background: $color-white
           &:hover
             background: $color-white
-          .data-list-img
+          .list-img
             width: 36px
             min-width: 36px
             height: @width
             margin-right: 8px
-            display: block
-            border: 0.5px solid $border-color
-            border-radius: 2px
+            border-1px($border-color,2px)
+            .data-list-img
+              width: 100%
+              min-width: 36px
+              height: @width
+              display: block
           .list-text
             width: 100%
             no-wrap()
