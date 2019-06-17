@@ -25,8 +25,6 @@
                 </div>
               </div>
               <e-chart-line ref="realTimeChart" chartId="realTimeChart" class="real-time-chart"></e-chart-line>
-<!--              <e-chart-line v-if="realTimeData.chartConfig.dataArr[0].data.length>0" ref="realTimeChart" chartId="realTimeChart" class="real-time-chart"></e-chart-line>-->
-<!--              <p v-else class="no-data-tips">暂无数据</p>-->
             </div>
             <div class="real-time-box">
               <div v-for="(item, index) in realData" :key="index" class="real-list-box">
@@ -494,10 +492,10 @@
           for (let i = 0; i < result.data.length; i++) {
             let _resData = result.data[i]
             // 测试数据
-            let rd = (Math.random() * 100).toFixed(2)
-            _chartData.data.push(_resData[_key] + rd)
+            // let rd = (Math.random() * 100).toFixed(2)
+            // _chartData.data.push(_resData[_key] + rd)
             // 测试数据
-            // _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
+            _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.date
