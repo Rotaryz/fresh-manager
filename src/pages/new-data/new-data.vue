@@ -492,10 +492,10 @@
           for (let i = 0; i < result.data.length; i++) {
             let _resData = result.data[i]
             // 测试数据
-            // let rd = (Math.random() * 100).toFixed(2)
-            // _chartData.data.push(_resData[_key] + rd)
+            let rd = (Math.random() * 100).toFixed(2)
+            _chartData.data.push(_resData[_key] + rd)
             // 测试数据
-            _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
+            // _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.date
@@ -675,7 +675,7 @@
             position: relative
             width: 33.3333%
             height: 150px
-            padding: $margin $margin-left
+            padding: $margin .6vw $margin $margin-left
             cursor: pointer
             &:nth-child(3n+2),&:nth-child(3n+1)
               border-right-1px($border-color)

@@ -8,7 +8,7 @@
   const COMPONENT_NAME = 'E_CHART_LINE'
   const CHART_COLOR = {
     line: ['#6081E3', '#8859E8', '#F7C136', '#6AE1FF'],
-    axle: '#F0F3F5', label: '#999999'
+    axle: '#f1f4f6', label: '#999999'
   }
 
   export default {
@@ -180,8 +180,7 @@
             show: true,
             lineStyle: {
               color: CHART_COLOR.axle,
-              width: 0.5,
-              type: "doted"
+              width: 0.5
             }
           },
           axisLabel: {
@@ -198,8 +197,7 @@
             show: true,
             lineStyle: {
               color: CHART_COLOR.axle,
-              width: 0.5,
-              type: "doted"
+              width: 0.5
             }
           }
         }
