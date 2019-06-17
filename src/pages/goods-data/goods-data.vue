@@ -42,15 +42,15 @@
               </div>
               <div class="data-list">
                 <div class="view">
-                  <p class="text">浏览量 <img v-if="saleData.data.views_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">浏览量 <img v-if="saleData.data.views_hight" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售数量 <img v-if="saleData.data.num_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售数量 <img v-if="saleData.data.sales_num_hight" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售额(元) <img v-if="saleData.data.sales_amount_hight" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
@@ -508,7 +508,7 @@
         this.leftTabItem = itemId
         this.leftTab = code
         if (code !== 'goods') {
-          this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+          this.getGoodsList({cate: itemId})
           // delete data.order_by
         }
         this._initSelect()
