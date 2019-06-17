@@ -1,7 +1,7 @@
 <template>
   <div class="advertisement ">
     <!---->
-    <base-tab-select :tabStatus="tabStatus" :infoTabIndex="infoTabIndex" @getStatusTab="changeTab"></base-tab-select>
+    <!--<base-tab-select :tabStatus="tabStatus" :infoTabIndex="infoTabIndex" @getStatusTab="changeTab"></base-tab-select>-->
     <div class="normal-box">
       <div class="identification">
         <div class="identification-page">

@@ -48,7 +48,7 @@
         </div>
 
         <!--新客有礼-->
-        <div v-if="marketIndex === 0" class="edit-item edit-item-new">
+        <div v-if="marketIndex === 0 ||marketIndex === 4" class="edit-item edit-item-new">
           <div class="edit-title">
             <span class="start">*</span>
             <span>配置</span>
@@ -217,7 +217,7 @@
                   <div class="list-item">{{item.people}}</div>
                   <div v-if="item.id" class="list-item">{{item.coupon_name}}</div>
                   <div v-if="item.id" class="list-item">{{item.preferential_str}}</div>
-                  <div v-if="item.id" class="list-item">{{item.denomination_str}}</div>
+                  <div v-if="item.id" class="list-item">{{item.denomination}}</div>
                   <div v-if="item.id" class="list-item">{{item.usable_stock}}</div>
                   <div v-if="item.id" class="list-item list-item-double">
                     <p class="item-dark">{{item.created_at}}</p>
@@ -295,7 +295,7 @@
                   <p>{{item.start_at}}</p>
                   <p>{{item.end_at}}</p>
                 </div>
-                <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                <p v-else-if="val.value === 'denomination'">{{item[val.value]}}</p>
                 <span v-else class="title-item">{{item[val.value]}}</span>
               </div>
             </div>
@@ -416,7 +416,7 @@
   const TITLE = '新建查看营销'
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
-  const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'share_coupon']
+  const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'invite_customer']
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
@@ -500,7 +500,8 @@
         msg: {
           type: 1, // 1新客户2活跃客户3沉睡4发放优惠券
           config_json: {},
-          shop_coupons: []
+          shop_coupons: [],
+
         },
         arrowArr: [],
         arrowIndex: 0,
@@ -560,8 +561,9 @@
         type: '',
         disable: false,
         currentItem: '',
-        inviterArr: [{people: '1人'}, {people: '3人'}, {people: '6人'}, {people: '大于6人'}],
-        invitedArr: [{condition: '新人红包'}, {condition: '下单返红包'}],
+        // 邀请者
+        inviterArr: [{people: '1人', cond_num: 1, cond_type: 5}, {people: '3人', cond_num: 3, cond_type: 5}, {people: '6人', cond_num: 6, cond_type: 5}, {people: '大于6人', cond_num: 7, cond_type: 5}],
+        invitedArr: [{condition: '新人红包', cond_type: 1}, {condition: '下单返红包', cond_type: 6}],
         inviteTitle: INVITE_TITLE,
         invitedTitle: INVITED_TITLE,
         invitedIndex: null,
@@ -583,14 +585,15 @@
         return this.msg.title
       },
       testNewStartTime() {
-        if (+this.marketIndex === 0) {
+        if (+this.marketIndex === 0 || +this.marketIndex === 4) {
+          console.log(this.msg.config_json.way)
           return this.msg.config_json.way === 'between_days' ? this.msg.config_json.start_day : true
         } else {
           return true
         }
       },
       testNewEndTime() {
-        if (+this.marketIndex === 0) {
+        if (+this.marketIndex === 0 || +this.marketIndex === 4) {
           return this.msg.config_json.way === 'between_days' ? this.msg.config_json.end_day : true
         } else {
           return true
@@ -598,11 +601,14 @@
       },
       testNewEndTimeReg() {
         // 结束时间规则判断
-        if (+this.marketIndex === 0 && this.msg.config_json.way === 'between_days') {
-          return (
-            Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
-            Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
-          )
+        if ((+this.marketIndex === 0 || +this.marketIndex === 4) && this.msg.config_json.way === 'between_days') {
+          if (this.msg.config_json.start_day && this.msg.config_json.end_day) {
+            return (
+              Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
+              Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
+            )
+          }
+          return true
         } else {
           return true
         }
@@ -712,6 +718,7 @@
         break
       case 4:
         this.msg.type = 7
+        this.type || (this.msg.config_json.way = 'between_days')
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
         this.title = '邀请有礼'
         this._getGoodsCouponList()
@@ -728,7 +735,8 @@
         if (this.disable) {
           return
         }
-        this.invitedArr[index] = {condition: this.invitedArr[index].condition}
+        let item = this.invitedArr[index]
+        this.invitedArr[index] = {condition: item.condition, cond_type: item.cond_type}
         this.invitedArr = JSON.parse(JSON.stringify(this.invitedArr))
       },
       // 删除邀请者
@@ -736,7 +744,8 @@
         if (this.disable) {
           return
         }
-        this.inviterArr[index] = {people: this.inviterArr[index].people}
+        let item = this.inviterArr[index]
+        this.inviterArr[index] = {people: item.people, cond_type: item.cond_type, cond_num: item.cond_num}
         this.inviterArr = JSON.parse(JSON.stringify(this.inviterArr))
       },
       bannerChange(index) {
@@ -840,7 +849,8 @@
           page: this.page,
           limit: 6,
           status: 1,
-          has_stock: 1
+          has_stock: 1,
+          tag_type: 0
         }
         API.Coupon.getCouponList(data, false).then((res) => {
           if (res.error !== this.$ERR_OK) {
@@ -870,25 +880,26 @@
       },
       // 获取商品券列表
       _getGoodsCouponList() {
-        // let data = {
-        //   coupon_name: this.keyword,
-        //   page: this.page,
-        //   limit: 6,
-        //   status: 1,
-        //   has_stock: 1
-        // }
-        // API.Coupon.getCouponList(data, false).then((res) => {
-        //   if (res.error !== this.$ERR_OK) {
-        //     this.$toast.show(res.message)
-        //     return
-        //   }
-        //   this.goodsPageTotal = {
-        //     total: res.meta.total,
-        //     per_page: res.meta.per_page,
-        //     total_page: res.meta.last_page
-        //   }
-        //   this.goodsList = res.data
-        // })
+        let data = {
+          coupon_name: this.goodsKeyword,
+          page: this.goodsPage,
+          limit: 6,
+          status: 1,
+          has_stock: 1,
+          tag_type: 1
+        }
+        API.Coupon.getCouponList(data, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.goodsPageTotal = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+          this.goodsList = res.data
+        })
       },
       _getMoreCoupontGoods(page) {
         this.goodsPage = page
@@ -896,7 +907,7 @@
       },
       _searchMoreCoupontGoods(word) {
         this.goodsKeyword = word
-        this.page = 1
+        this.goodsPage = 1
         this._getGoodsCouponList()
         this.$refs.paginationGoods.beginPage()
       },
@@ -1042,12 +1053,21 @@
           methodsName = 'storeMarket'
           break
         case 4:
+          this.msg.coupon_id = ''
+          this.msg.config_json.inviter_coupons = []
+          this.msg.config_json.inviter_coupons = this.msg.config_json.inviter_coupons.concat(this.invitedArr, this.inviterArr)
+          this.msg.config_json.inviter_coupons = this.msg.config_json.inviter_coupons.map((item) => {
+            item.coupon_id = item.id
+            item.tag_type = 1
+            return item
+          })
           // 对接商品
-          methodsName = '待定'
+          methodsName = 'storeMarket'
           break
         default:
           break
         }
+        console.log(methodsName)
         this.msg.config_json.type_str = TYPE[this.marketIndex]
         API.Market[methodsName](this.msg, true).then((res) => {
           this.$loading.hide()
@@ -1107,7 +1127,9 @@
             }
           })
           this.msg = obj
+          console.log(obj)
           this.msg.config_json = JSON.parse(obj.config_json)
+          console.log(obj.config_json.way)
           switch (obj.config_json.way) {
           case 'days':
             this.newItem = obj.config_json.way
@@ -1122,6 +1144,19 @@
             this.activityItem = obj.config_json.way
             this.dayData2.content = obj.config_json.days + '天'
             this.dayData.content = 3 + '天'
+            break
+          case 'between_days':
+            this.msg.config_json.start_at = this.msg.config_json.start_at
+            this.msg.config_json.end_at = this.msg.config_json.start_at
+            this.msg.config_json.inviter_coupons.forEach((item) => {
+              if (item.cond_type === 5) {
+                let index = this.inviterArr.findIndex((items) => (items.cond_num === item.cond_num))
+                this.inviterArr[index] = Object.assign({}, this.inviterArr[index], item)
+              } else {
+                let index = this.invitedArr.findIndex((items) => (items.cond_type === item.cond_type))
+                this.invitedArr[index] = Object.assign({}, this.inviterArr[index], item)
+              }
+            })
             break
           default:
             this.newItem = obj.config_json.way
@@ -1792,7 +1827,7 @@
         &:first-child
           min-width: 104px
           max-width: 104px
-        &:last-child
+        &:nth-child(7)
           padding: 0
           max-width: 50px
         &:nth-child(2)

@@ -1,5 +1,6 @@
 import request from '@utils/request'
-
+// todo记得删除v1
+let verson = 'v1/'
 export default {
   /**
    * 优惠券列表
@@ -8,7 +9,7 @@ export default {
    * @returns {*}
    */
   getCouponList(data, loading = true) {
-    let url = '/social-shopping/api/backend/coupon-manage/coupon'
+    let url = `/social-shopping/${verson}api/backend/coupon-manage/coupon`
     return request.get(url, data, loading)
   },
   /**
@@ -17,9 +18,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getCouponDetail(id, loading = true) {
-    let url = `/social-shopping/api/backend/coupon-manage/coupon/${id}`
-    return request.get(url, {}, loading)
+  getCouponDetail(data, id, loading = true) {
+    let url = `/social-shopping/${verson}api/backend/coupon-manage/coupon/${id}`
+    return request.get(url, data, loading)
   },
   /**
    * 删除优惠券
@@ -68,10 +69,9 @@ export default {
    * @returns {*}
    */
   storeCoupon(data, loading = false) {
-    let url = `/social-shopping/api/backend/coupon-manage/coupon`
+    let url = `/social-shopping/${verson}api/backend/coupon-manage/coupon`
     return request.post(url, data, loading)
   },
-
   /**
    * 优惠券分类统计
    * @param loading

@@ -22,9 +22,9 @@
       <div class="list">
         <!---->
         <div v-for="(item, index) in goodsItem" :key="index" class="list-content list-box">
-          <div class="list-item">{{item.goods_name}}</div>
+          <div class="list-item">{{item.name}}</div>
           <div class="list-item">{{item.base_unit}}</div>
-          <div class="list-item">{{item.total_stock}}</div>
+          <div class="list-item">{{item.trade_price}}</div>
           <div class="list-item">{{item.usable_stock}}</div>
           <div class="list-item">
             <div class="list-operation" :class="{'list-operation-disable': id}" @click="showDel(index)">删除</div>
@@ -43,7 +43,7 @@
           商品券金额
         </div>
         <div class="edit-input-box">
-          <input v-model="commodity.mobile"
+          <input v-model="commodity.denomination"
                  type="number"
                  class="edit-input"
                  :disabled="id"
@@ -61,7 +61,7 @@
           商品券名称
         </div>
         <div class="edit-input-box">
-          <input v-model="commodity.mobile"
+          <input v-model="commodity.coupon_name"
                  type="text"
                  class="edit-input"
                  :disabled="id"
@@ -69,7 +69,7 @@
                  placeholder="请输入商品券名称"
                  @mousewheel.native.prevent
           >
-          <div class="num">{{commodity.mobile ? commodity.mobile.length : 0}}/20</div>
+          <div class="num">{{commodity.coupon_name ? commodity.coupon_name.length : 0}}/20</div>
         </div>
         <div :class="{'text-no-change': id}"></div>
       </div>
@@ -80,11 +80,11 @@
           发放数量
         </div>
         <div class="edit-input-box">
-          <input v-model="commodity.mobile"
+          <input v-model="commodity.usable_stock"
                  type="number"
                  class="edit-input"
                  :disabled="id"
-                 placeholder="发放数量应设为1~99999之间的整数"
+                 :placeholder="`发放数量应设为1~${goodsItem.length ? goodsItem[0].usable_stock : 99999}之间的整数`"
                  @mousewheel.native.prevent
           >
         </div>
@@ -140,7 +140,7 @@
                       :readonly="id"
                       :disabled="id"
                       maxlength="50"
-                      :class="{'disable-input':id}"
+                      :class="{'disable-input': id}"
             >
             </textarea>
           </div>
@@ -202,7 +202,7 @@
     <!--按钮-->
     <div class="back">
       <div class="back-cancel back-btn hand" @click="back">返回</div>
-      <div class="back-btn back-submit" @click="submit">保存</div>
+      <div class="back-btn back-submit" :class="{'btn-disable': id}" @click="submit">保存</div>
     </div>
   </div>
 </template>
@@ -212,6 +212,7 @@
   import DefaultModal from '@components/default-modal/default-modal'
   import API from '@api'
   import _ from 'lodash'
+  import {couponComputed, couponMethods} from '@state/helpers'
 
   const PAGE_NAME = 'EDIT_COMMODITY'
   const TITLE = '新建商品券'
@@ -231,22 +232,37 @@
         id: this.$route.query.id,
         tableTitle: TABLE_TITLE,
         commodity: {
-          mobile: '',
+          coupon_name: '',
+          preferential_type: 2,
+          denomination: '', // 优惠券面额
+          condition: 0, // 满多少可用
+          support_activity: 1, // 是否支持活动商品使用0 1
           start_at: '',
           end_at: '',
-          description: ''
+          range_type: 3, // 适用范围0未知1通用券2品类券3单品券
+          ranges: [],
+          limit_days: 0,
+          is_day_limited: 0,
+          description: '',
+          tag_type: 1,
+          validity_type: 1,
+          usable_stock: ''
         },
+        text: 1,
         isSubmit: true,
         goodsPage: {total: 1, per_page: 10, total_page: 1},
         choiceGoods: [],
         choicePage: 1,
         goodsItem: [],
         showSelectIndex: -1,
+        parentId: '',
+        goodsCate: [],
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []} // 格式：{title: '55'}}
       }
     },
     computed: {
+      ...couponComputed,
       testEndDate() {
         // 结束时间规则判断
         return (
@@ -257,13 +273,31 @@
       testGoods() {
         // 判断是否选择商品
         return this.goodsItem.length
+      },
+      textDenomination() {
+        let value = /^[0-9]+$/.test(this.commodity.denomination)
+        return value
+      },
+      textUsableStock() {
+        let bigNum = this.goodsItem.length ? this.goodsItem[0].usable_stock : 99999
+        if (this.commodity.usable_stock > 0 && this.commodity.usable_stock < bigNum) {
+          let value = /^[0-9]+$/.test(this.commodity.usable_stock)
+          return value
+        }
+        return false
       }
     },
     async created() {
+      if (this.id) {
+        let obj = _.cloneDeep(this.couponDetail)
+        this.commodity = obj
+        this.goodsItem = obj.ranges
+      }
       await this._getFirstAssortment()
       await this._getGoodsList()
     },
     methods: {
+      ...couponMethods,
       getStartTime(time) {
         this.commodity.start_at = time
       },
@@ -275,6 +309,7 @@
           return
         }
         this.goodsItem.splice(index, 1)
+        this.commodity.ranges = []
       },
       back() {
         this.$router.back()
@@ -282,6 +317,11 @@
       checkForm() {
         let arr = [
           {value: this.testGoods, txt: '请选择商品'},
+          {value: this.commodity.denomination, txt: '请输入商品券金额'},
+          {value: this.textDenomination, txt: '请输入正整数商品券金额'},
+          {value: this.commodity.coupon_name, txt: '请输入商品券名称'},
+          {value: this.commodity.usable_stock, txt: '请输入发放数量'},
+          {value: this.textUsableStock, txt: '发放数量应设为1~99999之间的整数'},
           {value: this.commodity.start_at, txt: '请选择活动开始时间'},
           {value: this.commodity.end_at, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
@@ -297,22 +337,30 @@
           }
         }
       },
-      submit() {
-        if (!this.isSubmit) {
+      async submit() {
+        if (this.id || !this.isSubmit) return
+        if (!this.checkForm()) return
+        this.isSubmit = false
+        let res = await API.Coupon.storeCoupon(this.commodity, true)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          this.isSubmit = true
           return
         }
-        if (!this.checkForm()) {
-          return
-        }
-        this.isSubmit = true
+        setTimeout(() => {
+          this.back()
+        }, 1000)
       },
       // 获取商品列表
       async _getGoodsList() {
-        let res = await API.Store.getGoodsList({
+        let res = await API.Coupon.getGoodsList({
+          is_online: 1,
           keyword: this.text,
           goods_category_id: this.parentId,
           page: this.choicePage,
-          limit: 7
+          limit: 7,
+          has_stock: 1
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -327,13 +375,13 @@
       // 弹窗确定选择链接
       async _miniGoods() {
         this.goodsItem = [this.choiceGoods[this.showSelectIndex]]
+        this.commodity.ranges[0] = {range_id: this.goodsItem[0].id, coupon_range_id: 0}
         this._hideGoods()
       },
       // 获取分页商品列表
       async _getMoreGoods(page) {
         this.choicePage = page
         await this._getGoodsList()
-        await this._statistic()
       },
       async _secondAssortment(item) {
         this.parentId = item.id
@@ -374,6 +422,9 @@
         if (this.id) {
           return
         }
+        if (this.commodity.ranges.length) {
+          this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.ranges[0].range_id)
+        }
         this.$refs.goods.showModal()
       },
       // 搜索商品
@@ -383,7 +434,6 @@
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
-        await this._statistic()
       },
       // 选择商品
       _selectGoods(item, index) {
@@ -466,6 +516,9 @@
         height: 94px
         resize: none
         padding: 4px 14px
+      .disable-input
+        background: #F5F5F5
+        color: #ACACAC
       .edit-text
         font-size: $font-size-14
         padding: 10px 14px

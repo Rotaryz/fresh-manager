@@ -21,18 +21,21 @@
           <div v-for="(item, idx) in couponTitle" :key="idx" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-if="goodsCoupon.length">
-            <div v-for="(item, index) in goodsCoupon" :key="index" class="list-content list-box">
-              <div class="list-item">item.created_at}}</div>
-              <div class="list-item">item.social_name}}</div>
-              <div class="list-item">item.name}}</div>
-              <div class="list-item">item.total}}</div>
-              <div class="list-item">item.delivery_at}}</div>
-              <div class="list-item">item.delivery_at}}</div>
-              <div class="list-item">item.delivery_at}}</div>
-              <div class="list-item">item.delivery_at}}</div>
+          <div v-if="couponList.length">
+            <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.coupon_name}}</div>
+              <div class="list-item">{{item.denomination}}</div>
+              <div class="list-item list-double-row">
+                <p class="item-dark">{{item.start_at}}</p>
+                <p class="item-dark">{{item.end_at}}</p>
+              </div>
+              <div class="list-item">{{item.created_at}}</div>
+              <div class="list-item">{{item.total_stock}}</div>
+              <div class="list-item">{{item.usable_stock}}</div>
+              <div class="list-item">{{item.customer_coupon_count}}</div>
+              <div class="list-item">{{item.customer_coupon_used_count}}</div>
               <div class="list-item">
-                <router-link tag="div" to="edit-commodity?id=" append class="list-operation">查看</router-link>
+                <router-link tag="div" :to="`edit-commodity?id=${item.id}`" append class="list-operation">查看</router-link>
                 <div class="list-operation" @click="showDel(item)">删除</div>
               </div>
             </div>
@@ -90,16 +93,16 @@
       changeTime(time) {
         this.startTime = time[0]
         this.endTime = time[1]
-        this.page =1
-        this._getGoodsCoupon()
+        this.page = 1
+        this.getGoodsCoupon()
         this.$refs.pagination.beginPage()
       },
-      _getGoodsCoupon() {
-        this.getGoodsCoupon({startTime: this.startTime, endTime: this.endTime, page: this.page, loading: false})
+      getGoodsCoupon() {
+        this.getCouponList({startTime: this.startTime, endTime: this.endTime, page: this.page, tagType: 1, loading: false})
       },
       changePage(page) {
         this.page = page
-        this._getGoodsCoupon()
+        this.getGoodsCoupon()
       },
       // 确认删除
       sureConfirm() {

@@ -1,5 +1,6 @@
 import request from '@utils/request'
-
+// todo记得删除
+let verson = 'v1/'
 export default {
   /**
    * 营销列表
@@ -8,7 +9,7 @@ export default {
    * @returns {*}
    */
   getMarketList(data, loading = true) {
-    let url = '/social-shopping/api/backend/coupon-activity-manage/coupon-activity'
+    let url = `/social-shopping/${verson}api/backend/coupon-activity-manage/coupon-activity`
     return request.get(url, data, loading)
   },
   /**
@@ -18,7 +19,7 @@ export default {
    * @returns {*}
    */
   getMarketDetail(id, loading = true) {
-    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${id}`
+    let url = `/social-shopping/${verson}api/backend/coupon-activity-manage/coupon-activity/${id}`
     return request.get(url, {}, loading)
   },
   /**
@@ -39,7 +40,7 @@ export default {
    * @returns {*}
    */
   storeMarket(data, loading = false) {
-    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity`
+    let url = `/social-shopping/${verson}api/backend/coupon-activity-manage/coupon-activity`
     return request.post(url, data, loading)
   },
   /**
@@ -52,7 +53,6 @@ export default {
     let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${data.id}/status/${data.status}`
     return request.post(url, data, loading)
   },
-
   /**
    * 营销分类统计
    * @param loading
@@ -60,6 +60,15 @@ export default {
    */
   getMarketStatus(data, loading = false) {
     let url = '/social-shopping/api/backend/coupon-activity-manage/coupon-activity-status'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 营销分类统计
+   * @param loading
+   * @returns {*}
+   */
+  getMarketStatistic(id, data = {}, loading = false) {
+    let url = `/social-shopping/${verson}api/backend/coupon-activity-manage/coupon-activity-statistic/${id}`
     return request.get(url, data, loading)
   }
 }

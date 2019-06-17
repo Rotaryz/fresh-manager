@@ -105,7 +105,7 @@ export const couponComputed = {
   ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'infoTabIndex', 'goodsCoupon', 'pageTotal'])
 }
 
-export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex', 'getGoodsCoupon'])
+export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex'])
 
 // 营销计划
 export const marketComputed = {

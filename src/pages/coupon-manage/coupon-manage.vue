@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <goods-coupon v-show="infoTabIndex === 1"></goods-coupon>
+    <goods-coupon v-show="infoTabIndex === 1" ref="goodsCoupon"></goods-coupon>
     <default-confirm ref="confirm" infoTitle="删除优惠券" :oneBtn="false" @confirm="_sureConfirm"></default-confirm>
   </div>
 </template>
@@ -105,7 +105,8 @@
           endTime: '',
           status: '',
           page: 1,
-          loading: false
+          loading: false,
+          tagType: 0
         }
       }
     },
@@ -122,6 +123,15 @@
       ...couponMethods,
       changeTab(item, index) {
         this.setInfoIndex(index)
+        switch (index) {
+        case 0:
+          this.getCouponList(this.msg)
+          break
+        case 1:
+          this.$refs.goodsCoupon.getGoodsCoupon()
+          break
+        }
+
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({created_start_at: this.msg.startTime, created_end_at: this.msg.endTime})

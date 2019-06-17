@@ -26,14 +26,11 @@
         <div class="list">
           <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
+              <div v-if="+val.type === 1 || +val.type === 2" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || '---'}}
               </div>
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || 0}}
-              </div>
-              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
-                {{type[item[val.value]]}}
               </div>
               <!--状态-->
               <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
@@ -41,7 +38,7 @@
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>
-                <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
+                <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
             </div>
@@ -65,7 +62,7 @@
   const TITLE = '营销计划'
   const MARKET_TITLE = [
     {name: '营销名称', flex: 1.6, value: 'title', type: 1},
-    {name: '类型', flex: 1, value: 'type', type: 2},
+    {name: '类型', flex: 1, value: 'type_str', type: 2},
     {name: '领取数', flex: 1, value: 'take_count', type: 4},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}

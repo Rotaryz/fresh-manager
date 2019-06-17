@@ -65,13 +65,14 @@ export const actions = {
     commit('SET_INFO_TAB_INDEX', index)
   },
   getCouponList({commit}, msg) {
-    let {startTime, endTime, status, page, loading} = msg
+    let {startTime, endTime, status, page, tagType = 0, loading} = msg
     let data = {
       status,
       page,
       limit: 10,
       created_start_at: startTime,
-      created_end_at: endTime
+      created_end_at: endTime,
+      tag_type: tagType
     }
     return API.Coupon.getCouponList(data, loading)
       .then((res) => {
@@ -86,7 +87,11 @@ export const actions = {
           per_page: pages.per_page,
           total_page: pages.last_page
         }
-        commit('SET_COUPON_PAGE', pageDetail)
+        if (+tagType === 0) {
+          commit('SET_COUPON_PAGE', pageDetail)
+        } else {
+          commit('SET_PAGE_TOTAL', pageDetail)
+        }
         commit('SET_COUPON_LIST', couponList)
         return couponList
       })
@@ -98,41 +103,8 @@ export const actions = {
       })
   },
   // 商品券的方法
-  getGoodsCoupon({commit}, msg) {
-    let {startTime, endTime, page, loading} = msg
-    let data = {
-      page,
-      limit: 10,
-      start_at: startTime,
-      end_at: endTime
-    }
-    console.log(data, loading)
-    // return API.Coupon.getCouponList(data, loading)
-    //   .then((res) => {
-    //     if (res.error !== app.$ERR_OK) {
-    //       app.$toast.show(res.message)
-    //       return
-    //     }
-    //     let couponList = res.data
-    //     let pages = res.meta
-    //     let pageDetail = {
-    //       total: pages.total,
-    //       per_page: pages.per_page,
-    //       total_page: pages.last_page
-    //     }
-    //     commit('SET_COUPON_PAGE', pageDetail)
-    //     commit('SET_COUPON_LIST', couponList)
-    //     return couponList
-    //   })
-    //   .catch(() => {
-    //     return false
-    //   })
-    //   .finally(() => {
-    //     app.$loading.hide()
-    //   })
-  },
-  getCouponDetail({commit}, id) {
-    return API.Coupon.getCouponDetail(id)
+  getCouponDetail({commit}, {id, tagType}) {
+    return API.Coupon.getCouponDetail({tag_type: tagType}, id)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return

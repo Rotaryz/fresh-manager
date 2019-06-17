@@ -468,9 +468,10 @@ export default [
         meta: {
           titles: ['商城', '营销', '优惠券'],
           beforeResolve(routeTo, routeFrom, next) {
+            let index = store.state.coupon.infoTabIndex
             // 活动列表
             store
-              .dispatch('coupon/getCouponList', {page: 1})
+              .dispatch('coupon/getCouponList', {page: 1, tagType: index})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -491,7 +492,26 @@ export default [
         meta: {
           titles: ['商城', '营销', '优惠券', '商品券'],
           variableIndex: 3,
-          marginBottom: 80
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('coupon/getCouponDetail', {id, tagType: 1})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
         }
       },
       // 新建查看优惠券
@@ -508,7 +528,7 @@ export default [
             // 活动详情
             if (id) {
               store
-                .dispatch('coupon/getCouponDetail', id)
+                .dispatch('coupon/getCouponDetail', {id, tagType: 0})
                 .then((res) => {
                   if (!res) {
                     next({name: '404'})
@@ -583,7 +603,26 @@ export default [
         name: 'marketing-statistics',
         component: () => lazyLoadView(import('@pages/marketing-statistics/marketing-statistics')),
         meta: {
-          titles: ['商城', '营销', '营销计划', '营销统计']
+          titles: ['商城', '营销', '营销计划', '营销统计'],
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 活动详情
+            if (id) {
+              store
+                .dispatch('market/getMarketingStatisticsList', {id, page: 1, loading: true})
+                .then((res) => {
+                  if (!res) {
+                    next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
         }
       },
       /**

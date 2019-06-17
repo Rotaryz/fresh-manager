@@ -13,8 +13,7 @@ export const state = {
     total: 1,
     per_page: 12,
     total_page: 1
-  },
-  marketStaList: []
+  }
 }
 
 export const getters = {
@@ -80,30 +79,30 @@ export const actions = {
       })
   },
   getMarketingStatisticsList({commit, state}, msg) {
-    // let {id, page, loading} = msg
-    // return API.Market.getMarketList(id, {page, limit: 12}, loading)
-    //   .then((res) => {
-    //     if (res.error !== app.$ERR_OK) {
-    //       app.$toast.show(res.message)
-    //       return
-    //     }
-    //     let marketList = res.data
-    //     let pages = res.meta
-    //     let pageDetail = {
-    //       total: pages.total,
-    //       per_page: pages.per_page,
-    //       total_page: pages.last_page
-    //     }
-    //     commit('SET_MARKET_STA_PAGE_DETAIL', pageDetail)
-    //     commit('SET_MARKET_STA_LIST', marketList)
-    //     return marketList
-    //   })
-    //   .catch(() => {
-    //     return false
-    //   })
-    //   .finally(() => {
-    //     app.$loading.hide()
-    //   })
+    let {id, page, loading} = msg
+    return API.Market.getMarketStatistic(id, {page, limit: 12}, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          app.$toast.show(res.message)
+          return
+        }
+        let marketList = res.data
+        let pages = res.meta
+        let pageDetail = {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        }
+        commit('SET_MARKET_STA_PAGE_DETAIL', pageDetail)
+        commit('SET_MARKET_STA_LIST', marketList)
+        return marketList
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
   },
   getMarketDetail({commit}, id) {
     return API.Market.getMarketDetail(id)
