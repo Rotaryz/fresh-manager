@@ -797,7 +797,7 @@
           case 'week':
             return item.week ? '第' + item.week + '周' : ''
           default:
-            return item.month ? item.month + '月' : ''
+            return item.month ? item.month.year + item.month + '月' : ''
           }
         })
         let rate = data.map(item => {

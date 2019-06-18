@@ -108,7 +108,7 @@
             case 1:
               return date.valueOf() > new Date().valueOf() - new Date().getDay() * 84600000
             case 2:
-              return date.valueOf() > new Date().valueOf() - new Date().getDate() * 84600000
+              return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 84600000
             }
 
           }
@@ -122,7 +122,7 @@
         date: {
           day: new Date().valueOf() - 84600000,
           week: new Date().valueOf() - new Date().getDay() * 84600000,
-          month: new Date().valueOf() - new Date().getDate() * 84600000
+          month: new Date().valueOf() - (new Date().getDate()+1) * 84600000
         }
       }
     },
@@ -149,7 +149,7 @@
       mouseLeave(name) {
         this.timer = setTimeout(() => {
           this.$refs[name] && this.$refs[name][0].handleClose()
-        },2000)
+        },2500)
       },
       checkTab(index) {
         this.clickTab = true
@@ -169,7 +169,7 @@
           date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-')
           break
         case 2:
-          this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - new Date().getDate() * 84600000))
+          this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - (new Date().getDate() + 1) * 84600000))
           date = new Date(this.date[NAV[this.tabIndex].status]).getFullYear() + '-' + (new Date(this.date[NAV[this.tabIndex].status]).getMonth() + 1) + '-01'
         }
         this.$emit('checkTime', date, NAV[this.tabIndex].status)
