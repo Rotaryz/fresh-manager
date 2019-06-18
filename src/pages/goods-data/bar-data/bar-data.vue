@@ -85,23 +85,25 @@
         }
         this.$emit('hasData', sec - 1)
         this.hideChart = false
-        let msg = {
-          xAxisData: data.xAx.length ? data.xAx : this.data.x1,
-          seriesData1: data.salesNum.length ? data.salesNum : this.data.series,
-          seriesData2: data.purchaseNum.length ? data.purchaseNum : this.data.series,
-          salesNumAll: data.salesNumAll,
-          purchaseNumAll: data.purchaseNumAll
-        }
-        let el = document.getElementById(this.chartId)
-        this.$echarts.dispose(el) // 销毁之前的实例
-        let myChart = this.$echarts.init(el)
-        this.myChart = myChart
-        window.addEventListener('resize',  this.resize) // 加监听
-        let that = this
-        myChart.on('click', function(params) {
-          that.$emit('clickChart', params.dataIndex)
+        this.$nextTick(() => {
+          let msg = {
+            xAxisData: data.xAx.length ? data.xAx : this.data.x1,
+            seriesData1: data.salesNum.length ? data.salesNum : this.data.series,
+            seriesData2: data.purchaseNum.length ? data.purchaseNum : this.data.series,
+            salesNumAll: data.salesNumAll,
+            purchaseNumAll: data.purchaseNumAll
+          }
+          let el = document.getElementById(this.chartId)
+          this.$echarts.dispose(el) // 销毁之前的实例
+          let myChart = this.$echarts.init(el)
+          this.myChart = myChart
+          window.addEventListener('resize', this.resize) // 加监听
+          let that = this
+          myChart.on('click', function (params) {
+            that.$emit('clickChart', params.dataIndex)
+          })
+          myChart.setOption(this.createBar2(msg))
         })
-        myChart.setOption(this.createBar2(msg))
       },
       // 纵向柱状图
       drawBar2(data) {
@@ -432,6 +434,7 @@
   .data-content
     width: 100%
     height: 100%
+    position: relative
     #barData
       width: 100%
       height: 100%

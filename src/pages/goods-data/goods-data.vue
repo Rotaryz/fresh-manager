@@ -5,7 +5,8 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">商品数据</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>
+      <!--<base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>-->
+      <base-date-picker :infoTab="0" @checkTime="_getData"></base-date-picker>
     </div>
     <div class="data-content">
       <left-tab ref="goodsTab" @changeTab="changeTab"></left-tab>
@@ -192,10 +193,9 @@
   import API from '@api'
 
   const ARR_TITLE = [
-    {title: '7天', status: 'week'},
-    {title: '15天', status: 'half_month'},
-    {title: '30天', status: 'month'},
-    {title: '自定义', status: 'custom'}
+    {title: '日', status: 'day'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
   ]
   // 导出接口
   const EXPORT_URL = {
@@ -370,20 +370,10 @@
     },
     methods: {
       ...goodsDataMethods,
-      _getData(value) {
-        if (typeof value === 'string') {
-          this.requestPub.date_type = value
-        } else {
-          // this.start_at = value[0]
-          // this.end_at = value[1]
-          this.requestPub.date_type = 'cust-date'
-          this.requestPub.start_date = value[0]
-          this.requestPub.end_date = value[1]
-          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
-            this.$toast.show('选择时间范围不能小于两天')
-            return
-          }
-        }
+      _getData(value, type) {
+        this.requestPub.date_type = type
+        this.requestPub.start_date = value
+        console.log(value, type, 111)
         this.getAllData()
       },
       changeGoodsRank(type) {

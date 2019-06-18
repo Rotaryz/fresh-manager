@@ -10,9 +10,10 @@
           <img src="./icon-qundata@3x.png" alt="" class="title-icon">
           <div class="title">{{topTab[topTabIndex].conTitle}}</div>
         </div>
-        <base-option-box :arrTitle="dateSelector" :infoTab="0"
+        <!--<base-option-box :arrTitle="dateSelector" :infoTab="0"
                          @checkTime="_selectDate"
-        ></base-option-box>
+        ></base-option-box>-->
+        <base-date-picker :arrTitle="dateSelector" :infoTab="0" @checkTime="_selectDate"></base-date-picker>
       </div>
       <div class="chart-container">
         <template v-if="topTabIndex === 0">
@@ -51,9 +52,9 @@
     {text: '拓展视窗', status: 2, conTitle: '拓展数据'}
   ]
   const DATE_SELECTOR = [
-    {title: '7天', status: 'week'},
-    {title: '15天', status: 'half_month'},
-    {title: '30天', status: 'month'}
+    {title: '日', status: 'date'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
   ]
   /** chart配置，id：chart组件id，label：上面部分的数据名称，dataArr-name：图表内部、折线的label, dataArr-key：接口key，dataArr-data：接口数据
    * xAxleData：日期数组用于X轴，showSecondY：是否显示双Y轴，lineShadow：是否有区域阴影， tab：上面的tab切换，tabIndex：tab栏的索引，excel：是否有excel导出功能
