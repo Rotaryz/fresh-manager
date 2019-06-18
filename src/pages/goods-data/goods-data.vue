@@ -373,7 +373,6 @@
       _getData(value, type) {
         this.requestPub.date_type = type
         this.requestPub.start_date = value
-        console.log(value, type, 111)
         this.getAllData()
       },
       changeGoodsRank(type) {
