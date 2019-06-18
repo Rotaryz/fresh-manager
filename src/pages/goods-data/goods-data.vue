@@ -189,6 +189,7 @@
   import BigBarData from './big-bar-data/big-bar-data'
   import PieData from './pie-data/pie-data'
   import DescriptionModal from './description-modal/description-modal'
+  import {formatNumber} from '@utils/common'
 
   import API from '@api'
 
@@ -304,8 +305,8 @@
           limit: 10
         },
         requestPub: {
-          date_type: 'week',
-          start_date: '',
+          date_type: 'day',
+          start_date: new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-'),
           end_date: '',
           group_by: 'cate',
           cate: '',
@@ -790,7 +791,14 @@
         }
         let label = type
         let x = data.map(item => {
-          return item.date ? item.date.split('-').slice(1).join('/') : ''
+          switch (this.requestPub.date_type) {
+          case 'day':
+            return item.month ? formatNumber(item.month) + '/' + formatNumber(item.day) : ''
+          case 'week':
+            return item.week ? '第' + item.week + '周' : ''
+          default:
+            return item.month ? item.month + '月' : ''
+          }
         })
         let rate = data.map(item => {
           return item[code]
