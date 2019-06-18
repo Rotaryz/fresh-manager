@@ -56,6 +56,7 @@
 <script>
   import {couponComputed, couponMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import API from '@api'
 
   const PAGE_NAME = 'GOODS-COUPON'
   const COUPON_TITLE = ['商品券名称', '面值', '有效期', '创建时间', '发放总数', '剩余数量', '已领取数', '已使用数', '操作']
@@ -105,8 +106,13 @@
         this.getGoodsCoupon()
       },
       // 确认删除
-      sureConfirm() {
-
+      async sureConfirm() {
+        let res = await API.Coupon.deleteCoupon(this.delId)
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this.getGoodsCoupon()
       },
       showDel(item) {
         this.delId = item.id
