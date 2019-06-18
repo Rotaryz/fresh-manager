@@ -793,11 +793,11 @@
         let x = data.map(item => {
           switch (this.requestPub.date_type) {
           case 'day':
-            return item.month ? formatNumber(item.month) + '/' + formatNumber(item.day) : ''
+            return item.month ? item.year + '-' + formatNumber(item.month) + '-' + formatNumber(item.day) : ''
           case 'week':
-            return item.week ? '第' + item.week + '周' : ''
+            return item.week ? item.year.toString().slice(2) + '年第' + item.week + '周' : ''
           default:
-            return item.month ? item.month.year + item.month + '月' : ''
+            return item.month ? item.year.toString().slice(2)  + '年' + item.month + '月' : ''
           }
         })
         let rate = data.map(item => {
