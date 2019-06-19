@@ -16,7 +16,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search :infoText="leaderListFilter.keyword" ref="research" placeHolder="团长名称/社区名称" @search="searchBtn"></base-search>
+        <base-search ref="research" :infoText="leaderListFilter.keyword" placeHolder="团长名称/社区名称" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -35,7 +35,7 @@
           <!--<div class="btn-main g-btn-item" @click="_syncLeader">关联</div>-->
         </div>
       </div>
-      <div v-if="leaderListFilter.model_type===1"  class="identification">
+      <div v-if="leaderListFilter.model_type===1" class="identification">
         <div class="identification-page">
           <img src="./icon-bandit_list@2x.png" class="identification-icon">
           <p class="identification-name">团长申请表</p>
@@ -44,12 +44,12 @@
           ></base-status-nav>
         </div>
       </div>
-      <div class="big-list">
+      <div :class="['big-list',leaderListFilter.model_type===1 ? 'application-list' : 'leader-list']">
         <div class="list-header list-box leader-list">
           <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
         </div>
         <div v-if="leaderList.length && leaderListFilter.model_type===0" class="list">
-          <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box leader-list">
+          <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
             <div class="list-item">{{item.mobile || '---'}}</div>
             <div class="list-item">{{item.nickname || '---'}}</div>
             <div class="list-item">{{item.wx_account || '---'}}</div>
@@ -70,7 +70,7 @@
           </div>
         </div>
         <div v-if="leaderList.length && leaderListFilter.model_type===1" class="list">
-          <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box application-list">
+          <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
             <div class="list-item">{{item.mobile || '---'}}</div>
             <div class="list-item">{{item.name || '---'}}</div>
             <div class="list-item">{{item.social_name || '---'}}</div>
@@ -381,6 +381,27 @@
   @import "~@design"
   .big-list
    position:relative
+   &.leader-list  .list-item
+     &:nth-child(6), &:nth-child(7)
+       flex: 1.5
+     &:nth-child(8)
+       flex: 0.9
+     &:last-child
+       padding: 0
+       max-width: 90px
+       flex: 1.8
+    &.application-list .list-item
+      &:nth-child(6)
+        min-width:120px
+      &:nth-child(8)
+        min-width:200px
+      &:last-child
+        max-width: 50px
+      .photo
+        width:40px
+        height:40px
+        &.last
+          margin-left :10px
   .tab-top
     position:fixed
     top: 38px
@@ -405,27 +426,6 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
-    &.leader-list  .list-item
-      &:nth-child(6), &:nth-child(7)
-        flex: 1.5
-      &:nth-child(8)
-        flex: 0.9
-      &:last-child
-        padding: 0
-        max-width: 90px
-        flex: 1.8
-    &.application-list .list-item
-       &:nth-child(6)
-         min-width:120px
-       &:nth-child(8)
-          min-width:200px
-        &:last-child
-          max-width: 50px
-       .photo
-          width:40px
-          height:40px
-          &.last
-            margin-left :10px
   .pop-main
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px

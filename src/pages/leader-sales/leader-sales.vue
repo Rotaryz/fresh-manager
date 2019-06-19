@@ -20,11 +20,11 @@
           </div>
           <p class="leader-status" :class="{active: statusObj.status}">团长奖励比例：{{statusObj.percent > 0 ? statusObj.percent + '%' : '未设置'}}</p>
         </div>
-        <div class="big-list">
+        <div class="big-list  ranking-list">
           <div class="list-header list-box">
             <div v-for="(item,index) in tabTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
           </div>
-          <div v-if="dataArray.length" class="list ranking-list">
+          <div v-if="dataArray.length" class="list">
             <div v-for="(row, index) in dataArray" :key="index" class="list-content list-box">
               <!--{{row}}-->
               <div :style="{flex: tabTitle[0].flex}" class="list-item">
@@ -143,9 +143,6 @@
               <base-pagination ref="pages" :pageDetail="logPageInfo" @addPage="addPageLogs"></base-pagination>
             </div>
           </div>
-          <div class="btn-group">
-            <span class="btn cancel" @click="$refs.modalLogs.hideModal()">关闭</span>
-          </div>
         </div>
       </default-modal>
     </article>
@@ -195,6 +192,7 @@
       type: 'showModal',
       operateText: '佣金结算',
       modalName: 'modalAccount',
+      class:'operate-two',
       afterBtn: {
         type: 'showModal',
         modalName: 'modalLogs',
@@ -427,7 +425,7 @@
     max-height: 90%
 
   .default-panel
-    height:100%
+    height:606px
     background: #fff
     border-radius: 3px
     box-shadow: 0 8px 14px 0 rgba(12, 6, 14, 0.08)
@@ -448,10 +446,6 @@
       width: 1000px
       display flex
       flex-direction column
-      .btn-group
-        position relative
-        margin-top: 20px
-    /*justify-content: center*/
 
     .header
       display: flex
