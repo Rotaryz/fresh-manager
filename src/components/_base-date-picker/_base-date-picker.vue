@@ -58,6 +58,7 @@
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'element-ui'
+  import {formatNumber} from '@utils/common'
   // import moment from 'moment'
   // import DatePicker from './date-picker/src/picker'
   const COMPONENT_NAME = 'BASE_OPTION_BOX'
@@ -162,15 +163,15 @@
         switch (index) {
         case 0:
           this.$set(this.date, NAV[this.tabIndex].status, new Date(Date.now() - 86400000))
-          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-')
+          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
           break
         case 1:
           this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - (new Date().getDay() + 6) * 84600000))
-          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-')
+          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
           break
         case 2:
           this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - (new Date().getDate() + 1) * 84600000))
-          date = new Date(this.date[NAV[this.tabIndex].status]).getFullYear() + '-' + (new Date(this.date[NAV[this.tabIndex].status]).getMonth() + 1) + '-01'
+          date = new Date(this.date[NAV[this.tabIndex].status]).getFullYear() + '-' + formatNumber(new Date(this.date[NAV[this.tabIndex].status]).getMonth() + 1) + '-01'
         }
         this.$emit('checkTime', date, NAV[this.tabIndex].status)
         // this.clickTab = false
@@ -181,13 +182,13 @@
         let date = ''
         switch (+this.tabIndex) {
         case 0:
-          date = new Date(time).toLocaleDateString().replace(/\//g, '-')
+          date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
           break
         case 1:
-          date = new Date(time).toLocaleDateString().replace(/\//g, '-')
+          date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
           break
         case 2:
-          date = new Date(time).getFullYear() + '-' + (new Date(time).getMonth() + 1) + '-01'
+          date = new Date(time).getFullYear() + '-' + formatNumber(new Date(time).getMonth() + 1) + '-01'
         }
         this.$emit('checkTime', date, NAV[this.tabIndex].status)
       },

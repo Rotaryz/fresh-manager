@@ -306,7 +306,7 @@
         },
         requestPub: {
           date_type: 'day',
-          start_date: new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-'),
+          start_date: new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&'),
           end_date: '',
           group_by: 'cate',
           cate: '',
