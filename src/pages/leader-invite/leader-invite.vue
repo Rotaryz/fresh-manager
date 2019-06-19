@@ -247,7 +247,7 @@
           "invite_reward_number": "",
           "entry_source_money": "",
           "entry_percent": "",
-          "entry_money": ""
+          "entry_money": "0.00"
         },
         logTile: LOG_TITLE,
         pageInfo: params.pageInfo,
@@ -269,8 +269,10 @@
     created() {
       this._getSettingStatus()
       this.$loading.hide()
+
     },
     mounted() {
+      // this.$refs.modalAccount.showModal()
       // this.$refs.modal && this.$refs.modal.showModal()
     },
     methods: {
@@ -366,7 +368,7 @@
               this.$toast.show(res.message)
               return
             }
-            this.accountCountObj = res.data
+            this.accountCountObj = {...res.data,...{entry_money:Number(res.data.entry_money)}}
           })
         })
       },
