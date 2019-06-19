@@ -2383,6 +2383,12 @@ export default [
     component: () => lazyLoadView(import('@pages/_upgrade/_upgrade')),
     props: true
   },
+  // 修改密码
+  {
+    path: '/modify-password',
+    name: 'modify-password',
+    component: () => lazyLoadView(import('@pages/modify-password/modify-password'))
+  },
   {
     path: '/',
     redirect: '/login'
