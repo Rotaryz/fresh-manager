@@ -817,6 +817,7 @@ export default [
               limit:10,
               keyword:'',
               status:0,
+              model_type:0,
               ...routeTo.query
             }
             params.status = Number( params.status)
@@ -836,13 +837,13 @@ export default [
           }
         }
       },
-      // 团长分销 todo
+      // 团长邀请 todo
       {
         path: 'leader-invite',
         name: 'leader-invite',
         component: () => lazyLoadView(import('@pages/leader-invite/leader-invite')),
         meta: {
-          titles: ['商城', '团长', '团长分销'],
+          titles: ['商城', '团长', '团长邀请'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             API.Leader.leaderDistributionRankingList({page: 1, limit:10,keyword:'',...routeTo.query}, true)
