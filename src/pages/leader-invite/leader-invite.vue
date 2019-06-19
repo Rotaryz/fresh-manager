@@ -1,5 +1,5 @@
 <template>
-  <div class="leader-sales table">
+  <div class="leader-invite table">
     <article class="data-content">
       <section class="down-content">
         <div class="distribution-down">
@@ -60,7 +60,7 @@
       <default-modal ref="modalSwitch">
         <div slot="content" class="default-panel leader-switch">
           <header class="header">
-            <p>开启设置</p>
+            <p>设置团长邀请注册</p>
             <img class="close" src="./icon-close@2x.png" alt="" @click="$refs.modalSwitch.hideModal()">
           </header>
           <section class="input-wrapper">
@@ -71,9 +71,9 @@
             <p>%</p>
           </section>
           <dl class="explain-wrapper">
-            <dt>开启后团长邀请其他用户注册为团长将获得以下福利：</dt>
-            <dd>福利一：团长审核通过获得50元现金券</dd>
-            <dd>福利二：被邀请的团长用户下单后团长(邀请者)可获得对应的订单分销提成</dd>
+            <dt>注：开启后团长邀请其他用户注册为团长将获得以下福利：</dt>
+            <dd>福利一：团长审核通过且社区用户交易额达到100元可获50元现金</dd>
+            <dd>福利二：被邀请的团长用户下单后团长（邀请者）可获得对应的订单奖励提成</dd>
           </dl>
           <div class="btn-group">
             <span class="btn cancel" @click="$refs.modalSwitch.hideModal()">取消</span>
@@ -84,11 +84,11 @@
       <default-modal ref="modalAccount">
         <div slot="content" class="default-panel account">
           <header class="header">
-            <p>佣金结算</p>
+            <p>奖励结算</p>
             <img class="close" src="./icon-close@2x.png" alt="" @click="$refs.modalAccount.hideModal()">
           </header>
           <div class="account-container">
-            <p class="title">请选择结算佣金时间：</p>
+            <p class="title">请选择结算团长奖励时间：</p>
             <section class="date-wrapper">
               <base-date-select
                 dataPickerType="date"
@@ -98,6 +98,7 @@
               ></base-date-select>
               <span class="separator">至</span>
               <base-date-select
+                palceholder="选择结束时间"
                 :dateInfo="null"
                 dataPickerType="date"
                 :value="accountObj.end_date"
@@ -133,7 +134,7 @@
                   <div :style="{flex: logTile[0].flex}" class="list-item">{{row[logTile[0].key]}}</div>
                   <div :style="{flex: logTile[1].flex}" class="list-item">{{row[logTile[1].key]}}至{{row[logTile[1].key2]}}</div>
                   <div :style="{flex: logTile[2].flex}" class="list-item">{{row[logTile[2].key]}}%</div>
-                  <div :style="{flex: logTile[3].flex}" class="list-item acount-money-item">{{row.invite_reward_money}} * {{row.invite_reward_number}} + {{row.invite_reward_money}} * {{row.distribution_percent}}%= {{row.distribution_money}}元</div>
+                  <div :style="{flex: logTile[3].flex}" class="list-item acount-money-item">{{row.invite_reward_money}} * {{row.invite_reward_number}} + {{row.distribution_source_money}} * {{row.distribution_percent}}%= {{row.total_money}}元</div>
                 </div>
               </div>
               <div v-if="logArray.length < 1" style="height: 354px"></div>
@@ -154,7 +155,7 @@
   import DefaultModal from '@components/default-modal/default-modal'
 
   const PAGE_NAME = 'LEADER_SALES'
-  const TITLE = '团长分销'
+  const TITLE = '团长邀请'
 
   const TAB_TITLE = [
     {
@@ -182,15 +183,15 @@
     {
       name: '邀请团长用户数/奖励', flex: 1.5, key: 'invite_total_money', type: 6, after: {key: 'invite_reward_money'}
     },
-    {name: '分销佣金', flex: 1, key: 'invite_total_money'},
-    {name: '待结算佣金', flex: 1, key: 'not_settlement_money'},
-    {name: '已结算佣金', flex: 1.5, key: 'settlement_money'},
+    {name: '团长奖励', flex: 1, key: 'invite_total_money'},
+    {name: '待结算', flex: 1, key: 'not_settlement_money'},
+    {name: '已结算 ', flex: 1.5, key: 'settlement_money'},
     {
       name: '操作',
       flex: 1.6,
       key: '',
       type: 'showModal',
-      operateText: '佣金结算',
+      operateText: '奖励结算',
       modalName: 'modalAccount',
       class:'operate-two',
       afterBtn: {
@@ -201,8 +202,8 @@
     }]
   const LOG_TITLE = [
     {name: '结算时间', flex: 1, key: 'created_at', type: 1},
-    {name: '结算佣金时间段', flex: 2, key: 'start_at', type: 6, key2: 'end_at'},
-    {name: '奖励比例', flex: 1, key: 'distribution_percent', type: 1},
+    {name: '结算团长奖励时间段', flex: 2, key: 'start_at', type: 6, key2: 'end_at'},
+    {name: '团长佣金比例', flex: 1, key: 'distribution_percent', type: 1},
     {name: '结算金额', flex: 3, key: 'total_money', type: 1,class:'acount-money-item'},
   ]
   export default {
@@ -242,11 +243,11 @@
         },
         disableEndTime:'',
         accountCountObj:{
-          "invite_reward_money": "50.00",
-          "invite_reward_number": "2",
-          "entry_source_money": "1.48",
-          "entry_percent": "4.00",
-          "entry_money": "100.06"
+          "invite_reward_money": "",
+          "invite_reward_number": "",
+          "entry_source_money": "",
+          "entry_percent": "",
+          "entry_money": ""
         },
         logTile: LOG_TITLE,
         pageInfo: params.pageInfo,
@@ -417,7 +418,7 @@
   .big-list
     position: relative
 
-  .leader-sales
+  .leader-invite
     width: 100%
 
   // 弹窗

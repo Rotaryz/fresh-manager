@@ -139,8 +139,8 @@
           isLight: false
         },
         {
-          title: '团长分销',
-          url: '/home/leader-sales',
+          title: '团长邀请',
+          url: '/home/leader-invite',
           isLight: false
         },
         {

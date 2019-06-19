@@ -835,9 +835,9 @@ export default [
       },
       // 团长分销 todo
       {
-        path: 'leader-sales',
-        name: 'leader-sales',
-        component: () => lazyLoadView(import('@pages/leader-sales/leader-sales')),
+        path: 'leader-invite',
+        name: 'leader-invite',
+        component: () => lazyLoadView(import('@pages/leader-invite/leader-invite')),
         meta: {
           titles: ['商城', '团长', '团长分销'],
           beforeResolve(routeTo, routeFrom, next) {
