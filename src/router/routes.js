@@ -1530,6 +1530,42 @@ export default [
           }
         }
       },
+      // 商品管理
+      {
+        path: 'goods-manage',
+        name: 'goods-manage',
+        component: () => lazyLoadView(import('@pages/goods-manage/goods-manage')),
+        meta: {
+          titles: ['供应链', '采购', '商品管理']
+        }
+      },
+      // 商品素材库
+      {
+        path: 'goods-store',
+        name: 'goods-store',
+        component: () => lazyLoadView(import('@pages/goods-store/goods-store')),
+        meta: {
+          titles: ['供应链', '采购', '商品素材库']
+        }
+      },
+      // 导入商品
+      {
+        path: 'goods-manage/lead-supply-goods',
+        name: 'lead-supply-goods',
+        component: () => lazyLoadView(import('@pages/lead-supply-goods/lead-supply-goods')),
+        meta: {
+          titles: ['供应链', '采购', '商品管理', '商品导入']
+        }
+      },
+      // 新建商品
+      {
+        path: 'goods-manage/edit-supply-goods',
+        name: 'edit-supply-goods',
+        component: () => lazyLoadView(import('@pages/edit-supply-goods/edit-supply-goods')),
+        meta: {
+          titles: ['供应链', '采购', '商品管理', '新建商品']
+        }
+      },
       // 供应商
       {
         path: 'supplier',

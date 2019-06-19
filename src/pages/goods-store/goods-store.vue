@@ -1,0 +1,553 @@
+<template>
+  <div class="goods-store table">
+    <div class="table-content">
+      <div class="identification">
+        <div class="identification-page">
+          <img src="./icon-product_list@2x.png" class="identification-icon">
+          <p class="identification-name">商品素材中心</p>
+        </div>
+        <div class="function-btn">
+          <div class="distribution-down">
+            <span class="down-tip">搜索</span>
+            <div class="down-item">
+              <base-search placeHolder="商品名称或编码" @search="changeKeyword"></base-search>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="type-select">
+        <div class="select-left">一级类目：</div>
+        <div class="select-right" :class="{'select-right-active': isOpenOne}">
+          <div class="select-item select-item-select">全部</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">全部</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋蛋蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+        </div>
+        <div class="select-open" :class="{'select-open-active': isOpenOne}" @click="clickBtn('One')">
+          <div class="select-open-name">{{isOpenOne ? '收起' : '展开'}}</div>
+          <div class="select-open-icon"></div>
+        </div>
+      </div>
+      <div class="type-select type-select-top">
+        <div class="select-left">二级类目：</div>
+        <div class="select-right" :class="{'select-right-active': isOpenTwo}">
+          <div class="select-item select-item-select">全部</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">全部</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋蛋蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+        </div>
+        <div class="select-open" :class="{'select-open-active': isOpenTwo}" @click="clickBtn('Two')">
+          <div class="select-open-name">{{isOpenTwo ? '收起' : '展开'}}</div>
+          <div class="select-open-icon"></div>
+        </div>
+      </div>
+      <div class="type-select type-select-top">
+        <div class="select-left">三级类目：</div>
+        <div class="select-right" :class="{'select-right-active': isOpenThr}">
+          <div class="select-item select-item-select">全部</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">全部</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋蛋蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+          <div class="select-item">肉蛋家禽</div>
+        </div>
+        <div class="select-open" :class="{'select-open-active': isOpenThr}" @click="clickBtn('Thr')">
+          <div class="select-open-name">{{isOpenThr ? '收起' : '展开'}}</div>
+          <div class="select-open-icon"></div>
+        </div>
+      </div>
+      <div class="goods-list">
+        <div v-for="(item, index) in 21" class="goods-item">
+          <div class="goods-item-top">
+            <img class="top-pic-box" src="./001.jpg" alt="">
+            <div class="goods-item-model">
+              <div class="look-goods">预览</div>
+            </div>
+          </div>
+          <div class="goods-item-bottom">
+            <div class="goods-title">刺激王者 海南小台芒刺激王者 海南小台芒刺激王者 海南小台芒{{item}}{{index}}</div>
+            <div class="goods-price-box">
+              <div class="goods-price-left">￥15.00</div>
+              <div class="goods-price-right goods-price-add">添加</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-box">
+        <!--<base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>-->
+      </div>
+    </div>
+    <default-modal ref="storeModal">
+      <div slot="content" class="store-box">
+        <div class="title-box">
+          <div class="title">
+            商品预览
+          </div>
+          <span class="close hand" @click="supplierCancel"></span>
+        </div>
+        <div class="store-info-box">
+          <div class="phone-box">
+            <div class="phone">
+              <div class="content-box">
+                <div class="content-top-box">
+                  <img class="content-box-pic" src="./001.jpg" alt="">
+                  <div class="content-title">
+                    <div class="content-price-text">3.8</div>
+                    <div class="content-price-icon">元</div>
+                    <div class="price-line-box">
+                      <div class="price-line-top"></div>
+                      <div class="price-line-bottom">4.5元</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="content-title-box">
+                  智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g
+                </div>
+                <img class="content-detials-pic" src="./001.jpg" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="info-right-box">
+            <div class="info-right-title">浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜</div>
+            <div class="info-right-price-box">
+              <div class="one-right-price"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </default-modal>
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+  import DefaultModal from '@components/default-modal/default-modal'
+  const PAGE_NAME = 'GOODS_STORE'
+  const TITLE = '商品素材库'
+
+  export default {
+    name: PAGE_NAME,
+    page: {
+      title: TITLE
+    },
+    components: {
+      DefaultModal
+    },
+    data() {
+      return {
+        isOpenOne: false,
+        isOpenTwo: false,
+        isOpenThr: false
+      }
+    },
+    mounted() {
+      this.$refs.storeModal.showModal()
+    },
+    methods: {
+      changeKeyword() {},
+      clickBtn(text) {
+        this[`isOpen${text}`] = !this[`isOpen${text}`]
+      }
+    }
+  }
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "~@design"
+
+  .goods-store
+    width: 100%
+  .distribution-down
+    display: flex
+    align-items: center
+  .identification
+    border-bottom-1px($color-line)
+  .goods-list
+    width: 1632px
+    padding-top: 15px
+    layout(row)
+    .goods-item
+      width: 216px
+      border-1px(#D9DEE1, 4px)
+      margin-right: 20px
+      margin-bottom: 30px
+      .goods-item-top
+        width: 216px
+        height: @width
+        padding-top: 38px
+        box-sizing: border-box
+        position: relative
+        .top-pic-box
+          width: 140px
+          height: @width
+          display: block
+          margin: 0 auto
+          border-radius: 2px
+          object-fit: cover
+          background-repeat: no-repeat
+          background-size: cover
+          background-position: center
+        .goods-item-model
+          cursor: pointer
+          position: absolute
+          width: 100%
+          height: 100%
+          background: rgba(0,0,0,.5)
+          left: 0
+          top: 0
+          z-index: 2
+          layout(row)
+          align-items: center
+          justify-content: center
+          border-radius: 2px
+          opacity: 0
+          .look-goods
+            width: 64px
+            height: 28px
+            line-height: 28px
+            border-radius: 14px
+            background: rgba(0,0,0,.5)
+            text-align: center
+            font-size: $font-size-14
+            font-family: $font-family-regular
+            color: rgba(255,255,255,.7)
+        &:hover
+          .goods-item-model
+            opacity: 1
+      .goods-item-bottom
+        box-sizing: border-box
+        padding: 0 14px
+        .goods-title
+          padding: 10px 0 16px
+          font-family: $font-family-regular
+          color: $color-text-main
+          font-size: $font-size-14
+          no-wrap()
+        .goods-price-box
+          layout(row)
+          align-items: center
+          justify-content: space-between
+          padding-bottom: 16px
+          .goods-price-left
+            font-family: $font-family-medium
+            font-size: $font-size-16
+            color: $color-text-main
+          .goods-price-right
+            width: 64px
+            height: 28px
+            line-height: 28px
+            border-radius: 14px
+            text-align: center
+            font-family: $font-family-regular
+            font-size: $font-size-14
+            color: #3E77C3
+            border-1px(#3E77C3, 28px)
+            cursor: pointer
+            &:hover
+              background: #3E77C3
+              color: $color-white
+          .goods-price-add
+            border-1px(#ccc, 28px)
+            color: #ccc
+            cursor: auto
+            &:hover
+              background: #fff
+              color: #ccc
+
+
+      &:nth-child(7n)
+        margin-right: 0
+  .type-select
+    layout(row)
+    padding-top: 20px
+    display: flex
+    .select-left
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: $color-text-main
+      width: 90px
+      height: 24px
+      line-height: 24px
+    .select-right
+      layout(row)
+      width: 1200px
+      max-height: 34px
+      overflow: hidden
+      .select-item
+        height: 24px
+        line-height: 24px
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+        padding: 0 16px
+        border-radius: 12px
+        margin-bottom: 10px
+        margin-right: 8px
+        cursor: pointer
+      .select-item-select
+        background: #4FBD66
+        color: $color-white
+    .select-open
+      layout(row)
+      height: 24px
+      align-items: center
+      cursor: pointer
+      .select-open-name
+        font-size: $font-size-12
+        color: #4D77BD
+        font-family: $font-family-regular
+      .select-open-icon
+        width: 8px
+        height: 6px
+        margin-left: 6px
+        position: relative
+        transform: translateY(-1px) rotate(0deg)
+        transition: all 0.4s
+        &:after
+          content: ''
+          position: absolute
+          z-index: 99
+          top: 1px
+          right: 0
+          width: 0
+          height: 0
+          border-left: 4px solid transparent
+          border-right: 4px solid transparent
+          border-top: 6px solid #4D77BD
+    .select-right-active
+      max-height: 200px
+      transition: all .3s
+  .type-select-top
+    border-top-1px(#E6EAED, dotted)
+  .type-select
+    .select-open-active
+      .select-open-icon
+        transform: translateY(0) rotate(180deg)
+  .store-box
+    background: $color-white
+    width: 1000px
+    min-height: 650px
+    border-radius: 3px
+    padding: 0 20px 24px
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
+  .store-info-box
+    layout(row)
+  // 结构布局
+  .phone-box
+    margin: 0 41px 0 71px
+    box-sizing: border-box
+    display: flex
+    justify-content: center
+    .phone
+      icon-image('pic-tel')
+      width: 340px
+      height: 726.24px
+      position: relative
+      .content-box
+        padding: 0 2px
+        box-sizing: border-box
+        top: 111px
+        left: 20px
+        position: absolute
+        width: 298px
+        height: 505px
+        max-height: 532px
+        overflow: hidden
+        background: #f7f7f7
+        &::-webkit-scrollbar
+          width: 0
+      .content-top-box
+        width: 298px
+        height: @width
+        position: relative
+      .content-title
+        position: absolute
+        width: 288px
+        height: 50px
+        background: #ff6d0f
+        left: 4px
+        border-top-right-radius: 8px
+        border-top-left-radius: 8px
+        bottom: 0
+        z-index: 111
+        layout(row)
+        padding: 0 15px
+        box-sizing: border-box
+        align-items: center
+        .content-price-text
+          font-size: 24px
+          color: $color-white
+          font-family: $font-family-regular
+          margin-right: 2px
+        .content-price-icon
+          font-size: 20px
+          color: $color-white
+          font-family: $font-family-regular
+          margin-right: 5px
+        .price-line-box
+          layout()
+          .price-line-top
+            icon-image('pic-qgj')
+            width: 36px
+            height: 12px
+            font-size: 9px
+            color: #FF6803
+            font-family: $font-family-regular
+          .price-line-bottom
+            font-size: $font-size-12
+            color: $color-white
+            line-height: $font-size-12
+            margin-top: 1px
+            text-decoration:line-through
+            font-family: $font-family-regular
+      .content-box-pic
+        width: 298px
+        height: @width
+        display: block
+      .content-title-box
+        width: 288px
+        height: 50px
+        line-height: 50px
+        no-wrap()
+        background: #fff
+        border-bottom-left-radius: 8px
+        border-bottom-right-radius: 8px
+        margin-left: 5px
+        font-size: 17px
+        font-family: $font-family-medium
+        color: #111
+        box-sizing: border-box
+        padding: 0 10px
+        box-shadow: 0 6px 20px 0 rgba(17,17,17,0.06)
+    .content-detials-pic
+      width: 298px
+  .info-right-box
+    margin-top: 50px
+    width: 477px
+    height: 180px
+    border-1px($color-line)
+    .info-right-title
+      font-family: $font-family-medium
+      font-size: $font-size-16
+      color: $color-text-main
+      height: 60px
+      line-height: 60px
+      background: #F5F7FA
+      padding: 0 20px
+      box-sizing: border-box
+      no-wrap()
+    .info-right-price-box
+      border-top-1px($color-line)
+      height: 80px
+      layout()
+      justify-content: center
+      padding: 0 20px
+      .one-right-price
+        layout(row)
+        align-items: center
+  .down-tip
+    font-size: $font-size-12
+    color: $color-text-main
+    margin-right: 10px
+</style>
