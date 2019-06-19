@@ -45,7 +45,7 @@
         </div>
       </div>
       <div :class="['big-list',leaderListFilter.model_type===1 ? 'application-list' : 'leader-list']">
-        <div class="list-header list-box leader-list">
+        <div class="list-header list-box">
           <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
         </div>
         <div v-if="leaderList.length && leaderListFilter.model_type===0" class="list">
@@ -222,7 +222,11 @@
       }
     },
     created() {
-      this.getTopData()
+      console.log(this.leaderListFilter.model_type)
+      console.log(this.leaderList)
+      if(this.leaderListFilter.model_type){
+        this.getTopData()
+      }
       this._getLeaderStatus()
     },
     methods: {

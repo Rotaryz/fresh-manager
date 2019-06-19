@@ -181,7 +181,7 @@
       routerName: 'sorting-task-detail-by-goods',
     },
     {
-      name: '邀请团长用户数/奖励', flex: 1.5, key: 'invite_total_money', type: 6, after: {key: 'invite_reward_money'}
+      name: '邀请团长用户数/奖励', flex: 1.5, key: 'invite_number', type: 6, after: {key: 'invite_reward_money'}
     },
     {name: '团长奖励', flex: 1, key: 'invite_total_money'},
     {name: '待结算', flex: 1, key: 'not_settlement_money'},

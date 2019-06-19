@@ -182,11 +182,13 @@ export const actions = {
     /* eslint-disable */
     let {model_type,...params} = state.leaderListFilter
     let name =  state.leaderListFilter.model_type ? 'getLeaderApplicationList' :'getLeaderList'
+    console.log(model_type)
     return API.Leader[name](params).then((res) => {
       if (res.error !== app.$ERR_OK) {
         this.$toast.show(res.message)
         return false
       }
+      console.log(res)
       let pageTotal = {
         total: res.meta.total,
         per_page: res.meta.per_page,
