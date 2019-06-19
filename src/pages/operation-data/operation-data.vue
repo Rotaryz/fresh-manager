@@ -52,7 +52,7 @@
     {text: '拓展视窗', status: 2, conTitle: '拓展数据'}
   ]
   const DATE_SELECTOR = [
-    {title: '日', status: 'date'},
+    {title: '日', status: 'day'},
     {title: '周', status: 'week'},
     {title: '月', status: 'month'}
   ]
@@ -255,7 +255,9 @@
         chartArr: [], // 存储chart对象数组
         getFinish: false,
         disabledDate: {},
-        requestParam: {date_type: 'week'}
+        requestParam: {
+          date_type: 'week'
+        }
       }
     },
     watch: {
