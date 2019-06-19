@@ -562,8 +562,8 @@
         disable: false,
         currentItem: '',
         // 邀请者
-        inviterArr: [{people: '1人', cond_num: 1, cond_type: 5}, {people: '3人', cond_num: 3, cond_type: 5}, {people: '6人', cond_num: 6, cond_type: 5}, {people: '大于6人', cond_num: 7, cond_type: 5}],
-        invitedArr: [{condition: '新人红包', cond_type: 1}, {condition: '下单返红包', cond_type: 6}],
+        inviterArr: [{people: '1人', cond_num: 1, cond_type: 5, tag_type: 1}, {people: '3人', cond_num: 3, cond_type: 5, tag_type: 1}, {people: '6人', cond_num: 6, cond_type: 5, tag_type: 1}, {people: '大于6人', cond_num: 7, cond_type: 5, tag_type: 1}],
+        invitedArr: [{condition: '新人红包', cond_type: 1, tag_type: 1}, {condition: '下单返红包', cond_type: 6, tag_type: 1}],
         inviteTitle: INVITE_TITLE,
         invitedTitle: INVITED_TITLE,
         invitedIndex: null,
@@ -1054,11 +1054,12 @@
           break
         case 4:
           this.msg.coupon_id = ''
-          this.msg.config_json.inviter_coupons = []
-          this.msg.config_json.inviter_coupons = this.msg.config_json.inviter_coupons.concat(this.invitedArr, this.inviterArr)
-          this.msg.config_json.inviter_coupons = this.msg.config_json.inviter_coupons.map((item) => {
+          this.msg.config_json.inviter_coupons = this.inviterArr.map((item) => {
             item.coupon_id = item.id
-            item.tag_type = 1
+            return item
+          })
+          this.msg.config_json.invitee_coupons = this.invitedArr.map((item) => {
+            item.coupon_id = item.id
             return item
           })
           // 对接商品
@@ -1148,15 +1149,8 @@
           case 'between_days':
             this.msg.config_json.start_at = this.msg.config_json.start_at
             this.msg.config_json.end_at = this.msg.config_json.start_at
-            this.msg.config_json.inviter_coupons.forEach((item) => {
-              if (item.cond_type === 5) {
-                let index = this.inviterArr.findIndex((items) => (items.cond_num === item.cond_num))
-                this.inviterArr[index] = Object.assign({}, this.inviterArr[index], item)
-              } else {
-                let index = this.invitedArr.findIndex((items) => (items.cond_type === item.cond_type))
-                this.invitedArr[index] = Object.assign({}, this.inviterArr[index], item)
-              }
-            })
+            this.inviterArr = this.msg.config_json.inviter_coupons
+            this.invitedArr = this.msg.config_json.invitee_coupons
             break
           default:
             this.newItem = obj.config_json.way
