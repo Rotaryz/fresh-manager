@@ -140,7 +140,7 @@
     methods: {
       mouseEnter(name, index) {
         if (name !== this.enterName && this.enterName) {
-          this.$refs[this.enterName] && this.$refs[this.enterName][0].handleClose()
+          this.$refs[this.enterName] && this.$refs[this.enterName][0] && this.$refs[this.enterName][0].handleClose()
         }
         clearTimeout(this.timer)
         this.tempIndex = index
@@ -149,7 +149,7 @@
       },
       mouseLeave(name) {
         this.timer = setTimeout(() => {
-          this.$refs[name] && this.$refs[name][0].handleClose()
+          this.$refs[name] && this.$refs[name][0] && this.$refs[name][0].handleClose()
         },2500)
       },
       checkTab(index) {
@@ -157,7 +157,7 @@
         setTimeout(() => {
           this.clickTab = false
         }, 500)
-        this.$refs[this.enterName][0].handleClose()
+        this.$refs[this.enterName] && this.$refs[this.enterName][0] && this.$refs[this.enterName][0].handleClose()
         this.tabIndex = index
         let date = ''
         switch (index) {

@@ -29,7 +29,6 @@
           }
         ],
         op: {
-          label: '',
           data: [
             {
               x: ['05/19', '05/20', '05/21', '05/22', '05/23', '05/24', '05/25'],
@@ -99,7 +98,7 @@
           grid: {
             left: '20',
             right: '30',
-            bottom: '60',
+            bottom: '32',
             top: '20',
             containLabel: true
           },
@@ -171,7 +170,7 @@
           type: 'category',
           boundaryGap: false,
           data: data,
-          offset: 10,
+          offset: data[0].split('/')[1] ? 12 : 20,
           splitLine: {
             show: true,
             lineStyle: {
@@ -183,6 +182,7 @@
           axisLabel: {
             color: '#999',
             fontSize: 12,
+            rotate: 30,
             align: 'center',
             showMinLabel: true,
             showMaxLabel: true

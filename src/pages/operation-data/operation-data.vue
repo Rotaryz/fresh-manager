@@ -42,6 +42,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import app from '@src/main'
+  import {formatNumber} from '@utils/common'
   import ChartLine from '@components/e-chart/chart-line'
 
   const PAGE_NAME = 'OPERATION_DATA'
@@ -161,7 +162,7 @@
       showSecondY: true,
       tab: [{name: '退货'}, {name: '退货率'}],
       tabIndex: 0,
-      excel: 'https://www.baidu.com'
+      excel: ''
     }
   ]
   const MANAGER_CONFIG = [
@@ -237,6 +238,8 @@
     }
   ]
 
+  const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -256,7 +259,8 @@
         getFinish: false,
         disabledDate: {},
         requestParam: {
-          date_type: 'week'
+          date_type: 'day',
+          start_date: NOW_DATE
         }
       }
     },
@@ -280,9 +284,10 @@
         let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
         let currentShop = process.env.VUE_APP_CURRENT_SHOP
         let _dType = this.requestParam.date_type
+        let _startDate = this.requestParam.start_date
         return `${
           process.env.VUE_APP_API
-        }/social-shopping/api/backend/data-center/operation/after-server-data-excel?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&date_type=${_dType}`
+        }/social-shopping/api/backend/data-center/operation/after-server-data-excel?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&date_type=${_dType}&start_date=${_startDate}`
       },
       _changeStatusTab(item, index) {
         if (this.topTabIndex === index) return
@@ -290,8 +295,11 @@
         this.topTabIndex = index
         this._getData(true)
       },
-      _selectDate(value) {
-        this.requestParam = {date_type: value}
+      _selectDate(value, type) {
+        this.requestParam = {
+          date_type: type,
+          start_date: value
+        }
         this._getData()
       },
       _getData(first = false) {
@@ -301,14 +309,19 @@
           let getSuccess = false
           let curChart = this.curChartConfig[i]
           // 用户接口的传参字段和别的不一样
-          let _param = {}
-          if (curChart.id === 'userChart') {
-            let _dType = this.requestParam.date_type === 'half_month' ? 'month' : this.requestParam.date_type
-            _param = {day_type: _dType}
-          } else {
-            _param = this.requestParam
-          }
-          API.Operation[curChart.apiFun](_param, loading)
+          // let _param = {}
+          // if (curChart.id === 'userChart') { // todo
+          //   // let _dType = this.requestParam.date_type === 'half_month' ? 'month' : this.requestParam.date_type
+          //   let _dType = this.requestParam.date_type
+          //   let _startDate = this.requestParam.start_date
+          //   _param = {
+          //     day_type: _dType,
+          //     start_date: _startDate
+          //   }
+          // } else {
+          //   _param = this.requestParam
+          // }
+          API.Operation[curChart.apiFun](this.requestParam, loading)
             .then((res) => {
               if (res.error !== app.$ERR_OK) {
                 return false
@@ -365,11 +378,22 @@
             _chartData.data.push(_resData[_key]) // 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
-              let _date = _resData.date
-              _date = _date
-                .split('-')
-                .slice(1)
-                .join('/')
+              let _date = ''
+              switch (this.requestParam.date_type) {
+              case 'day':
+                if (result.data[0].year < result.data[29].year) {
+                  _date = _resData.month ? _resData.year + '-' + formatNumber(_resData.month) + '-' + formatNumber(_resData.day) : ''
+                } else {
+                  _date = _resData.month ? formatNumber(_resData.month) + '/' + formatNumber(_resData.day) : ''
+                }
+                break
+              case 'week':
+                _date = _resData.week ? _resData.year.toString().slice(2) + '年第' + _resData.week + '周' : ''
+                break
+              default:
+                _date = _resData.month ? _resData.year.toString().slice(2)  + '年' + _resData.month + '月' : ''
+                break
+              }
               curChart.xAxleData.push(_date)
             }
           }

@@ -793,7 +793,11 @@
         let x = data.map(item => {
           switch (this.requestPub.date_type) {
           case 'day':
-            return item.month ? item.year + '-' + formatNumber(item.month) + '-' + formatNumber(item.day) : ''
+            if (data[0].year < data[29].year) {
+              return item.month ? item.year + '-' + formatNumber(item.month) + '-' + formatNumber(item.day) : ''
+            } else {
+              return item.month ? formatNumber(item.month) + '/' + formatNumber(item.day) : ''
+            }
           case 'week':
             return item.week ? item.year.toString().slice(2) + '年第' + item.week + '周' : ''
           default:
