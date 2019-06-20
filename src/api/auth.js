@@ -10,11 +10,11 @@ export default {
     return request.get(url)
   },
   modifyPassword(data) {
-    let url = '/social-shopping/v1/api/backend/admin/change-password'
+    let url = '/social-shopping/api/backend/admin/change-password'
     return request.post(url, data)
   },
   getVerifyCode(data) {
-    let url = '/social-shopping/v1/api/backend/admin/send-message'
+    let url = '/social-shopping/api/backend/admin/send-message'
     return request.get(url, data)
   }
 }
