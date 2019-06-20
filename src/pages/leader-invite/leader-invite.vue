@@ -13,7 +13,7 @@
         <div class="identification">
           <div class="identification-page">
             <img src="./icon-bandit_list@2x.png" class="identification-icon">
-            <p class="identification-name">团长邀请排行榜<span class="sub-title">(合计成功邀请 {{pageInfo.total}} 位团长)</span></p>
+            <p class="identification-name">团长邀请排行榜<span class="sub-title">(合计成功邀请 {{invite_number_count}} 位团长)</span></p>
           </div>
           <div class="switch-wrapper" @click="handleSwitchChange">
             <base-switch :status="statusObj.status" confirmText="开启" cancelText="关闭"></base-switch>
@@ -223,6 +223,7 @@
           limit: 10,
           keyword: ''
         },
+        invite_number_count:0,
         tabTitle: TAB_TITLE,
         dataArray: params.dataInfo,
         statusObj: {
@@ -343,6 +344,7 @@
               per_page: res.meta.per_page,
               total_page: res.meta.last_page
             }
+            this.invite_number_count = res.invite_number_count
           })
           .finally(res => {
             this.$loading.hide()
