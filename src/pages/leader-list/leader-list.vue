@@ -20,75 +20,82 @@
       </div>
     </div>
     <div class="table-content">
-      <div v-if="leaderListFilter.model_type===0" class="identification">
-        <div class="identification-page">
-          <img src="./icon-bandit_list@2x.png" class="identification-icon">
-          <p class="identification-name">团长列表</p>
-          <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
-                           @change="changeStatus"
-          ></base-status-nav>
-          <!--<base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
-          <p class="header-text">团长可使用账号数量为{{topData.total}}个，当前剩余{{topData.usable}}个</p>
-        </div>
-        <div class="function-btn">
-          <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
-          <!--<div class="btn-main g-btn-item" @click="_syncLeader">关联</div>-->
-        </div>
-      </div>
-      <div v-if="leaderListFilter.model_type===1" class="identification">
-        <div class="identification-page">
-          <img src="./icon-bandit_list@2x.png" class="identification-icon">
-          <p class="identification-name">团长申请表</p>
-          <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
-                           @change="changeStatus"
-          ></base-status-nav>
-        </div>
-      </div>
-      <div :class="['big-list',leaderListFilter.model_type===1 ? 'application-list' : 'leader-list']">
-        <div class="list-header list-box">
-          <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
-        </div>
-        <div v-if="leaderList.length && leaderListFilter.model_type===0" class="list">
-          <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.mobile || '---'}}</div>
-            <div class="list-item">{{item.nickname || '---'}}</div>
-            <div class="list-item">{{item.wx_account || '---'}}</div>
-            <div class="list-item">{{item.social_name || '---'}}</div>
-            <div class="list-item">{{item.name || '---'}}</div>
-            <div class="list-item">{{item.address || '---'}}</div>
-            <div class="list-item">{{item.created_at || '---'}}</div>
-            <!--<div class="list-item">{{item.is_freeze_str}}</div>-->
-            <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
-            <div class="list-item" @click="_showFreeze(item, index)">
-              <base-switch :status="statusHandle(item, index)" confirmText="正常" cancelText="禁用"></base-switch>
-            </div>
-            <div class="list-item list-operation-box">
-              <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
-              <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
-              <!--<span class="list-operation" @click="_showFreeze(item.is_freeze, item.id)">{{item.is_freeze ? '解冻' : '冻结'}}</span>-->
-            </div>
+      <template v-if="leaderListFilter.model_type===0">
+        <div class="identification">
+          <div class="identification-page">
+            <img src="./icon-bandit_list@2x.png" class="identification-icon">
+            <p class="identification-name">团长列表</p>
+            <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                             @change="changeStatus"
+            ></base-status-nav>
           </div>
         </div>
-        <div v-if="leaderList.length && leaderListFilter.model_type===1" class="list">
-          <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
-            <div class="list-item">{{item.mobile || '---'}}</div>
-            <div class="list-item">{{item.name || '---'}}</div>
-            <div class="list-item">{{item.social_name || '---'}}</div>
-            <div class="list-item">{{item.address || '---'}}</div>
-            <div class="list-item">{{item.status_str || '---'}}</div>
-            <div class="list-item photo">
-              <img :src="item.shop_photo_url" class="photo" alt="门头照片" @click="showBigImg(item.shop_photo_url)">
-              <img :src="item.wx_group_photo_url" class="photo last" alt="微信群照片" @click="showBigImg(item.wx_group_photo_url)">
-            </div>
-            <!--<div class="list-item">{{item.total_money || '-&#45;&#45;'}}</div>-->
-            <div class="list-item">{{item.handle_at || '---'}}</div>
-            <div class="list-item list-operation-box">
-              <span class="list-operation" @click="showCheck(item, index)">审核</span>
+        <div class="big-list leader-list">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in leaderTitle" :key="index" class="list-item">{{item}}</div>
+          </div>
+          <div v-if="leaderList.length" class="list">
+            <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.mobile || '---'}}</div>
+              <div class="list-item">{{item.nickname || '---'}}</div>
+              <div class="list-item">{{item.wx_account || '---'}}</div>
+              <div class="list-item">{{item.social_name || '---'}}</div>
+              <div class="list-item">{{item.name || '---'}}</div>
+              <div class="list-item">{{item.address || '---'}}</div>
+              <div class="list-item">{{item.created_at || '---'}}</div>
+              <!--<div class="list-item">{{item.is_freeze_str}}</div>-->
+              <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
+              <div class="list-item" @click="_showFreeze(item, index)">
+                <base-switch :status="statusHandle(item, index)" confirmText="正常" cancelText="禁用"></base-switch>
+              </div>
+              <div class="list-item list-operation-box">
+                <router-link tag="span" :to="'edit-leader?id=' + item.id" append class="list-operation">编辑</router-link>
+                <span class="list-operation" @click="_getQrCode(item.id, index)">店铺码</span>
+                <!--<span class="list-operation" @click="_showFreeze(item.is_freeze, item.id)">{{item.is_freeze ? '解冻' : '冻结'}}</span>-->
+              </div>
             </div>
           </div>
+          <base-blank v-if="!leaderList.length" blackStyle="padding-top:15%"></base-blank>
         </div>
-        <base-blank v-if="!leaderList.length" blackStyle="padding-top:15%"></base-blank>
-      </div>
+      </template>
+      <template v-if="leaderListFilter.model_type===1">
+        <div class="identification">
+          <div class="identification-page">
+            <img src="./icon-bandit_list@2x.png" class="identification-icon">
+            <p class="identification-name">团长申请表</p>
+            <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                             @change="changeStatus"
+            ></base-status-nav>
+          </div>
+        </div>
+        <div class="big-list application-list">
+          <div class="list-header list-box">
+            <template v-for="(item,index) in leaderTitle">
+              <div v-if="!leaderListFilter.status || index !== leaderTitle.length-1" :key="index" class="list-item">{{item}}</div>
+            </template>
+          </div>
+          <div v-if="leaderList.length" class="list">
+            <div v-for="(item, index) in leaderList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.invite_name || '---'}}</div>
+              <div class="list-item">{{item.mobile || '---'}}</div>
+              <div class="list-item">{{item.name || '---'}}</div>
+              <div class="list-item">{{item.social_name || '---'}}</div>
+              <div class="list-item">{{item.address || '---'}}</div>
+              <div class="list-item">{{item.status_str || '---'}}</div>
+              <div class="list-item photo">
+                <img :src="item.shop_photo_url" class="photo" alt="门头照片" @click="showBigImg(item.shop_photo_url)">
+                <img :src="item.wx_group_photo_url" class="photo last" alt="微信群照片" @click="showBigImg(item.wx_group_photo_url)">
+              </div>
+              <!--<div class="list-item">{{item.total_money || '-&#45;&#45;'}}</div>-->
+              <div class="list-item">{{item.handle_at || '---'}}</div>
+              <div v-if="!leaderListFilter.status" class="list-item list-operation-box">
+                <span v-if="!item.status" class="list-operation" @click="showCheck(item, index)">审核</span>
+              </div>
+            </div>
+          </div>
+          <base-blank v-if="!leaderList.length" blackStyle="padding-top:15%"></base-blank>
+        </div>
+      </template>
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
       </div>
@@ -165,6 +172,7 @@
     '操作'
   ]
   const LEADER_APPLICATION_TILTE = [
+    '邀请者',
     '团长账号',
     '团长名称',
     '社区名称',
@@ -398,11 +406,11 @@
        max-width: 90px
        flex: 1.8
     &.application-list .list-item
-      &:nth-child(6)
-        min-width:130px
       &:nth-child(7)
-        min-width:200px
-      &:last-child
+        min-width:130px
+      &:nth-child(8)
+        width:200px
+      &:nth-child(9)
         max-width: 50px
       .photo
         width:40px

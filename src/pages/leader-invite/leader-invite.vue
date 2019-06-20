@@ -102,14 +102,14 @@
                 :dateInfo="null"
                 dataPickerType="date"
                 :value="accountObj.end_date"
-                :disabledDate="disabledDate()"
+                :disabledDate="disabledDate"
                 @getTime="getTime"
               ></base-date-select>
             </section>
-            <p v-if="accountCountObj.entry_money" class="result">结算金额：{{accountCountObj.invite_reward_money}} * {{accountCountObj.invite_reward_number}} + {{accountCountObj.entry_source_money}} * {{accountCountObj.entry_percent}}%= {{accountCountObj.entry_money}}元</p>
+            <p v-if="accountCountObj.entry_money>0" class="result">结算金额：{{accountCountObj.invite_reward_money}} * {{accountCountObj.invite_reward_number}} + {{accountCountObj.entry_source_money}} * {{accountCountObj.entry_percent}}%= {{accountCountObj.entry_money}}元</p>
             <p v-else class="result">该时间段内没有产生佣金记录</p>
           </div>
-          <div v-if="accountCountObj.entry_money" class="btn-group">
+          <div v-if="accountCountObj.entry_money>0" class="btn-group">
             <span class="btn cancel" @click="$refs.modalAccount.hideModal()">取消</span>
             <span class="btn confirm" @click="handleAccountConfirm">确认</span>
           </div>
@@ -266,7 +266,17 @@
         logArray: []
       }
     },
-    computed: {},
+    computed: {
+      disabledDate() {
+        return {
+          disabledDate:(date)=>{
+            console.log(this.accountObj.start_date, this.disableEndTime)
+            return date.valueOf() < new Date(this.accountObj.start_date) - 24*60*60*1000|| date.valueOf()> new Date(this.disableEndTime)
+          }
+        }
+        // 自定义日期必须小于今天
+      }
+    },
     created() {
       this._getSettingStatus()
       this.$loading.hide()
@@ -277,14 +287,6 @@
       // this.$refs.modal && this.$refs.modal.showModal()
     },
     methods: {
-      disabledDate() {
-        return {
-          disabledDate:(date)=>{
-            return date.valueOf() > new Date(this.accountObj.start_date) || date.valueOf() < new Date(this.disableEndTime)
-          }
-        }
-        // 自定义日期必须小于今天
-      },
       _getSettingStatus() {
         return API.Leader.getSettingStatus()
           .then((res) => {
@@ -364,14 +366,18 @@
           this.disableEndTime = res.data.end_date
           return true
         }).then( res =>{
-          res && API.Leader.getAccountData(this.accountObj).then(res => {
-            this.$refs.modalAccount.showModal()
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.accountCountObj = {...res.data,...{entry_money:Number(res.data.entry_money)}}
-          })
+          res && this._getAccountData()
+        })
+      },
+      // 获取算式 各个数据
+      _getAccountData() {
+        API.Leader.getAccountData(this.accountObj).then(res => {
+          this.$refs.modalAccount.showModal()
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.accountCountObj = {...res.data,...{entry_money:Number(res.data.entry_money)}}
         })
       },
       handleAccountConfirm() {
@@ -382,6 +388,7 @@
       },
       getTime(time) {
         this.accountObj.end_date = time
+        this._getAccountData()
       },
       // 结算记录
       showLogModal(row) {
