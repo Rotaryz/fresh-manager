@@ -107,7 +107,7 @@
             <div class="left-box">
               <p class="title">{{list.title}}</p>
             </div>
-            <a target="_blank" class="excel-btn">导出Excel</a>
+            <a v-if="list.excelUrl&&list.data.length>0" :href="list.excelUrl" target="_blank" class="excel-btn">导出Excel</a>
           </div>
           <div class="big-list">
             <template v-if="list.data&&list.data.length>0">
@@ -120,6 +120,9 @@
                     <template v-if="key==='index'">
                       <div v-if="idx<3" :src="item[key]" :class="'rank-'+(idx+1)" class="rank-icon"></div>
                       <p v-else class="list-rank-num">{{idx+1}}</p>
+                    </template>
+                    <template v-else-if="Array.isArray(key)">
+                      <div class="list-text">{{item[key[0]]}}({{item[key[1]]}})</div>
                     </template>
                     <template v-else>
                       <div v-if="key==='goods_name'" class="list-img">
@@ -168,7 +171,7 @@
     {title: '司机', key: 'driver_count', number: 0, url: '/home/dispatching-management', permissions: 'driver'}
   ]
   const DATE_ARR = [
-    {title: '日', status: 'date'},
+    {title: '日', status: 'day'},
     {title: '周', status: 'week'},
     {title: '月', status: 'month'}
   ]
@@ -263,29 +266,35 @@
     leader: {
       title: '团长',
       tableHead: ['排名', '团长', '销售额', '佣金'],
-      apiFun: 'getManagerRank',
-      params: {time: 'week', start_time: '', end_time: ''},
+      apiFun: 'managerData',
+      params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
       data: [],
-      dataKey: ['index', 'social_name', 'sale_total_sum', 'commission_total_sum'],
-      pager: {curPage: 1, pageTotal: 10}
+      dataKey: ['index', ['name','social_name'], 'total_order_money', 'total_settlement_money'],
+      pager: {curPage: 1, pageTotal: 10},
+      excelApi: '/social-shopping/api/backend/data-statistics-ranking-shop-excel',
+      excelUrl: ''
     },
     goods: {
       title: '商品',
       tableHead: ['排名', '商品', '销量', '销售额'],
-      apiFun: 'getGoodsRank',
-      params: {time: 'week', start_time: '', end_time: ''},
+      apiFun: 'goodsData',
+      params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
       data: [],
-      dataKey: ['index', 'goods_name', 'sale_count_sum', 'sale_total_sum'],
-      pager: {curPage: 1, pageTotal: 10}
+      dataKey: ['index', 'name', 'sale_count_sum', 'sale_total_sum'],
+      pager: {curPage: 1, pageTotal: 10},
+      excelApi: '/social-shopping/api/backend/data-statistics-ranking-goods-excel',
+      excelUrl: ''
     },
     search: {
       title: '搜索词',
       tableHead: ['排名', '搜索词', '搜索次数'],
-      apiFun: 'getGoodsRank',
-      params: {time: 'week', start_time: '', end_time: ''},
+      apiFun: 'searchData',
+      params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
       data: [],
-      dataKey: ['index', 'goods_name', 'sale_count_sum'],
-      pager: {curPage: 1, pageTotal: 10}
+      dataKey: ['index', 'keyword', 'times'],
+      pager: {curPage: 1, pageTotal: 10},
+      excelApi: '/social-shopping/api/backend/data-statistics-ranking-search-keyword-excel',
+      excelUrl: ''
     }
   }
 
@@ -334,11 +343,9 @@
       this.permissions = storage.get('permissions')
       this.getSurveyTrade('', '', 'week', true)
       this._getRealTimeData()
-      this.getScmBaseData()
       this.getShopBaseData()
       this._getDataBoard()
-      this.getGoodsRank()
-      this.getManagerRank()
+      this.getRankList()
     },
     methods: {
       ...deliveryMethods,
@@ -377,25 +384,13 @@
         })
       },
       // 基础功能
-      getScmBaseData() {
-        API.Data.getBaseData().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            for (let key in res.data) {
-              let index = this.baseList.findIndex((item) => item.key === key)
-              this.baseList[index].number = res.data[key]
-            }
-          } else {
-            this.$toast.show(res.message)
-          }
-        })
-      },
-      // 基础功能
       getShopBaseData() {
         API.Data.getStatisticsBaseData().then((res) => {
           if (res.error === this.$ERR_OK) {
-            for (let key in res.data) {
-              let index = this.baseList.findIndex((item) => item.key === key)
-              this.baseList[index].number = res.data[key]
+            for (let idx in this.baseList) {
+              let item = this.baseList[idx]
+              let key = item.key
+              item.number = res.data[key]
             }
           } else {
             this.$toast.show(res.message)
@@ -415,51 +410,6 @@
           this.setTabIndex(1)
         }
         this.$router.push(item.url)
-      },
-      // 商品排行
-      getGoodsRank(loading = false) {
-        API.Data.goodsData(this.rankDir.goods.params, loading).then((res) => {
-          if (loading) {
-            this.$loading.hide()
-          }
-          if (res.error === this.$ERR_OK) {
-            this.rankDir.goods.data = res.data
-            this.rankDir.search.data = res.data
-            // this._getShopUrl()
-          } else {
-            this.$toast.show(res.message)
-          }
-        })
-      },
-      _getShopUrl() {
-        let currentId = this.getCurrentId()
-        let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.shopStartTime}&end_time=${this.shopEndTime}&time=${this.shopTime}`
-        this.shopDownUrl =
-          process.env.VUE_APP_API +
-          `/social-shopping/api/backend/statistics-goods-data-export?${params}&current_corp=${currentId}`
-      },
-      // 社区排行
-      getManagerRank(loading = false) {
-        API.Data.managerData(this.rankDir.leader.params, loading).then((res) => {
-          if (loading) {
-            this.$loading.hide()
-          }
-          if (res.error === this.$ERR_OK) {
-            this.rankDir.leader.data = res.data
-            // this._getUrl()
-          } else {
-            this.$toast.show(res.message)
-          }
-        })
-      },
-      _getUrl() {
-        let currentId = this.getCurrentId()
-        let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.managerStartTime}&end_time=${this.managerEndTime}&time=${this.managerTime}`
-        this.downUrl =
-          process.env.VUE_APP_API +
-          `/social-shopping/api/backend/statistics-manager-data-export?${params}&current_corp=${currentId}`
       },
       // 数据看板
       _getDataBoard(loading = false) {
@@ -506,6 +456,29 @@
         }
         return curChart
       },
+      getRankList() {
+        for(let key in this.rankDir) {
+          let obj = this.rankDir[key]
+          API.Data[obj.apiFun](obj.params).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              obj.data = res.data
+              this._getExcelUrl(obj)
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+        }
+      },
+      _getExcelUrl(obj) {
+        let params = ``
+        let index = 0
+        for(let key in obj.params) {
+          if (index!==0) params += `&`
+          params += `${key}=${obj.params[key]}`
+          index++
+        }
+        obj.excelUrl = `${process.env.VUE_APP_API}${obj.excelApi}?${params}`
+      },
       _switchTab(tab, tabIdx) {
         if (this.dataBoardIndex === tabIdx) return
         this.dataBoardIndex = tabIdx
@@ -530,8 +503,7 @@
         this._getDataBoard()
       },
       _rankListChangeDate(value) {
-        this.getGoodsRank()
-        this.getManagerRank()
+        this.getRankList()
       }
     }
   }

@@ -8,7 +8,8 @@ export default {
    * @returns {*}
    */
   managerData(data, loading = true) {
-    let url = '/social-shopping/api/backend/statistics-manager-data'
+    // let url = '/social-shopping/api/backend/statistics-manager-data'
+    let url = '/social-shopping/v2/api/backend/data-statistics-ranking-shop'
     return request.get(url, data, loading)
   },
   /**
@@ -28,7 +29,8 @@ export default {
    * @returns {*}
    */
   goodsData(data, loading = true) {
-    let url = '/social-shopping/api/backend/statistics-goods-data'
+    // let url = '/social-shopping/api/backend/statistics-goods-data'
+    let url = '/social-shopping/v2/api/backend/data-statistics-ranking-goods'
     return request.get(url, data, loading)
   },
   /**
@@ -48,7 +50,8 @@ export default {
    * @returns {*}
    */
   getStatisticsBaseData(data, loading = false) {
-    let url = '/social-shopping/api/backend/statistics-base-data'
+    // let url = '/social-shopping/api/backend/statistics-base-data'
+    let url = '/social-shopping/v2/api/backend/data-statistics-base-data'
     return request.get(url, data, loading)
   },
   /**
@@ -80,5 +83,15 @@ export default {
   echartData(data, loading = false) {
     let url = '/social-shopping/api/backend/statistics-week-data'
     return request.get(url, data, loading)
-  }
+  },
+  /**
+   *  搜索词排行数据
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  searchData(data, loading = true) {
+    let url = '/social-shopping/v2/api/backend/data-statistics-ranking-search-keyword'
+    return request.get(url, data, loading)
+  },
 }
