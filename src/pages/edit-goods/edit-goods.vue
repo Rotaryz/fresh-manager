@@ -405,6 +405,8 @@
             if (res.error === this.$ERR_OK) {
               if (res.data.is_allow_change * 1 === 1) {
                 this.goods_skus.is_presale = index
+              } else {
+                this.$toast.show(res.data.msg)
               }
             } else {
               this.$toast.show(res.message)
