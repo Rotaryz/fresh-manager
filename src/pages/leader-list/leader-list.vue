@@ -28,6 +28,10 @@
             <base-status-nav :statusList="statusList" :value="leaderListFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
                              @change="changeStatus"
             ></base-status-nav>
+            <p class="header-text">团长可使用账号数量为{{topData.total}}个，当前剩余{{topData.usable}}个</p>
+          </div>
+          <div class="function-btn">
+            <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
           </div>
         </div>
         <div class="big-list leader-list">
