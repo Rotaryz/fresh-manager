@@ -13,8 +13,9 @@
         <div class="identification">
           <div class="identification-page">
             <img src="./icon-bandit_list@2x.png" class="identification-icon">
-            <p class="identification-name">团长邀请排行榜<span class="sub-title">(合计成功邀请 {{invite_number_count}} 位团长)</span></p>
+            <p class="identification-name">团长邀请排行榜<span class="sub-title">(合计成功邀请 {{pageInfo.invite_number_count}} 位团长)</span></p>
           </div>
+          <div class="empty-flex-1"></div>
           <div class="switch-wrapper" @click="handleSwitchChange">
             <base-switch :status="statusObj.status" confirmText="开启" cancelText="关闭"></base-switch>
           </div>
@@ -346,7 +347,7 @@
               per_page: res.meta.per_page,
               total_page: res.meta.last_page
             }
-            this.invite_number_count = res.invite_number_count
+            this.pageInfo.invite_number_count = res.invite_number_count
           })
           .finally(res => {
             this.$loading.hide()
@@ -583,9 +584,11 @@
 
       &.active
         color: #333333;
+    .empty-flex-1
+      flex: 1
 
     .switch-wrapper
-      flex: 1
+      flex-shrink: 0
       display: flex
       justify-content: flex-end
 

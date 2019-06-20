@@ -409,9 +409,9 @@
       &:nth-child(7)
         min-width:130px
       &:nth-child(8)
-        width:200px
+        min-width: 180px
       &:nth-child(9)
-        max-width: 50px
+        max-width: 40px
       .photo
         width:40px
         height:40px

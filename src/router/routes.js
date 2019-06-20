@@ -858,7 +858,8 @@ export default [
               let pageInfo = {
                 total: res.meta.total,
                 per_page: res.meta.per_page,
-                total_page: res.meta.last_page
+                total_page: res.meta.last_page,
+                invite_number_count:res.invite_number_count
               }
               next({params: {dataInfo, pageInfo}})
             })
