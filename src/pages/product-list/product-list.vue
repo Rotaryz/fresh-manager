@@ -8,6 +8,14 @@
       <div class="down-item">
         <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
       </div>
+      <span class="down-tip">类型</span>
+      <div class="down-item">
+        <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
+      </div>
+      <span class="down-tip">资料状态</span>
+      <div class="down-item">
+        <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
+      </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="商品名称或编码" @search="search"></base-search>
@@ -21,7 +29,8 @@
           <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="edit-goods" append class="btn-main">新建商品<span class="add-icon"></span></router-link>
+          <div class="btn-main">商品素材中心</div>
+          <router-link tag="div" to="edit-goods" append class="btn-main g-btn-item">新建商品<span class="add-icon"></span></router-link>
           <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
           <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
             <div class="show-more-text">
@@ -41,14 +50,14 @@
                       @change="importStock($event, 1)"
                     >
                   </div>
-                  <div class="show-hide-item">
-                    批量修改
-                    <input
-                      type="file"
-                      class="stock-file hand"
-                      @change="importStock($event, 0)"
-                    >
-                  </div>
+                  <!--<div class="show-hide-item">-->
+                  <!--批量修改-->
+                  <!--<input-->
+                  <!--type="file"-->
+                  <!--class="stock-file hand"-->
+                  <!--@change="importStock($event, 0)"-->
+                  <!--&gt;-->
+                  <!--</div>-->
                 </div>
               </div>
             </transition>
@@ -80,13 +89,17 @@
                 {{item.usable_stock}}{{item.sale_unit}}
                 <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
               </div>
+              <div class="list-item list-item-layout">
+                类型
+              </div>
               <div class="list-item">
                 <div class="list-item-btn" @click="switchBtn(item, index)">
                   <base-switch :status="item.is_online"></base-switch>
                 </div>
               </div>
               <div class="list-item list-operation-box">
-                <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
+                <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation list-operation-all">完善资料</router-link>
+                <!--<router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>-->
                 <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
@@ -119,6 +132,7 @@
     '销售规格',
     '销售单价',
     '销售库存',
+    '类型',
     '状态',
     '操作'
   ]
@@ -411,10 +425,13 @@
       &:nth-child(3)
         flex: 1.1
 
+      &:nth-child(8)
+        max-width: 120px
       &:last-child
         padding: 5px
-        max-width: 80px
-        flex: 0.8
+        max-width: 130px
+        min-width: 130px
+        flex: 1
 
   .list-item-btn
     display: inline-block
@@ -557,4 +574,13 @@
     opacity: 0
     height: 100%
     width: 100%
+  .list-operation-all
+    border: 1px solid #4D77BD
+    width: 76px
+    height: 28px
+    text-align: center
+    line-height: 26px
+    border-radius: 2px
+    &:after
+      top: 7px
 </style>

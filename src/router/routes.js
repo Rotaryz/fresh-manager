@@ -1424,11 +1424,11 @@ export default [
       },
       // 采购员
       {
-        path: 'buyer',
+        path: 'basics-set/buyer',
         name: 'buyer',
         component: () => lazyLoadView(import('@pages/buyer/buyer')),
         meta: {
-          titles: ['供应链', '采购', '采购员列表'],
+          titles: ['供应链', '采购', '基础设置', '采购员列表'],
           beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('buyer/infoSetKeyWord')
             store
@@ -1447,12 +1447,12 @@ export default [
       },
       // 新建采购员
       {
-        path: 'buyer/edit-procurement',
+        path: 'basics-set/buyer/edit-procurement',
         name: 'edit-procurement',
         component: () => lazyLoadView(import('@pages/edit-procurement/edit-procurement')),
         meta: {
           marginBottom: 80,
-          titles: ['供应链', '采购', '采购员', '采购员'],
+          titles: ['供应链', '采购', '基础设置', '采购员'],
           variableIndex: 3,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {
@@ -1566,13 +1566,22 @@ export default [
           titles: ['供应链', '采购', '商品管理', '新建商品']
         }
       },
+      // 基础设置
+      {
+        path: 'basics-set',
+        name: 'basics-set',
+        component: () => lazyLoadView(import('@pages/basics-set/basics-set')),
+        meta: {
+          titles: ['供应链', '采购', '基础设置']
+        }
+      },
       // 供应商
       {
-        path: 'supplier',
+        path: 'basics-set/supplier',
         name: 'supplier',
         component: () => lazyLoadView(import('@pages/supplier/supplier')),
         meta: {
-          titles: ['供应链', '采购', '供应商'],
+          titles: ['供应链', '采购', '基础设置', '供应商'],
           beforeResolve(routeTo, routeFrom, next) {
             store.dispatch('supplier/infoSetKeyWord')
             store
@@ -1591,11 +1600,11 @@ export default [
       },
       // 新建供应商
       {
-        path: 'supplier/edit-supplier',
+        path: 'basics-set/supplier/edit-supplier',
         name: 'edit-supplier',
         component: () => lazyLoadView(import('@pages/edit-supplier/edit-supplier')),
         meta: {
-          titles: ['供应链', '采购', '供应商', '供应商'],
+          titles: ['供应链', '采购', '基础设置', '供应商'],
           variableIndex: 3,
           beforeResolve(routeTo, routeFrom, next) {
             if (!routeTo.query.id) {

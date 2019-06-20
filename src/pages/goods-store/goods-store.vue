@@ -145,7 +145,7 @@
         </div>
       </div>
       <div class="goods-list">
-        <div v-for="(item, index) in 21" class="goods-item">
+        <div v-for="(item, index) in 21" :key="index" class="goods-item">
           <div class="goods-item-top">
             <img class="top-pic-box" src="./001.jpg" alt="">
             <div class="goods-item-model">
@@ -191,15 +191,32 @@
                 <div class="content-title-box">
                   智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g
                 </div>
-                <img class="content-detials-pic" src="./001.jpg" alt="">
+                <img class="content-detials-pic" src="./title-icon@2x.png" alt="">
+                <img class="content-box-pic" src="./001.jpg" alt="">
               </div>
             </div>
           </div>
-          <div class="info-right-box">
-            <div class="info-right-title">浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜</div>
-            <div class="info-right-price-box">
-              <div class="one-right-price"></div>
+          <div class="info-main">
+            <div class="info-right-box">
+              <div class="info-right-title">浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜</div>
+              <div class="info-right-price-box">
+                <div class="one-right-price">
+                  <div class="content-text-box">建议售价：</div>
+                  <div class="content-right-box suggest-price">￥18.99</div>
+                </div>
+                <div class="one-right-price mt-15">
+                  <div class="content-text-box">市场价：</div>
+                  <div class="content-right-box">￥18.99</div>
+                </div>
+              </div>
+              <div class="info-sale-box">
+                <div class="one-right-price">
+                  <div class="content-text-box">销售规格：</div>
+                  <div class="content-right-box">150g/份</div>
+                </div>
+              </div>
             </div>
+            <div class="back-btn back-submit back-submit hand">确定</div>
           </div>
         </div>
       </div>
@@ -228,7 +245,7 @@
       }
     },
     mounted() {
-      this.$refs.storeModal.showModal()
+      // this.$refs.storeModal.showModal()
     },
     methods: {
       changeKeyword() {},
@@ -488,7 +505,7 @@
         .price-line-box
           layout()
           .price-line-top
-            icon-image('pic-qgj')
+            icon-image('icon')
             width: 36px
             height: 12px
             font-size: 9px
@@ -505,6 +522,10 @@
         width: 298px
         height: @width
         display: block
+        object-fit: cover
+        background-repeat: no-repeat
+        background-size: cover
+        background-position: center
       .content-title-box
         width: 288px
         height: 50px
@@ -525,7 +546,7 @@
   .info-right-box
     margin-top: 50px
     width: 477px
-    height: 180px
+    height: 200px
     border-1px($color-line)
     .info-right-title
       font-family: $font-family-medium
@@ -543,11 +564,65 @@
       layout()
       justify-content: center
       padding: 0 20px
-      .one-right-price
-        layout(row)
-        align-items: center
+    .one-right-price
+      layout(row)
+      align-items: center
+      .content-text-box
+        width: 70px
+        text-align: justify
+        height: 14px
+        line-height: 14px
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+        &:after
+          content: ''
+          display: inline-block
+          width: 100%
+          height: 0
+      .content-right-box
+        height: 14px
+        line-height: 14px
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+      .suggest-price
+        font-size: $font-size-16
+        height: 16px
+        line-height: 16px
+        color: #ffa71d
+    .info-sale-box
+      border-top-1px($color-line)
+      height: 60px
+      layout(row)
+      align-items: center
+      padding: 0 20px
+  .mt-15
+    margin-top: 15px
   .down-tip
     font-size: $font-size-12
     color: $color-text-main
     margin-right: 10px
+  .back-btn
+    box-sizing: border-box
+    font-size: $font-size-16
+    margin-right: 20px
+    height: 40px
+    line-height: 40px
+    width: 477px
+    white-space: nowrap
+    transition: all 0.3s
+    text-align: center
+    margin-top: 30px
+    border-radius: 2px
+  .back-submit
+    background: $color-main
+    color: $color-white
+    &:hover
+      opacity: 0.8
+  .back-submit
+    background: #cccccc
+    color: $color-white
+    &:hover
+      opacity: 1
 </style>
