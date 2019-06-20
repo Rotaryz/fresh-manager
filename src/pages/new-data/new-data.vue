@@ -32,11 +32,11 @@
                   <div class="real-list-box-icon" :class="item.imgUrl"></div>
                   <div class="real-text">
                     <div class="real-text-title">{{item.title}}</div>
-                    <div class="real-text-number">{{item.curr_total}}</div>
+                    <div class="real-text-number">{{realResData[item.key[0]]}}</div>
                   </div>
                 </div>
                 <div class="bottom-box">
-                  昨日：{{item.total}}
+                  昨日：{{realResData[item.key[0]]}}
                 </div>
               </div>
             </div>
@@ -156,11 +156,12 @@
 
   const PAGE_NAME = 'NEW_DATA'
   const TITLE = '数据'
-  const REALDATA = [
-    {imgUrl: '', title: '访客数', key: 'visitor', curr_total: 0, total: 0},
-    {imgUrl: 'users', title: '支付用户', key: 'visitor', curr_total: 0, total: 0},
-    {imgUrl: 'browse_volume', title: '浏览量', key: 'pay_customer', curr_total: 0, total: 0},
-    {imgUrl: 'wallet', title: '支付订单', key: 'pay_customer', curr_total: 0, total: 0},
+  // const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+  const REAL_DATA = [
+    {imgUrl: '', title: '访客数', key: ['today_page_customer_total','yestoday_page_customer_total']},
+    {imgUrl: 'users', title: '支付用户', key: ['today_pay_customer_total','yestoday_pay_customer_total']},
+    {imgUrl: 'browse_volume', title: '浏览量', key: ['today_page_browsing_total','yestoday_page_browsing_total']},
+    {imgUrl: 'wallet', title: '支付订单', key: ['today_pay_order_total','yestoday_pay_order_total']},
   ]
   const BASELIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
@@ -189,8 +190,8 @@
     ],
     chartConfig: {
       dataArr: [
-        {name: '今日', key: 'amount', data: []},
-        {name: '昨日', key: 'num', data: []}
+        {name: '今日', key: 'today', data: []},
+        {name: '昨日', key: 'yestoday', data: []}
       ],
       xAxleData: [],
       legendOnTop: true,
@@ -276,7 +277,7 @@
       params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
       data: [],
       dataKey: ['index', ['name','social_name'], 'total_order_money', 'total_settlement_money'],
-      pager: {curPage: 1, pageTotal: 10},
+      pager: {curPage: 1, pageTotal: 1},
       excelApi: '/social-shopping/api/backend/data-statistics-ranking-shop-excel',
       excelUrl: ''
     },
@@ -287,7 +288,7 @@
       params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
       data: [],
       dataKey: ['index', 'name', 'sale_count_sum', 'sale_total_sum'],
-      pager: {curPage: 1, pageTotal: 10},
+      pager: {curPage: 1, pageTotal: 1},
       excelApi: '/social-shopping/api/backend/data-statistics-ranking-goods-excel',
       excelUrl: ''
     },
@@ -298,7 +299,7 @@
       params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
       data: [],
       dataKey: ['index', 'keyword', 'times'],
-      pager: {curPage: 1, pageTotal: 10},
+      pager: {curPage: 1, pageTotal: 1},
       excelApi: '/social-shopping/api/backend/data-statistics-ranking-search-keyword-excel',
       excelUrl: ''
     }
@@ -314,7 +315,8 @@
     },
     data() {
       return {
-        realData: REALDATA,
+        realData: REAL_DATA,
+        realResData: {},
         baseList: BASELIST,
         dateArr: DATE_ARR,
         downUrl: '',
@@ -347,7 +349,7 @@
         }
       }
       this.permissions = storage.get('permissions')
-      this.getSurveyTrade('', '', 'week', true)
+      this.getSurveyTrade(true)
       this._getRealTimeData()
       this.getShopBaseData()
       this._getDataBoard()
@@ -356,17 +358,18 @@
     methods: {
       ...deliveryMethods,
       // 实时总览
-      getSurveyTrade(startTime, endTime, time, loading) {
-        API.Data.tradeData({start_time: startTime, end_time: endTime, time: time}, loading).then((res) => {
+      getSurveyTrade(loading) {
+        API.Data.tradeData({}, loading).then((res) => {
           if (loading) {
             this.$loading.hide()
           }
           if (res.error === this.$ERR_OK) {
-            for (let i = 0; i < this.realData.length; i++) {
-              let item = this.realData[i]
-              item.curr_total = res.data[item.key].curr_total
-              item.total = res.data[item.key].total
-            }
+            this.realResData = res.data
+            // for (let i = 0; i < this.realData.length; i++) {
+            //   let item = this.realData[i]
+            //   item.curr_total = res.data[item.key].curr_total
+            //   item.total = res.data[item.key].total
+            // }
           } else {
             this.$toast.show(res.message)
           }
@@ -376,12 +379,13 @@
       _getRealTimeData(loading = false) {
         let curChart = this.realTimeData
         let getSuccess = false
-        API.Operation[curChart.apiFun]({date_type: 'week'}, loading).then((res) => {
+        API.Data.tradeDayData({}, loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
+          let a={"today":[{"hour":0,"total_money":"10.00"},{"hour":1,"total_money":"20.00"},{"hour":2,"total_money":"30.00"},{"hour":3,"total_money":"50.00"},{"hour":4,"total_money":"50.00"},{"hour":5,"total_money":"20.00"},{"hour":6,"total_money":"0.00"},{"hour":7,"total_money":"90.00"},{"hour":8,"total_money":"70.00"},{"hour":9,"total_money":"80.00"},{"hour":10,"total_money":"30.00"},{"hour":11,"total_money":"50.00"},{"hour":12,"total_money":"60.00"},{"hour":13,"total_money":"60.00"},{"hour":14,"total_money":"60.00"},{"hour":15,"total_money":"80.00"},{"hour":16,"total_money":"80.00"},{"hour":17,"total_money":"20.00"},{"hour":18,"total_money":"50.00"},{"hour":19,"total_money":"80.00"},{"hour":20,"total_money":"0.00"},{"hour":21,"total_money":"0.00"},{"hour":22,"total_money":"0.00"},{"hour":23,"total_money":"0.00"}],"yestoday":[{"hour":0,"total_money":"0.00"},{"hour":1,"total_money":"70.00"},{"hour":2,"total_money":"60.00"},{"hour":3,"total_money":"60.00"},{"hour":4,"total_money":"60.00"},{"hour":5,"total_money":"70.00"},{"hour":6,"total_money":"50.00"},{"hour":7,"total_money":"0.00"},{"hour":8,"total_money":"20.00"},{"hour":9,"total_money":"30.00"},{"hour":10,"total_money":"60.00"},{"hour":11,"total_money":"50.00"},{"hour":12,"total_money":"60.00"},{"hour":13,"total_money":"50.00"},{"hour":14,"total_money":"0.00"},{"hour":15,"total_money":"9.90"},{"hour":16,"total_money":"35.80"},{"hour":17,"total_money":"10.00"},{"hour":18,"total_money":"30.00"},{"hour":19,"total_money":"20.00"},{"hour":20,"total_money":"0.00"},{"hour":21,"total_money":"0.00"},{"hour":22,"total_money":"60.00"},{"hour":23,"total_money":"80.00"}]}
           // 格式化接口返回的数据
-          curChart = this.formatResData(res, curChart)
+          curChart = this.realTimeResDataFormat(a, curChart)
           getSuccess = true
         }).finally(() => {
           this.chartArr[0] = this.$refs.realTimeChart._setChart(curChart.chartConfig, loading, getSuccess)
@@ -433,6 +437,32 @@
           this.getFinish = this.chartArr.length === 2
           loading && this.$loading.hide()
         })
+      },
+      realTimeResDataFormat(result, curChart) {
+        let chartConfig = curChart.chartConfig
+        chartConfig.xAxleData = []// 重置x轴数据
+        // 遍历dataArr，通过key生成新的数组
+        for (let j = 0; j < chartConfig.dataArr.length; j++) {
+          let _chartData = chartConfig.dataArr[j]
+          let _key = _chartData.key// 对应接口每个值的key
+          // let _curLabel = curChart.label[j]
+          // _curLabel.total = result[_curLabel.key]// 配置的label数组,用于设置每个图表上面的总计
+          _chartData.data = []// 重置data
+          // 遍历接口的data数组，通过配置的key赋值给当前的数组
+          for (let i = 0; i < result[_key].length; i++) {
+            let _resData = result[_key][i]
+            // 测试数据
+            // let rd = (Math.random() * 100).toFixed(2)
+            // _chartData.data.push(_resData[_key] + rd)
+            // 测试数据
+            _chartData.data.push(_resData.total_money)
+            if (j === 0) {
+              // x轴的date指生成一个数组就行了
+              chartConfig.xAxleData.push(_resData.hour+'h')
+            }
+          }
+        }
+        return curChart
       },
       formatResData(result, curChart) {
         let chartConfig = curChart.chartConfig
@@ -508,7 +538,12 @@
       _dataBoardChangeDate(value) {
         this._getDataBoard()
       },
-      _rankListChangeDate(value) {
+      _rankListChangeDate(value, type) {
+        for(let key in this.rankDir) {
+          let obj = this.rankDir[key]
+          obj.params.date_type = type
+          obj.params.start_date = value
+        }
         this.getRankList()
       }
     }
@@ -887,6 +922,7 @@
             background: $color-main
       .big-list
         height: 695px
+        max-height: 695px
         padding-bottom: 60px
         font-size: $font-size-14
         .list-head
