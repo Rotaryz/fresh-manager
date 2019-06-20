@@ -8,9 +8,9 @@
         <p class="name">你好: {{currentUser && currentUser.manager_info.username}}</p>
         <div class="log-out"></div>
         <transition name="fade">
-          <div class="tooltip-con">
-            <div v-show="showTooltip" class="show-hide-box">
-              <div class="show-all-item">
+          <div v-show="showTooltip" class="tooltip-con">
+            <div class="show-hide-box">
+              <div class="show-all-item hand">
                 <div class="show-hide-item" @click="_modifyPassword">
                   修改密码
                 </div>
@@ -90,6 +90,8 @@
     .userInfo-wrapper
       display: flex
       align-items: center
+      position: relative
+      height: 40px
       .name
         margin-left: 10px
         font-size: $font-size-14
@@ -120,12 +122,14 @@
   .tooltip-con
     position: absolute
     width: 106px
+    height: 50px
     top: 0
-    right: 6px
+    right: 0
     z-index: 999
   .show-hide-box
-    margin-top: 50px
-    width: 100%
+    position: absolute
+    width: 106px
+    top: 50px
     color: $color-text-main
     font-family: $font-family-regular
     font-size: $font-size-14
