@@ -62,6 +62,11 @@ export default {
     let url = '/scm/api/backend/sorting/picking-order-delivery-export'
     window.open(url + paramsStr, '_parent')
   },
+  // 订单分拣导出拣货单【1.3.1】
+  exportSortingOrder(paramsStr) {
+    let url = '/scm/api/backend/sorting/order-sorting-export'
+    window.open(url + paramsStr, '_parent')
+  },
   // 批量完成分拣
   batchFinishSorting(data, loading = true) {
     let url = '/scm/api/backend/sorting/batch-finish-sorting'

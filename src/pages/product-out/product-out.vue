@@ -4,7 +4,11 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
+      </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -16,8 +20,13 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">出库列表</p>
-          <base-status-nav :statusList="dispatchSelect" :value="status" valueKey="status" labelKey="status_str" numKey="statistic"
-                           @change="setValue"
+          <base-status-nav
+            :statusList="dispatchSelect"
+            :value="status"
+            valueKey="status"
+            labelKey="status_str"
+            numKey="statistic"
+            @change="setValue"
           ></base-status-nav>
           <!--<base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>-->
         </div>
@@ -48,6 +57,7 @@
                 <span class="list-status" :class="{'list-status-success': item.status === 1,'list-status-warn': item.status === 2 }"></span>
                 {{item.status_str}}
                 <div v-if="item.show_sorting" class="list-item-img"></div>
+                <div v-if="item.is_exception" class="list-item-error"></div>
               </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
@@ -71,7 +81,7 @@
   // import {DatePicker} from 'iview'
   import _ from 'lodash'
   import API from '@api'
-  import {productComputed} from '@state/helpers'
+  import {productComputed, authComputed} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -87,7 +97,7 @@
     '状态',
     '操作'
   ]
-
+  let ws = null
   export default {
     name: PAGE_NAME,
     page: {
@@ -102,8 +112,9 @@
         productOutList: [],
         pageTotal: {},
         status: 2,
-        startTime: '',
-        endTime: '',
+        startTime: this.$route.query.start_time || '',
+        endTime: this.$route.query.end_time || '',
+        exceptionStatus: this.$route.query.exception_status || '',
         keyWord: '',
         goodsPage: 1,
         dispatchSelect: [
@@ -112,22 +123,70 @@
           {name: '已完成', value: 1, key: 'success', num: 0}
         ],
         // statusTab: 1,
-        time: ['', '']
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        }
       }
     },
     computed: {
-      ...productComputed
+      ...productComputed,
+      dateInfo() {
+        return [this.startTime, this.endTime]
+      }
     },
     async created() {
-      if (this.$route.query.status) {
-        // this.statusTab = this.$route.query.status * 1 + 1
-        this.status = this.$route.query.status * 1
-      }
+      this._setErrorStatus()
       this.productOutList = _.cloneDeep(this.outList)
       this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
+      if (this.$route.query.status) {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.status * 1 === this.$route.query.status * 1)
+        this.status = this.$route.query.status * 1
+      }
+    },
+    destory() {
+      ws = null
     },
     methods: {
+      ...authComputed,
+      webSocketData(apiUrl) {
+        let url =  process.env.VUE_APP_WSS + '/sub'
+        let prg = apiUrl + process.env.VUE_APP_CURRENT_CORP
+        let id = this.currentUser().manager_info.store_id
+        let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
+        ws = null
+        ws = new WebSocket(urlPrg)
+        let that = this
+        ws.onmessage = function(event) {
+          var data = JSON.parse(event.data)
+          if (data.status === 'success') {
+            ws.close()
+            that.initData()
+          }
+        }
+      },
+      initData() {
+        this.goodsPage = 1
+        this.getProductListData()
+        this._statistic()
+        this.$refs.pagination.beginPage()
+        this.$refs.confirm.hide()
+      },
+      async checkErr(item) {
+        this.exceptionStatus = item.status
+        this.goodsPage = 1
+        this.getProductListData()
+        this.$refs.pagination.beginPage()
+      },
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
+      },
       goDetail(item) {
         if (item.show_sorting) {
           return
@@ -136,17 +195,16 @@
       },
       async sureSubmit() {
         let type = 'batchOut'
+        let apiUrl = 'scm_batch_out_'
         if (this.status === 2) {
           type = 'batchRecheck'
+          apiUrl = 'scm_batch_finish_checked_'
         }
         let res = await API.Store[type]()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
-          this.goodsPage = 1
-          this.getProductListData()
-          await this._statistic()
-          this.$refs.pagination.beginPage()
-          this.$refs.confirm.hide()
+          console.log(apiUrl)
+          this.webSocketData(apiUrl)
         }
       },
       showBatchOut() {
@@ -167,7 +225,8 @@
         let res = await API.Store.outOrdersStatistic({
           start_time: this.time[0],
           end_time: this.time[1],
-          keyword: this.keyWord
+          keyword: this.keyWord,
+          exception_status: this.exceptionStatus
         })
         this.dispatchSelect = res.data.status || []
       },
@@ -178,7 +237,8 @@
           limit: 10,
           start_time: this.time[0],
           end_time: this.time[1],
-          keyword: this.keyWord
+          keyword: this.keyWord,
+          exception_status: this.exceptionStatus
         }
         API.Store.getOutList(data, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -281,6 +341,13 @@
     font-size: $font-size-14
   .list-item-img
     icon-image('icon-lock')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
+  .list-item-error
+    icon-image('icon-unusual_list')
     width: 16px
     height: 15px
     margin-top: 2px

@@ -11,7 +11,7 @@
             <img src="./icon-account_balance@2x.png" alt="" class="icon">
           </div>
           <div class="item-content-wrapper">
-            <div class="flex-wrapper margin">账户余额(元)</div>
+            <div class="flex-wrapper margin">待结算金额(元)</div>
             <div class="flex-wrapper end">
               <p class="number">{{account.remaining}}</p>
             </div>
@@ -30,7 +30,7 @@
                   <img src="./icon-help@2x.png" alt="" class="detail-icon hand">
                   <div class="static-explain">
                     <div class="explain">
-                      入账资金（所有状态为已入账的交易明细）金额总和
+                      已入账收入=已结算金额+待结算金额，是所有已入账收入的总和
                     </div>
                   </div>
                 </div>
@@ -53,7 +53,9 @@
                 <div class="explain-wrapper">
                   <img src="./icon-help@2x.png" alt="" class="detail-icon">
                   <div class="static-explain">
-                    <div class="explain">入账资金（所有状态为待入账的交易明细）金额总和</div>
+                    <div class="explain">
+                      在订单流程（含售后期）全部结束后入账
+                    </div>
                   </div>
                 </div>
               </div>

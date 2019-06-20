@@ -203,16 +203,15 @@
       ...activityMethods,
       // 选择商品
       getPreferenceDetail() {
-        API.Activity.getPreferenceDetail()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            // this.setPreferenceList(res.data)
-            this.usedGoods = res.data.activity_goods
-            this.goodsList = res.data.activity_goods
-          })
+        API.Activity.getPreferenceDetail().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          // this.setPreferenceList(res.data)
+          this.usedGoods = res.data.activity_goods
+          this.goodsList = res.data.activity_goods
+        })
       },
       async _getGoodsList() {
         let res = await API.Sale.getGoodsList({
@@ -233,7 +232,7 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.selectGoodsId = this.goodsList.map(item => {
+        this.selectGoodsId = this.goodsList.map((item) => {
           return item.goods_sku_id
         })
         this.choeesGoods = res.data.map((item, index) => {
@@ -251,7 +250,8 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
-          if (find) { // 重置库存
+          if (find) {
+            // 重置库存
             item.all_stock = find.usable_stock + item.usable_stock
           } else {
             item.all_stock = item.usable_stock
@@ -410,7 +410,7 @@
         //   item.all_stock = find.usable_stock + item.usable_stock
         //   item.usable_stock = 0
         // })
-        this.selectGoods = this.selectGoods.map(item => {
+        this.selectGoods = this.selectGoods.map((item) => {
           item.usable_stock = 0
           return item
         })
@@ -461,7 +461,6 @@
         setTimeout(() => {
           this._back()
         }, 1000)
-
       },
       test() {
         console.log(this.testData())

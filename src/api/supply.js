@@ -232,5 +232,15 @@ export default {
   createLeadTask(data, loading = false) {
     let url = '/scm/api/backend/purchase/purchase-tasks-create'
     return request.post(url, data, loading)
+  },
+  /**
+   * 采购任务手动生成[v1.3.1]
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  autoPurchaseTask(data, loading = true) {
+    let url = '/scm/api/backend/purchase/auto-purchase-task'
+    return request.get(url, data, loading)
   }
 }

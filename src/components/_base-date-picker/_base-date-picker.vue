@@ -3,21 +3,22 @@
     <li v-for="(item, index) in arrTitle"
         :key="index"
         class="date-item hand"
-        :class="{'date-item-active': (tempIndex !== '' ? tempIndex === index : tabIndex === index)}"
+        :class="{'date-item-active': tabIndex === index}"
         @click="checkTab(index)"
         @mouseenter="mouseEnter(item.status, index)"
         @mouseleave="mouseLeave(item.status, index)"
     >
       <date-picker :ref="item.status"
-                   v-model="time[item.status]"
+                   v-model="date[item.status]"
                    :clearable="false"
-                   :type="item.status"
+                   :type="item.status === 'day' ? 'date' : item.status"
                    :placeholder="text"
                    class="date"
-                   :pickerOptions="pickerOptions"
-                   @change="['_get'+firstUppercase(item.status)]"
+                   :pickerOptions="dateOptions"
+                   @change="_getDate"
       ></date-picker>
       {{item.title}}
+      <!--以下内容暂时无用-->
       <transition name="fade">
         <!-- v-show=""-->
         <div v-if="item.status === 'day' && tabIndex === index && showDate" class="block day">
@@ -57,10 +58,12 @@
 
 <script type="text/ecmascript-6">
   import {DatePicker} from 'element-ui'
+  import {formatNumber} from '@utils/common'
+  // import moment from 'moment'
   // import DatePicker from './date-picker/src/picker'
   const COMPONENT_NAME = 'BASE_OPTION_BOX'
   const NAV = [
-    {title: '日', status: 'date'},
+    {title: '日', status: 'day'},
     {title: '周', status: 'week'},
     {title: '月', status: 'month'}
   ]
@@ -98,9 +101,17 @@
       return {
         tabIndex: this.infoTab,
         tempIndex: '',
-        pickerOptions: {
-          disabledDate: function(date) {
-            return date.valueOf() > Date.now() - 86400000
+        dateOptions: {
+          disabledDate: (date) => {
+            switch (+this.tempIndex) {
+            case 0:
+              return date.valueOf() > Date.now() - 86400000
+            case 1:
+              return date.valueOf() > new Date().valueOf() - new Date().getDay() * 84600000
+            case 2:
+              return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 84600000
+            }
+
           }
         },
         showPicker: true,
@@ -108,11 +119,17 @@
         showDate: false,
         enterName: '',
         timer: '',
-        time: {
-          date: '',
-          week: '',
-          month: ''
+        clickTab: false,
+        date: {
+          day: new Date().valueOf() - 84600000,
+          week: new Date().valueOf() - new Date().getDay() * 84600000,
+          month: new Date().valueOf() - (new Date().getDate()+1) * 84600000
         }
+      }
+    },
+    computed: {
+      dateIndex() {
+        return this.tabIndex
       }
     },
     watch: {
@@ -122,50 +139,63 @@
     },
     methods: {
       mouseEnter(name, index) {
-        // if (name !== this.enterName && this.enterName) {
-        //   this.$refs[this.enterName][0].handleClose()
-        // }
-        // clearTimeout(this.timer)
-        // this.tempIndex = index
-        // this.$refs[name][0].$refs.reference.focus()
-        // this.enterName = name
+        if (name !== this.enterName && this.enterName) {
+          this.$refs[this.enterName] && this.$refs[this.enterName][0] && this.$refs[this.enterName][0].handleClose()
+        }
+        clearTimeout(this.timer)
+        this.tempIndex = index
+        this.$refs[name] && this.$refs[name][0].$refs.reference.focus()
+        this.enterName = name
       },
       mouseLeave(name) {
-        // this.timer = setTimeout(() => {
-        //   this.tempIndex = ''
-        // },100)
-        // this.$refs[name][0].handleClose()
+        this.timer = setTimeout(() => {
+          this.$refs[name] && this.$refs[name][0] && this.$refs[name][0].handleClose()
+        },2500)
       },
       checkTab(index) {
+        this.clickTab = true
+        setTimeout(() => {
+          this.clickTab = false
+        }, 500)
+        this.$refs[this.enterName] && this.$refs[this.enterName][0] && this.$refs[this.enterName][0].handleClose()
         this.tabIndex = index
-        let status = this.arrTitle[index].status
-        console.log(status)
+        let date = ''
+        switch (index) {
+        case 0:
+          this.$set(this.date, NAV[this.tabIndex].status, new Date(Date.now() - 86400000))
+          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          break
+        case 1:
+          this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - (new Date().getDay() + 6) * 84600000))
+          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          break
+        case 2:
+          this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - (new Date().getDate() + 1) * 84600000))
+          date = new Date(this.date[NAV[this.tabIndex].status]).getFullYear() + '-' + formatNumber(new Date(this.date[NAV[this.tabIndex].status]).getMonth() + 1) + '-01'
+        }
+        this.$emit('checkTime', date, NAV[this.tabIndex].status)
+        // this.clickTab = false
       },
-
+      _getDate(time) {
+        if (this.clickTab) return
+        this.tabIndex = this.tempIndex
+        let date = ''
+        switch (+this.tabIndex) {
+        case 0:
+          date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          break
+        case 1:
+          date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          break
+        case 2:
+          date = new Date(time).getFullYear() + '-' + formatNumber(new Date(time).getMonth() + 1) + '-01'
+        }
+        this.$emit('checkTime', date, NAV[this.tabIndex].status)
+      },
       _getCustomTime(time) {
         this.showDate = false
 
-        // this.$emit('checkTime', time)
-      },
-      _getDate(time) {
-        let date = new Date(time).getDate()
-        console.log(date)
-        // this.showDate = true
-        // this.$emit('checkTime', time)
-      },
-      _getWeek(time) {
-        let date = new Date(time).getDate()
-        console.log(date)
-        // this.week = time
-        // this.showDate = true
-        // this.$emit('checkTime', time)
-      },
-      _getMonth(time) {
-        let date = new Date(time).getMonth() + 1
-        console.log(date)
-        // this.month = time
-        // this.showDate = true
-        // this.$emit('checkTime', date)
+        // this.$emit('checkTime', time, NAV[this.tabIndex].status)
       },
       firstUppercase(str) {
         let first = str[0].toUpperCase()

@@ -10,7 +10,7 @@
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'BAR_DATA'
 
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       chartId: {
@@ -35,7 +35,7 @@
       }
     },
     mounted() {
-      // this.drawPie(this.data)
+    // this.drawPie(this.data)
     },
     methods: {
       setTab(num) {
@@ -45,15 +45,15 @@
         let sec = this.chartId.slice(3)
         if (!data.length) {
           this.hideChart = true
-          this.$emit('noData', sec -1)
+          this.$emit('noData', sec - 1)
           return
         }
-        this.$emit('hasData', sec -1)
+        this.$emit('hasData', sec - 1)
         this.hideChart = false
         let seriesData = data.length > 0 ? data : this.data
         let myChart = this.$echarts.init(document.getElementById(this.chartId))
         let that = this
-        myChart.on('click', function (params) {
+        myChart.on('click', function(params) {
           that.$emit('clickChart', params.dataIndex)
         })
         myChart.setOption(this.createPieData(seriesData))
@@ -86,8 +86,8 @@
           color: function(params) {
             let min = 129
             let maxOpacity = 110
-            min = min + 5*params.dataIndex
-            maxOpacity = maxOpacity - 10*params.dataIndex
+            min = min + 5 * params.dataIndex
+            maxOpacity = maxOpacity - 10 * params.dataIndex
             if (maxOpacity <= 30) maxOpacity = 30
             if (min >= 254) min = 254
             return `rgba(87, ${min}, 235, ${maxOpacity})`
@@ -112,7 +112,7 @@
               labelLine: {
                 normal: {
                   lineStyle: {
-                    // color: '#235894'
+                  // color: '#235894'
                   }
                 }
               },

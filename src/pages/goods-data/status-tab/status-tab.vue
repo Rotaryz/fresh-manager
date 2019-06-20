@@ -18,9 +18,7 @@
       statusList: {
         type: Array,
         default: () => {
-          return [
-            {name: '全部', value: '', num: 0}
-          ]
+          return [{name: '全部', value: '', num: 0}]
         }
       },
       infoTabIndex: {

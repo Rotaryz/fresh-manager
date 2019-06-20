@@ -6,7 +6,7 @@
         <div class="data-title">商品数据</div>
       </div>
       <!--<base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>-->
-      <base-date-picker :infoTab="0" :arrTitle="arrTitle" :disabledDate="dateOption" @checkTime="_getData"></base-date-picker>
+      <base-date-picker :arrTitle="arrTitle" :infoTab="0" @checkTime="_getData"></base-date-picker>
     </div>
     <div class="data-content">
       <left-tab ref="goodsTab" @changeTab="changeTab"></left-tab>
@@ -43,15 +43,15 @@
               </div>
               <div class="data-list">
                 <div class="view">
-                  <p class="text">浏览量 <img v-if="saleData.data.views_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">浏览量 <img v-if="+saleData.data.views_hight > 0" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.views}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售数量 <img v-if="saleData.data.num_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售数量 <img v-if="+saleData.data.sales_num_hight > 0" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_num}}</p>
                 </div>
                 <div class="view">
-                  <p class="text">销售额(元) <img v-if="saleData.data.amount_rate >= 1" src="./icon-high@2x.png" alt="" class="icon"></p>
+                  <p class="text">销售额(元) <img v-if="+saleData.data.sales_amount_hight > 0" src="./icon-high@2x.png" alt="" class="icon"></p>
                   <p class="num">{{saleData.data.sales_amount}}</p>
                 </div>
               </div>
@@ -189,11 +189,12 @@
   import BigBarData from './big-bar-data/big-bar-data'
   import PieData from './pie-data/pie-data'
   import DescriptionModal from './description-modal/description-modal'
+  import {formatNumber} from '@utils/common'
 
   import API from '@api'
 
   const ARR_TITLE = [
-    {title: '日', status: 'date'},
+    {title: '日', status: 'day'},
     {title: '周', status: 'week'},
     {title: '月', status: 'month'}
   ]
@@ -207,7 +208,7 @@
   const ALL_DATA = {
     all: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, code: 't'},
+        {name: '商品结构', type: 'bar', excel: true, code: 'total'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
         // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
@@ -217,8 +218,8 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true, limit: 8}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'cate_num_total', limit: 6},
-        {name: '商品SPU数', type: 'pie', excel: true, code: 'all_count', word: 'all_count'},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales_num', word: 'cate_num_total', limit: 6},
+        {name: '商品SPU数', type: 'pie', excel: true, code: 'sku_num', word: 'sku_total'},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
@@ -228,7 +229,7 @@
     },
     category: {
       sale: [
-        {name: '商品结构', type: 'bar', excel: true, code: 't'},
+        {name: '商品结构', type: 'bar', excel: true, code: 'total'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
         {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
         // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
@@ -238,7 +239,7 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'purchase_num', word: 'sku_num_total', limit: 6},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales', word: 'sku_num_total', limit: 6},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
@@ -296,7 +297,7 @@
           limit: 8
         },
         requestPurchase: {
-          order_by: 'purchase_num',
+          order_by: 'sales_num',
           limit: 6
         },
         requestSupply: {
@@ -304,8 +305,8 @@
           limit: 10
         },
         requestPub: {
-          date_type: 'week',
-          start_date: '',
+          date_type: 'day',
+          start_date: new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&'),
           end_date: '',
           group_by: 'cate',
           cate: '',
@@ -370,20 +371,9 @@
     },
     methods: {
       ...goodsDataMethods,
-      _getData(value) {
-        if (typeof value === 'string') {
-          this.requestPub.date_type = value
-        } else {
-          // this.start_at = value[0]
-          // this.end_at = value[1]
-          this.requestPub.date_type = 'cust-date'
-          this.requestPub.start_date = value[0]
-          this.requestPub.end_date = value[1]
-          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
-            this.$toast.show('选择时间范围不能小于两天')
-            return
-          }
-        }
+      _getData(value, type) {
+        this.requestPub.date_type = type
+        this.requestPub.start_date = value
         this.getAllData()
       },
       changeGoodsRank(type) {
@@ -508,7 +498,7 @@
         this.leftTabItem = itemId
         this.leftTab = code
         if (code !== 'goods') {
-          this.getGoodsList({goods_category_id: itemId, is_online: 1, keyword: '',  is_page: 0})
+          this.getGoodsList({cate: itemId})
           // delete data.order_by
         }
         this._initSelect()
@@ -570,7 +560,7 @@
         this.$set(this.selectMsg, 'serve', obj)
         this.$set(this.tabIndexControl, 'serve', index)
         this.requestServe.order_by = obj.code
-        let data = Object.assign({}, this.requestPub, this.requestServe)
+        let data = Object.assign({}, this.requestServe, this.requestPub)
         await this.getServeData(data)
         this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data, obj.code), obj.rate)
         this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, obj.code, obj.name), obj.rate)
@@ -583,9 +573,11 @@
         obj.limit ? this.$set(this.requestPurchase, 'limit', obj.limit) : this.$delete(this.requestPurchase, 'limit')
         // this.requestPurchase.order_by = obj.code
         if (index === 1 && this.leftTab === 'all') {
-          await this.getCategoryList({parent_id: 0, get_goods_count: 1, get_goods_online_count: 1})
+          let data = Object.assign({}, this.requestPurchase, this.requestPub)
+          data.limit = 0
+          await this.getSpu(data)
         } else {
-          let data = Object.assign({}, this.requestPub, this.requestPurchase)
+          let data = Object.assign({}, this.requestPurchase, this.requestPub)
           await this.getPurchaseData(data)
         }
         if (index === 0) {
@@ -782,7 +774,7 @@
         let series = data.map(item => {
           return {
             name: item.name,
-            value: item.goods_count
+            value: item.sku_num
           }
         })
         return series
@@ -799,7 +791,18 @@
         }
         let label = type
         let x = data.map(item => {
-          return item.date ? item.date.split('-').slice(1).join('/') : ''
+          switch (this.requestPub.date_type) {
+          case 'day':
+            if (data[0].year < data[29].year) {
+              return item.month ? item.year + '-' + formatNumber(item.month) + '-' + formatNumber(item.day) : ''
+            } else {
+              return item.month ? formatNumber(item.month) + '/' + formatNumber(item.day) : ''
+            }
+          case 'week':
+            return item.week ? item.year.toString().slice(2) + '年第' + item.week + '周' : ''
+          default:
+            return item.month ? item.year.toString().slice(2)  + '年' + item.month + '月' : ''
+          }
         })
         let rate = data.map(item => {
           return item[code]
@@ -864,7 +867,7 @@
       width: 100%
       display: flex
     .data-sec
-      width: 50%
+      width: 48.4%
       margin-right: 20px
       margin-top: 20px
       border-1px($color-line, 0)

@@ -22,7 +22,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import regionArr from './city'
+  // import cc from './city'
+  import regionArr from './city-data'
 
   export default {
     props: {
@@ -94,6 +95,7 @@
         this.city[1].children[0].data = regionArr[index].sub
         let idx = this.city[1].children[0].data.findIndex((item) => item.name.includes(arr[1]))
         this.city[2].children[0].data = regionArr[index].sub[idx].sub
+        console.log(this.city)
       },
       clearLocationInfo() {
         this.city.map((item) => {
@@ -113,6 +115,8 @@
         }, 1500)
       },
       selectType(type, index) {
+        // console.log(type, index)
+        // this.cityIndex = index
         if (!this.isUse) {
           return
         }
@@ -186,6 +190,7 @@
         this.city[1].children[0].data = arr
       },
       _infoArea(index) {
+        if (index < 0) return
         let areaArr = regionArr[this.cityIndex].sub[index].sub
         let arr = []
         for (let value in areaArr) {

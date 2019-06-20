@@ -10,7 +10,7 @@
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'BAR_DATA'
 
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       chartId: {
@@ -22,6 +22,7 @@
       return {
         tabIndex: 0,
         hideChart: false,
+        myChart: '',
         data: {
           x1: [],
           series: [0, 0, 0, 0, 0, 0],
@@ -29,17 +30,22 @@
         }
       }
     },
-    computed: {
-    },
-    watch: {
-    },
+    computed: {},
+    watch: {},
     mounted() {
-      // this.drawBar(this.data, '退货数')
+    // this.drawBar(this.data, '退货数')
+    },
+    beforeDestroy() {
+      this.myChart = ''
+      window.removeEventListener('resize', this.resize) // 取消监听
     },
     methods: {
+      resize() {
+        this.myChart && this.myChart.resize()
+      },
       random(itemNumber, max) {
         return new Array(itemNumber).fill(1).map((item, index) => {
-          return Math.ceil(Math.random() * (max))
+          return Math.ceil(Math.random() * max)
         })
       },
       // 纵向柱状图
@@ -47,75 +53,79 @@
         let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
-          this.$emit('noData', sec -1)
+          this.$emit('noData', sec - 1)
           return
         }
-        this.$emit('hasData', sec -1)
+        this.$emit('hasData', sec - 1)
         this.hideChart = false
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x1
           let seriesData = data.series.length > 0 ? data.series : this.data.series
-          let myChart = this.$echarts.init(document.getElementById(this.chartId))
+          let el = document.getElementById(this.chartId)
+          this.$echarts.dispose(el) // 销毁之前的实例
+          let myChart = this.$echarts.init(el)
+          this.myChart = myChart
+          window.addEventListener('resize',  this.resize) // 加监听
           let that = this
-          myChart.on('click', function (params) {
+          myChart.on('click', function(params) {
             that.$emit('clickChart', params.dataIndex)
           })
           let color = ['#5681EA', '#5490F3', '#6EB0FF', '#7AB6F5', '#8DC6F6', '#94CFF8', '#9ED6F7', '#A7DFF8', '#AFE5FA']
           myChart.setOption(this.createBar1(xAxisData, seriesData, color, rate))
-          window.addEventListener('resize', function() {
-            myChart.resize()
-          })
         })
       },
       // 横向柱状图
       drawBar1(data) {
+        window.removeEventListener('resize', this.resize)
         let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
-          this.$emit('noData', sec -1)
+          this.$emit('noData', sec - 1)
           return
         }
-        this.$emit('hasData', sec -1)
+        this.$emit('hasData', sec - 1)
         this.hideChart = false
-        let msg = {
-          xAxisData: data.xAx.length ? data.xAx : this.data.x1,
-          seriesData1: data.salesNum.length ? data.salesNum : this.data.series,
-          seriesData2: data.purchaseNum.length ? data.purchaseNum : this.data.series,
-          salesNumAll: data.salesNumAll,
-          purchaseNumAll: data.purchaseNumAll
-        }
-        let myChart = this.$echarts.init(document.getElementById(this.chartId))
-        let that = this
-        myChart.on('click', function (params) {
-          that.$emit('clickChart', params.dataIndex)
-        })
-        myChart.setOption(this.createBar2(msg))
-        window.addEventListener('resize', function() {
-          myChart.resize()
+        this.$nextTick(() => {
+          let msg = {
+            xAxisData: data.xAx.length ? data.xAx : this.data.x1,
+            seriesData1: data.salesNum.length ? data.salesNum : this.data.series,
+            seriesData2: data.purchaseNum.length ? data.purchaseNum : this.data.series,
+            salesNumAll: data.salesNumAll,
+            purchaseNumAll: data.purchaseNumAll
+          }
+          let el = document.getElementById(this.chartId)
+          this.$echarts.dispose(el) // 销毁之前的实例
+          let myChart = this.$echarts.init(el)
+          this.myChart = myChart
+          window.addEventListener('resize', this.resize) // 加监听
+          let that = this
+          myChart.on('click', function (params) {
+            that.$emit('clickChart', params.dataIndex)
+          })
+          myChart.setOption(this.createBar2(msg))
         })
       },
       // 纵向柱状图
       drawBar2(data) {
+        window.removeEventListener('resize', this.resize)
         let sec = this.chartId.slice(3)
         if (!data.xAx.length) {
           this.hideChart = true
-          this.$emit('noData', sec -1)
+          this.$emit('noData', sec - 1)
           return
         }
-        this.$emit('hasData', sec -1)
+        this.$emit('hasData', sec - 1)
         this.hideChart = false
         this.$nextTick(() => {
           let xAxisData = data.xAx.length > 0 ? data.xAx : this.data.x2
           let seriesData3 = data.series.length > 0 ? data.series : this.data.series
-          let myChart = this.$echarts.init(document.getElementById(this.chartId))
-          // myChart.on('click', function (params) {
-          //   console.log(params)
-          // })
+          let el = document.getElementById(this.chartId)
+          this.$echarts.dispose(el) // 销毁之前的实例
+          let myChart = this.$echarts.init(el)
+          this.myChart = myChart
+          window.addEventListener('resize',  this.resize) // 加监听
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
           myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
-          window.addEventListener('resize', function() {
-            myChart.resize()
-          })
         })
       },
       // 纵向柱状图
@@ -130,7 +140,7 @@
           },
           xAxis: {
             type: 'category',
-            boundaryGap: xAxisData.length<=5,
+            boundaryGap: xAxisData.length <= 5,
             data: xAxisData,
             offset: 15,
             nameGap: 20,
@@ -221,16 +231,16 @@
                   barBorderRadius: 0,
                   // color: '#8DC6F6',
                   color: function(params) {
-                    var num = color.length;
+                    var num = color.length
                     return color[params.dataIndex % num]
                   }
-                  // color: new this.$echarts.graphic.LinearGradient(
-                  //   0, 0, 0, 1,
-                  //   [
-                  //     {offset: 1, color: '#BE85FD'},
-                  //     {offset: 0, color: '#A08FF6'}
-                  //   ]
-                  // )
+                // color: new this.$echarts.graphic.LinearGradient(
+                //   0, 0, 0, 1,
+                //   [
+                //     {offset: 1, color: '#BE85FD'},
+                //     {offset: 0, color: '#A08FF6'}
+                //   ]
+                // )
                 }
               }
             }
@@ -249,7 +259,7 @@
           },
           legend: {
             data: ['销售', '采购'],
-            icon: "rect", //  这个字段控制形状  类型包括 circle 圆形，rect 正方形，roundRect，triangle，diamond，pin，arrow，none
+            icon: 'rect', //  这个字段控制形状  类型包括 circle 圆形，rect 正方形，roundRect，triangle，diamond，pin，arrow，none
             itemWidth: 11,
             itemHeight: 11,
             bottom: 10,
@@ -335,16 +345,19 @@
               }
             },
             formatter(prams) {
-              let result = `<p style="color:#ffffff;font-size:12px">${prams[0].axisValue}</p>`;
-              prams.forEach(function (item) {
-                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}%</span></p>`;
-              });
+              let result = `<p style="color:#ffffff;font-size:12px">${prams[0].axisValue}</p>`
+              prams.forEach(function(item) {
+                result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${
+                  item.color
+                }"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}%</span></p>`
+              })
               return result
-              // return `${prams[0].name}<br />${prams[0] ? prams[0].seriesName + '额占比：' + prams[0].value + '%<br />' : ''}${prams[1] ? prams[1].seriesName + '额占比：' + prams[1].value + '%<br />' : ''}`
+            // return `${prams[0].name}<br />${prams[0] ? prams[0].seriesName + '额占比：' + prams[0].value + '%<br />' : ''}${prams[1] ? prams[1].seriesName + '额占比：' + prams[1].value + '%<br />' : ''}`
             }
           },
           series: [
-            { // For shadow
+            {
+              // For shadow
               type: 'bar',
               name: '销售',
               data: series.seriesData1,
@@ -357,7 +370,7 @@
               },
               emphasis: {
                 itemStyle: {
-                  // color: '#F5F6F9'
+                // color: '#F5F6F9'
                 }
               },
               label: {
@@ -370,7 +383,7 @@
                   offset: [0, 1],
                   verticalAlign: 'middle',
                   color: '#999',
-                  fontSize: '12',
+                  fontSize: '12'
                 }
               },
               barWidth: '10px',
@@ -393,7 +406,7 @@
                   offset: [0, 2],
                   verticalAlign: 'middle',
                   color: '#999',
-                  fontSize: '12',
+                  fontSize: '12'
                 }
               },
               itemStyle: {
@@ -405,7 +418,7 @@
             }
           ]
         }
-      },
+      }
     }
   }
 </script>
@@ -421,6 +434,7 @@
   .data-content
     width: 100%
     height: 100%
+    position: relative
     #barData
       width: 100%
       height: 100%

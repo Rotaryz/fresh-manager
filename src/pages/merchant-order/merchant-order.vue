@@ -19,7 +19,9 @@
           <div class="identification-page">
             <img :src="tabStatus[0].img" class="identification-icon">
             <p class="identification-name">{{tabStatus[0].text}}</p>
-            <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
+            <base-status-nav :statusList="dispatchSelect" :value="merchantFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                             @change="setValue"
+            ></base-status-nav>
           </div>
         </div>
         <div class="big-list">
@@ -137,7 +139,6 @@
           {name: '待配送', value: 2, num: 0},
           {name: '已完成', value: 3, num: 0}
         ],
-        statusTab: 2, // 待调度
         datePlaceHolderMerger: '选择下单日期',
         merger: {
           pageTotal: {
@@ -167,9 +168,6 @@
     },
     async created() {
       this.commodities = this.tabIndex === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
-      if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1
-      }
       this._getStatusData()
     },
     methods: {
@@ -180,7 +178,6 @@
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
         if (!this.tabIndex) {
           // 待调度
-          this.statusTab = 2
           this._updateMerchantOrderList({
             page: 1,
             limit: 10,
@@ -258,13 +255,7 @@
           if (res.error !== this.$ERR_OK) {
             return false
           }
-          this.dispatchSelect = res.data.map((item) => {
-            return {
-              name: item.status_str,
-              value: item.status,
-              num: item.statistic
-            }
-          })
+          this.dispatchSelect = res.data
         })
       },
       // 翻页
@@ -286,12 +277,10 @@
       },
       // 状态
       setValue(item) {
-        this._updateMerchantOrderList(
-          {
-            status: item.value,
-            page: 1
-          }
-        )
+        this._updateMerchantOrderList({
+          status: item,
+          page: 1
+        })
       },
       // 搜索按钮
       changeKeyword(keyword) {

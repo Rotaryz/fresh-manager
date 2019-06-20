@@ -81,10 +81,26 @@ export const saleMethods = mapActions('sale', ['getSaleList', 'getSaleDetail', '
 
 // 活动管理
 export const activityComputed = {
-  ...mapGetters('activity', ['popularList', 'preferenceList', 'collageList', 'collageDetail', 'popularPage', 'preferencePage', 'collagePage', 'activityTab'])
+  ...mapGetters('activity', [
+    'popularList',
+    'preferenceList',
+    'collageList',
+    'collageDetail',
+    'popularPage',
+    'preferencePage',
+    'collagePage',
+    'activityTab'
+  ])
 }
 
-export const activityMethods = mapActions('activity', ['getPopularList', 'getPreferenceList', 'getCollageList', 'getCollageDetail', 'addPreferenceList', 'setActivityTab'])
+export const activityMethods = mapActions('activity', [
+  'getPopularList',
+  'getPreferenceList',
+  'getCollageList',
+  'getCollageDetail',
+  'addPreferenceList',
+  'setActivityTab'
+])
 
 // 拓展活动
 export const outreachComputed = {
@@ -232,10 +248,29 @@ export const communityMethods = mapActions('community', [
 
 // 商品数据
 export const goodsDataComputed = {
-  ...mapGetters('goodsData', ['categoryList', 'saleData', 'serveData', 'purchaseData', 'supplyData', 'saleRankList', 'stockRankList', 'bigChartData'])
+  ...mapGetters('goodsData', [
+    'categoryList',
+    'saleData',
+    'serveData',
+    'purchaseData',
+    'supplyData',
+    'saleRankList',
+    'stockRankList',
+    'bigChartData'
+  ])
 }
 
-export const goodsDataMethods = mapActions('goodsData', ['getCategoryList', 'getGoodsList', 'getSaleData', 'getServeData', 'getPurchaseData', 'getSupplyData', 'initSaleRankList', 'initStockRankList'])
+export const goodsDataMethods = mapActions('goodsData', [
+  'getCategoryList',
+  'getGoodsList',
+  'getSpu',
+  'getSaleData',
+  'getServeData',
+  'getPurchaseData',
+  'getSupplyData',
+  'initSaleRankList',
+  'initStockRankList'
+])
 
 // 交易记录
 export const tradeComputed = {
@@ -292,7 +327,8 @@ export const proTaskComputed = {
     'editTaskList',
     'timeStart',
     'timeEnd',
-    'goBackNumber'
+    'goBackNumber',
+    'timeDay'
   ])
 }
 
@@ -339,6 +375,7 @@ export const distributionMethods = {
     'getOrderList',
     'setOrderTime',
     'setOrderKeyword',
+    'setExceptionStatus',
     'setOrderPage',
     'setOrderStatus',
     'getDriverList',
@@ -592,4 +629,12 @@ export const warehouseComputed = {
 
 export const warehouseMethods = {
   ...mapActions('warehouse', ['getPurchaseUser', 'getPurchaseUserDetail', 'setKeyword', 'setPage', 'infoSetKeyWord'])
+}
+// 配置
+export const allocationComputed = {
+  ...mapGetters('allocation', ['allocationList', 'operation'])
+}
+
+export const allocationMethods = {
+  ...mapActions('allocation', ['getAllocationList', 'getOperation'])
 }
