@@ -250,6 +250,7 @@
             this.$toast.show(res.message)
             return
           }
+          this.$refs.checkDialog.hideModal()
           this._updateData()
         })
       },
