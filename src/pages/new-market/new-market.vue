@@ -274,7 +274,7 @@
           <div class="title">
             选择商品券
           </div>
-          <span class="close hand" @click="_cancelModal"></span>
+          <span class="close hand" @click="_cancelGoodsModal"></span>
         </div>
         <!--搜索-->
         <div class="shade-tab">
@@ -730,6 +730,9 @@
     },
     methods: {
       ...marketMethods,
+      _cancelGoodsModal() {
+        this.$refs.goodsModal.hideModal()
+      },
       // 删除被邀请者
       showDel(index) {
         if (this.disable) {
