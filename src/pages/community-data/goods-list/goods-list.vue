@@ -1,6 +1,6 @@
 <template>
   <div class="goods-list">
-    <div class="goods-title" :class="{'padding': goodsList.length > 5}">
+    <div v-if="goodsList.length" class="goods-title" :class="{'padding': goodsList.length > 5}">
       <span v-for="(item, index) in titleArr"
             :key="index"
             class="title-item"
@@ -18,6 +18,8 @@
         </div>
       </div>
     </div>
+
+    <div v-show="!goodsList.length && loaded" class="no-data">暂无数据</div>
   </div>
 </template>
 
@@ -68,11 +70,17 @@
     data() {
       return {
         titleArr: TITLE,
-        goods: GOOD
+        goods: GOOD,
+        loaded: false
       }
     },
     computed: {
       ...communityComputed
+    },
+    watch: {
+      goodsList(value, oldValue) {
+        this.loaded = true
+      }
     },
     methods: {}
   }
@@ -83,7 +91,18 @@
 
   .goods-list
     width: 100%
-    height: 345px
+    flex: 1
+    display: flex
+    flex-direction: column
+    .no-data
+      width: 100%
+      height: 100%
+      display: flex
+      align-items: center
+      justify-content: center
+      color: #666
+      font-size: $font-size-14
+      font-family: $font-family-regular
   .goods-title
     height: 45px
     line-height: 45px
@@ -92,12 +111,14 @@
     padding: 0 20px
     .title-item
       padding-right: 20px
+      &:first-child
+        min-width: 52px
       &:last-child
         padding-right: 0
   .padding
     padding-right: 26px
   .list
-    height: 300px
+    flex: 1
     overflow: auto
     &::-webkit-scrollbar
       width: 6px
@@ -128,6 +149,8 @@
       height: 36px
       line-height: 36px
       padding-right: 20px
+      &:first-child
+        min-width: 52px
       .main
         overflow: hidden
         text-overflow: ellipsis
