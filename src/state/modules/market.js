@@ -13,7 +13,8 @@ export const state = {
     total: 1,
     per_page: 12,
     total_page: 1
-  }
+  },
+  inviteCount: 0
 }
 
 export const getters = {
@@ -31,6 +32,9 @@ export const getters = {
   },
   marketStaList(state) {
     return state.marketStaList
+  },
+  inviteCount(state) {
+    return state.inviteCount
   }
 }
 
@@ -49,6 +53,9 @@ export const mutations = {
   },
   SET_MARKET_STA_LIST(state, marketStaList) {
     state.marketStaList = marketStaList
+  },
+  SET_INVITE_COUNT(state, inviteCount) {
+    state.inviteCount = inviteCount
   }
 }
 
@@ -95,6 +102,7 @@ export const actions = {
         }
         commit('SET_MARKET_STA_PAGE_DETAIL', pageDetail)
         commit('SET_MARKET_STA_LIST', marketList)
+        commit('SET_INVITE_COUNT', res.invite_count)
         return marketList
       })
       .catch(() => {

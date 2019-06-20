@@ -7,7 +7,7 @@
           <p class="identification-name">
             统计邀请排行榜
             <span class="identification-tip">
-              (合计邀请成功 {{marketStaPageDetail.total}}人)
+              (合计邀请成功 {{inviteCount}}人)
             </span>
           </p>
         </div>
@@ -19,7 +19,7 @@
         <div class="list">
           <div v-if="marketStaList.length">
             <div v-for="(item, index) in marketStaList" :key="index" class="list-content list-box list-box-goods">
-              <div class="list-item">
+              <div class="list-item list-img-box">
                 <!---->
                 <img :src="item.avatar" class="list-img">
               </div>
@@ -84,4 +84,7 @@
         max-width: 260px
   .big-list
     max-height: 765px
+  .list-img-box
+    display: flex
+    align-items: center
 </style>
