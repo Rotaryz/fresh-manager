@@ -48,7 +48,7 @@
         </div>
 
         <!--新客有礼-->
-        <div v-if="marketIndex === 0 ||marketIndex === 4" class="edit-item edit-item-new">
+        <div v-if="marketIndex === 0" class="edit-item edit-item-new">
           <div class="edit-title">
             <span class="start">*</span>
             <span>配置</span>
@@ -585,7 +585,7 @@
         return this.msg.title
       },
       testNewStartTime() {
-        if (+this.marketIndex === 0 || +this.marketIndex === 4) {
+        if (+this.marketIndex === 0) {
           console.log(this.msg.config_json.way)
           return this.msg.config_json.way === 'between_days' ? this.msg.config_json.start_day : true
         } else {
@@ -593,7 +593,7 @@
         }
       },
       testNewEndTime() {
-        if (+this.marketIndex === 0 || +this.marketIndex === 4) {
+        if (+this.marketIndex === 0) {
           return this.msg.config_json.way === 'between_days' ? this.msg.config_json.end_day : true
         } else {
           return true
@@ -601,7 +601,7 @@
       },
       testNewEndTimeReg() {
         // 结束时间规则判断
-        if ((+this.marketIndex === 0 || +this.marketIndex === 4) && this.msg.config_json.way === 'between_days') {
+        if ((+this.marketIndex === 0) && this.msg.config_json.way === 'between_days') {
           if (this.msg.config_json.start_day && this.msg.config_json.end_day) {
             return (
               Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
@@ -718,7 +718,7 @@
         break
       case 4:
         this.msg.type = 7
-        this.type || (this.msg.config_json.way = 'between_days')
+        // this.type || (this.msg.config_json.way = 'between_days')
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
         this.title = '邀请有礼'
         this._getGoodsCouponList()
@@ -1150,8 +1150,8 @@
             this.dayData.content = 3 + '天'
             break
           case 'between_days':
-            this.msg.config_json.start_at = this.msg.config_json.start_at
-            this.msg.config_json.end_at = this.msg.config_json.start_at
+            // this.msg.config_json.start_at = this.msg.config_json.start_at
+            // this.msg.config_json.end_at = this.msg.config_json.start_at
             this.inviterArr = this.msg.config_json.inviter_coupons
             this.invitedArr = this.msg.config_json.invitee_coupons
             break
