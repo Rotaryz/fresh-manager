@@ -80,7 +80,7 @@
               <img :src="item.shop_photo_url" class="photo" alt="门头照片" @click="showBigImg(item.shop_photo_url)">
               <img :src="item.wx_group_photo_url" class="photo last" alt="微信群照片" @click="showBigImg(item.wx_group_photo_url)">
             </div>
-            <div class="list-item">{{item.total_money || '---'}}</div>
+            <!--<div class="list-item">{{item.total_money || '-&#45;&#45;'}}</div>-->
             <div class="list-item">{{item.handle_at || '---'}}</div>
             <div class="list-item list-operation-box">
               <span class="list-operation" @click="showCheck(item, index)">审核</span>
@@ -130,13 +130,15 @@
         </div>
       </div>
     </default-modal>
-    <default-modal ref="imgModal">
-      <div slot="content" class="model-img-wrap">
+    <default-modal ref="imgModal" class="img-model">
+      <div slot="content">
         <div class="top">
           <div class="title">资质审核</div>
           <span class="close" @click="$refs.imgModal.hideModal()"></span>
         </div>
-        <img :src="currentImgSrc" alt="" class="big-img">
+        <div class="model-img-wrap">
+          <img :src="currentImgSrc" alt="" class="big-img">
+        </div>
       </div>
     </default-modal>
   </div>
@@ -169,7 +171,7 @@
     '详细地址',
     '状态',
     '资质审核',
-    '一周交易额',
+    // '一周交易额',
     '处理时间',
     '操作']
   const ORDERSTATUS = [{text: '团长列表', status: 0,id:'list'}, {text: '团长申请表', status: 1,id:'application'}]
@@ -396,8 +398,8 @@
        flex: 1.8
     &.application-list .list-item
       &:nth-child(6)
-        min-width:120px
-      &:nth-child(8)
+        min-width:130px
+      &:nth-child(7)
         min-width:200px
       &:last-child
         max-width: 50px
@@ -529,9 +531,17 @@
       background:#fff
       &::before
         border-top: 0px solid #e9ecee
-  .model-img-wrap
-    background: #fff
-  .big-img
-    height: 600px
-    width: 500px
+  .img-model
+    .top
+      background: #fff
+    .model-img-wrap
+      background: #fff
+      height: 600px
+      width: 500px
+      text-align center
+      padding:20px
+    .big-img
+      max-width: 100%
+      max-height: 100%
+
 </style>
