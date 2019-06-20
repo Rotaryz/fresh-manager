@@ -109,5 +109,5 @@ export default {
   getActiveStatus(data, loading = false) {
     let url = '/social-shopping/api/backend/activity-manage/activity-status'
     return request.get(url, data, loading)
-  },
+  }
 }

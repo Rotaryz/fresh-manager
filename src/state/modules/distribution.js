@@ -24,7 +24,8 @@ export const state = {
   driverEndTime: '',
   orderStatus: 1,
   start: '',
-  end: ''
+  end: '',
+  exceptionStatus: ''
 }
 
 export const getters = {
@@ -72,6 +73,9 @@ export const getters = {
   },
   end(state) {
     return state.end
+  },
+  exceptionStatus(state) {
+    return state.exceptionStatus
   }
 }
 
@@ -114,6 +118,9 @@ export const mutations = {
   },
   SET_DRIVER_END_TIME(state, time) {
     state.driverEndTime = time
+  },
+  SET_EXCEPTION_STATUS(state, exceptionStatus) {
+    state.exceptionStatus = exceptionStatus
   }
 }
 
@@ -137,14 +144,15 @@ export const actions = {
     }
   },
   getOrderList({commit, state}, loading = true) {
-    const {orderStartTime, orderEndTime, orderKeyword, orderPage, orderStatus} = state
+    const {orderStartTime, orderEndTime, orderKeyword, orderPage, orderStatus, exceptionStatus} = state
 
     let data = {
       start_time: orderStartTime,
       end_time: orderEndTime,
       keyword: orderKeyword,
       page: orderPage,
-      status: orderStatus
+      status: orderStatus,
+      exception_status: exceptionStatus
     }
     return API.Delivery.getDeliveryOrder(data, loading)
       .then((res) => {
@@ -158,6 +166,8 @@ export const actions = {
           per_page: pages.per_page,
           total_page: pages.last_page
         }
+        console.log(list)
+        console.log(state)
         commit('SET_ORDER_LIST', list)
         commit('SET_ORDER_PAGE_DETAIL', pageDetail)
         return list
@@ -177,6 +187,11 @@ export const actions = {
   },
   setOrderKeyword({commit, dispatch}, keyword) {
     commit('SET_ORDER_KEYWORD', keyword)
+    commit('SET_ORDER_PAGE', 1)
+    dispatch('getOrderList')
+  },
+  setExceptionStatus({commit, dispatch}, status) {
+    commit('SET_EXCEPTION_STATUS', status)
     commit('SET_ORDER_PAGE', 1)
     dispatch('getOrderList')
   },

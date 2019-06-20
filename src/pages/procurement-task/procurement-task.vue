@@ -4,7 +4,11 @@
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择时间" @getTime="changeStartTime"></base-date-select>
+        <base-date-select placeHolder="请选择时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
+      </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
       <!--下拉选择-->
       <span class="down-tip">供应商</span>
@@ -25,7 +29,8 @@
           <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main" :class="{'btn-disable-store': status * 1 !== 1}" @click="_sendPublish">发布给采购员</div>
+          <div class="btn-main" @click="_lookSuggest">查看预采建议单</div>
+          <div class="btn-main g-btn-item" :class="{'btn-disable-store': status * 1 !== 1}" @click="_sendPublish">发布给采购员</div>
           <div class="btn-main g-btn-item" :class="{'btn-disable-store': status * 1 !== 2}" @click="_createNewPublish">生成采购单</div>
           <!--<div class="btn-main g-btn-item" @click="_addTask">新建采购任务<span class="add-icon"></span></div>-->
           <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
@@ -76,7 +81,7 @@
                 <div class="progress-percentage">{{item.finish_percent}}</div>
               </div>
               <div class="list-item">{{item.publish_at}}</div>
-              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}</div>
+              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}<div v-if="item.is_exception" class="list-item-img"></div></div>
             </div>
           </div>
           <base-blank v-else></base-blank>
@@ -224,16 +229,16 @@
         commodities: COMMODITIES_LIST,
         supplierList: SUPPLIER_LIST,
         page: 1,
-        startTime: '',
-        endTime: '',
+        startTime: this.$route.query.start_time || '',
+        endTime: this.$route.query.end_time || '',
         keyword: '',
         time: '',
-        status: '',
+        status: 1,
         supplyId: '',
         selectList: [],
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
-          {name: '锁定中', value: 1, key: 'wait_release', num: 0},
+          // {name: '锁定中', value: 1, key: 'wait_release', num: 0},
           {name: '待发布', value: 1, key: 'wait_release', num: 0},
           {name: '待采购', value: 2, key: 'wait_purchase', num: 0},
           {name: '已完成', value: 3, key: 'success', num: 0}
@@ -257,33 +262,46 @@
         choicePage: 1,
         oneBtn: false,
         confirmType: '',
-        statusTab: 2,
+        statusTab: 1,
         downUrl: '',
         taskTime: ['', ''],
         supplierSortList: [],
-        showIndex: false
+        showIndex: false,
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
+        exceptionStatus: this.$route.query.exception_status || ''
       }
     },
     computed: {
-      ...proTaskComputed
+      ...proTaskComputed,
+      dateInfo() {
+        return [this.startTime, this.endTime]
+      }
     },
     async created() {
-      this.startTime = this.$route.params.start
-      this.endTime = this.$route.params.end
+      await this._statistic()
+      this._setErrorStatus()
       if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1 + 1
-        this.status = this.$route.query.status
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.$route.query.status * 1)
+        this.status = this.$route.query.status * 1
+      } else {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.name === '待发布')
+        this.status = this.dispatchSelect[this.statusTab].status
+        this._createNewPublish()
       }
-      this.status = this.$route.params.status
       if (this.goBackNumber > 0) {
-        this.statusTab = 3
-        this.status = 2
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.name === '待采购')
+        this.status = this.dispatchSelect[this.statusTab].status
         this._createNewPublish()
       }
       await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
-      await this._statistic()
       this._getUrl()
     },
     mounted() {},
@@ -298,8 +316,31 @@
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&start_time=${this.startTime}&end_time=${this.endTime}&status=${
           this.status
-        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&current_corp=${currentId}`
+        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&exception_status=${this.exceptionStatus}&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
+      },
+      async checkErr(item) {
+        this.exceptionStatus = item.status
+        this.goodsPage = 1
+        this.page = 1
+        this.$refs.pages.beginPage()
+        this.getPurchaseTaskList({
+          time: this.time,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          keyword: this.keyword,
+          status: this.status,
+          page: this.page,
+          supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
+          loading: false
+        })
+        this._getUrl()
+        await this._statistic()
+      },
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
       },
       // 获取商品列表
       async _getGoodsList() {
@@ -406,7 +447,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        let index = 2
+        let index = 1
         this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
         // this.getPurchaseTaskList({
         //   time: this.time,
@@ -437,6 +478,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -453,6 +495,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -470,6 +513,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -489,6 +533,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
         this._getUrl()
@@ -524,6 +569,7 @@
             status: this.status,
             page: this.page,
             supplyId: this.supplyId,
+            exceptionStatus: this.exceptionStatus,
             loading: false
           })
         }
@@ -625,6 +671,7 @@
           status: this.status,
           page: this.page,
           supplyId: this.supplyId,
+          exceptionStatus: this.exceptionStatus,
           loading: false
         })
       },
@@ -658,7 +705,7 @@
           this.$toast.show(res.message)
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
-            let index = 3
+            let index = 2
             this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
             await this._statistic()
             // this.getPurchaseTaskList({
@@ -699,6 +746,7 @@
           start_time: this.startTime,
           end_time: this.endTime,
           keyword: this.keyword,
+          exception_status: this.exceptionStatus,
           supplier_id: this.supplyId
         })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}
@@ -716,6 +764,15 @@
       },
       _hideTip() {
         this.showIndex = false
+      },
+      async _lookSuggest() {
+        let supplyRes = await API.Supply.autoPurchaseTask()
+        this.$loading.hide()
+        if (supplyRes.error !== this.$ERR_OK) {
+          this.$toast.show(supplyRes.message)
+          return
+        }
+        this.$router.push('/home/procurement-task/procurement-suggest')
       }
     }
   }
@@ -748,7 +805,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          max-width: 60px
+          max-width: 80px
           padding: 0
         /*&:nth-child(8), &:nth-child(2)*/
         &:nth-child(7), &:nth-child(1)
@@ -1239,4 +1296,11 @@
         transform: translateY(-1px) rotate(180deg)
         &:after
           border-top: 6px solid $color-white
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>

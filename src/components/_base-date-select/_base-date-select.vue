@@ -79,8 +79,7 @@
       return {}
     },
     watch: {
-      disabledDate(news) {
-      }
+      disabledDate(news) {}
     },
     methods: {
       _getTime(time) {

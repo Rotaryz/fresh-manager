@@ -238,22 +238,25 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let status = routeTo.query.status || ''
-            API.Activity.getActiveList({page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme}, true)
-            .then((res) => {
-              if (res.error !== ERR_OK) {
-                return next({name: '404'})
-              }
-              let dataInfo = res.data
-              let pageInfo = {
-                total: res.meta.total,
-                per_page: res.meta.per_page,
-                total_page: res.meta.last_page
-              }
-              next({params: {dataInfo, pageInfo}})
-            })
-            .catch(e => {
-              next({name: '404'})
-            })
+            API.Activity.getActiveList(
+              {page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme},
+              true
+            )
+              .then((res) => {
+                if (res.error !== ERR_OK) {
+                  return next({name: '404'})
+                }
+                let dataInfo = res.data
+                let pageInfo = {
+                  total: res.meta.total,
+                  per_page: res.meta.per_page,
+                  total_page: res.meta.last_page
+                }
+                next({params: {dataInfo, pageInfo}})
+              })
+              .catch((e) => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -1304,13 +1307,19 @@ export default [
         meta: {
           titles: ['供应链', '订单', '售后订单'],
           beforeResolve(routeTo, routeFrom, next) {
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
             store.commit('afterSalesOrder/SET_PARAMS', {
-              start_time: '',
-              end_time: '',
-              keyword: "",
-              status: 0,
-              page:1,
-              limit:10
+              start_time: startTime,
+              end_time: endTime,
+              exception_status: exceptionStatus,
+              keyword: '',
+              status: status,
+              page: 1,
+              limit: 10
             })
             store
               .dispatch('afterSalesOrder/getAfterSalesOrderList')
@@ -1359,7 +1368,12 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             routeTo.params.start = ''
             routeTo.params.end = ''
-            let status = routeTo.query.status || 1
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            // let status = routeTo.query.status || 1
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 1
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
             if (store.getters['proTask/goBackNumber'] >= 1) {
               status = 2
             }
@@ -1367,11 +1381,12 @@ export default [
             store
               .dispatch('proTask/getPurchaseTaskList', {
                 time: '',
-                startTime: '',
-                endTime: '',
+                startTime: startTime,
+                endTime: endTime,
                 keyword: '',
                 page: 1,
                 status: status,
+                exceptionStatus: exceptionStatus,
                 supplyId: '',
                 loading: true
               })
@@ -1409,6 +1424,39 @@ export default [
           titles: ['供应链', '采购', '采购任务', '采购任务导入'],
           beforeResolve(routeTo, routeFrom, next) {
             next()
+          }
+        }
+      },
+      // 预采建议
+      {
+        path: 'procurement-task/procurement-suggest',
+        name: 'procurement-suggest',
+        component: () => lazyLoadView(import('@pages/procurement-suggest/procurement-suggest')),
+        meta: {
+          titles: ['供应链', '采购', '采购任务', '预采建议单'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('proTask/getPurchaseTaskList', {
+                time: 'today',
+                startTime: '',
+                endTime: '',
+                keyword: '',
+                page: 1,
+                status: '',
+                supplyId: '',
+                isBlocked: 1,
+                loading: true
+              })
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                routeTo.params.detail = res
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -1578,9 +1626,13 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = routeTo.query.status || 0
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
             store
-              .dispatch('product/getEnterData', {startTime: '', endTime: '', status, page: 1})
+              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1623,9 +1675,13 @@ export default [
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = routeTo.query.status || 2
+            let exceptionStatus = routeTo.query.exception_status
+            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
+            let startTime = routeTo.query.start_time || ''
+            let endTime = routeTo.query.end_time || ''
             store
-              .dispatch('product/getOutData', {startTime: '', endTime: '', status, page: 1})
+              .dispatch('product/getOutData', {startTime, endTime, status, page: 1, exceptionStatus})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1771,7 +1827,7 @@ export default [
         meta: {
           titles: ['供应链', '分拣', '分拣任务'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.commit('sorting/SET_PARAMS', {
+            let params = {
               goods_category_id: '',
               page: 1,
               limit: 10,
@@ -1779,8 +1835,15 @@ export default [
               end_time: '',
               keyword: '',
               status: 0, // 待分拣
-              sorting_mode: 0
-            })
+              sorting_mode: 0,
+              exception_status:'',
+              ...routeTo.query
+            }
+            if(params.status!==''){
+              params.status = Number(params.status)
+            }
+            params.sorting_mode = Number(params.sorting_mode)
+            store.commit('sorting/SET_PARAMS', params)
             store
               .dispatch('sorting/getSortingTaskList')
               .then((res) => {
@@ -1890,6 +1953,50 @@ export default [
           }
         },
         component: () => lazyLoadView(import('@pages/sorting-config/sorting-config'))
+      },
+      // 配货设置
+      {
+        path: 'matching-setting',
+        name: 'matching-setting',
+        component: () => lazyLoadView(import('@pages/matching-setting/matching-setting')),
+        meta: {
+          titles: ['供应链', '设置', '配货设置'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('allocation/getAllocationList', true)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 运营时间配置
+      {
+        path: 'operation-allocation',
+        name: 'operation-allocation',
+        component: () => lazyLoadView(import('@pages/operation-allocation/operation-allocation')),
+        meta: {
+          titles: ['供应链', '设置', '运营时间配置'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('allocation/getOperation', true)
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
       },
       // 库存管理
       {
@@ -2027,14 +2134,18 @@ export default [
             // 获取服务器时间且初始化
             let tabIndex = store.state.distribution.tabIndex
             store.dispatch('distribution/infoOrderTime', {
-              startTime: '',
-              endTime: '',
-              status: 1
+              startTime: routeTo.query.start_time || '',
+              endTime: routeTo.query.end_time || '',
+              status: routeTo.query.status || 1
             })
             store.dispatch('distribution/infoDriverTime', {
               startTime: '',
               endTime: ''
             })
+            if (typeof (routeTo.query.status) !== 'undefined') {
+              store.dispatch('distribution/setTabIndex', 0)
+            }
+            // store.mutations.SET_TAB_INDEX(0)
             if (tabIndex === 0) {
               store
                 .dispatch('distribution/getOrderList')
@@ -2228,6 +2339,20 @@ export default [
         component: () => lazyLoadView(import('@pages/new-data/new-data')),
         meta: {
           titles: ['概况', '数据概况'],
+          async beforeResolve(routeTo, routeFrom, next) {
+            let time = await getCurrentTime()
+            routeTo.params.time = time
+            next()
+          }
+        }
+      },
+      // 物流监控
+      {
+        path: 'logistics-monitoring',
+        name: 'logistics-monitoring',
+        component: () => lazyLoadView(import('@pages/logistics-monitoring/logistics-monitoring')),
+        meta: {
+          titles: ['概况', '物流监控'],
           async beforeResolve(routeTo, routeFrom, next) {
             let time = await getCurrentTime()
             routeTo.params.time = time

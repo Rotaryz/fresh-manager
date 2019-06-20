@@ -64,8 +64,7 @@
         isSubmit: true
       }
     },
-    created() {
-    },
+    created() {},
     methods: {
       submitSure() {
         if (!this.blankList.length) {

@@ -24,6 +24,7 @@ export const state = {
     end_time: '',
     keyword: '',
     status: '',
+    exception_status: '',
     page: 1,
     limit: 10
   }

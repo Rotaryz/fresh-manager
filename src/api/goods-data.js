@@ -12,7 +12,7 @@ export default {
    * 分类下商品列表
    */
   getGoodsList(data, loading = false) {
-    let url = '/social-shopping/api/backend/goods-manage/goods'
+    let url = '/social-shopping/api/backend/data-center/goods/get-goods-by-cate'
     return request.get(url, data, loading)
   },
   // ----------------模块1各项数据接口-------------------
@@ -102,5 +102,5 @@ export default {
   getStockRatio(data, loading = false) {
     let url = `/social-shopping/api/backend/community/groups`
     return request.get(url, data, loading)
-  },
+  }
 }

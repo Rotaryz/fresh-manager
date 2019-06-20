@@ -5,6 +5,10 @@
       <div class="down-item">
         <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="_changeTime"></base-date-select>
       </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
+      </div>
       <div class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
@@ -37,6 +41,7 @@
                 </template>
                 <template v-else name="name">
                   <span v-if="item.before" :class="[item.beforeClass[0],row[item.before]?item.beforeClass[1]:'']"></span>{{row[item.key]}}
+                  <div v-if="item.is_exception & item.before" class="list-item-img"></div>
                 </template>
               </div>
             </div>
@@ -70,6 +75,11 @@
                   </div>
                 </template>
                 {{item.title}}
+                <template v-if="item.type==='afterHelp'">
+                  <div class="icon-help">
+                    <div class="help-text">待处理状态下可选择进行线上退款或补货处理，如该商品已进行线下处理，则线上可进行批量关闭处理。</div>
+                  </div>
+                </template>
               </div>
             </div>
             <div class="list" :class="{'goods-list-border':batchendList.length}">
@@ -93,6 +103,7 @@
         </div>
         <div class="back btn-group-wrap">
           <div class="back-cancel back-btn hand" @click="_hideModal">取消</div>
+          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(3)">批量关闭</div>
           <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量补货</div>
           <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量退款</div>
         </div>
@@ -147,7 +158,7 @@
     {title: '供应商', key: 'supplier_name', flex: 3},
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: 'sale_out_of_num'},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str'}
+    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str',type:'afterHelp'}
   ]
   export default {
     name: PAGE_NAME,
@@ -169,10 +180,18 @@
         ],
         statusTab: 1,
         batchendList: [],
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
         batchCommodities: COMMODITIES_LIST2,
         checkAllStatus: false,
         selectIds: [],
-        confirmType: 1 // 1  补货，2 退款
+        confirmType: 1, // 1  补货，2 退款
+        exceptionStatus: this.$route.query.exception_status || ''
       }
     },
     computed: {
@@ -182,10 +201,11 @@
       }
     },
     async created() {
+      this._setErrorStatus()
+      await this._getStatusData()
       if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.$route.query.status * 1)
       }
-      this._getStatusData()
     },
     methods: {
       ...afterSalesOrderMethods,
@@ -248,11 +268,35 @@
       _showConfirm(val) {
         if (this.selectIds.length === 0) return this.$toast.show('请选择批量处理的选项')
         this.confirmType = val
-        let text = `确定对所选商品${this.confirmType === 1 ? '批量补货' : '批量退款'}?`
+        let content = ''
+        switch (val) {
+        case 1:
+          content = '批量补货'
+          break
+        case 2:
+          content = '批量退款'
+          break
+        case 3:
+          content = '批量关闭'
+          break
+        }
+        let text = `确定对所选商品${content}?`
         this.$refs.confirm.show(text)
       },
       _getConfirmResult() {
-        this._setBacth(this.confirmType === 1 ? 'batchReplenishment' : 'batchRefund')
+        let methodsName = ''
+        switch (this.confirmType) {
+        case 1:
+          methodsName = 'batchReplenishment'
+          break
+        case 2:
+          methodsName = 'batchRefund'
+          break
+        case 3:
+          methodsName = 'batchClose'
+          break
+        }
+        this._setBacth(methodsName)
       },
       _setBacth(method = 'batchReplenishment') {
         API.AfterSalesOrder[method](this.selectIds)
@@ -285,21 +329,30 @@
         }
       },
       // 状态数据
-      _getStatusData() {
+      async _getStatusData() {
         let defaultParams = {
           start_time: this.afterSalesFilter.start_time,
           end_time: this.afterSalesFilter.end_time,
-          keyword: this.afterSalesFilter.keyword
+          keyword: this.afterSalesFilter.keyword,
+          exception_status: this.afterSalesFilter.exception_status
         }
-        API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
-          this.dispatchSelect = res.data.map((item) => {
-            return {
-              name: item.status_str,
-              value: item.status,
-              num: item.statistic
-            }
-          })
+        let res = await API.AfterSalesOrder.getStausData(defaultParams)
+        this.dispatchSelect = res.data.map((item) => {
+          return {
+            name: item.status_str,
+            value: item.status,
+            num: item.statistic
+          }
         })
+        // API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
+        //   this.dispatchSelect = res.data.map((item) => {
+        //     return {
+        //       name: item.status_str,
+        //       value: item.status,
+        //       num: item.statistic
+        //     }
+        //   })
+        // })
       },
       // 时间
       _changeTime(timeArr) {
@@ -311,12 +364,10 @@
       },
       // 状态
       _setValue(item) {
-        this._updateList(
-          {
-            status: item.value,
-            page: 1
-          }
-        )
+        this._updateList({
+          status: item.value,
+          page: 1
+        })
       },
       // 搜索按钮
       _changeKeyword(keyword) {
@@ -328,6 +379,16 @@
       // 分页
       _getMoreList(page) {
         this._updateList({page}, true)
+      },
+      checkErr(item) {
+        this._updateList({
+          exception_status: item.status,
+          page: 1
+        })
+      },
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
       }
     }
   }
@@ -336,6 +397,41 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   /*@import "@pages/supply-order/after-sales-detail/check/check.styl"*/
+  .icon-help
+    width:14px
+    height:@width
+    margin-left:4px
+    icon-image(icon-help)
+    .help-text
+      display: none
+      position:absolute
+      width:300px
+      white-space normal
+      z-index:2000
+      right:0
+      transform translate(0,-120%)
+      font-size: $font-size-12
+      color: #FFFFFF
+      line-height: 19px
+      padding:3px 11px
+      opacity: 0.8
+      background: #333333
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,0.11)
+      border-radius: 2px 2px 2px 2px
+      &:after
+        position:absolute
+        bottom:-9px
+        right:28px
+        content: ""
+        border-top:6px solid #333
+        border-left:4px solid transparent
+        border-right:4px solid transparent
+        border-bottom:4px solid transparent
+    &:hover
+      cursor pointer
+      .help-text
+        display: block
+
   .source-order-sn
     text-decoration: underline
     color: #4d77bd
@@ -408,8 +504,8 @@
       overflow auto
 
       .status_str
-        max-width 65px
-
+        max-width 80px
+        padding-right:0px
       .row-check
         max-width 60px
 
@@ -432,4 +528,11 @@
     width: 300px
     margin-bottom: 20px
 
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>

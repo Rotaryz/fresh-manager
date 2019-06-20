@@ -4,7 +4,11 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间" @getTime="changeStartTime"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
+      </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -34,7 +38,10 @@
               <div class="list-item">{{item.supplier}}</div>
               <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
               <div class="list-item">￥{{item.total}}</div>
-              <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}</div>
+              <div class="list-item">
+                <span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}
+                <div v-if="item.is_exception" class="list-item-img"></div>
+              </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
                 <div v-if="item.status === 0 || item.status === 2 || item.status === 3" class="list-operation" @click="entryOrdersExport(item)">导出</div>
@@ -79,8 +86,9 @@
         productEnterList: [],
         pageTotal: {},
         status: 0,
-        startTime: '',
-        endTime: '',
+        startTime: this.$route.query.start_time || '',
+        endTime: this.$route.query.end_time || '',
+        exceptionStatus: this.$route.query.exception_status || '',
         keyWord: '',
         goodsPage: 1,
         dispatchSelect: [
@@ -98,23 +106,45 @@
         accurateStart: '',
         accurateEnd: '',
         statusTab: 1,
-        time: ['', '']
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        }
       }
     },
     computed: {
       ...productComputed,
-      ...authComputed
+      ...authComputed,
+      dateInfo() {
+        return [this.startTime, this.endTime]
+      }
     },
     async created() {
-      if (this.$route.query.status) {
-        this.statusTab = this.$route.query.status * 1 + 1
-        this.status = this.$route.query.status * 1
-      }
+      this._setErrorStatus()
       this.productEnterList = _.cloneDeep(this.enterList)
       this.pageTotal = _.cloneDeep(this.statePageTotal)
       await this._statistic()
+      if (this.$route.query.status) {
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.$route.query.status * 1)
+        this.status = this.$route.query.status * 1
+      }
     },
     methods: {
+      async checkErr(item) {
+        this.exceptionStatus = item.status
+        this.goodsPage = 1
+        await this._statistic()
+        this.getProductListData()
+        this.$refs.pagination.beginPage()
+      },
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        this.errorObj.content = item.name || '全部'
+      },
       // 完成单日收货
       // async allocationStock() {
       //   if (this.productEnterList.length) {
@@ -156,9 +186,10 @@
       },
       async _statistic() {
         let res = await API.Store.entryOrdersStatistic({
-          tart_time: this.time[0],
+          start_time: this.time[0],
           end_time: this.time[1],
-          keyword: this.keyWord
+          keyword: this.keyWord,
+          exception_status: this.exceptionStatus
         })
         if (res.error === this.$ERR_OK) {
           this.dispatchSelect = res.data.status.map((item) => {
@@ -176,7 +207,8 @@
           limit: 10,
           start_time: this.time[0],
           end_time: this.time[1],
-          keyword: this.keyWord
+          keyword: this.keyWord,
+          exception_status: this.exceptionStatus
         }
         API.Store.getEnterList(data, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -267,4 +299,12 @@
   .tip
     margin: 0 2px
     font-size: $font-size-14
+
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
 </style>
