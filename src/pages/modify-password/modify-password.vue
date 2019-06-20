@@ -8,8 +8,7 @@
       </div>
       <div class="input-wrapper">
         <input v-model="formParams.verifyCode" type="text" :placeholder="placeHolders.verifyCode" @keyup.enter="_modifyPassword">
-        <button v-if="codeGetting" class="code-btn hand" @click="_getVerifyCode">{{countdown}}</button>
-        <button v-else class="code-btn hand" @click="_getVerifyCode">{{getCodeText}}</button>
+        <button class="code-btn hand" @click="_getVerifyCode">{{countdown}}</button>
       </div>
       <div class="input-wrapper">
         <input v-model="formParams.password" type="password" :placeholder="placeHolders.password" @keyup.enter="_modifyPassword">
@@ -41,10 +40,9 @@
           verifyCode: '',
           password: ''
         },
-        getCodeText: '获取短信验证码',
-        countdown: 30,
+        countdown: '获取短信验证码',
         codeGetting: false,
-        tryingToLogIn: false,
+        subModify: false,
       }
     },
     computed: {
@@ -59,6 +57,7 @@
     methods: {
       ...authMethods,
       _getVerifyCode() {
+        if (this.codeGetting) return;
         if (this.formParams.username === '') {
           this.$toast.show(this.placeHolders.username)
           return
@@ -71,7 +70,6 @@
               this.codeGetting = false
               return
             }
-            this.countdown = 30
             this._setCountdown()
           })
           .catch((error) => {
@@ -80,22 +78,23 @@
           })
       },
       _setCountdown() {
+        this.countdown = 30
         let that = this
         let cdTimer = setInterval(function () {
           if(that.countdown>0) {
             that.countdown--
           } else {
-            that.getCodeText = '再次获取验证码'
+            that.countdown = '再次获取验证码'
             that.codeGetting = false
             clearInterval(cdTimer)
           }
         },1000)
       },
       _modifyPassword() {
-        if (this.tryingToLogIn || !this.checkForm()) {
+        if (this.subModify || !this.checkForm()) {
           return
         }
-        this.tryingToLogIn = true
+        this.subModify = true
         API.Auth.modifyPassword({
           username: this.formParams.username,
           password: this.formParams.password,
@@ -103,22 +102,22 @@
         })
           .then((res) => {
             if (res.error !== this.$ERR_OK) {
-              this.tryingToLogIn = false
+              this.subModify = false
               this.$toast.show(res.message)
               return
             }
-            this.$toast.show('修改密码成功！')
             this.logOut()
+            this.$toast.show('修改密码成功！')
             let that = this
             setTimeout(function () {
               that.$router.replace({name: 'login'})
-            },3000)
+            },2500)
           })
           .catch((error) => {
             this.$toast.show(error)
           })
           .finally(() => {
-            this.tryingToLogIn = false
+            this.subModify = false
           })
       },
       checkForm() {
