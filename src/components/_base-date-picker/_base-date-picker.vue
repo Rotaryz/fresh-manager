@@ -126,8 +126,8 @@
           break
         case 1:
           date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
-          startDate = moment().week(moment(time).week()).startOf('week').format('YYYY-MM-DD')
-          endDate = moment().week(moment(time).week()).endOf('week').format('YYYY-MM-DD')
+          startDate = moment(time).subtract(0, 'days').format('YYYY-MM-DD')
+          endDate = moment(time).subtract(-6, 'days').format('YYYY-MM-DD')
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
