@@ -1,6 +1,11 @@
 <template>
   <div class="login">
     <div class="header-wrapper"></div>
+    <div class="clear-input">
+<!--      用于消除密码自动填充，必须放在要消除的input前面-->
+      <input type="text">
+      <input type="password">
+    </div>
     <div class="login-wrapper">
       <header class="title">修改密码/Change Password</header>
       <div class="input-wrapper">
@@ -217,5 +222,11 @@
       font-family: $font-family-regular
       span
         text-decoration: underline
-
+  .clear-input
+    position: absolute
+    z-index: -9999
+    width: 0
+    height: 0
+    opacity: 0
+    overflow: hidden
 </style>

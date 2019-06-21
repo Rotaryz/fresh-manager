@@ -10,6 +10,9 @@
         <input v-model="password" type="password" :placeholder="placeHolders.password" @keyup.enter="tryToLogIn">
       </div>
       <button class="login-btn hand" @click="tryToLogIn">登录</button>
+      <div class="forget-pw">
+        <span class="hand" @click="_modifyPassword">忘记密码？</span>
+      </div>
     </div>
   </div>
 </template>
@@ -107,6 +110,9 @@
           storage.set('permissions', this.permissionsList)
           this.$router.push(this.menuList[0].sub_menu[0].sub_menu[0].front_url || 'home')
         }
+      },
+      _modifyPassword() {
+        this.$router.push(`/modify-password`)
       }
     }
   }
@@ -166,4 +172,13 @@
         font-size: $font-size-14
         color: $color-white
         background: $color-positive
+  .forget-pw
+    width: 100%
+    margin-top: 24px
+    text-align: center
+    color: $color-white
+    font-size: $font-size-14
+    font-family: $font-family-regular
+    span
+      text-decoration: underline
 </style>
