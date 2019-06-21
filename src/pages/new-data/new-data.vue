@@ -125,8 +125,8 @@
                       <div class="list-text">{{item[key[0]]}}({{item[key[1]]}})</div>
                     </template>
                     <template v-else>
-                      <div v-if="key==='goods_name'" class="list-img">
-                        <img :src="item.image_url" class="data-list-img">
+                      <div v-if="key==='name'&&item.goods_cover_image" class="list-img">
+                        <img :src="item.goods_cover_image" class="data-list-img">
                       </div>
                       <div class="list-text">{{item[key]}}</div>
                     </template>
