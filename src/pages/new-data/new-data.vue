@@ -401,16 +401,21 @@
       },
       // 基础功能
       _getShopBaseData() {
-        API.Data.getStatisticsBaseData().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            for (let idx in this.baseList) {
-              let item = this.baseList[idx]
-              let key = item.key
-              item.number = res.data[key]
+        let baseApi = ['getBaseData','getStatisticsBaseData']
+        baseApi.forEach((apiName) => {
+          API.Data[apiName]().then((res) => {
+            if (res.error === this.$ERR_OK) {
+              for (let idx in this.baseList) {
+                let item = this.baseList[idx]
+                let key = item.key
+                if(res.data[key]) {
+                  item.number = res.data[key]
+                }
+              }
+            } else {
+              this.$toast.show(res.message)
             }
-          } else {
-            this.$toast.show(res.message)
-          }
+          })
         })
       },
       // 数据看板
@@ -821,6 +826,11 @@
             color: $color-white
             border-radius: 12px
             transition: all 0.3s
+      .data-date-picker
+        font-family: $font-family-regular
+        color: $color-text-sub
+        layout(row)
+        align-items:center
 
     .bottom-con
       layout(row,block,no-wrap)
@@ -1010,6 +1020,11 @@
               icon-image(icon-right_ash)
               &:hover
                 icon-image(icon-right_green)
+
+  .rank-list .identification .data-date-picker
+    .date-view
+      line-height: 28px
+      color: $color-text-sub
 
   .no-data-tips
     width: 100%
