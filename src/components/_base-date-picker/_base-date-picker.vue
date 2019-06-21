@@ -1,12 +1,11 @@
 <template>
   <ul class="data-date-picker">
+    <li class="date-view">统计时间 {{viewDate}}</li>
     <li v-for="(item, index) in arrTitle"
         :key="index"
         class="date-item hand"
         :class="{'date-item-active': tabIndex === index}"
         @click="checkTab(index)"
-        @mouseenter="mouseEnter(item.status, index)"
-        @mouseleave="mouseLeave(item.status, index)"
     >
       <date-picker :ref="item.status"
                    v-model="date[item.status]"
@@ -18,39 +17,6 @@
                    @change="_getDate"
       ></date-picker>
       {{item.title}}
-      <!--以下内容暂时无用-->
-      <transition name="fade">
-        <!-- v-show=""-->
-        <div v-if="item.status === 'day' && tabIndex === index && showDate" class="block day">
-          <!--<base-date-select :clearable="false" :disabledDate="disabledDate" :placeHolder="text" @getTime="_getCustomTime"></base-date-select>-->
-          <date-picker :ref="item.status"
-                       v-model="item.date"
-                       :clearable="false"
-                       type="date"
-                       :placeholder="text"
-                       @change="_getDayDate"
-          ></date-picker>
-        </div>
-        <div v-if="item.status === 'week' && tabIndex === index && showDate" class="block week">
-          <date-picker ref="week"
-                       v-model="week"
-                       :clearable="false"
-                       type="week"
-                       format="yyyy 第 WW 周"
-                       :placeholder="text"
-                       @change="_getWeekDate"
-          ></date-picker>
-        </div>
-        <div v-if="item.status === 'month' && tabIndex === index && showDate" class="block month">
-          <date-picker ref="month"
-                       v-model="month"
-                       :clearable="false"
-                       type="month"
-                       :placeholder="text"
-                       @change="_getMonthDate"
-          ></date-picker>
-        </div>
-      </transition>
     </li>
   </ul>
 
@@ -59,7 +25,7 @@
 <script type="text/ecmascript-6">
   import {DatePicker} from 'element-ui'
   import {formatNumber} from '@utils/common'
-  // import moment from 'moment'
+  import moment from 'moment'
   // import DatePicker from './date-picker/src/picker'
   const COMPONENT_NAME = 'BASE_OPTION_BOX'
   const NAV = [
@@ -122,9 +88,10 @@
         clickTab: false,
         date: {
           day: new Date().valueOf() - 84600000,
-          week: new Date().valueOf() - new Date().getDay() * 84600000,
-          month: new Date().valueOf() - (new Date().getDate()+1) * 84600000
-        }
+          week: '',
+          month: ''
+        },
+        viewDate: moment(new Date().valueOf() - 84600000).format('YYYY-MM-DD')
       }
     },
     computed: {
@@ -138,57 +105,31 @@
       }
     },
     methods: {
-      mouseEnter(name, index) {
-        if (name !== this.enterName && this.enterName) {
-          this.$refs[this.enterName] && this.$refs[this.enterName][0] && this.$refs[this.enterName][0].handleClose()
-        }
-        clearTimeout(this.timer)
-        this.tempIndex = index
-        this.$refs[name] && this.$refs[name][0].$refs.reference.focus()
-        this.enterName = name
-      },
-      mouseLeave(name) {
-        this.timer = setTimeout(() => {
-          this.$refs[name] && this.$refs[name][0] && this.$refs[name][0].handleClose()
-        },2500)
-      },
+
       checkTab(index) {
-        this.clickTab = true
-        setTimeout(() => {
-          this.clickTab = false
-        }, 500)
-        this.$refs[this.enterName] && this.$refs[this.enterName][0] && this.$refs[this.enterName][0].handleClose()
-        this.tabIndex = index
-        let date = ''
-        switch (index) {
-        case 0:
-          this.$set(this.date, NAV[this.tabIndex].status, new Date(Date.now() - 86400000))
-          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
-          break
-        case 1:
-          this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - (new Date().getDay() + 6) * 84600000))
-          date = new Date(this.date[NAV[this.tabIndex].status]).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
-          break
-        case 2:
-          this.$set(this.date, NAV[this.tabIndex].status, new Date(new Date().valueOf() - (new Date().getDate() + 1) * 84600000))
-          date = new Date(this.date[NAV[this.tabIndex].status]).getFullYear() + '-' + formatNumber(new Date(this.date[NAV[this.tabIndex].status]).getMonth() + 1) + '-01'
-        }
-        this.$emit('checkTime', date, NAV[this.tabIndex].status)
-        // this.clickTab = false
+        this.tempIndex = index
       },
       _getDate(time) {
-        if (this.clickTab) return
         this.tabIndex = this.tempIndex
         let date = ''
+        let startDate = ''
+        let endDate = ''
         switch (+this.tabIndex) {
         case 0:
           date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          this.viewDate = date
           break
         case 1:
           date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          startDate = moment().week(moment(time).week()).startOf('week').format('YYYY-MM-DD')
+          endDate = moment().week(moment(time).week()).endOf('week').format('YYYY-MM-DD')
+          this.viewDate = startDate + ' ~ ' + endDate
           break
         case 2:
           date = new Date(time).getFullYear() + '-' + formatNumber(new Date(time).getMonth() + 1) + '-01'
+          startDate = moment().month(moment(time).month()).startOf('month').format('YYYY-MM-DD')
+          endDate = moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
+          this.viewDate = startDate + ' ~ ' + endDate
         }
         this.$emit('checkTime', date, NAV[this.tabIndex].status)
       },
@@ -230,6 +171,10 @@
         left: 0
         top: 0
         opacity: 0
+    .date-view
+      line-height: 28px
+      font-size: $font-size-14
+      font-family: $font-family-regular
     .date-item-active
       color: #FFF
       background: #6EBA6E
@@ -258,7 +203,6 @@
         color: $color-text-main
         box-sizing: border-box
         cursor: pointer
-        padding: 4px 32px 4px 7px
         padding: 0
         &::placeholder
           font-family: $font-family-regular
