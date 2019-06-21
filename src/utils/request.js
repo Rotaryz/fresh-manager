@@ -52,6 +52,7 @@ http.interceptors.response.use(
 )
 
 function checkStatus(response) {
+  console.log(response)
   // _loading
   // 如果http状态码正常，则直接返回数据
   if (
