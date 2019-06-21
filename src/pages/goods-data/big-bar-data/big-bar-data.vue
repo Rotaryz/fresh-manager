@@ -330,7 +330,7 @@
               }
             },
             formatter(prams) {
-              return `${prams[0].name}<br />销售额占比：${prams[0].value}%<br />采购额占比：${prams[1].value}%`
+              return `${prams[0].name}<br />销售：${prams[0].value}%<br />采购：${prams[1].value}%`
             }
           },
           series: [

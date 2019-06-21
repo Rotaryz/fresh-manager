@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div class="list">
+    <div v-show="list.length" class="list">
       <div v-for="(item, index) in list" :key="index" class="list-item" :class="{'no-border': index > 5}">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
           <div v-if="val.value === 'img'" class="main">

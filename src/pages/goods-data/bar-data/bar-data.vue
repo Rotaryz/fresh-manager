@@ -97,9 +97,9 @@
           this.$echarts.dispose(el) // 销毁之前的实例
           let myChart = this.$echarts.init(el)
           this.myChart = myChart
-          window.addEventListener('resize', this.resize) // 加监听
+          window.addEventListener('resize',  this.resize) // 加监听
           let that = this
-          myChart.on('click', function (params) {
+          myChart.on('click', function(params) {
             that.$emit('clickChart', params.dataIndex)
           })
           myChart.setOption(this.createBar2(msg))
@@ -441,6 +441,9 @@
     .no-data
       width: 100%
       height: 100%
+      position: absolute
+      left: 0
+      top: 0
       display: flex
       align-items: center
       justify-content: center

@@ -56,7 +56,7 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" :loaded="loaded" @changeGoodsRank="changeGoodsRank"></goods-list>
+            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" :loaded="loadedSale" @changeGoodsRank="changeGoodsRank"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'"
                       ref="bar1" chartId="bar1"
                       @clickChart="clickChart"
@@ -150,7 +150,7 @@
             <div v-if="selectMsg.supply.type !== 'goods' && hideText[3]" class="name-text">
               <p class="item">{{selectMsg.supply.name}}<span class="data">{{supplyData[selectMsg.supply.code + '_total'] || supplyData[selectMsg.supply.code] || 0}}{{selectMsg.supply.rate && '%'}}</span></p>
             </div>
-            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList" :loaded="loaded"></goods-list>
+            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList" :loaded="loadedSupply"></goods-list>
             <bar-data v-if="selectMsg.supply.type === 'bar'"
                       ref="bar4" chartId="bar4"
                       @clickChart="clickChart"
@@ -340,7 +340,8 @@
         secName: {sale: 0, serve: 1, purchase: 2, supply: 3},
         bigBarIndex: 0, // 大图表所属第几块下标
         bigBarType: '', // 大图表所属第几块名称
-        loaded: false,
+        loadedSale: false,
+        loadedSupply: false,
         hideText: [true, true, true, true]
       }
     },
@@ -532,7 +533,7 @@
       },
       // 切换商品销售模块（模块1）
       async changeSale(obj, index) {
-        this.loaded = false
+        this.loadedSale = false
         this.$set(this.selectMsg, 'sale', this.deepCopy(obj))
         this.$set(this.tabIndexControl, 'sale', index)
         obj.code ? this.$set(this.requestSale, 'order_by', obj.code) : this.$delete(this.requestSale, 'order_by')
@@ -544,7 +545,7 @@
         }
         let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
-        this.loaded = true
+        this.loadedSale = true
         if (this.leftTab !== 'goods') {
           if (index === 0) {
             this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
@@ -590,7 +591,7 @@
       },
       // 切换供应链模块（模块4）
       async changeSupply(obj, index) {
-        this.loaded = false
+        this.loadedSupply = false
         this.$set(this.selectMsg, 'supply', obj)
         this.$set(this.tabIndexControl, 'supply', index)
         obj.code ? this.$set(this.requestSupply, 'order_by', obj.code) : this.$delete(this.requestSupply, 'order_by')
@@ -600,7 +601,7 @@
         }
         let dataSupply = Object.assign({}, this.requestPub, this.requestSupply)
         await this.getSupplyData({dataSupply, index})
-        this.loaded = true
+        this.loadedSupply = true
         this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
         this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, obj.code), obj.rate)
       },
