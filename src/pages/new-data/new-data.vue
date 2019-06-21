@@ -20,7 +20,7 @@
                 <div class="info-box">
                   <div class="info-title">支付金额(元)</div>
                   <div class="info-val">
-                    2380.00<span class="small-text">昨日(元): 6908.00</span>
+                    {{realResData.today_pay_amount_total}}<span class="small-text">昨日(元): {{realResData.yestoday_pay_amount_total}}</span>
                   </div>
                 </div>
               </div>
@@ -36,7 +36,7 @@
                   </div>
                 </div>
                 <div class="bottom-box">
-                  昨日：{{realResData[item.key[0]]}}
+                  昨日：{{realResData[item.key[1]]}}
                 </div>
               </div>
             </div>
@@ -77,7 +77,7 @@
             </li>
           </ul>
         </div>
-        <base-date-picker :infoTab="1" :arrTitle="dateArr" @checkTime="_dataBoardChangeDate"></base-date-picker>
+        <base-date-picker :infoTab="0" :arrTitle="dateArr" @checkTime="_dataBoardChangeDate"></base-date-picker>
       </div>
       <div class="bottom-con">
         <div class="label-con">
@@ -99,7 +99,7 @@
           <img src="./icon-ranking@2x.png" class="identification-icon">
           <p class="identification-name">排行</p>
         </div>
-        <base-date-picker :infoTab="1" :arrTitle="dateArr" @checkTime="_rankListChangeDate"></base-date-picker>
+        <base-date-picker :infoTab="0" :arrTitle="dateArr" @checkTime="_rankListChangeDate"></base-date-picker>
       </div>
       <div class="rank-list-content">
         <div v-for="(list,index) in rankDir" :key="index" class="rank-list-con">
@@ -118,8 +118,8 @@
                 <div v-for="(item, idx) in list.data" :key="idx" class="list-content">
                   <div v-for="(key, keyIdx) in list.dataKey" :key="keyIdx" class="list-item">
                     <template v-if="key==='index'">
-                      <div v-if="idx<3" :src="item[key]" :class="'rank-'+(idx+1)" class="rank-icon"></div>
-                      <p v-else class="list-rank-num">{{idx+1}}</p>
+                      <div v-if="list.pager.curPage===1&&idx<3" :src="item[key]" :class="'rank-'+(idx+1)" class="rank-icon"></div>
+                      <p v-else class="list-rank-num">{{(list.pager.curPage-1)*rankLimit+idx+1}}</p>
                     </template>
                     <template v-else-if="Array.isArray(key)">
                       <div class="list-text">{{item[key[0]]}}({{item[key[1]]}})</div>
@@ -153,25 +153,20 @@
 
   import API from '@api'
   import EChartLine from '@components/e-chart/e-chart-line'
+  import {formatNumber} from '@utils/common'
 
   const PAGE_NAME = 'NEW_DATA'
   const TITLE = '数据'
-  // const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+  const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
   const REAL_DATA = [
     {imgUrl: '', title: '访客数', key: ['today_page_customer_total','yestoday_page_customer_total']},
     {imgUrl: 'users', title: '支付用户', key: ['today_pay_customer_total','yestoday_pay_customer_total']},
     {imgUrl: 'browse_volume', title: '浏览量', key: ['today_page_browsing_total','yestoday_page_browsing_total']},
     {imgUrl: 'wallet', title: '支付订单', key: ['today_pay_order_total','yestoday_pay_order_total']},
   ]
-  const BASELIST = [
+  const BASE_LIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
-    {
-      title: '进行中活动',
-      key: 'activity_count',
-      number: 0,
-      url: '/home/activity-manage?status=1',
-      permissions: 'activity'
-    },
+    {title: '进行中活动', key: 'activity_count', number: 0, url: '/home/activity-manage?status=1', permissions: 'activity'},
     {title: '团长', key: 'shop_manage_count', number: 0, url: '/home/leader-list?status=0', permissions: 'shop-manager'},
     {title: '供应商', key: 'supplier_count', number: 0, url: '/home/supplier', permissions: 'supplier'},
     {title: '采购员', key: 'purchase_user_count', number: 0, url: '/home/buyer', permissions: 'purchase-user'},
@@ -183,7 +178,6 @@
     {title: '月', status: 'month'}
   ]
   const REAL_TIME = {
-    apiFun: 'getOperationOrderData',
     label: [
       {name: '今日', key: 'amount_total', total: ''},
       {name: '昨日', key: 'num_total', total: ''}
@@ -200,7 +194,7 @@
   }
   const DATA_BOARD = [
     {
-      apiFun: 'getOperationFlowData',
+      apiFun: 'flowData',
       title: '流量',
       label: [
         {name: '浏览量(PV)', key: 'pv_total', total: ''},
@@ -216,91 +210,91 @@
       },
     },
     {
-      apiFun: 'getOperationBusinessData',
+      apiFun: 'businessData',
       title: '成交',
       label: [
-        {name: '支付金额(元)', key: 'amount_total', total: ''},
-        {name: '客单价(元)', key: 'per_customer_price', total: ''},
-        {name: '销售数量', key: 'num_total', total: ''}
+        {name: '支付金额(元)', key: 'sales_amount_total', total: ''},
+        {name: '客单价(元)', key: 'customer_unit_amount_total', total: ''},
+        {name: '销售数量', key: 'customer_unit_amount_total', total: ''}
       ],
       chartConfig: {
         dataArr: [
-          {name: '支付金额', key: 'amount', data: []},
-          {name: '客单价', key: 'per_customer_price', data: []},
-          {name: '销售数量', key: 'num', data: []}
+          {name: '支付金额', key: 'sales_amount', data: []},
+          {name: '客单价', key: 'customer_unit_amount', data: []},
+          {name: '销售数量', key: 'sales_num', data: []}
         ],
         xAxleData: [],
         lineShadow: 'false'
       }
     },
     {
-      apiFun: 'getOperationOrderData',
+      apiFun: 'orderData',
       title: '订单',
       label: [
-        {name: '支付用户', key: 'amount_total', total: ''},
-        {name: '支付订单', key: 'num_total', total: ''},
-        {name: '支付转化率', key: 'unit_price', total: '', unit: '%'}
+        {name: '支付用户', key: 'pay_customer_num_total', total: ''},
+        {name: '支付订单', key: 'order_num_total', total: ''},
+        {name: '支付转化率', key: 'pay_conversion_rate_total', total: '', unit: '%'}
       ],
       chartConfig: {
         dataArr: [
-          {name: '支付用户', key: 'amount', data: []},
-          {name: '支付订单', key: 'num', data: []},
-          {name: '支付转化率', key: 'unit_price', data: []}
+          {name: '支付用户', key: 'pay_customer_num', data: []},
+          {name: '支付订单', key: 'order_num', data: []},
+          {name: '支付转化率', key: 'pay_conversion_rate', data: []}
         ],
         xAxleData: [],
         lineShadow: 'false'
       }
     },
     {
-      id: 'servicesChart',
-      apiFun: 'getOperationServicesData',
+      apiFun: 'servicesData',
       title: '售后',
       label: [
-        {name: '退货金额(元)', key: 'amount_total', total: ''},
-        {name: '退货数量', key: 'num_total', total: ''}
+        {name: '退货金额(元)', key: 'after_amount_total', total: ''},
+        {name: '退货数量', key: 'after_num_total', total: ''}
       ],
       chartConfig: {
         dataArr: [
-          {name: '退货金额', key: 'amount', data: []},
-          {name: '退货数量', key: 'num', data: []}
+          {name: '退货金额', key: 'after_amount', data: []},
+          {name: '退货数量', key: 'after_num', data: []}
         ],
         xAxleData: [],
         lineShadow: 'false'
       }
     }
   ]
+  const RANK_LIMIT = 10
   const RANK_DIR = {
     leader: {
       title: '团长',
       tableHead: ['排名', '团长', '销售额', '佣金'],
       apiFun: 'managerData',
-      params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
+      params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
       data: [],
       dataKey: ['index', ['name','social_name'], 'total_order_money', 'total_settlement_money'],
       pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/api/backend/data-statistics-ranking-shop-excel',
+      excelApi: '/social-shopping/v2/api/backend/data-statistics-ranking-shop-excel',
       excelUrl: ''
     },
     goods: {
       title: '商品',
       tableHead: ['排名', '商品', '销量', '销售额'],
       apiFun: 'goodsData',
-      params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
+      params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
       data: [],
       dataKey: ['index', 'name', 'sale_count_sum', 'sale_total_sum'],
       pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/api/backend/data-statistics-ranking-goods-excel',
+      excelApi: '/social-shopping/v2/api/backend/data-statistics-ranking-goods-excel',
       excelUrl: ''
     },
     search: {
       title: '搜索词',
       tableHead: ['排名', '搜索词', '搜索次数'],
       apiFun: 'searchData',
-      params: {date_type: 'week', start_date: '2019-06-03', page: 1, limit: 10},
+      params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
       data: [],
       dataKey: ['index', 'keyword', 'times'],
       pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/api/backend/data-statistics-ranking-search-keyword-excel',
+      excelApi: '/social-shopping/v2/api/backend/data-statistics-ranking-search-keyword-excel',
       excelUrl: ''
     }
   }
@@ -317,16 +311,17 @@
       return {
         realData: REAL_DATA,
         realResData: {},
-        baseList: BASELIST,
+        baseList: BASE_LIST,
         dateArr: DATE_ARR,
         downUrl: '',
         shopDownUrl: '',
         permissions: {},
-        disabledDate: {},
         realTimeData: REAL_TIME,
         dataBoard: DATA_BOARD,
         dataBoardIndex: 0,
+        dataBoardParams: {date_type: 'day', start_date: NOW_DATE},
         rankDir: RANK_DIR,
+        rankLimit: RANK_LIMIT,
         chartArr: [],
         getFinish: false
       }
@@ -342,50 +337,41 @@
       }
     },
     mounted() {
-      let time = this.$route.params.time
-      this.disabledDate = {
-        disabledDate(date) {
-          return date && (date.valueOf() <= time.timestamp - 2592000 * 1000 || date.valueOf() >= time.timestamp)
-        }
-      }
+      this.$loading.show()
       this.permissions = storage.get('permissions')
-      this.getSurveyTrade(true)
       this._getRealTimeData()
-      this.getShopBaseData()
+      this._getShopBaseData()
       this._getDataBoard()
-      this.getRankList()
+      this._getAllRankList()
     },
     methods: {
       ...deliveryMethods,
       // 实时总览
-      getSurveyTrade(loading) {
-        API.Data.tradeData({}, loading).then((res) => {
-          if (loading) {
-            this.$loading.hide()
-          }
+      _getRealTimeData() {
+        this._getSurveyTrade()
+        this._getRealTimeChart()
+      },
+      // 实时总览-数据
+      _getSurveyTrade() {
+        API.Data.tradeData().then((res) => {
           if (res.error === this.$ERR_OK) {
             this.realResData = res.data
-            // for (let i = 0; i < this.realData.length; i++) {
-            //   let item = this.realData[i]
-            //   item.curr_total = res.data[item.key].curr_total
-            //   item.total = res.data[item.key].total
-            // }
           } else {
             this.$toast.show(res.message)
           }
+          this.$loading.hide()
         })
       },
-      // 实时总览折线图
-      _getRealTimeData(loading = false) {
+      // 实时总览-折线图
+      _getRealTimeChart(loading = false) {
         let curChart = this.realTimeData
         let getSuccess = false
         API.Data.tradeDayData({}, loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
-          let a={"today":[{"hour":0,"total_money":"10.00"},{"hour":1,"total_money":"20.00"},{"hour":2,"total_money":"30.00"},{"hour":3,"total_money":"50.00"},{"hour":4,"total_money":"50.00"},{"hour":5,"total_money":"20.00"},{"hour":6,"total_money":"0.00"},{"hour":7,"total_money":"90.00"},{"hour":8,"total_money":"70.00"},{"hour":9,"total_money":"80.00"},{"hour":10,"total_money":"30.00"},{"hour":11,"total_money":"50.00"},{"hour":12,"total_money":"60.00"},{"hour":13,"total_money":"60.00"},{"hour":14,"total_money":"60.00"},{"hour":15,"total_money":"80.00"},{"hour":16,"total_money":"80.00"},{"hour":17,"total_money":"20.00"},{"hour":18,"total_money":"50.00"},{"hour":19,"total_money":"80.00"},{"hour":20,"total_money":"0.00"},{"hour":21,"total_money":"0.00"},{"hour":22,"total_money":"0.00"},{"hour":23,"total_money":"0.00"}],"yestoday":[{"hour":0,"total_money":"0.00"},{"hour":1,"total_money":"70.00"},{"hour":2,"total_money":"60.00"},{"hour":3,"total_money":"60.00"},{"hour":4,"total_money":"60.00"},{"hour":5,"total_money":"70.00"},{"hour":6,"total_money":"50.00"},{"hour":7,"total_money":"0.00"},{"hour":8,"total_money":"20.00"},{"hour":9,"total_money":"30.00"},{"hour":10,"total_money":"60.00"},{"hour":11,"total_money":"50.00"},{"hour":12,"total_money":"60.00"},{"hour":13,"total_money":"50.00"},{"hour":14,"total_money":"0.00"},{"hour":15,"total_money":"9.90"},{"hour":16,"total_money":"35.80"},{"hour":17,"total_money":"10.00"},{"hour":18,"total_money":"30.00"},{"hour":19,"total_money":"20.00"},{"hour":20,"total_money":"0.00"},{"hour":21,"total_money":"0.00"},{"hour":22,"total_money":"60.00"},{"hour":23,"total_money":"80.00"}]}
           // 格式化接口返回的数据
-          curChart = this.realTimeResDataFormat(a, curChart)
+          curChart = this.realTimeDataFormat(res.data, curChart)
           getSuccess = true
         }).finally(() => {
           this.chartArr[0] = this.$refs.realTimeChart._setChart(curChart.chartConfig, loading, getSuccess)
@@ -393,8 +379,28 @@
           loading && this.$loading.hide()
         })
       },
+      realTimeDataFormat(result, curChart) {
+        let chartConfig = curChart.chartConfig
+        chartConfig.xAxleData = []// 重置x轴数据
+        // 遍历dataArr，通过key生成新的数组
+        for (let j = 0; j < chartConfig.dataArr.length; j++) {
+          let _chartData = chartConfig.dataArr[j]
+          let _key = _chartData.key// 对应接口每个值的key
+          _chartData.data = []// 重置data
+          // 遍历接口的data数组，通过配置的key赋值给当前的数组
+          for (let i = 0; i < result[_key].length; i++) {
+            let _resData = result[_key][i]
+            _chartData.data.push(_resData.total_money)
+            if (j === 0) {
+              // x轴的date指生成一次就行了
+              chartConfig.xAxleData.push(_resData.hour+'h')
+            }
+          }
+        }
+        return curChart
+      },
       // 基础功能
-      getShopBaseData() {
+      _getShopBaseData() {
         API.Data.getStatisticsBaseData().then((res) => {
           if (res.error === this.$ERR_OK) {
             for (let idx in this.baseList) {
@@ -407,30 +413,16 @@
           }
         })
       },
-      jumpBase(item) {
-        if (!this.permissions[item.permissions]) {
-          this.$toast.show('暂无权限!')
-          return
-        }
-        if (this.permissions[item.permissions].index * 1 !== 1) {
-          this.$toast.show('暂无权限!')
-          return
-        }
-        if (item.title === '司机') {
-          this.setTabIndex(1)
-        }
-        this.$router.push(item.url)
-      },
       // 数据看板
       _getDataBoard(loading = false) {
         let curChart = this.dataBoard[this.dataBoardIndex]
         let getSuccess = false
-        API.Operation[curChart.apiFun]({date_type: 'week'}, loading).then((res) => {
+        API.Data[curChart.apiFun](this.dataBoardParams, loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return false
           }
           // 格式化接口返回的数据
-          curChart = this.formatResData(res, curChart)
+          curChart = this.dataBoardFormat(res.data, curChart)
           getSuccess = true
         }).finally(() => {
           this.chartArr[1] = this.$refs.dataBoardChart._setChart(curChart.chartConfig, true, getSuccess)
@@ -438,33 +430,7 @@
           loading && this.$loading.hide()
         })
       },
-      realTimeResDataFormat(result, curChart) {
-        let chartConfig = curChart.chartConfig
-        chartConfig.xAxleData = []// 重置x轴数据
-        // 遍历dataArr，通过key生成新的数组
-        for (let j = 0; j < chartConfig.dataArr.length; j++) {
-          let _chartData = chartConfig.dataArr[j]
-          let _key = _chartData.key// 对应接口每个值的key
-          // let _curLabel = curChart.label[j]
-          // _curLabel.total = result[_curLabel.key]// 配置的label数组,用于设置每个图表上面的总计
-          _chartData.data = []// 重置data
-          // 遍历接口的data数组，通过配置的key赋值给当前的数组
-          for (let i = 0; i < result[_key].length; i++) {
-            let _resData = result[_key][i]
-            // 测试数据
-            // let rd = (Math.random() * 100).toFixed(2)
-            // _chartData.data.push(_resData[_key] + rd)
-            // 测试数据
-            _chartData.data.push(_resData.total_money)
-            if (j === 0) {
-              // x轴的date指生成一个数组就行了
-              chartConfig.xAxleData.push(_resData.hour+'h')
-            }
-          }
-        }
-        return curChart
-      },
-      formatResData(result, curChart) {
+      dataBoardFormat(result, curChart) {
         let chartConfig = curChart.chartConfig
         chartConfig.xAxleData = []// 重置x轴数据
         // 遍历dataArr，通过key生成新的数组
@@ -475,56 +441,75 @@
           _curLabel.total = result[_curLabel.key]// 配置的label数组,用于设置每个图表上面的总计
           _chartData.data = []// 重置data
           // 遍历接口的data数组，通过配置的key赋值给当前的数组
-          for (let i = 0; i < result.data.length; i++) {
-            let _resData = result.data[i]
-            // 测试数据
-            let rd = (Math.random() * 100).toFixed(2)
-            _chartData.data.push(_resData[_key] + rd)
-            // 测试数据
-            // _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
+          for (let i = 0; i < result.list.length; i++) {
+            let _resData = result.list[i]
+            _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
-              let _date = _resData.date
-              _date = _date.split('-').slice(1).join('/')
+              let _date = ''
+              switch (this.dataBoardParams.date_type) {
+              case 'day':
+                if (result.list[0].year < result.list[29].year) {
+                  _date = _resData.month ? _resData.year + '-' + formatNumber(_resData.month) + '-' + formatNumber(_resData.day) : ''
+                } else {
+                  _date = _resData.month ? formatNumber(_resData.month) + '/' + formatNumber(_resData.day) : ''
+                }
+                break
+              case 'week':
+                _date = _resData.week ? _resData.year.toString().slice(2) + '年第' + _resData.week + '周' : ''
+                break
+              default:
+                _date = _resData.month ? _resData.year.toString().slice(2)  + '年' + _resData.month + '月' : ''
+                break
+              }
               chartConfig.xAxleData.push(_date)
             }
           }
         }
         return curChart
       },
-      getRankList() {
+      _getAllRankList() {
         for(let key in this.rankDir) {
-          let obj = this.rankDir[key]
-          API.Data[obj.apiFun](obj.params).then((res) => {
-            if (res.error === this.$ERR_OK) {
-              obj.data = res.data
-              this._getExcelUrl(obj)
-            } else {
-              this.$toast.show(res.message)
+          this._getRankList(this.rankDir[key])
+        }
+      },
+      // 获取排行每个表格的数据
+      _getRankList(obj) {
+        API.Data[obj.apiFun](obj.params).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            obj.data = res.data
+            obj.pager = {
+              curPage: res.meta.current_page,
+              pageTotal: res.meta.last_page
             }
-          })
-        }
+            let currentId = this.getCurrentId()
+            let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
+            let currentShop = process.env.VUE_APP_CURRENT_SHOP
+            this._getExcelUrl(obj, `access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}`)
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
       },
-      _getExcelUrl(obj) {
+      _getExcelUrl(obj,excelHeader) {
         let params = ``
-        let index = 0
         for(let key in obj.params) {
-          if (index!==0) params += `&`
-          params += `${key}=${obj.params[key]}`
-          index++
+          params += `&${key}=${obj.params[key]}`
         }
-        obj.excelUrl = `${process.env.VUE_APP_API}${obj.excelApi}?${params}`
+        obj.excelUrl = `${process.env.VUE_APP_API}${obj.excelApi}?${excelHeader}${params}`
       },
+      // 数据看板tab切换
       _switchTab(tab, tabIdx) {
         if (this.dataBoardIndex === tabIdx) return
         this.dataBoardIndex = tabIdx
         this._getDataBoard()
       },
+      // 排行的分页切换
       _changePage(item, num) {
         let curPage = item.pager.curPage + num
         if (curPage < 1 || curPage > item.pager.pageTotal) return
-        item.pager.curPage = curPage
-        this[item.apiFun]()
+        item.params.page = curPage// 传给接口用
+        this._getRankList(item)
       },
       _setResize() {
         // 设置chart自适应窗口大小变化
@@ -535,16 +520,30 @@
           }
         }
       },
-      _dataBoardChangeDate(value) {
+      // 数据看板日期切换
+      _dataBoardChangeDate(value, type) {
+        this.dataBoardParams = {date_type: type, start_date: value}
         this._getDataBoard()
       },
+      // 排行日期切换
       _rankListChangeDate(value, type) {
         for(let key in this.rankDir) {
           let obj = this.rankDir[key]
           obj.params.date_type = type
           obj.params.start_date = value
+          obj.params.page = 1
         }
-        this.getRankList()
+        this._getAllRankList()
+      },
+      jumpBase(item) {
+        if (!this.permissions[item.permissions] || this.permissions[item.permissions].index * 1 !== 1) {
+          this.$toast.show('暂无权限!')
+          return
+        }
+        if (item.title === '司机') {
+          this.setTabIndex(1)
+        }
+        this.$router.push(item.url)
       }
     }
   }

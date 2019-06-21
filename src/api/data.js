@@ -20,7 +20,7 @@ export default {
    */
   tradeData(data, loading = true) {
     // let url = '/social-shopping/api/backend/statistics-trade-data'
-    let url = '/social-shopping/v2/api/openapi/data-center/over-view/statistics'
+    let url = '/social-shopping/v2/api/backend/data-center/over-view/statistics'
     return request.get(url, data, loading)
   },
   /**
@@ -104,6 +104,46 @@ export default {
    */
   searchData(data, loading = false) {
     let url = '/social-shopping/v2/api/backend/data-statistics-ranking-search-keyword'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  数据看板-流量数据
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  flowData(data, loading = false) {
+    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-flow'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  数据看板-订单数据
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  orderData(data, loading = false) {
+    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-order'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  数据看板-售后数据
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  servicesData(data, loading = false) {
+    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-after'
+    return request.get(url, data, loading)
+  },
+  /**
+   *  数据看板-成交数据
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  businessData(data, loading = false) {
+    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-clinch'
     return request.get(url, data, loading)
   },
 }

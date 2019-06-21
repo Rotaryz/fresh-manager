@@ -93,7 +93,7 @@
           // canvas位置
           grid: {
             left: '20',
-            right: '30',
+            right: chartConfig.xAxleData.length>0&&chartConfig.xAxleData[0].length>6?'45':'30',
             bottom: chartConfig.legendOnTop?'30':'52',
             top: chartConfig.legendOnTop?'40':'20',
             containLabel: true
