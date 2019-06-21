@@ -117,6 +117,11 @@
         switch (+this.tabIndex) {
         case 0:
           date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          this.date = {
+            day: time,
+            week: '',
+            month: ''
+          }
           this.viewDate = date
           break
         case 1:
@@ -124,12 +129,22 @@
           startDate = moment().week(moment(time).week()).startOf('week').format('YYYY-MM-DD')
           endDate = moment().week(moment(time).week()).endOf('week').format('YYYY-MM-DD')
           this.viewDate = startDate + ' ~ ' + endDate
+          this.date = {
+            day: '',
+            week: time,
+            month: ''
+          }
           break
         case 2:
           date = new Date(time).getFullYear() + '-' + formatNumber(new Date(time).getMonth() + 1) + '-01'
           startDate = moment().month(moment(time).month()).startOf('month').format('YYYY-MM-DD')
           endDate = moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
           this.viewDate = startDate + ' ~ ' + endDate
+          this.date = {
+            day: '',
+            week: '',
+            month: time
+          }
         }
         this.$emit('checkTime', date, NAV[this.tabIndex].status)
       },
