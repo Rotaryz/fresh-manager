@@ -17,7 +17,7 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
-    config.baseURL = resetUrl(config.baseURL)
+    config.url = resetUrl(config.url)
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
@@ -52,7 +52,7 @@ http.interceptors.response.use(
 )
 
 function checkStatus(response) {
-  console.log(response)
+  // console.log(response)
   // _loading
   // 如果http状态码正常，则直接返回数据
   if (
