@@ -187,7 +187,8 @@
         tabArr: [],
         request: {
           wx_group_id: '',
-          day_type: 'week'
+          day_type: 'day',
+          start_date: ''
         },
         editGroupItem: {},
         leftTabItem: {},
