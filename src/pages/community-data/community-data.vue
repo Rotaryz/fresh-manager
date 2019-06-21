@@ -221,8 +221,9 @@
     },
     methods: {
       ...communityMethods,
-      _getData(value) {
-        this.request.day_type = value
+      _getData(value, type) {
+        this.request.day_type = type
+        this.request.start_date = value
         this.getAllData()
       },
       // 切换质量数据tab栏
