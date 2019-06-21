@@ -93,6 +93,7 @@
 
 <script type="text/ecmascript-6">
   import {communityComputed, communityMethods} from '@state/helpers'
+  import moment from 'moment'
   import ChartLine from './chart-line/chart-line'
   import LeftTab from './left-tab/left-tab'
   import StatusTab from './status-tab/status-tab'
@@ -115,12 +116,12 @@
       viewData: [
         [
           {name: '浏览量(PV)', data: '100', code: 'pv'},
-          {name: '访客数(UV)', data: '200', code: 'e_customer'}
+          {name: '访客数(UV)', data: '200', code: 'uv'}
         ],
         [
-          {name: '支付用户', data: '100', code: 'pv'},
-          {name: '支付订单', data: '200', code: 'e_customer'},
-          {name: '交易金额', data: '200', code: 'order'}
+          {name: '支付用户', data: '100', code: 'customers'},
+          {name: '支付订单', data: '200', code: 'order'},
+          {name: '交易金额', data: '200', code: 'transaction'}
         ]
       ]
     },
@@ -188,7 +189,7 @@
         request: {
           wx_group_id: '',
           day_type: 'day',
-          start_date: ''
+          start_date: moment(Date.now() - 84600000).format('YYYY-MM-DD')
         },
         editGroupItem: {},
         leftTabItem: {},

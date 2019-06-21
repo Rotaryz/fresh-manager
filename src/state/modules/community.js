@@ -73,12 +73,12 @@ export const actions = {
       })
   },
   getQualityData({commit}, data, loading = false) {
-    return API.Community.getQualityData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getQualityData(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = [['pv', 'e_customer'], ['pv', 'e_customer', 'order']]
+        let arr = [['pv', 'uv'], ['customers', 'order', 'transaction']]
         let data = dataHandle(arr, res.data)
         commit('SET_QUALITY_DATA', data)
         return true
@@ -91,7 +91,7 @@ export const actions = {
       })
   },
   getBusinessData({commit}, data, loading = false) {
-    return API.Community.getBusinessData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getBusinessData(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -109,7 +109,7 @@ export const actions = {
       })
   },
   getGroupData({commit}, data, loading = false) {
-    return API.Community.getGroupData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getGroupData(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -127,7 +127,7 @@ export const actions = {
       })
   },
   getGoodsList({commit}, data, loading = false) {
-    return API.Community.getGoodsList({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getGoodsList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
