@@ -638,3 +638,11 @@ export const allocationComputed = {
 export const allocationMethods = {
   ...mapActions('allocation', ['getAllocationList', 'getOperation'])
 }
+// 供应链商品
+export const scmGoodsComputed = {
+  ...mapGetters('scmGoods', ['productList', 'statePageTotal'])
+}
+
+export const scmGoodsMethods = {
+  ...mapActions('scmGoods', ['getProductList'])
+}

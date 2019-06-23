@@ -94,7 +94,7 @@ export default {
     return request.post(url, data, loading)
   },
   /**
-   * 获取商品列表
+   * 商品列表[v2.8]
    * @param id
    * @param loading
    * @returns {*}
@@ -212,5 +212,15 @@ export default {
   checkStockType(id, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods-change-stock/${id}`
     return request.get(url, loading)
+  },
+  /**
+   * 商品素材系统类目列表-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  getScmCategoryList(data, loading = true) {
+    let url = `/social-shopping/api/platform/goods-material-category`
+    return request.get(url, data, loading)
   }
 }

@@ -1530,15 +1530,6 @@ export default [
           }
         }
       },
-      // 商品管理
-      {
-        path: 'goods-manage',
-        name: 'goods-manage',
-        component: () => lazyLoadView(import('@pages/goods-manage/goods-manage')),
-        meta: {
-          titles: ['供应链', '采购', '商品管理']
-        }
-      },
       // 商品素材库
       {
         path: 'goods-store',
@@ -1546,6 +1537,28 @@ export default [
         component: () => lazyLoadView(import('@pages/goods-store/goods-store')),
         meta: {
           titles: ['供应链', '采购', '商品素材库']
+        }
+      },
+      // 商品管理
+      {
+        path: 'goods-manage',
+        name: 'goods-manage',
+        component: () => lazyLoadView(import('@pages/goods-manage/goods-manage')),
+        meta: {
+          titles: ['供应链', '采购', '商品管理'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('scmGoods/getProductList', {})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 导入商品
