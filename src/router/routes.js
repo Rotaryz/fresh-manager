@@ -1969,7 +1969,7 @@ export default [
           titles: ['供应链', '仓库', '库存管理'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: ''})
+              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: '', isPresale: ''})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
