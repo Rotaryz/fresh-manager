@@ -57,8 +57,8 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getGoodsDetailData({commit}, id) {
-    return API.Product.getGoodsDetail(id)
+  getGoodsDetailData({commit}, {id, showType}) {
+    return API.Product.getGoodsDetail(id, {show_type: showType})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

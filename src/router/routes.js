@@ -129,7 +129,7 @@ export default [
               return next()
             }
             store
-              .dispatch('editgoods/getGoodsDetailData', routeTo.query.id)
+              .dispatch('editgoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
               .then((response) => {
                 if (!response) {
                   return next({name: '404'})

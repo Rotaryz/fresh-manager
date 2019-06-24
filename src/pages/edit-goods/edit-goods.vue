@@ -205,20 +205,20 @@
             </div>
             <div class="image-box">
               <div class="edit-image">
-                <draggable v-model="msg.goods_banner_images" class="draggable" @update="_setSort()">
-                  <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand">
+                <draggable v-model="saleMsg.goods_banner_images" class="draggable" @update="_setSort()">
+                  <div v-for="(item, index) in saleMsg.goods_banner_images" :key="index" class="show-image hand">
                     <img class="img" :src="item.image_url" alt="">
                     <span class="close" @click="delPic(index)"></span>
                   </div>
                 </draggable>
-                <div v-if="msg.goods_banner_images.length < picNum" class="add-image hand">
+                <div v-if="saleMsg.goods_banner_images.length < picNum" class="add-image hand">
                   <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_banner_images', picNum, $event)">
                   <div v-if="showLoading && uploadImg === 'goods_banner_images'" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
                 </div>
               </div>
-              <!--<base-edit-image :picList.sync="msg.goods_banner_images" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>-->
+              <!--<base-edit-image :picList.sync="saleMsg.goods_banner_images" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>-->
               <div class="tip">上传图片的最佳尺寸：1:1，其他尺寸会影响页效果，格式png，jpeg，jpg，最多可上传5张，首张为封面。</div>
             </div>
           </div>
@@ -229,20 +229,20 @@
             </div>
             <div class="image-box">
               <div class="edit-image">
-                <draggable v-model="msg.goods_detail_images" class="draggable" @update="_setSort()">
-                  <div v-for="(item, index) in msg.goods_detail_images" :key="index" class="show-image hand">
+                <draggable v-model="saleMsg.goods_detail_images" class="draggable" @update="_setSort()">
+                  <div v-for="(item, index) in saleMsg.goods_detail_images" :key="index" class="show-image hand">
                     <img class="img" :src="item.image_url" alt="">
                     <span class="close" @click="delPic2(index)"></span>
                   </div>
                 </draggable>
-                <div v-if="msg.goods_detail_images.length < 15" class="add-image hand">
+                <div v-if="saleMsg.goods_detail_images.length < 15" class="add-image hand">
                   <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_detail_images', 15, $event)">
                   <div v-if="showLoading && uploadImg === 'goods_detail_images'" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
                 </div>
               </div>
-              <!--<base-edit-image :picList.sync="msg.goods_detail_images" :picNum="15" @failFile="failFile" @getPic="getPic2" @delPic="delPic2"></base-edit-image>-->
+              <!--<base-edit-image :picList.sync="saleMsg.goods_detail_images" :picNum="15" @failFile="failFile" @getPic="getPic2" @delPic="delPic2"></base-edit-image>-->
               <div class="tip">上传图片的格式png，jpeg，jpg，最多可上传15张。</div>
             </div>
           </div>
@@ -257,7 +257,7 @@
               商品销售标题
             </div>
             <div class="edit-input-box">
-              <input v-model="msg.name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
+              <input v-model="saleMsg.name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
             </div>
           </div>
           <div class="edit-item">
@@ -266,8 +266,8 @@
               商品副标题
             </div>
             <div class="edit-input-box">
-              <textarea v-model="msg.describe" class="edit-textarea edit-input" placeholder="输入商品副标题" maxlength="50"></textarea>
-              <span class="num">{{msg.describe && msg.describe.length || 0}}/50</span>
+              <textarea v-model="saleMsg.describe" class="edit-textarea edit-input" placeholder="输入商品副标题" maxlength="50"></textarea>
+              <span class="num">{{saleMsg.describe && saleMsg.describe.length || 0}}/50</span>
             </div>
           </div>
           <div class="edit-item">
@@ -277,9 +277,9 @@
             </div>
             <div class="edit-input-box mini-edit-input-box">
               <div class="mini-mr20">
-                <base-drop-down :height="40" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+                <base-drop-down :height="40" :width="190" :select="categoriesSelect" @setValue="setStairCategoriesValue"></base-drop-down>
               </div>
-              <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+              <base-drop-down :height="40" :width="190" :select="categoriesSecondSelect" @setValue="setSecondCategoriesValue"></base-drop-down>
             </div>
           </div>
           <div class="edit-item">
@@ -287,7 +287,7 @@
               销售规格
             </div>
             <div class="edit-input-box">
-              <div class="sale-size">150g/盒</div>
+              <div class="sale-size">{{goods_skus.base_sale_rate}}{{goods_skus.base_unit}}/{{goods_skus.sale_unit}}</div>
             </div>
           </div>
           <div class="edit-item">
@@ -296,7 +296,7 @@
               划线价
             </div>
             <div class="edit-input-box">
-              <input v-model="msg.original_price" type="number" class="edit-input" maxlength="10">
+              <input v-model="sale_skus.original_price" type="number" class="edit-input" maxlength="10">
             </div>
             <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
           </div>
@@ -306,7 +306,7 @@
               销售售价
             </div>
             <div class="edit-input-box">
-              <input v-model="msg.trade_price" type="number" class="edit-input">
+              <input v-model="sale_skus.trade_price" type="number" class="edit-input">
             </div>
             <div v-if="goods_skus.sale_unit" class="edit-pla">元/{{goods_skus.sale_unit}}</div>
           </div>
@@ -316,7 +316,7 @@
               初始销量
             </div>
             <div class="edit-input-box">
-              <input v-model="msg.init_sale_count" type="number" class="edit-input">
+              <input v-model="saleMsg.init_sale_count" type="number" class="edit-input">
             </div>
             <div class="edit-pla">仅展示在小程序，不影响订单</div>
           </div>
@@ -325,7 +325,7 @@
     </template>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn back-submit hand" @click="_submit">保存</div>
+      <div class="back-btn back-submit hand" @click="_submitType">保存</div>
     </div>
     <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
   </div>
@@ -436,17 +436,44 @@
           type: 'default',
           data: []
         },
+        saleMsg: {
+          goods_banner_images: [],
+          goods_detail_images: [],
+          goods_skus: [],
+          goods_category_id: 0,
+          name: '',
+          describe: '',
+          init_sale_count: ''
+        },
+        sale_skus: {
+          trade_price: '',
+          original_price: ''
+        },
+        categoriesSelect: {
+          check: false,
+          show: false,
+          content: '一级分类',
+          type: 'default',
+          data: []
+        },
+        categoriesSecondSelect: {
+          check: false,
+          show: false,
+          content: '二级分类',
+          type: 'default',
+          data: []
+        },
         menuName: '请选择',
         showMenu: false,
         preMenuIndex: null,
         preChildIndex: null,
-        isSubmit: false,
         showLoading: false,
         picNum: 5,
         uploadImg: '',
         isSelectStock: true,
         tabStatus: ORDERSTATUS,
-        tabIndex: 0
+        tabIndex: 0,
+        isSubmit: false
       }
     },
     created() {
@@ -455,6 +482,7 @@
       this.getSelectData()
       this.getSupplierData()
       this.getCategoriesData()
+      this.getScmCategoriesData()
     },
     mounted() {
       // this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
@@ -471,77 +499,67 @@
       _setData() {
         if (!_.isEmpty(this.detail)) {
           this.msg = _.cloneDeep(this.detail)
-          this.dispatchSelect.content = this.msg.goods_skus[0].base_unit
           this.goods_skus = this.msg.goods_skus[0]
           this.saleSelect.content = this.goods_skus.sale_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
           this.purchaseSelect.content = this.goods_skus.purchase_unit
-          this.menuName = this.msg.goods_category_name
+          this.dispatchSelect.content = this.goods_skus.base_unit
+          this._saleInfo()
         }
       },
-      _back() {
-        this.$router.back()
-      },
-      selectStock(index) {
-        if (!this.id) {
-          this.msg.is_presale = index
-        } else {
-          API.Product.checkStockType(this.id, false).then((res) => {
-            if (res.error === this.$ERR_OK) {
-              if (res.data.is_allow_change * 1 === 1) {
-                this.msg.is_presale = index
-              } else {
-                this.$toast.show(res.data.msg)
+      getScmCategoriesData() {
+        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.stairSelect.data = res.data
+            res.data.forEach((item) => {
+              if (item.is_selected) {
+                this.stairSelect.content = item.name
+                this.secondSelect.data = item.list
+                this.secondSelect.data.forEach((twomitem) => {
+                  if (twomitem.is_selected) {
+                    this.secondSelect.content = twomitem.name
+                    this.thirdlySelect.data = twomitem.list
+                    this.thirdlySelect.data.forEach((thritem) => {
+                      if(thritem.is_selected) {
+                        this.thirdlySelect.content = thritem.name
+                      }
+                    })
+                  }
+                })
               }
-            } else {
-              this.$toast.show(res.message)
-            }
-          })
-        }
+            })
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
       },
-      getPic(image) {
-        let item = {id: 0, image_id: image.id, image_url: image.url}
-        this.msg.goods_banner_images.push(item)
-      },
-      delPic(index) {
-        this.msg.goods_banner_images.splice(index, 1)
-      },
-      getPic2(image) {
-        let item = {id: 0, image_id: image.id, image_url: image.url}
-        this.msg.goods_detail_images.push(item)
-      },
-      delPic2(index) {
-        this.msg.goods_detail_images.splice(index, 1)
-      },
-      failFile(msg) {
-        this.$emit('showToast', msg)
-      },
-      _submit() {
+      _submitType() {
         if (this.isSubmit) {
           return
         }
-        this.msg.init_sale_count += ''
+        if (this.tabIndex === 0) {
+          this._baseSubmit()
+          return
+        }
+        this._saleSubmit()
+      },
+      // 基础信息提交
+      _baseSubmit() {
         this.goods_skus.presale_usable_stock += ''
-        if (this.msg.name.length === 0 || this.msg.name.length >= 30) {
+        if (this.goods_skus.goods_material_name.length === 0 || this.goods_skus.goods_material_name.length >= 30) {
           this.$toast.show('请选择输入商品名称且小于30字')
           return
-        } else if (this.msg.goods_category_id <= 0) {
-          this.$toast.show('请选择商品分类')
+        } else if (this.msg.goods_material_category_id <= 0) {
+          this.$toast.show('请选择商品类目')
+          return
+        } else if (this.msg.goods_main_images.length !== 0) {
+          this.$toast.show('请上传商品图片')
           return
         } else if (this.goods_skus.base_unit === '') {
           this.$toast.show('请选择基本单位')
           return
-        } else if (this.msg.goods_banner_images.length === 0) {
-          this.$toast.show('请上传商品封面图')
-          return
-        } else if (this.msg.goods_detail_images.length === 0) {
-          this.$toast.show('请上传商品详情图')
-          return
         } else if (this.goods_skus.base_sale_rate.length === 0) {
           this.$toast.show('请输入销售规格')
-          return
-        } else if (this.goods_skus.goods_sku_encoding.length === 0) {
-          this.$toast.show('请输入商品编码')
           return
         } else if (this.goods_skus.base_sale_rate <= 0) {
           this.$toast.show('请输入销售规格大于零')
@@ -549,14 +567,8 @@
         } else if (this.goods_skus.sale_unit === '') {
           this.$toast.show('请选择销售单位')
           return
-        } else if (this.msg.original_price.length === 0) {
-          this.$toast.show('请输入划线价')
-          return
-        } else if (this.msg.trade_price.length === 0) {
-          this.$toast.show('请输入售价')
-          return
-        } else if (+this.msg.original_price < +this.msg.trade_price) {
-          this.$toast.show('请输入划线价大于售价')
+        } else if (this.goods_skus.goods_sku_encoding.length === 0) {
+          this.$toast.show('请输入商品编码')
           return
         } else if (this.goods_skus.presale_usable_stock.length === 0 && this.msg.is_presale * 1 === 1) {
           this.$toast.show('请输入预售库存')
@@ -566,13 +578,6 @@
           return
         } else if (this.goods_skus.presale_usable_stock.includes('.') && this.msg.is_presale * 1 === 1) {
           this.$toast.show('请输入正确的预售库存')
-          return
-        } else if (
-          this.msg.init_sale_count === 'undefined' ||
-          this.msg.init_sale_count.includes('.') ||
-          +this.msg.init_sale_count < 0
-        ) {
-          this.$toast.show('请输入正确初始销量')
           return
         } else if (this.goods_skus.supplier_id <= 0) {
           this.$toast.show('请选择供应商')
@@ -597,24 +602,16 @@
           this.$toast.show('损耗比区间在0与100之间')
           return
         }
-        if (this.msg.is_presale * 1 === 0 && !this.id) {
-          this.goods_skus.presale_usable_stock = 0
-          this.goods_skus.warehouse_usable_stock = 0
-        }
-        if (this.msg.is_presale * 1 === 0) {
-          this.goods_skus.presale_usable_stock = 0
-        }
         this.msg.goods_skus[0] = this.goods_skus
-        this.msg.goods_skus[0].trade_price = this.msg.trade_price
-        this.msg.goods_skus[0].original_price = this.msg.original_price
+        this.msg.save_type = 'base'
+        console.log(this.msg)
+        console.log(this.goods_skus)
         this.isSubmit = true
         if (this.id) {
           API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
             if (res.error === this.$ERR_OK) {
-              this.$toast.show('编辑成功')
-              setTimeout(() => {
-                this._back()
-              }, 1000)
+              this.tabIndex = 1
+              this.$toast.show('编辑基础信息成功')
             } else {
               this.isSubmit = false
               this.$toast.show(res.message)
@@ -624,17 +621,119 @@
           return
         }
         API.Product.createGoodsDetail(this.msg).then((res) => {
+          this.isSubmit = false
           if (res.error === this.$ERR_OK) {
-            this.$toast.show('创建成功')
-            setTimeout(() => {
-              this._back()
-            }, 1000)
+            console.log(res.data)
+            this.id = res.data.goods_id
+            this.tabIndex = 1
+            this.$toast.show('创建基础信息成功')
           } else {
-            this.isSubmit = false
             this.$toast.show(res.message)
           }
           this.$loading.hide()
         })
+        console.log(this.msg)
+        console.log(this.goods_skus)
+      },
+      // 销售信息提交
+      _saleSubmit() {
+        this.saleMsg.init_sale_count += ''
+        if (this.saleMsg.goods_banner_images.length !== 0) {
+          this.$toast.show('请上传商品封面图')
+          return
+        } else if (this.saleMsg.goods_detail_images.length !== 0) {
+          this.$toast.show('请上传商品详情图')
+          return
+        } else if (this.saleMsg.name.length === 0 || this.saleMsg.name.length >= 30) {
+          this.$toast.show('请选择输入商品名称且小于30字')
+          return
+        } else if (this.saleMsg.goods_category_id <= 0) {
+          this.$toast.show('请选择商品分类')
+          return
+        } else if (this.sale_skus.original_price.length === 0) {
+          this.$toast.show('请输入划线价')
+          return
+        } else if (this.sale_skus.trade_price.length === 0) {
+          this.$toast.show('请输入销售售价')
+          return
+        } else if (+this.sale_skus.original_price < +this.sale_skus.trade_price) {
+          this.$toast.show('请输入划线价大于销售售价')
+          return
+        } else if (
+          this.saleMsg.init_sale_count === '' ||
+          this.saleMsg.init_sale_count.includes('.') ||
+          +this.saleMsg.init_sale_count < 0
+        ) {
+          this.$toast.show('请输入正确初始销量')
+          return
+        }
+        this.saleMsg.save_type = 'sale'
+        this.saleMsg.goods_skus[0] = this.sale_skus
+        this.isSubmit = true
+        if (this.id) {
+          API.Product.editGoodsDetail(this.id, this.saleMsg).then((res) => {
+            this.isSubmit = false
+            if (res.error === this.$ERR_OK) {
+              this.$toast.show('编辑销售信息成功')
+            } else {
+              this.$toast.show(res.message)
+            }
+            this.$loading.hide()
+          })
+          return
+        }
+        console.log(this.saleMsg)
+        this.$toast.show('请先保存基础信息')
+      },
+      _back() {
+        this.$router.back()
+      },
+      // 编辑销售信息
+      _saleInfo() {
+        API.Product.getGoodsDetail(this.id, {show_type: 'sale'}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            console.log(res.data)
+            this.saleMsg = res.data
+            this.sale_skus = this.saleMsg.goods_skus[0]
+          } else {
+            this.$toast.show(res.message)
+          }
+          this.$loading.hide()
+        })
+      },
+      selectStock(index) {
+        if (!this.id) {
+          this.msg.is_presale = index
+        } else {
+          API.Product.checkStockType(this.id, false).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              if (res.data.is_allow_change * 1 === 1) {
+                this.msg.is_presale = index
+              } else {
+                this.$toast.show(res.data.msg)
+              }
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+        }
+      },
+      getPic(image) {
+        let item = {id: 0, image_id: image.id, image_url: image.url}
+        this.saleMsg.goods_banner_images.push(item)
+      },
+      delPic(index) {
+        this.saleMsg.goods_banner_images.splice(index, 1)
+      },
+      getPic2(image) {
+        let item = {id: 0, image_id: image.id, image_url: image.url}
+        this.saleMsg.goods_detail_images.push(item)
+      },
+      delPic2(index) {
+        this.saleMsg.goods_detail_images.splice(index, 1)
+      },
+      failFile(msg) {
+        this.$emit('showToast', msg)
       },
       getSelectData() {
         API.Product.getUnitsList({}, false).then((res) => {
@@ -662,14 +761,14 @@
       getCategoriesData() {
         API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.stairSelect.data = res.data
+            this.categoriesSelect.data = res.data
             res.data.forEach((item) => {
               if (item.is_selected) {
-                this.stairSelect.content = item.name
-                this.secondSelect.data = item.list
-                this.secondSelect.data.forEach((twomitem) => {
+                this.categoriesSelect.content = item.name
+                this.categoriesSecondSelect.data = item.list
+                this.categoriesSecondSelect.data.forEach((twomitem) => {
                   if (twomitem.is_selected) {
-                    this.secondSelect.content = twomitem.name
+                    this.categoriesSecondSelect.content = twomitem.name
                   }
                 })
               }
@@ -679,29 +778,50 @@
           }
         })
       },
-      setValue(data) {
+      setStairValue(data) {
+        this.secondSelect.content = '二级类目'
+        this.secondSelect.data = data.list
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = ''
+        this.msg.goods_material_category_id = data.id
+        console.log(this.msg.goods_material_category_id)
+      },
+      setSecondValue(data) {
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = data.list
+        this.msg.goods_material_category_id = data.id
+        console.log(this.msg.goods_material_category_id)
+      },
+      setThirdlyValue(data) {
+        this.msg.goods_material_category_id = data.id
+        console.log(this.msg.goods_material_category_id)
+      },
+      setBaseValue(data) {
         this.goods_skus.base_unit = data.name
       },
       saleSelectValue(data) {
         this.goods_skus.sale_unit = data.name
       },
-      purchaseSelectValue(data) {
-        this.goods_skus.purchase_unit = data.name
-      },
       supplierSelectValue(data) {
+        console.log(data)
         this.goods_skus.supplier_id = data.supplier_id
       },
-      setStairValue(data) {
-        this.secondSelect.content = '二级分类'
-        this.secondSelect.data = data.list
-        this.msg.goods_category_id = data.id
-      },
-      setSecondValue(data) {
-        this.msg.goods_category_id = data.id
+      purchaseSelectValue(data) {
+        this.goods_skus.purchase_unit = data.name
       },
       switchBtn() {
         this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
       },
+      setStairCategoriesValue(data) {
+        this.categoriesSecondSelect.content = '二级分类'
+        this.categoriesSecondSelect.data = data.list
+        this.saleMsg.goods_category_id = data.id
+      },
+      setSecondCategoriesValue(data) {
+        this.saleMsg.goods_category_id = data.id
+      },
+      setValue() {},
+      delConfirm() {},
       _setSort() {},
       _addPic(type, length, e) {
         this.uploadImg = type
