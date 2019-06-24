@@ -30,7 +30,7 @@
             <p class="identification-name">商品列表</p>
           </div>
           <div class="function-btn">
-            <div class="btn-main btn-main-end">商品素材中心</div>
+            <div class="btn-main btn-main-end" @click="jumpStore">商品素材中心</div>
             <router-link to="edit-supply-goods" append class="btn-main btn-main-end g-btn-item">
               新建商品<span class="add-icon"></span>
             </router-link>
@@ -240,6 +240,9 @@
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()
+      },
+      jumpStore() {
+        this.$router.push('/home/goods-store')
       },
       getReqList() {
         this.getProductList({

@@ -391,6 +391,7 @@
     padding-top: 20px
     position: relative
     z-index: 11
+    min-height: 54px
     display: flex
     .select-left
       font-size: $font-size-14

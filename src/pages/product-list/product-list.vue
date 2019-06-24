@@ -3,21 +3,28 @@
     <div class="down-content">
       <span class="down-tip">分类筛选</span>
       <div class="down-item-small">
-        <base-drop-down :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+        <base-drop-down :select="stairSelect" @setValue="_setStairValue"></base-drop-down>
       </div>
       <div class="down-item">
-        <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
+        <base-drop-down :select="secondSelect" @setValue="_secondValue"></base-drop-down>
       </div>
       <span class="down-tip">类型</span>
       <div class="down-item">
-        <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
+        <base-drop-down :select="typeSelect" @setValue="_setTypeValue"></base-drop-down>
       </div>
       <span class="down-tip">资料状态</span>
       <div class="down-item">
-        <base-drop-down :select="secondSelect" @setValue="secondValue"></base-drop-down>
+        <base-drop-down :select="progressSelect" @setValue="_setCompleteValue"></base-drop-down>
+      </div>
+      <span class="down-tip">库存</span>
+      <div class="down-item-small">
+        <base-drop-down :select="presaleSelect" @setValue="_setPresaleValue"></base-drop-down>
+      </div>
+      <div class="down-item">
+        <base-drop-down :select="storeSelect" @setValue="_setStoreValue" :isUse="isPresale.length !== 0"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
-      <div class="down-item">
+      <div class="">
         <base-search placeHolder="商品名称或编码" @search="search"></base-search>
       </div>
     </div>
@@ -29,7 +36,7 @@
           <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main">商品素材中心</div>
+          <div class="btn-main" @click="jumpStore">商品素材中心</div>
           <router-link tag="div" to="edit-goods" append class="btn-main g-btn-item">新建商品<span class="add-icon"></span></router-link>
           <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
           <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
@@ -90,7 +97,7 @@
                 <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
               </div>
               <div class="list-item list-item-layout">
-                类型
+                {{item.source * 1 === 1 ? '自建' : '平台'}}
               </div>
               <div class="list-item">
                 <div class="list-item-btn" @click="switchBtn(item, index)">
@@ -98,8 +105,8 @@
                 </div>
               </div>
               <div class="list-item list-operation-box">
-                <router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation list-operation-all">完善资料</router-link>
-                <!--<router-link tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>-->
+                <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation list-operation-all">完善资料</router-link>
+                <router-link v-else tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation">编辑</router-link>
                 <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
@@ -170,15 +177,47 @@
           type: 'default',
           data: []
         },
+        typeSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]
+        },
+        progressSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]
+        },
+        presaleSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '仓库', value: 0}, {name: '预售', value: 1}]
+        },
+        storeSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '无库存', value: 0}, {name: '有库存', value: 1}]
+        },
         goodsList: [],
         pageTotal: {},
-        isOnline: '',
+        categoryId: '',
+        source: '',
+        completeStatus: '',
+        isPresale: '',
+        hasStock: '',
         keyWord: '',
+        isOnline: '',
         goodsPage: 1,
         curItem: '',
         downUrl: '',
         oneBtn: false,
-        categoryId: '',
         showIndex: false,
         defaultIndex: 0
       }
@@ -205,18 +244,75 @@
       _hideTip() {
         this.showIndex = false
       },
-      async _syncGoods() {
-        let res = await API.Product.syncGoodsInfo()
-        this.$loading.hide()
-        if (res.error === this.$ERR_OK) {
-          this.$toast.show('同步成功')
-          this.isOnline = ''
-          this.dispatchSelect.content = '全部状态'
-          this.goodsPage = 1
-          this.keyWord = ''
-          this.$refs.pagination.beginPage()
-          this.getGoodsListData()
+      _getUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
+          this.keyWord}&current_corp=${currentId}&goods_category_id=${this.categoryId}`
+        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
+      },
+      _setStairValue(data) {
+        this.secondSelect.content = '二级分类'
+        this.secondSelect.data = data.list
+        this.$refs.pagination.beginPage()
+        this.categoryId = data.id
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        this.getGoodsStatus()
+      },
+      _secondValue(data) {
+        this.secondSelect.content = data.name
+        this.$refs.pagination.beginPage()
+        this.categoryId = data.id
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        this.getGoodsStatus()
+      },
+      _setTypeValue(data) {
+        this.source = data.value
+        this.$refs.pagination.beginPage()
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        this.getGoodsStatus()
+      },
+      _setCompleteValue(data) {
+        this.completeStatus = data.value
+        this.$refs.pagination.beginPage()
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        this.getGoodsStatus()
+      },
+      _setPresaleValue(data) {
+        this.isPresale = data.value
+        if (data.value.length === 0) {
+          this.hasStock = ''
+          this.storeSelect.content = '全部'
         }
+        this.$refs.pagination.beginPage()
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        this.getGoodsStatus()
+      },
+      _setStoreValue(data) {
+        this.hasStock = data.value
+        this.$refs.pagination.beginPage()
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        this.getGoodsStatus()
+      },
+      search(text) {
+        this.$refs.pagination.beginPage()
+        this.keyWord = text
+        this.goodsPage = 1
+        this._getUrl()
+        this.getGoodsListData()
+        this.getGoodsStatus()
       },
       changeStatus(selectStatus) {
         this.isOnline = selectStatus.value
@@ -225,40 +321,21 @@
         this._getUrl()
         this.getGoodsListData()
       },
-      _getUrl() {
-        let currentId = this.getCurrentId()
-        let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
-          this.keyWord
-        }&current_corp=${currentId}&goods_category_id=${this.categoryId}`
-        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
-      },
-      getGoodsStatus() {
-        API.Product.getGoodsStatus({
-          keyword: this.keyWord,
-          goods_category_id: this.categoryId
-        }).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          this.statusTab = res.data.map((item, index) => {
-            return {
-              name: item.status_str,
-              value: item.status,
-              num: item.statistic
-            }
-          // this.$set(this.statusTab[index], 'num', item.statistic)
-          })
-        })
+      addPage(page) {
+        this.goodsPage = page
+        this.getGoodsListData()
       },
       getGoodsListData() {
         let data = {
+          goods_category_id: this.categoryId,
+          source: this.source,
+          complete_status: this.completeStatus,
+          is_presale: this.isPresale,
+          has_stock: this.hasStock,
+          keyword: this.keyWord,
           is_online: this.isOnline,
           page: this.goodsPage,
-          limit: 10,
-          keyword: this.keyWord,
-          goods_category_id: this.categoryId
+          limit: 10
         }
         API.Product.getGoodsList(data, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -274,24 +351,28 @@
           }
         })
       },
-      setValue(item) {
-        this.$refs.pagination.beginPage()
-        this.isOnline = item.value
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-      },
-      search(text) {
-        this.$refs.pagination.beginPage()
-        this.keyWord = text
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
-      },
-      addPage(page) {
-        this.goodsPage = page
-        this.getGoodsListData()
+      getGoodsStatus() {
+        API.Product.getGoodsStatus({
+          goods_category_id: this.categoryId,
+          source: this.source,
+          complete_status: this.completeStatus,
+          is_presale: this.isPresale,
+          has_stock: this.hasStock,
+          keyword: this.keyWord
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              value: item.status,
+              num: item.statistic
+            }
+            // this.$set(this.statusTab[index], 'num', item.statistic)
+          })
+        })
       },
       delGoods(item) {
         this.curItem = item
@@ -345,25 +426,6 @@
           }
         })
       },
-      setStairValue(data) {
-        this.secondSelect.content = '二级分类'
-        this.secondSelect.data = data.list
-        this.$refs.pagination.beginPage()
-        this.categoryId = data.id
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
-      },
-      secondValue(data) {
-        this.secondSelect.content = data.name
-        this.$refs.pagination.beginPage()
-        this.categoryId = data.id
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
-      },
       //  导入商品新建模板
       async importStock(e, index) {
         let param = this._infoFile(e.target.files[0])
@@ -385,6 +447,22 @@
         let param = new FormData() // 创建form对象
         param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
+      },
+      jumpStore() {
+        this.$router.push('/home/goods-store')
+      },
+      async _syncGoods() {
+        let res = await API.Product.syncGoodsInfo()
+        this.$loading.hide()
+        if (res.error === this.$ERR_OK) {
+          this.$toast.show('同步成功')
+          this.isOnline = ''
+          this.dispatchSelect.content = '全部状态'
+          this.goodsPage = 1
+          this.keyWord = ''
+          this.$refs.pagination.beginPage()
+          this.getGoodsListData()
+        }
       }
     }
   }
