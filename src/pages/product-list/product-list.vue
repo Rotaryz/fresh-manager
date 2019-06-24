@@ -21,7 +21,7 @@
         <base-drop-down :select="presaleSelect" @setValue="_setPresaleValue"></base-drop-down>
       </div>
       <div class="down-item">
-        <base-drop-down :select="storeSelect" @setValue="_setStoreValue" :isUse="isPresale.length !== 0"></base-drop-down>
+        <base-drop-down :select="storeSelect" :isUse="isPresale.length !== 0" @setValue="_setStoreValue"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="">

@@ -210,32 +210,26 @@
       return {
         id: this.$route.query.id || '',
         msg: {
-          name: '测试',
-          goods_material_category_id: 23,
-          goods_main_images: [
-            {
-              id: 0,
-              image_id: 219376,
-              url: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F24%2F1561349528001-001.jpg'
-            }
-          ],
+          name: '',
+          goods_material_category_id: 0,
+          goods_main_images: [],
           goods_skus: [],
           is_presale: 1,
           save_type: 'base'
         },
         goods_skus: {
           goods_material_name: '',
-          base_unit: 'KG',
-          base_sale_rate: '2',
-          sale_unit: 'KG',
-          goods_sku_encoding: '2223',
-          presale_usable_stock: '2',
-          warehouse_usable_stock: '4',
-          supplier_id: 4,
-          base_purchase_rate: '2',
-          purchase_unit: 'KG',
-          purchase_price: '2',
-          damage_rate: '1',
+          base_unit: '',
+          base_sale_rate: '',
+          sale_unit: '',
+          goods_sku_encoding: '',
+          presale_usable_stock: '',
+          warehouse_usable_stock: '',
+          supplier_id: 0,
+          base_purchase_rate: '',
+          purchase_unit: '',
+          purchase_price: '',
+          damage_rate: '',
           is_weight: 1
         },
         stairSelect: {
@@ -310,17 +304,10 @@
           this.msg = _.cloneDeep(this.detail)
           console.log(this.msg)
           this.goods_skus = this.msg.goods_skus[0]
-          this.dispatchSelect.content = this.goods_skus.base_unit || 'KG'
+          this.dispatchSelect.content = this.goods_skus.base_unit
           this.saleSelect.content = this.goods_skus.sale_unit
           this.purchaseSelect.content = this.goods_skus.purchase_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
-          this.msg.goods_main_images = [
-            {
-              id: 0,
-              image_id: 219376,
-              url: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F24%2F1561349528001-001.jpg'
-            }
-          ]
         }
       },
       getCategoriesData() {

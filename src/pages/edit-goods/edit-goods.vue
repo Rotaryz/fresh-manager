@@ -21,7 +21,7 @@
               商品名称
             </div>
             <div class="edit-input-box">
-              <input v-model="msg.name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
+              <input v-model="goods_skus.goods_material_name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
             </div>
             <div class="edit-input-copy hand">
               <div class="bnt-name">一键复制</div>
@@ -37,9 +37,9 @@
                 <base-drop-down :height="40" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
               </div>
               <div class="mini-mr20">
-                <base-drop-down :height="40" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+                <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
               </div>
-              <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+              <base-drop-down :height="40" :width="190" :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
             </div>
           </div>
           <div class="edit-item  edit-image-box">
@@ -49,20 +49,19 @@
             </div>
             <div class="image-box">
               <div class="edit-image">
-                <draggable v-model="msg.goods_banner_images" class="draggable" @update="_setSort()">
-                  <div v-for="(item, index) in msg.goods_banner_images" :key="index" class="show-image hand">
+                <draggable v-model="msg.goods_main_images" class="draggable" @update="_setSort()">
+                  <div v-for="(item, index) in msg.goods_main_images" :key="index" class="show-image hand">
                     <img class="img" :src="item.image_url" alt="">
                     <span class="close" @click="delPic(index)"></span>
                   </div>
                 </draggable>
-                <div v-if="msg.goods_banner_images.length < picNum" class="add-image hand">
-                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_banner_images', picNum, $event)">
-                  <div v-if="showLoading && uploadImg === 'goods_banner_images'" class="loading-mask">
+                <div v-if="msg.goods_main_images.length < picNum" class="add-image hand">
+                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_main_images', picNum, $event)">
+                  <div v-if="showLoading && uploadImg === 'goods_main_images'" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
                 </div>
               </div>
-              <!--<base-edit-image :picList.sync="msg.goods_banner_images" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>-->
               <div class="tip">建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。</div>
             </div>
           </div>
@@ -77,7 +76,7 @@
               基本单位
             </div>
             <div class="edit-input-box">
-              <base-drop-down :height="40" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setValue"></base-drop-down>
+              <base-drop-down :height="40" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setBaseValue"></base-drop-down>
             </div>
           </div>
           <div class="edit-item">
@@ -88,7 +87,7 @@
             <div class="edit-input-box mini-edit-input-box">
               <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
               <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-              <base-drop-down :height="40" :width="133" :select="saleSelect" :isUse="!id" @setValue="saleSelectValue"></base-drop-down>
+              <base-drop-down :height="40" :width="133" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
             </div>
             <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
           </div>
@@ -113,13 +112,13 @@
             </div>
             <div class="edit-input-box goods-select-box">
               <div class="goods-select-left" @click="selectStock(1)">
-                <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
+                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
                 <div class="goods-select-text">预售库存</div>
               </div>
-              <input v-model="goods_skus.presale_usable_stock" type="number" class="edit-input edit-input-select" :disabled="goods_skus.is_presale * 1 !== 1">
+              <input v-model="goods_skus.presale_usable_stock" type="number" class="edit-input edit-input-select" :disabled="msg.is_presale * 1 !== 1">
               <div class="stock-box-text">{{goods_skus.sale_unit}}</div>
               <div class="goods-select-left" @click="selectStock(0)">
-                <div class="goods-select-icon" :class="goods_skus.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
+                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
                 <div class="goods-select-text">仓库库存</div>
               </div>
               <div v-if="id" class="stock-box-text current-stock">当前可用库存<span class="stock-color">{{goods_skus.warehouse_usable_stock}}</span>件</div>
@@ -364,31 +363,50 @@
     },
     data() {
       return {
+        id: this.$route.query.id || null,
         msg: {
           name: '',
-          describe: '',
-          goods_banner_images: [],
-          goods_detail_images: [],
-          trade_price: '',
-          is_online: 1,
-          is_multi_specs: 0,
-          goods_category_id: 0,
-          original_price: '',
+          goods_material_category_id: 0,
+          goods_main_images: [],
+          goods_skus: [],
+          is_presale: 1,
+          save_type: 'base'
+        },
+        goods_skus: {
+          goods_material_name: '',
+          base_unit: '',
+          base_sale_rate: '',
+          sale_unit: '',
+          goods_sku_encoding: '',
+          presale_usable_stock: '',
+          warehouse_usable_stock: '',
+          supplier_id: 0,
+          base_purchase_rate: '',
+          purchase_unit: '',
           purchase_price: '',
-          // commission_rate: '',
-          usable_stock: '',
-          goods_skus: [
-            {
-              id: 0,
-              trade_price: 0,
-              original_price: 0,
-              goods_sku_encoding: '',
-              purchase_price: '',
-              image_id: '',
-              specs: '',
-              is_weight: 1
-            }
-          ]
+          damage_rate: '',
+          is_weight: 1
+        },
+        stairSelect: {
+          check: false,
+          show: false,
+          content: '一级类目',
+          type: 'default',
+          data: []
+        },
+        secondSelect: {
+          check: false,
+          show: false,
+          content: '二级类目',
+          type: 'default',
+          data: []
+        },
+        thirdlySelect: {
+          check: false,
+          show: false,
+          content: '三级类目',
+          type: 'default',
+          data: []
         },
         dispatchSelect: {
           check: false,
@@ -404,13 +422,6 @@
           type: 'default',
           data: []
         },
-        supplierSelect: {
-          check: false,
-          show: false,
-          content: '选择供应商',
-          type: 'default',
-          data: []
-        },
         purchaseSelect: {
           check: false,
           show: false,
@@ -418,17 +429,10 @@
           type: 'default',
           data: []
         },
-        stairSelect: {
+        supplierSelect: {
           check: false,
           show: false,
-          content: '一级分类',
-          type: 'default',
-          data: []
-        },
-        secondSelect: {
-          check: false,
-          show: false,
-          content: '二级分类',
+          content: '选择供应商',
           type: 'default',
           data: []
         },
@@ -437,22 +441,6 @@
         preMenuIndex: null,
         preChildIndex: null,
         isSubmit: false,
-        goods_skus: {
-          base_sale_rate: '',
-          base_purchase_rate: '',
-          base_unit: '',
-          sale_unit: '',
-          purchase_unit: '',
-          goods_sku_encoding: '',
-          presale_usable_stock: '',
-          warehouse_usable_stock: 0,
-          purchase_price: '',
-          damage_rate: '',
-          supplier_id: 0,
-          is_weight: 1,
-          is_presale: 1
-        },
-        isWeight: 1,
         showLoading: false,
         picNum: 5,
         uploadImg: '',
@@ -496,12 +484,12 @@
       },
       selectStock(index) {
         if (!this.id) {
-          this.goods_skus.is_presale = index
+          this.msg.is_presale = index
         } else {
           API.Product.checkStockType(this.id, false).then((res) => {
             if (res.error === this.$ERR_OK) {
               if (res.data.is_allow_change * 1 === 1) {
-                this.goods_skus.is_presale = index
+                this.msg.is_presale = index
               } else {
                 this.$toast.show(res.data.msg)
               }
@@ -570,13 +558,13 @@
         } else if (+this.msg.original_price < +this.msg.trade_price) {
           this.$toast.show('请输入划线价大于售价')
           return
-        } else if (this.goods_skus.presale_usable_stock.length === 0 && this.goods_skus.is_presale * 1 === 1) {
+        } else if (this.goods_skus.presale_usable_stock.length === 0 && this.msg.is_presale * 1 === 1) {
           this.$toast.show('请输入预售库存')
           return
-        } else if (this.goods_skus.presale_usable_stock < 0 && this.goods_skus.is_presale * 1 === 1) {
+        } else if (this.goods_skus.presale_usable_stock < 0 && this.msg.is_presale * 1 === 1) {
           this.$toast.show('请输入预售库存大于零')
           return
-        } else if (this.goods_skus.presale_usable_stock.includes('.') && this.goods_skus.is_presale * 1 === 1) {
+        } else if (this.goods_skus.presale_usable_stock.includes('.') && this.msg.is_presale * 1 === 1) {
           this.$toast.show('请输入正确的预售库存')
           return
         } else if (
@@ -609,11 +597,11 @@
           this.$toast.show('损耗比区间在0与100之间')
           return
         }
-        if (this.goods_skus.is_presale * 1 === 0 && !this.id) {
+        if (this.msg.is_presale * 1 === 0 && !this.id) {
           this.goods_skus.presale_usable_stock = 0
           this.goods_skus.warehouse_usable_stock = 0
         }
-        if (this.goods_skus.is_presale * 1 === 0) {
+        if (this.msg.is_presale * 1 === 0) {
           this.goods_skus.presale_usable_stock = 0
         }
         this.msg.goods_skus[0] = this.goods_skus
