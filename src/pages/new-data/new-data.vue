@@ -827,10 +827,7 @@
             border-radius: 12px
             transition: all 0.3s
       .data-date-picker
-        font-family: $font-family-regular
-        color: $color-text-sub
-        layout(row)
-        align-items:center
+        color: #666
 
     .bottom-con
       layout(row,block,no-wrap)
@@ -1020,11 +1017,6 @@
               icon-image(icon-right_ash)
               &:hover
                 icon-image(icon-right_green)
-
-  .rank-list .identification .data-date-picker
-    .date-view
-      line-height: 28px
-      color: $color-text-sub
 
   .no-data-tips
     width: 100%
