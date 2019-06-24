@@ -74,17 +74,17 @@ export default {
     return request.delete(url, null, loading)
   },
   /**
-   * 获取商品详情
+   * 获取商品详情[v2.8]
    * @param id
    * @param loading
    * @returns {*}
    */
-  getGoodsDetail(id, loading = true) {
+  getGoodsDetail(id, data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
-    return request.get(url, null, loading)
+    return request.get(url, data, loading)
   },
   /**
-   * 创建商品
+   * 创建商品[v2.8]
    * @param id
    * @param loading
    * @returns {*}
@@ -220,7 +220,27 @@ export default {
    * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
    */
   getScmCategoryList(data, loading = true) {
-    let url = `/social-shopping/api/platform/goods-material-category`
+    let url = `/social-shopping/api/backend/goods-material/goods-material-category`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 商品素材列表-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  getScmStoreList(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-material/goods-material`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 商品素材添加列表-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  addScmGoods(id, data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-material/goods-material-add/${id}`
     return request.get(url, data, loading)
   }
 }

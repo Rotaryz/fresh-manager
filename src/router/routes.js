@@ -1536,7 +1536,20 @@ export default [
         name: 'goods-store',
         component: () => lazyLoadView(import('@pages/goods-store/goods-store')),
         meta: {
-          titles: ['供应链', '采购', '商品素材库']
+          titles: ['供应链', '采购', '商品素材库'],
+          beforeResolve(routeTo, routeFrom, next) {
+            store
+              .dispatch('scmGoods/getScmStoreData', {})
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
         }
       },
       // 商品管理
@@ -1576,8 +1589,29 @@ export default [
         name: 'edit-supply-goods',
         component: () => lazyLoadView(import('@pages/edit-supply-goods/edit-supply-goods')),
         meta: {
-          titles: ['供应链', '采购', '商品管理', '新建商品']
-        }
+          titles: ['供应链', '采购', '商品管理', '商品'],
+          variableIndex: 3,
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            if (!routeTo.query.id) {
+              return next()
+            }
+            store
+              .dispatch('scmGoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
+              .then((response) => {
+                if (!response) {
+                  return next({name: '404'})
+                }
+                console.log(response)
+                routeTo.params.detail = response
+                next()
+              })
+              .catch(() => {
+                next({name: '404'})
+              })
+          }
+        },
+        props: (route) => ({detail: route.params.detail})
       },
       // 基础设置
       {

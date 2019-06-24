@@ -18,126 +18,27 @@
       <div class="type-select">
         <div class="select-left">一级类目：</div>
         <div class="select-right" :class="{'select-right-active': isOpenOne}">
-          <div class="select-item select-item-select">全部</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">全部</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋蛋蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
+          <div v-for="(item, index) in oneList" :key="index" class="select-item" :class="item.is_selected ? 'select-item-select' : ''" @click="selectOneList(item, index)">{{item.name}}</div>
         </div>
         <div class="select-open" :class="{'select-open-active': isOpenOne}" @click="clickBtn('One')">
           <div class="select-open-name">{{isOpenOne ? '收起' : '展开'}}</div>
           <div class="select-open-icon"></div>
         </div>
       </div>
-      <div class="type-select type-select-top">
+      <div v-if="twoList.length" class="type-select type-select-top">
         <div class="select-left">二级类目：</div>
         <div class="select-right" :class="{'select-right-active': isOpenTwo}">
-          <div class="select-item select-item-select">全部</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">全部</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋蛋蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
+          <div v-for="(item, index) in twoList" :key="index" class="select-item" :class="item.is_selected ? 'select-item-select' : ''" @click="selectTwoList(item, index)">{{item.name}}</div>
         </div>
         <div class="select-open" :class="{'select-open-active': isOpenTwo}" @click="clickBtn('Two')">
           <div class="select-open-name">{{isOpenTwo ? '收起' : '展开'}}</div>
           <div class="select-open-icon"></div>
         </div>
       </div>
-      <div class="type-select type-select-top">
+      <div v-if="thrList.length" class="type-select type-select-top">
         <div class="select-left">三级类目：</div>
         <div class="select-right" :class="{'select-right-active': isOpenThr}">
-          <div class="select-item select-item-select">全部</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">全部</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋蛋蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
-          <div class="select-item">肉蛋家禽</div>
+          <div v-for="(item, index) in thrList" :key="index" class="select-item" :class="item.is_selected ? 'select-item-select' : ''" @click="selectThrList(item, index)">{{item.name}}</div>
         </div>
         <div class="select-open" :class="{'select-open-active': isOpenThr}" @click="clickBtn('Thr')">
           <div class="select-open-name">{{isOpenThr ? '收起' : '展开'}}</div>
@@ -145,24 +46,25 @@
         </div>
       </div>
       <div class="goods-list">
-        <div v-for="(item, index) in 21" :key="index" class="goods-item">
+        <div v-for="(item, index) in goodsStoreList" :key="index" class="goods-item">
           <div class="goods-item-top">
-            <img class="top-pic-box" src="./001.jpg" alt="">
-            <div class="goods-item-model">
+            <img class="top-pic-box" :src="item.goods_cover_image" alt="">
+            <div class="goods-item-model" @click="lookGoodsInfo(item)">
               <div class="look-goods">预览</div>
             </div>
           </div>
           <div class="goods-item-bottom">
-            <div class="goods-title">刺激王者 海南小台芒刺激王者 海南小台芒刺激王者 海南小台芒{{item}}{{index}}</div>
+            <div class="goods-title">{{item.name}}</div>
             <div class="goods-price-box">
-              <div class="goods-price-left">￥15.00</div>
-              <div class="goods-price-right goods-price-add">添加</div>
+              <div class="goods-price-left">￥{{item.trade_price}}</div>
+              <div class="goods-price-right" :class="item.is_selected ? 'goods-price-add' : ''" @click="submitAdd(item)">{{item.is_selected ? '已添加' : '添加'}}</div>
             </div>
           </div>
         </div>
+        <base-blank v-if="goodsStoreList.length === 0"></base-blank>
       </div>
       <div class="pagination-box">
-        <!--<base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>-->
+        <base-pagination ref="pagination" :pageDetail="storePageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-modal ref="storeModal">
@@ -171,52 +73,52 @@
           <div class="title">
             商品预览
           </div>
-          <span class="close hand" @click="supplierCancel"></span>
+          <span class="close hand" @click="goodsCancel"></span>
         </div>
         <div class="store-info-box">
           <div class="phone-box">
             <div class="phone">
               <div class="content-box">
                 <div class="content-top-box">
-                  <img class="content-box-pic" src="./001.jpg" alt="">
+                  <img class="content-box-pic" :src="curItem.goods_cover_image" alt="">
                   <div class="content-title">
-                    <div class="content-price-text">3.8</div>
+                    <div class="content-price-text">{{curItem.trade_price}}</div>
                     <div class="content-price-icon">元</div>
                     <div class="price-line-box">
                       <div class="price-line-top"></div>
-                      <div class="price-line-bottom">4.5元</div>
+                      <div class="price-line-bottom">{{curItem.original_price}}元</div>
                     </div>
                   </div>
                 </div>
                 <div class="content-title-box">
-                  智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g
+                  {{curItem.name}}
                 </div>
                 <img class="content-detials-pic" src="./title-icon@2x.png" alt="">
-                <img class="content-box-pic" src="./001.jpg" alt="">
+                <img class="content-box-pic" :src="curItem.goods_cover_image" alt="">
               </div>
             </div>
           </div>
           <div class="info-main">
             <div class="info-right-box">
-              <div class="info-right-title">浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜浙江仙居杨梅东魁杨梅新鲜</div>
+              <div class="info-right-title">{{curItem.name}}</div>
               <div class="info-right-price-box">
                 <div class="one-right-price">
                   <div class="content-text-box">建议售价：</div>
-                  <div class="content-right-box suggest-price">￥18.99</div>
+                  <div class="content-right-box suggest-price">￥{{curItem.trade_price}}</div>
                 </div>
                 <div class="one-right-price mt-15">
                   <div class="content-text-box">市场价：</div>
-                  <div class="content-right-box">￥18.99</div>
+                  <div class="content-right-box">￥{{curItem.original_price}}</div>
                 </div>
               </div>
               <div class="info-sale-box">
                 <div class="one-right-price">
                   <div class="content-text-box">销售规格：</div>
-                  <div class="content-right-box">150g/份</div>
+                  <div class="content-right-box">{{curItem.base_sale_rate}}{{curItem.base_unit}}/{{curItem.sale_unit}}</div>
                 </div>
               </div>
             </div>
-            <div class="back-btn back-submit back-submit hand">确定</div>
+            <div class="back-btn back-submit" :class="curItem.is_selected ? 'none-submit' : ''" @click="submitAdd('')">{{curItem.is_selected ? '已添加' : '添加'}}</div>
           </div>
         </div>
       </div>
@@ -225,7 +127,9 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {scmGoodsComputed, scmGoodsMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
+  import API from '@api'
   const PAGE_NAME = 'GOODS_STORE'
   const TITLE = '商品素材库'
 
@@ -241,16 +145,127 @@
       return {
         isOpenOne: false,
         isOpenTwo: false,
-        isOpenThr: false
+        isOpenThr: false,
+        keyWord: '',
+        materialId: '',
+        oneList: [],
+        oneIndex: 0,
+        twoList: [],
+        twoIndex: 0,
+        thrList: [],
+        thrIndex: 0,
+        curItem: {},
+        isSubmit: false
       }
     },
-    mounted() {
-      // this.$refs.storeModal.showModal()
+    computed: {
+      ...scmGoodsComputed
+    },
+    created() {
+      this.getCategoriesData()
     },
     methods: {
-      changeKeyword() {},
+      ...scmGoodsMethods,
+      getCategoriesData() {
+        API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.oneList = res.data
+            this.oneList.unshift({name: '全部', id: '', is_selected: true, list: []})
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      addPage(page) {
+        this.page = page
+        this.getReqList()
+      },
+      lookGoodsInfo(item) {
+        this.curItem = item
+        console.log(item)
+        this.$refs.storeModal.showModal()
+      },
+      goodsCancel() {
+        this.$refs.storeModal.hideModal()
+      },
+      changeKeyword(text) {
+        this.keyWord = text
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        this.getReqList()
+      },
       clickBtn(text) {
         this[`isOpen${text}`] = !this[`isOpen${text}`]
+      },
+      selectOneList(item, index){
+        if (!item.is_selected) {
+          this.oneList[this.oneIndex].is_selected = false
+          this.oneList[index].is_selected = true
+          this.oneIndex = index
+        }
+        this.materialId = item.id
+        if (this.twoList.length) {
+          this.twoList.forEach((item) => {
+            item.is_selected = false
+          })
+        }
+        this.twoList = this.oneList[index].list
+        this.thrList = []
+        this.getReqList()
+      },
+      selectTwoList(item, index){
+        if (!item.is_selected) {
+          this.twoList[this.twoIndex].is_selected = false
+          this.twoList[index].is_selected = true
+          this.twoIndex = index
+        }
+        this.thrList = this.twoList[index].list
+        this.materialId = item.id
+        if (this.thrList.length) {
+          this.thrList.forEach((item) => {
+            item.is_selected = false
+          })
+        }
+        this.getReqList()
+      },
+      selectThrList(item, index){
+        if (!item.is_selected) {
+          this.thrList[this.thrIndex].is_selected = false
+          this.thrList[index].is_selected = true
+          this.thrIndex = index
+        }
+        this.materialId = item.id
+        this.getReqList()
+      },
+      submitAdd(item) {
+        let curItem
+        if (item.length !== 0) {
+          curItem = item
+        } else {
+          curItem = this.curItem
+        }
+        if (curItem.is_selected * 1 === 1 ||  this.isSubmit) return
+        this.isSubmit = true
+        API.Product.addScmGoods(curItem.id).then((res) => {
+          this.isSubmit = false
+          if (res.error === this.$ERR_OK) {
+            this.getReqList()
+            this.curItem.is_selected = 1
+            this.$toast.show('商品素材添加成功')
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+        console.log(curItem)
+      },
+      getReqList() {
+        this.getScmStoreData({
+          keyword: this.keyWord,
+          materialId: this.materialId,
+          page: 1,
+          limit: 21,
+          loading: false
+        })
       }
     }
   }
@@ -259,6 +274,16 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
+  .table-content
+    position: relative
+    padding: 0 20px 60px !important
+    .pagination-box
+      position: absolute
+      left: 0
+      bottom: 0
+      width: 100%
+      padding: 0 20px
+      box-sizing: border-box
   .goods-store
     width: 100%
   .distribution-down
@@ -364,6 +389,8 @@
   .type-select
     layout(row)
     padding-top: 20px
+    position: relative
+    z-index: 11
     display: flex
     .select-left
       font-size: $font-size-14
@@ -618,11 +645,13 @@
   .back-submit
     background: $color-main
     color: $color-white
+    cursor: pointer
     &:hover
       opacity: 0.8
-  .back-submit
+  .none-submit
     background: #cccccc
     color: $color-white
+    cursor: auto
     &:hover
       opacity: 1
 </style>

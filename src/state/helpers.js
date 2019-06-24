@@ -640,9 +640,9 @@ export const allocationMethods = {
 }
 // 供应链商品
 export const scmGoodsComputed = {
-  ...mapGetters('scmGoods', ['productList', 'statePageTotal'])
+  ...mapGetters('scmGoods', ['productList', 'statePageTotal', 'goodsStoreList', 'storePageTotal'])
 }
 
 export const scmGoodsMethods = {
-  ...mapActions('scmGoods', ['getProductList'])
+  ...mapActions('scmGoods', ['getProductList', 'getScmStoreData'])
 }

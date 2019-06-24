@@ -76,7 +76,7 @@
                   <img class="pic-box" :src="item.goods_cover_image" alt="">
                 </div>
                 <div class="list-item list-double-row">
-                  <div class="item-dark">{{item.name}}</div>
+                  <div class="item-dark">{{item.goods_material_name}}</div>
                   <div class="item-dark">{{item.goods_sku_encoding}}</div>
                 </div>
                 <div class="list-item">{{item.goods_material_category_name}}</div>
@@ -86,8 +86,8 @@
                 <div class="list-item">{{item.base_purchase_rate}}{{item.base_unit}}/{{item.purchase_unit}}</div>
                 <div class="list-item">{{item.source * 1 === 1 ? '自建' : '平台'}}</div>
                 <div class="list-item list-operation-box">
-                  <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-goods?id=' + item.id" append class="list-operation list-operation-all">完善资料</router-link>
-                  <router-link v-if="item.complete_status * 1 === 1" tag="span" :to="'edit-goods?id= + item.id'" append class="list-operation">编辑</router-link>
+                  <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-supply-goods?id=' + item.id" append class="list-operation list-operation-all">完善资料</router-link>
+                  <router-link v-if="item.complete_status * 1 === 1" tag="span" :to="'edit-supply-goods?id=' + item.id" append class="list-operation">编辑</router-link>
                   <span class="list-operation" @click="delGoods(item)">删除</span>
                 </div>
               </div>
