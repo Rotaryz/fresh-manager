@@ -215,7 +215,7 @@
       label: [
         {name: '支付金额(元)', key: 'sales_amount_total', total: ''},
         {name: '客单价(元)', key: 'customer_unit_amount_total', total: ''},
-        {name: '销售数量', key: 'customer_unit_amount_total', total: ''}
+        {name: '销售数量', key: 'sales_num_total', total: ''}
       ],
       chartConfig: {
         dataArr: [
