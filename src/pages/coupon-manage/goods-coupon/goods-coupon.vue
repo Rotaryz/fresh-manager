@@ -10,10 +10,10 @@
       <div class="identification">
         <div class="identification-page">
           <img src="../icon-coupon_list@2x.png" class="identification-icon">
-          <p class="identification-name">商品券列表</p>
+          <p class="identification-name">兑换券列表</p>
         </div>
         <div class="function-btn">
-          <router-link tag="div" to="edit-commodity" append class="btn-main">新建商品券<span class="add-icon"></span></router-link>
+          <router-link tag="div" to="edit-commodity" append class="btn-main">新建兑换券<span class="add-icon"></span></router-link>
         </div>
       </div>
       <div class="big-list">
@@ -49,7 +49,7 @@
         <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="changePage"></base-pagination>
       </div>
     </div>
-    <default-confirm ref="confirm" infoTitle="删除商品券" :oneBtn="false" @confirm="sureConfirm"></default-confirm>
+    <default-confirm ref="confirm" infoTitle="删除兑换券" :oneBtn="false" @confirm="sureConfirm"></default-confirm>
   </div>
 </template>
 
@@ -59,7 +59,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'GOODS-COUPON'
-  const COUPON_TITLE = ['商品券名称', '面值', '有效期', '创建时间', '发放总数', '剩余数量', '已领取数', '已使用数', '操作']
+  const COUPON_TITLE = ['兑换券名称', '面值', '有效期', '创建时间', '发放总数', '剩余数量', '已领取数', '已使用数', '操作']
   export default {
     name: PAGE_NAME,
     components: {
@@ -116,7 +116,7 @@
       },
       showDel(item) {
         this.delId = item.id
-        this.$refs.confirm.show('删除后将无法查看商品券的信息，且无法恢复，谨慎操作！')
+        this.$refs.confirm.show('删除后将无法查看兑换券的信息，且无法恢复，谨慎操作！')
       }
     }
   }

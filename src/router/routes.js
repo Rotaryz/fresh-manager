@@ -484,13 +484,13 @@ export default [
           }
         }
       },
-      // 新建商品券
+      // 新建兑换券
       {
         path: 'coupon-manage/edit-commodity',
         name: 'edit-commodity',
         component: () => lazyLoadView(import('@pages/edit-commodity/edit-commodity')),
         meta: {
-          titles: ['商城', '营销', '优惠券', '商品券'],
+          titles: ['商城', '营销', '优惠券', '兑换券'],
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {

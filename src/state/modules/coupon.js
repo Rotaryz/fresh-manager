@@ -102,7 +102,7 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  // 商品券的方法
+  // 兑换券的方法
   getCouponDetail({commit}, {id, tagType}) {
     return API.Coupon.getCouponDetail({tag_type: tagType}, id)
       .then((res) => {

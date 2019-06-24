@@ -64,7 +64,7 @@
   const TITLE = '优惠券列表'
   const DATE_PLACE_HOLDER = '选择时间'
 
-  const ORDERSTATUS = [{text: '优惠券', status: 1}, {text: '商品券', status: 0}]
+  const ORDERSTATUS = [{text: '优惠券', status: 1}, {text: '兑换券', status: 0}]
   const COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name', type: 1},
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},

@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{id ? '编辑' : '新建'}}商品券</p>
+        <p class="identification-name">{{id ? '编辑' : '新建'}}兑换券</p>
       </div>
       <div class="function-btn">
       </div>
@@ -40,25 +40,26 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          商品券金额
+          兑换券金额
         </div>
         <div class="edit-input-box">
-          <input v-model="commodity.denomination"
-                 type="number"
-                 class="edit-input"
-                 :disabled="id"
-                 placeholder="请输入正整数"
-                 @mousewheel.native.prevent
-          >
+          <div class="edit-show">0元兑换</div>
+          <!--<input v-model="commodity.denomination"-->
+          <!--type="number"-->
+          <!--class="edit-input"-->
+          <!--:disabled="id"-->
+          <!--placeholder="请输入正整数"-->
+          <!--@mousewheel.native.prevent-->
+          <!--&gt;-->
         </div>
-        <div class="edit-unit">元兑换</div>
+        <!--<div class="edit-unit"></div>-->
         <div :class="{'text-no-change': id}"></div>
       </div>
       <!--名称-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          商品券名称
+          兑换券名称
         </div>
         <div class="edit-input-box">
           <input v-model="commodity.coupon_name"
@@ -66,7 +67,7 @@
                  class="edit-input"
                  :disabled="id"
                  maxlength="20"
-                 placeholder="请输入商品券名称"
+                 placeholder="请输入兑换券名称"
                  @mousewheel.native.prevent
           >
           <div class="num">{{commodity.coupon_name ? commodity.coupon_name.length : 0}}/20</div>
@@ -215,7 +216,7 @@
   import {couponComputed, couponMethods} from '@state/helpers'
 
   const PAGE_NAME = 'EDIT_COMMODITY'
-  const TITLE = '新建商品券'
+  const TITLE = '新建兑换券'
   const TABLE_TITLE = ['商品名称', '单位', '售价(元)', '库存', '操作']
 
   export default {
@@ -234,7 +235,7 @@
         commodity: {
           coupon_name: '',
           preferential_type: 2,
-          denomination: '', // 优惠券面额
+          denomination: '0', // 优惠券面额
           condition: 0, // 满多少可用
           support_activity: 1, // 是否支持活动商品使用0 1
           start_at: '',
@@ -317,9 +318,9 @@
       checkForm() {
         let arr = [
           {value: this.testGoods, txt: '请选择商品'},
-          {value: this.commodity.denomination, txt: '请输入商品券金额'},
-          {value: this.textDenomination, txt: '请输入正整数商品券金额'},
-          {value: this.commodity.coupon_name, txt: '请输入商品券名称'},
+          {value: this.commodity.denomination, txt: '请输入兑换券金额'},
+          {value: this.textDenomination, txt: '请输入正整数兑换券金额'},
+          {value: this.commodity.coupon_name, txt: '请输入兑换券名称'},
           {value: this.commodity.usable_stock, txt: '请输入发放数量'},
           {value: this.textUsableStock, txt: '发放数量应设为1~99999之间的整数'},
           {value: this.commodity.start_at, txt: '请选择活动开始时间'},
@@ -493,6 +494,9 @@
       .edit-input-box
         margin-left: 40.9px
         position: relative
+        .edit-show
+          line-height: 40px
+          border: none
       .edit-input
         position: relative
         font-size: $font-size-14

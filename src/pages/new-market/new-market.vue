@@ -226,7 +226,7 @@
                   <div v-if="item.id" class="list-item">
                     <div class="list-operation" :class="{'list-operation-disable': id}" @click="delInvite(index)">删除</div>
                   </div>
-                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': id}" @click="_showGoodsCouponModal(index)">添加商品券<span class="add-icon"></span></div>
+                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': id}" @click="_showGoodsCouponModal(index)">添加兑换券<span class="add-icon"></span></div>
                 </div>
               </div>
             </div>
@@ -267,19 +267,19 @@
     </div>
 
     <default-confirm ref="confirm" @confirm="_delItem"></default-confirm>
-    <!-- 选择商品券弹窗-->
+    <!-- 选择兑换券弹窗-->
     <default-modal ref="goodsModal">
       <div slot="content" class="shade-box">
         <div class="title-box">
           <div class="title">
-            选择商品券
+            选择兑换券
           </div>
           <span class="close hand" @click="_cancelGoodsModal"></span>
         </div>
         <!--搜索-->
         <div class="shade-tab">
           <div class="tab-item">
-            <base-search ref="couponSearch" placeHolder="请输入商品券名称" @search="_searchMoreCoupontGoods"></base-search>
+            <base-search ref="couponSearch" placeHolder="请输入兑换券名称" @search="_searchMoreCoupontGoods"></base-search>
           </div>
         </div>
         <!--列表-->
@@ -462,7 +462,7 @@
     ],
     ['邀请者', '被邀请者']
   ]
-  const INVITE_TITLE = ['成功邀请人数', '商品券名称', '类型', '面值', '剩余', '有效期', '操作']
+  const INVITE_TITLE = ['成功邀请人数', '兑换券名称', '类型', '面值', '剩余', '有效期', '操作']
   const INVITED_TITLE = ['触发条件', '优惠券名称', '类型', '面值', '剩余', '有效期', '操作']
   export default {
     name: PAGE_NAME,
@@ -881,7 +881,7 @@
         this._getCouponList()
         this.$refs.couponModal.showModal()
       },
-      // 获取商品券列表
+      // 获取兑换券列表
       _getGoodsCouponList() {
         let data = {
           coupon_name: this.goodsKeyword,
@@ -914,7 +914,7 @@
         this._getGoodsCouponList()
         this.$refs.paginationGoods.beginPage()
       },
-      // 弹窗商品券
+      // 弹窗兑换券
       _showGoodsCouponModal(index) {
         this.inviteIndex = index
         if (this.disable) return
@@ -1101,7 +1101,7 @@
           {value: this.testCouponList, txt: '请选择优惠券'},
           {value: this.testGroupList, txt: '请选择团长'},
           {value: this.testGroupCount, txt: '请输入团长优惠券发放数量'},
-          {value: this.testInvite, txt: '请选择邀请者商品券'},
+          {value: this.testInvite, txt: '请选择邀请者兑换券'},
           {value: this.testInvited, txt: '请选择被邀请者优惠券'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
