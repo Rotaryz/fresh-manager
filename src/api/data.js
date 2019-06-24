@@ -9,7 +9,7 @@ export default {
    */
   managerData(data, loading = false) {
     // let url = '/social-shopping/api/backend/statistics-manager-data'
-    let url = '/social-shopping/v2/api/backend/data-statistics-ranking-shop'
+    let url = '/social-shopping/api/backend/data-statistics-ranking-shop'
     return request.get(url, data, loading)
   },
   /**
@@ -20,7 +20,7 @@ export default {
    */
   tradeData(data, loading = true) {
     // let url = '/social-shopping/api/backend/statistics-trade-data'
-    let url = '/social-shopping/v2/api/backend/data-center/over-view/statistics'
+    let url = '/social-shopping/api/backend/data-center/over-view/statistics'
     return request.get(url, data, loading)
   },
   /**
@@ -31,7 +31,7 @@ export default {
    */
   tradeDayData(data, loading = true) {
     // let url = '/social-shopping/api/backend/statistics-trade-data'
-    let url = '/social-shopping/v2/api/backend/data-center/over-view/statistics-day'
+    let url = '/social-shopping/api/backend/data-center/over-view/statistics-day'
     return request.get(url, data, loading)
   },
   /**
@@ -42,7 +42,7 @@ export default {
    */
   goodsData(data, loading = false) {
     // let url = '/social-shopping/api/backend/statistics-goods-data'
-    let url = '/social-shopping/v2/api/backend/data-statistics-ranking-goods'
+    let url = '/social-shopping/api/backend/data-statistics-ranking-goods'
     return request.get(url, data, loading)
   },
   /**
@@ -63,7 +63,7 @@ export default {
    */
   getStatisticsBaseData(data, loading = false) {
     // let url = '/social-shopping/api/backend/statistics-base-data'
-    let url = '/social-shopping/v2/api/backend/data-statistics-base-data'
+    let url = '/social-shopping/api/backend/data-statistics-base-data'
     return request.get(url, data, loading)
   },
   /**
@@ -103,7 +103,7 @@ export default {
    * @returns {*}
    */
   searchData(data, loading = false) {
-    let url = '/social-shopping/v2/api/backend/data-statistics-ranking-search-keyword'
+    let url = '/social-shopping/api/backend/data-statistics-ranking-search-keyword'
     return request.get(url, data, loading)
   },
   /**
@@ -113,7 +113,7 @@ export default {
    * @returns {*}
    */
   flowData(data, loading = false) {
-    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-flow'
+    let url = '/social-shopping/api/backend/data-center/over-view/data-board-flow'
     return request.get(url, data, loading)
   },
   /**
@@ -123,7 +123,7 @@ export default {
    * @returns {*}
    */
   orderData(data, loading = false) {
-    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-order'
+    let url = '/social-shopping/api/backend/data-center/over-view/data-board-order'
     return request.get(url, data, loading)
   },
   /**
@@ -133,7 +133,7 @@ export default {
    * @returns {*}
    */
   servicesData(data, loading = false) {
-    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-after'
+    let url = '/social-shopping/api/backend/data-center/over-view/data-board-after'
     return request.get(url, data, loading)
   },
   /**
@@ -143,7 +143,7 @@ export default {
    * @returns {*}
    */
   businessData(data, loading = false) {
-    let url = '/social-shopping/v2/api/backend/data-center/over-view/data-board-clinch'
+    let url = '/social-shopping/api/backend/data-center/over-view/data-board-clinch'
     return request.get(url, data, loading)
   },
 }

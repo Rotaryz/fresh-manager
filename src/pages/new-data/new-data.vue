@@ -81,7 +81,7 @@
       </div>
       <div class="bottom-con">
         <div class="label-con">
-          <div class="data-date">2019.05.01~2019.05.12</div>
+          <div class="data-date"></div>
           <div v-for="(label, labelIdx) in dataBoard[dataBoardIndex].label" :key="labelIdx" class="label">
             {{label.name}}
             <p class="label-val" :title="label.total">
@@ -339,7 +339,7 @@
     mounted() {
       this.$loading.show()
       this.permissions = storage.get('permissions')
-      this._getRealTimeData()
+      this._getRealTimeData(true)
       this._getShopBaseData()
       this._getDataBoard()
       this._getAllRankList()
@@ -347,9 +347,9 @@
     methods: {
       ...deliveryMethods,
       // 实时总览
-      _getRealTimeData() {
+      _getRealTimeData(loading = false) {
         this._getSurveyTrade()
-        this._getRealTimeChart()
+        this._getRealTimeChart(loading)
       },
       // 实时总览-数据
       _getSurveyTrade() {
