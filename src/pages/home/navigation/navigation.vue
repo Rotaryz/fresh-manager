@@ -139,6 +139,11 @@
           isLight: false
         },
         {
+          title: '团长邀请',
+          url: '/home/leader-invite',
+          isLight: false
+        },
+        {
           title: '团长配送单',
           url: '/home/dispatching-list',
           isLight: false
