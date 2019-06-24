@@ -239,7 +239,7 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales', word: 'sku_num_total', limit: 6},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales_num', word: 'sku_num_total', limit: 6},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
