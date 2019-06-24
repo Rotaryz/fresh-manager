@@ -11,36 +11,76 @@
       <left-tab @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
       <div class="right-data">
         <div class="top-sec">
+          <!--群质量-->
           <section class="data-sec quality-data">
             <div class="sec-title">
-              <p class="text">群质量数据<span v-if="+letTab !== 0">(当前等级Lv{{leftTabItem.level || 0}})</span></p>
+              <p class="text">
+                群质量数据
+                <span v-if="+letTab !== 0">(当前等级Lv{{leftTabItem.level || 0}})</span>
+                <status-tab ref="statusTab1" :statusList="dataConfig.quality.tab" @setStatus="changeQuality"></status-tab>
+              </p>
               <p class="right-text hand" @click="showDescription('quality')">等级说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
             </div>
-            <!--群质量数据-->
-            <quality-data ref="qualityData" :time="request.day_type" @changeQuality="changeQuality"></quality-data>
+            <div class="data-view">
+              <p v-for="(item, index) in dataConfig.quality.viewData[qualityIndex]" :key="index" class="item">
+                <span class="name">{{item.name}}</span>
+                <span class="num">{{item.data}}</span>
+              </p>
+            </div>
+            <!--群质量图表-->
+            <!--<quality-data ref="qualityData" :time="request.day_type" @changeQuality="changeQuality"></quality-data>-->
+            <chart-line ref="qualityChart" chartId="qualityChart"></chart-line>
           </section>
+
+          <!--群运营-->
           <section class="data-sec business-data">
             <div class="sec-title">
-              <p class="text">群运营数据</p>
-              <p class="right-text hand" @click="showDescription('business')">数据说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>
+              <p class="text">
+                群运营数据
+                <status-tab ref="statusTab2" :statusList="dataConfig.business.tab" @setStatus="changeBusiness"></status-tab>
+              </p>
+              <!--<p class="right-text hand" @click="showDescription('business')">数据说明 <img class="text-icon" src="./icon-help_lv@2x.png" alt=""></p>-->
             </div>
-            <!--群运营数据-->
-            <business-data ref="businessData" :time="request.day_type" @changeBusiness="changeBusiness"></business-data>
+
+            <div class="data-view">
+              <p v-for="(item, index) in dataConfig.business.viewData[businessIndex]" :key="index" class="item">
+                <span class="name">{{item.name}}</span>
+                <span class="num">{{item.data}}</span>
+              </p>
+            </div>
+            <!--群运营图表-->
+            <!--<business-data ref="businessData" :time="request.day_type" @changeBusiness="changeBusiness"></business-data>-->
+            <chart-line ref="businessChart" chartId="businessChart"></chart-line>
           </section>
         </div>
         <div class="bottom-sec">
+          <!--群用户分组-->
           <section class="data-sec group-data">
             <div class="sec-title">
-              <p class="text">群用户分组<span v-if="+letTab !== 0">(群总人数{{leftTabItem.total || 0}})</span></p>
+              <p class="text">
+                群用户分组
+                <span v-if="+letTab !== 0">(群总人数{{leftTabItem.total || 0}})</span>
+                <status-tab ref="statusTab3" :statusList="dataConfig.group.tab" @setStatus="changeGroup"></status-tab>
+              </p>
             </div>
-            <!--用户分组-->
-            <group-data ref="groupData" :time="request.day_type" @changeGroup="changeGroup"></group-data>
+
+            <div class="data-view">
+              <p v-for="(item, index) in dataConfig.group.viewData[groupIndex]" :key="index" class="item">
+                <span class="name">{{item.name}}</span>
+                <span class="num">{{item.data}}</span>
+              </p>
+            </div>
+            <!--用户分组图表-->
+            <!--<group-data ref="groupData" :time="request.day_type" @changeGroup="changeGroup"></group-data>-->
+            <chart-line ref="groupChart" chartId="groupChart"></chart-line>
           </section>
+
+          <!--商品TOP10-->
           <section class="data-sec goods-list">
             <div class="sec-title">
               <p class="text">最受欢迎商品Top10</p>
             </div>
-            <!--商品TOP10-->
+            <!--商品TOP10列表-->
             <goods-list :time="request.day_type"></goods-list>
           </section>
         </div>
@@ -53,11 +93,10 @@
 
 <script type="text/ecmascript-6">
   import {communityComputed, communityMethods} from '@state/helpers'
+  import ChartLine from './chart-line/chart-line'
   import LeftTab from './left-tab/left-tab'
-  import QualityData from './quality-data/quality-data'
+  import StatusTab from './status-tab/status-tab'
   import GoodsList from './goods-list/goods-list'
-  import BusinessData from './business-data/business-data'
-  import GroupData from './group-data/group-data'
   import EditModal from './edit-modal/edit-modal'
   import DescriptionModal from './description-modal/description-modal'
 
@@ -68,6 +107,64 @@
     {title: '7天', status: 'week'},
     {title: '30天', status: 'month'}
   ]
+  const DATA_CONFIG = {
+    quality: {
+      tab: [
+        {name: '流量'},
+        {name: '订单'}
+      ],
+      viewData: [
+        [
+          {name: '浏览量(PV)', data: '100', code: 'pv'},
+          {name: '访客数(UV)', data: '200', code: 'e_customer'}
+        ],
+        [
+          {name: '支付用户', data: '100', code: 'pv'},
+          {name: '支付订单', data: '200', code: 'e_customer'},
+          {name: '交易金额', data: '200', code: 'order'}
+        ]
+      ]
+    },
+    business: {
+      tab: [
+        {name: '营收金额'},
+        {name: '主力客户'},
+        {name: '复购率'},
+        {name: '笔单价'}
+      ],
+      viewData: [
+        [
+          {name: '营收金额', data: '100', code: 'profit'}
+        ],
+        [
+          {name: '主力客户', data: '200', code: 'e_customer'}
+        ],
+        [
+          {name: '复购率', data: '100', code: 'e_order_avg'}
+        ],
+        [
+          {name: '笔单价', data: '200', code: 'per_order'}
+        ]
+      ]
+    },
+    group: {
+      tab: [
+        {name: '用户数量'},
+        {name: '用户效率'}
+      ],
+      viewData: [
+        [
+          {name: '潜在客户', data: '500', code: 'p_customer'},
+          {name: '新客户', data: '200', code: 'n_customer'},
+          {name: '主力客户', data: '200', code: 'e_customer'},
+          {name: '沉睡客户', data: '200', code: 's_customer'}
+        ],
+        [
+          {name: '用户效率', data: '100', code: 'n_customer'}
+        ]
+      ]
+    }
+  }
   const PAGE_NAME = 'COMMUNITY-DATA'
   const TITLE = '社群数据'
   export default {
@@ -77,15 +174,15 @@
     },
     components: {
       LeftTab,
-      QualityData,
+      StatusTab,
+      ChartLine,
       GoodsList,
-      BusinessData,
-      GroupData,
       EditModal,
       DescriptionModal
     },
     data() {
       return {
+        dataConfig: DATA_CONFIG,
         arrTitle: ARR_TITLE,
         letTab: 0,
         tabArr: [],
@@ -94,11 +191,38 @@
           day_type: 'week'
         },
         editGroupItem: {},
-        leftTabItem: {}
+        leftTabItem: {},
+        qualityIndex: 0,
+        businessIndex: 0,
+        groupIndex: 0,
+        noDraw: false
       }
     },
     computed: {
       ...communityComputed
+    },
+    watch: {
+      qualityData(value, old) {
+        let code = 'quality'
+        this.$refs[code + 'Chart']._setChart(this.dataHandle(value.data[this[code + 'Index']], code), true, true)
+        // window.addEventListener('resize', function() {
+        //   mychart.resize()
+        // })
+      },
+      businessData(value, old) {
+        let code = 'business'
+        this.$refs[code + 'Chart']._setChart(this.dataHandle(value.data[this[code + 'Index']], code), true, true)
+        // window.addEventListener('resize', function() {
+        //   mychart.resize()
+        // })
+      },
+      groupData(value, old) {
+        let code = 'group'
+        this.$refs[code + 'Chart']._setChart(this.dataHandle(value.data[this[code + 'Index']], code), true, true)
+        // let mychart = window.addEventListener('resize', function() {
+        //   mychart.resize()
+        // })
+      }
     },
     created() {
       this.getAllData()
@@ -108,20 +232,29 @@
       _getData(value) {
         this.request.day_type = value
         this.getAllData()
-      // this.$refs.qualityData.drawLine()
-      // this.$refs.businessData.drawLine()
-      // this.$refs.groupData.drawLine()
       },
       // 切换质量数据tab栏
-      changeQuality(item) {
+      changeQuality(item, index) {
+        this.qualityIndex = index
+        if (this.noDraw) return
+        let code = 'quality'
+        this.$refs[code + 'Chart']._setChart(this.dataHandle(this[code + 'Data'].data[index], code), true, true)
       // this.getQualityData(this.request)
       },
       // 切换运营数据tab栏
-      changeBusiness(item) {
+      changeBusiness(item, index) {
+        this.businessIndex = index
+        if (this.noDraw) return
+        let code = 'business'
+        this.$refs[code + 'Chart']._setChart(this.dataHandle(this[code + 'Data'].data[index], code), true, true)
       // this.getBusinessData(this.request)
       },
       // 切换用户分组tab栏
-      changeGroup(item) {
+      changeGroup(item, index) {
+        this.groupIndex = index
+        if (this.noDraw) return
+        let code = 'group'
+        this.$refs[code + 'Chart']._setChart(this.dataHandle(this[code + 'Data'].data[index], code), true, true)
       // this.getGroupData(this.request)
       },
       // 切换左侧tab栏
@@ -129,9 +262,10 @@
         this.leftTabItem = item
         this.letTab = index
         this.request.wx_group_id = item.id
-        this.$refs.qualityData.setTab()
-        this.$refs.businessData.setTab()
-        this.$refs.groupData.setTab()
+        this.noDraw = true
+        this.$refs.statusTab1.checkStatus(0, '')
+        this.$refs.statusTab2.checkStatus(0, '')
+        this.$refs.statusTab3.checkStatus(0, '')
         this.getAllData()
       },
       showDescription(type) {
@@ -156,6 +290,30 @@
         this.getBusinessData(this.request)
         this.getGroupData(this.request)
         this.getGoodsList(this.request)
+        this.noDraw = false
+      },
+      dataHandle(data, type) {
+        // data = [
+        //   {
+        //     rate: [[], []],
+        //     x: []
+        //   }
+        // ]
+        // 几个tab栏
+        let ind = this[type + 'Index']
+        let tab = this.dataConfig[type].viewData[ind]
+        // tab栏下对应的数据
+        let dataArr = tab.map((item, index) => {
+          return {
+            name: item.name,
+            data: data.rate[index]
+          }
+        })
+        let xAxleData = data.x
+        return {
+          dataArr,
+          xAxleData
+        }
       }
     }
   }
@@ -172,6 +330,7 @@
     flex-direction: column
     background: #FFF
     border: 0.5px solid $color-line
+    min-width: 1240px
   .data-caption
     padding: 20px
     display: flex
@@ -219,9 +378,11 @@
         justify-content: space-between
         align-items: center
         font-family: $font-family-regular
+        border-bottom-1px($color-line)
         .text
           font-size: $font-size-16
           color: $color-text-main
+          display: flex
         .right-text
           display: flex
           align-items: center
@@ -231,6 +392,22 @@
             width: 14px
             height: 14px
             margin-left: 4px
+      .data-view
+        display: flex
+        color: #333
+        margin-top: 20px
+        .item
+          margin-left: 20px
+          display: flex
+          align-items: center
+        .name
+          font-size: $font-size-12
+          font-family: $font-family-regular
+        .num
+          margin-left: 4px
+          font-family: $font-family-din-bold
+          font-size: $font-size-16
+          line-height: 16px
     .bottom
       height: 0
 
