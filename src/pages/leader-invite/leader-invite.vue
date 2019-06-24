@@ -384,7 +384,10 @@
       handleAccountConfirm() {
         API.Leader.setAccountData(this.accountObj).then(res => {
           this.$toast.show(res.message)
-          this.$refs.modalAccount.hideModal()
+          if (res.error === this.$ERR_OK) {
+            this._getList()
+            this.$refs.modalAccount.hideModal()
+          }
         })
       },
       getTime(time) {
