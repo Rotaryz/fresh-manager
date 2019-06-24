@@ -1,8 +1,7 @@
 <template>
   <div class="login">
     <div class="header-wrapper"></div>
-    <div class="clear-input">
-<!--      用于消除密码自动填充，必须放在要消除的input前面-->
+    <div class="clear-input"><!-- 用于消除密码自动填充，必须放在要消除的input前面-->
       <input type="text">
       <input type="password">
     </div>
