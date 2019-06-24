@@ -127,7 +127,7 @@
         case 1:
           date = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
           startDate = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
-          endDate = moment(time).subtract(-6, 'days').format('YYYY-MM-DD')
+          endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
