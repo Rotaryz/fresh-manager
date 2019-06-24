@@ -77,8 +77,8 @@
             case 2:
               return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 84600000
             }
-
-          }
+          },
+          firstDayOfWeek: 1
         },
         showPicker: true,
         moreTime: '',
@@ -116,7 +116,7 @@
         let endDate = ''
         switch (+this.tabIndex) {
         case 0:
-          date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+          date = moment(time).format('YYYY-MM-DD')
           this.date = {
             day: time,
             week: '',
@@ -125,8 +125,8 @@
           this.viewDate = date
           break
         case 1:
-          date = new Date(time).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
-          startDate = moment(time).subtract(0, 'days').format('YYYY-MM-DD')
+          date = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
+          startDate = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
           endDate = moment(time).subtract(-6, 'days').format('YYYY-MM-DD')
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
