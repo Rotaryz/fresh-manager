@@ -285,11 +285,11 @@
         <!--列表-->
         <div class="group-content">
           <div class="title">
-            <span v-for="(item, index) in couponTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
+            <span v-for="(item, index) in invitationTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
           </div>
           <div class="outreach-group-list">
             <div v-for="(item, index) in goodsList" :key="index" class="group-item" @click="_selectCoupon(item, index)">
-              <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
+              <div v-for="(val, ind) in invitationTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
                   <p>{{item.start_at}}</p>
@@ -447,6 +447,14 @@
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1, value: 'time'}
   ]
+  const INVITATION_TITLE = [
+    {name: '选择', flex: 0.4, value: ''},
+    {name: '兑换券名称', flex: 1.8, value: 'coupon_name'},
+    {name: '类型', flex: 1, value: 'preferential_str'},
+    {name: '面值', flex: 1, value: 'denomination'},
+    {name: '剩余数量', flex: 1, value: 'usable_stock'},
+    {name: '有效期', flex: 1, value: 'time'}
+  ]
   const ARROW_TEXT = [
     ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
@@ -478,6 +486,7 @@
     data() {
       return {
         couponTitle: COUPON_TITLE, // 优惠券弹窗title
+        invitationTitle: INVITATION_TITLE, // 兑换券弹窗title
         groupTitle: GROUP_TITLE, // 团长弹窗title
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
         selectGroupTitle: SELECT_GROUP_TITLE, // 已选团长title
