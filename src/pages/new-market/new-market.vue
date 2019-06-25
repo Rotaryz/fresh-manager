@@ -220,8 +220,8 @@
                   <div v-if="item.id" class="list-item">{{item.denomination}}</div>
                   <div v-if="item.id" class="list-item">{{item.usable_stock}}</div>
                   <div v-if="item.id" class="list-item list-item-double">
-                    <p class="item-dark">{{item.created_at}}</p>
-                    <div class="item-sub-time">{{item.start_at}}</div>
+                    <p class="item-dark">{{item.start_at}}</p>
+                    <div class="item-sub-time">{{item.end_at}}</div>
                   </div>
                   <div v-if="item.id" class="list-item">
                     <div class="list-operation" :class="{'list-operation-disable': id}" @click="delInvite(index)">删除</div>
@@ -249,8 +249,8 @@
                   <div v-if="item.id" class="list-item">{{item.denomination_str}}</div>
                   <div v-if="item.id" class="list-item">{{item.usable_stock}}</div>
                   <div v-if="item.id" class="list-item list-item-double">
-                    <p class="item-dark">{{item.created_at}}</p>
-                    <div class="item-sub-time">{{item.start_at}}</div>
+                    <p class="item-dark">{{item.start_at}}</p>
+                    <div class="item-sub-time">{{item.end_at}}</div>
                   </div>
                   <div v-if="item.id" class="list-item">
                     <div class="list-operation" :class="{'list-operation-disable': id}" @click="showDel(index)">删除</div>
