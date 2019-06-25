@@ -469,7 +469,7 @@
       .pic-box
         width: 40px
         height: 40px
-        object-fit: contain
+        object-fit: cover
       &:last-child
         padding: 0
         max-width: 50px
