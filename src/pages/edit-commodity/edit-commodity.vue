@@ -329,7 +329,7 @@
           // {value: this.textDenomination, txt: '请输入正整数兑换券金额'},
           {value: this.commodity.coupon_name, txt: '请输入兑换券名称'},
           {value: this.commodity.usable_stock, txt: '请输入发放数量'},
-          {value: this.textUsableStock, txt: '发放数量应设为1~99999之间的整数'},
+          {value: this.textUsableStock, txt: `发放数量应设为1~${this.commodity.usable_stock}之间的整数`},
           {value: this.commodity.start_at, txt: '请选择活动开始时间'},
           {value: this.commodity.end_at, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
