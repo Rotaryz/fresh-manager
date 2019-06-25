@@ -272,7 +272,7 @@
       data: [],
       dataKey: ['index', ['name','social_name'], 'total_order_money', 'total_settlement_money'],
       pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/v2/api/backend/data-statistics-ranking-shop-excel',
+      excelApi: '/social-shopping/api/backend/data-statistics-ranking-shop-excel',
       excelUrl: ''
     },
     goods: {
@@ -283,7 +283,7 @@
       data: [],
       dataKey: ['index', 'name', 'sale_count_sum', 'sale_total_sum'],
       pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/v2/api/backend/data-statistics-ranking-goods-excel',
+      excelApi: '/social-shopping/api/backend/data-statistics-ranking-goods-excel',
       excelUrl: ''
     },
     search: {
@@ -294,7 +294,7 @@
       data: [],
       dataKey: ['index', 'keyword', 'times'],
       pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/v2/api/backend/data-statistics-ranking-search-keyword-excel',
+      excelApi: '/social-shopping/api/backend/data-statistics-ranking-search-keyword-excel',
       excelUrl: ''
     }
   }
