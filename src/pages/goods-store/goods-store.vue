@@ -61,7 +61,9 @@
             </div>
           </div>
         </div>
-        <base-blank v-if="goodsStoreList.length === 0"></base-blank>
+        <div v-if="goodsStoreList.length === 0" class="base-blank-box">
+          <base-blank></base-blank>
+        </div>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="storePageTotal" @addPage="addPage"></base-pagination>
@@ -631,6 +633,10 @@
     font-size: $font-size-12
     color: $color-text-main
     margin-right: 10px
+  .base-blank-box
+    width: 1200px
+    position: relative
+    height: 400px
   .back-btn
     box-sizing: border-box
     font-size: $font-size-16

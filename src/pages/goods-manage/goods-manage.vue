@@ -151,6 +151,7 @@
       ...scmGoodsComputed
     },
     created() {
+      this._getUrl()
       this.getCategoriesData()
     },
     methods: {
