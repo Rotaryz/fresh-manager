@@ -33,7 +33,7 @@
             </div>
             <div class="list-item">{{item.social_name}}</div>
             <div class="list-item">{{item.name}}</div>
-<!--            <div class="list-item">{{item.total}}</div>-->
+            <!--<div class="list-item">{{item.total}}</div>-->
             <div class="list-item">{{item.delivery_at}}</div>
             <div class="list-operation-box">
               <router-link tag="span" :to="'dispatching-detail?id='+item.id" append class="list-operation">
