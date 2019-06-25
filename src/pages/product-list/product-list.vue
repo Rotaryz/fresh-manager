@@ -49,14 +49,6 @@
               <div v-show="showIndex" class="show-hide-box">
                 <div class="show-all-item">
                   <a :href="downUrl" class="show-hide-item" target="_blank">商品导出</a>
-                  <div class="show-hide-item">
-                    批量新建
-                    <input
-                      type="file"
-                      class="stock-file hand"
-                      @change="importStock($event, 1)"
-                    >
-                  </div>
                   <router-link to="lead-supply-goods" append class="show-hide-item">
                     批量新建<span class="add-icon"></span>
                   </router-link>

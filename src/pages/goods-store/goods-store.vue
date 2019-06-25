@@ -262,7 +262,7 @@
         this.getScmStoreData({
           keyword: this.keyWord,
           materialId: this.materialId,
-          page: 1,
+          page: this.page,
           limit: 21,
           loading: false
         })
