@@ -96,8 +96,9 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = [['profit'], ['e_customer'], ['e_order_avg'], ['per_order']]
+        let arr = [['profit'], ['e_customer'], ['e_order_avg'], ['e_customer_order']]
         let data = dataHandle(arr, res.data)
+
         commit('SET_BUSINESS_DATA', data)
         return true
       })
@@ -148,7 +149,7 @@ export const actions = {
 
 const dataHandle = (arr, data) => {
   let titleData = arr.map((item, index) => {
-    return arr[index].map(val => {
+    return item.map(val => {
       return data[val].total
     })
   })
