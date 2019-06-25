@@ -88,7 +88,7 @@
                  type="number"
                  class="edit-input"
                  :disabled="id"
-                 :placeholder="`发放数量应设为1~${goodsItem.length ? goodsItem[0].usable_stock : 99999}之间的整数`"
+                 :placeholder="`发放数量应设为1~99999之间的整数`"
                  @mousewheel.native.prevent
           >
         </div>
@@ -287,8 +287,8 @@
         return value
       },
       textUsableStock() {
-        let bigNum = this.goodsItem.length ? this.goodsItem[0].usable_stock : 99999
-        if (this.commodity.usable_stock > 0 && this.commodity.usable_stock < bigNum) {
+        let bigNum = 99999
+        if (this.commodity.usable_stock > 0 && this.commodity.usable_stock <= bigNum) {
           let value = /^[0-9]+$/.test(this.commodity.usable_stock)
           return value
         }
@@ -329,7 +329,7 @@
           // {value: this.textDenomination, txt: '请输入正整数兑换券金额'},
           {value: this.commodity.coupon_name, txt: '请输入兑换券名称'},
           {value: this.commodity.usable_stock, txt: '请输入发放数量'},
-          {value: this.textUsableStock, txt: `发放数量应设为1~${this.commodity.usable_stock}之间的整数`},
+          {value: this.textUsableStock, txt: `发放数量应设为1~99999之间的整数`},
           {value: this.commodity.start_at, txt: '请选择活动开始时间'},
           {value: this.commodity.end_at, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
@@ -367,8 +367,7 @@
           keyword: this.text,
           goods_category_id: this.parentId,
           page: this.choicePage,
-          limit: 7,
-          has_stock: 1
+          limit: 7
         })
         if (res.error !== this.$ERR_OK) {
           return
