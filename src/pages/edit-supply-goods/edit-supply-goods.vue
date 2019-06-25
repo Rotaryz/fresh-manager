@@ -211,7 +211,7 @@
     },
     data() {
       return {
-        id: this.$route.query.id || '',
+        id: this.$route.query.id || null,
         msg: {
           name: '',
           goods_material_category_id: 0,
@@ -292,6 +292,7 @@
       }
     },
     created() {
+      console.log(this.id)
       this._setData()
       this.getCategoriesData()
       this.getSupplierData()
