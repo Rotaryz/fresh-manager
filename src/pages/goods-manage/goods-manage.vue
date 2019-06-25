@@ -43,22 +43,10 @@
               <transition name="fade">
                 <div v-show="showIndex" class="show-hide-box">
                   <div class="show-all-item">
-                    <div class="show-hide-item">
-                      批量新建
-                      <input
-                        type="file"
-                        class="stock-file hand"
-                        @change="importStock($event, 1)"
-                      >
-                    </div>
-                    <div class="show-hide-item">
-                      批量上架
-                      <input
-                        type="file"
-                        class="stock-file hand"
-                        @change="importStock($event, 0)"
-                      >
-                    </div>
+                    <a :href="downUrl" class="show-hide-item" target="_blank">商品导出</a>
+                    <router-link to="lead-supply-goods" append class="show-hide-item">
+                      批量新建<span class="add-icon"></span>
+                    </router-link>
                   </div>
                 </div>
               </transition>
@@ -155,7 +143,8 @@
         },
         keyWord: '',
         oneBtn: false,
-        curItem: {}
+        curItem: {},
+        downUrl: ''
       }
     },
     computed: {
@@ -186,7 +175,7 @@
         this.secondSelect.content = '二级类目'
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
-        this.thirdlySelect.data = ''
+        this.thirdlySelect.data = []
         this.categoryId = data.id
         this.page = 1
         this.$refs.pagination.beginPage()
@@ -235,7 +224,7 @@
         this.getReqList()
       },
       setDataValue(data) {
-        this.thirdlySelect.content = data.name
+        this.dataSelect.content = data.name
         this.completeStatus = data.id
         this.page = 1
         this.$refs.pagination.beginPage()
@@ -243,6 +232,13 @@
       },
       jumpStore() {
         this.$router.push('/home/goods-store')
+      },
+      _getUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_material_category_id=${this.categoryId}&complete_status=${this.completeStatus}&keyword=${this.keyWord}&show_type=base`
+        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
+        console.log(this.downUrl)
       },
       getReqList() {
         this.getProductList({
@@ -252,6 +248,7 @@
           completeStatus: this.completeStatus,
           loading: false
         })
+        this._getUrl()
       }
     }
   }

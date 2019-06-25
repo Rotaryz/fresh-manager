@@ -52,7 +52,7 @@
                 <draggable v-model="msg.goods_main_images" class="draggable" @update="_setSort()">
                   <div v-for="(item, index) in msg.goods_main_images" :key="index" class="show-image hand">
                     <img class="img" :src="item.image_url" alt="">
-                    <span class="close" @click="delPic(index)"></span>
+                    <span class="close" @click="delMainPic(index)"></span>
                   </div>
                 </draggable>
                 <div v-if="msg.goods_main_images.length < picNum" class="add-image hand">
@@ -144,9 +144,9 @@
               采购规格
             </div>
             <div class="edit-input-box mini-edit-input-box">
-              <input v-model="goods_skus.base_purchase_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
+              <input v-model="goods_skus.base_purchase_rate" type="number" class="edit-input mini-edit-input" maxlength="10">
               <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-              <base-drop-down :height="40" :width="133" :select="purchaseSelect" :isUse="!id" @setValue="purchaseSelectValue"></base-drop-down>
+              <base-drop-down :height="40" :width="133" :select="purchaseSelect" @setValue="purchaseSelectValue"></base-drop-down>
             </div>
             <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
           </div>
@@ -212,13 +212,12 @@
                   </div>
                 </draggable>
                 <div v-if="saleMsg.goods_banner_images.length < picNum" class="add-image hand">
-                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_banner_images', picNum, $event)">
+                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addSalePic('goods_banner_images', picNum, $event)">
                   <div v-if="showLoading && uploadImg === 'goods_banner_images'" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
                 </div>
               </div>
-              <!--<base-edit-image :picList.sync="saleMsg.goods_banner_images" @failFile="failFile" @getPic="getPic" @delPic="delPic"></base-edit-image>-->
               <div class="tip">上传图片的最佳尺寸：1:1，其他尺寸会影响页效果，格式png，jpeg，jpg，最多可上传5张，首张为封面。</div>
             </div>
           </div>
@@ -236,13 +235,12 @@
                   </div>
                 </draggable>
                 <div v-if="saleMsg.goods_detail_images.length < 15" class="add-image hand">
-                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_detail_images', 15, $event)">
+                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addSalePic('goods_detail_images', 15, $event)">
                   <div v-if="showLoading && uploadImg === 'goods_detail_images'" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
                 </div>
               </div>
-              <!--<base-edit-image :picList.sync="saleMsg.goods_detail_images" :picNum="15" @failFile="failFile" @getPic="getPic2" @delPic="delPic2"></base-edit-image>-->
               <div class="tip">上传图片的格式png，jpeg，jpg，最多可上传15张。</div>
             </div>
           </div>
@@ -552,7 +550,7 @@
         } else if (this.msg.goods_material_category_id <= 0) {
           this.$toast.show('请选择商品类目')
           return
-        } else if (this.msg.goods_main_images.length !== 0) {
+        } else if (this.msg.goods_main_images.length === 0) {
           this.$toast.show('请上传商品图片')
           return
         } else if (this.goods_skus.base_unit === '') {
@@ -609,11 +607,11 @@
         this.isSubmit = true
         if (this.id) {
           API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
+            this.isSubmit = false
             if (res.error === this.$ERR_OK) {
               this.tabIndex = 1
               this.$toast.show('编辑基础信息成功')
             } else {
-              this.isSubmit = false
               this.$toast.show(res.message)
             }
             this.$loading.hide()
@@ -638,10 +636,10 @@
       // 销售信息提交
       _saleSubmit() {
         this.saleMsg.init_sale_count += ''
-        if (this.saleMsg.goods_banner_images.length !== 0) {
+        if (this.saleMsg.goods_banner_images.length === 0) {
           this.$toast.show('请上传商品封面图')
           return
-        } else if (this.saleMsg.goods_detail_images.length !== 0) {
+        } else if (this.saleMsg.goods_detail_images.length === 0) {
           this.$toast.show('请上传商品详情图')
           return
         } else if (this.saleMsg.name.length === 0 || this.saleMsg.name.length >= 30) {
@@ -717,23 +715,6 @@
             }
           })
         }
-      },
-      getPic(image) {
-        let item = {id: 0, image_id: image.id, image_url: image.url}
-        this.saleMsg.goods_banner_images.push(item)
-      },
-      delPic(index) {
-        this.saleMsg.goods_banner_images.splice(index, 1)
-      },
-      getPic2(image) {
-        let item = {id: 0, image_id: image.id, image_url: image.url}
-        this.saleMsg.goods_detail_images.push(item)
-      },
-      delPic2(index) {
-        this.saleMsg.goods_detail_images.splice(index, 1)
-      },
-      failFile(msg) {
-        this.$emit('showToast', msg)
       },
       getSelectData() {
         API.Product.getUnitsList({}, false).then((res) => {
@@ -850,6 +831,45 @@
           this.$set(this.msg, type, this.msg[type].concat(imagesArr))
         })
       },
+      _addSalePic(type, length, e) {
+        this.uploadImg = type
+        let arr = Array.from(e.target.files)
+        if (arr.length < 1) return
+        if (this.saleMsg[type].length) {
+          arr = arr.slice(0, length - this.saleMsg[type].length)
+        } else {
+          arr = arr.slice(0, length)
+        }
+        this.showLoading = true
+        this.$cos.uploadFiles(this.$cosFileType.IMAGE_TYPE, arr).then((resArr) => {
+          this.showLoading = false
+          let imagesArr = []
+          resArr.forEach((item) => {
+            if (item.error !== this.$ERR_OK) {
+              return this.$toast.show(item.message)
+            }
+            let obj = {
+              id: 0,
+              image_id: item.data.id,
+              image_url: item.data.url
+            }
+            imagesArr.push(obj)
+          })
+          this.$set(this.saleMsg, type, this.saleMsg[type].concat(imagesArr))
+        })
+      },
+      delMainPic(index) {
+        this.msg.goods_main_images.splice(index, 1)
+      },
+      delPic(index) {
+        this.saleMsg.goods_banner_images.splice(index, 1)
+      },
+      delPic2(index) {
+        this.saleMsg.goods_detail_images.splice(index, 1)
+      },
+      failFile(msg) {
+        this.$emit('showToast', msg)
+      },
       // async _addPic(type, e) {
       //   this.uploadImg = type
       //   this.showLoading = true
@@ -858,6 +878,14 @@
       //   await this._upImage(param)
       // },
       // 格式化图片流
+      getPic2(image) {
+        let item = {id: 0, image_id: image.id, image_url: image.url}
+        this.saleMsg.goods_detail_images.push(item)
+      },
+      getPic(image) {
+        let item = {id: 0, image_id: image.id, image_url: image.url}
+        this.saleMsg.goods_banner_images.push(item)
+      },
       _infoImage(file) {
         let param = new FormData() // 创建form对象
         param.append('file', file, file.name) // 通过append向form对象添加数据

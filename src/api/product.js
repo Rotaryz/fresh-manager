@@ -242,5 +242,25 @@ export default {
   addScmGoods(id, data, loading = false) {
     let url = `/social-shopping/api/backend/goods-material/goods-material-add/${id}`
     return request.get(url, data, loading)
+  },
+  /**
+   * 商品新建模板导入【供应链专用】[v2.8]-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  scmGoodsImport(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/import-create-scm-goods`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 商品新建模板导入【供应链专用】[v2.8]-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  checkGoodsImport(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/import-create-scm-goods-check`
+    return request.post(url, data, loading)
   }
 }

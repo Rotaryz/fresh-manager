@@ -57,6 +57,9 @@
                       @change="importStock($event, 1)"
                     >
                   </div>
+                  <router-link to="lead-supply-goods" append class="show-hide-item">
+                    批量新建<span class="add-icon"></span>
+                  </router-link>
                   <!--<div class="show-hide-item">-->
                   <!--批量修改-->
                   <!--<input-->
@@ -247,8 +250,8 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&is_online=${this.isOnline}&keyword=${
-          this.keyWord}&current_corp=${currentId}&goods_category_id=${this.categoryId}`
+        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_category_id=${this.categoryId}&source=${this.source}&complete_status=${this.completeStatus}&is_presale=${this.isPresale}&has_stock=${this.hasStock}&keyword=${
+          this.keyWord}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       _setStairValue(data) {
@@ -432,8 +435,8 @@
         this.$loading.show('上传中...')
         let res =
           index === 1
-            ? await API.Product.goodsNewInto(param, true, 60000)
-            : await API.Product.goodsNewEdit(param, true, 60000)
+            ? await API.Product.scmGoodsImport(param, true, 60000)
+            : await API.Product.scmGoodsImport(param, true, 60000)
         this.$loading.hide()
         this.goodsPage = 1
         this.$refs.pagination.beginPage()

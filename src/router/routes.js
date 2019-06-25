@@ -144,6 +144,15 @@ export default [
         },
         props: (route) => ({detail: route.params.detail})
       },
+      // 导入商品
+      {
+        path: 'product-list/lead-supply-goods',
+        name: 'lead-supply-goods',
+        component: () => lazyLoadView(import('@pages/lead-supply-goods/lead-supply-goods')),
+        meta: {
+          titles: ['商城', '商品', '商品列表', '商品导入']
+        }
+      },
       /**
        * 商品
        *

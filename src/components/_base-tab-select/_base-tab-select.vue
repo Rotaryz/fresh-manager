@@ -44,6 +44,7 @@
     watch: {
       infoTabIndex(newVal) {
         this.tabIndex = newVal
+        this._setLeft()
       }
     },
     mounted() {
