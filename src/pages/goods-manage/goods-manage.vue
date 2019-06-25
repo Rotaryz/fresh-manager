@@ -144,7 +144,9 @@
         keyWord: '',
         oneBtn: false,
         curItem: {},
-        downUrl: ''
+        downUrl: '',
+        completeStatus: '',
+        categoryId: ''
       }
     },
     computed: {
