@@ -7,24 +7,30 @@
         </div>
         <span class="close hand" @click="cancel"></span>
       </div>
+      <p class="table-title">社群等级条件:</p>
+      <div v-if="type === 'quality'" class="main-data">
+        <div class="data-table">
+          <div v-for="(item, index) in data.qualification" :key="index" class="table-list">
+            <span v-for="(lv, ind) in item" :key="ind" class="cell" :class="{'grey': index === 0}">{{lv}}</span>
+          </div>
+        </div>
+      </div>
+      <p class="table-title">社群评级考核指标:</p>
       <div v-if="type === 'quality'" class="main-data">
         <div class="data-table">
           <div class="table-list">
-            <div class="table-title">
-              <span class="text">数据指标</span>
-              <span class="text">社群等级</span>
-            </div>
-            <span class="item grey">Lv1</span>
-            <span class="item grey">Lv2</span>
-            <span class="item grey">Lv3</span>
-            <span class="item grey">Lv4</span>
+            <span class="item item-title grey">名称</span>
+            <span class="item grey">分数占比</span>
+            <span class="item grey">指标</span>
           </div>
-          <div v-for="(val, ind) in data" :key="ind" class="table-list">
+          <div v-for="(val, ind) in data.quote" :key="ind" class="table-list">
             <span class="item title">{{val.name}}</span>
             <span v-for="(item, index) in val.data" :key="index" class="item">{{item}}</span>
           </div>
         </div>
-
+        <div class="text-list">
+          <p v-for="(txt, index) in text" :key="index" class="text" :class="{'text-margin': index === 2}">{{txt}}</p>
+        </div>
         <div class="btn-group">
           <div class="btn confirm" @click="confirm">确定</div>
         </div>
@@ -46,20 +52,42 @@
 
   const COMPONENT_NAME = 'EDIT_MODAL'
 
-  const DATA = [
-    {
-      name: '分享链接的浏览数(PV)',
-      data: [875, 1750, 3500, 7000]
-    },
-    {
-      name: '主力客户',
-      data: [25, 50, 100, 200]
-    },
-    {
-      name: '支付订单',
-      data: [50, 100, 200, 400]
-    }
+  const DATA = {
+    qualification: [
+      ['Lv1', 'Lv2', 'Lv3', 'Lv4'],
+      ['1~39分', '40~59分', '60~79分', '80~100分']
+    ],
+    quote: [
+      {
+        name: '分享链接的浏览数',
+        data: ['20分', '4000']
+      },
+      {
+        name: '访客数',
+        data: ['20分', '200']
+      },
+      {
+        name: '交易额',
+        data: ['20分', '3000']
+      },
+      {
+        name: '支付用户数',
+        data: ['20分', '200']
+      },
+      {
+        name: '支付订单数',
+        data: ['20分', '200']
+      }
+    ]
+  }
+
+  const TEXT = [
+    'A社群(分数计算方式：D=天；Y=指标数值；M=占比分数；Z=获得分数)',
+    '计算公式：Z=(D+D+D)÷Y×M',
+    '例如：浏览数第一天840、第二天1200、第三天734',
+    '(840+1200+734)÷400x20=13.8'
   ]
+
 
   export default {
     name: COMPONENT_NAME,
@@ -73,6 +101,7 @@
     data() {
       return {
         data: DATA,
+        text: TEXT,
         type: ''
       }
     },
@@ -119,61 +148,50 @@
         width: 12px
         height: @width
         icon-image('icon-close')
+    .table-title
+      font-size: $font-size-14
+      color: #333
+      font-family: $font-family-regular
     .main-data
-      padding: 10px 0 30px
+      padding: 8px 0 28px
       .data-table
         border-radius: 2px
-        border: 0.5px solid $color-line
+        border-1px($color-line)
         font-size: $font-size-12
         font-family: $font-family-regular
         color: #666
+        .cell
+          display: inline-block
+          width: 25%
+          height: 50px
+          line-height: 50px
+          text-align: center
+          box-sizing: border-box
+          border-bottom-1px($color-line)
+          border-left-1px($color-line)
+          font-size: $font-size-12
       .table-list
         height: 50px
         display: flex
-        &:last-child .item
-          border-bottom: 0
+        &:last-child .item,&:last-child .cell
+          &:after
+            border-bottom: 0
         &:first-child .item,.table-title
-          border-top: 0.5px solid $color-line
-      .table-title
-        width: 134px
-        height: 50px
-        position: relative
-        background: #F5F7FA
-        border-bottom: 0.5px solid $color-line
-        &:before
-          content: ""
-          width: 143px
-          height: 1px
-          border-top: 0.5px solid $color-line
-          position: absolute
-          left: 0
-          top: 0
-          transform: rotate(20deg)
-          transform-origin: 0 0
-        .text
-          position: absolute
-          left: 8px
-          bottom: 4px
-          font-size: $font-size-12
-          &:last-child
-            left: auto
-            right: 8px
-            bottom: auto
-            top: 4px
+          border-top-1px($color-line)
       .item
-        width: 90px
+        width: 30%
         height: 50px
         line-height: 50px
         text-align: center
-        border-bottom: 0.5px solid $color-line
-        border-left: 0.5px solid $color-line
+        border-bottom-1px($color-line)
+        border-left-1px($color-line)
         font-size: $font-size-12
-      .title
-        width: 134px
+      .title,.item-title
+        width: 40%
         height: 50px
         background: #F5F7FA
         line-height: 16px
-        padding: 0 10px
+        padding: 0 20px
         display: flex
         align-items: center
         border-left: 0
@@ -187,6 +205,13 @@
         display: block
         &:first-child
           margin-bottom: 10px
+    .text-list
+      margin-top: 14px
+      color: #999
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      .text-margin
+        margin-top: 8px
   .btn-group
     text-align: center
     display: flex
