@@ -22,6 +22,9 @@
       <div class="list">
         <!---->
         <div v-for="(item, index) in goodsItem" :key="index" class="list-content list-box">
+          <div class="list-item">
+            <img :src="item.goods_cover_image" class="pic-box">
+          </div>
           <div class="list-item">{{item.name}}</div>
           <div class="list-item">{{item.base_unit}}</div>
           <div class="list-item">{{item.trade_price}}</div>
@@ -217,7 +220,7 @@
 
   const PAGE_NAME = 'EDIT_COMMODITY'
   const TITLE = '新建兑换券'
-  const TABLE_TITLE = ['商品名称', '单位', '售价(元)', '库存', '操作']
+  const TABLE_TITLE = ['图片', '商品名称', '单位', '售价(元)', '库存', '操作']
 
   export default {
     name: PAGE_NAME,
@@ -318,8 +321,8 @@
       checkForm() {
         let arr = [
           {value: this.testGoods, txt: '请选择商品'},
-          {value: this.commodity.denomination, txt: '请输入兑换券金额'},
-          {value: this.textDenomination, txt: '请输入正整数兑换券金额'},
+          // {value: this.commodity.denomination, txt: '请输入兑换券金额'},
+          // {value: this.textDenomination, txt: '请输入正整数兑换券金额'},
           {value: this.commodity.coupon_name, txt: '请输入兑换券名称'},
           {value: this.commodity.usable_stock, txt: '请输入发放数量'},
           {value: this.textUsableStock, txt: '发放数量应设为1~99999之间的整数'},
@@ -463,10 +466,14 @@
   .list-box
     .list-item
       font-size: $font-size-14
+      .pic-box
+        width: 40px
+        height: 40px
+        object-fit: contain
       &:last-child
         padding: 0
         max-width: 50px
-      &:nth-child(1)
+      &:nth-child(2)
         flex: 3
   .big-list
     margin-bottom: 30px
