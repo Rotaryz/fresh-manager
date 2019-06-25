@@ -286,6 +286,10 @@
         this.noDraw = false
       },
       dataHandle(data, type) {
+        if (!data) return {
+          dataArr: [],
+          xAxleData: []
+        }
         // data = [
         //   {
         //     rate: [[], []],
@@ -299,7 +303,7 @@
         let dataArr = tab.map((item, index) => {
           return {
             name: item.name,
-            data: data.rate[index]
+            data: data.rate ? data.rate[index] : ''
           }
         })
         let xAxleData = data.x.map(item => {
@@ -319,6 +323,7 @@
             return month ? year.toString().slice(2)  + '年' + month + '月' : ''
           }
         })
+        console.log(dataArr)
         return {
           dataArr,
           xAxleData
