@@ -17,8 +17,7 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
-    // config.url = resetUrl
-    config.url = config.url.replace('/api', '/v4/api')
+    config.url = resetUrl
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
