@@ -213,6 +213,8 @@
         }
         this.twoList = this.oneList[index].list
         this.thrList = []
+        this.page = 1
+        this.$refs.pagination.beginPage()
         this.getReqList()
       },
       selectTwoList(item, index){
@@ -228,6 +230,8 @@
             item.is_selected = false
           })
         }
+        this.page = 1
+        this.$refs.pagination.beginPage()
         this.getReqList()
       },
       selectThrList(item, index){
@@ -237,6 +241,8 @@
           this.thrIndex = index
         }
         this.materialId = item.id
+        this.page = 1
+        this.$refs.pagination.beginPage()
         this.getReqList()
       },
       submitAdd(item) {

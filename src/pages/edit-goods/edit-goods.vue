@@ -24,7 +24,7 @@
               <input v-model="goods_skus.goods_material_name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
             </div>
             <div class="edit-input-copy hand">
-              <div class="bnt-name">一键复制</div>
+              <div v-if="id" class="bnt-name" @click="_jumpCopyPage">一键复制</div>
             </div>
           </div>
           <div class="edit-item">
@@ -184,7 +184,7 @@
         </div>
       </div>
     </template>
-    <template v-if="tabIndex===1">
+    <template v-if="tabIndex===1 && id">
       <div class="edit-leader">
         <div class="identification">
           <div class="identification-page">
@@ -322,7 +322,7 @@
       </div>
     </template>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
+      <div v-if="!isCopy" class="back-cancel back-btn hand" @click="_back">返回</div>
       <div class="back-btn back-submit hand" @click="_submitType">保存</div>
     </div>
     <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
@@ -333,6 +333,7 @@
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
   import Draggable from 'vuedraggable'
+  import storage from 'storage-controller'
   import _ from 'lodash'
 
   const PAGE_NAME = 'EDIT_GOODS'
@@ -472,7 +473,8 @@
         tabStatus: ORDERSTATUS,
         tabIndex: 0,
         isSubmit: false,
-        editSalePrice: 0
+        editSalePrice: 0,
+        isCopy: this.$route.query.copy || null
       }
     },
     created() {
@@ -481,8 +483,6 @@
       this.getSupplierData()
       this.getCategoriesData()
       this.getScmCategoriesData()
-    },
-    mounted() {
     },
     methods: {
       // 顶部 切换
@@ -505,9 +505,21 @@
           this.editSalePrice = this.goods_skus.base_purchase_rate
           this._saleInfo()
         }
+        if (this.$route.query.copy) {
+          this.msg = storage.get('msg')
+          this.goods_skus = storage.get('goods_skus')
+          this.saleMsg = storage.get('saleMsg')
+          this.sale_skus = storage.get('sale_skus')
+          this.saleSelect.content = this.goods_skus.sale_unit
+          this.supplierSelect.content = this.goods_skus.supplier_name
+          this.purchaseSelect.content = this.goods_skus.purchase_unit
+          this.dispatchSelect.content = this.goods_skus.base_unit
+          this.editSalePrice = this.goods_skus.base_purchase_rate
+          console.log(this.sale_skus)
+        }
       },
       getScmCategoriesData() {
-        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
+        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.isCopy ? storage.get('goods_id') : this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
             res.data.forEach((item) => {
@@ -662,6 +674,10 @@
       },
       // 销售信息提交
       _saleSubmit() {
+        if (!this.id) {
+          this.$toast.show('请先创建基础信息')
+          return
+        }
         this.saleMsg.init_sale_count += ''
         if (this.saleMsg.goods_banner_images.length === 0) {
           this.$toast.show('请上传商品封面图')
@@ -767,7 +783,7 @@
         })
       },
       getCategoriesData() {
-        API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
+        API.Product.getCategoryList({parent_id: -1, goods_id: this.isCopy ? storage.get('goods_id') : this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.categoriesSelect.data = res.data
             res.data.forEach((item) => {
@@ -941,6 +957,20 @@
         } else {
           this.getPic2(res.data)
         }
+      },
+      _jumpCopyPage() {
+        // let pathname = window.location.href + '?copy=true'
+        let pathname = window.location.href
+        let url = pathname.split('?')
+        let jumpUrl = url[0] + '?copy=true'
+        console.log(url)
+        storage.set('msg', this.msg)
+        storage.set('goods_skus', this.goods_skus)
+        storage.set('saleMsg', this.saleMsg)
+        storage.set('sale_skus', this.sale_skus)
+        storage.set('goods_id', this.id)
+        console.log(window.location)
+        window.open(jumpUrl, '_blank')
       }
     }
   }
