@@ -262,5 +262,15 @@ export default {
   checkGoodsImport(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/import-create-scm-goods-check`
     return request.post(url, data, loading)
+  },
+  /**
+   * 检查是否有采购任务[v2.8]
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  checkGoodsTask(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/check-task`
+    return request.get(url, data, loading)
   }
 }

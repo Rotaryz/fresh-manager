@@ -471,11 +471,11 @@
         isSelectStock: true,
         tabStatus: ORDERSTATUS,
         tabIndex: 0,
-        isSubmit: false
+        isSubmit: false,
+        editSalePrice: 0
       }
     },
     created() {
-      this.id = this.$route.query.id || null
       this._setData()
       this.getSelectData()
       this.getSupplierData()
@@ -483,7 +483,6 @@
       this.getScmCategoriesData()
     },
     mounted() {
-      // this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
     },
     methods: {
       // 顶部 切换
@@ -502,6 +501,8 @@
           this.supplierSelect.content = this.goods_skus.supplier_name
           this.purchaseSelect.content = this.goods_skus.purchase_unit
           this.dispatchSelect.content = this.goods_skus.base_unit
+          console.log(this.goods_skus.base_purchase_rate, 'base_purchase_rate')
+          this.editSalePrice = this.goods_skus.base_purchase_rate
           this._saleInfo()
         }
       },
@@ -604,18 +605,44 @@
         this.msg.save_type = 'base'
         console.log(this.msg)
         console.log(this.goods_skus)
-        this.isSubmit = true
         if (this.id) {
-          API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
-            this.isSubmit = false
-            if (res.error === this.$ERR_OK) {
-              this.tabIndex = 1
-              this.$toast.show('编辑基础信息成功')
-            } else {
-              this.$toast.show(res.message)
-            }
-            this.$loading.hide()
-          })
+          if (this.editSalePrice * 1 === this.goods_skus.base_purchase_rate * 1) {
+            this.isSubmit = true
+            API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
+              this.isSubmit = false
+              if (res.error === this.$ERR_OK) {
+                this.tabIndex = 1
+                this.$toast.show('编辑基础信息成功')
+              } else {
+                this.$toast.show(res.message)
+              }
+              this.$loading.hide()
+            })
+          } else {
+            API.Product.checkGoodsTask({goods_id: this.id}).then((res) => {
+              if (res.error === this.$ERR_OK) {
+                console.log(res.data)
+                if (res.data.has_task === 1) {
+                  this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
+                  return
+                }
+                this.isSubmit = true
+                API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
+                  this.isSubmit = false
+                  if (res.error === this.$ERR_OK) {
+                    this.tabIndex = 1
+                    this.$toast.show('编辑基础信息成功')
+                  } else {
+                    this.$toast.show(res.message)
+                  }
+                  this.$loading.hide()
+                })
+              } else {
+                this.$toast.show(res.message)
+              }
+              this.$loading.hide()
+            })
+          }
           return
         }
         API.Product.createGoodsDetail(this.msg).then((res) => {
@@ -801,8 +828,19 @@
       setSecondCategoriesValue(data) {
         this.saleMsg.goods_category_id = data.id
       },
-      setValue() {},
-      delConfirm() {},
+      delConfirm() {
+        this.isSubmit = true
+        API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
+          this.isSubmit = false
+          if (res.error === this.$ERR_OK) {
+            this.tabIndex = 1
+            this.$toast.show('编辑基础信息成功')
+          } else {
+            this.$toast.show(res.message)
+          }
+          this.$loading.hide()
+        })
+      },
       _setSort() {},
       _addPic(type, length, e) {
         this.uploadImg = type

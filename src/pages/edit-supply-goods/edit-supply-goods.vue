@@ -180,10 +180,12 @@
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
       <div class="back-btn back-submit hand" @click="_submit">保存</div>
     </div>
+    <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
   import Draggable from 'vuedraggable'
   import _ from 'lodash'
@@ -196,7 +198,8 @@
       title: TITLE
     },
     components: {
-      Draggable
+      Draggable,
+      DefaultConfirm
     },
     props: {
       detail: {
@@ -284,7 +287,8 @@
         showLoading: false,
         uploadImg: '',
         picNum: 5,
-        isSubmit: false
+        isSubmit: false,
+        editSalePrice: 0
       }
     },
     created() {
@@ -308,6 +312,8 @@
           this.saleSelect.content = this.goods_skus.sale_unit
           this.purchaseSelect.content = this.goods_skus.purchase_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
+          console.log(this.goods_skus.base_purchase_rate, 'base_purchase_rate')
+          this.editSalePrice = this.goods_skus.base_purchase_rate
         }
       },
       getCategoriesData() {
@@ -507,20 +513,48 @@
         this.msg.save_type = 'base'
         console.log(this.msg)
         console.log(this.goods_skus)
-        this.isSubmit = true
         if (this.id) {
-          API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
-            if (res.error === this.$ERR_OK) {
-              this.$toast.show('编辑成功')
-              setTimeout(() => {
-                this._back()
-              }, 1000)
-            } else {
+          if (this.editSalePrice * 1 === this.goods_skus.base_purchase_rate * 1) {
+            this.isSubmit = true
+            API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
               this.isSubmit = false
-              this.$toast.show(res.message)
-            }
-            this.$loading.hide()
-          })
+              if (res.error === this.$ERR_OK) {
+                this.$toast.show('编辑成功')
+                setTimeout(() => {
+                  this._back()
+                }, 1000)
+              } else {
+                this.$toast.show(res.message)
+              }
+              this.$loading.hide()
+            })
+          } else {
+            API.Product.checkGoodsTask({goods_id: this.id}).then((res) => {
+              if (res.error === this.$ERR_OK) {
+                console.log(res.data)
+                if (res.data.has_task === 1) {
+                  this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
+                  return
+                }
+                this.isSubmit = true
+                API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
+                  this.isSubmit = false
+                  if (res.error === this.$ERR_OK) {
+                    this.$toast.show('编辑成功')
+                    setTimeout(() => {
+                      this._back()
+                    }, 1000)
+                  } else {
+                    this.$toast.show(res.message)
+                  }
+                  this.$loading.hide()
+                })
+              } else {
+                this.$toast.show(res.message)
+              }
+              this.$loading.hide()
+            })
+          }
           return
         }
         API.Product.createGoodsDetail(this.msg).then((res) => {
@@ -537,6 +571,21 @@
         })
         console.log(this.msg)
         console.log(this.goods_skus)
+      },
+      delConfirm() {
+        this.isSubmit = true
+        API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
+          this.isSubmit = false
+          if (res.error === this.$ERR_OK) {
+            this.$toast.show('编辑成功')
+            setTimeout(() => {
+              this._back()
+            }, 1000)
+          } else {
+            this.$toast.show(res.message)
+          }
+          this.$loading.hide()
+        })
       },
       _back() {
         this.$router.back()

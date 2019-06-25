@@ -24,7 +24,6 @@ http.interceptors.request.use(
         config.url = config.url.split('api/').join(`${version}api/`)
       }
     }
-    console.log(config.url)
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
