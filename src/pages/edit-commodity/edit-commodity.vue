@@ -475,6 +475,9 @@
         max-width: 50px
       &:nth-child(2)
         flex: 3
+      &:nth-child(1)
+        max-width: 80px
+        min-width: 80px
   .big-list
     margin-bottom: 30px
   .leader-box
