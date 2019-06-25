@@ -149,8 +149,8 @@
     },
     group: {
       tab: [
-        {name: '用户数量'},
-        {name: '用户效率'}
+        {name: '用户数量'}
+        // {name: '用户效率'}
       ],
       viewData: [
         [
@@ -158,10 +158,10 @@
           {name: '新客户', data: '200', code: 'n_customer'},
           {name: '主力客户', data: '200', code: 'e_customer'},
           {name: '沉睡客户', data: '200', code: 's_customer'}
-        ],
-        [
-          {name: '用户效率', data: '100', code: 'n_customer'}
         ]
+        // [
+        //   {name: '用户效率', data: '100', code: 'n_customer'}
+        // ]
       ]
     }
   }
