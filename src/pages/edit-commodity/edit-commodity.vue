@@ -26,7 +26,7 @@
             <img :src="item.goods_cover_image" class="pic-box">
           </div>
           <div class="list-item">{{item.name}}</div>
-          <div class="list-item">{{item.base_unit}}</div>
+          <div class="list-item">{{item.sale_unit || item.goods_units}}</div>
           <div class="list-item">{{item.trade_price}}</div>
           <div class="list-item">{{item.usable_stock}}</div>
           <div class="list-item">
