@@ -96,7 +96,7 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = [['profit'], ['e_customer'], ['e_order_avg'], ['e_customer_order']]
+        let arr = [['profit'], ['e_customer'], ['e_order_avg'], ['per_order']]
         let data = dataHandle(arr, res.data)
 
         commit('SET_BUSINESS_DATA', data)
@@ -158,9 +158,6 @@ const dataHandle = (arr, data) => {
       let x = []
       x = data[item].data.map((val) => {
         return val.at
-          .split('-')
-          .slice(1)
-          .join('/')
       })
       let valueArr = data[item].data.map((val) => {
         if (typeof val.value === 'string') {

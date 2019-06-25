@@ -302,7 +302,23 @@
             data: data.rate[index]
           }
         })
-        let xAxleData = data.x
+        let xAxleData = data.x.map(item => {
+          let year = moment(item).year()
+          let month = moment(item).month() + 1
+          let week = moment(item).week()
+          switch (this.request.day_type) {
+          case 'day':
+            if (moment(data.x[0]).year() < moment(data.x[29]).year()) {
+              return month ? moment(item).format('YYYY-MM-DD') : ''
+            } else {
+              return month ? moment(item).format('MM/DD') : ''
+            }
+          case 'week':
+            return week ? year.toString().slice(2) + '年第' + week + '周' : ''
+          default:
+            return month ? year.toString().slice(2)  + '年' + month + '月' : ''
+          }
+        })
         return {
           dataArr,
           xAxleData
