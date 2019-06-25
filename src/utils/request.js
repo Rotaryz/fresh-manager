@@ -19,11 +19,13 @@ http.interceptors.request.use(
     // 请求数据前的拦截
     config.url = resetUrl(config.url)
     if (process.env.NODE_ENV === 'development') {
+      console.log(process.env.NODE_ENV)
       let version = 'v1/'
-      if (config.url.includes('social-shopping')) {
+      if (config.url.includes('social-shopping') && !config.url.includes('social-shopping/v')) {
         config.url = config.url.split('api/').join(`${version}api/`)
       }
     }
+    console.log(config.url)
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
