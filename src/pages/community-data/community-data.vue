@@ -60,7 +60,7 @@
               <p class="text">
                 群用户分组
                 <span v-if="+letTab !== 0">(群总人数{{leftTabItem.total || 0}})</span>
-                <status-tab ref="statusTab3" :statusList="dataConfig.group.tab" @setStatus="changeGroup"></status-tab>
+                <!--<status-tab ref="statusTab3" :statusList="dataConfig.group.tab" @setStatus="changeGroup"></status-tab>-->
               </p>
             </div>
 
@@ -258,7 +258,7 @@
         this.noDraw = true
         this.$refs.statusTab1.checkStatus(0, '')
         this.$refs.statusTab2.checkStatus(0, '')
-        this.$refs.statusTab3.checkStatus(0, '')
+        // this.$refs.statusTab3.checkStatus(0, '')
         this.getAllData()
       },
       showDescription(type) {
@@ -323,7 +323,6 @@
             return month ? year.toString().slice(2)  + '年' + month + '月' : ''
           }
         })
-        console.log(dataArr)
         return {
           dataArr,
           xAxleData
