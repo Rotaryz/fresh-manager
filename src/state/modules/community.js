@@ -4,15 +4,15 @@ import app from '@src/main'
 export const state = {
   communityList: [], // 社群列表
   qualityData: {
-    titleData: [],
+    titleData: [[], []],
     data: []
   }, // 群质量
   businessData: {
-    titleData: [],
+    titleData: [[], []],
     data: []
   }, // 群运营数据
   groupData: {
-    titleData: [],
+    titleData: [[], []],
     data: []
   }, // 群分组人数
   goodsList: [] // 商品TOP10

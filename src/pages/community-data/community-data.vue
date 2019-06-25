@@ -24,7 +24,7 @@
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.quality.viewData[qualityIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{item.data}}</span>
+                <span class="num">{{qualityData.titleData[qualityIndex][index]}}</span>
               </p>
             </div>
             <!--群质量图表-->
@@ -45,7 +45,7 @@
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.business.viewData[businessIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{item.data}}</span>
+                <span class="num">{{businessData.titleData[businessIndex][index]}}</span>
               </p>
             </div>
             <!--群运营图表-->
@@ -67,7 +67,7 @@
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.group.viewData[groupIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{item.data}}</span>
+                <span class="num">{{groupData.titleData[groupIndex][index]}}</span>
               </p>
             </div>
             <!--用户分组图表-->
