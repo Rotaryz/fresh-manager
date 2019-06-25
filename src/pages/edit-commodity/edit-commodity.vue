@@ -187,9 +187,13 @@
                 </div>
                 <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
                 <div class="goods-msg">
-                  <div class="goods-name">{{item.goods_name}}</div>
-                  <div class="goods-money">{{item.goods_sku_encoding}}</div>
+                  <div class="goods-name">{{item.name}}</div>
+                  <div class="goods-name">{{item.sale_unit || item.goods_units}}</div>
+                  <div class="goods-name">¥{{item.trade_price || 0}}</div>
+                  <div class="goods-name">{{item.usable_stock || 0}}</div>
+                  <!--<div class="goods-money">{{item.goods_sku_encoding}}</div>-->
                 </div>
+
               </div>
             </div>
           </div>
@@ -678,12 +682,16 @@
         display: flex
         color: $color-text-main
         font-family: $font-family-regular
-        justify-content: space-between
         height: 100%
         align-items: center
+        margin-left: 40px
         .goods-name
-          width: 500px
+          flex: 1
           no-wrap()
+          &:nth-child(1)
+            flex: 2
+          &:nth-child(4)
+            max-width: 80px
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14
