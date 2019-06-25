@@ -7,6 +7,10 @@
           <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': select.check}">
           <transition name="fade">
             <ul v-show="select.check" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
+              <input v-if="isInput" v-model="inputText" type="text" class="value-input" maxlength="10"
+                     @input="changeText"
+                     @click.stop
+              >
               <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
                   @click.stop="setValue(child, chIdx)"
               >
@@ -50,13 +54,18 @@
       height: {
         type: Number,
         default: 28
+      },
+      isInput: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
       return {
         setTime: '',
         showHover: false,
-        selectIdx: -1
+        selectIdx: -1,
+        inputText: ''
       }
     },
     mounted() {
@@ -72,6 +81,7 @@
         clearTimeout(this.setTime)
       },
       leaveHide() {
+        if (this.isInput) return
         this.setTime = setTimeout(() => {
           this.clickHide()
         }, 1500)
@@ -92,6 +102,9 @@
         this.showHover = false
         this.select.content = value.name
         this.$emit('setValue', value, index)
+      },
+      changeText() {
+        this.$emit('changeText', this.inputText)
       }
     }
   }
@@ -201,4 +214,24 @@
         margin-left: 0
         line-height: 44px !important
         height: 44px !important
+  .value-input
+    font-size: $font-size-14
+    padding: 0 14px
+    border-radius: 2px
+    width: 400px
+    height: 40px
+    border: 0.5px solid $color-line
+    transition: all 0.3s
+    &:disabled
+      color: $color-text-assist
+      background: $color-white
+    &::-webkit-inner-spin-button
+      appearance: none
+    &:hover
+      border: 1px solid #ACACAC
+    &::placeholder
+      font-family: $font-family-regular
+      color: $color-text-assist
+    &:focus
+      border-color: $color-main !important
 </style>

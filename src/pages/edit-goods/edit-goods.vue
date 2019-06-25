@@ -135,7 +135,10 @@
               供应商
             </div>
             <div class="edit-input-box">
-              <base-drop-down :height="40" :width="400" :select="supplierSelect" @setValue="supplierSelectValue"></base-drop-down>
+              <base-drop-down :height="40" :width="400" :isInput="true" :select="supplierSelect"
+                              @setValue="supplierSelectValue"
+                              @changeText="changeText"
+              ></base-drop-down>
             </div>
           </div>
           <div class="edit-item">
@@ -769,6 +772,9 @@
             this.$toast.show(res.message)
           }
         })
+      },
+      changeText(text) {
+        console.log(text)
       },
       getSupplierData() {
         API.Product.getSupplier({page: 1, limit: 10}, false).then((res) => {
