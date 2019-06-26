@@ -162,8 +162,8 @@
         })
       },
       getOutreachStatus() {
-        API.Outreach.getOutreachStatus({activity_theme: 'offline', start_at: this.startTime, end_at: this.endTime})
-          .then(res => {
+        API.Outreach.getOutreachStatus({activity_theme: 'offline', start_at: this.startTime, end_at: this.endTime}).then(
+          (res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
               return
@@ -175,7 +175,8 @@
                 num: item.statistic
               }
             })
-          })
+          }
+        )
       },
       showTip(index) {
         clearTimeout(this.timer)
@@ -219,7 +220,7 @@
         })
       },
       _textHandle(num) {
-        return (+num.split('%')[0] < 0 ? '下降' : '上升')
+        return +num.split('%')[0] < 0 ? '下降' : '上升'
       }
     }
   }

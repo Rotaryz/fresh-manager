@@ -64,11 +64,11 @@
         startTime: '',
         endTime: '',
         page: 1,
-        delId: 0,
+        delId: 0
       }
     },
     computed: {
-      ...activityComputed,
+      ...activityComputed
     },
     created() {
       this.getPreferenceList(1)

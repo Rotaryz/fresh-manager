@@ -18,8 +18,12 @@
       <div class="down-item">
         <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" :editable="false" @getTime="changeTime"></base-date-select>
       </div>
+      <span class="down-tip">异常状态</span>
+      <div class="down-item">
+        <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
+      </div>
       <!--下拉选择-->
-      <template v-if="sortingTask.filter.sorting_mode===1">
+      <template v-if="sortingTask.filter.sorting_mode === 1">
         <span class="down-tip">分类筛选</span>
         <div class="down-item down-group-item">
           <base-drop-down :select="filterTaskFrist" @setValue="setValueFrist"></base-drop-down>
@@ -47,7 +51,8 @@
         <div class="function-btn">
           <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
           <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
-            <div class="btn-main g-btn-item" @click="_exportByOrder">导出</div>
+            <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
+            <div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>
           </template>
           <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
@@ -64,7 +69,7 @@
           <template v-if="sortingTask.list.length">
             <div v-for="(row, index) in sortingTask.list" :key="index" class="list-content list-box">
               <div v-for="item in commodities" :key="item.title" :style="{flex:item.flex}" :class="['list-item',item.class]">
-                <template v-if="item.type==='operate'" name="operation">
+                <template v-if="item.type==='operate'">
                   <router-link class="list-operation no-right" :to="getRouterUrl(item,row)">{{item.operateText ? item.operateText :row[item.key]}}</router-link>
                   <router-link v-if="item.afterBtn" class="after-btn" :to="getRouterUrl(item.afterBtn,row)">
                     {{item.afterBtn.operateText}}
@@ -78,6 +83,8 @@
                   </template>
                   <div v-if="item.afterBr">
                     {{row[item.afterBr]}}
+                  </div>
+                  <div v-if="item.afterImg && row[item.afterImg.key]" :class="item.afterImg.class">
                   </div>
                 </template>
 
@@ -97,41 +104,60 @@
 <script type="text/ecmascript-6">
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import API from '@api'
-  const ORDERSTATUS = [{text: '按订单分拣', status: 0,id:'order'}, {text: '按商品分拣', status: 1,id:'goods'}]
+  const ORDERSTATUS = [{text: '按订单分拣', status: 0, id: 'order'}, {text: '按商品分拣', status: 1, id: 'goods'}]
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '拣货任务列表'
   const COMMODITIES_LIST1 = [
     {tilte: '建单时间', key: 'created_at', flex: '1.5'},
-    {tilte: '订单号', key: 'out_order_sn',type: "operate", params: {id: 'out_order_id'}, routerName: 'merchant-order-detail', flex: '2'},
-    {tilte: '商户名称', key: 'merchant_name', flex: '2'},
-    {tilte: '订单数', key: 'order_num', after: "sale_unit"},
-    {tilte: '配货数', key: 'allocation_num', after: "sale_unit"},
-    {tilte: '状态', key: 'status_str'},
-    {tilte: '操作', key: '', type: 'operate', operateText: '明细', flex: 1, class: "operate", params: {id: 'id',order_id:'order_id'}, routerName: 'sorting-task-order-detail'}]
-  const COMMODITIES_LIST2 = [
-    {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
-    {tilte: '分类', key: 'goods_category', flex: '2'},
-    {tilte: '下单数', key: 'sale_num', after: "sale_unit"},
-    {tilte: '配货数', key: 'sale_wait_pick_num', after: "sale_unit"},
-    {tilte: '缺货数', key: 'sale_out_of_num', after: "sale_unit"},
-    {tilte: '存放库位', key: 'position_name', flex: '2'},
-    {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'status_str'},
     {
-      tilte: '操作', key: '',
+      tilte: '订单号',
+      key: 'out_order_sn',
+      type: 'operate',
+      params: {id: 'out_order_id'},
+      routerName: 'merchant-order-detail',
+      flex: '2'
+    },
+    {tilte: '商户名称', key: 'merchant_name', flex: '2'},
+    {tilte: '订单数', key: 'order_num', after: 'sale_unit'},
+    {tilte: '配货数', key: 'allocation_num', after: 'sale_unit'},
+    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {
+      tilte: '操作',
+      key: '',
       type: 'operate',
       operateText: '明细',
       flex: 1,
-      class: "operate add-btn",
-      params: {id: 'id','goods_sku_code':'goods_sku_code'},
+      class: 'operate',
+      params: {id: 'id', order_id: 'order_id'},
+      routerName: 'sorting-task-order-detail'
+    }
+  ]
+  const COMMODITIES_LIST2 = [
+    {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
+    {tilte: '分类', key: 'goods_category', flex: '2'},
+    {tilte: '下单数', key: 'sale_num', after: 'sale_unit'},
+    {tilte: '配货数', key: 'sale_wait_pick_num', after: 'sale_unit'},
+    {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
+    {tilte: '存放库位', key: 'position_name', flex: '2'},
+    {tilte: '待配商户数', key: 'merchant_num'},
+    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {
+      tilte: '操作',
+      key: '',
+      type: 'operate',
+      operateText: '明细',
+      flex: 1,
+      class: 'operate add-btn',
+      params: {id: 'id', goods_sku_code: 'goods_sku_code'},
       routerName: 'sorting-task-detail-by-goods',
-      afterBtn:{
-        routerName:'sorting-task-preview',
+      afterBtn: {
+        routerName: 'sorting-task-preview',
         params: {id: 'id'},
-        operateText: '打印标签',
+        operateText: '打印标签'
       }
-    }]
+    }
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -141,11 +167,16 @@
 
     data() {
       return {
-        currentPrint:{
-
-        },
+        currentPrint: {},
         tabStatus: ORDERSTATUS,
-        datePlaceHolder: "选择生成日期",
+        datePlaceHolder: '选择生成日期',
+        errorObj: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
         filterTaskFrist: {
           check: false,
           show: false,
@@ -164,78 +195,92 @@
         statusList: [
           {name: '全部', value: '', num: 0},
           {name: '待分拣', value: 0, num: 0},
-          {name:'拣货中', value: 2, num: 0},
-          {name:'待配货', value: 3, num: 0},
+          {name: '拣货中', value: 2, num: 0},
+          {name: '待配货', value: 3, num: 0},
           {name: '已完成', value: 1, num: 0}
         ],
-        exportUrl: ""
+        exportUrl: ''
       }
     },
     computed: {
       ...sortingComputed,
       commodities() {
-        return this.sortingTask.filter.sorting_mode === 1 ? COMMODITIES_LIST2 :COMMODITIES_LIST1
+        return this.sortingTask.filter.sorting_mode === 1 ? COMMODITIES_LIST2 : COMMODITIES_LIST1
       },
       timeArr() {
         return [this.sortingTask.filter.start_time, this.sortingTask.filter.end_time]
       }
     },
     created() {
-      this.$route.params.tabIndex && this.SET_PARAMS({sorting_mode:this.$route.params.tabIndex})
       this.getFristList()
       this._getStatusData()
+      this._setErrorStatus()
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
-      initBaseDropDown(first,second){
-        if(first){
+      _setErrorStatus() {
+        let item = this.errorObj.data.find((item) => item.status === this.sortingTask.filter.exception_status)
+        console.log(item, this.sortingTask.filter.exception_status)
+        this.errorObj.content = item.name || '全部'
+      },
+      async checkErr(item) {
+        this._updateData({exception_status:item.status,page:1})
+      },
+      initBaseDropDown(first, second) {
+        if (first) {
           this.filterTaskFrist.data = [{name: '全部', id: ''}]
           this.filterTaskFrist.content = '一级分类'
         }
-        if(second){
+        if (second) {
           this.filterTaskSecond.data = [{name: '全部', id: ''}]
-          this.filterTaskFrist.content = '二级分类'
+          this.filterTaskSecond.content = '二级分类'
         }
       },
-      _batchFinishSorting(){
-        API.Sorting.batchFinishSorting(this.sortingTask.filter,true).then(res => {
-          this.$toast.show(res.message)
-          this._updateData({page:1})
-        }).catch((err) => {
-          this.$toast.show(err.message)
-        })
+      _batchFinishSorting() {
+        API.Sorting.batchFinishSorting(this.sortingTask.filter, true)
+          .then((res) => {
+            this.$toast.show(res.message)
+            this._updateData({page: 1})
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+          })
           .finally(() => {
             this.$loading.hide()
           })
       },
 
       // 打印标签按鈕
-      printTagBtn(row){
-        this.$router.push({name:"perview",params:{id:row.id}})
+      printTagBtn(row) {
+        this.$router.push({name: 'perview', params: {id: row.id}})
       },
       // 顶部tab切换
       tabChange(val) {
-        this.initBaseDropDown()
-        let params ={
-          sorting_mode:val,
+        if(val===1){
+          this.initBaseDropDown(true,true)
+          this.getFristList()
+        }
+        let params = {
+          sorting_mode: val,
           page: 1,
           limit: 10,
           start_time: '',
           end_time: '',
-          goods_category_id: "",
+          goods_category_id: '',
           status: 0,
-          keyword: "",
+          keyword: '',
+          exception_status:''
         }
-
+        this.errorObj.content = '全部'
         this.$refs.research._setText()
         this._updateData(params)
       },
       // 表格跳转路由获取
-      getRouterUrl(item, row){
+      getRouterUrl(item, row) {
         let res = {}
         for (let i in item.params) {
-          res[i] = row [item.params[i]]
+          res[i] = row[item.params[i]]
         }
         return {
           name: item.routerName,
@@ -268,18 +313,20 @@
           end_time: this.sortingTask.filter.end_time,
           goods_category_id: this.sortingTask.filter.goods_category_id,
           keyword: this.sortingTask.filter.keyword,
-          sorting_mode:this.sortingTask.filter.sorting_mode
+          sorting_mode: this.sortingTask.filter.sorting_mode
         }
         // todo
-        API.Sorting.getStausData(params).then(res => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return false
-          }
-          this.statusList =  res.data.status
-        }).catch((err) => {
-          this.$toast.show(err.message)
-        })
+        API.Sorting.getStausData(params)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return false
+            }
+            this.statusList = res.data.status
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+          })
       },
       // 列表状态栏选择
       setStatus(val) {
@@ -287,31 +334,33 @@
       },
       // 分类数据
       _getClassifyList(params) {
-        return API.Sorting.getClassifyList(params).then(res => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return false
-          }
-          return res
-        }).catch((err) => {
-          this.$toast.show(err.message)
-        })
+        return API.Sorting.getClassifyList(params)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return false
+            }
+            return res
+          })
+          .catch((err) => {
+            this.$toast.show(err.message)
+          })
       },
       getFristList() {
-        this._getClassifyList().then(res => {
-          if(!res) return false
-          this.filterTaskFrist.data = [{name: '全部', id: ''},...res.data]
+        this._getClassifyList().then((res) => {
+          if (!res) return false
+          this.filterTaskFrist.data = [{name: '全部', id: ''}, ...res.data]
         })
       },
       // 分类选择
       setValueFrist(item) {
         this._updateData({goods_category_id: item.id || '', page: 1})
         this._getClassifyList({
-          'parent_id': item.id,
-        }).then(res => {
-          if(!res) return false
+          parent_id: item.id
+        }).then((res) => {
+          if (!res) return false
           this.filterTaskSecond.content = '全部'
-          this.filterTaskSecond.data = [{name: '全部', id: item.id},...res.data]
+          this.filterTaskSecond.data = [{name: '全部', id: item.id}, ...res.data]
         })
       },
       setValueSecond(item) {
@@ -327,7 +376,7 @@
       // 导出路径
       getUrl() {
         let obj = this.sortingTask.filter
-        let  data = {
+        let data = {
           current_corp: this.getCurrentId(),
           access_token: this.currentUser().access_token,
           goods_category_id: obj.goods_category_id,
@@ -335,7 +384,7 @@
           end_time: obj.end_time,
           keyword: obj.keyword,
           status: obj.status,
-          sorting_mode:obj.sorting_mode
+          sorting_mode: obj.sorting_mode
         }
         let search = []
         for (let key in data) {
@@ -344,9 +393,14 @@
         return '?' + search.join('&')
       },
       // 按订单分拣 导出
-      _exportByOrder(){
+      _exportByOrder() {
         // todo
         API.Sorting.exportDistributionOrder(this.getUrl())
+      },
+      // 按订单分拣 导出
+      _exportSortingByOrder() {
+        // todo
+        API.Sorting.exportSortingOrder(this.getUrl())
       },
       // 导出分拣单
       _exportPickingOrder() {
@@ -355,19 +409,26 @@
       // 导出配货单
       async _exportDeliveryOrder() {
         await API.Sorting.exportAllocationOrder(this.getUrl())
-        setTimeout(()=>{
-          this._updateData({page:1})
-        },500)
+        setTimeout(() => {
+          this._updateData({page: 1})
+        }, 500)
       },
       pageChange(page) {
         this._updateData({page})
-      },
+      }
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .list-item-img
+    icon-image('icon-unusual_list')
+    width: 16px
+    height: 15px
+    margin-top: 2px
+    margin-left: 1px
+    background-size: 16px 15px
   .fill-line
     width:28px
     border-top:1px solid #333

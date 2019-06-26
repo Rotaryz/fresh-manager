@@ -111,10 +111,10 @@
       }
     },
     computed: {
-      ...couponComputed,
-      // infoTabIndex() {
-      //   return this.tabStatus.findIndex((item) => item.status === this.status)
-      // }
+      ...couponComputed
+    // infoTabIndex() {
+    //   return this.tabStatus.findIndex((item) => item.status === this.status)
+    // }
     },
     created() {
       this.getCouponStatus()
@@ -134,8 +134,8 @@
 
       },
       getCouponStatus() {
-        API.Coupon.getCouponStatus({created_start_at: this.msg.startTime, created_end_at: this.msg.endTime})
-          .then(res => {
+        API.Coupon.getCouponStatus({created_start_at: this.msg.startTime, created_end_at: this.msg.endTime}).then(
+          (res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
               return
@@ -147,7 +147,8 @@
                 num: item.statistic
               }
             })
-          })
+          }
+        )
       },
       changeStatus(status) {
         this.msg.status = status.status

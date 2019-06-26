@@ -58,7 +58,7 @@
   /** chart配置，id：chart组件id，label：上面部分的数据名称，dataArr-name：图表内部、折线的label, dataArr-key：接口key，dataArr-data：接口数据
    * xAxleData：日期数组用于X轴，showSecondY：是否显示双Y轴，lineShadow：是否有区域阴影， tab：上面的tab切换，tabIndex：tab栏的索引，excel：是否有excel导出功能
    * yAxisIdx：参照哪一条y轴（有两条y轴才用设，不传默认0）, apiFun：接口方法名， tabIdx：表示在哪个tab中显示，用于有tab的图表（不传默认0）
-  **/
+   **/
   const OPERATION_CONFIG = [
     {
       id: 'flowChart',
@@ -70,9 +70,9 @@
         {name: '支付用户', key: 'pay_user_num_total', total: ''}
       ],
       dataArr: [
-        {name: '浏览量', key: 'pv', data:[]},
-        {name: '访客数', key: 'uv', data:[]},
-        {name: '支付用户', key: 'pay_user_num_total', data:[], yAxisIdx: 1}
+        {name: '浏览量', key: 'pv', data: []},
+        {name: '访客数', key: 'uv', data: []},
+        {name: '支付用户', key: 'pay_user_num_total', data: [], yAxisIdx: 1}
       ],
       xAxleData: [],
       showSecondY: true
@@ -87,9 +87,9 @@
         {name: '客单价(元)', key: 'per_customer_price', total: ''}
       ],
       dataArr: [
-        {name: '交易金额', key: 'amount', data:[]},
-        {name: '销售数量', key: 'num', data:[], yAxisIdx: 1},
-        {name: '客单价', key: 'per_customer_price', data:[]}
+        {name: '交易金额', key: 'amount', data: []},
+        {name: '销售数量', key: 'num', data: [], yAxisIdx: 1},
+        {name: '客单价', key: 'per_customer_price', data: []}
       ],
       xAxleData: [],
       showSecondY: true
@@ -104,9 +104,9 @@
         {name: '笔单价(元)', key: 'unit_price', total: ''}
       ],
       dataArr: [
-        {name: '订单金额', key: 'amount', data:[]},
-        {name: '订单数量', key: 'num', data:[], yAxisIdx: 1},
-        {name: '笔单价', key: 'unit_price', data:[]}
+        {name: '订单金额', key: 'amount', data: []},
+        {name: '订单数量', key: 'num', data: [], yAxisIdx: 1},
+        {name: '笔单价', key: 'unit_price', data: []}
       ],
       xAxleData: [],
       showSecondY: true
@@ -122,10 +122,10 @@
         {name: '沉睡客户', key: 's_customer', total: ''}
       ],
       dataArr: [
-        {name: '潜在客户', key: 'p_customer', data:[]},
-        {name: '新客户', key: 'n_customer', data:[]},
-        {name: '主力客户', key: 'e_customer', data:[]},
-        {name: '沉睡客户', key: 's_customer', data:[]}
+        {name: '潜在客户', key: 'p_customer', data: []},
+        {name: '新客户', key: 'n_customer', data: []},
+        {name: '主力客户', key: 'e_customer', data: []},
+        {name: '沉睡客户', key: 's_customer', data: []}
       ],
       xAxleData: [],
       showSecondY: false,
@@ -135,12 +135,8 @@
       id: 'benefitChart',
       apiFun: 'getOperationBenefitData',
       title: '效率',
-      label: [
-        {name: '动销率', key: 'rate', total: '', unit:'%'}
-      ],
-      dataArr: [
-        {name: '动销率', key: 'rate', data:[], unit:'%'}
-      ],
+      label: [{name: '动销率', key: 'rate', total: '', unit: '%'}],
+      dataArr: [{name: '动销率', key: 'rate', data: [], unit: '%'}],
       xAxleData: [],
       showSecondY: false
     },
@@ -152,20 +148,17 @@
         {name: '退货金额(元)', key: 'amount_total', total: '', tabIdx: 0},
         {name: '退货数量', key: 'num_total', total: '', tabIdx: 0},
         {name: '退货用户数', key: 'user_count_total', total: '', tabIdx: 0},
-        {name: '退货率', key: 'rate', total: '', tabIdx: 1, unit:'%'}
+        {name: '退货率', key: 'rate', total: '', tabIdx: 1, unit: '%'}
       ],
       dataArr: [
-        {name: '退货金额', key: 'amount', data:[], tabIdx: 0},
-        {name: '退货数量', key: 'num', data:[], tabIdx: 0, yAxisIdx: 1},
-        {name: '退货用户数', key: 'user_count', data:[], tabIdx: 0, yAxisIdx: 1},
-        {name: '退货率', key: 'rate', data:[], tabIdx: 1, unit:'%'}
+        {name: '退货金额', key: 'amount', data: [], tabIdx: 0},
+        {name: '退货数量', key: 'num', data: [], tabIdx: 0, yAxisIdx: 1},
+        {name: '退货用户数', key: 'user_count', data: [], tabIdx: 0, yAxisIdx: 1},
+        {name: '退货率', key: 'rate', data: [], tabIdx: 1, unit: '%'}
       ],
       xAxleData: [],
       showSecondY: true,
-      tab: [
-        {name: '退货'},
-        {name: '退货率'}
-      ],
+      tab: [{name: '退货'}, {name: '退货率'}],
       tabIndex: 0,
       excel: 'https://www.baidu.com'
     }
@@ -178,34 +171,25 @@
       label: [
         {name: '送货金额(元)', key: 'amount_total', total: '', tabIdx: 0},
         {name: '送货数量', key: 'delivery_num_total', total: '', tabIdx: 0, yAxisIdx: 1},
-        {name: '订单满足率', key: 'rate', total: '', tabIdx: 1, unit:'%'}
+        {name: '订单满足率', key: 'rate', total: '', tabIdx: 1, unit: '%'}
       ],
       dataArr: [
-        {name: '送货金额', key: 'amount', data:[], tabIdx: 0},
-        {name: '送货数量', key: 'delivery_num', data:[], tabIdx: 0, yAxisIdx: 1},
-        {name: '订单满足率', key: 'rate', data:[], tabIdx: 1, unit:'%'}
+        {name: '送货金额', key: 'amount', data: [], tabIdx: 0},
+        {name: '送货数量', key: 'delivery_num', data: [], tabIdx: 0, yAxisIdx: 1},
+        {name: '订单满足率', key: 'rate', data: [], tabIdx: 1, unit: '%'}
       ],
       xAxleData: [],
       showSecondY: true,
       lineShadow: true,
-      tab: [
-        {name: '送货'},
-        {name: '订单'}
-      ],
+      tab: [{name: '送货'}, {name: '订单'}],
       tabIndex: 0
     },
     {
       id: 'procurementChart',
       apiFun: 'getPurchaseData',
       title: '采购',
-      label: [
-        {name: '采购金额(元)', key: 'amount_total', total: ''},
-        {name: '采购数量', key: 'num_total', total: ''}
-      ],
-      dataArr: [
-        {name: '采购金额', key: 'amount', data:[]},
-        {name: '采购数量', key: 'num', data:[], yAxisIdx: 1}
-      ],
+      label: [{name: '采购金额(元)', key: 'amount_total', total: ''}, {name: '采购数量', key: 'num_total', total: ''}],
+      dataArr: [{name: '采购金额', key: 'amount', data: []}, {name: '采购数量', key: 'num', data: [], yAxisIdx: 1}],
       xAxleData: [],
       showSecondY: true
     },
@@ -213,12 +197,8 @@
       id: 'warehouseChart',
       apiFun: 'getWarehouseData',
       title: '仓库',
-      label: [
-        {name: '库存周转率', key: 'rate', total: '', unit:'%'}
-      ],
-      dataArr: [
-        {name: '库存周转率', key: 'rate', data:[], unit:'%'}
-      ],
+      label: [{name: '库存周转率', key: 'rate', total: '', unit: '%'}],
+      dataArr: [{name: '库存周转率', key: 'rate', data: [], unit: '%'}],
       xAxleData: [],
       showSecondY: true
     }
@@ -228,13 +208,10 @@
       id: 'expandChart',
       apiFun: 'getExpandData',
       title: '拓展',
-      label: [
-        {name: '订单数量', key: 'num_total', total: ''},
-        {name: '交易金额(元)', key: 'amount', total: ''}
-      ],
+      label: [{name: '订单数量', key: 'num_total', total: ''}, {name: '交易金额(元)', key: 'amount', total: ''}],
       dataArr: [
-        {name: '订单数量', key: 'num', data:[], yAxisIdx: 0},
-        {name: '交易金额', key: 'amount', data:[], yAxisIdx: 1}
+        {name: '订单数量', key: 'num', data: [], yAxisIdx: 0},
+        {name: '交易金额', key: 'amount', data: [], yAxisIdx: 1}
       ],
       xAxleData: [],
       showSecondY: true
@@ -243,14 +220,8 @@
       id: 'leaderChart',
       apiFun: 'getExpandLeaderData',
       title: '团长',
-      label: [
-        {name: '团长数量', key: 'total', total: ''},
-        {name: '新增团长', key: 'add_num_total', total: ''}
-      ],
-      dataArr: [
-        {name: '团长数量', key: 'current_num', data:[]},
-        {name: '新增团长', key: 'add_num', data:[]}
-      ],
+      label: [{name: '团长数量', key: 'total', total: ''}, {name: '新增团长', key: 'add_num_total', total: ''}],
+      dataArr: [{name: '团长数量', key: 'current_num', data: []}, {name: '新增团长', key: 'add_num', data: []}],
       xAxleData: [],
       showSecondY: true
     },
@@ -258,14 +229,8 @@
       id: 'communityChart',
       apiFun: 'getExpandCommunityData',
       title: '社群',
-      label: [
-        {name: '社群数量', key: 'total', total: ''},
-        {name: '新增社群', key: 'add_num_total', total: ''}
-      ],
-      dataArr: [
-        {name: '社群数量', key: 'current_num', data:[]},
-        {name: '新增社群', key: 'add_num', data:[]}
-      ],
+      label: [{name: '社群数量', key: 'total', total: ''}, {name: '新增社群', key: 'add_num_total', total: ''}],
+      dataArr: [{name: '社群数量', key: 'current_num', data: []}, {name: '新增社群', key: 'add_num', data: []}],
       xAxleData: [],
       showSecondY: true
     }
@@ -285,8 +250,8 @@
         topTabIndex: 0,
         dateSelector: DATE_SELECTOR,
         chartConfig: [OPERATION_CONFIG, MANAGER_CONFIG, EXPAND_CONFIG],
-        curChartConfig: [],// 当前tab的所有chart
-        chartArr: [],// 存储chart对象数组
+        curChartConfig: [], // 当前tab的所有chart
+        chartArr: [], // 存储chart对象数组
         getFinish: false,
         disabledDate: {},
         requestParam: {date_type: 'week'}
@@ -312,7 +277,9 @@
         let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
         let currentShop = process.env.VUE_APP_CURRENT_SHOP
         let _dType = this.requestParam.date_type
-        return `${process.env.VUE_APP_API}/social-shopping/api/backend/data-center/operation/after-server-data-excel?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&date_type=${_dType}`
+        return `${
+          process.env.VUE_APP_API
+        }/social-shopping/api/backend/data-center/operation/after-server-data-excel?access_token=${token}&current_shop=${currentShop}&current_corp=${currentId}&date_type=${_dType}`
       },
       _changeStatusTab(item, index) {
         if (this.topTabIndex === index) return
@@ -338,51 +305,53 @@
           } else {
             _param = this.requestParam
           }
-          API.Operation[curChart.apiFun](_param, loading).then((res) => {
-            if (res.error !== app.$ERR_OK) {
-              return false
-            }
-            if (curChart.id === 'servicesChart') {
-              // console.log(111) todo
-              curChart.excel = this._formatExcelData()
-            }
-            // 格式化接口返回的数据
-            if (curChart.id === 'userChart') {
-              // 用户接口的格式化和别的不一样
-              curChart = this.formatUserResData(res, curChart)
-            } else {
-              curChart = this.formatResData(res, curChart)
-            }
-            getSuccess = true
-          }).finally(() => {
-            let currentChart = this.$refs[curChart.id]
-            if (currentChart) {
-              this.chartArr.push(currentChart._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
-            }
-            // this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
-            this.getFinish = i === (this.curChartConfig.length - 1)// 设置请求完
-            loading && this.$loading.hide()
-          })
+          API.Operation[curChart.apiFun](_param, loading)
+            .then((res) => {
+              if (res.error !== app.$ERR_OK) {
+                return false
+              }
+              if (curChart.id === 'servicesChart') {
+                // console.log(111) todo
+                curChart.excel = this._formatExcelData()
+              }
+              // 格式化接口返回的数据
+              if (curChart.id === 'userChart') {
+                // 用户接口的格式化和别的不一样
+                curChart = this.formatUserResData(res, curChart)
+              } else {
+                curChart = this.formatResData(res, curChart)
+              }
+              getSuccess = true
+            })
+            .finally(() => {
+              let currentChart = this.$refs[curChart.id]
+              if (currentChart) {
+                this.chartArr.push(currentChart._setChart(curChart, first, getSuccess)) // 设chart并把返回的chart对象存起来
+              }
+              // this.chartArr.push(this.$refs[curChart.id]._setChart(curChart, first, getSuccess))// 设chart并把返回的chart对象存起来
+              this.getFinish = i === this.curChartConfig.length - 1 // 设置请求完
+              loading && this.$loading.hide()
+            })
         }
       },
       _setResize() {
         // 设置chart自适应窗口大小变化
         let _that = this
-        window.onresize = function () {
+        window.onresize = function() {
           for (let i = 0; i < _that.chartArr.length; i++) {
             _that.chartArr[i] && _that.chartArr[i].resize()
           }
         }
       },
       formatResData(result, curChart) {
-        curChart.xAxleData = []// 重置x轴数据
+        curChart.xAxleData = [] // 重置x轴数据
         // 遍历dataArr，通过key生成新的数组
         for (let j = 0; j < curChart.dataArr.length; j++) {
           let _chartData = curChart.dataArr[j]
-          let _key = _chartData.key// 对应接口每个值的key
+          let _key = _chartData.key // 对应接口每个值的key
           let _curLabel = curChart.label[j]
-          _curLabel.total = result[_curLabel.key]// 配置的label数组,用于设置每个图表上面的总计
-          _chartData.data = []// 重置data
+          _curLabel.total = result[_curLabel.key] // 配置的label数组,用于设置每个图表上面的总计
+          _chartData.data = [] // 重置data
           // 遍历接口的data数组，通过配置的key赋值给当前的数组
           for (let i = 0; i < result.data.length; i++) {
             let _resData = result.data[i]
@@ -390,11 +359,14 @@
             // let rd = (Math.random() * 1000).toFixed(2)
             // _chartData.data.push(_resData[_key]+rd)
             // 测试数据
-            _chartData.data.push(_resData[_key])// 通过key取出接口返回的值并push进数组
+            _chartData.data.push(_resData[_key]) // 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.date
-              _date = _date.split('-').slice(1).join('/')
+              _date = _date
+                .split('-')
+                .slice(1)
+                .join('/')
               curChart.xAxleData.push(_date)
             }
           }
@@ -402,20 +374,23 @@
         return curChart
       },
       formatUserResData(result, curChart) {
-        curChart.xAxleData = []// 重置x轴数据
+        curChart.xAxleData = [] // 重置x轴数据
         for (let j = 0; j < curChart.dataArr.length; j++) {
           let _chartData = curChart.dataArr[j]
-          let _key = _chartData.key// 对应接口每个值的key
+          let _key = _chartData.key // 对应接口每个值的key
           let _curLabel = curChart.label[j]
           let _item = result.data[_key]
-          _curLabel.total = _item.total// 配置的label数组,用于设置每个图表上面的总计
-          _chartData.data = []// 重置data
+          _curLabel.total = _item.total // 配置的label数组,用于设置每个图表上面的总计
+          _chartData.data = [] // 重置data
           for (let i = 0; i < _item.data.length; i++) {
             let _resData = _item.data[i]
-            _chartData.data.push(_resData.value)// 通过key取出接口返回的值并push进数组
+            _chartData.data.push(_resData.value) // 通过key取出接口返回的值并push进数组
             if (j === 0) {
               // x轴的date指生成一个数组就行了
-              let _date = _resData.at.split('-').slice(1).join('/')
+              let _date = _resData.at
+                .split('-')
+                .slice(1)
+                .join('/')
               curChart.xAxleData.push(_date)
             }
           }

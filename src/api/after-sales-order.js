@@ -42,5 +42,14 @@ export default {
     let url = '/scm/api/backend/oms/after-sale-order-details'
     // let url = '/mock/batchendSalesList.json'
     return request.get(url, params)
+  },
+  /**
+   * 批量关闭售后[v1.3]
+   * @param params
+   * @returns {*}
+   */
+  batchClose(params) {
+    let url = '/scm/api/backend/oms/batch-close'
+    return request.post(url, {goods_sku_codes: params})
   }
 }

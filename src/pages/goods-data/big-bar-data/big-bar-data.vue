@@ -10,7 +10,7 @@
 <script type="text/ecmascript-6">
   const COMPONENT_NAME = 'BAR_DATA'
 
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       chartId: {
@@ -31,12 +31,10 @@
         }
       }
     },
-    computed: {
-    },
-    watch: {
-    },
+    computed: {},
+    watch: {},
     mounted() {
-      // this.drawBar(this.data, '退货数')
+    // this.drawBar(this.data, '退货数')
     },
     methods: {
       setTab(num) {
@@ -46,10 +44,10 @@
         this.drawBar(data)
       },
       countNum(length, ratio) {
-        return 100 / length * ratio
+        return (100 / length) * ratio
       },
       countNum1(length) {
-        return 100 / length * 9
+        return (100 / length) * 9
       },
       // 纵向柱状图
       drawBar(data, rate) {
@@ -117,7 +115,7 @@
           },
           xAxis: {
             type: 'category',
-            boundaryGap: xAxisData.length<=7,
+            boundaryGap: xAxisData.length <= 7,
             data: xAxisData,
             offset: 12,
             splitLine: {
@@ -128,8 +126,8 @@
               fontSize: 12,
               rotate: 30,
               interval: 0,
-              formatter: function (value) {
-                let txt = value.substring(0,7)
+              formatter: function(value) {
+                let txt = value.substring(0, 7)
                 return txt + (value.length > 7 ? '...' : '')
               }
             },
@@ -175,28 +173,28 @@
               }
             },
             formatter(prams) {
-              return `${prams.name}：${prams.value}${rate ? '%': ''}`
+              return `${prams.name}：${prams.value}${rate ? '%' : ''}`
             }
           },
           dataZoom: [
             {
               // end: this.countNum(xAxisData.length, ratio),// 数据窗口范围的结束百分比
-              endValue: xAxisData[15],// 数据窗口范围
+              endValue: xAxisData[15], // 数据窗口范围
               type: 'slider',
               bottom: '26px',
               show: true,
               handleSize: '0',
               height: 12,
               xAxisIndex: [0],
-              borderColor: "rgba(250,250,250,0)",
+              borderColor: 'rgba(250,250,250,0)',
               fillerColor: '#999999',
               borderRadius: 6,
-              showDataShadow: false,// 是否显示数据阴影 默认auto
-              showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
-              realtime: true, // 是否实时更新
+              showDataShadow: false, // 是否显示数据阴影 默认auto
+              showDetail: false, // 即拖拽时候是否显示详细数值信息 默认true
+              realtime: true // 是否实时更新
             },
             {
-              type: 'inside',// 滚动缩放，拖拽拉动
+              type: 'inside' // 滚动缩放，拖拽拉动
             }
           ],
           series: [
@@ -216,8 +214,8 @@
                   color: function(params) {
                     let min = 129
                     let maxOpacity = 110
-                    min = min + 5*params.dataIndex
-                    maxOpacity = maxOpacity - 10*params.dataIndex
+                    min = min + 5 * params.dataIndex
+                    maxOpacity = maxOpacity - 10 * params.dataIndex
                     if (maxOpacity <= 30) maxOpacity = 30
                     if (min >= 254) min = 254
                     return `rgba(87, ${min}, 235, ${maxOpacity})`
@@ -303,17 +301,17 @@
           },
           dataZoom: [
             {
-              end: this.countNum1(series.xAxisData.length),// 数据窗口范围的结束百分比
+              end: this.countNum1(series.xAxisData.length), // 数据窗口范围的结束百分比
               type: 'slider',
               left: '30px',
               show: true,
               width: 12,
               handleSize: '0',
               yAxisIndex: [0],
-              borderColor: "rgba(250,250,250,0)",
+              borderColor: 'rgba(250,250,250,0)',
               fillerColor: '#999',
-              showDataShadow: false,// 是否显示数据阴影 默认auto
-              showDetail: false,// 即拖拽时候是否显示详细数值信息 默认true
+              showDataShadow: false, // 是否显示数据阴影 默认auto
+              showDetail: false, // 即拖拽时候是否显示详细数值信息 默认true
               realtime: true // 是否实时更新
             },
             {
@@ -336,7 +334,8 @@
             }
           },
           series: [
-            { // For shadow
+            {
+              // For shadow
               type: 'bar',
               name: '销售',
               data: series.seriesData1,
@@ -349,7 +348,7 @@
               },
               emphasis: {
                 itemStyle: {
-                  // color: '#F5F6F9'
+                // color: '#F5F6F9'
                 }
               },
               label: {
@@ -361,7 +360,7 @@
                   },
                   verticalAlign: 'middle',
                   color: '#333',
-                  fontSize: '14',
+                  fontSize: '14'
                 }
               },
               barWidth: '20px',
@@ -384,7 +383,7 @@
                   offset: [0, 2],
                   verticalAlign: 'middle',
                   color: '#333',
-                  fontSize: '14',
+                  fontSize: '14'
                 }
               },
               itemStyle: {

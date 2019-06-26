@@ -84,7 +84,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .last-td
-    max-width:50px
+    max-width:80px
   .sorting-task-detail
     display flex
     flex-direction column
