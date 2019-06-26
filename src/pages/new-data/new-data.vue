@@ -263,41 +263,6 @@
     }
   ]
   const RANK_LIMIT = 10
-  const RANK_DIR = {
-    leader: {
-      title: '团长',
-      tableHead: ['排名', '团长', '销售额', '佣金'],
-      apiFun: 'managerData',
-      params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
-      data: [],
-      dataKey: ['index', ['name','social_name'], 'total_order_money', 'total_settlement_money'],
-      pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/api/backend/data-statistics-ranking-shop-excel',
-      excelUrl: ''
-    },
-    goods: {
-      title: '商品',
-      tableHead: ['排名', '商品', '销量', '销售额'],
-      apiFun: 'goodsData',
-      params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
-      data: [],
-      dataKey: ['index', 'name', 'sale_count_sum', 'sale_total_sum'],
-      pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/api/backend/data-statistics-ranking-goods-excel',
-      excelUrl: ''
-    },
-    search: {
-      title: '搜索词',
-      tableHead: ['排名', '搜索词', '搜索次数'],
-      apiFun: 'searchData',
-      params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
-      data: [],
-      dataKey: ['index', 'keyword', 'times'],
-      pager: {curPage: 1, pageTotal: 1},
-      excelApi: '/social-shopping/api/backend/data-statistics-ranking-search-keyword-excel',
-      excelUrl: ''
-    }
-  }
 
   export default {
     name: PAGE_NAME,
@@ -320,7 +285,41 @@
         dataBoard: DATA_BOARD,
         dataBoardIndex: 0,
         dataBoardParams: {date_type: 'day', start_date: NOW_DATE},
-        rankDir: RANK_DIR,
+        rankDir: {
+          leader: {
+            title: '团长',
+            tableHead: ['排名', '团长', '销售额', '佣金'],
+            apiFun: 'managerData',
+            params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
+            data: [],
+            dataKey: ['index', ['name', 'social_name'], 'total_order_money', 'total_settlement_money'],
+            pager: {curPage: 1, pageTotal: 1},
+            excelApi: '/social-shopping/api/backend/data-statistics-ranking-shop-excel',
+            excelUrl: ''
+          },
+          goods: {
+            title: '商品',
+            tableHead: ['排名', '商品', '销量', '销售额'],
+            apiFun: 'goodsData',
+            params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
+            data: [],
+            dataKey: ['index', 'name', 'sale_count_sum', 'sale_total_sum'],
+            pager: {curPage: 1, pageTotal: 1},
+            excelApi: '/social-shopping/api/backend/data-statistics-ranking-goods-excel',
+            excelUrl: ''
+          },
+          search: {
+            title: '搜索词',
+            tableHead: ['排名', '搜索词', '搜索次数'],
+            apiFun: 'searchData',
+            params: {date_type: 'day', start_date: NOW_DATE, page: 1, limit: RANK_LIMIT},
+            data: [],
+            dataKey: ['index', 'keyword', 'times'],
+            pager: {curPage: 1, pageTotal: 1},
+            excelApi: '/social-shopping/api/backend/data-statistics-ranking-search-keyword-excel',
+            excelUrl: ''
+          }
+        },
         rankLimit: RANK_LIMIT,
         chartArr: [],
         getFinish: false
