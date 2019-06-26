@@ -1140,9 +1140,7 @@
             }
           })
           this.msg = obj
-          console.log(obj)
           this.msg.config_json = JSON.parse(obj.config_json)
-          console.log(obj.config_json.way)
           switch (obj.config_json.way) {
           case 'days':
             this.newItem = obj.config_json.way
@@ -1158,14 +1156,12 @@
             this.dayData2.content = obj.config_json.days + '天'
             this.dayData.content = 3 + '天'
             break
-          case 'between_days':
-            // this.msg.config_json.start_at = this.msg.config_json.start_at
-            // this.msg.config_json.end_at = this.msg.config_json.start_at
-            this.inviterArr = this.msg.config_json.inviter_coupons
-            this.invitedArr = this.msg.config_json.invitee_coupons
-            break
           default:
             this.newItem = obj.config_json.way
+          }
+          if (this.marketIndex === 4) {
+            this.inviterArr = this.msg.config_json.inviter_coupons
+            this.invitedArr = this.msg.config_json.invitee_coupons
           }
         }
       }
