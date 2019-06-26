@@ -14,7 +14,8 @@ export const state = {
     per_page: 12,
     total_page: 1
   },
-  inviteCount: 0
+  inviteCount: 0,
+  marketStaLists: []
 }
 
 export const getters = {
@@ -30,8 +31,8 @@ export const getters = {
   marketStaPageDetail(state) {
     return state.marketStaPageDetail
   },
-  marketStaList(state) {
-    return state.marketStaList
+  marketStaLists(state) {
+    return state.marketStaLists
   },
   inviteCount(state) {
     return state.inviteCount
@@ -51,8 +52,8 @@ export const mutations = {
   SET_MARKET_STA_PAGE_DETAIL(state, detail) {
     state.marketStaPageDetail = detail
   },
-  SET_MARKET_STA_LIST(state, marketStaList) {
-    state.marketStaList = marketStaList
+  SET_MARKET_STA_LIST(state, marketStaLists) {
+    state.marketStaLists = marketStaLists
   },
   SET_INVITE_COUNT(state, inviteCount) {
     state.inviteCount = inviteCount

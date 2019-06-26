@@ -17,8 +17,8 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-if="marketStaList.length">
-            <div v-for="(item, index) in marketStaList" :key="index" class="list-content list-box list-box-goods">
+          <div v-if="marketStaLists.length">
+            <div v-for="(item, index) in marketStaLists" :key="index" class="list-content list-box list-box-goods">
               <div class="list-item list-img-box">
                 <!---->
                 <img :src="item.avatar" class="list-img">
@@ -39,7 +39,6 @@
 
 <script type="text/ecmascript-6">
   import {marketComputed, marketMethods} from '@state/helpers'
-
   const PAGE_NAME = 'MARKETING_STATISTICS'
   const TITLE = '营销统计、'
   const COMMODITIES_LIST = ['用户头像', '用户名称', '成功邀请用户数']
