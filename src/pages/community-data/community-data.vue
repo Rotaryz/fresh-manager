@@ -45,7 +45,7 @@
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.business.viewData[businessIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{businessData.titleData[businessIndex][index] || 0}}{{+businessIndex === 2 ? '%':''}}</span>
+                <span class="num">{{businessData.titleData[businessIndex][index] || 0}}</span>
               </p>
             </div>
             <!--群运营图表-->
@@ -310,6 +310,9 @@
           let year = moment(item).year()
           let month = moment(item).month() + 1
           let week = moment(item).week()
+          if (moment(item).day() === 0) {
+            week -= 1
+          }
           switch (this.request.day_type) {
           case 'day':
             if (moment(data.x[0]).year() < moment(data.x[29]).year()) {
