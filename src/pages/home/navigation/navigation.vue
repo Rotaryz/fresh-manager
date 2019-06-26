@@ -534,12 +534,15 @@
         })
         this.firstIndex = i
         this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].sub_menu))
-        this.$router.push(this.firstMenu[i].url)
+        this._navigationTo(this.firstMenu[i].url)
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
+        this._navigationTo(child.front_url)
+      },
+      _navigationTo(url) {
         this.resetHooks()
-        this.$router.push(child.front_url)
+        this.$router.push(url)
       },
       // 监听页面变化
       _handleNavList() {
