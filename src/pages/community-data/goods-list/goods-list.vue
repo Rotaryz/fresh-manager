@@ -29,7 +29,7 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
-    {name: '商品名称', flex: 4, class: 'name', value: 'name'},
+    {name: '商品', flex: 4, class: 'name', value: 'name'},
     {name: '销量', flex: 0.8, class: 'count', value: 'sales'},
     {name: '销售额', flex: 1.2, class: 'rate', value: 'amount'}
   ]
