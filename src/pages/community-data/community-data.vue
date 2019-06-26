@@ -45,7 +45,7 @@
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.business.viewData[businessIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{businessData.titleData[businessIndex][index] || 0}}</span>
+                <span class="num">{{businessData.titleData[businessIndex][index] || 0}}{{+businessIndex === 2 ? '%':''}}</span>
               </p>
             </div>
             <!--群运营图表-->
