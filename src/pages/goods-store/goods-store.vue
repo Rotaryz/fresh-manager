@@ -332,16 +332,16 @@
   .identification
     border-bottom-1px($color-line)
   .goods-list
-    width: 1632px
+    width: 1618px
     padding-top: 15px
     layout(row)
     .goods-item
-      width: 216px
+      width: 214px
       border-1px(#D9DEE1, 4px)
       margin-right: 20px
       margin-bottom: 30px
       .goods-item-top
-        width: 216px
+        width: 214px
         height: @width
         padding-top: 38px
         box-sizing: border-box
@@ -361,7 +361,7 @@
           position: absolute
           width: 100%
           height: 100%
-          background: rgba(0,0,0,.5)
+          background: rgba(0,0,0,.05)
           left: 0
           top: 0
           z-index: 2
