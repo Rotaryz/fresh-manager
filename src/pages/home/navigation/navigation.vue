@@ -26,6 +26,7 @@
 
 <script type="text/ecmascript-6">
   import storage from 'storage-controller'
+  import {resetMethods} from '@state/helpers'
   const COMPONENT_NAME = 'NAVIGATION_BAR'
   const INFO_INDEX = 0
   // const HEIGHT = 40
@@ -493,6 +494,7 @@
       this._handleNavList()
     },
     methods: {
+      ...resetMethods,
       // 初始化一级菜单的高亮
       _getMenuIndex() {
         let currentPath = this.$route.fullPath
@@ -536,10 +538,12 @@
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
+        this.resetHooks()
         this.$router.push(child.front_url)
       },
       // 监听页面变化
       _handleNavList() {
+        this.$route.meta.resetHooks && this['ADD_HOOKS'](this.$route.meta.resetHooks)
         let currentPath = this.$route.fullPath
         let currentNav
         this.firstMenu.forEach((item, idx) => {

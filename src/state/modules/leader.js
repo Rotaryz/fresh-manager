@@ -45,7 +45,7 @@ export const state = {
   },
   billPage: 1
 }
-
+// const _state = JSON.parse(JSON.stringify(state)) // 保存state初始值 // todo 根据业务编写
 export const getters = {
   leaderListFilter(state){
     return state.leaderListFilter
@@ -173,22 +173,33 @@ export const mutations = {
   SET_TIME_AT(state, value) {
     state.startAt = value[0]
     state.endAt = value[1]
+  },
+  RESET_STATE(state) { // todo 根据业务编写
+    // state =  _state
+    console.log('todo demo leader!!')
   }
 }
 
 export const actions = {
+  resetState({commit}) { // todo
+    commit('RESET_STATE')
+  },
+  resetTodo({commit}) { // todo
+    // todo
+    console.log('todo clear reset!!')
+  },
   // 团长分销列表
   getList({state, commit, dispatch}, loading = true){
     /* eslint-disable */
     let {model_type,...params} = state.leaderListFilter
     let name =  state.leaderListFilter.model_type ? 'getLeaderApplicationList' :'getLeaderList'
-    console.log(model_type)
+    // console.log(model_type)
     return API.Leader[name](params).then((res) => {
       if (res.error !== app.$ERR_OK) {
         this.$toast.show(res.message)
         return false
       }
-      console.log(res)
+      // console.log(res)
       let pageTotal = {
         total: res.meta.total,
         per_page: res.meta.per_page,

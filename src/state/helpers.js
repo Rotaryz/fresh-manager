@@ -8,6 +8,11 @@ export const authComputed = {
   ...mapGetters('auth', ['loggedIn'])
 }
 
+export const resetMethods = {
+  ...mapActions('resetModule', ['resetHooks']),
+  ...mapMutations('resetModule', ['ADD_HOOKS'])
+}
+
 export const authMethods = mapActions('auth', ['logIn', 'logOut'])
 
 export const globalComputed = {
