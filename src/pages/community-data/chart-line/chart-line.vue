@@ -1,7 +1,6 @@
 <template>
   <div class="data-chart-line">
-    <div v-show="!hideChart" :id="chartId" class="chart-con"></div>
-    <div v-show="hideChart" class="no-data">暂无数据</div>
+    <div :id="chartId" class="chart-con"></div>
   </div>
 </template>
 
@@ -32,8 +31,7 @@
             {name: '新客户', data: [0, 0, 0, 0, 0, 0]}
           ],
           xAxleData: ['5/6', '6/6', '7/6', '8/6', '9/6', '10/6']
-        },
-        hideChart: false
+        }
       }
     },
     beforeDestroy() {
@@ -47,7 +45,6 @@
         this.myChart && this.myChart.resize()
       },
       _setChart(chartConfig, initChart = false, hasData = false) {
-        console.log(chartConfig, 11)
         window.removeEventListener('resize', this.resize)
         let myChart = this.myChart
         if (initChart || !myChart) {
@@ -288,16 +285,4 @@
       width: 100%
       height: 100%
 
-    .no-data
-      position: absolute
-      left: 0
-      top: 0
-      width: 100%
-      height: 100%
-      display: flex
-      align-items: center
-      justify-content: center
-      color: #666
-      font-size: $font-size-14
-      font-family: $font-family-regular
 </style>
