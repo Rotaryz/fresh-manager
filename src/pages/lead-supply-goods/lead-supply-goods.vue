@@ -77,8 +77,8 @@
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&current_corp=${currentId}&`
-        if (process.env.NODE_ENV === 'development') {
-          this.downUrl = process.env.VUE_APP_API + `/social-shopping/v1/api/backend/goods-manage/goods-create-scm-template-excel?${params}`
+        if (process.env.VUE_APP_ENV === 'release') {
+          this.downUrl = process.env.VUE_APP_API + `/social-shopping/v5/api/backend/goods-manage/goods-create-scm-template-excel?${params}`
         } else {
           this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-create-scm-template-excel?${params}`
         }
