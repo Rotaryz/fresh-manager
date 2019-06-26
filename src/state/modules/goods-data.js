@@ -128,7 +128,7 @@ export const actions = {
         let arr = res.data
         let categoryArr = state.categoryList.map((item) => {
           let val = JSON.parse(JSON.stringify(item))
-          if (+val.id === +data.goods_category_id) {
+          if (+val.id === +data.cate) {
             val.list = arr
           }
           return val
@@ -143,31 +143,14 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getSaleRank({commit}, data, loading = false) {
-    return API.GoodsData.getSaleRank(data, loading)
+
+  getSpu({commit}, data) {
+    return API.GoodsData.getSaleRank(data, false)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let data = res.data
-        commit('SALE_RANK_LIST', data)
-        return true
-      })
-      .catch(() => {
-        return false
-      })
-      .finally(() => {
-        app.$loading.hide()
-      })
-  },
-  getStockRank({commit}, data, loading = false) {
-    return API.GoodsData.getStockRank(data, loading)
-      .then((res) => {
-        if (res.error !== app.$ERR_OK) {
-          return false
-        }
-        let data = res.data
-        commit('STOCK_RANK_LIST', data)
+        commit('SET_PURCHASE_DATA', res)
         return true
       })
       .catch(() => {
@@ -198,7 +181,7 @@ export const actions = {
         if (index === 1) {
           commit('SALE_RANK_LIST', res.data)
         } else if (index === 0) {
-          data.t = res.data.b + res.data.l + res.data.n + res.data.o + res.data.y
+          data.total = res.data.total
         }
         // let arr = ['pv', 'e_customer', 'order']
         // let data = dataHandle(arr, res.data)

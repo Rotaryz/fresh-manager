@@ -35,7 +35,7 @@
                @click.stop="changeGoods(goods.id, ind, 'goods')"
           >
             <div class="image-box">
-              <img :src="goods.goods_cover_image" alt="" class="goods-image">
+              <img :src="goods.image_url" alt="" class="goods-image">
             </div>
             <span class="title">{{goods.name}}</span>
           </div>
@@ -99,9 +99,6 @@
         this.selectGoods = false
         // boolean判断选中的是否是商品，code区分选中的类型
         this.$emit('changeTab', itemId, code) // item, selectGoods
-      },
-      height(item) {
-        return (48*item.length)
       },
       selectList(categoryId, goodsId) {
         let code = ''

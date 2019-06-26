@@ -81,7 +81,7 @@
   // import {DatePicker} from 'iview'
   import _ from 'lodash'
   import API from '@api'
-  import {productComputed} from '@state/helpers'
+  import {productComputed, authComputed} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -97,7 +97,7 @@
     '状态',
     '操作'
   ]
-
+  let ws = null
   export default {
     name: PAGE_NAME,
     page: {
@@ -149,7 +149,34 @@
         this.status = this.$route.query.status * 1
       }
     },
+    destory() {
+      ws = null
+    },
     methods: {
+      ...authComputed,
+      webSocketData(apiUrl) {
+        let url =  process.env.VUE_APP_WSS + '/sub'
+        let prg = apiUrl + process.env.VUE_APP_CURRENT_CORP
+        let id = this.currentUser().manager_info.store_id
+        let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
+        ws = null
+        ws = new WebSocket(urlPrg)
+        let that = this
+        ws.onmessage = function(event) {
+          var data = JSON.parse(event.data)
+          if (data.status === 'success') {
+            ws.close()
+            that.initData()
+          }
+        }
+      },
+      initData() {
+        this.goodsPage = 1
+        this.getProductListData()
+        this._statistic()
+        this.$refs.pagination.beginPage()
+        this.$refs.confirm.hide()
+      },
       async checkErr(item) {
         this.exceptionStatus = item.status
         this.goodsPage = 1
@@ -168,17 +195,16 @@
       },
       async sureSubmit() {
         let type = 'batchOut'
+        let apiUrl = 'scm_batch_out_'
         if (this.status === 2) {
           type = 'batchRecheck'
+          apiUrl = 'scm_batch_finish_checked_'
         }
         let res = await API.Store[type]()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
-          this.goodsPage = 1
-          this.getProductListData()
-          await this._statistic()
-          this.$refs.pagination.beginPage()
-          this.$refs.confirm.hide()
+          console.log(apiUrl)
+          this.webSocketData(apiUrl)
         }
       },
       showBatchOut() {

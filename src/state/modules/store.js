@@ -108,12 +108,13 @@ export const mutations = {
 }
 
 export const actions = {
-  getWarehouseList({state, commit}, {page, goodsCategoryId, keyword, warehousePositionId, loading = true}) {
+  getWarehouseList({state, commit}, {page, goodsCategoryId, isPresale, keyword, warehousePositionId, loading = true}) {
     let data = {
       page,
       keyword,
       warehouse_position_id: warehousePositionId,
-      goods_category_id: goodsCategoryId
+      goods_category_id: goodsCategoryId,
+      is_presale: isPresale
     }
     return API.Store.warehouseStock(data, loading)
       .then((res) => {

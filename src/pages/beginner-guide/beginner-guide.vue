@@ -75,7 +75,7 @@
     {
       name: '创建活动',
       imgName: 'activity',
-      routerName: 'new-sale',
+      routerName: '/home/activity-manage/new-sale?id=0&activity_theme=fixed',
       positions: [615, PAGE_ONE_TOP_SECOND]
     },
     {
