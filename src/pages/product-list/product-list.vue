@@ -242,7 +242,7 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_category_id=${this.categoryId}&source=${this.source}&complete_status=${this.completeStatus}&is_presale=${this.isPresale}&has_stock=${this.hasStock}&keyword=${
+        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_category_id=${this.categoryId}&source=${this.source}&complete_status=${this.completeStatus}&is_presale=${this.isPresale}&has_stock=${this.hasStock}&is_online=${this.isOnline}&keyword=${
           this.keyWord}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },

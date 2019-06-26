@@ -81,7 +81,7 @@
         <div class="edit-input-box mini-edit-input-box">
           <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
           <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-          <base-drop-down :height="40" :width="133" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
+          <base-drop-down :height="40" :width="133" :select="saleSelect" :isUse="!id" @setValue="saleSelectValue"></base-drop-down>
         </div>
         <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
       </div>
@@ -440,6 +440,7 @@
       _addPic(type, length, e) {
         this.uploadImg = type
         let arr = Array.from(e.target.files)
+        e.target.value = ''
         if (arr.length < 1) return
         if (this.msg[type].length) {
           arr = arr.slice(0, length - this.msg[type].length)

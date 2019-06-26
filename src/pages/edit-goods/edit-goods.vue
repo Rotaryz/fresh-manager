@@ -56,7 +56,12 @@
                   </div>
                 </draggable>
                 <div v-if="msg.goods_main_images.length < picNum" class="add-image hand">
-                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_main_images', picNum, $event)">
+                  <input type="file"
+                         class="sendImage hand"
+                         multiple="multiple"
+                         accept="image/*"
+                         @change="_addPic('goods_main_images', picNum, $event)"
+                  >
                   <div v-if="showLoading && uploadImg === 'goods_main_images'" class="loading-mask">
                     <img src="./loading.gif" class="loading">
                   </div>
@@ -87,7 +92,7 @@
             <div class="edit-input-box mini-edit-input-box">
               <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
               <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-              <base-drop-down :height="40" :width="133" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
+              <base-drop-down :height="40" :width="133" :isUse="!id" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
             </div>
             <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
           </div>
@@ -478,7 +483,8 @@
         isSubmit: false,
         editSalePrice: 0,
         isCopy: this.$route.query.copy || null,
-        searchList: []
+        searchList: [],
+        imgInput: ''
       }
     },
     created() {
@@ -889,6 +895,7 @@
       _addPic(type, length, e) {
         this.uploadImg = type
         let arr = Array.from(e.target.files)
+        e.target.value = ''
         if (arr.length < 1) return
         if (this.msg[type].length) {
           arr = arr.slice(0, length - this.msg[type].length)
@@ -916,6 +923,7 @@
       _addSalePic(type, length, e) {
         this.uploadImg = type
         let arr = Array.from(e.target.files)
+        e.target.value = ''
         if (arr.length < 1) return
         if (this.saleMsg[type].length) {
           arr = arr.slice(0, length - this.saleMsg[type].length)
@@ -942,6 +950,7 @@
       },
       delMainPic(index) {
         this.msg.goods_main_images.splice(index, 1)
+        this.imgInput = ''
       },
       delPic(index) {
         this.saleMsg.goods_banner_images.splice(index, 1)
