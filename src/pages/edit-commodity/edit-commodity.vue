@@ -266,7 +266,8 @@
         parentId: '',
         goodsCate: [],
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []} // 格式：{title: '55'}}
+        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        selectItem: {}
       }
     },
     computed: {
@@ -302,7 +303,7 @@
         this.goodsItem = obj.ranges
       }
       await this._getFirstAssortment()
-      await this._getGoodsList()
+      await this._getGoodsList(false)
     },
     methods: {
       ...couponMethods,
@@ -361,14 +362,15 @@
         }, 1000)
       },
       // 获取商品列表
-      async _getGoodsList() {
+      async _getGoodsList(loading = true) {
         let res = await API.Coupon.getGoodsList({
           is_online: 1,
           keyword: this.text,
           goods_category_id: this.parentId,
           page: this.choicePage,
           limit: 7
-        })
+        }, loading)
+        this.$loading.hide()
         if (res.error !== this.$ERR_OK) {
           return
         }
@@ -378,6 +380,9 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
+        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.selectItem.id)
+
+        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === )
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -445,6 +450,7 @@
       // 选择商品
       _selectGoods(item, index) {
         this.showSelectIndex = index
+        this.selectItem = item
       }
     }
   }
@@ -687,13 +693,11 @@
         .goods-name
           flex: 1
           no-wrap()
+          line-height: 1.2
           &:nth-child(1)
             flex: 2
           &:nth-child(4)
             max-width: 80px
-        .goods-name, .goods-money
-          line-height: 1
-          font-size: $font-size-14
       .add-btn
         border-radius: 2px
         margin-left: 88px
