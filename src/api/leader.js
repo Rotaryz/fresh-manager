@@ -198,5 +198,91 @@ export default {
   getTopData(data, loading = false) {
     let url = '/social-shopping/api/backend/shop-manager-account-summary'
     return request.get(url, data, loading)
-  }
+  },
+  /**
+   * 团长申请列表
+   * @param loading
+   * @returns {*}
+   */
+  getLeaderApplicationList(data, loading = false) {
+    let url = '/social-shopping/api/backend/shop-distribution-invite-index'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 团长申请表状态列表
+   * @param loading
+   * @returns {*}
+   */
+  getDistributionStatus(data, loading = false) {
+    let url = '/social-shopping/api/backend/shop-distribution-invite-status'
+    return request.get(url, data, loading)
+  },
+
+  /**
+   * 团长申请审核
+   * @param loading
+   * @returns {*}
+   */
+  submitCheck(id,data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-invite-audit/${id}`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 团长邀请排行榜
+   * @param loading
+   * @returns {*}
+   */
+  leaderDistributionRankingList(data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-index`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 开启邀请设置
+   * @param loading
+   * @returns {*}
+   */
+  leaderInviteSetting(data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-config`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 获取团长设置状态
+   * @param loading
+   * @returns {*}
+   */
+  getSettingStatus(loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-config`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 查询团长结算时间范围
+   * @param loading
+   * @returns {*}
+   */
+  getAccountTimes(data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-settlement-date`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 查询团长结算统计
+   * @param loading
+   * @returns {*}
+   */
+  getAccountData(data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-entry-count`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 结算
+   * @param loading
+   * @returns {*}
+   */
+  setAccountData(data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-settlement`
+    return request.get(url, data, loading)
+  },
+  getLogList(data,loading = false){
+    let url = `/social-shopping/api/backend/shop-distribution-settlement-log-list`
+    return request.get(url, data, loading)
+  },
 }

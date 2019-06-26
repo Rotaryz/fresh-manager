@@ -815,9 +815,19 @@ export default [
           titles: ['商城', '团长', '团长列表'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
-            let status = routeTo.query.status || ''
+            let params = {
+              page:1,
+              limit:10,
+              keyword:'',
+              status:0,
+              model_type:0,
+              ...routeTo.query
+            }
+            params.status = Number( params.status)
+            params.model_type = Number( params.model_type)
+            store.commit('leader/SET_lEADER_LIST_FILTER',params)
             store
-              .dispatch('leader/getLeaderList', {page: 1, status})
+              .dispatch('leader/getList')
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -827,6 +837,35 @@ export default [
               .catch(() => {
                 return next({name: '404'})
               })
+          }
+        }
+      },
+      // 团长邀请 todo
+      {
+        path: 'leader-invite',
+        name: 'leader-invite',
+        component: () => lazyLoadView(import('@pages/leader-invite/leader-invite')),
+        meta: {
+          titles: ['商城', '团长', '团长邀请'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  抢购列表
+            API.Leader.leaderDistributionRankingList({page: 1, limit:10,keyword:'',...routeTo.query}, true)
+            .then((res) => {
+              if (res.error !== ERR_OK) {
+                return next({name: '404'})
+              }
+              let dataInfo = res.data
+              let pageInfo = {
+                total: res.meta.total,
+                per_page: res.meta.per_page,
+                total_page: res.meta.last_page,
+                invite_number_count:res.invite_number_count
+              }
+              next({params: {dataInfo, pageInfo}})
+            })
+            .catch(e => {
+              next({name: '404'})
+            })
           }
         }
       },
@@ -1969,7 +2008,7 @@ export default [
           titles: ['供应链', '仓库', '库存管理'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: ''})
+              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: '', isPresale: ''})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2382,6 +2421,12 @@ export default [
     name: 'upgrade',
     component: () => lazyLoadView(import('@pages/_upgrade/_upgrade')),
     props: true
+  },
+  // 修改密码
+  {
+    path: '/modify-password',
+    name: 'modify-password',
+    component: () => lazyLoadView(import('@pages/modify-password/modify-password'))
   },
   {
     path: '/',

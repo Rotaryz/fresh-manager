@@ -23,6 +23,7 @@ export const globalMethods = {
 // 团长
 export const leaderComputed = {
   ...mapGetters('leader', [
+    'leaderListFilter',
     'leaderList',
     'pageTotal',
     'leaderDetail',
@@ -47,24 +48,26 @@ export const leaderComputed = {
   ])
 }
 
-export const leaderMethods = mapActions('leader', [
-  'getLeaderList',
-  'getDeliveryOrder',
-  'getDeliveryDetail',
-  'setDeliveryOrder',
-  'getSettlementList',
-  'getSettlementDetail',
-  'getWithdrawalList',
-  'setWithdrawalPage',
-  'setWithdrawalType',
-  'setWithdrawalStatus',
-  'setWithdrawalSearch',
-  'setBillPage',
-  'setBillType',
-  'setWidthTime',
-  'infoStatus'
-])
-
+export const leaderMethods = {
+  ...mapActions('leader', [
+    'getList',
+    'getDeliveryOrder',
+    'getDeliveryDetail',
+    'setDeliveryOrder',
+    'getSettlementList',
+    'getSettlementDetail',
+    'getWithdrawalList',
+    'setWithdrawalPage',
+    'setWithdrawalType',
+    'setWithdrawalStatus',
+    'setWithdrawalSearch',
+    'setBillPage',
+    'setBillType',
+    'setWidthTime',
+    'infoStatus'
+  ]),
+  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
+}
 // 今日采购
 export const rushComputed = {
   ...mapGetters('rush', ['rushList', 'rushPage', 'rushDetail'])
