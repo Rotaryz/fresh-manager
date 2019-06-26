@@ -477,7 +477,8 @@
         tabIndex: 0,
         isSubmit: false,
         editSalePrice: 0,
-        isCopy: this.$route.query.copy || null
+        isCopy: this.$route.query.copy || null,
+        searchList: []
       }
     },
     created() {
@@ -486,6 +487,14 @@
       this.getSupplierData()
       this.getCategoriesData()
       this.getScmCategoriesData()
+    },
+    destroyed() {
+      if (this.isCopy) {
+        storage.remove('msg')
+        storage.remove('goods_skus')
+        storage.remove('saleMsg')
+        storage.remove('sale_skus')
+      }
     },
     methods: {
       // 顶部 切换
@@ -774,7 +783,17 @@
         })
       },
       changeText(text) {
-        console.log(text)
+        if (text.length === 0) {
+          this.supplierSelect.data = this.searchList
+          return
+        }
+        let arr = []
+        this.searchList.forEach((item) =>{
+          if (item.supplier_name.includes(text)) {
+            arr.push(item)
+          }
+        })
+        this.supplierSelect.data = arr
       },
       getSupplierData() {
         API.Product.getSupplier({page: 1, limit: 10}, false).then((res) => {
@@ -783,6 +802,7 @@
               item.name = item.supplier_name
             })
             this.supplierSelect.data = res.data
+            this.searchList = res.data
           } else {
             this.$toast.show(res.message)
           }

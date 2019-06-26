@@ -129,7 +129,10 @@
           供应商
         </div>
         <div class="edit-input-box">
-          <base-drop-down :height="40" :width="400" :select="supplierSelect" @setValue="supplierSelectValue"></base-drop-down>
+          <base-drop-down :height="40" :width="400" :isInput="true" :select="supplierSelect"
+                          @setValue="supplierSelectValue"
+                          @changeText="changeText"
+          ></base-drop-down>
         </div>
       </div>
       <div class="edit-item">
@@ -288,7 +291,8 @@
         uploadImg: '',
         picNum: 5,
         isSubmit: false,
-        editSalePrice: 0
+        editSalePrice: 0,
+        searchList: []
       }
     },
     created() {
@@ -361,6 +365,19 @@
         this.msg.goods_material_category_id = data.id
         console.log(this.msg.goods_material_category_id)
       },
+      changeText(text) {
+        if (text.length === 0) {
+          this.supplierSelect.data = this.searchList
+          return
+        }
+        let arr = []
+        this.searchList.forEach((item) =>{
+          if (item.supplier_name.includes(text)) {
+            arr.push(item)
+          }
+        })
+        this.supplierSelect.data = arr
+      },
       getSupplierData() {
         API.Product.getSupplier({page: 1, limit: 100}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -368,6 +385,7 @@
               item.name = item.supplier_name
             })
             this.supplierSelect.data = res.data
+            this.searchList = res.data
           } else {
             this.$toast.show(res.message)
           }

@@ -76,12 +76,13 @@
     methods: {
       clickHide() {
         this.select.check = false
+        this.inputText = ''
+        this.$emit('changeText', this.inputText)
       },
       endShow() {
         clearTimeout(this.setTime)
       },
       leaveHide() {
-        if (this.isInput) return
         this.setTime = setTimeout(() => {
           this.clickHide()
         }, 1500)
