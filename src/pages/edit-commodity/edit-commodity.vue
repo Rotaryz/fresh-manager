@@ -256,7 +256,7 @@
           validity_type: 1,
           usable_stock: ''
         },
-        text: 1,
+        text: '',
         isSubmit: true,
         goodsPage: {total: 1, per_page: 10, total_page: 1},
         choiceGoods: [],
@@ -400,7 +400,7 @@
         if (item.id === '') {
           this.secondAssortment.data = []
         } else {
-          let res = await API.Store.goodsCategory({parent_id: this.parentId})
+          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
@@ -418,7 +418,7 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Store.goodsCategory({parent_id: this.parentId})
+        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
         this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
