@@ -28,7 +28,7 @@
               <div class="item-dark">{{item.goods_material_name}}</div>
               <div class="item-dark">{{item.goods_sku_encoding}}</div>
             </div>
-            <div class="list-item">{{item.goods_material_name}}</div>
+            <div class="list-item">{{item.goods_material_category_name}}</div>
             <div class="list-item">{{item.supplier_name}}</div>
             <div class="list-item">{{item.base_unit}}</div>
             <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
