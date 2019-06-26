@@ -26,7 +26,8 @@
               </div>
             </div>
             <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text">
-              <p class="item hand" @click.stop="showDescription(saleData.data.type_name)">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
+              <!--<p class="item hand" @click.stop="showDescription(saleData.data.type_name)">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>-->
+              <p class="item">商品结构 <span class="name">{{saleData.data.type_name}}</span></p>
             </div>
 
             <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail' && hideText[0]" class="name-text">
