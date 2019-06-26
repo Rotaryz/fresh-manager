@@ -38,9 +38,14 @@
       this.chartConfig = {}
       this.tabIndex = 0
       this.myChart = ''
+      window.removeEventListener('resize', this.resize) // 取消监听
     },
     methods: {
+      resize() {
+        this.myChart && this.myChart.resize()
+      },
       _setChart(chartConfig, initChart = false, hasData = false) {
+        window.removeEventListener('resize', this.resize)
         let myChart = this.myChart
         if (initChart || !myChart) {
           let el = document.getElementById(this.chartId)
@@ -48,9 +53,7 @@
           myChart = this.$echarts.init(el)// 初始化chart
           this.myChart = myChart
         }
-        window.addEventListener('resize',  function() {
-          myChart.resize()
-        })
+        window.addEventListener('resize',  this.resize) // 加监听
         this.chartConfig = chartConfig
         if (!hasData) return false// 没有数据不设置option
         let option = this._setOption(chartConfig)
@@ -186,8 +189,7 @@
             show: true,
             lineStyle: {
               color: CHART_COLOR.axle,
-              width: 0.5,
-              type: "doted"
+              width: 0.5
             }
           },
           axisLabel: {
@@ -204,8 +206,7 @@
             show: true,
             lineStyle: {
               color: CHART_COLOR.axle,
-              width: 0.5,
-              type: "doted"
+              width: 0.5
             }
           }
         }
@@ -279,7 +280,9 @@
   .data-chart-line
     width: 100%
     flex: 1
+    position: relative
     .chart-con
       width: 100%
       height: 100%
+
 </style>

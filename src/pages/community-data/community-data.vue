@@ -5,7 +5,7 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">微信群运营数据概况</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" :infoTab="2" :tabActive="2" @checkTime="_getData"></base-option-box>
+      <base-date-picker :infoTab="0" :arrTitle="arrTitle" @checkTime="_getData"></base-date-picker>
     </div>
     <div class="data-content">
       <left-tab @editGroup="editGroup" @changeCommunity="changeCommunity"></left-tab>
@@ -24,7 +24,7 @@
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.quality.viewData[qualityIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{item.data}}</span>
+                <span class="num">{{qualityData.titleData[qualityIndex][index] || 0}}</span>
               </p>
             </div>
             <!--群质量图表-->
@@ -45,7 +45,7 @@
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.business.viewData[businessIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{item.data}}</span>
+                <span class="num">{{businessData.titleData[businessIndex][index] || 0}}</span>
               </p>
             </div>
             <!--群运营图表-->
@@ -60,14 +60,14 @@
               <p class="text">
                 群用户分组
                 <span v-if="+letTab !== 0">(群总人数{{leftTabItem.total || 0}})</span>
-                <status-tab ref="statusTab3" :statusList="dataConfig.group.tab" @setStatus="changeGroup"></status-tab>
+                <!--<status-tab ref="statusTab3" :statusList="dataConfig.group.tab" @setStatus="changeGroup"></status-tab>-->
               </p>
             </div>
 
             <div class="data-view">
               <p v-for="(item, index) in dataConfig.group.viewData[groupIndex]" :key="index" class="item">
                 <span class="name">{{item.name}}</span>
-                <span class="num">{{item.data}}</span>
+                <span class="num">{{groupData.titleData[groupIndex][index] || 0}}</span>
               </p>
             </div>
             <!--用户分组图表-->
@@ -93,6 +93,7 @@
 
 <script type="text/ecmascript-6">
   import {communityComputed, communityMethods} from '@state/helpers'
+  import moment from 'moment'
   import ChartLine from './chart-line/chart-line'
   import LeftTab from './left-tab/left-tab'
   import StatusTab from './status-tab/status-tab'
@@ -102,10 +103,9 @@
 
   import API from '@api'
   const ARR_TITLE = [
-    {title: '今天', status: 'today'},
-    {title: '昨天', status: 'yesterday'},
-    {title: '7天', status: 'week'},
-    {title: '30天', status: 'month'}
+    {title: '日', status: 'date'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'},
   ]
   const DATA_CONFIG = {
     quality: {
@@ -116,12 +116,12 @@
       viewData: [
         [
           {name: '浏览量(PV)', data: '100', code: 'pv'},
-          {name: '访客数(UV)', data: '200', code: 'e_customer'}
+          {name: '访客数(UV)', data: '200', code: 'uv'}
         ],
         [
-          {name: '支付用户', data: '100', code: 'pv'},
-          {name: '支付订单', data: '200', code: 'e_customer'},
-          {name: '交易金额', data: '200', code: 'order'}
+          {name: '支付用户', data: '100', code: 'customers'},
+          {name: '支付订单', data: '200', code: 'order'},
+          {name: '交易金额', data: '200', code: 'transaction'}
         ]
       ]
     },
@@ -149,8 +149,8 @@
     },
     group: {
       tab: [
-        {name: '用户数量'},
-        {name: '用户效率'}
+        {name: '用户数量'}
+        // {name: '用户效率'}
       ],
       viewData: [
         [
@@ -158,10 +158,10 @@
           {name: '新客户', data: '200', code: 'n_customer'},
           {name: '主力客户', data: '200', code: 'e_customer'},
           {name: '沉睡客户', data: '200', code: 's_customer'}
-        ],
-        [
-          {name: '用户效率', data: '100', code: 'n_customer'}
         ]
+        // [
+        //   {name: '用户效率', data: '100', code: 'n_customer'}
+        // ]
       ]
     }
   }
@@ -188,7 +188,8 @@
         tabArr: [],
         request: {
           wx_group_id: '',
-          day_type: 'week'
+          day_type: 'day',
+          start_date: moment(Date.now() - 84600000).format('YYYY-MM-DD')
         },
         editGroupItem: {},
         leftTabItem: {},
@@ -205,23 +206,14 @@
       qualityData(value, old) {
         let code = 'quality'
         this.$refs[code + 'Chart']._setChart(this.dataHandle(value.data[this[code + 'Index']], code), true, true)
-        // window.addEventListener('resize', function() {
-        //   mychart.resize()
-        // })
       },
       businessData(value, old) {
         let code = 'business'
         this.$refs[code + 'Chart']._setChart(this.dataHandle(value.data[this[code + 'Index']], code), true, true)
-        // window.addEventListener('resize', function() {
-        //   mychart.resize()
-        // })
       },
       groupData(value, old) {
         let code = 'group'
         this.$refs[code + 'Chart']._setChart(this.dataHandle(value.data[this[code + 'Index']], code), true, true)
-        // let mychart = window.addEventListener('resize', function() {
-        //   mychart.resize()
-        // })
       }
     },
     created() {
@@ -229,8 +221,9 @@
     },
     methods: {
       ...communityMethods,
-      _getData(value) {
-        this.request.day_type = value
+      _getData(value, type) {
+        this.request.day_type = type
+        this.request.start_date = value
         this.getAllData()
       },
       // 切换质量数据tab栏
@@ -265,7 +258,7 @@
         this.noDraw = true
         this.$refs.statusTab1.checkStatus(0, '')
         this.$refs.statusTab2.checkStatus(0, '')
-        this.$refs.statusTab3.checkStatus(0, '')
+        // this.$refs.statusTab3.checkStatus(0, '')
         this.getAllData()
       },
       showDescription(type) {
@@ -293,6 +286,10 @@
         this.noDraw = false
       },
       dataHandle(data, type) {
+        if (!data) return {
+          dataArr: [],
+          xAxleData: []
+        }
         // data = [
         //   {
         //     rate: [[], []],
@@ -306,10 +303,26 @@
         let dataArr = tab.map((item, index) => {
           return {
             name: item.name,
-            data: data.rate[index]
+            data: data.rate ? data.rate[index] : ''
           }
         })
-        let xAxleData = data.x
+        let xAxleData = data.x.map(item => {
+          let year = moment(item).year()
+          let month = moment(item).month() + 1
+          let week = moment(item).week()
+          switch (this.request.day_type) {
+          case 'day':
+            if (moment(data.x[0]).year() < moment(data.x[29]).year()) {
+              return month ? moment(item).format('YYYY-MM-DD') : ''
+            } else {
+              return month ? moment(item).format('MM/DD') : ''
+            }
+          case 'week':
+            return week ? year.toString().slice(2) + '年第' + week + '周' : ''
+          default:
+            return month ? year.toString().slice(2)  + '年' + month + '月' : ''
+          }
+        })
         return {
           dataArr,
           xAxleData

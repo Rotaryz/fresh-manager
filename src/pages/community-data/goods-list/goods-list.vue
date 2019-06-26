@@ -11,8 +11,10 @@
     <div class="list">
       <div v-for="(item, index) in goodsList" :key="index" class="list-item">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
-          <img v-if="val.class === 'img'" class="img" :src="item.goods && item.goods.cover_image" alt="">
-          <p v-else-if="val.value === 'name'" class="main">{{item.goods && item.goods[val.value]}}</p>
+          <p v-if="val.value === 'name'" class="main">
+            <img class="img" :src="item.goods && item.goods.cover_image" alt="">
+            <span class="text">{{item.goods && item.goods[val.value]}}</span>
+          </p>
           <p v-else-if="val.value === 'conversion'" class="main">{{(time === 'today') ? '---' : item.conversion}}</p>
           <p v-else class="main">{{item[val.value]}}</p>
         </div>
@@ -27,11 +29,9 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
-    {name: '图片', flex: 0.4, class: 'img', value: ''},
-    {name: '商品名称', flex: 4, class: 'name', value: 'name'},
-    {name: '浏览量', flex: 1.2, class: 'view', value: 'views'},
+    {name: '商品', flex: 4, class: 'name', value: 'name'},
     {name: '销量', flex: 0.8, class: 'count', value: 'sales'},
-    {name: '转化率', flex: 1.2, class: 'rate', value: 'conversion'}
+    {name: '销售额', flex: 1.2, class: 'rate', value: 'amount'}
   ]
   const GOOD = [
     {
@@ -155,11 +155,18 @@
         overflow: hidden
         text-overflow: ellipsis
         white-space: nowrap
+        display: flex
+        align-items: center
       .img
         width: 36px
         height: 36px
+        margin-right: 10px
         border-radius: 2px
+        object-fit: cover
         border: 0.5px solid $color-line
+      .text
+        overflow: hidden;
+        text-overflow: ellipsis;
     .item-data:last-child
       padding-right: 0
   .rate
