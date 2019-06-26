@@ -426,6 +426,7 @@
       // 隐藏商品弹窗
       _hideGoods() {
         this.showSelectIndex = -1
+        this.selectItem = {}
         this.text = ''
         this.choicePage = 1
         this.$refs.goods.hideModal()
