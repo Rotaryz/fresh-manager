@@ -592,7 +592,7 @@
       _baseSubmit() {
         this.goods_skus.presale_usable_stock += ''
         if (this.goods_skus.goods_material_name.length === 0 || this.goods_skus.goods_material_name.length >= 30) {
-          this.$toast.show('请选择输入商品名称且小于30字')
+          this.$toast.show('请输入商品名称且小于30字')
           return
         } else if (this.msg.goods_material_category_id <= 0) {
           this.$toast.show('请选择商品类目')
@@ -722,7 +722,7 @@
           this.$toast.show('请上传商品详情图')
           return
         } else if (this.saleMsg.name.length === 0 || this.saleMsg.name.length >= 30) {
-          this.$toast.show('请选择输入商品名称且小于30字')
+          this.$toast.show('请输入商品名称且小于30字')
           return
         } else if (this.saleMsg.goods_category_id <= 0) {
           this.$toast.show('请选择商品分类')
