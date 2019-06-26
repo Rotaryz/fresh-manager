@@ -73,9 +73,9 @@
             case 0:
               return date.valueOf() > Date.now() - 86400000
             case 1:
-              return date.valueOf() > new Date().valueOf() - new Date().getDay() * 84600000
+              return date.valueOf() > new Date().valueOf() - new Date().getDay() * 86400000
             case 2:
-              return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 84600000
+              return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 86400000
             }
           },
           firstDayOfWeek: 1
@@ -87,11 +87,11 @@
         timer: '',
         clickTab: false,
         date: {
-          day: new Date().valueOf() - 84600000,
+          day: new Date().valueOf() - 86400000,
           week: '',
           month: ''
         },
-        viewDate: moment(new Date().valueOf() - 84600000).format('YYYY-MM-DD')
+        viewDate: moment(new Date().valueOf() - 86400000).format('YYYY-MM-DD')
       }
     },
     computed: {
@@ -110,6 +110,7 @@
         this.tempIndex = index
       },
       _getDate(time) {
+
         this.tabIndex = this.tempIndex
         let date = ''
         let startDate = ''

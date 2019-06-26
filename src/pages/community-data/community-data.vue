@@ -103,7 +103,7 @@
 
   import API from '@api'
   const ARR_TITLE = [
-    {title: '日', status: 'date'},
+    {title: '日', status: 'day'},
     {title: '周', status: 'week'},
     {title: '月', status: 'month'},
   ]
@@ -189,7 +189,7 @@
         request: {
           wx_group_id: '',
           day_type: 'day',
-          start_date: moment(Date.now() - 84600000).format('YYYY-MM-DD')
+          start_date: moment(Date.now() - 86400000).format('YYYY-MM-DD')
         },
         editGroupItem: {},
         leftTabItem: {},
