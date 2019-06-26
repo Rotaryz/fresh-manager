@@ -674,6 +674,8 @@
           if (res.error === this.$ERR_OK) {
             console.log(res.data)
             this.id = res.data.goods_id
+            this.goods_skus.goods_sku_id = res.data.goods_sku_id
+            this.sale_skus.goods_sku_id = res.data.goods_sku_id
             this.tabIndex = 1
             this.$toast.show('创建基础信息成功')
           } else {

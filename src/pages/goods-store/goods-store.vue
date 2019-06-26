@@ -17,7 +17,7 @@
       </div>
       <div class="type-select">
         <div class="select-left">一级类目：</div>
-        <div class="select-right" :class="{'select-right-active': isOpenOne}">
+        <div class="select-right one-select-box" :class="{'select-right-active': isOpenOne}">
           <div v-for="(item, index) in oneList" :key="index" class="select-item" :class="item.is_selected ? 'select-item-select' : ''" @click="selectOneList(item, index)">{{item.name}}</div>
         </div>
         <div class="select-open" :class="{'select-open-active': isOpenOne}" @click="clickBtn('One')">
@@ -166,6 +166,8 @@
     created() {
       this.getCategoriesData()
     },
+    mounted() {
+    },
     methods: {
       ...scmGoodsMethods,
       getCategoriesData() {
@@ -173,6 +175,8 @@
           if (res.error === this.$ERR_OK) {
             this.oneList = res.data
             this.oneList.unshift({name: '全部', id: '', is_selected: true, list: []})
+            let oneSelect = document.querySelectorAll('.select-item')
+            console.log(oneSelect)
           } else {
             this.$toast.show(res.message)
           }
@@ -264,7 +268,6 @@
             this.$toast.show(res.message)
           }
         })
-        console.log(curItem)
       },
       getReqList() {
         this.getScmStoreData({
