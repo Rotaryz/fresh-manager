@@ -386,8 +386,13 @@
       },
       // 弹窗确定选择链接
       async _miniGoods() {
-        this.goodsItem = [this.choiceGoods[this.showSelectIndex]]
+        if (!this.selectItem.id) {
+          this.$toast.show('请选择商品')
+          return
+        }
+        this.goodsItem = [this.selectItem]
         this.commodity.ranges[0] = {range_id: this.goodsItem[0].id, coupon_range_id: 0}
+        this.commodity.coupon_name = this.selectItem.name
         this._hideGoods()
       },
       // 获取分页商品列表
