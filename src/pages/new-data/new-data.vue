@@ -295,7 +295,8 @@
             dataKey: ['index', ['name', 'social_name'], 'total_order_money', 'total_settlement_money'],
             pager: {curPage: 1, pageTotal: 1},
             excelApi: '/social-shopping/api/backend/data-statistics-ranking-shop-excel',
-            excelUrl: ''
+            excelUrl: '',
+            dataGetting: false
           },
           goods: {
             title: '商品',
@@ -306,7 +307,8 @@
             dataKey: ['index', 'name', 'sale_count_sum', 'sale_total_sum'],
             pager: {curPage: 1, pageTotal: 1},
             excelApi: '/social-shopping/api/backend/data-statistics-ranking-goods-excel',
-            excelUrl: ''
+            excelUrl: '',
+            dataGetting: false
           },
           search: {
             title: '搜索词',
@@ -317,12 +319,13 @@
             dataKey: ['index', 'keyword', 'times'],
             pager: {curPage: 1, pageTotal: 1},
             excelApi: '/social-shopping/api/backend/data-statistics-ranking-search-keyword-excel',
-            excelUrl: ''
+            excelUrl: '',
+            dataGetting: false
           }
         },
         rankLimit: RANK_LIMIT,
         chartArr: [],
-        getFinish: false
+        getFinish: false,
       }
     },
     watch: {
@@ -486,6 +489,7 @@
               curPage: res.meta.current_page,
               pageTotal: res.meta.last_page
             }
+            obj.dataGetting = false
             let currentId = this.getCurrentId()
             let token = (this.$storage.get('auth.currentUser', '') || {}).access_token
             let currentShop = process.env.VUE_APP_CURRENT_SHOP
@@ -493,6 +497,8 @@
           } else {
             this.$toast.show(res.message)
           }
+        }).finally(() => {
+          obj.dataGetting = false
         })
       },
       _getExcelUrl(obj,excelHeader) {
@@ -511,7 +517,8 @@
       // 排行的分页切换
       _changePage(item, num) {
         let curPage = item.pager.curPage + num
-        if (curPage < 1 || curPage > item.pager.pageTotal) return
+        if (this.dataGetting || curPage < 1 || curPage > item.pager.pageTotal) return
+        item.dataGetting = true
         item.params.page = curPage// 传给接口用
         this._getRankList(item)
       },
@@ -979,10 +986,10 @@
           layout(row, block, no-warp)
           align-items: center
           box-sizing: border-box
-          padding-right: 10px
+          margin-right: 10px
           flex: 1
           &:nth-child(1)
-            max-width: 56px
+            max-width: 42px
           &:nth-child(2)
             flex: 3
             width: 12.5vw
@@ -992,7 +999,7 @@
             text-align: right
             justify-content: flex-end
           &:last-child
-            padding-right: 0
+            margin-right: 0
 
         .rank-icon
           width: 30px
@@ -1004,7 +1011,9 @@
           &.rank-3
             icon-image(icon-three)
         .list-rank-num
-          padding-left: 12px
+          min-width: 30px
+          max-width: 100%
+          text-align: center
           font-family: $font-family-medium
         .pager-bar
           position: absolute
