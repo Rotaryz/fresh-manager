@@ -140,7 +140,7 @@
               供应商
             </div>
             <div class="edit-input-box">
-              <base-drop-down :height="40" :width="400" :isInput="true" :select="supplierSelect"
+              <base-drop-down :height="40" :width="400" :isInput="true" :select="supplierSelect" isInputPla="请选择供应商"
                               @setValue="supplierSelectValue"
                               @changeText="changeText"
               ></base-drop-down>

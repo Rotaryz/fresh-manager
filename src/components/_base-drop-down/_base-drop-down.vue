@@ -8,6 +8,7 @@
           <transition name="fade">
             <ul v-show="select.check" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
               <input v-if="isInput" v-model="inputText" type="text" class="value-input" maxlength="10"
+                     :placeholder="isInputPla"
                      @input="changeText"
                      @click.stop
               >
@@ -58,6 +59,10 @@
       isInput: {
         type: Boolean,
         default: false
+      },
+      isInputPla: {
+        type: String,
+        default: '请输入搜索文字'
       }
     },
     data() {
