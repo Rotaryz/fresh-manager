@@ -861,9 +861,13 @@
         height: 370px
         margin-top: 10px
   .rank-list
+    width: 100%
+    overflow-x: hidden
     margin-top: $margin
     background: #ffffff
     .rank-list-content
+      width: 100%
+      overflow-x: hidden
       padding: $margin 0 $margin $margin
       layout(row)
       .rank-list-con
@@ -926,8 +930,10 @@
             color: $color-white
             background: $color-main
       .big-list
-        height: 695px
-        max-height: 695px
+        width: 100%
+        overflow-x: hidden
+        height: 700px
+        max-height: 700px
         padding-bottom: 60px
         font-size: $font-size-14
         .list-head
@@ -941,6 +947,8 @@
           color: $color-text-main
           font-family: $font-family-medium
         .list-content
+          width: 100%
+          overflow-x: hidden
           padding: 0 20px
           box-sizing: border-box
           border-bottom-1px($border-color)
@@ -965,6 +973,8 @@
             width: 100%
             no-wrap()
         .list-item
+          width: 100%
+          overflow-x: hidden
           height: 40px
           layout(row, block, no-warp)
           align-items: center
@@ -975,6 +985,9 @@
             max-width: 56px
           &:nth-child(2)
             flex: 3
+            width: 12.5vw
+            min-width: 12.5vw
+            max-width: 12.5vw
           &:nth-child(3), &:nth-child(4), &:nth-child(5)
             text-align: right
             justify-content: flex-end
