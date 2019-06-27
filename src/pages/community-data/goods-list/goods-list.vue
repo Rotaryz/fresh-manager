@@ -1,6 +1,6 @@
 <template>
   <div class="goods-list">
-    <div class="goods-title" :class="{'padding': goodsList.length > 5}">
+    <div v-if="goodsList.length" class="goods-title" :class="{'padding': goodsList.length > 5}">
       <span v-for="(item, index) in titleArr"
             :key="index"
             class="title-item"
@@ -11,13 +11,17 @@
     <div class="list">
       <div v-for="(item, index) in goodsList" :key="index" class="list-item">
         <div v-for="(val, ind) in titleArr" :key="ind" :style="{flex: val.flex}" class="item-data" :class="val.class">
-          <img v-if="val.class === 'img'" class="img" :src="item.goods && item.goods.cover_image" alt="">
-          <p v-else-if="val.value === 'name'" class="main">{{item.goods && item.goods[val.value]}}</p>
+          <p v-if="val.value === 'name'" class="main">
+            <img class="img" :src="item.goods && item.goods.cover_image" alt="">
+            <span class="text">{{item.goods && item.goods[val.value]}}</span>
+          </p>
           <p v-else-if="val.value === 'conversion'" class="main">{{(time === 'today') ? '---' : item.conversion}}</p>
           <p v-else class="main">{{item[val.value]}}</p>
         </div>
       </div>
     </div>
+
+    <div v-show="!goodsList.length && loaded" class="no-data">暂无数据</div>
   </div>
 </template>
 
@@ -25,11 +29,9 @@
   import {communityComputed} from '@state/helpers'
   const COMPONENT_NAME = 'GOODS_LIST'
   const TITLE = [
-    {name: '图片', flex: 0.4, class: 'img', value: ''},
-    {name: '商品名称', flex: 4, class: 'name', value: 'name'},
-    {name: '浏览量', flex: 1.2, class: 'view', value: 'views'},
+    {name: '商品', flex: 4, class: 'name', value: 'name'},
     {name: '销量', flex: 0.8, class: 'count', value: 'sales'},
-    {name: '转化率', flex: 1.2, class: 'rate', value: 'conversion'}
+    {name: '销售额', flex: 1.2, class: 'rate', value: 'amount'}
   ]
   const GOOD = [
     {
@@ -68,11 +70,17 @@
     data() {
       return {
         titleArr: TITLE,
-        goods: GOOD
+        goods: GOOD,
+        loaded: false
       }
     },
     computed: {
       ...communityComputed
+    },
+    watch: {
+      goodsList(value, oldValue) {
+        this.loaded = true
+      }
     },
     methods: {}
   }
@@ -83,7 +91,18 @@
 
   .goods-list
     width: 100%
-    height: 345px
+    flex: 1
+    display: flex
+    flex-direction: column
+    .no-data
+      width: 100%
+      height: 100%
+      display: flex
+      align-items: center
+      justify-content: center
+      color: #666
+      font-size: $font-size-14
+      font-family: $font-family-regular
   .goods-title
     height: 45px
     line-height: 45px
@@ -92,12 +111,14 @@
     padding: 0 20px
     .title-item
       padding-right: 20px
+      &:first-child
+        min-width: 52px
       &:last-child
         padding-right: 0
   .padding
     padding-right: 26px
   .list
-    height: 300px
+    flex: 1
     overflow: auto
     &::-webkit-scrollbar
       width: 6px
@@ -128,15 +149,24 @@
       height: 36px
       line-height: 36px
       padding-right: 20px
+      &:first-child
+        min-width: 52px
       .main
         overflow: hidden
         text-overflow: ellipsis
         white-space: nowrap
+        display: flex
+        align-items: center
       .img
         width: 36px
         height: 36px
+        margin-right: 10px
         border-radius: 2px
+        object-fit: cover
         border: 0.5px solid $color-line
+      .text
+        overflow: hidden;
+        text-overflow: ellipsis;
     .item-data:last-child
       padding-right: 0
   .rate

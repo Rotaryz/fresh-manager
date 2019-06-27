@@ -236,9 +236,9 @@
       }
     },
     created() {
-      console.log(this.leaderListFilter.model_type)
-      console.log(this.leaderList)
-      if(this.leaderListFilter.model_type){
+      // console.log(this.leaderListFilter.model_type)
+      // console.log(this.leaderList)
+      if(!this.leaderListFilter.model_type){
         this.getTopData()
       }
       this._getLeaderStatus()

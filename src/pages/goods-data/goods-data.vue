@@ -5,7 +5,8 @@
         <img src="./icon-qundata@2x.png" alt="" class="title-icon">
         <div class="data-title">商品数据</div>
       </div>
-      <base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>
+      <!--<base-option-box :arrTitle="arrTitle" :infoTab="0" :tabActive="3" :disabledDate="dateOption" @checkTime="_getData"></base-option-box>-->
+      <base-date-picker :arrTitle="arrTitle" :infoTab="0" @checkTime="_getData"></base-date-picker>
     </div>
     <div class="data-content">
       <left-tab ref="goodsTab" @changeTab="changeTab"></left-tab>
@@ -25,7 +26,8 @@
               </div>
             </div>
             <div v-if="selectMsg.sale.type === 'goodsDetail'" class="name-text">
-              <p class="item hand" @click.stop="showDescription(saleData.data.type_name)">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>
+              <!--<p class="item hand" @click.stop="showDescription(saleData.data.type_name)">商品结构 <span class="name">{{saleData.data.type_name}}</span> <img src="./icon-help_lv@2x.png" alt="" class="icon"></p>-->
+              <p class="item">商品结构 <span class="name">{{saleData.data.type_name}}</span></p>
             </div>
 
             <div v-if="selectMsg.sale.type !== 'goods' && selectMsg.sale.type !== 'goodsDetail' && hideText[0]" class="name-text">
@@ -55,7 +57,7 @@
                 </div>
               </div>
             </div>
-            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" :loaded="loaded" @changeGoodsRank="changeGoodsRank"></goods-list>
+            <goods-list v-if="selectMsg.sale.type === 'goods'" type="sales" :list="saleRankList" :loaded="loadedSale" @changeGoodsRank="changeGoodsRank"></goods-list>
             <bar-data v-if="selectMsg.sale.type === 'bar'"
                       ref="bar1" chartId="bar1"
                       @clickChart="clickChart"
@@ -149,7 +151,7 @@
             <div v-if="selectMsg.supply.type !== 'goods' && hideText[3]" class="name-text">
               <p class="item">{{selectMsg.supply.name}}<span class="data">{{supplyData[selectMsg.supply.code + '_total'] || supplyData[selectMsg.supply.code] || 0}}{{selectMsg.supply.rate && '%'}}</span></p>
             </div>
-            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList" :loaded="loaded"></goods-list>
+            <goods-list v-if="selectMsg.supply.type === 'goods'" type="stock" :list="stockRankList" :loaded="loadedSupply"></goods-list>
             <bar-data v-if="selectMsg.supply.type === 'bar'"
                       ref="bar4" chartId="bar4"
                       @clickChart="clickChart"
@@ -188,14 +190,14 @@
   import BigBarData from './big-bar-data/big-bar-data'
   import PieData from './pie-data/pie-data'
   import DescriptionModal from './description-modal/description-modal'
+  import {formatNumber} from '@utils/common'
 
   import API from '@api'
 
   const ARR_TITLE = [
-    {title: '7天', status: 'week'},
-    {title: '15天', status: 'half_month'},
-    {title: '30天', status: 'month'},
-    {title: '自定义', status: 'custom'}
+    {title: '日', status: 'day'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
   ]
   // 导出接口
   const EXPORT_URL = {
@@ -238,7 +240,7 @@
         {name: '退货率', type: 'bar', big: true, code: 'rate', rate: true}
       ],
       purchase: [
-        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales', word: 'sku_num_total', limit: 6},
+        {name: '采销匹配度', type: 'bar1', big: true, excel: true, code: 'sales_num', word: 'sku_num_total', limit: 6},
         {name: '毛利率', type: 'bar', big: true, rate: true, code: 'rate', word: 'rate', limit: 8}
       ],
       supply: [
@@ -304,8 +306,8 @@
           limit: 10
         },
         requestPub: {
-          date_type: 'week',
-          start_date: '',
+          date_type: 'day',
+          start_date: new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&'),
           end_date: '',
           group_by: 'cate',
           cate: '',
@@ -339,7 +341,8 @@
         secName: {sale: 0, serve: 1, purchase: 2, supply: 3},
         bigBarIndex: 0, // 大图表所属第几块下标
         bigBarType: '', // 大图表所属第几块名称
-        loaded: false,
+        loadedSale: false,
+        loadedSupply: false,
         hideText: [true, true, true, true]
       }
     },
@@ -370,20 +373,9 @@
     },
     methods: {
       ...goodsDataMethods,
-      _getData(value) {
-        if (typeof value === 'string') {
-          this.requestPub.date_type = value
-        } else {
-          // this.start_at = value[0]
-          // this.end_at = value[1]
-          this.requestPub.date_type = 'cust-date'
-          this.requestPub.start_date = value[0]
-          this.requestPub.end_date = value[1]
-          if (new Date(Number(value[0])) - new Date(Number(value[1])) <= 2) {
-            this.$toast.show('选择时间范围不能小于两天')
-            return
-          }
-        }
+      _getData(value, type) {
+        this.requestPub.date_type = type
+        this.requestPub.start_date = value
         this.getAllData()
       },
       changeGoodsRank(type) {
@@ -542,7 +534,7 @@
       },
       // 切换商品销售模块（模块1）
       async changeSale(obj, index) {
-        this.loaded = false
+        this.loadedSale = false
         this.$set(this.selectMsg, 'sale', this.deepCopy(obj))
         this.$set(this.tabIndexControl, 'sale', index)
         obj.code ? this.$set(this.requestSale, 'order_by', obj.code) : this.$delete(this.requestSale, 'order_by')
@@ -554,7 +546,7 @@
         }
         let dataSale = Object.assign({}, this.requestSale, this.requestPub)
         await this.getSaleData({dataSale, index})
-        this.loaded = true
+        this.loadedSale = true
         if (this.leftTab !== 'goods') {
           if (index === 0) {
             this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
@@ -600,7 +592,7 @@
       },
       // 切换供应链模块（模块4）
       async changeSupply(obj, index) {
-        this.loaded = false
+        this.loadedSupply = false
         this.$set(this.selectMsg, 'supply', obj)
         this.$set(this.tabIndexControl, 'supply', index)
         obj.code ? this.$set(this.requestSupply, 'order_by', obj.code) : this.$delete(this.requestSupply, 'order_by')
@@ -610,7 +602,7 @@
         }
         let dataSupply = Object.assign({}, this.requestPub, this.requestSupply)
         await this.getSupplyData({dataSupply, index})
-        this.loaded = true
+        this.loadedSupply = true
         this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, obj.code, obj.name), obj.rate)
         this.$refs.bar4 && this.$refs.bar4.drawBar(this.dataHandle(this.supplyData.data, obj.code), obj.rate)
       },
@@ -801,7 +793,18 @@
         }
         let label = type
         let x = data.map(item => {
-          return item.date ? item.date.split('-').slice(1).join('/') : ''
+          switch (this.requestPub.date_type) {
+          case 'day':
+            if (data[0].year < data[29].year) {
+              return item.month ? item.year + '-' + formatNumber(item.month) + '-' + formatNumber(item.day) : ''
+            } else {
+              return item.month ? formatNumber(item.month) + '/' + formatNumber(item.day) : ''
+            }
+          case 'week':
+            return item.week ? item.year.toString().slice(2) + '年第' + item.week + '周' : ''
+          default:
+            return item.month ? item.year.toString().slice(2)  + '年' + item.month + '月' : ''
+          }
         })
         let rate = data.map(item => {
           return item[code]
