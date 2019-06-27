@@ -162,7 +162,7 @@
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
-            this.stairSelect.data.unshift({name: '全部', id: ''})
+            this.stairSelect.data.unshift({name: '全部', id: '', list: []})
           } else {
             this.$toast.show(res.message)
           }

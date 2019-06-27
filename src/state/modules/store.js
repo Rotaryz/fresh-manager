@@ -113,7 +113,7 @@ export const actions = {
       page,
       keyword,
       warehouse_position_id: warehousePositionId,
-      goods_category_id: goodsCategoryId
+      goods_material_category_id: goodsCategoryId
     }
     return API.Store.warehouseStock(data, loading)
       .then((res) => {

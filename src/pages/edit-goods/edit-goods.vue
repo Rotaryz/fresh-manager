@@ -755,6 +755,9 @@
             this.isSubmit = false
             if (res.error === this.$ERR_OK) {
               this.$toast.show('编辑销售信息成功')
+              setTimeout(() => {
+                this.$router.push('/home/product-list')
+              }, 1000)
             } else {
               this.$toast.show(res.message)
             }

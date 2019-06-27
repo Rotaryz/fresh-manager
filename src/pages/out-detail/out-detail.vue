@@ -30,7 +30,7 @@
               <p class="item-dark">{{item.goods_name}}</p>
               <p class="item-sub">{{item.goods_sku_encoding}}</p>
             </div>
-            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.goods_material_category}}</div>
             <div class="list-item">{{item.order_num}}</div>
             <div class="list-item">{{item.allocation_num}}</div>
             <div class="list-item">
@@ -106,7 +106,7 @@
   const COMMODITIES_LIST = [
     '序号',
     '商品',
-    '分类',
+    '类目',
     '订单数量(销售单位)',
     '配货数量(销售单位)',
     '出库数量(销售单位)',

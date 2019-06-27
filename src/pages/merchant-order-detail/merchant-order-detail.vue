@@ -49,7 +49,7 @@
   const TITLE = '订单详情'
   let commodities = [
     {title: '商品', key: 'goods_name', flex: 2, afterBr: 'goods_sku_encoding'},
-    {title: '分类', key: 'goods_category', flex: 1},
+    {title: '类目', key: 'goods_material_category', flex: 1},
     {title: '下单数量', key: 'sale_num', flex: 1},
     {title: '配货数量', key: 'sale_wait_pick_num', flex: 1, line: true}, // 待配送 已完成
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, line: true},
