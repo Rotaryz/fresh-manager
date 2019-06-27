@@ -381,7 +381,6 @@
         }
         this.choiceGoods = res.data
         this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.selectItem.id)
-
         // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === )
       },
       // 弹窗确定选择链接

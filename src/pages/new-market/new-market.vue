@@ -593,7 +593,6 @@
       },
       testNewStartTime() {
         if (+this.marketIndex === 0) {
-          console.log(this.msg.config_json.way)
           return this.msg.config_json.way === 'between_days' ? this.msg.config_json.start_day : true
         } else {
           return true
@@ -1078,7 +1077,6 @@
         default:
           break
         }
-        console.log(methodsName)
         this.msg.config_json.type_str = TYPE[this.marketIndex]
         API.Market[methodsName](this.msg, true).then((res) => {
           this.$loading.hide()

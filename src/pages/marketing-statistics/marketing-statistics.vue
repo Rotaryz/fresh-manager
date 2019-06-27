@@ -39,6 +39,7 @@
 
 <script type="text/ecmascript-6">
   import {marketComputed, marketMethods} from '@state/helpers'
+
   const PAGE_NAME = 'MARKETING_STATISTICS'
   const TITLE = '营销统计、'
   const COMMODITIES_LIST = ['用户头像', '用户名称', '成功邀请用户数']
@@ -80,7 +81,7 @@
       &:nth-child(1)
         max-width: 136px
       &:nth-child(2)
-        max-width: 260px
+        flex: 0.5
   .big-list
     max-height: 765px
   .list-img-box
