@@ -606,7 +606,6 @@
                 height: 48px
                 margin-right: 14px
               .info-box
-                layout(column)
                 font-family: $font-family-regular
                 color: $color-text-main
                 .info-title
