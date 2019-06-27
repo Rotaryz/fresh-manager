@@ -291,7 +291,8 @@
         uploadImg: '',
         picNum: 5,
         isSubmit: false,
-        editSalePrice: 0,
+        editRurchasePrice: 0,
+        editRurchaseUnit: '',
         searchList: []
       }
     },
@@ -316,9 +317,10 @@
           this.dispatchSelect.content = this.goods_skus.base_unit
           this.saleSelect.content = this.goods_skus.sale_unit
           this.purchaseSelect.content = this.goods_skus.purchase_unit
+          this.editRurchaseUnitcontent = this.goods_skus.purchase_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
           console.log(this.goods_skus.base_purchase_rate, 'base_purchase_rate')
-          this.editSalePrice = this.goods_skus.base_purchase_rate
+          this.editRurchasePrice = this.goods_skus.base_purchase_rate
         }
       },
       getCategoriesData() {
@@ -534,7 +536,7 @@
         console.log(this.msg)
         console.log(this.goods_skus)
         if (this.id) {
-          if (this.editSalePrice * 1 === this.goods_skus.base_purchase_rate * 1) {
+          if (this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 && this.editRurchaseUnit === this.goods_skus.purchase_unit) {
             this.isSubmit = true
             API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
               this.isSubmit = false
