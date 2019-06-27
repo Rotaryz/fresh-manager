@@ -35,7 +35,7 @@
                 <div class="item-dark">{{item.goods_name}}</div>
                 <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
-              <div class="list-item">{{item.goods_category}}</div>
+              <div class="list-item">{{item.goods_material_category}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <div class="list-item">{{item.purchase_user}}</div>
               <div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>
@@ -60,7 +60,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_SUGGEST'
   const TITLE = '预采建议'
-  const COMMODITIES_LIST = ['商品', '分类', '供应商', '采购员', '商品销售数', '库存数', '建议采购数', '创建时间']
+  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '商品销售数', '库存数', '建议采购数', '创建时间']
 
   export default {
     name: PAGE_NAME,
