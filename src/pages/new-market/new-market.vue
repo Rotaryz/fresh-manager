@@ -243,7 +243,7 @@
               </div>
               <div class="list">
                 <div v-for="(item, index) in invitedArr" :key="index" class="list-content list-box">
-                  <div class="list-item">{{item.condition}}</div>
+                  <div class="list-item">{{item.cond_type === 1 ? '新人红包' : item.cond_type === 6 ? '下单返红包' : ''}}</div>
                   <div v-if="item.id" class="list-item">{{item.coupon_name}}</div>
                   <div v-if="item.id" class="list-item">{{item.preferential_str}}</div>
                   <div v-if="item.id" class="list-item">{{item.denomination_str}}</div>
