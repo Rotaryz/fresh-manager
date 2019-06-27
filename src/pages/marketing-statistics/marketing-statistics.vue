@@ -81,7 +81,7 @@
       &:nth-child(1)
         max-width: 136px
       &:nth-child(2)
-        flex: 0.5
+        flex: 0.4
   .big-list
     max-height: 765px
   .list-img-box
