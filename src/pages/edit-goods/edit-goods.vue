@@ -332,7 +332,7 @@
     <div class="back">
       <div v-if="!isCopy" class="back-cancel back-btn hand" @click="_back">返回</div>
       <div class="back-btn back-submit hand" @click="_submitType">保存</div>
-      <div v-if="id" class="back-btn back-submit hand" @click="_jumpCopyPage">一键复制</div>
+      <div v-if="isShow" class="back-btn back-submit hand" @click="_jumpCopyPage">一键复制</div>
     </div>
     <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
   </div>
