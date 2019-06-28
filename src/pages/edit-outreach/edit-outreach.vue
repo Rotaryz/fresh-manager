@@ -260,6 +260,7 @@
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import MemberModal from './member-modal/member-modal'
+  import moment from 'moment'
   import {outreachComputed, outreachMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
@@ -417,8 +418,8 @@
       }
     },
     created() {
-      let time = new Date().toLocaleDateString().replace(/^(\d)$/, '0$1')
-      this.essInformation.start_at = time.replace(/\//g, '-')
+      // let time = new Date().toLocaleDateString().replace(/\b\d\b/, '0$1')
+      this.essInformation.start_at = moment().format('YYYY-MM-DD')
       if (this.$route.query.id) {
         this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '任务', '拓展任务', '查看任务'])
       } else {

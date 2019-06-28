@@ -561,7 +561,6 @@
         this.msg.end_at = time
       },
       test() {
-        console.log(this.testEndDate, 11)
       },
       // 选择商品
       async _getGoodsList() {
