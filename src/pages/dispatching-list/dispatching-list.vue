@@ -33,7 +33,7 @@
             </div>
             <div class="list-item">{{item.social_name}}</div>
             <div class="list-item">{{item.name}}</div>
-            <div class="list-item">{{item.total}}</div>
+            <!--<div class="list-item">{{item.total}}</div>-->
             <div class="list-item">{{item.delivery_at}}</div>
             <div class="list-operation-box">
               <router-link tag="span" :to="'dispatching-detail?id='+item.id" append class="list-operation">
@@ -67,7 +67,7 @@
 
   const PAGE_NAME = 'DISPATCHING_LIST'
   const TITLE = '团长配送单'
-  const DISPATCHING_LIST = ['配送单号', '社区名称', '团长名称', '配送金额', '配送日期', '操作']
+  const DISPATCHING_LIST = ['配送单号', '社区名称', '团长名称', '配送日期', '操作']
   const TYPE_LIST = ['团长配送订单', '消费者订单']
   const DOWNLOAD_ORDER_EXCEL = '/social-shopping/api/backend/user-order-exports'
   const DELIVERY_ORDER_EXCEL = '/social-shopping/api/backend/store-delivery-exports'

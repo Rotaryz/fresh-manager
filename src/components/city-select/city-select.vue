@@ -10,7 +10,7 @@
           <img src="./icon-drop_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': item.select}">
           <transition name="fade">
             <ul v-show="item.select" class="select-child" @mouseleave="leaveHide(index)" @mouseenter="endShow">
-              <li v-for="(child, chIdx) in items.data" :key="chIdx" class="select-child-item" @click.stop="setValue(child,index,idx)">
+              <li v-for="(child, chIdx) in items.data" :key="chIdx" class="select-child-item" @click.stop="setValue(child,index,idx, chIdx)">
                 {{child.name}}
               </li>
             </ul>
@@ -95,7 +95,6 @@
         this.city[1].children[0].data = regionArr[index].sub
         let idx = this.city[1].children[0].data.findIndex((item) => item.name.includes(arr[1]))
         this.city[2].children[0].data = regionArr[index].sub[idx].sub
-        console.log(this.city)
       },
       clearLocationInfo() {
         this.city.map((item) => {
@@ -115,8 +114,6 @@
         }, 1500)
       },
       selectType(type, index) {
-        // console.log(type, index)
-        // this.cityIndex = index
         if (!this.isUse) {
           return
         }
@@ -130,7 +127,7 @@
         })
         this.$emit('selectType', type, this.city)
       },
-      setValue(value, bigIndex, idx) {
+      setValue(value, bigIndex, idx, currentIdx) {
         this.city[bigIndex].select = false
         this.city[bigIndex].children[idx].content = value.name
         switch (bigIndex) {
@@ -150,12 +147,11 @@
           if (!this.cityIndex) {
             this.cityIndex = bigIndex + 1
           }
-          let idx = regionArr[this.cityIndex].sub.findIndex((child) => child.name === value.name)
           if (value.name !== this.content.city || idx === 0) {
             this.content.area = ''
             this.city[2].children = [{content: '请选择区/县', data: []}]
           }
-          this._infoArea(idx)
+          this._infoArea(currentIdx)
           this.content.city = value.name
           break
         case 2:
@@ -184,18 +180,19 @@
       _infoCity(index) {
         let cityArr = regionArr[index].sub
         let arr = []
-        for (let value in cityArr) {
-          arr.push({name: cityArr[value].name, type: 'city'})
-        }
+        cityArr.forEach(item => {
+          arr.push({name: item.name, type: 'city'})
+        })
         this.city[1].children[0].data = arr
       },
       _infoArea(index) {
-        if (index < 0) return
-        let areaArr = regionArr[this.cityIndex].sub[index].sub
+        let idx = regionArr.findIndex(child => child.name === this.city[0].children[0].content)
+        if (idx === -1) return
+        let areaArr = regionArr[idx].sub[index]
         let arr = []
-        for (let value in areaArr) {
-          arr.push({name: areaArr[value].name, type: 'area'})
-        }
+        areaArr.sub.map(item => {
+          arr.push({name: item.name, type: 'area'})
+        })
         this.city[2].children[0].data = arr
       }
     }

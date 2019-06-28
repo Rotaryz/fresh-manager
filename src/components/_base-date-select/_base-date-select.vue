@@ -3,11 +3,12 @@
     <date-picker :placeholder="placeHolder"
                  :options="disabledDate"
                  :type="dataPickerType"
-                 :value="dateInfo"
+                 :value="value || dateInfo"
                  :style="{height: `${height}px`, width: `${width}px`}"
                  :clearable="clearable"
                  :format="format"
                  :editable="editable"
+                 :disabled="disabled"
                  @on-change="_getTime"
     ></date-picker>
   </div>
@@ -27,6 +28,10 @@
       editable: {
         type: Boolean,
         default: true
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       },
       format: {
         type: String,
@@ -54,6 +59,10 @@
         default: () => {
           return []
         }
+      },
+      value: {
+        type: undefined,
+        default: null
       },
       disabledDate: {
         type: Object,

@@ -4,15 +4,15 @@ import app from '@src/main'
 export const state = {
   communityList: [], // 社群列表
   qualityData: {
-    titleData: [],
+    titleData: [[], []],
     data: []
   }, // 群质量
   businessData: {
-    titleData: [],
+    titleData: [[], []],
     data: []
   }, // 群运营数据
   groupData: {
-    titleData: [],
+    titleData: [[], []],
     data: []
   }, // 群分组人数
   goodsList: [] // 商品TOP10
@@ -73,12 +73,12 @@ export const actions = {
       })
   },
   getQualityData({commit}, data, loading = false) {
-    return API.Community.getQualityData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getQualityData(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['pv', 'e_customer', 'order']
+        let arr = [['pv', 'uv'], ['customers', 'order', 'transaction']]
         let data = dataHandle(arr, res.data)
         commit('SET_QUALITY_DATA', data)
         return true
@@ -91,13 +91,14 @@ export const actions = {
       })
   },
   getBusinessData({commit}, data, loading = false) {
-    return API.Community.getBusinessData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getBusinessData(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['profit', 'e_customer', 'e_order_avg', 'per_order']
+        let arr = [['profit'], ['e_customer'], ['e_order_avg'], ['per_order']]
         let data = dataHandle(arr, res.data)
+
         commit('SET_BUSINESS_DATA', data)
         return true
       })
@@ -109,12 +110,12 @@ export const actions = {
       })
   },
   getGroupData({commit}, data, loading = false) {
-    return API.Community.getGroupData({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getGroupData(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        let arr = ['p_customer', 'n_customer', 'e_customer', 's_customer']
+        let arr = [['p_customer', 'n_customer', 'e_customer', 's_customer'], ['n_customer']]
         let data = dataHandle(arr, res.data)
         commit('SET_GROUP_DATA', data)
         return true
@@ -127,7 +128,7 @@ export const actions = {
       })
   },
   getGoodsList({commit}, data, loading = false) {
-    return API.Community.getGoodsList({wx_group_id: data.wx_group_id, day_type: data.day_type}, loading)
+    return API.Community.getGoodsList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -147,27 +148,37 @@ export const actions = {
 }
 
 const dataHandle = (arr, data) => {
-  let titleData = arr.map((item) => {
-    return data[item].total
-  })
-  let dataArr = arr.map((item) => {
-    let time = []
-    time = data[item].data.map((val) => {
-      return val.at
-        .split('-')
-        .slice(1)
-        .join('/')
+  let titleData = arr.map((item, index) => {
+    return item.map(val => {
+      return data[val].total
     })
-    let valueArr = data[item].data.map((val) => {
-      if (typeof val.value === 'string') {
-        return val.value.replace(',', '')
-      } else {
-        return val.value || 0
+  })
+  let dataArr = arr.map(value => {
+    let valArr = value.map(item => {
+      let x = []
+      x = data[item].data.map((val) => {
+        return val.at
+      })
+      let valueArr = data[item].data.map((val) => {
+        if (typeof val.value === 'string') {
+          return val.value.replace(',', '')
+        } else {
+          return val.value || 0
+        }
+      })
+      return {
+        x,
+        rate: valueArr
       }
     })
+    // valArr = [{x, rate}, {x, rate}]
+    let rateArr = valArr.map(item => {
+      return item.rate
+    })
+    let xAx = valArr[0].x
     return {
-      x: time,
-      rate: valueArr
+      x: xAx,
+      rate: rateArr
     }
   })
   let resultData = {

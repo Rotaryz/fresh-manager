@@ -1,8 +1,9 @@
 <template>
-  <div ref="leftTab" class="left-tab" @scroll="tabScroll">
+  <div ref="leftTab" :style="{height: leftTabHeight}" class="left-tab" @scroll="tabScroll">
     <div ref="leftBox" class="left-box">
       <div class="left-tab-item hand" :class="{'active': +tabIndex === 0}" @click="changeCommunity(0, {id: ''})">
         <div class="left">
+          <img src="./icon-all_green@2x.png" alt="" class="head-image all-image">
           <span class="name all-data">全部群数据({{communityList.length}})</span>
         </div>
         <div v-if="+tabIndex === 0" class="right">
@@ -60,7 +61,10 @@
       }
     },
     computed: {
-      ...communityComputed
+      ...communityComputed,
+      leftTabHeight() {
+        return  window.innerHeight - 150 + 'px'
+      }
     },
     methods: {
       changeCommunity(index, item) {
@@ -94,8 +98,10 @@
   .left-tab
     width: 176px
     padding-right: 6px
-    height: 852px
+    height: 850px
+    min-height: 870px
     overflow-y: auto
+    overflow-x: hidden
     display: flex
     flex-direction: column
     &::-webkit-scrollbar
@@ -122,6 +128,7 @@
       border-bottom: 0.5px solid $color-line
       border-right: 0.5px solid $color-line
       transition: color 0.3s
+      backgroung: #FFF
       flex: 0 0 auto
       &:hover
         color: $color-positive
@@ -135,8 +142,7 @@
           margin-right: 10px
           display: block
           transition: all 0.3s
-        .no-edit
-          background-image: url("./icon-right_greed@2x.png")
+
       &:before
         content: ''
         position: absolute
@@ -149,6 +155,10 @@
       .left
         display: flex
         align-items: center
+        .all-image
+          width: 18px
+          height: 18px
+          margin: 8px
         .head
           width: 28px
           height: 28px
@@ -208,7 +218,7 @@
         margin-right: 10px
         display: block
         transition: all 0.3s
-        background-image: url("./icon-right_greed@2x.png")
+
 
     .last
       border-bottom: 0
@@ -216,7 +226,7 @@
       flex: 1 0 0
     .active
       color: $color-positive
-      border-right: 0.5px solid transparent
+      background: rgba(77,189,101,0.10)
       &:before
         background-color: $color-positive
       .name

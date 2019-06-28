@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   getCouponList(data, loading = true) {
-    let url = '/social-shopping/api/backend/coupon-manage/coupon'
+    let url = `/social-shopping/api/backend/coupon-manage/coupon`
     return request.get(url, data, loading)
   },
   /**
@@ -17,9 +17,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getCouponDetail(id, loading = true) {
+  getCouponDetail(data, id, loading = true) {
     let url = `/social-shopping/api/backend/coupon-manage/coupon/${id}`
-    return request.get(url, {}, loading)
+    return request.get(url, data, loading)
   },
   /**
    * 删除优惠券
@@ -71,7 +71,6 @@ export default {
     let url = `/social-shopping/api/backend/coupon-manage/coupon`
     return request.post(url, data, loading)
   },
-
   /**
    * 优惠券分类统计
    * @param loading

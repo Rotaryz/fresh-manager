@@ -2,22 +2,33 @@ import API from '@api'
 import app from '@src/main'
 
 export const state = {
-  infoBannerList: []
+  infoBannerList: [],
+  infoTabIndex: 0
 }
 
 export const getters = {
   infoBannerList(state) {
     return state.infoBannerList
+  },
+  infoTabIndex(state) {
+    return state.infoTabIndex
   }
 }
 
 export const mutations = {
   SET_INFO_LIST(state, list) {
     state.infoBannerList = list
+  },
+  SET_INFO_TAB_INDEX(state, infoTabIndex) {
+    state.infoTabIndex = infoTabIndex
   }
 }
 
 export const actions = {
+  checkTab({commit}, index) {
+    console.log(index)
+    commit('SET_INFO_TAB_INDEX', index)
+  },
   getInfoBannerList({state, commit, dispatch}) {
     return API.Advertisement.cmsMsg({page_name: 'index'})
       .then((res) => {

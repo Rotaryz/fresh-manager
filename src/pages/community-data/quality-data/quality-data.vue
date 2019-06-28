@@ -1,6 +1,6 @@
 <template>
   <div class="quality-data">
-    <div class="tab">
+    <!--<div class="tab">
       <div
         v-for="(item, index) in tabArr"
         :key="index"
@@ -10,9 +10,9 @@
         <span class="num">{{qualityData.titleData[index] || 0}}</span>
         <span class="text">{{item}}{{index === 0 ? '(PV)' : ''}}</span>
       </div>
-    </div>
+    </div>-->
     <div class="data-content">
-      <div v-show="time !== 'today' && time !== 'yesterday'" id="data"></div>
+      <div v-show="time !== 'today' && time !== 'yesterday'" id="quality"></div>
       <div v-show="time === 'today' || time === 'yesterday'" class="alone-data">
         <span class="num">{{qualityData.titleData[tabIndex] || 0}}</span>
         <span class="text">{{tabArr[tabIndex]}}{{tabIndex === 0 ? '(PV)' : ''}}</span>
@@ -37,6 +37,7 @@
     data() {
       return {
         tabArr: TAB_ARR,
+        color: ['#6081E3', '#8859E8', '#F7C136', '#6AE1FF'],
         tabIndex: 0,
         data: {
           x: ['04/03', '04/04', '04/05', '04/06', '04/07', '04/08', '04/09'],
@@ -68,7 +69,7 @@
       drawLine(data, name) {
         let xAxis = data.x.length > 0 ? data.x : this.data.x
         let series = data.rate.length > 0 ? data.rate : this.data.series
-        let myChart = this.$echarts.init(document.getElementById('data'))
+        let myChart = this.$echarts.init(document.getElementById('quality'))
         myChart.setOption({
           legend: {
             itemWidth: 14,

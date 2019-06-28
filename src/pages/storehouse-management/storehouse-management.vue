@@ -19,6 +19,10 @@
       <div class="down-item">
         <base-drop-down :select="secondStore" @setValue="selectSecondStore"></base-drop-down>
       </div>
+      <span class="down-tip">售卖类型筛选</span>
+      <div class="down-item">
+        <base-drop-down :select="saleStore" @setValue="selectSaleStore"></base-drop-down>
+      </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="商品名称或商品编码" @search="searchStore"></base-search>
@@ -111,6 +115,8 @@
         secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{name: '55'}}
         store: {check: false, show: false, content: '库区名', type: 'default', data: []}, // 格式：{name: '55'}}
         secondStore: {check: false, show: false, content: '货架名', type: 'default', data: []}, // 格式：{name: '55'}}
+        saleStore: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '仓库库存', value: 0}, {name: '预售库存', value: 1}]}, // 格式：{name: '55'}}
+        isPresale: '',
         stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
@@ -131,6 +137,7 @@
           access_token: this.currentUser.access_token,
           goods_material_category_id: this.goodsCategoryId,
           keyword: this.keyword,
+          is_presale: this.isPresale,
           warehouse_position_id: this.warehousePositionId
         }
         let search = []
@@ -165,6 +172,7 @@
           page: this.page,
           goodsCategoryId: this.goodsCategoryId,
           keyword: this.keyword,
+          isPresale: this.isPresale,
           warehousePositionId: this.warehousePositionId,
           loading: false
         })
@@ -229,7 +237,6 @@
         let res = await API.Store.getStoreList(false, false)
         this.store.data = res.error === this.$ERR_OK && res.data[0] ? res.data[0].warehouse_positions : []
         this.store.data.unshift({name: '全部', id: ''})
-        console.log()
       },
       // 获取库架名
       async getSecondStore(item) {
@@ -249,6 +256,13 @@
       // 选择库架名
       async selectSecondStore(item) {
         this.warehousePositionId = item.id
+        this.page = 1
+        this._getWarehouseList()
+        this.$refs.pagination.beginPage()
+      },
+      // 选择预售类型
+      async selectSaleStore(item) {
+        this.isPresale = item.value
         this.page = 1
         this._getWarehouseList()
         this.$refs.pagination.beginPage()

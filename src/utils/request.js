@@ -59,6 +59,7 @@ http.interceptors.response.use(
 )
 
 function checkStatus(response) {
+  // console.log(response)
   // _loading
   // 如果http状态码正常，则直接返回数据
   if (
@@ -100,9 +101,9 @@ function requestException(res) {
     error.data = serviceData.data || []
   }
   switch (serviceData.code) {
-    case 13004: // 系统升级
-      error.error = 0
-      break
+  case 13004: // 系统升级
+    error.error = 0
+    break
   }
   return error
 }
