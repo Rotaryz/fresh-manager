@@ -485,6 +485,7 @@
         editRurchasePrice: 0,
         editRurchaseUnit: '',
         isCopy: this.$route.query.copy || null,
+        isShow: this.$route.query.isShow || null,
         searchList: [],
         imgInput: ''
       }

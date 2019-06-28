@@ -284,8 +284,8 @@
 
       &:last-child
         padding: 5px
-        max-width: 130px
-        min-width: 130px
+        max-width: 135px
+        min-width: 135px
         flex: 1
   .product-list
     width: 100%
