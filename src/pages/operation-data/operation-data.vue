@@ -322,7 +322,12 @@
           // } else {
           //   _param = this.requestParam
           // }
-          API.Operation[curChart.apiFun](this.requestParam, loading)
+          let requestParam = JSON.parse(JSON.stringify(this.requestParam))
+          if (curChart.id === 'userChart') {
+            requestParam.day_type = requestParam.date_type
+            delete requestParam.date_type
+          }
+          API.Operation[curChart.apiFun](requestParam, loading)
             .then((res) => {
               if (res.error !== app.$ERR_OK) {
                 return false
@@ -416,9 +421,26 @@
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.at
-                .split('-')
-                .slice(1)
-                .join('/')
+              let year = moment(_date).year()
+              let month = moment(_date).month() + 1
+              let week = moment(_date).week()
+              if (moment(_date).day() === 0) {
+                week -= 1
+              }
+              switch (this.requestParam.date_type) {
+              case 'day':
+                if (moment(_item.data[0].at).year() < moment(_item.data[29].at).year()) {
+                  _date = month ? moment(_date).format('YYYY-MM-DD') : ''
+                } else {
+                  _date = month ? moment(_date).format('MM/DD') : ''
+                }
+                break
+              case 'week':
+                _date = week ? year.toString().slice(2) + '年第' + week + '周' : ''
+                break
+              default:
+                _date = month ? year.toString().slice(2)  + '年' + month + '月' : ''
+              }
               curChart.xAxleData.push(_date)
             }
           }
@@ -435,7 +457,7 @@
 
   .operation-data
     width: 100%
-    min-width: 1200px
+    min-width: 1220px
 
   .content
     min-height: calc(100vh - 130px)
