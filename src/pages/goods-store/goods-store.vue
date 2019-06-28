@@ -166,18 +166,12 @@
     computed: {
       ...scmGoodsComputed
     },
-    watch: {
-      el(value, old) {
-        console.log(value, old)
-      }
-    },
     created() {
       this.getCategoriesData()
     },
-    mounted() {
-    },
     methods: {
       ...scmGoodsMethods,
+      // 获取类目列表
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -196,26 +190,32 @@
           }
         })
       },
+      // 分页
       addPage(page) {
         this.page = page
         this.getReqList()
       },
+      // 预览
       lookGoodsInfo(item) {
         this.curItem = item
         this.$refs.storeModal.showModal()
       },
+      // 关闭预览
       goodsCancel() {
         this.$refs.storeModal.hideModal()
       },
+      // 搜索
       changeKeyword(text) {
         this.keyWord = text
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 显示更多
       clickBtn(text) {
         this[`isOpen${text}`] = !this[`isOpen${text}`]
       },
+      // 选择一级类目
       selectOneList(item, index){
         if (!item.is_selected) {
           this.oneList[this.oneIndex].is_selected = false
@@ -242,6 +242,7 @@
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 选择二级类目
       selectTwoList(item, index){
         if (!item.is_selected) {
           this.twoList[this.twoIndex].is_selected = false
@@ -267,6 +268,7 @@
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 选择三级类目
       selectThrList(item, index){
         if (!item.is_selected) {
           this.thrList[this.thrIndex].is_selected = false
@@ -278,6 +280,7 @@
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 添加商品
       submitAdd(item) {
         let curItem
         if (item.length !== 0) {
@@ -298,6 +301,7 @@
           }
         })
       },
+      // 获取商品列表
       getReqList() {
         this.getScmStoreData({
           keyword: this.keyWord,

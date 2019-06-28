@@ -74,9 +74,9 @@
               销售规格
             </div>
             <div class="edit-input-box mini-edit-input-box">
-              <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
+              <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="completeStatus * 1 === 1">
               <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-              <base-drop-down :height="40" :width="133" :select="saleSelect" :isUse="!id" @setValue="saleSelectValue"></base-drop-down>
+              <base-drop-down :height="40" :width="133" :select="saleSelect" :isUse="completeStatus * 1 === 0" @setValue="saleSelectValue"></base-drop-down>
             </div>
             <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
           </div>
@@ -253,7 +253,8 @@
         editRurchaseUnit: '',
         tabStatus: ORDERSTATUS,
         tabIndex: 0,
-        searchList: []
+        searchList: [],
+        completeStatus: 0
       }
     },
     created() {
@@ -277,6 +278,7 @@
           this.editRurchaseUnit = this.goods_skus.purchase_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
           this.editRurchasePrice = this.goods_skus.base_purchase_rate
+          this.completeStatus = this.msg.complete_status
         }
       },
       // 获取类目列表

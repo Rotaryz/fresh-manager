@@ -80,9 +80,9 @@
               销售规格
             </div>
             <div class="edit-input-box mini-edit-input-box">
-              <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
+              <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="completeStatus * 1 === 1">
               <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-              <base-drop-down :height="40" :width="133" :isUse="!id" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
+              <base-drop-down :height="40" :width="133" :isUse="completeStatus * 1 === 0" :select="saleSelect" @setValue="saleSelectValue"></base-drop-down>
             </div>
             <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
           </div>
@@ -413,7 +413,8 @@
         isCopy: this.$route.query.copy || null,
         isShow: this.$route.query.isShow || null,
         searchList: [],
-        imgInput: ''
+        imgInput: '',
+        completeStatus: 0
       }
     },
     created() {
@@ -450,6 +451,7 @@
           this.editRurchaseUnit = this.goods_skus.purchase_unit
           this.dispatchSelect.content = this.goods_skus.base_unit
           this.editRurchasePrice = this.goods_skus.base_purchase_rate
+          this.completeStatus = this.msg.complete_status
           this._saleInfo()
         }
         if (this.$route.query.copy) {

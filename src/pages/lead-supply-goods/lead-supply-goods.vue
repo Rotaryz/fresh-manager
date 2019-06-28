@@ -80,6 +80,7 @@
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-create-scm-template-excel?${params}`
         console.log(this.downUrl)
       },
+      // 提交
       submitSure() {
         if (!this.blankList.length) {
           this.$toast.show('导入商品不能为空')
@@ -87,6 +88,7 @@
         }
         this.$refs.confirm.show('是否批量导入商品？')
       },
+      // 提交数据
       async confirm() {
         if (!this.isSubmit) {
           return
@@ -113,7 +115,6 @@
         let res = await API.Product.checkGoodsImport(param, true, 60000)
         this.$loading.hide()
         this.blankList = res.error === this.$ERR_OK ? res.data : []
-        console.log(res)
         e.target.value = ''
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)

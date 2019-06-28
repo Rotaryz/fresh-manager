@@ -229,7 +229,6 @@
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_material_category_id=${this.categoryId}&complete_status=${this.completeStatus}&keyword=${this.keyWord}&show_type=base`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
-        console.log(this.downUrl)
       },
       // 获取列表
       getReqList() {
