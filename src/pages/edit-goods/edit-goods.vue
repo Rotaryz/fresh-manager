@@ -57,7 +57,7 @@
                   </div>
                 </div>
               </div>
-              <div class="tip">建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。</div>
+              <div class="tip">该图片不展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张。</div>
             </div>
           </div>
         </div>
@@ -208,7 +208,7 @@
                   </div>
                 </div>
               </div>
-              <div class="tip">上传图片的最佳尺寸：1:1，其他尺寸会影响页效果，格式png，jpeg，jpg，最多可上传5张，首张为封面。</div>
+              <div class="tip">该图片展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。</div>
             </div>
           </div>
           <div class="edit-item  edit-image-box">
