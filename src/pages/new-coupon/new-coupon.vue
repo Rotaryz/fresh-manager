@@ -560,6 +560,8 @@
       _getEndTime(time) {
         this.msg.end_at = time
       },
+      test() {
+      },
       // 选择商品
       async _getGoodsList() {
         let res = await API.Coupon.getGoodsList({
@@ -862,7 +864,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
-  ::-webkit-input-placeholder {
+  ::-webkit-input-placeholder{
     font-size: 14px
     font-family: $font-family-regular
     color: #ACACAC
@@ -1017,7 +1019,7 @@
         padding: 0 10px
         margin: 0 14px 0 10px
         border: 1px solid $color-line
-    .time-no-change, .text-no-change, .check-no-change
+    .time-no-change,.text-no-change,.check-no-change
       position: absolute
       left: 127px
       top: 0
@@ -1567,7 +1569,7 @@
       border-color: $color-main !important
   .no-border
     border-width: 0
-    background: rgba(255, 255, 255, 0)
+    background: rgba(255,255,255,0)
   .small-money
     col-center()
     left: 10px

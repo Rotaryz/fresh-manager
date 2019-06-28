@@ -152,12 +152,13 @@
   import {deliveryMethods} from '@state/helpers'
 
   import API from '@api'
+  import moment from 'moment'
   import EChartLine from '@components/e-chart/e-chart-line'
   import {formatNumber} from '@utils/common'
 
   const PAGE_NAME = 'NEW_DATA'
   const TITLE = '数据'
-  const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+  const NOW_DATE = moment(Date.now() - 86400000).format('YYYY-MM-DD')
   const REAL_DATA = [
     {imgUrl: '', title: '访客数', key: ['today_page_customer_total','yestoday_page_customer_total']},
     {imgUrl: 'users', title: '支付用户', key: ['today_pay_customer_total','yestoday_pay_customer_total']},

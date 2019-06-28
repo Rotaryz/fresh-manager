@@ -42,6 +42,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import app from '@src/main'
+  import moment from 'moment'
   import {formatNumber} from '@utils/common'
   import ChartLine from '@components/e-chart/chart-line'
 
@@ -238,7 +239,7 @@
     }
   ]
 
-  const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+  const NOW_DATE = moment(Date.now() - 86400000).format('YYYY-MM-DD')
 
   export default {
     name: PAGE_NAME,
@@ -321,7 +322,12 @@
           // } else {
           //   _param = this.requestParam
           // }
-          API.Operation[curChart.apiFun](this.requestParam, loading)
+          let requestParam = JSON.parse(JSON.stringify(this.requestParam))
+          if (curChart.id === 'userChart') {
+            requestParam.day_type = requestParam.date_type
+            delete requestParam.date_type
+          }
+          API.Operation[curChart.apiFun](requestParam, loading)
             .then((res) => {
               if (res.error !== app.$ERR_OK) {
                 return false
@@ -415,9 +421,26 @@
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.at
-                .split('-')
-                .slice(1)
-                .join('/')
+              let year = moment(_date).year()
+              let month = moment(_date).month() + 1
+              let week = moment(_date).week()
+              if (moment(_date).day() === 0) {
+                week -= 1
+              }
+              switch (this.requestParam.date_type) {
+              case 'day':
+                if (moment(_item.data[0].at).year() < moment(_item.data[29].at).year()) {
+                  _date = month ? moment(_date).format('YYYY-MM-DD') : ''
+                } else {
+                  _date = month ? moment(_date).format('MM/DD') : ''
+                }
+                break
+              case 'week':
+                _date = week ? year.toString().slice(2) + '年第' + week + '周' : ''
+                break
+              default:
+                _date = month ? year.toString().slice(2)  + '年' + month + '月' : ''
+              }
               curChart.xAxleData.push(_date)
             }
           }
@@ -434,7 +457,7 @@
 
   .operation-data
     width: 100%
-    min-width: 1200px
+    min-width: 1220px
 
   .content
     min-height: calc(100vh - 130px)
