@@ -56,7 +56,8 @@ export const actions = {
       complete_status: completeStatus,
       goods_material_category_id: materialId,
       is_online: isOnline,
-      limit
+      limit,
+      platform: 'scm'
     }, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
