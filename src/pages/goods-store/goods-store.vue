@@ -332,16 +332,15 @@
   .identification
     border-bottom-1px($color-line)
   .goods-list
-    width: 1618px
     padding-top: 15px
     layout(row)
     .goods-item
-      width: 214px
+      width: 210px
       border-1px(#D9DEE1, 4px)
       margin-right: 20px
       margin-bottom: 30px
       .goods-item-top
-        width: 214px
+        width: 210px
         height: @width
         padding-top: 38px
         box-sizing: border-box
@@ -425,7 +424,8 @@
 
 
       &:nth-child(7n)
-        margin-right: 0
+        /*margin-right: 0*/
+        opacity: 1
   .type-select
     layout(row)
     padding-top: 20px

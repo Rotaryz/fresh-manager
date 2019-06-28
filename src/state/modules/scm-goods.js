@@ -98,7 +98,7 @@ export const actions = {
       })
   },
   // 获取商品素材中心
-  getScmStoreData({state, commit}, {keyword = '', materialId = '', page = 1, limit = 21, loading = true}) {
+  getScmStoreData({state, commit}, {keyword = '', materialId = '', page = 1, limit, loading = true}) {
     return API.Product.getScmStoreList({
       keyword,
       goods_material_category_id: materialId,

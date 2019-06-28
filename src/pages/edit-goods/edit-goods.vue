@@ -3,15 +3,15 @@
     <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
     <template v-if="tabIndex===0">
       <div class="edit-leader">
-        <div class="identification">
-          <div class="identification-page">
-            <img src="./icon-new_commodity@2x.png" class="identification-icon">
-            <p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>
-          </div>
-          <div class="function-btn">
-          </div>
-        </div>
-        <div class="content-header">
+        <!--<div class="identification">-->
+        <!--<div class="identification-page">-->
+        <!--<img src="./icon-new_commodity@2x.png" class="identification-icon">-->
+        <!--<p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>-->
+        <!--</div>-->
+        <!--<div class="function-btn">-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="content-header content-padding-top">
           <div class="content-title">商品信息</div>
         </div>
         <div class="leader-box">
@@ -23,9 +23,9 @@
             <div class="edit-input-box">
               <input v-model="goods_skus.goods_material_name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
             </div>
-            <div class="edit-input-copy hand">
-              <div v-if="id" class="bnt-name" @click="_jumpCopyPage">一键复制</div>
-            </div>
+            <!--<div class="edit-input-copy hand">-->
+            <!--<div v-if="id" class="bnt-name" @click="_jumpCopyPage">一键复制</div>-->
+            <!--</div>-->
           </div>
           <div class="edit-item">
             <div class="edit-title">
@@ -194,15 +194,15 @@
     </template>
     <template v-if="tabIndex===1 && id">
       <div class="edit-leader">
-        <div class="identification">
-          <div class="identification-page">
-            <img src="./icon-new_commodity@2x.png" class="identification-icon">
-            <p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>
-          </div>
-          <div class="function-btn">
-          </div>
-        </div>
-        <div class="content-header">
+        <!--<div class="identification">-->
+        <!--<div class="identification-page">-->
+        <!--<img src="./icon-new_commodity@2x.png" class="identification-icon">-->
+        <!--<p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>-->
+        <!--</div>-->
+        <!--<div class="function-btn">-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="content-header content-padding-top">
           <div class="content-title">图文信息</div>
         </div>
         <div class="leader-box">
@@ -332,6 +332,7 @@
     <div class="back">
       <div v-if="!isCopy" class="back-cancel back-btn hand" @click="_back">返回</div>
       <div class="back-btn back-submit hand" @click="_submitType">保存</div>
+      <div v-if="id" class="back-btn back-submit hand" @click="_jumpCopyPage">一键复制</div>
     </div>
     <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
   </div>
@@ -1039,6 +1040,8 @@
   @import "~@design"
   @import "~@style/detail"
 
+  .content-padding-top
+    padding-top: 32px
   .img
     width :100%
     height :@width

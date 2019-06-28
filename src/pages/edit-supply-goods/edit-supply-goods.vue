@@ -1,188 +1,193 @@
 <template>
-  <div class="edit-supply-goods">
-    <div class="identification">
-      <div class="identification-page">
-        <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>
-      </div>
-      <div class="function-btn">
-      </div>
-    </div>
-    <div class="content-header">
-      <div class="content-title">商品信息</div>
-    </div>
-    <div class="leader-box">
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          商品名称
+  <div class="">
+    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104"></base-tab-select>
+    <!--<div class="identification">-->
+    <!--<div class="identification-page">-->
+    <!--<img src="./icon-new_commodity@2x.png" class="identification-icon">-->
+    <!--<p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>-->
+    <!--</div>-->
+    <!--<div class="function-btn">-->
+    <!--</div>-->
+    <!--</div>-->
+    <template>
+      <div class="edit-supply-goods">
+        <div class="content-header content-padding-top">
+          <div class="content-title">商品信息</div>
         </div>
-        <div class="edit-input-box">
-          <input v-model="goods_skus.goods_material_name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          类目
-        </div>
-        <div class="edit-input-box mini-edit-input-box">
-          <div class="mini-mr20">
-            <base-drop-down :height="40" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+        <div class="leader-box">
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              商品名称
+            </div>
+            <div class="edit-input-box">
+              <input v-model="goods_skus.goods_material_name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
+            </div>
           </div>
-          <div class="mini-mr20">
-            <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
-          </div>
-          <base-drop-down :height="40" :width="190" :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
-        </div>
-      </div>
-      <div class="edit-item  edit-image-box">
-        <div class="edit-title">
-          <span class="start">*</span>
-          商品图片
-        </div>
-        <div class="image-box">
-          <div class="edit-image">
-            <draggable v-model="msg.goods_main_images" class="draggable" @update="_setSort()">
-              <div v-for="(item, index) in msg.goods_main_images" :key="index" class="show-image hand">
-                <img class="img" :src="item.image_url" alt="">
-                <span class="close" @click="delPic(index)"></span>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              类目
+            </div>
+            <div class="edit-input-box mini-edit-input-box">
+              <div class="mini-mr20">
+                <base-drop-down :height="40" :width="190" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
               </div>
-            </draggable>
-            <div v-if="msg.goods_main_images.length < picNum" class="add-image hand">
-              <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_main_images', picNum, $event)">
-              <div v-if="showLoading && uploadImg === 'goods_main_images'" class="loading-mask">
-                <img src="./loading.gif" class="loading">
+              <div class="mini-mr20">
+                <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+              </div>
+              <base-drop-down :height="40" :width="190" :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
+            </div>
+          </div>
+          <div class="edit-item  edit-image-box">
+            <div class="edit-title">
+              <span class="start">*</span>
+              商品图片
+            </div>
+            <div class="image-box">
+              <div class="edit-image">
+                <draggable v-model="msg.goods_main_images" class="draggable" @update="_setSort()">
+                  <div v-for="(item, index) in msg.goods_main_images" :key="index" class="show-image hand">
+                    <img class="img" :src="item.image_url" alt="">
+                    <span class="close" @click="delPic(index)"></span>
+                  </div>
+                </draggable>
+                <div v-if="msg.goods_main_images.length < picNum" class="add-image hand">
+                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addPic('goods_main_images', picNum, $event)">
+                  <div v-if="showLoading && uploadImg === 'goods_main_images'" class="loading-mask">
+                    <img src="./loading.gif" class="loading">
+                  </div>
+                </div>
+              </div>
+              <div class="tip">上传图片的最佳尺寸：1:1，其他尺寸会影响页效果，格式png，jpeg，jpg，最多可上传5张，首张为封面。</div>
+            </div>
+          </div>
+        </div>
+        <div class="content-header">
+          <div class="content-title">商品规格</div>
+        </div>
+        <div class="leader-box">
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              基本单位
+            </div>
+            <div class="edit-input-box">
+              <base-drop-down :height="40" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setBaseValue"></base-drop-down>
+            </div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              销售规格
+            </div>
+            <div class="edit-input-box mini-edit-input-box">
+              <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
+              <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
+              <base-drop-down :height="40" :width="133" :select="saleSelect" :isUse="!id" @setValue="saleSelectValue"></base-drop-down>
+            </div>
+            <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              商品编码
+            </div>
+            <div class="edit-input-box">
+              <input v-model="goods_skus.goods_sku_encoding" type="text" class="edit-input" maxlength="20">
+            </div>
+          </div>
+        </div>
+        <div class="content-header procurement-top">
+          <div class="content-title">库存信息</div>
+        </div>
+        <div class="leader-box">
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              销售库存
+            </div>
+            <div class="edit-input-box goods-select-box">
+              <div class="goods-select-left" @click="selectStock(1)">
+                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
+                <div class="goods-select-text">预售库存</div>
+              </div>
+              <input v-model="goods_skus.presale_usable_stock" type="number" class="edit-input edit-input-select" :disabled="msg.is_presale * 1 !== 1">
+              <div class="stock-box-text">{{goods_skus.sale_unit}}</div>
+              <div class="goods-select-left" @click="selectStock(0)">
+                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
+                <div class="goods-select-text">仓库库存</div>
+              </div>
+              <div v-if="id" class="stock-box-text current-stock">当前可用库存<span class="stock-color">{{goods_skus.warehouse_usable_stock}}</span>件</div>
+            </div>
+          </div>
+        </div>
+        <div class="content-header procurement-top">
+          <div class="content-title">供应链信息</div>
+        </div>
+        <div class="leader-box">
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              供应商
+            </div>
+            <div class="edit-input-box">
+              <base-drop-down :height="40" :width="400" :isInput="true" :select="supplierSelect" isInputPla="请选择供应商"
+                              @setValue="supplierSelectValue"
+                              @changeText="changeText"
+              ></base-drop-down>
+            </div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              采购规格
+            </div>
+            <div class="edit-input-box mini-edit-input-box">
+              <input v-model="goods_skus.base_purchase_rate" type="number" class="edit-input mini-edit-input" maxlength="10">
+              <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
+              <base-drop-down :height="40" :width="133" :select="purchaseSelect" @setValue="purchaseSelectValue"></base-drop-down>
+            </div>
+            <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              采购单价
+            </div>
+            <div class="edit-input-box">
+              <input v-model="goods_skus.purchase_price" type="number" class="edit-input" maxlength="10">
+            </div>
+            <div v-if="goods_skus.purchase_unit" class="edit-pla">元/{{goods_skus.purchase_unit}}</div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              损耗比
+            </div>
+            <div class="edit-input-box">
+              <input v-model="goods_skus.damage_rate" type="number" class="edit-input">
+            </div>
+            <div class="edit-pla">根据耗损的百分比额外增加采购数量（%）</div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              是否称重
+            </div>
+            <div class="edit-input-box">
+              <div class="list-item-btn" @click="switchBtn">
+                <base-switch width="80px" transform="50px" confirmText="称重" cancelText="不称重" :status="goods_skus.is_weight"></base-switch>
               </div>
             </div>
           </div>
-          <div class="tip">上传图片的最佳尺寸：1:1，其他尺寸会影响页效果，格式png，jpeg，jpg，最多可上传5张，首张为封面。</div>
+        </div>
+        <div class="back">
+          <div class="back-cancel back-btn hand" @click="_back">返回</div>
+          <div class="back-btn back-submit hand" @click="_submit">保存</div>
         </div>
       </div>
-    </div>
-    <div class="content-header">
-      <div class="content-title">商品规格</div>
-    </div>
-    <div class="leader-box">
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          基本单位
-        </div>
-        <div class="edit-input-box">
-          <base-drop-down :height="40" :width="400" :select="dispatchSelect" :isUse="!id" @setValue="setBaseValue"></base-drop-down>
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          销售规格
-        </div>
-        <div class="edit-input-box mini-edit-input-box">
-          <input v-model="goods_skus.base_sale_rate" type="number" class="edit-input mini-edit-input" maxlength="10" :disabled="id">
-          <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-          <base-drop-down :height="40" :width="133" :select="saleSelect" :isUse="!id" @setValue="saleSelectValue"></base-drop-down>
-        </div>
-        <div class="edit-pla">例如：基本单位是kg，销售单位是份，则销售规格可输入0.5，即0.5kg/份</div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          商品编码
-        </div>
-        <div class="edit-input-box">
-          <input v-model="goods_skus.goods_sku_encoding" type="text" class="edit-input" maxlength="20">
-        </div>
-      </div>
-    </div>
-    <div class="content-header procurement-top">
-      <div class="content-title">库存信息</div>
-    </div>
-    <div class="leader-box">
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          销售库存
-        </div>
-        <div class="edit-input-box goods-select-box">
-          <div class="goods-select-left" @click="selectStock(1)">
-            <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
-            <div class="goods-select-text">预售库存</div>
-          </div>
-          <input v-model="goods_skus.presale_usable_stock" type="number" class="edit-input edit-input-select" :disabled="msg.is_presale * 1 !== 1">
-          <div class="stock-box-text">{{goods_skus.sale_unit}}</div>
-          <div class="goods-select-left" @click="selectStock(0)">
-            <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
-            <div class="goods-select-text">仓库库存</div>
-          </div>
-          <div v-if="id" class="stock-box-text current-stock">当前可用库存<span class="stock-color">{{goods_skus.warehouse_usable_stock}}</span>件</div>
-        </div>
-      </div>
-    </div>
-    <div class="content-header procurement-top">
-      <div class="content-title">供应链信息</div>
-    </div>
-    <div class="leader-box">
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          供应商
-        </div>
-        <div class="edit-input-box">
-          <base-drop-down :height="40" :width="400" :isInput="true" :select="supplierSelect" isInputPla="请选择供应商"
-                          @setValue="supplierSelectValue"
-                          @changeText="changeText"
-          ></base-drop-down>
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          采购规格
-        </div>
-        <div class="edit-input-box mini-edit-input-box">
-          <input v-model="goods_skus.base_purchase_rate" type="number" class="edit-input mini-edit-input" maxlength="10">
-          <div class="edit-input-unit"><span>{{goods_skus.base_unit}}</span>/</div>
-          <base-drop-down :height="40" :width="133" :select="purchaseSelect" @setValue="purchaseSelectValue"></base-drop-down>
-        </div>
-        <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          采购单价
-        </div>
-        <div class="edit-input-box">
-          <input v-model="goods_skus.purchase_price" type="number" class="edit-input" maxlength="10">
-        </div>
-        <div v-if="goods_skus.purchase_unit" class="edit-pla">元/{{goods_skus.purchase_unit}}</div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          损耗比
-        </div>
-        <div class="edit-input-box">
-          <input v-model="goods_skus.damage_rate" type="number" class="edit-input">
-        </div>
-        <div class="edit-pla">根据耗损的百分比额外增加采购数量（%）</div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          是否称重
-        </div>
-        <div class="edit-input-box">
-          <div class="list-item-btn" @click="switchBtn">
-            <base-switch width="80px" transform="50px" confirmText="称重" cancelText="不称重" :status="goods_skus.is_weight"></base-switch>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn back-submit hand" @click="_submit">保存</div>
-    </div>
+    </template>
     <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
   </div>
 </template>
@@ -194,6 +199,9 @@
   import _ from 'lodash'
   const PAGE_NAME = 'EDIT_SUPPLY_GOODS'
   const TITLE = '新建商品'
+  const ORDERSTATUS = [
+    {text: '基础信息', status: 0}
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -293,6 +301,8 @@
         isSubmit: false,
         editRurchasePrice: 0,
         editRurchaseUnit: '',
+        tabStatus: ORDERSTATUS,
+        tabIndex: 0,
         searchList: []
       }
     },
@@ -620,6 +630,8 @@
   @import "~@design"
   @import "~@style/detail"
 
+  .content-padding-top
+    padding-top: 32px
   .img
     width :100%
     height :@width

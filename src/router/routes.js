@@ -1548,7 +1548,13 @@ export default [
           titles: ['供应链', '采购', '商品素材库'],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('scmGoods/getScmStoreData', {})
+              .dispatch('scmGoods/getScmStoreData', {
+                keyword: '',
+                materialId: '',
+                page: 1,
+                limit: 21,
+                loading: false
+              })
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

@@ -87,6 +87,7 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
 
 const ADD_TEXT = '新建'
 const EDIT_TEXT = '编辑'
+const SUCCESS_TEXT = '完善资料'
 
 router.afterEach((routeTo, routeFrom, next) => {
   // 动态添加页面标题
@@ -96,7 +97,13 @@ router.afterEach((routeTo, routeFrom, next) => {
   let titles = routeTo.meta.titles ? [...routeTo.meta.titles] : []
   // 判断该页面是否是变动的标题
   if (variableIndex || variableIndex === 0) {
-    titles[variableIndex] = (routeTo.query.id || routeTo.params.id ? EDIT_TEXT : ADD_TEXT) + titles[variableIndex]
+    console.log(routeTo.query.complete || routeTo.params.complete)
+    if (routeTo.query.complete || routeTo.params.complete) {
+      titles[variableIndex] = SUCCESS_TEXT
+    } else {
+      titles[variableIndex] = (routeTo.query.id || routeTo.params.id ? EDIT_TEXT : ADD_TEXT) + titles[variableIndex]
+    }
+    console.log(titles[variableIndex])
   }
   titles[titles.length - 1] = name || titles[titles.length - 1]
   if (titles) {

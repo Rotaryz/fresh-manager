@@ -74,7 +74,7 @@
                 <div class="list-item">{{item.base_purchase_rate}}{{item.base_unit}}/{{item.purchase_unit}}</div>
                 <div class="list-item">{{item.source * 1 === 1 ? '自建' : '平台'}}</div>
                 <div class="list-item list-operation-box">
-                  <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-supply-goods?id=' + item.id" append class="list-operation list-operation-all">完善资料</router-link>
+                  <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-supply-goods?complete=1&id=' + item.id" append class="list-operation list-operation-all">完善资料</router-link>
                   <router-link v-if="item.complete_status * 1 === 1" tag="span" :to="'edit-supply-goods?id=' + item.id" append class="list-operation">编辑</router-link>
                   <span class="list-operation" @click="delGoods(item)">删除</span>
                 </div>

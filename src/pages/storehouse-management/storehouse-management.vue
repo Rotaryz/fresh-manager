@@ -138,6 +138,7 @@
           search.push(`${key}=${data[key]}`)
         }
         let url = process.env.VUE_APP_SCM_API + ENTRY_STORE_EXPORT + '?' + search.join('&')
+        console.log(url)
         return url
       }
     },
