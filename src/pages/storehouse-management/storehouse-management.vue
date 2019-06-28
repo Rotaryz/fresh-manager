@@ -175,7 +175,7 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
-        this.categoryId = data.id
+        this.goodsCategoryId = data.id
         this.page = 1
         this._getWarehouseList()
         this.$refs.pagination.beginPage()
@@ -184,14 +184,14 @@
       async setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
-        this.categoryId = data.id
+        this.goodsCategoryId = data.id
         this.page = 1
         this._getWarehouseList()
         this.$refs.pagination.beginPage()
       },
       // 选择三级类目
       async setThirdlyValue(data) {
-        this.categoryId = data.id
+        this.goodsCategoryId = data.id
         this.page = 1
         this._getWarehouseList()
         this.$refs.pagination.beginPage()
