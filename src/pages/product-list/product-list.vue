@@ -148,13 +148,7 @@
     data() {
       return {
         productTitleList: PRODUCT_TITLE_LIST,
-        dispatchSelect: {
-          check: false,
-          show: false,
-          content: '全部状态',
-          type: 'default',
-          data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
-        },
+        dispatchSelect: {check: false, show: false, content: '全部状态', type: 'default', data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]},
         statusTab: [{name: '全部', num: 0, key: ''}, {name: '已上架', num: 0, key: 1}, {name: '已下架', num: 0, key: 0}],
         stairSelect: {
           check: false,
@@ -163,41 +157,11 @@
           type: 'default',
           data: []
         },
-        secondSelect: {
-          check: false,
-          show: false,
-          content: '二级分类',
-          type: 'default',
-          data: []
-        },
-        typeSelect: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]
-        },
-        progressSelect: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]
-        },
-        presaleSelect: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: [{name: '全部', value: ''}, {name: '仓库', value: 0}, {name: '预售', value: 1}]
-        },
-        storeSelect: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: [{name: '全部', value: ''}, {name: '无库存', value: 0}, {name: '有库存', value: 1}]
-        },
+        secondSelect: {check: false, show: false, content: '二级分类', type: 'default', data: []},
+        typeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]},
+        progressSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]},
+        presaleSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '仓库', value: 0}, {name: '预售', value: 1}]},
+        storeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '无库存', value: 0}, {name: '有库存', value: 1}]},
         goodsList: [],
         pageTotal: {},
         categoryId: '',
@@ -237,6 +201,7 @@
       _hideTip() {
         this.showIndex = false
       },
+      // 导出
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
@@ -244,6 +209,7 @@
           this.keyWord}`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
+      // 选择一级分类
       _setStairValue(data) {
         this.secondSelect.content = '二级分类'
         this.secondSelect.data = data.list
@@ -254,6 +220,7 @@
         this.getGoodsListData()
         this.getGoodsStatus()
       },
+      // 选择二级分类
       _secondValue(data) {
         this.secondSelect.content = data.name
         this.$refs.pagination.beginPage()
@@ -263,6 +230,7 @@
         this.getGoodsListData()
         this.getGoodsStatus()
       },
+      // 选择类型
       _setTypeValue(data) {
         this.source = data.value
         this.$refs.pagination.beginPage()
@@ -271,6 +239,7 @@
         this.getGoodsListData()
         this.getGoodsStatus()
       },
+      // 选择资料状态
       _setCompleteValue(data) {
         this.completeStatus = data.value
         this.$refs.pagination.beginPage()
@@ -279,6 +248,7 @@
         this.getGoodsListData()
         this.getGoodsStatus()
       },
+      // 选择库存类型
       _setPresaleValue(data) {
         this.isPresale = data.value
         if (data.value.length === 0) {
@@ -291,6 +261,7 @@
         this.getGoodsListData()
         this.getGoodsStatus()
       },
+      // 选择库存
       _setStoreValue(data) {
         this.hasStock = data.value
         this.$refs.pagination.beginPage()
@@ -299,6 +270,7 @@
         this.getGoodsListData()
         this.getGoodsStatus()
       },
+      // 搜索
       search(text) {
         this.$refs.pagination.beginPage()
         this.keyWord = text
@@ -307,6 +279,7 @@
         this.getGoodsListData()
         this.getGoodsStatus()
       },
+      // 切换上下架状态
       changeStatus(selectStatus) {
         this.isOnline = selectStatus.value
         this.$refs.pagination.beginPage()
@@ -314,10 +287,12 @@
         this._getUrl()
         this.getGoodsListData()
       },
+      // 分页
       addPage(page) {
         this.goodsPage = page
         this.getGoodsListData()
       },
+      // 获取列表
       getGoodsListData() {
         let data = {
           goods_category_id: this.categoryId,
@@ -344,6 +319,7 @@
           }
         })
       },
+      // 获取Tab栏状态
       getGoodsStatus() {
         API.Product.getGoodsStatus({
           goods_category_id: this.categoryId,
@@ -367,6 +343,7 @@
           })
         })
       },
+      // 删除商品
       delGoods(item) {
         this.curItem = item
         this.oneBtn = false
@@ -386,6 +363,7 @@
           }
         })
       },
+      // 商品上下架
       switchBtn(item, index) {
         if (item.goods_sku_encoding.length === 0 && item.is_online * 1 === 0) {
           this.$toast.show('请先补充商品编码再上架')
@@ -410,6 +388,7 @@
           }
         })
       },
+      // 获取分类列表
       getCategoriesData() {
         API.Product.getCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -441,6 +420,7 @@
         param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
       },
+      // 商品素材中心
       jumpStore() {
         this.$router.push('/home/goods-store')
       },

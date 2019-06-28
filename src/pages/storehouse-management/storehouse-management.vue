@@ -163,7 +163,7 @@
       _getWarehouseList() {
         this.getWarehouseList({
           page: this.page,
-          goodsCategoryId: this.categoryId,
+          goodsCategoryId: this.goodsCategoryId,
           keyword: this.keyword,
           warehousePositionId: this.warehousePositionId,
           loading: false
