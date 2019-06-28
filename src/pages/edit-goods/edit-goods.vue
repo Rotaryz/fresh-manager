@@ -15,6 +15,7 @@
             <div class="edit-input-box">
               <input v-model="goods_skus.goods_material_name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
             </div>
+            <div class="edit-pla">该商品名称为后台名称，不展示在小程序</div>
           </div>
           <div class="edit-item">
             <div class="edit-title">
@@ -246,6 +247,7 @@
             <div class="edit-input-box">
               <input v-model="saleMsg.name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
             </div>
+            <div class="edit-pla">展示在小程序端</div>
           </div>
           <div class="edit-item">
             <div class="edit-title">

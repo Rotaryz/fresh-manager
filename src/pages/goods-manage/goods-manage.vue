@@ -113,34 +113,10 @@
         listTitle: LIST_TITLE,
         dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '支付', key: 'wait_release', num: 0}, {name: '退款', key: 'wait_purchase', num: 0}],
         showIndex: false,
-        stairSelect: {
-          check: false,
-          show: false,
-          content: '一级类目',
-          type: 'default',
-          data: []
-        },
-        secondSelect: {
-          check: false,
-          show: false,
-          content: '二级类目',
-          type: 'default',
-          data: []
-        },
-        thirdlySelect: {
-          check: false,
-          show: false,
-          content: '三级类目',
-          type: 'default',
-          data: []
-        },
-        dataSelect: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: [{name: '全部', id: ''}, {name: '未完成', id: 0}, {name: '完成', id: 1}]
-        },
+        stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
+        secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
+        thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
+        dataSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', id: ''}, {name: '未完成', id: 0}, {name: '完成', id: 1}]},
         keyWord: '',
         oneBtn: false,
         curItem: {},
@@ -158,6 +134,7 @@
     },
     methods: {
       ...scmGoodsMethods,
+      // 获取类目列表
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -168,12 +145,14 @@
           }
         })
       },
+      // 搜索
       changeKeyword(text) {
         this.keyWord = text
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 选择一级类目
       setStairValue(data) {
         this.secondSelect.content = '二级类目'
         this.secondSelect.data = data.list
@@ -184,6 +163,7 @@
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 选择二级类目
       setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
@@ -192,12 +172,27 @@
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 选择三级类目
       setThirdlyValue(data) {
         this.categoryId = data.id
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
+      // 分页
+      addPage(page) {
+        this.page = page
+        this.getReqList()
+      },
+      // 资料类型
+      setDataValue(data) {
+        this.dataSelect.content = data.name
+        this.completeStatus = data.id
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        this.getReqList()
+      },
+      // 删除商品
       delGoods(item) {
         this.curItem = item
         this.oneBtn = false
@@ -216,26 +211,19 @@
           }
         })
       },
+      // 显示更多
       _showTip() {
         this.showIndex = true
       },
+      // 隐藏更多
       _hideTip() {
         this.showIndex = false
       },
-      addPage(page) {
-        this.page = page
-        this.getReqList()
-      },
-      setDataValue(data) {
-        this.dataSelect.content = data.name
-        this.completeStatus = data.id
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        this.getReqList()
-      },
+      // 跳转素材中心
       jumpStore() {
         this.$router.push('/home/goods-store')
       },
+      // 导出
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
@@ -243,6 +231,7 @@
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
         console.log(this.downUrl)
       },
+      // 获取列表
       getReqList() {
         this.getProductList({
           materialId: this.categoryId,

@@ -227,8 +227,9 @@
       //  获取一级库位
       async _getStoreList() {
         let res = await API.Store.getStoreList(false, false)
-        this.store.data = res.error === this.$ERR_OK ? res.data[0].warehouse_positions : []
+        this.store.data = res.error === this.$ERR_OK && res.data[0] ? res.data[0].warehouse_positions : []
         this.store.data.unshift({name: '全部', id: ''})
+        console.log()
       },
       // 获取库架名
       async getSecondStore(item) {
