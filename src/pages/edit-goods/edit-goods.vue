@@ -3,14 +3,6 @@
     <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
     <template v-if="tabIndex===0">
       <div class="edit-leader">
-        <!--<div class="identification">-->
-        <!--<div class="identification-page">-->
-        <!--<img src="./icon-new_commodity@2x.png" class="identification-icon">-->
-        <!--<p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>-->
-        <!--</div>-->
-        <!--<div class="function-btn">-->
-        <!--</div>-->
-        <!--</div>-->
         <div class="content-header content-padding-top">
           <div class="content-title">商品信息</div>
         </div>
@@ -23,9 +15,6 @@
             <div class="edit-input-box">
               <input v-model="goods_skus.goods_material_name" type="text" class="edit-input" maxlength="29" @mousewheel.native.prevent>
             </div>
-            <!--<div class="edit-input-copy hand">-->
-            <!--<div v-if="id" class="bnt-name" @click="_jumpCopyPage">一键复制</div>-->
-            <!--</div>-->
           </div>
           <div class="edit-item">
             <div class="edit-title">
@@ -194,14 +183,6 @@
     </template>
     <template v-if="tabIndex===1 && id">
       <div class="edit-leader">
-        <!--<div class="identification">-->
-        <!--<div class="identification-page">-->
-        <!--<img src="./icon-new_commodity@2x.png" class="identification-icon">-->
-        <!--<p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>-->
-        <!--</div>-->
-        <!--<div class="function-btn">-->
-        <!--</div>-->
-        <!--</div>-->
         <div class="content-header content-padding-top">
           <div class="content-title">图文信息</div>
         </div>
@@ -334,7 +315,7 @@
       <div class="back-btn back-submit hand" @click="_submitType">保存</div>
       <div v-if="isShow" class="back-btn back-submit hand" @click="_jumpCopyPage">一键复制</div>
     </div>
-    <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
+    <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>
   </div>
 </template>
 
@@ -395,55 +376,13 @@
           damage_rate: '',
           is_weight: 1
         },
-        stairSelect: {
-          check: false,
-          show: false,
-          content: '一级类目',
-          type: 'default',
-          data: []
-        },
-        secondSelect: {
-          check: false,
-          show: false,
-          content: '二级类目',
-          type: 'default',
-          data: []
-        },
-        thirdlySelect: {
-          check: false,
-          show: false,
-          content: '三级类目',
-          type: 'default',
-          data: []
-        },
-        dispatchSelect: {
-          check: false,
-          show: false,
-          content: '基本单位',
-          type: 'default',
-          data: []
-        },
-        saleSelect: {
-          check: false,
-          show: false,
-          content: '销售单位',
-          type: 'default',
-          data: []
-        },
-        purchaseSelect: {
-          check: false,
-          show: false,
-          content: '采购单位',
-          type: 'default',
-          data: []
-        },
-        supplierSelect: {
-          check: false,
-          show: false,
-          content: '选择供应商',
-          type: 'default',
-          data: []
-        },
+        stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
+        secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
+        thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
+        dispatchSelect: {check: false, show: false, content: '基本单位', type: 'default', data: []},
+        saleSelect: {check: false, show: false, content: '销售单位', type: 'default', data: []},
+        purchaseSelect: {check: false, show: false, content: '采购单位', type: 'default', data: []},
+        supplierSelect: {check: false, show: false, content: '选择供应商', type: 'default', data: []},
         saleMsg: {
           goods_banner_images: [],
           goods_detail_images: [],
@@ -457,23 +396,8 @@
           trade_price: '',
           original_price: ''
         },
-        categoriesSelect: {
-          check: false,
-          show: false,
-          content: '一级分类',
-          type: 'default',
-          data: []
-        },
-        categoriesSecondSelect: {
-          check: false,
-          show: false,
-          content: '二级分类',
-          type: 'default',
-          data: []
-        },
-        menuName: '请选择',
-        showMenu: false,
-        preMenuIndex: null,
+        categoriesSelect: {check: false, show: false, content: '一级分类', type: 'default', data: []},
+        categoriesSecondSelect: {check: false, show: false, content: '二级分类', type: 'default', data: []},
         preChildIndex: null,
         showLoading: false,
         picNum: 5,
@@ -523,7 +447,6 @@
           this.purchaseSelect.content = this.goods_skus.purchase_unit
           this.editRurchaseUnit = this.goods_skus.purchase_unit
           this.dispatchSelect.content = this.goods_skus.base_unit
-          console.log(this.goods_skus.base_purchase_rate, 'base_purchase_rate')
           this.editRurchasePrice = this.goods_skus.base_purchase_rate
           this._saleInfo()
         }
@@ -553,8 +476,6 @@
           this.saleMsg.goods_id = 0
           this.sale_skus.goods_sku_id = 0
           this.sale_skus.goods_id = 0
-          console.log(this.msg)
-          console.log(this.saleMsg)
         }
       },
       getScmCategoriesData() {
@@ -654,8 +575,6 @@
         }
         this.msg.goods_skus[0] = this.goods_skus
         this.msg.save_type = 'base'
-        console.log(this.msg)
-        console.log(this.goods_skus)
         if (this.id) {
           if (this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 && this.editRurchaseUnit === this.goods_skus.purchase_unit) {
             this.isSubmit = true
@@ -672,7 +591,6 @@
           } else {
             API.Product.checkGoodsTask({goods_id: this.id}).then((res) => {
               if (res.error === this.$ERR_OK) {
-                console.log(res.data)
                 if (res.data.has_task === 1) {
                   this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
                   return
@@ -699,7 +617,6 @@
         API.Product.createGoodsDetail(this.msg).then((res) => {
           this.isSubmit = false
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
             this.id = res.data.goods_id
             this.goods_skus.goods_sku_id = res.data.goods_sku_id
             this.sale_skus.goods_sku_id = res.data.goods_sku_id
@@ -710,8 +627,6 @@
           }
           this.$loading.hide()
         })
-        console.log(this.msg)
-        console.log(this.goods_skus)
       },
       // 销售信息提交
       _saleSubmit() {
@@ -767,9 +682,9 @@
           })
           return
         }
-        console.log(this.saleMsg)
         this.$toast.show('请先保存基础信息')
       },
+      // 返回上一页
       _back() {
         this.$router.back()
       },
@@ -777,7 +692,6 @@
       _saleInfo() {
         API.Product.getGoodsDetail(this.id, {show_type: 'sale'}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
             this.saleMsg = res.data
             this.sale_skus = this.saleMsg.goods_skus[0]
           } else {
@@ -786,6 +700,7 @@
           this.$loading.hide()
         })
       },
+      // 切换销售类型
       selectStock(index) {
         if (!this.id) {
           this.msg.is_presale = index
@@ -803,6 +718,7 @@
           })
         }
       },
+      // 获取计量单位
       getSelectData() {
         API.Product.getUnitsList({}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -814,6 +730,7 @@
           }
         })
       },
+      // 筛选供应商
       changeText(text) {
         if (text.length === 0) {
           this.supplierSelect.data = this.searchList
@@ -827,6 +744,7 @@
         })
         this.supplierSelect.data = arr
       },
+      // 获取供应商列表
       getSupplierData() {
         API.Product.getSupplier({page: 1, limit: 10}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -840,6 +758,7 @@
           }
         })
       },
+      // 获取类目
       getCategoriesData() {
         API.Product.getCategoryList({parent_id: -1, goods_id: this.isCopy ? storage.get('goods_id') : this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -860,49 +779,56 @@
           }
         })
       },
+      // 选择一级类目
       setStairValue(data) {
         this.secondSelect.content = '二级类目'
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = ''
         this.msg.goods_material_category_id = data.id
-        console.log(this.msg.goods_material_category_id)
       },
+      // 选择二级类目
       setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
         this.msg.goods_material_category_id = data.id
-        console.log(this.msg.goods_material_category_id)
       },
+      // 选择三级类目
       setThirdlyValue(data) {
         this.msg.goods_material_category_id = data.id
-        console.log(this.msg.goods_material_category_id)
       },
+      // 选择基本单位
       setBaseValue(data) {
         this.goods_skus.base_unit = data.name
       },
+      // 选择销售单位
       saleSelectValue(data) {
         this.goods_skus.sale_unit = data.name
       },
-      supplierSelectValue(data) {
-        console.log(data)
-        this.goods_skus.supplier_id = data.supplier_id
-      },
+      // 选择采购单位
       purchaseSelectValue(data) {
         this.goods_skus.purchase_unit = data.name
       },
+      // 选择供应商
+      supplierSelectValue(data) {
+        this.goods_skus.supplier_id = data.supplier_id
+      },
+      // 切换称重
       switchBtn() {
         this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
       },
+      // 选择一级分类
       setStairCategoriesValue(data) {
         this.categoriesSecondSelect.content = '二级分类'
         this.categoriesSecondSelect.data = data.list
         this.saleMsg.goods_category_id = data.id
       },
+      // 选择二级分类
       setSecondCategoriesValue(data) {
         this.saleMsg.goods_category_id = data.id
       },
-      delConfirm() {
+      // 修改采购规格编辑
+      changeEdit() {
         this.isSubmit = true
         API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
           this.isSubmit = false
@@ -916,6 +842,7 @@
         })
       },
       _setSort() {},
+      // 添加基本信息图片
       _addPic(type, length, e) {
         this.uploadImg = type
         let arr = Array.from(e.target.files)
@@ -944,6 +871,7 @@
           this.$set(this.msg, type, this.msg[type].concat(imagesArr))
         })
       },
+      // 添加销售信息图片
       _addSalePic(type, length, e) {
         this.uploadImg = type
         let arr = Array.from(e.target.files)
@@ -972,13 +900,16 @@
           this.$set(this.saleMsg, type, this.saleMsg[type].concat(imagesArr))
         })
       },
+      // 删除商品信息图片
       delMainPic(index) {
         this.msg.goods_main_images.splice(index, 1)
         this.imgInput = ''
       },
+      // 删除封面图片
       delPic(index) {
         this.saleMsg.goods_banner_images.splice(index, 1)
       },
+      // 删除详情图片
       delPic2(index) {
         this.saleMsg.goods_detail_images.splice(index, 1)
       },
@@ -1019,18 +950,16 @@
           this.getPic2(res.data)
         }
       },
+      // 一键复制
       _jumpCopyPage() {
-        // let pathname = window.location.href + '?copy=true'
         let pathname = window.location.href
         let url = pathname.split('?')
         let jumpUrl = url[0] + '?copy=true'
-        console.log(url)
         storage.set('msg', this.msg)
         storage.set('goods_skus', this.goods_skus)
         storage.set('saleMsg', this.saleMsg)
         storage.set('sale_skus', this.sale_skus)
         storage.set('goods_id', this.id)
-        console.log(window.location)
         window.open(jumpUrl, '_blank')
       }
     }
@@ -1384,19 +1313,6 @@
     font-size: $font-size-medium14
     color: #acacac
     margin-left: 10px
-  .edit-input-copy
-    layout(row)
-    align-items: center
-    margin-left: 20px
-    .bnt-name
-      font-size: $font-size-12
-      font-family: $font-family-regular
-      color: $color-main
-      height: 28px
-      width: 68px
-      line-height: 28px
-      text-align: center
-      border-1px($color-main)
   .sale-size
     font-size: $font-size-14
     line-height: 40px

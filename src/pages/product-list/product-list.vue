@@ -75,7 +75,6 @@
           <div v-if="goodsList.length">
             <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
               <div class="list-item">
-                <!--                <div class="pic-box" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>-->
                 <img class="pic-box" :src="item.goods_cover_image" alt="">
               </div>
               <div class="list-item list-double-row">
@@ -128,7 +127,6 @@
   const PRODUCT_TITLE_LIST = [
     '图片',
     '商品名称',
-    // '商品编码',
     '分类',
     '基本单位',
     '销售规格',

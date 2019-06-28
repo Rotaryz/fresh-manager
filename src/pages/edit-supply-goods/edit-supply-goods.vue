@@ -1,14 +1,6 @@
 <template>
-  <div class="">
+  <div class="table">
     <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104"></base-tab-select>
-    <!--<div class="identification">-->
-    <!--<div class="identification-page">-->
-    <!--<img src="./icon-new_commodity@2x.png" class="identification-icon">-->
-    <!--<p class="identification-name">{{id ? '编辑商品' : '新建商品'}}</p>-->
-    <!--</div>-->
-    <!--<div class="function-btn">-->
-    <!--</div>-->
-    <!--</div>-->
     <template>
       <div class="edit-supply-goods">
         <div class="content-header content-padding-top">
@@ -188,7 +180,7 @@
         </div>
       </div>
     </template>
-    <default-confirm ref="confirm" @confirm="delConfirm"></default-confirm>
+    <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>
   </div>
 </template>
 
@@ -246,55 +238,13 @@
           damage_rate: '',
           is_weight: 1
         },
-        stairSelect: {
-          check: false,
-          show: false,
-          content: '一级类目',
-          type: 'default',
-          data: []
-        },
-        secondSelect: {
-          check: false,
-          show: false,
-          content: '二级类目',
-          type: 'default',
-          data: []
-        },
-        thirdlySelect: {
-          check: false,
-          show: false,
-          content: '三级类目',
-          type: 'default',
-          data: []
-        },
-        dispatchSelect: {
-          check: false,
-          show: false,
-          content: '基本单位',
-          type: 'default',
-          data: []
-        },
-        saleSelect: {
-          check: false,
-          show: false,
-          content: '销售单位',
-          type: 'default',
-          data: []
-        },
-        purchaseSelect: {
-          check: false,
-          show: false,
-          content: '采购单位',
-          type: 'default',
-          data: []
-        },
-        supplierSelect: {
-          check: false,
-          show: false,
-          content: '选择供应商',
-          type: 'default',
-          data: []
-        },
+        stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
+        secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
+        thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
+        dispatchSelect: {check: false, show: false, content: '基本单位', type: 'default', data: []},
+        saleSelect: {check: false, show: false, content: '销售单位', type: 'default', data: []},
+        purchaseSelect: {check: false, show: false, content: '采购单位', type: 'default', data: []},
+        supplierSelect: {check: false, show: false, content: '选择供应商', type: 'default', data: []},
         showLoading: false,
         uploadImg: '',
         picNum: 5,
@@ -307,7 +257,6 @@
       }
     },
     created() {
-      console.log(this.id)
       this._setData()
       this.getCategoriesData()
       this.getSupplierData()
@@ -319,20 +268,18 @@
        * @private
        */
       _setData() {
-        console.log(this.detail)
         if (!_.isEmpty(this.detail)) {
           this.msg = _.cloneDeep(this.detail)
-          console.log(this.msg)
           this.goods_skus = this.msg.goods_skus[0]
           this.dispatchSelect.content = this.goods_skus.base_unit
           this.saleSelect.content = this.goods_skus.sale_unit
           this.purchaseSelect.content = this.goods_skus.purchase_unit
-          this.editRurchaseUnitcontent = this.goods_skus.purchase_unit
+          this.editRurchaseUnit = this.goods_skus.purchase_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
-          console.log(this.goods_skus.base_purchase_rate, 'base_purchase_rate')
           this.editRurchasePrice = this.goods_skus.base_purchase_rate
         }
       },
+      // 获取类目列表
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -359,24 +306,25 @@
           }
         })
       },
+      // 选择一级类目
       setStairValue(data) {
         this.secondSelect.content = '二级类目'
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = ''
         this.msg.goods_material_category_id = data.id
-        console.log(this.msg.goods_material_category_id)
       },
+      // 选择二级类目
       setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
         this.msg.goods_material_category_id = data.id
-        console.log(this.msg.goods_material_category_id)
       },
+      // 选择三级类目
       setThirdlyValue(data) {
         this.msg.goods_material_category_id = data.id
-        console.log(this.msg.goods_material_category_id)
       },
+      // 筛选供应商
       changeText(text) {
         if (text.length === 0) {
           this.supplierSelect.data = this.searchList
@@ -390,6 +338,7 @@
         })
         this.supplierSelect.data = arr
       },
+      // 获取供应商列表
       getSupplierData() {
         API.Product.getSupplier({page: 1, limit: 100}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -403,10 +352,11 @@
           }
         })
       },
+      // 选择供应商
       supplierSelectValue(data) {
-        console.log(data)
         this.goods_skus.supplier_id = data.supplier_id
       },
+      // 切换销售类型
       selectStock(index) {
         if (!this.id) {
           this.msg.is_presale = index
@@ -424,20 +374,7 @@
           })
         }
       },
-      switchBtn() {
-        this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
-      },
-      setBaseValue(data) {
-        this.goods_skus.base_unit = data.name
-      },
-      saleSelectValue(data) {
-        this.goods_skus.sale_unit = data.name
-        console.log(data)
-      },
-      purchaseSelectValue(data) {
-        this.goods_skus.purchase_unit = data.name
-        console.log(data)
-      },
+      // 获取计量单位
       getSelectData() {
         API.Product.getUnitsList({}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -449,6 +386,23 @@
           }
         })
       },
+      // 选择基本单位
+      setBaseValue(data) {
+        this.goods_skus.base_unit = data.name
+      },
+      // 选择销售单位
+      saleSelectValue(data) {
+        this.goods_skus.sale_unit = data.name
+      },
+      // 选择采购单位
+      purchaseSelectValue(data) {
+        this.goods_skus.purchase_unit = data.name
+      },
+      // 切换称重
+      switchBtn() {
+        this.goods_skus.is_weight = !this.goods_skus.is_weight ? 1 : 0
+      },
+      // 添加图片
       _addPic(type, length, e) {
         this.uploadImg = type
         let arr = Array.from(e.target.files)
@@ -477,9 +431,11 @@
           this.$set(this.msg, type, this.msg[type].concat(imagesArr))
         })
       },
+      // 删除图片
       delPic(index) {
         this.msg.goods_main_images.splice(index, 1)
       },
+      // 提交商品信息
       _submit() {
         this.goods_skus.presale_usable_stock += ''
         if (this.isSubmit) {
@@ -543,8 +499,6 @@
         }
         this.msg.goods_skus[0] = this.goods_skus
         this.msg.save_type = 'base'
-        console.log(this.msg)
-        console.log(this.goods_skus)
         if (this.id) {
           if (this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 && this.editRurchaseUnit === this.goods_skus.purchase_unit) {
             this.isSubmit = true
@@ -563,7 +517,6 @@
           } else {
             API.Product.checkGoodsTask({goods_id: this.id}).then((res) => {
               if (res.error === this.$ERR_OK) {
-                console.log(res.data)
                 if (res.data.has_task === 1) {
                   this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
                   return
@@ -601,10 +554,9 @@
           }
           this.$loading.hide()
         })
-        console.log(this.msg)
-        console.log(this.goods_skus)
       },
-      delConfirm() {
+      // 修改采购规格编辑
+      changeEdit() {
         this.isSubmit = true
         API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
           this.isSubmit = false
