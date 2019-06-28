@@ -450,7 +450,7 @@
         if (!_.isEmpty(this.detail)) {
           this.msg = _.cloneDeep(this.detail)
           this.goods_skus = this.msg.goods_skus[0]
-          this.editSkus = this.goods_skus
+          this.editSkus = _.cloneDeep(this.goods_skus)
           this.saleSelect.content = this.goods_skus.sale_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
           this.purchaseSelect.content = this.goods_skus.purchase_unit
@@ -465,7 +465,7 @@
           this.goods_skus = storage.get('goods_skus')
           this.saleMsg = storage.get('saleMsg')
           this.sale_skus = storage.get('sale_skus')
-          this.editSkus = this.goods_skus
+          this.editSkus = _.cloneDeep(this.goods_skus)
           this.saleSelect.content = this.goods_skus.sale_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
           this.purchaseSelect.content = this.goods_skus.purchase_unit
@@ -594,7 +594,7 @@
               if (res.error === this.$ERR_OK) {
                 this.tabIndex = 1
                 this.$toast.show('编辑基础信息成功')
-                this.editSkus = this.goods_skus
+                this.editSkus = _.cloneDeep(this.goods_skus)
               } else {
                 this.$toast.show(res.message)
               }
@@ -613,7 +613,7 @@
                   if (res.error === this.$ERR_OK) {
                     this.tabIndex = 1
                     this.$toast.show('编辑基础信息成功')
-                    this.editSkus = this.goods_skus
+                    this.editSkus = _.cloneDeep(this.goods_skus)
                   } else {
                     this.$toast.show(res.message)
                   }
@@ -635,7 +635,7 @@
             this.sale_skus.goods_sku_id = res.data.goods_sku_id
             this.tabIndex = 1
             this.$toast.show('创建基础信息成功')
-            this.editSkus = this.goods_skus
+            this.editSkus = _.cloneDeep(this.goods_skus)
           } else {
             this.$toast.show(res.message)
           }
@@ -849,7 +849,7 @@
           if (res.error === this.$ERR_OK) {
             this.tabIndex = 1
             this.$toast.show('编辑基础信息成功')
-            this.editSkus = this.goods_skus
+            this.editSkus = _.cloneDeep(this.goods_skus)
           } else {
             this.$toast.show(res.message)
           }
