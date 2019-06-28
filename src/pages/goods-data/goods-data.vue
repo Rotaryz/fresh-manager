@@ -191,6 +191,7 @@
   import PieData from './pie-data/pie-data'
   import DescriptionModal from './description-modal/description-modal'
   import {formatNumber} from '@utils/common'
+  import moment from 'moment'
 
   import API from '@api'
 
@@ -307,7 +308,7 @@
         },
         requestPub: {
           date_type: 'day',
-          start_date: new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&'),
+          start_date: moment(Date.now() - 86400000).format('YYYY-MM-DD'),
           end_date: '',
           group_by: 'cate',
           cate: '',

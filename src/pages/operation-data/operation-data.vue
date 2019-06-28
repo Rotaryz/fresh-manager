@@ -42,6 +42,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import app from '@src/main'
+  import moment from 'moment'
   import {formatNumber} from '@utils/common'
   import ChartLine from '@components/e-chart/chart-line'
 
@@ -238,7 +239,7 @@
     }
   ]
 
-  const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+  const NOW_DATE = moment(Date.now() - 86400000).format('YYYY-MM-DD')
 
   export default {
     name: PAGE_NAME,
