@@ -367,6 +367,7 @@
           color: $color-text-sub
           max-height: 290px
           overflow-y: auto
+          z-index: 99
           &.fade-enter, &.fade-leave-to
             opacity: 0
           &.fade-enter-to, &.fade-leave-to
