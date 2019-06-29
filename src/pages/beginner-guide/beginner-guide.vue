@@ -157,7 +157,7 @@
     {
       name: '商品出库',
       imgName: 'outbound',
-      routerName: 'product-out',
+      routerName: '/home/product-out?status=0',
       positions: [480, PAGE_TWO_TOP_SECOND]
     },
     {

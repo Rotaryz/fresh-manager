@@ -26,7 +26,7 @@
               <div class="item-dark">{{item.goods_name}}</div>
               <div class="item-dark">{{item.goods_sku_encoding}}</div>
             </div>
-            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.goods_material_category}}</div>
             <div class="list-item">{{item.supplier_name}}</div>
             <div class="list-item">{{item.plan_num}}</div>
           </div>
@@ -48,7 +48,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
   const TITLE = '采购任务导入'
-  const COMMODITIES_LIST = ['序号', '商品', '分类', '供应商', '采购数量']
+  const COMMODITIES_LIST = ['序号', '商品', '类目', '供应商', '采购数量']
   export default {
     name: PAGE_NAME,
     page: {

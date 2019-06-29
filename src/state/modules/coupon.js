@@ -8,7 +8,14 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  couponDetail: {}
+  couponDetail: {},
+  infoTabIndex: 0,
+  pageTotal: {
+    total: 1,
+    per_page: 10,
+    total_page: 1
+  },
+  goodsCoupon: []
 }
 
 export const getters = {
@@ -20,6 +27,15 @@ export const getters = {
   },
   couponDetail(state) {
     return state.couponDetail
+  },
+  infoTabIndex(state) {
+    return state.infoTabIndex
+  },
+  goodsCoupon(state) {
+    return state.goodsCoupon
+  },
+  pageTotal(state) {
+    return state.pageTotal
   }
 }
 
@@ -32,18 +48,31 @@ export const mutations = {
   },
   SET_COUPON_DETAIL(state, detail) {
     state.couponDetail = detail
+  },
+  SET_INFO_TAB_INDEX(state, infoTabIndex) {
+    state.infoTabIndex = infoTabIndex
+  },
+  SET_GOODS_COUPON(state, goodsCoupon) {
+    state.goodsCoupon = goodsCoupon
+  },
+  SET_PAGE_TOTAL(state, pageTotal) {
+    state.pageTotal = pageTotal
   }
 }
 
 export const actions = {
+  setInfoIndex({commit}, index) {
+    commit('SET_INFO_TAB_INDEX', index)
+  },
   getCouponList({commit}, msg) {
-    let {startTime, endTime, status, page, loading} = msg
+    let {startTime, endTime, status, page, tagType = 0, loading} = msg
     let data = {
       status,
       page,
       limit: 10,
       created_start_at: startTime,
-      created_end_at: endTime
+      created_end_at: endTime,
+      tag_type: tagType
     }
     return API.Coupon.getCouponList(data, loading)
       .then((res) => {
@@ -58,7 +87,11 @@ export const actions = {
           per_page: pages.per_page,
           total_page: pages.last_page
         }
-        commit('SET_COUPON_PAGE', pageDetail)
+        if (+tagType === 0) {
+          commit('SET_COUPON_PAGE', pageDetail)
+        } else {
+          commit('SET_PAGE_TOTAL', pageDetail)
+        }
         commit('SET_COUPON_LIST', couponList)
         return couponList
       })
@@ -69,8 +102,9 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getCouponDetail({commit}, id) {
-    return API.Coupon.getCouponDetail(id)
+  // 兑换券的方法
+  getCouponDetail({commit}, {id, tagType}) {
+    return API.Coupon.getCouponDetail({tag_type: tagType}, id)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return

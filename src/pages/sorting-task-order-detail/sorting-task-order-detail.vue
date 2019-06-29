@@ -74,7 +74,7 @@
         ],
         commodities: [
           {tilte: '商品', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
-          {tilte: '分类', key: 'goods_category'},
+          {tilte: '类目', key: 'goods_material_category'},
           {tilte: '订单数量 ', key: 'order_num', after: 'sale_unit'},
           {tilte: '配货数量', key: 'allocation_num', after: 'sale_unit'},
           {tilte: '存放库位', key: 'position_name', flex: '2'}

@@ -9,11 +9,20 @@
         <span class="close hand" @click="_cancelGoods"></span>
       </div>
       <div class="shade-tab">
+        <!--<div class="tab-item">-->
+        <!--<base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>-->
+        <!--</div>-->
+        <!--<div class="tab-item">-->
+        <!--<base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>-->
+        <!--</div>-->
         <div class="tab-item">
-          <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
+          <base-drop-down :select="stairSelect" @setValue="setStairValue"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+          <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+        </div>
+        <div class="tab-item">
+          <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
         </div>
         <div class="tab-item">
           <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
@@ -85,16 +94,73 @@
         parentId: '',
         keyword: '',
         goodsList: [],
+        stairSelect: {
+          check: false,
+          show: false,
+          content: '一级类目',
+          type: 'default',
+          data: []
+        },
+        secondSelect: {
+          check: false,
+          show: false,
+          content: '二级类目',
+          type: 'default',
+          data: []
+        },
+        thirdlySelect: {
+          check: false,
+          show: false,
+          content: '三级类目',
+          type: 'default',
+          data: []
+        },
+        categoryId: '',
         selectStoreList: []
       }
     },
     async created() {
       await this._getGoodsList()
-      await this._getFirstAssortment()
+      // await this._getFirstAssortment()
+      this.getCategoriesData()
     // this.$refs.goodsModel.showModal()
     },
     methods: {
       // 删除商品传入商品id
+      getCategoriesData() {
+        API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.stairSelect.data = res.data
+            this.stairSelect.data.unshift({name: '全部', id: '', list: []})
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      async setStairValue(data) {
+        this.secondSelect.content = '二级类目'
+        this.secondSelect.data = data.list
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = []
+        this.categoryId = data.id
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
+      async setSecondValue(data) {
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = data.list
+        this.categoryId = data.id
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
+      async setThirdlyValue(data) {
+        this.categoryId = data.id
+        this.page = 1
+        this.$refs.pagination.beginPage()
+        await this._getGoodsList()
+      },
       _delGoods(list) {
         this.selectStoreList = list
         this._getGoodsList()
@@ -153,7 +219,7 @@
       async _getGoodsList() {
         let res = await API.Store.getGoodsList({
           keyword: this.keyword,
-          goods_category_id: this.parentId,
+          goods_material_category_id: this.categoryId,
           is_entry_goods: 1,
           limit: 7,
           page: this.page || 1

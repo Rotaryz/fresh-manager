@@ -74,17 +74,17 @@ export default {
     return request.delete(url, null, loading)
   },
   /**
-   * 获取商品详情
+   * 获取商品详情[v2.8]
    * @param id
    * @param loading
    * @returns {*}
    */
-  getGoodsDetail(id, loading = true) {
+  getGoodsDetail(id, data, loading = true) {
     let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
-    return request.get(url, null, loading)
+    return request.get(url, data, loading)
   },
   /**
-   * 创建商品
+   * 创建商品[v2.8]
    * @param id
    * @param loading
    * @returns {*}
@@ -94,7 +94,7 @@ export default {
     return request.post(url, data, loading)
   },
   /**
-   * 获取商品列表
+   * 商品列表[v2.8]
    * @param id
    * @param loading
    * @returns {*}
@@ -212,5 +212,65 @@ export default {
   checkStockType(id, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/goods-change-stock/${id}`
     return request.get(url, loading)
+  },
+  /**
+   * 商品素材系统类目列表-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  getScmCategoryList(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-material/goods-material-category`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 商品素材列表-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  getScmStoreList(data, loading = true) {
+    let url = `/social-shopping/api/backend/goods-material/goods-material`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 商品素材添加列表-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  addScmGoods(id, data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-material/goods-material-add/${id}`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 商品新建模板导入【供应链专用】[v2.8]-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  scmGoodsImport(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/import-create-scm-goods`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 商品新建模板导入【供应链专用】[v2.8]-scm
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  checkGoodsImport(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/import-create-scm-goods-check`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 检查是否有采购任务[v2.8]
+   * @param data
+   * @param loading
+   * @returns {AxiosPromise<any> | * | IDBRequest<IDBValidKey> | Promise<void>}
+   */
+  checkGoodsTask(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/check-task`
+    return request.get(url, data, loading)
   }
 }

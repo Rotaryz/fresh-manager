@@ -12,7 +12,6 @@ export const state = {
     list: [],
     detail: {},
     filter: {
-      goods_category_id: '',
       page: 1,
       limit: 10,
       start_time: '',

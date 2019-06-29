@@ -18,6 +18,13 @@ http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
     config.url = resetUrl(config.url)
+    // if (process.env.VUE_APP_ENV === 'release') {
+    //   let version = 'v5/'
+    //   if (config.url.includes('social-shopping') && !config.url.includes('social-shopping/v')) {
+    //     config.url = config.url.split('api/').join(`${version}api/`)
+    //   }
+    // }
+    // console.log(config.url)
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
@@ -52,6 +59,7 @@ http.interceptors.response.use(
 )
 
 function checkStatus(response) {
+  // console.log(response)
   // _loading
   // 如果http状态码正常，则直接返回数据
   if (
@@ -93,9 +101,9 @@ function requestException(res) {
     error.data = serviceData.data || []
   }
   switch (serviceData.code) {
-    case 13004: // 系统升级
-      error.error = 0
-      break
+  case 13004: // 系统升级
+    error.error = 0
+    break
   }
   return error
 }

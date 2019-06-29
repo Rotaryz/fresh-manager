@@ -31,7 +31,7 @@
                 <div class="item-dark">{{item.goods_name}}</div>
                 <div class="item-sub">{{item.goods_sku_encoding}}</div>
               </div>
-              <div class="list-item">{{item.goods_category}}</div>
+              <div class="list-item">{{item.goods_material_category}}</div>
               <div class="list-item">{{item.base_unit}}</div>
               <div class="list-item">{{item.system_stock}}</div>
               <div class="list-item">{{item.actual_stock}}</div>
@@ -61,7 +61,7 @@
   const COMMODITIES_LIST = [
     '序号',
     '商品',
-    '分类',
+    '类目',
     '基本单位',
     '库存数量',
     '盘点数量',

@@ -31,7 +31,7 @@
               <p class="item-dark">{{item.goods_name}}</p>
               <p class="item-sub">{{item.goods_sku_encoding}}</p>
             </div>
-            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.goods_material_category}}</div>
             <div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0 || enterMsg.status === 2" v-model="item.base_num" type="number" class="edit-input" @input="echangInput(item, index)">
               <div v-else>{{item.base_num}}</div>
@@ -92,7 +92,7 @@
   const COMMODITIES_LIST = [
     '批次号',
     '商品',
-    '分类',
+    '类目',
     '入库数量(基本单位)',
     '入库数量(采购单位) ',
     '入库单价(基本单位) ',
