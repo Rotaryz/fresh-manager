@@ -127,7 +127,7 @@
         page: 1,
         delId: 0,
         status: '',
-        defaultIndex: 0,
+        // defaultIndex: 0,
         tabIndex: +window.$$tabIndex || 0,
         dateInfo: []
       }
@@ -137,6 +137,9 @@
       // infoTabIndex() {
       //   return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
       // },
+      defaultIndex() {
+        return this.statusTab.findIndex((item) => +item.value === +this.status) || 0
+      },
       currentTab() {
         return TAB_STATUS[this.tabIndex]
       }
@@ -152,7 +155,7 @@
     },
     created() {
       this.$loading.hide()
-      // this.defaultIndex = this.$route.query.status * 1 || 0
+      this.status = this.$route.query.status * 1 || 0
       this._getActiveStatus()
     },
     mounted() {
@@ -220,7 +223,7 @@
         this.startTime = ''
         this.endTime = ''
         // this.status = ''
-        this.defaultIndex = 0
+        // this.defaultIndex = 0
         this.dateInfo = []
         // this.$refs.statusTab && this.$refs.statusTab._resetTo()
         this._getActiveList()
