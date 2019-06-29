@@ -4,7 +4,7 @@ import axios from 'axios'
 import * as Utils from './request-utils'
 import {getCorpId} from '@utils/tool'
 
-const TIME_OUT = 10000
+const TIME_OUT = 100000
 const ERR_OK = 0
 const ERR_NO = -404
 const COMMON_HEADER = {}
@@ -109,11 +109,12 @@ function requestException(res) {
 }
 
 export default {
-  post(url, data, loading = false) {
+  post(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'post',
       url,
+      timeout,
       data // post 请求时带的参数
     })
       .then((response) => {
@@ -123,11 +124,12 @@ export default {
         return checkCode(res)
       })
   },
-  get(url, params, loading = false) {
+  get(url, params, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'get',
       url,
+      timeout,
       params // get 请求时带的参数
     })
       .then((response) => {
@@ -137,11 +139,12 @@ export default {
         return checkCode(res)
       })
   },
-  put(url, data, loading = false) {
+  put(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'put',
       url,
+      timeout,
       data // put 请求时带的参数
     })
       .then((response) => {
@@ -151,11 +154,12 @@ export default {
         return checkCode(res)
       })
   },
-  delete(url, data, loading = false) {
+  delete(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'delete',
       url,
+      timeout,
       data // put 请求时带的参数
     })
       .then((response) => {
