@@ -1,12 +1,34 @@
 <template>
   <div>
+    <div v-if="fileType === 'image-video'" class="edit-image">
+      <draggable v-model="picList" class="draggable" @update="_setSort()">
+        <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
+          <span v-if="isEdit" class="close" @click="_del(index)"></span>
+        </div>
+      </draggable>
+      <div v-if="picList.length < picNum" class="add-image add-image-video">
+        <div v-if="showLoading" class="loading-mask">
+          <img src="./loading.gif" class="loading">
+        </div>
+        <div class="operate-wrap">
+          <div class="operate-item hand">
+            上传图片
+            <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
+          </div>
+          <div class="operate-item hand">
+            上传视频
+            <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
+          </div>
+        </div>
+      </div>
+    </div>
     <div v-if="fileType === 'image'" class="edit-image">
       <draggable v-model="picList" class="draggable" @update="_setSort()">
         <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
           <span v-if="isEdit" class="close" @click="_del(index)"></span>
         </div>
       </draggable>
-      <div v-if="picList.length < picNum" class="add-image hand">
+      <div v-if="picList.length < picNum" :class="['add-image','hand',imageIconClassName]">
         <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
         <div v-if="showLoading" class="loading-mask">
           <img src="./loading.gif" class="loading">
@@ -38,6 +60,10 @@
       Draggable
     },
     props: {
+      imageIconClassName:{
+        type: String,
+        default: ''
+      },
       showMorePic: {
         type: Boolean, // 是否多个图/视频
         default: true
@@ -132,6 +158,7 @@
     .draggable
       flex-wrap: wrap
       display: flex
+
   .add-image
     margin-bottom: 20px
     icon-image('pic-picture1')
@@ -140,6 +167,9 @@
     position: relative
     border-radius: 2px
     overflow: hidden
+    position:relative
+
+
     .sendImage
       height: 100%
       width: 100%
@@ -149,8 +179,37 @@
       z-index: 1
       position: absolute
 
+  .add-image-head-photo
+    icon-image('pic-head_author')
   .add-video
     icon-image('pic-video')
+  .add-image-video
+    margin-bottom:0px
+    icon-image('pic-select_pic')
+    .operate-wrap
+      visibility hidden
+      position:absolute
+      top:0
+      right:0
+      bottom:0
+      left:0
+      background rgba(0,0,0,0.5)
+      display:flex
+      flex-direction column
+      align-items center
+      justify-content: space-around
+      .operate-item
+        position:relative
+        width:70px
+        height:22px
+        line-height:22px
+        border-radius 11px
+        text-align center
+        background #FFFFFF
+        cursor pointer
+    &:hover
+      .operate-wrap
+        visibility:visible
 
   .show-image
     margin-bottom: 20px
