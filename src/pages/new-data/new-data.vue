@@ -627,10 +627,11 @@
                 .small-text
                   margin-left: $margin-left
                   font-size: $font-size-12
+                  line-height: 1
                   font-family: $font-family-regular
                   color: #999999
                   &:last-child
-                    margin-top: 4px
+                    margin-top: 8px
               .info-icon
                 width: 48px
                 height: 48px
