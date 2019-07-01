@@ -132,7 +132,7 @@
           <div class="tab-item">
             <base-search ref="search" placeHolder="商户名称" @search="search"></base-search>
           </div>
-          <div class="select-text">已选中{{selectList.length}}商户</div>
+          <div class="select-text">已选中{{selectList.length}}个商户</div>
         </div>
         <div class="goods-content">
           <div class="big-list">
