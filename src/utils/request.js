@@ -4,7 +4,7 @@ import axios from 'axios'
 import * as Utils from './request-utils'
 import {getCorpId} from '@utils/tool'
 
-const TIME_OUT = 100000
+const TIME_OUT = 10000
 const ERR_OK = 0
 const ERR_NO = -404
 const COMMON_HEADER = {}
@@ -18,13 +18,6 @@ http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
     config.url = resetUrl(config.url)
-    // if (process.env.VUE_APP_ENV === 'release') {
-    //   let version = 'v5/'
-    //   if (config.url.includes('social-shopping') && !config.url.includes('social-shopping/v')) {
-    //     config.url = config.url.split('api/').join(`${version}api/`)
-    //   }
-    // }
-    // console.log(config.url)
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId()
     }
