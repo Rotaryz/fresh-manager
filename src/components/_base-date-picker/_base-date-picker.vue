@@ -61,6 +61,10 @@
       text: {
         type: String,
         default: '请选择时间'
+      },
+      disabledCurDate: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -69,13 +73,24 @@
         tempIndex: '',
         dateOptions: {
           disabledDate: (date) => {
-            switch (+this.tempIndex) {
-            case 0:
-              return date.valueOf() > Date.now() - 86400000
-            case 1:
-              return date.valueOf() > new Date().valueOf() - new Date().getDay() * 86400000
-            case 2:
-              return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 86400000
+            if (this.disabledCurDate) {
+              switch (+this.tempIndex) {
+              case 0:
+                return date.valueOf() > Date.now() - 86400000
+              case 1:
+                return date.valueOf() > new Date().valueOf() - new Date().getDay() * 86400000
+              case 2:
+                return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 86400000
+              }
+            } else {
+              switch (+this.tempIndex) {
+              case 0:
+                return date.valueOf() > Date.now()
+              case 1:
+                return date.valueOf() > new Date().valueOf() + (7-new Date().getDay()) * 86400000
+              case 2:
+                return date.valueOf() > Date.now()
+              }
             }
           },
           firstDayOfWeek: 1
@@ -86,12 +101,12 @@
         enterName: '',
         timer: '',
         clickTab: false,
-        date: {
-          day: new Date().valueOf() - 86400000,
+        viewDate: moment(new Date().valueOf() - (this.disabledCurDate ? 86400000 : 0)).format('YYYY-MM-DD'),
+        date:{
+          day: new Date().valueOf() - (this.disabledCurDate ? 86400000 : 0),
           week: '',
           month: ''
-        },
-        viewDate: moment(new Date().valueOf() - 86400000).format('YYYY-MM-DD')
+        }
       }
     },
     computed: {
@@ -128,7 +143,11 @@
         case 1:
           date = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
           startDate = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
-          endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
+          if(!this.disabledCurDate) {
+            endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
+          }else{
+            endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
+          }
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
@@ -147,6 +166,7 @@
             month: time
           }
         }
+        console.log(time)
         this.$emit('checkTime', date, NAV[this.tabIndex].status)
       },
       _getCustomTime(time) {

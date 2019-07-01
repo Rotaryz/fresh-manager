@@ -20,7 +20,9 @@
                 <div class="info-box">
                   <div class="info-title">支付金额(元)</div>
                   <div class="info-val">
-                    {{realResData.today_pay_amount_total}}<span class="small-text">昨日(元): {{realResData.yestoday_pay_amount_total}}</span>
+                    {{realResData.today_pay_amount_total}}
+                    <span class="small-text">昨日(元): {{realResData.yestoday_pay_amount_total}}</span>
+                    <span class="small-text">总计(元): {{realResData.all_pay_amount_total}}</span>
                   </div>
                 </div>
               </div>
@@ -37,6 +39,9 @@
                 </div>
                 <div class="bottom-box">
                   昨日：{{realResData[item.key[1]]}}
+                </div>
+                <div class="bottom-box">
+                  总计：{{realResData[item.key[2]]}}
                 </div>
               </div>
             </div>
@@ -99,7 +104,7 @@
           <img src="./icon-ranking@2x.png" class="identification-icon">
           <p class="identification-name">排行</p>
         </div>
-        <base-date-picker :infoTab="0" :arrTitle="dateArr" @checkTime="_rankListChangeDate"></base-date-picker>
+        <base-date-picker :disabledCurDate="false" :infoTab="0" :arrTitle="dateArr" @checkTime="_rankListChangeDate"></base-date-picker>
       </div>
       <div class="rank-list-content">
         <div v-for="(list,index) in rankDir" :key="index" class="rank-list-con">
@@ -158,12 +163,13 @@
 
   const PAGE_NAME = 'NEW_DATA'
   const TITLE = '数据'
-  const NOW_DATE = moment(Date.now() - 86400000).format('YYYY-MM-DD')
+  const NOW_DATE = moment(Date.now()).format('YYYY-MM-DD')
+  const PRE_DATE = moment(Date.now() - 86400000).format('YYYY-MM-DD')
   const REAL_DATA = [
-    {imgUrl: '', title: '访客数', key: ['today_page_customer_total','yestoday_page_customer_total']},
-    {imgUrl: 'users', title: '支付用户', key: ['today_pay_customer_total','yestoday_pay_customer_total']},
-    {imgUrl: 'browse_volume', title: '浏览量', key: ['today_page_browsing_total','yestoday_page_browsing_total']},
-    {imgUrl: 'wallet', title: '支付订单', key: ['today_pay_order_total','yestoday_pay_order_total']},
+    {imgUrl: '', title: '访客数', key: ['today_page_customer_total','yestoday_page_customer_total','all_page_customer_total']},
+    {imgUrl: 'users', title: '支付用户', key: ['today_pay_customer_total','yestoday_pay_customer_total','all_pay_customer_total']},
+    {imgUrl: 'browse_volume', title: '浏览量', key: ['today_page_browsing_total','yestoday_page_browsing_total','all_page_browsing_total']},
+    {imgUrl: 'wallet', title: '支付订单', key: ['today_pay_order_total','yestoday_pay_order_total','all_pay_order_total']},
   ]
   const BASE_LIST = [
     {title: '上架商品', key: 'goods_count', number: 0, url: '/home/product-list?online=1', permissions: 'goods'},
@@ -285,7 +291,7 @@
         realTimeData: REAL_TIME,
         dataBoard: DATA_BOARD,
         dataBoardIndex: 0,
-        dataBoardParams: {date_type: 'day', start_date: NOW_DATE},
+        dataBoardParams: {date_type: 'day', start_date: PRE_DATE},
         rankDir: {
           leader: {
             title: '团长',
@@ -633,7 +639,6 @@
               padding: 24px .6vw 24px $margin-left
               box-sizing: border-box
               layout(column)
-              justify-content: space-between
               &:nth-child(odd)
                 border-right-1px($border-color)
               &:nth-child(-n+2)
@@ -675,7 +680,9 @@
                   no-wrap()
               .bottom-box
                 width: 100%
+                margin-top: 8px
                 font-size: 12px
+                line-height: 1
                 font-family: $font-family-regular
                 color: #999
                 text-align: center
