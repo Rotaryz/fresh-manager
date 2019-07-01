@@ -16,14 +16,18 @@
           <div class="real-time-con">
             <div class="real-time-chart">
               <div class="info-con">
-                <img src="./icon-money_more@2x.png" class="info-icon">
-                <div class="info-box">
-                  <div class="info-title">支付金额(元)</div>
-                  <div class="info-val">
-                    {{realResData.today_pay_amount_total}}
-                    <span class="small-text">昨日(元): {{realResData.yestoday_pay_amount_total}}</span>
-                    <span class="small-text">总计(元): {{realResData.all_pay_amount_total}}</span>
+                <div class="info-left">
+                  <img src="./icon-money_more@2x.png" class="info-icon">
+                  <div class="info-box">
+                    <div class="info-title">支付金额(元)</div>
+                    <div class="info-val">
+                      {{realResData.today_pay_amount_total}}
+                    </div>
                   </div>
+                </div>
+                <div class="info-right">
+                  <span class="small-text">昨日(元): {{realResData.yestoday_pay_amount_total}}</span>
+                  <span class="small-text">总计(元): {{realResData.all_pay_amount_total}}</span>
                 </div>
               </div>
               <e-chart-line ref="realTimeChart" chartId="realTimeChart" class="real-time-chart"></e-chart-line>
@@ -38,10 +42,10 @@
                   </div>
                 </div>
                 <div class="bottom-box">
-                  昨日：{{realResData[item.key[1]]}}
+                  昨日: {{realResData[item.key[1]]}}
                 </div>
                 <div class="bottom-box">
-                  总计：{{realResData[item.key[2]]}}
+                  总计: {{realResData[item.key[2]]}}
                 </div>
               </div>
             </div>
@@ -599,15 +603,34 @@
           .real-time-chart
             width: 62%
             height: 300px
+            padding-bottom: 5px
             border-right-1px($border-color)
             layout(column)
             .info-con
               position: absolute
-              top: 25px
-              left: $margin
+              top: 20px
+              width: 100%
+              padding: 0 60px 0 20px
+              left: 0
               z-index: 9
               layout(row)
               height: 48px
+              display: flex
+              justify-content: space-between
+              align-items: center
+              .info-left
+                display: flex
+                align-items: center
+              .info-right
+                display: flex
+                flex-direction: column
+                .small-text
+                  margin-left: $margin-left
+                  font-size: $font-size-12
+                  font-family: $font-family-regular
+                  color: #999999
+                  &:last-child
+                    margin-top: 4px
               .info-icon
                 width: 48px
                 height: 48px
@@ -621,11 +644,6 @@
                   line-height: 30px
                   font-size: 28px
                   font-family: $font-family-din-bold
-                  .small-text
-                    margin-left: $margin-left
-                    font-size: $font-size-12
-                    font-family: $font-family-regular
-                    color: #999999
             .real-time-chart
               width: 100%
               height: 246px
@@ -653,7 +671,7 @@
                   width: 48px
                   height: 48px
                   display: block
-                  margin-right: .73vw
+                  margin-right: 8px
                   icon-image(icon-visitor_number)
                 .users
                   icon-image(icon-paying_users)
@@ -682,10 +700,10 @@
                 width: 100%
                 margin-top: 8px
                 font-size: 12px
+                padding-left: 56px
                 line-height: 1
                 font-family: $font-family-regular
                 color: #999
-                text-align: center
                 no-wrap()
             .real-list-box:nth-of-type(3n)
               border-right: 0 solid $border-color

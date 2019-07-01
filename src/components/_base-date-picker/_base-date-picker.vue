@@ -143,9 +143,10 @@
         case 1:
           date = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
           startDate = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
-          if(!this.disabledCurDate) {
-            endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
-          }else{
+          if (!this.disabledCurDate) {
+            let day = moment() < moment(time).subtract(-5, 'days') ? new Date().getDay() : 7
+            endDate = moment(time).subtract(7 - day -5, 'days').format('YYYY-MM-DD')
+          } else {
             endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
           }
           this.viewDate = startDate + ' ~ ' + endDate
@@ -158,7 +159,13 @@
         case 2:
           date = new Date(time).getFullYear() + '-' + formatNumber(new Date(time).getMonth() + 1) + '-01'
           startDate = moment().month(moment(time).month()).startOf('month').format('YYYY-MM-DD')
-          endDate = moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
+          if (!this.disabledCurDate) {
+            endDate = moment() < moment().month(moment(time).month()).endOf('month')
+              ? moment().format('YYYY-MM-DD')
+              : moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
+          } else {
+            endDate = moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
+          }
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
@@ -166,7 +173,6 @@
             month: time
           }
         }
-        console.log(time)
         this.$emit('checkTime', date, NAV[this.tabIndex].status)
       },
       _getCustomTime(time) {

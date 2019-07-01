@@ -81,20 +81,19 @@
           // 底部每条折线的label，控制显示隐藏
           legend: {
             data: [],
-            top: chartConfig.legendOnTop?0:'auto',
-            right: chartConfig.legendOnTop?20:'auto',
+            top: 'auto',
             bottom: 0,
             icon: "rect", //  这个字段控制形状  类型包括 circle 圆形，rect 正方形，roundRect，triangle，diamond，pin，arrow，none
             itemWidth: 11,
             itemHeight: 11,
-            itemGap: 40,
+            itemGap: chartConfig.legendOnTop ? 20 : 40,
             borderWidth: 0
           },
           // canvas位置
           grid: {
             left: '20',
             right: chartConfig.xAxleData.length>0&&chartConfig.xAxleData[0].length>6?'45':'30',
-            bottom: chartConfig.legendOnTop?'30':'52',
+            bottom: chartConfig.legendOnTop?'40':'52',
             top: chartConfig.legendOnTop?'40':'20',
             containLabel: true
           },
