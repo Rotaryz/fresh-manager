@@ -29,7 +29,7 @@
           <p class="identification-name">{{tabStatus[tabIndex].text}}</p>
           <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
-        <div class="function-btn">
+        <div v-if="tabIndex === 0" class="function-btn">
           <div class="btn-main" @click="deliveryExcel">导出配送单</div>
           <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
           <div

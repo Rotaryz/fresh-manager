@@ -132,6 +132,7 @@
           <div class="tab-item">
             <base-search ref="search" placeHolder="商户名称" @search="search"></base-search>
           </div>
+          <div class="select-text">已选中{{selectList.length}}商户</div>
         </div>
         <div class="goods-content">
           <div class="big-list">
@@ -230,7 +231,8 @@
         deliveryAddress: [],
         isRoadSubmit: false,
         isDriverSubmit: false,
-        changePass: false
+        changePass: false,
+        selectList: []
       }
     },
     computed: {
@@ -293,6 +295,10 @@
                 return
               }
               this.deliveryAddress = res.data
+              let selectAddress = this.deliveryAddress.filter((res) => {
+                return res.checked
+              })
+              this.selectList = selectAddress.map((item) => item.id)
               this.$refs.addressModal.showModal()
             })
           }
@@ -370,15 +376,16 @@
             }
           })
         } else if (this.handleRoadType === EDIT_ROAD) {
-          let selectAddress = this.deliveryAddress.filter((res) => {
-            return res.checked
-          })
-          if (selectAddress.length === 0) {
+          // let selectAddress = this.deliveryAddress.filter((res) => {
+          //   return res.checked
+          // })
+          if (this.selectList.length === 0) {
             this.$toast.show('请选择商户')
             return
           }
           let data = {
-            delivery_address_ids: selectAddress.map((item) => item.id),
+            // delivery_address_ids: selectAddress.map((item) => item.id),
+            delivery_address_ids: this.selectList,
             road_id: this.handleRoadId,
             road_name: this.roadName
           }
@@ -420,7 +427,6 @@
         return true
       },
       handleDriver() {
-        console.log(this.driverForm)
         if (!this.checkDriverValidate()) {
           return
         }
@@ -464,8 +470,16 @@
           if (item.id === delivery.id) {
             if (item.checked) {
               item.checked = 0
+              let number = 0
+              this.selectList.forEach((selectItem, selectIndex) => {
+                if (selectItem === delivery.id) {
+                  number = selectIndex
+                }
+              })
+              this.selectList.splice(number, 1)
             } else {
               item.checked = 1
+              this.selectList.push(item.id)
             }
           }
         })
@@ -478,6 +492,19 @@
             return
           }
           this.deliveryAddress = res.data
+          this.deliveryAddress.forEach((item, index) => {
+            let isChecked = false
+            this.selectList.forEach((selectItem) => {
+              if (item.id === selectItem) {
+                isChecked = true
+              }
+            })
+            if (isChecked) {
+              this.deliveryAddress[index].checked = 1
+            } else {
+              this.deliveryAddress[index].checked = 0
+            }
+          })
           this.$refs.addressModal.showModal()
         })
       }
@@ -809,9 +836,14 @@
   .shade-tab
     margin-bottom: 20px
     box-sizing: border-box
-    display: flex
+    layout(row)
+    align-items: center
     .tab-item
       margin-right: 10px
+    .select-text
+      font-size: $font-size-14
+      color: $color-main
+      font-family: $font-family-regular
 
   .page-box
     padding: 0 20px

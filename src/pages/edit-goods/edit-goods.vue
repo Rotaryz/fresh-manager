@@ -34,7 +34,7 @@
           </div>
           <div class="edit-item  edit-image-box">
             <div class="edit-title">
-              <span class="start">*</span>
+              <!--<span class="start">*</span>-->
               商品图片
             </div>
             <div class="image-box">
@@ -533,9 +533,6 @@
           return
         } else if (this.msg.goods_material_category_id <= 0) {
           this.$toast.show('请选择商品类目')
-          return
-        } else if (this.msg.goods_main_images.length === 0) {
-          this.$toast.show('请上传商品图片')
           return
         } else if (this.goods_skus.base_unit === '') {
           this.$toast.show('请选择基本单位')
