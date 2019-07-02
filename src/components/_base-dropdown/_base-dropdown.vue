@@ -1,20 +1,19 @@
 <template>
   <div class="admin-select">
     <div class="select-item" @click.stop="selectType">
-      <div class="admin-big-box" @mouseleave.stop="mouseLeave" @mouseenter.stop="mouseEnter">
-        <div class="admin-select-box input-height-item" :class="{'button-dropdown':isButtonDropdown,'admin-select-box-active': select.check}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
-          {{select.content}}
-          <div v-if="isUse" class="show-icon"></div>
+      <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
+        <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': visible, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
+          <input :value="valueLabel" :placeholder="placeholder" type="text" disable class="input-item">
+          <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': visible}">
           <transition name="fade">
-            <div v-show="select.check" class="select-child" :style="{top: (height - 4) + 'px'}">
-              <ul class="down-content-ul" @mouseleave.stop="leaveHide()" @mouseenter.stop="endShow">
-                <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :class="{active:child[labelKey]===select.content && !isButtonDropdown}" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
-                    @click.stop="setValue(child, chIdx)"
-                >
-                  {{child[labelKey]}}
-                </li>
-              </ul>
-            </div>
+            <ul v-show="visible" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
+              <li v-for="(child, chIdx) in data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
+                  @click.stop="setValue(child, chIdx)"
+              >
+                {{child[labelKey]}}
+              </li>
+              <li v-if="!data.length" class="select-child-item">{{noContentText}}</li>
+            </ul>
           </transition>
         </div>
       </div>
@@ -25,17 +24,31 @@
 <script type="text/ecmascript-6">
   export default {
     props: {
-      trigger: {
-        type: String,
-        default: 'click'
+      value: {
+        type:[String,Object,Boolean,Number],
+        default: ''
       },
-      isButtonDropdown: {
-        type: Boolean,
-        default: false
+      placeholder: {
+        type: String,
+        default: ''
       },
       labelKey: {
         type: String,
         default: 'name'
+      },
+      valueKey: {
+        type: String,
+        default: ''
+      },
+      data: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
+      noContentText:{
+        type: String,
+        default: '暂无数据'
       },
       select: {
         type: Object,
@@ -49,6 +62,7 @@
           }
         }
       },
+
       isUse: {
         type: Boolean,
         default: true
@@ -68,36 +82,33 @@
     },
     data() {
       return {
+        visible: "",
         setTime: '',
+        showHover: false,
         selectIdx: -1
+      }
+    },
+    computed: {
+      valueLabel() {
+        let res = this.data.find(item => {
+          let re = this.valueKey ? item[this.valueKey] === this.value : item === this.value
+          console.log(re)
+          return re
+        })
+        return res ? res[this.labelKey] : ''
       }
     },
     mounted() {
       window.onclick = () => {
-        this.select.check = false
+        this.vi = false
       }
     },
     methods: {
-      mouseLeave() {
-        if (this.trigger === 'hover') {
-          this.setTime && clearTimeout(this.setTime)
-          this.setTime = setTimeout(() => {
-            this.clickHide()
-          }, 1000)
-        }
-      },
-      mouseEnter() {
-        if (this.trigger === 'hover') {
-          this.setTime && clearTimeout(this.setTime)
-          this.select.check = true
-        }
-      },
       clickHide() {
-        this.select.check = false
+        this.visible = false
       },
       endShow() {
-        this.setTime && clearTimeout(this.setTime)
-        this.select.check = true
+        clearTimeout(this.setTime)
       },
       leaveHide() {
         this.setTime = setTimeout(() => {
@@ -108,19 +119,19 @@
         if (!this.isUse) {
           return
         }
-        if (!this.select.data.length) {
-          return
-        }
-        this.select.check = !this.select.check
+        this.visible = !this.visible
         this.$emit('selectType', this.select)
       },
       setValue(value, index) {
-        this.select.check = false
+        this.visible = false
         this.selectIdx = index
-        if (!this.isButtonDropdown) {
-          this.select.content = value.name
-        }
-        this.$emit('setValue', value, index)
+        this.showHover = false
+        this.select.content = value[this.labelKey]
+        let res = this.valueKey ? value[this.valueKey] : value
+        console.log(res)
+
+        this.$emit('input', res)
+        // this.$emit('setValue', value, index)
       }
     }
   }
@@ -132,12 +143,25 @@
   .admin-select
     box-sizing: border-box
     display: flex
+
   .select-item
     display: flex
     align-items: center
     position: relative
+
+    .input-item
+      width: 100%
+      height: 100%
+      border: 0px solid #ccc
+
     &:first-child
       margin-left: 0px
+
+  .select-title
+    font-size: $font-size-medium
+    line-height: 17px
+    no-wrap()
+
   .admin-big-box
     cursor: pointer
     box-sizing: border-box
@@ -145,10 +169,8 @@
     font-size: $font-size-medium
     color: $color-text-main
     position: relative
+
     .admin-select-box
-      display: flex
-      align-items: center
-      justify-content space-between
       min-width: 102px
       border-radius: 2px
       border 1px solid $color-line
@@ -160,11 +182,10 @@
       color: $color-text-sub
       box-sizing: border-box
       transition: all 0.2s
-      .show-icon
-        width: 8px
-        height: 6px
-        margin-left: 6px
-        position: relative
+      display: flex
+      justify-content: center
+
+      .city-tap-top
         width: 8px
         height: @width
         col-center()
@@ -172,17 +193,12 @@
         transform-origin: 50% 0
         transform: rotate(0deg) translateY(-50%)
         transition: transform 0.3s
-        &:after
-          content: ''
-          position: absolute
-          z-index: 99
-          top: 0
-          right: 0
-          width: 0
-          height: 0
-          border-left: 4px solid transparent
-          border-right: 4px solid transparent
-          border-top: 6px solid #000
+
+      .city-tap-top-active
+        transform-origin: 50% 0
+        transform: rotate(180deg) translateY(-50%)
+        transition: transform 0.3s
+
       .select-child
         left: 0
         background: $color-white
@@ -191,25 +207,31 @@
         border-radius: 3px
         box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.20)
         margin-top: 10px
+        max-height: 350px
+        overflow-y: auto
         min-width: 100%
-        .down-content-ul
-          max-height: 350px
-          overflow-y: auto
+
         &::-webkit-scrollbar
           width: 8px
           height: 10px
+
         &::-webkit-scrollbar-thumb
           background-color: rgba(0, 0, 0, .15)
           border-radius: 10px
+
         &::-webkit-scrollbar-thumb:hover
           background-color: rgba(0, 0, 0, .3)
+
         &::-webkit-scrollbar-track
           box-shadow: inset 0 0 6px rgba(0, 0, 0, .15)
           border-radius: 10px
+
         &.fade-enter, &.fade-leave-to
           opacity: 0
+
         &.fade-enter-to, &.fade-leave-to
           transition: opacity .3s ease-in-out
+
         .select-child-item
           white-space: nowrap
           color: $color-text-main
@@ -221,53 +243,25 @@
           font-family: $font-family-regular
           border-bottom: 0.5px solid $color-line
           box-sizing: border-box
-          &:hover,&.active
+
+          &:hover
             color: $color-main
-      &:hover
-        border-color: #ACACAC
-      &.admin-select-box-active
-        border-color: $color-main !important
-        color: $color-text-main
-        .show-icon
-          transform-origin: 50% 0
-          transform: rotate(180deg) translateY(-50%)
-          transition: transform 0.3s
-      &.button-dropdown
-        border 1px solid $color-positive
-        color: $color-positive
-        .select-child:before
-          content: ""
-          position: absolute
-          z-index: 99
-          top: -8px
-          right: 32px
-          width: 0
-          height: 0
-          border-left: 4px solid transparent
-          border-right: 4px solid transparent
-          border-bottom: 8px solid #ebebeb
-        .show-icon:after
-          border-top: 6px solid  $color-positive
-        &.admin-select-box-active
-          color: $color-white
-          background-color $color-positive
-          .show-icon:after
-            border-top: 6px solid  $color-white
 
+    .admin-select-box-active
+      border-color: $color-main !important
+      color: $color-text-main
 
-  /*下方不知道是否有使用*/
+    .admin-big-box-hover
+      border-color: #ACACAC
+
   .categories-input-box
     .admin-big-box
       margin-left: 0 !important
+
       .admin-select-box
         font-size: $font-size-14 !important
         min-width: 310px !important
         margin-left: 0
         line-height: 44px !important
         height: 44px !important
-  .select-title
-    font-size: $font-size-medium
-    line-height: 17px
-    no-wrap()
-
 </style>

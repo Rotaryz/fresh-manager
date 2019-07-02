@@ -11,45 +11,51 @@
     <div class="wrap-container">
       <phone-box></phone-box>
       <div class="edite-right-box">
-        <!--内容分类 -->
+        <!--分类 -->
         <div class="edit-item">
           <div class="edit-title">
             <span class="start">*</span>
             内容分类
           </div>
           <div class="edit-input-box">
-            <base-drop-down :width="218" :select="assortment" placeholder="请选择内容分类" @setValue="_secondAssortment"></base-drop-down>
+            <base-dropdown v-model="addData.category" :data="articleCategoryList" valueKey="value" :width="400" :height="40"
+                           placeholder="请选择内容分类"
+            ></base-dropdown>
           </div>
+          <div class="add-category-operate">添加分类</div>
         </div>
-        <!--菜谱标题-->
+        <!--标题-->
         <div class="edit-item">
           <div class="edit-title">
             <span class="start">*</span>
-            菜谱标题
+            {{name}}标题
           </div>
           <div class="edit-input-box">
             <input v-model="addData.title"
                    type="text"
-                   placeholder="在此输入文章标题，最少5个字"
-                   class="edit-input"
+                   :placeholder="'在此输入'+name+'标题，最少5个字'"
+                   class="edit-input title-input"
             >
           </div>
         </div>
-        <!-- 菜谱封面-->
+        <!-- 封面-->
         <div class="edit-item">
           <div class="edit-title">
             <span class="start">*</span>
-            菜谱封面
+            {{name}}封面
           </div>
           <div class="edit-input-box flex-box">
-            <base-edit-image :picList.sync="coverImage" :picNum="1" fileType="image-video" @failFile="failFile" @getPic="getPic"
-                             @delPic="delPic"
-            ></base-edit-image>
+            <base-upload :picList.sync="coverImages"
+                         :picNum="1"
+                         :fileType="currentType!=='1' ?'image-video' :'image'"
+                         @failFile="failFile"
+                         @getPic="getPic"
+                         @delPic="delPic"
+            ></base-upload>
             <div class="tip">
               请添加不大于10M的清晰图片或视频
-              <br>文章封面是文章首图
+              <br>{{name}}封面是{{name}}首图
             </div>
-            <div :class="{'img-no-change':disable}"></div>
           </div>
         </div>
         <!--作者信息-->
@@ -59,19 +65,19 @@
             作者信息
           </div>
           <div class="edit-input-box flex-box author-info-box">
-            <base-edit-image :picList.sync="authorPhoto" :picNum="1" imageIconClassName="add-image-head-photo"
-                             fileType="image"
-                             @failFile="failFile"
-                             @getPic="getAuthorPic"
-                             @delPic="delAuthorPic"
-            ></base-edit-image>
+            <base-upload :picList.sync="authorPhoto" :picNum="1" imageIconClassName="add-image-head-photo"
+                         fileType="image"
+                         @failFile="failFile"
+                         @getPic="getAuthorPic"
+                         @delPic="delAuthorPic"
+            ></base-upload>
             <div class="auto-input">
-              <input v-model="addData.title"
+              <input v-model="addData.authName"
                      type="text"
                      placeholder="请输入作者名称"
                      class="edit-input"
               >
-              <input v-model="addData.title"
+              <input v-model="addData.auth_signature"
                      type="text"
                      placeholder="请输入30个字的个性签名"
                      class="edit-input edit-signature"
@@ -79,84 +85,117 @@
             </div>
           </div>
         </div>
-        <!--食材清单-->
-        <div class="edit-item">
+        <!-- 视频  视频内容-->
+        <div v-if="currentType === '1'" class="edit-item">
+          <div class="edit-title">
+            <span class="start">*</span>
+            视频内容
+          </div>
+          <!-- todo-->
+          <div class="edit-input-box flex-box">
+            <base-edit-image :picList.sync="coverImages" :picNum="1" fileType="video" @failFile="failFile" @getPic="getPic"
+                             @delPic="delPic"
+            ></base-edit-image>
+            <div class="tip">
+              请上传5-15秒竖版视频，大小控制在100M以内优质且清晰的小视频，可以获得更多流量哦
+            </div>
+            <div class="tip">
+              视频上传成功，处理完成
+              <div>视频名称-香菇芋头排骨焖饭</div>
+            </div>
+          </div>
+        </div>
+        <!--视频  视频简介-->
+        <div v-if="currentType === '1'" class="edit-item">
+          <div class="edit-title">
+            <span class="start">*</span>
+            视频简介
+          </div>
+          <div class="edit-input-box">
+            <textarea v-model="addData.foodList" class="edit-textarea edit-input" placeholder="" maxlength="50"></textarea>
+            <span class="num">{{addData.foodList && addData.foodList.length || 0}}/50</span>
+          </div>
+        </div>
+        <!--菜谱  食材清单-->
+        <div v-if="currentType === '2'" class="edit-item">
           <div class="edit-title">
             <span class="start">*</span>
             食材清单
           </div>
           <div class="edit-input-box">
-            <textarea v-model="addData.foodList" class="edit-textarea edit-input" placeholder="输入商品副标题" maxlength="50"></textarea>
+            <textarea v-model="addData.foodList" class="edit-textarea edit-input"
+                      placeholder="例子：大蒜，酱油，猪肉，食材之间用逗号隔开，最多输入50个字符"
+                      maxlength="50"></textarea>
             <span class="num">{{addData.foodList && addData.foodList.length || 0}}/50</span>
           </div>
         </div>
-        <!--添加商品-->
-        <div class="edit-item">
+        <!--视频/菜谱 添加商品-->
+        <div v-if="currentType !== '0'" class="edit-item add-goods-wrap">
           <div class="edit-title">
             添加商品
           </div>
-          <div class="edit-input-box flex-box">
-            <div class="activity-tab">
-              <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
+          <div class="edit-input-box">
+            <div class="activity-tab  flex-box">
+              <div class="add-goods-btn hand" @click="showGoods">
                 <img class="icon-add" src="./icon-add@2x.png" alt="">
                 添加商品
               </div>
               <div class="tip">最多添加5个商品</div>
             </div>
             <div v-if="goodsList && goodsList.length" class="goods-list-box">
-              <div class="commodities-list-header com-list-box commodities-list-top">
-                <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+              <div class="list-header list-box">
+                <div v-for="(item, index) in selectedGoodsCommodities" :key="index" class="list-item">{{item}}</div>
               </div>
-              <div class="big-box">
-                <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-                  <div class="com-list-item">{{item.name}}</div>
-                  <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-                  <div class="com-list-item">¥{{item.original_price || 0}}</div>
-                  <div class="com-list-item" :class="{'price-focus':priceFocus === index}">
-                    <input v-model="item.trade_price" :class="{'no-border': disable}" type="number" class="com-edit" :readonly="disable">
-                    <span v-if="item.original_price" class="small-money">¥</span>
-                  </div>
-                  <div class="com-list-item" :class="{'sort-focus':sortFocus === index}">
-                    <input v-model="item.sort" type="number" class="com-edit com-edit-small" :class="{'no-border': disable}" :readonly="disable">
-                  </div>
-                  <div class="com-list-item">
-                    <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+              <div class="list">
+                <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
+                  <div class="list-item">{{item.name}}</div>
+                  <div class="list-item">{{item.sale_unit || item.goods_units}}</div>
+                  <div class="list-item">¥{{item.original_price || 0}}</div>
+                  <div class="list-item">
+                    <span class="list-operation" @click="_showDelGoods(item, index)">删除</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!--内容详情-->
-        <div class="edit-item">
+        <!--文章/菜谱 内容详情-->
+        <div v-if="currentType!=='1'" class="edit-item">
           <div class="edit-title">
             内容详情
           </div>
           <div class="edit-input-box add-cont-type-box">
-            <div class="add-cont-type-item">
+            <div class="add-cont-type-item" @click="addTextItem">
               <div class="icon icon-text"></div>
               <div>文本</div>
             </div>
-            <div class="add-cont-type-item">
-              <div class="icon icon-img"></div>
-              <div>图片</div>
-            </div>
-            <div class="add-cont-type-item">
-              <div class="icon icon-video"></div>
-              <div>视频</div>
-            </div>
-            <div class="add-cont-type-item">
+            <base-upload fileType="image-custom">
+              <div class="add-cont-type-item">
+                <div class="icon icon-img"></div>
+                <div>图片</div>
+              </div>
+            </base-upload>
+
+            <base-upload fileType="video-custom">
+              <div class="add-cont-type-item">
+                <div class="icon icon-video"></div>
+                <div>视频</div>
+              </div>
+            </base-upload>
+            <!---文章-->
+            <div v-if="currentType==='0'" class="add-cont-type-item">
               <div class="icon icon-goods"></div>
               <div>商品</div>
             </div>
           </div>
         </div>
-        <draggable v-model="contentDetails" class="content-details" @update="_setSort()">
+        <draggable v-if="contentDetails.length" v-model="contentDetails" class="content-details" @update="_setSort()">
           <transition-group>
             <div v-for="(item, idx) in contentDetails" :key="idx" class="content-item">
-              <div class="close-icon"></div>
+              <div class="close-icon" @click="deleteContentItem(idx)"></div>
               <textarea v-model="item.value" class="edit-textarea edit-input" placeholder="输入文字"></textarea>
-            </div>value
+            </div>
+            value
           </transition-group>
         </draggable>
         <!-- 其他设置 -->
@@ -169,7 +208,7 @@
               <div class="edit-title">
                 初始点赞人数
               </div>
-              <input v-model="addData.title"
+              <input v-model="addData.goodCount"
                      type="number"
                      placeholder=""
                      class="edit-input"
@@ -179,7 +218,7 @@
               <div class="edit-title">
                 初始浏览人数
               </div>
-              <input v-model="addData.title"
+              <input v-model="addData.lookCount"
                      type="number"
                      placeholder=""
                      class="edit-input"
@@ -189,49 +228,60 @@
         </div>
       </div>
     </div>
-    <div class="advertisement-btn-wrap">
-      <div class="advertisement-btn">
-        <div class="submit-activity-btn hand" @click="_editBanner()">提交</div>
-      </div>
+    <div class="back">
+      <div class="back-cancel back-btn hand" @click="submitDraft()">存为草稿</div>
+      <div class="back-btn back-submit hand" @click="submitLaunch()">上线</div>
     </div>
     <!-- 选择商品弹窗-->
-    <default-modal ref="goodsModal">
+    <default-modal ref="goods">
       <div slot="content" class="shade-box">
         <div class="title-box">
           <div class="title">
             选择商品
           </div>
-          <span class="close hand" @click="_cancelGoods"></span>
+          <span class="close hand" @click="hideGoods"></span>
         </div>
         <div class="shade-tab">
           <div class="tab-item">
-            <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+            <base-dropdown v-model="chooseGoodsFilter.goods_category_id"
+                           :data="goodsCategoryList"
+                           valueKey="value"
+                           :width="218"
+                           @change="goodsCategoryChange"
+            ></base-dropdown>
           </div>
           <div class="tab-item">
             <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
           </div>
         </div>
-        <div class="goods-content">
-          <div class="outreach-goods-list">
-            <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
-              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
-              <div class="goods-msg">
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.original_price}}</div>
+        <div class="goods-list list">
+          <div v-for="(item, index) in chooseGoods" :key="index" class="list-content list-box">
+            <div class="list-item list-item-select">
+              <div class="select-icon hand"
+                   :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"
+                   @click="selectGoodsBtn(item,index)"
+              >
               </div>
-              <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
+            <div class="list-item goods-img-wrap">
+              <div class="wrap">
+                <div class="goods-img" :style="{'background-image': 'url('+ item.goods_cover_image+ ')'}">
+                </div>
+              </div>
+            </div>
+            <div class="list-item goods-name">
+              {{item.name}}
+            </div>
+            <div class="list-item  goods-money">¥{{item.original_price}}</div>
+
+            <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
         </div>
         <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
+          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="getMoreGoods"></base-pagination>
         </div>
         <div class="back">
-          <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
+          <div class="back-cancel back-btn hand" @click="hideGoods">取消</div>
           <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
         </div>
       </div>
@@ -249,6 +299,11 @@
 
   const PAGE_NAME = 'ARTICLE_ADD'
   const TITLE = '创作文章'
+
+  const ARTICLE = '0'
+  const VEDIO = '1'
+  const COOKBOOK = '2'
+
   export default {
     name: PAGE_NAME,
     components: {
@@ -262,15 +317,38 @@
     data() {
       this._isSave = false // 是否保存当前数据
       return {
+        typeList: {
+          [ARTICLE]: {
+            name: '文章'
+          },
+          [VEDIO]: {
+            name: '视频'
+          },
+          [COOKBOOK]: {
+            name: '菜谱'
+          }
+        }, // 三种创作
+        currentType: '0', // 现在创作类型
         addData: {
           category: '',
           title: '',
           cover_image: '',
-          image_id: '',
+          cover_image_id: '',
           authorPhoto: '',
-          autoPhotoId: '',
-          foodList: ''
+          authPhotoId: '',
+          authName: '',
+          auth_signature: '',
+          foodList: '',
+          goodCount: 0,
+          lookCount: 0
         },
+        articleCategoryList: [],// 内容分类列表
+        coverImages: [], // 封面图片
+        authorPhoto: [], // 作者头像
+        // 已经选择的商品头部
+        selectedGoodsCommodities: ['商品名称', '单位', '售价', '操作'],
+        goodsList: [],
+        // 内容详情
         contentDetails: [{
           type: 'text',
           value: '111111111'
@@ -281,40 +359,92 @@
           type: 'video',
           value: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/07/01/156197765342658.png'
         }],
-        showLoading: false,
-        chooseGoods: [],
-        parentId: '',
+        // 校验规则
+        justifyArr: [{
+          key: 'category',
+          tips: [{
+            default: true,
+            tip: '请选择内容分类'
+          }]
+        }, {
+          key: 'title',
+          tips: [{
+            default: true,
+            tip: '请输入文章标题'
+          }, {
+            length: [5, 8],
+            tip: '请输入5-8个字的文章标题'
+          }]
+        }, {
+          key: 'cover_image',
+          tips: [{
+            default: true,
+            tip: '请上传首图'
+          }]
+        }, {
+          key: 'authorPhoto',
+          tips: [{
+            default: true,
+            tip: '请上传作者头像'
+          }]
+        }, {
+          key: 'authName',
+          tips: [{
+            default: true,
+            tip: '请输入作者名称'
+          }]
+        }, {
+          key: 'auth_signature',
+          tips: [{
+            default: true,
+            tip: '请输入个性签名'
+          }, {
+            length: [1, 30],
+            tip: '请输入30字的个性签名'
+          }]
+        }, {
+          key: 'foodList',
+          tips: [{
+            default: true,
+            tip: '食材清单'
+          }]
+        }, {
+          key: 'goodsList',
+          tips: [{
+            length: [0, 5],
+            tip: '最多添加5个商品'
+          }]
+        }, {
+          key: 'wx_group_photo_url',
+          tips: [{
+            default: true,
+            tip: '请上传100人以上的微信群照片'
+          }]
+        }],
+        goodsCategoryList: [],
+        // 选择商品弹框删选条件
+        chooseGoodsFilter: {
+          limit: 7,
+          page: '',
+          keyword: '',
+          goods_category_id: '',
+        },
+        chooseGoods: [], // 弹框商品列表
         goodsPage: {
           total: 1,
           per_page: 10,
           total_page: 1
         },
-        assortment: {
-          check: false,
-          show: false,
-          content: '选择分类',
-          type: 'default',
-          data: [] // 格式：{title: '55'}}
-        },
-        secondAssortment: {
-          check: false,
-          show: false,
-          content: '选择二级分类',
-          type: 'default',
-          data: [] // 格式：{title: '55'}}
-        },
-        coverImage: [],
-        authorPhoto: [],
-        page: '',
-        keyword: '',
-        goodsList: [],
+        showLoading: false,
         selectGoods: [], // 单次选择的商品
-        selectGoodsId: [], // 所有选择的商品id
-        disable: false // 有id不可编辑
       }
     },
     computed: {
       ...adverComputed,
+      name() {
+        console.log(this.typeList[this.currentType] && this.typeList[this.currentType].name)
+        return this.typeList[this.currentType] && this.typeList[this.currentType].name || '文章'
+      },
       dataName() {
         let lastName = this.cmsType[0].toUpperCase() + this.cmsType.slice(1, this.cmsType.length)
         let useName = `temporary${lastName}`
@@ -322,50 +452,78 @@
       }
     },
     async created() {
-      this.$loading.show()
-      this._getFirstAssortment()
-      this.$loading.hide()
+      this.currentType = this.$route.params.type
+      console.log(this.$route.params.type)
+      this._getArticleCategory()
     },
     methods: {
       ...adverMethods,
-      failFile(msg) {
-        this.$emit('showToast', msg)
+      // 获取内容分类列表
+      _getArticleCategory() {
+
       },
+      // 封面图片
       getPic(image) {
         console.log(image)
         let item = {id: 0, image_id: image.id, image_url: image.url}
         this.addData.cover_image = image.url
-        this.addData.image_id = image.id
-        this.coverImage[0] = item
+        this.addData.cover_image_id = image.id
+        this.coverImages[0] = item
       },
+      delPic(index) {
+        this.addData.cover_image = ''
+        this.addData.cover_image_id = ''
+        this.coverImages = []
+      },
+      failFile(msg) {
+        this.$emit('showToast', msg)
+      },
+      // 作者头像
       getAuthorPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
         this.addData.authorPhoto = image.url
         this.addData.authorPhotoId = image.id
         this.authorPhoto[0] = item
       },
-      delPic(index) {
-        this.addData.cover_image = ''
-        this.addData.image_id = ''
-        this.coverImage = []
-      },
       delAuthorPic(index) {
         this.addData.authorPhoto = ''
         this.addData.authorPhotoId = ''
         this.authorPhoto = []
       },
-      // 选择商品
+      // 内容详情增加
+      addTextItem() {
+        this.contentDetails.push({
+          type: 'text',
+          value: ''
+        })
+      },
+      addVedioItem() {
+
+      },
+      addImageItem() {
+
+      },
+      deleteContentItem(idx) {
+        this.contentDetails.splice(idx, 1)
+      },
+      // 托拽
+      _setSort() {
+        console.log(this.contentDetails)
+      },
+      // --------------弹窗
+      // 获取商品列表
       async _getGoodsList() {
+        this.$loading.show()
         let res = await API.Outreach.getGoodsList({
           is_online: 1,
-          keyword: this.keyword,
-          goods_category_id: this.parentId,
           shelf_id: this.id,
-          limit: 7,
-          page: this.page
+          ...this.chooseGoodsFilter
         })
         if (res.error !== this.$ERR_OK) {
           return
+        }
+        if (this.chooseGoodsFilter.page === 1) {
+          this.$refs.pagination && this.$refs.pagination.beginPage()
         }
         this.goodsPage = {
           total: res.meta.total,
@@ -373,153 +531,85 @@
           total_page: res.meta.last_page
         }
         this.chooseGoods = res.data.map((item, index) => {
-          item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          // item.trade_price = item.trade_price || 0
-          if (delIndex !== -1) {
-            item.selected = 0
-          }
-          if (idx !== -1) {
-            item.selected = 1
-          }
-          if (goodsIndex !== -1) {
-            item.selected = 2
-          }
-          item.trade_price = ''
-          item.usable_stock = ''
-          item.sort = 0
+          let isInList = this.goodsList.findIndex((items) => items.id === item.id)
+          let isSelect = this.selectGoods.findIndex((select) => select.id === item.id)
+
+          item.selected = isSelect !== -1 ? 2 : (isInList !== -1 ? 1 : 0)
+          console.log(isInList, 'isInList', isSelect, 'isSelect', item.selected)
+          // 0 没有选择 2 选择高亮  1 单个确认进入列表
           return item
         })
+        this.$loading.hide()
+      },
+      // 展示商品弹窗
+      async showGoods() {
+        this.chooseGoodsFilter.page = 1
+        this._getFirstAssortment()
+        await this._getGoodsList()
+        this.$refs.goods.showModal()
+        this.$refs.pagination.beginPage()
+      },
+      // 隐藏商品弹窗
+      hideGoods() {
+        this.selectGoods = []
+        this.$refs.goods.hideModal()
       },
       // 获取分页商品列表
-      async _getMoreGoods(page) {
-        this.page = page
-        await this._getGoodsList()
-      },
-      _cancelGoods() {
-        this.selectGoods.forEach((item) => {
-          let idx = this.chooseGoods.findIndex((items) => items.goods_id === item.goods_id)
-          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.chooseGoods[idx].selected = this.chooseGoods[idx].selected === 1 ? 1 : 0
-          this.selectGoodsId.splice(delIdx, 1)
-        })
-        this.selectGoods = []
-        this._hideGoods()
-      },
-      handleCancelConfirm() {
-        if (this._isRouting) {
-          console.log(this._next)
-          this._next()
-        } else {
-          this._actionToChangeModule()
-        }
-      },
-      handleSaveConfirm() {
-
-      },
-      _setSort() {
-      },
-      // 展示确认弹窗
-      _showConfirm(id, index) {
-        this.delId = id
-        this.delIndex = index
-        if (!id) {
-          this[this.dataName].splice(index, 1)
-          return
-        }
-        this.$refs.dialog.show('是否确定删除该广告？')
-      },
-      // 弹窗确定选择链接
-      async _miniGoods() {
-      },
-      // 选择一级分类
-      async _secondAssortment(item) {
-        this.parentId = item.id
-        if (item.id === '') {
-          this.secondAssortment.data = []
-        } else {
-          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
-          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
-        }
-        this.secondAssortment.content = '选择二级分类'
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 选择二级分类
-      async _choessSecondAssortment(item) {
-        this.parentId = item.id
-        this.page = 1
-        this.$refs.pagination.beginPage()
+      async getMoreGoods(page) {
+        this.chooseGoodsFilter.page = page
         await this._getGoodsList()
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
-        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.assortment.data.unshift({name: '全部', id: ''})
+        let res = await API.Outreach.goodsCategory({parent_id: this.chooseGoodsFilter.goods_category_id})
+        this.goodsCategoryList = res.error === this.$ERR_OK ? res.data : []
       },
-      // 搜索商品/搜索团长
+      // 选择分类
+      async goodsCategoryChange(item) {
+        this.chooseGoodsFilter.goods_category_id = item.id
+        this.chooseGoodsFilter.page = 1
+        await this._getGoodsList()
+      },
+      // 搜索商品
       async _searchGoods(text) {
-        this.keyword = text
-        this.page = 1
-
-        if (this.groupShow) {
-          this.$refs.paginationGroup.beginPage()
-          await this._getGroupList()
-        } else {
-          this.$refs.pagination.beginPage()
-          await this._getGoodsList()
-        }
+        this.chooseGoodsFilter.keyword = text
+        this.chooseGoodsFilter.page = 1
+        await this._getGoodsList()
       },
       // 勾选商品
-      _selectGoods(item, index) {
+      selectGoodsBtn(item, index) {
+        /* eslint-disable */
         switch (item.selected) {
           case 0:
-            if (this.selectGoodsId.length === 20) {
-              this.$toast.show('选择商品数量不能超过二十个')
+            if (this.goodsList.length === 5) {
+              this.$toast.show('选择商品数量不能超过五个')
               return
             }
             this.chooseGoods[index].selected = 2
             this.selectGoods.push(item)
-            this.selectGoodsId.push(item.id)
             break
           case 2:
             this.chooseGoods[index].selected = 0
             let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-            let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
             if (idx !== -1) {
               this.selectGoods.splice(idx, 1)
-            }
-            if (idIdx !== -1) {
-              this.selectGoodsId.splice(idx, 1)
             }
             break
         }
       },
       // 删除商品
       _showDelGoods(item, index) {
-        if (this.disable) {
-          return
-        }
-        this.delType = 'goods'
-        this.goodsDelId = item.goods_id
-        this.goodsDelIndex = index
-        this.$refs.confirm.show('是否确定删除该商品？')
+        this.goodsList.splice(index, 1)
       },
       // 单个添加
       _additionOne(item, index) {
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 19 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过20个')
+        if (this.goodsList.length === 5 && item.selected !== 2) {
+          this.$toast.show('选择商品数量不能超过5个')
           return
         }
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
         this.chooseGoods.forEach((item) => {
@@ -539,52 +629,29 @@
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
-        this._hideGoods()
+        this.hideGoods()
       },
-      // 添加图片
-      async _addPic(index, item, e) {
-        this.upIndex = index
-        this.upItem = item
-        this[this.dataName][index].showLoading = true
-        let param = this._infoImage(e.target.files[0])
-        e.target.value = ''
-        await this._upImage(param)
+      // 上线
+      async submitLaunch() {
+        console.log(this.contentDetails)
       },
-      // 格式化图片流
-      _infoImage(file) {
-        let param = new FormData() // 创建form对象
-        param.append('file', file, file.name) // 通过append向form对象添加数据
-        return param
+      // 草稿
+      async submitDraft() {
       },
-      // 上传banner图片
-      async _upImage(param) {
-        let res = await API.Upload.UploadImg(param)
-        this[this.dataName][this.upIndex].showLoading = false
-        if (res.error !== this.$ERR_OK) {
-          this.$toast.show(res.message)
-          return
-        }
-        this[this.dataName][this.upIndex].image_url = res.data.url
-        this[this.dataName][this.upIndex].image_id = res.data.id
-      },
-      // 新建banner
-      async _editBanner(success) {
-      },
-      // 展示商品弹窗
-      _showGoods() {
-        this.$refs.goods.showModal()
-      },
-      // 隐藏商品弹窗
-      _hideGoods() {
-        this.$refs.goods.hideModal()
-      }
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .add-category-operate
+    color: $color-main
+    text-decoration underline
+    height: 40px
+    line-height: 40px
+    margin-left: 20px
 
+  /*输入框*/
   .edit-input
     font-size: $font-size-14
     padding: 0 14px
@@ -629,8 +696,11 @@
       color: #F52424
 
     .edit-input-box
-      margin: 0 14px 0 40px
+      margin: 0 0px 0 40px
       position: relative
+
+      .edit-input.title-input
+        width: 400px
 
       .edit-input-item
         display flex
@@ -669,165 +739,159 @@
         font-family: $font-family-regular
         color: $color-text-assist
 
-    .add-cont-type-box
-      display flex
-      flex: 1
-      border-1px()
-
-      .add-cont-type-item
-        height 46px
-        border-right-1px()
-        width: 92px
-        display flex
-        align-items center
-        justify-content center
-
-        .icon
-          width: 20px
-          height: 18px
-          margin-right: 5px
-
-        .icon-text
-          icon-image(icon-text_normal)
-
-        .icon-img
-          icon-image(icon-picture_normal)
-
-        .icon-video
-          icon-image(icon-vedio_normal)
-
-        .icon-goods
-          icon-image(icon-commodity_normal)
-
-        &:hover
-          color: $color-main
-
-          .icon-text
-            icon-image(icon-text_hover)
-
-          .icon-img
-            icon-image(icon-picture_hover)
-
-          .icon-video
-            icon-image(icon-vedio_hover)
-
-          .icon-goods
-            icon-image(icon-commodity_hover)
-
-
-    .edit-input-right
-      margin-left: 14px
-
-    .tip
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: $color-text-assist
-      margin-left: 14px
-
-    .tip-text
-      margin-left: 2px
-      line-height: 40px
-      font-size: $font-size-12
-      font-family: $font-family-regular
-      color: $color-text-assist
-
-    .time-no-change, .text-no-change
-      position: absolute
-      left: 100px
-      top: 0
-      width: 550px
-      height: 50px
-      z-index: 100
-
-    .text-no-change
-      cursor: not-allowed
-
-  /*添加商品样式*/
-  .activity-tab
-    display: flex
-    align-items: center
-    box-sizing: border-box
-
-    .add-goods-btn
-      box-sizing: border-box
-      height: 32px
-      line-height: 32px
-      width: 108px
-      color: #4DBD65
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      transition: all 0.3s
-      text-align: center
-      border-radius: 2px
-      border: 1px solid #4DBD65
-      display: flex
-      align-items: center
-      justify-content: center
-
-    .disable
-      cursor: not-allowed
-
-    .icon-add
-      width: 10px
-      height: 10px
-      margin-right: 5px
-      object-fit: cover
-
-  .goods-list-box
-    background: $color-white
-    overflow: visible
-    display: flex
-    flex-direction: column
-    flex: 1
 
   /* 布局*/
-  .wrap-container
-    display: flex
-    font-family: $font-family-regular
-    .content-details
-      background: #F5F7FA
-      border-radius: 2px
-      padding:20px
+  .advertisement
+    flex: 1
+
+    .wrap-container
+      display: flex
+      font-family: $font-family-regular
+
+      .edite-right-box
+        flex: 1
+
+      .tip
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-assist
+        margin-left: 14px
+
+      /*添加商品样式*/
+
+      .activity-tab
+        display: flex
+        align-items: center
+        box-sizing: border-box
+
+        .add-goods-btn
+          box-sizing: border-box
+          height: 28px
+          line-height: 28px
+          width: 108px
+          color: #4DBD65
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          transition: all 0.3s
+          text-align: center
+          border-radius: 2px
+          border: 1px solid #4DBD65
+          display: flex
+          align-items: center
+          justify-content: center
 
 
-    .content-item
-      border: 0.5 pxdashed #D3D8DC
-      border-radius: 2px
-      background: #fff
-      height: 168px
-      position relative
-      margin-bottom:20px
-      &:last-child
-        margin-bottom:0px
+        .icon-add
+          width: 10px
+          height: 10px
+          margin-right: 5px
+          object-fit: cover
 
-      .close-icon
-        width:12px
-        height: @width
-        icon-image(icon-close_content)
-        position absolute
-        right:10px
-        top:10px
 
-      .edit-textarea
-        height: 100%
-        width:100%
-  .advertisement-btn-wrap
-    height: 60px
-    background: #F8F8FD
+      /*商品列表*/
 
-  .advertisement-btn
-    display: flex
-    position: fixed
-    left: 230px
-    right: 0
-    bottom: 0
-    z-index: 10
-    background: #F8F8FD
-    height: 80px
-    border-radius: 0 0 6px 6px
-    box-sizing: border-box
-    justify-content: center
-    align-items: center
+      .add-goods-wrap
+        margin-top: 20px
+        width: 100%
+
+        .goods-list-box
+          margin-top: 20px
+          background: $color-white
+          overflow: visible
+          display: flex
+          flex-direction: column
+          flex: 1
+
+        .edit-input-box
+          flex: 1
+
+        .list-box .list-item
+          &:child-nth(1)
+            flex: 2
+
+          &:last-child
+            max-width: 50px
+
+      /* 内容详情*/
+
+      .add-cont-type-box
+        display flex
+        flex: 1
+        border-1px()
+
+        .add-cont-type-item
+          height 46px
+          border-right-1px()
+          width: 92px
+          display flex
+          align-items center
+          justify-content center
+
+          .icon
+            width: 20px
+            height: 18px
+            margin-right: 5px
+
+          .icon-text
+            icon-image(icon-text_normal)
+
+          .icon-img
+            icon-image(icon-picture_normal)
+
+          .icon-video
+            icon-image(icon-vedio_normal)
+
+          .icon-goods
+            icon-image(icon-commodity_normal)
+
+          &:hover
+            color: $color-main
+
+            .icon-text
+              icon-image(icon-text_hover)
+
+            .icon-img
+              icon-image(icon-picture_hover)
+
+            .icon-video
+              icon-image(icon-vedio_hover)
+
+            .icon-goods
+              icon-image(icon-commodity_hover)
+
+
+      .content-details
+        background: #F5F7FA
+        border-radius: 2px
+        padding: 20px
+        margin-top: 20px
+        margin-left: 104px
+        max-height: 600px
+        overflow auto
+        scroll-opacity(5px, 100px)
+
+        .content-item
+          border: 0.5 pxdashed #D3D8DC
+          border-radius: 2px
+          background: #fff
+          height: 168px
+          position relative
+          margin-bottom: 20px
+
+          &:last-child
+            margin-bottom: 0px
+
+          .close-icon
+            width: 12px
+            height: @width
+            icon-image(icon-close_content)
+            position absolute
+            right: 10px
+            top: 10px
+
+          .edit-textarea
+            height: 100%
+            width: 100%
 
 
   //  商品弹窗
@@ -842,6 +906,26 @@
     overflow-x: hidden
     overflow-y: auto
     flex-wrap: wrap
+    padding: 0 20px
+    box-sizing: border-box
+
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
 
     .shade-tab
       height: 68px
@@ -853,96 +937,59 @@
       .tab-item
         margin-right: 10px
 
-    .page-box
-      padding: 0 20px
-      box-sizing: border-box
-      height: 66px
-      align-items: center
-      display: flex
-
-  .goods-content
-    border-radius: 4px
-    margin: 0 20px
-    height: 420px
-
     .goods-list
-      flex-wrap: wrap
-      display: flex
+      .list-item-select
+        max-width 60px
 
-    .goods-item
-      box-sizing: border-box
-      padding: 0 30px 0 20px
-      width: 100%
-      height: 60px
-      display: flex
-      align-items: center
-      position: relative
+        .select-icon
+          margin-right: 20px
+          border-radius: 1px
+          border: 1px solid #e9ecee
+          height: 16px
+          width: 16px
+          -webkit-transition: all .3s
+          transition: all .3s
+          background-size: 100% 100%
+          display: inline-block
 
-      &:last-child
-        border-bottom-1px($color-line)
+          &.select-icon-active
+            border: 1px solid transparent
+            background-image: url("./icon-check@2x.png")
 
-      &:before
-        content: ""
-        pointer-events: none // 解决iphone上的点击无效Bug
-        display: block
-        position: absolute
-        left: 0
-        top: 0
-        transform-origin: 0 0
-        border-right: 1px solid #E9ECEE
-        border-left: 1px solid #E9ECEE
-        border-top: 1px solid #E9ECEE
-        box-sizing border-box
-        width: 200%
-        height: 100%
-        transform: scaleX(.5) translateZ(0)
-        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
-          width: 100%
-          height: 300%
-          transform: scaleX(1 / 3) translateZ(0)
+          &.select-icon-disable
+            cursor: not-allowed
+            border: 1px solid transparent
+            background-image: url("./icon-check_ash@2x.png")
 
-      &:nth-child(2n - 1)
-        background: #f5f7fa
 
-      .goods-img
-        margin-right: 10px
-        width: 40px
-        height: @width
-        overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
+      .goods-img-wrap
+        max-width 100px
 
-      .goods-msg
-        flex: 1
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        justify-content: space-between
-        height: 100%
-        align-items: center
+        .wrap
+          width: 40px
+          height: 40px
+          background #fff
 
-        .goods-name
-          width: 500px
-          no-wrap()
+        .goods-img
+          width: 40px
+          height: 40px
+          border-radius 50%
+          background-size 100%
 
-        .goods-name, .goods-money
-          line-height: 1
-          font-size: $font-size-14
+      .goods-name
+        flex: 3
 
       .add-btn
         border-radius: 2px
         margin-left: 88px
         padding: 7px 0
-        width: 56px
+        min-width: 54px
         text-align: center
 
       .add-btn-disable
         border-radius: 2px
         margin-left: 88px
         padding: 7px 0
-        width: 56px
         box-sizing: border-box
         text-align: center
         font-size: $font-size-14
@@ -950,6 +997,17 @@
         cursor: not-allowed
         background: $color-line
         color: $color-text-assist
+        border: none
+
+    .back
+      border-top-1px($color-line)
+      position: absolute
+      left: 0
+      right: 0
+      bottom: 0
+      background: $color-white
+      justify-content: flex-end
+      height: 70px
 
     .page-box
       padding: 0 20px
@@ -958,102 +1016,5 @@
       align-items: center
       display: flex
 
-  .shade-header
-    display: flex
-    justify-content: space-between
-    height: 52px
-    box-sizing: border-box
-    padding: 23px 20px 0 0
 
-    .shade-tab-type
-      height: 100%
-      display: flex
-      position: relative
-
-      .shade-tab-item
-        line-height: 1
-        display: flex
-        transition: all 0.3s
-        color: $color-text-main
-        font-family: $font-family-regular
-        margin-left: 40px
-
-      .shade-tab-item-active
-        font-family: $font-family-medium
-
-      .line
-        transition: all 0.3s
-        left: 40px
-        position: absolute
-        bottom: 0px
-        height: 3px
-        width: 64px
-        background: $color-main
-        border-radius: 3px
-
-    .shade-title
-      color: $color-text-main
-      font-family: $font-family-medium
-      font-size: $font-size-16
-
-    .close
-      icon-image('icon-close')
-      width: 12px
-      height: @width
-      transition: all 0.3s
-
-  .back-box
-    background: $color-white
-    height: 70px
-    border-top-1px($color-line)
-    justify-content: flex-end
-    position: absolute
-    left: 0
-    bottom: 0
-
-
-  .submit-activity
-    border-top: 0.5px solid $color-line
-
-  .submit-activity-btn
-    margin-left: 20px
-    font-family: $font-family-regular
-    font-size: $font-size-14
-    color: $color-white
-    letter-spacing: 0
-    width: 108px
-    height: 32px
-    background: $color-main
-    border-radius: 2px
-    line-height: 32px
-    text-align: center
-    transition: 0.3s all
-    user-select: none
-
-    &:hover
-      opacity: 0.8
-
-
-  //  单选框
-  .select-icon
-    width: 16px
-    height: 16px
-    border-radius: 50%
-    background: $color-white
-    border: 1px solid $color-line
-    transition: all, 0.3s
-    position: relative
-    transform-origin: 50%
-    margin-right: 20px
-
-    .after
-      all-center()
-      transform-origin: 50%
-      transition: all, 0.3s
-      width: 0
-      height: 0
-      border-radius: 50%
-
-  .select-icon-active
-    border: 5px solid $color-main
 </style>

@@ -227,10 +227,10 @@ all-center()
   transform: translate(-50%, -50%)
 
 // scroll
-scroll-opacity()
+scroll-opacity($width=0,$height=0)
   &::-webkit-scrollbar
-    width: 0
-    height: 0
+    width: $width
+    height: $height
     transition: all 0.2s
   &::-webkit-scrollbar-thumb
     background-color: rgba(0, 0, 0, .15)

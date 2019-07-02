@@ -158,6 +158,7 @@ export default [
         component: () => lazyLoadView(import('@pages/article-add/article-add')),
         meta: {
           titles: ['商城', '内容', '我的作品', '创作作品'],
+          marginBottom: 80
         }
       },
       // 轮播广告
