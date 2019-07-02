@@ -881,6 +881,7 @@ export default [
         component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
         meta: {
           titles: ['商城', '团长', '团长列表'],
+          resetHooks: ['leader/resetState'], // todo 根据业务编写
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             let params = {
@@ -908,7 +909,7 @@ export default [
           }
         }
       },
-      // 团长邀请 todo
+      // 团长邀请
       {
         path: 'leader-invite',
         name: 'leader-invite',
@@ -944,6 +945,7 @@ export default [
         component: () => lazyLoadView(import('@pages/dispatching-list/dispatching-list')),
         meta: {
           titles: ['商城', '团长', '团长配送单'],
+          resetHooks: ['leader/resetTodo'], // todo 根据业务编写
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
