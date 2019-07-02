@@ -208,7 +208,29 @@
                   </div>
                 </div>
               </div>
-              <div class="tip">该图片展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。</div>
+              <div class="tip">该图片展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面，可视频或图片。</div>
+            </div>
+          </div>
+          <div class="edit-item  edit-image-box">
+            <div class="edit-title">
+              主图视频
+            </div>
+            <div class="image-box">
+              <div class="edit-image">
+                <draggable v-model="saleMsg.goods_banner_images" class="draggable" @update="_setSort()">
+                  <div v-for="(item, index) in saleMsg.goods_banner_images" :key="index" class="show-image hand">
+                    <img class="img" :src="item.image_url" alt="">
+                    <span class="close" @click="delPic(index)"></span>
+                  </div>
+                </draggable>
+                <div v-if="saleMsg.goods_banner_images.length < picNum" class="add-image hand">
+                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addSalePic('goods_banner_images', picNum, $event)">
+                  <div v-if="showLoading && uploadImg === 'goods_banner_images'" class="loading-mask">
+                    <img src="./loading.gif" class="loading">
+                  </div>
+                </div>
+              </div>
+              <div class="tip">建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。</div>
             </div>
           </div>
           <div class="edit-item  edit-image-box">

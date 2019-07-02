@@ -61,6 +61,7 @@
             <div v-if="productList.length">
               <div v-for="(item, index) in productList" :key="index" class="list-content list-box">
                 <div class="list-item">
+                  <img v-if="item.goods_video_url" class="icon-video" src="./icon-play_list@2x.png" alt="">
                   <img class="pic-box" :src="item.goods_cover_image" alt="">
                 </div>
                 <div class="list-item list-double-row">
@@ -257,6 +258,7 @@
     .list-item
       box-sizing: border-box
       flex: 1
+      position: relative
 
       &:nth-child(1)
         flex: 0.55
@@ -376,6 +378,12 @@
     opacity: 0
     height: 100%
     width: 100%
+  .icon-video
+    height: 16px
+    width: @width
+    position: absolute
+    top: 12px
+    left: 12px
   .pic-box
     height: 40px
     width: 40px
