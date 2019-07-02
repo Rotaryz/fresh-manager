@@ -828,6 +828,7 @@
       async _getGroupList() {
         let res = await API.Outreach.getGroupList({
           keyword: this.keyword,
+          status: 0,
           limit: 6,
           page: this.page
         })
