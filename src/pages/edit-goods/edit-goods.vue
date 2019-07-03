@@ -219,7 +219,7 @@
               <div class="edit-image">
                 <draggable v-if="videoUrl" class="draggable" @update="_setSort()">
                   <div class="show-image hand">
-                    <img :src="videoUrl" class="img" alt="">
+                    <video :src="videoUrl" :autoplay="false" class="video"></video>
                     <span class="close" @click="delVideo()"></span>
                     <img class="icon-video" src="./icon-play_list@2x.png" alt="">
                   </div>
@@ -459,6 +459,7 @@
         storage.remove('goods_skus')
         storage.remove('saleMsg')
         storage.remove('sale_skus')
+        storage.remove('videoUrl')
       }
     },
     methods: {
@@ -489,6 +490,7 @@
           this.goods_skus = storage.get('goods_skus')
           this.saleMsg = storage.get('saleMsg')
           this.sale_skus = storage.get('sale_skus')
+          this.videoUrl = storage.get('videoUrl')
           this.editSkus = _.cloneDeep(this.goods_skus)
           this.saleSelect.content = this.goods_skus.sale_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
@@ -732,7 +734,9 @@
           if (res.error === this.$ERR_OK) {
             this.saleMsg = res.data
             this.sale_skus = this.saleMsg.goods_skus[0]
-            this.videoUrl = res.data.goods_videos[0].full_cover_url||''
+            if(res.data.goods_videos.length&&res.data.goods_videos[0]) {
+              this.videoUrl = res.data.goods_videos[0].full_url||''
+            }
           } else {
             this.$toast.show(res.message)
           }
@@ -1005,6 +1009,7 @@
         storage.set('saleMsg', this.saleMsg)
         storage.set('sale_skus', this.sale_skus)
         storage.set('goods_id', this.id)
+        storage.set('videoUrl', this.videoUrl)
         window.open(jumpUrl, '_blank')
       },
       loading(curr = 0, result) {
@@ -1029,7 +1034,7 @@
         }).then(res => {
           this.$loading.hide()
           if (res.error === this.$ERR_OK) {
-            this.videoUrl = res.data.full_cover_url
+            this.videoUrl = res.data.path
             this.saleMsg.goods_videos = [{file_id: res.data.id}]
           }
         })
