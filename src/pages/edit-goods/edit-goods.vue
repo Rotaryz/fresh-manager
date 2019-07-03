@@ -208,7 +208,7 @@
                   </div>
                 </div>
               </div>
-              <div class="tip">该图片展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面，可视频或图片。</div>
+              <div class="tip">该图片展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。</div>
             </div>
           </div>
           <div class="edit-item  edit-image-box">
@@ -217,17 +217,15 @@
             </div>
             <div class="image-box">
               <div class="edit-image">
-                <draggable v-model="saleMsg.goods_banner_images" class="draggable" @update="_setSort()">
-                  <div v-for="(item, index) in saleMsg.goods_banner_images" :key="index" class="show-image hand">
-                    <img class="img" :src="item.image_url" alt="">
-                    <span class="close" @click="delPic(index)"></span>
+                <draggable v-if="videoUrl" class="draggable" @update="_setSort()">
+                  <div class="show-image hand">
+                    <img :src="videoUrl" class="img" alt="">
+                    <span class="close" @click="delVideo()"></span>
+                    <img class="icon-video" src="./icon-play_list@2x.png" alt="">
                   </div>
                 </draggable>
-                <div v-if="saleMsg.goods_banner_images.length < picNum" class="add-image hand">
-                  <input type="file" class="sendImage hand" multiple="multiple" accept="image/*" @change="_addSalePic('goods_banner_images', picNum, $event)">
-                  <div v-if="showLoading && uploadImg === 'goods_banner_images'" class="loading-mask">
-                    <img src="./loading.gif" class="loading">
-                  </div>
+                <div v-else class="add-image add-video hand">
+                  <input type="file" class="sendImage hand" accept="video/*" value="上传视频" @change="handleChange">
                 </div>
               </div>
               <div class="tip">建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。</div>
@@ -349,6 +347,7 @@
   import Draggable from 'vuedraggable'
   import storage from 'storage-controller'
   import _ from 'lodash'
+  import {uploadFiles} from '../../utils/vod/vod'
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
@@ -414,7 +413,8 @@
           goods_category_id: 0,
           name: '',
           describe: '',
-          init_sale_count: ''
+          init_sale_count: '',
+          goods_videos: []
         },
         sale_skus: {
           trade_price: '',
@@ -441,7 +441,8 @@
           base_unit: '',
           base_sale_rate: '',
           sale_unit: ''
-        }
+        },
+        videoUrl: ''
       }
     },
     created() {
@@ -452,6 +453,7 @@
       this.getScmCategoriesData()
     },
     destroyed() {
+      clearInterval(this.timerVod)
       if (this.isCopy) {
         storage.remove('msg')
         storage.remove('goods_skus')
@@ -730,6 +732,7 @@
           if (res.error === this.$ERR_OK) {
             this.saleMsg = res.data
             this.sale_skus = this.saleMsg.goods_skus[0]
+            this.videoUrl = res.data.goods_videos[0].full_cover_url||''
           } else {
             this.$toast.show(res.message)
           }
@@ -950,6 +953,11 @@
       delPic2(index) {
         this.saleMsg.goods_detail_images.splice(index, 1)
       },
+      // 删除视频
+      delVideo() {
+        this.videoUrl = ''
+        this.saleMsg.goods_videos = [{file_id: 0}]
+      },
       failFile(msg) {
         this.$emit('showToast', msg)
       },
@@ -998,6 +1006,33 @@
         storage.set('sale_skus', this.sale_skus)
         storage.set('goods_id', this.id)
         window.open(jumpUrl, '_blank')
+      },
+      loading(curr = 0, result) {
+        this.timerVod = setInterval(() => {
+          this.$loading.show('视频上传中' + curr + '%')
+          curr += 10
+          if (curr > 100) {
+            clearInterval(this.timerVod)
+            this.$loading.hide()
+          }
+        }, 500)
+      },
+      handleChange(e) {
+        const file = e.target.files[0]
+        if (!/^video/.test(file.type )) {
+          this.$toast.show('请选择视频文件')
+          return
+        }
+        this.$loading.show('视频上传中...')
+        uploadFiles(e.target.files[0], (curr, result) => {
+          this.$loading.showCurr(curr)
+        }).then(res => {
+          this.$loading.hide()
+          if (res.error === this.$ERR_OK) {
+            this.videoUrl = res.data.full_cover_url
+            this.saleMsg.goods_videos = [{file_id: res.data.id}]
+          }
+        })
       }
     }
   }
@@ -1277,6 +1312,10 @@
       position: relative
       border-radius: 2px
       overflow: hidden
+      &.add-video
+        icon-image('pic-video_upload')
+      &.add-img-video
+        icon-image('pic-videopic_upload')
       .sendImage
         height: 100%
         width: 100%
@@ -1296,6 +1335,12 @@
       border-radius: 2px
       position: relative
       overflow: hidden
+      .icon-video
+        width: 26px
+        height: @width
+        all-center()
+      .video
+        height: 90px
     .close
       icon-image('pic-delete')
       width: 15px
