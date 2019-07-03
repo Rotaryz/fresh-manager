@@ -13,6 +13,25 @@ export const state = {
     total: 1,
     per_page: 10,
     total_page: 1
+  },
+  goodsReqData: {
+    keyword: '',
+    page: 1,
+    goods_category_id: '',
+    complete_status: '',
+    goods_material_category_id: '',
+    is_online: '',
+    limit: 10,
+    platform: 'scm'
+  },
+  selectDown: {
+    oneMaterialTitle: '一级类目',
+    twoMaterialTitle: '二级类目',
+    thrMaterialTitle: '三级类目',
+    oneMaterialList: [],
+    twoMaterialList: [],
+    thrMaterialList: [],
+    completeStatusTitle: '全部'
   }
 }
 
@@ -28,6 +47,12 @@ export const getters = {
   },
   storePageTotal(state) {
     return state.storePageTotal
+  },
+  goodsReqData(state) {
+    return state.goodsReqData
+  },
+  selectDown(state) {
+    return state.selectDown
   }
 }
 
@@ -43,22 +68,59 @@ export const mutations = {
   },
   SET_STORE_PAGE_TOTAL(state, statePageTotal) {
     state.storePageTotal = statePageTotal
+  },
+  SET_GOODS_REQ_DATA(state, goodsReqData) {
+    state.goodsReqData = goodsReqData
+  },
+  SET_KEYWORD(state, keyword) {
+    state.goodsReqData.keyword = keyword
+  },
+  SET_PAGE(state, page) {
+    state.goodsReqData.page = page
+  },
+  SET_PAGE_SUBTRACT(state) {
+    state.goodsReqData.page--
+  },
+  SET_MATERIAL_CATEGORY(state, id) {
+    state.goodsReqData.goods_material_category_id = id
+  },
+  SET_COMPLETE_STATUS(state, id) {
+    state.goodsReqData.complete_status = id
+  },
+  SET_SELECT_DOWN(state, data) {
+    switch (data.type) {
+      case 1:
+        state.selectDown.oneMaterialTitle = data.content
+        break
+      case 2:
+        state.selectDown.twoMaterialTitle = data.content
+        break
+      case 3:
+        state.selectDown.thrMaterialTitle = data.content
+        break
+      case 4:
+        state.selectDown.oneMaterialList = data.content
+        break
+      case 5:
+        state.selectDown.twoMaterialList = data.content
+        break
+      case 6:
+        state.selectDown.thrMaterialList = data.content
+        break
+      case 7:
+        state.selectDown.completeStatusTitle = data.content
+        break
+    }
+  },
+  SET_SELECT_DOWN_RESET(state, data) {
+    state.selectDown = data
   }
 }
 
 export const actions = {
   // 商品列表
-  getProductList({state, commit}, {keyword = '', page = 1, categoryId = '', materialId = '', completeStatus = '', isOnline = '', limit = 10, loading = true}) {
-    return API.Product.getGoodsList({
-      keyword,
-      page,
-      goods_category_id: categoryId,
-      complete_status: completeStatus,
-      goods_material_category_id: materialId,
-      is_online: isOnline,
-      limit,
-      platform: 'scm'
-    }, loading)
+  getProductList({state, commit}, {loading = true}) {
+    return API.Product.getGoodsList(state.goodsReqData, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -126,5 +188,51 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  setKeyword({commit, dispatch}, keyword) {
+    commit('SET_KEYWORD', keyword)
+    commit('SET_PAGE', 1)
+    dispatch('getProductList', {loading: false})
+  },
+  setPage({commit, dispatch}, page) {
+    commit('SET_PAGE', page)
+    dispatch('getProductList', {loading: false})
+  },
+  setMaterialCategory({commit, dispatch}, id) {
+    commit('SET_MATERIAL_CATEGORY', id)
+    commit('SET_PAGE', 1)
+    dispatch('getProductList', {loading: false})
+  },
+  setCompleteStatus({commit, dispatch}, id) {
+    commit('SET_COMPLETE_STATUS', id)
+    commit('SET_PAGE', 1)
+    dispatch('getProductList', {loading: false})
+  },
+  saveSelectDown({commit}, data) {
+    commit('SET_SELECT_DOWN', data)
+  },
+  setPageSubtract({commit}) {
+    commit('SET_PAGE_SUBTRACT')
+  },
+  resetData({commit}) {
+    commit('SET_GOODS_REQ_DATA', {
+      keyword: '',
+      page: 1,
+      goods_category_id: '',
+      complete_status: '',
+      goods_material_category_id: '',
+      is_online: '',
+      limit: 10,
+      platform: 'scm'
+    })
+    commit('SET_SELECT_DOWN_RESET', {
+      oneMaterialTitle: '一级类目',
+      twoMaterialTitle: '二级类目',
+      thrMaterialTitle: '三级类目',
+      oneMaterialList: [],
+      twoMaterialList: [],
+      thrMaterialList: [],
+      completeStatusTitle: '全部'
+    })
   }
 }

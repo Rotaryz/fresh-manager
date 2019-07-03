@@ -11,7 +11,10 @@ export const state = {
   purchaseList: [], // 采购列表
   purchaseDetail: {}, // 采购详情
   timeStart: '',
-  timeEnd: ''
+  timeEnd: '',
+  page: 1,
+  keyword: '',
+  status: 1
 }
 
 export const getters = {
@@ -29,6 +32,15 @@ export const getters = {
   },
   timeEnd(state) {
     return state.timeEnd
+  },
+  page(state) {
+    return state.page
+  },
+  keyword(state) {
+    return state.keyword
+  },
+  status(state) {
+    return state.status
   }
 }
 
@@ -47,19 +59,30 @@ export const mutations = {
   },
   SET_TIME_END(state, timeEnd) {
     state.timeEnd = timeEnd
+  },
+  SET_PAGE(state, page) {
+    state.page = page
+  },
+  SET_KEYWORD(state, keyword) {
+    state.keyword = keyword
+  },
+  SET_STATUS(state, status) {
+    state.status = status
   }
 }
 
 export const actions = {
   // 采购列表
-  getPurchaseList({state, commit, dispatch}, {time, startTime, endTime, keyword, page, status, loading = true}) {
+  getPurchaseList({state, commit, dispatch}, {loading = true}) {
+    const {time, timeStart, timeEnd, keyword, page, status} = state
     return API.Supply.purchaseOrder(
       {
         time,
-        start_time: startTime,
-        end_time: endTime,
+        start_time: timeStart,
+        end_time: timeEnd,
         keyword,
         page,
+        limit: 10,
         status
       },
       loading
@@ -104,7 +127,31 @@ export const actions = {
       })
   },
   infoPurchaseTime({commit, dispatch}, {start, end}) {
+    console.log(start, end)
     commit('SET_TIME_START', start)
     commit('SET_TIME_END', end)
+    commit('SET_PAGE', 1)
+    dispatch('getPurchaseList', {loading: false})
+  },
+  setKeyword({commit, dispatch}, keyword) {
+    commit('SET_KEYWORD', keyword)
+    commit('SET_PAGE', 1)
+    dispatch('getPurchaseList', {loading: false})
+  },
+  setStatus({commit, dispatch}, status) {
+    commit('SET_STATUS', status)
+    commit('SET_PAGE', 1)
+    dispatch('getPurchaseList', {loading: false})
+  },
+  setPage({commit, dispatch}, page) {
+    commit('SET_PAGE', page)
+    dispatch('getPurchaseList', {loading: false})
+  },
+  resetData({commit}) {
+    commit('SET_TIME_START', '')
+    commit('SET_TIME_END', '')
+    commit('SET_KEYWORD', '')
+    commit('SET_STATUS', 1)
+    commit('SET_PAGE', 1)
   }
 }

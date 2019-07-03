@@ -4,12 +4,12 @@
       <!--时间选择-->
       <span class="down-tip">生成时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择时间" @getTime="changeStartTime"></base-date-select>
+        <base-date-select placeHolder="请选择时间" :dateInfo="dateInfo" @getTime="changeStartTime"></base-date-select>
       </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="采购单号" @search="_search"></base-search>
+        <base-search :infoText="keyword" placeHolder="采购单号" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="pageTotal" :pagination="page" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
   </div>
@@ -66,95 +66,56 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        page: 1,
-        startTime: '',
-        endTime: '',
-        keyword: '',
-        time: '',
-        status: '',
+        // page: 1,
+        // startTime: '',
+        // endTime: '',
+        // keyword: '',
+        // time: '',
+        // status: '',
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
           {name: '待入库', value: 1, key: 'wait_entry', num: 0},
           {name: '已完成', value: 2, key: 'success', num: 0}
         ],
         taskTime: ['', ''],
-        statusTab: 1
+        statusTab: 0
       }
     },
     computed: {
-      ...supplyComputed
+      ...supplyComputed,
+      dateInfo() {
+        return [this.timeStart, this.timeEnd]
+      }
     },
     async created() {
-      this.startTime = this.$route.params.start
-      this.endTime = this.$route.params.end
-      this.status = this.$route.params.status
       await this._statistic()
+      let status = JSON.parse(JSON.stringify(this.status))
+      this.statusTab = this.dispatchSelect.findIndex((item) => item.value * 1 === status * 1)
     },
     methods: {
       ...supplyMethods,
       async _setStatus(item) {
-        this.status = item.value
-        this.page = 1
+        this.setStatus(item.value)
         this.$refs.pages.beginPage()
-        this.getPurchaseList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          page: this.page,
-          status: this.status,
-          loading: false
-        })
       },
       async _search(word) {
-        this.keyword = word
-        this.page = 1
+        this.setKeyword(word)
         this.$refs.pages.beginPage()
-        this.getPurchaseList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          page: this.page,
-          status: this.status,
-          loading: false
-        })
         await this._statistic()
       },
       async changeStartTime(value) {
         this.taskTime = value
-        this.startTime = value[0]
-        this.endTime = value[1]
-        this.page = 1
+        this.infoPurchaseTime({start: value[0], end: value[1]})
         this.$refs.pages.beginPage()
-        this.getPurchaseList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          status: this.status,
-          page: this.page,
-          loading: false
-        })
         await this._statistic()
       },
       async _getMoreList(page) {
-        this.page = page
-        this.getPurchaseList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          page: this.page,
-          status: this.status,
-          loading: false
-        })
-        await this._statistic()
+        this.setPage(page)
       },
       async _statistic() {
         let res = await API.Supply.getPurchaseOrderStatistic({
-          start_time: this.startTime,
-          end_time: this.endTime,
+          start_time: this.timeStart,
+          end_time: this.timeEnd,
           keyword: this.keyword
         })
         this.statistic = res.error === this.$ERR_OK ? res.data : {}

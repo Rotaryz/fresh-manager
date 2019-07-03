@@ -1441,7 +1441,6 @@ export default [
             routeTo.params.end = ''
             let exceptionStatus = routeTo.query.exception_status
             exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            // let status = routeTo.query.status || 1
             let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 1
             let startTime = routeTo.query.start_time || ''
             let endTime = routeTo.query.end_time || ''
@@ -1538,8 +1537,8 @@ export default [
         component: () => lazyLoadView(import('@pages/buyer/buyer')),
         meta: {
           titles: ['供应链', '采购', '基础设置', '采购员列表'],
+          resetHooks: ['buyer/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('buyer/infoSetKeyWord')
             store
               .dispatch('buyer/getPurchaseUser')
               .then((res) => {
@@ -1589,24 +1588,16 @@ export default [
         component: () => lazyLoadView(import('@pages/purchase-order/purchase-order')),
         meta: {
           titles: ['供应链', '采购', '采购单'],
+          resetHooks: ['supply/resetData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = 1
-            routeTo.params.status = status
             store
               .dispatch('supply/getPurchaseList', {
-                time: '',
-                startTime: '',
-                endTime: '',
-                keyword: '',
-                page: 1,
-                loading: true,
-                status: status
+                loading: true
               })
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
                 }
-                routeTo.params.detail = res
                 next()
               })
               .catch(() => {
@@ -1674,9 +1665,10 @@ export default [
         component: () => lazyLoadView(import('@pages/goods-manage/goods-manage')),
         meta: {
           titles: ['供应链', '采购', '商品管理'],
+          resetHooks: ['scmGoods/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('scmGoods/getProductList', {})
+              .dispatch('scmGoods/getProductList', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1687,7 +1679,39 @@ export default [
                 return next({name: '404'})
               })
           }
-        }
+        },
+        children: [
+          // 新建商品
+          {
+            path: 'goods-manage/edit-supply-goods',
+            name: 'edit-supply-goods',
+            component: () => lazyLoadView(import('@pages/edit-supply-goods/edit-supply-goods')),
+            meta: {
+              titles: ['供应链', '采购', '商品管理', '商品'],
+              variableIndex: 3,
+              marginBottom: 80,
+              beforeResolve(routeTo, routeFrom, next) {
+                if (!routeTo.query.id) {
+                  return next()
+                }
+                store
+                  .dispatch('scmGoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
+                  .then((response) => {
+                    if (!response) {
+                      return next({name: '404'})
+                    }
+                    console.log(response)
+                    routeTo.params.detail = response
+                    next()
+                  })
+                  .catch(() => {
+                    next({name: '404'})
+                  })
+              }
+            },
+            props: (route) => ({detail: route.params.detail})
+          },
+        ]
       },
       // 导入商品
       {
@@ -1744,8 +1768,9 @@ export default [
         component: () => lazyLoadView(import('@pages/supplier/supplier')),
         meta: {
           titles: ['供应链', '采购', '基础设置', '供应商'],
+          resetHooks: ['supplier/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('supplier/infoSetKeyWord')
+            // store.dispatch('supplier/infoSetKeyWord')
             store
               .dispatch('supplier/getSupplier')
               .then((res) => {

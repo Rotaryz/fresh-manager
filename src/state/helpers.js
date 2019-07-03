@@ -321,10 +321,10 @@ export const omsMethods = {
 }
 // 采购单
 export const supplyComputed = {
-  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail', 'timeStart', 'timeEnd'])
+  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail', 'timeStart', 'timeEnd', 'page', 'keyword', 'status'])
 }
 
-export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail', 'infoPurchaseTime'])
+export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail', 'infoPurchaseTime', 'setKeyword', 'setPage', 'setStatus'])
 
 // 采购任务
 export const proTaskComputed = {
@@ -648,9 +648,9 @@ export const allocationMethods = {
 }
 // 供应链商品
 export const scmGoodsComputed = {
-  ...mapGetters('scmGoods', ['productList', 'statePageTotal', 'goodsStoreList', 'storePageTotal'])
+  ...mapGetters('scmGoods', ['productList', 'statePageTotal', 'goodsStoreList', 'storePageTotal', 'goodsReqData', 'selectDown'])
 }
 
 export const scmGoodsMethods = {
-  ...mapActions('scmGoods', ['getProductList', 'getScmStoreData'])
+  ...mapActions('scmGoods', ['getProductList', 'getScmStoreData', 'setKeyword', 'setPage', 'setMaterialCategory', 'setCompleteStatus', 'saveSelectDown', 'setPageSubtract', 'resetData'])
 }

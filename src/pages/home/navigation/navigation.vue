@@ -163,21 +163,6 @@
     }
   ]
   const FINANCE = [
-    // {
-    //   title: '财务',
-    //   children: [
-    //     {
-    //       title: '营业概况',
-    //       url: '/home/business-overview',
-    //       isLight: false
-    //     }
-    //     // {
-    //     //   title: '交易记录',
-    //     //   url: '/home/transaction-record',
-    //     //   isLight: false
-    //     // }
-    //   ]
-    // },
     {
       title: '账户',
       children: [
