@@ -87,7 +87,19 @@
       Draggable
     },
     props: {
-      isGetVedioCoverImage:{
+      ratioImage:{
+        type: Array, // 图片比例范围
+        default: () => []
+      },
+      width: {
+        type: String,
+        default: ''
+      },
+      height: {
+        type: String,
+        default: ''
+      },
+      isGetVedioCoverImage: {
         type: Boolean,
         default: true
       },
@@ -115,28 +127,42 @@
       isEdit: {
         type: Number, // 1 为开启  0为关闭
         default: 1
-      }
+      },
+      size:{
+        type: Number, // 单位 m
+        default: 10
+      },
     },
     data() {
       return {
-        coverImage:'',
+        coverImage: '',
         showLoading: false
       }
     },
     methods: {
+      dataURLtoFile(dataurl, filename) {
+        // 将base64转换为文件
+        let arr = dataurl.split(',')
+        let mime = arr[0].match(/:(.*?);/)[1]
+        let bstr = atob(arr[1])
+        let n = bstr.length
+        let u8arr = new Uint8Array(n)
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n)
+        }
+        return new File([u8arr], filename, {type: mime})
+      },
       async loadedVedio() {
         var canvas = document.createElement("canvas");
         let video = this.$refs.fullVideo[0]
-        console.log('video', video)
-        let scale =1
+        let scale = 1
         canvas.width = video.videoWidth * scale
         canvas.height = video.videoHeight * scale
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         let imgsrc = canvas.toDataURL("image/png")
         this.coverImage = imgsrc
-        let param = this._infoImage(this.coverImage)
-        console.log(this.coverImage)
-
+        let file = this.dataURLtoFile(this.coverImage, 'cover.png')
+        let param = this._infoImage(file)
         await this._upImage(param)
       },
       _setSort() {
@@ -155,13 +181,12 @@
       },
       // 格式化图片流
       _infoImage(file) {
-        console.log(file)
+        console.log('_infoImage', file)
         let param = new FormData() // 创建form对象
         param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
       },
       async _upImage(param) {
-        console.log(param)
         let res = await API.Upload.UploadImg(param)
         this.showLoading = false
         if (res.error !== this.$ERR_OK) {
@@ -178,9 +203,9 @@
         e.target.value = ''
         let size = (arr[0].size / 1024 / 1024)
         console.log(size)
-        if (size > 30) {
+        if (size > this.size) {
           this.showLoading = false
-          this.$emit('failFile', '视频大小不能超过30M')
+          this.$emit('failFile', '视频大小不能超过'+this.size+'M')
           return
         }
         uploadFiles(arr[0], curr => {
@@ -204,9 +229,11 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .hand
+    cursor pointer
+
   .custom-item
     position: relative
-
   .edit-image
     flex-wrap: wrap
     display: flex
@@ -291,8 +318,10 @@
       width: 100%
       height: 100%
       object-fit: cover
+
     .full-video
       visibility hidden
+
   .close
     icon-image('pic-delete')
     width: 15px

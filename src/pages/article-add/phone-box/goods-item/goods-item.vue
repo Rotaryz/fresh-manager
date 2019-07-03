@@ -1,13 +1,19 @@
 <template>
   <div class="good-item">
-    <img src=" ./icon-add_to@2x.png" class="goods-photo">
+    <img :src="goodsData.goods_cover_image" class="goods-photo">
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
-      <div class="details">{{goodsData.details}}</div>
+      <div class="details">{{goodsData.describe}}</div>
       <div class="operate">
         <div>
-          <span class="price-now">10<span class="small">.8<span class="unit">元</span></span></span>
-          <span class="price">{{goodsData.price}}元</span>
+          <span class="price-now">
+            {{goodsData.trade_price.split('.')[0]}}
+            <span class="small">
+              <span v-if="goodsData.trade_price.split('.')[1]">.{{goodsData.trade_price.split('.')[1]}}</span>
+              <span class="unit">元</span>
+            </span>
+          </span>
+          <span class="price">{{goodsData.original_price}}元</span>
         </div>
         <img src="./icon-add_to@2x.png" class="add-img" @click="addBtn">
       </div>
@@ -19,13 +25,16 @@
   const PAGE_NAME = 'GOODS_ITEM'
   export default {
     name: PAGE_NAME,
-    components: {
-    },
+    components: {},
     props: {
+      addDisabled: {
+        type: Boolean,
+        default: false
+      },
       goodsData: {
         require: true,
         type: Object,
-        default: function() {
+        default: function () {
           return {
             name: '',
             details: '',
@@ -40,7 +49,8 @@
     },
     methods: {
       addBtn() {
-        this.$emit('add-click')
+        if (this.addDisabled) return false
+        this.$emit('add-click', this.goodsData)
       }
     }
   }

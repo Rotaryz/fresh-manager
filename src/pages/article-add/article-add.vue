@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="wrap-container">
-      <phone-box></phone-box>
+      <phone-box :isShowEmpty="isShowEmpty" :data="addData" :type="currentType"></phone-box>
       <div class="edite-right-box">
         <!--分类 -->
         <div class="edit-item">
@@ -54,8 +54,14 @@
                          @successVideo="getCoverVideo"
             ></base-upload>
             <div class="tip">
-              请添加不大于10M的清晰图片或视频
-              <br>{{name}}封面是{{name}}首图
+              <template v-if="currentType === '1'">
+                请添加不大于10M的清晰图片
+              </template>
+              <template v-else>
+                请添加不大于10M的清晰图片或视频
+                <br>
+                {{name}}封面是{{name}}首图
+              </template>
             </div>
           </div>
         </div>
@@ -66,7 +72,7 @@
             作者信息
           </div>
           <div class="edit-input-box flex-box author-info-box">
-            <base-upload :picList.sync="authorPhoto" :picNum="1" imageIconClassName="add-image-head-photo"
+            <base-upload :picList.sync="authPhoto" :picNum="1" imageIconClassName="add-image-head-photo"
                          fileType="image"
                          @failFile="failFile"
                          @getPic="getAuthorPic"
@@ -78,7 +84,7 @@
                      placeholder="请输入作者名称"
                      class="edit-input"
               >
-              <input v-model="addData.auth_signature"
+              <input v-model="addData.authSignature"
                      type="text"
                      placeholder="请输入30个字的个性签名"
                      class="edit-input edit-signature"
@@ -94,19 +100,33 @@
           </div>
           <!-- todo-->
           <div class="edit-input-box flex-box">
-            <base-upload :picList.sync="coverImages"
-                         :picNum="1"
-                         fileType="video"
-                         @failFile="failFile"
-                         @getPic="getPic"
-                         @delPic="delPic"
-            ></base-upload>
-            <div class="tip">
-              请上传5-15秒竖版视频，大小控制在100M以内优质且清晰的小视频，可以获得更多流量哦
-            </div>
-            <div class="tip">
-              视频上传成功，处理完成
-              <div>视频名称-香菇芋头排骨焖饭</div>
+            <template v-if="addData.videoContent.url">
+              <div class="video-wrap">
+                <video :src="addData.videoContent.url" class="video-wrap">
+                </video>
+                <div class="delete-icon" @click="deleteVideoContent"></div>
+              </div>
+              <div class="tip">
+                视频上传成功，处理完成
+                <div>视频名称-{{addData.videoContent.name}}</div>
+              </div>
+            </template>
+            <div v-else class="video-content-wrap">
+              <div class="video-tip"></div>
+              <div class="upload-video-wrap">
+                <base-upload :picList.sync="coverImages"
+                             :picNum="1"
+                             fileType="video-custom"
+                             :size="100"
+                             @failFile="failFile"
+                             @successVideo="getVideoContent"
+                >
+                  <button class="upload-video btn-main  hand">
+                    点击上传视频
+                  </button>
+                </base-upload>
+              </div>
+
             </div>
           </div>
         </div>
@@ -117,8 +137,8 @@
             视频简介
           </div>
           <div class="edit-input-box">
-            <textarea v-model="addData.foodList" class="edit-textarea edit-input" placeholder="" maxlength="50"></textarea>
-            <span class="num">{{addData.foodList && addData.foodList.length || 0}}/50</span>
+            <textarea v-model="addData.videoIntroduce" class="edit-textarea edit-input" placeholder="" maxlength="50"></textarea>
+            <span class="num">{{addData.videoIntroduce && addData.videoIntroduce.length || 0}}/50</span>
           </div>
         </div>
         <!--菜谱  食材清单-->
@@ -142,18 +162,18 @@
           </div>
           <div class="edit-input-box">
             <div class="activity-tab  flex-box">
-              <div class="add-goods-btn hand" @click="showGoods">
+              <div class="add-goods-btn  btn-main hand" @click="showGoods">
                 <img class="icon-add" src="./icon-add@2x.png" alt="">
                 添加商品
               </div>
               <div class="tip">最多添加5个商品</div>
             </div>
-            <div v-if="goodsList && goodsList.length" class="goods-list-box">
+            <div v-if="addData.goodsList && addData.goodsList.length" class="goods-list-box">
               <div class="list-header list-box">
                 <div v-for="(item, index) in selectedGoodsCommodities" :key="index" class="list-item">{{item}}</div>
               </div>
               <div class="list">
-                <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
+                <div v-for="(item, index) in addData.goodsList" :key="index" class="list-content list-box">
                   <div class="list-item">{{item.name}}</div>
                   <div class="list-item">{{item.sale_unit || item.goods_units}}</div>
                   <div class="list-item">¥{{item.original_price || 0}}</div>
@@ -168,6 +188,7 @@
         <!--文章/菜谱 内容详情-->
         <div v-if="currentType!=='1'" class="edit-item">
           <div class="edit-title">
+            <span class="start">*</span>
             内容详情
           </div>
           <div class="edit-input-box add-cont-type-box">
@@ -175,32 +196,48 @@
               <div class="icon icon-text"></div>
               <div>文本</div>
             </div>
-            <base-upload fileType="image-custom" @getPic="addImageItem">
-              <div class="add-cont-type-item">
-                <div class="icon icon-img"></div>
-                <div>图片</div>
-              </div>
-            </base-upload>
-
-            <base-upload fileType="video-custom" @successVedio="addVideoItem">
-              <div class="add-cont-type-item">
-                <div class="icon icon-video"></div>
-                <div>视频</div>
-              </div>
-            </base-upload>
+            <div class="add-cont-type-item">
+              <base-upload fileType="image-custom" @getPic="addImageItem">
+                <div class="add-cont-type-item">
+                  <div class="icon icon-img"></div>
+                  <div>图片</div>
+                </div>
+              </base-upload>
+            </div>
+            <div class="add-cont-type-item">
+              <base-upload fileType="video-custom" @successVideo="addVideoItem">
+                <div class="add-cont-type-item">
+                  <div class="icon icon-video"></div>
+                  <div>视频</div>
+                </div>
+              </base-upload>
+            </div>
             <!---文章-->
-            <div v-if="currentType==='0'" class="add-cont-type-item">
+            <div v-if="currentType==='0'" class="add-cont-type-item" @click="addOneGoods">
               <div class="icon icon-goods"></div>
               <div>商品</div>
             </div>
           </div>
         </div>
-        <draggable v-if="contentDetails.length" v-model="contentDetails" class="content-details" @update="_setSort()">
+        <draggable v-if="currentType!=='1' && addData.details.length" ref="detailsContent" v-model="addData.details" class="content-details" @update="_setSort()">
           <transition-group>
-            <div v-for="(item, idx) in contentDetails" :key="idx" class="content-item">
-              <div class="close-icon" @click="deleteContentItem(idx)"></div>
+            <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
+              <div class="close-icon" @click="deleteContentItem(idx,item)"></div>
               <img v-if="item.type==='image'" :src="item.value" class="conten-image">
               <video v-else-if="item.type==='video'" :src="item.value" class="conten-video"></video>
+              <div v-else-if="item.type==='goods'" class="good-item">
+                <img :src="item.value.goods_cover_image" class="goods-photo">
+                <div class="info">
+                  <div>
+                    <div class="name">{{item.value.name}}</div>
+                    <div class="details">{{item.value.describe}}</div>
+                  </div>
+                  <div class="operate">
+                    <span class="price-now">10<span class="small">.8<span class="unit">元</span></span></span>
+                    <span class="price">{{item.value.original_price}}元</span>
+                  </div>
+                </div>
+              </div>
               <textarea v-else v-model="item.value" class="edit-textarea edit-input" placeholder="输入文字">
               </textarea>
             </div>
@@ -300,6 +337,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import PhoneBox from './phone-box/phone-box'
+
   import API from '@api'
   import {adverComputed, adverMethods} from '@state/helpers'
   // import _ from 'lodash'
@@ -323,8 +361,8 @@
       title: TITLE
     },
     data() {
-      this._isSave = false // 是否保存当前数据
       return {
+        isCanSelectMore: true,
         typeList: {
           [ARTICLE]: {
             name: '文章'
@@ -338,37 +376,85 @@
         }, // 三种创作
         currentType: '0', // 现在创作类型
         addData: {
+          likes:[],
           category: '',
           title: '',
-          cover_image: '',
-          cover_image_id: '',
-          coverVideo: '',
-          coverVideoId: '',
-          authorPhoto: '',
-          authPhotoId: '',
+          coverImage: {
+            url: '',
+            id: ''
+          },
+          coverVideo: {
+            url: '',
+            id: ''
+          },
+          authPhoto: {
+            url: '',
+            id: ''
+          },
           authName: '',
-          auth_signature: '',
-          foodList: '',
+          authSignature: '',
           goodCount: 0,
-          lookCount: 0
+          lookCount: 0,
+          // 不同情况的字段
+          videoContent: {
+            url: '',
+            id: '',
+            name: ''
+          },
+          videoIntroduce: "",
+          foodList: '',
+          goodsList: [],
+          // 内容详情
+          details: [{
+            type: 'goods',
+            value: {
+              base_purchase_rate: "1.00",
+              base_sale_rate: "1",
+              base_unit: "个",
+              complete_status: 1,
+              describe: "美味农家小香柚",
+              goods_category_id: 42,
+              goods_category_name: "日用百货",
+              goods_cover_image: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F07%2F03%2F1562139724569-53956fe26e241.jpg",
+              goods_material_category_name: "日用百货",
+              goods_material_name: "美味农家小香柚",
+              goods_sku_code: "SKU1541581145",
+              goods_sku_encoding: "9876543210",
+              goods_sku_id: 55264,
+              goods_video_url: "http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/81fc231a5285890791064001022/bfyDuQxiDTYA.mp4",
+              id: 55217,
+              is_online: 1,
+              is_presale: 1,
+              name: "美味农家小香柚",
+              original_price: "199",
+              purchase_unit: "个",
+              sale_count: 0,
+              sale_unit: "个",
+              source: 1,
+              supplier_name: "13800000001",
+              trade_price: "99",
+              usable_stock: 1
+            }
+          }, {
+            type: 'text',
+            value: '111111111'
+          }, {
+            type: 'image',
+            value: "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/07/01/156197765342658.png"
+          }, {
+            type: 'video',
+            value: 'http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/f810daf65285890791055957705/hZ6zRcaKA8EA.mp4'
+          }
+          ],
         },
-        articleCategoryList: [],// 内容分类列表
+        articleCategoryList: [{
+          name: '111',
+          value: 'skajd'
+        }],// 内容分类列表
         coverImages: [], // 封面图片
-        authorPhoto: [], // 作者头像
+        authPhoto: [], // 作者头像
         // 已经选择的商品头部
         selectedGoodsCommodities: ['商品名称', '单位', '售价', '操作'],
-        goodsList: [],
-        // 内容详情
-        contentDetails: [{
-          type: 'text',
-          value: '111111111'
-        }, {
-          type: 'image',
-          value: "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/07/01/156197765342658.png"
-        }, {
-          type: 'video',
-          value: 'http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/f810daf65285890791055957705/hZ6zRcaKA8EA.mp4'
-        }],
         // 校验规则
         justifyArr: [{
           key: 'category',
@@ -386,13 +472,13 @@
             tip: '请输入5-8个字的文章标题'
           }]
         }, {
-          key: 'cover_image',
+          key: 'coverImage',
           tips: [{
             default: true,
             tip: '请上传首图'
           }]
         }, {
-          key: 'authorPhoto',
+          key: 'authPhoto',
           tips: [{
             default: true,
             tip: '请上传作者头像'
@@ -404,7 +490,7 @@
             tip: '请输入作者名称'
           }]
         }, {
-          key: 'auth_signature',
+          key: 'authSignature',
           tips: [{
             default: true,
             tip: '请输入个性签名'
@@ -419,7 +505,7 @@
             tip: '食材清单'
           }]
         }, {
-          key: 'goodsList',
+          key: 'addData.goodsList',
           tips: [{
             length: [0, 5],
             tip: '最多添加5个商品'
@@ -431,116 +517,187 @@
             tip: '请上传100人以上的微信群照片'
           }]
         }],
-        goodsCategoryList: [],
+        goodsCategoryList:
+          [],
         // 选择商品弹框删选条件
-        chooseGoodsFilter: {
-          limit: 7,
-          page: '',
-          keyword: '',
-          goods_category_id: '',
-        },
+        chooseGoodsFilter:
+          {
+            limit: 7,
+            page:
+              '',
+            keyword:
+              '',
+            goods_category_id:
+              '',
+          }
+        ,
         chooseGoods: [], // 弹框商品列表
-        goodsPage: {
-          total: 1,
-          per_page: 10,
-          total_page: 1
-        },
+        goodsPage:
+          {
+            total: 1,
+            per_page:
+              10,
+            total_page:
+              1
+          }
+        ,
         showLoading: false,
-        selectGoods: [], // 单次选择的商品
+        selectGoods:
+          [], // 单次选择的商品
       }
-    },
+    }
+    ,
     computed: {
-      ...adverComputed,
-      name() {
-        console.log(this.typeList[this.currentType] && this.typeList[this.currentType].name)
-        return this.typeList[this.currentType] && this.typeList[this.currentType].name || '文章'
+      ...
+        adverComputed,
+      isShowEmpty() {
+        return !(this.addData.title || this.addData.coverImage.id
+          || this.addData.authPhoto.id || this.addData.authName
+          || ((this.addData.videoContent.id || this.addData.videoIntroduce) && this.currentType === '1')
+          || (this.currentType === '2' && this.addData.foodList)
+          || (this.currentType !== '1' && this.addData.details.length))
       },
+      name() {
+        return this.typeList[this.currentType] && this.typeList[this.currentType].name || '文章'
+      }
+      ,
       dataName() {
         let lastName = this.cmsType[0].toUpperCase() + this.cmsType.slice(1, this.cmsType.length)
         let useName = `temporary${lastName}`
         return useName
       }
-    },
+    }
+    ,
     async created() {
       this.currentType = this.$route.params.type
       console.log(this.$route.params.type)
       this._getArticleCategory()
-    },
+    }
+    ,
     methods: {
-      ...adverMethods,
+      ...
+        adverMethods,
       // 获取内容分类列表
       _getArticleCategory() {
 
-      },
+      }
+      ,
+      // 封面
       getCoverVideo(video) {
-        console.log(video)
+        console.log('封面视频', video)
         let item = {id: 0, image_id: video.id, image_url: '', video_url: video.full_url}
-        this.addData.cover_image = video.full_cover_url
-        this.addData.cover_image_id = video.id
-        this.addData.covervideoId = video.id
-        this.addData.covervideo = video.full_url
+        this.addData.coverVideo.id = video.id
+        this.addData.coverVideo.url = video.full_url
         this.coverImages[0] = item
-      },
-      // 封面图片
+      }
+      ,
       getPic(image) {
-        console.log(image)
+        console.log('封面图片', image)
         let item = {id: 0, image_id: image.id, image_url: image.url}
-        this.addData.cover_image = image.url
-        this.addData.cover_image_id = image.id
+        this.addData.coverImage.url = image.url
+        this.addData.coverImage.id = image.id
         this.coverImages[0] = item
-      },
-      delPic(index) {
-        this.addData.cover_image = ''
-        this.addData.cover_image_id = ''
-        this.addData.covervideoId = ''
-        this.addData.covervideo = ''
+      }
+      ,
+      delPic() {
+        this.addData.coverImage = {
+          url: '',
+          id: ''
+        }
+        this.addData.coverVideo = {
+          url: '',
+          id: ''
+        }
         this.coverImages = []
-      },
+      }
+      ,
       failFile(msg) {
         this.$emit('showToast', msg)
-      },
+      }
+      ,
       // 作者头像
       getAuthorPic(image) {
         let item = {id: 0, image_id: image.id, image_url: image.url}
-        this.addData.authorPhoto = image.url
-        this.addData.authorPhotoId = image.id
-        this.authorPhoto[0] = item
-      },
-      delAuthorPic(index) {
-        this.addData.authorPhoto = ''
-        this.addData.authorPhotoId = ''
-        this.authorPhoto = []
-      },
+        this.addData.authPhoto.url = image.url
+        this.addData.authPhoto.id = image.id
+        this.authPhoto[0] = item
+      }
+      ,
+      delAuthorPic() {
+        this.addData.authPhoto.url = ''
+        this.addData.authPhoto.id = ''
+        this.authPhoto = []
+      }
+      ,
+      // 视频内容
+      getVideoContent(video) {
+        this.addData.videoContent.url = video.full_url
+        this.addData.videoContent.id = video.id
+        this.addData.videoContent.name = video.name
+      }
+      ,
+      deleteVideoContent() {
+        this.addData.videoContent = {
+          url: '',
+          id: '',
+          name: ''
+        }
+      }
+      ,
       // 内容详情增加
+      addDetailContentItem(item) {
+        this.addData.details.push(item)
+        this.$nextTick(function () {
+          let el = this.$refs.detailsContent.$el
+          console.log(el)
+          el.scrollTop = el.scrollHeight
+        })
+      }
+      ,
       addTextItem() {
-        this.contentDetails.push({
+        this.addDetailContentItem({
           type: 'text',
           value: ''
         })
-      },
+      }
+      ,
       addImageItem(image) {
-        this.contentDetails.push({
+        this.addDetailContentItem({
           type: 'image',
           value: image.url,
           id: image.id
         })
         console.log(image)
-      },
+      }
+      ,
       addVideoItem(video) {
-        this.contentDetails.push({
+        console.log('addVideoItem', video)
+        this.addDetailContentItem({
           type: 'video',
           value: video.full_url,
           id: video.id
         })
         console.log(video)
-      },
-      deleteContentItem(idx) {
-        this.contentDetails.splice(idx, 1)
-      },
+      }
+      ,
+      addOneGoods() {
+        this.showGoods()
+        this.isCanSelectMore = false
+      }
+      ,
+      deleteContentItem(idx, item) {
+        this.addData.details.splice(idx, 1)
+        if (item.type === 'goods') {
+          let index = this.addData.goodsList.findIndex(goods => goods.id === item.value.id)
+          if (index !== -1) this.addData.goodsList.splice(index, 1)
+        }
+      }
+      ,
       // 托拽
       _setSort() {
-        console.log(this.contentDetails)
-      },
+        console.log(this.addData.details)
+      }
+      ,
       // --------------弹窗
       // 获取商品列表
       async _getGoodsList() {
@@ -562,16 +719,16 @@
           total_page: res.meta.last_page
         }
         this.chooseGoods = res.data.map((item, index) => {
-          let isInList = this.goodsList.findIndex((items) => items.id === item.id)
+          let isInList = this.addData.goodsList.findIndex((items) => items.id === item.id)
           let isSelect = this.selectGoods.findIndex((select) => select.id === item.id)
-
           item.selected = isSelect !== -1 ? 2 : (isInList !== -1 ? 1 : 0)
           console.log(isInList, 'isInList', isSelect, 'isSelect', item.selected)
           // 0 没有选择 2 选择高亮  1 单个确认进入列表
           return item
         })
         this.$loading.hide()
-      },
+      }
+      ,
       // 展示商品弹窗
       async showGoods() {
         this.chooseGoodsFilter.page = 1
@@ -579,40 +736,46 @@
         await this._getGoodsList()
         this.$refs.goods.showModal()
         this.$refs.pagination.beginPage()
-      },
+      }
+      ,
       // 隐藏商品弹窗
       hideGoods() {
         this.selectGoods = []
         this.$refs.goods.hideModal()
-      },
+      }
+      ,
       // 获取分页商品列表
       async getMoreGoods(page) {
         this.chooseGoodsFilter.page = page
         await this._getGoodsList()
-      },
+      }
+      ,
       // 获取一级分类
       async _getFirstAssortment() {
         let res = await API.Outreach.goodsCategory({parent_id: this.chooseGoodsFilter.goods_category_id})
         this.goodsCategoryList = res.error === this.$ERR_OK ? res.data : []
-      },
+      }
+      ,
       // 选择分类
       async goodsCategoryChange(item) {
         this.chooseGoodsFilter.goods_category_id = item.id
         this.chooseGoodsFilter.page = 1
         await this._getGoodsList()
-      },
+      }
+      ,
       // 搜索商品
       async _searchGoods(text) {
         this.chooseGoodsFilter.keyword = text
         this.chooseGoodsFilter.page = 1
         await this._getGoodsList()
-      },
+      }
+      ,
       // 勾选商品
       selectGoodsBtn(item, index) {
         /* eslint-disable */
         switch (item.selected) {
           case 0:
-            if (this.goodsList.length === 5) {
+            if (this.addData.goodsList.length + this.selectGoods.length === 5) {
               this.$toast.show('选择商品数量不能超过五个')
               return
             }
@@ -627,48 +790,89 @@
             }
             break
         }
-      },
+      }
+      ,
       // 删除商品
       _showDelGoods(item, index) {
-        this.goodsList.splice(index, 1)
-      },
+        this.addData.goodsList.splice(index, 1)
+      }
+      ,
       // 单个添加
       _additionOne(item, index) {
         if (item.selected === 1) {
           return
         }
-        if (this.goodsList.length === 5 && item.selected !== 2) {
+        if (this.addData.goodsList.length === 5) {
           this.$toast.show('选择商品数量不能超过5个')
           return
         }
         this.chooseGoods[index].selected = 1
-        this.goodsList.push(item)
-        this.chooseGoods.forEach((item) => {
-          if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
+        this.addData.goodsList.push(item)
+        if (this.currentType === '0') {
+          this.selectGoods = []
+          this.addDetailContentItem({type: 'goods', value: item})
+        } else {
+          this.chooseGoods.forEach((item) => {
+            if (item.selected === 1) {
+              let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+              if (idx !== -1) {
+                this.selectGoods.splice(idx, 1)
+              }
             }
-          }
-        })
-      },
+          })
+        }
+
+      }
+      ,
       // 批量添加
       _batchAddition() {
         this.chooseGoods = this.chooseGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.goodsList = this.goodsList.concat(this.selectGoods)
+        this.addData.goodsList = this.addData.goodsList.concat(this.selectGoods)
+        if (this.currentType === '0') {
+          this.selectGoods.forEach(item => {
+            this.addDetailContentItem({type: 'goods', value: item})
+          })
+        }
         this.selectGoods = []
         this.hideGoods()
-      },
+
+      }
+      ,
+      justifyConent() {
+        let message = ''
+        if (!this.addData.category) message = '请选择内容分类'
+        else if (!this.addData.title) message = '请输入文章标题'
+        else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 8)) message = '请输入5-8个字的文章标题'
+        else if (!this.addData.coverImage.id) message = '请上传封面'
+        else if (!this.addData.authPhoto.id) message = '请上传作者头像'
+        else if (!this.addData.authName) message = '请填写作者名字'
+        else if (this.currentType === '1') {
+          if (!this.addData.videoContent.id) message = '请上传视频内容'
+          else if (!this.addData.videoIntroduce) message = '请填写视频简介'
+        } else if (this.currentType === '2' && !this.addData.foodList) message = '请填写食材清单'
+        else if (this.currentType !== '1' && !this.addData.details.length) message = '请编辑内容详情'
+        else if (this.addData.goodCount) this.addData.goodCount = 0
+        else if (this.addData.lookCount) this.addData.lookCount = 0
+        if (message) {
+          this.$toast.show(message)
+          return false
+        } else {
+          return true
+        }
+      }
+      ,
       // 上线
       async submitLaunch() {
-        console.log(this.contentDetails)
-      },
+        let res = this.justifyConent()
+        console.log(res, this.addData.details)
+      }
+      ,
       // 草稿
       async submitDraft() {
-      },
+      }
     }
   }
 </script>
@@ -771,6 +975,51 @@
         color: $color-text-assist
 
 
+      .video-wrap
+        width: 265px
+        height: 140px
+        border-radius 4px
+        position: relative
+        object-fit: fill
+
+        .delete-icon
+          position: absolute
+          top: 0
+          right: 0
+          width: 18px
+          height: @width
+          icon-image(icon-delete_img)
+
+      .video-content-wrap
+        padding: 12px
+        width: 265px
+        height: 140px
+        display flex
+        flex-direction column
+        justify-content space-around
+        align-items center
+        background: #FAFAFA
+        border-1px(#D3D8DC, 4px, dashed)
+
+        .video-tip
+          width: 100%
+          padding: 0px 14px 20px
+          flex: 1
+          icon-image(pic-video_select)
+          background-origin content-box
+          background-repeat no-repeat
+
+        .upload-video-wrap
+          &:hover  .upload-video
+            color: #ffffff
+            background: $color-main
+            cursor pointer
+
+        .upload-video
+          border-radius: 2px
+          height: 28px
+          padding: 0px 10px
+
   /* 布局*/
   .advertisement
     flex: 1
@@ -800,13 +1049,11 @@
           height: 28px
           line-height: 28px
           width: 108px
-          color: #4DBD65
           font-size: $font-size-14
           font-family: $font-family-regular
           transition: all 0.3s
           text-align: center
           border-radius: 2px
-          border: 1px solid #4DBD65
           display: flex
           align-items: center
           justify-content: center
@@ -899,21 +1146,79 @@
         margin-left: 104px
         max-height: 600px
         overflow auto
-        scroll-opacity(5px, 100px)
 
         .content-item
-          border: 0.5 pxdashed #D3D8DC
+          border-1px(#D3D8DC)
           border-radius: 2px
           background: #fff
-          height: 168px
+          height: 140px
           position relative
           margin-bottom: 20px
-          padding:14px
+          padding: 14px
+
+          .good-item
+            height: 112px
+            display flex
+
+            .goods-photo
+              width: 112px
+              height: @width
+
+            .info
+              margin-left: 14px
+              flex: 1
+              display flex
+              flex-direction column
+              justify-content space-around
+
+            .name
+              font-family $font-family-medium
+              font-size: $font-size-16
+              color: #111111
+              overflow hidden
+              text-overflow ellipsis
+              white-space: nowrap
+
+            .details
+              font-family $font-family-regular
+              font-size: $font-size-14
+              color: #808080
+              margin: 0px 0px 5px
+              overflow hidden
+              text-overflow ellipsis
+              white-space: nowrap
+
+            .price-now
+              color: #FA7500
+              font-size: 32px
+              font-family $font-family-medium
+
+              .small
+                font-size: $font-size-20
+
+                .unit
+                  font-family $font-family-regular
+
+            .price
+              color: #B7B7B7
+              font-size: $font-size-30
+              font-family $font-family-regular
+              text-decoration-line line-through
+              margin-left 6px
+
           .conten-video
           .conten-image
-            width:140px
+            width: 112px
             height @width
             border-radius 2px
+
+          .edit-textarea
+            border-width: 0px
+            padding: 0px
+            scroll-opacity(5px, 100px)
+            height: 100%
+            width: 100%
+
           &:last-child
             margin-bottom: 0px
 
@@ -924,10 +1229,6 @@
             position absolute
             right: 10px
             top: 10px
-
-          .edit-textarea
-            height: 100%
-            width: 100%
 
 
   //  商品弹窗
