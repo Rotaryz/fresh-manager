@@ -2,103 +2,185 @@
   <div class="phone-box">
     <div class="phone">
       <div class="content-box">
+        <div class="content-article-detail">
+          <img v-if="!details.coverVideo" :src=" '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix" class="cover-photo">
+          <video v-if="details.coverVideo" :src="item.value" class="cover-photo"></video>
+          <div class="auth-wrap">
+            <img :src="'./icon-high_quality@2x.png'" class="good-article-icon">
+            <div class="auth-photo-wrap">
+              <img v-if="details.authPhoto" :src="details.authPhoto" class="auth-photo">
+              <img src="./icon-v@2x.png" class="auth-photo-v">
+            </div>
+            <div class="auth-info">
+              <div class="name">
+                {{details.authName}}
+                <img src="./icon-lv8@2x.png" class="level-icon">
+              </div>
+              <div class="auth-introduce">{{details.authIntroduce}}</div>
+            </div>
+          </div>
+          <div class="browse-wrap">
+            <div class="browse-title">浏览1.9万</div>
+            <div class="like-wrap">
+              <div class="like-total">
+                <img src="./icon-like_big1@2x.png" alt="" class="like-icon">
+                <div class="total-count">664</div>
+              </div>
+              <img v-for="(item,idx) in details.likes" :key="idx" :src="item.photo" class="liker-photo">
+            </div>
+          </div>
+          <div class="line-middle"></div>
+          <div class="article-cont">
+            <div class="name">懒人版糖醋排骨</div>
+            <div class="foods-list">
+              {{details.foodsList}}
+            </div>
+            <div class="goods-list">
+              <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item"></goods-item>
+            </div>
+            <div v-for="(item,idx) in details.articles" :key="idx" class="article-item">
+              <div v-if="item.type==='text'" class="article-text">{{item.value}}</div>
+              <img v-if="item.type==='img'" :src="item.value" mode="widthFix" class="article-image">
+              <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
+              <goods-item v-if="item.type==='goods'" :goodsData="item.value"></goods-item>
+            </div>
+          </div>
+          <div class="bottom-operate-wrap">
+            <div class="bottom-operate">
+              <div class="operate-item">
+                <div class="icon-wrap">
+                  <div class="count">{{details.goodCount}}</div>
+                  <img v-if="!goodsStatus" :src=" './icon-like_big1@2x.png'" class="operate-icon">
+                </div>
+              </div>
+              <div class="operate-item">
+                <div class="icon-wrap">
+                  <div class="count">{{details.goodCount}}</div>
+                  <img :src="'./icon-share@2x.png'" class="operate-icon">
+                </div>
+              </div>
+              <div class="operate-item">
+                <div class="icon-wrap">
+                  <div class="count red">{{details.goodCount}}</div>
+                  <img :src=" './icon-shopping_cart@2x.png'" class="operate-icon">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import goodsItem from './goods-item/goods-item.vue'
   const COMPONENT_NAME = 'PHONE_BOX'
+
   export default {
     name: COMPONENT_NAME,
     components: {
+      goodsItem
     },
-    props: {
-      comType: {
-        type: String,
-        default: 'bannar'
-      },
-      cmsArray: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
-      activityGoodsList: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
-      newClientList: {
-        type: Array,
-        default: () => []
-      },
-      todayHotList: {
-        type: Array,
-        default: () => []
-      },
-      guessList: {
-        type: Array,
-        default: () => []
-      },
-      groupList: {
-        type: Array,
-        default: () => []
-      }
-    },
+    props: {},
     data() {
       return {
-        bannerIndex: 0,
-        serverList: [
-          {
-            text: '次日送达',
-            icon: require('./icon-lightning@2x.png')
-          },
-          {
-            text: '品控质检',
-            icon: require('./icon-ok@2x.png')
-          },
-          {
-            text: '100%售后服务',
-            icon: require('./icon-ok@2x.png')
-          },
-          {
-            text: '原产地直采',
-            icon: require('./icon-ok@2x.png')
-          }
-        ]
+        goodsStatus: false,
+        details: {
+          coverVideo: false,
+          authName: 'dsofdpsf',
+          authIntroduce: '美食达人。深入浅出的美食科普知识…',
+          authPhoto: 'https://img.jkweixin.net/defaults/yx-image/retuan/hdpi/icon-select_press01.png',
+          text: '迅速的翻炒，我用筷子直接搅拌了几下，蛋液只要都凝固了，就可以改小火盛起来，我这个炒锅有点粘锅，看起来不是很好。',
+          goodCount: 132,
+          foodsList: '用料：排骨、糖、醋、大葱、丁香、八角、花椒、老抽、可乐、盐',
+          likes: [{
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }, {
+            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
+          }],
+          goodsList: [{
+            name: '超值特惠 2斤农家新鲜家新鲜',
+            details: '绿色外皮下包裹着白嫩嫩的果…',
+            price: '10.8',
+            photo: ''
+          }, {
+            name: '超值特惠 2斤农家新鲜家新鲜',
+            details: '绿色外皮下包裹着白嫩嫩的果…',
+            price: '10.8',
+            photo: ''
+          }, {
+            name: '超值特惠 2斤农家新鲜家新鲜',
+            details: '绿色外皮下包裹着白嫩嫩的果…',
+            price: '10.8',
+            photo: ''
+          }, {
+            name: '超值特惠 2斤农家新鲜家新鲜',
+            details: '绿色外皮下包裹着白嫩嫩的果…',
+            price: '10.8',
+            photo: ''
+          }],
+          steps: [{
+            type: 'text',
+            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
+          }, {
+            type: 'text',
+            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
+          }, {
+            type: 'text',
+            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
+          }, {
+            type: 'text',
+            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
+          }],
+          articles: [{
+            type: 'text',
+            value: '一般而言在聊到自己制作的肉一类菜肴的时候，每个人最先想到的大概都是辣椒炒肉以及红烧肉了，但实际上有一种比这两种更受欢迎的菜，那就是红烧排骨了。'
+          }, {
+            type: 'img',
+            value: 'https://img.jkweixin.net/defaults/yx-image/goods/pic-zbyx@2x.png'
+          }, {
+            type: 'text',
+            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
+          }, {
+            type: 'text',
+            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
+          }, {
+            type: 'img',
+            value: 'https://img.jkweixin.net/defaults/yx-image/goods/pic-zbyx@2x.png'
+          }, {
+            type: 'goods',
+            value: {
+              name: '超值特惠 2斤农家新鲜家新鲜',
+              details: '绿色外皮下包裹着白嫩嫩的果…',
+              price: '10.8',
+              photo: ''
+            }
+          }]
+        }
       }
     },
-    computed: {
-    },
-    methods: {
-    }
+    computed: {},
+    methods: {}
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
-  // 服务说明
-  .server-book-wrapper
-    display :flex
-    padding :8px 12.5px 10px
-    .serve-wrapper
-      font-family: $font-family-regular
-      color: #54990F
-      display :flex
-      align-self :center
-      justify-content :center
-      img
-        width :11px
-        height :@width
-      span
-        transform :scale(0.8)
-        font-size: 10px
-        line-height :11px
-        margin-left :-1px
-        white-space :nowrap
 
   // 结构布局
   .phone-box
@@ -106,11 +188,13 @@
     box-sizing: border-box
     display: flex
     justify-content: center
+
     .phone
       icon-image('pic-tel')
       width: 340px
       height: 726.24px
       position: relative
+
       .content-box
         padding: 0 2px
         box-sizing: border-box
@@ -121,363 +205,170 @@
         height: 499px
         max-height: 532px
         overflow-x: hidden
+
         &::-webkit-scrollbar
           width: 0
-  // 活动tab
-  .active-wrapper
-    padding-top :10px
-    background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 5%)
-    // tab
-    .tab-wrapper
-      overflow :hidden
-      height :46px
-      padding :0 5px
-      .tab-item
-        display :inline-block
-        p
-          padding-top :7px
-          font-family: $font-family-medium
-          font-size: 12px;
-          color: #1D2023;
-          text-align: center;
-        .sub
-          display :block
-          font-family: $font-family-regular;
-          font-size: 10px;
-          color: #808080;
-          text-align: center;
-          line-height :14px
-          height :16px
-          border-radius :14px
-          transform :scale(0.7)
-          padding :2px 5px
-        &.active
-          p
-            color: #73C200
-          .sub
-            background : #73C200
-            color: #fff
-    // 各个活动
-    .panel
-      position :relative
-      padding: 47px 9px 0
-      min-height :90px
-      &.guess
-        padding :0 9px 0
-      .banner-img
-        position absolute
-        left :0
-        top:0
-        width :100%
-      .goods-item-wrapper
-        padding-bottom :10px
-        .goods-wrapper
-          height :102px
-          display :flex
-          border-radius: 3px
-          position :relative
-          align-items :center
-          padding :0 8px
-          background :#FFFFFF
-          .right
-            flex: 1
-            overflow :hidden
-            padding-left :8px
-            height :100%
-            position :relative
-            background :#FFFFFF
-            .button-group
-              font-family: $font-family-regular
-              position absolute
-              right :0
-              bottom :5px
-              &.guess
-                .button-wrapper
-                  background: #73C200
-              &.group
-                .button-wrapper
-                  background: #FF8506
-              .button-wrapper
-                height :22px
-                padding :0 13px
-                background: #FF8506
-                border-radius: 22px
-                font-size: 10px;
-                display :flex
-                align-items :center
-                justify-content :center
-                color: #FFFFFF
-                transform :scale(0.9)
-              .number
-                position :relative
-                top: -2px
-                font-size: 10px
-                height: 18.6px
-                transform :scale(0.7)
-                color: #808080
-                text-align :center
-            .type-icon
-              position absolute
-              left :8px
-              bottom :30px
-              height :18.5px
-              line-height :8.5px
-              border-radius: 12.5px
-              padding :4px 5px
-              font-family: $font-family-regular
-              font-size: 10px;
-              transform scale(0.8)
-              border: 1px solid transparent
-              &.group
-                background: rgba(250,117,0,0.10)
-                color: #FA7500;
-                border: 1px solid #FA7500
-            .title
-              width :100%
-              height: 18px
-              line-height: 18px
-              box-sizing: border-box
-              margin-top :10px
-              font-family: $font-family-medium
-              font-size: 12px
-              color: #111111
-              no-wrap()
-            .sub-title
-              width :100%
-              padding-top :0px
-              height: 18px
-              line-height: 18px
-              font-family: $font-family-regular
-              font-size: 10px;
-              color: #808080;
-              no-wrap()
-            .money-wrapper
-              display :flex
-              font-family: $font-family-medium
-              color: #FA7500;
-              padding-top :24px
-              .int
-                font-size: 19px
-              .dot
-                position :relative
-                top:7px
-                font-size :12px
-              .unit
-                padding-left :1px
-                position :relative
-                top:6px
-                font-size :10px
-                transform :scale(0.8)
-                font-family: $font-family-regular
-              .origin
-                padding-left :2px
-                position :relative
-                top:6px
-                font-family: $font-family-regular
-                font-size :10px
-                color: #B7B7B7
-                transform :scale(0.8)
-                text-decoration :line-through
-          .left
-            width :86px
-            height :@width
-            position :relative
-            .goods-image
-              width: 100%
-              height: 100%
-              object-fit :cover
-              background :#f5f5f5
-              border-radius :1px
-              &.empty
-                object-fit :contain
-            .label
-              position :absolute
-              display :block
-              top:-1px
-              left :@top
-              width :25px
-              height :@width
 
-  // 商品分类
-  .goods-classify-wrapper
-    padding :0 9.4px 17.5px
-    display :flex
-    flex-direction :row
-    flex-wrap :wrap
-    .classify-item
-      width :20%
-      display :flex
-      flex-direction column
-      align-items :center
-      overflow :hidden
-      &.next-row
-        padding-top :9.6px
-      img
-        display inline-block
-        width :39.2px
-        background :#ccc
-        height :@width
-        text-align :center
-      p
-        width :100%
-        box-sizing :border-box
-        padding :0 1px
-        padding-top :7.9px
-        font-family: $font-family-regular
-        font-size: 9.41px;
-        color: #333333;
-        text-align: center;
-        line-height: 1
-        no-wrap()
-  // 限时抢购
-  .flash-wrapper
-    padding :0 9.4px
-    .goods-list-wrapper
-      height :134.8px
-      box-sizing :border-box
-      border:7px solid #FFE359
-      display :flex
-      flex-wrap :nowrap
-      overflow :hidden
-      .goods-item-wrapper
-        height :100%
-        margin-left :5.5px
-        width :71px
-        position :relative
-        &.empty
-          background :#f5f5f5
-          .goods-image
-            object-fit :contain
-          .empty-text
-            font-size :10px
-            text-align :center
-        .goods-image
-          margin-top :7.8px
-          width :71px
-          height :@width
-          position :relative
-          .goods-img
-            width :100%
-            height :@width
-            object-fit :cover
-            border-radius: 2.35px;
-          .label
-            width :20px
-            height :12.2px
-            position :absolute
-            left :0
-            bottom :@left
-        .title
-          padding-top :5px
-          width :100%
-          font-family: $font-family-regular
-          font-size: 10.19px;
-          color: #111111;
-          transform :scale(0.9)
-          no-wrap()
-        .money-wrapper
-          width :100%
-          display :flex
-          font-family: $font-family-medium
-          color:#FA7500
-          overflow :hidden
-          .m-int
-            font-size: 15px
-            transform :scale(0.8)
-            position :relative
-            bottom :3px
-          .m-dot, .m-unit
-            position :relative
-            font-size: 10px;
-            bottom :1px
-          .m-dot
-            transform :scale(.9)
-          .m-unit
-            transform :scale(0.8)
-          .m-origin
-            font-family: $font-family-regular
-            font-size: 10px;
-            transform :scale(0.8)
-            color: #B7B7B7;
-            text-decoration :line-through
-    .tab-wrapper
-      display :flex
-      height :35.3px
-      align-items :center
-      background :#F7F9FA
-      .logo
-        width :60px
-        height :14.8px
-        margin-right :11px
-        margin-left :7.8px
-      .more-wrapper
-        flex: 1
-        display :flex
-        height :100%
-        align-items :center
-        justify-content :flex-end
-        padding-right :9.8px
-        p
-          font-family: $font-family-regular
-          font-size: 10.98px;
-          color: #111111;
-          transform scale(0.8)
-        img
-          width :4.3px
-          height :8.2px
-      .button-wrapper
-        width :64.3px
-        height :100%
-        color: #1D2023;
-        font-family: $font-family-medium
-        text-align :center
-        &.active
-          background :#FFE359
-        .title
-          padding-top :8px
-          font-size: 12.54px;
-          transform scale(1)
-          line-height :0.8
-        .date
-          font-size: 7.84px;
-          transform scale(0.6)
-          line-height :1
-
-  // 轮播图
-  .banner-box
-    margin-top: 3px
-    background: $color-white
+  .content-article-detail
     width: 100%
-    overflow: hidden
-    display: flex
-    align-items: center
-    justify-content: center
-    box-sizing: border-box
-    position: relative
-    transition: all 0.2s
-    border: 2px dashed #D9D9D9
-    .big-box
-      width: 299px
-      height: 100%
-      box-sizing: border-box
-    .banner
-      height: 117px
-      .carousel
-        border-radius: 2px
+
+    .cover-photo
+      width: 100vw
+
+    .article-cont
+      padding: 13px 15px
+
+    .auth-wrap
+      display flex
+      align-items center
+      margin-bottom: 12px
+      padding: 13px 15px
+      position relative
+
+      .good-article-icon
+        position absolute
+        right: 11px
+        top: 35px
+        width: 48px
+        height: @width
+
+      .auth-photo-wrap
+        position: relative
+
+        .auth-photo
+          width: 36px
+          height: 36px
+
+        .auth-photo-v
+          position: absolute
+          bottom: 0
+          right: 0
+          width: 12px
+          height: 12px
+
+      .auth-info
+        font-family $font-family-regular
+        margin-left: 5px
+
+        .name
+          font-size: $font-size-14
+          color: #111111
+          margin-bottom: 6px
+
+          .level-icon
+            width: 40px
+            height: 13px
+
+        .auth-introduce
+          color: #808080
+          font-size: $font-size-12
+
+    .browse-wrap
+      padding-left: 15px
+
+      .browse-title
+        font-size $font-size-12
+        color: #333
+        padding-bottom: 10px
+        border-bottom-1px(#E6E6E6)
+
+      .like-wrap
+        height: 56px
+        display flex
+        align-items center
+        flex-wrap wrap
+        overflow hidden
+
+        .like-total
+          margin-right: 10px
+
+          .like-icon
+            width: 15px
+            height: 15px
+
+          .total-count
+            font-size $font-size-10
+            color: #111
+            margin-top: 3px
+
+        .liker-photo
+          margin 15px 20px 15px 0px
+          width: 26px
+          height: 26px
+          flex-shrink 0
+
+    .line-middle
+      border-bottom-1px(#E6E6E6)
+
+    .article-cont
+      padding: 25px 15px 10px 15px
+
+      .name
+        font-size $font-size-22
+        font-family $font-family-medium
+        color: #111111
+        margin-bottom 25px
+
+      .foods-list
+        font-family $font-family-regular
+        font-size $font-size-15
+        letter-spacing 0.4px
+
+      .goods-list
+        margin-bottom: 10px
+        margin-top: 25px
+
+      .article-item
+        margin-bottom 15px
+
+      .article-text
+        font-family $font-family-regular
+        font-size $font-size-15
+
+      .article-image
+      .article-video
         width: 100%
-        height: 100%
-        object-fit :cover
 
-  // 选中
-  .touch
-    overflow: hidden
-    position: relative
-    border: 2px solid $color-main !important
 
-  // 未选中
-  .un-touch
-    transition: all 0.2s
-    background-clip: padding-box
-    border: 2px dashed #D9D9D9
+    .bottom-operate-wrap
+      height: 50px
+
+    .bottom-operate
+      position fixed
+      bottom 0px
+      right: 0
+      left: 0
+      background white
+      box-shadow: 0 -4px 20px 0 rgba(29, 32, 35, 0.06)
+      display flex
+      justify-content space-around
+      align-items center
+
+      .operate-item
+        padding: 13px
+
+        .icon-wrap
+          position relative
+          height: 23px
+
+          .operate-icon
+            width: 23px
+            height: @width
+
+          .count
+            position absolute
+            top: -5px
+            left: 23px
+            color: #111
+            font-size $font-size-12
+
+            &.red
+              left: 16px
+              padding: 0px 4px
+              background #FE3B39
+              color: #fff
+              height: 16px
+              border-radius 8px
+              font-size: $font-size-10
 
 </style>

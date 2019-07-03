@@ -33,7 +33,8 @@ function resetUrl(url) {
   if (IS_PRODUCTION) {
     return url
   }
-  let pathname = window.location.pathname
+  // todo
+  let pathname = window.location.pathname + 'v3/'
   if (pathname && pathname.indexOf('/v') > -1) {
     let version = pathname.substr(1)
     url = url.split('api/').join(`${version}api/`)

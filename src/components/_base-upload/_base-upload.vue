@@ -22,6 +22,13 @@
       <draggable v-model="picList" class="draggable" @update="_setSort()">
         <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
           <span v-if="isEdit" class="close" @click="_del(index)"></span>
+          <video v-if="item.video_url" :src="item.video_url" class="video-tag"></video>
+          <video v-if="item.video_url && isGetVedioCoverImage"
+                 ref="fullVideo"
+                 :src="item.video_url"
+                 crossOrigin="anonymous" class="full-video"
+                 @loadeddata="loadedVedio"
+          ></video>
         </div>
       </draggable>
       <div v-if="picList.length < picNum" class="add-image add-image-video">
@@ -70,6 +77,7 @@
 <script>
   import API from '@api'
   import Draggable from 'vuedraggable'
+  import {uploadFiles} from '../../utils/vod/vod'
 
   const EDIT_IMAGE = 'BASE_EDIT_IMAGE'
 
@@ -79,6 +87,10 @@
       Draggable
     },
     props: {
+      isGetVedioCoverImage:{
+        type: Boolean,
+        default: true
+      },
       imageIconClassName: {
         type: String,
         default: ''
@@ -107,10 +119,26 @@
     },
     data() {
       return {
+        coverImage:'',
         showLoading: false
       }
     },
     methods: {
+      async loadedVedio() {
+        var canvas = document.createElement("canvas");
+        let video = this.$refs.fullVideo[0]
+        console.log('video', video)
+        let scale =1
+        canvas.width = video.videoWidth * scale
+        canvas.height = video.videoHeight * scale
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        let imgsrc = canvas.toDataURL("image/png")
+        this.coverImage = imgsrc
+        let param = this._infoImage(this.coverImage)
+        console.log(this.coverImage)
+
+        await this._upImage(param)
+      },
       _setSort() {
       },
       _del(index) {
@@ -127,21 +155,25 @@
       },
       // 格式化图片流
       _infoImage(file) {
+        console.log(file)
         let param = new FormData() // 创建form对象
         param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
       },
       async _upImage(param) {
+        console.log(param)
         let res = await API.Upload.UploadImg(param)
         this.showLoading = false
         if (res.error !== this.$ERR_OK) {
           this.$emit('failFile', res.message)
           return
         }
+        console.log('successImage', res)
         this.$emit('getPic', res.data)
       },
       _addVideo(e) {
         this.showLoading = true
+        console.log(e.target.files)
         let arr = Array.from(e.target.files)
         e.target.value = ''
         let size = (arr[0].size / 1024 / 1024)
@@ -151,7 +183,7 @@
           this.$emit('failFile', '视频大小不能超过30M')
           return
         }
-        this.$vod.uploadFiles(arr[0], curr => {
+        uploadFiles(arr[0], curr => {
         }).then(res => {
           this.showLoading = false
           if (res.error !== this.$ERR_OK) {
@@ -159,6 +191,7 @@
             return
           }
           this.$emit('successVideo', res.data)
+          console.log('successVideo111', res)
         }).catch(err => {
           this.showLoading = false
           this.$emit('failFile', err)
@@ -258,7 +291,8 @@
       width: 100%
       height: 100%
       object-fit: cover
-
+    .full-video
+      visibility hidden
   .close
     icon-image('pic-delete')
     width: 15px

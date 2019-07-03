@@ -51,6 +51,7 @@
                          @failFile="failFile"
                          @getPic="getPic"
                          @delPic="delPic"
+                         @successVideo="getCoverVideo"
             ></base-upload>
             <div class="tip">
               请添加不大于10M的清晰图片或视频
@@ -93,9 +94,13 @@
           </div>
           <!-- todo-->
           <div class="edit-input-box flex-box">
-            <base-edit-image :picList.sync="coverImages" :picNum="1" fileType="video" @failFile="failFile" @getPic="getPic"
-                             @delPic="delPic"
-            ></base-edit-image>
+            <base-upload :picList.sync="coverImages"
+                         :picNum="1"
+                         fileType="video"
+                         @failFile="failFile"
+                         @getPic="getPic"
+                         @delPic="delPic"
+            ></base-upload>
             <div class="tip">
               请上传5-15秒竖版视频，大小控制在100M以内优质且清晰的小视频，可以获得更多流量哦
             </div>
@@ -125,7 +130,8 @@
           <div class="edit-input-box">
             <textarea v-model="addData.foodList" class="edit-textarea edit-input"
                       placeholder="例子：大蒜，酱油，猪肉，食材之间用逗号隔开，最多输入50个字符"
-                      maxlength="50"></textarea>
+                      maxlength="50"
+            ></textarea>
             <span class="num">{{addData.foodList && addData.foodList.length || 0}}/50</span>
           </div>
         </div>
@@ -169,14 +175,14 @@
               <div class="icon icon-text"></div>
               <div>文本</div>
             </div>
-            <base-upload fileType="image-custom">
+            <base-upload fileType="image-custom" @getPic="addImageItem">
               <div class="add-cont-type-item">
                 <div class="icon icon-img"></div>
                 <div>图片</div>
               </div>
             </base-upload>
 
-            <base-upload fileType="video-custom">
+            <base-upload fileType="video-custom" @successVedio="addVideoItem">
               <div class="add-cont-type-item">
                 <div class="icon icon-video"></div>
                 <div>视频</div>
@@ -193,9 +199,11 @@
           <transition-group>
             <div v-for="(item, idx) in contentDetails" :key="idx" class="content-item">
               <div class="close-icon" @click="deleteContentItem(idx)"></div>
-              <textarea v-model="item.value" class="edit-textarea edit-input" placeholder="输入文字"></textarea>
+              <img v-if="item.type==='image'" :src="item.value" class="conten-image">
+              <video v-else-if="item.type==='video'" :src="item.value" class="conten-video"></video>
+              <textarea v-else v-model="item.value" class="edit-textarea edit-input" placeholder="输入文字">
+              </textarea>
             </div>
-            value
           </transition-group>
         </draggable>
         <!-- 其他设置 -->
@@ -301,7 +309,7 @@
   const TITLE = '创作文章'
 
   const ARTICLE = '0'
-  const VEDIO = '1'
+  const VIDEO = '1'
   const COOKBOOK = '2'
 
   export default {
@@ -321,7 +329,7 @@
           [ARTICLE]: {
             name: '文章'
           },
-          [VEDIO]: {
+          [VIDEO]: {
             name: '视频'
           },
           [COOKBOOK]: {
@@ -334,6 +342,8 @@
           title: '',
           cover_image: '',
           cover_image_id: '',
+          coverVideo: '',
+          coverVideoId: '',
           authorPhoto: '',
           authPhotoId: '',
           authName: '',
@@ -357,7 +367,7 @@
           value: "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/07/01/156197765342658.png"
         }, {
           type: 'video',
-          value: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/07/01/156197765342658.png'
+          value: 'http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/f810daf65285890791055957705/hZ6zRcaKA8EA.mp4'
         }],
         // 校验规则
         justifyArr: [{
@@ -462,6 +472,15 @@
       _getArticleCategory() {
 
       },
+      getCoverVideo(video) {
+        console.log(video)
+        let item = {id: 0, image_id: video.id, image_url: '', video_url: video.full_url}
+        this.addData.cover_image = video.full_cover_url
+        this.addData.cover_image_id = video.id
+        this.addData.covervideoId = video.id
+        this.addData.covervideo = video.full_url
+        this.coverImages[0] = item
+      },
       // 封面图片
       getPic(image) {
         console.log(image)
@@ -473,6 +492,8 @@
       delPic(index) {
         this.addData.cover_image = ''
         this.addData.cover_image_id = ''
+        this.addData.covervideoId = ''
+        this.addData.covervideo = ''
         this.coverImages = []
       },
       failFile(msg) {
@@ -497,11 +518,21 @@
           value: ''
         })
       },
-      addVedioItem() {
-
+      addImageItem(image) {
+        this.contentDetails.push({
+          type: 'image',
+          value: image.url,
+          id: image.id
+        })
+        console.log(image)
       },
-      addImageItem() {
-
+      addVideoItem(video) {
+        this.contentDetails.push({
+          type: 'video',
+          value: video.full_url,
+          id: video.id
+        })
+        console.log(video)
       },
       deleteContentItem(idx) {
         this.contentDetails.splice(idx, 1)
@@ -877,7 +908,12 @@
           height: 168px
           position relative
           margin-bottom: 20px
-
+          padding:14px
+          .conten-video
+          .conten-image
+            width:140px
+            height @width
+            border-radius 2px
           &:last-child
             margin-bottom: 0px
 
