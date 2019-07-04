@@ -1280,27 +1280,45 @@ export default [
         name: 'merchant-order',
         meta: {
           titles: ['供应链', '订单', '商户订单'],
+          resetHooks: ['merchantOrder/resetData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.commit('merchantOrder/SET_PARAMS', {
-              page: 1,
-              limit: 10,
-              start_time: '',
-              end_time: '',
-              type: '',
-              status: 0, // 待调度
-              keyword: ''
-            })
-            store
-              .dispatch('merchantOrder/getMerchantOrderList')
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
+            console.log(store.getters['merchantOrder/tabIndex'])
+            if (store.getters['merchantOrder/tabIndex'] === 0) {
+              console.log(111)
+              store
+                .dispatch('merchantOrder/getMerchantOrderList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              console.log(2222)
+              store
+                .dispatch('merchantOrder/getMergerOrderList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            }
+            // store.commit('merchantOrder/SET_PARAMS', {
+            //   page: 1,
+            //   limit: 10,
+            //   start_time: '',
+            //   end_time: '',
+            //   type: '',
+            //   status: 0, // 待调度
+            //   keyword: ''
+            // })
           }
         },
         component: () => lazyLoadView(import('@pages/merchant-order/merchant-order'))
@@ -1377,21 +1395,29 @@ export default [
         name: 'after-sales-order',
         meta: {
           titles: ['供应链', '订单', '售后订单'],
+          resetHooks: ['afterSalesOrder/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let exceptionStatus = routeTo.query.exception_status
-            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
-            let startTime = routeTo.query.start_time || ''
-            let endTime = routeTo.query.end_time || ''
-            store.commit('afterSalesOrder/SET_PARAMS', {
-              start_time: startTime,
-              end_time: endTime,
-              exception_status: exceptionStatus,
-              keyword: '',
-              status: status,
-              page: 1,
-              limit: 10
-            })
+            console.log(store.getters['afterSalesOrder/isFirst'])
+            if (store.getters['afterSalesOrder/isFirst']) {
+              let exceptionStatus = routeTo.query.exception_status
+              exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+              let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+              if (status.length) {
+                status = status * 1
+              }
+              let startTime = routeTo.query.start_time || ''
+              let endTime = routeTo.query.end_time || ''
+              store.commit('afterSalesOrder/SET_PARAMS', {
+                start_time: startTime,
+                end_time: endTime,
+                exception_status: exceptionStatus,
+                keyword: '',
+                status: status,
+                page: 1,
+                limit: 10
+              })
+              store.commit('afterSalesOrder/SET_IS_FIRST', false)
+            }
             store
               .dispatch('afterSalesOrder/getAfterSalesOrderList')
               .then((res) => {

@@ -586,25 +586,30 @@ export const merchantOrderComputed = {
     'pageTotal',
     'orderList',
     'mergerDetail',
+    'mergerPageTotal',
+    'mergerList',
+    'mergerFilter',
     'merchantDetail',
     'merchantFilter',
     'consumerDetailTotal',
     'consumerDetail',
-    'mergerDetail'
+    'mergerDetail',
+    'tabIndex'
   ])
 }
 export const merchantOrderMethods = {
   ...mapActions('merchantOrder', [
     'getMerchantOrderList',
+    'getMergerOrderList',
     'getMerchantOrderDetail',
     'getConsumerOrderDetail',
     'getMergerOrderDetail'
   ]),
-  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL'])
+  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL', 'SET_MERGER_PARAMS', 'SET_TAB_INDEX'])
 }
 // 售后订单
 export const afterSalesOrderComputed = {
-  ...mapGetters('afterSalesOrder', ['pageTotal', 'afterSalesList', 'afterSalesDetail', 'afterSalesFilter'])
+  ...mapGetters('afterSalesOrder', ['pageTotal', 'afterSalesList', 'afterSalesDetail', 'afterSalesFilter', 'exceptionText'])
 }
 export const afterSalesOrderMethods = {
   ...mapActions('afterSalesOrder', ['getAfterSalesOrderList', 'getAfterSalesOrderDetail']),
@@ -617,7 +622,9 @@ export const afterSalesOrderMethods = {
     'SET_LIST',
     'SET_DETAIL',
     'SET_STATUS',
-    'SET_DETAIL_PAGE'
+    'SET_DETAIL_PAGE',
+    'SET_IS_FIRST',
+    'SET_EXCEPTION_TEXT'
   ])
 }
 

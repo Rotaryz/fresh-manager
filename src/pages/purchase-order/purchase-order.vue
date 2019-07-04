@@ -9,7 +9,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search :infoText="keyword" placeHolder="采购单号" @search="_search"></base-search>
+        <base-search placeHolder="采购单号" :infoText="keyword" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
