@@ -347,7 +347,7 @@
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="$refs.addCategory.hideModal()">取消</div>
-          <div class="back-btn back-submit hand" @click="_submitCategory">添加</div>
+          <div class="back-btn back-submit hand" @click="_submitCategory">确定</div>
         </div>
       </div>
     </default-modal>
@@ -1117,7 +1117,7 @@
 
       .add-category-input
         width: 340px
-
+        margin-top:7px
     .title-box
       display: flex
       box-sizing: border-box
@@ -1217,7 +1217,7 @@
       background: $color-white
       justify-content: flex-end
       height: 70px
-
+      border-none()
     .page-box
       padding: 0 20px
       box-sizing: border-box
