@@ -9,13 +9,13 @@ export const state = {
     total_page: 1
   },
   couponDetail: {},
-  infoTabIndex: 0,
   pageTotal: {
     total: 1,
     per_page: 10,
     total_page: 1
   },
-  goodsCoupon: []
+  infoTabIndex: 0,
+  defaultIndex: 0
 }
 
 export const getters = {
@@ -31,8 +31,8 @@ export const getters = {
   infoTabIndex(state) {
     return state.infoTabIndex
   },
-  goodsCoupon(state) {
-    return state.goodsCoupon
+  defaultIndex(state) {
+    return state.defaultIndex
   },
   pageTotal(state) {
     return state.pageTotal
@@ -52,8 +52,8 @@ export const mutations = {
   SET_INFO_TAB_INDEX(state, infoTabIndex) {
     state.infoTabIndex = infoTabIndex
   },
-  SET_GOODS_COUPON(state, goodsCoupon) {
-    state.goodsCoupon = goodsCoupon
+  SET_DEFAULT_INDEX(state, defaultIndex) {
+    state.defaultIndex = defaultIndex
   },
   SET_PAGE_TOTAL(state, pageTotal) {
     state.pageTotal = pageTotal

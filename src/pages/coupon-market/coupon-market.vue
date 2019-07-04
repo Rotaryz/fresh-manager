@@ -16,7 +16,7 @@
         <div class="identification-page">
           <img src="./icon-marketing_list@2x.png" class="identification-icon">
           <p class="identification-name">营销列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
       </div>
       <div class="big-list">
@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="marketPageDetail" @addPage="setPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -124,9 +124,7 @@
           {name: '开启', value: 1, num: 0},
           {name: '关闭', value: 0, num: 0}
         ],
-        page: 1,
         delId: 0,
-        status: '',
         statusArr: new Array(10).fill(undefined)
       }
     },
@@ -137,18 +135,19 @@
       this.getMarketStatus()
     },
     mounted() {
+      this.requestData.page > 1 && this.$refs.pages.getPage(this.requestData.page)
     },
     methods: {
       ...marketMethods,
       newMarket(index) {
         this.$router.push(`/home/coupon-market/new-market?index=${index}`)
       },
-      changeStatus(selectStatus) {
-        this.status = selectStatus.status
+      changeStatus(selectStatus, index) {
+        // this.status = selectStatus.status
         this.$refs.pages.beginPage()
-        this.page = 1
+        this.setStatus({status: selectStatus.status, index})
+        // this.page = 1
         this.statusArr = new Array(10).fill(undefined)
-        this.getMarketList({page: this.page, status: selectStatus.status, loading: false})
       },
       getMarketStatus() {
         API.Market.getMarketStatus().then((res) => {
@@ -164,10 +163,6 @@
             }
           })
         })
-      },
-      addPage(page) {
-        this.page = page
-        this.getMarketList({page: this.page, status: this.status, loading: false})
       },
       statusHandle(item, index) {
         let status = 0
@@ -216,7 +211,11 @@
         }
         this.$toast.show('删除成功')
         this.getMarketStatus()
-        this.getMarketList({page: this.page, status: this.status, loading: false})
+        if (+this.requestData.page === +this.marketPageDetail.total_page) {
+          this.setPage(this.marketPageDetail.total_page - 1)
+        } else {
+          this.getMarketList(this.requestData)
+        }
       }
     }
   }

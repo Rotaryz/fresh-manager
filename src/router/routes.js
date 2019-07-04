@@ -563,10 +563,11 @@ export default [
         component: () => lazyLoadView(import('@pages/coupon-market/coupon-market')),
         meta: {
           titles: ['商城', '营销', '营销计划'],
+          resetHooks: ['market/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
-              .dispatch('market/getMarketList', {page: 1})
+              .dispatch('market/getMarketList', true)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1700,7 +1701,6 @@ export default [
                     if (!response) {
                       return next({name: '404'})
                     }
-                    console.log(response)
                     routeTo.params.detail = response
                     next()
                   })
@@ -1741,7 +1741,6 @@ export default [
                 if (!response) {
                   return next({name: '404'})
                 }
-                console.log(response)
                 routeTo.params.detail = response
                 next()
               })

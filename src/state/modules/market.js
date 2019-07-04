@@ -15,7 +15,12 @@ export const state = {
     total_page: 1
   },
   inviteCount: 0,
-  marketStaLists: []
+  marketStaLists: [],
+  defaultIndex: 0,
+  requestData: {
+    page: 1,
+    status: ''
+  }
 }
 
 export const getters = {
@@ -36,6 +41,12 @@ export const getters = {
   },
   inviteCount(state) {
     return state.inviteCount
+  },
+  defaultIndex(state) {
+    return state.defaultIndex
+  },
+  requestData(state) {
+    return state.requestData
   }
 }
 
@@ -57,12 +68,27 @@ export const mutations = {
   },
   SET_INVITE_COUNT(state, inviteCount) {
     state.inviteCount = inviteCount
+  },
+  SET_STATUS(state, status) {
+    state.requestData.status = status
+  },
+  SET_PAGE(state, page) {
+    state.requestData.page = page
+  },
+  SET_DEFAULT_INDEX(state, index) {
+    state.defaultIndex = index
+  },
+  RESET_DATA(state) {
+    state.requestData = {
+      page: 1,
+      status: ''
+    }
   }
 }
 
 export const actions = {
-  getMarketList({commit, state}, data) {
-    return API.Market.getMarketList(data, data.loading)
+  getMarketList({commit, state}, loading = false) {
+    return API.Market.getMarketList(state.requestData, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
@@ -129,5 +155,23 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
+    commit('SET_DEFAULT_INDEX', 0)
+  },
+  setStatus({commit, dispatch}, data) {
+    commit('SET_STATUS', data.status)
+    commit('SET_PAGE', 1)
+    commit('SET_DEFAULT_INDEX', data.index)
+    dispatch('getMarketList')
+  },
+  setPage({commit, dispatch}, page) {
+    commit('SET_PAGE', page)
+    dispatch('getMarketList')
+  },
+  setDefaultIndex({commit, dispatch}, index) {
+    commit('SET_DEFAULT_INDEX', index)
+    dispatch('getMarketList')
   }
 }
