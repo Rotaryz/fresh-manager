@@ -948,7 +948,7 @@ export default [
         component: () => lazyLoadView(import('@pages/dispatching-list/dispatching-list')),
         meta: {
           titles: ['商城', '团长', '团长配送单'],
-          resetHooks: ['leader/resetDeliverRequest'],
+          resetHooks: ['leader/resetDeliveryRequest'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store

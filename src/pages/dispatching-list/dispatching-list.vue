@@ -88,12 +88,7 @@
           type: 'default',
           data: [] // 格式：{title: '55'}
         },
-        page: 1,
-        orderSn: '',
-        status: '',
-        excelParams: '',
-        startTime: '',
-        endTime: ''
+        excelParams: ''
       }
     },
     computed: {
@@ -160,14 +155,6 @@
         this.$refs.pages.beginPage()
         this.setSelectContent({deliveryContent: item.name})
         this.setDeliveryRequest({page: 1, shop_id: item.id})
-        // this.status = item.id
-        // this.getDeliveryOrder({
-        //   page: this.page,
-        //   shopId: this.status,
-        //   startTime: this.startTime,
-        //   endTime: this.endTime,
-        //   loading: false
-        // })
       },
       _selectFileType(index) {
         let arr = _.cloneDeep(this.deliveryOrder)
@@ -187,14 +174,7 @@
         this.setDeliveryOrder(arr)
       },
       _addPage(page) {
-        this.page = page
-        this.getDeliveryOrder({
-          page: this.page,
-          shopId: this.status,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          loading: false
-        })
+        this.setDeliveryRequest({page})
       }
     }
   }
