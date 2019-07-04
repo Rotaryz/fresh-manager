@@ -347,10 +347,11 @@ export default [
         component: () => lazyLoadView(import('@pages/outreach-activity/outreach-activity')),
         meta: {
           titles: ['商城', '拓展', '拓展任务'],
+          resetHooks: ['outreach/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
-              .dispatch('outreach/getOutreachList', {page: 1})
+              .dispatch('outreach/getOutreachList', true)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -794,9 +795,10 @@ export default [
         component: () => lazyLoadView(import('@pages/purchase-management/purchase-management')),
         meta: {
           titles: ['商城', '采购', '采购管理'],
+          resetHooks: ['purchase/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('purchase/getPurchaseList', {page: 1, orderSn: ''})
+              .dispatch('purchase/getPurchaseList')
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

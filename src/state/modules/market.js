@@ -69,11 +69,8 @@ export const mutations = {
   SET_INVITE_COUNT(state, inviteCount) {
     state.inviteCount = inviteCount
   },
-  SET_STATUS(state, status) {
-    state.requestData.status = status
-  },
-  SET_PAGE(state, page) {
-    state.requestData.page = page
+  SET_REQUEST_DATA(state, data) {
+    state.requestData = Object.assign({}, state.requestData, data)
   },
   SET_DEFAULT_INDEX(state, index) {
     state.defaultIndex = index
@@ -160,18 +157,13 @@ export const actions = {
     commit('RESET_DATA')
     commit('SET_DEFAULT_INDEX', 0)
   },
-  setStatus({commit, dispatch}, data) {
-    commit('SET_STATUS', data.status)
-    commit('SET_PAGE', 1)
+  setRequestData({commit, dispatch}, data) {
+    commit('SET_REQUEST_DATA', data)
+    dispatch('getMarketList')
+  },
+  setDefaultIndex({commit, dispatch}, data) {
     commit('SET_DEFAULT_INDEX', data.index)
-    dispatch('getMarketList')
-  },
-  setPage({commit, dispatch}, page) {
-    commit('SET_PAGE', page)
-    dispatch('getMarketList')
-  },
-  setDefaultIndex({commit, dispatch}, index) {
-    commit('SET_DEFAULT_INDEX', index)
+    commit('SET_REQUEST_DATA', {status: data.status})
     dispatch('getMarketList')
   }
 }

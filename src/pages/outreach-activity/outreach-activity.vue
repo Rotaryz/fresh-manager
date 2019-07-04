@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">活动时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="选择活动时间" @getTime="_setTime"></base-date-select>
+        <base-date-select :dateInfo="[requestData.start_at, requestData.end_at]" placeHolder="选择活动时间" @getTime="_setTime"></base-date-select>
       </div>
     </div>
     <div class="table-content">
@@ -11,7 +11,7 @@
         <div class="identification-page">
           <img src="./icon-task@2x.png" class="identification-icon">
           <p class="identification-name">拓展任务</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-outreach" append class="btn-main">新建任务<span class="add-icon"></span></router-link>
@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="outreachPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -112,9 +112,6 @@
           {name: '已结束', value: 1, key: 'success', num: 0}
         ],
         activityTitle: ACTIVITI_TITLE,
-        startTime: '',
-        endTime: '',
-        page: 1,
         delId: 0,
         downId: 0,
         status: '',
@@ -137,32 +134,15 @@
       ...outreachMethods,
       async _setTime(arr) {
         this.$refs.pages.beginPage()
-        this.page = 1
-        this.startTime = arr[0]
-        this.endTime = arr[1]
-        await this.getOutreachList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
+        this.setRequestData({page: 1, start_at: arr[0], end_at: arr[1]})
         this.getOutreachStatus()
       },
-      async changeStatus(selectStatus) {
-        this.status = selectStatus.status
+      async changeStatus(selectStatus, index) {
         this.$refs.pages.beginPage()
-        this.page = 1
-        await this.getOutreachList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: selectStatus.status,
-          loading: false
-        })
+        this.setDefaultIndex({status: selectStatus.status, index})
       },
       getOutreachStatus() {
-        API.Outreach.getOutreachStatus({activity_theme: 'offline', start_at: this.startTime, end_at: this.endTime}).then(
+        API.Outreach.getOutreachStatus({activity_theme: 'offline', start_at: this.requestData.start_at, end_at: this.requestData.end_at}).then(
           (res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -188,14 +168,7 @@
         }, 500)
       },
       addPage(page) {
-        this.page = page
-        this.getOutreachList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
+        this.setRequestData({page})
       },
       _deleteActivity(id) {
         this.delId = id
@@ -210,14 +183,12 @@
         } else {
           this.$toast.show('删除成功')
         }
+        if (+this.requestData.page === +this.outreachPage.total_page) {
+          this.setRequestData({page: this.outreachPage.total_page - 1})
+        } else {
+          this.getOutreachList(this.requestData)
+        }
         this.getOutreachStatus()
-        this.getOutreachList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          loading: false
-        })
       },
       _textHandle(num) {
         return +num.split('%')[0] < 0 ? '下降' : '上升'

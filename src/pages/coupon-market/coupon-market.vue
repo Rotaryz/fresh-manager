@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="marketPageDetail" @addPage="setPage"></base-pagination>
+        <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -134,19 +134,15 @@
     created() {
       this.getMarketStatus()
     },
-    mounted() {
-      this.requestData.page > 1 && this.$refs.pages.getPage(this.requestData.page)
-    },
+    mounted() {},
     methods: {
       ...marketMethods,
       newMarket(index) {
         this.$router.push(`/home/coupon-market/new-market?index=${index}`)
       },
       changeStatus(selectStatus, index) {
-        // this.status = selectStatus.status
         this.$refs.pages.beginPage()
-        this.setStatus({status: selectStatus.status, index})
-        // this.page = 1
+        this.defaultIndex({status: selectStatus.status, index})
         this.statusArr = new Array(10).fill(undefined)
       },
       getMarketStatus() {
@@ -199,6 +195,9 @@
           this.getMarketStatus()
         })
       },
+      addPage(page) {
+        this.setRequestData({page})
+      },
       _deleteMarket(item) {
         this.delId = item.id
         this.$refs.confirm.show(`删除${item.title || ''}营销计划`)
@@ -212,7 +211,7 @@
         this.$toast.show('删除成功')
         this.getMarketStatus()
         if (+this.requestData.page === +this.marketPageDetail.total_page) {
-          this.setPage(this.marketPageDetail.total_page - 1)
+          this.setRequestData({page: this.marketPageDetail.total_page - 1})
         } else {
           this.getMarketList(this.requestData)
         }

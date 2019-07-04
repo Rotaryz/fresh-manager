@@ -118,11 +118,13 @@ export const outreachComputed = {
     'outreachDetail',
     'memberList',
     'memberData',
-    'memberPage'
+    'memberPage',
+    'defaultIndex',
+    'requestData'
   ])
 }
 
-export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList'])
+export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList', 'setRequestData', 'setDefaultIndex', 'setPage'])
 
 // 优惠券
 export const couponComputed = {
@@ -137,7 +139,7 @@ export const marketComputed = {
 }
 
 export const marketMethods = {
-  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList', 'resetData', 'setDefaultIndex', 'setStatus', 'setPage'])
+  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList', 'resetData', 'setDefaultIndex', 'setRequestData'])
 }
 
 export const auxiliaryComputed = {
@@ -224,10 +226,10 @@ export const returnsMethods = {
 
 // 轮播广告
 export const purchaseComputed = {
-  ...mapGetters('purchase', ['pageTotal', 'purchaseList', 'purchaseDetail'])
+  ...mapGetters('purchase', ['pageTotal', 'purchaseList', 'purchaseDetail', 'requestData'])
 }
 
-export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail'])
+export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail', 'resetData', 'setRequestData'])
 // 成员管理
 export const customerComputed = {
   ...mapGetters('customer', ['customerList', 'pageTotal'])

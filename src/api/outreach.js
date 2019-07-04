@@ -7,7 +7,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getOutreachList(data, loading = true) {
+  getOutreachList(data, loading = false) {
     let url = '/social-shopping/api/backend/activity-manage/activity'
     return request.get(url, data, loading)
   },
