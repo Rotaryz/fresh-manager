@@ -96,7 +96,7 @@
                   {{curItem.name}}
                 </div>
                 <img class="content-detials-pic" src="./title-icon@2x.png" alt="">
-                <img class="content-box-pic" :src="curItem.goods_cover_image" alt="">
+                <img v-for="(item, index) in curItem.goods_main_images" :key="index" class="content-box-pic" :src="item.image_url" alt="">
               </div>
             </div>
           </div>
@@ -198,6 +198,7 @@
       // 预览
       lookGoodsInfo(item) {
         this.curItem = item
+        console.log(this.curItem)
         this.$refs.storeModal.showModal()
       },
       // 关闭预览
@@ -542,7 +543,7 @@
         width: 298px
         height: 505px
         max-height: 532px
-        overflow: hidden
+        overflow-y: auto
         background: #f7f7f7
         &::-webkit-scrollbar
           width: 0
