@@ -186,13 +186,17 @@
       },
       // 选择三级类目
       setThirdlyValue(data) {
+        // this.categoryId = data.id
         this.saveSelectDown({content: data.name, type: 3})
         this.setMaterialCategory(data.id)
         this.$refs.pagination.beginPage()
+        // this.getReqList()
       },
       // 分页
       addPage(page) {
         this.setPage(page)
+        // this.page = page
+        // this.getReqList()
       },
       // 资料类型
       setDataValue(data) {

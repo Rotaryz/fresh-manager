@@ -118,7 +118,6 @@
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import {afterSalesOrderComputed, afterSalesOrderMethods} from '@state/helpers'
   import API from '@api'
-  import _ from 'lodash'
 
   const PAGE_NAME = 'MERCHANT_ORDER'
   const TITLE = '商户订单'
