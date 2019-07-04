@@ -220,7 +220,7 @@
                 <draggable v-if="videoUrl" class="draggable" @update="_setSort()">
                   <div class="show-image hand">
                     <video :src="videoUrl" :autoplay="false" class="video"></video>
-                    <span class="close" @click="delVideo()"></span>
+                    <span class="close" @click="delVideo"></span>
                     <img class="icon-video" src="./icon-play_list@2x.png" alt="">
                   </div>
                 </draggable>
@@ -958,7 +958,7 @@
       // 删除视频
       delVideo() {
         this.videoUrl = ''
-        this.saleMsg.goods_videos = [{file_id: 0}]
+        this.saleMsg.goods_videos = [{file_id: 0}]// 删除视频
       },
       failFile(msg) {
         this.$emit('showToast', msg)
