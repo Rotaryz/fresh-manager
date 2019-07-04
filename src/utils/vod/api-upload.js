@@ -15,7 +15,7 @@ export default {
    * @returns {Promise.<*>}
    */
   saveFile(data) {
-    const url = `social-shopping/api/cos/save-file`
+    const url = `/social-shopping/api/cos/save-file`
     return request.post(url, data)
   }
 }
