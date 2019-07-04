@@ -202,7 +202,6 @@
       display: flex
 
   .add-image
-    margin-bottom: 20px
     icon-image('pic-picture1')
     height: 90px
     width: @height

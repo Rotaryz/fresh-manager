@@ -779,7 +779,7 @@
     display: flex
     color: #2A2A2A
     min-height: 40px
-    margin-top: 24px
+    margin-top: 30px
     position: relative
 
     .edit-title
@@ -816,10 +816,9 @@
       &.author-info-box
         flex: 1
         background: #F5F7FA
-        padding: 20px 20px 0px 20px
+        padding: 20px 20px 20px 20px
 
         .auto-input
-          margin-bottom: 20px
           margin-left: 20px
 
           .edit-signature
