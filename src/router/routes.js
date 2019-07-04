@@ -153,12 +153,37 @@ export default [
        */
       // 创作文章
       {
-        path: 'article-add/:type',
+        path: 'article-add',
         name: 'article-add',
         component: () => lazyLoadView(import('@pages/article-add/article-add')),
         meta: {
           titles: ['商城', '内容', '我的作品', '创作作品'],
-          marginBottom: 80
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            //  团长列表
+            if (id) {
+              next({params:{
+                test: 293874
+              }})
+              API.content.getArticleDetail({id},false)
+                .then((res) => {
+                  if (res.error !== ERR_OK) {
+                    return false
+                  }
+                  next({
+                    params:{
+                      data:res.data
+                    }
+                  })
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
         }
       },
       // 轮播广告
@@ -826,16 +851,16 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             let params = {
-              page:1,
-              limit:10,
-              keyword:'',
-              status:0,
-              model_type:0,
+              page: 1,
+              limit: 10,
+              keyword: '',
+              status: 0,
+              model_type: 0,
               ...routeTo.query
             }
-            params.status = Number( params.status)
-            params.model_type = Number( params.model_type)
-            store.commit('leader/SET_lEADER_LIST_FILTER',params)
+            params.status = Number(params.status)
+            params.model_type = Number(params.model_type)
+            store.commit('leader/SET_lEADER_LIST_FILTER', params)
             store
               .dispatch('leader/getList')
               .then((res) => {
@@ -859,23 +884,23 @@ export default [
           titles: ['商城', '团长', '团长邀请'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
-            API.Leader.leaderDistributionRankingList({page: 1, limit:10,keyword:'',...routeTo.query}, true)
-            .then((res) => {
-              if (res.error !== ERR_OK) {
-                return next({name: '404'})
-              }
-              let dataInfo = res.data
-              let pageInfo = {
-                total: res.meta.total,
-                per_page: res.meta.per_page,
-                total_page: res.meta.last_page,
-                invite_number_count:res.invite_number_count
-              }
-              next({params: {dataInfo, pageInfo}})
-            })
-            .catch(e => {
-              next({name: '404'})
-            })
+            API.Leader.leaderDistributionRankingList({page: 1, limit: 10, keyword: '', ...routeTo.query}, true)
+              .then((res) => {
+                if (res.error !== ERR_OK) {
+                  return next({name: '404'})
+                }
+                let dataInfo = res.data
+                let pageInfo = {
+                  total: res.meta.total,
+                  per_page: res.meta.per_page,
+                  total_page: res.meta.last_page,
+                  invite_number_count: res.invite_number_count
+                }
+                next({params: {dataInfo, pageInfo}})
+              })
+              .catch(e => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -1847,10 +1872,10 @@ export default [
               keyword: '',
               status: 0, // 待分拣
               sorting_mode: 0,
-              exception_status:'',
+              exception_status: '',
               ...routeTo.query
             }
-            if(params.status!==''){
+            if (params.status !== '') {
               params.status = Number(params.status)
             }
             params.sorting_mode = Number(params.sorting_mode)

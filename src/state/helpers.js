@@ -641,3 +641,12 @@ export const allocationComputed = {
 export const allocationMethods = {
   ...mapActions('allocation', ['getAllocationList', 'getOperation'])
 }
+
+// // 内容
+// export const contentComputed = {
+//   ...mapGetters('content', ['artcleDetail'])
+// }
+// export const contentMethods ={
+//   ...mapActions('content', ['getArtcleDetail'])
+//
+// }
