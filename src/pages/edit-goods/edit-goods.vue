@@ -731,7 +731,7 @@
           if (res.error === this.$ERR_OK) {
             this.saleMsg = res.data
             this.sale_skus = this.saleMsg.goods_skus[0]
-            if(res.data.goods_videos.length&&res.data.goods_videos[0]) {
+            if(res.data.goods_videos && res.data.goods_videos.length && res.data.goods_videos[0]) {
               this.videoUrl = res.data.goods_videos[0].full_url||''
               this.saleMsg.goods_videos = [{file_id: res.data.goods_videos[0].id}]
             }
