@@ -49,7 +49,9 @@ export const leaderComputed = {
     'billPageDetail',
     'billPage',
     'startAt',
-    'endAt'
+    'endAt',
+    'deliveryRequest',
+    'selectContent'
   ])
 }
 
@@ -69,7 +71,10 @@ export const leaderMethods = {
     'setBillPage',
     'setBillType',
     'setWidthTime',
-    'infoStatus'
+    'infoStatus',
+    'resetDeliveryRequest',
+    'setDeliveryRequest',
+    'setSelectContent'
   ]),
   ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
 }

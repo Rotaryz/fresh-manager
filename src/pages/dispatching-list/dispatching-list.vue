@@ -6,8 +6,8 @@
         <base-drop-down :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
       </div>
       <span class="down-tip">筛选</span>
-      <div class="down-item">
-        <base-date-select placeHolder="选择配送日期" @getTime="_selectTime"></base-date-select>
+      <div class="down-item" @click.stop>
+        <base-date-select placeHolder="选择配送日期" :dateInfo="[deliveryRequest.start_time, deliveryRequest.end_time]" @getTime="_selectTime"></base-date-select>
       </div>
     </div>
     <div class="table-content">
@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_addPage"></base-pagination>
+        <base-pagination ref="pages" :pagination="deliveryRequest.page" :pageDetail="pageTotal" @addPage="_addPage"></base-pagination>
       </div>
     </div>
   </div>
@@ -103,6 +103,7 @@
       let currentId = this.getCurrentId()
       let token = this.$storage.get('auth.currentUser', '')
       this.excelParams = token ? `?access_token=${token.access_token}&current_corp=${currentId}` : ''
+      this.$set(this.dispatchSelect, 'content', this.selectContent.deliveryContent || this.dispatchSelect.content)
       await this._getdropdownList()
     },
     methods: {
@@ -115,16 +116,7 @@
       },
       _selectTime(value) {
         this.$refs.pages.beginPage()
-        this.page = 1
-        this.startTime = value[0]
-        this.endTime = value[1]
-        this.getDeliveryOrder({
-          page: this.page,
-          shopId: this.status,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          loading: false
-        })
+        this.setDeliveryRequest({page: 1, start_time: value[0], end_time: value[1]})
       },
       _getUrl(url) {
         let currentId = this.getCurrentId()
@@ -133,9 +125,9 @@
           current_corp: currentId,
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: token.access_token,
-          start_time: this.startTime || '',
-          end_time: this.endTime || '',
-          shop_id: this.status,
+          start_time: this.deliveryRequest.start_time || '',
+          end_time: this.deliveryRequest.end_time || '',
+          shop_id: this.deliveryRequest.shop_id,
           order_sn: ''
         }
         let search = []
@@ -166,15 +158,16 @@
       },
       _getShop(item) {
         this.$refs.pages.beginPage()
-        this.page = 1
-        this.status = item.id
-        this.getDeliveryOrder({
-          page: this.page,
-          shopId: this.status,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          loading: false
-        })
+        this.setSelectContent({deliveryContent: item.name})
+        this.setDeliveryRequest({page: 1, shop_id: item.id})
+        // this.status = item.id
+        // this.getDeliveryOrder({
+        //   page: this.page,
+        //   shopId: this.status,
+        //   startTime: this.startTime,
+        //   endTime: this.endTime,
+        //   loading: false
+        // })
       },
       _selectFileType(index) {
         let arr = _.cloneDeep(this.deliveryOrder)

@@ -43,9 +43,17 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  billPage: 1
+  billPage: 1,
+  deliveryRequest: {
+    page: 1,
+    shop_id: '',
+    start_time: '',
+    end_time: ''
+  },
+  selectContent: {
+    deliveryContent: ''
+  }
 }
-// const _state = JSON.parse(JSON.stringify(state)) // 保存state初始值 // todo 根据业务编写
 export const getters = {
   leaderListFilter(state){
     return state.leaderListFilter
@@ -106,6 +114,12 @@ export const getters = {
   },
   billPage(state) {
     return state.billPage
+  },
+  deliveryRequest(state) {
+    return state.deliveryRequest
+  },
+  selectContent(state) {
+    return state.selectContent
   }
 }
 
@@ -174,20 +188,23 @@ export const mutations = {
     state.startAt = value[0]
     state.endAt = value[1]
   },
-  RESET_STATE(state) { // todo 根据业务编写
-    // state =  _state
-    console.log('todo demo leader!!')
+  RESET_DELIVERY_REQUEST(state) {
+    state.deliveryRequest = {
+      page: 1,
+      shop_id: '',
+      start_time: '',
+      end_time: ''
+    }
+  },
+  SET_DELIVERY_REQUEST(state, data) {
+    state.deliveryRequest = Object.assign({}, state.deliveryRequest, data)
+  },
+  SET_SELECT_CONTENT(state, data) {
+    state.selectContent = Object.assign({}, state.selectContent, data)
   }
 }
 
 export const actions = {
-  resetState({commit}) { // todo
-    commit('RESET_STATE')
-  },
-  resetTodo({commit}) { // todo
-    // todo
-    console.log('todo clear reset!!')
-  },
   // 团长分销列表
   getList({state, commit, dispatch}, loading = true){
     /* eslint-disable */
@@ -235,8 +252,8 @@ export const actions = {
       })
   },
   // 配送订单列表
-  getDeliveryOrder({commit}, {page, shopId, startTime, endTime, loading = true}) {
-    return API.Leader.getDeliveryOrder({page, shop_id: shopId, start_time: startTime, end_time: endTime}, loading)
+  getDeliveryOrder({commit, state}, loading = false) {
+    return API.Leader.getDeliveryOrder(state.deliveryRequest, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -442,5 +459,15 @@ export const actions = {
     commit('SET_BILL_TYPE', select.id)
     commit('SET_BILL_PAGE', 1)
     dispatch('getBillList')
+  },
+  resetDeliveryRequest({commit}) {
+    commit('RESET_DELIVERY_REQUEST')
+  },
+  setDeliveryRequest({commit, dispatch}, data) {
+    commit('SET_DELIVERY_REQUEST', data)
+    dispatch('getDeliveryOrder')
+  },
+  setSelectContent({commit}, data) {
+    commit('SET_SELECT_CONTENT', data)
   }
 }
