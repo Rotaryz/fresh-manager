@@ -6,8 +6,7 @@
       <div v-else class="content-box">
         <div v-if="type !== '1'" class="content-article-detail">
           <video v-if="data.coverVideo.url" :src="data.coverVideo.url" class="cover-photo"></video>
-          <img v-if="data.coverImage.url" :src="data.coverImage.url" class="cover-photo">
-          <div v-if="!data.coverVideo.url && !data.coverImage.url" class="full-empty-box cover"></div>
+          <img v-else :src="data.coverImage.url" class="cover-photo">
           <div class="auth-wrap">
             <img src="./icon-high_quality@2x.png" class="good-article-icon">
             <div v-if="data.authPhoto.url" class="auth-photo-wrap">
@@ -23,13 +22,13 @@
             </div>
           </div>
           <div class="browse-wrap">
-            <div class="browse-title">浏览1.9万</div>
-            <div class="like-wrap">
+            <div v-if="data.lookCount" class="browse-title">浏览{{data.lookCount>= 10000 ? data.lookCount/10000 +'万':data.lookCount}}</div>
+            <div v-if="data.goodCount" class="like-wrap">
               <div class="like-total">
                 <img src="./icon-like_big1@2x.png" alt="" class="like-icon">
-                <div class="total-count">664</div>
+                <div class="total-count">{{data.goodCount}}</div>
               </div>
-              <img v-for="(item,idx) in data.likes" :key="idx" :src="item.photo" class="liker-photo">
+              <img v-for="(item,idx) in 6" :key="idx" :src="item.photo" class="liker-photo">
             </div>
           </div>
           <div class="line-middle"></div>
@@ -54,47 +53,49 @@
             <div class="bottom-operate">
               <div class="operate-item">
                 <div class="icon-wrap">
-                  <div class="count">{{data.goodCount}}</div>
-                  <img v-if="!goodsStatus" :src=" './icon-like_big1@2x.png'" class="operate-icon">
+                  <div v-if="data.goodCount" class="count">{{data.goodCount}}</div>
+                  <img src="./icon-like_big1@2x.png" class="operate-icon">
                 </div>
               </div>
               <div class="operate-item">
                 <div class="icon-wrap">
-                  <div class="count">{{data.goodCount}}</div>
-                  <img :src="'./icon-share@2x.png'" class="operate-icon">
+                  <!--<div class="count">{{data.goodCount}}</div>-->
+                  <img src="./icon-share@2x.png" class="operate-icon">
                 </div>
               </div>
               <div class="operate-item">
                 <div class="icon-wrap">
-                  <div class="count red">{{data.goodCount}}</div>
-                  <img :src=" './icon-shopping_cart@2x.png'" class="operate-icon">
+                  <!--<div class="count red">{{data.goodCount}}</div>-->
+                  <img src="./icon-shopping_cart@2x.png" class="operate-icon">
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div v-else class="content-article-detail-video">
+        <div v-else class="content-article-detail-video" @click.self="videoClick">
           <video v-if="data.videoContent.url" :src="data.videoContent.url" class="full-screen-video" @click="videoClick">
           </video>
-          <div class="info-wrap">
+          <div class="info-wrap" @click="videoClick">
             <div class="auth-wrap">
-              <div class="auth-photo-wrap">
-                <img v-if="data.authPhoto.url" :src="data.authPhoto.url" class="auth-photo">
+              <div v-if="data.authPhoto.url" class="auth-photo-wrap">
+                <img :src="data.authPhoto.url" class="auth-photo">
                 <img src="./icon-v@2x.png" class="auth-photo-v">
               </div>
-              <div class="name">{{data.authName}}</div>
-              <img src="./icon-lv8@2x.png" class="level-icon">
+              <template v-if="data.authName">
+                <div class="name">{{data.authName}}</div>
+                <img src="./icon-lv8@2x.png" class="level-icon">
+              </template>
             </div>
-            <dix class="text">
+            <div class="text">
               {{data.videoIntroduce}}
-            </dix>
+            </div>
             <div class="operate-wrap">
               <div>
                 <div class="like-operate">
-                  <div class="count">1</div>
+                  <div class="count">{{data.goodCount > 99 ? '99+' :data.goodCount}}</div>
                   <img src="./icon-fabulous1@2x.png" class="operate-icon">
                 </div>
-                <img src="./icon-fabulous2@2x.png" class="operate-icon">
+                <!--<img src="./icon-fabulous2@2x.png" class="operate-icon">-->
                 <img src="./icon-share_big@2x.png" class="operate-icon">
                 <img src="./icon-shoping_catbig@2x.png" class="operate-icon">
               </div>
@@ -199,6 +200,11 @@
 
     .content-article-detail
       width: 100%
+      height: 100%;
+      overflow: auto
+
+      &::-webkit-scrollbar
+        width: 0
 
       .cover-photo
         width: 100%
@@ -224,15 +230,15 @@
           position: relative
 
           .auth-photo
-            width: 36px
-            height: 36px
+            width: 34px
+            height: 34px
 
           .auth-photo-v
             position: absolute
             bottom: 0
             right: 0
-            width: 12px
-            height: 12px
+            width: 10px
+            height: 10px
 
         .auth-info
           font-family $font-family-regular
@@ -280,10 +286,13 @@
               margin-top: 3px
 
           .liker-photo
-            margin 15px 20px 15px 0px
+            margin 15px 15px 15px 0px
             width: 26px
             height: 26px
+            border-radius 50%
+            border: 1px solid #ccc
             flex-shrink 0
+            background #acacac
 
       .line-middle
         border-bottom-1px(#E6E6E6)
@@ -361,9 +370,9 @@
 
     .content-article-detail-video
       position absolute
-      top:0
-      left:0
-      right:0
+      top: 0
+      left: 0
+      right: 0
       bottom 0
       overflow hidden
       background #000
@@ -392,11 +401,12 @@
             .auth-photo
               width: 36px
               height: 36px
+              border-radius 50%
 
             .auth-photo-v
               position: absolute
-              bottom: 0
-              right: 0
+              bottom: 4px
+              right: 4px
               width: 12px
               height: 12px
 
@@ -423,9 +433,9 @@
           align-items center
 
           .operate-icon
-            width: 40px
-            height: 40px
-            margin-right: px-change-vw(25)
+            width: 36px
+            height: 36px
+            margin-right: 20px
 
           .like-operate
             display inline-block
@@ -437,17 +447,19 @@
               left: 18px
               color: #fff;
               font-size $font-size-12
-              padding: 0 4px
-              height: 15px
-              line-height 15px
+              padding: 0 3px
+              min-width: 14px
+              text-align: center
+              height: 14px
+              line-height 14px
               background: #FE3B39
               border-radius 7px
 
           .goods-btn
-            flex-shrink 0
-            height: 40px
-            line-height 40px
-            padding: 0px 24px
+            flex-shrink 0s
+            height: 36px
+            line-height 36px
+            padding: 0px 15px
             border-radius: 20px
             color: #fff
             background #73C200
@@ -485,6 +497,7 @@
 
         .good-list
           padding: 0px 15px 17px 15px
-          max-height: 60vh
+          max-height: 400px
           overflow auto
+          scroll-opacity(0, 0)
 </style>

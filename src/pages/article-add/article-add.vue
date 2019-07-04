@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">创作</p>
+        <p class="identification-name">创作{{name}}</p>
       </div>
       <div class="function-btn">
       </div>
@@ -19,10 +19,10 @@
           </div>
           <div class="edit-input-box">
             <base-dropdown v-model="addData.category" :data="articleCategoryList" valueKey="value" :width="400" :height="40"
-                           placeholder="请选择内容分类"
+                           placeholder="请选择内容分类" @click="_getArticleCategory"
             ></base-dropdown>
           </div>
-          <div class="add-category-operate">添加分类</div>
+          <div class="add-category-operate hand" @click="addCategory">添加分类</div>
         </div>
         <!--标题-->
         <div class="edit-item">
@@ -45,7 +45,8 @@
             {{name}}封面
           </div>
           <div class="edit-input-box flex-box">
-            <base-upload :picList.sync="coverImages"
+            <base-upload :videoUrl="addData.coverVideo.url"
+                         :imageUrl="addData.coverImage.url"
                          :picNum="1"
                          :fileType="currentType!=='1' ?'image-video' :'image'"
                          @failFile="failFile"
@@ -72,7 +73,9 @@
             作者信息
           </div>
           <div class="edit-input-box flex-box author-info-box">
-            <base-upload :picList.sync="authPhoto" :picNum="1" imageIconClassName="add-image-head-photo"
+            <base-upload :imageUrl = "addData.authPhoto.url"
+                         :picNum="1"
+                         imageIconClassName="add-image-head-photo"
                          fileType="image"
                          @failFile="failFile"
                          @getPic="getAuthorPic"
@@ -114,7 +117,7 @@
             <div v-else class="video-content-wrap">
               <div class="video-tip"></div>
               <div class="upload-video-wrap">
-                <base-upload :picList.sync="coverImages"
+                <base-upload :videoUrl="addData.videoContent.url"
                              :picNum="1"
                              fileType="video-custom"
                              :size="100"
@@ -331,16 +334,30 @@
         </div>
       </div>
     </default-modal>
+    <default-modal ref="addCategory">
+      <div slot="content" class="shade-box add-category-box">
+        <div class="title-box">
+          <div class="title">
+            增加分类
+          </div>
+          <span class="close hand" @click="$refs.addCategory.hideModal()"></span>
+        </div>
+        <div>
+          <input v-model="addCategoryText" placeholder="长度不能超过6个字" maxlength="6" type="text" class="edit-input add-category-input">
+        </div>
+        <div class="back">
+          <div class="back-cancel back-btn hand" @click="$refs.addCategory.hideModal()">取消</div>
+          <div class="back-btn back-submit hand" @click="_submitCategory">添加</div>
+        </div>
+      </div>
+    </default-modal>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import PhoneBox from './phone-box/phone-box'
-
   import API from '@api'
-  import {adverComputed, adverMethods} from '@state/helpers'
-  // import _ from 'lodash'
   import Draggable from 'vuedraggable'
 
   const PAGE_NAME = 'ARTICLE_ADD'
@@ -375,8 +392,9 @@
           }
         }, // 三种创作
         currentType: '0', // 现在创作类型
+        addCategoryText: "",
         addData: {
-          likes:[],
+          likes: [],
           category: '',
           title: '',
           coverImage: {
@@ -405,151 +423,31 @@
           foodList: '',
           goodsList: [],
           // 内容详情
-          details: [{
-            type: 'goods',
-            value: {
-              base_purchase_rate: "1.00",
-              base_sale_rate: "1",
-              base_unit: "个",
-              complete_status: 1,
-              describe: "美味农家小香柚",
-              goods_category_id: 42,
-              goods_category_name: "日用百货",
-              goods_cover_image: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F07%2F03%2F1562139724569-53956fe26e241.jpg",
-              goods_material_category_name: "日用百货",
-              goods_material_name: "美味农家小香柚",
-              goods_sku_code: "SKU1541581145",
-              goods_sku_encoding: "9876543210",
-              goods_sku_id: 55264,
-              goods_video_url: "http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/81fc231a5285890791064001022/bfyDuQxiDTYA.mp4",
-              id: 55217,
-              is_online: 1,
-              is_presale: 1,
-              name: "美味农家小香柚",
-              original_price: "199",
-              purchase_unit: "个",
-              sale_count: 0,
-              sale_unit: "个",
-              source: 1,
-              supplier_name: "13800000001",
-              trade_price: "99",
-              usable_stock: 1
-            }
-          }, {
-            type: 'text',
-            value: '111111111'
-          }, {
-            type: 'image',
-            value: "http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/07/01/156197765342658.png"
-          }, {
-            type: 'video',
-            value: 'http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/f810daf65285890791055957705/hZ6zRcaKA8EA.mp4'
-          }
-          ],
+          details: [],
         },
-        articleCategoryList: [{
-          name: '111',
-          value: 'skajd'
-        }],// 内容分类列表
-        coverImages: [], // 封面图片
-        authPhoto: [], // 作者头像
+        articleCategoryList: [],// 内容分类列表
         // 已经选择的商品头部
         selectedGoodsCommodities: ['商品名称', '单位', '售价', '操作'],
-        // 校验规则
-        justifyArr: [{
-          key: 'category',
-          tips: [{
-            default: true,
-            tip: '请选择内容分类'
-          }]
-        }, {
-          key: 'title',
-          tips: [{
-            default: true,
-            tip: '请输入文章标题'
-          }, {
-            length: [5, 8],
-            tip: '请输入5-8个字的文章标题'
-          }]
-        }, {
-          key: 'coverImage',
-          tips: [{
-            default: true,
-            tip: '请上传首图'
-          }]
-        }, {
-          key: 'authPhoto',
-          tips: [{
-            default: true,
-            tip: '请上传作者头像'
-          }]
-        }, {
-          key: 'authName',
-          tips: [{
-            default: true,
-            tip: '请输入作者名称'
-          }]
-        }, {
-          key: 'authSignature',
-          tips: [{
-            default: true,
-            tip: '请输入个性签名'
-          }, {
-            length: [1, 30],
-            tip: '请输入30字的个性签名'
-          }]
-        }, {
-          key: 'foodList',
-          tips: [{
-            default: true,
-            tip: '食材清单'
-          }]
-        }, {
-          key: 'addData.goodsList',
-          tips: [{
-            length: [0, 5],
-            tip: '最多添加5个商品'
-          }]
-        }, {
-          key: 'wx_group_photo_url',
-          tips: [{
-            default: true,
-            tip: '请上传100人以上的微信群照片'
-          }]
-        }],
-        goodsCategoryList:
-          [],
+        goodsCategoryList: [],
         // 选择商品弹框删选条件
-        chooseGoodsFilter:
-          {
-            limit: 7,
-            page:
-              '',
-            keyword:
-              '',
-            goods_category_id:
-              '',
-          }
-        ,
+        chooseGoodsFilter: {
+          limit: 7,
+          page: '',
+          keyword: '',
+          goods_category_id: '',
+        },
         chooseGoods: [], // 弹框商品列表
-        goodsPage:
-          {
-            total: 1,
-            per_page:
-              10,
-            total_page:
-              1
-          }
-        ,
-        showLoading: false,
-        selectGoods:
-          [], // 单次选择的商品
+        goodsPage: {
+          total: 1,
+          per_page:
+            10,
+          total_page:
+            1
+        },
+        selectGoods: [], // 单次选择的商品
       }
-    }
-    ,
+    },
     computed: {
-      ...
-        adverComputed,
       isShowEmpty() {
         return !(this.addData.title || this.addData.coverImage.id
           || this.addData.authPhoto.id || this.addData.authName
@@ -559,46 +457,43 @@
       },
       name() {
         return this.typeList[this.currentType] && this.typeList[this.currentType].name || '文章'
-      }
-      ,
+      },
       dataName() {
         let lastName = this.cmsType[0].toUpperCase() + this.cmsType.slice(1, this.cmsType.length)
         let useName = `temporary${lastName}`
         return useName
       }
-    }
-    ,
+    },
     async created() {
       this.currentType = this.$route.params.type
       console.log(this.$route.params.type)
-      this._getArticleCategory()
-    }
-    ,
+    },
     methods: {
-      ...
-        adverMethods,
       // 获取内容分类列表
       _getArticleCategory() {
+        console.log(111)
+      },
+      addCategory() {
+        this.addCategoryText = ''
+        console.log(111)
+        this.$refs.addCategory.showModal()
+      },
+      _submitCategory() {
 
-      }
-      ,
+      },
       // 封面
       getCoverVideo(video) {
         console.log('封面视频', video)
-        let item = {id: 0, image_id: video.id, image_url: '', video_url: video.full_url}
         this.addData.coverVideo.id = video.id
         this.addData.coverVideo.url = video.full_url
-        this.coverImages[0] = item
-      }
-      ,
+        this.addData.coverImage.id = video.cover_image_id
+        this.addData.coverImage.url = video.full_cover_url
+      },
       getPic(image) {
         console.log('封面图片', image)
-        let item = {id: 0, image_id: image.id, image_url: image.url}
         this.addData.coverImage.url = image.url
         this.addData.coverImage.id = image.id
-        this.coverImages[0] = item
-      }
-      ,
+      },
       delPic() {
         this.addData.coverImage = {
           url: '',
@@ -608,42 +503,32 @@
           url: '',
           id: ''
         }
-        this.coverImages = []
-      }
-      ,
+      },
       failFile(msg) {
         this.$emit('showToast', msg)
-      }
-      ,
+      },
       // 作者头像
       getAuthorPic(image) {
-        let item = {id: 0, image_id: image.id, image_url: image.url}
         this.addData.authPhoto.url = image.url
         this.addData.authPhoto.id = image.id
-        this.authPhoto[0] = item
-      }
-      ,
+      },
       delAuthorPic() {
         this.addData.authPhoto.url = ''
         this.addData.authPhoto.id = ''
-        this.authPhoto = []
-      }
-      ,
+      },
       // 视频内容
       getVideoContent(video) {
         this.addData.videoContent.url = video.full_url
         this.addData.videoContent.id = video.id
         this.addData.videoContent.name = video.name
-      }
-      ,
+      },
       deleteVideoContent() {
         this.addData.videoContent = {
           url: '',
           id: '',
           name: ''
         }
-      }
-      ,
+      },
       // 内容详情增加
       addDetailContentItem(item) {
         this.addData.details.push(item)
@@ -652,15 +537,13 @@
           console.log(el)
           el.scrollTop = el.scrollHeight
         })
-      }
-      ,
+      },
       addTextItem() {
         this.addDetailContentItem({
           type: 'text',
           value: ''
         })
-      }
-      ,
+      },
       addImageItem(image) {
         this.addDetailContentItem({
           type: 'image',
@@ -668,8 +551,7 @@
           id: image.id
         })
         console.log(image)
-      }
-      ,
+      },
       addVideoItem(video) {
         console.log('addVideoItem', video)
         this.addDetailContentItem({
@@ -678,26 +560,22 @@
           id: video.id
         })
         console.log(video)
-      }
-      ,
+      },
       addOneGoods() {
         this.showGoods()
         this.isCanSelectMore = false
-      }
-      ,
+      },
       deleteContentItem(idx, item) {
         this.addData.details.splice(idx, 1)
         if (item.type === 'goods') {
           let index = this.addData.goodsList.findIndex(goods => goods.id === item.value.id)
           if (index !== -1) this.addData.goodsList.splice(index, 1)
         }
-      }
-      ,
+      },
       // 托拽
       _setSort() {
         console.log(this.addData.details)
-      }
-      ,
+      },
       // --------------弹窗
       // 获取商品列表
       async _getGoodsList() {
@@ -727,8 +605,7 @@
           return item
         })
         this.$loading.hide()
-      }
-      ,
+      },
       // 展示商品弹窗
       async showGoods() {
         this.chooseGoodsFilter.page = 1
@@ -736,40 +613,34 @@
         await this._getGoodsList()
         this.$refs.goods.showModal()
         this.$refs.pagination.beginPage()
-      }
-      ,
+      },
       // 隐藏商品弹窗
       hideGoods() {
         this.selectGoods = []
         this.$refs.goods.hideModal()
-      }
-      ,
+      },
       // 获取分页商品列表
       async getMoreGoods(page) {
         this.chooseGoodsFilter.page = page
         await this._getGoodsList()
-      }
-      ,
+      },
       // 获取一级分类
       async _getFirstAssortment() {
         let res = await API.Outreach.goodsCategory({parent_id: this.chooseGoodsFilter.goods_category_id})
         this.goodsCategoryList = res.error === this.$ERR_OK ? res.data : []
-      }
-      ,
+      },
       // 选择分类
       async goodsCategoryChange(item) {
         this.chooseGoodsFilter.goods_category_id = item.id
         this.chooseGoodsFilter.page = 1
         await this._getGoodsList()
-      }
-      ,
+      },
       // 搜索商品
       async _searchGoods(text) {
         this.chooseGoodsFilter.keyword = text
         this.chooseGoodsFilter.page = 1
         await this._getGoodsList()
-      }
-      ,
+      },
       // 勾选商品
       selectGoodsBtn(item, index) {
         /* eslint-disable */
@@ -790,13 +661,11 @@
             }
             break
         }
-      }
-      ,
+      },
       // 删除商品
       _showDelGoods(item, index) {
         this.addData.goodsList.splice(index, 1)
-      }
-      ,
+      },
       // 单个添加
       _additionOne(item, index) {
         if (item.selected === 1) {
@@ -822,8 +691,7 @@
           })
         }
 
-      }
-      ,
+      },
       // 批量添加
       _batchAddition() {
         this.chooseGoods = this.chooseGoods.map((item) => {
@@ -839,8 +707,7 @@
         this.selectGoods = []
         this.hideGoods()
 
-      }
-      ,
+      },
       justifyConent() {
         let message = ''
         if (!this.addData.category) message = '请选择内容分类'
@@ -862,14 +729,12 @@
         } else {
           return true
         }
-      }
-      ,
+      },
       // 上线
       async submitLaunch() {
         let res = this.justifyConent()
         console.log(res, this.addData.details)
-      }
-      ,
+      },
       // 草稿
       async submitDraft() {
       }
@@ -1245,6 +1110,13 @@
     flex-wrap: wrap
     padding: 0 20px
     box-sizing: border-box
+
+    &.add-category-box
+      width: 380px
+      height: 213px
+
+      .add-category-input
+        width: 340px
 
     .title-box
       display: flex

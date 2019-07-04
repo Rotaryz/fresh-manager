@@ -19,19 +19,11 @@
       </slot>
     </div>
     <div v-if="fileType === 'image-video'" class="edit-image">
-      <draggable v-model="picList" class="draggable" @update="_setSort()">
-        <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
-          <span v-if="isEdit" class="close" @click="_del(index)"></span>
-          <video v-if="item.video_url" :src="item.video_url" class="video-tag"></video>
-          <video v-if="item.video_url && isGetVedioCoverImage"
-                 ref="fullVideo"
-                 :src="item.video_url"
-                 crossOrigin="anonymous" class="full-video"
-                 @loadeddata="loadedVedio"
-          ></video>
-        </div>
-      </draggable>
-      <div v-if="picList.length < picNum" class="add-image add-image-video">
+      <div v-if="videoUrl || imageUrl" class="show-image hand" :style="{'background-image': 'url(\'' + imageUrl + '\')'}">
+        <span v-if="isEdit" class="close" @click="_del()"></span>
+        <video v-if="videoUrl" :src="videoUrl" class="video-tag"></video>
+      </div>
+      <div v-else class="add-image add-image-video">
         <div v-if="showLoading" class="loading-mask">
           <img src="./loading.gif" class="loading">
         </div>
@@ -48,12 +40,10 @@
       </div>
     </div>
     <div v-if="fileType === 'image'" class="edit-image">
-      <draggable v-model="picList" class="draggable" @update="_setSort()">
-        <div v-for="(item, index) in picList" :key="index" class="show-image hand" :style="{'background-image': 'url(\'' + item.image_url + '\')'}">
-          <span v-if="isEdit" class="close" @click="_del(index)"></span>
-        </div>
-      </draggable>
-      <div v-if="picList.length < picNum" :class="['add-image','hand',imageIconClassName]">
+      <div v-if="imageUrl" class="show-image hand" :style="{'background-image': 'url(\'' + imageUrl + '\')'}">
+        <span v-if="isEdit" class="close" @click="_del()"></span>
+      </div>
+      <div v-else :class="['add-image','hand',imageIconClassName]">
         <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
         <div v-if="showLoading" class="loading-mask">
           <img src="./loading.gif" class="loading">
@@ -61,11 +51,11 @@
       </div>
     </div>
     <div v-if="fileType === 'video'" class="edit-image">
-      <div v-for="(item, index) in picList" :key="index" width="90px" class="show-image hand">
+      <div v-if="videoUrl" width="90px" class="show-image hand">
         <video class="video-tag" :src="item.image_url"></video>
-        <span v-if="isEdit" class="close" @click="_del(index)"></span>
+        <span v-if="isEdit" class="close" @click="_del()"></span>
       </div>
-      <div v-if="picList.length < picNum" class="add-image add-video hand">
+      <div v-else class="add-image add-video hand">
         <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
         <div v-if="showLoading" class="loading-mask">
           <img src="./loading.gif" class="loading">
@@ -76,18 +66,21 @@
 </template>
 <script>
   import API from '@api'
-  import Draggable from 'vuedraggable'
   import {uploadFiles} from '../../utils/vod/vod'
-
   const EDIT_IMAGE = 'BASE_EDIT_IMAGE'
 
   export default {
     name: EDIT_IMAGE,
-    components: {
-      Draggable
-    },
     props: {
-      ratioImage:{
+      videoUrl: {
+        type: String,
+        default: ''
+      },
+      imageUrl: {
+        type: String,
+        default: ''
+      },
+      ratioImage: {
         type: Array, // 图片比例范围
         default: () => []
       },
@@ -99,10 +92,6 @@
         type: String,
         default: ''
       },
-      isGetVedioCoverImage: {
-        type: Boolean,
-        default: true
-      },
       imageIconClassName: {
         type: String,
         default: ''
@@ -110,10 +99,6 @@
       showMorePic: {
         type: Boolean, // 是否多个图/视频
         default: true
-      },
-      picList: {
-        type: Array, // 图片/视频列表
-        default: () => []
       },
       picNum: {
         // 图片/视频数量
@@ -128,7 +113,7 @@
         type: Number, // 1 为开启  0为关闭
         default: 1
       },
-      size:{
+      size: {
         type: Number, // 单位 m
         default: 10
       },
@@ -140,38 +125,11 @@
       }
     },
     methods: {
-      dataURLtoFile(dataurl, filename) {
-        // 将base64转换为文件
-        let arr = dataurl.split(',')
-        let mime = arr[0].match(/:(.*?);/)[1]
-        let bstr = atob(arr[1])
-        let n = bstr.length
-        let u8arr = new Uint8Array(n)
-        while (n--) {
-          u8arr[n] = bstr.charCodeAt(n)
-        }
-        return new File([u8arr], filename, {type: mime})
-      },
-      async loadedVedio() {
-        var canvas = document.createElement("canvas");
-        let video = this.$refs.fullVideo[0]
-        let scale = 1
-        canvas.width = video.videoWidth * scale
-        canvas.height = video.videoHeight * scale
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-        let imgsrc = canvas.toDataURL("image/png")
-        this.coverImage = imgsrc
-        let file = this.dataURLtoFile(this.coverImage, 'cover.png')
-        let param = this._infoImage(file)
-        await this._upImage(param)
-      },
-      _setSort() {
-      },
-      _del(index) {
+      _del() {
         if (!this.isEdit) {
           return
         }
-        this.$emit('delPic', index)
+        this.$emit('delPic')
       },
       async _addPic(e) {
         this.showLoading = true
@@ -205,7 +163,7 @@
         console.log(size)
         if (size > this.size) {
           this.showLoading = false
-          this.$emit('failFile', '视频大小不能超过'+this.size+'M')
+          this.$emit('failFile', '视频大小不能超过' + this.size + 'M')
           return
         }
         uploadFiles(arr[0], curr => {
@@ -234,6 +192,7 @@
 
   .custom-item
     position: relative
+
   .edit-image
     flex-wrap: wrap
     display: flex

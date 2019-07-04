@@ -75,7 +75,7 @@
     .info
       padding: 5px 12px
       overflow: hidden
-
+      flex:1
       .name
         font-family $font-family-medium
         font-size: $font-size-16

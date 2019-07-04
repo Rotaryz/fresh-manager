@@ -1,21 +1,19 @@
 <template>
-  <div class="admin-select">
-    <div class="select-item" @click.stop="selectType">
-      <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
-        <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': visible, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
-          <input :value="valueLabel" :placeholder="placeholder" type="text" disable class="input-item">
-          <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': visible}">
-          <transition name="fade">
-            <ul v-show="visible" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
-              <li v-for="(child, chIdx) in data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
-                  @click.stop="setValue(child, chIdx)"
-              >
-                {{child[labelKey]}}
-              </li>
-              <li v-if="!data.length" class="select-child-item">{{noContentText}}</li>
-            </ul>
-          </transition>
-        </div>
+  <div class="select-item" @click="selectType">
+    <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
+      <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': visible, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
+        <input :value="valueLabel" :placeholder="placeholder" type="text" disabled="true" class="input-item">
+        <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': visible}">
+        <transition name="fade">
+          <ul v-show="visible" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
+            <li v-for="(child, chIdx) in data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
+                @click.stop="setValue(child, chIdx)"
+            >
+              {{child[labelKey]}}
+            </li>
+            <li v-if="!data.length" class="select-child-item">{{noContentText}}</li>
+          </ul>
+        </transition>
       </div>
     </div>
   </div>
@@ -25,7 +23,7 @@
   export default {
     props: {
       value: {
-        type:[String,Object,Boolean,Number],
+        type: [String, Object, Boolean, Number],
         default: ''
       },
       placeholder: {
@@ -46,7 +44,7 @@
           return []
         }
       },
-      noContentText:{
+      noContentText: {
         type: String,
         default: '暂无数据'
       },
@@ -92,7 +90,6 @@
       valueLabel() {
         let res = this.data.find(item => {
           let re = this.valueKey ? item[this.valueKey] === this.value : item === this.value
-          console.log(re)
           return re
         })
         return res ? res[this.labelKey] : ''
@@ -119,6 +116,7 @@
         if (!this.isUse) {
           return
         }
+        this.$emit('click')
         this.visible = !this.visible
         this.$emit('selectType', this.select)
       },
@@ -128,10 +126,7 @@
         this.showHover = false
         this.select.content = value[this.labelKey]
         let res = this.valueKey ? value[this.valueKey] : value
-        console.log(res)
-
         this.$emit('input', res)
-        // this.$emit('setValue', value, index)
       }
     }
   }
@@ -139,10 +134,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
-  .admin-select
-    box-sizing: border-box
-    display: flex
 
   .select-item
     display: flex
@@ -153,6 +144,8 @@
       width: 100%
       height: 100%
       border: 0px solid #ccc
+      color: #333333
+      background #fff
 
     &:first-child
       margin-left: 0px
