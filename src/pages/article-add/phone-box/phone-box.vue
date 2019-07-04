@@ -42,7 +42,7 @@
             </div>
             <template v-if="type!=='1'&& data.details.length">
               <div v-for="(item,idx) in data.details" :key="idx" class="article-item">
-                <div v-if="item.type==='text'" class="article-text">{{item.value}}</div>
+                <per v-if="item.type==='text'" class="article-text">{{item.value}}</per>
                 <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image">
                 <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
                 <goods-item v-if="item.type==='goods'" :goodsData="item.value" :addDisabled="true"></goods-item>
@@ -172,12 +172,13 @@
     box-sizing: border-box
     display: flex
     justify-content: center
-
+    width: 340px
     .phone
+      position: fixed
+      top:13%
       icon-image('pic-tel')
       width: 340px
       height: 726.24px
-      position: relative
 
       .content-box
         box-sizing: border-box
@@ -320,7 +321,7 @@
 
         .article-text
           font-family $font-family-regular
-          font-size $font-size-15
+          font-size 15px
 
         .article-image
         .article-video
