@@ -8,7 +8,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="单据号" @search="searchDetail"></base-search>
+        <base-search placeHolder="单据号" :infoText="warehouseDetailFilter.order_sn" @search="searchDetail"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="detailPageTotal" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pagination" :pagination="warehouseDetailFilter.page" :pageDetail="detailPageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
 
@@ -51,6 +51,7 @@
 <script type="text/ecmascript-6">
   import {storeComputed, storeMethods} from '@state/helpers'
   import API from '@api'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'STOREHOUSE_DETAIL'
   const TITLE = '库存管理详情'
@@ -86,6 +87,8 @@
       ...storeComputed
     },
     async created() {
+      this.storeType.content = _.cloneDeep(this.typeName)
+      console.log(this.storeType.content)
       await this._getwarehouseStockType()
     },
     methods: {
@@ -120,29 +123,32 @@
         this.storeType.data = arr
       },
       setStoreType(item) {
-        this.type = item.status
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        this._getWarehouseDetailList()
+        // this.type = item.status
+        // this.page = 1
+        // this.$refs.pagination.beginPage()
+        this.SET_TYPE_NAME(item.name)
+        this._getWarehouseDetailList({page: 1, type: item.status})
       },
-      _getWarehouseDetailList() {
+      _getWarehouseDetailList(params) {
+        this.SET_WAREHOUSE_DETAIL_PARAMS(params)
         this.getWarehouseDetailList({
           code: this.$route.query.code,
-          page: this.page,
-          type: this.type,
-          orderSn: this.orderSn,
           loading: false
         })
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
       },
       searchDetail(orderSn) {
-        this.page = 1
-        this.orderSn = orderSn
-        this.$refs.pagination.beginPage()
-        this._getWarehouseDetailList()
+        // this.page = 1
+        // this.orderSn = orderSn
+        // this.$refs.pagination.beginPage()
+        // this._getWarehouseDetailList()
+        this._getWarehouseDetailList({page: 1, order_sn: orderSn})
       },
       addPage(page) {
-        this.page = page
-        this._getWarehouseDetailList()
+        // this.page = page
+        this._getWarehouseDetailList({page})
       }
     }
   }

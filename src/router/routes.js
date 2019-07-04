@@ -1284,7 +1284,6 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             console.log(store.getters['merchantOrder/tabIndex'])
             if (store.getters['merchantOrder/tabIndex'] === 0) {
-              console.log(111)
               store
                 .dispatch('merchantOrder/getMerchantOrderList')
                 .then((res) => {
@@ -1845,14 +1844,34 @@ export default [
         component: () => lazyLoadView(import('@pages/product-enter/product-enter')),
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
+          resetHooks: ['product/resetProductData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let exceptionStatus = routeTo.query.exception_status
-            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
-            let startTime = routeTo.query.start_time || ''
-            let endTime = routeTo.query.end_time || ''
+            if (store.getters['product/isEnterFirst']) {
+              let exceptionStatus = routeTo.query.exception_status
+              exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+              let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+              if (status.length) {
+                status = status * 1
+              }
+              if (exceptionStatus.length) {
+                exceptionStatus = exceptionStatus * 1
+              }
+              console.log(exceptionStatus, 'exceptionStatus')
+              let startTime = routeTo.query.start_time || ''
+              let endTime = routeTo.query.end_time || ''
+              store.commit('product/SET_ENTER_PARAMS', {
+                start_time: startTime,
+                end_time: endTime,
+                exception_status: exceptionStatus,
+                keyword: '',
+                status: status,
+                page: 1,
+                limit: 10
+              })
+              store.commit('product/SET_IS_ENTER_FRIRST', false)
+            }
             store
-              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1, exceptionStatus})
+              .dispatch('product/getEnterData', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1894,14 +1913,33 @@ export default [
         component: () => lazyLoadView(import('@pages/product-out/product-out')),
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
+          resetHooks: ['product/resetOutData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let exceptionStatus = routeTo.query.exception_status
-            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
-            let startTime = routeTo.query.start_time || ''
-            let endTime = routeTo.query.end_time || ''
+            if (store.getters['product/isOutFirst']) {
+              let exceptionStatus = routeTo.query.exception_status
+              exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+              let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
+              let startTime = routeTo.query.start_time || ''
+              let endTime = routeTo.query.end_time || ''
+              if (status.length) {
+                status = status * 1
+              }
+              if (exceptionStatus.length) {
+                exceptionStatus = exceptionStatus * 1
+              }
+              store.commit('product/SET_OUT_PARAMS', {
+                start_time: startTime,
+                end_time: endTime,
+                exception_status: exceptionStatus,
+                keyword: '',
+                status: status,
+                page: 1,
+                limit: 10
+              })
+              store.commit('product/SET_IS_OUT_FRIRST', false)
+            }
             store
-              .dispatch('product/getOutData', {startTime, endTime, status, page: 1, exceptionStatus})
+              .dispatch('product/getOutData', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1996,8 +2034,8 @@ export default [
         component: () => lazyLoadView(import('@pages/warehouse-personnel/warehouse-personnel')),
         meta: {
           titles: ['供应链', '仓库', '基础设置', '仓库人员管理'],
+          resetHooks: ['warehouse/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('warehouse/infoSetKeyWord')
             store
               .dispatch('warehouse/getPurchaseUser')
               .then((res) => {
@@ -2225,9 +2263,10 @@ export default [
         component: () => lazyLoadView(import('@pages/storehouse-management/storehouse-management')),
         meta: {
           titles: ['供应链', '仓库', '库存管理'],
+          resetHooks: ['store/resetWarehouseData'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: '', isPresale: ''})
+              .dispatch('store/getWarehouseList', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2249,7 +2288,7 @@ export default [
           titles: ['供应链', '仓库', '库存管理', '库存详情'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getWarehouseDetailList', {code: routeTo.query.code, page: 1, order_sn: '', type: ''})
+              .dispatch('store/getWarehouseDetailList', {code: routeTo.query.code, loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2296,9 +2335,10 @@ export default [
         component: () => lazyLoadView(import('@pages/stock-taking/stock-taking')),
         meta: {
           titles: ['供应链', '仓库', '库存盘点'],
+          resetHooks: ['store/resetTakingData'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getAdjustOrder', {page: 1, startTime: '', endTime: '', keyword: ''})
+              .dispatch('store/getAdjustOrder', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

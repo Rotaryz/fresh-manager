@@ -421,7 +421,9 @@ export const productComputed = {
     'outList',
     'outPageTotal',
     'enterDetail',
-    'outDetail'
+    'outDetail',
+    'enterFilter',
+    'outFilter'
   ])
 }
 
@@ -433,7 +435,8 @@ export const productMethods = {
     'getEnterDetailData',
     'getOutDetailData',
     'setOutList'
-  ])
+  ]),
+  ...mapMutations('product', ['SET_ENTER_PARAMS', 'SET_OUT_PARAMS'])
 }
 
 // 财务管理
@@ -547,7 +550,12 @@ export const storeComputed = {
     'adjustOrder',
     'adjustPageTotal',
     'adjustOrderDetail',
-    'adjustDetailPageTotal'
+    'adjustDetailPageTotal',
+    'stockFilter',
+    'warehouseFilter',
+    'selectData',
+    'warehouseDetailFilter',
+    'typeName'
   ])
 }
 export const storeMethods = {
@@ -556,8 +564,10 @@ export const storeMethods = {
     'getWarehouseDetailList',
     'getStockList',
     'getAdjustOrder',
-    'getAdjustOrderDetail'
-  ])
+    'getAdjustOrderDetail',
+    'resetWarehouseDetail'
+  ]),
+  ...mapMutations('store', ['SET_STOCK_PARAMS', 'SET_WAREHOUSE_PARAMS', 'SET_SELECT_PARAMS', 'SET_WAREHOUSE_DETAIL_PARAMS', 'SET_TYPE_NAME'])
 }
 // todo 分拣任务
 export const sortingComputed = {

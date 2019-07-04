@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="仓库人员姓名或账号" @search="changeKeyword"></base-search>
+        <base-search placeHolder="仓库人员姓名或账号" :infoText="keyword" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">

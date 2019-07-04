@@ -25,7 +25,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="商品名称或商品编码" @search="searchStore"></base-search>
+        <base-search placeHolder="商品名称或商品编码" :infoText="warehouseFilter.keyword" @search="searchStore"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -65,14 +65,15 @@
               <div class="list-item">￥{{item.stock_average}}</div>
               <div class="list-item">{{item.warehouse_position}}</div>
               <div class="list-item">
-                <router-link
-                  tag="div"
-                  :to="`storehouse-detail?code=${item.goods_sku_code}`"
-                  append
-                  class="list-operation"
-                >
-                  详情
-                </router-link>
+                <!--<router-link-->
+                <!--tag="div"-->
+                <!--:to="`storehouse-detail?code=${item.goods_sku_code}`"-->
+                <!--append-->
+                <!--class="list-operation"-->
+                <!--&gt;-->
+                <!--详情-->
+                <!--</router-link>-->
+                <div class="list-operation" @click="jumpDeatil(item)">详情</div>
                 <router-link
                   tag="div"
                   :to="`batch?code=${item.goods_sku_code}`"
@@ -89,7 +90,7 @@
       </div>
       <div class="pagination-box">
         <!-- @addPage="addPage"-->
-        <base-pagination ref="pagination" :pageDetail="warehousePageTotal" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pagination" :pagination="warehouseFilter.page" :pageDetail="warehousePageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
   </div>
@@ -98,6 +99,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import {storeComputed, storeMethods, authComputed} from '@state/helpers'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'STOREHOUSE_MANAGEMENT'
   const TITLE = '库存管理'
@@ -135,17 +137,17 @@
           current_corp: currentId,
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: this.currentUser.access_token,
-          goods_material_category_id: this.goodsCategoryId,
-          keyword: this.keyword,
-          is_presale: this.isPresale,
-          warehouse_position_id: this.warehousePositionId
+          goods_material_category_id: this.warehouseFilter.goods_material_category_id,
+          keyword: this.warehouseFilter.keyword,
+          is_presale: this.warehouseFilter.isPresale,
+          warehouse_position_id: this.warehouseFilter.warehouse_position_id
         }
         let search = []
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
         let url = process.env.VUE_APP_SCM_API + ENTRY_STORE_EXPORT + '?' + search.join('&')
-        console.log(url)
+        // console.log(url)
         return url
       }
     },
@@ -153,9 +155,28 @@
       // await this._getFirstAssortment()
       await this._getStoreList()
       this.getCategoriesData()
+      console.log(this.selectData)
+      this._setData()
     },
     methods: {
       ...storeMethods,
+      jumpDeatil(item) {
+        this.resetWarehouseDetail()
+        this.$router.push(`/home/storehouse-management/storehouse-detail?code=${item.goods_sku_code}`)
+      },
+      // 重置数据
+      _setData() {
+        let selectDown = _.cloneDeep(this.selectData)
+        this.saleStore.content = selectDown.saleName
+        this.store.content = selectDown.storeName
+        this.secondStore.content = selectDown.shelfName
+        this.secondStore.data = selectDown.shelfList
+        this.stairSelect.content = selectDown.oneName
+        this.secondSelect.content = selectDown.twoName
+        this.thirdlySelect.content = selectDown.thrName
+        this.secondSelect.data = selectDown.twoList
+        this.thirdlySelect.data = selectDown.thrList
+      },
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -167,15 +188,12 @@
         })
       },
       // 获取列表
-      _getWarehouseList() {
-        this.getWarehouseList({
-          page: this.page,
-          goodsCategoryId: this.goodsCategoryId,
-          keyword: this.keyword,
-          isPresale: this.isPresale,
-          warehousePositionId: this.warehousePositionId,
-          loading: false
-        })
+      _getWarehouseList(params) {
+        this.SET_WAREHOUSE_PARAMS(params)
+        this.getWarehouseList({loading: false})
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
       },
       // 选择一级类目
       async setStairValue(data) {
@@ -183,26 +201,31 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
-        this.goodsCategoryId = data.id
-        this.page = 1
-        this._getWarehouseList()
-        this.$refs.pagination.beginPage()
+        // this.goodsCategoryId = data.id
+        // this.page = 1
+        this.SET_SELECT_PARAMS({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
+        this._getWarehouseList({goods_material_category_id: data.id, page: 1})
+        // this.$refs.pagination.beginPage()
       },
       // 选择二级类目
       async setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
-        this.goodsCategoryId = data.id
-        this.page = 1
-        this._getWarehouseList()
-        this.$refs.pagination.beginPage()
+        // this.goodsCategoryId = data.id
+        this.SET_SELECT_PARAMS({twoName: data.name, thrList: data.list, thrName: '三级类目'})
+        // this.page = 1
+        // this._getWarehouseList()
+        // this.$refs.pagination.beginPage()
+        this._getWarehouseList({goods_material_category_id: data.id, page: 1})
       },
       // 选择三级类目
       async setThirdlyValue(data) {
-        this.goodsCategoryId = data.id
-        this.page = 1
-        this._getWarehouseList()
-        this.$refs.pagination.beginPage()
+        // this.goodsCategoryId = data.id
+        // this.page = 1
+        // this._getWarehouseList()
+        // this.$refs.pagination.beginPage()
+        this.SET_SELECT_PARAMS({thrName: data.name})
+        this._getWarehouseList({goods_material_category_id: data.id, page: 1})
       },
       // 选择一级分类
       async setSecondAssortment(item) {
@@ -240,44 +263,54 @@
       },
       // 获取库架名
       async getSecondStore(item) {
-        this.warehousePositionId = item.id
+        console.log(item)
+        // this.warehousePositionId = item.id
         if (item.id === '') {
           this.secondStore.data = []
+          this.SET_SELECT_PARAMS({shelfList: []})
         } else {
           let res = await API.Store.findChild(item.id)
           this.secondStore.data = res.error === this.$ERR_OK ? res.data : []
           this.secondStore.data.unshift({name: '全部', id: this.warehousePositionId})
+          this.SET_SELECT_PARAMS({shelfList: this.secondStore.data})
         }
         this.secondStore.content = '货架名'
-        this.page = 1
-        this._getWarehouseList()
-        this.$refs.pagination.beginPage()
+        this.SET_SELECT_PARAMS({storeName: item.name})
+        this.SET_SELECT_PARAMS({shelfName: '货架名'})
+        // this.page = 1
+        this._getWarehouseList({warehouse_position_id: item.id, page: 1})
+        // this.$refs.pagination.beginPage()
       },
       // 选择库架名
       async selectSecondStore(item) {
         this.warehousePositionId = item.id
-        this.page = 1
-        this._getWarehouseList()
-        this.$refs.pagination.beginPage()
+        this.SET_SELECT_PARAMS({shelfName: item.name})
+        // console.log(item)
+        // this.page = 1
+        // this._getWarehouseList()
+        this._getWarehouseList({warehouse_position_id: item.id, page: 1})
       },
       // 选择预售类型
       async selectSaleStore(item) {
-        this.isPresale = item.value
-        this.page = 1
-        this._getWarehouseList()
-        this.$refs.pagination.beginPage()
+        // this.isPresale = item.value
+        // this.page = 1
+        // this._getWarehouseList()
+        // this.$refs.pagination.beginPage()
+        this.SET_SELECT_PARAMS({saleName: item.name})
+        this._getWarehouseList({is_presale: item.value, page: 1})
       },
       // 搜索
       searchStore(keyword) {
-        this.keyword = keyword
-        this.page = 1
-        this._getWarehouseList()
-        this.$refs.pagination.beginPage()
+        // this.keyword = keyword
+        // this.page = 1
+        // this._getWarehouseList()
+        // this.$refs.pagination.beginPage()
+        this._getWarehouseList({keyword, page: 1})
       },
       // 翻页
       addPage(page) {
-        this.page = page
-        this._getWarehouseList()
+        // this.page = page
+        this._getWarehouseList({page})
       }
     }
   }

@@ -16,7 +16,27 @@ export const state = {
     total_page: 1
   },
   enterDetail: {},
-  outDetail: {}
+  outDetail: {},
+  isEnterFirst: true,
+  enterFilter: {
+    status: 0,
+    keyword: '',
+    start_time: '',
+    end_time: '',
+    limit: 10,
+    page: 1,
+    exception_status: ''
+  },
+  isOutFirst: true,
+  outFilter: {
+    status: 0,
+    keyword: '',
+    start_time: '',
+    end_time: '',
+    limit: 10,
+    page: 1,
+    exception_status: ''
+  }
 }
 
 export const getters = {
@@ -40,6 +60,18 @@ export const getters = {
   },
   outDetail(state) {
     return state.outDetail
+  },
+  enterFilter(state) {
+    return state.enterFilter
+  },
+  isEnterFirst(state) {
+    return state.isEnterFirst
+  },
+  outFilter(state) {
+    return state.outFilter
+  },
+  isOutFirst(state) {
+    return state.isOutFirst
   }
 }
 
@@ -64,6 +96,18 @@ export const mutations = {
   },
   SET_OUT_MSG(state, enterDetail) {
     state.outDetail = enterDetail
+  },
+  SET_IS_ENTER_FRIRST(state, isEnterFirst) {
+    state.isEnterFirst = isEnterFirst
+  },
+  SET_ENTER_PARAMS(state, params) {
+    state.enterFilter = {...state.enterFilter, ...params}
+  },
+  SET_IS_OUT_FRIRST(state, isOutFirst) {
+    state.isOutFirst = isOutFirst
+  },
+  SET_OUT_PARAMS(state, params) {
+    state.outFilter = {...state.outFilter, ...params}
   }
 }
 
@@ -83,17 +127,18 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  async getEnterData({state, commit, dispatch}, {startTime, endTime, status, page, exceptionStatus, loading = true}) {
-    let data = {
-      status: status,
-      keyword: '',
-      start_time: startTime,
-      end_time: endTime,
-      limit: 10,
-      page: 1,
-      exception_status: exceptionStatus
-    }
-    return API.Store.getEnterList(data, loading)
+  // async getEnterData({state, commit, dispatch}, {startTime, endTime, status, page, exceptionStatus, loading = true}) {
+  async getEnterData({state, commit, dispatch}, {loading = false}) {
+    // let data = {
+    //   status: status,
+    //   keyword: '',
+    //   start_time: startTime,
+    //   end_time: endTime,
+    //   limit: 10,
+    //   page: 1,
+    //   exception_status: exceptionStatus
+    // }
+    return API.Store.getEnterList(state.enterFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -115,17 +160,18 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  async getOutData({state, commit, dispatch}, {startTime, endTime, status, page, exceptionStatus, loading = true}) {
-    let data = {
-      status: status,
-      keyword: '',
-      start_time: startTime,
-      end_time: endTime,
-      limit: 10,
-      page: 1,
-      exception_status: exceptionStatus
-    }
-    return API.Store.getOutList(data, loading)
+  // async getOutData({state, commit, dispatch}, {startTime, endTime, status, page, exceptionStatus, loading = true}) {
+  async getOutData({state, commit, dispatch}, {loading = false}) {
+    // let data = {
+    //   status: status,
+    //   keyword: '',
+    //   start_time: startTime,
+    //   end_time: endTime,
+    //   limit: 10,
+    //   page: 1,
+    //   exception_status: exceptionStatus
+    // }
+    return API.Store.getOutList(state.outFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -180,5 +226,29 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetProductData({commit}) {
+    commit('SET_ENTER_PARAMS', {
+      status: 0,
+      keyword: '',
+      start_time: '',
+      end_time: '',
+      limit: 10,
+      page: 1,
+      exception_status: ''
+    })
+    commit('SET_IS_ENTER_FRIRST', true)
+  },
+  resetOutData({commit}) {
+    commit('SET_OUT_PARAMS', {
+      status: 2,
+      keyword: '',
+      start_time: '',
+      end_time: '',
+      limit: 10,
+      page: 1,
+      exception_status: ''
+    })
+    commit('SET_IS_OUT_FRIRST', true)
   }
 }
