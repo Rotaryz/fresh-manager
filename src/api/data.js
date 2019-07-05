@@ -145,5 +145,5 @@ export default {
   businessData(data, loading = false) {
     let url = '/social-shopping/api/backend/data-center/over-view/data-board-clinch'
     return request.get(url, data, loading)
-  },
+  }
 }

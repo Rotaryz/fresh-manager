@@ -3,7 +3,7 @@ import app from '@src/main'
 
 export const state = {
   infoBannerList: [],
-  infoTabIndex: 0
+  infoTabIndex: 1
 }
 
 export const getters = {
@@ -26,7 +26,6 @@ export const mutations = {
 
 export const actions = {
   checkTab({commit}, index) {
-    console.log(index)
     commit('SET_INFO_TAB_INDEX', index)
   },
   getInfoBannerList({state, commit, dispatch}) {

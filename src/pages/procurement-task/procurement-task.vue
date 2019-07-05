@@ -382,7 +382,9 @@
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&start_time=${this.startTime}&end_time=${this.endTime}&status=${
           this.status
-        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&exception_status=${this.exceptionStatus}&current_corp=${currentId}`
+        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&exception_status=${
+          this.exceptionStatus
+        }&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
       },
       async checkErr(item) {

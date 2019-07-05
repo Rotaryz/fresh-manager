@@ -560,8 +560,7 @@
       _getEndTime(time) {
         this.msg.end_at = time
       },
-      test() {
-      },
+      test() {},
       // 选择商品
       async _getGoodsList() {
         let res = await API.Coupon.getGoodsList({

@@ -83,139 +83,139 @@
     computed: {
       indexArr() {
         /* eslint-disable */ // todo
-        let ret = []
-        if (this.pageDetail.total_page <= 9 && this.pageDetail.total_page > 0) {
-          for (let i = 1; i <= this.pageDetail.total_page; i++) {
-            this.showEnd = false
-            this.backClipped = false
-            ret.push(i)
-          }
-          return ret
-        } else if (this.pageDetail.total_page === 0) {
+      let ret = []
+      if (this.pageDetail.total_page <= 9 && this.pageDetail.total_page > 0) {
+        for (let i = 1; i <= this.pageDetail.total_page; i++) {
           this.showEnd = false
           this.backClipped = false
-          return [1]
-        }
-        if (this.page < 4) {
-          this.backClipped = true
-          this.showFirst = false
-          this.preClipped = false
-          this.showEnd = true
-          for (let i = 1; i <= 4; i++) {
-            ret.push(i)
-          }
-        } else if (this.page === 4) {
-          this.backClipped = true
-          this.showFirst = false
-          this.preClipped = false
-          for (let i = 1; i <= 6; i++) {
-            ret.push(i)
-          }
-        } else if (this.page > 4 && this.page < this.pageDetail.total_page - 2) {
-          this.showFirst = true
-          this.preClipped = true
-          this.showEnd = true
-          this.backClipped = true
-          for (let i = this.page - 2; i <= this.page + 2; i++) {
-            ret.push(i)
-          }
-        } else if (this.page === this.pageDetail.total_page - 3) {
-          this.showFirst = true
-          this.showEnd = false
-          this.backClipped = false
-          this.preClipped = true
-          for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
-            ret.push(i)
-          }
-        } else if (this.page > this.pageDetail.total_page - 3) {
-          this.showFirst = true
-          this.showEnd = false
-          this.backClipped = false
-          this.preClipped = true
-          for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
-            ret.push(i)
-          }
+          ret.push(i)
         }
         return ret
+      } else if (this.pageDetail.total_page === 0) {
+        this.showEnd = false
+        this.backClipped = false
+        return [1]
       }
-    },
-    created() {
-      window.onclick = () => {
-        this.hidePageDetail()
+      if (this.page < 4) {
+        this.backClipped = true
+        this.showFirst = false
+        this.preClipped = false
+        this.showEnd = true
+        for (let i = 1; i <= 4; i++) {
+          ret.push(i)
+        }
+      } else if (this.page === 4) {
+        this.backClipped = true
+        this.showFirst = false
+        this.preClipped = false
+        for (let i = 1; i <= 6; i++) {
+          ret.push(i)
+        }
+      } else if (this.page > 4 && this.page < this.pageDetail.total_page - 2) {
+        this.showFirst = true
+        this.preClipped = true
+        this.showEnd = true
+        this.backClipped = true
+        for (let i = this.page - 2; i <= this.page + 2; i++) {
+          ret.push(i)
+        }
+      } else if (this.page === this.pageDetail.total_page - 3) {
+        this.showFirst = true
+        this.showEnd = false
+        this.backClipped = false
+        this.preClipped = true
+        for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
+          ret.push(i)
+        }
+      } else if (this.page > this.pageDetail.total_page - 3) {
+        this.showFirst = true
+        this.showEnd = false
+        this.backClipped = false
+        this.preClipped = true
+        for (let i = this.pageDetail.total_page - 3; i <= this.pageDetail.total_page; i++) {
+          ret.push(i)
+        }
       }
-    },
-    methods: {
-      _runPage(e) {
-        if (e.keyCode === 13) {
-          if (this.pageInput !== '') {
-            if (this.pageInput > this.pageDetail.total_page) {
-              this.pageInput = this.pageDetail.total_page
-            } else if (this.pageInput * 1 <= 0) {
-              this.pageInput = 1
-            }
-            this.pageInput = Math.floor(this.pageInput * 1)
-            this.page = this.pageInput
-            this.$emit('addPage', this.page)
-          }
-        }
-      },
-      getPage(page) {
-        this.page = page
-        this.$emit('addPage', this.page)
-      },
-      subtract() {
-        if (this.page > 1) {
-          this.page--
-          this.$emit('addPage', this.page)
-        }
-        this.notAllowed()
-      },
-      notAllowed() {
-        this.page === 1 ? (this.isHand.handLeft = 'not-allowed') : (this.isHand.handLeft = 'pointer')
-        this.page === this.pageDetail.total_page
-          ? (this.isHand.handRight = 'not-allowed')
-          : (this.isHand.handRight = 'pointer')
-        this.pageInput === '' ? (this.isHand.handGo = 'not-allowed') : (this.isHand.handGo = 'pointer')
-      },
-      addPage() {
-        if (this.page < this.pageDetail.total_page) {
-          this.page++
-          this.$emit('addPage', this.page)
-        }
-      },
-      showPageDetail() {
-        this.showMorePage = !this.showMorePage
-      },
-      detailPage(page) {
-        this.page = page
-        this.pageIndex = page
-        setTimeout(() => {
-          this.hidePageDetail()
-        }, 100)
-        this.$emit('addPage', this.page)
-      },
-      hidePageDetail() {
-        this.showMorePage = false
-        this.focus = false
-      },
-      goPage() {
+      return ret
+    }
+  },
+  created() {
+    window.onclick = () => {
+      this.hidePageDetail()
+    }
+  },
+  methods: {
+    _runPage(e) {
+      if (e.keyCode === 13) {
         if (this.pageInput !== '') {
-          this.pageInput = Math.floor(this.pageInput * 1)
           if (this.pageInput > this.pageDetail.total_page) {
             this.pageInput = this.pageDetail.total_page
           } else if (this.pageInput * 1 <= 0) {
             this.pageInput = 1
           }
+          this.pageInput = Math.floor(this.pageInput * 1)
           this.page = this.pageInput
           this.$emit('addPage', this.page)
         }
-      },
-      beginPage(page = 1) {
-        this.pageInput = ''
-        this.page = page
       }
+    },
+    getPage(page) {
+      this.page = page
+      this.$emit('addPage', this.page)
+    },
+    subtract() {
+      if (this.page > 1) {
+        this.page--
+        this.$emit('addPage', this.page)
+      }
+      this.notAllowed()
+    },
+    notAllowed() {
+      this.page === 1 ? (this.isHand.handLeft = 'not-allowed') : (this.isHand.handLeft = 'pointer')
+      this.page === this.pageDetail.total_page
+        ? (this.isHand.handRight = 'not-allowed')
+        : (this.isHand.handRight = 'pointer')
+      this.pageInput === '' ? (this.isHand.handGo = 'not-allowed') : (this.isHand.handGo = 'pointer')
+    },
+    addPage() {
+      if (this.page < this.pageDetail.total_page) {
+        this.page++
+        this.$emit('addPage', this.page)
+      }
+    },
+    showPageDetail() {
+      this.showMorePage = !this.showMorePage
+    },
+    detailPage(page) {
+      this.page = page
+      this.pageIndex = page
+      setTimeout(() => {
+        this.hidePageDetail()
+      }, 100)
+      this.$emit('addPage', this.page)
+    },
+    hidePageDetail() {
+      this.showMorePage = false
+      this.focus = false
+    },
+    goPage() {
+      if (this.pageInput !== '') {
+        this.pageInput = Math.floor(this.pageInput * 1)
+        if (this.pageInput > this.pageDetail.total_page) {
+          this.pageInput = this.pageDetail.total_page
+        } else if (this.pageInput * 1 <= 0) {
+          this.pageInput = 1
+        }
+        this.page = this.pageInput
+        this.$emit('addPage', this.page)
+      }
+    },
+    beginPage(page = 1) {
+      this.pageInput = ''
+      this.page = page
     }
   }
+}
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"

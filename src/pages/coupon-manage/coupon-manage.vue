@@ -131,7 +131,6 @@
           this.$refs.goodsCoupon.getGoodsCoupon()
           break
         }
-
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({created_start_at: this.msg.startTime, created_end_at: this.msg.endTime}).then(

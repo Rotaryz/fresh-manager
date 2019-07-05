@@ -1,7 +1,7 @@
 import source from 'china-division/dist/pca-code.json'
 let s = JSON.parse(JSON.stringify(source).replace(/children/g, 'sub'))
-let newS = s.map(city => {
-  let citySub = city.sub.map(area => {
+let newS = s.map((city) => {
+  let citySub = city.sub.map((area) => {
     area.sub.unshift({name: '请选择'})
     return area
   })

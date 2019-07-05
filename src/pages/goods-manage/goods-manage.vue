@@ -111,12 +111,22 @@
     data() {
       return {
         listTitle: LIST_TITLE,
-        dispatchSelect: [{name: '全部', value: '', key: 'all', num: 0}, {name: '支付', key: 'wait_release', num: 0}, {name: '退款', key: 'wait_purchase', num: 0}],
+        dispatchSelect: [
+          {name: '全部', value: '', key: 'all', num: 0},
+          {name: '支付', key: 'wait_release', num: 0},
+          {name: '退款', key: 'wait_purchase', num: 0}
+        ],
         showIndex: false,
         stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
-        dataSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', id: ''}, {name: '未完成', id: 0}, {name: '完成', id: 1}]},
+        dataSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', id: ''}, {name: '未完成', id: 0}, {name: '完成', id: 1}]
+        },
         keyWord: '',
         oneBtn: false,
         curItem: {},
@@ -227,7 +237,9 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_material_category_id=${this.categoryId}&complete_status=${this.completeStatus}&keyword=${this.keyWord}&show_type=base`
+        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_material_category_id=${
+          this.categoryId
+        }&complete_status=${this.completeStatus}&keyword=${this.keyWord}&show_type=base`
         this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       // 获取列表

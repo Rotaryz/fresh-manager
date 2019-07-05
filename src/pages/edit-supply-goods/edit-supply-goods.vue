@@ -191,9 +191,7 @@
   import _ from 'lodash'
   const PAGE_NAME = 'EDIT_SUPPLY_GOODS'
   const TITLE = '新建商品'
-  const ORDERSTATUS = [
-    {text: '基础信息', status: 0}
-  ]
+  const ORDERSTATUS = [{text: '基础信息', status: 0}]
 
   export default {
     name: PAGE_NAME,
@@ -295,7 +293,7 @@
                     this.secondSelect.content = twomitem.name
                     this.thirdlySelect.data = twomitem.list
                     this.thirdlySelect.data.forEach((thritem) => {
-                      if(thritem.is_selected) {
+                      if (thritem.is_selected) {
                         this.thirdlySelect.content = thritem.name
                       }
                     })
@@ -333,7 +331,7 @@
           return
         }
         let arr = []
-        this.searchList.forEach((item) =>{
+        this.searchList.forEach((item) => {
           if (item.supplier_name.includes(text)) {
             arr.push(item)
           }
@@ -502,7 +500,10 @@
         this.msg.goods_skus[0] = this.goods_skus
         this.msg.save_type = 'base'
         if (this.id) {
-          if (this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 && this.editRurchaseUnit === this.goods_skus.purchase_unit) {
+          if (
+            this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 &&
+            this.editRurchaseUnit === this.goods_skus.purchase_unit
+          ) {
             this.isSubmit = true
             API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
               this.isSubmit = false

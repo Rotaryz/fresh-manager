@@ -363,13 +363,16 @@
       },
       // 获取商品列表
       async _getGoodsList(loading = true) {
-        let res = await API.Coupon.getGoodsList({
-          is_online: 1,
-          keyword: this.text,
-          goods_category_id: this.parentId,
-          page: this.choicePage,
-          limit: 7
-        }, loading)
+        let res = await API.Coupon.getGoodsList(
+          {
+            is_online: 1,
+            keyword: this.text,
+            goods_category_id: this.parentId,
+            page: this.choicePage,
+            limit: 7
+          },
+          loading
+        )
         this.$loading.hide()
         if (res.error !== this.$ERR_OK) {
           return
@@ -381,7 +384,7 @@
         }
         this.choiceGoods = res.data
         this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.selectItem.id)
-        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === )
+      // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === )
       },
       // 弹窗确定选择链接
       async _miniGoods() {

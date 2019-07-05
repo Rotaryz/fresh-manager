@@ -28,11 +28,7 @@
   import moment from 'moment'
   // import DatePicker from './date-picker/src/picker'
   const COMPONENT_NAME = 'BASE_OPTION_BOX'
-  const NAV = [
-    {title: '日', status: 'day'},
-    {title: '周', status: 'week'},
-    {title: '月', status: 'month'}
-  ]
+  const NAV = [{title: '日', status: 'day'}, {title: '周', status: 'week'}, {title: '月', status: 'month'}]
 
   export default {
     name: COMPONENT_NAME,
@@ -105,12 +101,10 @@
       }
     },
     methods: {
-
       checkTab(index) {
         this.tempIndex = index
       },
       _getDate(time) {
-
         this.tabIndex = this.tempIndex
         let date = ''
         let startDate = ''
@@ -126,9 +120,15 @@
           this.viewDate = date
           break
         case 1:
-          date = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
-          startDate = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
-          endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
+          date = moment(time)
+            .subtract(1, 'days')
+            .format('YYYY-MM-DD')
+          startDate = moment(time)
+            .subtract(1, 'days')
+            .format('YYYY-MM-DD')
+          endDate = moment(time)
+            .subtract(-5, 'days')
+            .format('YYYY-MM-DD')
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
@@ -138,8 +138,14 @@
           break
         case 2:
           date = new Date(time).getFullYear() + '-' + formatNumber(new Date(time).getMonth() + 1) + '-01'
-          startDate = moment().month(moment(time).month()).startOf('month').format('YYYY-MM-DD')
-          endDate = moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
+          startDate = moment()
+            .month(moment(time).month())
+            .startOf('month')
+            .format('YYYY-MM-DD')
+          endDate = moment()
+            .month(moment(time).month())
+            .endOf('month')
+            .format('YYYY-MM-DD')
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
@@ -152,12 +158,12 @@
       _getCustomTime(time) {
         this.showDate = false
 
-        // this.$emit('checkTime', time, NAV[this.tabIndex].status)
+      // this.$emit('checkTime', time, NAV[this.tabIndex].status)
       },
       firstUppercase(str) {
         let first = str[0].toUpperCase()
-        return first+str.slice(1)
-      },
+        return first + str.slice(1)
+      }
     }
   }
 </script>

@@ -48,17 +48,32 @@ export const mutations = {
 
 export const actions = {
   // 商品列表
-  getProductList({state, commit}, {keyword = '', page = 1, categoryId = '', materialId = '', completeStatus = '', isOnline = '', limit = 10, loading = true}) {
-    return API.Product.getGoodsList({
-      keyword,
-      page,
-      goods_category_id: categoryId,
-      complete_status: completeStatus,
-      goods_material_category_id: materialId,
-      is_online: isOnline,
-      limit,
-      platform: 'scm'
-    }, loading)
+  getProductList(
+    {state, commit},
+    {
+      keyword = '',
+      page = 1,
+      categoryId = '',
+      materialId = '',
+      completeStatus = '',
+      isOnline = '',
+      limit = 10,
+      loading = true
+    }
+  ) {
+    return API.Product.getGoodsList(
+      {
+        keyword,
+        page,
+        goods_category_id: categoryId,
+        complete_status: completeStatus,
+        goods_material_category_id: materialId,
+        is_online: isOnline,
+        limit,
+        platform: 'scm'
+      },
+      loading
+    )
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -100,12 +115,15 @@ export const actions = {
   },
   // 获取商品素材中心
   getScmStoreData({state, commit}, {keyword = '', materialId = '', page = 1, limit, loading = true}) {
-    return API.Product.getScmStoreList({
-      keyword,
-      goods_material_category_id: materialId,
-      page,
-      limit
-    }, loading)
+    return API.Product.getScmStoreList(
+      {
+        keyword,
+        goods_material_category_id: materialId,
+        page,
+        limit
+      },
+      loading
+    )
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

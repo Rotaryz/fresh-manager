@@ -59,7 +59,17 @@
   import API from '@api'
 
   const PAGE_NAME = 'GOODS-COUPON'
-  const COUPON_TITLE = ['兑换券名称', '面值', '有效期', '创建时间', '发放总数', '剩余数量', '已领取数', '已使用数', '操作']
+  const COUPON_TITLE = [
+    '兑换券名称',
+    '面值',
+    '有效期',
+    '创建时间',
+    '发放总数',
+    '剩余数量',
+    '已领取数',
+    '已使用数',
+    '操作'
+  ]
   export default {
     name: PAGE_NAME,
     components: {
@@ -99,7 +109,13 @@
         this.$refs.pagination.beginPage()
       },
       getGoodsCoupon() {
-        this.getCouponList({startTime: this.startTime, endTime: this.endTime, page: this.page, tagType: 1, loading: false})
+        this.getCouponList({
+          startTime: this.startTime,
+          endTime: this.endTime,
+          page: this.page,
+          tagType: 1,
+          loading: false
+        })
       },
       changePage(page) {
         this.page = page

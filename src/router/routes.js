@@ -184,6 +184,76 @@ export default [
           }
         }
       },
+      // 内容分类
+      {
+        path: 'content-classification',
+        name: 'content-classification',
+        component: () => lazyLoadView(import('@pages/content-classification/content-classification')),
+        meta: {
+          titles: ['商城', '内容', '内容分类'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store
+              .dispatch('content/getContentClassList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 内容中心
+      {
+        path: 'content-center',
+        name: 'content-center',
+        component: () => lazyLoadView(import('@pages/content-center/content-center')),
+        meta: {
+          titles: ['商城', '内容', '内容中心'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store.dispatch('content/infoCenter')
+            store
+              .dispatch('content/getCenterList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 我的作品
+      {
+        path: 'my-work',
+        name: 'my-work',
+        component: () => lazyLoadView(import('@pages/my-work/my-work')),
+        meta: {
+          titles: ['商城', '内容', '我的作品'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store
+              .dispatch('content/getWorkList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
       // 今日抢购
       {
         path: 'rush-purchase',
@@ -884,16 +954,16 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             let params = {
-              page:1,
-              limit:10,
-              keyword:'',
-              status:0,
-              model_type:0,
+              page: 1,
+              limit: 10,
+              keyword: '',
+              status: 0,
+              model_type: 0,
               ...routeTo.query
             }
-            params.status = Number( params.status)
-            params.model_type = Number( params.model_type)
-            store.commit('leader/SET_lEADER_LIST_FILTER',params)
+            params.status = Number(params.status)
+            params.model_type = Number(params.model_type)
+            store.commit('leader/SET_lEADER_LIST_FILTER', params)
             store
               .dispatch('leader/getList')
               .then((res) => {
@@ -917,23 +987,23 @@ export default [
           titles: ['商城', '团长', '团长邀请'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
-            API.Leader.leaderDistributionRankingList({page: 1, limit:10,keyword:'',...routeTo.query}, true)
-            .then((res) => {
-              if (res.error !== ERR_OK) {
-                return next({name: '404'})
-              }
-              let dataInfo = res.data
-              let pageInfo = {
-                total: res.meta.total,
-                per_page: res.meta.per_page,
-                total_page: res.meta.last_page,
-                invite_number_count:res.invite_number_count
-              }
-              next({params: {dataInfo, pageInfo}})
-            })
-            .catch(e => {
-              next({name: '404'})
-            })
+            API.Leader.leaderDistributionRankingList({page: 1, limit: 10, keyword: '', ...routeTo.query}, true)
+              .then((res) => {
+                if (res.error !== ERR_OK) {
+                  return next({name: '404'})
+                }
+                let dataInfo = res.data
+                let pageInfo = {
+                  total: res.meta.total,
+                  per_page: res.meta.per_page,
+                  total_page: res.meta.last_page,
+                  invite_number_count: res.invite_number_count
+                }
+                next({params: {dataInfo, pageInfo}})
+              })
+              .catch((e) => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -2003,10 +2073,10 @@ export default [
               keyword: '',
               status: 0, // 待分拣
               sorting_mode: 0,
-              exception_status:'',
+              exception_status: '',
               ...routeTo.query
             }
-            if(params.status!==''){
+            if (params.status !== '') {
               params.status = Number(params.status)
             }
             params.sorting_mode = Number(params.sorting_mode)
@@ -2174,7 +2244,13 @@ export default [
           titles: ['供应链', '仓库', '库存管理'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getWarehouseList', {page: 1, goodsCategoryId: '', keyword: '', warehousePositionId: '', isPresale: ''})
+              .dispatch('store/getWarehouseList', {
+                page: 1,
+                goodsCategoryId: '',
+                keyword: '',
+                warehousePositionId: '',
+                isPresale: ''
+              })
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2309,7 +2385,7 @@ export default [
               startTime: '',
               endTime: ''
             })
-            if (typeof (routeTo.query.status) !== 'undefined') {
+            if (typeof routeTo.query.status !== 'undefined') {
               store.dispatch('distribution/setTabIndex', 0)
             }
             // store.mutations.SET_TAB_INDEX(0)

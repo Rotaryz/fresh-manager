@@ -44,7 +44,7 @@
       }
     },
     watch: {
-      value(val){
+      value(val) {
         this.getStyle()
         return val
       },

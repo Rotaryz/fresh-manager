@@ -130,7 +130,7 @@
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
     {tilte: '订单数', key: 'order_num', after: 'sale_unit'},
     {tilte: '配货数', key: 'allocation_num', after: 'sale_unit'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -150,7 +150,7 @@
     {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -265,7 +265,7 @@
         this.errorObj.content = item.name || '全部'
       },
       webSocketData() {
-        let url =  process.env.VUE_APP_WSS + '/sub'
+        let url = process.env.VUE_APP_WSS + '/sub'
         let prg = `scm_batch_finish_sorting_` + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
@@ -280,7 +280,7 @@
         }
       },
       async checkErr(item) {
-        this._updateData({exception_status:item.status,page:1})
+        this._updateData({exception_status: item.status, page: 1})
       },
       initBaseDropDown(first, second) {
         if (first) {
@@ -297,7 +297,7 @@
           .then((res) => {
             this.$toast.show(res.message)
             this.webSocketData()
-            // this._updateData({page: 1})
+          // this._updateData({page: 1})
           })
           .catch((err) => {
             this.$toast.show(err.message)
@@ -313,8 +313,8 @@
       },
       // 顶部tab切换
       tabChange(val) {
-        if(val===1){
-          this.initBaseDropDown(true,true)
+        if (val === 1) {
+          this.initBaseDropDown(true, true)
           this.getCategoriesData()
         }
         let params = {
@@ -326,7 +326,7 @@
           goods_material_category_id: '',
           status: 0,
           keyword: '',
-          exception_status:''
+          exception_status: ''
         }
         this.errorObj.content = '全部'
         this.$refs.research._setText()

@@ -22,7 +22,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import cc from './city'
+// import cc from './city'
   import regionArr from './city-data'
 
   export default {
@@ -180,17 +180,17 @@
       _infoCity(index) {
         let cityArr = regionArr[index].sub
         let arr = []
-        cityArr.forEach(item => {
+        cityArr.forEach((item) => {
           arr.push({name: item.name, type: 'city'})
         })
         this.city[1].children[0].data = arr
       },
       _infoArea(index) {
-        let idx = regionArr.findIndex(child => child.name === this.city[0].children[0].content)
+        let idx = regionArr.findIndex((child) => child.name === this.city[0].children[0].content)
         if (idx === -1) return
         let areaArr = regionArr[idx].sub[index]
         let arr = []
-        areaArr.sub.map(item => {
+        areaArr.sub.map((item) => {
           arr.push({name: item.name, type: 'area'})
         })
         this.city[2].children[0].data = arr

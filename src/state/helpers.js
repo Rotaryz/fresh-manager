@@ -66,7 +66,7 @@ export const leaderMethods = {
     'setWidthTime',
     'infoStatus'
   ]),
-  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
+  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER', 'SET_PAGE_TOTAL'])
 }
 // 今日采购
 export const rushComputed = {
@@ -128,7 +128,14 @@ export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDe
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount'])
+  ...mapGetters('market', [
+    'marketList',
+    'marketPageDetail',
+    'marketDetail',
+    'marketStaPageDetail',
+    'marketStaLists',
+    'inviteCount'
+  ])
 }
 
 export const marketMethods = {
@@ -648,4 +655,26 @@ export const scmGoodsComputed = {
 
 export const scmGoodsMethods = {
   ...mapActions('scmGoods', ['getProductList', 'getScmStoreData'])
+}
+
+// 内容
+export const contentComputed = {
+  ...mapGetters('content', [
+    'centerTabIndex',
+    'contentPage',
+    'contentClassList',
+    'contentClassPage',
+    'workList',
+    'workPage',
+    'centerList',
+    'centerPage',
+    'centerKeyword',
+    'centerStatus',
+    'contentCenterPage',
+    'centerTabIndex'
+  ])
+}
+
+export const contentMethods = {
+  ...mapActions('content', ['getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
 }

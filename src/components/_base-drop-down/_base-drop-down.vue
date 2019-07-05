@@ -63,6 +63,10 @@
       isInputPla: {
         type: String,
         default: '请输入搜索文字'
+      },
+      downIndex: {
+        type: Number,
+        default: 0
       }
     },
     data() {
@@ -93,6 +97,8 @@
         }, 1500)
       },
       selectType() {
+        this.$emit('selectType', this.select, this.downIndex)
+
         if (!this.isUse) {
           return
         }

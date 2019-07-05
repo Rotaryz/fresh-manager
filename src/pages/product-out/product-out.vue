@@ -78,7 +78,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import {DatePicker} from 'iview'
+// import {DatePicker} from 'iview'
   import _ from 'lodash'
   import API from '@api'
   import {productComputed, authComputed} from '@state/helpers'
@@ -123,7 +123,7 @@
           {name: '已完成', value: 1, key: 'success', num: 0}
         ],
         // statusTab: 1,
-        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || ''],
         errorObj: {
           check: false,
           show: false,
@@ -155,7 +155,7 @@
     methods: {
       ...authComputed,
       webSocketData(apiUrl) {
-        let url =  process.env.VUE_APP_WSS + '/sub'
+        let url = process.env.VUE_APP_WSS + '/sub'
         let prg = apiUrl + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`

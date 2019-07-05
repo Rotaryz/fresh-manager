@@ -507,8 +507,7 @@
         msg: {
           type: 1, // 1新客户2活跃客户3沉睡4发放优惠券
           config_json: {},
-          shop_coupons: [],
-
+          shop_coupons: []
         },
         arrowArr: [],
         arrowIndex: 0,
@@ -569,8 +568,16 @@
         disable: false,
         currentItem: '',
         // 邀请者
-        inviterArr: [{people: '1人', cond_num: 1, cond_type: 5, tag_type: 1}, {people: '3人', cond_num: 3, cond_type: 5, tag_type: 1}, {people: '6人', cond_num: 6, cond_type: 5, tag_type: 1}, {people: '大于6人', cond_num: 7, cond_type: 5, tag_type: 1}],
-        invitedArr: [{condition: '新人红包', cond_type: 1, tag_type: 1}, {condition: '下单返红包', cond_type: 6, tag_type: 1}],
+        inviterArr: [
+          {people: '1人', cond_num: 1, cond_type: 5, tag_type: 1},
+          {people: '3人', cond_num: 3, cond_type: 5, tag_type: 1},
+          {people: '6人', cond_num: 6, cond_type: 5, tag_type: 1},
+          {people: '大于6人', cond_num: 7, cond_type: 5, tag_type: 1}
+        ],
+        invitedArr: [
+          {condition: '新人红包', cond_type: 1, tag_type: 1},
+          {condition: '下单返红包', cond_type: 6, tag_type: 1}
+        ],
         inviteTitle: INVITE_TITLE,
         invitedTitle: INVITED_TITLE,
         invitedIndex: null,
@@ -607,7 +614,7 @@
       },
       testNewEndTimeReg() {
         // 结束时间规则判断
-        if ((+this.marketIndex === 0) && this.msg.config_json.way === 'between_days') {
+        if (+this.marketIndex === 0 && this.msg.config_json.way === 'between_days') {
           if (this.msg.config_json.start_day && this.msg.config_json.end_day) {
             return (
               Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
@@ -876,7 +883,7 @@
       },
       // 弹窗优惠券
       _showCouponModal(index) {
-        this.invitedIndex = typeof (index) === 'number' ? index : null
+        this.invitedIndex = typeof index === 'number' ? index : null
         if (this.disable) return
         this.couponCheckItem = {}
         if (this.modalType !== 'coupon') {

@@ -136,8 +136,7 @@
     created() {
       this.getMarketStatus()
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
       ...marketMethods,
       newMarket(index) {
