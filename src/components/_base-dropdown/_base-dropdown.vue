@@ -1,5 +1,5 @@
 <template>
-  <div class="select-item" @click="selectType">
+  <div class="select-item" @click.stop="selectType">
     <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
       <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': visible, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
         <input :value="valueLabel" :placeholder="placeholder" type="text" disabled="true" class="input-item">
@@ -48,19 +48,6 @@
         type: String,
         default: '暂无数据'
       },
-      select: {
-        type: Object,
-        default: () => {
-          return {
-            check: false,
-            show: false,
-            content: '全部',
-            type: 'default',
-            data: [] // 格式：{name: '55'}
-          }
-        }
-      },
-
       isUse: {
         type: Boolean,
         default: true
@@ -83,7 +70,6 @@
         visible: "",
         setTime: '',
         showHover: false,
-        selectIdx: -1
       }
     },
     computed: {
@@ -97,7 +83,7 @@
     },
     mounted() {
       window.onclick = () => {
-        this.vi = false
+        this.visible = false
       }
     },
     methods: {
@@ -118,15 +104,14 @@
         }
         this.$emit('click')
         this.visible = !this.visible
-        this.$emit('selectType', this.select)
       },
       setValue(value, index) {
+        console.log(value, this.valueKey)
         this.visible = false
-        this.selectIdx = index
         this.showHover = false
-        this.select.content = value[this.labelKey]
         let res = this.valueKey ? value[this.valueKey] : value
         this.$emit('input', res)
+        this.$emit('change', res)
       }
     }
   }

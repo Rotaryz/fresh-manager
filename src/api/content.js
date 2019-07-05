@@ -30,5 +30,15 @@ export default {
   getGoodsList(data, loading = true) {
     let url = `/social-shopping/api/backend/shop-manager/`
     return request.get(url, data, loading)
+  },
+  /**
+   * 根據video 返回的 file_id获取cover_image
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getCoverImage(data, loading = false) {
+    let url = `/social-shopping/api/cos/get-file-info`
+    return request.get(url, data, loading)
   }
 }

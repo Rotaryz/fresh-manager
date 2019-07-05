@@ -293,7 +293,7 @@
           <div class="tab-item">
             <base-dropdown v-model="chooseGoodsFilter.goods_category_id"
                            :data="goodsCategoryList"
-                           valueKey="value"
+                           valueKey="id"
                            :width="218"
                            @change="goodsCategoryChange"
             ></base-dropdown>
@@ -402,7 +402,8 @@
           },
           coverVideo: {
             url: '',
-            id: ''
+            id: '',
+            file_id: ''
           },
           authPhoto: {
             url: '',
@@ -464,6 +465,7 @@
       }
     },
     async created() {
+      this._getCoverImage()
       const params = this.$route.meta.params
       console.log(params)
       this.currentType = this.$route.query.type
@@ -487,9 +489,23 @@
       getCoverVideo(video) {
         console.log('封面视频', video)
         this.addData.coverVideo.id = video.id
+        this.addData.coverVideo.file_id = video.file_id
         this.addData.coverVideo.url = video.full_url
         this.addData.coverImage.id = video.cover_image_id
         this.addData.coverImage.url = video.full_cover_url
+        if (!this.addData.coverImage.id) {
+          setTimeout(() => {
+            this._getCoverImage(video.file_id)
+          }, 10000)
+        }
+      },
+      _getCoverImage() {
+        API.Content.getCoverImage({file_id: this.addData.coverVideo.file_id || 5285890791111588992}).then(res => {
+          console.log(res,this.$ERR_OK)
+          if(res.error !== this.$ERR_OK) return false
+          this.addData.coverImage.id = res.data.cover_image_id
+          this.addData.coverImage.url = res.data.full_cover_url
+        })
       },
       getPic(image) {
         console.log('封面图片', image)
@@ -503,7 +519,8 @@
         }
         this.addData.coverVideo = {
           url: '',
-          id: ''
+          id: '',
+          file_id: ''
         }
       },
       failFile(msg) {
@@ -632,7 +649,8 @@
       },
       // 选择分类
       async goodsCategoryChange(item) {
-        this.chooseGoodsFilter.goods_category_id = item.id
+        console.log(item)
+        // this.chooseGoodsFilter.goods_category_id = item.id
         this.chooseGoodsFilter.page = 1
         await this._getGoodsList()
       },
@@ -707,14 +725,18 @@
         }
         this.selectGoods = []
         this.hideGoods()
-
       },
       justifyConent() {
         let message = ''
         if (!this.addData.category) message = '请选择内容分类'
         else if (!this.addData.title) message = '请输入文章标题'
         else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 8)) message = '请输入5-8个字的文章标题'
-        else if (!this.addData.coverImage.id) message = '请上传封面'
+        else if (this.currentType === 'video' && this.addData.coverImage.id === '') message = '请上传封面'
+        else if (this.currentType !== 'video' && !this.addData.coverVideo.id && !this.addData.coverImage.id) message = '请上传封面'
+        else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id){
+          this._getCoverImage()
+          message = '正在处理视频第一帧作为封面图，请稍后上线'
+        }
         else if (!this.addData.authPhoto.id) message = '请上传作者头像'
         else if (!this.addData.authName) message = '请填写作者名字'
         else if (this.currentType === 'video') {
