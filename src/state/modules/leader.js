@@ -126,7 +126,6 @@ export const getters = {
 export const mutations = {
   SET_lEADER_LIST_FILTER(state,params){
     state.leaderListFilter = Object.assign({}, state.leaderListFilter, params)
-    console.log(state.leaderListFilter, 111)
   },
   SET_LEADER_LIST(state, list) {
     state.leaderList = list
