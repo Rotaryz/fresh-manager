@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pagination='headDetailFitter.page' :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="pageTotal" :pagination="headDetailFitter.page" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
   </div>
