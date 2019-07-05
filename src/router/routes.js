@@ -483,11 +483,11 @@ export default [
         component: () => lazyLoadView(import('@pages/coupon-manage/coupon-manage')),
         meta: {
           titles: ['商城', '营销', '优惠券'],
+          resetHooks: ['coupon/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let index = store.state.coupon.infoTabIndex
             // 活动列表
             store
-              .dispatch('coupon/getCouponList', {page: 1, tagType: index})
+              .dispatch('coupon/getCouponList', true)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

@@ -260,7 +260,7 @@
         } else {
           this.$toast.show('删除成功')
         }
-        if (+this.requestData.page === +this.activePage.total_page) {
+        if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
           this.setRequestData({page: this.activePage.total_page - 1})
         } else {
           this._getActiveList()

@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">创建时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="选择创建时间" :dateInfo="[startTime, endTime]" @getTime="changeTime"></base-date-select>
+        <base-date-select placeHolder="选择创建时间" :dateInfo="[requestData.created_start_at, requestData.created_end_at]" @getTime="changeTime"></base-date-select>
       </div>
     </div>
     <div class="table-content">
@@ -46,7 +46,7 @@
       <!---->
       <div class="pagination-box">
         <!-- :pagination="goodsCoupon.page" -->
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="changePage"></base-pagination>
+        <base-pagination ref="pagination" :pagination="requestData.page" :pageDetail="pageDetail" @addPage="changePage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" infoTitle="删除兑换券" :oneBtn="false" @confirm="sureConfirm"></default-confirm>
@@ -65,24 +65,13 @@
     components: {
       DefaultConfirm
     },
-    props: {
-      goodsMsg: {
-        type: Object,
-        default: () => {
-          return {
-            page: 1,
-            startTime: '',
-            endTime: ''
-          }
-        }
-      }
-    },
+    props: {},
     data() {
       return {
         couponTitle: COUPON_TITLE,
-        page: 1,
-        startTime: '',
-        endTime: '',
+        // page: 1,
+        // startTime: '',
+        // endTime: '',
         delId: null
       }
     },
@@ -92,18 +81,24 @@
     methods: {
       ...couponMethods,
       changeTime(time) {
-        this.startTime = time[0]
-        this.endTime = time[1]
-        this.page = 1
-        this.getGoodsCoupon()
+        // this.startTime = time[0]
+        // this.endTime = time[1]
+        // this.page = 1
+        this.setRequestData({
+          created_start_at: time[0],
+          created_end_at: time[1],
+          page: 1
+        })
+        // this.getGoodsCoupon()
         this.$refs.pagination.beginPage()
       },
-      getGoodsCoupon() {
-        this.getCouponList({startTime: this.startTime, endTime: this.endTime, page: this.page, tagType: 1, loading: false})
-      },
+      // getGoodsCoupon() {
+      //   this.getCouponList()
+      // },
       changePage(page) {
-        this.page = page
-        this.getGoodsCoupon()
+        // this.page = page
+        this.setRequestData({page})
+        // this.getGoodsCoupon()
       },
       // 确认删除
       async sureConfirm() {
@@ -112,7 +107,12 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        this.getGoodsCoupon()
+        if (+this.pageDetail.total%10 === 1 && +this.requestData.page === +this.pageDetail.total_page) {
+          this.setRequestData({page: this.pageDetail.total_page - 1})
+        } else {
+          this.getCouponList()
+        }
+        // this.getGoodsCoupon()
       },
       showDel(item) {
         this.delId = item.id

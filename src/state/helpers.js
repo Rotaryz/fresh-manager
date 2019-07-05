@@ -142,10 +142,10 @@ export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOu
 
 // 优惠券
 export const couponComputed = {
-  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'infoTabIndex', 'goodsCoupon', 'pageTotal', 'requestData'])
+  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'infoTabIndex', 'goodsCoupon', 'requestData', 'defaultIndex'])
 }
 
-export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex'])
+export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex', 'resetData', 'setRequestData', 'setDefaultIndex'])
 
 // 营销计划
 export const marketComputed = {

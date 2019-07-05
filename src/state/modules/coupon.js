@@ -15,7 +15,14 @@ export const state = {
     total_page: 1
   },
   infoTabIndex: 0,
-  defaultIndex: 0
+  defaultIndex: 0,
+  requestData: {
+    status: '',
+    page: 1,
+    created_start_at: '',
+    created_end_at: '',
+    tag_type: 0
+  }
 }
 
 export const getters = {
@@ -36,6 +43,9 @@ export const getters = {
   },
   pageTotal(state) {
     return state.pageTotal
+  },
+  requestData(state) {
+    return state.requestData
   }
 }
 
@@ -57,24 +67,25 @@ export const mutations = {
   },
   SET_PAGE_TOTAL(state, pageTotal) {
     state.pageTotal = pageTotal
+  },
+  SET_REQUEST_DATA(state, data) {
+    state.requestData = Object.assign({}, state.requestData, data)
+  },
+  RESET_DATA(state) {
+    state.requestData = {
+      status: '',
+      page: 1,
+      created_start_at: '',
+      created_end_at: '',
+      tag_type: 0
+    }
   }
 }
 
 export const actions = {
-  setInfoIndex({commit}, index) {
-    commit('SET_INFO_TAB_INDEX', index)
-  },
-  getCouponList({commit}, msg) {
-    let {startTime, endTime, status, page, tagType = 0, loading} = msg
-    let data = {
-      status,
-      page,
-      limit: 10,
-      created_start_at: startTime,
-      created_end_at: endTime,
-      tag_type: tagType
-    }
-    return API.Coupon.getCouponList(data, loading)
+  getCouponList({commit, state}, loading) {
+    // let tagType = state.requestData.tag_type
+    return API.Coupon.getCouponList(state.requestData, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
@@ -87,11 +98,12 @@ export const actions = {
           per_page: pages.per_page,
           total_page: pages.last_page
         }
-        if (+tagType === 0) {
-          commit('SET_COUPON_PAGE', pageDetail)
-        } else {
-          commit('SET_PAGE_TOTAL', pageDetail)
-        }
+        commit('SET_COUPON_PAGE', pageDetail)
+        // if (+tagType === 0) {
+        //   commit('SET_COUPON_PAGE', pageDetail)
+        // } else {
+        //   commit('SET_PAGE_TOTAL', pageDetail)
+        // }
         commit('SET_COUPON_LIST', couponList)
         return couponList
       })
@@ -118,5 +130,22 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
+  },
+  setRequestData({commit, dispatch}, data) {
+    commit('SET_REQUEST_DATA', data)
+    dispatch('getCouponList')
+  },
+  setInfoIndex({commit, dispatch}, index) {
+    commit('SET_DEFAULT_INDEX', 0)
+    commit('SET_INFO_TAB_INDEX', index)
+    commit('SET_REQUEST_DATA', {status: '', page: 1, created_start_at: '', created_end_at: '', tag_type: index})
+  },
+  setDefaultIndex({commit, dispatch}, data) {
+    commit('SET_DEFAULT_INDEX', data.index)
+    commit('SET_REQUEST_DATA', {status: data.status, page: 1})
+    dispatch('getCouponList')
   }
 }
