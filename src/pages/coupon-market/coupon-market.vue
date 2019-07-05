@@ -142,7 +142,7 @@
       },
       changeStatus(selectStatus, index) {
         this.$refs.pages.beginPage()
-        this.defaultIndex({status: selectStatus.status, index})
+        this.setDefaultIndex({status: selectStatus.status, index})
         this.statusArr = new Array(10).fill(undefined)
       },
       getMarketStatus() {
