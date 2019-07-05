@@ -453,6 +453,7 @@
         return !(this.addData.title || this.addData.coverImage.id
           || this.addData.authPhoto.id || this.addData.authName
           || ((this.addData.videoContent.id || this.addData.videoIntroduce) && this.currentType === 'video')
+          || (this.addData.goodsList.length)
           || (this.currentType === 'cookbook' && this.addData.foodList)
           || (this.currentType !== 'video' && this.addData.details.length))
       },

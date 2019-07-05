@@ -34,15 +34,15 @@
           <div class="line-middle"></div>
           <div class="article-cont">
             <div v-if="data.title" class="name">{{data.title}}</div>
-            <div v-if="data.foodsList" class="foods-list">
-              {{data.foodsList}}
+            <div v-if="data.foodList" class="foods-list">
+              {{data.foodList}}
             </div>
             <div v-if="type==='cookbook'&& data.goodsList.length" class="goods-list">
               <goods-item v-for="(item,idx) in data.goodsList" :key="idx" :goodsData="item"></goods-item>
             </div>
             <template v-if="type!=='video'&& data.details.length">
               <div v-for="(item,idx) in data.details" :key="idx" class="article-item">
-                <per v-if="item.type==='text'" class="article-text">{{item.value}}</per>
+                <pre v-if="item.type==='text'" class="article-text">{{item.value}}</pre>
                 <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image">
                 <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
                 <goods-item v-if="item.type==='goods'" :goodsData="item.value" :addDisabled="true"></goods-item>
@@ -309,12 +309,13 @@
 
         .foods-list
           font-family $font-family-regular
-          font-size $font-size-15
+          font-size $font-size-14
           letter-spacing 0.4px
-
+          color: #111111
+          margin-bottom: 25px
         .goods-list
           margin-bottom: 10px
-          margin-top: 25px
+
 
         .article-item
           margin-bottom 15px
@@ -322,7 +323,7 @@
         .article-text
           font-family $font-family-regular
           font-size 15px
-
+          color: #111111
         .article-image
         .article-video
           width: 100%

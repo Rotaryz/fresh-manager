@@ -7,11 +7,8 @@
       <div class="operate">
         <div>
           <span class="price-now">
-            {{goodsData.trade_price.split('.')[0]}}
-            <span class="small">
-              <span v-if="goodsData.trade_price.split('.')[1]">.{{goodsData.trade_price.split('.')[1]}}</span>
-              <span class="unit">元</span>
-            </span>
+            <span class="big">{{goodsData.trade_price}}</span>
+            <span class="unit">元</span>
           </span>
           <span class="price">{{goodsData.original_price}}元</span>
         </div>
@@ -75,7 +72,8 @@
     .info
       padding: 5px 12px
       overflow: hidden
-      flex:1
+      flex: 1
+
       .name
         font-family $font-family-medium
         font-size: $font-size-16
@@ -100,14 +98,13 @@
 
       .price-now
         color: #FA7500
-        font-size: $font-size-25
         font-family $font-family-medium
 
-        .small
-          font-size: $font-size-16
+        .big
+          font-size: $font-size-25
 
-          .unit
-            font-family $font-family-regular
+        .unit
+          font-family $font-family-regular
 
       .price
         color: #B7B7B7
