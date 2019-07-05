@@ -51,7 +51,8 @@ export const leaderComputed = {
     'startAt',
     'endAt',
     'deliveryRequest',
-    'selectContent'
+    'selectContent',
+    'firstIn'
   ])
 }
 
@@ -74,7 +75,8 @@ export const leaderMethods = {
     'infoStatus',
     'resetDeliveryRequest',
     'setDeliveryRequest',
-    'setSelectContent'
+    'setSelectContent',
+    'setFirstIn'
   ]),
   ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
 }

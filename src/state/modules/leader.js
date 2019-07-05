@@ -52,7 +52,8 @@ export const state = {
   },
   selectContent: {
     deliveryContent: ''
-  }
+  },
+  firstIn: true
 }
 export const getters = {
   leaderListFilter(state){
@@ -120,6 +121,9 @@ export const getters = {
   },
   selectContent(state) {
     return state.selectContent
+  },
+  firstIn(state) {
+    return state.firstIn
   }
 }
 
@@ -210,6 +214,9 @@ export const mutations = {
       status: 0,
       model_type: 0
     }
+  },
+  SET_FIRST_IN(state, type) {
+    state.firstIn = type
   }
 }
 
@@ -481,5 +488,8 @@ export const actions = {
   },
   resetData({commit}) {
     commit('RESET_DATA')
+  },
+  setFirstIn({commit}) {
+    commit('SET_FIRST_IN', false)
   }
 }

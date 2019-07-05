@@ -898,12 +898,16 @@ export default [
           resetHooks: ['leader/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
-            let params = {
-              ...routeTo.query
+            let params = {}
+            if (store.getters['leader/firstIn']) {
+              params = {
+                ...routeTo.query
+              }
+              params.status && (params.status = Number(params.status))
+              params.model_type && (params.model_type = Number(params.model_type))
+              store.dispatch('leader/setFirstIn')
             }
-            params.status && (params.status = Number(params.status))
-            params.model_type && (params.model_type = Number(params.model_type))
-            store.commit('leader/SET_lEADER_LIST_FILTER',params)
+            store.commit('leader/SET_lEADER_LIST_FILTER', params)
             store
               .dispatch('leader/getList')
               .then((res) => {
