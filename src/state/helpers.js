@@ -102,7 +102,11 @@ export const activityComputed = {
     'popularPage',
     'preferencePage',
     'collagePage',
-    'activityTab'
+    'activityTab',
+    'defaultIndex',
+    'tabIndex',
+    'requestData',
+    'firstIn'
   ])
 }
 
@@ -112,7 +116,12 @@ export const activityMethods = mapActions('activity', [
   'getCollageList',
   'getCollageDetail',
   'addPreferenceList',
-  'setActivityTab'
+  'setActivityTab',
+  'resetData',
+  'setRequestData',
+  'setDefaultIndex',
+  'setTabIndex',
+  'setFirstIn'
 ])
 
 // 拓展活动

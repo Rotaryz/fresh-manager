@@ -244,13 +244,16 @@ export default [
         component: () => lazyLoadView(import('@pages/activity-manage/activity-manage')),
         meta: {
           titles: ['商城', '活动', '活动管理'],
+          resetHooks: ['activity/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
+            let data = JSON.parse(JSON.stringify(store.getters['activity/requestData']))
+            let firstIn = store.getters['activity/firstIn']
             let status = routeTo.query.status || ''
-            API.Activity.getActiveList(
-              {page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme},
-              true
-            )
+            if (status && firstIn) {
+              data.status = status
+            }
+            API.Activity.getActiveList(data, true)
               .then((res) => {
                 if (res.error !== ERR_OK) {
                   return next({name: '404'})
