@@ -73,7 +73,7 @@
                 <!--&gt;-->
                 <!--详情-->
                 <!--</router-link>-->
-                <div class="list-operation" @click="jumpDeatil(item)">详情</div>
+                <div class="list-operation" @click="jumpDetail(item)">详情</div>
                 <router-link
                   tag="div"
                   :to="`batch?code=${item.goods_sku_code}`"
@@ -160,7 +160,7 @@
     },
     methods: {
       ...storeMethods,
-      jumpDeatil(item) {
+      jumpDetail(item) {
         this.resetWarehouseDetail()
         this.$router.push(`/home/storehouse-management/storehouse-detail?code=${item.goods_sku_code}`)
       },

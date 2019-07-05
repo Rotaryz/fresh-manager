@@ -49,14 +49,23 @@ export default [
         component: () => lazyLoadView(import('@pages/product-list/product-list')),
         meta: {
           titles: ['商城', '商品', '商品列表'],
+          resetHooks: ['editgoods/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let online = ''
-            if (routeTo.query.online) {
-              online = routeTo.query.online
+            console.log(store.getters['editgoods/taskData'].isTaskFirst)
+            if (store.getters['editgoods/taskData'].isTaskFirst) {
+              let online = ''
+              if (routeTo.query.online) {
+                online = routeTo.query.online
+              }
+              if (online.length) {
+                online = Number(online)
+              }
+              store.commit('editgoods/SET_PARAMS', {is_online: online})
+              store.commit('editgoods/SET_TASK_DATA', {isTaskFirst: false})
             }
             //  商品列表
             store
-              .dispatch('editgoods/getGoodsData', online)
+              .dispatch('editgoods/getGoodsData', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1026,9 +1035,10 @@ export default [
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
           titles: ['财务', '团长', '团长佣金'],
+          resetHooks: ['leader/resetHeadData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
+              .dispatch('leader/getSettlementList', {loading: true})
               .then((response) => {
                 if (!response) {
                   return next({name: '404'})
@@ -1050,9 +1060,10 @@ export default [
         meta: {
           titles: ['商城', '团长', '团长结算', '团长结算详情'],
           beforeResolve(routeTo, routeFrom, next) {
-            let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
+            // let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
+            store.commit('leader/SET_DETAIL_PARAMS', {shop_id: routeTo.params.id})
             store
-              .dispatch('leader/getSettlementDetail', data)
+              .dispatch('leader/getSettlementDetail', {loading: true})
               .then((response) => {
                 if (!response) {
                   return next({name: '404'})
@@ -1177,7 +1188,8 @@ export default [
         name: 'leader-withdrawal',
         component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
         meta: {
-          titles: ['财务', '团长', '团长提现'],
+          titles: ['财务', '团长', '提现记录'],
+          resetHooks: ['leader/resetWithdrawal'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store
@@ -2084,26 +2096,31 @@ export default [
         name: 'sorting-task',
         meta: {
           titles: ['供应链', '分拣', '分拣任务'],
+          resetHooks: ['sorting/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let params = {
-              goods_category_id: '',
-              page: 1,
-              limit: 10,
-              start_time: '',
-              end_time: '',
-              keyword: '',
-              status: 0, // 待分拣
-              sorting_mode: 0,
-              exception_status:'',
-              ...routeTo.query
+            console.log(store.getters['sorting/taskData'].isTaskFirst)
+            if (store.getters['sorting/taskData'].isTaskFirst) {
+              let params = {
+                goods_category_id: '',
+                page: 1,
+                limit: 10,
+                start_time: '',
+                end_time: '',
+                keyword: '',
+                status: 0, // 待分拣
+                sorting_mode: 0,
+                exception_status:'',
+                ...routeTo.query
+              }
+              if(params.status!==''){
+                params.status = Number(params.status)
+              }
+              params.sorting_mode = Number(params.sorting_mode)
+              store.commit('sorting/SET_PARAMS', params)
+              store.commit('sorting/SET_TASK_DATA', {isTaskFirst: false})
             }
-            if(params.status!==''){
-              params.status = Number(params.status)
-            }
-            params.sorting_mode = Number(params.sorting_mode)
-            store.commit('sorting/SET_PARAMS', params)
             store
-              .dispatch('sorting/getSortingTaskList')
+              .dispatch('sorting/getSortingTaskList', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

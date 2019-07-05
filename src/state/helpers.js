@@ -49,7 +49,9 @@ export const leaderComputed = {
     'billPageDetail',
     'billPage',
     'startAt',
-    'endAt'
+    'endAt',
+    'headFitter',
+    'headDetailFitter'
   ])
 }
 
@@ -69,9 +71,10 @@ export const leaderMethods = {
     'setBillPage',
     'setBillType',
     'setWidthTime',
-    'infoStatus'
+    'infoStatus',
+    'resetHeadDetailData'
   ]),
-  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
+  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL','SET_PARAMS','SET_DETAIL_PARAMS'])
 }
 // 今日采购
 export const rushComputed = {
@@ -157,13 +160,18 @@ export const categoriesComputed = {
 export const categoriesMethods = mapActions('categories', ['getCategoryList', 'setCategory', 'addChild'])
 
 export const goodsComputed = {
-  ...mapState('editgoods', {
-    productList: (state) => state.productList,
-    statePageTotal: (state) => state.statePageTotal
-  })
+  ...mapGetters('editgoods', [
+    'productList',
+    'statePageTotal',
+    'goodsFitter',
+    'taskData'
+  ])
 }
 
-export const goodsMethods = mapActions('editgoods', ['getGoodsData'])
+export const goodsMethods = {
+    ...mapActions('editgoods', ['getGoodsData']),
+  ...mapMutations('editgoods', ['SET_PARAMS', 'SET_TASK_DATA'])
+}
 
 // 轮播广告
 export const adverComputed = {
@@ -576,7 +584,8 @@ export const sortingComputed = {
     'sortingConfig',
     'sortingTaskDetail',
     'sortingTaskDetailByOrder',
-    'barCodePreviewInfo'
+    'barCodePreviewInfo',
+    'taskData'
   ])
 }
 
@@ -588,7 +597,7 @@ export const sortingMethods = {
     'getBarCodePreviewInfo',
     'getSortingConfigList'
   ]),
-  ...mapMutations('sorting', ['SET_PARAMS'])
+  ...mapMutations('sorting', ['SET_PARAMS', 'SET_TASK_DATA'])
 }
 // 商户订单
 export const merchantOrderComputed = {

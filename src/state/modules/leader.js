@@ -43,7 +43,19 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  billPage: 1
+  billPage: 1,
+  headFitter: {
+    page: 1,
+    limit: 10,
+    keyword: ''
+  },
+  headDetailFitter: {
+    page: 1,
+    shop_id: '',
+    order_sn: '',
+    status: '',
+    type: ''
+  }
 }
 // const _state = JSON.parse(JSON.stringify(state)) // 保存state初始值 // todo 根据业务编写
 export const getters = {
@@ -106,6 +118,18 @@ export const getters = {
   },
   billPage(state) {
     return state.billPage
+  },
+  startAt(state) {
+    return state.startAt
+  },
+  endAt(state) {
+    return state.endAt
+  },
+  headFitter(state) {
+    return state.headFitter
+  },
+  headDetailFitter(state) {
+    return state.headDetailFitter
   }
 }
 
@@ -174,9 +198,11 @@ export const mutations = {
     state.startAt = value[0]
     state.endAt = value[1]
   },
-  RESET_STATE(state) { // todo 根据业务编写
-    // state =  _state
-    console.log('todo demo leader!!')
+  SET_PARAMS(state, params) {
+    state.headFitter = {...state.headFitter, ...params}
+  },
+  SET_DETAIL_PARAMS(state, params) {
+    state.headDetailFitter = {...state.headDetailFitter, ...params}
   }
 }
 
@@ -287,8 +313,8 @@ export const actions = {
   },
   //  团长结算列表
   // 团长列表
-  getSettlementList({state, commit, dispatch}, {page, keyword, loading = true}) {
-    return API.Leader.settlementList({page, keyword}, loading)
+  getSettlementList({state, commit, dispatch}, {loading = true}) {
+    return API.Leader.settlementList(state.headFitter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -311,9 +337,10 @@ export const actions = {
       })
   },
   // 团长结算详情列表
-  getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
+  // getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
+  getSettlementDetail({state, commit, dispatch}, {loading = false}) {
     return API.Leader.settlementDetail(
-      {page, shop_id: shopId, order_sn: orderSn, status, type: settlementType},
+      state.headDetailFitter,
       loading
     )
       .then((res) => {
@@ -442,5 +469,29 @@ export const actions = {
     commit('SET_BILL_TYPE', select.id)
     commit('SET_BILL_PAGE', 1)
     dispatch('getBillList')
+  },
+  resetWithdrawal({commit}) {
+    commit('SET_WITHDRAWAL_PAGE', 1)
+    commit('SET_WITHDRAWAL_SN', '')
+    commit('SET_WITHDRAWAL_KEYWORD', '')
+    commit('SET_WITHDRAWAL_STATUS', '')
+    commit('SET_WITHDRAWAL_TYPE', 2)
+    commit('SET_TIME_AT', ['', ''])
+  },
+  resetHeadData({commit}) {
+    commit('SET_PARAMS', {
+      page: 1,
+      limit: 10,
+      keyword: ''
+    })
+  },
+  resetHeadDetailData({commit}) {
+    commit('SET_DETAIL_PARAMS', {
+      page: 1,
+      shop_id: '',
+      order_sn: '',
+      status: '',
+      type: ''
+    })
   }
 }

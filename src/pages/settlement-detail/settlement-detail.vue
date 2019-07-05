@@ -5,12 +5,13 @@
       <div class="down-item-small">
         <base-drop-down :select="statusObj" @setValue="_setStatus"></base-drop-down>
       </div>
+      <span class="down-tip">结算类型</span>
       <div class="down-item">
         <base-drop-down :select="settlementObj" @setValue="_settlementType"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="订单号" @search="_search"></base-search>
+        <base-search placeHolder="订单号" :infoText="headDetailFitter.order_sn" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -42,7 +43,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pages" :pagination='headDetailFitter.page' :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
   </div>
@@ -69,7 +70,7 @@
         statusObj: {
           check: false,
           show: false,
-          content: '全部状态',
+          content: '全部',
           type: 'default',
           data: [
             {name: '全部', status: ''},
@@ -81,7 +82,7 @@
         settlementObj: {
           check: false,
           show: false,
-          content: '结算类型',
+          content: '全部',
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '佣金收益', status: 0}, {name: '退款补偿', status: 1}]
         },
@@ -95,6 +96,10 @@
     },
     created() {
       this.id = this.$route.params.id
+      let item = this.statusObj.data.find((item) => item.status === this.headDetailFitter.status)
+      this.statusObj.content = item.name || '全部'
+      let statusObj = this.settlementObj.data.find((item) => item.status === this.headDetailFitter.type)
+      this.settlementObj.content = statusObj.name || '全部'
     },
     methods: {
       ...leaderMethods,
@@ -113,27 +118,38 @@
           loading: false
         })
       },
+      // 更新列表数据
+      _updateList(params) {
+        this.SET_DETAIL_PARAMS(params)
+        this.getSettlementDetail({})
+        if (params.page === 1) {
+          this.$refs.pages.beginPage()
+        }
+      },
       _search(text) {
-        this.$refs.pages.beginPage()
-        this.page = 1
-        this.orderSn = text
-        this._getSettlementDetail()
+        // this.$refs.pages.beginPage()
+        // this.page = 1
+        // this.orderSn = text
+        // this._getSettlementDetail()
+        this._updateList({page: 1, order_sn: text})
       },
       _setStatus(item) {
-        this.status = item.status
-        this.$refs.pages.beginPage()
-        this.page = 1
-        this._getSettlementDetail()
+        // this.status = item.status
+        // this.$refs.pages.beginPage()
+        // this.page = 1
+        // this._getSettlementDetail()
+        this._updateList({page: 1, status: item.status})
       },
       _settlementType(item) {
-        this.settlementType = item.status
-        this.$refs.pages.beginPage()
-        this.page = 1
-        this._getSettlementDetail()
+        // this.settlementType = item.status
+        // this.$refs.pages.beginPage()
+        // this.page = 1
+        // this._getSettlementDetail()
+        this._updateList({page: 1, type: item.status})
       },
       _getMoreList(page) {
-        this.page = page
-        this._getSettlementDetail()
+        // this.page = page
+        this._updateList({page})
       }
     }
   }

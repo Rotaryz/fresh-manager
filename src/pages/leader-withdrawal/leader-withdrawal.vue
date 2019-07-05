@@ -6,7 +6,7 @@
         <base-drop-down :select="statusSelect" @setValue="changeWithdrawalStatus"></base-drop-down>
       </div>
       <div class="down-item">
-        <base-date-select @getTime="_setTime"></base-date-select>
+        <base-date-select :dateInfo="dateInfo" @getTime="_setTime"></base-date-select>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -60,7 +60,7 @@
       </div>
       <div class="pagination-box">
         <!--:pageDetail="pageTotal"-->
-        <base-pagination ref="pagination" :pageDetail="withdrawalPageDetail" :pagination="page" @addPage="setWithdrawalPage"></base-pagination>
+        <base-pagination ref="pagination" :pageDetail="withdrawalPageDetail" :pagination="withdrawalPage" @addPage="setWithdrawalPage"></base-pagination>
       </div>
       <default-modal ref="modal">
         <div slot="content">
@@ -92,6 +92,7 @@
   import DefaultModal from '@components/default-modal/default-modal'
   import {authComputed, leaderComputed, leaderMethods} from '@state/helpers'
   import API from '@api'
+  import _ from 'lodash'
 
   const PAGE_NAME = 'LEADER_WITHDRAWAL'
   const TITLE = '提现记录'
@@ -158,10 +159,15 @@
           search.push(`${key}=${data[key]}`)
         }
         return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
+      },
+      dateInfo() {
+        return [this.startAt, this.endAt]
       }
     },
     created() {
       this._getWithdrawalStatus()
+      this.orderSn = _.cloneDeep(this.withdrawalSn)
+      this.keyword = _.cloneDeep(this.withdrawalKeyword)
     },
     methods: {
       ...leaderMethods,
