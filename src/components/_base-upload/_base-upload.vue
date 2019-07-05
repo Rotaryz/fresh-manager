@@ -4,7 +4,9 @@
       <div v-if="showLoading" class="loading-mask">
         <img src="./loading.gif" class="loading">
       </div>
-      <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
+      <div class="input-wrap hand">
+        <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
+      </div>
       <slot>
         上传图片
       </slot>
@@ -13,7 +15,9 @@
       <div v-if="showLoading" class="loading-mask">
         <img src="./loading.gif" class="loading">
       </div>
-      <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
+      <div class="input-wrap hand">
+        <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
+      </div>
       <slot>
         上传视频
       </slot>
@@ -30,11 +34,15 @@
         <div class="operate-wrap">
           <div class="operate-item hand">
             上传图片
-            <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
+            <div class="input-wrap hand">
+              <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
+            </div>
           </div>
           <div class="operate-item hand">
             上传视频
-            <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
+            <div class="input-wrap hand">
+              <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
+            </div>
           </div>
         </div>
       </div>
@@ -67,6 +75,7 @@
 <script>
   import API from '@api'
   import {uploadFiles} from '../../utils/vod/vod'
+
   const EDIT_IMAGE = 'BASE_EDIT_IMAGE'
 
   export default {
@@ -210,6 +219,10 @@
     overflow: hidden
     position: relative
 
+  .input-wrap
+    width: 100%
+    height: 100%
+    position: relative
 
   .sendImage
     height: 100%
@@ -231,6 +244,7 @@
     icon-image('pic-select_pic')
 
     .operate-wrap
+      cursor pointer
       visibility hidden
       position: absolute
       top: 0
@@ -241,7 +255,8 @@
       display: flex
       flex-direction column
       align-items center
-      justify-content: space-around
+      justify-content: space-between
+      padding: 17px 10px
 
       .operate-item
         position: relative
@@ -252,13 +267,13 @@
         text-align center
         background #FFFFFF
         cursor pointer
+        font-size $font-size-12
 
     &:hover
       .operate-wrap
         visibility: visible
 
   .show-image
-    margin-bottom: 20px
     background-repeat: no-repeat
     background-size: cover
     background-position: center

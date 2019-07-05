@@ -189,11 +189,11 @@
         height: 503px
         overflow-x: hidden
 
-        &.empty-type-1
+        &.empty-type-video
           icon-image(pic-video_empty)
 
-        &.empty-type-0
-        &.empty-type-2
+        &.empty-type-common
+        &.empty-type-cookbook
           icon-image(pic-content_empty)
 
         &::-webkit-scrollbar
