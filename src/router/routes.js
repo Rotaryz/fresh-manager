@@ -3,7 +3,7 @@ import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
 import API from '@api'
 import {ERR_OK} from '@utils/config'
-import {TAB_STATUS} from '../pages/activity-manage/config'
+// import {TAB_STATUS} from '../pages/activity-manage/config'
 
 export default [
   // 模板
@@ -247,12 +247,14 @@ export default [
           resetHooks: ['activity/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
-            let data = JSON.parse(JSON.stringify(store.getters['activity/requestData']))
+            // let data = JSON.parse(JSON.stringify(store.getters['activity/requestData']))
             let firstIn = store.getters['activity/firstIn']
             let status = routeTo.query.status || ''
             if (status && firstIn) {
-              data.status = status
+              // data.status = status
+              store.dispatch('activity/setRequestData', {status})
             }
+            let data = store.getters['activity/requestData']
             API.Activity.getActiveList(data, true)
               .then((res) => {
                 if (res.error !== ERR_OK) {
@@ -679,37 +681,42 @@ export default [
         component: () => lazyLoadView(import('@pages/returns-management/returns-management')),
         meta: {
           titles: ['商城', '订单', '退货管理'],
+          resetHooks: ['returns/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             let status = routeTo.query.status || ''
-            let tabIndex = store.state.returns.tabIndex
-            if (tabIndex === 0) {
-              //  售后订单
+            let firstIn = store.getters['returns/firstIn']
+            if (status && firstIn) {
               store.dispatch('returns/infoStatus', status)
-              store
-                .dispatch('returns/getReturnsList')
-                .then((res) => {
-                  if (!res) {
-                    return next({name: '404'})
-                  }
-                  return next()
-                })
-                .catch(() => {
-                  return next({name: '404'})
-                })
-            } else {
-              // 售后补偿
-              store
-                .dispatch('market/getMarketList', {page: 1, source_type: 2})
-                .then((res) => {
-                  if (!res) {
-                    return next({name: '404'})
-                  }
-                  return next()
-                })
-                .catch(() => {
-                  return next({name: '404'})
-                })
             }
+            // let tabIndex = store.state.returns.tabIndex
+            // if (tabIndex === 0) {
+              //  售后订单
+            store
+              .dispatch('returns/getReturnsList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+            // }
+            // else {
+            //   // 售后补偿
+            //   store
+            //     .dispatch('market/getMarketList', {page: 1, source_type: 2})
+            //     .then((res) => {
+            //       if (!res) {
+            //         return next({name: '404'})
+            //       }
+            //       return next()
+            //     })
+            //     .catch(() => {
+            //       return next({name: '404'})
+            //     })
+            // }
           }
         }
       },

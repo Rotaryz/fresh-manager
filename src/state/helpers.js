@@ -221,7 +221,8 @@ export const returnsComputed = {
     'status',
     'page',
     'tabIndex',
-    'socialName'
+    'socialName',
+    'firstIn'
   ])
 }
 
@@ -234,7 +235,9 @@ export const returnsMethods = {
     'setStatus',
     'setPage',
     'infoStatus',
-    'infoTab'
+    'infoTab',
+    'setFirstIn',
+    'resetData'
   ])
 }
 

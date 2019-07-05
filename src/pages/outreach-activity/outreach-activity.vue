@@ -183,10 +183,10 @@
         } else {
           this.$toast.show('删除成功')
         }
-        if (+this.requestData.page === +this.outreachPage.total_page) {
+        if (+this.outreachPage.total%10 === 1 && +this.requestData.page === +this.outreachPage.total_page) {
           this.setRequestData({page: this.outreachPage.total_page - 1})
         } else {
-          this.getOutreachList(this.requestData)
+          this.getOutreachList()
         }
         this.getOutreachStatus()
       },

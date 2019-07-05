@@ -210,10 +210,10 @@
         }
         this.$toast.show('删除成功')
         this.getMarketStatus()
-        if (+this.requestData.page === +this.marketPageDetail.total_page) {
+        if (+this.marketPageDetail.total%10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
           this.setRequestData({page: this.marketPageDetail.total_page - 1})
         } else {
-          this.getMarketList(this.requestData)
+          this.getMarketList()
         }
       }
     }

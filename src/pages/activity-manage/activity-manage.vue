@@ -183,8 +183,8 @@
               num: item.statistic
             }
           })
-          let index = this.statusTab.findIndex((item) => +item.value === +this.status)
-          this.firstIn && this.setDefaultIndex({status: this.status, index} || 0)
+          let index = this.statusTab.findIndex((item) => +item.value === +this.requestData.status)
+          this.firstIn && this.setDefaultIndex({status: this.status, index: index > 0 ? index : 0})
           if (this.status) {
             this.setFirstIn()
           }
@@ -230,7 +230,7 @@
         // this.status = selectStatus.value
         // this.page = 1
         this._getActiveList()
-        this._getActiveStatus()
+        // this._getActiveStatus()
       },
       async _setTime(arr) {
         // this.startTime = arr[0]
@@ -245,7 +245,7 @@
         // this.page = page
         this.setRequestData({page})
         this._getActiveList()
-        this._getActiveStatus()
+        // this._getActiveStatus()
       },
       _deleteActivity(id) {
         this.delId = id
