@@ -214,7 +214,7 @@ export const orderComputed = {
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus'])
+  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus', 'resetData'])
 }
 
 // 退货

@@ -158,11 +158,14 @@
       }
     },
     created() {
+      if (!this.shopId) {
+        this.socialSelect.content = '全部社区'
+      }
       this._getShopList()
       this.getOrderStatus()
     },
     beforeDestroy() {
-      this.setTime(['', ''])
+      // this.setTime(['', ''])
     },
     methods: {
       ...orderMethods,

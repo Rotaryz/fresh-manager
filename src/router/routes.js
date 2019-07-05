@@ -658,6 +658,7 @@ export default [
         component: () => lazyLoadView(import('@pages/order-list/order-list')),
         meta: {
           titles: ['商城', '订单', '订单列表'],
+          resetHooks: ['order/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store

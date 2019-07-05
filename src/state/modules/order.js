@@ -82,6 +82,16 @@ export const mutations = {
   },
   SET_ORDER_STATUS(state, status) {
     state.orderStatus = status
+  },
+  RESET_DATA(state) {
+    console.log(333)
+    state.page =1
+    state.startTime = ''
+    state.endTime = ''
+    state.status = ''
+    state.shopId = ''
+    state.keyword = ''
+    state.orderStatus = ''
   }
 }
 
@@ -169,5 +179,8 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getOrderList')
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
   }
 }
