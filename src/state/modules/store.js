@@ -35,7 +35,41 @@ export const state = {
     total: 1,
     per_page: 10,
     total_page: 1
-  }
+  },
+  stockFilter: {
+    page: 1,
+    limit: 10,
+    start_time: '',
+    end_time: '',
+    time: '',
+    keyword: ''
+  },
+  warehouseFilter: {
+    page: 1,
+    limit: 10,
+    warehouse_position_id: '',
+    goods_material_category_id: '',
+    is_presale: '',
+    keyword: ''
+  },
+  selectData: {
+    oneName: '一级类目',
+    twoName: '二级类目',
+    thrName: '三级类目',
+    twoList: [],
+    thrList: [],
+    storeName: '库区名',
+    shelfName: '货架名',
+    shelfList: [],
+    saleName: '全部'
+  },
+  warehouseDetailFilter: {
+    page: 1,
+    limit: 10,
+    order_sn: '',
+    type: ''
+  },
+  typeName: '变动类型'
 }
 
 export const getters = {
@@ -70,6 +104,21 @@ export const getters = {
   },
   adjustDetailPageTotal(state) {
     return state.adjustDetailPageTotal
+  },
+  stockFilter(state) {
+    return state.stockFilter
+  },
+  warehouseFilter(state) {
+    return state.warehouseFilter
+  },
+  selectData(state) {
+    return state.selectData
+  },
+  warehouseDetailFilter(state) {
+    return state.warehouseDetailFilter
+  },
+  typeName(state) {
+    return state.typeName
   }
 }
 
@@ -104,19 +153,34 @@ export const mutations = {
   },
   SET_ADJUST_DETAIL_PAGE_TOTAL(state, adjustDetailPageTotal) {
     state.adjustDetailPageTotal = adjustDetailPageTotal
+  },
+  SET_STOCK_PARAMS(state, params) {
+    state.stockFilter = {...state.stockFilter, ...params}
+  },
+  SET_WAREHOUSE_PARAMS(state, params) {
+    state.warehouseFilter = {...state.warehouseFilter, ...params}
+  },
+  SET_SELECT_PARAMS(state, params) {
+    state.selectData = {...state.selectData, ...params}
+  },
+  SET_WAREHOUSE_DETAIL_PARAMS(state, params) {
+    state.warehouseDetailFilter = {...state.warehouseDetailFilter, ...params}
+  },
+  SET_TYPE_NAME(state, typeName) {
+    state.typeName = typeName
   }
 }
 
 export const actions = {
-  getWarehouseList({state, commit}, {page, goodsCategoryId, isPresale, keyword, warehousePositionId, loading = true}) {
-    let data = {
-      page,
-      keyword,
-      warehouse_position_id: warehousePositionId,
-      goods_material_category_id: goodsCategoryId,
-      is_presale: isPresale
-    }
-    return API.Store.warehouseStock(data, loading)
+  getWarehouseList({state, commit}, {loading = false}) {
+    // let data = {
+    //   page,
+    //   keyword,
+    //   warehouse_position_id: warehousePositionId,
+    //   goods_material_category_id: goodsCategoryId,
+    //   is_presale: isPresale
+    // }
+    return API.Store.warehouseStock(state.warehouseFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -138,13 +202,13 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getWarehouseDetailList({state, commit}, {code, page, type, orderSn, loading = true}) {
-    let data = {
-      page,
-      order_sn: orderSn,
-      type
-    }
-    return API.Store.warehouseStockLogs(code, data, loading)
+  getWarehouseDetailList({state, commit}, {code, loading = true}) {
+    // let data = {
+    //   page,
+    //   order_sn: orderSn,
+    //   type
+    // }
+    return API.Store.warehouseStockLogs(code, state.warehouseDetailFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -183,14 +247,15 @@ export const actions = {
         app.$loading.hide()
       })
   },
-  getAdjustOrder({state, commit}, {page = 1, startTime, endTime, keyword, loading = true}) {
-    let data = {
-      page,
-      start_time: startTime,
-      end_time: endTime,
-      keyword
-    }
-    return API.Store.adjustOrder(data, loading)
+  getAdjustOrder({state, commit}, {loading = false}) {
+    // let data = {
+    //   page,
+    //   start_time: startTime,
+    //   end_time: endTime,
+    //   keyword
+    // }
+    console.log(state.stockFilter)
+    return API.Store.adjustOrder(state.stockFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -234,5 +299,45 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetTakingData({commit}) {
+    commit('SET_STOCK_PARAMS', {
+      page: 1,
+      limit: 10,
+      start_time: '',
+      end_time: '',
+      time: '',
+      keyword: ''
+    })
+  },
+  resetWarehouseData({commit}) {
+    commit('SET_WAREHOUSE_PARAMS', {
+      page: 1,
+      limit: 10,
+      warehouse_position_id: '',
+      goods_material_category_id: '',
+      is_presale: '',
+      keyword: ''
+    })
+    commit('SET_SELECT_PARAMS', {
+      oneName: '一级类目',
+      twoName: '二级类目',
+      thrName: '三级类目',
+      twoList: [],
+      thrList: [],
+      storeName: '库区名',
+      shelfName: '货架名',
+      shelfList: [],
+      saleName: '全部'
+    })
+  },
+  resetWarehouseDetail({commit}) {
+    commit('SET_WAREHOUSE_DETAIL_PARAMS', {
+      page: 1,
+      limit: 10,
+      order_sn: '',
+      type: ''
+    })
+    commit('SET_TYPE_NAME', '变动类型')
   }
 }

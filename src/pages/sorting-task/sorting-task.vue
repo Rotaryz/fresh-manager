@@ -44,7 +44,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" @search="searchBtn"></base-search>
+        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" :infoText="sortingTask.filter.keyword" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -104,7 +104,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="sortingTask.pageTotal" @addPage="pageChange"></base-pagination>
+        <base-pagination ref="pagination" :pagination="sortingTask.filter.page" :pageDetail="sortingTask.pageTotal" @addPage="pageChange"></base-pagination>
       </div>
     </div>
   </div>
@@ -113,6 +113,7 @@
 <script type="text/ecmascript-6">
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import API from '@api'
+  import _ from 'lodash'
   const ORDERSTATUS = [{text: '按订单分拣', status: 0, id: 'order'}, {text: '按商品分拣', status: 1, id: 'goods'}]
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -228,10 +229,20 @@
       this._getStatusData()
       this._setErrorStatus()
       this.getCategoriesData()
+      this._setData()
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
+      // 重置数据
+      _setData() {
+        let selectDown = _.cloneDeep(this.taskData)
+        this.stairSelect.content = selectDown.oneName
+        this.secondSelect.content = selectDown.twoName
+        this.thirdlySelect.content = selectDown.thrName
+        this.secondSelect.data = selectDown.twoList
+        this.thirdlySelect.data = selectDown.thrList
+      },
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -248,16 +259,19 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
+        this.SET_TASK_DATA({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       // 选择二级类目
       async setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
+        this.SET_TASK_DATA({twoName: data.name, thrList: data.list, thrName: '三级类目'})
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       // 选择三级类目
       async setThirdlyValue(data) {
+        this.SET_TASK_DATA({thrName: data.name})
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       _setErrorStatus() {
@@ -346,7 +360,7 @@
       // 更新列表
       _updateData({...params}, noUpdataStatus) {
         this.SET_PARAMS(params)
-        this.getSortingTaskList()
+        this.getSortingTaskList({})
         if (!noUpdataStatus) {
           this._getStatusData()
         }
@@ -369,6 +383,7 @@
           end_time: this.sortingTask.filter.end_time,
           goods_material_category_id: this.sortingTask.filter.goods_material_category_id,
           keyword: this.sortingTask.filter.keyword,
+          exception_status: this.sortingTask.filter.exception_status,
           sorting_mode: this.sortingTask.filter.sorting_mode
         }
         // todo

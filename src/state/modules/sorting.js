@@ -61,6 +61,14 @@ export const state = {
   barCodePreviewInfo: {
     goodsName: '',
     code: ''
+  },
+  taskData: {
+    isTaskFirst: true,
+    oneName: '一级类目',
+    twoName: '二级类目',
+    thrName: '三级类目',
+    twoList: [],
+    thrList: []
   }
 }
 
@@ -79,6 +87,9 @@ export const getters = {
   },
   sortingTaskDetailByOrder(state) {
     return state.sortingTaskDetailByOrder
+  },
+  taskData(state) {
+    return state.taskData
   }
 }
 
@@ -98,15 +109,18 @@ export const mutations = {
   SET_BARCODE_PERVIEW_INFO(state, value) {
     state.barCodePreviewInfo.goodsName = value.goods_name || '无定义名'
     state.barCodePreviewInfo.code = value.goods_sku_encoding || ''
+  },
+  SET_TASK_DATA(state, params) {
+    state.taskData = {...state.taskData, ...params}
   }
 }
 // export const
 
 export const actions = {
   // 拣货列表 √
-  getSortingTaskList({state, commit, dispatch}) {
+  getSortingTaskList({state, commit, dispatch}, {loading = false}) {
     commit('SET_LIST', {list: []})
-    return API.Sorting.getSortingTaskList(state.sortingTask.filter)
+    return API.Sorting.getSortingTaskList(state.sortingTask.filter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -224,5 +238,15 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('SET_TASK_DATA', {
+      isTaskFirst: true,
+      oneName: '一级类目',
+      twoName: '二级类目',
+      thrName: '三级类目',
+      twoList: [],
+      thrList: []
+    })
   }
 }

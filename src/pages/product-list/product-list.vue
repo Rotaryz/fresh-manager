@@ -25,7 +25,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="">
-        <base-search placeHolder="商品名称或编码" @search="search"></base-search>
+        <base-search placeHolder="商品名称或编码" :infoText="goodsFitter.keyword" @search="search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -48,7 +48,7 @@
             <transition name="fade">
               <div v-show="showIndex" class="show-hide-box">
                 <div class="show-all-item">
-                  <a :href="downUrl" class="show-hide-item" target="_blank">商品导出</a>
+                  <div class="show-hide-item" @click="exportExcel">商品导出</div>
                   <router-link to="lead-supply-goods" append class="show-hide-item">
                     批量新建
                   </router-link>
@@ -72,9 +72,10 @@
           <div v-for="(item, index) in productTitleList" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-if="goodsList.length">
-            <div v-for="(item, index) in goodsList" :key="index" class="list-content list-box">
+          <div v-if="productList.length">
+            <div v-for="(item, index) in productList" :key="index" class="list-content list-box">
               <div class="list-item">
+                <img v-if="item.goods_video_url" class="icon-video" src="./icon-play_list@2x.png" alt="">
                 <img class="pic-box" :src="item.goods_cover_image" alt="">
               </div>
               <div class="list-item list-double-row">
@@ -109,7 +110,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pagination" :pagination="goodsFitter.page" :pageDetail="statePageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="delConfirm"></default-confirm>
@@ -117,7 +118,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {goodsComputed} from '@state/helpers'
+  import {goodsComputed, goodsMethods} from '@state/helpers'
   import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
@@ -136,6 +137,7 @@
     '状态',
     '操作'
   ]
+  const EXCEL_URL = '/social-shopping/api/backend/goods-manage/goods-excel'
 
   export default {
     name: PAGE_NAME,
@@ -150,13 +152,7 @@
         productTitleList: PRODUCT_TITLE_LIST,
         dispatchSelect: {check: false, show: false, content: '全部状态', type: 'default', data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]},
         statusTab: [{name: '全部', num: 0, key: ''}, {name: '已上架', num: 0, key: 1}, {name: '已下架', num: 0, key: 0}],
-        stairSelect: {
-          check: false,
-          show: false,
-          content: '一级分类',
-          type: 'default',
-          data: []
-        },
+        stairSelect: {check: false, show: false, content: '一级分类', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级分类', type: 'default', data: []},
         typeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]},
         progressSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]},
@@ -180,21 +176,62 @@
       }
     },
     computed: {
-      ...goodsComputed
+      ...goodsComputed,
+      _getUrl() {
+        let currentId = this.getCurrentId()
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          is_online: this.goodsFitter.is_online,
+          keyword: this.goodsFitter.keyword,
+          goods_category_id: this.goodsFitter.goods_category_id,
+          page: this.goodsFitter.page,
+          has_stock: this.goodsFitter.has_stock,
+          complete_status: this.goodsFitter.complete_status,
+          is_presale: this.goodsFitter.is_presale,
+          goods_material_category_id: this.goodsFitter.goods_material_category_id,
+          source: this.goodsFitter.source
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
+      }
     },
     created() {
-      this._getUrl()
-      this.goodsList = _.cloneDeep(this.productList)
-      this.pageTotal = _.cloneDeep(this.statePageTotal)
-      this.isOnline = this.$route.query.online || ''
-      this.defaultIndex = this.$route.query.online * 1 || 0
-      if (this.$route.query.online * 1 === 1) {
-        this.dispatchSelect.content = '上架'
-      }
+      // this._getUrl()
+      // this.goodsList = _.cloneDeep(this.productList)
+      // this.pageTotal = _.cloneDeep(this.statePageTotal)
+      // this.isOnline = this.$route.query.online || ''
+      // this.defaultIndex = this.$route.query.online * 1 || 0
+      // if (this.$route.query.online * 1 === 1) {
+      //   this.dispatchSelect.content = '上架'
+      // }
+      console.log(this.dispatchSelect, this.goodsFitter.is_online)
+      this.defaultIndex = this.dispatchSelect.data.findIndex((item) => item.value === this.goodsFitter.is_online)
+      console.log(this.defaultIndex)
       this.getCategoriesData()
       this.getGoodsStatus()
+      this._setData()
     },
     methods: {
+      ...goodsMethods,
+      exportExcel() {
+        window.open(this._getUrl, '_blank')
+      },
+      // 重置数据
+      _setData() {
+        let selectDown = _.cloneDeep(this.taskData)
+        this.stairSelect.content = selectDown.oneName
+        this.secondSelect.content = selectDown.twoName
+        this.typeSelect.content = selectDown.source
+        this.progressSelect.content = selectDown.complete
+        this.presaleSelect.content = selectDown.presale
+        this.storeSelect.content = selectDown.stock
+        this.secondSelect.data = selectDown.twoList
+      },
       _showTip() {
         this.showIndex = true
       },
@@ -202,51 +239,70 @@
         this.showIndex = false
       },
       // 导出
-      _getUrl() {
-        let currentId = this.getCurrentId()
-        let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_category_id=${this.categoryId}&source=${this.source}&complete_status=${this.completeStatus}&is_presale=${this.isPresale}&has_stock=${this.hasStock}&is_online=${this.isOnline}&keyword=${
-          this.keyWord}`
-        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
+      // _getUrl() {
+      //   let currentId = this.getCurrentId()
+      //   let token = this.$storage.get('auth.currentUser', '')
+      //   let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_category_id=${this.categoryId}&source=${this.source}&complete_status=${this.completeStatus}&is_presale=${this.isPresale}&has_stock=${this.hasStock}&is_online=${this.isOnline}&keyword=${
+      //     this.keyWord}`
+      //   this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
+      // },
+      // 更新列表数据
+      _updateList(params, noUpdataStatus) {
+        this.SET_PARAMS(params)
+        this.getGoodsData({})
+        if (!noUpdataStatus) {
+          this.getGoodsStatus()
+        }
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
       },
       // 选择一级分类
       _setStairValue(data) {
         this.secondSelect.content = '二级分类'
         this.secondSelect.data = data.list
-        this.$refs.pagination.beginPage()
-        this.categoryId = data.id
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+        this.SET_TASK_DATA({oneName: data.name, twoName: '二级分类', twoList: data.list})
+        // this.$refs.pagination.beginPage()
+        // this.categoryId = data.id
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
+        this._updateList({page: 1, goods_category_id: data.id})
       },
       // 选择二级分类
       _secondValue(data) {
         this.secondSelect.content = data.name
-        this.$refs.pagination.beginPage()
-        this.categoryId = data.id
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+        this.SET_TASK_DATA({twoName: data.name})
+        this._updateList({page: 1, goods_category_id: data.id})
+        // this.$refs.pagination.beginPage()
+        // this.categoryId = data.id
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
       },
       // 选择类型
       _setTypeValue(data) {
         this.source = data.value
-        this.$refs.pagination.beginPage()
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+        this.SET_TASK_DATA({source: data.name})
+        this._updateList({page: 1, source: data.value})
+        // this.$refs.pagination.beginPage()
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
       },
       // 选择资料状态
       _setCompleteValue(data) {
         this.completeStatus = data.value
-        this.$refs.pagination.beginPage()
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+        this.SET_TASK_DATA({complete: data.name})
+        this._updateList({page: 1, complete_status: data.value})
+        // this.$refs.pagination.beginPage()
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
       },
       // 选择库存类型
       _setPresaleValue(data) {
@@ -254,43 +310,54 @@
         if (data.value.length === 0) {
           this.hasStock = ''
           this.storeSelect.content = '全部'
+          this.SET_TASK_DATA({presale: data.name, stock: '全部'})
+          this._updateList({page: 1, is_presale: data.value, has_stock: ''})
+        } else {
+          this.SET_TASK_DATA({presale: data.name})
+          this._updateList({page: 1, is_presale: data.value})
         }
-        this.$refs.pagination.beginPage()
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+        // this.$refs.pagination.beginPage()
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
       },
       // 选择库存
       _setStoreValue(data) {
         this.hasStock = data.value
-        this.$refs.pagination.beginPage()
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+        this._updateList({page: 1, has_stock: data.value})
+        this.SET_TASK_DATA({stock: data.name})
+        // this.$refs.pagination.beginPage()
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
       },
       // 搜索
-      search(text) {
-        this.$refs.pagination.beginPage()
-        this.keyWord = text
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+      search(keyword) {
+        this._updateList({page: 1, keyword})
+        // this.$refs.pagination.beginPage()
+        // this.keyWord = text
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
       },
       // 切换上下架状态
       changeStatus(selectStatus) {
         this.isOnline = selectStatus.value
-        this.$refs.pagination.beginPage()
-        this.goodsPage = 1
-        this._getUrl()
-        this.getGoodsListData()
+        console.log(selectStatus.value)
+        this._updateList({page: 1, is_online: selectStatus.value}, true)
+        // this.$refs.pagination.beginPage()
+        // this.goodsPage = 1
+        // this._getUrl()
+        // this.getGoodsListData()
       },
       // 分页
       addPage(page) {
         this.goodsPage = page
-        this.getGoodsListData()
+        this._updateList({page}, true)
+        // this.getGoodsListData()
       },
       // 获取列表
       getGoodsListData() {
@@ -322,12 +389,12 @@
       // 获取Tab栏状态
       getGoodsStatus() {
         API.Product.getGoodsStatus({
-          goods_category_id: this.categoryId,
-          source: this.source,
-          complete_status: this.completeStatus,
-          is_presale: this.isPresale,
-          has_stock: this.hasStock,
-          keyword: this.keyWord
+          goods_category_id: this.goodsFitter.goods_category_id,
+          source: this.goodsFitter.source,
+          complete_status: this.goodsFitter.complete_status,
+          is_presale: this.goodsFitter.is_presale,
+          has_stock: this.goodsFitter.has_stock,
+          keyword: this.goodsFitter.keyword
         }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -353,11 +420,12 @@
         API.Product.delGoodsDetail(this.curItem.id).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$toast.show('删除成功')
-            if (this.goodsList.length === 1 && this.goodsPage * 1 !== 1) {
-              this.goodsPage--
+            if (this.productList.length === 1 && this.goodsFitter.page * 1 !== 1) {
+              let page = _.cloneDeep(this.goodsFitter.page) - 1
+              this.SET_PARAMS({page})
+              this.$refs.pagination.beginPage(page)
             }
             this.getGoodsStatus()
-            this.getGoodsListData()
           } else {
             this.$toast.show(res.message)
           }
@@ -379,7 +447,8 @@
         }
         API.Product.upDownGoods(data).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.goodsList[index].is_online = item.is_online * 1 === 1 ? 0 : 1
+            // this.goodsList[index].is_online = item.is_online * 1 === 1 ? 0 : 1
+            this.getGoodsData({})
             this.oneBtn = true
             this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功上架' : '该商品已成功下架')
             this.getGoodsStatus()
@@ -407,10 +476,10 @@
             ? await API.Product.scmGoodsImport(param, true, 60000)
             : await API.Product.scmGoodsImport(param, true, 60000)
         this.$loading.hide()
-        this.goodsPage = 1
-        this.$refs.pagination.beginPage()
-        this.getGoodsListData()
-        this.getGoodsStatus()
+        // this.$refs.pagination.beginPage()
+        // this.getGoodsListData()
+        // this.getGoodsStatus()
+        this._updateList({page: 1})
         this.$toast.show(res.message)
         e.target.value = ''
       },
@@ -466,6 +535,7 @@
     .list-item
       box-sizing: border-box
       flex: 1
+      position: relative
 
       &:nth-child(1)
         flex: 0.55
@@ -599,6 +669,12 @@
       border-right: 4px solid transparent
       border-bottom: 8px solid #EBEBEB
 
+  .icon-video
+    height: 16px
+    width: @width
+    position: absolute
+    top: 12px
+    left: 12px
   .pic-box
     height: 40px
     width: 40px

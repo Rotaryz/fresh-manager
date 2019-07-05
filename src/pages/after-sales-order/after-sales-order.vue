@@ -12,7 +12,7 @@
       <div class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
-          <base-search placeHolder="原订单号" @search="_changeKeyword"></base-search>
+          <base-search placeHolder="原订单号" :infoText="afterSalesFilter.keyword" @search="_changeKeyword"></base-search>
         </div>
       </div>
 
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pagination" :pagination="afterSalesFilter.page" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
     <default-modal ref="modal">
@@ -203,9 +203,9 @@
     async created() {
       this._setErrorStatus()
       await this._getStatusData()
-      if (this.$route.query.status) {
-        this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.$route.query.status * 1)
-      }
+      // this.errorObj.content = _.cloneDeep(this.exceptionText)
+      console.log(this.afterSalesFilter.status)
+      this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.afterSalesFilter.status)
     },
     methods: {
       ...afterSalesOrderMethods,
@@ -385,9 +385,10 @@
           exception_status: item.status,
           page: 1
         })
+        this.SET_EXCEPTION_TEXT(item.name)
       },
       _setErrorStatus() {
-        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        let item = this.errorObj.data.find((item) => item.status === this.afterSalesFilter.exception_status)
         this.errorObj.content = item.name || '全部'
       }
     }

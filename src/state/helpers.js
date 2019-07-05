@@ -52,7 +52,10 @@ export const leaderComputed = {
     'endAt',
     'deliveryRequest',
     'selectContent',
-    'firstIn'
+    'firstIn',
+    'endAt',
+    'headFitter',
+    'headDetailFitter'
   ])
 }
 
@@ -73,12 +76,14 @@ export const leaderMethods = {
     'setBillType',
     'setWidthTime',
     'infoStatus',
+    'resetHeadDetailData',
+    'infoStatus',
     'resetDeliveryRequest',
     'setDeliveryRequest',
     'setSelectContent',
     'setFirstIn'
   ]),
-  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
+  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL','SET_PARAMS','SET_DETAIL_PARAMS'])
 }
 
 // 团长邀请
@@ -183,13 +188,18 @@ export const categoriesComputed = {
 export const categoriesMethods = mapActions('categories', ['getCategoryList', 'setCategory', 'addChild'])
 
 export const goodsComputed = {
-  ...mapState('editgoods', {
-    productList: (state) => state.productList,
-    statePageTotal: (state) => state.statePageTotal
-  })
+  ...mapGetters('editgoods', [
+    'productList',
+    'statePageTotal',
+    'goodsFitter',
+    'taskData'
+  ])
 }
 
-export const goodsMethods = mapActions('editgoods', ['getGoodsData'])
+export const goodsMethods = {
+    ...mapActions('editgoods', ['getGoodsData']),
+  ...mapMutations('editgoods', ['SET_PARAMS', 'SET_TASK_DATA'])
+}
 
 // 轮播广告
 export const adverComputed = {
@@ -450,7 +460,9 @@ export const productComputed = {
     'outList',
     'outPageTotal',
     'enterDetail',
-    'outDetail'
+    'outDetail',
+    'enterFilter',
+    'outFilter'
   ])
 }
 
@@ -462,7 +474,8 @@ export const productMethods = {
     'getEnterDetailData',
     'getOutDetailData',
     'setOutList'
-  ])
+  ]),
+  ...mapMutations('product', ['SET_ENTER_PARAMS', 'SET_OUT_PARAMS'])
 }
 
 // 财务管理
@@ -576,7 +589,12 @@ export const storeComputed = {
     'adjustOrder',
     'adjustPageTotal',
     'adjustOrderDetail',
-    'adjustDetailPageTotal'
+    'adjustDetailPageTotal',
+    'stockFilter',
+    'warehouseFilter',
+    'selectData',
+    'warehouseDetailFilter',
+    'typeName'
   ])
 }
 export const storeMethods = {
@@ -585,8 +603,10 @@ export const storeMethods = {
     'getWarehouseDetailList',
     'getStockList',
     'getAdjustOrder',
-    'getAdjustOrderDetail'
-  ])
+    'getAdjustOrderDetail',
+    'resetWarehouseDetail'
+  ]),
+  ...mapMutations('store', ['SET_STOCK_PARAMS', 'SET_WAREHOUSE_PARAMS', 'SET_SELECT_PARAMS', 'SET_WAREHOUSE_DETAIL_PARAMS', 'SET_TYPE_NAME'])
 }
 // todo 分拣任务
 export const sortingComputed = {
@@ -595,7 +615,8 @@ export const sortingComputed = {
     'sortingConfig',
     'sortingTaskDetail',
     'sortingTaskDetailByOrder',
-    'barCodePreviewInfo'
+    'barCodePreviewInfo',
+    'taskData'
   ])
 }
 
@@ -607,7 +628,7 @@ export const sortingMethods = {
     'getBarCodePreviewInfo',
     'getSortingConfigList'
   ]),
-  ...mapMutations('sorting', ['SET_PARAMS'])
+  ...mapMutations('sorting', ['SET_PARAMS', 'SET_TASK_DATA'])
 }
 // 商户订单
 export const merchantOrderComputed = {
@@ -615,25 +636,30 @@ export const merchantOrderComputed = {
     'pageTotal',
     'orderList',
     'mergerDetail',
+    'mergerPageTotal',
+    'mergerList',
+    'mergerFilter',
     'merchantDetail',
     'merchantFilter',
     'consumerDetailTotal',
     'consumerDetail',
-    'mergerDetail'
+    'mergerDetail',
+    'tabIndex'
   ])
 }
 export const merchantOrderMethods = {
   ...mapActions('merchantOrder', [
     'getMerchantOrderList',
+    'getMergerOrderList',
     'getMerchantOrderDetail',
     'getConsumerOrderDetail',
     'getMergerOrderDetail'
   ]),
-  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL'])
+  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL', 'SET_MERGER_PARAMS', 'SET_TAB_INDEX'])
 }
 // 售后订单
 export const afterSalesOrderComputed = {
-  ...mapGetters('afterSalesOrder', ['pageTotal', 'afterSalesList', 'afterSalesDetail', 'afterSalesFilter'])
+  ...mapGetters('afterSalesOrder', ['pageTotal', 'afterSalesList', 'afterSalesDetail', 'afterSalesFilter', 'exceptionText'])
 }
 export const afterSalesOrderMethods = {
   ...mapActions('afterSalesOrder', ['getAfterSalesOrderList', 'getAfterSalesOrderDetail']),
@@ -646,7 +672,9 @@ export const afterSalesOrderMethods = {
     'SET_LIST',
     'SET_DETAIL',
     'SET_STATUS',
-    'SET_DETAIL_PAGE'
+    'SET_DETAIL_PAGE',
+    'SET_IS_FIRST',
+    'SET_EXCEPTION_TEXT'
   ])
 }
 

@@ -10,7 +10,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="订单号或商户名称" @search="changeKeyword"></base-search>
+            <base-search placeHolder="订单号或商户名称" :infoText="merchantFilter.keyword" @search="changeKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="paginationMerchant" :pageDetail="pageTotal" @addPage="setOrderPage"></base-pagination>
+          <base-pagination ref="paginationMerchant" :pageDetail="pageTotal" :pagination="merchantFilter.page" @addPage="setOrderPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -71,8 +71,8 @@
             <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
           </div>
           <div class="list">
-            <template v-if="merger.list.length">
-              <div v-for="(row, index) in merger.list" :key="index" class="list-content list-box">
+            <template v-if="mergerList.length">
+              <div v-for="(row, index) in mergerList" :key="index" class="list-content list-box">
                 <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
                     {{row[item.key]}}
@@ -87,7 +87,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="paginationMerger" :pageDetail="merger.pageTotal" @addPage="_setMergerPage"></base-pagination>
+          <base-pagination ref="paginationMerger" :pageDetail="mergerPageTotal" :pagination="mergerFilter.page" @addPage="_setMergerPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -129,7 +129,6 @@
         tabStatus: ORDERSTATUS,
         commodities: COMMODITIES_LIST,
         datePlaceHolder: '选择下单日期',
-        tabIndex: 0,
         orderKeyword: '',
         signItem: {},
         dispatchSelect: [
@@ -139,22 +138,22 @@
           {name: '待配送', value: 2, num: 0},
           {name: '已完成', value: 3, num: 0}
         ],
-        datePlaceHolderMerger: '选择下单日期',
-        merger: {
-          pageTotal: {
-            // 页码详情
-            total: 1,
-            per_page: 10,
-            total_page: 1
-          },
-          list: [],
-          filter: {
-            start_time: '',
-            end_time: '',
-            page: 1,
-            limit: 10
-          }
-        }
+        datePlaceHolderMerger: '选择下单日期'
+        // merger: {
+        //   pageTotal: {
+        //     // 页码详情
+        //     total: 1,
+        //     per_page: 10,
+        //     total_page: 1
+        //   },
+        //   list: [],
+        //   filter: {
+        //     start_time: '',
+        //     end_time: '',
+        //     page: 1,
+        //     limit: 10
+        //   }
+        // }
       }
     },
     computed: {
@@ -163,7 +162,7 @@
         return [this.merchantFilter.start_time, this.merchantFilter.end_time]
       },
       timeArrMerger() {
-        return [this.merchantFilter.start_time, this.merchantFilter.end_time]
+        return [this.mergerFilter.start_time, this.mergerFilter.end_time]
       }
     },
     async created() {
@@ -174,7 +173,7 @@
       ...merchantOrderMethods,
       // 顶部 切换
       _changeStatusTab(item, index) {
-        this.tabIndex = index
+        this.SET_TAB_INDEX(index)
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
         if (!this.tabIndex) {
           // 待调度
@@ -188,36 +187,43 @@
             keyword: ''
           })
         } else {
-          this._updateMergerList()
+          this._updateMergerList({
+            start_time: '',
+            end_time: '',
+            page: 1,
+            limit: 10
+          })
         }
       },
-      _updateMergerList(params = {}) {
-        this.merger.filter = {...this.merger.filter, ...params}
-        this._getMergeOrderslist()
+      _updateMergerList(params) {
+        this.SET_MERGER_PARAMS(params)
+        this.getMergerOrderList()
         if (params.page === 1) {
-          this.$refs.paginationMerger.beginPage()
+          this.$nextTick(function() {
+            this.$refs.paginationMerger.beginPage()
+          })
         }
       },
-      _getMergeOrderslist() {
-        API.MerchantOrder.getMergeOrderslist(this.merger.filter)
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return false
-            }
-            this.merger.list = res.data
-            this.merger.pageTotal = {
-              total: res.meta.total,
-              per_page: res.meta.per_page,
-              total_page: res.meta.last_page
-            }
-          })
-          .catch(() => {
-            return false
-          })
-          .finally(() => {
-            this.$loading.hide()
-          })
-      },
+      // _getMergeOrderslist() {
+      //   API.MerchantOrder.getMergeOrderslist(this.merger.filter)
+      //     .then((res) => {
+      //       if (res.error !== this.$ERR_OK) {
+      //         return false
+      //       }
+      //       this.merger.list = res.data
+      //       this.merger.pageTotal = {
+      //         total: res.meta.total,
+      //         per_page: res.meta.per_page,
+      //         total_page: res.meta.last_page
+      //       }
+      //     })
+      //     .catch(() => {
+      //       return false
+      //     })
+      //     .finally(() => {
+      //       this.$loading.hide()
+      //     })
+      // },
       // 时间选择器
       _changeTimeMerger(timeArr) {
         this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})

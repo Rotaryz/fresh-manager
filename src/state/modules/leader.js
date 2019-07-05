@@ -44,6 +44,18 @@ export const state = {
     total_page: 1
   },
   billPage: 1,
+  headFitter: {
+    page: 1,
+    limit: 10,
+    keyword: ''
+  },
+  headDetailFitter: {
+    page: 1,
+    shop_id: '',
+    order_sn: '',
+    status: '',
+    type: ''
+  },
   deliveryRequest: {
     page: 1,
     shop_id: '',
@@ -124,11 +136,23 @@ export const getters = {
   },
   firstIn(state) {
     return state.firstIn
+  },
+  startAt(state) {
+    return state.startAt
+  },
+  endAt(state) {
+    return state.endAt
+  },
+  headFitter(state) {
+    return state.headFitter
+  },
+  headDetailFitter(state) {
+    return state.headDetailFitter
   }
 }
 
 export const mutations = {
-  SET_lEADER_LIST_FILTER(state,params){
+  SET_lEADER_LIST_FILTER(state, params) {
     state.leaderListFilter = Object.assign({}, state.leaderListFilter, params)
   },
   SET_LEADER_LIST(state, list) {
@@ -192,6 +216,12 @@ export const mutations = {
     state.startAt = value[0]
     state.endAt = value[1]
   },
+  SET_PARAMS(state, params) {
+    state.headFitter = {...state.headFitter, ...params}
+  },
+  SET_DETAIL_PARAMS(state, params) {
+    state.headDetailFitter = {...state.headDetailFitter, ...params}
+  },
   RESET_DELIVERY_REQUEST(state) {
     state.deliveryRequest = {
       page: 1,
@@ -208,8 +238,8 @@ export const mutations = {
   },
   RESET_DATA(state) {
     state.leaderListFilter = {
-      page:1,
-      limit:10,
+      page: 1,
+      limit: 10,
       keyword: '',
       status: 0,
       model_type: 0
@@ -219,7 +249,6 @@ export const mutations = {
     state.firstIn = type
   }
 }
-
 export const actions = {
   // 团长分销列表
   getList({state, commit, dispatch}, loading = true){
@@ -320,8 +349,8 @@ export const actions = {
   },
   //  团长结算列表
   // 团长列表
-  getSettlementList({state, commit, dispatch}, {page, keyword, loading = true}) {
-    return API.Leader.settlementList({page, keyword}, loading)
+  getSettlementList({state, commit, dispatch}, {loading = true}) {
+    return API.Leader.settlementList(state.headFitter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -344,9 +373,10 @@ export const actions = {
       })
   },
   // 团长结算详情列表
-  getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
+  // getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
+  getSettlementDetail({state, commit, dispatch}, {loading = false}) {
     return API.Leader.settlementDetail(
-      {page, shop_id: shopId, order_sn: orderSn, status, type: settlementType},
+      state.headDetailFitter,
       loading
     )
       .then((res) => {
@@ -491,5 +521,29 @@ export const actions = {
   },
   setFirstIn({commit}) {
     commit('SET_FIRST_IN', false)
+  },
+  resetWithdrawal({commit}) {
+    commit('SET_WITHDRAWAL_PAGE', 1)
+    commit('SET_WITHDRAWAL_SN', '')
+    commit('SET_WITHDRAWAL_KEYWORD', '')
+    commit('SET_WITHDRAWAL_STATUS', '')
+    commit('SET_WITHDRAWAL_TYPE', 2)
+    commit('SET_TIME_AT', ['', ''])
+  },
+  resetHeadData({commit}) {
+    commit('SET_PARAMS', {
+      page: 1,
+      limit: 10,
+      keyword: ''
+    })
+  },
+  resetHeadDetailData({commit}) {
+    commit('SET_DETAIL_PARAMS', {
+      page: 1,
+      shop_id: '',
+      order_sn: '',
+      status: '',
+      type: ''
+    })
   }
 }
