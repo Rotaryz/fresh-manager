@@ -50,6 +50,10 @@ export const leaderComputed = {
     'billPage',
     'startAt',
     'endAt',
+    'deliveryRequest',
+    'selectContent',
+    'firstIn',
+    'endAt',
     'headFitter',
     'headDetailFitter'
   ])
@@ -72,10 +76,23 @@ export const leaderMethods = {
     'setBillType',
     'setWidthTime',
     'infoStatus',
-    'resetHeadDetailData'
+    'resetHeadDetailData',
+    'infoStatus',
+    'resetDeliveryRequest',
+    'setDeliveryRequest',
+    'setSelectContent',
+    'setFirstIn'
   ]),
   ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL','SET_PARAMS','SET_DETAIL_PARAMS'])
 }
+
+// 团长邀请
+export const inviteComputed = {
+  ...mapGetters('leaderInvite', ['requestData'])
+}
+
+export const inviteMethods = mapActions('leaderInvite', ['resetData', 'setRequestData'])
+
 // 今日采购
 export const rushComputed = {
   ...mapGetters('rush', ['rushList', 'rushPage', 'rushDetail'])
@@ -100,7 +117,11 @@ export const activityComputed = {
     'popularPage',
     'preferencePage',
     'collagePage',
-    'activityTab'
+    'activityTab',
+    'defaultIndex',
+    'tabIndex',
+    'requestData',
+    'firstIn'
   ])
 }
 
@@ -110,7 +131,12 @@ export const activityMethods = mapActions('activity', [
   'getCollageList',
   'getCollageDetail',
   'addPreferenceList',
-  'setActivityTab'
+  'setActivityTab',
+  'resetData',
+  'setRequestData',
+  'setDefaultIndex',
+  'setTabIndex',
+  'setFirstIn'
 ])
 
 // 拓展活动
@@ -121,26 +147,28 @@ export const outreachComputed = {
     'outreachDetail',
     'memberList',
     'memberData',
-    'memberPage'
+    'memberPage',
+    'defaultIndex',
+    'requestData'
   ])
 }
 
-export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList'])
+export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList', 'setRequestData', 'setDefaultIndex', 'setPage'])
 
 // 优惠券
 export const couponComputed = {
-  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'infoTabIndex', 'goodsCoupon', 'pageTotal'])
+  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'infoTabIndex', 'goodsCoupon', 'requestData', 'defaultIndex'])
 }
 
-export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex'])
+export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex', 'resetData', 'setRequestData', 'setDefaultIndex'])
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount'])
+  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount', 'defaultIndex', 'requestData'])
 }
 
 export const marketMethods = {
-  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList'])
+  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList', 'resetData', 'setDefaultIndex', 'setRequestData'])
 }
 
 export const auxiliaryComputed = {
@@ -198,7 +226,7 @@ export const orderComputed = {
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus'])
+  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus', 'resetData'])
 }
 
 // 退货
@@ -213,7 +241,8 @@ export const returnsComputed = {
     'status',
     'page',
     'tabIndex',
-    'socialName'
+    'socialName',
+    'firstIn'
   ])
 }
 
@@ -226,16 +255,18 @@ export const returnsMethods = {
     'setStatus',
     'setPage',
     'infoStatus',
-    'infoTab'
+    'infoTab',
+    'setFirstIn',
+    'resetData'
   ])
 }
 
 // 轮播广告
 export const purchaseComputed = {
-  ...mapGetters('purchase', ['pageTotal', 'purchaseList', 'purchaseDetail'])
+  ...mapGetters('purchase', ['pageTotal', 'purchaseList', 'purchaseDetail', 'requestData'])
 }
 
-export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail'])
+export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail', 'resetData', 'setRequestData'])
 // 成员管理
 export const customerComputed = {
   ...mapGetters('customer', ['customerList', 'pageTotal'])

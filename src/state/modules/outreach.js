@@ -20,6 +20,14 @@ export const state = {
     total: 1,
     per_page: 10,
     total_page: 1
+  },
+  defaultIndex: 0,
+  requestData: {
+    page: 1,
+    start_at: '',
+    end_at: '',
+    status: '',
+    activity_theme: 'offline'
   }
 }
 
@@ -41,6 +49,12 @@ export const getters = {
   },
   memberPage() {
     return state.memberPage
+  },
+  requestData() {
+    return state.requestData
+  },
+  defaultIndex() {
+    return state.defaultIndex
   }
 }
 
@@ -62,13 +76,28 @@ export const mutations = {
   },
   SET_MEMBER_PAGE(state, memberPage) {
     state.memberPage = memberPage
+  },
+  SET_DEFAULT_INDEX(state, index) {
+    state.defaultIndex = index
+  },
+  SET_REQUEST_DATA(state, data) {
+    state.requestData = Object.assign({}, state.requestData, data)
+  },
+  RESET_DATA(state) {
+    state.requestData = {
+      page: 1,
+      startTime: '',
+      endTime: '',
+      status: '',
+      activity_theme: 'offline'
+    }
   }
 }
 
 export const actions = {
-  getOutreachList({state, commit, dispatch}, {page, startTime = '', endTime = '', status = '', loading = true}) {
+  getOutreachList({state, commit, dispatch}, loading = false) {
     return API.Outreach.getOutreachList(
-      {page: page, start_at: startTime, end_at: endTime, status, activity_theme: 'offline'},
+      state.requestData,
       loading
     )
       .then((res) => {
@@ -139,5 +168,18 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
+    commit('SET_DEFAULT_INDEX', 0)
+  },
+  setRequestData({commit, dispatch}, data) {
+    commit('SET_REQUEST_DATA', data)
+    dispatch('getOutreachList')
+  },
+  setDefaultIndex({commit, dispatch}, data) {
+    commit('SET_DEFAULT_INDEX', data.index)
+    commit('SET_REQUEST_DATA', {status: data.status, page: 1})
+    dispatch('getOutreachList')
   }
 }

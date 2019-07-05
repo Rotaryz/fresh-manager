@@ -9,7 +9,11 @@ export const state = {
     total_page: 1
   },
   purchaseList: [], // 采购列表
-  purchaseDetail: {} // 采购详情
+  purchaseDetail: {}, // 采购详情
+  requestData: {
+    page: 1,
+    order_sn: ''
+  }
 }
 
 export const getters = {
@@ -21,6 +25,9 @@ export const getters = {
   },
   pageTotal(state) {
     return state.pageTotal
+  },
+  requestData(state) {
+    return state.requestData
   }
 }
 
@@ -33,13 +40,22 @@ export const mutations = {
   },
   SET_PURCHASE_DETAIL(state, pageTotal) {
     state.purchaseDetail = pageTotal
+  },
+  SET_REQUEST_DATA(state, data) {
+    state.requestData = Object.assign({}, state.requestData, data)
+  },
+  RESET_DATA(state) {
+    state.requestData = {
+      page: 1,
+      order_sn: ''
+    }
   }
 }
 
 export const actions = {
   // 采购列表
-  getPurchaseList({state, commit, dispatch}, {page, orderSn, loading = true}) {
-    return API.Purchase.purchaseList({page, order_sn: orderSn}, loading)
+  getPurchaseList({state, commit, dispatch}, loading = false) {
+    return API.Purchase.purchaseList(state.requestData, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -82,5 +98,12 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
+  },
+  setRequestData({commit, dispatch}, data) {
+    commit('SET_REQUEST_DATA', data)
+    dispatch('getPurchaseList')
   }
 }

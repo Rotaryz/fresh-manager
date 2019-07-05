@@ -5,7 +5,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search :infoText="filter.keyword" placeHolder="请输入团长名称" @search="handleSearch"></base-search>
+            <base-search :infoText="requestData.keyword" placeHolder="请输入团长名称" @search="handleSearch"></base-search>
           </div>
         </div>
       </section>
@@ -55,7 +55,7 @@
           <base-blank v-else blackStyle="padding-top:15%"></base-blank>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pagination" :pageDetail="pageInfo" @addPage="addPage"></base-pagination>
+          <base-pagination ref="pagination" :pagination="requestData.page" :pageDetail="pageInfo" @addPage="addPage"></base-pagination>
         </div>
       </section>
       <default-modal ref="modalSwitch">
@@ -153,6 +153,7 @@
 
 <script type="text/ecmascript-6">
   import API from '@api'
+  import {inviteComputed, inviteMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
 
   const PAGE_NAME = 'LEADER_SALES'
@@ -219,11 +220,11 @@
       const params = this.$route.meta.params
       return {
         status: 0,
-        filter: {
-          page: 1,
-          limit: 10,
-          keyword: ''
-        },
+        // filter: {
+        //   page: 1,
+        //   limit: 10,
+        //   keyword: ''
+        // },
         invite_number_count:0,
         tabTitle: TAB_TITLE,
         dataArray: params.dataInfo,
@@ -268,6 +269,7 @@
       }
     },
     computed: {
+      ...inviteComputed,
       disabledDate() {
         return {
           disabledDate:(date)=>{
@@ -288,6 +290,7 @@
       // this.$refs.modal && this.$refs.modal.showModal()
     },
     methods: {
+      ...inviteMethods,
       _getSettingStatus() {
         return API.Leader.getSettingStatus()
           .then((res) => {
@@ -302,7 +305,8 @@
           })
       },
       addPage(page) {
-        this.filter.page = page
+        // this.filter.page = page
+        this.setRequestData({page})
         this._getList()
       },
       _leaderInviteSetting() {
@@ -330,12 +334,13 @@
         }
       },
       handleSearch(val) {
-        if (this.filter.page !== 1) this.$refs.pagination.beginPage()
-        this.filter.keyword = val
+        if (this.requestData.page !== 1) this.$refs.pagination.beginPage()
+        // this.filter.keyword = val
+        this.setRequestData({keyword: val})
         this._getList()
       },
       _getList() {
-        API.Leader.leaderDistributionRankingList(this.filter, true)
+        API.Leader.leaderDistributionRankingList(this.requestData, true)
           .then((res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)

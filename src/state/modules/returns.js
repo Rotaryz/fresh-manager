@@ -16,7 +16,8 @@ export const state = {
   keyword: '',
   status: '',
   socialName: '',
-  tabIndex: 0
+  tabIndex: 0,
+  firstIn: true
 }
 
 export const getters = {
@@ -49,6 +50,9 @@ export const getters = {
   },
   socialName(state) {
     return state.socialName
+  },
+  firstIn(state) {
+    return state.firstIn
   }
 }
 
@@ -83,6 +87,17 @@ export const mutations = {
   },
   SET_TAB_INDEX(state, tabIndex) {
     state.tabIndex = tabIndex
+  },
+  SET_FIRST_IN(state, type) {
+    state.firstIn = type
+  },
+  RESET_REQUEST_DATA(state, type) {
+    state.page = 1
+    state.startTime = ''
+    state.endTime = ''
+    state.status = ''
+    state.keyword = ''
+    state.socialName = ''
   }
 }
 
@@ -172,5 +187,11 @@ export const actions = {
   },
   infoTab({commit, dispatch}, tabIndex) {
     commit('SET_TAB_INDEX', tabIndex)
+  },
+  setFirstIn({commit}) {
+    commit('SET_FIRST_IN', false)
+  },
+  resetData({commit}) {
+    commit('RESET_REQUEST_DATA')
   }
 }

@@ -13,7 +13,7 @@ export const state = {
     page:1,
     limit:10,
     keyword:'',
-    status:'',
+    status: 0,
     model_type:0
   },
   leaderDetail: {}, // 团长详情
@@ -55,9 +55,18 @@ export const state = {
     order_sn: '',
     status: '',
     type: ''
-  }
+  },
+  deliveryRequest: {
+    page: 1,
+    shop_id: '',
+    start_time: '',
+    end_time: ''
+  },
+  selectContent: {
+    deliveryContent: ''
+  },
+  firstIn: true
 }
-// const _state = JSON.parse(JSON.stringify(state)) // 保存state初始值 // todo 根据业务编写
 export const getters = {
   leaderListFilter(state){
     return state.leaderListFilter
@@ -119,6 +128,15 @@ export const getters = {
   billPage(state) {
     return state.billPage
   },
+  deliveryRequest(state) {
+    return state.deliveryRequest
+  },
+  selectContent(state) {
+    return state.selectContent
+  },
+  firstIn(state) {
+    return state.firstIn
+  },
   startAt(state) {
     return state.startAt
   },
@@ -134,8 +152,8 @@ export const getters = {
 }
 
 export const mutations = {
-  SET_lEADER_LIST_FILTER(state,params){
-    state.leaderListFilter = {...state.leaderListFilter, ...params}
+  SET_lEADER_LIST_FILTER(state, params) {
+    state.leaderListFilter = Object.assign({}, state.leaderListFilter, params)
   },
   SET_LEADER_LIST(state, list) {
     state.leaderList = list
@@ -203,17 +221,35 @@ export const mutations = {
   },
   SET_DETAIL_PARAMS(state, params) {
     state.headDetailFitter = {...state.headDetailFitter, ...params}
+  },
+  RESET_DELIVERY_REQUEST(state) {
+    state.deliveryRequest = {
+      page: 1,
+      shop_id: '',
+      start_time: '',
+      end_time: ''
+    }
+  },
+  SET_DELIVERY_REQUEST(state, data) {
+    state.deliveryRequest = Object.assign({}, state.deliveryRequest, data)
+  },
+  SET_SELECT_CONTENT(state, data) {
+    state.selectContent = Object.assign({}, state.selectContent, data)
+  },
+  RESET_DATA(state) {
+    state.leaderListFilter = {
+      page: 1,
+      limit: 10,
+      keyword: '',
+      status: 0,
+      model_type: 0
+    }
+  },
+  SET_FIRST_IN(state, type) {
+    state.firstIn = type
   }
 }
-
 export const actions = {
-  resetState({commit}) { // todo
-    commit('RESET_STATE')
-  },
-  resetTodo({commit}) { // todo
-    // todo
-    console.log('todo clear reset!!')
-  },
   // 团长分销列表
   getList({state, commit, dispatch}, loading = true){
     /* eslint-disable */
@@ -261,8 +297,8 @@ export const actions = {
       })
   },
   // 配送订单列表
-  getDeliveryOrder({commit}, {page, shopId, startTime, endTime, loading = true}) {
-    return API.Leader.getDeliveryOrder({page, shop_id: shopId, start_time: startTime, end_time: endTime}, loading)
+  getDeliveryOrder({commit, state}, loading = false) {
+    return API.Leader.getDeliveryOrder(state.deliveryRequest, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -469,6 +505,22 @@ export const actions = {
     commit('SET_BILL_TYPE', select.id)
     commit('SET_BILL_PAGE', 1)
     dispatch('getBillList')
+  },
+  resetDeliveryRequest({commit}) {
+    commit('RESET_DELIVERY_REQUEST')
+  },
+  setDeliveryRequest({commit, dispatch}, data) {
+    commit('SET_DELIVERY_REQUEST', data)
+    dispatch('getDeliveryOrder')
+  },
+  setSelectContent({commit}, data) {
+    commit('SET_SELECT_CONTENT', data)
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
+  },
+  setFirstIn({commit}) {
+    commit('SET_FIRST_IN', false)
   },
   resetWithdrawal({commit}) {
     commit('SET_WITHDRAWAL_PAGE', 1)

@@ -221,9 +221,6 @@
       }
     },
     async created() {
-      if (this.$route.query.status) {
-        this.infoTabIndex = this.$route.query.status * 1 + 1
-      }
       this.keywords = this.keyword
       this.socialNames = this.socialName
       await this._statistic()
@@ -263,6 +260,13 @@
           return
         }
         let selectData = res.data
+        if (this.$route.query.status && this.firstIn) {
+          this.infoTabIndex = this.$route.query.status * 1 + 1
+          this.setFirstIn()
+        } else {
+          let index = res.data.findIndex((item) => item.status === this.status)
+          this.infoTabIndex = index > 0 ? index : 0
+        }
         this.statusList = selectData.map((item) => {
           item.num = item.statistic
           item.name = item.status_str
@@ -321,6 +325,8 @@
       },
       changeStatus(selectStatus) {
         this.setStatus(selectStatus)
+        let index = this.statusList.findIndex((item) => +item.status === +this.status)
+        this.infoTabIndex = index > 0 ? index : 0
         this.$refs.pagination.beginPage()
       },
       changeShopId(shop) {
