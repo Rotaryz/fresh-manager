@@ -78,6 +78,14 @@ export const leaderMethods = {
   ]),
   ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
 }
+
+// 团长邀请
+export const inviteComputed = {
+  ...mapGetters('leaderInvite', ['requestData'])
+}
+
+export const inviteMethods = mapActions('leaderInvite', ['resetData', 'setRequestData'])
+
 // 今日采购
 export const rushComputed = {
   ...mapGetters('rush', ['rushList', 'rushPage', 'rushDetail'])

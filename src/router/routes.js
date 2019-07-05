@@ -894,7 +894,7 @@ export default [
         component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
         meta: {
           titles: ['商城', '团长', '团长列表'],
-          // resetHooks: ['leader/resetLeaderRequest'], // todo 根据业务编写
+          resetHooks: ['leader/resetLeaderRequest'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             let params = {
@@ -931,7 +931,8 @@ export default [
           titles: ['商城', '团长', '团长邀请'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
-            API.Leader.leaderDistributionRankingList({page: 1, limit:10,keyword:'',...routeTo.query}, true)
+            let data = store.getters['leaderInvite/requestData']
+            API.Leader.leaderDistributionRankingList(data, true)
             .then((res) => {
               if (res.error !== ERR_OK) {
                 return next({name: '404'})
