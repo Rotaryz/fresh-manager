@@ -895,19 +895,14 @@ export default [
         component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
         meta: {
           titles: ['商城', '团长', '团长列表'],
-          resetHooks: ['leader/resetLeaderRequest'],
+          resetHooks: ['leader/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             let params = {
-              page:1,
-              limit:10,
-              keyword:'',
-              status:0,
-              model_type:0,
               ...routeTo.query
             }
-            params.status = Number( params.status)
-            params.model_type = Number( params.model_type)
+            params.status && (params.status = Number(params.status))
+            params.model_type && (params.model_type = Number(params.model_type))
             store.commit('leader/SET_lEADER_LIST_FILTER',params)
             store
               .dispatch('leader/getList')

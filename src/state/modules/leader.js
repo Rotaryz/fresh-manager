@@ -13,7 +13,7 @@ export const state = {
     page:1,
     limit:10,
     keyword:'',
-    status:'',
+    status: 0,
     model_type:0
   },
   leaderDetail: {}, // 团长详情
@@ -125,7 +125,8 @@ export const getters = {
 
 export const mutations = {
   SET_lEADER_LIST_FILTER(state,params){
-    state.leaderListFilter = {...state.leaderListFilter, ...params}
+    state.leaderListFilter = Object.assign({}, state.leaderListFilter, params)
+    console.log(state.leaderListFilter, 111)
   },
   SET_LEADER_LIST(state, list) {
     state.leaderList = list
@@ -201,6 +202,15 @@ export const mutations = {
   },
   SET_SELECT_CONTENT(state, data) {
     state.selectContent = Object.assign({}, state.selectContent, data)
+  },
+  RESET_DATA(state) {
+    state.leaderListFilter = {
+      page:1,
+      limit:10,
+      keyword: '',
+      status: 0,
+      model_type: 0
+    }
   }
 }
 
@@ -469,5 +479,8 @@ export const actions = {
   },
   setSelectContent({commit}, data) {
     commit('SET_SELECT_CONTENT', data)
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
   }
 }
