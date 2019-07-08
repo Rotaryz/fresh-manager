@@ -221,12 +221,13 @@ export const orderComputed = {
     'page',
     'orderStatus',
     'startTime',
-    'endTime'
+    'endTime',
+    'defaultIndex'
   ])
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus', 'resetData'])
+  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus', 'resetData', 'setDefaultIndex'])
 }
 
 // 退货
