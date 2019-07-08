@@ -1227,6 +1227,7 @@ export default [
         component: () => lazyLoadView(import('@pages/transaction-detail/transaction-detail')),
         meta: {
           titles: ['财务', '账户', '交易明细'],
+          resetHooks: ['finance/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('finance/getSettleStatus')

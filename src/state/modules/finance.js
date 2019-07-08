@@ -221,5 +221,11 @@ export const actions = {
   setPayListPage({commit, dispatch}, page) {
     commit('SET_PAY_LIST_PAGE', page)
     dispatch('getPayList')
+  },
+  resetData({commit}) {
+    commit('SET_SETTLE_LOGS_PAGE', 1)
+    commit('SET_SETTLE_LOGS_KEYWORD', '')
+    commit('SET_SETTLE_LOGS_STATUS', '')
+    commit('SET_SETTLE_LOGS_DATE', [])
   }
 }
