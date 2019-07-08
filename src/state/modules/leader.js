@@ -245,6 +245,7 @@ export const mutations = {
       status: 0,
       model_type: 0
     }
+    state.firstIn = true
   },
   SET_FIRST_IN(state, type) {
     state.firstIn = type

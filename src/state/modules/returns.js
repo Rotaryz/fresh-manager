@@ -117,6 +117,7 @@ export const mutations = {
     state.keyword = ''
     state.socialName = ''
     state.marketPage = 1
+    state.firstIn = true
   },
   SET_MARKET_PAGE(state, page) {
     state.marketPage = page
