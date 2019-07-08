@@ -937,6 +937,7 @@ export default [
         component: () => lazyLoadView(import('@pages/leader-invite/leader-invite')),
         meta: {
           titles: ['商城', '团长', '团长邀请'],
+          resetHooks: ['leaderInvite/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
             let data = store.getters['leaderInvite/requestData']

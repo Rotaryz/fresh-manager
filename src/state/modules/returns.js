@@ -8,6 +8,11 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
+  marketPageDetail: {
+    total: 1,
+    per_page: 10,
+    total_page: 1
+  },
   detail: {},
   page: 1,
   shopId: '',
@@ -17,7 +22,10 @@ export const state = {
   status: '',
   socialName: '',
   tabIndex: 0,
-  firstIn: true
+  marketPage: 1,
+  source_type: 2,
+  firstIn: true,
+  marketList: []
 }
 
 export const getters = {
@@ -45,6 +53,9 @@ export const getters = {
   page(state) {
     return state.page
   },
+  marketPage(state) {
+    return state.marketPage
+  },
   tabIndex(state) {
     return state.tabIndex
   },
@@ -53,6 +64,12 @@ export const getters = {
   },
   firstIn(state) {
     return state.firstIn
+  },
+  marketPageDetail(state) {
+    return state.marketPageDetail
+  },
+  marketList(state) {
+    return state.marketList
   }
 }
 
@@ -91,14 +108,25 @@ export const mutations = {
   SET_FIRST_IN(state, type) {
     state.firstIn = type
   },
-  RESET_REQUEST_DATA(state, type) {
+  RESET_REQUEST_DATA(state) {
     state.page = 1
+    state.tabIndex = 0
     state.startTime = ''
     state.endTime = ''
     state.status = ''
     state.keyword = ''
     state.socialName = ''
-  }
+    state.marketPage = 1
+  },
+  SET_MARKET_PAGE(state, page) {
+    state.marketPage = page
+  },
+  SET_MARKET_PAGE_DETAIL(state, detail) {
+    state.marketPageDetail = detail
+  },
+  SET_MARKET_LIST(state, marketList) {
+    state.marketList = marketList
+  },
 }
 
 export const actions = {
@@ -128,6 +156,31 @@ export const actions = {
         commit('SET_LIST', list)
         commit('SET_PAGE_DETAIL', pageDetail)
         return list
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  getMarketList({commit, state}, data) {
+    return API.Market.getMarketList(data, false)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          app.$toast.show(res.message)
+          return
+        }
+        let marketList = res.data
+        let pages = res.meta
+        let pageDetail = {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        }
+        commit('SET_MARKET_PAGE_DETAIL', pageDetail)
+        commit('SET_MARKET_LIST', marketList)
+        return marketList
       })
       .catch(() => {
         return false
@@ -190,6 +243,12 @@ export const actions = {
   },
   setFirstIn({commit}) {
     commit('SET_FIRST_IN', false)
+  },
+  resetReturnsData({commit}) {
+    commit('RESET_REQUEST_DATA')
+  },
+  setMarketPage({commit}, page) {
+    commit('SET_MARKET_PAGE', page)
   },
   resetData({commit}) {
     commit('RESET_REQUEST_DATA')

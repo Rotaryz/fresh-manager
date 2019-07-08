@@ -241,9 +241,12 @@ export const returnsComputed = {
     'keyword',
     'status',
     'page',
+    'marketPage',
     'tabIndex',
     'socialName',
-    'firstIn'
+    'firstIn',
+    'marketPageDetail',
+    'marketList'
   ])
 }
 
@@ -258,7 +261,9 @@ export const returnsMethods = {
     'infoStatus',
     'infoTab',
     'setFirstIn',
-    'resetData'
+    'resetReturnsData',
+    'setMarketPage',
+    'getMarketList'
   ])
 }
 

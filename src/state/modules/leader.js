@@ -229,6 +229,7 @@ export const mutations = {
       start_time: '',
       end_time: ''
     }
+    state.selectContent.deliveryContent = ''
   },
   SET_DELIVERY_REQUEST(state, data) {
     state.deliveryRequest = Object.assign({}, state.deliveryRequest, data)

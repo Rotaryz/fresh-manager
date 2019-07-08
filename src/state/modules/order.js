@@ -94,7 +94,7 @@ export const mutations = {
     state.page =1
     state.startTime = ''
     state.endTime = ''
-    state.status = ''
+    state.status = 'c_shop'
     state.shopId = ''
     state.keyword = ''
     state.orderStatus = ''
@@ -176,6 +176,10 @@ export const actions = {
     commit('SET_STATUS', selectStatus.status)
     commit('SET_ORDER_STATUS', '')
     commit('SET_PAGE', 1)
+    commit('SET_TIME', ['', ''])
+    commit('SET_KEYWORD', '')
+    commit('SET_DEFAULT_INDEX', 0)
+    commit('SET_SHOP_ID', '')
     dispatch('getOrderList')
   },
   setOrderStatus({commit, dispatch}, selectStatus) {
