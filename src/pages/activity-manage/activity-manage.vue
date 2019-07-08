@@ -184,7 +184,7 @@
             }
           })
           let index = this.statusTab.findIndex((item) => +item.value === +this.requestData.status)
-          this.firstIn && this.setDefaultIndex({status: this.status, index: index > 0 ? index : 0})
+          this.firstIn && this.status && this.setDefaultIndex({status: this.status, index: index > 0 ? index : 0})
           if (this.status) {
             this.setFirstIn()
           }
