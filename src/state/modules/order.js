@@ -98,6 +98,7 @@ export const mutations = {
     state.shopId = ''
     state.keyword = ''
     state.orderStatus = ''
+    state.defaultIndex = 0
   }
 }
 

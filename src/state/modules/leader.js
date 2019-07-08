@@ -229,6 +229,7 @@ export const mutations = {
       start_time: '',
       end_time: ''
     }
+    state.firstIn = true
     state.selectContent.deliveryContent = ''
   },
   SET_DELIVERY_REQUEST(state, data) {

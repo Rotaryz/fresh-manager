@@ -89,6 +89,7 @@ export const mutations = {
       end_at: '',
       activity_theme: 'fixed'
     }
+    state.firstIn = true
   },
   SET_REQUEST_DATA(state, data) {
     state.requestData = Object.assign({}, state.requestData, data)
