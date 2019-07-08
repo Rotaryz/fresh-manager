@@ -65,14 +65,6 @@
               <div class="list-item">￥{{item.stock_average}}</div>
               <div class="list-item">{{item.warehouse_position}}</div>
               <div class="list-item">
-                <!--<router-link-->
-                <!--tag="div"-->
-                <!--:to="`storehouse-detail?code=${item.goods_sku_code}`"-->
-                <!--append-->
-                <!--class="list-operation"-->
-                <!--&gt;-->
-                <!--详情-->
-                <!--</router-link>-->
                 <div class="list-operation" @click="jumpDetail(item)">详情</div>
                 <router-link
                   tag="div"
@@ -89,7 +81,6 @@
         </div>
       </div>
       <div class="pagination-box">
-        <!-- @addPage="addPage"-->
         <base-pagination ref="pagination" :pagination="warehouseFilter.page" :pageDetail="warehousePageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
@@ -147,15 +138,12 @@
           search.push(`${key}=${data[key]}`)
         }
         let url = process.env.VUE_APP_SCM_API + ENTRY_STORE_EXPORT + '?' + search.join('&')
-        // console.log(url)
         return url
       }
     },
     async created() {
-      // await this._getFirstAssortment()
       await this._getStoreList()
       this.getCategoriesData()
-      console.log(this.selectData)
       this._setData()
     },
     methods: {
@@ -201,29 +189,18 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
-        // this.goodsCategoryId = data.id
-        // this.page = 1
         this.SET_SELECT_PARAMS({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
         this._getWarehouseList({goods_material_category_id: data.id, page: 1})
-        // this.$refs.pagination.beginPage()
       },
       // 选择二级类目
       async setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
-        // this.goodsCategoryId = data.id
         this.SET_SELECT_PARAMS({twoName: data.name, thrList: data.list, thrName: '三级类目'})
-        // this.page = 1
-        // this._getWarehouseList()
-        // this.$refs.pagination.beginPage()
         this._getWarehouseList({goods_material_category_id: data.id, page: 1})
       },
       // 选择三级类目
       async setThirdlyValue(data) {
-        // this.goodsCategoryId = data.id
-        // this.page = 1
-        // this._getWarehouseList()
-        // this.$refs.pagination.beginPage()
         this.SET_SELECT_PARAMS({thrName: data.name})
         this._getWarehouseList({goods_material_category_id: data.id, page: 1})
       },
@@ -263,8 +240,6 @@
       },
       // 获取库架名
       async getSecondStore(item) {
-        console.log(item)
-        // this.warehousePositionId = item.id
         if (item.id === '') {
           this.secondStore.data = []
           this.SET_SELECT_PARAMS({shelfList: []})
@@ -277,39 +252,25 @@
         this.secondStore.content = '货架名'
         this.SET_SELECT_PARAMS({storeName: item.name})
         this.SET_SELECT_PARAMS({shelfName: '货架名'})
-        // this.page = 1
         this._getWarehouseList({warehouse_position_id: item.id, page: 1})
-        // this.$refs.pagination.beginPage()
       },
       // 选择库架名
       async selectSecondStore(item) {
         this.warehousePositionId = item.id
         this.SET_SELECT_PARAMS({shelfName: item.name})
-        // console.log(item)
-        // this.page = 1
-        // this._getWarehouseList()
         this._getWarehouseList({warehouse_position_id: item.id, page: 1})
       },
       // 选择预售类型
       async selectSaleStore(item) {
-        // this.isPresale = item.value
-        // this.page = 1
-        // this._getWarehouseList()
-        // this.$refs.pagination.beginPage()
         this.SET_SELECT_PARAMS({saleName: item.name})
         this._getWarehouseList({is_presale: item.value, page: 1})
       },
       // 搜索
       searchStore(keyword) {
-        // this.keyword = keyword
-        // this.page = 1
-        // this._getWarehouseList()
-        // this.$refs.pagination.beginPage()
         this._getWarehouseList({keyword, page: 1})
       },
       // 翻页
       addPage(page) {
-        // this.page = page
         this._getWarehouseList({page})
       }
     }

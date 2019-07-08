@@ -313,7 +313,6 @@
           this.errorObj.content = '全部'
           this.exceptionStatus = ''
           this.statusTab = 1
-          // console.log(this.$refs.infoStatusTab.statusIndex = 1)
           this.$forceUpdate()
           await this._statistic(false)
         }

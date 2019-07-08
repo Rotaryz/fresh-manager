@@ -173,13 +173,6 @@ export const mutations = {
 
 export const actions = {
   getWarehouseList({state, commit}, {loading = false}) {
-    // let data = {
-    //   page,
-    //   keyword,
-    //   warehouse_position_id: warehousePositionId,
-    //   goods_material_category_id: goodsCategoryId,
-    //   is_presale: isPresale
-    // }
     return API.Store.warehouseStock(state.warehouseFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -203,11 +196,6 @@ export const actions = {
       })
   },
   getWarehouseDetailList({state, commit}, {code, loading = true}) {
-    // let data = {
-    //   page,
-    //   order_sn: orderSn,
-    //   type
-    // }
     return API.Store.warehouseStockLogs(code, state.warehouseDetailFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -248,13 +236,6 @@ export const actions = {
       })
   },
   getAdjustOrder({state, commit}, {loading = false}) {
-    // let data = {
-    //   page,
-    //   start_time: startTime,
-    //   end_time: endTime,
-    //   keyword
-    // }
-    console.log(state.stockFilter)
     return API.Store.adjustOrder(state.stockFilter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {

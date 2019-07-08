@@ -203,8 +203,6 @@
     async created() {
       this._setErrorStatus()
       await this._getStatusData()
-      // this.errorObj.content = _.cloneDeep(this.exceptionText)
-      console.log(this.afterSalesFilter.status)
       this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.afterSalesFilter.status)
     },
     methods: {
@@ -344,15 +342,6 @@
             num: item.statistic
           }
         })
-        // API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
-        //   this.dispatchSelect = res.data.map((item) => {
-        //     return {
-        //       name: item.status_str,
-        //       value: item.status,
-        //       num: item.statistic
-        //     }
-        //   })
-        // })
       },
       // 时间
       _changeTime(timeArr) {

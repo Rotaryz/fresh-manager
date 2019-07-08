@@ -330,7 +330,6 @@
         this.status = this.dispatchSelect[this.statusTab].status
         this._createNewPublish()
       }
-      // await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
       this.getCategoriesData()
@@ -515,16 +514,6 @@
         }
         let index = 1
         this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
-        // this.getPurchaseTaskList({
-        //   time: this.time,
-        //   startTime: this.startTime,
-        //   endTime: this.endTime,
-        //   keyword: this.keyword,
-        //   status: this.status,
-        //   page: this.page,
-        //   supplyId: this.supplyId,
-        //   loading: false
-        // })
         await this._statistic()
         this.cancel()
       },
@@ -774,16 +763,6 @@
             let index = 2
             this.$refs.baseStatusTab.checkStatus(index, this.dispatchSelect[index])
             await this._statistic()
-            // this.getPurchaseTaskList({
-            //   time: this.time,
-            //   startTime: this.taskTime[0],
-            //   endTime: this.taskTime[1],
-            //   keyword: this.keyword,
-            //   status: this.status,
-            //   page: this.page,
-            //   supplyId: this.supplyId,
-            //   loading: false
-            // })
           }
           break
         case 2:
