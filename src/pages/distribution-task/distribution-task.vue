@@ -225,7 +225,6 @@
       if (this.$route.query.status) {
         this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.$route.query.status * 1)
         this.status = this.$route.query.status * 1
-        console.log(this.statusTab)
       }
     },
     methods: {
@@ -298,14 +297,27 @@
           this.dispatchSelect[index].num = this.statistic[key]
         }
       },
-      async setValue(item) {
+      async setValue(item, index) {
+        this.statusTab = index
         this.setOrderStatus(item.value)
         await this._statistic(false)
         this.$refs.pagination.beginPage()
       },
       async changeStatus(item, index) {
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+        if (index === 1) {
+          this.statusTab = 1
+        }
         this.setTabIndex(index)
+        if (index === 0) {
+          this.errorObj.content = '全部'
+          this.exceptionStatus = ''
+          this.statusTab = 1
+          // console.log(this.$refs.infoStatusTab.statusIndex = 1)
+          this.$forceUpdate()
+          await this._statistic(false)
+        }
+        this.$refs.pagination.beginPage()
       },
       async changeKeyword(keyword) {
         this.setOrderKeyword(keyword)

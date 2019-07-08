@@ -2389,6 +2389,7 @@ export default [
         component: () => lazyLoadView(import('@pages/distribution-task/distribution-task')),
         meta: {
           titles: ['供应链', '配送', '配送任务'],
+          resetHooks: ['distribution/resetData'],
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
             let tabIndex = store.state.distribution.tabIndex
