@@ -183,6 +183,8 @@
         if (this.$route.query.status * 1 === 0) {
           this.statusSelect.content = '待审核'
         }
+        let statusObj = this.statusSelect.data.find((item) => item.id === this.withdrawalStatus)
+        this.statusSelect.content = statusObj.name
       },
       exportExcel() {
         window.open(this.withdrawalExportUrl, '_blank')

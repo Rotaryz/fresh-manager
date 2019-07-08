@@ -118,7 +118,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {goodsComputed, goodsMethods} from '@state/helpers'
+  import {authComputed, goodsComputed, goodsMethods} from '@state/helpers'
   import API from '@api'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import _ from 'lodash'
@@ -176,6 +176,7 @@
       }
     },
     computed: {
+      ...authComputed,
       ...goodsComputed,
       _getUrl() {
         let currentId = this.getCurrentId()

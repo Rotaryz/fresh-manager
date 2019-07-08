@@ -1731,38 +1731,7 @@ export default [
                 return next({name: '404'})
               })
           }
-        },
-        children: [
-          // 新建商品
-          {
-            path: 'goods-manage/edit-supply-goods',
-            name: 'edit-supply-goods',
-            component: () => lazyLoadView(import('@pages/edit-supply-goods/edit-supply-goods')),
-            meta: {
-              titles: ['供应链', '采购', '商品管理', '商品'],
-              variableIndex: 3,
-              marginBottom: 80,
-              beforeResolve(routeTo, routeFrom, next) {
-                if (!routeTo.query.id) {
-                  return next()
-                }
-                store
-                  .dispatch('scmGoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
-                  .then((response) => {
-                    if (!response) {
-                      return next({name: '404'})
-                    }
-                    routeTo.params.detail = response
-                    next()
-                  })
-                  .catch(() => {
-                    next({name: '404'})
-                  })
-              }
-            },
-            props: (route) => ({detail: route.params.detail})
-          },
-        ]
+        }
       },
       // 导入商品
       {
