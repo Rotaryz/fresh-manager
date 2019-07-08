@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">创作{{name}}</p>
+        <p class="identification-name">{{editName}}{{name}}</p>
       </div>
       <div class="function-btn">
       </div>
@@ -18,7 +18,7 @@
             内容分类
           </div>
           <div class="edit-input-box">
-            <base-dropdown v-model="addData.category" :data="articleCategoryList" valueKey="value" :width="400" :height="40"
+            <base-dropdown v-model="addData.category" :data="articleCategoryList" valueKey="id" :width="400" :height="40"
                            placeholder="请选择内容分类" @click="_getArticleCategory"
             ></base-dropdown>
           </div>
@@ -278,8 +278,11 @@
       </div>
     </div>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="submitDraft()">存为草稿</div>
-      <div class="back-btn back-submit hand" @click="submitLaunch()">上线</div>
+      <template v-if="!this.id">
+        <div  class="back-cancel back-btn hand" @click="_submitBtn('addDraft')">存为草稿</div>
+        <div class="back-btn back-submit hand" @click="_submitBtn('addContent')">上线</div>
+      </template>
+      <div v-else class="back-btn back-submit hand" @click="_submitBtn('editContetnArticle')">保存</div>
     </div>
     <!-- 选择商品弹窗-->
     <default-modal ref="goods">
@@ -292,11 +295,19 @@
         </div>
         <div class="shade-tab">
           <div class="tab-item">
-            <base-dropdown v-model="chooseGoodsFilter.goods_category_id"
-                           :data="goodsCategoryList"
+            <base-dropdown v-model="goodsCategoryFrist"
+                           :data="goodsCategoryFristList"
                            valueKey="id"
                            :width="218"
-                           @change="goodsCategoryChange"
+                           @change="_selectCategoryFirst"
+            ></base-dropdown>
+          </div>
+          <div class="tab-item">
+            <base-dropdown v-model="goodsCategorySecond"
+                           :data="goodsCategorySecondList"
+                           valueKey="id"
+                           :width="140"
+                           @change="_selectCategorySecond"
             ></base-dropdown>
           </div>
           <div class="tab-item">
@@ -429,14 +440,18 @@
         articleCategoryList: [],// 内容分类列表
         // 已经选择的商品头部
         selectedGoodsCommodities: ['商品名称', '单位', '售价', '操作'],
-        goodsCategoryList: [],
         // 选择商品弹框删选条件
         chooseGoodsFilter: {
           limit: 7,
-          page: '',
+          page: 1,
           keyword: '',
           goods_category_id: '',
+          is_online: 1
         },
+        goodsCategoryFristList:[],
+        goodsCategorySecondList:[],
+        goodsCategoryFrist:'',
+        goodsCategorySecond:'',
         chooseGoods: [], // 弹框商品列表
         goodsPage: {
           total: 1,
@@ -460,24 +475,97 @@
       name() {
         return this.typeList[this.currentType] && this.typeList[this.currentType].name || '文章'
       },
-      dataName() {
-        let lastName = this.cmsType[0].toUpperCase() + this.cmsType.slice(1, this.cmsType.length)
-        let useName = `temporary${lastName}`
-        return useName
+      editName(){
+        return this.id ? '编辑' :'创作'
       }
     },
     async created() {
-      this._getCoverImage()
-      const params = this.$route.meta.params
-      console.log(params)
-      this.currentType = this.$route.query.type
+      this._getArticleCategory()
+      this.currentType = this.$route.query.type || 'common'
       this.id = this.$route.query.id || ''
-      console.log(this.$route)
+      this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
     },
     methods: {
+      // 转换详情数据
+      changeDetialData(obj) {
+        console.log(obj)
+        this.currentType = obj.type || 'common'
+        this.addData.title = obj.title
+        this.addData.category = obj.id
+        this.addData.coverImage.url = obj.cover_image.source_url
+        this.addData.coverImage.id = obj.cover_image.id
+        this.addData.coverVideo.url = obj.cover_video.full_url || ''
+        this.addData.coverVideo.id = obj.cover_video.id || ''
+        this.addData.authPhoto.url = obj.author.head_image_url
+        this.addData.authPhoto.id = obj.author.head_image_id
+        this.addData.authName = obj.author.nickname
+        this.addData.authSignature = obj.author.sign
+        this.addData.goodCount = obj.browse_count
+        this.addData.lookCount = obj.fabulous_num
+        obj.assembly.forEach(item => {
+          if (item.type === 'combination' && item.style_type === 'content') {
+            let details = []
+            item.content.map(cont => {
+              if(!(cont.content && cont.content.length))return false
+              let contItem = cont.content[0]
+
+              /* eslint-disable */
+              switch (cont.type) {
+                case "image":
+                  console.log({
+                    type: 'image',
+                    value: contItem.image.source_url,
+                    id: contItem.image.id
+                  })
+                  details.push({
+                    type: 'image',
+                    value: contItem.image.source_url,
+                    id: contItem.image.id
+                  })
+                  break
+                case "video":
+                  console.log({
+                    type: 'video',
+                    value:contItem.video.full_url,
+                    id: contItem.video.id
+                  })
+                  details.push({
+                    type: 'video',
+                    value:contItem.video.full_url,
+                    id: contItem.video.id
+                  })
+                  break
+                case "text":
+                  console.log({
+                    type: 'text',
+                    value: contItem.text,
+                  })
+                  details.push({
+                    type: 'text',
+                    value: contItem.text,
+                  })
+                  break
+                // case "goods":
+                //    details.push({
+                //     type: 'goods',
+                //     value: contItem.goods,
+                //   })
+                //   break
+              }
+            })
+            this.addData.details = details
+          }
+        })
+        console.log(this.addData)
+      },
       // 获取内容分类列表
       _getArticleCategory() {
-        console.log(111)
+        API.Content.getSortList().then(res => {
+          if (res.error !== this.$ERR_OK) this.$toast.show(res.message)
+          this.articleCategoryList = res.data
+        }).finally(() => {
+          this.$loading.hide()
+        })
       },
       addCategory() {
         this.addCategoryText = ''
@@ -485,7 +573,15 @@
         this.$refs.addCategory.showModal()
       },
       _submitCategory() {
-
+        API.Content.addSort({name: this.addCategoryText}).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+          }
+          this.$toast.show(res.message)
+          this.$refs.addCategory.hideModal()
+        }).finally(() => {
+          this.$loading.hide()
+        })
       },
       // 封面
       getCoverVideo(video) {
@@ -502,7 +598,7 @@
         }
       },
       _getCoverImage() {
-        API.Content.getCoverImage({file_id: this.addData.coverVideo.file_id || 5285890791111588992}).then(res => {
+        this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id: this.addData.coverVideo.file_id}).then(res => {
           console.log(res,this.$ERR_OK)
           if(res.error !== this.$ERR_OK) return false
           this.addData.coverImage.id = res.data.cover_image_id
@@ -600,11 +696,7 @@
       // 获取商品列表
       async _getGoodsList() {
         this.$loading.show()
-        let res = await API.Outreach.getGoodsList({
-          is_online: 1,
-          shelf_id: this.id,
-          ...this.chooseGoodsFilter
-        })
+        let res = await API.Product.getGoodsList(this.chooseGoodsFilter)
         if (res.error !== this.$ERR_OK) {
           return
         }
@@ -629,10 +721,10 @@
       // 展示商品弹窗
       async showGoods() {
         this.chooseGoodsFilter.page = 1
-        this._getFirstAssortment()
+        this.chooseGoodsFilter.goods_category_id = ""
+        this.getCategoryFirst()
         await this._getGoodsList()
         this.$refs.goods.showModal()
-        this.$refs.pagination.beginPage()
       },
       // 隐藏商品弹窗
       hideGoods() {
@@ -645,14 +737,23 @@
         await this._getGoodsList()
       },
       // 获取一级分类
-      async _getFirstAssortment() {
-        let res = await API.Outreach.goodsCategory({parent_id: this.chooseGoodsFilter.goods_category_id})
-        this.goodsCategoryList = res.error === this.$ERR_OK ? res.data : []
+      async getCategoryFirst(){
+        let res = await API.Product.getCategory({parent_id: ''})
+        this.goodsCategoryFristList = res.error === this.$ERR_OK ? res.data : []
+        this.goodsCategorySecondList = []
+        this.goodsCategorySecond= ''
+      },
+      async _selectCategoryFirst(){
+        let res = await API.Product.getCategory({parent_id: this.goodsCategoryFrist})
+        this.goodsCategorySecondList = res.error === this.$ERR_OK ? res.data : []
+        this.goodsCategoryChange(this.goodsCategoryFrist)
+      },
+      async _selectCategorySecond(){
+        this.goodsCategoryChange(this.goodsCategorySecond)
       },
       // 选择分类
-      async goodsCategoryChange(item) {
-        console.log(item)
-        // this.chooseGoodsFilter.goods_category_id = item.id
+      async goodsCategoryChange(id) {
+        this.chooseGoodsFilter.goods_category_id = id
         this.chooseGoodsFilter.page = 1
         await this._getGoodsList()
       },
@@ -756,12 +857,122 @@
         }
       },
       // 上线
+      async _submitBtn(name) {
+        let res = this.justifyConent()
+        if (res) {
+          let data = this.getSubmitData()
+          res && API.Content[name](data, true).then(res => {
+            this.$toast.show(res.message)
+          }).finally(() => {
+            this.$loading.hide()
+          })
+        }
+        console.log(res, this.addData)
+      },
+      // 上线
       async submitLaunch() {
         let res = this.justifyConent()
         console.log(res, this.addData.details)
       },
-      // 草稿
-      async submitDraft() {
+      getSubmitData() {
+        let params = {
+          type: this.currentType,
+          title: this.addData.title,
+          category_id: this.addData.category,
+          author_image_id: this.addData.authPhoto.id,
+          author_nickname: this.addData.authName,
+          author_sign: this.addData.authSignature,
+          image_cover_id: this.addData.coverImage.id,
+          video_cover_id: this.addData.coverVideo.id,
+          init_fabulous_num: this.addData.goodCount,
+          init_browse_num: this.addData.lookCount,
+          assembly: []
+        }
+        console.log(this.currentType, 'this.currentType')
+        if (this.currentType === 'video' || this.currentType === 'cookbook') {
+          this.addData.goodsList.length && params.assembly.push({
+            type: "goods",
+            style_type: "content_goods_list",
+            content: [{
+              type: "goods",
+              style_type: "goods",
+              content: this.addData.goodsList.map(item => {
+                return {
+                  "goods_id":item.id,
+                  "goods_sku_id": item.goods_sku_id
+                }
+              })
+            }]
+          })
+          if (this.currentType === 'video') {
+            params.assembly.push({
+              type: "video",
+              style_type: "content_video",
+              content: [{
+                type: "video",
+                style_type: "video",
+                content: [{
+                  video_id: this.addData.videoContent.id,
+                  title: this.addData.videoContent.name,
+                  introduction: this.addData.videoIntroduce
+                }]
+              }]
+            })
+          } else if (this.currentType === 'cookbook') {
+            params.assembly.push({
+              type: "text",
+              style_type: "content_cookbook",
+              content: [{
+                type: "text",
+                style_type: "text",
+                content: [{
+                  text: this.addData.foodList
+                }]
+              }]
+            })
+          }
+        }
+        if (this.currentType !== 'video') {
+          let contents = this.addData.details.map(item => {
+            let newItem = {
+              type: item.type,
+              style_type: 'content_' + item.type
+            }
+            /* eslint-disable */
+            switch (item.type) {
+              case 'goods':
+                newItem.content = [{
+                  goods_id: item.value.id,
+                  goods_sku_id: item.value.goods_sku_id
+                }]
+                break;
+              case 'image':
+                newItem.content = [{
+                  image_id: item.id
+                }]
+                break;
+              case 'video':
+                newItem.content = [{
+                  video_id: item.id,
+                  title: '',
+                  introduction: ''
+                }]
+                break;
+              default:
+                newItem.content = [{
+                  text: item.value
+                }]
+            }
+            return newItem
+          })
+          params.assembly.push({
+            type: "combination",
+            style_type: "content",
+            content: contents
+          })
+        }
+        if(this.id) params.id = this.id
+        return params
       }
     }
   }

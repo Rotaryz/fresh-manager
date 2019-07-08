@@ -153,28 +153,24 @@ export default [
        */
       // 创作文章
       {
-        path: 'article-add',
-        name: 'article-add',
+        path: 'content-center/article-add',
+        name: 'content-center-article-add',
         component: () => lazyLoadView(import('@pages/article-add/article-add')),
         meta: {
           titles: ['商城', '内容', '我的作品', '创作作品'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             let id = routeTo.query.id
-            //  团长列表
+            // 详情数据
             if (id) {
-              next({params:{
-                test: 293874
-              }})
               API.content.getArticleDetail({id},false)
                 .then((res) => {
+                  console.log(res, ERR_OK)
                   if (res.error !== ERR_OK) {
                     return false
                   }
                   next({
-                    params:{
-                      data:res.data
-                    }
+                    params:res.data
                   })
                 })
                 .catch(() => {

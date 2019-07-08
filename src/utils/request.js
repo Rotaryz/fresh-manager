@@ -34,7 +34,7 @@ function resetUrl(url) {
     return url
   }
   // todo
-  let pathname = window.location.pathname + 'v3/'
+  let pathname = window.location.pathname
   if (pathname && pathname.indexOf('/v') > -1) {
     let version = pathname.substr(1)
     url = url.split('api/').join(`${version}api/`)
