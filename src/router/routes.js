@@ -1126,6 +1126,8 @@ export default [
         meta: {
           titles: ['商城', '团长', '团长提现', '收支明细', ''],
           beforeResolve(routeTo, routeFrom, next) {
+            store.commit('leader/SET_BILL_PAGE', 1)
+            store.commit('leader/SET_BILL_TYPE', '')
             store
               .dispatch('leader/getBillList', routeTo.params.id)
               .then((res) => {
