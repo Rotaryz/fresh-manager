@@ -163,7 +163,7 @@ export const actions = {
   },
   setDefaultIndex({commit, dispatch}, data) {
     commit('SET_DEFAULT_INDEX', data.index)
-    commit('SET_REQUEST_DATA', {status: data.status})
+    commit('SET_REQUEST_DATA', {status: data.status, page: 1})
     dispatch('getMarketList')
   }
 }
