@@ -51,7 +51,7 @@
           <base-blank v-else blackStyle="margin-top:15%"></base-blank>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pages" :pageDetail="activePage" @addPage="addPage"></base-pagination>
+          <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="activePage" @addPage="addPage"></base-pagination>
         </div>
       </div>
       <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
