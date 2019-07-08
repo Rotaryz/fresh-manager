@@ -229,7 +229,6 @@ export const mutations = {
       start_time: '',
       end_time: ''
     }
-    state.firstIn = true
     state.selectContent.deliveryContent = ''
   },
   SET_DELIVERY_REQUEST(state, data) {
@@ -246,6 +245,7 @@ export const mutations = {
       status: 0,
       model_type: 0
     }
+    state.firstIn = true
   },
   SET_FIRST_IN(state, type) {
     state.firstIn = type
