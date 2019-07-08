@@ -79,6 +79,8 @@ export const mutations = {
       created_end_at: '',
       tag_type: 0
     }
+    state.infoTabIndex = 0
+    state.defaultIndex = 0
   }
 }
 
