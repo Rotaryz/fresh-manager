@@ -51,7 +51,6 @@ export default [
           titles: ['商城', '商品', '商品列表'],
           resetHooks: ['editgoods/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            console.log(store.getters['editgoods/taskData'].isTaskFirst)
             if (store.getters['editgoods/taskData'].isTaskFirst) {
               let online = ''
               if (routeTo.query.online) {
@@ -1309,7 +1308,6 @@ export default [
           titles: ['供应链', '订单', '商户订单'],
           resetHooks: ['merchantOrder/resetData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            console.log(store.getters['merchantOrder/tabIndex'])
             if (store.getters['merchantOrder/tabIndex'] === 0) {
               store
                 .dispatch('merchantOrder/getMerchantOrderList')
@@ -1323,7 +1321,6 @@ export default [
                   next({name: '404'})
                 })
             } else {
-              console.log(2222)
               store
                 .dispatch('merchantOrder/getMergerOrderList')
                 .then((res) => {
@@ -1423,7 +1420,6 @@ export default [
           titles: ['供应链', '订单', '售后订单'],
           resetHooks: ['afterSalesOrder/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            console.log(store.getters['afterSalesOrder/isFirst'])
             if (store.getters['afterSalesOrder/isFirst']) {
               let exceptionStatus = routeTo.query.exception_status
               exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
@@ -1850,7 +1846,6 @@ export default [
               if (exceptionStatus.length) {
                 exceptionStatus = exceptionStatus * 1
               }
-              console.log(exceptionStatus, 'exceptionStatus')
               let startTime = routeTo.query.start_time || ''
               let endTime = routeTo.query.end_time || ''
               store.commit('product/SET_ENTER_PARAMS', {
@@ -2080,7 +2075,6 @@ export default [
           titles: ['供应链', '分拣', '分拣任务'],
           resetHooks: ['sorting/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            console.log(store.getters['sorting/taskData'].isTaskFirst)
             if (store.getters['sorting/taskData'].isTaskFirst) {
               let params = {
                 goods_category_id: '',
@@ -2403,7 +2397,8 @@ export default [
               endTime: ''
             })
             if (typeof (routeTo.query.status) !== 'undefined') {
-              store.dispatch('distribution/setTabIndex', 0)
+              // store.dispatch('distribution/setTabIndex', 0)
+              store.commit('distribution/SET_TAB_INDEX', 0)
             }
             // store.mutations.SET_TAB_INDEX(0)
             if (tabIndex === 0) {
