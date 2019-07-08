@@ -202,17 +202,7 @@
       }
     },
     created() {
-      // this._getUrl()
-      // this.goodsList = _.cloneDeep(this.productList)
-      // this.pageTotal = _.cloneDeep(this.statePageTotal)
-      // this.isOnline = this.$route.query.online || ''
-      // this.defaultIndex = this.$route.query.online * 1 || 0
-      // if (this.$route.query.online * 1 === 1) {
-      //   this.dispatchSelect.content = '上架'
-      // }
-      console.log(this.dispatchSelect, this.goodsFitter.is_online)
       this.defaultIndex = this.dispatchSelect.data.findIndex((item) => item.value === this.goodsFitter.is_online)
-      console.log(this.defaultIndex)
       this.getCategoriesData()
       this.getGoodsStatus()
       this._setData()
@@ -240,13 +230,6 @@
         this.showIndex = false
       },
       // 导出
-      // _getUrl() {
-      //   let currentId = this.getCurrentId()
-      //   let token = this.$storage.get('auth.currentUser', '')
-      //   let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_category_id=${this.categoryId}&source=${this.source}&complete_status=${this.completeStatus}&is_presale=${this.isPresale}&has_stock=${this.hasStock}&is_online=${this.isOnline}&keyword=${
-      //     this.keyWord}`
-      //   this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
-      // },
       // 更新列表数据
       _updateList(params, noUpdataStatus) {
         this.SET_PARAMS(params)
@@ -263,12 +246,6 @@
         this.secondSelect.content = '二级分类'
         this.secondSelect.data = data.list
         this.SET_TASK_DATA({oneName: data.name, twoName: '二级分类', twoList: data.list})
-        // this.$refs.pagination.beginPage()
-        // this.categoryId = data.id
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
         this._updateList({page: 1, goods_category_id: data.id})
       },
       // 选择二级分类
@@ -276,34 +253,18 @@
         this.secondSelect.content = data.name
         this.SET_TASK_DATA({twoName: data.name})
         this._updateList({page: 1, goods_category_id: data.id})
-        // this.$refs.pagination.beginPage()
-        // this.categoryId = data.id
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
       },
       // 选择类型
       _setTypeValue(data) {
         this.source = data.value
         this.SET_TASK_DATA({source: data.name})
         this._updateList({page: 1, source: data.value})
-        // this.$refs.pagination.beginPage()
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
       },
       // 选择资料状态
       _setCompleteValue(data) {
         this.completeStatus = data.value
         this.SET_TASK_DATA({complete: data.name})
         this._updateList({page: 1, complete_status: data.value})
-        // this.$refs.pagination.beginPage()
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
       },
       // 选择库存类型
       _setPresaleValue(data) {
@@ -317,48 +278,26 @@
           this.SET_TASK_DATA({presale: data.name})
           this._updateList({page: 1, is_presale: data.value})
         }
-        // this.$refs.pagination.beginPage()
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
       },
       // 选择库存
       _setStoreValue(data) {
         this.hasStock = data.value
         this._updateList({page: 1, has_stock: data.value})
         this.SET_TASK_DATA({stock: data.name})
-        // this.$refs.pagination.beginPage()
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
       },
       // 搜索
       search(keyword) {
         this._updateList({page: 1, keyword})
-        // this.$refs.pagination.beginPage()
-        // this.keyWord = text
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
       },
       // 切换上下架状态
       changeStatus(selectStatus) {
         this.isOnline = selectStatus.value
-        console.log(selectStatus.value)
         this._updateList({page: 1, is_online: selectStatus.value}, true)
-        // this.$refs.pagination.beginPage()
-        // this.goodsPage = 1
-        // this._getUrl()
-        // this.getGoodsListData()
       },
       // 分页
       addPage(page) {
         this.goodsPage = page
         this._updateList({page}, true)
-        // this.getGoodsListData()
       },
       // 获取列表
       getGoodsListData() {
@@ -407,7 +346,6 @@
               value: item.status,
               num: item.statistic
             }
-            // this.$set(this.statusTab[index], 'num', item.statistic)
           })
         })
       },
@@ -448,7 +386,6 @@
         }
         API.Product.upDownGoods(data).then((res) => {
           if (res.error === this.$ERR_OK) {
-            // this.goodsList[index].is_online = item.is_online * 1 === 1 ? 0 : 1
             this.getGoodsData({})
             this.oneBtn = true
             this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功上架' : '该商品已成功下架')
@@ -477,9 +414,6 @@
             ? await API.Product.scmGoodsImport(param, true, 60000)
             : await API.Product.scmGoodsImport(param, true, 60000)
         this.$loading.hide()
-        // this.$refs.pagination.beginPage()
-        // this.getGoodsListData()
-        // this.getGoodsStatus()
         this._updateList({page: 1})
         this.$toast.show(res.message)
         e.target.value = ''
