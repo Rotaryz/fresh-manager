@@ -1,5 +1,7 @@
-// import API from '@api'
-// import app from '@src/main'
+import API from '@api'
+import app from '@src/main'
+
+const TYPE = ['common', 'video', 'cookbook']
 
 export const state = {
   /**
@@ -23,6 +25,12 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
+  workStatus: 1,
+  contentWorkPage: 1,
+  workKeyword: '',
+  workTabIndex: 0,
+  workCategoryId: '',
+  workType: 'common',
   /**
    * -------------------------------
    * 内容中心
@@ -45,6 +53,11 @@ export const getters = {
   contentPage: (state) => state.contentPage,
   workList: (state) => state.workList,
   workPage: (state) => state.workPage,
+  workStatus: (state) => state.workStatus,
+  workKeyword: (state) => state.workKeyword,
+  workTabIndex: (state) => state.workTabIndex,
+  workCategoryId: (state) => state.workCategoryId,
+  workType: (state) => state.workType,
   centerList: (state) => state.centerList,
   centerPage: (state) => state.centerPage,
   contentCenterPage: (state) => state.contentCenterPage,
@@ -83,6 +96,23 @@ export const mutations = {
   SET_WORK_PAGE(state, workPage) {
     state.workPage = workPage
   },
+  SET_WORK_CONTENT_PAGE(state, contentWorkPage) {
+    state.contentWorkPage = contentWorkPage
+  },
+  SET_WORK_STATUS(state, workStatus) {
+    state.workStatus = workStatus
+  },
+  SET_WORK_KEYWORD(state, workKeyword) {
+    state.workKeyword = workKeyword
+  },
+  SET_WORK_TAB_INDEX(state, workTabIndex) {
+    state.workTabIndex = workTabIndex
+
+    state.workType = TYPE[workTabIndex]
+  },
+  SET_WORK_CATEGORY_ID(state, workCategoryId) {
+    state.workCategoryId = workCategoryId
+  },
   /**
    * -------------------------------
    * 内容中心
@@ -114,33 +144,31 @@ export const mutations = {
 }
 
 export const actions = {
-  getContentClassList({commit, state}, loading = false) {
-    // let {contentPage} = state
-    // return API.Content.getContentClassList({page:contentPage}, loading)
-    //   .then((res) => {
-    //     if (res.error !== app.$ERR_OK) {
-    //       app.$toast.show(res.message)
-    //       return
-    //     }
-    //     let list = res.data
-    //     let pages = res.meta
-    //     let pageDetail = {
-    //       total: pages.total,
-    //       per_page: pages.per_page,
-    //       total_page: pages.last_page
-    //     }
-    //     commit('SET_CONTENT_CLASS_LIST', list)
-    //     commit('SET_CONTENT_CLASS_PAGE', pageDetail)
-    //     return list
-    //   })
-    //   .catch(() => {
-    //     return false
-    //   })
-    //   .finally(() => {
-    //     app.$loading.hide()
-    //   })
-    console.log('ddd')
-    return true
+  getContentClassList({commit, state}, loading = true) {
+    let {contentPage} = state
+    return API.Content.getContentClassList({page: contentPage}, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          app.$toast.show(res.message)
+          return
+        }
+        let list = res.data
+        let pages = res.meta
+        let pageDetail = {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        }
+        commit('SET_CONTENT_CLASS_LIST', list)
+        commit('SET_CONTENT_CLASS_PAGE', pageDetail)
+        return list
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
   },
   contentAddPage({commit, dispatch}, obj) {
     obj.page && commit('SET_CONTENT_PAGE', obj.page)
@@ -149,33 +177,39 @@ export const actions = {
   infoContent({commit, dispatch}, obj) {
     commit('SET_CONTENT_PAGE', 1)
   },
-  getWorkList({commit}, obj) {
-    // let {page,status, keyword, loading} = obj
-    // return API.Content.getWorkList({page}, loading)
-    // .then((res) => {
-    //   if (res.error !== app.$ERR_OK) {
-    //     app.$toast.show(res.message)
-    //     return
-    //   }
-    //   let list = res.data
-    //   let pages = res.meta
-    //   let pageDetail = {
-    //     total: pages.total,
-    //     per_page: pages.per_page,
-    //     total_page: pages.last_page
-    //   }
-    //   commit('SET_WORK_LIST', list)
-    //   commit('SET_WORK_PAGE', pageDetail)
-    //   return list
-    // })
-    // .catch(() => {
-    //   return false
-    // })
-    // .finally(() => {
-    //   app.$loading.hide()
-    // })
-    console.log('ddd')
-    return true
+  getWorkList({commit}, loading = true) {
+    let {contentWorkPage, workStatus, workKeyword, workCategoryId, workType} = state
+    let data = {
+      page: contentWorkPage,
+      status: workStatus,
+      keyword: workKeyword,
+      category_id: workCategoryId,
+      type: workType
+    }
+    return API.Content.getWorkList(data, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          app.$toast.show(res.message)
+          return
+        }
+        let list = res.data
+        let pages = res.meta
+        let pageDetail = {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        }
+        // [{id: 1, status: 1, title: 'dfs', list_date: 'sd', status_str: 'sds'}]
+        commit('SET_WORK_LIST', list)
+        commit('SET_WORK_PAGE', pageDetail)
+        return list
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
   },
   selectWork({commit, state}, obj) {
     let {type, index, value, ids} = obj
@@ -249,4 +283,23 @@ export const actions = {
     // console.log(state)
     dispatch('getCenterList')
   },
+  infoWork({commit}, obj) {
+    commit('SET_WORK_CONTENT_PAGE', 1)
+    commit('SET_WORK_STATUS', 1)
+    commit('SET_WORK_TAB_INDEX', 0)
+    commit('SET_WORK_KEYWORD', '')
+    commit('SET_WORK_CATEGORY_ID', '')
+  },
+  setWorkIndex({commit, dispatch}, index) {
+    commit('SET_WORK_TAB_INDEX', index)
+  },
+  getWorkListMore({commit, dispatch}, obj) {
+    typeof (obj.tabIndex) === 'number' && commit('SET_WORK_TAB_INDEX', obj.tabIndex)
+    typeof (obj.page) !== 'undefined' && commit('SET_WORK_CONTENT_PAGE', obj.page)
+    typeof (obj.status) !== 'undefined' && commit('SET_WORK_STATUS', obj.status)
+    typeof (obj.keyword) !== 'undefined' && commit('SET_WORK_KEYWORD', obj.keyword)
+    typeof (obj.workCategoryId) !== 'undefined' && commit('SET_WORK_CATEGORY_ID', obj.workCategoryId)
+    // console.log(state)
+    dispatch('getWorkList', false)
+  }
 }

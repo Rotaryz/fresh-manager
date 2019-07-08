@@ -8,7 +8,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="请输入关键词" @search="search"></base-search>
+        <base-search ref="search" placeHolder="请输入关键词" @search="search"></base-search>
       </div>
     </div>
 
@@ -17,7 +17,7 @@
         <div class="identification-page">
           <img src="./icon-product_list@2x.png" class="identification-icon">
           <p class="identification-name">我的作品</p>
-          <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
+          <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :statusType="statusType" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main">创作内容<span class="add-icon"></span></div>
@@ -59,7 +59,7 @@
       </div>
       <div class="pagination-box">
         <!--:pageDetail="contentClassPage"-->
-        <base-pagination ref="pages" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="workPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="freeze"></default-confirm>
@@ -87,6 +87,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'MY_WORK'
+  const QUERY = ['Keyword', 'Page', 'Status', 'CategoryId']
   const TITLE = '我的作品'
   const DISPATCHING_LIST = [
     '封面图',
@@ -101,7 +102,7 @@
     '操作'
   ]
   const DISPATCHING_LIST2 = ['封面图', '文章标题', '创建时间', '操作']
-  const TAB_STATUS = [{text: '图文', statue: ''}, {text: '视频', statue: ''}, {text: '菜谱', statue: ''}]
+  const TAB_STATUS = [{text: '图文', status: '', type: 'common'}, {text: '视频', status: '', type: 'video'}, {text: '菜谱', status: '', type: 'cookbook'}]
   export default {
     name: PAGE_NAME,
     page: {
@@ -137,11 +138,30 @@
           data: []
         },
         select: false,
-        selectId: []
+        selectId: [],
+        saveValue: {},
+        statusType: 1
       }
     },
     computed: {
-      ...contentComputed
+      ...contentComputed,
+      keywordName() {
+        console.log(this.tabStatus[this.workTabIndex])
+        let name = `${this.tabStatus[this.workTabIndex].type}Keyword`
+        return name
+      },
+      pageName() {
+        let page = `${this.tabStatus[this.workTabIndex].type}Page`
+        return page
+      },
+      categoryIdName() {
+        let page = `${this.tabStatus[this.workTabIndex].type}CategoryId`
+        return page
+      },
+      statusName() {
+        let status = `${this.tabStatus[this.workTabIndex].type}Status`
+        return status
+      }
     },
     watch: {
       workList: {
@@ -150,13 +170,37 @@
           this.select = index === -1
         },
         deep: true
+      },
+      workTabIndex(news) {
+        if (this.stairSelect.data.length < 1) {
+          return
+        }
+        let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
+        this.stairSelect.content = item.name || '请选择分类'
+      },
+      statusName(news) {
+        this.statusType = this.saveValue[news]
+        this.$refs.baseStatusTab.infoStatus(this.statusType)
       }
     },
-    create() {
+    created() {
+      this.infoQuery()
       this._statistic()
     },
     methods: {
       ...contentMethods,
+      // 初始化变量
+      infoQuery() {
+        this.tabStatus.forEach((item) => {
+          QUERY.forEach((items) => {
+            this.saveValue[`${item.type}${items}`] = items === 'Page' || items === 'Status' ? 1 : ''
+          })
+        })
+        this.saveValue[this.keywordName] = this.workKeyword
+        this.saveValue[this.pageName] = this.workPage
+        this.saveValue[this.categoryIdName] = this.workCategoryId
+        this.saveValue[this.statusName] = this.workStatus
+      },
       // 获取二维码
       async shwoQrCode(id, index) {
         this.loadImg = true
@@ -189,43 +233,57 @@
       },
       //  删除单个
       delContent(id) {
+        this.methodsName = 'delWork'
         this.delId = id
         this.$refs.confirm.show('确定要删除该作品吗？')
       },
       // 批量删除
       delContentAll() {
-        console.log(this.selectId)
         this.$refs.confirm.show(`确定要删除这${this.workList.length}该作品吗？`)
       },
       // 下线
       upLine(item) {
+        this.methodsName = item.status === 1 ? 'downLineWork' : 'upLineWork'
+        this.delId = item.id
         this.$refs.confirm.show('确定要下线该作品吗？')
       },
       // 编辑
       editWork(item) {
-        this.$router.push(`?id=${item.id}`)
+        this.$router.push(`/home/content-center/article-add?type=${this.workType}&id=${item.id}`)
       },
       async freeze() {
-        let res = await API.Content.delWork(this.delId)
+        let res = await API.Content[this.methodsName](this.delId)
         this.$toast.show(res.message)
-        this._getWorkList()
+        this.$loading.hide()
+        res.error === this.$ERR_OK && this.getWorkList()
+      },
+      // 获取分类
+      async getContentClassList() {
+        let res = await API.Content.getContentClassList({limit: 0, keyword: '', page: 1, status: 1})
+        let arr = [{name: '全部', id: ''}]
+        if (res.error === this.$ERR_OK) {
+          arr = arr.concat(res.data)
+        }
+        this.stairSelect.data = arr
       },
       // 筛选分类
-      _setStairValue() {
-        this.page = 1
+      _setStairValue(item) {
+        this.saveValue[this.categoryIdName] = item.id
+        this.getWorkListMore({page: 1, workCategoryId: item.id})
         this.$refs.pages.beginPage()
-        this._getWorkList()
+        this._statistic()
       },
       // 搜索
-      search(text) {
-        this.keyWord = text
-        this.page = 1
+      search(keyword) {
+        this.saveValue[this.keywordName] = keyword
+        this.getWorkListMore({page: 1, keyword})
         this.$refs.pages.beginPage()
-        this._getWorkList()
       },
       // 翻页
       addPage(page) {
-        this.page = page
+        this.saveValue[this.pageName] = page
+        this.getWorkListMore({page})
+        this._statistic()
       },
       // 获取列表和状态
       _getWorkList() {
@@ -233,15 +291,32 @@
         this.getWorkList({page: this.page, status: this.status, keyword: this.keyWord})
       },
       // 获取状态
-      _statistic() {},
+      async _statistic() {
+        let res = await API.Content.getWorkStatusList({type: this.workType, keyword: this.workKeyword, category_id: this.saveValue[this.categoryIdName]})
+        if (res.error !== this.$ERR_OK) return
+        let selectData = res.data.map((item) => {
+          return {
+            name: item.status_str,
+            status: item.status,
+            num: item.statistic
+          }
+        })
+        this.dispatchSelect = selectData
+      },
       // 切换状态
       _setStatus(item, index) {
-        this.statusTab = index
-        this.status = item.status
+        this.saveValue[this.statusName] = item.status
+        this.getWorkListMore({page: 1, status: item.status})
+        this._statistic()
         this.dispatTitle = item.name === '草稿' ? DISPATCHING_LIST2 : DISPATCHING_LIST
       },
       // 切换tab
-      changeTab() {}
+      changeTab(item, index) {
+        this.setWorkIndex(index)
+        this.getWorkListMore({page: this.saveValue[this.pageName], workCategoryId: this.saveValue[this.categoryIdName], keyword: this.saveValue[this.keywordName], status: this.saveValue[this.statusName], tabIndex: index})
+        this.$refs.search.infoTextMethods(this.saveValue[this.keywordName])
+        this._statistic()
+      }
     }
   }
 </script>

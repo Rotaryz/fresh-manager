@@ -240,6 +240,7 @@ export default [
           titles: ['商城', '内容', '我的作品'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
+            !routeFrom.fullPath.includes(routeTo.fullPath) && store.dispatch('content/infoWork')
             store
               .dispatch('content/getWorkList')
               .then((res) => {

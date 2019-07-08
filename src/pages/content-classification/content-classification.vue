@@ -7,7 +7,7 @@
           <p class="identification-name">内容分类</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main" @click="newClassify"><span class="add-icon"></span>添加分类</div>
+          <div class="btn-main hand" @click="newClassify"><span class="add-icon"></span>添加分类</div>
         </div>
       </div>
       <div class="big-list">
@@ -16,14 +16,14 @@
         </div>
         <div v-if="contentClassList.length" class="list">
           <div v-for="(item, index) in contentClassList" :key="index" class="list-content list-box">
-            <div class="list-item">item.social_name}}</div>
-            <div class="list-item">item.name}}</div>
+            <div class="list-item">{{item.name}}</div>
+            <div class="list-item">{{item.updated_at}}</div>
             <div class="list-item">
               <div class="list-item-btn" @click="changeSwitch(index, item)">
-                <base-switch confirmText="显示" cancelText="隐藏"></base-switch>
+                <base-switch confirmText="显示" cancelText="隐藏" switchColor="#922C88" :status="item.status"></base-switch>
               </div>
             </div>
-            <div class="list-item">item.delivery_at}}</div>
+            <div class="list-item">{{item.quote_count}}</div>
             <div class="list-item list-operation-box">
               <span class="list-operation" @click="editClassify(item)">
                 编辑
@@ -35,11 +35,11 @@
         <base-blank v-else></base-blank>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="contentClassPage" @addPage="contentAddPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="contentClassPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="freeze"></default-confirm>
-    <default-input ref="modalBox" @confirm="confirmInput"></default-input>
+    <default-input ref="modalBox" :classifyMaxLength="6" inputType="classification" @confirm="confirmInput"></default-input>
   </div>
 </template>
 
@@ -75,16 +75,21 @@
     computed: {
       ...contentComputed
     },
+    // mounted() {
+    //   this.$refs.modalBox.show('', '添加分类', '请输入分类名字，最多6个字')
+    // },
     methods: {
       ...contentMethods,
-      changeSwitch(index, item) {
-        console.log(index)
-      // this.contentClassList[index].status = this.contentClassList[index].status === 0 ? 1 : 0
+      async changeSwitch(index, item) {
+        let status = item.status === 1 ? 0 : 1
+        let res = await API.Content.changeClassify(item.id, {status})
+        this.$toast.show(res.message)
+        res.error === this.$ERR_OK && this.contentAddPage({})
+        // this.contentClassList[index].status = this.contentClassList[index].status === 0 ? 1 : 0
       },
-      // addPage(page) {
-      //   this.page = page
-      //   this.getContentClassList({page: this.page, loading: false})
-      // },
+      addPage(page) {
+        this.contentAddPage({page})
+      },
       delContent(id) {
         this.$refs.confirm.show('确定删除该分类吗？')
         this.delId = id
@@ -93,9 +98,10 @@
       async freeze() {
         let res = await API.Content.delContentClass(this.delId)
         this.$toast.show(res.message)
-        this.getContentClassList()
+        res.error === this.$ERR_OK && this.contentAddPage({})
       },
       async confirmInput(text) {
+        console.log(text)
         if (text.length === 0) {
           this.$toast.show('分类名字不能为空')
           return
@@ -103,11 +109,16 @@
           this.$toast.show('分类名字的长度不能超过6个字')
           return
         }
-        let res = await API.Content[this.methodsName]({}, this.editId || false)
-        let index = this.contentClassList.findIndex((item) => item.id === this.editId)
-        if (index !== -1) {
-          this.contentClassList[index].name = text
+        let res = await API.Content[this.methodsName]({name: text}, this.editId || true)
+        this.$toast.show(res.message)
+        this.$loading.hide()
+        if (res.error !== this.$ERR_OK) {
+          return
         }
+        this.$refs.modalBox.hide()
+        this.editId = null
+        this.contentAddPage({})
+
         console.log(res)
       },
       editClassify(item) {
@@ -129,6 +140,7 @@
 
   .content-classification
     width: 100%
+
   .list-box
     .list-item
       &:nth-child(1)
@@ -137,6 +149,7 @@
         flex: 0.6
         max-width: 76px
         padding: 0
+
   .list-item-btn
     display: inline-block
 </style>

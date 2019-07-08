@@ -671,10 +671,15 @@ export const contentComputed = {
     'centerKeyword',
     'centerStatus',
     'contentCenterPage',
-    'centerTabIndex'
+    'centerTabIndex',
+    'contentPage', 'workType',
+    'contentWorkPage',
+    'workStatus',
+    'workTabIndex',
+    'workKeyword'
   ])
 }
 
 export const contentMethods = {
-  ...mapActions('content', ['getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
+  ...mapActions('content', ['infoContent', 'contentAddPage', 'setWorkIndex', 'infoWork', 'getWorkListMore', 'getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
 }
