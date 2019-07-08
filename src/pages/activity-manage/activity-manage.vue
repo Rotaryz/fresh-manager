@@ -214,10 +214,12 @@
       },
       changeTab(tab, index) {
         this.setTabIndex(index)
+        this.setDefaultIndex(0)
         this.setRequestData({
           page: 1,
           start_at: '',
           end_at: '',
+          status: '',
           activity_theme: this.currentTab.activity_theme
         })
         this._getActiveList()

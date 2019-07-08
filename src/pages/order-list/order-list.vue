@@ -22,7 +22,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
+        <base-search ref="search" :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -212,8 +212,9 @@
         window.open(this.orderExportUrl, '_blank')
       },
       changeStatus(selectStatus) {
-        this.setDefaultIndex(0)
         this.setStatus(selectStatus)
+        this.socialSelect.content = '全部社区'
+        this.$refs.search._setText('')
         this.getOrderStatus()
         this.$refs.pagination.beginPage()
       },
