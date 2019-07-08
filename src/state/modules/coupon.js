@@ -80,6 +80,7 @@ export const mutations = {
       tag_type: 0
     }
     state.infoTabIndex = 0
+    state.defaultIndex = 0
   }
 }
 
