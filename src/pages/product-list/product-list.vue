@@ -388,7 +388,7 @@
           if (res.error === this.$ERR_OK) {
             this.getGoodsData({})
             this.oneBtn = true
-            this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功上架' : '该商品已成功下架')
+            this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功下架' : '该商品已成功上架')
             this.getGoodsStatus()
           } else {
             this.$toast.show(res.message)
