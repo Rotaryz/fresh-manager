@@ -252,7 +252,10 @@
         let res = await API.Content[this.methodsName](this.delId)
         this.$toast.show(res.message)
         this.$loading.hide()
-        res.error === this.$ERR_OK && this.getWorkList()
+        if(res.error === this.$ERR_OK){
+          this._statistic()
+          this.getWorkList()
+        }
       },
       // 获取分类
       async getContentClassList() {
