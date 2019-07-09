@@ -68,19 +68,19 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getSortList(data={keyword:'',page:1,limit:0,status:1}, loading = false) {
+  getSortList(data = {keyword: '', page: 1, limit: 0, status: 1}, loading = false) {
     let url = `/social-shopping/api/backend/article-category-index`
     return request.get(url, data, loading)
   },
-  addSort(data,loading=false){
+  addSort(data, loading = false) {
     let url = `/social-shopping/api/backend/article-category-store`
     return request.get(url, data, loading)
   },
-  addContent(data,loading=true){
+  addContent(data, loading = true) {
     let url = `/social-shopping/api/backend/article-store`
     return request.post(url, data, loading)
   },
-  addDraft(data,loading=true){
+  addDraft(data, loading = true) {
     let url = `/social-shopping/api/backend/article-draft`
     return request.post(url, data, loading)
   },
@@ -129,7 +129,7 @@ export default {
     let url = `/social-shopping/api/backend/article-show/${id}`
     return request.get(url, {}, loading)
   },
-  editContetnArticle({id,...data}, loading = true){
+  editContetnArticle({id, ...data}, loading = true) {
     let url = ` /social-shopping/api/backend/article-update/${id}`
     return request.post(url, data, loading)
   },
@@ -152,6 +152,7 @@ export default {
   selectContent(id, data = {}, loading = true) {
     let url = `/${id}`
     return request.delete(url, data, loading)
+  },
   getCoverImage(data, loading = false) {
     let url = `/social-shopping/api/cos/get-file-info`
     return request.get(url, data, loading)

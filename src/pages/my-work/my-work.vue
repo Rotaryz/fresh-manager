@@ -20,7 +20,7 @@
           <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :statusType="statusType" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main">创作内容<span class="add-icon"></span></div>
+          <router-link :to="`article-add?type=${workType}`" append class="btn-main">创作内容<span class="add-icon"></span></router-link>
           <!--<div v-else class="btn-main" @click="delContentAll">删除</div>-->
         </div>
       </div>
@@ -33,23 +33,20 @@
         </div>
         <div v-if="workList.length" class="list">
           <div v-for="(item, index) in workList" :key="index" class="list-content list-box">
-            <!--<div class="list-item">-->
-            <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select}" @click="selectPurchase('one', index)"></div>-->
-            <!--</div>-->
             <div class="list-item list-item-img">
-              <img class="pic-box" alt="">
+              <img class="pic-box" :src="item.cover_image_url">
             </div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.name}}</div>
-            <div class="list-item">item.delivery_at}}</div>
+            <div class="list-item">{{item.title}}</div>
+            <div class="list-item">{{item.list_date}}</div>
+            <div v-if="workStatus !== 0" class="list-item">{{item.status_str}}</div>
+            <div v-if="workStatus !== 0" class="list-item">{{item.browse_count}}</div>
+            <div v-if="workStatus !== 0" class="list-item">{{item.share_count}}</div>
+            <div v-if="workStatus !== 0" class="list-item">{{item.fabulous_num}}</div>
+            <div v-if="workStatus !== 0" class="list-item">{{item.guide_goods_rate}}</div>
+            <div v-if="workStatus !== 0" class="list-item">{{item.pay_goods_count}}</div>
             <div class="list-item list-operation-box">
               <span class="list-operation" @click="shwoQrCode(item.id, index)">预览</span>
-              <span v-if="status !== 1" class="list-operation" @click="editWork(item)">编辑</span>
+              <span v-if="item.status !== 1" class="list-operation" @click="editWork(item)">编辑</span>
               <span v-else class="list-operation" @click="upLine(item)">下线</span>
               <div class="list-operation" @click="delContent(item.id)">删除</div>
             </div>
@@ -146,7 +143,6 @@
     computed: {
       ...contentComputed,
       keywordName() {
-        console.log(this.tabStatus[this.workTabIndex])
         let name = `${this.tabStatus[this.workTabIndex].type}Keyword`
         return name
       },
@@ -176,16 +172,17 @@
           return
         }
         let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
-        this.stairSelect.content = item.name || '请选择分类'
+        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
       },
       statusName(news) {
         this.statusType = this.saveValue[news]
         this.$refs.baseStatusTab.infoStatus(this.statusType)
       }
     },
-    created() {
+    async created() {
       this.infoQuery()
-      this._statistic()
+      await this.getContentClassList()
+      await this._statistic()
     },
     methods: {
       ...contentMethods,
@@ -205,7 +202,7 @@
       async shwoQrCode(id, index) {
         this.loadImg = true
         // {path: 'pages/choiceness?s=' + id, is_hyaline: false} 页面参数
-        let res = await API.Content.createQrcode()
+        let res = await API.Content.createQrcode({path: `package-content/content-article-detail-video?c=${id}`, is_hyaline: false})
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return
@@ -265,6 +262,8 @@
           arr = arr.concat(res.data)
         }
         this.stairSelect.data = arr
+        let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
+        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
       },
       // 筛选分类
       _setStairValue(item) {
