@@ -84,6 +84,10 @@ export default {
     let url = `/social-shopping/api/backend/article-draft`
     return request.post(url, data, loading)
   },
+  getCoverImage(data, loading = false) {
+    let url = `/social-shopping/api/cos/get-file-info`
+    return request.get(url, data, loading)
+  },
   /**
    * 内容詳情
    *
