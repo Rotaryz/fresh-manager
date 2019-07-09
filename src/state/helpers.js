@@ -676,7 +676,8 @@ export const contentComputed = {
     'contentWorkPage',
     'workStatus',
     'workTabIndex',
-    'workKeyword'
+    'workKeyword',
+    'workCategoryId'
   ])
 }
 
