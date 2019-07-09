@@ -33,6 +33,7 @@ function resetUrl(url) {
   if (IS_PRODUCTION) {
     return url
   }
+  // todo
   let pathname = window.location.pathname
   if (pathname && pathname.indexOf('/v') > -1) {
     let version = pathname.substr(1)

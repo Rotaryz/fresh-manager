@@ -160,6 +160,37 @@ export default [
        *
        * 商城
        */
+      // 创作文章
+      {
+        path: 'content-center/article-add',
+        name: 'content-center-article-add',
+        component: () => lazyLoadView(import('@pages/article-add/article-add')),
+        meta: {
+          titles: ['商城', '内容', '我的作品', '创作作品'],
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id
+            // 详情数据
+            if (id) {
+              API.Content.getArticleDetail({id},false)
+                .then((res) => {
+                  console.log(res, ERR_OK)
+                  if (res.error !== ERR_OK) {
+                    return false
+                  }
+                  next({
+                    params:res.data
+                  })
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
+          }
+        }
+      },
       // 轮播广告
       {
         path: 'advertisement',
@@ -1002,7 +1033,7 @@ export default [
                 }
                 next({params: {dataInfo, pageInfo}})
               })
-              .catch((e) => {
+              .catch(e => {
                 next({name: '404'})
               })
           }

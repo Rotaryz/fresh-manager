@@ -7,7 +7,8 @@ const time = 1 * 1000
 function getSignature(callback) {
   Upload.getUploadSign()
     .then((res) => {
-      callback && callback(res.data.signature)
+      // callback && callback(res.data.signature)
+      callback && callback(res.data.sign)
     })
     .catch((err) => {
       console.error(err)
@@ -23,7 +24,7 @@ export function uploadFiles(file, callback) {
       error: reject,
       finish: (res) => {
         setTimeout(() => {
-          Upload.saveFile({file_id: res.fileId}).then((response) => {
+          Upload.saveFile({file_id: res.fileId, type: file.type, path: res.videoUrl}).then((response) => {
             let result = Object.assign({}, response, {vod: res})
             resolve(result)
           })
