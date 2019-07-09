@@ -448,10 +448,10 @@
           goods_category_id: '',
           is_online: 1
         },
-        goodsCategoryFristList:[],
-        goodsCategorySecondList:[],
-        goodsCategoryFrist:'',
-        goodsCategorySecond:'',
+        goodsCategoryFristList: [],
+        goodsCategorySecondList: [],
+        goodsCategoryFrist: '',
+        goodsCategorySecond: '',
         chooseGoods: [], // 弹框商品列表
         goodsPage: {
           total: 1,
@@ -475,8 +475,8 @@
       name() {
         return this.typeList[this.currentType] && this.typeList[this.currentType].name || '文章'
       },
-      editName(){
-        return this.id ? '编辑' :'创作'
+      editName() {
+        return this.id ? '编辑' : '创作'
       }
     },
     async created() {
@@ -506,17 +506,12 @@
           if (item.type === 'combination' && item.style_type === 'content') {
             let details = []
             item.content.map(cont => {
-              if(!(cont.content && cont.content.length))return false
+              if (!(cont.content && cont.content.length)) return false
               let contItem = cont.content[0]
 
               /* eslint-disable */
               switch (cont.type) {
                 case "image":
-                  console.log({
-                    type: 'image',
-                    value: contItem.image.source_url,
-                    id: contItem.image.id
-                  })
                   details.push({
                     type: 'image',
                     value: contItem.image.source_url,
@@ -524,36 +519,32 @@
                   })
                   break
                 case "video":
-                  console.log({
-                    type: 'video',
-                    value:contItem.video.full_url,
-                    id: contItem.video.id
-                  })
                   details.push({
                     type: 'video',
-                    value:contItem.video.full_url,
+                    value: contItem.video.full_url,
                     id: contItem.video.id
                   })
                   break
                 case "text":
-                  console.log({
-                    type: 'text',
-                    value: contItem.text,
-                  })
                   details.push({
                     type: 'text',
                     value: contItem.text,
                   })
                   break
-                // case "goods":
-                //    details.push({
-                //     type: 'goods',
-                //     value: contItem.goods,
-                //   })
-                //   break
+                case "goods":
+                  details.push({
+                    type: 'goods',
+                    value: contItem.goods,
+                  })
+                  break
               }
             })
             this.addData.details = details
+          }
+          if (item.type === 'goods' && item.style_type === 'content_goods_list') {
+            let goodsList = item.content.content.map(goods => {
+
+            })
           }
         })
         console.log(this.addData)
@@ -599,8 +590,8 @@
       },
       _getCoverImage() {
         this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id: this.addData.coverVideo.file_id}).then(res => {
-          console.log(res,this.$ERR_OK)
-          if(res.error !== this.$ERR_OK) return false
+          console.log(res, this.$ERR_OK)
+          if (res.error !== this.$ERR_OK) return false
           this.addData.coverImage.id = res.data.cover_image_id
           this.addData.coverImage.url = res.data.full_cover_url
         })
@@ -737,18 +728,18 @@
         await this._getGoodsList()
       },
       // 获取一级分类
-      async getCategoryFirst(){
+      async getCategoryFirst() {
         let res = await API.Product.getCategory({parent_id: ''})
         this.goodsCategoryFristList = res.error === this.$ERR_OK ? res.data : []
         this.goodsCategorySecondList = []
-        this.goodsCategorySecond= ''
+        this.goodsCategorySecond = ''
       },
-      async _selectCategoryFirst(){
+      async _selectCategoryFirst() {
         let res = await API.Product.getCategory({parent_id: this.goodsCategoryFrist})
         this.goodsCategorySecondList = res.error === this.$ERR_OK ? res.data : []
         this.goodsCategoryChange(this.goodsCategoryFrist)
       },
-      async _selectCategorySecond(){
+      async _selectCategorySecond() {
         this.goodsCategoryChange(this.goodsCategorySecond)
       },
       // 选择分类
@@ -836,11 +827,10 @@
         else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 8)) message = '请输入5-8个字的文章标题'
         else if (this.currentType === 'video' && this.addData.coverImage.id === '') message = '请上传封面'
         else if (this.currentType !== 'video' && !this.addData.coverVideo.id && !this.addData.coverImage.id) message = '请上传封面'
-        else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id){
+        else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id) {
           this._getCoverImage()
           message = '正在处理视频第一帧作为封面图，请稍后上线'
-        }
-        else if (!this.addData.authPhoto.id) message = '请上传作者头像'
+        } else if (!this.addData.authPhoto.id) message = '请上传作者头像'
         else if (!this.addData.authName) message = '请填写作者名字'
         else if (this.currentType === 'video') {
           if (!this.addData.videoContent.id) message = '请上传视频内容'
@@ -893,29 +883,21 @@
           this.addData.goodsList.length && params.assembly.push({
             type: "goods",
             style_type: "content_goods_list",
-            content: [{
-              type: "goods",
-              style_type: "goods",
-              content: this.addData.goodsList.map(item => {
-                return {
-                  "goods_id":item.id,
-                  "goods_sku_id": item.goods_sku_id
-                }
-              })
-            }]
+            content: this.addData.goodsList.map(item => {
+              return {
+                "goods_id": item.id,
+                "goods_sku_id": item.goods_sku_id
+              }
+            })
           })
           if (this.currentType === 'video') {
             params.assembly.push({
               type: "video",
               style_type: "content_video",
               content: [{
-                type: "video",
-                style_type: "video",
-                content: [{
-                  video_id: this.addData.videoContent.id,
-                  title: this.addData.videoContent.name,
-                  introduction: this.addData.videoIntroduce
-                }]
+                video_id: this.addData.videoContent.id,
+                title: this.addData.videoContent.name,
+                introduction: this.addData.videoIntroduce
               }]
             })
           } else if (this.currentType === 'cookbook') {
@@ -971,7 +953,7 @@
             content: contents
           })
         }
-        if(this.id) params.id = this.id
+        if (this.id) params.id = this.id
         return params
       }
     }
@@ -1015,9 +997,11 @@
     color: #2A2A2A
     margin-top: 30px
     position: relative
+
     &.other-edit-item
       .edit-input
-        width:240px
+        width: 240px
+
     .edit-title
       margin-top: 7.5px
       font-size: $font-size-14
@@ -1056,13 +1040,15 @@
 
         .auto-input
           margin-left: 20px
+
           .edit-input
             width: 670px
+
           .edit-signature
             margin-top: 10px
 
       .edit-textarea
-        width:800px
+        width: 800px
         padding: 5px 14px
         height: 94px
         resize: none
@@ -1167,12 +1153,15 @@
           object-fit: cover
 
       /*商品列表*/
+
       .add-goods-wrap
         width: 100%
+
         .edit-title
           margin-top 0px
           line-height 28px
-          height:28px
+          height: 28px
+
         .goods-list-box
           margin-top: 20px
           background: $color-white
