@@ -1,6 +1,6 @@
 <template>
   <div class="my-work table">
-    <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
+    <base-tab-select :infoTabIndex="workTabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
     <div class="down-content">
       <span class="down-tip">分类</span>
       <div class="down-item">

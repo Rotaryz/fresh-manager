@@ -295,6 +295,8 @@
       this._getAllActivityData()
       this._getFirstAssortment()
       this.$loading.hide()
+      // let res = await this.getInfoBannerList({pageName: 'food'})
+      // console.log(res)
     },
     methods: {
       ...adverMethods,

@@ -170,5 +170,15 @@ export default {
   getCenterList(data, loading = true) {
     let url = `/social-shopping/api/backend/article-material-index`
     return request.get(url, data, loading)
+  },
+  /**
+   * 素材分类列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getMaterialList(data, loading = false) {
+    let url = `/social-shopping/api/backend/article-category-material-index`
+    return request.get(url, data, loading)
   }
 }

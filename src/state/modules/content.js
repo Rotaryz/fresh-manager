@@ -285,10 +285,10 @@ export const actions = {
       })
   },
   setCenterIndex({commit, dispatch}, index) {
-    commit('SET_WORK_TAB_INDEX', index)
+    commit('SET_CENTER_TAB_INDEX', index)
   },
   infoCenter({commit}, obj) {
-    commit('SET_WORK_TAB_INDEX', 0)
+    commit('SET_CENTER_TAB_INDEX', 0)
     commit('SET_CENTER_CONTENT_PAGE', 1)
     commit('SET_CENTER_STATUS', 1)
     commit('SET_CENTER_KEYWORD', '')

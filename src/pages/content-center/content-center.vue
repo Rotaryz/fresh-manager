@@ -28,7 +28,7 @@
           </p>
           <div class="center-btn">
             <div class="center-btn-item hand" @click="showQrCode(item)">预览</div>
-            <div class="center-btn-item hand select" :class="{'select-disable': item.used_status}" @click="selectContent(item.id)">选择</div>
+            <div class="center-btn-item hand select" :class="{'select-disable': item.used_status}" @click="selectContent(item.id,item)">选择</div>
           </div>
         </div>
       </div>
@@ -109,7 +109,6 @@
         if (this.stairSelect.data.length < 1) {
           return
         }
-        console.log(this.categoryIdName)
         let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
         this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
       },
@@ -134,11 +133,10 @@
         this.saveValue[this.keywordName] = this.workKeyword
         this.saveValue[this.pageName] = this.workPage
         this.saveValue[this.categoryIdName] = this.centerCategoryId
-        this.saveValue[this.statusName] = this.workStatus
       },
       // 获取分类
       async getContentClassList() {
-        let res = await API.Content.getContentClassList({limit: 0, keyword: '', page: 1, status: 1})
+        let res = await API.Content.getMaterialList({limit: 0, keyword: '', page: 1, status: 1})
         let arr = [{name: '全部', id: ''}]
         if (res.error === this.$ERR_OK) {
           arr = arr.concat(res.data)
@@ -170,9 +168,13 @@
         this.$refs.dialog.hideModal()
       },
       // 选择内容
-      async selectContent(id) {
-        let routeData = this.$router.resolve(`/home/my-work/article-add?type=${this.centerType}&articlePid=${id}`)
-        window.open(routeData.href)
+      async selectContent(id, item) {
+        if (item.used_status) {
+          return
+        }
+        // let routeData = this.$router.resolve()
+        // window.open(routeData.href)
+        this.$router.push(`/home/my-work/article-add?type=${this.centerType}&articlePid=${id}`)
       },
       addPage(page) {
         this.saveValue[this.pageName] = page

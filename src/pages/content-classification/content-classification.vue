@@ -20,7 +20,7 @@
             <div class="list-item">{{item.updated_at}}</div>
             <div class="list-item">
               <div class="list-item-btn" @click="changeSwitch(index, item)">
-                <base-switch confirmText="显示" cancelText="隐藏" switchColor="#922C88" :status="item.status"></base-switch>
+                <base-switch confirmText="显示" cancelText="隐藏" :status="item.status"></base-switch>
               </div>
             </div>
             <div class="list-item">{{item.quote_count}}</div>

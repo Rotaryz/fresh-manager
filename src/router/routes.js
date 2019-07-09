@@ -215,9 +215,8 @@ export default [
         meta: {
           titles: ['商城', '内容', '内容中心'],
           beforeResolve(routeTo, routeFrom, next) {
-            !routeFrom.fullPath.includes(routeTo.fullPath) && store.dispatch('content/infoCenter')
+            routeFrom.path !== '/home/my-work/article-add' && store.dispatch('content/infoCenter')
             //  团长列表
-            store.dispatch('content/infoCenter')
             store
               .dispatch('content/getCenterList')
               .then((res) => {
@@ -241,7 +240,7 @@ export default [
           titles: ['商城', '内容', '我的作品'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
-            !routeFrom.fullPath.includes(routeTo.fullPath) && store.dispatch('content/infoWork')
+            !routeFrom.path.includes(routeTo.path) && store.dispatch('content/infoWork')
             store
               .dispatch('content/getWorkList')
               .then((res) => {
@@ -268,14 +267,14 @@ export default [
             let id = routeTo.query.id || routeTo.query.articlePid
             // 详情数据
             if (id) {
-              API.Content.getArticleDetail({id},false)
+              API.Content.getArticleDetail({id}, false)
                 .then((res) => {
                   console.log(res, ERR_OK)
                   if (res.error !== ERR_OK) {
                     return false
                   }
                   next({
-                    params:res.data
+                    params: res.data
                   })
                 })
                 .catch(() => {

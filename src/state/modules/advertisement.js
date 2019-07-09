@@ -28,8 +28,8 @@ export const actions = {
   checkTab({commit}, index) {
     commit('SET_INFO_TAB_INDEX', index)
   },
-  getInfoBannerList({state, commit, dispatch}) {
-    return API.Advertisement.cmsMsg({page_name: 'index'})
+  getInfoBannerList({state, commit, dispatch}, {pageName = 'index'}) {
+    return API.Advertisement.cmsMsg({page_name: pageName})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
