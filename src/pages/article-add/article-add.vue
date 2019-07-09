@@ -223,7 +223,7 @@
             </div>
           </div>
         </div>
-        <draggable v-if="currentType!=='video' && addData.details.length" ref="detailsContent" v-model="addData.details" class="content-details" @update="_setSort()">
+        <draggable v-if="currentType!=='video' && addData.details.length" ref="detailsContent" v-model="addData.details" class="content-details">
           <transition-group>
             <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
               <div class="close-icon" @click="deleteContentItem(idx,item)"></div>
@@ -436,7 +436,7 @@
           goodsList: [],
           // 内容详情
           details: [],
-          articlePid:0
+          articlePid: 0
         },
         articleCategoryList: [],// 内容分类列表
         // 已经选择的商品头部
@@ -481,20 +481,33 @@
       }
     },
     async created() {
-      console.log(this.addData)
       this._getArticleCategory()
       this.currentType = this.$route.query.type || 'common'
       this.id = this.$route.query.id || ''
-      this.addData.articlePid = this.$route.query.articlePid || ''
-      this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
-    },
-    destroyed(){
-      console.log(this.addData)
+      this.addData.articlePid = this.$route.query.articlePid || '';
+      if(this.id || this.addData.articlePid){
+        this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
+      }else{
+        this._getAuth()
+      }
     },
     methods: {
+      // 新增创建时获取最后一次作者信息
+      _getAuth(){
+        API.Content.getAuth().then(res => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+          }
+          this.addData.authPhoto.url = res.data.head_image_url
+          this.addData.authPhoto.id =  res.data.head_image_id
+          this.addData.authName =  res.data.nickname
+          this.addData.authSignature =  res.data.sign
+        }).finally(() => {
+          this.$loading.hide()
+        })
+      },
       // 转换详情数据
       changeDetialData(obj) {
-        console.log(obj)
         this.currentType = obj.type || 'common'
         this.addData.title = obj.title
         this.addData.category = obj.id
@@ -546,21 +559,20 @@
             })
             this.addData.details = details
           }
-          if(item.type === 'text' && item.style_type === 'content_foods_list'){
+          if (item.type === 'text' && item.style_type === 'content_foods_list') {
             this.addData.foodList = item.content[0].text
           }
-          if(item.type === 'video' && item.style_type === 'content_video'){
+          if (item.type === 'video' && item.style_type === 'content_video') {
             this.addData.videoContent.url = item.content[0].video.full_url
             this.addData.videoContent.name = item.content[0].video.name
             this.addData.videoContent.id = item.content[0].video.id
           }
-          if(item.type === 'goods' && item.style_type === 'content_goods_list'){
-            this.addData.goodsList = item.content.map(item=>{
+          if (item.type === 'goods' && item.style_type === 'content_goods_list') {
+            this.addData.goodsList = item.content.map(item => {
               return item.goods
             })
           }
         })
-        console.log(this.addData)
       },
       // 获取内容分类列表
       _getArticleCategory() {
@@ -573,7 +585,6 @@
       },
       addCategory() {
         this.addCategoryText = ''
-        console.log(111)
         this.$refs.addCategory.showModal()
       },
       _submitCategory() {
@@ -589,7 +600,6 @@
       },
       // 封面
       getCoverVideo(video) {
-        console.log('封面视频', video)
         this.addData.coverVideo.id = video.id
         this.addData.coverVideo.file_id = video.file_id
         this.addData.coverVideo.url = video.full_url
@@ -603,14 +613,12 @@
       },
       _getCoverImage() {
         this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id: this.addData.coverVideo.file_id}).then(res => {
-          console.log(res, this.$ERR_OK)
           if (res.error !== this.$ERR_OK) return false
           this.addData.coverImage.id = res.data.cover_image_id
           this.addData.coverImage.url = res.data.full_cover_url
         })
       },
       getPic(image) {
-        console.log('封面图片', image)
         this.addData.coverImage.url = image.url
         this.addData.coverImage.id = image.id
       },
@@ -655,7 +663,6 @@
         this.addData.details.push(item)
         this.$nextTick(function () {
           let el = this.$refs.detailsContent.$el
-          console.log(el)
           el.scrollTop = el.scrollHeight
         })
       },
@@ -671,16 +678,13 @@
           value: image.url,
           id: image.id
         })
-        console.log(image)
       },
       addVideoItem(video) {
-        console.log('addVideoItem', video)
         this.addDetailContentItem({
           type: 'video',
           value: video.full_url,
           id: video.id
         })
-        console.log(video)
       },
       addOneGoods() {
         this.showGoods()
@@ -691,10 +695,6 @@
           let index = this.addData.goodsList.findIndex(goods => goods.id === item.value.id)
           if (index !== -1) this.addData.goodsList.splice(index, 1)
         }
-      },
-      // 托拽
-      _setSort() {
-        console.log(this.addData.details)
       },
       // --------------弹窗
       // 获取商品列表
@@ -716,7 +716,6 @@
           let isInList = this.addData.goodsList.findIndex((items) => items.id === item.id)
           let isSelect = this.selectGoods.findIndex((select) => select.id === item.id)
           item.selected = isSelect !== -1 ? 2 : (isInList !== -1 ? 1 : 0)
-          console.log(isInList, 'isInList', isSelect, 'isSelect', item.selected)
           // 0 没有选择 2 选择高亮  1 单个确认进入列表
           return item
         })
@@ -869,7 +868,6 @@
           this.$loading.hide()
           if (res.error !== this.$ERR_OK) this.$route.go(-1)
         }
-        console.log(res, this.addData)
       },
       // 上线
       getSubmitData() {
@@ -884,10 +882,9 @@
           video_cover_id: this.addData.coverVideo.id,
           init_fabulous_num: this.addData.goodCount,
           init_browse_num: this.addData.lookCount,
-          article_pid:this.addData.articlePid,
+          article_pid: this.addData.articlePid,
           assembly: []
         }
-        console.log(this.currentType, 'this.currentType')
         if (this.currentType === 'video' || this.currentType === 'cookbook') {
           this.addData.goodsList.length && params.assembly.push({
             type: "goods",
