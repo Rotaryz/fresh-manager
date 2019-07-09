@@ -152,5 +152,15 @@ export default {
   selectContent(id, data = {}, loading = true) {
     let url = `/${id}`
     return request.delete(url, data, loading)
+  },
+  /**
+   * 内容中心列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getCenterList(data, loading = true) {
+    let url = `/social-shopping/api/backend/article-material-index`
+    return request.get(url, data, loading)
   }
 }

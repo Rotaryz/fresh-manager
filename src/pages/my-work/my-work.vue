@@ -246,7 +246,7 @@
       },
       // 编辑
       editWork(item) {
-        this.$router.push(`/home/content-center/article-add?type=${this.workType}&id=${item.id}`)
+        this.$router.push(`/home/my-work/article-add?type=${this.workType}&id=${item.id}`)
       },
       async freeze() {
         let res = await API.Content[this.methodsName](this.delId)
@@ -277,6 +277,7 @@
         this.saveValue[this.keywordName] = keyword
         this.getWorkListMore({page: 1, keyword})
         this.$refs.pages.beginPage()
+        this._statistic()
       },
       // 翻页
       addPage(page) {

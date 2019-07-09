@@ -35,16 +35,18 @@ export const state = {
    * -------------------------------
    * 内容中心
    */
-  centerList: [{id: 1, is_select: false}, {id: 2, is_select: false}],
+  centerList: [],
   centerPage: {
     total: 1,
     per_page: 10,
     total_page: 1
   },
   contentCenterPage: 1,
-  centerStatus: '',
+  centerStatus: 1,
   centerKeyword: '',
-  centerTabIndex: 0
+  centerTabIndex: 0,
+  centerType: 'common',
+  centerCategoryId: '',
 }
 
 export const getters = {
@@ -58,11 +60,13 @@ export const getters = {
   workTabIndex: (state) => state.workTabIndex,
   workCategoryId: (state) => state.workCategoryId,
   workType: (state) => state.workType,
+  centerCategoryId: (state) => state.centerCategoryId,
   centerList: (state) => state.centerList,
   centerPage: (state) => state.centerPage,
   contentCenterPage: (state) => state.contentCenterPage,
   centerStatus: (state) => state.centerStatus,
   centerKeyword: (state) => state.centerKeyword,
+  centerType: (state) => state.centerType,
   centerTabIndex: (state) => state.centerTabIndex
 }
 
@@ -107,7 +111,6 @@ export const mutations = {
   },
   SET_WORK_TAB_INDEX(state, workTabIndex) {
     state.workTabIndex = workTabIndex
-
     state.workType = TYPE[workTabIndex]
   },
   SET_WORK_CATEGORY_ID(state, workCategoryId) {
@@ -120,11 +123,11 @@ export const mutations = {
    * @param workPage
    * @constructor
    */
-  SET_CENTER_PAGE(state, workPage) {
-    state.workPage = workPage
+  SET_CENTER_PAGE(state, centerPage) {
+    state.centerPage = centerPage
   },
-  SET_CENTER_LIST(state, workPage) {
-    state.workPage = workPage
+  SET_CENTER_LIST(state, centerList) {
+    state.centerList = centerList
   },
   SET_CENTER_CONTENT_PAGE(state, contentCenterPage) {
     state.contentCenterPage = contentCenterPage
@@ -137,6 +140,10 @@ export const mutations = {
   },
   SET_CENTER_TAB_INDEX(state, centerTabIndex) {
     state.centerTabIndex = centerTabIndex
+    state.centerType = TYPE[centerTabIndex]
+  },
+  SET_CENTER_CATEGORY_ID(state, centerCategoryId) {
+    state.centerCategoryId = centerCategoryId
   }
   /**
    * ---------------------------------
@@ -242,46 +249,58 @@ export const actions = {
    * @param workPage
    * @constructor
    */
-  getCenterList({commit}) {
-    // let {page,status, keyword,type, loading} = state
-    // return API.Content.getCenterList({page}, loading)
-    // .then((res) => {
-    //   if (res.error !== app.$ERR_OK) {
-    //     app.$toast.show(res.message)
-    //     return
-    //   }
-    //   let list = res.data
-    //   let pages = res.meta
-    //   let pageDetail = {
-    //     total: pages.total,
-    //     per_page: pages.per_page,
-    //     total_page: pages.last_page
-    //   }
-    //   commit('SET_CENTER_LIST', list)
-    //   commit('SET_CENTER_PAGE', pageDetail)
-    //   return list
-    // })
-    // .catch(() => {
-    //   return false
-    // })
-    // .finally(() => {
-    //   app.$loading.hide()
-    // })
-    console.log('666')
-    return true
+  getCenterList({commit}, loading = true) {
+    let {contentCenterPage, centerStatus, centerCategoryId, centerKeyword, centerType} = state
+    let data = {
+      page: contentCenterPage,
+      status: centerStatus,
+      keyword: centerKeyword,
+      type: centerType,
+      category_id: centerCategoryId,
+      is_cate_show: 1,
+      limit: 12
+    }
+    return API.Content.getCenterList(data, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          app.$toast.show(res.message)
+          return
+        }
+        let list = res.data
+        let pages = res.meta
+        let pageDetail = {
+          total: pages.total,
+          per_page: pages.per_page,
+          total_page: pages.last_page
+        }
+        commit('SET_CENTER_LIST', list)
+        commit('SET_CENTER_PAGE', pageDetail)
+        return list
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  setCenterIndex({commit, dispatch}, index) {
+    commit('SET_WORK_TAB_INDEX', index)
   },
   infoCenter({commit}, obj) {
+    commit('SET_WORK_TAB_INDEX', 0)
     commit('SET_CENTER_CONTENT_PAGE', 1)
-    commit('SET_CENTER_STATUS', '')
+    commit('SET_CENTER_STATUS', 1)
     commit('SET_CENTER_KEYWORD', '')
+    commit('SET_CENTER_CATEGORY_ID', '')
   },
   getCenterListMore({commit, dispatch}, obj) {
     typeof (obj.tabIndex) === 'number' && commit('SET_CENTER_TAB_INDEX', obj.tabIndex)
-    obj.page && commit('SET_CENTER_CONTENT_PAGE', obj.page)
-    obj.status && commit('SET_CENTER_STATUS', obj.status)
-    obj.keyword && commit('SET_CENTER_KEYWORD', obj.keyword)
-    // console.log(state)
-    dispatch('getCenterList')
+    typeof (obj.page) !== 'undefined' && commit('SET_CENTER_CONTENT_PAGE', obj.page)
+    typeof (obj.status) !== 'undefined' && commit('SET_CENTER_STATUS', obj.status)
+    typeof (obj.keyword) !== 'undefined' && commit('SET_CENTER_KEYWORD', obj.keyword)
+    typeof (obj.centerCategoryId) !== 'undefined' && commit('SET_CENTER_CATEGORY_ID', obj.centerCategoryId)
+    dispatch('getCenterList', false)
   },
   infoWork({commit}, obj) {
     commit('SET_WORK_CONTENT_PAGE', 1)
@@ -299,7 +318,6 @@ export const actions = {
     typeof (obj.status) !== 'undefined' && commit('SET_WORK_STATUS', obj.status)
     typeof (obj.keyword) !== 'undefined' && commit('SET_WORK_KEYWORD', obj.keyword)
     typeof (obj.workCategoryId) !== 'undefined' && commit('SET_WORK_CATEGORY_ID', obj.workCategoryId)
-    // console.log(state)
     dispatch('getWorkList', false)
   }
 }

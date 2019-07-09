@@ -15,20 +15,20 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-activity_category@2x.png" class="identification-icon">
-          <p class="identification-name">内容分类</p>
+          <p class="identification-name">内容中心</p>
         </div>
         <div class="function-btn">
         </div>
       </div>
       <div class="center-list">
         <div v-for="(item, index) in centerList" :key="index" class="center-item">
-          <img src="" alt="" class="center-img">
+          <img :src="item.cover_image_url" class="center-img">
           <p class="center-title">
-            <span class="center-title-box">这里是文章标题文章标题文章标题爱上覅卷发</span>
+            <span class="center-title-box">{{item.title}}</span>
           </p>
           <div class="center-btn">
             <div class="center-btn-item hand" @click="showQrCode(item)">预览</div>
-            <div class="center-btn-item hand select" :class="{'select-disable': item.is_select}" @click="selectContent(item.id)">选择</div>
+            <div class="center-btn-item hand select" :class="{'select-disable': item.used_status}" @click="selectContent(item.id)">选择</div>
           </div>
         </div>
       </div>
@@ -62,6 +62,7 @@
   const PAGE_NAME = 'CONTENT_CENTER'
   const TITLE = '内容中心'
   const TAB_STATUS = [{text: '图文', status: '', type: 'common'}, {text: '视频', status: '', type: 'video'}, {text: '菜谱', status: '', type: 'cookbook'}]
+  const QUERY = ['Keyword', 'Page', 'CategoryId']
 
   export default {
     name: PAGE_NAME,
@@ -84,47 +85,78 @@
           data: []
         },
         type: 1,
-        commonKeyword: '',
-        videoKeyword: '',
-        cookbookKeyword: '',
-        commonPage: '',
-        videoPage: '',
-        cookbookPage: '',
-        commonStatus: '',
-        videoStatus: '',
-        cookbookStatus: ''
+        saveValue: {},
+        statusType: 1
       }
     },
     computed: {
       ...contentComputed,
       keywordName() {
-        let name = `${this.tabStatus[this.centerTabIndex].type}Keyword`
+        let name = `${this.tabStatus[this.workTabIndex].type}Keyword`
         return name
       },
       pageName() {
-        let page = `${this.tabStatus[this.centerTabIndex].type}Page`
+        let page = `${this.tabStatus[this.workTabIndex].type}Page`
         return page
       },
-      statusName() {
-        let page = `${this.tabStatus[this.centerTabIndex].type}Status`
+      categoryIdName() {
+        let page = `${this.tabStatus[this.workTabIndex].type}CategoryId`
         return page
       }
     },
     watch: {
       centerTabIndex(news) {
-        this.stairSelect.content = this[this.statusName] || '请选择分类' + news
+        if (this.stairSelect.data.length < 1) {
+          return
+        }
+        console.log(this.categoryIdName)
+        let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
+        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
+      },
+      statusName(news) {
+        this.statusType = this.saveValue[news]
+        this.$refs.baseStatusTab.infoStatus(this.statusType)
       }
+    },
+    async created() {
+      this.infoQuery()
+      await this.getContentClassList()
     },
     methods: {
       ...contentMethods,
-      changeTab(item, index) {
-        this.getCenterListMore({page: this[this.pageName], status: this[this.statusName], keyword: this[this.keywordName], tabIndex: index})
-        this.$refs.search.infoTextMethods(this[this.keywordName])
+      // 初始化变量
+      infoQuery() {
+        this.tabStatus.forEach((item) => {
+          QUERY.forEach((items) => {
+            this.saveValue[`${item.type}${items}`] = items === 'Page' || items === 'Status' ? 1 : ''
+          })
+        })
+        this.saveValue[this.keywordName] = this.workKeyword
+        this.saveValue[this.pageName] = this.workPage
+        this.saveValue[this.categoryIdName] = this.centerCategoryId
+        this.saveValue[this.statusName] = this.workStatus
       },
-      async showQrCode(item) {
+      // 获取分类
+      async getContentClassList() {
+        let res = await API.Content.getContentClassList({limit: 0, keyword: '', page: 1, status: 1})
+        let arr = [{name: '全部', id: ''}]
+        if (res.error === this.$ERR_OK) {
+          arr = arr.concat(res.data)
+        }
+        this.stairSelect.data = arr
+        let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
+        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
+      },
+      changeTab(item, index) {
+        this.setCenterIndex(index)
+        this.getCenterListMore({page: this.saveValue[this.pageName], centerCategoryId: this.saveValue[this.categoryIdName], keyword: this.saveValue[this.keywordName], status: this.saveValue[this.statusName], tabIndex: index})
+        this.$refs.search.infoTextMethods(this.saveValue[this.keywordName])
+      },
+      // 获取二维码
+      async showQrCode(id, index) {
         this.loadImg = true
         // {path: 'pages/choiceness?s=' + id, is_hyaline: false} 页面参数
-        let res = await API.Content.createQrcode()
+        let res = await API.Content.createQrcode({path: `package-content/content-article-detail-video?c=${id}`, is_hyaline: false})
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return
@@ -139,20 +171,20 @@
       },
       // 选择内容
       async selectContent(id) {
-        let res = await API.Center.selectContent(id)
-        this.$toast.show(res.message)
-        res.error === this.$ERR_OK && this.getCenterList()
+        let routeData = this.$router.resolve(`/home/my-work/article-add?type=${this.centerType}&articlePid=${id}`)
+        window.open(routeData.href)
       },
       addPage(page) {
-        this[this.pageName] = page
+        this.saveValue[this.pageName] = page
         this.getCenterListMore({page})
       },
       _setStairValue(item) {
-        this.getCenterListMore({page: 1, status: item.status})
+        this.saveValue[this.categoryIdName] = item.id
+        this.getCenterListMore({page: 1, centerCategoryId: item.id})
         this.$refs.pages.beginPage()
       },
       search(keyword) {
-        this[this.keywordName] = keyword
+        this.saveValue[this.keywordName] = keyword
         this.getCenterListMore({page: 1, keyword})
         this.$refs.pages.beginPage()
       }
@@ -198,6 +230,7 @@
         display: flex
         align-items: center
         height: 11.68%
+        border-top-1px($color-line)
         .center-btn-item
           flex: 1
           text-align: center
