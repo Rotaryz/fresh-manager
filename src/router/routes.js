@@ -264,7 +264,7 @@ export default [
           titles: ['商城', '内容', '我的作品', '创作作品'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
-            let id = routeTo.query.id
+            let id = routeTo.query.id || routeTo.query.articlePid
             // 详情数据
             if (id) {
               API.Content.getArticleDetail({id},false)

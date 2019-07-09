@@ -436,6 +436,7 @@
           goodsList: [],
           // 内容详情
           details: [],
+          articlePid:0
         },
         articleCategoryList: [],// 内容分类列表
         // 已经选择的商品头部
@@ -480,10 +481,15 @@
       }
     },
     async created() {
+      console.log(this.addData)
       this._getArticleCategory()
       this.currentType = this.$route.query.type || 'common'
       this.id = this.$route.query.id || ''
+      this.addData.articlePid = this.$route.query.articlePid || ''
       this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
+    },
+    destroyed(){
+      console.log(this.addData)
     },
     methods: {
       // 转换详情数据
@@ -508,7 +514,6 @@
             item.content.map(cont => {
               if (!(cont.content && cont.content.length)) return false
               let contItem = cont.content[0]
-
               /* eslint-disable */
               switch (cont.type) {
                 case "image":
@@ -541,9 +546,17 @@
             })
             this.addData.details = details
           }
-          if (item.type === 'goods' && item.style_type === 'content_goods_list') {
-            let goodsList = item.content.content.map(goods => {
-
+          if(item.type === 'text' && item.style_type === 'content_foods_list'){
+            this.addData.foodList = item.content[0].text
+          }
+          if(item.type === 'video' && item.style_type === 'content_video'){
+            this.addData.videoContent.url = item.content[0].video.full_url
+            this.addData.videoContent.name = item.content[0].video.name
+            this.addData.videoContent.id = item.content[0].video.id
+          }
+          if(item.type === 'goods' && item.style_type === 'content_goods_list'){
+            this.addData.goodsList = item.content.map(item=>{
+              return item.goods
             })
           }
         })
@@ -851,19 +864,14 @@
         let res = this.justifyConent()
         if (res) {
           let data = this.getSubmitData()
-          res && API.Content[name](data, true).then(res => {
-            this.$toast.show(res.message)
-          }).finally(() => {
-            this.$loading.hide()
-          })
+          let res = await API.Content[name](data, true)
+          this.$toast.show(res.message)
+          this.$loading.hide()
+          if (res.error !== this.$ERR_OK) this.$route.go(-1)
         }
         console.log(res, this.addData)
       },
       // 上线
-      async submitLaunch() {
-        let res = this.justifyConent()
-        console.log(res, this.addData.details)
-      },
       getSubmitData() {
         let params = {
           type: this.currentType,
@@ -876,6 +884,7 @@
           video_cover_id: this.addData.coverVideo.id,
           init_fabulous_num: this.addData.goodCount,
           init_browse_num: this.addData.lookCount,
+          article_pid:this.addData.articlePid,
           assembly: []
         }
         console.log(this.currentType, 'this.currentType')
@@ -1301,6 +1310,7 @@
             width: 112px
             height @width
             border-radius 2px
+            object-fit: cover
 
           .edit-textarea
             border-width: 0px
