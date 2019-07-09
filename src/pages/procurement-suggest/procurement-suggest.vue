@@ -35,7 +35,7 @@
                 <div class="item-dark">{{item.goods_name}}</div>
                 <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
-              <div class="list-item">{{item.goods_category}}</div>
+              <div class="list-item">{{item.goods_material_category}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <div class="list-item">{{item.purchase_user}}</div>
               <div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>
@@ -60,7 +60,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_SUGGEST'
   const TITLE = '预采建议'
-  const COMMODITIES_LIST = ['商品', '分类', '供应商', '采购员', '商品销售数', '库存数', '建议采购数', '创建时间']
+  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '商品销售数', '库存数', '建议采购数', '创建时间']
 
   export default {
     name: PAGE_NAME,
@@ -100,8 +100,11 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.startTime}&time=${this.time}&end_time=${this.endTime}&status=${
-          this.status}&keyword=${this.keyword}&supplier_id=${this.supplyId}&is_blocked=1&current_corp=${currentId}`
+        let params = `access_token=${token.access_token}&start_time=${this.startTime}&time=${this.time}&end_time=${
+          this.endTime
+        }&status=${this.status}&keyword=${this.keyword}&supplier_id=${
+          this.supplyId
+        }&is_blocked=1&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
       },
       async _getSupplierList() {

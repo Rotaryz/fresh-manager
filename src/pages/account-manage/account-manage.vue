@@ -119,7 +119,7 @@
   import API from '@api'
   const PAGE_NAME = 'ACCOUNT_MANAGE'
   const TITLE = '账号管理'
-  const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
+  const TELREG = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[0-9])\d{8}$/
   const ORDERSTATUS = [{text: '账号管理', status: ''}, {text: '角色权限', status: 0}]
   const ACCOUNT_LIST = [
     {title: '账号姓名', key: 'created_at', flex: 0.8},

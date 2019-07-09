@@ -24,12 +24,21 @@
       </div>
       <!--下拉选择-->
       <template v-if="sortingTask.filter.sorting_mode === 1">
-        <span class="down-tip">分类筛选</span>
+        <span class="down-tip">类目筛选</span>
+        <!--<div class="down-item down-group-item">-->
+        <!--<base-drop-down :select="filterTaskFrist" @setValue="setValueFrist"></base-drop-down>-->
+        <!--</div>-->
+        <!--<div class="down-item">-->
+        <!--<base-drop-down :select="filterTaskSecond" @setValue="setValueSecond"></base-drop-down>-->
+        <!--</div>-->
         <div class="down-item down-group-item">
-          <base-drop-down :select="filterTaskFrist" @setValue="setValueFrist"></base-drop-down>
+          <base-drop-down :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+        </div>
+        <div class="down-item down-group-item">
+          <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
         </div>
         <div class="down-item">
-          <base-drop-down :select="filterTaskSecond" @setValue="setValueSecond"></base-drop-down>
+          <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
         </div>
       </template>
       <!--搜索-->
@@ -121,7 +130,7 @@
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
     {tilte: '订单数', key: 'order_num', after: 'sale_unit'},
     {tilte: '配货数', key: 'allocation_num', after: 'sale_unit'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -135,13 +144,13 @@
   ]
   const COMMODITIES_LIST2 = [
     {tilte: '商品名称', key: 'goods_name', flex: '2', afterBr: 'goods_sku_encoding'},
-    {tilte: '分类', key: 'goods_category', flex: '2'},
+    {tilte: '类目', key: 'goods_material_category', flex: '2'},
     {tilte: '下单数', key: 'sale_num', after: 'sale_unit'},
     {tilte: '配货数', key: 'sale_wait_pick_num', after: 'sale_unit'},
     {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -199,6 +208,9 @@
           {name: '待配货', value: 3, num: 0},
           {name: '已完成', value: 1, num: 0}
         ],
+        stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
+        secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
+        thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
         exportUrl: ''
       }
     },
@@ -212,19 +224,48 @@
       }
     },
     created() {
-      this.getFristList()
+      // this.getFristList()
       this._getStatusData()
       this._setErrorStatus()
+      this.getCategoriesData()
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
+      getCategoriesData() {
+        API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.stairSelect.data = res.data
+            this.stairSelect.data.unshift({name: '全部', id: '', list: []})
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      // 选择一级类目
+      async setStairValue(data) {
+        this.secondSelect.content = '二级类目'
+        this.secondSelect.data = data.list
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = []
+        this._updateData({goods_material_category_id: data.id || '', page: 1})
+      },
+      // 选择二级类目
+      async setSecondValue(data) {
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = data.list
+        this._updateData({goods_material_category_id: data.id || '', page: 1})
+      },
+      // 选择三级类目
+      async setThirdlyValue(data) {
+        this._updateData({goods_material_category_id: data.id || '', page: 1})
+      },
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.sortingTask.filter.exception_status)
         this.errorObj.content = item.name || '全部'
       },
       webSocketData() {
-        let url =  process.env.VUE_APP_WSS + '/sub'
+        let url = process.env.VUE_APP_WSS + '/sub'
         let prg = `scm_batch_finish_sorting_` + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
@@ -239,7 +280,7 @@
         }
       },
       async checkErr(item) {
-        this._updateData({exception_status:item.status,page:1})
+        this._updateData({exception_status: item.status, page: 1})
       },
       initBaseDropDown(first, second) {
         if (first) {
@@ -256,7 +297,7 @@
           .then((res) => {
             this.$toast.show(res.message)
             this.webSocketData()
-            // this._updateData({page: 1})
+          // this._updateData({page: 1})
           })
           .catch((err) => {
             this.$toast.show(err.message)
@@ -272,9 +313,9 @@
       },
       // 顶部tab切换
       tabChange(val) {
-        if(val===1){
-          this.initBaseDropDown(true,true)
-          this.getFristList()
+        if (val === 1) {
+          this.initBaseDropDown(true, true)
+          this.getCategoriesData()
         }
         let params = {
           sorting_mode: val,
@@ -282,10 +323,10 @@
           limit: 10,
           start_time: '',
           end_time: '',
-          goods_category_id: '',
+          goods_material_category_id: '',
           status: 0,
           keyword: '',
-          exception_status:''
+          exception_status: ''
         }
         this.errorObj.content = '全部'
         this.$refs.research._setText()
@@ -326,7 +367,7 @@
         let params = {
           start_time: this.sortingTask.filter.start_time,
           end_time: this.sortingTask.filter.end_time,
-          goods_category_id: this.sortingTask.filter.goods_category_id,
+          goods_material_category_id: this.sortingTask.filter.goods_material_category_id,
           keyword: this.sortingTask.filter.keyword,
           sorting_mode: this.sortingTask.filter.sorting_mode
         }
@@ -394,7 +435,7 @@
         let data = {
           current_corp: this.getCurrentId(),
           access_token: this.currentUser().access_token,
-          goods_category_id: obj.goods_category_id,
+          goods_material_category_id: obj.goods_material_category_id,
           start_time: obj.start_time,
           end_time: obj.end_time,
           keyword: obj.keyword,

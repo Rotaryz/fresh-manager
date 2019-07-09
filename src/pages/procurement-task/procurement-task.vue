@@ -66,7 +66,7 @@
                 <div class="item-dark">{{item.goods_name}}</div>
                 <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
-              <div class="list-item">{{item.goods_category}}</div>
+              <div class="list-item">{{item.goods_material_category}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <div class="list-item">{{item.purchase_user}}</div>
               <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
@@ -141,11 +141,20 @@
         <!--商品详情-->
         <div>
           <div class="shade-tab">
+            <!--<div class="tab-item">-->
+            <!--<base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>-->
+            <!--</div>-->
+            <!--<div class="tab-item">-->
+            <!--<base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>-->
+            <!--</div>-->
             <div class="tab-item">
-              <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
+              <base-drop-down :select="stairSelect" @setValue="setStairValue"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+              <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+            </div>
+            <div class="tab-item">
+              <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
             </div>
             <div class="tab-item">
               <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
@@ -213,7 +222,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '采购任务'
-  const COMMODITIES_LIST = ['商品', '分类', '供应商', '采购员', '计划采购', '已采购', '采购进度', '发布时间', '状态']
+  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '计划采购', '已采购', '采购进度', '发布时间', '状态']
   const SUPPLIER_LIST = ['供应商', '采购任务数', '操作']
   export default {
     name: PAGE_NAME,
@@ -274,6 +283,28 @@
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
         },
+        stairSelect: {
+          check: false,
+          show: false,
+          content: '一级类目',
+          type: 'default',
+          data: []
+        },
+        secondSelect: {
+          check: false,
+          show: false,
+          content: '二级类目',
+          type: 'default',
+          data: []
+        },
+        thirdlySelect: {
+          check: false,
+          show: false,
+          content: '三级类目',
+          type: 'default',
+          data: []
+        },
+        categoryId: '',
         exceptionStatus: this.$route.query.exception_status || ''
       }
     },
@@ -299,14 +330,49 @@
         this.status = this.dispatchSelect[this.statusTab].status
         this._createNewPublish()
       }
-      await this._getFirstAssortment()
+      // await this._getFirstAssortment()
       await this._getGoodsList()
       await this._getSupplierList()
+      this.getCategoriesData()
       this._getUrl()
     },
     mounted() {},
     methods: {
       ...proTaskMethods,
+      getCategoriesData() {
+        API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.stairSelect.data = res.data
+            this.stairSelect.data.unshift({name: '全部', id: '', list: []})
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
+      async setStairValue(data) {
+        this.secondSelect.content = '二级类目'
+        this.secondSelect.data = data.list
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = []
+        this.categoryId = data.id
+        this.choicePage = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
+      async setSecondValue(data) {
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = data.list
+        this.categoryId = data.id
+        this.choicePage = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
+      async setThirdlyValue(data) {
+        this.categoryId = data.id
+        this.choicePage = 1
+        this.$refs.goodsPage.beginPage()
+        await this._getGoodsList()
+      },
       // 选择商品
       _selectGoods(item, index) {
         this.showSelectIndex = index
@@ -316,7 +382,9 @@
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&start_time=${this.startTime}&end_time=${this.endTime}&status=${
           this.status
-        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&exception_status=${this.exceptionStatus}&current_corp=${currentId}`
+        }&keyword=${this.keyword}&supplier_id=${this.supplyId}&exception_status=${
+          this.exceptionStatus
+        }&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
       },
       async checkErr(item) {
@@ -346,7 +414,7 @@
       async _getGoodsList() {
         let res = await API.Store.getGoodsList({
           keyword: this.text,
-          goods_category_id: this.parentId,
+          goods_material_category_id: this.categoryId,
           page: this.choicePage,
           limit: 7
         })

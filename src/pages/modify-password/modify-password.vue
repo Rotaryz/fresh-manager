@@ -46,7 +46,7 @@
         },
         countdown: '获取短信验证码',
         codeGetting: false,
-        subModify: false,
+        subModify: false
       }
     },
     computed: {
@@ -61,7 +61,7 @@
     methods: {
       ...authMethods,
       _getVerifyCode() {
-        if (this.codeGetting) return;
+        if (this.codeGetting) return
         if (this.formParams.username === '') {
           this.$toast.show(this.placeHolders.username)
           return
@@ -84,15 +84,15 @@
       _setCountdown() {
         this.countdown = 30
         let that = this
-        let cdTimer = setInterval(function () {
-          if(that.countdown>0) {
+        let cdTimer = setInterval(function() {
+          if (that.countdown > 0) {
             that.countdown--
           } else {
             that.countdown = '再次获取验证码'
             that.codeGetting = false
             clearInterval(cdTimer)
           }
-        },1000)
+        }, 1000)
       },
       _modifyPassword() {
         if (this.subModify || !this.checkForm()) {
@@ -113,9 +113,9 @@
             this.logOut()
             this.$toast.show('修改密码成功！')
             let that = this
-            setTimeout(function () {
+            setTimeout(function() {
               that.$router.replace({name: 'login'})
-            },2500)
+            }, 2500)
           })
           .catch((error) => {
             this.$toast.show(error)

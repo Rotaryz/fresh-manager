@@ -42,6 +42,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import app from '@src/main'
+  import moment from 'moment'
   import {formatNumber} from '@utils/common'
   import ChartLine from '@components/e-chart/chart-line'
 
@@ -52,11 +53,7 @@
     {text: '管理视窗', status: 1, conTitle: '管理数据'},
     {text: '拓展视窗', status: 2, conTitle: '拓展数据'}
   ]
-  const DATE_SELECTOR = [
-    {title: '日', status: 'day'},
-    {title: '周', status: 'week'},
-    {title: '月', status: 'month'}
-  ]
+  const DATE_SELECTOR = [{title: '日', status: 'day'}, {title: '周', status: 'week'}, {title: '月', status: 'month'}]
   /** chart配置，id：chart组件id，label：上面部分的数据名称，dataArr-name：图表内部、折线的label, dataArr-key：接口key，dataArr-data：接口数据
    * xAxleData：日期数组用于X轴，showSecondY：是否显示双Y轴，lineShadow：是否有区域阴影， tab：上面的tab切换，tabIndex：tab栏的索引，excel：是否有excel导出功能
    * yAxisIdx：参照哪一条y轴（有两条y轴才用设，不传默认0）, apiFun：接口方法名， tabIdx：表示在哪个tab中显示，用于有tab的图表（不传默认0）
@@ -238,7 +235,7 @@
     }
   ]
 
-  const NOW_DATE = new Date(Date.now() - 86400000).toLocaleDateString().replace(/\//g, '-').replace(/\b\d\b/g, '0$&')
+  const NOW_DATE = moment(Date.now() - 86400000).format('YYYY-MM-DD')
 
   export default {
     name: PAGE_NAME,
@@ -321,7 +318,12 @@
           // } else {
           //   _param = this.requestParam
           // }
-          API.Operation[curChart.apiFun](this.requestParam, loading)
+          let requestParam = JSON.parse(JSON.stringify(this.requestParam))
+          if (curChart.id === 'userChart') {
+            requestParam.day_type = requestParam.date_type
+            delete requestParam.date_type
+          }
+          API.Operation[curChart.apiFun](requestParam, loading)
             .then((res) => {
               if (res.error !== app.$ERR_OK) {
                 return false
@@ -382,7 +384,9 @@
               switch (this.requestParam.date_type) {
               case 'day':
                 if (result.data[0].year < result.data[29].year) {
-                  _date = _resData.month ? _resData.year + '-' + formatNumber(_resData.month) + '-' + formatNumber(_resData.day) : ''
+                  _date = _resData.month
+                    ? _resData.year + '-' + formatNumber(_resData.month) + '-' + formatNumber(_resData.day)
+                    : ''
                 } else {
                   _date = _resData.month ? formatNumber(_resData.month) + '/' + formatNumber(_resData.day) : ''
                 }
@@ -391,7 +395,7 @@
                 _date = _resData.week ? _resData.year.toString().slice(2) + '年第' + _resData.week + '周' : ''
                 break
               default:
-                _date = _resData.month ? _resData.year.toString().slice(2)  + '年' + _resData.month + '月' : ''
+                _date = _resData.month ? _resData.year.toString().slice(2) + '年' + _resData.month + '月' : ''
                 break
               }
               curChart.xAxleData.push(_date)
@@ -415,9 +419,26 @@
             if (j === 0) {
               // x轴的date指生成一个数组就行了
               let _date = _resData.at
-                .split('-')
-                .slice(1)
-                .join('/')
+              let year = moment(_date).year()
+              let month = moment(_date).month() + 1
+              let week = moment(_date).week()
+              if (moment(_date).day() === 0) {
+                week -= 1
+              }
+              switch (this.requestParam.date_type) {
+              case 'day':
+                if (moment(_item.data[0].at).year() < moment(_item.data[29].at).year()) {
+                  _date = month ? moment(_date).format('YYYY-MM-DD') : ''
+                } else {
+                  _date = month ? moment(_date).format('MM/DD') : ''
+                }
+                break
+              case 'week':
+                _date = week ? year.toString().slice(2) + '年第' + week + '周' : ''
+                break
+              default:
+                _date = month ? year.toString().slice(2) + '年' + month + '月' : ''
+              }
               curChart.xAxleData.push(_date)
             }
           }
@@ -434,7 +455,7 @@
 
   .operation-data
     width: 100%
-    min-width: 1200px
+    min-width: 1220px
 
   .content
     min-height: calc(100vh - 130px)

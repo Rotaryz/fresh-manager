@@ -26,21 +26,19 @@
         <div class="list">
           <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
+              <div v-if="+val.type === 1 || +val.type === 2" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || '---'}}
               </div>
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || 0}}
-              </div>
-              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
-                {{type[item[val.value]]}}
               </div>
               <!--状态-->
               <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
                 <base-switch :status="statusHandle(item, index)" confirmText="开启" cancelText="关闭"></base-switch>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (item.type -1)" append class="list-operation">查看</router-link>
+                <router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>
+                <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
                 <span class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
             </div>
@@ -64,7 +62,7 @@
   const TITLE = '营销计划'
   const MARKET_TITLE = [
     {name: '营销名称', flex: 1.6, value: 'title', type: 1},
-    {name: '类型', flex: 1, value: 'type', type: 2},
+    {name: '类型', flex: 1, value: 'type_str', type: 2},
     {name: '领取数', flex: 1, value: 'take_count', type: 4},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
@@ -87,6 +85,11 @@
           name: '唤醒流失客户',
           value: 2,
           icon: 'icon-awaken'
+        },
+        {
+          name: '邀请有礼',
+          value: 4,
+          icon: 'icon-invite_courtesy'
         }
       ]
     },
@@ -226,7 +229,7 @@
       font-size: $font-size-14
       &:last-child
         padding-right: 0
-        max-width: 75px
+        max-width: 120px
       .item
         text-overflow: ellipsis
         overflow: hidden
@@ -285,13 +288,13 @@
           .icon
             opacity: 0.9
           .icon-0
-            box-shadow: 0 2px 8px 0 rgba(159,213,198,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159, 213, 198, 0.40)
           .icon-1
-            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159, 170, 213, 0.40)
           .icon-2
-            box-shadow: 0 2px 8px 0 rgba(199,159,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(199, 159, 213, 0.40)
           .icon-3
-            box-shadow: 0 2px 8px 0 rgba(159,170,213,0.40)
+            box-shadow: 0 2px 8px 0 rgba(159, 170, 213, 0.40)
           .text
             text-decoration: underline
 

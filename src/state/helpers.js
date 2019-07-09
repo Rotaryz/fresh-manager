@@ -66,7 +66,7 @@ export const leaderMethods = {
     'setWidthTime',
     'infoStatus'
   ]),
-  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL'])
+  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER', 'SET_PAGE_TOTAL'])
 }
 // 今日采购
 export const rushComputed = {
@@ -121,18 +121,25 @@ export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOu
 
 // 优惠券
 export const couponComputed = {
-  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail'])
+  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'infoTabIndex', 'goodsCoupon', 'pageTotal'])
 }
 
-export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail'])
+export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex'])
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail'])
+  ...mapGetters('market', [
+    'marketList',
+    'marketPageDetail',
+    'marketDetail',
+    'marketStaPageDetail',
+    'marketStaLists',
+    'inviteCount'
+  ])
 }
 
 export const marketMethods = {
-  ...mapActions('market', ['getMarketList', 'getMarketDetail'])
+  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList'])
 }
 
 export const auxiliaryComputed = {
@@ -162,10 +169,10 @@ export const goodsMethods = mapActions('editgoods', ['getGoodsData'])
 
 // 轮播广告
 export const adverComputed = {
-  ...mapGetters('advertisement', ['infoBannerList'])
+  ...mapGetters('advertisement', ['infoBannerList', 'infoTabIndex'])
 }
 
-export const adverMethods = mapActions('advertisement', ['getInfoBannerList'])
+export const adverMethods = mapActions('advertisement', ['getInfoBannerList', 'checkTab'])
 
 // 订单
 export const orderComputed = {
@@ -640,6 +647,41 @@ export const allocationComputed = {
 
 export const allocationMethods = {
   ...mapActions('allocation', ['getAllocationList', 'getOperation'])
+}
+// 供应链商品
+export const scmGoodsComputed = {
+  ...mapGetters('scmGoods', ['productList', 'statePageTotal', 'goodsStoreList', 'storePageTotal'])
+}
+
+export const scmGoodsMethods = {
+  ...mapActions('scmGoods', ['getProductList', 'getScmStoreData'])
+}
+
+// 内容
+export const contentComputed = {
+  ...mapGetters('content', [
+    'centerTabIndex',
+    'contentPage',
+    'contentClassList',
+    'contentClassPage',
+    'workList',
+    'workPage',
+    'centerList',
+    'centerPage',
+    'centerKeyword',
+    'centerStatus',
+    'contentCenterPage',
+    'centerTabIndex',
+    'contentPage', 'workType',
+    'contentWorkPage',
+    'workStatus',
+    'workTabIndex',
+    'workKeyword'
+  ])
+}
+
+export const contentMethods = {
+  ...mapActions('content', ['infoContent', 'contentAddPage', 'setWorkIndex', 'infoWork', 'getWorkListMore', 'getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
 }
 
 // // 内容

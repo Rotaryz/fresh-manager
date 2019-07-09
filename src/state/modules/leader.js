@@ -9,12 +9,12 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
- leaderListFilter:{
-    page:1,
-    limit:10,
-    keyword:'',
-    status:'',
-    model_type:0
+  leaderListFilter: {
+    page: 1,
+    limit: 10,
+    keyword: '',
+    status: '',
+    model_type: 0
   },
   leaderDetail: {}, // 团长详情
   deliveryOrder: {}, // 配送订单列表
@@ -47,7 +47,7 @@ export const state = {
 }
 
 export const getters = {
-  leaderListFilter(state){
+  leaderListFilter(state) {
     return state.leaderListFilter
   },
   leaderList(state) {
@@ -110,7 +110,7 @@ export const getters = {
 }
 
 export const mutations = {
-  SET_lEADER_LIST_FILTER(state,params){
+  SET_lEADER_LIST_FILTER(state, params) {
     state.leaderListFilter = {...state.leaderListFilter, ...params}
   },
   SET_LEADER_LIST(state, list) {
@@ -178,29 +178,31 @@ export const mutations = {
 
 export const actions = {
   // 团长分销列表
-  getList({state, commit, dispatch}, loading = true){
+  getList({state, commit, dispatch}, loading = true) {
     /* eslint-disable */
-    let {model_type,...params} = state.leaderListFilter
-    let name =  state.leaderListFilter.model_type ? 'getLeaderApplicationList' :'getLeaderList'
-    console.log(model_type)
-    return API.Leader[name](params).then((res) => {
-      if (res.error !== app.$ERR_OK) {
-        this.$toast.show(res.message)
-        return false
-      }
-      console.log(res)
-      let pageTotal = {
-        total: res.meta.total,
-        per_page: res.meta.per_page,
-        total_page: res.meta.last_page
-      }
-      commit('SET_LEADER_LIST', res.data)
-      commit('SET_PAGE_TOTAL', pageTotal)
+    let {model_type, ...params} = state.leaderListFilter
+    let name = state.leaderListFilter.model_type ? 'getLeaderApplicationList' : 'getLeaderList'
+    // console.log(model_type)
+    return API.Leader[name](params)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          this.$toast.show(res.message)
+          return false
+        }
+        // console.log(res)
+        let pageTotal = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        commit('SET_LEADER_LIST', res.data)
+        commit('SET_PAGE_TOTAL', pageTotal)
 
-      return true
-    }) .catch(() => {
-      return false
-    })
+        return true
+      })
+      .catch(() => {
+        return false
+      })
       .finally(() => {
         app.$loading.hide()
       })

@@ -24,7 +24,7 @@
               <div class="item-dark">{{item.goods_name}}</div>
               <div class="item-dark">{{item.goods_sku_encoding}}</div>
             </div>
-            <div class="list-item">{{item.goods_category}}</div>
+            <div class="list-item">{{item.goods_material_category}}</div>
             <div class="list-item list-item-layout">
               <input v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
               <div class="base-unit">{{item.purchase_unit}}</div>
@@ -55,7 +55,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
-  const COMMODITIES_LIST = ['商品', '分类', '采购数量(采购单位)', '采购数量(基本单位)', '采购单价', '采购金额']
+  const COMMODITIES_LIST = ['商品', '类目', '采购数量(采购单位)', '采购数量(基本单位)', '采购单价', '采购金额']
   export default {
     name: PAGE_NAME,
     page: {

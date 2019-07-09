@@ -20,6 +20,7 @@
     },
     watch: {
       $route(to, from) {
+        console.log(to)
         this.keepAlive = to.meta.keepAlive
       // this.transitionType = 'out'
       }

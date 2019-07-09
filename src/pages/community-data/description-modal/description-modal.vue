@@ -53,10 +53,7 @@
   const COMPONENT_NAME = 'EDIT_MODAL'
 
   const DATA = {
-    qualification: [
-      ['Lv1', 'Lv2', 'Lv3', 'Lv4'],
-      ['1~39分', '40~59分', '60~79分', '80~100分']
-    ],
+    qualification: [['Lv1', 'Lv2', 'Lv3', 'Lv4'], ['1~39分', '40~59分', '60~79分', '80~100分']],
     quote: [
       {
         name: '分享链接的浏览数',
@@ -87,7 +84,6 @@
     '例如：浏览数第一天840、第二天1200、第三天734',
     '(840+1200+734)÷400x20=13.8'
   ]
-
 
   export default {
     name: COMPONENT_NAME,

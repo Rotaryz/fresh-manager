@@ -185,8 +185,9 @@
     '资质审核',
     // '一周交易额',
     '处理时间',
-    '操作']
-  const ORDERSTATUS = [{text: '团长列表', status: 0,id:'list'}, {text: '团长申请表', status: 1,id:'application'}]
+    '操作'
+  ]
+  const ORDERSTATUS = [{text: '团长列表', status: 0, id: 'list'}, {text: '团长申请表', status: 1, id: 'application'}]
 
   export default {
     name: PAGE_NAME,
@@ -200,19 +201,22 @@
     data() {
       return {
         tabStatus: ORDERSTATUS,
-        bigImgUrl:'',
-        currentLeader:null,
-        currentImgSrc:'',
-        checkList:[{
-          label:'通过',
-          value:1
-        },{
-          label:'拒绝',
-          value:0
-        }],
-        checkDialogContent:{
-          status:1,
-          remark:''
+        bigImgUrl: '',
+        currentLeader: null,
+        currentImgSrc: '',
+        checkList: [
+          {
+            label: '通过',
+            value: 1
+          },
+          {
+            label: '拒绝',
+            value: 0
+          }
+        ],
+        checkDialogContent: {
+          status: 1,
+          remark: ''
         },
         statusList: [
           {name: '全部', value: '', num: 0},
@@ -232,32 +236,32 @@
     computed: {
       ...leaderComputed,
       leaderTitle() {
-        return this.leaderListFilter.model_type ===0 ? LEADER_TITLE : LEADER_APPLICATION_TILTE
+        return this.leaderListFilter.model_type === 0 ? LEADER_TITLE : LEADER_APPLICATION_TILTE
       }
     },
     created() {
-      console.log(this.leaderListFilter.model_type)
-      console.log(this.leaderList)
-      if(this.leaderListFilter.model_type){
+      // console.log(this.leaderListFilter.model_type)
+      // console.log(this.leaderList)
+      if (!this.leaderListFilter.model_type) {
         this.getTopData()
       }
       this._getLeaderStatus()
     },
     methods: {
       ...leaderMethods,
-      showBigImg(src){
-        this.currentImgSrc =src
+      showBigImg(src) {
+        this.currentImgSrc = src
         this.$refs.imgModal.showModal()
       },
-      showCheck(item,idx){
+      showCheck(item, idx) {
         this.currentLeader = item
         this.$refs.checkDialog.showModal()
       },
-      closeCheck(){
+      closeCheck() {
         this.$refs.checkDialog.hideModal()
       },
-      _submitCheck(){
-        API.Leader.submitCheck(this.currentLeader.id || '',this.checkDialogContent).then(res => {
+      _submitCheck() {
+        API.Leader.submitCheck(this.currentLeader.id || '', this.checkDialogContent).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
@@ -272,14 +276,14 @@
           page: 1,
           limit: 10,
           status: 0,
-          keyword: "",
-          model_type:val
+          keyword: '',
+          model_type: val
         }
         this.$refs.research._setText()
         this._updateData(params)
       },
       // 更新列表
-      _updateData(params={}, noUpdataStatus) {
+      _updateData(params = {}, noUpdataStatus) {
         this.SET_lEADER_LIST_FILTER(params)
         this.getList(params)
         if (!noUpdataStatus) {
@@ -295,8 +299,8 @@
       },
       // 状态列表
       _getLeaderStatus() {
-        let name  = this.leaderListFilter.model_type ?'getDistributionStatus' :'getLeaderStatus'
-        API.Leader[name]({keyword:this.leaderListFilter.keyword}).then((res) => {
+        let name = this.leaderListFilter.model_type ? 'getDistributionStatus' : 'getLeaderStatus'
+        API.Leader[name]({keyword: this.leaderListFilter.keyword}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
@@ -313,7 +317,7 @@
         this.$loading.hide()
         if (res.error === this.$ERR_OK) {
           this.$toast.show('关联成功')
-          this._updateData({page:1})
+          this._updateData({page: 1})
         }
       },
       // 团长可使用账号数量为10000个，当前剩余9966个

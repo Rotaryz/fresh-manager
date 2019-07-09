@@ -136,7 +136,7 @@
         </div>
 
         <!--社群福利券-->
-        <div class="edit-item  edit-list-item">
+        <div v-if="showAdd" class="edit-item  edit-list-item">
           <div class="edit-title">
             <span class="start">*</span>
             <span>选择优惠券</span>
@@ -200,14 +200,115 @@
             </div>
           </div>
         </div>
+
+        <!--邀请有礼-->
+        <div v-if="marketIndex === 4">
+          <div class="edit-item edit-list-item inviter">
+            <div class="edit-title">
+              <span class="start">*</span>
+              <span>邀请者</span>
+            </div>
+            <div class="big-list">
+              <div class="list-header list-box">
+                <div v-for="(item, idx) in inviteTitle" :key="idx" class="list-item">{{item}}</div>
+              </div>
+              <div class="list">
+                <div v-for="(item, index) in inviterArr" :key="index" class="list-content list-box">
+                  <div class="list-item">{{item.people}}</div>
+                  <div v-if="item.id" class="list-item">{{item.coupon_name}}</div>
+                  <div v-if="item.id" class="list-item">{{item.preferential_str}}</div>
+                  <div v-if="item.id" class="list-item">{{item.denomination}}</div>
+                  <div v-if="item.id" class="list-item">{{item.usable_stock}}</div>
+                  <div v-if="item.id" class="list-item list-item-double">
+                    <p class="item-dark">{{item.start_at}}</p>
+                    <div class="item-sub-time">{{item.end_at}}</div>
+                  </div>
+                  <div v-if="item.id" class="list-item">
+                    <div class="list-operation" :class="{'list-operation-disable': id}" @click="delInvite(index)">删除</div>
+                  </div>
+                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': id}" @click="_showGoodsCouponModal(index)">添加兑换券<span class="add-icon"></span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="edit-item edit-list-item inviter">
+            <div class="edit-title">
+              <span class="start">*</span>
+              <span>被邀请者</span>
+            </div>
+            <div class="big-list">
+              <div class="list-header list-box">
+                <div v-for="(item, idx) in invitedTitle" :key="idx" class="list-item">{{item}}</div>
+              </div>
+              <div class="list">
+                <div v-for="(item, index) in invitedArr" :key="index" class="list-content list-box">
+                  <div class="list-item">{{item.cond_type === 1 ? '新人红包' : item.cond_type === 6 ? '下单返红包' : ''}}</div>
+                  <div v-if="item.id" class="list-item">{{item.coupon_name}}</div>
+                  <div v-if="item.id" class="list-item">{{item.preferential_str}}</div>
+                  <div v-if="item.id" class="list-item">{{item.denomination_str}}</div>
+                  <div v-if="item.id" class="list-item">{{item.usable_stock}}</div>
+                  <div v-if="item.id" class="list-item list-item-double">
+                    <p class="item-dark">{{item.start_at}}</p>
+                    <div class="item-sub-time">{{item.end_at}}</div>
+                  </div>
+                  <div v-if="item.id" class="list-item">
+                    <div class="list-operation" :class="{'list-operation-disable': id}" @click="showDel(index)">删除</div>
+                  </div>
+                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': id}" @click="_showCouponModal(index)">添加优惠券<span class="add-icon"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <default-confirm ref="confirm" @confirm="_delItem"></default-confirm>
-    <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">取消</div>
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
-    </div>
+    <!-- 选择兑换券弹窗-->
+    <default-modal ref="goodsModal">
+      <div slot="content" class="shade-box">
+        <div class="title-box">
+          <div class="title">
+            选择兑换券
+          </div>
+          <span class="close hand" @click="_cancelGoodsModal"></span>
+        </div>
+        <!--搜索-->
+        <div class="shade-tab">
+          <div class="tab-item">
+            <base-search ref="couponSearch" placeHolder="请输入兑换券名称" @search="_searchMoreCoupontGoods"></base-search>
+          </div>
+        </div>
+        <!--列表-->
+        <div class="group-content">
+          <div class="title">
+            <span v-for="(item, index) in invitationTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
+          </div>
+          <div class="outreach-group-list">
+            <div v-for="(item, index) in goodsList" :key="index" class="group-item" @click="_selectCoupon(item, index)">
+              <div v-for="(val, ind) in invitationTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
+                <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
+                <div v-else-if="val.value === 'time'" class="main">
+                  <p>{{item.start_at}}</p>
+                  <p>{{item.end_at}}</p>
+                </div>
+                <p v-else-if="val.value === 'denomination'">{{item[val.value]}}</p>
+                <span v-else class="title-item">{{item[val.value]}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--翻页器-->
+        <div class="page-box">
+          <base-pagination ref="paginationGoods" :pageDetail="goodsPageTotal" @addPage="_getMoreCoupontGoods"></base-pagination>
+        </div>
+        <div class="back">
+          <div class="back-cancel back-btn hand" @click="_cancelGoodModal">取消</div>
+          <div class="back-btn back-submit hand" @click="_additionGoodsCoupon">确定</div>
+        </div>
+      </div>
+    </default-modal>
 
     <!-- 选择优惠券弹窗-->
     <default-modal ref="couponModal">
@@ -293,6 +394,10 @@
         </div>
       </div>
     </default-modal>
+    <div class="back">
+      <div class="back-cancel back-btn hand" @click="_back">取消</div>
+      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
+    </div>
   </div>
 </template>
 
@@ -309,7 +414,7 @@
   const TITLE = '新建查看营销'
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
-  const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'share_coupon']
+  const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'invite_customer']
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
@@ -340,6 +445,14 @@
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1, value: 'time'}
   ]
+  const INVITATION_TITLE = [
+    {name: '选择', flex: 0.4, value: ''},
+    {name: '兑换券名称', flex: 1.8, value: 'coupon_name'},
+    {name: '类型', flex: 1, value: 'preferential_str'},
+    {name: '面值', flex: 1, value: 'denomination'},
+    {name: '剩余数量', flex: 1, value: 'usable_stock'},
+    {name: '有效期', flex: 1, value: 'time'}
+  ]
   const ARROW_TEXT = [
     ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
@@ -352,8 +465,11 @@
       '领取成功点击去使用跳转商城',
       '客户商城选购商品',
       '提交订单立减金额'
-    ]
+    ],
+    ['邀请者', '被邀请者']
   ]
+  const INVITE_TITLE = ['成功邀请人数', '兑换券名称', '类型', '面值', '剩余', '有效期', '操作']
+  const INVITED_TITLE = ['触发条件', '优惠券名称', '类型', '面值', '剩余', '有效期', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -368,6 +484,7 @@
     data() {
       return {
         couponTitle: COUPON_TITLE, // 优惠券弹窗title
+        invitationTitle: INVITATION_TITLE, // 兑换券弹窗title
         groupTitle: GROUP_TITLE, // 团长弹窗title
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
         selectGroupTitle: SELECT_GROUP_TITLE, // 已选团长title
@@ -449,11 +566,34 @@
         modalType: '',
         type: '',
         disable: false,
-        currentItem: ''
+        currentItem: '',
+        // 邀请者
+        inviterArr: [
+          {people: '1人', cond_num: 1, cond_type: 5, tag_type: 1},
+          {people: '3人', cond_num: 3, cond_type: 5, tag_type: 1},
+          {people: '6人', cond_num: 6, cond_type: 5, tag_type: 1},
+          {people: '大于6人', cond_num: 7, cond_type: 5, tag_type: 1}
+        ],
+        invitedArr: [
+          {condition: '新人红包', cond_type: 1, tag_type: 1},
+          {condition: '下单返红包', cond_type: 6, tag_type: 1}
+        ],
+        inviteTitle: INVITE_TITLE,
+        invitedTitle: INVITED_TITLE,
+        invitedIndex: null,
+        inviteIndex: null,
+        goodsPage: 1,
+        goodsKeyword: '',
+        goodsList: [],
+        goodsPageTotal: {total: 1, per_page: 10, total_page: 1}
       }
     },
     computed: {
       ...marketComputed,
+      showAdd() {
+        let arr = [0, 1, 2, 3]
+        return arr.includes(this.marketIndex)
+      },
       testName() {
         // 活动名称
         return this.msg.title
@@ -475,10 +615,13 @@
       testNewEndTimeReg() {
         // 结束时间规则判断
         if (+this.marketIndex === 0 && this.msg.config_json.way === 'between_days') {
-          return (
-            Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
-            Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
-          )
+          if (this.msg.config_json.start_day && this.msg.config_json.end_day) {
+            return (
+              Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
+              Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
+            )
+          }
+          return true
         } else {
           return true
         }
@@ -512,6 +655,9 @@
         }
       },
       testCouponList() {
+        if (this.marketIndex === 4) {
+          return true
+        }
         let length = this.selectCouponList.length
         return length > 0
       },
@@ -523,6 +669,20 @@
           return item.number > 0 && COUNTREG.test(item.number)
         })
         return result
+      },
+      testInvite() {
+        if (this.marketIndex !== 4) {
+          return true
+        }
+        let index = this.inviterArr.findIndex((item) => !item.id)
+        return index === -1
+      },
+      testInvited() {
+        if (this.marketIndex !== 4) {
+          return true
+        }
+        let index = this.invitedArr.findIndex((item) => !item.id)
+        return index === -1
       }
     },
     watch: {},
@@ -568,12 +728,42 @@
         this.title = '社群福利券'
         this.type || this._getCouponList()
         this.type || this._getGroupList()
+        break
+      case 4:
+        this.msg.type = 7
+        // this.type || (this.msg.config_json.way = 'between_days')
+        this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
+        this.title = '邀请有礼'
+        this._getGoodsCouponList()
+        break
+      default:
+        break
       }
       this._initMsg(this.marketDetail)
     },
-    async mounted() {},
     methods: {
       ...marketMethods,
+      _cancelGoodsModal() {
+        this.$refs.goodsModal.hideModal()
+      },
+      // 删除被邀请者
+      showDel(index) {
+        if (this.disable) {
+          return
+        }
+        let item = this.invitedArr[index]
+        this.invitedArr[index] = {condition: item.condition, cond_type: item.cond_type}
+        this.invitedArr = JSON.parse(JSON.stringify(this.invitedArr))
+      },
+      // 删除邀请者
+      delInvite(index) {
+        if (this.disable) {
+          return
+        }
+        let item = this.inviterArr[index]
+        this.inviterArr[index] = {people: item.people, cond_type: item.cond_type, cond_num: item.cond_num}
+        this.inviterArr = JSON.parse(JSON.stringify(this.inviterArr))
+      },
       bannerChange(index) {
         this.arrowIndex = index
       },
@@ -675,7 +865,8 @@
           page: this.page,
           limit: 6,
           status: 1,
-          has_stock: 1
+          has_stock: 1,
+          tag_type: 0
         }
         API.Coupon.getCouponList(data, false).then((res) => {
           if (res.error !== this.$ERR_OK) {
@@ -690,8 +881,9 @@
           this.couponList = res.data
         })
       },
-      // 弹窗
-      _showCouponModal() {
+      // 弹窗优惠券
+      _showCouponModal(index) {
+        this.invitedIndex = typeof index === 'number' ? index : null
         if (this.disable) return
         this.couponCheckItem = {}
         if (this.modalType !== 'coupon') {
@@ -701,6 +893,55 @@
         }
         this._getCouponList()
         this.$refs.couponModal.showModal()
+      },
+      // 获取兑换券列表
+      _getGoodsCouponList() {
+        let data = {
+          coupon_name: this.goodsKeyword,
+          page: this.goodsPage,
+          limit: 6,
+          status: 1,
+          has_stock: 1,
+          tag_type: 1
+        }
+        API.Coupon.getCouponList(data, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.goodsPageTotal = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+          this.goodsList = res.data
+        })
+      },
+      _getMoreCoupontGoods(page) {
+        this.goodsPage = page
+        this._getGoodsCouponList()
+      },
+      _searchMoreCoupontGoods(word) {
+        this.goodsKeyword = word
+        this.goodsPage = 1
+        this._getGoodsCouponList()
+        this.$refs.paginationGoods.beginPage()
+      },
+      // 弹窗兑换券
+      _showGoodsCouponModal(index) {
+        this.inviteIndex = index
+        if (this.disable) return
+        this.couponCheckItem = {}
+        this._getGoodsCouponList()
+        this.$refs.goodsModal.showModal()
+      },
+      _cancelGoodModal() {
+        this.$refs.goodsModal.hideModal()
+      },
+      _additionGoodsCoupon() {
+        this.inviterArr[this.inviteIndex] = Object.assign({}, this.inviterArr[this.inviteIndex], this.couponCheckItem)
+        this.inviterArr = JSON.parse(JSON.stringify(this.inviterArr))
+        this._cancelGoodModal()
       },
       _showGroupModal() {
         if (this.disable) return
@@ -769,6 +1010,12 @@
         this._cancelModal()
       },
       _additionCoupon() {
+        if (this.marketIndex === 4) {
+          this.invitedArr[this.invitedIndex] = Object.assign({}, this.invitedArr[this.invitedIndex], this.couponCheckItem)
+          this.invitedArr = JSON.parse(JSON.stringify(this.invitedArr))
+          this._cancelModal()
+          return
+        }
         this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
         if (this.couponCheckItem.id) {
           let arr = []
@@ -792,6 +1039,7 @@
         let checkForm = this.checkForm()
         if (!checkForm) return
         this.isSubmit = true
+        let methodsName = ''
         this.msg.coupon_id = this.couponSelectItem.id
         switch (+this.marketIndex) {
         case 0:
@@ -801,6 +1049,7 @@
             delete this.msg.config_json.start_day
             delete this.msg.config_json.end_day
           }
+          methodsName = 'storeMarket'
           break
         case 1:
           if (this.msg.config_json.way === 'order_count') {
@@ -808,6 +1057,7 @@
           } else {
             delete this.msg.config_json.order_count
           }
+          methodsName = 'storeMarket'
           break
         case 3:
           this.msg.shop_coupons = this.selectGroupList.map((item) => {
@@ -816,10 +1066,26 @@
               number: item.number
             }
           })
+          methodsName = 'storeMarket'
+          break
+        case 4:
+          this.msg.coupon_id = ''
+          this.msg.config_json.inviter_coupons = this.inviterArr.map((item) => {
+            item.coupon_id = item.id
+            return item
+          })
+          this.msg.config_json.invitee_coupons = this.invitedArr.map((item) => {
+            item.coupon_id = item.id
+            return item
+          })
+          // 对接商品
+          methodsName = 'storeMarket'
+          break
+        default:
           break
         }
         this.msg.config_json.type_str = TYPE[this.marketIndex]
-        API.Market.storeMarket(this.msg, true).then((res) => {
+        API.Market[methodsName](this.msg, true).then((res) => {
           this.$loading.hide()
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -846,7 +1112,9 @@
           {value: this.testActivityMoneyReg, txt: '请输入正确的满足订单金额'},
           {value: this.testCouponList, txt: '请选择优惠券'},
           {value: this.testGroupList, txt: '请选择团长'},
-          {value: this.testGroupCount, txt: '请输入团长优惠券发放数量'}
+          {value: this.testGroupCount, txt: '请输入团长优惠券发放数量'},
+          {value: this.testInvite, txt: '请选择邀请者兑换券'},
+          {value: this.testInvited, txt: '请选择被邀请者优惠券'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -893,6 +1161,10 @@
             break
           default:
             this.newItem = obj.config_json.way
+          }
+          if (this.marketIndex === 4) {
+            this.inviterArr = this.msg.config_json.inviter_coupons
+            this.invitedArr = this.msg.config_json.invitee_coupons
           }
         }
       }
@@ -1553,5 +1825,23 @@
             overflow: hidden
             -webkit-line-clamp: 2
             -webkit-box-orient: vertical
-
+  .inviter
+    .list-box
+      margin-left: 40.9px
+      .list-item
+        &:first-child
+          min-width: 104px
+          max-width: 104px
+        &:nth-child(7)
+          padding: 0
+          max-width: 50px
+        &:nth-child(2)
+          flex: 2
+        &:nth-child(6)
+          min-width: 100px
+      .btn-main-big
+        line-height: 34px
+        height: 34px
+    .list .list-content:nth-child(2n)
+      background: $color-white
 </style>

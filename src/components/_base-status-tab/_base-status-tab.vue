@@ -60,6 +60,10 @@
         let el = document.querySelectorAll('.status-tab-item')
         this.statusIndex = index
         this.style = `left: ${el[index].offsetLeft}px; width: ${el[this.statusIndex].offsetWidth}px`
+      },
+      infoStatus(news) {
+        this.statusIndex = this.statusList.findIndex(item => item.status === news)
+        this.checkStatus(this.statusIndex, this.statusList[this.statusIndex])
       }
     }
   }

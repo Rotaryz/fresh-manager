@@ -53,6 +53,7 @@ http.interceptors.response.use(
 )
 
 function checkStatus(response) {
+  // console.log(response)
   // _loading
   // 如果http状态码正常，则直接返回数据
   if (
@@ -102,11 +103,12 @@ function requestException(res) {
 }
 
 export default {
-  post(url, data, loading = false) {
+  post(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'post',
       url,
+      timeout,
       data // post 请求时带的参数
     })
       .then((response) => {
@@ -116,11 +118,12 @@ export default {
         return checkCode(res)
       })
   },
-  get(url, params, loading = false) {
+  get(url, params, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'get',
       url,
+      timeout,
       params // get 请求时带的参数
     })
       .then((response) => {
@@ -130,11 +133,12 @@ export default {
         return checkCode(res)
       })
   },
-  put(url, data, loading = false) {
+  put(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'put',
       url,
+      timeout,
       data // put 请求时带的参数
     })
       .then((response) => {
@@ -144,11 +148,12 @@ export default {
         return checkCode(res)
       })
   },
-  delete(url, data, loading = false) {
+  delete(url, data, loading = false, timeout = 10000) {
     Utils.showLoading(loading)
     return http({
       method: 'delete',
       url,
+      timeout,
       data // put 请求时带的参数
     })
       .then((response) => {

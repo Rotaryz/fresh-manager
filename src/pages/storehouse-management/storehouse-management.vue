@@ -2,12 +2,15 @@
   <div class="storehouse-management table">
     <div class="down-content">
       <!--时间选择-->
-      <span class="down-tip">分类筛选</span>
+      <span class="down-tip">类目筛选</span>
       <div class="down-item-small">
-        <base-drop-down :select="assortment" @setValue="setSecondAssortment"></base-drop-down>
+        <base-drop-down :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+      </div>
+      <div class="down-item-small">
+        <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
       </div>
       <div class="down-item">
-        <base-drop-down :select="secondAssortment" @setValue="choessSecondAssortment"></base-drop-down>
+        <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
       </div>
       <span class="down-tip">库区筛选</span>
       <div class="down-item-small">
@@ -54,7 +57,7 @@
                 <p class="item-dark">{{item.goods_name}}</p>
                 <p class="item-sub">{{item.goods_sku_encoding}}</p>
               </div>
-              <div class="list-item">{{item.goods_category}}</div>
+              <div class="list-item">{{item.goods_material_category}}</div>
               <div class="list-item">{{`${item.total_stock}${item.unit}`}}</div>
               <div class="list-item">{{`${item.blocked_stock}${item.unit}`}}</div>
               <div class="list-item">{{`${item.usable_stock}${item.unit}`}}</div>
@@ -98,7 +101,7 @@
 
   const PAGE_NAME = 'STOREHOUSE_MANAGEMENT'
   const TITLE = '库存管理'
-  const COMMODITIES_LIST = ['商品', '分类', '总库存', '锁定库存', '可用库存', '总库存货值', '库存均价', '库位', '操作']
+  const COMMODITIES_LIST = ['商品', '类目', '总库存', '锁定库存', '可用库存', '总库存货值', '库存均价', '库位', '操作']
   const ENTRY_STORE_EXPORT = '/scm/api/backend/stock/warehouse-stock-export'
   export default {
     name: PAGE_NAME,
@@ -112,8 +115,17 @@
         secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{name: '55'}}
         store: {check: false, show: false, content: '库区名', type: 'default', data: []}, // 格式：{name: '55'}}
         secondStore: {check: false, show: false, content: '货架名', type: 'default', data: []}, // 格式：{name: '55'}}
-        saleStore: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '仓库库存', value: 0}, {name: '预售库存', value: 1}]}, // 格式：{name: '55'}}
+        saleStore: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '仓库库存', value: 0}, {name: '预售库存', value: 1}]
+        }, // 格式：{name: '55'}}
         isPresale: '',
+        stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
+        secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
+        thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
         warehousePositionId: '',
         goodsCategoryId: '',
         keyword: '',
@@ -129,7 +141,7 @@
           current_corp: currentId,
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: this.currentUser.access_token,
-          goods_category_id: this.goodsCategoryId,
+          goods_material_category_id: this.goodsCategoryId,
           keyword: this.keyword,
           is_presale: this.isPresale,
           warehouse_position_id: this.warehousePositionId
@@ -139,15 +151,27 @@
           search.push(`${key}=${data[key]}`)
         }
         let url = process.env.VUE_APP_SCM_API + ENTRY_STORE_EXPORT + '?' + search.join('&')
+        console.log(url)
         return url
       }
     },
     async created() {
-      await this._getFirstAssortment()
+      // await this._getFirstAssortment()
       await this._getStoreList()
+      this.getCategoriesData()
     },
     methods: {
       ...storeMethods,
+      getCategoriesData() {
+        API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.stairSelect.data = res.data
+            this.stairSelect.data.unshift({name: '全部', id: '', list: []})
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
       // 获取列表
       _getWarehouseList() {
         this.getWarehouseList({
@@ -158,6 +182,33 @@
           warehousePositionId: this.warehousePositionId,
           loading: false
         })
+      },
+      // 选择一级类目
+      async setStairValue(data) {
+        this.secondSelect.content = '二级类目'
+        this.secondSelect.data = data.list
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = []
+        this.goodsCategoryId = data.id
+        this.page = 1
+        this._getWarehouseList()
+        this.$refs.pagination.beginPage()
+      },
+      // 选择二级类目
+      async setSecondValue(data) {
+        this.thirdlySelect.content = '三级类目'
+        this.thirdlySelect.data = data.list
+        this.goodsCategoryId = data.id
+        this.page = 1
+        this._getWarehouseList()
+        this.$refs.pagination.beginPage()
+      },
+      // 选择三级类目
+      async setThirdlyValue(data) {
+        this.goodsCategoryId = data.id
+        this.page = 1
+        this._getWarehouseList()
+        this.$refs.pagination.beginPage()
       },
       // 选择一级分类
       async setSecondAssortment(item) {
@@ -190,7 +241,7 @@
       //  获取一级库位
       async _getStoreList() {
         let res = await API.Store.getStoreList(false, false)
-        this.store.data = res.error === this.$ERR_OK ? res.data[0].warehouse_positions : []
+        this.store.data = res.error === this.$ERR_OK && res.data[0] ? res.data[0].warehouse_positions : []
         this.store.data.unshift({name: '全部', id: ''})
       },
       // 获取库架名
