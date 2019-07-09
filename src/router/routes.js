@@ -1033,7 +1033,11 @@ export default [
                 }
                 next({params: {dataInfo, pageInfo}})
               })
+<<<<<<<<< Temporary merge branch 1
               .catch((e) => {
+=========
+              .catch(e => {
+>>>>>>>>> Temporary merge branch 2
                 next({name: '404'})
               })
           }

@@ -676,19 +676,11 @@ export const contentComputed = {
     'contentWorkPage',
     'workStatus',
     'workTabIndex',
-    'workKeyword'
+    'workKeyword',
+    'workCategoryId'
   ])
 }
 
 export const contentMethods = {
   ...mapActions('content', ['infoContent', 'contentAddPage', 'setWorkIndex', 'infoWork', 'getWorkListMore', 'getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
 }
-
-// // 内容
-// export const contentComputed = {
-//   ...mapGetters('content', ['artcleDetail'])
-// }
-// export const contentMethods ={
-//   ...mapActions('content', ['getArtcleDetail'])
-//
-// }
