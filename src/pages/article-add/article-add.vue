@@ -278,8 +278,8 @@
       </div>
     </div>
     <div class="back">
-      <template v-if="!this.id">
-        <div  class="back-cancel back-btn hand" @click="_submitBtn('addDraft')">存为草稿</div>
+      <template v-if="!id">
+        <div class="back-cancel back-btn hand" @click="_submitBtn('addDraft')">存为草稿</div>
         <div class="back-btn back-submit hand" @click="_submitBtn('addContent')">上线</div>
       </template>
       <div v-else class="back-btn back-submit hand" @click="_submitBtn('editContetnArticle')">保存</div>

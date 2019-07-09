@@ -163,7 +163,7 @@ export default [
             let id = routeTo.query.id
             // 详情数据
             if (id) {
-              API.content.getArticleDetail({id},false)
+              API.Content.getArticleDetail({id},false)
                 .then((res) => {
                   console.log(res, ERR_OK)
                   if (res.error !== ERR_OK) {
