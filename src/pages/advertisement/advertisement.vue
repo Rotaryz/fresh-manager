@@ -294,12 +294,28 @@
       await this._getModuleMsg(this.currentModule.module_name, this.cmsId, this.cmsModuleId)
       this._getAllActivityData()
       this._getFirstAssortment()
+      await this._infoEat()
       this.$loading.hide()
-      // let res = await this.getInfoBannerList({pageName: 'food'})
-      // console.log(res)
     },
     methods: {
       ...adverMethods,
+      async _infoEat() {
+        let res = await this.getInfoBannerList({pageName: 'food'})
+        let arr = res.modules
+        arr.forEach((item) => {
+          switch (item.module_name) {
+          case 'article_cate':
+            this.classifyList = item.list
+            break
+          case 'article':
+            this.articleList = item.list
+            break
+          default:
+            break
+          }
+        })
+        console.log(this.classifyList, this.articleList)
+      },
       getClassify(arr) {
         console.log(arr)
         this.classifyList = arr

@@ -98,7 +98,6 @@
       },
       selectType() {
         this.$emit('selectType', this.select, this.downIndex)
-
         if (!this.isUse) {
           return
         }

@@ -171,7 +171,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
-              .dispatch('advertisement/getInfoBannerList')
+              .dispatch('advertisement/getInfoBannerList', {pageName: 'index'})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})

@@ -240,7 +240,7 @@
       },
       // 下线
       upLine(item) {
-        this.methodsName = item.status === 1 ? 'downLineWork' : 'upLineWork'
+        this.methodsName =  'downLineWork'
         this.delId = item.id
         this.$refs.confirm.show('确定要下线该作品吗？')
       },

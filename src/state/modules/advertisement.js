@@ -28,7 +28,8 @@ export const actions = {
   checkTab({commit}, index) {
     commit('SET_INFO_TAB_INDEX', index)
   },
-  getInfoBannerList({state, commit, dispatch}, {pageName = 'index'}) {
+  getInfoBannerList({state, commit, dispatch}, obj) {
+    let {pageName} = obj
     return API.Advertisement.cmsMsg({page_name: pageName})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -36,7 +37,7 @@ export const actions = {
         }
         let arr = res.data
         commit('SET_INFO_LIST', arr)
-        return true
+        return res.data
       })
       .catch(() => {
         return false
