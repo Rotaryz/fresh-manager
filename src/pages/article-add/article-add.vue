@@ -226,11 +226,13 @@
         <draggable v-if="currentType!=='video' && addData.details.length" ref="detailsContent" v-model="addData.details" class="content-details">
           <transition-group>
             <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
-              <div class="close-icon" @click="deleteContentItem(idx,item)"></div>
+              <div class="close-icon hand" @click="deleteContentItem(idx,item)"></div>
               <img v-if="item.type==='image'" :src="item.value" class="conten-image">
               <video v-else-if="item.type==='video'" :src="item.value" class="conten-video"></video>
               <div v-else-if="item.type==='goods'" class="good-item">
-                <img :src="item.value.goods_cover_image" class="goods-photo">
+                <img v-if="item.value.is_online === 0" src="./pic-off_shelf@2x.png" class="goods-photo">
+                <img v-else-if="item.value.usable_stock === 0" src="./pic-out_stock@2x.png" class="goods-photo">
+                <img v-else :src="item.value.goods_cover_image" class="goods-photo">
                 <div class="info">
                   <div>
                     <div class="name">{{item.value.name}}</div>
@@ -487,23 +489,23 @@
       this.currentType = this.$route.query.type || 'common'
       this.id = this.$route.query.id || ''
       this.addData.articlePid = this.$route.query.articlePid || '';
-      if(this.id || this.addData.articlePid){
+      if (this.id || this.addData.articlePid) {
         this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
-      }else{
+      } else {
         this._getAuth()
       }
     },
     methods: {
       // 新增创建时获取最后一次作者信息
-      _getAuth(){
+      _getAuth() {
         API.Content.getAuth().then(res => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
           }
           this.addData.authPhoto.url = res.data.head_image_url
-          this.addData.authPhoto.id =  res.data.head_image_id
-          this.addData.authName =  res.data.nickname
-          this.addData.authSignature =  res.data.sign
+          this.addData.authPhoto.id = res.data.head_image_id
+          this.addData.authName = res.data.nickname
+          this.addData.authSignature = res.data.sign
         }).finally(() => {
           this.$loading.hide()
         })
@@ -552,10 +554,13 @@
                   })
                   break
                 case "goods":
-                  details.push({
-                    type: 'goods',
-                    value: contItem.goods,
-                  })
+                  if (contItem.goods.goods_id) {
+                    details.push({
+                      type: 'goods',
+                      value: {id: contItem.goods.goods_id, ...contItem.goods},
+                    })
+                    this.addData.goodsList.push({id: contItem.goods.goods_id, ...contItem.goods})
+                  }
                   break
               }
             })
@@ -571,9 +576,13 @@
             this.addData.videoIntroduce = item.content[0].introduction
           }
           if (item.type === 'goods' && item.style_type === 'content_goods_list') {
-            this.addData.goodsList = item.content.map(item => {
-              return item.goods
+            let goodsList = []
+            item.content.forEach(item => {
+              if (item.goods.goods_id) {
+                goodsList.push({id: item.goods.goods_id, ...item.goods})
+              }
             })
+            this.addData.goodsList = goodsList
           }
         })
       },
@@ -695,6 +704,7 @@
       deleteContentItem(idx, item) {
         this.addData.details.splice(idx, 1)
         if (item.type === 'goods') {
+          console.log(this.addData.goodsList, item.value)
           let index = this.addData.goodsList.findIndex(goods => goods.id === item.value.id)
           if (index !== -1) this.addData.goodsList.splice(index, 1)
         }
@@ -726,6 +736,7 @@
       },
       // 展示商品弹窗
       async showGoods() {
+        console.log(this.addData.goodsList)
         this.chooseGoodsFilter.page = 1
         this.chooseGoodsFilter.goods_category_id = ""
         this.getCategoryFirst()
@@ -774,7 +785,7 @@
         /* eslint-disable */
         switch (item.selected) {
           case 0:
-            if (this.addData.goodsList.length + this.selectGoods.length === 5) {
+            if (this.addData.goodsList.length + this.selectGoods.length >= 5) {
               this.$toast.show('选择商品数量不能超过五个')
               return
             }
@@ -793,13 +804,15 @@
       // 删除商品
       _showDelGoods(item, index) {
         this.addData.goodsList.splice(index, 1)
+        console.log(this.addData.goodsList)
       },
       // 单个添加
       _additionOne(item, index) {
         if (item.selected === 1) {
           return
         }
-        if (this.addData.goodsList.length === 5) {
+        console.log(this.addData.goodsList)
+        if (this.addData.goodsList.length >= 5) {
           this.$toast.show('选择商品数量不能超过5个')
           return
         }
@@ -1061,6 +1074,7 @@
         padding: 5px 14px
         height: 94px
         resize: none
+        resize: none
 
       .num
         position: absolute
@@ -1318,6 +1332,7 @@
             scroll-opacity(5px, 100px)
             height: 100%
             width: 100%
+            resize: none
 
           &:last-child
             margin-bottom: 0px
