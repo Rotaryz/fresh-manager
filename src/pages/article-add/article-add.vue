@@ -531,8 +531,8 @@
         this.addData.authPhoto.id = obj.author.head_image_id
         this.addData.authName = obj.author.nickname
         this.addData.authSignature = obj.author.sign
-        this.addData.goodCount = obj.browse_count
-        this.addData.lookCount = obj.fabulous_num
+        this.addData.goodCount = obj.browse_count || 0
+        this.addData.lookCount = obj.fabulous_num || 0
         obj.assembly.forEach(item => {
           if (item.type === 'combination' && item.style_type === 'content') {
             let details = []
@@ -874,8 +874,8 @@
           else if (!this.addData.videoIntroduce) message = '请填写视频简介'
         } else if (this.currentType === 'cookbook' && !this.addData.foodList) message = '请填写食材清单'
         else if (this.currentType !== 'video' && !this.addData.details.length) message = '请编辑内容详情'
-        else if (this.addData.goodCount) this.addData.goodCount = 0
-        else if (this.addData.lookCount) this.addData.lookCount = 0
+        else if (!this.addData.goodCount) this.addData.goodCount = 0
+        else if (!this.addData.lookCount) this.addData.lookCount = 0
         if (message) {
           this.$toast.show(message)
           return false
@@ -885,6 +885,7 @@
       },
       // 上线
       async _submitBtn(name) {
+
         let res = this.justifyConent()
         if (res) {
           let data = this.getSubmitData()
@@ -985,6 +986,7 @@
           })
         }
         if (this.id) params.id = this.id
+        console.log(params, this.addData)
         return params
       }
     }
