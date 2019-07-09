@@ -485,9 +485,27 @@
       this.currentType = this.$route.query.type || 'common'
       this.id = this.$route.query.id || ''
       this.addData.articlePid = this.$route.query.articlePid || '';
-      (this.id || this.addData.articlePid) && this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
+      if(this.id || this.addData.articlePid){
+        this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
+      }else{
+        this._getAuth()
+      }
     },
     methods: {
+      // 新增创建时获取最后一次作者信息
+      _getAuth(){
+        API.Content.getAuth().then(res => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+          }
+          this.addData.authPhoto.url = res.data.head_image_url
+          this.addData.authPhoto.id =  res.data.head_image_id
+          this.addData.authName =  res.data.nickname
+          this.addData.authSignature =  res.data.sign
+        }).finally(() => {
+          this.$loading.hide()
+        })
+      },
       // 转换详情数据
       changeDetialData(obj) {
         this.currentType = obj.type || 'common'

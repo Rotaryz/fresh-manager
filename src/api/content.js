@@ -88,6 +88,10 @@ export default {
     let url = `/social-shopping/api/cos/get-file-info`
     return request.get(url, data, loading)
   },
+  getAuth(loading=false){
+    let url = `/social-shopping/api/backend/article-last-author`
+    return request.get(url, {}, loading)
+  },
   /**
    * 内容詳情
    *
