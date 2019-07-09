@@ -31,11 +31,19 @@
             {{name}}标题
           </div>
           <div class="edit-input-box">
-            <input v-model="addData.title"
+            <input v-if="currentType === 'video'" v-model="addData.title"
                    type="text"
-                   :placeholder="'在此输入'+name+'标题，最少5个字'"
+                   :placeholder="'在此输入'+name+'标题，最多30个字'"
                    class="edit-input title-input"
+                   max-length="30"
             >
+            <input v-else v-model="addData.title"
+                   type="text"
+                   :placeholder="'在此输入'+name+'标题，最少5个最多50个字'"
+                   class="edit-input title-input"
+                   max-length="50"
+            >
+
           </div>
         </div>
         <!-- 封面-->
@@ -47,7 +55,7 @@
           <div class="edit-input-box flex-box">
             <base-upload :videoUrl="addData.coverVideo.url"
                          :imageUrl="addData.coverImage.url"
-                         :picNum="1"
+                         :videoSize="10"
                          :fileType="currentType!=='video' ?'image-video' :'image'"
                          @failFile="failFile"
                          @getPic="getPic"
@@ -142,8 +150,8 @@
             视频简介
           </div>
           <div class="edit-input-box">
-            <textarea v-model="addData.videoIntroduce" class="edit-textarea edit-input" placeholder="" maxlength="50"></textarea>
-            <span class="num">{{addData.videoIntroduce && addData.videoIntroduce.length || 0}}/50</span>
+            <textarea v-model="addData.videoIntroduce" class="edit-textarea edit-input" placeholder="" maxlength="60"></textarea>
+            <span class="num">{{addData.videoIntroduce && addData.videoIntroduce.length || 0}}/60</span>
           </div>
         </div>
         <!--菜谱  食材清单-->
@@ -155,9 +163,9 @@
           <div class="edit-input-box">
             <textarea v-model="addData.foodList" class="edit-textarea edit-input"
                       placeholder="例子：大蒜，酱油，猪肉，食材之间用逗号隔开，最多输入50个字符"
-                      maxlength="50"
+                      maxlength="100"
             ></textarea>
-            <span class="num">{{addData.foodList && addData.foodList.length || 0}}/50</span>
+            <span class="num">{{addData.foodList && addData.foodList.length || 0}}/100</span>
           </div>
         </div>
         <!--视频/菜谱 添加商品-->
@@ -612,6 +620,7 @@
       },
       // 封面
       getCoverVideo(video) {
+        console.log(video)
         this.addData.coverVideo.id = video.id
         this.addData.coverVideo.file_id = video.file_id
         this.addData.coverVideo.url = video.full_url
@@ -646,7 +655,7 @@
         }
       },
       failFile(msg) {
-        this.$emit('showToast', msg)
+        this.$toast.show(msg)
       },
       // 作者头像
       getAuthorPic(image) {
@@ -852,7 +861,7 @@
         let message = ''
         if (!this.addData.category) message = '请选择内容分类'
         else if (!this.addData.title) message = '请输入文章标题'
-        else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 8)) message = '请输入5-8个字的文章标题'
+        else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 50)) message = '请输入文章标题最少5个最多50个字符'
         else if (this.currentType === 'video' && this.addData.coverImage.id === '') message = '请上传封面'
         else if (this.currentType !== 'video' && !this.addData.coverVideo.id && !this.addData.coverImage.id) message = '请上传封面'
         else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id) {
