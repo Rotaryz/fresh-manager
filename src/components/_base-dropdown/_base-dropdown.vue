@@ -6,7 +6,10 @@
         <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': visible}">
         <transition name="fade">
           <ul v-show="visible" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
-            <li v-for="(child, chIdx) in data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
+            <li v-for="(child, chIdx) in data"
+                :key="chIdx"
+                :class="['select-child-item',{active:(valueKey ? child[valueKey] :child)===value}]"
+                :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
                 @click.stop="setValue(child, chIdx)"
             >
               {{child[labelKey]}}
@@ -22,44 +25,54 @@
 <script type="text/ecmascript-6">
   export default {
     props: {
+      // 选中的值
       value: {
         type: [String, Object, Boolean, Number],
         default: ''
       },
+      // 占位符
       placeholder: {
         type: String,
         default: ''
       },
+      // 显示的label键值
       labelKey: {
         type: String,
         default: 'name'
       },
+      // 需要的value键值
       valueKey: {
         type: String,
-        default: ''
+        default: 'id'
       },
+      // 列表数据
       data: {
         type: Array,
         default: () => {
           return []
         }
       },
+      // 没有选择列表显示的文字
       noContentText: {
         type: String,
         default: '暂无数据'
       },
+      // 是否使用下拉
       isUse: {
         type: Boolean,
         default: true
       },
+      // 每一行高度
       itemHeight: {
         type: Number,
         default: 40
       },
+      // 每一行宽度
       width: {
         type: Number,
         default: 102
       },
+      // 显示选中input的高度
       height: {
         type: Number,
         default: 28
@@ -223,6 +236,7 @@
           box-sizing: border-box
 
           &:hover
+          &.active
             color: $color-main
 
     .admin-select-box-active

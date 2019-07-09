@@ -297,6 +297,7 @@
           <div class="tab-item">
             <base-dropdown v-model="goodsCategoryFrist"
                            :data="goodsCategoryFristList"
+                           placeholder="一级分类"
                            valueKey="id"
                            :width="218"
                            @change="_selectCategoryFirst"
@@ -305,6 +306,7 @@
           <div class="tab-item">
             <base-dropdown v-model="goodsCategorySecond"
                            :data="goodsCategorySecondList"
+                           placeholder="二级分类"
                            valueKey="id"
                            :width="140"
                            @change="_selectCategorySecond"
@@ -510,7 +512,7 @@
       changeDetialData(obj) {
         this.currentType = obj.type || 'common'
         this.addData.title = obj.title
-        this.addData.category = obj.id
+        this.addData.category = obj.category.id
         this.addData.coverImage.url = obj.cover_image.source_url
         this.addData.coverImage.id = obj.cover_image.id
         this.addData.coverVideo.url = obj.cover_video.full_url || ''
@@ -566,6 +568,7 @@
             this.addData.videoContent.url = item.content[0].video.full_url
             this.addData.videoContent.name = item.content[0].video.name
             this.addData.videoContent.id = item.content[0].video.id
+            this.addData.videoIntroduce = item.content[0].introduction
           }
           if (item.type === 'goods' && item.style_type === 'content_goods_list') {
             this.addData.goodsList = item.content.map(item => {
@@ -866,7 +869,7 @@
           let res = await API.Content[name](data, true)
           this.$toast.show(res.message)
           this.$loading.hide()
-          if (res.error !== this.$ERR_OK) this.$route.go(-1)
+          if (res.error === this.$ERR_OK) this.$router.go(-1)
         }
       },
       // 上线
