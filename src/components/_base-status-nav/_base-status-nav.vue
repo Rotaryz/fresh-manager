@@ -16,24 +16,29 @@
     name: COMPONENT_NAME,
     props: {
       statusList: {
+        // 组件数据数据
         type: Array,
         default: () => {
           return [{label: '全部', value: '', num: 0}]
         }
       },
       value: {
+        // 当前选择值
         type: [String, Number],
         default: ''
       },
       valueKey: {
+        // 默认键值(可使用自己所需键值)
         type: String,
         default: 'value'
       },
       labelKey: {
+        // 默认label键值(可使用自己所需键值)
         type: String,
         default: 'label'
       },
       numKey: {
+        // 默认num键值(可使用自己所需键值)
         type: String,
         default: 'num'
       }

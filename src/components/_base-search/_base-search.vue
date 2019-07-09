@@ -17,14 +17,17 @@
     name: COMPONENT_NAME,
     props: {
       placeHolder: {
+        // 默认文字
         type: String,
         default: '退款单号/会员名称'
       },
       infoText: {
+        // 输入框值
         type: String,
         default: ''
       },
       width: {
+        // 组件输入框宽度
         type: Number,
         default: 187
       }
