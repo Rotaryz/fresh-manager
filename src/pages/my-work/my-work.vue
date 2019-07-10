@@ -183,6 +183,9 @@
       this.infoQuery()
       await this.getContentClassList()
       await this._statistic()
+      this.$nextTick(() => {
+        this.$refs.baseStatusTab.infoStatus(this.statusType)
+      })
     },
     methods: {
       ...contentMethods,
@@ -197,6 +200,7 @@
         this.saveValue[this.pageName] = this.workPage
         this.saveValue[this.categoryIdName] = this.workCategoryId
         this.saveValue[this.statusName] = this.workStatus
+        this.statusType = this.saveValue[this.statusName]
       },
       // 获取二维码
       async shwoQrCode(id, index, item) {
