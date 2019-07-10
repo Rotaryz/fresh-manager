@@ -126,7 +126,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  downLineWork(id, data = {status: 0}, loading = true) {
+  downLineWork(id, data = {status: 2}, loading = true) {
     let url = `/social-shopping/api/backend/article-set-status/${id}`
     return request.get(url, data, loading)
   },

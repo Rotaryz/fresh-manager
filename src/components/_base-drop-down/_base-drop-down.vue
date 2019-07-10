@@ -97,8 +97,7 @@
         }, 1500)
       },
       selectType() {
-        this.$emit('selectType', this.select, this.downIndex)
-
+        console.log(this.select)
         if (!this.isUse) {
           return
         }
@@ -106,7 +105,7 @@
           return
         }
         this.select.check = !this.select.check
-        this.$emit('selectType', this.select)
+        this.$emit('selectType', this.select, this.downIndex)
       },
       setValue(value, index) {
         this.select.check = false
