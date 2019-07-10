@@ -202,7 +202,7 @@
       async shwoQrCode(id, index) {
         this.loadImg = true
         // {path: 'pages/choiceness?s=' + id, is_hyaline: false} 页面参数
-        let res = await API.Content.createQrcode({path: `package-content/content-article-detail-video?c=${id}`, is_hyaline: false})
+        let res = await API.Content.createQrcode({path: `package-content/content-article-detail-video?a=${id}&p=1`, is_hyaline: false})
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return

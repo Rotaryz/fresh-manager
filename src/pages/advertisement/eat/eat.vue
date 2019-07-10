@@ -50,18 +50,18 @@
             <div class="fall-box fall-left">
               <div v-for="(item, index) in leftList" :key="item.id" class="fall-item">
                 <div class="img-box" :style="{height:item.itemHeight+'px'}">
-                  <img src="./icon-img_play@2x.png" class="video-icon">
-                  <img class="card-img" :style="{background:item.color}" :src="item.image_url">
+                  <img v-if="item.type === 'video'" src="./icon-img_play@2x.png" class="video-icon">
+                  <img :src="item.cover_image_url" class="card-img">
                 </div>
-                <div class="fall-title">{{item.text}}</div>
+                <div class="fall-title">{{item.title}}</div>
                 <div class="fall-author">
                   <div class="fall-author-left">
                     <img src="" class="fall-author-img">
-                    <span class="fall-author-name">厨师达人厨师达人</span>
+                    <span v-if="item.author" class="fall-author-name">{{item.author.nickname}}</span>
                   </div>
                   <div class="fall-author-right" @click="giveLike('left', index, item)">
                     <img src="./icon-like_big1@2x.png" class="fall-author-icon">
-                    <span class="fall-author-like">30</span>
+                    <span class="fall-author-like">{{item.fabulous_num}}</span>
                   </div>
                 </div>
                 <!--瀑布流内容卡片-->
@@ -71,18 +71,18 @@
             <div id="right" class="fall-box fall-right">
               <div v-for="(item, index) in rightList" :key="item.id" class="fall-item">
                 <div class="img-box" :style="{height:item.itemHeight+'px'}">
-                  <img src="./icon-img_play@2x.png" class="video-icon">
-                  <img :style="{background:item.color}" :src="item.image_url" class="card-img">
+                  <img v-if="item.type === 'video'" src="./icon-img_play@2x.png" class="video-icon">
+                  <img :src="item.cover_image_url" class="card-img">
                 </div>
-                <div class="fall-title">{{item.text}}</div>
+                <div class="fall-title">{{item.title}}</div>
                 <div class="fall-author">
                   <div class="fall-author-left">
                     <img src="" class="fall-author-img">
-                    <span class="fall-author-name">厨师达人厨师达人</span>
+                    <span v-if="item.author" class="fall-author-name">{{item.author.nickname}}</span>
                   </div>
                   <div class="fall-author-right" @click="giveLike('left', index, item)">
                     <img src="./icon-like_big1@2x.png" class="fall-author-icon">
-                    <span class="fall-author-like">30</span>
+                    <span class="fall-author-like">{{item.fabulous_num}}</span>
                   </div>
                 </div>
                 <!--瀑布流内容卡片-->
@@ -129,6 +129,12 @@
             status: 1
           })
         }
+      },
+      listData: {
+        type: Array,
+        default: () => {
+          return []
+        }
       }
     },
     data() {
@@ -144,6 +150,14 @@
         elRight: '',
       }
     },
+    watch: {
+      listData: {
+        handler(news) {
+          this.fillData()
+        },
+        deep: true
+      }
+    },
     created() {
       let percentage = 750 / 294
       // 计算瀑布流间距
@@ -152,7 +166,7 @@
       itemWidth = (294 - margin) / 2
       // 计算瀑布流的最大高度，防止长图霸屏
       maxHeight = itemWidth / 0.8
-      this.getList()
+      // this.getList()
     },
     methods: {
       changeType(type) {
@@ -176,7 +190,7 @@
         this.fillData(false, list)
       },
       // 分开左右两个list
-      fillData(isPull, listData) {
+      fillData(isPull) {
         if (isPull) {
           // 是否下拉刷新，是的话清除之前的数据
           leftList.length = 0
@@ -188,10 +202,10 @@
         }
         rightList = []
         leftList = []
-        for (let i = 0, len = listData.length; i < len; i++) {
-          let tmp = listData[i]
-          tmp.width = parseInt(tmp.width)
-          tmp.height = parseInt(tmp.height)
+        for (let i = 0, len = this.listData.length; i < len; i++) {
+          let tmp = this.listData[i]
+          tmp.width = parseInt(tmp.cover_image.width)
+          tmp.height = parseInt(tmp.cover_image.height)
           tmp.itemWidth = itemWidth
           let per = tmp.width / tmp.itemWidth
           tmp.itemHeight = tmp.height / per

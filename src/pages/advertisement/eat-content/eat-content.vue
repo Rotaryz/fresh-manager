@@ -97,10 +97,10 @@
                 <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
                   <span class="after"></span>
                 </div>
-                <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
+                <div class="goods-img" :style="{'background-image': 'url(\'' + item.cover_image_url + '\')'}"></div>
                 <div class="goods-msg">
-                  <div class="goods-name">文章标题</div>
-                  <div class="goods-name">文章作者</div>
+                  <div class="goods-name">{{item.title}}</div>
+                  <div v-if="item.author" class="goods-name">{{item.author.nickname}}</div>
                   <!--<div class="goods-money">{{item.goods_sku_encoding}}</div>-->
                 </div>
 
@@ -135,7 +135,7 @@
   const TEMPLATE_OBJ = {
     id: '',
     image_id: '',
-    type: '',
+    type: 'article',
     name: '',
     url: '',
     other_id: '',
@@ -144,11 +144,13 @@
     showLoading: false,
     add_icon: ADD_IMAGE
   } // 模板对象
-  const TEMPLATE_CLASSIFY = {
+  let TEMPLATE_CLASSIFY = {
     content: '请选择内容分类',
-    type: 'default',
+    type: 'article_cate',
     id: '',
     name: '',
+    check: false,
+    show: false,
     data: []
   }
   export default {
@@ -162,6 +164,14 @@
       contentType: {
         type: String,
         default: 'article'
+      },
+      articleId: {
+        type: Number,
+        default: 0
+      },
+      articleCateId: {
+        type: Number,
+        default: 0
       }
     },
     data() {
@@ -180,7 +190,9 @@
         assortment: {check: false, show: false, content: '选择文章分类', type: 'default', data: []}, // 格式：{title: '55'
         selectItem: {},
         classifyIndex: 0,
-        temporaryClassify: [JSON.parse(JSON.stringify(TEMPLATE_CLASSIFY))]
+        temporaryClassify: [JSON.parse(JSON.stringify(TEMPLATE_CLASSIFY))],
+        storageId: 0,
+        storageList: []
       }
     },
     computed: {
@@ -190,35 +202,70 @@
         return useName
       }
     },
+    watch: {
+      temporaryClassify: {
+        async handler(news) {
+          await this.getContentList()
+        },
+        deep: true
+      }
+    },
     async created() {
       await this._getFirstAssortment()
       await this._getGoodsList(false)
     },
     methods: {
+      async infoClassData(arr) {
+        TEMPLATE_CLASSIFY.data = JSON.parse(JSON.stringify(arr))
+      },
       changeArticle(arr) {
         this.temporaryArticle = arr
       },
-      _editClassify() {
+      async _editClassify() {
         if (!this.temporaryClassify.length) {
           this.$toast.show('内容推荐不能为空', 1500)
           return
         } else {
           for (let i = 0; i < this.temporaryClassify.length; i++) {
-            if (!this.temporaryClassify[i].id) {
+            if (!this.temporaryClassify[i].other_id) {
               this.$toast.show(`第${i + 1}条内容分类不能为空`, 1500)
               return
             }
           }
         }
-        console.log(this.temporaryClassify)
+        let data = this.temporaryClassify.map((item) => {
+          let obj = {id: item.id, name: item.content, other_id: item.other_id, type: item.type}
+          return {page_module_id: this.articleCateId, ext_json: obj}
+        })
+        let res = await API.Advertisement.saveModuleMsg({data})
+        if (res.error === this.$ERR_OK) {
+          this.$parent.infoEat()
+          // await this._getModuleMsg(this.cmsType, this.articleId, this.cmsModuleId)
+          // this._isSave = true
+        }
+        this.$loading.hide()
+        this.$toast.show(res.message)
       },
       showSelectClassify(value, index) {
         this.classifyIndex = index
       },
+      async getContentList(item) {
+        let arr = []
+        let id = this.temporaryClassify.length && this.temporaryClassify[0].other_id ? this.temporaryClassify[0].other_id : ''
+        if (this.storageId === id) {
+          this.$emit('getContentList', this.storageList)
+          return
+        }
+        this.storageId = id
+        let res = await API.Content.getWorkList({type: '', status: 1, is_cate_show: 1, category_id: this.storageId}, false)
+        arr = res.data
+        this.storageList = arr
+        this.$emit('getContentList', arr)
+      },
       // 获取分类id
-      getClassifyId(item) {
+      async getClassifyId(item) {
         this[this.dataName][this.classifyIndex].name = item.name
-        this[this.dataName][this.classifyIndex].id = item.id
+        this[this.dataName][this.classifyIndex].other_id = item.id
         this.$emit('getClassify', this[this.dataName])
       },
       _addMoreClassify() {
@@ -242,12 +289,13 @@
           this.$emit('getClassify', this[this.dataName])
           break
         }
-        // let res = await API.Advertisement.deleteBanner(this.delId)
-        // this.$toast.show(res.message)
-        // if (res.error !== this.$ERR_OK) {
-        //   return
-        // }
-        // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+        let index = this[this.dataName].findIndex(item => item.id === this.delId)
+        let res = await API.Advertisement.deleteBanner(this.delId)
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        this[this.dataName].splice(1, index)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -260,7 +308,7 @@
         this.$refs.dialog.show('是否确定删除该内容？')
       },
       // 提交内容推荐
-      _editBanner() {
+      async _editBanner() {
         if (!this.temporaryArticle.length) {
           this.$toast.show('内容推荐不能为空', 1500)
           return
@@ -278,8 +326,18 @@
             }
           }
         }
-        console.log(this.temporaryArticle)
-
+        let data = this.temporaryArticle.map((item) => {
+          delete item.add_icon
+          return {page_module_id: this.articleId, ext_json: item}
+        })
+        let res = await API.Advertisement.saveModuleMsg({data})
+        if (res.error === this.$ERR_OK) {
+          this.$parent.infoEat()
+          // await this._getModuleMsg(this.cmsType, this.articleId, this.cmsModuleId)
+          // this._isSave = true
+        }
+        this.$loading.hide()
+        this.$toast.show(res.message)
       },
       // 添加更多的广告
       _addMore() {
@@ -292,6 +350,7 @@
         setTimeout(() => {
           el.scrollTop = el.scrollHeight
         }, 100)
+        this.$emit('getArticle', this[this.dataName])
       },
       _showGoods(index) {
         this.upIndex = index
@@ -299,12 +358,13 @@
       },
       // 获取商品列表
       async _getGoodsList(loading = true) {
-        let res = await API.Coupon.getGoodsList(
+        let res = await API.Content.getWorkList(
           {
-            is_online: 1,
+            type: '',
             keyword: this.text,
-            goods_category_id: this.parentId,
+            category_id: this.parentId,
             page: this.choicePage,
+            is_cate_show: 1,
             limit: 7
           },
           loading
@@ -320,7 +380,6 @@
         }
         this.choiceGoods = res.data
         this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.selectItem.id)
-        // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === )
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -329,8 +388,8 @@
           return
         }
         this.goodsItem = [this.selectItem]
-        this[this.dataName][this.upIndex].name = this.selectItem.name
-        console.log(this[this.dataName])
+        this[this.dataName][this.upIndex].name = this.selectItem.title
+        this[this.dataName][this.upIndex].other_id = this.selectItem.id
         this._hideGoods()
       },
       // 获取分页商品列表
@@ -359,7 +418,7 @@
       },
       // 获取一级分类
       async _getFirstAssortment() {
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
+        let res = await API.Content.getContentClassList({keyword: '', limit: 0, page: 1, status: 1})
         this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})

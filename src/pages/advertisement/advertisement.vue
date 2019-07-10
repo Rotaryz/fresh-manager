@@ -74,8 +74,16 @@
 
       </div>
       <div v-show="infoTabIndex === 1" class="advertisement-small">
-        <eat :articleList="articleList" :contentTypeDefault="contentType" :classifyList="classifyList" @getContentType="getContentType"></eat>
-        <eat-content :contentType="contentType" @getArticle="getArticle" @getClassify="getClassify"></eat-content>
+        <eat :articleList="articleList" :listData="listData" :contentTypeDefault="contentType" :classifyList="classifyList" @getContentType="getContentType"></eat>
+        <eat-content
+          ref="eatContent"
+          :contentType="contentType"
+          :articleId="articleId"
+          :articleCateId="articleCateId"
+          @getArticle="getArticle"
+          @getClassify="getClassify"
+          @getContentList="getContentList"
+        ></eat-content>
       </div>
       <!--<div class="back">-->
       <!--<div class="back-btn btn-main">保存并发布</div>-->
@@ -268,8 +276,12 @@
         guessList: [],
         groupList: [],
         articleList: [],
-        contentType: 'classify',
-        classifyList: []
+        contentType: 'article',
+        classifyList: [],
+        articleId: 0,
+        articleCateId: 0,
+        listData: [],
+        classList: []
       }
     },
     computed: {
@@ -278,11 +290,6 @@
         let lastName = this.cmsType[0].toUpperCase() + this.cmsType.slice(1, this.cmsType.length)
         let useName = `temporary${lastName}`
         return useName
-      }
-    },
-    watch: {
-      classifyList(news) {
-        console.log(news)
       }
     },
     async created() {
@@ -294,30 +301,58 @@
       await this._getModuleMsg(this.currentModule.module_name, this.cmsId, this.cmsModuleId)
       this._getAllActivityData()
       this._getFirstAssortment()
-      await this._infoEat()
+      await this.getCate(false)
+      await this.infoEat()
       this.$loading.hide()
     },
     methods: {
       ...adverMethods,
-      async _infoEat() {
+      async infoEat() {
         let res = await this.getInfoBannerList({pageName: 'food'})
         let arr = res.modules
-        arr.forEach((item) => {
+        arr.forEach(async (item) => {
           switch (item.module_name) {
-          case 'article_cate':
+          case 'article_category':
             this.classifyList = item.list
+            this.articleCateId = item.id
+            this.classifyList = this.classifyList.map((item) => {
+              item.content = item.name
+              item.data = this.classList
+              item.check = false
+              item.show = false
+              return item
+            })
+            this.$nextTick(async () => {
+              this.$refs.eatContent.temporaryClassify = JSON.parse(JSON.stringify(this.classifyList))
+              this.$refs.eatContent.infoClassData(this.classList)
+              await this.getContentList()
+            })
+
             break
-          case 'article':
+          case 'article_recommend':
             this.articleList = item.list
+            this.articleId = item.id
+            this.$nextTick(async () => {
+              this.$refs.eatContent.temporaryArticle = JSON.parse(JSON.stringify(this.articleList))
+            })
             break
           default:
             break
           }
         })
-        console.log(this.classifyList, this.articleList)
+      },
+      async getCate() {
+        let res = await API.Content.getContentClassList({keyword: '', limit: 0, page: 1, status: 1})
+        if (res.error !== this.$ERR_OK) {
+          return []
+        }
+        this.classList = res.data
+        return res.data
+      },
+      getContentList(arr) {
+        this.listData = arr
       },
       getClassify(arr) {
-        console.log(arr)
         this.classifyList = arr
       },
       getContentType(type) {
@@ -825,7 +860,6 @@
   .advertisement-content
     box-sizing: border-box
     flex: 1
-    overflow: hidden
     padding-bottom: 40px
     .content-header
       border-bottom-1px($color-line)
