@@ -1,6 +1,8 @@
 <template>
   <div class="good-item">
-    <img :src="goodsData.goods_cover_image" class="goods-photo">
+    <img v-if="goodsData.is_online === 0" src="../../pic-off_shelf@2x.png" class="goods-photo">
+    <img v-else-if="goodsData.usable_stock === 0" src="../../pic-out_stock@2x.png" class="goods-photo">
+    <img v-else :src="goodsData.goods_cover_image" class="goods-photo">
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
       <div class="details">{{goodsData.describe}}</div>

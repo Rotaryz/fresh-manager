@@ -101,11 +101,6 @@
         type: Boolean, // 是否多个图/视频
         default: true
       },
-      picNum: {
-        // 图片/视频数量
-        type: Number,
-        default: 5
-      },
       fileType: {
         type: String,
         default: 'image'
@@ -114,10 +109,14 @@
         type: Number, // 1 为开启  0为关闭
         default: 1
       },
-      size: {
+      videoSize: {
+        type: Number, // 单位 m
+        default: 100
+      },
+      imageSize: {
         type: Number, // 单位 m
         default: 10
-      },
+      }
     },
     data() {
       return {
@@ -140,7 +139,12 @@
       },
       // 格式化图片流
       _infoImage(file) {
-        console.log('_infoImage', file)
+        let size = (file.size / 1024 / 1024)
+        if (size > this.imageSize) {
+          this.showLoading = false
+          this.$emit('failFile', '视频大小不能超过' + this.imageSize + 'M')
+          return
+        }
         let param = new FormData() // 创建form对象
         param.append('file', file, file.name) // 通过append向form对象添加数据
         return param
@@ -157,14 +161,12 @@
       },
       _addVideo(e) {
         this.showLoading = true
-        console.log(e.target.files)
         let arr = Array.from(e.target.files)
         e.target.value = ''
         let size = (arr[0].size / 1024 / 1024)
-        console.log(size)
-        if (size > this.size) {
+        if (size > this.videoSize) {
           this.showLoading = false
-          this.$emit('failFile', '视频大小不能超过' + this.size + 'M')
+          this.$emit('failFile', '视频大小不能超过' + this.videoSize + 'M')
           return
         }
         uploadFiles(arr[0], curr => {

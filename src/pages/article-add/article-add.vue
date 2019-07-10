@@ -31,11 +31,19 @@
             {{name}}标题
           </div>
           <div class="edit-input-box">
-            <input v-model="addData.title"
+            <input v-if="currentType === 'video'" v-model="addData.title"
                    type="text"
-                   :placeholder="'在此输入'+name+'标题，最少5个字'"
+                   :placeholder="'在此输入'+name+'标题，最多30个字'"
                    class="edit-input title-input"
+                   max-length="30"
             >
+            <input v-else v-model="addData.title"
+                   type="text"
+                   :placeholder="'在此输入'+name+'标题，最少5个最多50个字'"
+                   class="edit-input title-input"
+                   max-length="50"
+            >
+
           </div>
         </div>
         <!-- 封面-->
@@ -47,7 +55,7 @@
           <div class="edit-input-box flex-box">
             <base-upload :videoUrl="addData.coverVideo.url"
                          :imageUrl="addData.coverImage.url"
-                         :picNum="1"
+                         :videoSize="10"
                          :fileType="currentType!=='video' ?'image-video' :'image'"
                          @failFile="failFile"
                          @getPic="getPic"
@@ -142,8 +150,8 @@
             视频简介
           </div>
           <div class="edit-input-box">
-            <textarea v-model="addData.videoIntroduce" class="edit-textarea edit-input" placeholder="" maxlength="50"></textarea>
-            <span class="num">{{addData.videoIntroduce && addData.videoIntroduce.length || 0}}/50</span>
+            <textarea v-model="addData.videoIntroduce" class="edit-textarea edit-input" placeholder="" maxlength="60"></textarea>
+            <span class="num">{{addData.videoIntroduce && addData.videoIntroduce.length || 0}}/60</span>
           </div>
         </div>
         <!--菜谱  食材清单-->
@@ -155,9 +163,9 @@
           <div class="edit-input-box">
             <textarea v-model="addData.foodList" class="edit-textarea edit-input"
                       placeholder="例子：大蒜，酱油，猪肉，食材之间用逗号隔开，最多输入50个字符"
-                      maxlength="50"
+                      maxlength="100"
             ></textarea>
-            <span class="num">{{addData.foodList && addData.foodList.length || 0}}/50</span>
+            <span class="num">{{addData.foodList && addData.foodList.length || 0}}/100</span>
           </div>
         </div>
         <!--视频/菜谱 添加商品-->
@@ -226,11 +234,13 @@
         <draggable v-if="currentType!=='video' && addData.details.length" ref="detailsContent" v-model="addData.details" class="content-details">
           <transition-group>
             <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
-              <div class="close-icon" @click="deleteContentItem(idx,item)"></div>
+              <div class="close-icon hand" @click="deleteContentItem(idx,item)"></div>
               <img v-if="item.type==='image'" :src="item.value" class="conten-image">
               <video v-else-if="item.type==='video'" :src="item.value" class="conten-video"></video>
               <div v-else-if="item.type==='goods'" class="good-item">
-                <img :src="item.value.goods_cover_image" class="goods-photo">
+                <img v-if="item.value.is_online === 0" src="./pic-off_shelf@2x.png" class="goods-photo">
+                <img v-else-if="item.value.usable_stock === 0" src="./pic-out_stock@2x.png" class="goods-photo">
+                <img v-else :src="item.value.goods_cover_image" class="goods-photo">
                 <div class="info">
                   <div>
                     <div class="name">{{item.value.name}}</div>
@@ -297,6 +307,7 @@
           <div class="tab-item">
             <base-dropdown v-model="goodsCategoryFrist"
                            :data="goodsCategoryFristList"
+                           placeholder="一级分类"
                            valueKey="id"
                            :width="218"
                            @change="_selectCategoryFirst"
@@ -305,6 +316,7 @@
           <div class="tab-item">
             <base-dropdown v-model="goodsCategorySecond"
                            :data="goodsCategorySecondList"
+                           placeholder="二级分类"
                            valueKey="id"
                            :width="140"
                            @change="_selectCategorySecond"
@@ -485,23 +497,23 @@
       this.currentType = this.$route.query.type || 'common'
       this.id = this.$route.query.id || ''
       this.addData.articlePid = this.$route.query.articlePid || '';
-      if(this.id || this.addData.articlePid){
+      if (this.id || this.addData.articlePid) {
         this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
-      }else{
+      } else {
         this._getAuth()
       }
     },
     methods: {
       // 新增创建时获取最后一次作者信息
-      _getAuth(){
+      _getAuth() {
         API.Content.getAuth().then(res => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
           }
           this.addData.authPhoto.url = res.data.head_image_url
-          this.addData.authPhoto.id =  res.data.head_image_id
-          this.addData.authName =  res.data.nickname
-          this.addData.authSignature =  res.data.sign
+          this.addData.authPhoto.id = res.data.head_image_id
+          this.addData.authName = res.data.nickname
+          this.addData.authSignature = res.data.sign
         }).finally(() => {
           this.$loading.hide()
         })
@@ -510,7 +522,7 @@
       changeDetialData(obj) {
         this.currentType = obj.type || 'common'
         this.addData.title = obj.title
-        this.addData.category = obj.id
+        this.addData.category = obj.category.id
         this.addData.coverImage.url = obj.cover_image.source_url
         this.addData.coverImage.id = obj.cover_image.id
         this.addData.coverVideo.url = obj.cover_video.full_url || ''
@@ -519,8 +531,8 @@
         this.addData.authPhoto.id = obj.author.head_image_id
         this.addData.authName = obj.author.nickname
         this.addData.authSignature = obj.author.sign
-        this.addData.goodCount = obj.browse_count
-        this.addData.lookCount = obj.fabulous_num
+        this.addData.goodCount = obj.browse_count || 0
+        this.addData.lookCount = obj.fabulous_num || 0
         obj.assembly.forEach(item => {
           if (item.type === 'combination' && item.style_type === 'content') {
             let details = []
@@ -550,10 +562,13 @@
                   })
                   break
                 case "goods":
-                  details.push({
-                    type: 'goods',
-                    value: contItem.goods,
-                  })
+                  if (contItem.goods.goods_id) {
+                    details.push({
+                      type: 'goods',
+                      value: {id: contItem.goods.goods_id, ...contItem.goods},
+                    })
+                    this.addData.goodsList.push({id: contItem.goods.goods_id, ...contItem.goods})
+                  }
                   break
               }
             })
@@ -566,11 +581,16 @@
             this.addData.videoContent.url = item.content[0].video.full_url
             this.addData.videoContent.name = item.content[0].video.name
             this.addData.videoContent.id = item.content[0].video.id
+            this.addData.videoIntroduce = item.content[0].introduction
           }
           if (item.type === 'goods' && item.style_type === 'content_goods_list') {
-            this.addData.goodsList = item.content.map(item => {
-              return item.goods
+            let goodsList = []
+            item.content.forEach(item => {
+              if (item.goods.goods_id) {
+                goodsList.push({id: item.goods.goods_id, ...item.goods})
+              }
             })
+            this.addData.goodsList = goodsList
           }
         })
       },
@@ -600,6 +620,7 @@
       },
       // 封面
       getCoverVideo(video) {
+        console.log(video)
         this.addData.coverVideo.id = video.id
         this.addData.coverVideo.file_id = video.file_id
         this.addData.coverVideo.url = video.full_url
@@ -634,7 +655,7 @@
         }
       },
       failFile(msg) {
-        this.$emit('showToast', msg)
+        this.$toast.show(msg)
       },
       // 作者头像
       getAuthorPic(image) {
@@ -692,6 +713,7 @@
       deleteContentItem(idx, item) {
         this.addData.details.splice(idx, 1)
         if (item.type === 'goods') {
+          console.log(this.addData.goodsList, item.value)
           let index = this.addData.goodsList.findIndex(goods => goods.id === item.value.id)
           if (index !== -1) this.addData.goodsList.splice(index, 1)
         }
@@ -723,6 +745,7 @@
       },
       // 展示商品弹窗
       async showGoods() {
+        console.log(this.addData.goodsList)
         this.chooseGoodsFilter.page = 1
         this.chooseGoodsFilter.goods_category_id = ""
         this.getCategoryFirst()
@@ -771,7 +794,7 @@
         /* eslint-disable */
         switch (item.selected) {
           case 0:
-            if (this.addData.goodsList.length + this.selectGoods.length === 5) {
+            if (this.addData.goodsList.length + this.selectGoods.length >= 5) {
               this.$toast.show('选择商品数量不能超过五个')
               return
             }
@@ -790,13 +813,15 @@
       // 删除商品
       _showDelGoods(item, index) {
         this.addData.goodsList.splice(index, 1)
+        console.log(this.addData.goodsList)
       },
       // 单个添加
       _additionOne(item, index) {
         if (item.selected === 1) {
           return
         }
-        if (this.addData.goodsList.length === 5) {
+        console.log(this.addData.goodsList)
+        if (this.addData.goodsList.length >= 5) {
           this.$toast.show('选择商品数量不能超过5个')
           return
         }
@@ -836,7 +861,7 @@
         let message = ''
         if (!this.addData.category) message = '请选择内容分类'
         else if (!this.addData.title) message = '请输入文章标题'
-        else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 8)) message = '请输入5-8个字的文章标题'
+        else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 50)) message = '请输入文章标题最少5个最多50个字符'
         else if (this.currentType === 'video' && this.addData.coverImage.id === '') message = '请上传封面'
         else if (this.currentType !== 'video' && !this.addData.coverVideo.id && !this.addData.coverImage.id) message = '请上传封面'
         else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id) {
@@ -849,8 +874,8 @@
           else if (!this.addData.videoIntroduce) message = '请填写视频简介'
         } else if (this.currentType === 'cookbook' && !this.addData.foodList) message = '请填写食材清单'
         else if (this.currentType !== 'video' && !this.addData.details.length) message = '请编辑内容详情'
-        else if (this.addData.goodCount) this.addData.goodCount = 0
-        else if (this.addData.lookCount) this.addData.lookCount = 0
+        else if (!this.addData.goodCount) this.addData.goodCount = 0
+        else if (!this.addData.lookCount) this.addData.lookCount = 0
         if (message) {
           this.$toast.show(message)
           return false
@@ -860,13 +885,14 @@
       },
       // 上线
       async _submitBtn(name) {
+
         let res = this.justifyConent()
         if (res) {
           let data = this.getSubmitData()
           let res = await API.Content[name](data, true)
           this.$toast.show(res.message)
           this.$loading.hide()
-          if (res.error !== this.$ERR_OK) this.$route.go(-1)
+          if (res.error === this.$ERR_OK) this.$router.go(-1)
         }
       },
       // 上线
@@ -960,6 +986,7 @@
           })
         }
         if (this.id) params.id = this.id
+        console.log(params, this.addData)
         return params
       }
     }
@@ -1057,6 +1084,7 @@
         width: 800px
         padding: 5px 14px
         height: 94px
+        resize: none
         resize: none
 
       .num
@@ -1315,6 +1343,7 @@
             scroll-opacity(5px, 100px)
             height: 100%
             width: 100%
+            resize: none
 
           &:last-child
             margin-bottom: 0px
