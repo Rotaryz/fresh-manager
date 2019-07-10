@@ -295,7 +295,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        this[this.dataName].splice(1, index)
+        this[this.dataName].splice(index, 1)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -356,7 +356,7 @@
         this.upIndex = index
         this.$refs.goods.showModal()
       },
-      // 获取商品列表
+      // 获取文章列表
       async _getGoodsList(loading = true) {
         let res = await API.Content.getWorkList(
           {

@@ -55,9 +55,9 @@
                 </div>
                 <div class="fall-title">{{item.title}}</div>
                 <div class="fall-author">
-                  <div class="fall-author-left">
-                    <img src="" class="fall-author-img">
-                    <span v-if="item.author" class="fall-author-name">{{item.author.nickname}}</span>
+                  <div v-if="item.author" class="fall-author-left">
+                    <img :src="item.author.head_image_url" class="fall-author-img">
+                    <span class="fall-author-name">{{item.author.nickname}}</span>
                   </div>
                   <div class="fall-author-right" @click="giveLike('left', index, item)">
                     <img src="./icon-like_big1@2x.png" class="fall-author-icon">
@@ -76,9 +76,9 @@
                 </div>
                 <div class="fall-title">{{item.title}}</div>
                 <div class="fall-author">
-                  <div class="fall-author-left">
-                    <img src="" class="fall-author-img">
-                    <span v-if="item.author" class="fall-author-name">{{item.author.nickname}}</span>
+                  <div v-if="item.author" class="fall-author-left">
+                    <img :src="item.author.head_image_url" class="fall-author-img">
+                    <span class="fall-author-name">{{item.author.nickname}}</span>
                   </div>
                   <div class="fall-author-right" @click="giveLike('left', index, item)">
                     <img src="./icon-like_big1@2x.png" class="fall-author-icon">
