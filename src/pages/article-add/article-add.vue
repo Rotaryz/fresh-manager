@@ -19,7 +19,7 @@
           </div>
           <div class="edit-input-box">
             <zb-dropdown v-model="addData.category" :data="articleCategoryList" valueKey="id" :width="400" :height="40"
-                           placeholder="请选择内容分类" @click="_getArticleCategory"
+                         placeholder="请选择内容分类" @click="_getArticleCategory"
             ></zb-dropdown>
           </div>
           <div class="add-category-operate hand" @click="addCategory">添加分类</div>
@@ -309,20 +309,20 @@
         <div class="shade-tab">
           <div class="tab-item">
             <zb-dropdown v-model="goodsCategoryFrist"
-                           :data="goodsCategoryFristList"
-                           placeholder="一级分类"
-                           valueKey="id"
-                           :width="218"
-                           @change="_selectCategoryFirst"
+                         :data="goodsCategoryFristList"
+                         placeholder="一级分类"
+                         valueKey="id"
+                         :width="218"
+                         @change="_selectCategoryFirst"
             ></zb-dropdown>
           </div>
           <div class="tab-item">
             <zb-dropdown v-model="goodsCategorySecond"
-                           :data="goodsCategorySecondList"
-                           placeholder="二级分类"
-                           valueKey="id"
-                           :width="140"
-                           @change="_selectCategorySecond"
+                         :data="goodsCategorySecondList"
+                         placeholder="二级分类"
+                         valueKey="id"
+                         :width="140"
+                         @change="_selectCategorySecond"
             ></zb-dropdown>
           </div>
           <div class="tab-item">
@@ -441,7 +441,7 @@
           },
           authName: '',
           authSignature: '',
-          goodCount:50,
+          goodCount: 50,
           lookCount: 50,
           // 不同情况的字段
           videoContent: {
@@ -890,7 +890,7 @@
         }
       },
       // 上线
-      async _submitBtn(name,status) {
+      async _submitBtn(name, status) {
         let res = this.justifyConent()
         if (res) {
           let data = this.getSubmitData(status)
