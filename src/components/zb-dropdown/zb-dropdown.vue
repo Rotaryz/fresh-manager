@@ -1,22 +1,29 @@
 <template>
-  <div class="select-item" @click.stop="selectType">
-    <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
-      <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': visible, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
-        <input :value="valueLabel" :placeholder="placeholder" type="text" disabled="true" class="input-item">
-        <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': visible}">
-        <transition name="fade">
-          <ul v-show="visible" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
-            <li v-for="(child, chIdx) in data"
-                :key="chIdx"
-                :class="['select-child-item',{active:(valueKey ? child[valueKey] :child)===value}]"
-                :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
-                @click.stop="setValue(child, chIdx)"
-            >
-              {{child[labelKey]}}
-            </li>
-            <li v-if="!data.length" class="select-child-item">{{noContentText}}</li>
-          </ul>
-        </transition>
+  <div class="admin-select">
+    <div class="select-item" @click.stop="selectType">
+      <div class="admin-big-box" @mouseleave="showHover = false" @mouseenter="showHover = true">
+        <div class="admin-select-box input-height-item" :class="{'admin-select-box-active': visible, 'admin-big-box-hover': showHover}" :style="{'min-width': width + 'px',height: height + 'px', lineHeight: height + 'px'}">
+          <div v-if="valueLabel" class="input-item">{{valueLabel}}</div>
+          <div v-else class="placeholder-text">{{placeholder}}</div>
+          <input :value="valueLabel" :placeholder="placeholder" type="text" disabled="true" class="input-item"
+                 style="visibility: hidden"
+                 @click.stop="selectType"
+          >
+          <img v-if="isUse" src="./icon-pull_down@2x.png" class="city-tap-top" :class="{'city-tap-top-active': visible}">
+          <transition name="fade">
+            <ul v-show="visible" class="select-child" :style="{top: (height - 4) + 'px'}" @mouseleave="leaveHide()" @mouseenter="endShow">
+              <li v-for="(child, chIdx) in data"
+                  :key="chIdx"
+                  :class="['select-child-item',{active:(valueKey ? child[valueKey] :child)===value}]"
+                  :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
+                  @click.stop="setValue(child, chIdx)"
+              >
+                {{child[labelKey]}}
+              </li>
+              <li v-if="!data.length" class="select-child-item">{{noContentText}}</li>
+            </ul>
+          </transition>
+        </div>
       </div>
     </div>
   </div>
@@ -112,11 +119,13 @@
         }, 1500)
       },
       selectType() {
+        console.log(1111)
         if (!this.isUse) {
           return
         }
-        this.$emit('click')
+        console.log(2222)
         this.visible = !this.visible
+        this.$emit('change-visible')
       },
       setValue(value, index) {
         console.log(value, this.valueKey)

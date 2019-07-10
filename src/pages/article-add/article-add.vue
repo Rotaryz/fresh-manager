@@ -19,7 +19,7 @@
           </div>
           <div class="edit-input-box">
             <zb-dropdown v-model="addData.category" :data="articleCategoryList" valueKey="id" :width="400" :height="40"
-                         placeholder="请选择内容分类" @click="_getArticleCategory"
+                         placeholder="请选择内容分类" @change-visible="_getArticleCategory"
             ></zb-dropdown>
           </div>
           <div class="add-category-operate hand" @click="addCategory">添加分类</div>
