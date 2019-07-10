@@ -880,8 +880,8 @@
           else if (!this.addData.videoIntroduce) message = '请填写视频简介'
         } else if (this.currentType === 'cookbook' && !this.addData.foodList) message = '请填写食材清单'
         else if (this.currentType !== 'video' && !this.addData.details.length) message = '请编辑内容详情'
-        else if (!this.addData.goodCount) this.addData.goodCount = 0
-        else if (!this.addData.lookCount) this.addData.lookCount = 0
+        else if (!(/^[+]{0,1}(\d+)$/.test(this.addData.goodCount)))  message = '请输入正确的初始化点赞数'
+        else if (!(/^[+]{0,1}(\d+)$/.test(this.addData.lookCount)))  message = '请输入正确的初始化浏览数'
         if (message) {
           this.$toast.show(message)
           return false
