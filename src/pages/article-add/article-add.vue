@@ -67,7 +67,7 @@
                 请添加不大于10M的清晰图片
               </template>
               <template v-else>
-                请添加不大于10M的清晰图片或视频
+                请添加不大于10M的清晰图片或视频(格式:mp4、3gp、m3u8、webm)
                 <br>
                 {{name}}封面是{{name}}首图
               </template>
@@ -139,7 +139,9 @@
                   </button>
                 </base-upload>
               </div>
-
+            </div>
+            <div class="tip">
+              请添加小于100M,格式为mp4、3gp、m3u8、webm的视频
             </div>
           </div>
         </div>

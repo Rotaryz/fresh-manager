@@ -13,7 +13,7 @@
       <div v-if="showLoading" class="loading-mask">
         <img src="./loading.gif" class="loading">
       </div>
-      <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
+      <input type="file" class="sendImage hand" :accept="videoType" @change="_addVideo">
       <slot>
         上传视频
       </slot>
@@ -34,7 +34,7 @@
           </div>
           <div class="operate-item hand">
             上传视频
-            <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
+            <input type="file" class="sendImage hand" :accept="videoType" @change="_addVideo">
           </div>
         </div>
       </div>
@@ -116,6 +116,10 @@
       imageSize: {
         type: Number, // 单位 m
         default: 10
+      },
+      videoType:{
+        type: String,
+        default: 'video/mp4,video/3gp,video/m3u8,video/webm'
       }
     },
     data() {
