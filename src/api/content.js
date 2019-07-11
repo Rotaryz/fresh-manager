@@ -88,7 +88,7 @@ export default {
     let url = `/social-shopping/api/cos/get-file-info`
     return request.get(url, data, loading)
   },
-  getAuth(loading=false){
+  getAuth(loading = false) {
     let url = `/social-shopping/api/backend/article-last-author`
     return request.get(url, {}, loading)
   },
@@ -121,7 +121,7 @@ export default {
     return request.delete(url, data, loading)
   },
   /**
-   * 上下线我的作品列表
+   * 下线我的作品列表
    * @param data
    * @param loading
    * @returns {*}
@@ -131,8 +131,12 @@ export default {
     return request.get(url, data, loading)
   },
   /**
-   * 上下线我的作品列表
+   * 上线我的作品列表
    */
+  upLineWork(id, data = {status: 1}, loading = true) {
+    let url = `/social-shopping/api/backend/article-set-status/${id}`
+    return request.get(url, data, loading)
+  },
   getArticleDetail({id}, loading = true) {
     let url = `/social-shopping/api/backend/article-show/${id}`
     return request.get(url, {}, loading)
@@ -147,10 +151,6 @@ export default {
    * @param loading
    * @returns {*}
    */
-  upLineWork(id, data = {status: 1}, loading = true) {
-    let url = `/social-shopping/api/backend/article-set-status/${id}`
-    return request.get(url, data, loading)
-  },
   /**
    * 选择内容分类
    * @param data

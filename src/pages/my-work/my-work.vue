@@ -47,7 +47,7 @@
             <div class="list-item list-operation-box">
               <span class="list-operation" @click="shwoQrCode(item.id, index, item)">预览</span>
               <span v-if="item.status !== 1" class="list-operation" @click="editWork(item)">编辑</span>
-              <span v-else class="list-operation" @click="upLine(item)">下线</span>
+              <span v-if="item.status !== 0" class="list-operation" @click="upLine(item)">{{item.status === 1 ? '下线' : '上线'}}</span>
               <div class="list-operation" @click="delContent(item.id)">删除</div>
             </div>
           </div>
@@ -120,10 +120,10 @@
         dispatTitle: DISPATCHING_LIST,
         statusTab: 1,
         dispatchSelect: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '已上线', value: 1, key: 'wait_release', num: 0},
-          {name: '草稿', value: 2, key: 'wait_purchase', num: 0},
-          {name: '已下线', value: 3, key: 'success', num: 0}
+          {name: '全部', status: '', key: 'all', num: 0},
+          {name: '已上线', status: 1, key: 'wait_release', num: 0},
+          {name: '草稿', status: 0, key: 'wait_purchase', num: 0},
+          {name: '已下线', status: 2, key: 'success', num: 0}
         ],
         tabIndex: 0,
         delId: null,
@@ -183,9 +183,9 @@
       this.infoQuery()
       await this.getContentClassList()
       await this._statistic()
-      this.$nextTick(() => {
-        this.$refs.baseStatusTab.infoStatus(this.statusType)
-      })
+      // this.$nextTick(() => {
+      //   this.$refs.baseStatusTab.infoStatus(this.statusType)
+      // })
     },
     methods: {
       ...contentMethods,
@@ -201,6 +201,7 @@
         this.saveValue[this.categoryIdName] = this.workCategoryId
         this.saveValue[this.statusName] = this.workStatus
         this.statusType = this.saveValue[this.statusName]
+        this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.statusType)
       },
       // 获取二维码
       async shwoQrCode(id, index, item) {
@@ -245,9 +246,9 @@
       },
       // 下线
       upLine(item) {
-        this.methodsName = 'downLineWork'
+        this.methodsName = item.status === 1 ? 'downLineWork' : 'upLineWork'
         this.delId = item.id
-        this.$refs.confirm.show('确定要下线该作品吗？')
+        this.$refs.confirm.show(`确定要${item.status === 1 ? '下线' : '上线'}该作品吗？`)
       },
       // 编辑
       editWork(item) {
@@ -338,8 +339,8 @@
   .list-box
     .list-item
       &:last-child
-        max-width: 128px
-        min-width: 128px
+        max-width: 166px
+        min-width: 166px
         padding: 0
   .list-item-img
     display: flex
