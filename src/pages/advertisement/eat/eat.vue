@@ -193,13 +193,13 @@
       fillData(isPull) {
         if (isPull) {
           // 是否下拉刷新，是的话清除之前的数据
-          leftList.length = 0
-          rightList.length = 0
-          leftHight = 0
-          rightHight = 0
-          this.leftList = []
-          this.rightList = []
         }
+        leftList.length = 0
+        rightList.length = 0
+        leftHight = 0
+        rightHight = 0
+        this.leftList = []
+        this.rightList = []
         rightList = []
         leftList = []
         for (let i = 0, len = this.listData.length; i < len; i++) {
