@@ -343,6 +343,9 @@
       &:nth-child(1)
         max-width: 100px
         min-width: 100px
+      &:nth-child(3)
+        flex: 1.6
+        min-width: 140px
       &:last-child
         max-width: 166px
         min-width: 166px

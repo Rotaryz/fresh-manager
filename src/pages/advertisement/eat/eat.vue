@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="phone-box">
+      {{articleList.length}}{{classifyList.length}}
       <div class="phone">
         <div class="content-box">
           <img v-if="!articleList.length && !classifyList.length" src="./pic-recommend_empty@2x.png" class="null-img">
@@ -39,7 +40,7 @@
           <!--分类列表-->
           <div class="scroll-classify hand" :class="{'active': contentType === 'classify', 'none': !classifyList.length}" @click="changeType('classify')">
             <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-item" :class="{'none': !classifyList.length}">
-              <span v-if="item.name" :class="{'scroll-classify-item-active': index === 0}">
+              <span v-if="item.name && item.is_close" :class="{'scroll-classify-item-active': index === 0}">
                 {{item.name}}
               </span>
             </div>
