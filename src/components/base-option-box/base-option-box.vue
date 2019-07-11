@@ -44,12 +44,14 @@
         default: 0
       },
       disabledDate: {
+        // 选择器额外配置，比如不可选日期与快捷选项
         type: Object,
         default: () => {
           return {}
         }
       },
       text: {
+        // 时间组件默认文字
         type: String,
         default: '请选择时间'
       }

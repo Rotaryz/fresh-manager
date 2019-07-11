@@ -130,7 +130,7 @@
           access_token: this.currentUser.access_token,
           goods_material_category_id: this.warehouseFilter.goods_material_category_id,
           keyword: this.warehouseFilter.keyword,
-          is_presale: this.warehouseFilter.isPresale,
+          is_presale: this.warehouseFilter.is_presale,
           warehouse_position_id: this.warehouseFilter.warehouse_position_id
         }
         let search = []

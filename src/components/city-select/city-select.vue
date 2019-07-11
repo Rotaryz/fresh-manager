@@ -38,14 +38,17 @@
         ]
       },
       isUse: {
+        // 是否使用
         type: Boolean,
         default: true
       },
       width: {
+        // 宽度
         type: Number,
         default: 126.5
       },
       height: {
+        // 高度
         type: Number,
         default: 40
       }

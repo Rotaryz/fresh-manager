@@ -17,18 +17,22 @@
     name: COMPONENT_NAME,
     props: {
       tabStatus: {
+        // Tab数据
         type: Array,
         default: () => []
       },
       infoTabIndex: {
+        // 当前选择
         type: Number,
         default: 0
       },
       marginRight: {
+        // tab距离
         type: Number,
         default: 40
       },
       lineWidth: {
+        // 下划线宽度
         type: Number,
         default: 40
       }
