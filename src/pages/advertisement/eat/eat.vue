@@ -258,7 +258,7 @@
         &::-webkit-scrollbar
           width: 0
   .article-modal
-    border: 2px solid transparent
+    border: 2px dashed #D9D9D9
   .article
     margin: 2% 2%
     height: 134.45px
@@ -324,7 +324,7 @@
   .scroll-classify
     height: 55px
     display: flex
-    border: 2px solid transparent
+    border: 2px dashed #D9D9D9
     overflow-x: auto
     align-items: center
     margin-top: 6px
