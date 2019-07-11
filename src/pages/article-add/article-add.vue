@@ -648,12 +648,12 @@
         this.addData.coverImage.url = video.full_cover_url
         if (!this.addData.coverImage.id) {
           setTimeout(() => {
-            this._getCoverImage(video.file_id)
+            this._getCoverImage(this.addData.coverVideo.file_id)
           }, 10000)
         }
       },
-      _getCoverImage() {
-        this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id: this.addData.coverVideo.file_id}).then(res => {
+      _getCoverImage(file_id) {
+        this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id}).then(res => {
           if (res.error !== this.$ERR_OK) return false
           this.addData.coverImage.id = res.data.cover_image_id
           this.addData.coverImage.url = res.data.full_cover_url
@@ -724,7 +724,8 @@
         this.addDetailContentItem({
           type: 'video',
           value: video.full_url,
-          id: video.id
+          id: video.id,
+          file_id:video.file_id
         })
       },
       addOneGoods() {
@@ -885,7 +886,7 @@
         else if (this.currentType === 'video' && this.addData.coverImage.id === '') message = '请上传封面'
         else if (this.currentType !== 'video' && !this.addData.coverVideo.id && !this.addData.coverImage.id) message = '请上传封面'
         else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id) {
-          this._getCoverImage()
+          this._getCoverImage(this.addData.coverVideo.file_id)
           message = '正在处理视频第一帧作为封面图，请稍后上线'
         } else if (!this.addData.authPhoto.id) message = '请上传作者头像'
         else if (!this.addData.authName) message = '请填写作者名字'
@@ -997,6 +998,7 @@
                   title: '',
                   introduction: ''
                 }]
+                this._getCoverImage(item.file_id)
                 break;
               default:
                 newItem.content = [{
