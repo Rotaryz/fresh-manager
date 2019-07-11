@@ -3,6 +3,7 @@
     <div class="phone-box">
       <div class="phone">
         <div class="content-box">
+          <img v-if="!articleList.length && !classifyList.length" src="./pic-recommend_empty@2x.png" class="null-img">
           <!--文章-->
           <div class="article-modal hand " :class="{'active': contentType === 'article', 'none': !articleList.length}" @click="changeType('article')">
             <!--一篇文章样式-->
@@ -257,6 +258,11 @@
         overflow-y: auto
         &::-webkit-scrollbar
           width: 0
+        .null-img
+          position: absolute
+          top: 0
+          left: 0
+          width: 100%
   .article-modal
     border: 2px dashed #D9D9D9
   .article
