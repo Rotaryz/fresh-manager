@@ -198,8 +198,8 @@
         rightList.length = 0
         leftHight = 0
         rightHight = 0
-        this.leftList = []
-        this.rightList = []
+        // this.leftList = []
+        // this.rightList = []
         rightList = []
         leftList = []
         for (let i = 0, len = this.listData.length; i < len; i++) {

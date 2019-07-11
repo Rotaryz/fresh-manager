@@ -252,6 +252,10 @@
       async getContentList(item) {
         let arr = []
         let id = this.temporaryClassify.length && this.temporaryClassify[0].other_id ? this.temporaryClassify[0].other_id : ''
+        if (id === '') {
+          this.$emit('getContentList', [])
+          return
+        }
         if (this.storageId === id) {
           this.$emit('getContentList', this.storageList)
           return
