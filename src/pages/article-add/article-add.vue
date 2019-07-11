@@ -1000,7 +1000,7 @@
                   title: '',
                   introduction: ''
                 }]
-                this._getCoverImage(item.file_id)
+                // this._getCoverImage(item.file_id)
                 break;
               default:
                 newItem.content = [{
