@@ -929,15 +929,15 @@
       getSubmitData(status) {
         let params = {
           type: this.currentType,
-          title: this.addData.title,
+          title: this.addData.title.trim(),
           category_id: this.addData.category,
           author_image_id: this.addData.authPhoto.id,
-          author_nickname: this.addData.authName,
-          author_sign: this.addData.authSignature,
+          author_nickname: this.addData.authName.trim(),
+          author_sign: this.addData.authSignature.trim(),
           image_cover_id: this.addData.coverImage.id,
           video_cover_id: this.addData.coverVideo.id,
-          init_fabulous_num: this.addData.goodCount,
-          init_browse_num: this.addData.lookCount,
+          init_fabulous_num: (this.addData.goodCount+'').trim(),
+          init_browse_num: (this.addData.lookCount+'').trim(),
           article_pid: this.addData.articlePid,
           assembly: [],
           status
