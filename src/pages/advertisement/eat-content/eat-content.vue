@@ -233,6 +233,14 @@
             }
           }
         }
+        let idsArr = this.temporaryClassify.map((item) => {
+          return item.other_id
+        })
+        let arr = new Set(idsArr)
+        if(arr.size < idsArr.length){
+          this.$toast.show(`请勿选择重复的分类`, 1500)
+          return
+        }
         let data = this.temporaryClassify.map((item) => {
           let obj = {id: item.id, name: item.content, other_id: item.other_id, type: item.type}
           return {page_module_id: this.articleCateId, ext_json: obj}
