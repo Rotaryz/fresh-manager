@@ -29,6 +29,21 @@ export const state = {
       keyword: ''
     }
   },
+  merger: {
+    pageTotal: {
+      // 页码详情
+      total: 1,
+      per_page: 10,
+      total_page: 1
+    },
+    list: [],
+    filter: {
+      start_time: '',
+      end_time: '',
+      page: 1,
+      limit: 10
+    }
+  },
   consumerDetail: {
     pageTotal: {
       // 页码详情
@@ -54,7 +69,8 @@ export const state = {
       details: []
     }
   },
-  mergerDetail: {}
+  mergerDetail: {},
+  tabIndex: 0
 }
 
 export const getters = {
@@ -71,6 +87,16 @@ export const getters = {
   merchantDetail(state) {
     return state.merchant.detail
   },
+  // 商品汇总单
+  mergerPageTotal(state) {
+    return state.merger.pageTotal
+  },
+  mergerList(state) {
+    return state.merger.list
+  },
+  mergerFilter(state) {
+    return state.merger.filter
+  },
   // 消费者详情
   consumerDetailTotal(state) {
     return state.consumerDetail.pageTotal
@@ -80,6 +106,9 @@ export const getters = {
   },
   mergerDetail(state) {
     return state.mergerDetail
+  },
+  tabIndex(state) {
+    return state.tabIndex
   }
 }
 
@@ -96,11 +125,23 @@ export const mutations = {
   SET_MERCHANT_DETAIL(state, {key = 'merchant', value}) {
     state.merchant.detail = value
   },
+  SET_MERGER_PARAMS(state, {key = 'merger', ...params}) {
+    state[key].filter = {...state[key].filter, ...params}
+  },
+  SET_MERGER_PAGE_TOTAL(state, {key = 'merger', pageTotal}) {
+    state[key].pageTotal = pageTotal
+  },
+  SET_MERGER_LIST(state, {list}) {
+    state.merger.list = list
+  },
   SET_CONSUMER_DETAIL(state, value) {
     state.consumerDetail.detail = value
   },
   SET_MERGER_DETAIL(state, {value}) {
     state.mergerDetail = value
+  },
+  SET_TAB_INDEX(state, tabIndex) {
+    state.tabIndex = tabIndex
   }
 }
 
@@ -120,6 +161,30 @@ export const actions = {
         let arr = res.data
         commit('SET_MERCHANT_LIST', {list: arr})
         commit('SET_PAGE_TOTAL', {pageTotal})
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
+  // 商户订单列表
+  getMergerOrderList({state, commit, dispatch}) {
+    return API.MerchantOrder.getMergeOrderslist(state.merger.filter, {loading: true})
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+        let pageTotal = {
+          total: res.meta.total,
+          per_page: res.meta.per_page,
+          total_page: res.meta.last_page
+        }
+        let arr = res.data
+        commit('SET_MERGER_LIST', {list: arr})
+        commit('SET_MERGER_PAGE_TOTAL', {pageTotal})
         return true
       })
       .catch(() => {
@@ -199,5 +264,22 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('SET_PARAMS', {
+      page: 1,
+      limit: 10,
+      start_time: '',
+      end_time: '',
+      status: 0,
+      keyword: ''
+    })
+    commit('SET_MERGER_PARAMS', {
+      start_time: '',
+      end_time: '',
+      page: 1,
+      limit: 10
+    })
+    commit('SET_TAB_INDEX', 0)
   }
 }

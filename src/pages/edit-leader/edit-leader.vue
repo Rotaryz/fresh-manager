@@ -97,6 +97,18 @@
         <div class="check-box hand" @click="selectCommission">
           <span class="check" :class="{'checked': +leaderData.commission_type === 2}"></span>
           <span class="text">阶梯比例佣金</span>
+          <div class="explain-wrapper">
+            <img src="./icon-help@2x.png" alt="" class="detail-icon hand">
+            <div class="static-explain">
+              <div class="explain">
+                1.根据团长上月销售额，计算下月佣金比例；<br>
+                2.如果是新创建的团长，第一个月，佣金比例按照最低一档计算。<br>
+                3.设置完成立即生效。<br><br>
+                例：满1000，佣金7%；满2000，佣金9%<br>
+                团长上个月销售额为2000以上（含2000），那他下个月的佣金比例为9%
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div v-if="+leaderData.commission_type === 1" class="fixed-main">
@@ -105,7 +117,7 @@
       </div>
       <div v-if="+leaderData.commission_type === 2" class="rate-main">
         <p class="title">
-          <span class="left">销售金额</span>
+          <span class="left">月度销售金额</span>
           <span class="right">佣金比例</span>
         </p>
         <transition-group>
@@ -120,7 +132,7 @@
                      @blur="numBlur(index)"
               >
               <img src="./icon-ride@2x.png" alt="" class="icon">
-              <span class="text">大于{{index === 0 ? '等于' : ''}}</span>
+              <span class="text">大于{{index === 0 ? '等于' : '（不含）'}}</span>
             </div>
             <div class="right">
               <input v-model="item.rate" type="text" class="right-input" @blur="rateBlur(index)">
@@ -482,22 +494,67 @@
         display: flex
         align-items: center
         margin-right: 50px
-      .check
-        width: 16px
-        height: 16px
-        border: 1px solid #E1E1E1
-        border-radius: 50%
-        transition: all 0.3s
-        display: flex
-        justify-content: center
-        align-items: center
-        margin-right: 10px
-      .checked
-        border: 5px solid $color-main
-      .text
-        color: $color-text-main
-        font-family: $font-family-regular
-        font-size: $font-size-14
+        .check
+          width: 16px
+          height: 16px
+          border: 1px solid #E1E1E1
+          border-radius: 50%
+          transition: all 0.3s
+          display: flex
+          justify-content: center
+          align-items: center
+          margin-right: 10px
+        .checked
+          border: 5px solid $color-main
+        .text
+          color: $color-text-main
+          font-family: $font-family-regular
+          font-size: $font-size-14
+        .explain-wrapper
+          position: relative
+          width: 16px
+          height: 16px
+          margin-left: 4px
+          display: flex
+          flex-direction: column
+          align-items: center
+          opacity: .8
+          .detail-icon
+            width: 16px
+            height: 16px
+          &:hover .static-explain
+            opacity: .8
+            visibility: initial
+          .static-explain
+            position: absolute
+            display: flex
+            justify-content: center
+            bottom: 25px
+            width: 374px
+            visibility: hidden
+            opacity: 0
+            transition: opacity .3s
+            &:after
+              position: absolute
+              bottom: -6px
+              display: block
+              content: ''
+              width: 0
+              height: 0
+              border-left: 4px solid transparent
+              border-right: 4px solid transparent
+              border-top: 6px solid #32323A
+            .explain
+              padding: 12px
+              border-radius: 4px
+              line-height: 20px
+              font-family: $font-family-regular
+              font-size: $font-size-12
+              white-space: normal
+              transition: opacity .3s
+              color: $color-white
+              background: #32323A
+              z-index: 111
 
     .fixed-main
       width: 523px
@@ -578,7 +635,7 @@
           .text
             color: $color-text-assist
             col-center()
-            left: 20px
+            left: 10px
           .icon
             width: 14px
             height: 14px

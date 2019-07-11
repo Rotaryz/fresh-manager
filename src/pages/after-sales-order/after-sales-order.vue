@@ -12,7 +12,7 @@
       <div class="distribution-down">
         <span class="down-tip">搜索</span>
         <div class="down-item">
-          <base-search placeHolder="原订单号" @search="_changeKeyword"></base-search>
+          <base-search placeHolder="原订单号" :infoText="afterSalesFilter.keyword" @search="_changeKeyword"></base-search>
         </div>
       </div>
 
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pagination" :pagination="afterSalesFilter.page" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
     <default-modal ref="modal">
@@ -158,7 +158,7 @@
     {title: '供应商', key: 'supplier_name', flex: 3},
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: 'sale_out_of_num'},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str', type: 'afterHelp'}
+    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str',type:'afterHelp'}
   ]
   export default {
     name: PAGE_NAME,
@@ -203,9 +203,7 @@
     async created() {
       this._setErrorStatus()
       await this._getStatusData()
-      if (this.$route.query.status) {
-        this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.$route.query.status * 1)
-      }
+      this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.afterSalesFilter.status)
     },
     methods: {
       ...afterSalesOrderMethods,
@@ -344,15 +342,6 @@
             num: item.statistic
           }
         })
-      // API.AfterSalesOrder.getStausData(defaultParams).then((res) => {
-      //   this.dispatchSelect = res.data.map((item) => {
-      //     return {
-      //       name: item.status_str,
-      //       value: item.status,
-      //       num: item.statistic
-      //     }
-      //   })
-      // })
       },
       // 时间
       _changeTime(timeArr) {
@@ -385,9 +374,10 @@
           exception_status: item.status,
           page: 1
         })
+        this.SET_EXCEPTION_TEXT(item.name)
       },
       _setErrorStatus() {
-        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        let item = this.errorObj.data.find((item) => item.status === this.afterSalesFilter.exception_status)
         this.errorObj.content = item.name || '全部'
       }
     }

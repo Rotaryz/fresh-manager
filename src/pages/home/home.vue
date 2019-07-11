@@ -68,6 +68,7 @@
       box-sizing: border-box
       padding: 20px
       margin-top: 40px
+      position :relative
       .container-small
         border-radius: 2px
         flex: 1

@@ -106,5 +106,6 @@ export const actions = {
   },
   infoSetKeyWord({commit}) {
     commit('SET_KEYWORD', '')
+    commit('SET_PAGE', 1)
   }
 }

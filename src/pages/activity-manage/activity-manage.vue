@@ -5,7 +5,7 @@
       <div class="down-content">
         <span class="down-tip">活动时间</span>
         <div class="down-item">
-          <base-date-select :dateInfo="dateInfo" placeHolder="选择日期" @getTime="_setTime"></base-date-select>
+          <base-date-select :dateInfo="[requestData.start_at, requestData.end_at]" placeHolder="选择日期" @getTime="_setTime"></base-date-select>
         </div>
       </div>
       <div class="table-content">
@@ -51,7 +51,7 @@
           <base-blank v-else blackStyle="margin-top:15%"></base-blank>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pages" :pageDetail="activePage" @addPage="addPage"></base-pagination>
+          <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="activePage" @addPage="addPage"></base-pagination>
         </div>
       </div>
       <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
@@ -64,10 +64,10 @@
 // import PopularToday from './popular-today/popular-today'
 // import NewPreference from './new-preference/new-preference'
 // import CollageReturn from './collage-return/collage-return'
-  import {saleComputed, saleMethods} from '@state/helpers'
+  import {activityComputed, activityMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
-  import {TAB_STATUS} from './config'
+  import { TAB_STATUS } from './config'
   // import { activityMethods, activityComputed, saleMethods } from '@state/helpers'
 
   const PAGE_NAME = 'ACTIVITY_MANAGE'
@@ -127,19 +127,14 @@
         page: 1,
         delId: 0,
         status: '',
-        // defaultIndex: 0,
-        tabIndex: +window.$$tabIndex || 0,
-        dateInfo: []
+        statusIndex: 0
       }
     },
     computed: {
-      ...saleComputed,
+      ...activityComputed,
       // infoTabIndex() {
       //   return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
       // },
-      defaultIndex() {
-        return this.statusTab.findIndex((item) => +item.value === +this.status) || 0
-      },
       currentTab() {
         return TAB_STATUS[this.tabIndex]
       }
@@ -159,22 +154,23 @@
       this._getActiveStatus()
     },
     mounted() {
-      window.$$tabIndex = undefined
+
     },
     methods: {
-      ...saleMethods,
+      ...activityMethods,
       handleNav(item = {}, key = 'id') {
         const path = this.currentTab.activity_theme === 'groupon' ? 'new-collage' : 'new-sale'
         const url = `${this.$route.path}/${path}?${key}=${item.id || 0}&activity_theme=${this.currentTab.activity_theme}`
-        window.$$tabIndex = this.tabIndex
+        // window.$$tabIndex = this.tabIndex
         this.$router.push(url)
       },
       async _getActiveStatus() {
         try {
           const res = await API.Activity.getActiveStatus({
-            start_at: this.startTime,
-            end_at: this.endTime,
-            activity_theme: this.currentTab.activity_theme
+            start_at: this.requestData.start_at,
+            end_at: this.requestData.end_at,
+            activity_theme: this.requestData.activity_theme
+            // activity_theme: this.currentTab.activity_theme
           })
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -187,19 +183,18 @@
               num: item.statistic
             }
           })
+          let index = this.statusTab.findIndex((item) => +item.value === +this.requestData.status)
+          this.firstIn && this.status && this.setDefaultIndex({status: this.status, index: index > 0 ? index : 0})
+          if (this.status) {
+            this.setFirstIn()
+          }
         } catch (e) {
           console.warn(e)
         }
       },
       async _getActiveList() {
         try {
-          const res = await API.Activity.getActiveList({
-            page: this.page,
-            status: this.status,
-            activity_theme: this.currentTab.activity_theme,
-            start_at: this.startTime,
-            end_at: this.endTime
-          })
+          const res = await API.Activity.getActiveList(this.requestData)
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
@@ -218,37 +213,41 @@
         this.$refs.pages && this.$refs.pages.beginPage()
       },
       changeTab(tab, index) {
-        this.tabIndex = index
-        this.page = 1
-        this.startTime = ''
-        this.endTime = ''
-        // this.status = ''
-        // this.defaultIndex = 0
-        this.dateInfo = []
-        // this.$refs.statusTab && this.$refs.statusTab._resetTo()
+        this.setTabIndex(index)
+        this.setDefaultIndex(0)
+        this.setRequestData({
+          page: 1,
+          start_at: '',
+          end_at: '',
+          status: '',
+          activity_theme: this.currentTab.activity_theme
+        })
         this._getActiveList()
         this._getActiveStatus()
         this._resetPage()
       },
-      async changeStatus(selectStatus) {
+      async changeStatus(selectStatus, index) {
         this._resetPage()
-        this.status = selectStatus.value
-        this.page = 1
+        this.setDefaultIndex({status: selectStatus.value, index})
+        // this.status = selectStatus.value
+        // this.page = 1
         this._getActiveList()
-        this._getActiveStatus()
+        // this._getActiveStatus()
       },
       async _setTime(arr) {
-        this.startTime = arr[0]
-        this.endTime = arr[1]
-        this.page = 1
+        // this.startTime = arr[0]
+        // this.endTime = arr[1]
+        // this.page = 1
+        this.setRequestData({start_at: arr[0], end_at: arr[1], page: 1})
         this._getActiveList()
         this._getActiveStatus()
         this._resetPage()
       },
       addPage(page) {
-        this.page = page
+        // this.page = page
+        this.setRequestData({page})
         this._getActiveList()
-        this._getActiveStatus()
+        // this._getActiveStatus()
       },
       _deleteActivity(id) {
         this.delId = id
@@ -263,7 +262,11 @@
         } else {
           this.$toast.show('删除成功')
         }
-        this._getActiveList()
+        if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
+          this.setRequestData({page: this.activePage.total_page - 1})
+        } else {
+          this._getActiveList()
+        }
         this._getActiveStatus()
       }
     }

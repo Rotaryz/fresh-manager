@@ -15,7 +15,8 @@ export const state = {
   endTime: '',
   keyword: '',
   status: 'c_shop',
-  orderStatus: ''
+  orderStatus: '',
+  defaultIndex: 0
 }
 
 export const getters = {
@@ -51,6 +52,9 @@ export const getters = {
   },
   endTime(state) {
     return state.endTime
+  },
+  defaultIndex(state) {
+    return state.defaultIndex
   }
 }
 
@@ -80,8 +84,21 @@ export const mutations = {
   SET_PAGE(state, page) {
     state.page = page
   },
+  SET_DEFAULT_INDEX(state, index) {
+    state.defaultIndex = index
+  },
   SET_ORDER_STATUS(state, status) {
     state.orderStatus = status
+  },
+  RESET_DATA(state) {
+    state.page =1
+    state.startTime = ''
+    state.endTime = ''
+    state.status = 'c_shop'
+    state.shopId = ''
+    state.keyword = ''
+    state.orderStatus = ''
+    state.defaultIndex = 0
   }
 }
 
@@ -158,7 +175,12 @@ export const actions = {
   },
   setStatus({commit, dispatch}, selectStatus) {
     commit('SET_STATUS', selectStatus.status)
+    commit('SET_ORDER_STATUS', '')
     commit('SET_PAGE', 1)
+    commit('SET_TIME', ['', ''])
+    commit('SET_KEYWORD', '')
+    commit('SET_DEFAULT_INDEX', 0)
+    commit('SET_SHOP_ID', '')
     dispatch('getOrderList')
   },
   setOrderStatus({commit, dispatch}, selectStatus) {
@@ -169,5 +191,11 @@ export const actions = {
   setPage({commit, dispatch}, page) {
     commit('SET_PAGE', page)
     dispatch('getOrderList')
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
+  },
+  setDefaultIndex({commit}, index) {
+    commit('SET_DEFAULT_INDEX', index)
   }
 }

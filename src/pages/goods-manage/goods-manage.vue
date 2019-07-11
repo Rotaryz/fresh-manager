@@ -19,7 +19,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search :infoText="keyWord" placeHolder="商品名称或编码" @search="changeKeyword"></base-search>
+            <base-search :infoText="goodsReqData.keyword" placeHolder="商品名称或编码" @search="changeKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -43,7 +43,8 @@
               <transition name="fade">
                 <div v-show="showIndex" class="show-hide-box">
                   <div class="show-all-item">
-                    <a :href="downUrl" class="show-hide-item" target="_blank">商品导出</a>
+                    <!--<a :href="downUrl" class="show-hide-item" target="_blank">商品导出</a>-->
+                    <div class="show-hide-item" @click.stop="exportExcel">商品导出</div>
                     <router-link to="lead-supply-goods" append class="show-hide-item">
                       批量新建
                     </router-link>
@@ -61,6 +62,7 @@
             <div v-if="productList.length">
               <div v-for="(item, index) in productList" :key="index" class="list-content list-box">
                 <div class="list-item">
+                  <img v-if="item.goods_video_url" class="icon-video" src="./icon-play_list@2x.png" alt="">
                   <img class="pic-box" :src="item.goods_cover_image" alt="">
                 </div>
                 <div class="list-item list-double-row">
@@ -84,7 +86,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pagination" :pageDetail="statePageTotal" @addPage="addPage"></base-pagination>
+          <base-pagination ref="pagination" :pageDetail="statePageTotal" :pagination="goodsReqData.page" @addPage="addPage"></base-pagination>
         </div>
       </div>
     </template>
@@ -96,6 +98,7 @@
   import {scmGoodsComputed, scmGoodsMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
+  import _ from 'lodash'
   const PAGE_NAME = 'GOODS_MANAGE'
   const TITLE = '商品管理'
   const LIST_TITLE = ['图片', '商品名称', '类目', '供应商', '基本单位', '销售规格', '采购规格', '类型', '操作']
@@ -111,22 +114,11 @@
     data() {
       return {
         listTitle: LIST_TITLE,
-        dispatchSelect: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '支付', key: 'wait_release', num: 0},
-          {name: '退款', key: 'wait_purchase', num: 0}
-        ],
         showIndex: false,
         stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
-        dataSelect: {
-          check: false,
-          show: false,
-          content: '全部',
-          type: 'default',
-          data: [{name: '全部', id: ''}, {name: '未完成', id: 0}, {name: '完成', id: 1}]
-        },
+        dataSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', id: ''}, {name: '未完成', id: 0}, {name: '完成', id: 1}]},
         keyWord: '',
         oneBtn: false,
         curItem: {},
@@ -139,11 +131,21 @@
       ...scmGoodsComputed
     },
     created() {
-      this._getUrl()
       this.getCategoriesData()
+      this._setData()
     },
     methods: {
       ...scmGoodsMethods,
+      // 获取数据
+      _setData() {
+        let selectDown = _.cloneDeep(this.selectDown)
+        this.dataSelect.content = selectDown.completeStatusTitle
+        this.stairSelect.content = selectDown.oneMaterialTitle
+        this.secondSelect.content = selectDown.twoMaterialTitle
+        this.thirdlySelect.content = selectDown.thrMaterialTitle
+        this.secondSelect.data = selectDown.twoMaterialList
+        this.thirdlySelect.data = selectDown.thrMaterialList
+      },
       // 获取类目列表
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
@@ -157,10 +159,8 @@
       },
       // 搜索
       changeKeyword(text) {
-        this.keyWord = text
-        this.page = 1
+        this.setKeyword(text)
         this.$refs.pagination.beginPage()
-        this.getReqList()
       },
       // 选择一级类目
       setStairValue(data) {
@@ -168,39 +168,39 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
-        this.categoryId = data.id
-        this.page = 1
+        this.saveSelectDown({content: data.name, type: 1})
+        this.saveSelectDown({content: '二级类目', type: 2})
+        this.saveSelectDown({content: '三级类目', type: 3})
+        this.saveSelectDown({content: data.list, type: 5})
+        this.setMaterialCategory(data.id)
         this.$refs.pagination.beginPage()
-        this.getReqList()
       },
       // 选择二级类目
       setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
-        this.categoryId = data.id
-        this.page = 1
+        this.saveSelectDown({content: data.name, type: 2})
+        this.saveSelectDown({content: '三级类目', type: 3})
+        this.saveSelectDown({content: data.list, type: 6})
+        this.setMaterialCategory(data.id)
         this.$refs.pagination.beginPage()
-        this.getReqList()
       },
       // 选择三级类目
       setThirdlyValue(data) {
-        this.categoryId = data.id
-        this.page = 1
+        this.saveSelectDown({content: data.name, type: 3})
+        this.setMaterialCategory(data.id)
         this.$refs.pagination.beginPage()
-        this.getReqList()
       },
       // 分页
       addPage(page) {
-        this.page = page
-        this.getReqList()
+        this.setPage(page)
       },
       // 资料类型
       setDataValue(data) {
         this.dataSelect.content = data.name
-        this.completeStatus = data.id
-        this.page = 1
+        this.saveSelectDown({content: data.name, type: 7})
+        this.setCompleteStatus(data.id)
         this.$refs.pagination.beginPage()
-        this.getReqList()
       },
       // 删除商品
       delGoods(item) {
@@ -212,8 +212,9 @@
         API.Product.delGoodsDetail(this.curItem.id).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$toast.show('删除成功')
-            if (this.productList.length === 1 && this.page * 1 !== 1) {
-              this.page--
+            if (this.productList.length === 1 && this.goodsReqData.page * 1 !== 1) {
+              this.setPageSubtract()
+              this.$refs.pagination.beginPage(this.goodsReqData.page)
             }
             this.getReqList()
           } else {
@@ -234,13 +235,14 @@
         this.$router.push('/home/goods-store')
       },
       // 导出
+      exportExcel() {
+        window.open(this._getUrl(), '_blank')
+      },
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_material_category_id=${
-          this.categoryId
-        }&complete_status=${this.completeStatus}&keyword=${this.keyWord}&show_type=base`
-        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
+        let params = `access_token=${token.access_token}&current_corp=${currentId}&goods_material_category_id=${this.goodsReqData.goods_material_category_id}&complete_status=${this.goodsReqData.complete_status}&keyword=${this.goodsReqData.keyword}&show_type=base`
+        return process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-excel?${params}`
       },
       // 获取列表
       getReqList() {
@@ -269,6 +271,7 @@
     .list-item
       box-sizing: border-box
       flex: 1
+      position: relative
 
       &:nth-child(1)
         flex: 0.55
@@ -388,6 +391,12 @@
     opacity: 0
     height: 100%
     width: 100%
+  .icon-video
+    height: 16px
+    width: @width
+    position: absolute
+    top: 12px
+    left: 12px
   .pic-box
     height: 40px
     width: 40px

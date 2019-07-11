@@ -4,11 +4,11 @@
       <!--时间选择-->
       <span class="down-tip">建单时间</span>
       <div class="down-item">
-        <base-date-select placeHolder="请选择建单时间" @getTime="setTime"></base-date-select>
+        <base-date-select placeHolder="请选择建单时间" :dateInfo="timeArr" @getTime="setTime"></base-date-select>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="盘点单号" @search="searchOrderSn"></base-search>
+        <base-search placeHolder="盘点单号" :infoText="stockFilter.keyword" @search="searchOrderSn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="adjustPageTotal" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pagination" :pagination="stockFilter.page" :pageDetail="adjustPageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
 
@@ -73,35 +73,28 @@
       }
     },
     computed: {
-      ...storeComputed
+      ...storeComputed,
+      timeArr() {
+        return [this.stockFilter.start_time, this.stockFilter.end_time]
+      }
     },
     methods: {
       ...storeMethods,
-      _getAdjustOrder() {
-        this.getAdjustOrder({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          loading: false
-        })
+      _getAdjustOrder(params) {
+        this.SET_STOCK_PARAMS(params)
+        this.getAdjustOrder({loading: false})
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
       },
       setTime(value) {
-        this.startTime = value[0]
-        this.endTime = value[1]
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        this._getAdjustOrder()
+        this._getAdjustOrder({page: 1, start_time: value[0], end_time: value[1]})
       },
       searchOrderSn(value) {
-        this.keyword = value
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        this._getAdjustOrder()
+        this._getAdjustOrder({keyword: value, page: 1})
       },
       addPage(page) {
-        this.page = page
-        this._getAdjustOrder()
+        this._getAdjustOrder({page})
       }
     }
   }

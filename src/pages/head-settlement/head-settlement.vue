@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="社区名称/团长名称/团长账号" @search="_search"></base-search>
+        <base-search placeHolder="社区名称/团长名称/团长账号" :infoText="headFitter.keyword" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -27,13 +27,14 @@
             <div class="list-item">{{item.settled_total}}</div>
             <div class="list-item">{{item.settle_total}}</div>
             <div class="list-item list-operation-box">
-              <router-link tag="span" :to="`settlement-detail/${item.shop_id}/${item.name}-${item.mobile}`" append class="list-operation">详情</router-link>
+              <!--<router-link tag="span" :to="`settlement-detail/${item.shop_id}/${item.name}-${item.mobile}`" append class="list-operation">详情</router-link>-->
+              <div class="list-operation" @click="jumpDetail(item)">详情</div>
             </div>
           </div>
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pages" :pagination="headFitter.page" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
   </div>
@@ -63,15 +64,18 @@
     },
     methods: {
       ...leaderMethods,
-      _search(text) {
+      jumpDetail(item) {
+        this.resetHeadDetailData()
+        this.$router.push(`/home/head-settlement/settlement-detail/${item.shop_id}/${item.name}-${item.mobile}`)
+      },
+      _search(keyword) {
+        this.SET_PARAMS({page: 1, keyword})
+        this.getSettlementList({loading: false})
         this.$refs.pages.beginPage()
-        this.page = 1
-        this.keyword = text
-        this.getSettlementList({page: this.page, keyword: this.keyword, loading: false})
       },
       _getMoreList(page) {
-        this.page = page
-        this.getSettlementList({page: this.page, keyword: this.keyword, loading: false})
+        this.SET_PARAMS({page})
+        this.getSettlementList({loading: false})
       }
     }
   }

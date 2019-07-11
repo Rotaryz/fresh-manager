@@ -9,12 +9,12 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  leaderListFilter: {
-    page: 1,
-    limit: 10,
-    keyword: '',
-    status: '',
-    model_type: 0
+ leaderListFilter:{
+    page:1,
+    limit:10,
+    keyword:'',
+    status: 0,
+    model_type:0
   },
   leaderDetail: {}, // 团长详情
   deliveryOrder: {}, // 配送订单列表
@@ -43,11 +43,32 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  billPage: 1
+  billPage: 1,
+  headFitter: {
+    page: 1,
+    limit: 10,
+    keyword: ''
+  },
+  headDetailFitter: {
+    page: 1,
+    shop_id: '',
+    order_sn: '',
+    status: '',
+    type: ''
+  },
+  deliveryRequest: {
+    page: 1,
+    shop_id: '',
+    start_time: '',
+    end_time: ''
+  },
+  selectContent: {
+    deliveryContent: ''
+  },
+  firstIn: true
 }
-
 export const getters = {
-  leaderListFilter(state) {
+  leaderListFilter(state){
     return state.leaderListFilter
   },
   leaderList(state) {
@@ -106,12 +127,33 @@ export const getters = {
   },
   billPage(state) {
     return state.billPage
+  },
+  deliveryRequest(state) {
+    return state.deliveryRequest
+  },
+  selectContent(state) {
+    return state.selectContent
+  },
+  firstIn(state) {
+    return state.firstIn
+  },
+  startAt(state) {
+    return state.startAt
+  },
+  endAt(state) {
+    return state.endAt
+  },
+  headFitter(state) {
+    return state.headFitter
+  },
+  headDetailFitter(state) {
+    return state.headDetailFitter
   }
 }
 
 export const mutations = {
   SET_lEADER_LIST_FILTER(state, params) {
-    state.leaderListFilter = {...state.leaderListFilter, ...params}
+    state.leaderListFilter = Object.assign({}, state.leaderListFilter, params)
   },
   SET_LEADER_LIST(state, list) {
     state.leaderList = list
@@ -173,36 +215,67 @@ export const mutations = {
   SET_TIME_AT(state, value) {
     state.startAt = value[0]
     state.endAt = value[1]
+  },
+  SET_PARAMS(state, params) {
+    state.headFitter = {...state.headFitter, ...params}
+  },
+  SET_DETAIL_PARAMS(state, params) {
+    state.headDetailFitter = {...state.headDetailFitter, ...params}
+  },
+  RESET_DELIVERY_REQUEST(state) {
+    state.deliveryRequest = {
+      page: 1,
+      shop_id: '',
+      start_time: '',
+      end_time: ''
+    }
+    state.selectContent.deliveryContent = ''
+  },
+  SET_DELIVERY_REQUEST(state, data) {
+    state.deliveryRequest = Object.assign({}, state.deliveryRequest, data)
+  },
+  SET_SELECT_CONTENT(state, data) {
+    state.selectContent = Object.assign({}, state.selectContent, data)
+  },
+  RESET_DATA(state) {
+    state.leaderListFilter = {
+      page: 1,
+      limit: 10,
+      keyword: '',
+      status: 0,
+      model_type: 0
+    }
+    state.firstIn = true
+  },
+  SET_FIRST_IN(state, type) {
+    state.firstIn = type
   }
 }
-
 export const actions = {
   // 团长分销列表
-  getList({state, commit, dispatch}, loading = true) {
+  getList({state, commit, dispatch}, loading = true){
     /* eslint-disable */
-    let {model_type, ...params} = state.leaderListFilter
-    let name = state.leaderListFilter.model_type ? 'getLeaderApplicationList' : 'getLeaderList'
+    let {model_type,...params} = state.leaderListFilter
+    let name =  state.leaderListFilter.model_type ? 'getLeaderApplicationList' :'getLeaderList'
     // console.log(model_type)
-    return API.Leader[name](params)
-      .then((res) => {
-        if (res.error !== app.$ERR_OK) {
-          this.$toast.show(res.message)
-          return false
-        }
-        // console.log(res)
-        let pageTotal = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        commit('SET_LEADER_LIST', res.data)
-        commit('SET_PAGE_TOTAL', pageTotal)
-
-        return true
-      })
-      .catch(() => {
+    return API.Leader[name](params).then((res) => {
+      if (res.error !== app.$ERR_OK) {
+        this.$toast.show(res.message)
         return false
-      })
+      }
+      // console.log(res)
+      let pageTotal = {
+        total: res.meta.total,
+        per_page: res.meta.per_page,
+        total_page: res.meta.last_page
+      }
+      commit('SET_LEADER_LIST', res.data)
+      commit('SET_PAGE_TOTAL', pageTotal)
+
+      return true
+    }) .catch(() => {
+      return false
+    })
       .finally(() => {
         app.$loading.hide()
       })
@@ -226,8 +299,8 @@ export const actions = {
       })
   },
   // 配送订单列表
-  getDeliveryOrder({commit}, {page, shopId, startTime, endTime, loading = true}) {
-    return API.Leader.getDeliveryOrder({page, shop_id: shopId, start_time: startTime, end_time: endTime}, loading)
+  getDeliveryOrder({commit, state}, loading = false) {
+    return API.Leader.getDeliveryOrder(state.deliveryRequest, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -278,8 +351,8 @@ export const actions = {
   },
   //  团长结算列表
   // 团长列表
-  getSettlementList({state, commit, dispatch}, {page, keyword, loading = true}) {
-    return API.Leader.settlementList({page, keyword}, loading)
+  getSettlementList({state, commit, dispatch}, {loading = true}) {
+    return API.Leader.settlementList(state.headFitter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -302,9 +375,10 @@ export const actions = {
       })
   },
   // 团长结算详情列表
-  getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
+  // getSettlementDetail({state, commit, dispatch}, {page, shopId, orderSn, status, settlementType, loading = true}) {
+  getSettlementDetail({state, commit, dispatch}, {loading = false}) {
     return API.Leader.settlementDetail(
-      {page, shop_id: shopId, order_sn: orderSn, status, type: settlementType},
+      state.headDetailFitter,
       loading
     )
       .then((res) => {
@@ -433,5 +507,45 @@ export const actions = {
     commit('SET_BILL_TYPE', select.id)
     commit('SET_BILL_PAGE', 1)
     dispatch('getBillList')
+  },
+  resetDeliveryRequest({commit}) {
+    commit('RESET_DELIVERY_REQUEST')
+  },
+  setDeliveryRequest({commit, dispatch}, data) {
+    commit('SET_DELIVERY_REQUEST', data)
+    dispatch('getDeliveryOrder')
+  },
+  setSelectContent({commit}, data) {
+    commit('SET_SELECT_CONTENT', data)
+  },
+  resetData({commit}) {
+    commit('RESET_DATA')
+  },
+  setFirstIn({commit}) {
+    commit('SET_FIRST_IN', false)
+  },
+  resetWithdrawal({commit}) {
+    commit('SET_WITHDRAWAL_PAGE', 1)
+    commit('SET_WITHDRAWAL_SN', '')
+    commit('SET_WITHDRAWAL_KEYWORD', '')
+    commit('SET_WITHDRAWAL_STATUS', '')
+    commit('SET_WITHDRAWAL_TYPE', 2)
+    commit('SET_TIME_AT', ['', ''])
+  },
+  resetHeadData({commit}) {
+    commit('SET_PARAMS', {
+      page: 1,
+      limit: 10,
+      keyword: ''
+    })
+  },
+  resetHeadDetailData({commit}) {
+    commit('SET_DETAIL_PARAMS', {
+      page: 1,
+      shop_id: '',
+      order_sn: '',
+      status: '',
+      type: ''
+    })
   }
 }

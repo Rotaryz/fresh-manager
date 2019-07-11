@@ -26,6 +26,7 @@
 
 <script type="text/ecmascript-6">
   import storage from 'storage-controller'
+  import {resetMethods} from '@state/helpers'
   const COMPONENT_NAME = 'NAVIGATION_BAR'
   const INFO_INDEX = 0
   // const HEIGHT = 40
@@ -162,21 +163,6 @@
     }
   ]
   const FINANCE = [
-    // {
-    //   title: '财务',
-    //   children: [
-    //     {
-    //       title: '营业概况',
-    //       url: '/home/business-overview',
-    //       isLight: false
-    //     }
-    //     // {
-    //     //   title: '交易记录',
-    //     //   url: '/home/transaction-record',
-    //     //   isLight: false
-    //     // }
-    //   ]
-    // },
     {
       title: '账户',
       children: [
@@ -493,6 +479,7 @@
       this._handleNavList()
     },
     methods: {
+      ...resetMethods,
       // 初始化一级菜单的高亮
       _getMenuIndex() {
         let currentPath = this.$route.fullPath
@@ -532,14 +519,19 @@
         })
         this.firstIndex = i
         this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].sub_menu))
-        this.$router.push(this.firstMenu[i].url)
+        this._navigationTo(this.firstMenu[i].url)
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
-        this.$router.push(child.front_url)
+        this._navigationTo(child.front_url)
+      },
+      _navigationTo(url) {
+        this.resetHooks()
+        this.$router.push(url)
       },
       // 监听页面变化
       _handleNavList() {
+        this.$route.meta.resetHooks && this['ADD_HOOKS'](this.$route.meta.resetHooks)
         let currentPath = this.$route.fullPath
         let currentNav
         this.firstMenu.forEach((item, idx) => {

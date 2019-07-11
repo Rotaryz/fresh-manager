@@ -12,7 +12,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="出库单号或商户名称" @search="changeKeyword"></base-search>
+        <base-search placeHolder="出库单号或商户名称" :infoText="outFilter.keyword" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -20,19 +20,19 @@
         <div class="identification-page">
           <img src="./icon-warehousing@2x.png" class="identification-icon">
           <p class="identification-name">出库列表</p>
-          <base-status-nav
-            :statusList="dispatchSelect"
-            :value="status"
-            valueKey="status"
-            labelKey="status_str"
-            numKey="statistic"
-            @change="setValue"
-          ></base-status-nav>
-          <!--<base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>-->
+          <!--<base-status-nav-->
+          <!--:statusList="dispatchSelect"-->
+          <!--:value="status"-->
+          <!--valueKey="status"-->
+          <!--labelKey="status_str"-->
+          <!--numKey="statistic"-->
+          <!--@change="setValue"-->
+          <!--&gt;</base-status-nav>-->
+          <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div v-if="status===0" class="btn-main" @click="showBatchOut">批量出库</div>
-          <div v-if="status===2" class="btn-main" @click="showBatchRecheck">批量复核</div>
+          <div v-if="outFilter.status===0" class="btn-main" @click="showBatchOut">批量出库</div>
+          <div v-if="outFilter.status===2" class="btn-main" @click="showBatchRecheck">批量复核</div>
           <router-link tag="div" :to="{path: `edit-store`}" append class="btn-main g-btn-item">新建出库单<span class="add-icon"></span></router-link>
         </div>
       </div>
@@ -41,8 +41,8 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-if="productOutList.length">
-            <div v-for="(item, index) in productOutList" :key="index" :class="{'list-lock': item.show_sorting}" class="list-content list-box">
+          <div v-if="outList.length">
+            <div v-for="(item, index) in outList" :key="index" :class="{'list-lock': item.show_sorting}" class="list-content list-box">
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">
@@ -70,7 +70,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pagination" :pagination="outFilter.page" :pageDetail="outPageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="sureSubmit"></default-confirm>
@@ -78,10 +78,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-// import {DatePicker} from 'iview'
-  import _ from 'lodash'
+  // import {DatePicker} from 'iview'
+  // import _ from 'lodash'
   import API from '@api'
-  import {productComputed, authComputed} from '@state/helpers'
+  import {productComputed, authComputed, productMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -122,8 +122,8 @@
           {name: '待出库', value: 0, key: 'wait_out', num: 0},
           {name: '已完成', value: 1, key: 'success', num: 0}
         ],
-        // statusTab: 1,
-        time: [this.$route.query.start_time || '', this.$route.query.end_time || ''],
+        statusTab: 1,
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
         errorObj: {
           check: false,
           show: false,
@@ -136,26 +136,22 @@
     computed: {
       ...productComputed,
       dateInfo() {
-        return [this.startTime, this.endTime]
+        return [this.outFilter.start_time, this.outFilter.end_time]
       }
     },
     async created() {
       this._setErrorStatus()
-      this.productOutList = _.cloneDeep(this.outList)
-      this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
-      if (this.$route.query.status) {
-        this.statusTab = this.dispatchSelect.findIndex((item) => item.status * 1 === this.$route.query.status * 1)
-        this.status = this.$route.query.status * 1
-      }
+      this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.outFilter.status)
     },
     destory() {
       ws = null
     },
     methods: {
+      ...productMethods,
       ...authComputed,
       webSocketData(apiUrl) {
-        let url = process.env.VUE_APP_WSS + '/sub'
+        let url =  process.env.VUE_APP_WSS + '/sub'
         let prg = apiUrl + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
@@ -166,25 +162,25 @@
           var data = JSON.parse(event.data)
           if (data.status === 'success') {
             ws.close()
-            that.initData()
+            that._updateList({page: 1})
           }
         }
       },
-      initData() {
-        this.goodsPage = 1
-        this.getProductListData()
-        this._statistic()
-        this.$refs.pagination.beginPage()
-        this.$refs.confirm.hide()
+      _updateList(params, noUpdataStatus) {
+        this.SET_OUT_PARAMS(params)
+        this.getOutData({loading: false})
+        if (!noUpdataStatus) {
+          this._statistic()
+        }
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
       },
       async checkErr(item) {
-        this.exceptionStatus = item.status
-        this.goodsPage = 1
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+        this._updateList({exception_status: item.status, page: 1})
       },
       _setErrorStatus() {
-        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        let item = this.errorObj.data.find((item) => item.status === this.outFilter.exception_status)
         this.errorObj.content = item.name || '全部'
       },
       goDetail(item) {
@@ -196,7 +192,7 @@
       async sureSubmit() {
         let type = 'batchOut'
         let apiUrl = 'scm_batch_out_'
-        if (this.status === 2) {
+        if (this.outFilter.status === 2) {
           type = 'batchRecheck'
           apiUrl = 'scm_batch_finish_checked_'
         }
@@ -208,14 +204,14 @@
         }
       },
       showBatchOut() {
-        if (this.status !== 0 || (this.status === 0 && !this.productOutList.length)) {
+        if (this.outFilter.status !== 0 || (this.outFilter.status === 0 && !this.outList.length)) {
           this.$toast.show('暂无出库单')
           return
         }
         this.$refs.confirm.show('是否确认批量出库？')
       },
       showBatchRecheck() {
-        if (!this.productOutList.length) {
+        if (!this.outList.length) {
           this.$toast.show('暂无待复核')
           return
         }
@@ -223,12 +219,19 @@
       },
       async _statistic() {
         let res = await API.Store.outOrdersStatistic({
-          start_time: this.time[0],
-          end_time: this.time[1],
-          keyword: this.keyWord,
-          exception_status: this.exceptionStatus
+          start_time: this.outFilter.start_time,
+          end_time: this.outFilter.end_time,
+          keyword: this.outFilter.keyword,
+          exception_status: this.outFilter.exception_status
         })
-        this.dispatchSelect = res.data.status || []
+        if (res.error === this.$ERR_OK) {
+          this.dispatchSelect = res.data.status.map((item) => {
+            item.name = item.status_str
+            item.num = item.statistic
+            item.value = item.status
+            return item
+          })
+        }
       },
       async getProductListData() {
         let data = {
@@ -256,16 +259,10 @@
         await this._statistic()
       },
       async changeKeyword(keyword) {
-        this.keyWord = keyword
-        this.goodsPage = 1
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+        this._updateList({keyword, page: 1})
       },
       async changeStartTime(value) {
-        this.time = value
-        this.goodsPage = 1
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+        this._updateList({start_time: value[0], end_time: value[1], page: 1})
       },
       async changeEndTime(value) {
         this.endTime = value
@@ -277,15 +274,11 @@
         this.getProductListData()
         this.$refs.pagination.beginPage()
       },
-      async setValue(val) {
-        this.status = val
-        this.goodsPage = 1
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+      async setValue(item) {
+        this._updateList({status: item.value, page: 1})
       },
       async addPage(page) {
-        this.goodsPage = page
-        this.getProductListData()
+        this._updateList({page}, true)
       }
     }
   }

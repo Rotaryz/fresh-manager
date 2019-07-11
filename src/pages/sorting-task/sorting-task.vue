@@ -44,7 +44,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" @search="searchBtn"></base-search>
+        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" :infoText="sortingTask.filter.keyword" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -104,7 +104,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="sortingTask.pageTotal" @addPage="pageChange"></base-pagination>
+        <base-pagination ref="pagination" :pagination="sortingTask.filter.page" :pageDetail="sortingTask.pageTotal" @addPage="pageChange"></base-pagination>
       </div>
     </div>
   </div>
@@ -113,6 +113,7 @@
 <script type="text/ecmascript-6">
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import API from '@api'
+  import _ from 'lodash'
   const ORDERSTATUS = [{text: '按订单分拣', status: 0, id: 'order'}, {text: '按商品分拣', status: 1, id: 'goods'}]
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -130,7 +131,7 @@
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
     {tilte: '订单数', key: 'order_num', after: 'sale_unit'},
     {tilte: '配货数', key: 'allocation_num', after: 'sale_unit'},
-    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
+    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -150,7 +151,7 @@
     {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
+    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -228,10 +229,20 @@
       this._getStatusData()
       this._setErrorStatus()
       this.getCategoriesData()
+      this._setData()
     },
     methods: {
       ...authComputed,
       ...sortingMethods,
+      // 重置数据
+      _setData() {
+        let selectDown = _.cloneDeep(this.taskData)
+        this.stairSelect.content = selectDown.oneName
+        this.secondSelect.content = selectDown.twoName
+        this.thirdlySelect.content = selectDown.thrName
+        this.secondSelect.data = selectDown.twoList
+        this.thirdlySelect.data = selectDown.thrList
+      },
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -248,16 +259,19 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
+        this.SET_TASK_DATA({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       // 选择二级类目
       async setSecondValue(data) {
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = data.list
+        this.SET_TASK_DATA({twoName: data.name, thrList: data.list, thrName: '三级类目'})
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       // 选择三级类目
       async setThirdlyValue(data) {
+        this.SET_TASK_DATA({thrName: data.name})
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       _setErrorStatus() {
@@ -265,7 +279,7 @@
         this.errorObj.content = item.name || '全部'
       },
       webSocketData() {
-        let url = process.env.VUE_APP_WSS + '/sub'
+        let url =  process.env.VUE_APP_WSS + '/sub'
         let prg = `scm_batch_finish_sorting_` + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
@@ -280,7 +294,7 @@
         }
       },
       async checkErr(item) {
-        this._updateData({exception_status: item.status, page: 1})
+        this._updateData({exception_status:item.status,page:1})
       },
       initBaseDropDown(first, second) {
         if (first) {
@@ -297,7 +311,6 @@
           .then((res) => {
             this.$toast.show(res.message)
             this.webSocketData()
-          // this._updateData({page: 1})
           })
           .catch((err) => {
             this.$toast.show(err.message)
@@ -313,8 +326,8 @@
       },
       // 顶部tab切换
       tabChange(val) {
-        if (val === 1) {
-          this.initBaseDropDown(true, true)
+        if(val===1){
+          this.initBaseDropDown(true,true)
           this.getCategoriesData()
         }
         let params = {
@@ -326,7 +339,7 @@
           goods_material_category_id: '',
           status: 0,
           keyword: '',
-          exception_status: ''
+          exception_status:''
         }
         this.errorObj.content = '全部'
         this.$refs.research._setText()
@@ -346,7 +359,7 @@
       // 更新列表
       _updateData({...params}, noUpdataStatus) {
         this.SET_PARAMS(params)
-        this.getSortingTaskList()
+        this.getSortingTaskList({})
         if (!noUpdataStatus) {
           this._getStatusData()
         }
@@ -369,6 +382,7 @@
           end_time: this.sortingTask.filter.end_time,
           goods_material_category_id: this.sortingTask.filter.goods_material_category_id,
           keyword: this.sortingTask.filter.keyword,
+          exception_status: this.sortingTask.filter.exception_status,
           sorting_mode: this.sortingTask.filter.sorting_mode
         }
         // todo

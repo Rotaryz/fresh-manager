@@ -26,30 +26,37 @@
     },
     props: {
       editable: {
+        // 是否可以输入
         type: Boolean,
         default: true
       },
       disabled: {
+        // 是否禁用时间组件
         type: Boolean,
         default: false
       },
       format: {
+        // 返回数据格式
         type: String,
         default: 'yyyy-MM-dd'
       },
       height: {
+        // 样式
         type: Number,
         default: 28
       },
       width: {
+        // 组件宽度
         type: Number,
         default: 187
       },
       dataPickerType: {
+        // 组件高度
         type: String,
         default: 'daterange'
       },
       placeHolder: {
+        // 时间组件默认文字
         type: String,
         default: '选择申请日期'
       },
@@ -61,16 +68,19 @@
         }
       },
       value: {
+        // value 使用 v-model 时，值是 Date 类型，可以配合 @on-change 使用
         type: undefined,
         default: null
       },
       disabledDate: {
+        // 选择器额外配置，比如不可选日期与快捷选项
         type: Object,
         default: () => {
           return {}
         }
       },
       clearable: {
+        // 是否显示清除按钮
         type: Boolean,
         default: true
       }

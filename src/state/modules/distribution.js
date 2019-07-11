@@ -138,8 +138,17 @@ export const actions = {
   setTabIndex({commit, dispatch, state}, index) {
     commit('SET_TAB_INDEX', index)
     if (state.tabIndex === 0) {
+      commit('SET_ORDER_START_TIME', '')
+      commit('SET_ORDER_END_TIME', '')
+      commit('SET_ORDER_KEYWORD', '')
+      commit('SET_ORDER_STATUS', 1)
+      commit('SET_EXCEPTION_STATUS', '')
+      commit('SET_ORDER_PAGE', 1)
       dispatch('getOrderList', false)
     } else if (state.tabIndex === 1) {
+      commit('SET_DRIVER_START_TIME', '')
+      commit('SET_DRIVER_END_TIME', '')
+      commit('SET_DRIVER_PAGE', 1)
       dispatch('getDriverList', false)
     }
   },
@@ -166,8 +175,6 @@ export const actions = {
           per_page: pages.per_page,
           total_page: pages.last_page
         }
-        console.log(list)
-        console.log(state)
         commit('SET_ORDER_LIST', list)
         commit('SET_ORDER_PAGE_DETAIL', pageDetail)
         return list
@@ -242,5 +249,14 @@ export const actions = {
   setDriverPage({commit, dispatch}, page) {
     commit('SET_DRIVER_PAGE', page)
     dispatch('getDriverList')
+  },
+  resetData({commit}) {
+    commit('SET_ORDER_START_TIME', '')
+    commit('SET_ORDER_END_TIME', '')
+    commit('SET_ORDER_KEYWORD', '')
+    commit('SET_EXCEPTION_STATUS', '')
+    commit('SET_ORDER_STATUS', 1)
+    commit('SET_ORDER_PAGE', 1)
+    commit('SET_TAB_INDEX', 0)
   }
 }

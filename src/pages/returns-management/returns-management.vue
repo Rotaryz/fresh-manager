@@ -92,7 +92,7 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="pagination" :pageDetail="marketPageDetail" @addPage="setMarketPage"></base-pagination>
+          <base-pagination ref="pagination" :pagination="marketPage" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
         </div>
       </div>
 
@@ -127,7 +127,7 @@
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
-  import {authComputed, returnsMethods, returnsComputed, marketComputed, marketMethods} from '@state/helpers'
+  import {authComputed, returnsMethods, returnsComputed} from '@state/helpers'
 
   const PAGE_NAME = 'ORDER_LIST'
   const TITLE = '退货管理'
@@ -182,14 +182,12 @@
         rulesList: RULES_LIST,
         keywords: '',
         socialNames: '',
-        marketPage: 1,
         delId: ''
       }
     },
     computed: {
       ...authComputed,
       ...returnsComputed,
-      ...marketComputed,
       // infoTabIndex() {
       //   return this.tabStatus.findIndex((item) => item.status === this.status)
       // },
@@ -221,16 +219,12 @@
       }
     },
     async created() {
-      if (this.$route.query.status) {
-        this.infoTabIndex = this.$route.query.status * 1 + 1
-      }
       this.keywords = this.keyword
       this.socialNames = this.socialName
       await this._statistic()
     },
     methods: {
       ...returnsMethods,
-      ...marketMethods,
       async open(item, index) {
         let res = await API.Order.openActivity(item.id, item.status === 0 ? 1 : 0)
         this.$toast.show(res.message)
@@ -263,6 +257,13 @@
           return
         }
         let selectData = res.data
+        if (this.$route.query.status && this.firstIn) {
+          this.infoTabIndex = this.$route.query.status * 1 + 1
+          this.setFirstIn()
+        } else {
+          let index = res.data.findIndex((item) => item.status === this.status)
+          this.infoTabIndex = index > 0 ? index : 0
+        }
         this.statusList = selectData.map((item) => {
           item.num = item.statistic
           item.name = item.status_str
@@ -270,6 +271,9 @@
         })
       },
       changeList(item, index) {
+        this.resetReturnsData()
+        this.infoTab(index)
+        this.infoTabIndex = 0
         switch (index) {
         case 0:
           this.getReturnsList()
@@ -278,11 +282,11 @@
           this.getMarketList({page: this.marketPage, source_type: 2})
           break
         }
-        this.infoTab(index)
       },
-      setMarketPage(page) {
-        this.marketPage = page
-        this.getMarketList({page: this.marketPage, source_type: 2})
+      addPage(page) {
+        // this.marketPage = page
+        this.setMarketPage(page)
+        this.getMarketList({page, source_type: 2})
       },
       exportExcel() {
         window.open(this.returnsExportUrl, '_blank')
@@ -321,6 +325,8 @@
       },
       changeStatus(selectStatus) {
         this.setStatus(selectStatus)
+        let index = this.statusList.findIndex((item) => +item.status === +this.status)
+        this.infoTabIndex = index > 0 ? index : 0
         this.$refs.pagination.beginPage()
       },
       changeShopId(shop) {

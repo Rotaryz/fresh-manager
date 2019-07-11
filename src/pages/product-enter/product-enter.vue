@@ -12,7 +12,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="入库单号或采购单号" @search="changeKeyword"></base-search>
+        <base-search placeHolder="入库单号或采购单号" :infoText="enterFilter.keyword" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -31,8 +31,8 @@
           <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
         </div>
         <div class="list">
-          <div v-if="productEnterList.length">
-            <div v-for="(item, index) in productEnterList" :key="index" class="list-content list-box">
+          <div v-if="enterList.length">
+            <div v-for="(item, index) in enterList" :key="index" class="list-content list-box">
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">{{item.supplier}}</div>
@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pagination" :pagination="enterFilter.page" :pageDetail="statePageTotal" @addPage="addPage"></base-pagination>
       </div>
       <default-confirm ref="confirm" @confirm="sendAllocationStock"></default-confirm>
     </div>
@@ -62,9 +62,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import _ from 'lodash'
+  // import _ from 'lodash'
   import API from '@api'
-  import {productComputed, authComputed} from '@state/helpers'
+  import {productComputed, authComputed, productMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -120,29 +120,21 @@
       ...productComputed,
       ...authComputed,
       dateInfo() {
-        return [this.startTime, this.endTime]
+        return [this.enterFilter.start_time, this.enterFilter.end_time]
       }
     },
     async created() {
       this._setErrorStatus()
-      this.productEnterList = _.cloneDeep(this.enterList)
-      this.pageTotal = _.cloneDeep(this.statePageTotal)
       await this._statistic()
-      if (this.$route.query.status) {
-        this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.$route.query.status * 1)
-        this.status = this.$route.query.status * 1
-      }
+      this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.enterFilter.status)
     },
     methods: {
+      ...productMethods,
       async checkErr(item) {
-        this.exceptionStatus = item.status
-        this.goodsPage = 1
-        await this._statistic()
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+        this._updateList({exception_status: item.status, page: 1})
       },
       _setErrorStatus() {
-        let item = this.errorObj.data.find((item) => item.status === this.exceptionStatus)
+        let item = this.errorObj.data.find((item) => item.status === this.enterFilter.exception_status)
         this.errorObj.content = item.name || '全部'
       },
       // 完成单日收货
@@ -186,10 +178,10 @@
       },
       async _statistic() {
         let res = await API.Store.entryOrdersStatistic({
-          start_time: this.time[0],
-          end_time: this.time[1],
-          keyword: this.keyWord,
-          exception_status: this.exceptionStatus
+          start_time: this.enterFilter.start_time,
+          end_time: this.enterFilter.end_time,
+          keyword: this.enterFilter.keyword,
+          exception_status: this.enterFilter.exception_status
         })
         if (res.error === this.$ERR_OK) {
           this.dispatchSelect = res.data.status.map((item) => {
@@ -224,30 +216,27 @@
           }
         })
       },
+      _updateList(params, noUpdataStatus) {
+        this.SET_ENTER_PARAMS(params)
+        this.getEnterData({loading: false})
+        if (!noUpdataStatus) {
+          this._statistic()
+        }
+        if (params.page === 1) {
+          this.$refs.pagination.beginPage()
+        }
+      },
       async changeKeyword(keyword) {
-        this.keyWord = keyword
-        this.goodsPage = 1
-        await this._statistic()
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+        this._updateList({keyword, page: 1})
       },
       async changeStartTime(value) {
-        this.time = value
-        this.goodsPage = 1
-        await this._statistic()
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+        this._updateList({start_time: value[0], end_time: value[1], page: 1})
       },
       async setValue(item) {
-        this.status = item.value
-        this.goodsPage = 1
-        await this._statistic()
-        this.getProductListData()
-        this.$refs.pagination.beginPage()
+        this._updateList({status: item.value, page: 1})
       },
       addPage(page) {
-        this.goodsPage = page
-        this.getProductListData()
+        this._updateList({page}, true)
       }
     }
   }

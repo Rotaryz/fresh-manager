@@ -27,7 +27,9 @@ export const state = {
     exception_status: '',
     page: 1,
     limit: 10
-  }
+  },
+  isFirst: true,
+  exceptionText: '全部'
 }
 
 export const getters = {
@@ -42,6 +44,12 @@ export const getters = {
   },
   afterSalesFilter(state) {
     return state.afterSalesFilter
+  },
+  isFirst(state) {
+    return state.isFirst
+  },
+  exceptionText(state) {
+    return state.exceptionText
   }
 }
 
@@ -57,6 +65,12 @@ export const mutations = {
   },
   SET_LIST(state, {list}) {
     state.afterSalesList = list
+  },
+  SET_IS_FIRST(state, isFirst) {
+    state.isFirst = isFirst
+  },
+  SET_EXCEPTION_TEXT(state, exceptionText) {
+    state.exceptionText = exceptionText
   }
 }
 
@@ -102,5 +116,18 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('SET_PARAMS', {
+      start_time: '',
+      end_time: '',
+      keyword: '',
+      status: '',
+      exception_status: '',
+      page: 1,
+      limit: 10
+    })
+    commit('SET_IS_FIRST', true)
+    commit('SET_EXCEPTION_TEXT', '全部')
   }
 }

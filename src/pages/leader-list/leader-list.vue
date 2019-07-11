@@ -101,7 +101,7 @@
         </div>
       </template>
       <div class="pagination-box">
-        <base-pagination ref="pagination" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
+        <base-pagination ref="pagination" :pagination="leaderListFilter.page" :pageDetail="pageTotal" @addPage="_getMore"></base-pagination>
       </div>
     </div>
     <default-modal v-if="leaderList.length" ref="dialog">

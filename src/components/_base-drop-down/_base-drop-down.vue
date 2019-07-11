@@ -41,26 +41,32 @@
         }
       },
       isUse: {
+        // 是否使用
         type: Boolean,
         default: true
       },
       itemHeight: {
+        // 下拉列表高度
         type: Number,
         default: 40
       },
       width: {
+        // 组件宽度
         type: Number,
         default: 102
       },
       height: {
+        // 组件高度
         type: Number,
         default: 28
       },
       isInput: {
+        // 是否显示筛选输入框
         type: Boolean,
         default: false
       },
       isInputPla: {
+        // 输入框文字
         type: String,
         default: '请输入搜索文字'
       },

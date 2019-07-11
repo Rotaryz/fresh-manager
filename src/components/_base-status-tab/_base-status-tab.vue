@@ -22,10 +22,12 @@
         }
       },
       infoTabIndex: {
+        // 当前选择值
         type: Number,
         default: 0
       },
       show: {
+        // 是否展示
         type: Boolean,
         default: true
       }

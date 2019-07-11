@@ -19,38 +19,47 @@
     name: COMPONENT_NAME,
     props: {
       padding: {
+        // 样式padding
         type: String,
         default: '20px 69px'
       },
       margin: {
+        // 样式margin
         type: String,
         default: '0px'
       },
       tabAlign: {
+        // 文字样式
         type: String,
         default: 'center'
       },
       defaultTab: {
+        // Tab选中值
         type: [Number, String],
         default: 0
       },
       tabList: {
+        // tab数据
         type: Array,
         default: () => []
       },
       activeColor: {
+        // 高亮颜色
         type: String,
         default: ''
       },
       defaultColor: {
+        // 默认颜色
         type: String,
         default: ''
       },
       isShowMark: {
+        // 是否后面有标记
         type: Boolean,
         default: true
       },
       id: {
+        // 需要键值
         type: [String, Number],
         default: ''
       }

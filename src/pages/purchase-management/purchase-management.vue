@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="采购单号" @search="_search"></base-search>
+        <base-search :infoText="requestData.order_sn" placeHolder="采购单号" @search="_search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
+        <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
   </div>
@@ -62,8 +62,6 @@
     data() {
       return {
         listTitle: LIST_TITLE,
-        page: 1,
-        orderSn: '',
         excelParams: ''
       }
     },
@@ -90,8 +88,7 @@
           if (res.error !== this.$ERR_OK) {
             return
           }
-          this.page = 1
-          this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
+          this.setRequestData({page: 1})
         })
         e.target.value = ''
       },
@@ -102,13 +99,10 @@
       },
       _search(text) {
         this.$refs.pages.beginPage()
-        this.page = 1
-        this.orderSn = text
-        this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
+        this.setRequestData({page: 1, order_sn: text})
       },
       _getMoreList(page) {
-        this.page = page
-        this.getPurchaseList({page: this.page, orderSn: this.orderSn, loading: false})
+        this.setRequestData({page})
       }
     }
   }

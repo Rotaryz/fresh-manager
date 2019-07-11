@@ -86,6 +86,7 @@
     created() {
       this._getShopBillType()
       this.name = this.$route.params.name
+      this.billSelect.content = '全部类型'
     },
     methods: {
       ...leaderMethods,
