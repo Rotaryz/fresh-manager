@@ -124,25 +124,28 @@
                 <div>视频名称-{{addData.videoContent.name}}</div>
               </div>
             </template>
-            <div v-else class="video-content-wrap">
-              <div class="video-tip"></div>
-              <div class="upload-video-wrap">
-                <base-upload :videoUrl="addData.videoContent.url"
-                             :picNum="1"
-                             fileType="video-custom"
-                             :size="100"
-                             @failFile="failFile"
-                             @successVideo="getVideoContent"
-                >
-                  <button class="upload-video btn-main  hand">
-                    点击上传视频
-                  </button>
-                </base-upload>
+            <template  v-else>
+              <div class="video-content-wrap">
+                <div class="video-tip"></div>
+                <div class="upload-video-wrap">
+                  <base-upload :videoUrl="addData.videoContent.url"
+                               :picNum="1"
+                               fileType="video-custom"
+                               :size="100"
+                               @failFile="failFile"
+                               @successVideo="getVideoContent"
+                  >
+                    <button class="upload-video btn-main  hand">
+                      点击上传视频
+                    </button>
+                  </base-upload>
+                </div>
               </div>
-            </div>
-            <div class="tip">
-              请添加小于100M,格式为mp4、3gp、m3u8、webm的视频
-            </div>
+              <div class="tip">
+                请添加小于100M,格式为mp4、3gp、m3u8、webm的视频
+              </div>
+            </template>
+
           </div>
         </div>
         <!--视频  视频简介-->
@@ -1091,7 +1094,7 @@
         .edit-title
           text-align left
           min-width: 105px
-
+          color:#666
       .look-item
         margin-top 20px
         margin-bottom: 60px
@@ -1250,7 +1253,7 @@
         display flex
         flex: 1
         border-1px()
-
+        background-color #fdfdfd
         .add-cont-type-item
           height 46px
           border-right-1px()
