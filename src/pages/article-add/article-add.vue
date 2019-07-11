@@ -67,7 +67,7 @@
                 请添加不大于10M的清晰图片
               </template>
               <template v-else>
-                请添加不大于10M的清晰图片或视频
+                请添加不大于10M的清晰图片或视频(格式:mp4、3gp、m3u8、webm)
                 <br>
                 {{name}}封面是{{name}}首图
               </template>
@@ -139,7 +139,9 @@
                   </button>
                 </base-upload>
               </div>
-
+            </div>
+            <div class="tip">
+              请添加小于100M,格式为mp4、3gp、m3u8、webm的视频
             </div>
           </div>
         </div>
@@ -648,12 +650,12 @@
         this.addData.coverImage.url = video.full_cover_url
         if (!this.addData.coverImage.id) {
           setTimeout(() => {
-            this._getCoverImage(video.file_id)
+            this._getCoverImage(this.addData.coverVideo.file_id)
           }, 10000)
         }
       },
-      _getCoverImage() {
-        this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id: this.addData.coverVideo.file_id}).then(res => {
+      _getCoverImage(file_id) {
+        this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id}).then(res => {
           if (res.error !== this.$ERR_OK) return false
           this.addData.coverImage.id = res.data.cover_image_id
           this.addData.coverImage.url = res.data.full_cover_url
@@ -724,7 +726,8 @@
         this.addDetailContentItem({
           type: 'video',
           value: video.full_url,
-          id: video.id
+          id: video.id,
+          file_id:video.file_id
         })
       },
       addOneGoods() {
@@ -885,7 +888,7 @@
         else if (this.currentType === 'video' && this.addData.coverImage.id === '') message = '请上传封面'
         else if (this.currentType !== 'video' && !this.addData.coverVideo.id && !this.addData.coverImage.id) message = '请上传封面'
         else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id) {
-          this._getCoverImage()
+          this._getCoverImage(this.addData.coverVideo.file_id)
           message = '正在处理视频第一帧作为封面图，请稍后上线'
         } else if (!this.addData.authPhoto.id) message = '请上传作者头像'
         else if (!this.addData.authName) message = '请填写作者名字'
@@ -928,15 +931,15 @@
       getSubmitData(status) {
         let params = {
           type: this.currentType,
-          title: this.addData.title,
+          title: this.addData.title.trim(),
           category_id: this.addData.category,
           author_image_id: this.addData.authPhoto.id,
-          author_nickname: this.addData.authName,
-          author_sign: this.addData.authSignature,
+          author_nickname: this.addData.authName.trim(),
+          author_sign: this.addData.authSignature.trim(),
           image_cover_id: this.addData.coverImage.id,
           video_cover_id: this.addData.coverVideo.id,
-          init_fabulous_num: this.addData.goodCount,
-          init_browse_num: this.addData.lookCount,
+          init_fabulous_num: (this.addData.goodCount+'').trim(),
+          init_browse_num: (this.addData.lookCount+'').trim(),
           article_pid: this.addData.articlePid,
           assembly: [],
           status
@@ -997,6 +1000,7 @@
                   title: '',
                   introduction: ''
                 }]
+                this._getCoverImage(item.file_id)
                 break;
               default:
                 newItem.content = [{

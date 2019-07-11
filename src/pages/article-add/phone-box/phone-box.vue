@@ -5,7 +5,7 @@
       </div>
       <div v-else class="content-box">
         <div v-if="type !== 'video'" class="content-article-detail">
-          <video v-if="data.coverVideo.url" :src="data.coverVideo.url" class="cover-photo"></video>
+          <video v-if="data.coverVideo.url" :src="data.coverVideo.url" controls class="cover-photo"></video>
           <img v-else :src="data.coverImage.url" class="cover-photo">
           <div class="auth-wrap">
             <img src="./icon-high_quality@2x.png" class="good-article-icon">
@@ -26,7 +26,7 @@
             <div v-if="data.goodCount" class="like-wrap">
               <div class="like-total">
                 <img src="./icon-like_big1@2x.png" alt="" class="like-icon">
-                <div class="total-count">{{data.goodCount}}</div>
+                <div class="total-count">{{data.goodCount >999 ?'999+' :data.goodCount}}</div>
               </div>
               <img v-for="(item,idx) in data.likes" :key="idx" :src="item.avatar" class="liker-photo">
             </div>
@@ -42,7 +42,7 @@
             </div>
             <template v-if="type!=='video'&& data.details.length">
               <div v-for="(item,idx) in data.details" :key="idx" class="article-item">
-                <pre v-if="item.type==='text'" class="article-text">{{item.value}}</pre>
+                <div v-if="item.type==='text'" class="article-text">{{item.value}}</div>
                 <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image">
                 <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
                 <goods-item v-if="item.type==='goods'" :goodsData="item.value" :addDisabled="true"></goods-item>
@@ -73,7 +73,7 @@
           </div>
         </div>
         <div v-else class="content-article-detail-video" @click.self="videoClick">
-          <video v-if="data.videoContent.url" :src="data.videoContent.url" class="full-screen-video" @click="videoClick">
+          <video v-if="data.videoContent.url" :src="data.videoContent.url" controls class="full-screen-video" @click="videoClick">
           </video>
           <div class="info-wrap" @click="videoClick">
             <div class="auth-wrap">
@@ -172,10 +172,11 @@
     display: flex
     justify-content: center
     width: 340px
+
     .phone
       position: fixed
       z-index: 200
-      top:13%
+      top: 13%
       icon-image('pic-tel')
       width: 340px
       height: 726.24px
@@ -281,6 +282,7 @@
               width: 15px
               height: 15px
               display block
+
             .total-count
               font-size $font-size-10
               color: #111
@@ -313,6 +315,7 @@
           letter-spacing 0.4px
           color: #111111
           margin-bottom: 25px
+
         .goods-list
           margin-bottom: 10px
 
@@ -324,6 +327,7 @@
           font-family $font-family-regular
           font-size 15px
           color: #111111
+
         .article-image
         .article-video
           width: 100%
