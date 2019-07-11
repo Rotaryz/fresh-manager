@@ -68,34 +68,6 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getSortList(data = {keyword: '', page: 1, limit: 0, status: 1}, loading = false) {
-    let url = `/social-shopping/api/backend/article-category-index`
-    return request.get(url, data, loading)
-  },
-  addSort(data, loading = false) {
-    let url = `/social-shopping/api/backend/article-category-store`
-    return request.get(url, data, loading)
-  },
-  addContent(data, loading = true) {
-    let url = `/social-shopping/api/backend/article-store`
-    return request.post(url, data, loading)
-  },
-  addDraft(data, loading = true) {
-    let url = `/social-shopping/api/backend/article-draft`
-    return request.post(url, data, loading)
-  },
-  getCoverImage(data, loading = false) {
-    let url = `/social-shopping/api/cos/get-file-info`
-    return request.get(url, data, loading)
-  },
-  getAuth(loading=false){
-    let url = `/social-shopping/api/backend/article-last-author`
-    return request.get(url, {}, loading)
-  },
-  /**
-   * 内容詳情
-   *
-   */
   getWorkStatusList(data, loading = false) {
     let url = `/social-shopping/api/backend/article-status`
     return request.get(url, data, loading)
@@ -133,20 +105,6 @@ export default {
   /**
    * 上下线我的作品列表
    */
-  getArticleDetail({id}, loading = true) {
-    let url = `/social-shopping/api/backend/article-show/${id}`
-    return request.get(url, {}, loading)
-  },
-  editContetnArticle({id, ...data}, loading = true) {
-    let url = ` /social-shopping/api/backend/article-update/${id}`
-    return request.post(url, data, loading)
-  },
-  /**
-   * 根據video 返回的 file_id获取cover_image
-   * @param data
-   * @param loading
-   * @returns {*}
-   */
   upLineWork(id, data = {status: 1}, loading = true) {
     let url = `/social-shopping/api/backend/article-set-status/${id}`
     return request.get(url, data, loading)
@@ -179,6 +137,73 @@ export default {
    */
   getMaterialList(data, loading = false) {
     let url = `/social-shopping/api/backend/article-category-material-index`
+    return request.get(url, data, loading)
+  },
+  // 内容分类列表
+  getSortList(data = {keyword: '', page: 1, limit: 0, status: 1}, loading = false) {
+    let url = `/social-shopping/api/backend/article-category-index`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 增加分类
+   *
+   */
+  addSort(data, loading = false) {
+    let url = `/social-shopping/api/backend/article-category-store`
+    return request.get(url, data, loading)
+  },
+  /**
+   *创作内容
+   *
+   */
+  addContent(data, loading = true) {
+    let url = `/social-shopping/api/backend/article-store`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 增加草稿
+   *
+   */
+  addDraft(data, loading = true) {
+    let url = `/social-shopping/api/backend/article-draft`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 根據video 返回的 file_id获取cover_image
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getCoverImage(data, loading = false) {
+    let url = `/social-shopping/api/cos/get-file-info`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 站点作者信息
+   *
+   */
+  getAuth(loading = false) {
+    let url = `/social-shopping/api/backend/article-last-author`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 内容詳情
+   *
+   */
+  getArticleDetail({id}, loading = true) {
+    let url = `/social-shopping/api/backend/article-show/${id}`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 编辑
+   *
+   * **/
+  editContetnArticle({id, ...data}, loading = true) {
+    let url = ` /social-shopping/api/backend/article-update/${id}`
+    return request.post(url, data, loading)
+  },
+  getLikes(data, loading = false) {
+    const url = `/social-shopping/api/wap/content/article-fabulou-list`
     return request.get(url, data, loading)
   }
 }

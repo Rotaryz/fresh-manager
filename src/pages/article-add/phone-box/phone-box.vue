@@ -28,7 +28,7 @@
                 <img src="./icon-like_big1@2x.png" alt="" class="like-icon">
                 <div class="total-count">{{data.goodCount}}</div>
               </div>
-              <img v-for="(item,idx) in 6" :key="idx" :src="item.photo" class="liker-photo">
+              <img v-for="(item,idx) in data.likes" :key="idx" :src="item.avatar" class="liker-photo">
             </div>
           </div>
           <div class="line-middle"></div>
@@ -280,7 +280,7 @@
             .like-icon
               width: 15px
               height: 15px
-
+              display block
             .total-count
               font-size $font-size-10
               color: #111
