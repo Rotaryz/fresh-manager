@@ -260,7 +260,7 @@
           width: 0
         .null-img
           position: absolute
-          top: 0
+          top: -1px
           left: 0
           width: 100%
   .article-modal

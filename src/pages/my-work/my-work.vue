@@ -338,6 +338,11 @@
     width: 100%
   .list-box
     .list-item
+      &:nth-child(2)
+        flex: 2.3
+      &:nth-child(1)
+        max-width: 100px
+        min-width: 100px
       &:last-child
         max-width: 166px
         min-width: 166px
