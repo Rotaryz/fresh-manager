@@ -717,3 +717,31 @@ export const scmGoodsComputed = {
 export const scmGoodsMethods = {
   ...mapActions('scmGoods', ['getProductList', 'getScmStoreData', 'setKeyword', 'setPage', 'setMaterialCategory', 'setCompleteStatus', 'saveSelectDown', 'setPageSubtract', 'resetData'])
 }
+
+// 内容
+export const contentComputed = {
+  ...mapGetters('content', [
+    'centerTabIndex',
+    'contentPage',
+    'contentClassList',
+    'contentClassPage',
+    'workList',
+    'workPage',
+    'centerList',
+    'centerPage',
+    'centerKeyword',
+    'centerStatus',
+    'contentCenterPage',
+    'centerTabIndex',
+    'contentPage', 'workType',
+    'contentWorkPage',
+    'workStatus',
+    'workTabIndex',
+    'workKeyword',
+    'workCategoryId'
+  ])
+}
+
+export const contentMethods = {
+  ...mapActions('content', ['infoContent', 'contentAddPage', 'setWorkIndex', 'infoWork', 'getWorkListMore', 'getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
+}

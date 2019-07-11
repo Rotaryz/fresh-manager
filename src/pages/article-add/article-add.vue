@@ -124,7 +124,7 @@
                 <div>视频名称-{{addData.videoContent.name}}</div>
               </div>
             </template>
-            <template  v-else>
+            <template v-else>
               <div class="video-content-wrap">
                 <div class="video-tip"></div>
                 <div class="upload-video-wrap">
