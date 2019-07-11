@@ -19,7 +19,7 @@
           </div>
           <div class="edit-input-box">
             <zb-dropdown v-model="addData.category" :data="articleCategoryList" valueKey="id" :width="400" :height="40"
-                           placeholder="请选择内容分类" @click="_getArticleCategory"
+                         placeholder="请选择内容分类" @change-visible="_getArticleCategory"
             ></zb-dropdown>
           </div>
           <div class="add-category-operate hand" @click="addCategory">添加分类</div>
@@ -289,8 +289,8 @@
     </div>
     <div class="back">
       <template v-if="!id">
-        <div class="back-cancel back-btn hand" @click="_submitBtn('addDraft')">存为草稿</div>
-        <div class="back-btn back-submit hand" @click="_submitBtn('addContent')">上线</div>
+        <div class="back-cancel back-btn hand" @click="_submitBtn('addDraft',0)">存为草稿</div>
+        <div class="back-btn back-submit hand" @click="_submitBtn('addContent',1)">上线</div>
       </template>
       <template v-else>
         <div class="back-btn back-cancel hand" @click="_submitBtn('editContetnArticle',0)">存为草稿</div>
@@ -309,20 +309,20 @@
         <div class="shade-tab">
           <div class="tab-item">
             <zb-dropdown v-model="goodsCategoryFrist"
-                           :data="goodsCategoryFristList"
-                           placeholder="一级分类"
-                           valueKey="id"
-                           :width="218"
-                           @change="_selectCategoryFirst"
+                         :data="goodsCategoryFristList"
+                         placeholder="一级分类"
+                         valueKey="id"
+                         :width="218"
+                         @change="_selectCategoryFirst"
             ></zb-dropdown>
           </div>
           <div class="tab-item">
             <zb-dropdown v-model="goodsCategorySecond"
-                           :data="goodsCategorySecondList"
-                           placeholder="二级分类"
-                           valueKey="id"
-                           :width="140"
-                           @change="_selectCategorySecond"
+                         :data="goodsCategorySecondList"
+                         placeholder="二级分类"
+                         valueKey="id"
+                         :width="140"
+                         @change="_selectCategorySecond"
             ></zb-dropdown>
           </div>
           <div class="tab-item">
@@ -441,7 +441,7 @@
           },
           authName: '',
           authSignature: '',
-          goodCount:50,
+          goodCount: 30,
           lookCount: 50,
           // 不同情况的字段
           videoContent: {
@@ -508,8 +508,21 @@
       } else {
         this._getAuth()
       }
+      this._getLikes()
     },
     methods: {
+      _getLikes() {
+        let limit = this.addData.goodCount < 10 ? this.addData.goodCount : 10
+        let params = {article_id: this.articleId || 0, preview: 1, limit, page: 1}
+        console.log(params)
+        API.Content.getLikes(params).then(res => {
+          console.log(res)
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+          }
+          this.addData.likes = res.data
+        })
+      },
       // 新增创建时获取最后一次作者信息
       _getAuth() {
         API.Content.getAuth().then(res => {
@@ -863,7 +876,7 @@
         this.selectGoods = []
         this.hideGoods()
       },
-      justifyConent() {
+      justifyConent(status) {
         let message = ''
         if (!this.addData.category) message = '请选择内容分类'
         else if (!this.addData.title) message = '请输入文章标题'
@@ -880,8 +893,18 @@
           else if (!this.addData.videoIntroduce) message = '请填写视频简介'
         } else if (this.currentType === 'cookbook' && !this.addData.foodList) message = '请填写食材清单'
         else if (this.currentType !== 'video' && !this.addData.details.length) message = '请编辑内容详情'
-        else if (!this.addData.goodCount) this.addData.goodCount = 0
-        else if (!this.addData.lookCount) this.addData.lookCount = 0
+        else if (!(/^[+]{0,1}(\d+)$/.test(this.addData.goodCount))) message = '请输入正确的初始化点赞数'
+        else if (!(/^[+]{0,1}(\d+)$/.test(this.addData.lookCount))) message = '请输入正确的初始化浏览数'
+        if (message) {
+          this.$toast.show(message)
+          return false
+        } else {
+          return true
+        }
+      },
+      justifyDraft() {
+        let message = ''
+        if (!this.addData.title) message = '请输入文章标题'
         if (message) {
           this.$toast.show(message)
           return false
@@ -890,8 +913,8 @@
         }
       },
       // 上线
-      async _submitBtn(name,status) {
-        let res = this.justifyConent()
+      async _submitBtn(name, status) {
+        let res = status ? this.justifyConent() : this.justifyDraft()
         if (res) {
           let data = this.getSubmitData(status)
           let res = await API.Content[name](data, true)

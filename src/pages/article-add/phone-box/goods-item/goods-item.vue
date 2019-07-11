@@ -70,7 +70,7 @@
       width: 90px
       height: 90px
       flex-shrink: 0
-
+      border-radius 8px 0px 0px 8px
     .info
       padding: 5px 12px
       overflow: hidden
