@@ -369,6 +369,7 @@
             category_id: this.parentId,
             page: this.choicePage,
             is_cate_show: 1,
+            status: 1,
             limit: 7
           },
           loading
