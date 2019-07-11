@@ -27,8 +27,10 @@
                   <p class="goods-title">{{article.name}}</p>
                 </div>
               </div>
-
               <p class="use hand" @click="_showConfirm(article.id, idx)">删除</p>
+              <div class="eat-switch" @click="changeSwitch(idx, article)">
+                <base-switch :status="article.is_close" confirmText="显示" cancelText="隐藏"></base-switch>
+              </div>
             </div>
           </div>
         </transition-group>
@@ -58,6 +60,9 @@
                 ></base-drop-down>
               </div>
               <p class="use hand" @click="_showConfirm(item.id, idx)">删除</p>
+            </div>
+            <div class="eat-switch" @click="changeSwitch(idx, item)">
+              <base-switch :status="item.is_close" confirmText="显示" cancelText="隐藏"></base-switch>
             </div>
           </div>
         </transition-group>
@@ -142,6 +147,7 @@
     image_url: '',
     title: '',
     showLoading: false,
+    is_close: 1,
     add_icon: ADD_IMAGE
   } // 模板对象
   let TEMPLATE_CLASSIFY = {
@@ -151,6 +157,7 @@
     name: '',
     check: false,
     show: false,
+    is_close: 1,
     data: []
   }
   export default {
@@ -176,7 +183,7 @@
     },
     data() {
       return {
-        temporaryArticle: [JSON.parse(JSON.stringify(TEMPLATE_OBJ))],
+        temporaryArticle: [],
         upIndex: -1,
         upItem: {},
         goodsPage: {total: 1, per_page: 10, total_page: 1},
@@ -190,9 +197,11 @@
         assortment: {check: false, show: false, content: '选择文章分类', type: 'default', data: []}, // 格式：{title: '55'
         selectItem: {},
         classifyIndex: 0,
-        temporaryClassify: [JSON.parse(JSON.stringify(TEMPLATE_CLASSIFY))],
+        temporaryClassify: [],
         storageId: 0,
-        storageList: []
+        storageList: [],
+        showArticle: [],
+        showClassify: []
       }
     },
     computed: {
@@ -205,7 +214,20 @@
     watch: {
       temporaryClassify: {
         async handler(news) {
+          this.$emit('getClassify', news)
           await this.getContentList()
+        },
+        deep: true
+      },
+      temporaryArticle: {
+        handler(news) {
+          this.showArticle = news.map((item) => {
+            if (item.is_close) {
+              return item
+            }
+          })
+          this.showArticle = this.showArticle.length && this.showArticle[0] !== undefined ? this.showArticle : []
+          this.$emit('getArticle', this.showArticle)
         },
         deep: true
       }
@@ -215,6 +237,9 @@
       await this._getGoodsList(false)
     },
     methods: {
+      changeSwitch(index, item) {
+        this[this.dataName][index].is_close = item.is_close === 1 ? 0 : 1
+      },
       async infoClassData(arr) {
         TEMPLATE_CLASSIFY.data = JSON.parse(JSON.stringify(arr))
       },
@@ -233,8 +258,16 @@
             }
           }
         }
+        let idsArr = this.temporaryClassify.map((item) => {
+          return item.other_id
+        })
+        let arr = new Set(idsArr)
+        if (arr.size < idsArr.length) {
+          this.$toast.show(`请勿选择重复的分类`, 1500)
+          return
+        }
         let data = this.temporaryClassify.map((item) => {
-          let obj = {id: item.id, name: item.content, other_id: item.other_id, type: item.type}
+          let obj = {id: item.id, name: item.content, other_id: item.other_id, type: item.type, is_close: item.is_close}
           return {page_module_id: this.articleCateId, ext_json: obj}
         })
         let res = await API.Advertisement.saveModuleMsg({data})
@@ -251,7 +284,12 @@
       },
       async getContentList(item) {
         let arr = []
-        let id = this.temporaryClassify.length && this.temporaryClassify[0].other_id ? this.temporaryClassify[0].other_id : ''
+        let id = this.temporaryArticle.length && this.temporaryArticle[0].other_id ? this.temporaryArticle[0].other_id : ''
+        console.log(id)
+        if (id === '') {
+          this.$emit('getContentList', [])
+          return
+        }
         if (this.storageId === id) {
           this.$emit('getContentList', this.storageList)
           return
@@ -283,7 +321,7 @@
       async _delBanner() {
         switch (this.dataName) {
         case 'temporaryArticle':
-          this.$emit('getArticle', this[this.dataName])
+          // this.$emit('getArticle', this[this.dataName])
           break
         case 'temporaryClassify':
           this.$emit('getClassify', this[this.dataName])
@@ -350,7 +388,7 @@
         setTimeout(() => {
           el.scrollTop = el.scrollHeight
         }, 100)
-        this.$emit('getArticle', this[this.dataName])
+        // this.$emit('getArticle', this[this.dataName])
       },
       _showGoods(index) {
         this.upIndex = index
@@ -365,6 +403,7 @@
             category_id: this.parentId,
             page: this.choicePage,
             is_cate_show: 1,
+            status: 1,
             limit: 7
           },
           loading
@@ -458,7 +497,7 @@
         }
         this[this.dataName][this.upIndex].image_url = res.data.url
         this[this.dataName][this.upIndex].image_id = res.data.id
-        this.$emit('getArticle', this[this.dataName])
+        // this.$emit('getArticle', this[this.dataName])
       },
     }
   }
@@ -693,6 +732,7 @@
       font-family: $font-family-regular
   .art-right
     height: 100px
+    padding: 4px 0
     justify-content: space-between
     display: flex
     flex-direction: column
@@ -1055,6 +1095,7 @@
   .classify-msg
     padding: 0
     height: 100px
+    position: relative
     .advertisement-msg
       height: 100%
       width: 100%
@@ -1066,4 +1107,11 @@
         top: 16px
       .input-box
         background: $color-white
+  .eat-switch
+    col-center()
+    right: -4px
+  .classify-msg
+    position: relative
+    .eat-switch
+      right: 12px
 </style>

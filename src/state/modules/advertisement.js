@@ -36,7 +36,9 @@ export const actions = {
           return false
         }
         let arr = res.data
-        commit('SET_INFO_LIST', arr)
+        if(pageName === 'index'){
+          commit('SET_INFO_LIST', arr)
+        }
         return res.data
       })
       .catch(() => {

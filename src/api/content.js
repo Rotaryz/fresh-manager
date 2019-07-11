@@ -93,7 +93,7 @@ export default {
     return request.delete(url, data, loading)
   },
   /**
-   * 上下线我的作品列表
+   * 下线我的作品列表
    * @param data
    * @param loading
    * @returns {*}
@@ -109,6 +109,12 @@ export default {
     let url = `/social-shopping/api/backend/article-set-status/${id}`
     return request.get(url, data, loading)
   },
+  /**
+   * 根據video 返回的 file_id获取cover_image
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
   /**
    * 选择内容分类
    * @param data

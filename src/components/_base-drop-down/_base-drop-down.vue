@@ -103,7 +103,6 @@
         }, 1500)
       },
       selectType() {
-        console.log(this.select)
         if (!this.isUse) {
           return
         }

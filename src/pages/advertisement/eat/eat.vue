@@ -1,8 +1,10 @@
 <template>
   <div>
     <div class="phone-box">
+      {{articleList.length}}{{classifyList.length}}
       <div class="phone">
         <div class="content-box">
+          <img v-if="!articleList.length && !classifyList.length" src="./pic-recommend_empty@2x.png" class="null-img">
           <!--文章-->
           <div class="article-modal hand " :class="{'active': contentType === 'article', 'none': !articleList.length}" @click="changeType('article')">
             <!--一篇文章样式-->
@@ -38,7 +40,7 @@
           <!--分类列表-->
           <div class="scroll-classify hand" :class="{'active': contentType === 'classify', 'none': !classifyList.length}" @click="changeType('classify')">
             <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-item" :class="{'none': !classifyList.length}">
-              <span v-if="item.name" :class="{'scroll-classify-item-active': index === 0}">
+              <span v-if="item.name && item.is_close" :class="{'scroll-classify-item-active': index === 0}">
                 {{item.name}}
               </span>
             </div>
@@ -193,13 +195,13 @@
       fillData(isPull) {
         if (isPull) {
           // 是否下拉刷新，是的话清除之前的数据
-          leftList.length = 0
-          rightList.length = 0
-          leftHight = 0
-          rightHight = 0
-          this.leftList = []
-          this.rightList = []
         }
+        leftList.length = 0
+        rightList.length = 0
+        leftHight = 0
+        rightHight = 0
+        // this.leftList = []
+        // this.rightList = []
         rightList = []
         leftList = []
         for (let i = 0, len = this.listData.length; i < len; i++) {
@@ -257,8 +259,13 @@
         overflow-y: auto
         &::-webkit-scrollbar
           width: 0
+        .null-img
+          position: absolute
+          top: -1px
+          left: 0
+          width: 100%
   .article-modal
-    border: 2px solid transparent
+    border: 2px dashed #D9D9D9
   .article
     margin: 2% 2%
     height: 134.45px
@@ -324,7 +331,7 @@
   .scroll-classify
     height: 55px
     display: flex
-    border: 2px solid transparent
+    border: 2px dashed #D9D9D9
     overflow-x: auto
     align-items: center
     margin-top: 6px

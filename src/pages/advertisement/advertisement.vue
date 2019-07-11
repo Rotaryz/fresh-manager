@@ -327,7 +327,6 @@
               this.$refs.eatContent.infoClassData(this.classList)
               await this.getContentList()
             })
-
             break
           case 'article_recommend':
             this.articleList = item.list
