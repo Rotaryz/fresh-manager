@@ -505,6 +505,7 @@
       this.addData.articlePid = this.$route.query.articlePid || '';
       if (this.id || this.addData.articlePid) {
         this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
+        if(this.addData.articlePid) this.addData.category = 0
       } else {
         this._getAuth()
       }
