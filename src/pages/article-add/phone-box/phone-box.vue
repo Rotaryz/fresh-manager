@@ -7,7 +7,8 @@
         <div v-if="type !== 'video'" class="content-article-detail">
           <video v-if="data.coverVideo.url" :src="data.coverVideo.url" controls class="cover-photo"></video>
           <img v-else :src="data.coverImage.url" class="cover-photo">
-          <div class="auth-wrap">
+          <div v-if="type === 'cookbook'" class="cookbook-title">{{data.title}}</div>
+          <div :class="['auth-wrap',{cookbook: type === 'cookbook' }]">
             <img src="./icon-high_quality@2x.png" class="good-article-icon">
             <div v-if="data.authPhoto.url" class="auth-photo-wrap">
               <img :src="data.authPhoto.url" class="auth-photo">
@@ -22,32 +23,38 @@
             </div>
           </div>
           <div class="browse-wrap">
-            <div v-if="data.lookCount" class="browse-title">浏览{{data.lookCount>= 10000 ? data.lookCount/10000 +'万':data.lookCount}}</div>
+            <div v-if="data.lookCount && type !== 'cookbook'" class="browse-title">浏览{{data.lookCount>= 10000 ? data.lookCount/10000 +'万':data.lookCount}}</div>
+            <div v-if="type === 'cookbook'" class="browse-title"></div>
             <div v-if="data.goodCount" class="like-wrap">
               <div class="like-total">
                 <img src="./icon-like_big1@2x.png" alt="" class="like-icon">
-                <div class="total-count">{{data.goodCount >999 ?'999+' :data.goodCount}}</div>
+                <div class="total-count">{{data.goodCount}}</div>
               </div>
               <img v-for="(item,idx) in data.likes" :key="idx" :src="item.avatar" class="liker-photo">
             </div>
           </div>
           <div class="line-middle"></div>
-          <div class="article-cont">
-            <div v-if="data.title" class="name">{{data.title}}</div>
+          <div v-if="type !== 'cookbook'" class="title">{{data.title}}</div>
+          <template v-else>
+            <div class="emoty-grey-bg"></div>
+            <div class="foodlist-title">
+              <img src="./icon-ingredients@2x.png" class="foodlist-icon">食材
+            </div>
             <div v-if="data.foodList" class="foods-list">
               {{data.foodList}}
             </div>
-            <div v-if="type==='cookbook'&& data.goodsList.length" class="goods-list">
+            <div class="goods-list">
               <goods-item v-for="(item,idx) in data.goodsList" :key="idx" :goodsData="item"></goods-item>
             </div>
-            <template v-if="type!=='video'&& data.details.length">
-              <div v-for="(item,idx) in data.details" :key="idx" class="article-item">
-                <div v-if="item.type==='text'" class="article-text">{{item.value}}</div>
-                <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image">
-                <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
-                <goods-item v-if="item.type==='goods'" :goodsData="item.value" :addDisabled="true"></goods-item>
-              </div>
-            </template>
+            <div class="emoty-grey-bg"></div>
+          </template>
+          <div class="article-cont">
+            <div v-for="(item,idx) in data.details" :key="idx" class="article-item">
+              <div v-if="item.type==='text'" class="article-text">{{item.value}}</div>
+              <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image">
+              <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
+              <goods-item v-if="item.type==='goods'" :goodsData="item.value" :addDisabled="true"></goods-item>
+            </div>
           </div>
           <div class="bottom-operate-wrap">
             <div class="bottom-operate">
@@ -211,6 +218,13 @@
       .cover-photo
         width: 100%
 
+      .cookbook-title
+        font-family: $font-family-medium
+        font-size: $font-size-22
+        color: #111111;
+        text-align: center
+        padding: 22px 12px 10px
+
       .article-cont
         padding: 13px 15px
 
@@ -220,6 +234,12 @@
         margin-bottom: 12px
         padding: 13px 15px
         position relative
+
+        &.cookbook
+          justify-content: center
+
+          .good-article-icon
+            top: 12px
 
         .good-article-icon
           position absolute
@@ -300,25 +320,44 @@
       .line-middle
         border-bottom-1px(#E6E6E6)
 
+      .emoty-grey-bg
+        height: 10px
+        background-color #F8F8F8
+
+      .title
+        font-size $font-size-22
+        font-family $font-family-medium
+        color: #111111
+        padding: 22px 15px 5px 15px
+
+      .foodlist-title
+        margin-left: 15px
+        margin-right: 15px
+        height: 44px
+        line-height: 44px
+        font-size: $font-size-15
+        border-bottom-1px()
+        font-family: $font-family-bold
+        color: #111111
+        letter-spacing: 0.4px
+
+        .foodlist-icon
+          width: 16px
+          height: 13px
+          margin-right: 3px
+
+      .foods-list
+        font-family $font-family-regular
+        font-size $font-size-15
+        letter-spacing 0.4px
+        color: #111111
+        margin: 15px
+
+      .goods-list
+        padding: 0px 15px 5px
+
       .article-cont
-        padding: 25px 15px 10px 15px
-
-        .name
-          font-size $font-size-22
-          font-family $font-family-medium
-          color: #111111
-          margin-bottom 25px
-
-        .foods-list
-          font-family $font-family-regular
-          font-size $font-size-14
-          letter-spacing 0.4px
-          color: #111111
-          margin-bottom: 25px
-
-        .goods-list
-          margin-bottom: 10px
-
+        padding: 15px 15px 10px 15px
 
         .article-item
           margin-bottom 15px
