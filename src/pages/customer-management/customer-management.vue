@@ -72,7 +72,7 @@
   const SOCIAL_SELECT = {
     check: false,
     show: false,
-    content: '选择社区',
+    content: '全部社区',
     type: 'default',
     data: []
   }
@@ -114,7 +114,7 @@
             item.name = item.social_name
             return item
           })
-          selectData.unshift({name: '选择社区', id: ''})
+          selectData.unshift({name: '全部社区', id: ''})
           this.socialSelect.data = selectData
         })
       },
