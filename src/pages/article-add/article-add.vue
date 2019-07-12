@@ -377,7 +377,7 @@
           <span class="close hand" @click="$refs.addCategory.hideModal()"></span>
         </div>
         <div>
-          <input v-model="addCategoryText" placeholder="长度不能超过6个字" maxlength="6" type="text" class="edit-input add-category-input">
+          <input v-model="addCategoryText" placeholder="长度不能超过4个字" maxlength="4" type="text" class="edit-input add-category-input">
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="$refs.addCategory.hideModal()">取消</div>
@@ -550,6 +550,7 @@
         this.currentType = obj.type || 'common'
         this.addData.title = obj.title
         this.addData.category = obj.category.id
+        this._getArticleCategory()
         this.addData.coverImage.url = obj.cover_image.source_url
         this.addData.coverImage.id = obj.cover_image.id
         this.addData.coverVideo.url = obj.cover_video.full_url || ''
@@ -626,6 +627,7 @@
         API.Content.getSortList().then(res => {
           if (res.error !== this.$ERR_OK) this.$toast.show(res.message)
           this.articleCategoryList = res.data
+          if(!this.articleCategoryList.find(item => item.id === this.addData.category)) this.addData.category = ''
         }).finally(() => {
           this.$loading.hide()
         })
