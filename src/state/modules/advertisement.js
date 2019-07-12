@@ -3,7 +3,7 @@ import app from '@src/main'
 
 export const state = {
   infoBannerList: [],
-  infoTabIndex: 1
+  infoTabIndex: 0
 }
 
 export const getters = {

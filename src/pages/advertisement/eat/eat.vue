@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="phone-box">
-      {{articleList.length}}{{classifyList.length}}
       <div class="phone">
         <div class="content-box">
           <img v-if="!articleList.length && !classifyList.length" src="./pic-recommend_empty@2x.png" class="null-img">
