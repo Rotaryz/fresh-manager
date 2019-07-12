@@ -745,5 +745,19 @@ export const contentComputed = {
 }
 
 export const contentMethods = {
-  ...mapActions('content', ['infoContent', 'contentAddPage', 'setWorkIndex', 'infoWork', 'getWorkListMore', 'getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
+  ...mapActions('content', [
+    'getStatusTab',
+    'setCenterIndex',
+    'infoContent',
+    'contentAddPage',
+    'setWorkIndex',
+    'infoWork',
+    'getWorkListMore',
+    'getCenterListMore',
+    'infoContent',
+    'contentAddPage',
+    'getContentClassList',
+    'getWorkList',
+    'selectWork',
+    'getCenterList'])
 }

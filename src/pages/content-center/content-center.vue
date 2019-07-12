@@ -96,15 +96,15 @@
     computed: {
       ...contentComputed,
       keywordName() {
-        let name = `${this.tabStatus[this.workTabIndex].type}Keyword`
+        let name = `${this.tabStatus[this.centerTabIndex].type}Keyword`
         return name
       },
       pageName() {
-        let page = `${this.tabStatus[this.workTabIndex].type}Page`
+        let page = `${this.tabStatus[this.centerTabIndex].type}Page`
         return page
       },
       categoryIdName() {
-        let page = `${this.tabStatus[this.workTabIndex].type}CategoryId`
+        let page = `${this.tabStatus[this.centerTabIndex].type}CategoryId`
         return page
       }
     },
@@ -151,6 +151,7 @@
       },
       changeTab(item, index) {
         this.setCenterIndex(index)
+        console.log(this.categoryIdName)
         this.getCenterListMore({page: this.saveValue[this.pageName], centerCategoryId: this.saveValue[this.categoryIdName], keyword: this.saveValue[this.keywordName], status: this.saveValue[this.statusName], tabIndex: index})
         this.$refs.search.infoTextMethods(this.saveValue[this.keywordName])
       },
