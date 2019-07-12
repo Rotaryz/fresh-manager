@@ -10,8 +10,8 @@
             <!--两篇文章样式-->
             <div v-if="articleList.length <3 " class="article" :class="'article' + articleList.length">
               <div v-for="(item, index) in articleList" :key="index" class="article-item">
-                <div class="shade" v-if="articleList.length === 1">{{!item.image_url ? '建议尺寸702*343' : ''}}</div>
-                <div class="shade" v-if="articleList.length === 2">{{!item.image_url ? '建议尺寸343*343' : ''}}</div>
+                <div v-if="articleList.length === 1" class="shade">{{!item.image_url ? '建议尺寸702*343' : ''}}</div>
+                <div v-if="articleList.length === 2" class="shade">{{!item.image_url ? '建议尺寸343*343' : ''}}</div>
                 <img mode="aspectFill" :src="item.image_url" class="article-modal-img">
                 <div class="article-modal-title">{{item.title}}</div>
               </div>
@@ -43,7 +43,7 @@
               <p v-if="item.name && item.is_close">
                 {{item.name}}
               </p>
-              <p class="class-title" v-if="item.title">{{item.title}}</p>
+              <p v-if="item.title" class="class-title">{{item.title}}</p>
 
             </div>
           </div>
