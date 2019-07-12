@@ -1,6 +1,7 @@
 <template>
   <div class="demo">
     demo
+    <textarea id="test" placeholder="klfjlkarsj geklrajtgler" cols="30" rows="10" class="placeholder-text"></textarea>
     <!--<add-goods ref="addg" @batchAddition="_batchAddition"></add-goods>-->
     <span @click="deleteGoods()">sahNGV</span>
     <div v-show="true" class="big">
@@ -28,7 +29,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-// import AddGoods from '@components/add-goods/add-goods'
+  // import AddGoods from '@components/add-goods/add-goods'
   import JsBarcode from 'jsbarcode'
 
   const PAGE_NAME = 'DEMO'
@@ -40,7 +41,7 @@
       title: TITLE
     },
     components: {
-    // AddGoods
+      // AddGoods
     },
     data() {
       return {
@@ -48,7 +49,7 @@
       }
     },
     mounted() {
-    // this.barcode()
+      // this.barcode()
     },
     methods: {
       barcode() {
@@ -77,20 +78,38 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
-
+  #test::-webkit-input-placeholder
+  #test::-moz-placeholder
+  #test:-moz-placeholder
+  #test::-ms-input-placeholder
+    font-size: $font-size-14
+    color:red
+  textarea::-webkit-input-placeholder
+  textarea::-moz-placeholder
+  textarea:-moz-placeholder
+  textarea::-ms-input-placeholder
+    font-size: $font-size-14
+    color: #000
+  .placeholder-text
+    font-size: $font-size-14
+    color: #ACACAC
   .demo
     width: 100%
+
   @media print {
     html, body {
       height: inherit
     }
   }
+
   .big
     display: block
+
   @page
     color: #000
     margin: 3mm 0 0
     size: auto A4 landscape
+
   #printTest
     color: #000
     padding: 0
@@ -103,16 +122,20 @@
     /*height: 205px*/
     box-sizing: border-box
     margin-left: -10px
+
   .img
     width: 60px
+
   .name
     font-size: 24px
+
   .msg
     margin: 8px auto
     display: flex
     width: 60%
     font-size: 14px
     justify-content: space-between
+
   .barcodes
     width: 210px
     margin-left: 18px

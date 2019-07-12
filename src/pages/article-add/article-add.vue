@@ -166,7 +166,9 @@
             食材清单
           </div>
           <div class="edit-input-box">
-            <textarea v-model="addData.foodList" class="edit-textarea edit-input"
+            <textarea id="test"
+                      v-model="addData.foodList"
+                      class="edit-textarea edit-input"
                       placeholder="例子：大蒜，酱油，猪肉，食材之间用逗号隔开，最多输入50个字符"
                       maxlength="100"
             ></textarea>
@@ -1028,6 +1030,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
   .add-category-operate
     color: $color-main
     text-decoration underline
@@ -1117,7 +1120,6 @@
         width: 800px
         padding: 5px 14px
         height: 94px
-        resize: none
         resize: none
 
       .num
@@ -1520,6 +1522,4 @@
       height: 77px
       align-items: center
       display: flex
-
-
 </style>
