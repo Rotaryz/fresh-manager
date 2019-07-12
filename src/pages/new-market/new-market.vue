@@ -1033,7 +1033,7 @@
         let checkForm = this.checkForm()
         if (!checkForm) return
         this.isSubmit = true
-        let methodsName = ''
+        let methodsName = 'storeMarket'
         this.msg.coupon_id = this.couponSelectItem.id
         switch (+this.marketIndex) {
         case 0:
