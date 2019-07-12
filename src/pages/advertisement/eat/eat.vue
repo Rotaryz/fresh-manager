@@ -10,7 +10,8 @@
             <!--两篇文章样式-->
             <div v-if="articleList.length <3 " class="article" :class="'article' + articleList.length">
               <div v-for="(item, index) in articleList" :key="index" class="article-item">
-                <div class="shade"></div>
+                <div class="shade" v-if="articleList.length === 1">{{!item.image_url ? '建议尺寸702*343' : ''}}</div>
+                <div class="shade" v-if="articleList.length === 2">{{!item.image_url ? '建议尺寸343*343' : ''}}</div>
                 <img mode="aspectFill" :src="item.image_url" class="article-modal-img">
                 <div class="article-modal-title">{{item.title}}</div>
               </div>
@@ -18,18 +19,18 @@
             <!--三篇文章样式-->
             <div v-if="articleList.length === 3" class="article article3">
               <div class="article-item">
-                <div class="shade"></div>
+                <div class="shade">{{!articleList[0].image_url ? '建议尺寸343*343' : ''}}</div>
                 <img mode="aspectFill" :src="articleList[0].image_url" class="article-modal-img">
                 <div class="article-modal-title">{{articleList[0].title}}</div>
               </div>
               <div class="article-left">
                 <div class="article-item">
-                  <div class="shade"></div>
+                  <div class="shade">{{!articleList[1].image_url ? '建议尺寸343*163' : ''}}</div>
                   <img mode="aspectFill" :src="articleList[1].image_url" class="article-modal-img">
                   <div class="article-modal-title">{{articleList[1].title}}</div>
                 </div>
                 <div class="article-item">
-                  <div class="shade"></div>
+                  <div class="shade">{{!articleList[2].image_url ? '建议尺寸343*163' : ''}}</div>
                   <img mode="aspectFill" :src="articleList[2].image_url" class="article-modal-img">
                   <div class="article-modal-title">{{articleList[2].title}}</div>
                 </div>
@@ -284,6 +285,13 @@
       width: 100%
       height: 100%
       background: rgba(0, 0, 0, .15)
+      z-index: 11
+      text-align: center
+      align-items: center
+      display: flex
+      justify-content: center
+      color: #999
+      font-size: $font-size-12
     .article-modal-img
       position: absolute
       top: 0
@@ -297,7 +305,7 @@
       color: $color-white
       font-weight: bold
       font-size: $font-size-16
-      z-index: 1
+      z-index: 11
   .article1
     border-radius: 4px
   .article2
