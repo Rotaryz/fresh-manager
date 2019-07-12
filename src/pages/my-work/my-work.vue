@@ -20,7 +20,7 @@
           <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :statusType="statusType" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <router-link :to="`article-add?type=${workType}`" append class="btn-main">创作内容<span class="add-icon"></span></router-link>
+          <router-link :to="`article-add?type=${workType}`" append class="btn-main">创作{{tabStatus[workTabIndex].text}}<span class="add-icon"></span></router-link>
           <!--<div v-else class="btn-main" @click="delContentAll">删除</div>-->
         </div>
       </div>
