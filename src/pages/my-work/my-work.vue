@@ -16,7 +16,7 @@
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-product_list@2x.png" class="identification-icon">
-          <p class="identification-name">我的作品</p>
+          <p class="identification-name">{{tabStatus[workTabIndex].title}}</p>
           <base-status-tab ref="baseStatusTab" :statusList="dispatchSelect" :statusType="statusType" :infoTabIndex="statusTab" @setStatus="_setStatus"></base-status-tab>
         </div>
         <div class="function-btn">
@@ -99,7 +99,7 @@
     '操作'
   ]
   const DISPATCHING_LIST2 = ['封面图', '文章标题', '创建时间', '操作']
-  const TAB_STATUS = [{text: '图文', status: '', type: 'common'}, {text: '视频', status: '', type: 'video'}, {text: '菜谱', status: '', type: 'cookbook'}]
+  const TAB_STATUS = [{text: '图文', status: '', type: 'common', title: '我的图文'}, {text: '视频', status: '', type: 'video', title: '我的视频'}, {text: '菜谱', status: '', type: 'cookbook', title: '我的菜谱'}]
   export default {
     name: PAGE_NAME,
     page: {
