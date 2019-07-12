@@ -39,7 +39,7 @@
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="freeze"></default-confirm>
-    <default-input ref="modalBox" :classifyMaxLength="6" inputType="classification" @confirm="confirmInput"></default-input>
+    <default-input ref="modalBox" :classifyMaxLength="4" inputType="classification" @confirm="confirmInput"></default-input>
   </div>
 </template>
 
@@ -76,7 +76,7 @@
       ...contentComputed
     },
     // mounted() {
-    //   this.$refs.modalBox.show('', '添加分类', '请输入分类名字，最多6个字')
+    //   this.$refs.modalBox.show('', '添加分类', '请输入分类名字，最多4个字')
     // },
     methods: {
       ...contentMethods,
@@ -105,8 +105,8 @@
         if (text.length === 0) {
           this.$toast.show('分类名字不能为空')
           return
-        } else if (text.length === 0 || text.length > 6) {
-          this.$toast.show('分类名字的长度不能超过6个字')
+        } else if (text.length === 0 || text.length > 4) {
+          this.$toast.show('分类名字的长度不能超过4个字')
           return
         }
         let res = await API.Content[this.methodsName]({name: text}, this.editId || true)
@@ -124,12 +124,12 @@
       editClassify(item) {
         this.methodsName = 'editClassify'
         this.editId = item.id
-        this.$refs.modalBox.show(item.name, '添加分类', '请输入分类名字，最多6个字')
+        this.$refs.modalBox.show(item.name, '添加分类', '请输入分类名字，最多4个字')
       },
       // 新增分类
       newClassify() {
         this.methodsName = 'newClassify'
-        this.$refs.modalBox.show('', '添加分类', '请输入分类名字，最多6个字')
+        this.$refs.modalBox.show('', '添加分类', '请输入分类名字，最多4个字')
       }
     }
   }

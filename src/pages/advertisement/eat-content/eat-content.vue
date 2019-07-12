@@ -51,13 +51,17 @@
             <div class="advertisement-msg">
               <div class="input-box">
                 <base-drop-down
-                  :width="400"
+                  :width="300"
                   :height="44"
                   :select="item"
                   :downIndex="idx"
                   @selectType="showSelectClassify"
                   @setValue="getClassifyId"
                 ></base-drop-down>
+              </div>
+              <div class="input-box input-box-title">
+                <input v-model="item.title" maxlength="4" type="text" class="edit-input" placeholder="请输入内容分类描述">
+                <span class="input-num">{{item.title.length}}/4</span>
               </div>
               <p class="use hand" @click="_showConfirm(item.id, idx)">删除</p>
             </div>
@@ -155,6 +159,7 @@
     type: 'article_cate',
     id: '',
     name: '',
+    title: '',
     check: false,
     show: false,
     is_close: 1,
@@ -257,6 +262,9 @@
             if (!this.temporaryClassify[i].other_id) {
               this.$toast.show(`第${i + 1}条内容分类不能为空`, 1500)
               return
+            } else if (!this.temporaryClassify[i].title) {
+              this.$toast.show(`第${i + 1}条内容分类描述不能为空`, 1500)
+              return
             }
           }
         }
@@ -268,8 +276,9 @@
           this.$toast.show(`请勿选择重复的分类`, 1500)
           return
         }
+        console.log(this.temporaryClassify)
         let data = this.temporaryClassify.map((item) => {
-          let obj = {id: item.id, name: item.content, other_id: item.other_id, type: item.type, is_close: item.is_close}
+          let obj = {id: item.id, title: item.title, name: item.content, other_id: item.other_id, type: item.type, is_close: item.is_close}
           return {page_module_id: this.articleCateId, ext_json: obj}
         })
         let res = await API.Advertisement.saveModuleMsg({data})
@@ -1097,14 +1106,20 @@
 
   .classify-msg
     padding: 0
-    height: 100px
     position: relative
     .advertisement-msg
       height: 100%
       width: 100%
-      padding-left: 20px
+      padding: 20px 0 20px 20px
       display: flex
-      align-items: center
+      flex-direction: column
+      align-items: flex-start
+      .input-box-title
+        margin-top: 12px
+      .input-box
+        .edit-input
+          width: 300px
+          margin-left: 0
       .use
         right: 20px
         top: 16px

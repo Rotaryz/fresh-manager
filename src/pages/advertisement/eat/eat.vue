@@ -38,10 +38,12 @@
           </div>
           <!--分类列表-->
           <div class="scroll-classify hand" :class="{'active': contentType === 'classify', 'none': !classifyList.length}" @click="changeType('classify')">
-            <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-item" :class="{'none': !classifyList.length}">
-              <span v-if="item.name && item.is_close" :class="{'scroll-classify-item-active': index === 0}">
+            <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-item" :class="{'none': !classifyList.length, 'scroll-classify-item-active': index === 0}">
+              <p v-if="item.name && item.is_close">
                 {{item.name}}
-              </span>
+              </p>
+              <p class="class-title" v-if="item.title">{{item.title}}</p>
+
             </div>
           </div>
           <!--内容列表-->
@@ -337,22 +339,41 @@
     margin-top: 6px
     hide-scrollbar()
     .scroll-classify-item
-      padding: 0 10px
       white-space: nowrap
-      font-size: $font-size-13
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-main
+      text-align: center
+      display: inline-block
+      position: relative
+      width: 84px
+      height: 39px
+      box-sizing: border-box
+      transform-origin: 50%
+      line-height: 1
+      transition: all 0.2s
+      border-right-1px($color-line)
+      &:last-child
+        border-none()
+      .class-title
+        margin-top: 5px
+        display: inline-block
+        font-size: $font-size-12
+        border-radius: 9px
+        padding: 3px 6px
+        line-height: 1
+        color: #808080
+        transition: all 0.2s
     .scroll-classify-item-active
       font-family: $font-family-medium
-      color: #4dbd65
       font-size: $font-size-16
+      color: #73C200
       position: relative
-      &:before
-        content: ''
-        row-center()
-        bottom: -6px
-        width: 30px
-        height: 2px
-        border-radius: 2px
-        background: #4dbd65
+      transition: font-size 0.2s
+      transform-origin: 50%
+      .class-title
+        color: $color-white
+        background: #73C200
 
   .active
     background: $color-white

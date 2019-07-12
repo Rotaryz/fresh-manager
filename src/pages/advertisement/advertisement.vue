@@ -319,11 +319,11 @@
               item.data = this.classList
               item.check = false
               item.show = false
+              item.title = item.title || ''
               return item
             })
             this.$nextTick(async () => {
               this.$refs.eatContent.temporaryClassify = JSON.parse(JSON.stringify(item.list))
-              console.log(this.$refs.eatContent.temporaryClassify)
               this.$refs.eatContent.infoClassData(this.classList)
               await this.getContentList()
             })
