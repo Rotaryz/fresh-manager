@@ -295,6 +295,7 @@
       position: relative
       font-family: FZLTTHJW--GB1-0
       color: $color-white
+      font-weight: bold
       font-size: $font-size-16
       z-index: 1
   .article1

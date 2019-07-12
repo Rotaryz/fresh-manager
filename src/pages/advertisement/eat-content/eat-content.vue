@@ -158,6 +158,7 @@
     check: false,
     show: false,
     is_close: 1,
+    other_id: 0,
     data: []
   }
   export default {
@@ -221,12 +222,13 @@
       },
       temporaryArticle: {
         handler(news) {
-          this.showArticle = news.map((item) => {
+          let arr = []
+          news.forEach((item) => {
             if (item.is_close) {
-              return item
+              arr.push(item)
             }
           })
-          this.showArticle = this.showArticle.length && this.showArticle[0] !== undefined ? this.showArticle : []
+          this.showArticle = arr
           this.$emit('getArticle', this.showArticle)
         },
         deep: true
@@ -284,8 +286,9 @@
       },
       async getContentList(item) {
         let arr = []
-        let id = this.temporaryArticle.length && this.temporaryArticle[0].other_id ? this.temporaryArticle[0].other_id : ''
-        console.log(id)
+        let inIndex = this.temporaryClassify.findIndex((item) => item.is_close && item.other_id !== 0)
+        let id = inIndex === -1 ? '' : this.temporaryClassify[inIndex].other_id
+        console.log(id, inIndex)
         if (id === '') {
           this.$emit('getContentList', [])
           return
