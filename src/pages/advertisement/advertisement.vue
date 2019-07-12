@@ -313,17 +313,17 @@
         arr.forEach(async (item) => {
           switch (item.module_name) {
           case 'article_category':
-            this.classifyList = item.list
             this.articleCateId = item.id
-            this.classifyList = this.classifyList.map((item) => {
+            this.classifyList = item.list.map((item) => {
               item.content = item.name
               item.data = this.classList
               item.check = false
               item.show = false
+              item.title = item.title || ''
               return item
             })
             this.$nextTick(async () => {
-              this.$refs.eatContent.temporaryClassify = JSON.parse(JSON.stringify(this.classifyList))
+              this.$refs.eatContent.temporaryClassify = JSON.parse(JSON.stringify(item.list))
               this.$refs.eatContent.infoClassData(this.classList)
               await this.getContentList()
             })

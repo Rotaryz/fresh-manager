@@ -96,15 +96,15 @@
     computed: {
       ...contentComputed,
       keywordName() {
-        let name = `${this.tabStatus[this.workTabIndex].type}Keyword`
+        let name = `${this.tabStatus[this.centerTabIndex].type}Keyword`
         return name
       },
       pageName() {
-        let page = `${this.tabStatus[this.workTabIndex].type}Page`
+        let page = `${this.tabStatus[this.centerTabIndex].type}Page`
         return page
       },
       categoryIdName() {
-        let page = `${this.tabStatus[this.workTabIndex].type}CategoryId`
+        let page = `${this.tabStatus[this.centerTabIndex].type}CategoryId`
         return page
       }
     },
@@ -114,7 +114,7 @@
           return
         }
         let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
-        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
+        this.stairSelect.content = item && item.name === '全部' ? '请选择分类' : item.name
       },
       statusName(news) {
         this.statusType = this.saveValue[news]
@@ -136,7 +136,7 @@
         })
         this.saveValue[this.keywordName] = this.workKeyword
         this.saveValue[this.pageName] = this.workPage
-        this.saveValue[this.categoryIdName] = this.centerCategoryId
+        this.saveValue[this.categoryIdName] = this.centerCategoryId || ''
       },
       // 获取分类
       async getContentClassList() {
@@ -147,10 +147,11 @@
         }
         this.stairSelect.data = arr
         let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
-        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
+        this.stairSelect.content = item && item.name === '全部' ? '请选择分类' : item.name
       },
       changeTab(item, index) {
         this.setCenterIndex(index)
+        console.log(this.categoryIdName)
         this.getCenterListMore({page: this.saveValue[this.pageName], centerCategoryId: this.saveValue[this.categoryIdName], keyword: this.saveValue[this.keywordName], status: this.saveValue[this.statusName], tabIndex: index})
         this.$refs.search.infoTextMethods(this.saveValue[this.keywordName])
       },

@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="phone-box">
-      {{articleList.length}}{{classifyList.length}}
       <div class="phone">
         <div class="content-box">
           <img v-if="!articleList.length && !classifyList.length" src="./pic-recommend_empty@2x.png" class="null-img">
@@ -11,7 +10,8 @@
             <!--两篇文章样式-->
             <div v-if="articleList.length <3 " class="article" :class="'article' + articleList.length">
               <div v-for="(item, index) in articleList" :key="index" class="article-item">
-                <div class="shade"></div>
+                <div class="shade" v-if="articleList.length === 1">{{!item.image_url ? '建议尺寸702*343' : ''}}</div>
+                <div class="shade" v-if="articleList.length === 2">{{!item.image_url ? '建议尺寸343*343' : ''}}</div>
                 <img mode="aspectFill" :src="item.image_url" class="article-modal-img">
                 <div class="article-modal-title">{{item.title}}</div>
               </div>
@@ -19,18 +19,18 @@
             <!--三篇文章样式-->
             <div v-if="articleList.length === 3" class="article article3">
               <div class="article-item">
-                <div class="shade"></div>
+                <div class="shade">{{!articleList[0].image_url ? '建议尺寸343*343' : ''}}</div>
                 <img mode="aspectFill" :src="articleList[0].image_url" class="article-modal-img">
                 <div class="article-modal-title">{{articleList[0].title}}</div>
               </div>
               <div class="article-left">
                 <div class="article-item">
-                  <div class="shade"></div>
+                  <div class="shade">{{!articleList[1].image_url ? '建议尺寸343*163' : ''}}</div>
                   <img mode="aspectFill" :src="articleList[1].image_url" class="article-modal-img">
                   <div class="article-modal-title">{{articleList[1].title}}</div>
                 </div>
                 <div class="article-item">
-                  <div class="shade"></div>
+                  <div class="shade">{{!articleList[2].image_url ? '建议尺寸343*163' : ''}}</div>
                   <img mode="aspectFill" :src="articleList[2].image_url" class="article-modal-img">
                   <div class="article-modal-title">{{articleList[2].title}}</div>
                 </div>
@@ -39,10 +39,12 @@
           </div>
           <!--分类列表-->
           <div class="scroll-classify hand" :class="{'active': contentType === 'classify', 'none': !classifyList.length}" @click="changeType('classify')">
-            <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-item" :class="{'none': !classifyList.length}">
-              <span v-if="item.name && item.is_close" :class="{'scroll-classify-item-active': index === 0}">
+            <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-item" :class="{'none': !classifyList.length, 'scroll-classify-item-active': index === 0}">
+              <p v-if="item.name && item.is_close">
                 {{item.name}}
-              </span>
+              </p>
+              <p class="class-title" v-if="item.title">{{item.title}}</p>
+
             </div>
           </div>
           <!--内容列表-->
@@ -188,7 +190,6 @@
           }
           list.push(item)
         }
-        // console.log(list)
         this.fillData(false, list)
       },
       // 分开左右两个list
@@ -284,6 +285,13 @@
       width: 100%
       height: 100%
       background: rgba(0, 0, 0, .15)
+      z-index: 11
+      text-align: center
+      align-items: center
+      display: flex
+      justify-content: center
+      color: #999
+      font-size: $font-size-12
     .article-modal-img
       position: absolute
       top: 0
@@ -295,8 +303,9 @@
       position: relative
       font-family: FZLTTHJW--GB1-0
       color: $color-white
+      font-weight: bold
       font-size: $font-size-16
-      z-index: 1
+      z-index: 11
   .article1
     border-radius: 4px
   .article2
@@ -337,22 +346,42 @@
     margin-top: 6px
     hide-scrollbar()
     .scroll-classify-item
-      padding: 0 10px
       white-space: nowrap
-      font-size: $font-size-13
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-main
+      text-align: center
+      display: inline-block
+      position: relative
+      width: 80px
+      min-width: 80px
+      height: 39px
+      box-sizing: border-box
+      transform-origin: 50%
+      line-height: 1
+      transition: all 0.2s
+      border-right-1px($color-line)
+      &:last-child
+        border-none()
+      .class-title
+        margin-top: 5px
+        display: inline-block
+        font-size: $font-size-12
+        border-radius: 9px
+        padding: 3px 6px
+        line-height: 1
+        color: #808080
+        transition: all 0.2s
     .scroll-classify-item-active
       font-family: $font-family-medium
-      color: #4dbd65
       font-size: $font-size-16
+      color: #73C200
       position: relative
-      &:before
-        content: ''
-        row-center()
-        bottom: -6px
-        width: 30px
-        height: 2px
-        border-radius: 2px
-        background: #4dbd65
+      transition: font-size 0.2s
+      transform-origin: 50%
+      .class-title
+        color: $color-white
+        background: #73C200
 
   .active
     background: $color-white

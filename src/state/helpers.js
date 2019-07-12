@@ -83,7 +83,7 @@ export const leaderMethods = {
     'setSelectContent',
     'setFirstIn'
   ]),
-  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL','SET_PARAMS','SET_DETAIL_PARAMS'])
+  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER', 'SET_PAGE_TOTAL', 'SET_PARAMS', 'SET_DETAIL_PARAMS'])
 }
 
 // 团长邀请
@@ -164,7 +164,7 @@ export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDe
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount', 'defaultIndex', 'requestData'])
+  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists', 'inviteCount', 'defaultIndex', 'requestData'])
 }
 
 export const marketMethods = {
@@ -197,7 +197,7 @@ export const goodsComputed = {
 }
 
 export const goodsMethods = {
-    ...mapActions('editgoods', ['getGoodsData']),
+  ...mapActions('editgoods', ['getGoodsData']),
   ...mapMutations('editgoods', ['SET_PARAMS', 'SET_TASK_DATA'])
 }
 
@@ -725,15 +725,17 @@ export const contentComputed = {
     'contentPage',
     'contentClassList',
     'contentClassPage',
-    'workList',
-    'workPage',
     'centerList',
     'centerPage',
     'centerKeyword',
     'centerStatus',
     'contentCenterPage',
     'centerTabIndex',
-    'contentPage', 'workType',
+    'contentPage',
+    'centerCategoryId',
+    'workList',
+    'workPage',
+    'workType',
     'contentWorkPage',
     'workStatus',
     'workTabIndex',
@@ -743,5 +745,19 @@ export const contentComputed = {
 }
 
 export const contentMethods = {
-  ...mapActions('content', ['infoContent', 'contentAddPage', 'setWorkIndex', 'infoWork', 'getWorkListMore', 'getCenterListMore', 'infoContent', 'contentAddPage', 'getContentClassList', 'getWorkList', 'selectWork', 'getCenterList'])
+  ...mapActions('content', [
+    'getStatusTab',
+    'setCenterIndex',
+    'infoContent',
+    'contentAddPage',
+    'setWorkIndex',
+    'infoWork',
+    'getWorkListMore',
+    'getCenterListMore',
+    'infoContent',
+    'contentAddPage',
+    'getContentClassList',
+    'getWorkList',
+    'selectWork',
+    'getCenterList'])
 }
