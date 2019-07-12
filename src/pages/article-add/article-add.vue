@@ -154,7 +154,7 @@
             <span class="start">*</span>
             视频简介
           </div>
-          <div class="edit-input-box">
+          <div class="edit-input-box  flex-box flex-1">
             <textarea v-model="addData.videoIntroduce" class="edit-textarea edit-input" placeholder="" maxlength="60"></textarea>
             <span class="num">{{addData.videoIntroduce && addData.videoIntroduce.length || 0}}/60</span>
           </div>
@@ -165,7 +165,7 @@
             <span class="start">*</span>
             食材清单
           </div>
-          <div class="edit-input-box">
+          <div class="edit-input-box  flex-box flex-1">
             <textarea id="test"
                       v-model="addData.foodList"
                       class="edit-textarea edit-input"
@@ -1060,7 +1060,10 @@
   .flex-box
     display flex
     align-items center
-
+  .flex-1
+    flex:1
+    .edit-textarea
+      width:100%
   /* 编辑每一行样式*/
   .edit-item
     display: flex
@@ -1112,13 +1115,13 @@
           margin-left: 20px
 
           .edit-input
-            width: 670px
+            min-width: 270px
 
           .edit-signature
             margin-top: 10px
 
       .edit-textarea
-        width: 800px
+        min-width: 370px
         padding: 5px 14px
         height: 94px
         resize: none
