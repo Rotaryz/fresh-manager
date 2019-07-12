@@ -114,7 +114,7 @@
           return
         }
         let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
-        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
+        this.stairSelect.content = item && item.name === '全部' ? '请选择分类' : item.name
       },
       statusName(news) {
         this.statusType = this.saveValue[news]
@@ -136,7 +136,7 @@
         })
         this.saveValue[this.keywordName] = this.workKeyword
         this.saveValue[this.pageName] = this.workPage
-        this.saveValue[this.categoryIdName] = this.centerCategoryId
+        this.saveValue[this.categoryIdName] = this.centerCategoryId || ''
       },
       // 获取分类
       async getContentClassList() {
@@ -147,7 +147,7 @@
         }
         this.stairSelect.data = arr
         let item = this.stairSelect.data.find((item) => item.id === this.saveValue[this.categoryIdName])
-        this.stairSelect.content = item.name === '全部' ? '请选择分类' : item.name
+        this.stairSelect.content = item && item.name === '全部' ? '请选择分类' : item.name
       },
       changeTab(item, index) {
         this.setCenterIndex(index)
