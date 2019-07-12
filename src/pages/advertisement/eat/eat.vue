@@ -345,7 +345,8 @@
       text-align: center
       display: inline-block
       position: relative
-      width: 84px
+      width: 80px
+      min-width: 80px
       height: 39px
       box-sizing: border-box
       transform-origin: 50%
