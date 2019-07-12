@@ -124,25 +124,28 @@
                 <div>视频名称-{{addData.videoContent.name}}</div>
               </div>
             </template>
-            <div v-else class="video-content-wrap">
-              <div class="video-tip"></div>
-              <div class="upload-video-wrap">
-                <base-upload :videoUrl="addData.videoContent.url"
-                             :picNum="1"
-                             fileType="video-custom"
-                             :size="100"
-                             @failFile="failFile"
-                             @successVideo="getVideoContent"
-                >
-                  <button class="upload-video btn-main  hand">
-                    点击上传视频
-                  </button>
-                </base-upload>
+            <template v-else>
+              <div class="video-content-wrap">
+                <div class="video-tip"></div>
+                <div class="upload-video-wrap">
+                  <base-upload :videoUrl="addData.videoContent.url"
+                               :picNum="1"
+                               fileType="video-custom"
+                               :size="100"
+                               @failFile="failFile"
+                               @successVideo="getVideoContent"
+                  >
+                    <button class="upload-video btn-main  hand">
+                      点击上传视频
+                    </button>
+                  </base-upload>
+                </div>
               </div>
-            </div>
-            <div class="tip">
-              请添加小于100M,格式为mp4、3gp、m3u8、webm的视频
-            </div>
+              <div class="tip">
+                请添加小于100M,格式为mp4、3gp、m3u8、webm的视频
+              </div>
+            </template>
+
           </div>
         </div>
         <!--视频  视频简介-->
@@ -163,7 +166,9 @@
             食材清单
           </div>
           <div class="edit-input-box">
-            <textarea v-model="addData.foodList" class="edit-textarea edit-input"
+            <textarea id="test"
+                      v-model="addData.foodList"
+                      class="edit-textarea edit-input"
                       placeholder="例子：大蒜，酱油，猪肉，食材之间用逗号隔开，最多输入50个字符"
                       maxlength="100"
             ></textarea>
@@ -1000,7 +1005,7 @@
                   title: '',
                   introduction: ''
                 }]
-                this._getCoverImage(item.file_id)
+                // this._getCoverImage(item.file_id)
                 break;
               default:
                 newItem.content = [{
@@ -1025,6 +1030,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
   .add-category-operate
     color: $color-main
     text-decoration underline
@@ -1091,7 +1097,7 @@
         .edit-title
           text-align left
           min-width: 105px
-
+          color:#666
       .look-item
         margin-top 20px
         margin-bottom: 60px
@@ -1114,7 +1120,6 @@
         width: 800px
         padding: 5px 14px
         height: 94px
-        resize: none
         resize: none
 
       .num
@@ -1250,7 +1255,7 @@
         display flex
         flex: 1
         border-1px()
-
+        background-color #fdfdfd
         .add-cont-type-item
           height 46px
           border-right-1px()
@@ -1517,6 +1522,4 @@
       height: 77px
       align-items: center
       display: flex
-
-
 </style>

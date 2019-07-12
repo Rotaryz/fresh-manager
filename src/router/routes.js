@@ -3,7 +3,7 @@ import storage from 'storage-controller'
 import {getCurrentTime} from '@utils/tool'
 import API from '@api'
 import {ERR_OK} from '@utils/config'
-import {TAB_STATUS} from '../pages/activity-manage/config'
+// import {TAB_STATUS} from '../pages/activity-manage/config'
 
 export default [
   // 模板
@@ -49,14 +49,22 @@ export default [
         component: () => lazyLoadView(import('@pages/product-list/product-list')),
         meta: {
           titles: ['商城', '商品', '商品列表'],
+          resetHooks: ['editgoods/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let online = ''
-            if (routeTo.query.online) {
-              online = routeTo.query.online
+            if (store.getters['editgoods/taskData'].isTaskFirst) {
+              let online = ''
+              if (routeTo.query.online) {
+                online = routeTo.query.online
+              }
+              if (online.length) {
+                online = Number(online)
+              }
+              store.commit('editgoods/SET_PARAMS', {is_online: online})
+              store.commit('editgoods/SET_TASK_DATA', {isTaskFirst: false})
             }
             //  商品列表
             store
-              .dispatch('editgoods/getGoodsData', online)
+              .dispatch('editgoods/getGoodsData', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -346,13 +354,18 @@ export default [
         component: () => lazyLoadView(import('@pages/activity-manage/activity-manage')),
         meta: {
           titles: ['商城', '活动', '活动管理'],
+          resetHooks: ['activity/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
+            // let data = JSON.parse(JSON.stringify(store.getters['activity/requestData']))
+            let firstIn = store.getters['activity/firstIn']
             let status = routeTo.query.status || ''
-            API.Activity.getActiveList(
-              {page: 1, status, activity_theme: TAB_STATUS[window.$$tabIndex || 0].activity_theme},
-              true
-            )
+            if (status && firstIn) {
+              // data.status = status
+              store.dispatch('activity/setRequestData', {status})
+            }
+            let data = store.getters['activity/requestData']
+            API.Activity.getActiveList(data, true)
               .then((res) => {
                 if (res.error !== ERR_OK) {
                   return next({name: '404'})
@@ -449,10 +462,11 @@ export default [
         component: () => lazyLoadView(import('@pages/outreach-activity/outreach-activity')),
         meta: {
           titles: ['商城', '拓展', '拓展任务'],
+          resetHooks: ['outreach/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
-              .dispatch('outreach/getOutreachList', {page: 1})
+              .dispatch('outreach/getOutreachList', true)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -581,11 +595,11 @@ export default [
         component: () => lazyLoadView(import('@pages/coupon-manage/coupon-manage')),
         meta: {
           titles: ['商城', '营销', '优惠券'],
+          resetHooks: ['coupon/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let index = store.state.coupon.infoTabIndex
             // 活动列表
             store
-              .dispatch('coupon/getCouponList', {page: 1, tagType: index})
+              .dispatch('coupon/getCouponList', true)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -665,10 +679,11 @@ export default [
         component: () => lazyLoadView(import('@pages/coupon-market/coupon-market')),
         meta: {
           titles: ['商城', '营销', '营销计划'],
+          resetHooks: ['market/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             // 活动列表
             store
-              .dispatch('market/getMarketList', {page: 1})
+              .dispatch('market/getMarketList', true)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -753,6 +768,7 @@ export default [
         component: () => lazyLoadView(import('@pages/order-list/order-list')),
         meta: {
           titles: ['商城', '订单', '订单列表'],
+          resetHooks: ['order/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store
@@ -776,37 +792,42 @@ export default [
         component: () => lazyLoadView(import('@pages/returns-management/returns-management')),
         meta: {
           titles: ['商城', '订单', '退货管理'],
+          resetHooks: ['returns/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             let status = routeTo.query.status || ''
-            let tabIndex = store.state.returns.tabIndex
-            if (tabIndex === 0) {
-              //  售后订单
+            let firstIn = store.getters['returns/firstIn']
+            if (status && firstIn) {
               store.dispatch('returns/infoStatus', status)
-              store
-                .dispatch('returns/getReturnsList')
-                .then((res) => {
-                  if (!res) {
-                    return next({name: '404'})
-                  }
-                  return next()
-                })
-                .catch(() => {
-                  return next({name: '404'})
-                })
-            } else {
-              // 售后补偿
-              store
-                .dispatch('market/getMarketList', {page: 1, source_type: 2})
-                .then((res) => {
-                  if (!res) {
-                    return next({name: '404'})
-                  }
-                  return next()
-                })
-                .catch(() => {
-                  return next({name: '404'})
-                })
             }
+            // let tabIndex = store.state.returns.tabIndex
+            // if (tabIndex === 0) {
+              //  售后订单
+            store
+              .dispatch('returns/getReturnsList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+            // }
+            // else {
+            //   // 售后补偿
+            //   store
+            //     .dispatch('market/getMarketList', {page: 1, source_type: 2})
+            //     .then((res) => {
+            //       if (!res) {
+            //         return next({name: '404'})
+            //       }
+            //       return next()
+            //     })
+            //     .catch(() => {
+            //       return next({name: '404'})
+            //     })
+            // }
           }
         }
       },
@@ -983,18 +1004,18 @@ export default [
         component: () => lazyLoadView(import('@pages/leader-list/leader-list')),
         meta: {
           titles: ['商城', '团长', '团长列表'],
+          resetHooks: ['leader/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
-            let params = {
-              page: 1,
-              limit: 10,
-              keyword: '',
-              status: 0,
-              model_type: 0,
-              ...routeTo.query
+            let params = {}
+            if (store.getters['leader/firstIn']) {
+              params = {
+                ...routeTo.query
+              }
+              params.status && (params.status = Number(params.status))
+              params.model_type && (params.model_type = Number(params.model_type))
+              store.dispatch('leader/setFirstIn')
             }
-            params.status = Number(params.status)
-            params.model_type = Number(params.model_type)
             store.commit('leader/SET_lEADER_LIST_FILTER', params)
             store
               .dispatch('leader/getList')
@@ -1010,32 +1031,34 @@ export default [
           }
         }
       },
-      // 团长邀请 todo
+      // 团长邀请
       {
         path: 'leader-invite',
         name: 'leader-invite',
         component: () => lazyLoadView(import('@pages/leader-invite/leader-invite')),
         meta: {
           titles: ['商城', '团长', '团长邀请'],
+          resetHooks: ['leaderInvite/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             //  抢购列表
-            API.Leader.leaderDistributionRankingList({page: 1, limit: 10, keyword: '', ...routeTo.query}, true)
-              .then((res) => {
-                if (res.error !== ERR_OK) {
-                  return next({name: '404'})
-                }
-                let dataInfo = res.data
-                let pageInfo = {
-                  total: res.meta.total,
-                  per_page: res.meta.per_page,
-                  total_page: res.meta.last_page,
-                  invite_number_count: res.invite_number_count
-                }
-                next({params: {dataInfo, pageInfo}})
-              })
-              .catch(e => {
-                next({name: '404'})
-              })
+            let data = store.getters['leaderInvite/requestData']
+            API.Leader.leaderDistributionRankingList(data, true)
+            .then((res) => {
+              if (res.error !== ERR_OK) {
+                return next({name: '404'})
+              }
+              let dataInfo = res.data
+              let pageInfo = {
+                total: res.meta.total,
+                per_page: res.meta.per_page,
+                total_page: res.meta.last_page,
+                invite_number_count:res.invite_number_count
+              }
+              next({params: {dataInfo, pageInfo}})
+            })
+            .catch(e => {
+              next({name: '404'})
+            })
           }
         }
       },
@@ -1046,10 +1069,11 @@ export default [
         component: () => lazyLoadView(import('@pages/dispatching-list/dispatching-list')),
         meta: {
           titles: ['商城', '团长', '团长配送单'],
+          resetHooks: ['leader/resetDeliveryRequest'],
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
-              .dispatch('leader/getDeliveryOrder', {page: 1, shopId: '', startTime: '', endTime: ''})
+              .dispatch('leader/getDeliveryOrder', true)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1126,9 +1150,10 @@ export default [
         component: () => lazyLoadView(import('@pages/head-settlement/head-settlement')),
         meta: {
           titles: ['财务', '团长', '团长佣金'],
+          resetHooks: ['leader/resetHeadData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('leader/getSettlementList', {page: 1, keyword: ''})
+              .dispatch('leader/getSettlementList', {loading: true})
               .then((response) => {
                 if (!response) {
                   return next({name: '404'})
@@ -1150,9 +1175,10 @@ export default [
         meta: {
           titles: ['商城', '团长', '团长结算', '团长结算详情'],
           beforeResolve(routeTo, routeFrom, next) {
-            let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
+            // let data = {page: 1, shopId: routeTo.params.id, orderSn: '', status: '', settlementType: ''}
+            store.commit('leader/SET_DETAIL_PARAMS', {shop_id: routeTo.params.id})
             store
-              .dispatch('leader/getSettlementDetail', data)
+              .dispatch('leader/getSettlementDetail', {loading: true})
               .then((response) => {
                 if (!response) {
                   return next({name: '404'})
@@ -1201,6 +1227,8 @@ export default [
         meta: {
           titles: ['商城', '团长', '团长提现', '收支明细', ''],
           beforeResolve(routeTo, routeFrom, next) {
+            store.commit('leader/SET_BILL_PAGE', 1)
+            store.commit('leader/SET_BILL_TYPE', '')
             store
               .dispatch('leader/getBillList', routeTo.params.id)
               .then((res) => {
@@ -1277,7 +1305,8 @@ export default [
         name: 'leader-withdrawal',
         component: () => lazyLoadView(import('@pages/leader-withdrawal/leader-withdrawal')),
         meta: {
-          titles: ['财务', '团长', '团长提现'],
+          titles: ['财务', '团长', '提现记录'],
+          resetHooks: ['leader/resetWithdrawal'],
           beforeResolve(routeTo, routeFrom, next) {
             //  订单列表
             store
@@ -1301,6 +1330,7 @@ export default [
         component: () => lazyLoadView(import('@pages/transaction-detail/transaction-detail')),
         meta: {
           titles: ['财务', '账户', '交易明细'],
+          resetHooks: ['finance/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('finance/getSettleStatus')
@@ -1380,27 +1410,42 @@ export default [
         name: 'merchant-order',
         meta: {
           titles: ['供应链', '订单', '商户订单'],
+          resetHooks: ['merchantOrder/resetData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            store.commit('merchantOrder/SET_PARAMS', {
-              page: 1,
-              limit: 10,
-              start_time: '',
-              end_time: '',
-              type: '',
-              status: 0, // 待调度
-              keyword: ''
-            })
-            store
-              .dispatch('merchantOrder/getMerchantOrderList')
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
+            if (store.getters['merchantOrder/tabIndex'] === 0) {
+              store
+                .dispatch('merchantOrder/getMerchantOrderList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              store
+                .dispatch('merchantOrder/getMergerOrderList')
+                .then((res) => {
+                  if (!res) {
+                    return next({name: '404'})
+                  }
+                  next()
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            }
+            // store.commit('merchantOrder/SET_PARAMS', {
+            //   page: 1,
+            //   limit: 10,
+            //   start_time: '',
+            //   end_time: '',
+            //   type: '',
+            //   status: 0, // 待调度
+            //   keyword: ''
+            // })
           }
         },
         component: () => lazyLoadView(import('@pages/merchant-order/merchant-order'))
@@ -1477,21 +1522,28 @@ export default [
         name: 'after-sales-order',
         meta: {
           titles: ['供应链', '订单', '售后订单'],
+          resetHooks: ['afterSalesOrder/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let exceptionStatus = routeTo.query.exception_status
-            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
-            let startTime = routeTo.query.start_time || ''
-            let endTime = routeTo.query.end_time || ''
-            store.commit('afterSalesOrder/SET_PARAMS', {
-              start_time: startTime,
-              end_time: endTime,
-              exception_status: exceptionStatus,
-              keyword: '',
-              status: status,
-              page: 1,
-              limit: 10
-            })
+            if (store.getters['afterSalesOrder/isFirst']) {
+              let exceptionStatus = routeTo.query.exception_status
+              exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+              let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+              if (status.length) {
+                status = status * 1
+              }
+              let startTime = routeTo.query.start_time || ''
+              let endTime = routeTo.query.end_time || ''
+              store.commit('afterSalesOrder/SET_PARAMS', {
+                start_time: startTime,
+                end_time: endTime,
+                exception_status: exceptionStatus,
+                keyword: '',
+                status: status,
+                page: 1,
+                limit: 10
+              })
+              store.commit('afterSalesOrder/SET_IS_FIRST', false)
+            }
             store
               .dispatch('afterSalesOrder/getAfterSalesOrderList')
               .then((res) => {
@@ -1541,7 +1593,6 @@ export default [
             routeTo.params.end = ''
             let exceptionStatus = routeTo.query.exception_status
             exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            // let status = routeTo.query.status || 1
             let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 1
             let startTime = routeTo.query.start_time || ''
             let endTime = routeTo.query.end_time || ''
@@ -1689,24 +1740,16 @@ export default [
         component: () => lazyLoadView(import('@pages/purchase-order/purchase-order')),
         meta: {
           titles: ['供应链', '采购', '采购单'],
+          resetHooks: ['supply/resetData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let status = 1
-            routeTo.params.status = status
             store
               .dispatch('supply/getPurchaseList', {
-                time: '',
-                startTime: '',
-                endTime: '',
-                keyword: '',
-                page: 1,
-                loading: true,
-                status: status
+                loading: true
               })
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
                 }
-                routeTo.params.detail = res
                 next()
               })
               .catch(() => {
@@ -1774,9 +1817,10 @@ export default [
         component: () => lazyLoadView(import('@pages/goods-manage/goods-manage')),
         meta: {
           titles: ['供应链', '采购', '商品管理'],
+          resetHooks: ['scmGoods/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('scmGoods/getProductList', {})
+              .dispatch('scmGoods/getProductList', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1817,7 +1861,6 @@ export default [
                 if (!response) {
                   return next({name: '404'})
                 }
-                console.log(response)
                 routeTo.params.detail = response
                 next()
               })
@@ -1844,8 +1887,9 @@ export default [
         component: () => lazyLoadView(import('@pages/supplier/supplier')),
         meta: {
           titles: ['供应链', '采购', '基础设置', '供应商'],
+          resetHooks: ['supplier/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('supplier/infoSetKeyWord')
+            // store.dispatch('supplier/infoSetKeyWord')
             store
               .dispatch('supplier/getSupplier')
               .then((res) => {
@@ -1894,14 +1938,33 @@ export default [
         component: () => lazyLoadView(import('@pages/product-enter/product-enter')),
         meta: {
           titles: ['供应链', '仓库', '成品入库'],
+          resetHooks: ['product/resetProductData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let exceptionStatus = routeTo.query.exception_status
-            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
-            let startTime = routeTo.query.start_time || ''
-            let endTime = routeTo.query.end_time || ''
+            if (store.getters['product/isEnterFirst']) {
+              let exceptionStatus = routeTo.query.exception_status
+              exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+              let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 0
+              if (status.length) {
+                status = status * 1
+              }
+              if (exceptionStatus.length) {
+                exceptionStatus = exceptionStatus * 1
+              }
+              let startTime = routeTo.query.start_time || ''
+              let endTime = routeTo.query.end_time || ''
+              store.commit('product/SET_ENTER_PARAMS', {
+                start_time: startTime,
+                end_time: endTime,
+                exception_status: exceptionStatus,
+                keyword: '',
+                status: status,
+                page: 1,
+                limit: 10
+              })
+              store.commit('product/SET_IS_ENTER_FRIRST', false)
+            }
             store
-              .dispatch('product/getEnterData', {startTime, endTime, status, page: 1, exceptionStatus})
+              .dispatch('product/getEnterData', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1943,14 +2006,33 @@ export default [
         component: () => lazyLoadView(import('@pages/product-out/product-out')),
         meta: {
           titles: ['供应链', '仓库', '成品出库'],
+          resetHooks: ['product/resetOutData'],
           async beforeResolve(routeTo, routeFrom, next) {
-            let exceptionStatus = routeTo.query.exception_status
-            exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
-            let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
-            let startTime = routeTo.query.start_time || ''
-            let endTime = routeTo.query.end_time || ''
+            if (store.getters['product/isOutFirst']) {
+              let exceptionStatus = routeTo.query.exception_status
+              exceptionStatus = typeof exceptionStatus === 'undefined' ? '' : exceptionStatus
+              let status = exceptionStatus === 1 ? 1 : routeTo.query.status ? routeTo.query.status : 2
+              let startTime = routeTo.query.start_time || ''
+              let endTime = routeTo.query.end_time || ''
+              if (status.length) {
+                status = status * 1
+              }
+              if (exceptionStatus.length) {
+                exceptionStatus = exceptionStatus * 1
+              }
+              store.commit('product/SET_OUT_PARAMS', {
+                start_time: startTime,
+                end_time: endTime,
+                exception_status: exceptionStatus,
+                keyword: '',
+                status: status,
+                page: 1,
+                limit: 10
+              })
+              store.commit('product/SET_IS_OUT_FRIRST', false)
+            }
             store
-              .dispatch('product/getOutData', {startTime, endTime, status, page: 1, exceptionStatus})
+              .dispatch('product/getOutData', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2045,8 +2127,8 @@ export default [
         component: () => lazyLoadView(import('@pages/warehouse-personnel/warehouse-personnel')),
         meta: {
           titles: ['供应链', '仓库', '基础设置', '仓库人员管理'],
+          resetHooks: ['warehouse/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
-            store.dispatch('warehouse/infoSetKeyWord')
             store
               .dispatch('warehouse/getPurchaseUser')
               .then((res) => {
@@ -2095,26 +2177,30 @@ export default [
         name: 'sorting-task',
         meta: {
           titles: ['供应链', '分拣', '分拣任务'],
+          resetHooks: ['sorting/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
-            let params = {
-              goods_category_id: '',
-              page: 1,
-              limit: 10,
-              start_time: '',
-              end_time: '',
-              keyword: '',
-              status: 0, // 待分拣
-              sorting_mode: 0,
-              exception_status: '',
-              ...routeTo.query
+            if (store.getters['sorting/taskData'].isTaskFirst) {
+              let params = {
+                goods_category_id: '',
+                page: 1,
+                limit: 10,
+                start_time: '',
+                end_time: '',
+                keyword: '',
+                status: 0, // 待分拣
+                sorting_mode: 0,
+                exception_status:'',
+                ...routeTo.query
+              }
+              if(params.status!==''){
+                params.status = Number(params.status)
+              }
+              params.sorting_mode = Number(params.sorting_mode)
+              store.commit('sorting/SET_PARAMS', params)
+              store.commit('sorting/SET_TASK_DATA', {isTaskFirst: false})
             }
-            if (params.status !== '') {
-              params.status = Number(params.status)
-            }
-            params.sorting_mode = Number(params.sorting_mode)
-            store.commit('sorting/SET_PARAMS', params)
             store
-              .dispatch('sorting/getSortingTaskList')
+              .dispatch('sorting/getSortingTaskList', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2274,15 +2360,10 @@ export default [
         component: () => lazyLoadView(import('@pages/storehouse-management/storehouse-management')),
         meta: {
           titles: ['供应链', '仓库', '库存管理'],
+          resetHooks: ['store/resetWarehouseData'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getWarehouseList', {
-                page: 1,
-                goodsCategoryId: '',
-                keyword: '',
-                warehousePositionId: '',
-                isPresale: ''
-              })
+              .dispatch('store/getWarehouseList', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2304,7 +2385,7 @@ export default [
           titles: ['供应链', '仓库', '库存管理', '库存详情'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getWarehouseDetailList', {code: routeTo.query.code, page: 1, order_sn: '', type: ''})
+              .dispatch('store/getWarehouseDetailList', {code: routeTo.query.code, loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2351,9 +2432,10 @@ export default [
         component: () => lazyLoadView(import('@pages/stock-taking/stock-taking')),
         meta: {
           titles: ['供应链', '仓库', '库存盘点'],
+          resetHooks: ['store/resetTakingData'],
           beforeResolve(routeTo, routeForm, next) {
             store
-              .dispatch('store/getAdjustOrder', {page: 1, startTime: '', endTime: '', keyword: ''})
+              .dispatch('store/getAdjustOrder', {loading: true})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -2405,6 +2487,7 @@ export default [
         component: () => lazyLoadView(import('@pages/distribution-task/distribution-task')),
         meta: {
           titles: ['供应链', '配送', '配送任务'],
+          resetHooks: ['distribution/resetData'],
           async beforeResolve(routeTo, routeFrom, next) {
             // 获取服务器时间且初始化
             let tabIndex = store.state.distribution.tabIndex
@@ -2417,8 +2500,9 @@ export default [
               startTime: '',
               endTime: ''
             })
-            if (typeof routeTo.query.status !== 'undefined') {
-              store.dispatch('distribution/setTabIndex', 0)
+            if (typeof (routeTo.query.status) !== 'undefined') {
+              // store.dispatch('distribution/setTabIndex', 0)
+              store.commit('distribution/SET_TAB_INDEX', 0)
             }
             // store.mutations.SET_TAB_INDEX(0)
             if (tabIndex === 0) {

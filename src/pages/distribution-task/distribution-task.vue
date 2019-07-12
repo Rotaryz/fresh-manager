@@ -29,7 +29,7 @@
           <p class="identification-name">{{tabStatus[tabIndex].text}}</p>
           <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
-        <div class="function-btn">
+        <div v-if="tabIndex === 0" class="function-btn">
           <div class="btn-main" @click="deliveryExcel">导出配送单</div>
           <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
           <div
@@ -73,7 +73,7 @@
             <base-blank v-else></base-blank>
           </div>
           <div v-else-if="tabIndex === 1">
-            <div v-if="orderList.length">
+            <div v-if="driverList.length">
               <div v-for="(driver, key) in driverList" :key="key" class="list-content list-box">
                 <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}">
                   {{item.operation ? '' : driver[item.key]}}
@@ -225,7 +225,6 @@
       if (this.$route.query.status) {
         this.statusTab = this.dispatchSelect.findIndex((item) => item.value === this.$route.query.status * 1)
         this.status = this.$route.query.status * 1
-        console.log(this.statusTab)
       }
     },
     methods: {
@@ -298,14 +297,26 @@
           this.dispatchSelect[index].num = this.statistic[key]
         }
       },
-      async setValue(item) {
+      async setValue(item, index) {
+        this.statusTab = index
         this.setOrderStatus(item.value)
         await this._statistic(false)
         this.$refs.pagination.beginPage()
       },
       async changeStatus(item, index) {
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
+        if (index === 1) {
+          this.statusTab = 1
+        }
         this.setTabIndex(index)
+        if (index === 0) {
+          this.errorObj.content = '全部'
+          this.exceptionStatus = ''
+          this.statusTab = 1
+          this.$forceUpdate()
+          await this._statistic(false)
+        }
+        this.$refs.pagination.beginPage()
       },
       async changeKeyword(keyword) {
         this.setOrderKeyword(keyword)

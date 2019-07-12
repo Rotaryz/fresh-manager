@@ -31,18 +31,22 @@
     components: {DefaultModal},
     props: {
       cancelText: {
+        // 取消文字
         type: String,
         default: '取消'
       },
       sureText: {
+        // 确定文字
         type: String,
         default: '确认'
       },
       oneBtn: {
+        // 是否显示取消
         type: Boolean,
         default: false
       },
       infoTitle: {
+        // title默认值
         type: String,
         default: '温馨提示'
       }

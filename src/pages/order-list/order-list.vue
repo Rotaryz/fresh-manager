@@ -22,7 +22,7 @@
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
+        <base-search ref="search" :infoText="keyword" :placeHolder="searchPlaceHolder" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -30,7 +30,7 @@
         <div class="identification-page">
           <img src="./icon-order_list@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
-          <base-status-tab :statusList="statusTab" @setStatus="changeTab"></base-status-tab>
+          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeTab"></base-status-tab>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="exportExcel">导出Excel</div>
@@ -120,7 +120,7 @@
       ...authComputed,
       ...orderComputed,
       infoTabIndex() {
-        return this.tabStatus.findIndex((item) => item.status === this.defaultStatus)
+        return this.tabStatus.findIndex((item) => item.status === this.status)
       },
       orderExportUrl() {
         let currentId = this.getCurrentId()
@@ -158,15 +158,20 @@
       }
     },
     created() {
+
+      if (!this.shopId) {
+        this.socialSelect.content = '全部社区'
+      }
       this._getShopList()
       this.getOrderStatus()
     },
     beforeDestroy() {
-      this.setTime(['', ''])
+      // this.setTime(['', ''])
     },
     methods: {
       ...orderMethods,
-      changeTab(selectStatus) {
+      changeTab(selectStatus, index) {
+        this.setDefaultIndex(index)
         this.setOrderStatus(selectStatus)
       },
       getOrderStatus(startTime, endTime) {
@@ -208,6 +213,8 @@
       },
       changeStatus(selectStatus) {
         this.setStatus(selectStatus)
+        this.socialSelect.content = '全部社区'
+        this.$refs.search._setText('')
         this.getOrderStatus()
         this.$refs.pagination.beginPage()
       },

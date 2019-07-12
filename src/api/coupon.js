@@ -7,7 +7,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getCouponList(data, loading = true) {
+  getCouponList(data, loading = false) {
     let url = `/social-shopping/api/backend/coupon-manage/coupon`
     return request.get(url, data, loading)
   },

@@ -34,7 +34,7 @@
           </div>
           <div class="edit-item  edit-image-box">
             <div class="edit-title">
-              <span class="start">*</span>
+              <!--<span class="start">*</span>-->
               商品图片
             </div>
             <div class="image-box">
@@ -213,6 +213,26 @@
           </div>
           <div class="edit-item  edit-image-box">
             <div class="edit-title">
+              主图视频
+            </div>
+            <div class="image-box">
+              <div class="edit-image">
+                <draggable v-if="videoUrl" class="draggable" @update="_setSort()">
+                  <div class="show-image hand">
+                    <video :src="videoUrl" :autoplay="false" class="video"></video>
+                    <span class="close" @click="delVideo"></span>
+                    <img class="icon-video" src="./icon-play_list@2x.png" alt="">
+                  </div>
+                </draggable>
+                <div v-else class="add-image add-video hand">
+                  <input type="file" class="sendImage hand" accept="video/*" value="上传视频" @change="handleChange">
+                </div>
+              </div>
+              <div class="tip">建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。</div>
+            </div>
+          </div>
+          <div class="edit-item  edit-image-box">
+            <div class="edit-title">
               <span class="start">*</span>
               详情图
             </div>
@@ -327,6 +347,7 @@
   import Draggable from 'vuedraggable'
   import storage from 'storage-controller'
   import _ from 'lodash'
+  import {uploadFiles} from '../../utils/vod/vod'
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
@@ -389,7 +410,8 @@
           goods_category_id: 0,
           name: '',
           describe: '',
-          init_sale_count: ''
+          init_sale_count: '',
+          goods_videos: []
         },
         sale_skus: {
           trade_price: '',
@@ -416,7 +438,8 @@
           base_unit: '',
           base_sale_rate: '',
           sale_unit: ''
-        }
+        },
+        videoUrl: ''
       }
     },
     created() {
@@ -427,11 +450,13 @@
       this.getScmCategoriesData()
     },
     destroyed() {
+      clearInterval(this.timerVod)
       if (this.isCopy) {
         storage.remove('msg')
         storage.remove('goods_skus')
         storage.remove('saleMsg')
         storage.remove('sale_skus')
+        storage.remove('videoUrl')
       }
     },
     methods: {
@@ -462,6 +487,7 @@
           this.goods_skus = storage.get('goods_skus')
           this.saleMsg = storage.get('saleMsg')
           this.sale_skus = storage.get('sale_skus')
+          this.videoUrl = storage.get('videoUrl')
           this.editSkus = _.cloneDeep(this.goods_skus)
           this.saleSelect.content = this.goods_skus.sale_unit
           this.supplierSelect.content = this.goods_skus.supplier_name
@@ -533,9 +559,6 @@
           return
         } else if (this.msg.goods_material_category_id <= 0) {
           this.$toast.show('请选择商品类目')
-          return
-        } else if (this.msg.goods_main_images.length === 0) {
-          this.$toast.show('请上传商品图片')
           return
         } else if (this.goods_skus.base_unit === '') {
           this.$toast.show('请选择基本单位')
@@ -711,6 +734,10 @@
           if (res.error === this.$ERR_OK) {
             this.saleMsg = res.data
             this.sale_skus = this.saleMsg.goods_skus[0]
+            if(res.data.goods_videos && res.data.goods_videos.length && res.data.goods_videos[0]) {
+              this.videoUrl = res.data.goods_videos[0].full_url||''
+              this.saleMsg.goods_videos = [{file_id: res.data.goods_videos[0].id}]
+            }
           } else {
             this.$toast.show(res.message)
           }
@@ -934,6 +961,11 @@
       delPic2(index) {
         this.saleMsg.goods_detail_images.splice(index, 1)
       },
+      // 删除视频
+      delVideo() {
+        this.videoUrl = ''
+        this.saleMsg.goods_videos = [{file_id: 0}]// 删除视频
+      },
       failFile(msg) {
         this.$emit('showToast', msg)
       },
@@ -981,7 +1013,35 @@
         storage.set('saleMsg', this.saleMsg)
         storage.set('sale_skus', this.sale_skus)
         storage.set('goods_id', this.id)
+        storage.set('videoUrl', this.videoUrl)
         window.open(jumpUrl, '_blank')
+      },
+      loading(curr = 0, result) {
+        this.timerVod = setInterval(() => {
+          this.$loading.show('视频上传中' + curr + '%')
+          curr += 10
+          if (curr > 100) {
+            clearInterval(this.timerVod)
+            this.$loading.hide()
+          }
+        }, 500)
+      },
+      handleChange(e) {
+        const file = e.target.files[0]
+        if (!/^video/.test(file.type )) {
+          this.$toast.show('请选择视频文件')
+          return
+        }
+        this.$loading.show('视频上传中...')
+        uploadFiles(e.target.files[0], (curr, result) => {
+          this.$loading.showCurr(curr)
+        }).then(res => {
+          this.$loading.hide()
+          if (res.error === this.$ERR_OK) {
+            this.videoUrl = res.data.path
+            this.saleMsg.goods_videos = [{file_id: res.data.id}]
+          }
+        })
       }
     }
   }
@@ -1261,6 +1321,10 @@
       position: relative
       border-radius: 2px
       overflow: hidden
+      &.add-video
+        icon-image('pic-video_upload')
+      &.add-img-video
+        icon-image('pic-videopic_upload')
       .sendImage
         height: 100%
         width: 100%
@@ -1280,6 +1344,12 @@
       border-radius: 2px
       position: relative
       overflow: hidden
+      .icon-video
+        width: 26px
+        height: @width
+        all-center()
+      .video
+        height: 90px
     .close
       icon-image('pic-delete')
       width: 15px

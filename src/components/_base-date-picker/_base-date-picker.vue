@@ -28,7 +28,11 @@
   import moment from 'moment'
   // import DatePicker from './date-picker/src/picker'
   const COMPONENT_NAME = 'BASE_OPTION_BOX'
-  const NAV = [{title: '日', status: 'day'}, {title: '周', status: 'week'}, {title: '月', status: 'month'}]
+  const NAV = [
+    {title: '日', status: 'day'},
+    {title: '周', status: 'week'},
+    {title: '月', status: 'month'}
+  ]
 
   export default {
     name: COMPONENT_NAME,
@@ -37,26 +41,31 @@
     },
     props: {
       arrTitle: {
+        // 日周月配置
         type: Array,
         default: () => NAV
       },
-      newPickerOptions: {
-        type: Number,
-        default: 0
-      },
       infoTab: {
+        // Tab值
         type: Number,
         default: 0
       },
       disabledDate: {
+        // 是否禁用
         type: Object,
         default: () => {
           return {}
         }
       },
       text: {
+        // 输入框默认文字
         type: String,
         default: '请选择时间'
+      },
+      disabledCurDate: {
+        // 是否禁用到时间
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -65,13 +74,24 @@
         tempIndex: '',
         dateOptions: {
           disabledDate: (date) => {
-            switch (+this.tempIndex) {
-            case 0:
-              return date.valueOf() > Date.now() - 86400000
-            case 1:
-              return date.valueOf() > new Date().valueOf() - new Date().getDay() * 86400000
-            case 2:
-              return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 86400000
+            if (this.disabledCurDate) {
+              switch (+this.tempIndex) {
+              case 0:
+                return date.valueOf() > Date.now() - 86400000
+              case 1:
+                return date.valueOf() > new Date().valueOf() - new Date().getDay() * 86400000
+              case 2:
+                return date.valueOf() > new Date().valueOf() - (new Date().getDate() + 1) * 86400000
+              }
+            } else {
+              switch (+this.tempIndex) {
+              case 0:
+                return date.valueOf() > Date.now()
+              case 1:
+                return date.valueOf() > new Date().valueOf() + (7-new Date().getDay()) * 86400000
+              case 2:
+                return date.valueOf() > Date.now()
+              }
             }
           },
           firstDayOfWeek: 1
@@ -82,12 +102,12 @@
         enterName: '',
         timer: '',
         clickTab: false,
-        date: {
-          day: new Date().valueOf() - 86400000,
+        viewDate: moment(new Date().valueOf() - (this.disabledCurDate ? 86400000 : 0)).format('YYYY-MM-DD'),
+        date:{
+          day: new Date().valueOf() - (this.disabledCurDate ? 86400000 : 0),
           week: '',
           month: ''
-        },
-        viewDate: moment(new Date().valueOf() - 86400000).format('YYYY-MM-DD')
+        }
       }
     },
     computed: {
@@ -101,10 +121,12 @@
       }
     },
     methods: {
+
       checkTab(index) {
         this.tempIndex = index
       },
       _getDate(time) {
+
         this.tabIndex = this.tempIndex
         let date = ''
         let startDate = ''
@@ -120,15 +142,14 @@
           this.viewDate = date
           break
         case 1:
-          date = moment(time)
-            .subtract(1, 'days')
-            .format('YYYY-MM-DD')
-          startDate = moment(time)
-            .subtract(1, 'days')
-            .format('YYYY-MM-DD')
-          endDate = moment(time)
-            .subtract(-5, 'days')
-            .format('YYYY-MM-DD')
+          date = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
+          startDate = moment(time).subtract(1, 'days').format('YYYY-MM-DD')
+          if (!this.disabledCurDate) {
+            let day = moment() < moment(time).subtract(-5, 'days') ? new Date().getDay() : 7
+            endDate = moment(time).subtract(7 - day -5, 'days').format('YYYY-MM-DD')
+          } else {
+            endDate = moment(time).subtract(-5, 'days').format('YYYY-MM-DD')
+          }
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
@@ -138,14 +159,14 @@
           break
         case 2:
           date = new Date(time).getFullYear() + '-' + formatNumber(new Date(time).getMonth() + 1) + '-01'
-          startDate = moment()
-            .month(moment(time).month())
-            .startOf('month')
-            .format('YYYY-MM-DD')
-          endDate = moment()
-            .month(moment(time).month())
-            .endOf('month')
-            .format('YYYY-MM-DD')
+          startDate = moment().month(moment(time).month()).startOf('month').format('YYYY-MM-DD')
+          if (!this.disabledCurDate) {
+            endDate = moment() < moment().month(moment(time).month()).endOf('month')
+              ? moment().format('YYYY-MM-DD')
+              : moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
+          } else {
+            endDate = moment().month(moment(time).month()).endOf('month').format('YYYY-MM-DD')
+          }
           this.viewDate = startDate + ' ~ ' + endDate
           this.date = {
             day: '',
@@ -158,12 +179,12 @@
       _getCustomTime(time) {
         this.showDate = false
 
-      // this.$emit('checkTime', time, NAV[this.tabIndex].status)
+        // this.$emit('checkTime', time, NAV[this.tabIndex].status)
       },
       firstUppercase(str) {
         let first = str[0].toUpperCase()
-        return first + str.slice(1)
-      }
+        return first+str.slice(1)
+      },
     }
   }
 </script>

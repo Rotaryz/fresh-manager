@@ -12,6 +12,7 @@
     name: COMPONENT_NAME,
     props: {
       blackStyle: {
+        // 样式
         type: String,
         default: ''
       }

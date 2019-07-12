@@ -8,7 +8,29 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  msg: {}
+  msg: {},
+  goodsFitter: {
+    is_online: '',
+    keyword: '',
+    goods_category_id: '',
+    limit: 10,
+    page: 1,
+    has_stock: '',
+    source: '',
+    complete_status: '',
+    is_presale: '',
+    goods_material_category_id: ''
+  },
+  taskData: {
+    isTaskFirst: true,
+    oneName: '一级分类',
+    twoName: '二级分类',
+    twoList: [],
+    source: '全部',
+    complete: '全部',
+    presale: '全部',
+    stock: '全部'
+  }
 }
 
 export const getters = {
@@ -17,6 +39,15 @@ export const getters = {
   },
   msg(state) {
     return state.msg
+  },
+  statePageTotal(state) {
+    return state.statePageTotal
+  },
+  goodsFitter(state) {
+    return state.goodsFitter
+  },
+  taskData(state) {
+    return state.taskData
   }
 }
 
@@ -29,24 +60,21 @@ export const mutations = {
   },
   SET_PAGE_TOTAL(state, statePageTotal) {
     state.statePageTotal = statePageTotal
+  },
+  SET_PARAMS(state, params) {
+    console.log(params)
+    state.goodsFitter = {...state.goodsFitter, ...params}
+    console.log(state.goodsFitter, 'state.goodsFitter')
+  },
+  SET_TASK_DATA(state, params) {
+    state.taskData = {...state.taskData, ...params}
   }
 }
 
 export const actions = {
-  getGoodsData({state, commit, dispatch}, online) {
-    let data = {
-      is_online: online,
-      keyword: '',
-      goods_category_id: '',
-      limit: 10,
-      page: 1,
-      has_stock: '',
-      source: '',
-      complete_status: '',
-      is_presale: '',
-      goods_material_category_id: ''
-    }
-    return API.Product.getGoodsList(data, true)
+  getGoodsData({state, commit, dispatch}, {loading = false}) {
+    // let data = {is_online: online, keyword: '', goods_category_id: '', limit: 10, page: 1, has_stock: '', source: '', complete_status: '', is_presale: '', goods_material_category_id: ''}
+    return API.Product.getGoodsList(state.goodsFitter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -84,5 +112,29 @@ export const actions = {
       .finally(() => {
         app.$loading.hide()
       })
+  },
+  resetData({commit}) {
+    commit('SET_PARAMS', {
+      is_online: '',
+      keyword: '',
+      goods_category_id: '',
+      limit: 10,
+      page: 1,
+      has_stock: '',
+      source: '',
+      complete_status: '',
+      is_presale: '',
+      goods_material_category_id: ''
+    })
+    commit('SET_TASK_DATA', {
+      isTaskFirst: true,
+      oneName: '一级分类',
+      twoName: '二级分类',
+      twoList: [],
+      source: '全部',
+      complete: '全部',
+      presale: '全部',
+      stock: '全部'
+    })
   }
 }

@@ -25,34 +25,32 @@ export const state = {
     total_page: 1
   },
   // 记录活动管理tab栏
-  activityTab: 0
+  activityTab: 0,
+  defaultIndex: 0,
+  tabIndex: 0,
+  firstIn: true,
+  requestData: {
+    page: 1,
+    status: '',
+    start_at: '',
+    end_at: '',
+    activity_theme: 'fixed'
+  }
 }
 
 export const getters = {
-  popularList: (state) => {
-    return state.popularList
-  },
-  popularPage: (state) => {
-    return state.popularPage
-  },
-  preferenceList: (state) => {
-    return state.preferenceList
-  },
-  preferencePage: (state) => {
-    return state.preferencePage
-  },
-  collageList: (state) => {
-    return state.collageList
-  },
-  collagePage: (state) => {
-    return state.collagePage
-  },
-  collageDetail: (state) => {
-    return state.collageDetail
-  },
-  activityTab: (state) => {
-    return state.activityTab
-  }
+  popularList: state => state.popularList,
+  popularPage: state => state.popularPage,
+  preferenceList: state => state.preferenceList,
+  preferencePage: state =>state.preferencePage,
+  collageList: state => state.collageList,
+  collagePage: state => state.collagePage,
+  collageDetail: state => state.collageDetail,
+  activityTab: state => state.activityTab,
+  requestData: state => state.requestData,
+  defaultIndex: state => state.defaultIndex,
+  tabIndex: state => state.tabIndex,
+  firstIn: state => state.firstIn
 }
 
 export const mutations = {
@@ -82,6 +80,28 @@ export const mutations = {
   },
   SET_ACTIVITY_TYPE(state, index) {
     state.activityTab = index
+  },
+  RESET_REQUEST_DATA(state) {
+    state.requestData = {
+      page: 1,
+      status: '',
+      start_at: '',
+      end_at: '',
+      activity_theme: 'fixed'
+    }
+    state.firstIn = true
+  },
+  SET_REQUEST_DATA(state, data) {
+    state.requestData = Object.assign({}, state.requestData, data)
+  },
+  SET_DEFAULT_INDEX(state, index) {
+    state.defaultIndex = index
+  },
+  SET_TAB_INDEX(state, index) {
+    state.tabIndex = index
+  },
+  SET_FIRST_IN(state, type) {
+    state.firstIn = type
   }
 }
 
@@ -198,5 +218,24 @@ export const actions = {
   // 设置活动管理tab栏
   setActivityTab({commit}, index) {
     commit('SET_ACTIVITY_TYPE', index)
+  },
+  resetData({commit}) {
+    commit('RESET_REQUEST_DATA')
+    commit('SET_DEFAULT_INDEX', 0)
+    commit('SET_TAB_INDEX', 0)
+    commit('SET_FIRST_IN', true)
+  },
+  setRequestData({commit}, data) {
+    commit('SET_REQUEST_DATA', data)
+  },
+  setDefaultIndex({commit}, data) {
+    commit('SET_DEFAULT_INDEX', data.index)
+    commit('SET_REQUEST_DATA', {status: data.status, page: 1})
+  },
+  setTabIndex({commit}, index) {
+    commit('SET_TAB_INDEX', index)
+  },
+  setFirstIn({commit}) {
+    commit('SET_FIRST_IN', false)
   }
 }

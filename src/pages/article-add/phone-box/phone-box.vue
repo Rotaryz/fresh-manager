@@ -286,7 +286,7 @@
             .total-count
               font-size $font-size-10
               color: #111
-              margin-top: 3px
+              margin-top: 1px
 
           .liker-photo
             margin 15px 15px 15px 0px

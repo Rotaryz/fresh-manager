@@ -16,30 +16,37 @@
         default: 1
       },
       width: {
+        // 组件宽度
         type: String,
         default: '69px'
       },
       height: {
+        // 组件高度
         type: String,
         default: '28px'
       },
       switchColor: {
+        // 组件打开背景色
         type: String,
         default: '#4DBD65'
       },
       closeColor: {
+        // 组件关闭背景色
         type: String,
         default: '#E1E1E1'
       },
       transform: {
+        // 按钮位移距离
         type: String,
         default: '40px'
       },
       confirmText: {
+        // 打开按钮默认文字
         type: String,
         default: '上架'
       },
       cancelText: {
+        // 关闭按钮默认文字
         type: String,
         default: '下架'
       }

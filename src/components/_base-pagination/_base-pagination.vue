@@ -63,6 +63,7 @@
         }
       },
       pagination: {
+        // 当前页面
         type: Number,
         default: 1
       }
