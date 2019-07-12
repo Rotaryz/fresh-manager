@@ -189,7 +189,6 @@
           }
           list.push(item)
         }
-        // console.log(list)
         this.fillData(false, list)
       },
       // 分开左右两个list

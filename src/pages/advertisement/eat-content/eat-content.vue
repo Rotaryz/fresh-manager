@@ -276,7 +276,6 @@
           this.$toast.show(`请勿选择重复的分类`, 1500)
           return
         }
-        console.log(this.temporaryClassify)
         let data = this.temporaryClassify.map((item) => {
           let obj = {id: item.id, title: item.title, name: item.content, other_id: item.other_id, type: item.type, is_close: item.is_close}
           return {page_module_id: this.articleCateId, ext_json: obj}
@@ -297,7 +296,6 @@
         let arr = []
         let inIndex = this.temporaryClassify.findIndex((item) => item.is_close && item.other_id !== 0)
         let id = inIndex === -1 ? '' : this.temporaryClassify[inIndex].other_id
-        console.log(id, inIndex)
         if (id === '') {
           this.$emit('getContentList', [])
           return
