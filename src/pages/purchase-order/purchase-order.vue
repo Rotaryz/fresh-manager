@@ -66,12 +66,6 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
-        // page: 1,
-        // startTime: '',
-        // endTime: '',
-        // keyword: '',
-        // time: '',
-        // status: '',
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
           {name: '待入库', value: 1, key: 'wait_entry', num: 0},

@@ -125,24 +125,15 @@
     },
     async created() {
       this._setErrorStatus()
-      // this.productEnterList = _.cloneDeep(this.enterList)
-      // this.pageTotal = _.cloneDeep(this.statePageTotal)
       await this._statistic()
-      console.log(this.enterFilter.status)
       this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.enterFilter.status)
     },
     methods: {
       ...productMethods,
       async checkErr(item) {
-        // this.exceptionStatus = item.status
-        // this.goodsPage = 1
-        // await this._statistic()
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
         this._updateList({exception_status: item.status, page: 1})
       },
       _setErrorStatus() {
-        console.log(this.enterFilter.exception_status)
         let item = this.errorObj.data.find((item) => item.status === this.enterFilter.exception_status)
         this.errorObj.content = item.name || '全部'
       },
@@ -237,31 +228,14 @@
       },
       async changeKeyword(keyword) {
         this._updateList({keyword, page: 1})
-        // this.keyWord = keyword
-        // this.goodsPage = 1
-        // await this._statistic()
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
       },
       async changeStartTime(value) {
         this._updateList({start_time: value[0], end_time: value[1], page: 1})
-        // this.time = value
-        // this.goodsPage = 1
-        // await this._statistic()
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
       },
       async setValue(item) {
         this._updateList({status: item.value, page: 1})
-        // this.status = item.value
-        // this.goodsPage = 1
-        // await this._statistic()
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
       },
       addPage(page) {
-        // this.goodsPage = page
-        // this.getProductListData()
         this._updateList({page}, true)
       }
     }

@@ -5,6 +5,12 @@
       <div class="down-item">
         <base-date-select placeHolder="选择注册日期" @getTime="_selectTime"></base-date-select>
       </div>
+      <div class="down-item-small">
+        <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+      </div>
+      <div class="down-item">
+        <base-date-select placeHolder="选择用户首单的时间" @getTime="_selectFirstTime"></base-date-select>
+      </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="客户昵称/手机号" @search="_search"></base-search>
@@ -50,6 +56,7 @@
 
 <script type="text/ecmascript-6">
   import {customerComputed, customerMethods} from '@state/helpers'
+  import API from '@api'
 
   const PAGE_NAME = 'CUSTOMER_MANAGEMENT'
   const TITLE = '客户列表'
@@ -62,6 +69,13 @@
     {title: '笔单价', showSort: true, sort: [5, 6]},
     {title: '注册时间', showSort: false, sort: []}
   ]
+  const SOCIAL_SELECT = {
+    check: false,
+    show: false,
+    content: '全部社区',
+    type: 'default',
+    data: []
+  }
 
   export default {
     name: PAGE_NAME,
@@ -76,20 +90,52 @@
         keyword: '',
         sortType: 0,
         startTime: '',
-        endTime: ''
+        endTime: '',
+        shop_id: '',
+        paid_start_time: '',
+        paid_end_time: '',
+        socialSelect: SOCIAL_SELECT
       }
     },
     computed: {
       ...customerComputed
     },
-    created() {},
+    created() {
+      this._getShopList()
+    },
     methods: {
       ...customerMethods,
+      _getShopList() {
+        API.Leader.shopDropdownList().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          let selectData = res.data.map((item) => {
+            item.name = item.social_name
+            return item
+          })
+          selectData.unshift({name: '全部社区', id: ''})
+          this.socialSelect.data = selectData
+        })
+      },
       _selectTime(value) {
         this.$refs.pages.beginPage()
         this.page = 1
         this.startTime = value[0]
         this.endTime = value[1]
+        this._getCustomerList()
+      },
+      _selectFirstTime(value) {
+        this.$refs.pages.beginPage()
+        this.page = 1
+        this.paid_start_time = value[0]
+        this.paid_end_time = value[1]
+        this._getCustomerList()
+      },
+      changeShopId(shop) {
+        this.$refs.pages.beginPage()
+        this.page = 1
+        this.shop_id = shop.id
         this._getCustomerList()
       },
       _setSort(index) {
@@ -102,14 +148,17 @@
         this.sortType = sort
         this._getCustomerList()
       },
-      _getCustomerList() {
+      _getCustomerList(loading=false) {
         this.getCustomerList({
           page: this.page,
           startTime: this.startTime,
           endTime: this.endTime,
           keyword: this.keyword,
           sortType: this.sortType,
-          loading: false
+          shopId: this.shop_id,
+          paidStartTime: this.paid_start_time,
+          paidEndTime: this.paid_end_time,
+          loading: loading
         })
       },
       _search(text) {
@@ -121,14 +170,7 @@
       },
       _getMoreList(page) {
         this.page = page
-        this.getCustomerList({
-          page: this.page,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          sortType: this.sortType,
-          loading: true
-        })
+        this._getCustomerList(true)
       }
     }
   }
@@ -150,4 +192,10 @@
       .list-img
         width: 40px
         height: 40px
+  .down-content
+    .down-tip
+      margin-left: 10px
+    .down-item
+      margin-right: 10px
+
 </style>

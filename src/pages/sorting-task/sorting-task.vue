@@ -311,7 +311,6 @@
           .then((res) => {
             this.$toast.show(res.message)
             this.webSocketData()
-            // this._updateData({page: 1})
           })
           .catch((err) => {
             this.$toast.show(err.message)

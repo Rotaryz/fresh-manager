@@ -141,13 +141,8 @@
     },
     async created() {
       this._setErrorStatus()
-      // this.productOutList = _.cloneDeep(this.outList)
-      // this.pageTotal = _.cloneDeep(this.outPageTotal)
       await this._statistic()
       this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.outFilter.status)
-      if (this.$route.query.status) {
-        // this.status = this.$route.query.status * 1
-      }
     },
     destory() {
       ws = null
@@ -167,17 +162,9 @@
           var data = JSON.parse(event.data)
           if (data.status === 'success') {
             ws.close()
-            // that.initData()
             that._updateList({page: 1})
           }
         }
-      },
-      initData() {
-        this.goodsPage = 1
-        this.getProductListData()
-        this._statistic()
-        this.$refs.pagination.beginPage()
-        this.$refs.confirm.hide()
       },
       _updateList(params, noUpdataStatus) {
         this.SET_OUT_PARAMS(params)
@@ -190,10 +177,6 @@
         }
       },
       async checkErr(item) {
-        // this.exceptionStatus = item.status
-        // this.goodsPage = 1
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
         this._updateList({exception_status: item.status, page: 1})
       },
       _setErrorStatus() {
@@ -241,7 +224,6 @@
           keyword: this.outFilter.keyword,
           exception_status: this.outFilter.exception_status
         })
-        // this.dispatchSelect = res.data.status || []
         if (res.error === this.$ERR_OK) {
           this.dispatchSelect = res.data.status.map((item) => {
             item.name = item.status_str
@@ -277,17 +259,9 @@
         await this._statistic()
       },
       async changeKeyword(keyword) {
-        // this.keyWord = keyword
-        // this.goodsPage = 1
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
         this._updateList({keyword, page: 1})
       },
       async changeStartTime(value) {
-        // this.time = value
-        // this.goodsPage = 1
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
         this._updateList({start_time: value[0], end_time: value[1], page: 1})
       },
       async changeEndTime(value) {
@@ -301,15 +275,9 @@
         this.$refs.pagination.beginPage()
       },
       async setValue(item) {
-        // this.status = val
-        // this.goodsPage = 1
-        // this.getProductListData()
-        // this.$refs.pagination.beginPage()
         this._updateList({status: item.value, page: 1})
       },
       async addPage(page) {
-        // this.goodsPage = page
-        // this.getProductListData()
         this._updateList({page}, true)
       }
     }

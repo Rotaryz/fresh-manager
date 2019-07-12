@@ -30,9 +30,9 @@ export const mutations = {
 }
 
 export const actions = {
-  getCustomerList({state, commit, dispatch}, {page, startTime, endTime, keyword, sortType, loading = true}) {
+  getCustomerList({state, commit, dispatch}, {page, startTime, endTime, keyword, sortType, shopId, paidStartTime, paidEndTime, loading = true}) {
     return API.Customer.customerList(
-      {page, start_time: startTime, end_time: endTime, keyword: keyword, sort_type: sortType},
+      {page, start_time: startTime, end_time: endTime, keyword: keyword, sort_type: sortType, shop_id: shopId, paid_start_time: paidStartTime, paid_end_time: paidEndTime},
       loading
     )
       .then((res) => {

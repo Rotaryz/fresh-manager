@@ -41,28 +41,29 @@
     },
     props: {
       arrTitle: {
+        // 日周月配置
         type: Array,
         default: () => NAV
       },
-      newPickerOptions: {
-        type: Number,
-        default: 0
-      },
       infoTab: {
+        // Tab值
         type: Number,
         default: 0
       },
       disabledDate: {
+        // 是否禁用
         type: Object,
         default: () => {
           return {}
         }
       },
       text: {
+        // 输入框默认文字
         type: String,
         default: '请选择时间'
       },
       disabledCurDate: {
+        // 是否禁用到时间
         type: Boolean,
         default: true
       }

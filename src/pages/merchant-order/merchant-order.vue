@@ -139,21 +139,6 @@
           {name: '已完成', value: 3, num: 0}
         ],
         datePlaceHolderMerger: '选择下单日期'
-        // merger: {
-        //   pageTotal: {
-        //     // 页码详情
-        //     total: 1,
-        //     per_page: 10,
-        //     total_page: 1
-        //   },
-        //   list: [],
-        //   filter: {
-        //     start_time: '',
-        //     end_time: '',
-        //     page: 1,
-        //     limit: 10
-        //   }
-        // }
       }
     },
     computed: {
@@ -204,26 +189,6 @@
           })
         }
       },
-      // _getMergeOrderslist() {
-      //   API.MerchantOrder.getMergeOrderslist(this.merger.filter)
-      //     .then((res) => {
-      //       if (res.error !== this.$ERR_OK) {
-      //         return false
-      //       }
-      //       this.merger.list = res.data
-      //       this.merger.pageTotal = {
-      //         total: res.meta.total,
-      //         per_page: res.meta.per_page,
-      //         total_page: res.meta.last_page
-      //       }
-      //     })
-      //     .catch(() => {
-      //       return false
-      //     })
-      //     .finally(() => {
-      //       this.$loading.hide()
-      //     })
-      // },
       // 时间选择器
       _changeTimeMerger(timeArr) {
         this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})

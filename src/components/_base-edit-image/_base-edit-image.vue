@@ -52,6 +52,7 @@
         default: 5
       },
       fileType: {
+        // 组件使用类型
         type: String,
         default: 'image'
       },
