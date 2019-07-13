@@ -318,6 +318,7 @@
         this.getWorkListMore({page: 1, status: item.status})
         this._statistic()
         this.dispatTitle = item.name === '草稿' ? DISPATCHING_LIST2 : DISPATCHING_LIST
+        this.$refs.pages.beginPage()
       },
       // 切换tab
       changeTab(item, index) {
