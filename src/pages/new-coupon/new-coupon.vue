@@ -32,6 +32,72 @@
         <div :class="{'text-no-change':disable}"></div>
       </div>
 
+      <!--使用范围-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          使用范围
+        </div>
+        <div class="input-box" style="flex: 1">
+          <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
+          <!--添加品类列表-->
+          <div v-if="+msg.range_type === 2" class="activity-box">
+            <div class="activity-list">
+              <div class="activity-tab">
+                <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showCategory">
+                  <img class="icon" src="./icon-add@2x.png" alt="">
+                  添加
+                </div>
+                <div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>
+              </div>
+              <div v-if="categorySelectItem.name" class="goods-list-box">
+                <div class="commodities-list-header com-list-box commodities-list-top">
+                  <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">{{item.name}}</div>
+                </div>
+                <div class="big-box">
+                  <div class="com-list-box com-list-content">
+                    <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">
+                      <span v-if="item.value !== ''">{{categorySelectItem[item.value]}}</span>
+                      <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('category', item, index)">删除</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--添加商品列表-->
+          <div v-if="+msg.range_type === 3" class="activity-box">
+            <div class="activity-list">
+              <div class="activity-tab">
+                <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
+                  <img class="icon" src="./icon-add@2x.png" alt="">
+                  添加
+                </div>
+                <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用，最多10个商品)</div>
+              </div>
+              <div v-if="goodsList.length" class="goods-list-box">
+                <div class="commodities-list-header com-list-box commodities-list-top">
+                  <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+                </div>
+                <div class="big-box">
+                  <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
+                    <div class="com-list-item">{{item.name}}</div>
+                    <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
+                    <div class="com-list-item">¥{{item.trade_price || 0}}</div>
+                    <div class="com-list-item">{{item.usable_stock || 0}}</div>
+                    <div class="com-list-item">
+                      <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('goods', item, index)">删除</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
       <!--类型-->
       <div class="edit-item">
         <div class="edit-title">
@@ -146,17 +212,6 @@
         <div :class="{'check-no-change':disable}"></div>
       </div>
       <!--<p @click="test">测试</p>-->
-      <!--使用范围-->
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          使用范围
-        </div>
-        <div class="input-box">
-          <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
-        </div>
-        <div :class="{'text-no-change':disable}"></div>
-      </div>
 
       <!--使用说明-->
       <div class="edit-item">
@@ -179,75 +234,6 @@
           <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/45</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
-      </div>
-    </div>
-
-    <!--添加品类列表-->
-    <div v-if="+msg.range_type === 2" class="content-header">
-      <div class="content-title">品类信息</div>
-    </div>
-    <div v-if="+msg.range_type === 2" class="activity-box">
-      <div class="activity-list">
-        <div class="activity-tab">
-          <div class="edit-title">
-            <span class="start">*</span>
-            选择品类
-          </div>
-          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showCategory">
-            <img class="icon" src="./icon-add@2x.png" alt="">
-            添加
-          </div>
-          <div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>
-        </div>
-        <div v-if="categorySelectItem.name" class="goods-list-box">
-          <div class="commodities-list-header com-list-box commodities-list-top">
-            <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">{{item.name}}</div>
-          </div>
-          <div class="big-box">
-            <div class="com-list-box com-list-content">
-              <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">
-                <span v-if="item.value !== ''">{{categorySelectItem[item.value]}}</span>
-                <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('category', item, index)">删除</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--添加商品列表-->
-    <div v-if="+msg.range_type === 3" class="content-header">
-      <div class="content-title">活动商品</div>
-    </div>
-    <div v-if="+msg.range_type === 3" class="activity-box">
-      <div class="activity-list">
-        <div class="activity-tab">
-          <div class="edit-title">
-            <span class="start">*</span>
-            选择商品
-          </div>
-          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
-            <img class="icon" src="./icon-add@2x.png" alt="">
-            添加
-          </div>
-          <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用，最多10个商品)</div>
-        </div>
-        <div v-if="goodsList.length" class="goods-list-box">
-          <div class="commodities-list-header com-list-box commodities-list-top">
-            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
-          </div>
-          <div class="big-box">
-            <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.trade_price || 0}}</div>
-              <div class="com-list-item">{{item.usable_stock || 0}}</div>
-              <div class="com-list-item">
-                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('goods', item, index)">删除</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
