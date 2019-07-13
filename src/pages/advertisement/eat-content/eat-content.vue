@@ -305,7 +305,7 @@
           return
         }
         this.storageId = id
-        let res = await API.Content.getWorkList({type: '', status: 1, is_cate_show: 1, category_id: this.storageId}, false)
+        let res = await API.Content.getWorkList({type: '', status: 1, is_cate_show: 0, category_id: this.storageId}, false)
         arr = res.data
         this.storageList = arr
         this.$emit('getContentList', arr)
