@@ -23,8 +23,9 @@
             </div>
           </div>
           <div class="browse-wrap">
-            <div v-if="data.lookCount && type !== 'cookbook'" class="browse-title">浏览{{data.lookCount>= 10000 ? data.lookCount/10000 +'万':data.lookCount}}</div>
-            <div v-if="type === 'cookbook'" class="browse-title"></div>
+            <!--<div v-if="data.lookCount && type !== 'cookbook'" class="browse-title">浏览{{data.lookCount>= 10000 ? data.lookCount/10000 +'万':data.lookCount}}</div>-->
+            <!--v-if="type === 'cookbook'"-->
+            <div class="browse-title"></div>
             <div v-if="data.goodCount" class="like-wrap">
               <div class="like-total">
                 <img src="./icon-like_big1@2x.png" alt="" class="like-icon">
@@ -193,7 +194,7 @@
         top: 111px
         left: 21px
         position: absolute
-        width: 298px
+        width: 303px
         height: 503px
         overflow-x: hidden
 
@@ -204,17 +205,11 @@
         &.empty-type-cookbook
           icon-image(pic-content_empty)
 
-        &::-webkit-scrollbar
-          width: 0
-
     .content-article-detail
       width: 100%
-      height: 100%;
+      height: 100%
       overflow: auto
-
-      &::-webkit-scrollbar
-        width: 0
-
+      scroll-opacity(5px, 50px,rgba(0,0,0,0),rgba(0,0,0,0.15))
       .cover-photo
         width: 100%
 
@@ -231,7 +226,6 @@
       .auth-wrap
         display flex
         align-items center
-        margin-bottom: 12px
         padding: 13px 15px
         position relative
 
@@ -239,12 +233,12 @@
           justify-content: center
 
           .good-article-icon
-            top: 12px
+            top: 0px
 
         .good-article-icon
           position absolute
           right: 11px
-          top: 35px
+          top: 10px
           width: 48px
           height: @width
 
@@ -370,7 +364,7 @@
         .article-image
         .article-video
           width: 100%
-
+          background-color :#333
 
       .bottom-operate-wrap
         height: 50px

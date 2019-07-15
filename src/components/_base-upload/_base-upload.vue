@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="disabled">
     <div v-if="fileType === 'image-custom'" class="custom-item edit-image">
       <div v-if="showLoading" class="loading-mask">
         <img src="./loading.gif" class="loading">
@@ -20,7 +20,7 @@
     </div>
     <div v-if="fileType === 'image-video'" class="edit-image">
       <div v-if="videoUrl || imageUrl" class="show-image hand" :style="{'background-image': 'url(\'' + imageUrl + '\')'}">
-        <span v-if="isEdit" class="close" @click="_del()"></span>
+        <span v-if="!disabled" class="close" @click="_del()"></span>
         <video v-if="videoUrl" :src="videoUrl" class="video-tag"></video>
       </div>
       <div v-else class="add-image add-image-video">
@@ -41,7 +41,7 @@
     </div>
     <div v-if="fileType === 'image'" class="edit-image">
       <div v-if="imageUrl" class="show-image hand" :style="{'background-image': 'url(\'' + imageUrl + '\')'}">
-        <span v-if="isEdit" class="close" @click="_del()"></span>
+        <span v-if="!disabled" class="close" @click="_del()"></span>
       </div>
       <div v-else :class="['add-image','hand',imageIconClassName]">
         <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
@@ -53,7 +53,8 @@
     <div v-if="fileType === 'video'" class="edit-image">
       <div v-if="videoUrl" width="90px" class="show-image hand">
         <video class="video-tag" :src="item.image_url"></video>
-        <span v-if="isEdit" class="close" @click="_del()"></span>
+
+        <span v-if="!disabled" class="close" @click="_del()"></span>
       </div>
       <div v-else class="add-image add-video hand">
         <input type="file" class="sendImage hand" accept="video/*" @change="_addVideo">
@@ -105,9 +106,9 @@
         type: String,
         default: 'image'
       },
-      isEdit: {
-        type: Number, // 1 为开启  0为关闭
-        default: 1
+      disabled: {
+        type: Boolean, // 1 为开启  0为关闭
+        default: false
       },
       videoSize: {
         type: Number, // 单位 m
@@ -130,7 +131,7 @@
     },
     methods: {
       _del() {
-        if (!this.isEdit) {
+        if (this.disabled) {
           return
         }
         this.$emit('delPic')
