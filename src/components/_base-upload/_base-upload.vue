@@ -164,18 +164,19 @@
         this.$emit('getPic', res.data)
       },
       _addVideo(e) {
-        this.showLoading = true
         let arr = Array.from(e.target.files)
         e.target.value = ''
         let size = (arr[0].size / 1024 / 1024)
         if (size > this.videoSize) {
-          this.showLoading = false
+          this.$loading.hide()
           this.$emit('failFile', '视频大小不能超过' + this.videoSize + 'M')
           return
         }
+        this.$loading.show('视频上传中...')
         uploadFiles(arr[0], curr => {
+          this.$loading.showCurr(curr)
         }).then(res => {
-          this.showLoading = false
+          this.$loading.hide()
           if (res.error !== this.$ERR_OK) {
             this.$emit('failFile', res.message)
             return
@@ -183,7 +184,7 @@
           this.$emit('successVideo', res.data)
           console.log('successVideo111', res)
         }).catch(err => {
-          this.showLoading = false
+          this.$loading.hide()
           this.$emit('failFile', err)
         })
       }
