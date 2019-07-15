@@ -77,27 +77,27 @@
       </div>
     </div>
 
-    <!--商品弹窗-->
+    <!--内容弹窗-->
     <default-modal ref="goods">
       <div slot="content" class="shade-box">
         <div class="title-box">
           <div class="title">
-            选择商品
+            内容详情
           </div>
           <span class="close hand" @click="_hideGoods"></span>
         </div>
         <!--<div class="shade-header">-->
-        <!--<div class="shade-title">选择商品</div>-->
+        <!--<div class="shade-title">选择内容</div>-->
         <!--<span class="close hand" @click="_hideGoods"></span>-->
         <!--</div>-->
-        <!--商品详情-->
+        <!--内容详情-->
         <div>
           <div class="shade-tab">
             <div class="tab-item">
               <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+              <base-search placeHolder="请输入内容名称" @search="_searchGoods"></base-search>
             </div>
           </div>
           <div class="goods-content">
@@ -441,7 +441,7 @@
         this[this.dataName][this.upIndex].other_id = this.selectItem.id
         this._hideGoods()
       },
-      // 获取分页商品列表
+      // 获取分页内容列表
       async _getMoreGoods(page) {
         this.choicePage = page
         await this._getGoodsList()
@@ -452,7 +452,7 @@
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
-      // 搜索商品
+      // 搜索内容
       async _searchGoods(text) {
         this.statusTab = 4
         this.text = text
@@ -460,7 +460,7 @@
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
-      // 选择商品
+      // 选择内容
       _selectGoods(item, index) {
         this.showSelectIndex = index
         this.selectItem = item
@@ -472,7 +472,7 @@
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
       },
-      // 隐藏商品弹窗
+      // 隐藏内容弹窗
       _hideGoods() {
         this.showSelectIndex = -1
         this.selectItem = {}
@@ -891,7 +891,7 @@
         font-family: $font-family-regular
         width: 60px
         margin-right: 36px
-  //  商品弹窗
+  //  内容弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px
