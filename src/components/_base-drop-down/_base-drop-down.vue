@@ -10,6 +10,8 @@
               <input v-if="isInput" v-model="inputText" type="text" class="value-input" maxlength="10"
                      :placeholder="isInputPla"
                      @input="changeText"
+                     @focus="inputFocusStatus(true)"
+                     @blur="inputFocusStatus(false)"
                      @click.stop
               >
               <li v-for="(child, chIdx) in select.data" :key="chIdx" class="select-child-item" :style="{height: itemHeight + 'px', lineHeight: itemHeight + 'px'}"
@@ -72,6 +74,7 @@
       }
     },
     data() {
+      this.inputStatus = false
       return {
         setTime: '',
         showHover: false,
@@ -90,15 +93,20 @@
         this.inputText = ''
         this.$emit('changeText', this.inputText)
       },
+      inputFocusStatus(status) {
+        this.inputStatus = status
+      },
       endShow() {
-        clearTimeout(this.setTime)
+        this.setTime&&clearTimeout(this.setTime)
       },
       leaveHide() {
+        if(this.inputStatus) return
         this.setTime = setTimeout(() => {
           this.clickHide()
         }, 1500)
       },
       selectType() {
+        this.endShow()
         if (!this.isUse) {
           return
         }

@@ -6,7 +6,7 @@
         <base-date-select placeHolder="选择注册日期" @getTime="_selectTime"></base-date-select>
       </div>
       <div class="down-item-small">
-        <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+        <base-drop-down :select="socialSelect" :isInput="true" @changeText="_searchShop" @setValue="changeShopId"></base-drop-down>
       </div>
       <div class="down-item">
         <base-date-select placeHolder="选择用户首单的时间" @getTime="_selectFirstTime"></base-date-select>
@@ -83,6 +83,7 @@
       title: TITLE
     },
     data() {
+      this.socialList = []
       return {
         listTitle: LIST_TITLE,
         page: 1,
@@ -94,7 +95,7 @@
         shop_id: '',
         paid_start_time: '',
         paid_end_time: '',
-        socialSelect: SOCIAL_SELECT
+        socialSelect: SOCIAL_SELECT,
       }
     },
     computed: {
@@ -116,6 +117,7 @@
           })
           selectData.unshift({name: '全部社区', id: ''})
           this.socialSelect.data = selectData
+          this.socialList = selectData
         })
       },
       _selectTime(value) {
@@ -131,6 +133,19 @@
         this.paid_start_time = value[0]
         this.paid_end_time = value[1]
         this._getCustomerList()
+      },
+      _searchShop(text) {
+        if (text.length === 0) {
+          this.socialSelect.data = this.socialList
+          return
+        }
+        let arr = []
+        this.socialList.forEach((item) =>{
+          if (item.name.toLowerCase().includes(text.toLowerCase())) {
+            arr.push(item)
+          }
+        })
+        this.socialSelect.data = arr
       },
       changeShopId(shop) {
         this.$refs.pages.beginPage()
