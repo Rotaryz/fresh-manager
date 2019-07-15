@@ -364,7 +364,7 @@
         .article-image
         .article-video
           width: 100%
-          background-color :#333
+          background-color $color-np-content
 
       .bottom-operate-wrap
         height: 50px
