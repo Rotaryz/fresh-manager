@@ -37,18 +37,20 @@
             {{name}}标题
           </div>
           <div class="edit-input-box">
-            <input v-if="currentType === 'video'" v-model="addData.title"
-                   type="text"
+            <input v-if="currentType === 'video'"
+                   v-model="addData.title"
                    :placeholder="'在此输入'+name+'标题，最多30个字'"
                    :disabled="isDisabled"
                    class="edit-input title-input"
+                   type="text"
                    max-length="30"
             >
-            <input v-else v-model="addData.title"
-                   type="text"
+            <input v-else
+                   v-model="addData.title"
                    :placeholder="'在此输入'+name+'标题，最少5个最多50个字'"
                    :disabled="isDisabled"
                    class="edit-input title-input"
+                   type="text"
                    max-length="50"
             >
 
@@ -71,7 +73,7 @@
                          @delPic="delPic"
                          @successVideo="getCoverVideo"
             ></base-upload>
-            <div class="tip">
+            <div v-if="!isDisabled" class="tip">
               <template v-if="currentType === 'video'">
                 请添加不大于10M的清晰图片
               </template>
@@ -91,10 +93,9 @@
           </div>
           <div class="edit-input-box flex-box author-info-box">
             <base-upload :imageUrl="addData.authPhoto.url"
-                         :picNum="1"
+                         :disabled="isDisabled"
                          imageIconClassName="add-image-head-photo"
                          fileType="image"
-                         :disabled="isDisabled"
                          @failFile="failFile"
                          @getPic="getAuthorPic"
                          @delPic="delAuthorPic"
@@ -132,7 +133,9 @@
                 <div v-if="!isDisabled" class="delete-icon" @click="deleteVideoContent"></div>
               </div>
               <div class="tip">
-                视频上传成功，处理完成
+                <template v-if="!isDisabled">
+                  视频上传成功，处理完成
+                </template>
                 <div>视频名称-{{addData.videoContent.name}}</div>
               </div>
             </template>
@@ -142,9 +145,9 @@
                 <div class="upload-video-wrap">
                   <base-upload :videoUrl="addData.videoContent.url"
                                :picNum="1"
-                               fileType="video-custom"
                                :size="100"
                                :disabled="isDisabled"
+                               fileType="video-custom"
                                @failFile="failFile"
                                @successVideo="getVideoContent"
                   >
@@ -256,8 +259,8 @@
               <transition-group>
                 <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
                   <div v-if="!isDisabled" class="close-icon hand" @click="deleteContentItem(idx,item)"></div>
-                  <img v-if="item.type==='image'" :src="item.value" class="conten-image">
-                  <video v-else-if="item.type==='video'" :src="item.value" class="conten-video"></video>
+                  <img v-if="item.type==='image'" :src="item.value" class="content-image">
+                  <video v-else-if="item.type==='video'" :src="item.value" class="content-video"></video>
                   <div v-else-if="item.type==='goods'" class="good-item">
                     <img v-if="item.value.is_online === 0" src="./pic-off_shelf@2x.png" class="goods-photo">
                     <img v-else-if="item.value.usable_stock === 0" src="./pic-out_stock@2x.png" class="goods-photo">
@@ -279,7 +282,6 @@
               </transition-group>
             </draggable>
           </div>
-
         </div>
 
         <!-- 其他设置 -->
@@ -321,7 +323,6 @@
       </template>
       <template v-else-if="isDisabled">
         <div class="back-cancel back-btn hand" @click="goBack">返回</div>
-
       </template>
       <template v-else>
         <div class="back-btn back-cancel hand" @click="_submitBtn('editContetnArticle',0)">存为草稿</div>
@@ -1175,7 +1176,7 @@
         height: 140px
         border-radius 4px
         position: relative
-        object-fit: fill
+        object-fit: cover
         background-color #333333
         .delete-icon
           position: absolute
@@ -1402,15 +1403,15 @@
               text-decoration-line line-through
               margin-left 6px
 
-          .conten-video
-          .conten-image
+          .content-video
+          .content-image
             width: 112px
             height @width
             border-radius 2px
             object-fit: cover
             margin:14px
             background-color #333
-
+            object-fit: cover
           .edit-textarea
             border-width: 0px
             padding: 14px

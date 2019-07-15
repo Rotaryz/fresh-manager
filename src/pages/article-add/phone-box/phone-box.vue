@@ -196,7 +196,7 @@
         position: absolute
         width: 303px
         height: 503px
-        overflow-x: hidden
+        overflow: hidden
 
         &.empty-type-video
           icon-image(pic-video_empty)
