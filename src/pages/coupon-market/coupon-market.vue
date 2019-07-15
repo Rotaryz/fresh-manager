@@ -1,22 +1,30 @@
 <template>
   <div class="coupon-market table">
     <div class="down-content">
-      <div v-for="(item, index) in topBtn" :key="index" class="down-main">
-        <span class="down-title">{{item.name}}</span>
-        <div class="down-item">
-          <div v-for="(val, ind) in item.child" :key="ind" class="top-btn" @click="newMarket(val.value)">
-            <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
-            <span class="text">{{val.name}}</span>
-          </div>
+      <!--<span class="down-title">{{item.name}}</span>-->
+      <div class="down-item">
+        <div v-for="(val, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">
+          <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
+          <span class="text">{{val.text}}</span>
         </div>
       </div>
     </div>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-marketing_list@2x.png" class="identification-icon">
-          <p class="identification-name">营销列表</p>
-          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <!--<img src="./icon-marketing_list@2x.png" class="identification-icon">-->
+          <!--<p class="identification-name">营销列表</p>-->
+          <!--<base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
+          <base-tabs :tabList="topBtn"
+                     :defaultTab="0"
+                     :isShowMark="false"
+                     tabAlign="left"
+                     padding="12px 5px"
+                     margin="0 10px"
+                     defaultColor="#333333"
+                     class="tab-top"
+                     @tab-change="tabChange"
+          ></base-tabs>
         </div>
       </div>
       <div class="big-list">
@@ -34,11 +42,13 @@
               </div>
               <!--状态-->
               <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
-                <base-switch :status="statusHandle(item, index)" confirmText="开启" cancelText="关闭"></base-switch>
+                未开始
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>
-                <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
+                <!--<router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>-->
+                <router-link v-if="true" tag="span" :to="'new-market?editId=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">编辑</router-link>
+                <router-link v-if="false" tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
+                <span v-if="false" class="list-operation" @click="_stopMarket(item)">关闭</span>
                 <span class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
             </div>
@@ -61,47 +71,37 @@
   const PAGE_NAME = 'COUPON_MARKET'
   const TITLE = '营销计划'
   const MARKET_TITLE = [
+    {name: '活动时间', flex: 1.2, value: 'title', type: 1},
     {name: '营销名称', flex: 1.6, value: 'title', type: 1},
-    {name: '类型', flex: 1, value: 'type_str', type: 2},
-    {name: '领取数', flex: 1, value: 'take_count', type: 4},
+    {name: '优惠券', flex: 1, value: 'type_str', type: 2},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
+
   const TOP_BTN = [
     {
-      name: '平台发放',
-      child: [
-        {
-          name: '新客有礼',
-          value: 0,
-          icon: 'icon-new_courtesy'
-        },
-        {
-          name: '复购有礼',
-          value: 1,
-          icon: 'icon-complex_courtesy'
-        },
-        {
-          name: '唤醒流失客户',
-          value: 2,
-          icon: 'icon-awaken'
-        },
-        {
-          name: '邀请有礼',
-          value: 4,
-          icon: 'icon-invite_courtesy'
-        }
-      ]
+      text: '新客有礼',
+      icon: 'icon-new_courtesy'
     },
     {
-      name: '团长发放',
-      child: [
-        {
-          name: '社群福利券',
-          value: 3,
-          icon: 'icon-group'
-        }
-      ]
+      text: '复购有礼',
+      icon: 'icon-complex_courtesy'
+    },
+    {
+      text: '召回有礼',
+      icon: 'icon-recall_courtesy'
+    },
+    {
+      text: '定向营销',
+      icon: 'icon-directional_courtesy'
+    },
+    {
+      text: '邀请有礼',
+      icon: 'icon-invitation_courtesy'
+    },
+    {
+      text: '社群营销',
+      icon: 'icon-community_courtesy'
     }
   ]
   export default {
@@ -125,7 +125,8 @@
           {name: '关闭', value: 0, num: 0}
         ],
         delId: 0,
-        statusArr: new Array(10).fill(undefined)
+        statusArr: new Array(10).fill(undefined),
+        currentItem: {}
       }
     },
     computed: {
@@ -169,6 +170,11 @@
         }
         return status
       },
+      // 顶部tab切换
+      tabChange(val) {
+        this.$refs.pagination.beginPage()
+        this.setRequestData({page: 1, type: ''})
+      },
       switchBtn(item, index) {
         let status = 1
         if (typeof this.statusArr[index] === 'number') {
@@ -197,6 +203,9 @@
       },
       addPage(page) {
         this.setRequestData({page})
+      },
+      _stopMarket(item) {
+        this.currentItem = item
       },
       _deleteMarket(item) {
         this.delId = item.id
@@ -244,27 +253,18 @@
       white-space: nowrap
       font-size: 14px
   .down-content
-    height: 170px
-    .down-main
-      &:first-child
-        .top-btn:nth-child(2)
-          margin-right: 22px
-      &:last-child
-        .top-btn:first-child
-          width: 84px
-          margin-left: -14px
+    height: 138px
     .down-title
       font-size: $font-size-16
       line-height: 1
       color: $color-text-main
       font-family: $font-family-regular
     .down-item
-      margin-top: 22px
       .top-btn
-        width: 84px
+        width: 60px
         height: 84px
         text-align: center
-        margin-right: 36px
+        margin-right: 50px
         overflow: hidden
         color: $color-text-main
         font-size: $font-size-14
@@ -281,8 +281,6 @@
           margin-top: 10px
           display: block
           transition: all 0.3s
-        &:first-child
-          width: 60px
         &:hover
           .icon
             opacity: 0.9
@@ -297,4 +295,9 @@
           .text
             text-decoration: underline
 
+  .identification
+    padding-bottom: 18px
+    height: 78px
+  .identification-page
+    width: 100%
 </style>

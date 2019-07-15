@@ -26,7 +26,7 @@
       </div>
 
       <div class="right-form">
-        <h3 class="title">{{title}} <span v-if="marketIndex === 2" class="tip">{{'(6天内没有支付订单的客户)'}}</span></h3>
+        <h3 class="title">{{formConfig[marketIndex].title}} <span v-if="marketIndex === 2" class="tip">{{'(6天内没有支付订单的客户)'}}</span></h3>
 
         <!--营销名称-->
         <div class="edit-item">
@@ -37,102 +37,65 @@
           <div class="edit-content">
             <input v-model="msg.title"
                    type="text"
-                   placeholder="请输入营销名称"
+                   :placeholder="formConfig[marketIndex].placeHolder"
                    class="edit-input"
                    maxlength="12"
                    :class="{'disable-input':disable}"
             >
-            <span class="count">{{(msg.title && msg.title.length) || 0}}/12</span>
+            <span class="count">{{(msg.title && msg.title.length) || 0}}/10</span>
             <div :class="{'text-no-change':disable}"></div>
           </div>
         </div>
 
-        <!--新客有礼-->
-        <div v-if="marketIndex === 0" class="edit-item edit-item-new">
+        <!--用户类型说明-->
+        <div v-if="!formConfig[marketIndex].group" class="edit-item">
           <div class="edit-title">
             <span class="start">*</span>
-            <span>配置</span>
-            <span class="tip">(二选一)</span>
-          </div>
-          <div class="edit-content">
-            <div class="check-item">
-              <span class="check-icon" :class="{'checked': newItem === 'between_days'}" @click="checkNew('between_days')"></span>
-              <span style="margin-right: 10px; cursor: pointer; white-space: nowrap" @click="checkNew('between_days')">满足注册时间 从</span>
-              <date-picker
-                :value="msg.config_json.start_day"
-                class="edit-input-box"
-                type="date"
-                :editable="false"
-                placement="bottom-end"
-                placeholder="选择开始时间"
-                style="width: 240px;height: 40px;border-radius: 1px"
-                @click.stop
-                @on-change="_getStartTime"
-              ></date-picker>
-              <span style="margin: 0 10px">至</span>
-              <date-picker
-                :value="msg.config_json.end_day"
-                class="edit-input-box edit-input-right"
-                type="date"
-                :editable="false"
-                placement="bottom-end"
-                placeholder="选择结束时间"
-                style="width: 240px;height: 40px"
-                @on-change="_getEndTime"
-              ></date-picker>
-              <span style="margin: 0 10px; white-space: nowrap">的客户</span>
-            </div>
-            <div class="check-item">
-              <span class="check-icon" :class="{'checked': newItem === 'days'}" @click="checkNew('days')"></span>
-              <span style="margin-right: 28px; cursor: pointer" @click="checkNew('days')">满足注册时间</span>
-              <base-drop-down :width="120" :height="40" :select="dayDataNew" @setValue="_selectDayNew"></base-drop-down>
-              <span style="margin: 0 10px">内的客户</span>
-            </div>
-            <div v-if="disable" :class="{'time-no-change':disable}"></div>
-          </div>
-        </div>
-
-        <!--复购有礼-->
-        <div v-if="marketIndex === 1" class="edit-item edit-item-activity">
-          <div class="edit-title">
-            <span class="start">*</span>
-            <span>配置</span>
-            <span class="tip">(二选一)</span>
-          </div>
-          <div class="edit-content">
-            <p class="text">如果设置的数字为空或为“0”，则视为没有设置，设置条件后，系统自动按照条件筛选出匹配的客户</p>
-            <div class="check-item">
-              <span class="check-icon" :class="{'checked': activityItem === 'order_count'}" @click="checkActivity('order_count')"></span>
-              <span style="margin-right: 10px" @click="checkActivity('order_count')">满足下单次数 </span>
-              <base-drop-down :width="120" :height="40" :select="dayData" @setValue="_selectDay"></base-drop-down>
-              <span style="margin: 0 10px">内大于</span>
-              <input v-model="msg.config_json.order_count" type="number" :readonly="activityItem === 'order_toal'" placeholder="输入次数" class="count-input">
-              <span style="margin-left: 10px">次的客户</span>
-            </div>
-            <div class="check-item">
-              <span class="check-icon" :class="{'checked': activityItem === 'order_toal'}" @click="checkActivity('order_toal')"></span>
-              <span style="margin-right: 10px" @click="checkActivity('order_toal')">满足订单金额 </span>
-              <base-drop-down :width="120" :height="40" :select="dayData2" @setValue="_selectDay2"></base-drop-down>
-              <span style="margin: 0 10px">内大于</span>
-              <input v-model="msg.config_json.order_toal" type="number" :readonly="activityItem === 'order_count'" placeholder="输入金额" class="count-input">
-              <span style="margin-left: 10px">元的客户</span>
-            </div>
-            <div v-if="disable" :class="{'day-no-change':disable}"></div>
-          </div>
-        </div>
-
-        <!--唤醒流失客户-->
-        <div v-if="false" class="edit-item">
-          <!--<div class="edit-title long-title">
-            <span class="start">*</span>
-            <span>配置</span>
-            <span class="tip">6天不活跃的客户（没有订单）</span>
+            <span>{{formConfig[marketIndex].name}}</span>
           </div>
           <div class="edit-content no-wrap">
-            <span style="margin-right: 10px">满足 前</span>
-            <base-drop-down :width="120" :height="40" :select="dayData" @setValue="_selectDay"></base-drop-down>
-            <span style="margin-left: 10px">内无下单记录的客户</span>
-          </div>-->
+            <input v-model="msg.title"
+                   type="text"
+                   readonly
+                   :placeholder="formConfig[marketIndex].text"
+                   class="edit-input disable-input"
+                   maxlength="10"
+            >
+            <span class="end-text">文字</span>
+            <div class="input-no-change"></div>
+          </div>
+        </div>
+
+        <!--计划时间-->
+        <div v-if="!formConfig[marketIndex].group" class="edit-item">
+          <div class="edit-title">
+            <span class="start">*</span>
+            <span>计划时间</span>
+          </div>
+          <div class="edit-content no-wrap">
+            <date-picker
+              v-model="msg.config_json.start_day"
+              :editable="false"
+              class="edit-input-box"
+              type="datetime"
+              placeholder="选择开始时间"
+              style="width: 240px;height: 40px;border-radius: 1px"
+              valueFormat="yyyy-MM-dd HH:mm:ss"
+              @change="_getStartTime"
+            ></date-picker>
+            <div class="tip">至</div>
+            <date-picker
+              v-model="msg.config_json.end_day"
+              :editable="false"
+              class="edit-input-box"
+              type="datetime"
+              placeholder="选择结束时间"
+              style="width: 240px;height: 40px;border-radius: 1px"
+              valueFormat="yyyy-MM-dd HH:mm:ss"
+              @change="_getEndTime"
+            ></date-picker>
+            <div v-if="disable" :class="{'time-no-change':disable}"></div>
+          </div>
         </div>
 
         <!--社群福利券-->
@@ -167,7 +130,7 @@
         </div>
 
         <!--添加团长-->
-        <div v-if="marketIndex === 3" class="edit-item edit-list-item">
+        <div v-if="marketIndex === 5" class="edit-item edit-list-item">
           <div class="edit-title">
             <span class="start">*</span>
             <span>添加团长</span>
@@ -406,13 +369,12 @@
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import Swiper from './swiper/swiper'
   import {marketComputed, marketMethods} from '@state/helpers'
-  import {DatePicker} from 'iview'
+  import {DatePicker} from 'element-ui'
   import API from '@api'
   import _ from 'lodash'
 
   const PAGE_NAME = 'NEW_MARKET'
   const TITLE = '新建查看营销'
-  const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
   const COUNTREG = /^[1-9]\d*$/
   const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'invite_customer']
   const SELECT_COUPON_TITLE = [
@@ -453,6 +415,45 @@
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1, value: 'time'}
   ]
+
+  const FORM_CONFIG = [
+    {
+      type: '新客有礼',
+      placeHolder: '如: 新用户送25元优惠券，最多10个字',
+      name: '新用户',
+      text: '已授权成功且没有支付订单的用户',
+      code: 'new_customer'
+    },{
+      type: '复购有礼',
+      placeHolder: '如：老用户送25元优惠券，最多10个字',
+      name: '复购用户',
+      text: '7天内2次支付订单的用户',
+      code: 'active_customer'
+    },{
+      type: '召回有礼',
+      placeHolder: '如：流失用户送25元优惠券，最多10个字',
+      name: '沉睡用户',
+      text: '连续6天没支付订单的用户',
+      code: 'sleeping_customer'
+    },{
+      type: '定向营销',
+      placeHolder: '如：流失用户送25元优惠券，最多10个字',
+      name: '全部用户',
+      text: '登录小程序且授权成功的用户'
+    },{
+      type: '邀请有礼',
+      placeHolder: '如：流失用户送25元优惠券，最多10个字',
+      name: '全部用户',
+      group: true,
+      text: '登录小程序且授权成功的用户'
+    },{
+      type: '社群福利',
+      placeHolder: '如：社群发福利10元优惠券，最多10个字',
+      group: true,
+      code: 'share_coupon'
+    }
+  ]
+
   const ARROW_TEXT = [
     ['新客户打开小程序弹出优惠券', '客户商城选购商品', '提交订单立减金额'],
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
@@ -466,6 +467,7 @@
       '客户商城选购商品',
       '提交订单立减金额'
     ],
+    ['邀请者', '被邀请者'],
     ['邀请者', '被邀请者']
   ]
   const INVITE_TITLE = ['成功邀请人数', '兑换券名称', '类型', '面值', '剩余', '有效期', '操作']
@@ -488,6 +490,7 @@
         groupTitle: GROUP_TITLE, // 团长弹窗title
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
         selectGroupTitle: SELECT_GROUP_TITLE, // 已选团长title
+        formConfig: FORM_CONFIG,
         selectGroupList: [], // 已选团长列表
         selectCouponList: [], // 已选优惠券列表
         groupList: [], // 弹窗团长列表
@@ -517,51 +520,7 @@
         couponSelectItem: {},
         couponCheckItem: {},
         title: '',
-        dayData: {
-          check: false,
-          show: false,
-          content: '3天',
-          type: 'default',
-          data: [
-            {name: '1天', id: 1},
-            {name: '3天', id: 3},
-            {name: '5天', id: 5},
-            {name: '7天', id: 7},
-            {name: '15天', id: 15},
-            {name: '30天', id: 30}
-          ] // 格式：{title: '55'}}
-        },
-        dayData2: {
-          check: false,
-          show: false,
-          content: '3天',
-          type: 'default',
-          data: [
-            {name: '1天', id: 1},
-            {name: '3天', id: 3},
-            {name: '5天', id: 5},
-            {name: '7天', id: 7},
-            {name: '15天', id: 15},
-            {name: '30天', id: 30}
-          ] // 格式：{title: '55'}}
-        },
-        dayDataNew: {
-          check: false,
-          show: false,
-          content: '3天',
-          type: 'default',
-          data: [
-            {name: '1天', id: 1},
-            {name: '3天', id: 3},
-            {name: '5天', id: 5},
-            {name: '7天', id: 7},
-            {name: '15天', id: 15},
-            {name: '30天', id: 30}
-          ] // 格式：{title: '55'}}
-        },
         count: '',
-        activityItem: 'order_count', // 活跃客户配置
-        newItem: 'between_days', // 新客户配置
         willDelItem: {},
         confirmType: '',
         modalType: '',
@@ -584,7 +543,7 @@
     computed: {
       ...marketComputed,
       showAdd() {
-        let arr = [0, 1, 2, 3]
+        let arr = [0, 1, 2, 3, 5]
         return arr.includes(this.marketIndex)
       },
       testName() {
@@ -592,22 +551,22 @@
         return this.msg.title
       },
       testNewStartTime() {
-        if (+this.marketIndex === 0) {
-          return this.msg.config_json.way === 'between_days' ? this.msg.config_json.start_day : true
+        if (+this.marketIndex !== 4) {
+          return this.msg.config_json.start_day
         } else {
           return true
         }
       },
       testNewEndTime() {
-        if (+this.marketIndex === 0) {
-          return this.msg.config_json.way === 'between_days' ? this.msg.config_json.end_day : true
+        if (+this.marketIndex !== 4) {
+          return this.msg.config_json.end_day
         } else {
           return true
         }
       },
       testNewEndTimeReg() {
         // 结束时间规则判断
-        if ((+this.marketIndex === 0) && this.msg.config_json.way === 'between_days') {
+        if (+this.marketIndex !== 4) {
           if (this.msg.config_json.start_day && this.msg.config_json.end_day) {
             return (
               Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
@@ -615,34 +574,6 @@
             )
           }
           return true
-        } else {
-          return true
-        }
-      },
-      testActivityCount() {
-        if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_count' ? this.msg.config_json.order_count : true
-        } else {
-          return true
-        }
-      },
-      testActivityCountReg() {
-        if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_count' ? COUNTREG.test(this.msg.config_json.order_count) : true
-        } else {
-          return true
-        }
-      },
-      testActivityMoney() {
-        if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_toal' ? this.msg.config_json.order_toal : true
-        } else {
-          return true
-        }
-      },
-      testActivityMoneyReg() {
-        if (+this.marketIndex === 1) {
-          return this.msg.config_json.way === 'order_toal' ? MONEYREG.test(this.msg.config_json.order_toal) : true
         } else {
           return true
         }
@@ -655,7 +586,7 @@
         return length > 0
       },
       testGroupList() {
-        return +this.marketIndex === 3 ? this.selectGroupList.length : true
+        return +this.marketIndex === 5 ? this.selectGroupList.length : true
       },
       testGroupCount() {
         let result = this.selectGroupList.every((item) => {
@@ -696,7 +627,6 @@
         this.msg.type = 1
         this.type || (this.msg.config_json.way = 'between_days')
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '新客有礼'
         this.type || this._getCouponList()
         break
       case 1:
@@ -704,7 +634,6 @@
         this.msg.config_json.way = 'order_count'
         this.msg.config_json.days = 3
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '复购有礼'
         this.type || this._getCouponList()
         break
       case 2:
@@ -712,13 +641,11 @@
         this.msg.config_json.way = 'days'
         this.msg.config_json.days = 6
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '唤醒流失客户'
         this.type || this._getCouponList()
         break
       case 3:
         this.msg.type = 4
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '社群福利券'
         this.type || this._getCouponList()
         this.type || this._getGroupList()
         break
@@ -726,7 +653,6 @@
         this.msg.type = 7
         // this.type || (this.msg.config_json.way = 'between_days')
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.title = '邀请有礼'
         this._getGoodsCouponList()
         break
       default:
@@ -764,16 +690,6 @@
         this.arrowIndex = index
         this.$refs.swiper._changeBanner(index)
       },
-      // 下拉选择
-      _selectDay(item) {
-        this.msg.config_json.days = item.id
-      },
-      _selectDay2(item) {
-        this.msg.config_json.days = item.id
-      },
-      _selectDayNew(item) {
-        this.msg.config_json.days = item.id
-      },
       // 开始结束时间
       _getStartTime(time) {
         this.msg.config_json.start_day = time
@@ -782,19 +698,6 @@
       _getEndTime(time) {
         this.msg.config_json.end_day = time
         this.msg = JSON.parse(JSON.stringify(this.msg))
-      },
-      // 选择配置
-      checkNew(str) {
-        if (this.disable) return
-        this.$set(this.msg.config_json, 'way', str)
-        this.newItem = str
-        if (str === 'days') {
-          this.msg.config_json.days = 3
-        }
-      },
-      checkActivity(str) {
-        this.$set(this.msg.config_json, 'way', str)
-        this.activityItem = str
       },
       // 删除列表时弹窗
       showConfirm(type, index, item) {
@@ -1033,7 +936,6 @@
         let checkForm = this.checkForm()
         if (!checkForm) return
         this.isSubmit = true
-        let methodsName = 'storeMarket'
         this.msg.coupon_id = this.couponSelectItem.id
         switch (+this.marketIndex) {
         case 0:
@@ -1043,7 +945,6 @@
             delete this.msg.config_json.start_day
             delete this.msg.config_json.end_day
           }
-          methodsName = 'storeMarket'
           break
         case 1:
           if (this.msg.config_json.way === 'order_count') {
@@ -1051,16 +952,14 @@
           } else {
             delete this.msg.config_json.order_count
           }
-          methodsName = 'storeMarket'
           break
-        case 3:
+        case 5:
           this.msg.shop_coupons = this.selectGroupList.map((item) => {
             return {
               shop_id: item.id,
               number: item.number
             }
           })
-          methodsName = 'storeMarket'
           break
         case 4:
           this.msg.coupon_id = ''
@@ -1073,13 +972,12 @@
             return item
           })
           // 对接商品
-          methodsName = 'storeMarket'
           break
         default:
           break
         }
         this.msg.config_json.type_str = TYPE[this.marketIndex]
-        API.Market[methodsName](this.msg, true).then((res) => {
+        API.Market.storeMarket(this.msg, true).then((res) => {
           this.$loading.hide()
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -1091,6 +989,9 @@
           setTimeout(() => {
             this._back()
           }, 1000)
+          setTimeout(() => {
+            this.isSubmit = false
+          }, 2000)
         })
       },
       // 验证表单
@@ -1100,10 +1001,6 @@
           {value: this.testNewStartTime, txt: '请选择开始时间'},
           {value: this.testNewEndTime, txt: '请选择结束时间'},
           {value: this.testNewEndTimeReg, txt: '结束时间必须大于开始时间'},
-          {value: this.testActivityCount, txt: '请输入满足下单次数'},
-          {value: this.testActivityCountReg, txt: '请输入正确的满足下单次数'},
-          {value: this.testActivityMoney, txt: '请输入满足订单金额'},
-          {value: this.testActivityMoneyReg, txt: '请输入正确的满足订单金额'},
           {value: this.testCouponList, txt: '请选择优惠券'},
           {value: this.testGroupList, txt: '请选择团长'},
           {value: this.testGroupCount, txt: '请输入团长优惠券发放数量'},
@@ -1138,24 +1035,6 @@
           })
           this.msg = obj
           this.msg.config_json = JSON.parse(obj.config_json)
-          switch (obj.config_json.way) {
-          case 'days':
-            this.newItem = obj.config_json.way
-            this.dayDataNew.content = obj.config_json.days + '天'
-            break
-          case 'order_count':
-            this.activityItem = obj.config_json.way
-            this.dayData.content = obj.config_json.days + '天'
-            this.dayData2.content = 3 + '天'
-            break
-          case 'order_toal':
-            this.activityItem = obj.config_json.way
-            this.dayData2.content = obj.config_json.days + '天'
-            this.dayData.content = 3 + '天'
-            break
-          default:
-            this.newItem = obj.config_json.way
-          }
           if (this.marketIndex === 4) {
             this.inviterArr = this.msg.config_json.inviter_coupons
             this.invitedArr = this.msg.config_json.invitee_coupons
@@ -1429,11 +1308,44 @@
             box-sizing: border-box
         .check-item:last-child
           margin-bottom: 0
+      .edit-input-box
+        margin-right: 14px
+        &:nth-child(4)
+          margin: 0 14px
+        .edit-input
+          font-size: $font-size-12
+          border-radius: 2px
+          padding: 0 14px
+          width: 400px
+          height: 40px
+          display: flex
+          align-items: center
+          justify-content: space-between
+          font-family: $font-family-regular
+          color: $color-text-main
+          border: 1px solid $color-line
+          transition: all 0.3s
+          &:hover
+            border-color: #ACACAC
+          &:focus
+            border-color: $color-main
+          .edit-time
+            color: $color-text-assist
+            font-family: $font-family-regular
+            font-size: $font-size-12
+        .disable-input
+          background: #F5F5F5
+          color: #ACACAC
+      .tip
+        margin-right: 14px
       .flex
         flex: 1
       .no-wrap
         display: flex
         align-items: center
+        .end-text
+          margin-left: 10px
+          color: $color-text-assist
     .edit-list-item
       align-items: flex-start
       .edit-title

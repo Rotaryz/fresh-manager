@@ -58,7 +58,7 @@
       <div class="view-header">
         <div class="title">
           <img src="./icon-@2x.png" alt="" class="data-icon">
-          <p class="name">“优惠券名称”效果统计</p>
+          <p class="name">“{{currentItem.coupon_name}}”效果统计</p>
           <span class="text">(统计至前一天)</span>
         </div>
         <div class="right">
@@ -221,6 +221,7 @@
         this.$refs.pagination.beginPage()
       },
       viewDataShow(item) {
+        this.currentItem = item
         this.showViewData = true
       },
       exportExcel(item) {
@@ -336,7 +337,7 @@
         color: #333
       .text
         font-family: $font-family-regular
-        font-size: $font-size-16
+        font-size: $font-size-14
         color: #acacac
         margin-left: 6px
       .right

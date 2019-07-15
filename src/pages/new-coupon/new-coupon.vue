@@ -99,7 +99,7 @@
       </div>
 
       <!--类型-->
-      <div class="edit-item">
+      <div class="edit-item short-top">
         <div class="edit-title">
           <span class="start">*</span>
           优惠券类型
@@ -109,16 +109,51 @@
             <p class="check-item" @click="changeCheck(2)"><span :class="['item-icon', {'checked': +msg.preferential_type === 2}]"></span>满减券</p>
             <p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>折扣券</p>
           </div>
+        </div>
+        <div :class="{'check-no-change':disable}"></div>
+      </div>
+
+      <!--减免金额-->
+      <div class="edit-item short-top">
+        <div class="edit-title">
+          <span class="start">*</span>
+          {{+msg.preferential_type === 1 ? '折扣额度' : '减免金额'}}
+        </div>
+        <div class="edit-input-box">
           <div class="no-wrap">
             <input v-model="msg.denomination"
                    type="number"
-                   :placeholder="+msg.preferential_type === 1 ? '优惠券面值应设为0.1~9.9之间的数值' : '优惠券面值应设为1~999之间的整数'"
                    class="edit-input"
                    :readonly="disable"
                    maxlength="12"
                    :class="{'disable-input':disable}"
             >
             <span>{{+msg.preferential_type === 1 ? '折' : '元'}}</span>
+          </div>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
+      <!--使用条件-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          使用条件
+        </div>
+        <div class="edit-input-box">
+          <div class="no-wrap">
+            <div class="threshold" @click="changeCheck(2)">
+              <span style="margin-right: 10px">消费金额满</span>
+            </div>
+            <input v-model="msg.condition"
+                   type="number"
+                   class="edit-input"
+                   style="width: 202px"
+                   :readonly="disable"
+                   maxlength="12"
+                   :class="{'disable-input':disable}"
+            >
+            <span>元</span>
           </div>
         </div>
         <div :class="{'check-no-change':disable}"></div>
@@ -128,13 +163,13 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          发放数量
+          发放总量
         </div>
         <div class="edit-input-box">
           <div class="no-wrap">
             <input v-model="msg.usable_stock"
                    type="number"
-                   :placeholder="disable ? '' : '发放数量应设为1~99999之间的整数'"
+                   :placeholder="disable ? '' : '最多100000000张'"
                    class="edit-input"
                    :readonly="disable"
                    maxlength="12"
@@ -146,38 +181,24 @@
         <div :class="{'text-no-change':disable}"></div>
       </div>
 
-      <!--满减-->
-      <div class="edit-item">
-        <div class="edit-title">订单满减</div>
-        <div class="edit-input-box">
-          <div class="no-wrap">
-            <input v-model="msg.condition"
-                   type="number"
-                   :placeholder="disable ? '' : '不填则默认为“0”'"
-                   class="edit-input"
-                   :readonly="disable"
-                   maxlength="12"
-                   :class="{'disable-input':disable}"
-            >
-            <span>元可使用</span>
-          </div>
-          <div class="description" @click="changeFull()">
-            <span :class="['item-icon', {'checked': +msg.support_activity === 1}]"></span>
-            <span>支持活动商品使用</span>
-            <span class="tip">(勾选此项时，活动商品可以叠加使用该优惠券。新人特惠、拼团返现活动不参与)</span>
-          </div>
-        </div>
-        <div :class="{'check-no-change':disable}"></div>
-      </div>
-
       <!--时间-->
-      <div class="edit-item">
+      <div class="edit-item short-top">
         <div class="edit-title">
           <span class="start">*</span>
           用券时间
         </div>
         <div class="wrap">
-          <div class="time-select">
+          <div class="select-item">
+            <div class="checkbox hand" @click="changeLimit">
+              <span :class="['item-icon', {'checked': +msg.is_day_limited === 0}]"></span>
+              <span class="text">固定时间</span>
+            </div>
+            <div class="checkbox hand" @click="changeLimit">
+              <span :class="['item-icon', {'checked': +msg.is_day_limited === 1}]"></span>
+              <span class="text">领取后生效</span>
+            </div>
+          </div>
+          <div v-if="+msg.is_day_limited === 0" class="time-select">
             <date-picker
               :value="msg.start_at"
               class="edit-input-box"
@@ -202,9 +223,8 @@
               @on-change="_getEndTime"
             ></date-picker>
           </div>
-          <div class="select-item">
-            <span :class="['item-icon', 'hand', {'checked': +msg.is_day_limited === 1}]" @click="changeLimit"></span>
-            <span class="hand" @click="changeLimit">领取当日起</span>
+          <div v-if="+msg.is_day_limited === 1" class="select-day">
+            <span>领取当日起</span>
             <input v-model="msg.limit_days" type="text" class="day-item">
             <span>天内可用</span>
           </div>
@@ -224,14 +244,15 @@
             <textarea v-model="msg.description"
                       type="text"
                       class="edit-input edit-textarea"
+                      placeholder="例如: 全场商品通用或特惠商品不可以使用"
                       :readonly="disable"
-                      maxlength="45"
+                      maxlength="50"
                       :class="{'disable-input':disable}"
             >
             </textarea>
-            <span class="tip">例如: 全场商品通用或特惠商品不可以使用</span>
+            <span class="tip"></span>
           </div>
-          <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/45</div>
+          <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/50</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -370,9 +391,9 @@
         useRange: {
           check: false,
           show: false,
-          content: '通用',
+          content: '全部商品',
           type: 'default',
-          data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定商品', id: 3}] // 格式：{title: '55'}}
+          data: [{name: '全部商品', id: 1}, {name: '指定品类可用', id: 2}, {name: '指定商品可用', id: 3}] // 格式：{title: '55'}}
         },
         parentId: '',
         goodsPage: {
@@ -888,7 +909,6 @@
     .checkbox
       height: 24px
       margin-top: 7.5px
-      margin-bottom: 10px
       .check-item
         float: left
         margin-right: 20px
@@ -904,22 +924,9 @@
       margin-right: 5px
       border-radius: 50%
       transition: all 0.3s
-      &:after
-        content: ""
-        border-radius: 50%
-        position: absolute
-        left: 50%
-        top: 50%
-        margin-left: -4px
-        margin-top: -4px
-        width: 8px
-        height: 8px
-        background: #FFF
-        transition: all 0.3s
     .checked
-      border: 1px solid $color-main
-      &:after
-        background: $color-main
+      border: 5px solid $color-main
+
     .edit-input-box
       margin: 0 14px 0 40px
       position: relative
@@ -993,11 +1000,32 @@
       .time-select
         display: flex
         align-items: center
+        margin: 20px 0 0 40px
+        width: 560px
+        height: 80px
+        background: #f5f7fa
+        border: 1px solid #E9ECEE
+        .edit-input-box
+          margin-left: 20px
       .select-item
-        margin-top: 20px
         margin-left: 40px
         display: flex
         align-items: center
+        .checkbox
+          display: flex
+          align-items: center
+        .text
+          margin-right: 60px
+      .select-day
+        width: 400px
+        height: 80px
+        margin-top: 20px
+        margin-left: 40px
+        display: flex
+        padding-left: 20px
+        align-items: center
+        background: #f5f7fa
+        border: 1px solid #E9ECEE
       .day-item
         width: 138px
         height: 34px
@@ -1018,6 +1046,8 @@
       cursor: not-allowed
       height: 100px
 
+  .short-top
+    margin-top: 14px
   .edit-activity
     box-sizing: border-box
     padding-left: 20px
@@ -1121,7 +1151,7 @@
       font-family: $font-family-regular
       transition: all 0.3s
       text-align: center
-      border-radius: 1px
+      border-radius: 2px
       border: 1px solid #4DBD65
       display: flex
       align-items: center
