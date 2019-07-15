@@ -275,6 +275,7 @@
         visibility: visible
 
   .show-image
+    background-color $color-np-content
     background-repeat: no-repeat
     background-size: cover
     background-position: center
