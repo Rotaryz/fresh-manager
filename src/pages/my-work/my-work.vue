@@ -46,7 +46,7 @@
             <div v-if="workStatus !== 0" class="list-item">{{item.pay_goods_count}}</div>
             <div class="list-item list-operation-box">
               <span class="list-operation" @click="shwoQrCode(item.id, index, item)">预览</span>
-              <span v-if="item.status !== 1" class="list-operation" @click="editWork(item)">编辑</span>
+              <span class="list-operation" @click="editWork(item)">{{item.status === 1 ? '查看' : '编辑'}}</span>
               <span v-if="item.status !== 0" class="list-operation" @click="upLine(item)">{{item.status === 1 ? '下线' : '上线'}}</span>
               <div class="list-operation" @click="delContent(item.id)">删除</div>
             </div>
