@@ -37,7 +37,7 @@
 
       </div>
       <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="centerPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="centerPage" :pagination="contentCenterPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-modal ref="dialog">

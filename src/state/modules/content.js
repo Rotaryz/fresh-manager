@@ -64,6 +64,7 @@ export const getters = {
   centerList: (state) => state.centerList,
   centerPage: (state) => state.centerPage,
   contentCenterPage: (state) => state.contentCenterPage,
+  contentWorkPage: (state) => state.contentWorkPage,
   centerStatus: (state) => state.centerStatus,
   centerKeyword: (state) => state.centerKeyword,
   centerType: (state) => state.centerType,

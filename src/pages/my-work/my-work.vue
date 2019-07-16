@@ -56,7 +56,7 @@
       </div>
       <div class="pagination-box">
         <!--:pageDetail="contentClassPage"-->
-        <base-pagination ref="pages" :pageDetail="workPage" @addPage="addPage"></base-pagination>
+        <base-pagination ref="pages" :pageDetail="workPage" :pagination="contentWorkPage" @addPage="addPage"></base-pagination>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="freeze"></default-confirm>
