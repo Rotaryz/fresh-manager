@@ -16,7 +16,7 @@
           <!--<p class="identification-name">营销列表</p>-->
           <!--<base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
           <base-tabs :tabList="topBtn"
-                     :defaultTab="0"
+                     :defaultTab="defaultTab"
                      :isShowMark="false"
                      tabAlign="left"
                      padding="12px 5px"
@@ -31,29 +31,31 @@
         <div class="list-header list-box">
           <div v-for="(item,index) in marketTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
-        <div class="list">
+        <div v-if="marketList.length" class="list">
           <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
             <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
               <div v-if="+val.type === 1 || +val.type === 2" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || '---'}}
               </div>
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="item">
-                {{item[val.value] || 0}}
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-double-row item">
+                <p v-if="item.start_at" class="item-dark">{{item.start_at}}-{{item.end_at}}</p>
+                <p v-else class="item-dark">---</p>
               </div>
               <!--状态-->
-              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
-                未开始
+              <div v-if="+val.type === 3" class="list-item-btn">
+                {{+item.status === 0 ? '关闭' : '开启'}}
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <!--<router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>-->
-                <router-link v-if="true" tag="span" :to="'new-market?editId=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">编辑</router-link>
-                <router-link v-if="false" tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
-                <span v-if="false" class="list-operation" @click="_stopMarket(item)">关闭</span>
-                <span class="list-operation" @click="_deleteMarket(item)">删除</span>
+                <router-link v-if="+item.status === 1" tag="span" :to="'new-market?editId=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">编辑</router-link>
+                <router-link v-if="+item.status === 0" tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
+                <span v-if="+item.status === 1" class="list-operation" @click="_stopMarket(item)">停止</span>
+                <span v-if="+item.status === 0" class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
             </div>
           </div>
         </div>
+        <base-blank v-else blackStyle="margin-top:15%"></base-blank>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
@@ -71,9 +73,9 @@
   const PAGE_NAME = 'COUPON_MARKET'
   const TITLE = '营销计划'
   const MARKET_TITLE = [
-    {name: '活动时间', flex: 1.2, value: 'title', type: 1},
-    {name: '营销名称', flex: 1.6, value: 'title', type: 1},
-    {name: '优惠券', flex: 1, value: 'type_str', type: 2},
+    {name: '活动时间', flex: 1.6, value: 'time', type: 4},
+    {name: '营销名称', flex: 1.1, value: 'title', type: 1},
+    {name: '优惠券', flex: 1, value: 'coupons_str', type: 2},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
@@ -81,27 +83,33 @@
   const TOP_BTN = [
     {
       text: '新客有礼',
-      icon: 'icon-new_courtesy'
+      icon: 'icon-new_courtesy',
+      type: 1
     },
     {
       text: '复购有礼',
-      icon: 'icon-complex_courtesy'
+      icon: 'icon-complex_courtesy',
+      type: 2
     },
     {
       text: '召回有礼',
-      icon: 'icon-recall_courtesy'
+      icon: 'icon-recall_courtesy',
+      type: 3
     },
     {
       text: '定向营销',
-      icon: 'icon-directional_courtesy'
+      icon: 'icon-directional_courtesy',
+      type: 9
     },
     {
       text: '邀请有礼',
-      icon: 'icon-invitation_courtesy'
+      icon: 'icon-invitation_courtesy',
+      type: 7
     },
     {
       text: '社群营销',
-      icon: 'icon-community_courtesy'
+      icon: 'icon-community_courtesy',
+      type: 4
     }
   ]
   export default {
@@ -124,9 +132,10 @@
           {name: '开启', value: 1, num: 0},
           {name: '关闭', value: 0, num: 0}
         ],
-        delId: 0,
+        curentItem: {},
         statusArr: new Array(10).fill(undefined),
-        currentItem: {}
+        currentItem: {},
+        toastType: ''
       }
     },
     computed: {
@@ -171,9 +180,10 @@
         return status
       },
       // 顶部tab切换
-      tabChange(val) {
-        this.$refs.pagination.beginPage()
-        this.setRequestData({page: 1, type: ''})
+      tabChange(index) {
+        this.$refs.pages.beginPage()
+        this.setDefaultTab(index)
+        this.setRequestData({page: 1, type: this.topBtn[index].type})
       },
       switchBtn(item, index) {
         let status = 1
@@ -206,23 +216,38 @@
       },
       _stopMarket(item) {
         this.currentItem = item
+        this.toastType = 'stop'
+        this.$refs.confirm.show(`确定停止“${item.title || ''}”营销计划？`)
       },
       _deleteMarket(item) {
-        this.delId = item.id
-        this.$refs.confirm.show(`删除${item.title || ''}营销计划`)
+        this.curentItem = item
+        this.toastType = 'del'
+        this.$refs.confirm.show(`确定删除“${item.title || ''}”营销计划？`)
       },
       async _sureConfirm() {
-        let res = await API.Market.deleteMarket(this.delId)
-        if (res.error !== this.$ERR_OK) {
-          this.$toast.show(res.message)
-          return
-        }
-        this.$toast.show('删除成功')
-        this.getMarketStatus()
-        if (+this.marketPageDetail.total%10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
-          this.setRequestData({page: this.marketPageDetail.total_page - 1})
+        if (this.toastType === 'del') {
+          let res = await API.Market.deleteMarket(this.curentItem.id)
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.$toast.show('删除成功')
+          this.getMarketStatus()
+          if (+this.marketPageDetail.total%10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
+            this.setRequestData({page: this.marketPageDetail.total_page - 1})
+          } else {
+            this.getMarketList()
+          }
         } else {
-          this.getMarketList()
+          API.Market.stopMarket(this.currentItem.id)
+            .then(res => {
+              if (res.error !== this.$ERR_OK) {
+                this.$toast.show(res.message)
+                return
+              }
+              this.$toast.show('停止成功')
+              this.getMarketList()
+            })
         }
       }
     }
@@ -298,6 +323,8 @@
   .identification
     padding-bottom: 18px
     height: 78px
+    position: relative
+    z-index: 10
   .identification-page
     width: 100%
 </style>

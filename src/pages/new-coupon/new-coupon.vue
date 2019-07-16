@@ -371,6 +371,7 @@
       return {
         commodities: COMMODITIES_LIST,
         id: null,
+        editId: '',
         couponPage: 1,
         chooseGoods: [],
         assortment: {
@@ -546,11 +547,9 @@
     },
     watch: {},
     beforeCreate() {
-      if (this.$route.query.id) {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
-      } else {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
-      }
+      (this.$route.query.id && this.$route.query.editId) || this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
+      this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
+      this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '编辑优惠券'])
     },
     created() {
       this.disable = this.$route.query.id || this.$route.query.editId
@@ -843,17 +842,26 @@
           let list = this.goodsList
           data = Object.assign({}, this.msg, {ranges: list})
         }
+
         let res = null
         this.isSubmit = true
         // 调用保存活动接口
-        res = await API.Coupon.storeCoupon(data, true)
-        this.$loading.hide()
-        this.$toast.show('保存成功')
+        if (this.editId) {
+          res = await API.Coupon.editCoupon({
+            coupon_name: data.coupon_name,
+            usable_stock: data.usable_stock,
+            id: this.editId
+          })
+        } else {
+          res = await API.Coupon.storeCoupon(data, true)
+        }
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           this.isSubmit = false
           return
         }
+        this.$loading.hide()
+        this.$toast.show('保存成功')
         setTimeout(() => {
           this._back()
         }, 1000)

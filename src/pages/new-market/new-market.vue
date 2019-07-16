@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
-        <p class="identification-name">{{disable ? '查看' : '新建'}}营销</p>
+        <p class="identification-name">{{!disable ? '新建' : type ? '查看' : '编辑'}}营销</p>
       </div>
       <div class="function-btn">
       </div>
@@ -26,7 +26,10 @@
       </div>
 
       <div class="right-form">
-        <h3 class="title">{{formConfig[marketIndex].title}} <span v-if="marketIndex === 2" class="tip">{{'(6天内没有支付订单的客户)'}}</span></h3>
+        <h3 class="title">
+          {{formConfig[marketIndex].type}}
+          <!--<span v-if="marketIndex === 2" class="tip">{{'(6天内没有支付订单的客户)'}}</span>-->
+        </h3>
 
         <!--营销名称-->
         <div class="edit-item">
@@ -40,10 +43,10 @@
                    :placeholder="formConfig[marketIndex].placeHolder"
                    class="edit-input"
                    maxlength="12"
-                   :class="{'disable-input':disable}"
+                   :class="{'disable-input': type}"
             >
             <span class="count">{{(msg.title && msg.title.length) || 0}}/10</span>
-            <div :class="{'text-no-change':disable}"></div>
+            <div :class="{'text-no-change':type}"></div>
           </div>
         </div>
 
@@ -54,7 +57,7 @@
             <span>{{formConfig[marketIndex].name}}</span>
           </div>
           <div class="edit-content no-wrap">
-            <input v-model="msg.title"
+            <input v-model="formConfig[marketIndex].text"
                    type="text"
                    readonly
                    :placeholder="formConfig[marketIndex].text"
@@ -67,14 +70,14 @@
         </div>
 
         <!--计划时间-->
-        <div v-if="!formConfig[marketIndex].group" class="edit-item">
+        <div class="edit-item">
           <div class="edit-title">
             <span class="start">*</span>
             <span>计划时间</span>
           </div>
           <div class="edit-content no-wrap">
             <date-picker
-              v-model="msg.config_json.start_day"
+              v-model="msg.start_at"
               :editable="false"
               class="edit-input-box"
               type="datetime"
@@ -85,7 +88,7 @@
             ></date-picker>
             <div class="tip">至</div>
             <date-picker
-              v-model="msg.config_json.end_day"
+              v-model="msg.end_at"
               :editable="false"
               class="edit-input-box"
               type="datetime"
@@ -359,7 +362,7 @@
     </default-modal>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
+      <div :class="{'btn-disable': type}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -376,7 +379,6 @@
   const PAGE_NAME = 'NEW_MARKET'
   const TITLE = '新建查看营销'
   const COUNTREG = /^[1-9]\d*$/
-  const TYPE = ['new_customer', 'active_customer', 'sleeping_customer', 'invite_customer']
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
@@ -439,13 +441,15 @@
       type: '定向营销',
       placeHolder: '如：流失用户送25元优惠券，最多10个字',
       name: '全部用户',
-      text: '登录小程序且授权成功的用户'
+      text: '登录小程序且授权成功的用户',
+      code: 'share_coupon'
     },{
       type: '邀请有礼',
       placeHolder: '如：流失用户送25元优惠券，最多10个字',
       name: '全部用户',
       group: true,
-      text: '登录小程序且授权成功的用户'
+      text: '登录小程序且授权成功的用户',
+      code: 'invite_customer'
     },{
       type: '社群福利',
       placeHolder: '如：社群发福利10元优惠券，最多10个字',
@@ -511,7 +515,9 @@
           type: 1, // 1新客户2活跃客户3沉睡4发放优惠券
           config_json: {},
           shop_coupons: [],
-
+          title: '',
+          start_at: '',
+          end_at: ''
         },
         arrowArr: [],
         arrowIndex: 0,
@@ -537,7 +543,9 @@
         goodsPage: 1,
         goodsKeyword: '',
         goodsList: [],
-        goodsPageTotal: {total: 1, per_page: 10, total_page: 1}
+        goodsPageTotal: {total: 1, per_page: 10, total_page: 1},
+        id: '',
+        editId: ''
       }
     },
     computed: {
@@ -551,32 +559,21 @@
         return this.msg.title
       },
       testNewStartTime() {
-        if (+this.marketIndex !== 4) {
-          return this.msg.config_json.start_day
-        } else {
-          return true
-        }
+        return this.msg.start_at
       },
       testNewEndTime() {
-        if (+this.marketIndex !== 4) {
-          return this.msg.config_json.end_day
-        } else {
-          return true
-        }
+        return this.msg.end_at
       },
       testNewEndTimeReg() {
         // 结束时间规则判断
-        if (+this.marketIndex !== 4) {
-          if (this.msg.config_json.start_day && this.msg.config_json.end_day) {
-            return (
-              Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
-              Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
-            )
-          }
-          return true
-        } else {
-          return true
+        if (this.msg.start_at && this.msg.end_at) {
+          return (
+            // Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
+            // Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
+            Date.parse(this.msg.end_at) > Date.parse(this.msg.start_at)
+          )
         }
+        return true
       },
       testCouponList() {
         if (this.marketIndex === 4) {
@@ -611,49 +608,47 @@
     },
     watch: {},
     beforeCreate() {
-      this.id = this.$route.query.id || null
-      if (this.$route.query.id) {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看营销'])
-      } else {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建营销'])
-      }
+      (this.$route.query.id && this.$route.query.editId) || this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建优惠券'])
+      this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看优惠券'])
+      this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '编辑优惠券'])
     },
     created() {
-      this.disable = this.$route.query.id
+      this.id = this.$route.query.id || this.$route.query.editId || null
+      this.editId = this.$route.query.editId || null
+      this.disable = this.$route.query.id || this.$route.query.editId
       this.marketIndex = +this.$route.query.index || 0
       this.type = this.$route.query.id || ''
       switch (this.marketIndex) {
       case 0:
         this.msg.type = 1
-        this.type || (this.msg.config_json.way = 'between_days')
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.type || this._getCouponList()
+        this.disable || this._getCouponList()
         break
       case 1:
         this.msg.type = 2
-        this.msg.config_json.way = 'order_count'
-        this.msg.config_json.days = 3
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.type || this._getCouponList()
+        this.disable || this._getCouponList()
         break
       case 2:
         this.msg.type = 3
-        this.msg.config_json.way = 'days'
-        this.msg.config_json.days = 6
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.type || this._getCouponList()
+        this.disable || this._getCouponList()
         break
       case 3:
-        this.msg.type = 4
+        this.msg.type = 9
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.type || this._getCouponList()
-        this.type || this._getGroupList()
+        this.disable || this._getCouponList()
+        this.disable || this._getGroupList()
         break
       case 4:
         this.msg.type = 7
-        // this.type || (this.msg.config_json.way = 'between_days')
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this._getGoodsCouponList()
+        this.disable || this._getGoodsCouponList()
+        break
+      case 5:
+        this.msg.type = 4
+        this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
+        this.disable || this._getGoodsCouponList()
         break
       default:
         break
@@ -692,11 +687,11 @@
       },
       // 开始结束时间
       _getStartTime(time) {
-        this.msg.config_json.start_day = time
+        this.msg.start_at = time
         this.msg = JSON.parse(JSON.stringify(this.msg))
       },
       _getEndTime(time) {
-        this.msg.config_json.end_day = time
+        this.msg.end_at = time
         this.msg = JSON.parse(JSON.stringify(this.msg))
       },
       // 删除列表时弹窗
@@ -931,38 +926,17 @@
         await this._getCouponList()
       },
       // 保存优惠券数据
-      _saveActivity() {
-        if (this.disable || this.isSubmit) return
+      async _saveActivity() {
+        if (this.type || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
         this.isSubmit = true
-        this.msg.coupon_id = this.couponSelectItem.id
+        // this.msg.coupon_id = this.couponSelectItem.id
+        this.msg.common_coupons = [{coupon_id: this.couponSelectItem.id}]
         switch (+this.marketIndex) {
-        case 0:
-          if (this.msg.config_json.way === 'between_days') {
-            delete this.msg.config_json.days
-          } else {
-            delete this.msg.config_json.start_day
-            delete this.msg.config_json.end_day
-          }
-          break
-        case 1:
-          if (this.msg.config_json.way === 'order_count') {
-            delete this.msg.config_json.order_toal
-          } else {
-            delete this.msg.config_json.order_count
-          }
-          break
-        case 5:
-          this.msg.shop_coupons = this.selectGroupList.map((item) => {
-            return {
-              shop_id: item.id,
-              number: item.number
-            }
-          })
-          break
         case 4:
-          this.msg.coupon_id = ''
+          delete this.msg.common_coupons
+          delete this.msg.shop_coupons
           this.msg.config_json.inviter_coupons = this.inviterArr.map((item) => {
             item.coupon_id = item.id
             return item
@@ -973,26 +947,39 @@
           })
           // 对接商品
           break
+        case 5:
+          this.msg.shop_coupons = this.selectGroupList.map((item) => {
+            return {
+              shop_id: item.id,
+              number: item.number
+            }
+          })
+          break
         default:
           break
         }
-        this.msg.config_json.type_str = TYPE[this.marketIndex]
-        API.Market.storeMarket(this.msg, true).then((res) => {
-          this.$loading.hide()
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            this.isSubmit = false
-            return
-          }
+        // this.msg.config_json.type_str = this.formConfig[this.marketIndex].code
+        let res = null
+        if (this.editId) {
+          res = await API.Market.editMarket({
+            title: this.msg.title,
+            id: this.editId
+          })
+        } else {
+          res = await API.Market.storeMarket(this.msg, true)
+        }
+        this.setDefaultTab(+this.$route.query.index)
+        this.$loading.hide()
+        if (res.error !== this.$ERR_OK) {
+          this.$toast.show(res.message)
+          this.isSubmit = false
+          return
+        }
 
-          this.$toast.show('保存成功')
-          setTimeout(() => {
-            this._back()
-          }, 1000)
-          setTimeout(() => {
-            this.isSubmit = false
-          }, 2000)
-        })
+        this.$toast.show('保存成功')
+        setTimeout(() => {
+          this._back()
+        }, 1000)
       },
       // 验证表单
       checkForm() {
@@ -1019,10 +1006,11 @@
       },
       // 详情信息
       _initMsg(news) {
-        let id = this.$route.query.id || null
+        let id = this.$route.query.id || this.$route.query.editId || null
         if (id) {
           let obj = _.cloneDeep(news)
           this.selectCouponList[0] = obj.coupon
+          console.log(obj.coupon, 111)
           this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
           this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
           this.selectGroupList = obj.shop_coupon.map((item) => {
@@ -1268,6 +1256,9 @@
                   color: #06397e
               .list-operation-disable
                 cursor: not-allowed
+                color: #acacac
+                &:hover
+                  color: #acacac
         .text
           color: $color-text-assist
           margin-bottom: 20px

@@ -25,7 +25,7 @@
           <div class="list-header list-box">
             <div v-for="(item,index) in couponTitle" :key="index" :style="{flex: item.flex}" class="list-item">{{item.name}}</div>
           </div>
-          <div class="list">
+          <div v-if="couponList.length" class="list">
             <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
               <div v-for="(val, ind) in couponTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
 
@@ -48,6 +48,7 @@
               </div>
             </div>
           </div>
+          <base-blank v-else blackStyle="margin-top:15%"></base-blank>
         </div>
         <div class="pagination-box">
           <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="requestData.page" @addPage="changePage"></base-pagination>

@@ -9,6 +9,7 @@ export const state = {
     total_page: 1
   },
   marketDetail: {},
+  defaultTab: 0,
   marketStaPageDetail: {
     total: 1,
     per_page: 12,
@@ -19,7 +20,7 @@ export const state = {
   defaultIndex: 0,
   requestData: {
     page: 1,
-    status: ''
+    type: 1
   }
 }
 
@@ -47,6 +48,9 @@ export const getters = {
   },
   requestData(state) {
     return state.requestData
+  },
+  defaultTab(state) {
+    return state.defaultTab
   }
 }
 
@@ -78,8 +82,12 @@ export const mutations = {
   RESET_DATA(state) {
     state.requestData = {
       page: 1,
-      status: ''
+      type: 1
     }
+    state.defaultTab = 0
+  },
+  SET_DEFAULT_TAB(state, index) {
+    state.defaultTab = index
   }
 }
 
@@ -165,5 +173,8 @@ export const actions = {
     commit('SET_DEFAULT_INDEX', data.index)
     commit('SET_REQUEST_DATA', {status: data.status, page: 1})
     dispatch('getMarketList')
+  },
+  setDefaultTab({commit}, index) {
+    commit('SET_DEFAULT_TAB', index)
   }
 }
