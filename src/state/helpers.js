@@ -733,6 +733,7 @@ export const contentComputed = {
     'centerTabIndex',
     'contentPage',
     'centerCategoryId',
+    'centerType',
     'workList',
     'workPage',
     'workType',

@@ -252,7 +252,8 @@
       },
       // 编辑
       editWork(item) {
-        this.$router.push(`/home/my-work/article-add?type=${this.workType}&id=${item.id}`)
+        let look = item.status === 1 ? `&isSee=1` : ``
+        this.$router.push(`/home/my-work/article-add?type=${this.workType}&id=${item.id}${look}`)
       },
       async freeze() {
         let res = await API.Content[this.methodsName](this.delId)
