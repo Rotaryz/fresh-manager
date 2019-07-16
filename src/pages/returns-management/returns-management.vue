@@ -111,6 +111,7 @@
             <textarea v-model="remark" placeholder="备注原因" class="modelarea"></textarea>
             <span class="before"></span>
           </div>
+          <div class="check-box hand" @click="checkAuditing"><span class="icon" :class="{'checked': +makeUp === 1}"></span>售后补偿发送用户优惠券</div>
           <div class="btn-group">
             <div class="btn cancel" @click.stop="hideModal">取消</div>
             <div class="btn manager" @click.stop="auditing(0)">驳回</div>
@@ -182,7 +183,8 @@
         rulesList: RULES_LIST,
         keywords: '',
         socialNames: '',
-        delId: ''
+        delId: '',
+        makeUp: 0
       }
     },
     computed: {
@@ -291,12 +293,16 @@
       exportExcel() {
         window.open(this.returnsExportUrl, '_blank')
       },
+      checkAuditing() {
+        this.makeUp = this.makeUp ? 0 : 1
+      },
       // 审核
       auditing(isAgree) {
         let data = {
           id: this.checkId,
           remark: this.remark,
-          is_agree: isAgree
+          is_agree: isAgree,
+          is_make_up: this.makeUp
         }
         this.hideModal()
         API.Order.checkApply(data)
@@ -318,6 +324,7 @@
       // 删除规则
       checkApply(id) {
         this.checkId = id
+        this.makeUp = 0
         this.$refs.modal.showModal()
       },
       hideModal() {
@@ -400,7 +407,7 @@
         max-width: 76px
   .Auditing
     width: 380px
-    height: 225px
+    height: 276px
     padding: 0 20px
     box-sizing: border-box
     background: $color-white
@@ -444,6 +451,23 @@
         background: #F9F9F9
         &:focus
           background: $color-white
+
+    .check-box
+      display: flex
+      align-items: center
+      padding: 20px 0 30px
+      font-size: $font-size-14
+      color: #333
+      font-family: $font-family-regular
+      .icon
+        width: 16px
+        height: 16px
+        margin-right: 10px
+        border: 1px solid $color-line
+        border-radius: 50%
+        transition: all 0.3s
+      .checked
+        border: 5px solid $color-main
 
   .search-warp
     layout(row)

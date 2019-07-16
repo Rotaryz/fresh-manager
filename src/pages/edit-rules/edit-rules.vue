@@ -44,20 +44,20 @@
               <span>选择优惠券</span>
             </div>
             <div class="edit-content">
-              <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal('pub')">选择<span class="add-icon"></span></div>
-              <div v-if="selectCouponList.length" class="edit-list-box">
-                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+              <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal('coupon')">选择<span class="add-icon"></span></div>
+              <div v-if="couponSelectList.length" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': couponSelectList.length === 0}">
                   <div v-for="(item, index) in selectCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
 
                 </div>
                 <div>
-                  <div v-for="(item, index) in selectCouponList" :key="index" class="list">
+                  <div v-for="(item, index) in couponSelectList" :key="index" class="list">
                     <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
                       <div v-if="val.value === 'time'" class="main">
                         <p>{{item.start_at}}</p>
                         <p>{{item.end_at}}</p>
                       </div>
-                      <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('pub', index, item)">删除</p>
+                      <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
                       <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                       <p v-else class="main">{{item[val.value]}}</p>
                     </div>
@@ -71,7 +71,7 @@
           <!--补偿条件-->
           <!--订单金额小于-->
           <div v-if="marketIndex === 2" class="edit-item edit-list-item">
-            <div class="edit-title">
+            <div class="edit-title" style="margin-top: 10px">
               <span class="start">*</span>
               <span>补偿条件</span>
             </div>
@@ -79,7 +79,7 @@
               <div class="edit-input-box">
                 <div class="no-wrap">
                   <span>订单金额小于</span>
-                  <input v-model="lessPrice"
+                  <input v-model="price"
                          type="number"
                          class="edit-input"
                          :readonly="disable"
@@ -91,15 +91,15 @@
               </div>
               <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal('less')">添加<span class="add-icon"></span></div>
 
-              <div v-if="selectGreatCoupon.length" class="edit-list-box">
-                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+              <div v-if="lessSelectList.length" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': lessSelectList.length === 0}">
                   <div v-for="(item, index) in selectCompensateCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
 
                 </div>
                 <div>
-                  <div v-for="(item, index) in selectCompensateCouponTitle" :key="index" class="list">
-                    <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
-                      <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('lessCoupon', index, item)">删除</p>
+                  <div v-for="(item, index) in lessSelectList" :key="index" class="list">
+                    <div v-for="(val, ind) in selectCompensateCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
+                      <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('less', index, item)">删除</p>
                       <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                       <p v-else class="main">{{item[val.value]}}</p>
                     </div>
@@ -111,7 +111,7 @@
 
           <!--订单金额大于-->
           <div v-if="marketIndex === 2" class="edit-item edit-list-item">
-            <div class="edit-title">
+            <div class="edit-title" style="margin-top: 10px">
               <span class="start">*</span>
               <span>补偿条件</span>
             </div>
@@ -119,7 +119,7 @@
               <div class="edit-input-box">
                 <div class="no-wrap">
                   <span>订单金额大于等于</span>
-                  <input v-model="lessPrice"
+                  <input v-model="price"
                          type="number"
                          class="edit-input small-input"
                          :readonly="disable"
@@ -131,15 +131,15 @@
               </div>
               <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal('great')">添加<span class="add-icon"></span></div>
 
-              <div v-if="selectGreatCoupon.length" class="edit-list-box">
-                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+              <div v-if="greatSelectList.length" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': greatSelectList.length === 0}">
                   <div v-for="(item, index) in selectCompensateCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
 
                 </div>
                 <div>
-                  <div v-for="(item, index) in selectCouponList" :key="index" class="list">
+                  <div v-for="(item, index) in greatSelectList" :key="index" class="list">
                     <div v-for="(val, ind) in selectCompensateCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
-                      <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('greatCoupon', index, item)">删除</p>
+                      <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('great', index, item)">删除</p>
                       <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                       <p v-else class="main">{{item[val.value]}}</p>
                     </div>
@@ -178,7 +178,7 @@
           <div class="outreach-group-list">
             <div v-for="(item, index) in couponList" :key="index" class="group-item hand" @click="selectCoupon(item, index)">
               <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
-                <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
+                <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id && item.id === couponCheckItem.id)}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
                   <p>{{item.start_at}}</p>
                   <p>{{item.end_at}}</p>
@@ -207,7 +207,7 @@
 
   import Swiper from './swiper/swiper'
   import API from '@api'
-  import DefaultModal from '@components/default-modal/default-modal'
+  import DefaultModal from './default-modal/default-modal'
 
   const PAGE_NAME = 'EDIT_RULES'
   const TITLE = '新增规则'
@@ -236,6 +236,8 @@
     {name: '剩余', flex: 1, value: 'usable_stock'},
     {name: '操作', flex: 0.5, value: ''}
   ]
+
+  const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
 
   export default {
     name: PAGE_NAME,
@@ -273,20 +275,37 @@
         rulesId: '',
         rulesTitle: '',
         couponSelectItem: {},
+        lessSelectItem: {},
+        greatSelectItem: {},
         isAdditionGroup: true,
-        selectCouponList: [], // 已选优惠券列表
-        selectLessCoupon: [],
-        selectGreatCoupon: [],
+        couponSelectList: [], // 已选优惠券列表
+        lessSelectList: [],
+        greatSelectList: [],
         couponTitle: COUPON_TITLE, // 优惠券弹窗title
         showAdd: true,
-        lessPrice: '',
-        greatPrice: '',
+        price: '',
         modalType: '',
         confirmType: ''
       }
     },
     computed: {
-      ...marketComputed
+      ...marketComputed,
+      testRules() {
+        return this.rulesId
+      },
+      testCoupon() {
+        if (+this.marketIndex === 2) {
+          return this.lessSelectItem.id && this.greatSelectItem.id
+        } else {
+          return this.couponSelectItem.id
+        }
+      },
+      testPrice() {
+        if (+this.marketIndex === 2) {
+          return this.price && MONEYREG.test(this.price)
+        }
+        return true
+      }
     },
     async created() {
       this._initMsg(this.marketDetail)
@@ -305,6 +324,7 @@
         this.rulesTitle = item.name
         this.marketIndex = +index
         this.arrowIndex = 0
+        this._initData()
         this.$refs.swiper._changeBanner(0)
       },
       selectCoupon(item, index) {
@@ -327,19 +347,42 @@
         if (!this.isAdditionGroup || this.disable) {
           return
         }
-        if (!this.rulesId) {
-          this.$toast.show('请选择规则')
-          return
-        } else if (!this.couponSelectItem.id) {
-          this.$toast.show('请选择优惠券')
-          return
-        }
+        let checkForm = this.checkForm()
+        if (!checkForm) return
         this.isAdditionGroup = false
-        let res = await API.Order.addCouponActivity({
-          title: this.rulesTitle,
+        let arr = []
+        if (+this.marketIndex === 2) {
+          arr = [
+            {oupon_id: this.lessSelectItem.id},
+            {coupon_id: this.greatSelectItem.id}
+          ]
+        } else {
+          arr = [{coupon_id: this[`${this.modalType}SelectItem`].id}]
+        }
+        let data = {
           type: this.rulesId,
-          coupon_id: this.couponSelectItem.id
-        })
+          config_json: {
+            title: this.rulesTitle,
+            common_coupons: arr
+          }
+        }
+        if (+this.marketIndex === 2) {
+          data.config_json.condition_one_coupons = [
+            {
+              coupon_id: this.lessSelectItem.id,
+              conditon_type: 0,
+              total: this.lessSelectItem.denomination
+            }
+          ]
+          data.config_json.condition_two_coupons = [
+            {
+              coupon_id: this.greatSelectItem.id,
+              conditon_type: 0,
+              total: this.greatSelectItem.denomination
+            }
+          ]
+        }
+        let res = await API.Order.addCouponActivity(data)
         this.$toast.show(res.message, 600)
         if (res.error !== this.$ERR_OK) {
           this.isAdditionGroup = true
@@ -349,20 +392,34 @@
           this.$router.back()
         }, 800)
       },
+      // 验证表单
+      checkForm() {
+        let arr = [
+          {value: this.testRules, txt: '请选择规则'},
+          {value: this.testCoupon, txt: '请选择优惠券'},
+          {value: this.testPrice, txt: '请正确输入金额'},
+        ]
+        for (let i = 0, j = arr.length; i < j; i++) {
+          if (!arr[i].value) {
+            this.$toast.show(arr[i].txt)
+            return false
+          }
+          if (i === j - 1 && arr[i].value) {
+            return true
+          }
+        }
+      },
       // 删除优惠券
       showConfirm(type) {
         if (this.disable) return
-        this.confirmType = type
-        this.selectCouponList = []
-        this.couponSelectItem = {}
+        this[`${type}SelectList`] = []
+        this[`${type}SelectItem`] = {}
         this.couponCheckItem = {}
       },
       additionCoupon() {
-        this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
         if (this.couponCheckItem.id) {
-          let arr = []
-          arr.push(this.couponSelectItem)
-          this.selectCouponList = arr
+          this[`${this.modalType}SelectItem`] = JSON.parse(JSON.stringify(this.couponCheckItem))
+          this[`${this.modalType}SelectList`] = [JSON.parse(JSON.stringify(this.couponCheckItem))]
         }
         this.cancelModal()
       },
@@ -410,16 +467,25 @@
           this.page = 1
           this.keyword = ''
         }
+        if (type !== this.modalType) {
+          this.couponCheckItem = this[`${type}SelectItem`] || {}
+        }
         this.modalType = type
-        this.couponCheckItem = {}
         this._getCouponList()
         this.$refs.couponModal.showModal()
+      },
+      _initData() {
+        ['coupon', 'less', 'great'].map(item => {
+          this[`${item}SelectList`] = []
+          this[`${item}SelectItem`] = {}
+          this.couponCheckItem = {}
+        })
       },
       // 详情信息
       _initMsg(news) {
         let id = this.$route.query.id || null
         if (id) {
-          this.selectCouponList[0] = news.coupon
+          this.couponSelectList[0] = news.coupon
           this.stairSelect.content = news.title
         }
       }

@@ -22,6 +22,7 @@
 
   const IMAGE_ARR = [
     ['pic-extract', 'pic-compensate', 'pic-choose_commodity', 'pic-place_order'],
+    ['pic-refund_notice', 'pic-compensate', 'pic-choose_commodity', 'pic-place_order'],
     ['pic-refund_notice', 'pic-compensate', 'pic-choose_commodity', 'pic-place_order']
   ]
   const COMPONENT_NAME = 'SWIPER'
