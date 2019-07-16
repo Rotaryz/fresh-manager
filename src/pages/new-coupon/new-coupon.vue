@@ -21,15 +21,15 @@
         <div class="edit-input-box">
           <input v-model="msg.coupon_name"
                  type="text"
-                 :placeholder="disable ? '' : '请输入优惠券名称'"
+                 placeholder="请输入优惠券名称"
                  class="edit-input"
-                 :readonly="disable"
-                 maxlength="12"
-                 :class="{'disable-input':disable}"
+                 :readonly="(disable && !editId)"
+                 maxlength="10"
+                 :class="{'disable-input':(disable && !editId)}"
           >
-          <div class="num">{{msg.coupon_name ? msg.coupon_name.length : 0}}/12</div>
+          <div class="num">{{msg.coupon_name ? msg.coupon_name.length : 0}}/10</div>
         </div>
-        <div :class="{'text-no-change':disable}"></div>
+        <div :class="{'text-no-change': (disable && !editId)}"></div>
       </div>
 
       <!--使用范围-->
@@ -110,7 +110,7 @@
             <p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>折扣券</p>
           </div>
         </div>
-        <div :class="{'check-no-change':disable}"></div>
+        <div :class="{'text-no-change':disable}"></div>
       </div>
 
       <!--减免金额-->
@@ -148,7 +148,7 @@
             <input v-model="msg.condition"
                    type="number"
                    class="edit-input"
-                   style="width: 202px"
+                   style="width: 318px"
                    :readonly="disable"
                    maxlength="12"
                    :class="{'disable-input':disable}"
@@ -156,7 +156,7 @@
             <span>元</span>
           </div>
         </div>
-        <div :class="{'check-no-change':disable}"></div>
+        <div :class="{'text-no-change':disable}"></div>
       </div>
 
       <!--数量-->
@@ -169,16 +169,16 @@
           <div class="no-wrap">
             <input v-model="msg.usable_stock"
                    type="number"
-                   :placeholder="disable ? '' : '最多100000000张'"
+                   placeholder="最多100000000张"
                    class="edit-input"
-                   :readonly="disable"
+                   :readonly="(disable && !editId)"
                    maxlength="12"
-                   :class="{'disable-input':disable}"
+                   :class="{'disable-input': (disable && !editId)}"
             >
             <span>张</span>
           </div>
         </div>
-        <div :class="{'text-no-change':disable}"></div>
+        <div :class="{'text-no-change':(disable && !editId)}"></div>
       </div>
 
       <!--时间-->
@@ -200,27 +200,25 @@
           </div>
           <div v-if="+msg.is_day_limited === 0" class="time-select">
             <date-picker
-              :value="msg.start_at"
-              class="edit-input-box"
-              type="date"
-              :confirm="false"
+              v-model="msg.start_at"
               :editable="false"
-              placement="bottom-end"
+              class="edit-input-box"
+              type="datetime"
               placeholder="选择开始时间"
               style="width: 240px;height: 40px;border-radius: 1px"
-              @on-change="_getStartTime"
+              valueFormat="yyyy-MM-dd HH:mm:ss"
+              @change="_getStartTime"
             ></date-picker>
             <div class="tip-text">至</div>
             <date-picker
-              :value="msg.end_at"
-              class="edit-input-box edit-input-right"
-              type="date"
-              :confirm="false"
+              v-model="msg.end_at"
               :editable="false"
-              placement="bottom-end"
+              class="edit-input-box"
+              type="datetime"
               placeholder="选择结束时间"
-              style="width: 240px;height: 40px"
-              @on-change="_getEndTime"
+              style="width: 240px;height: 40px;border-radius: 1px"
+              valueFormat="yyyy-MM-dd HH:mm:ss"
+              @change="_getEndTime"
             ></date-picker>
           </div>
           <div v-if="+msg.is_day_limited === 1" class="select-day">
@@ -231,7 +229,6 @@
         </div>
         <div :class="{'check-no-change':disable}"></div>
       </div>
-      <!--<p @click="test">测试</p>-->
 
       <!--使用说明-->
       <div class="edit-item">
@@ -256,6 +253,7 @@
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
+      <!--<p @click="test">测试</p>-->
     </div>
 
     <!-- 选择品类弹窗-->
@@ -332,7 +330,7 @@
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
+      <div :class="{'btn-disable': (disable && !editId)}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -343,7 +341,8 @@
   import {couponComputed, couponMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
-  import {DatePicker} from 'iview'
+  // import {DatePicker} from 'iview'
+  import {DatePicker} from 'element-ui'
 
   const PAGE_NAME = 'MEW_COUPON'
   const TITLE = '新建查看优惠券'
@@ -413,7 +412,7 @@
           coupon_name: '',
           preferential_type: 2,
           denomination: '', // 优惠券面额
-          condition: '', // 满多少可用
+          condition: 0, // 满多少可用
           support_activity: 0, // 是否支持活动商品使用0 1
           start_at: '',
           end_at: '',
@@ -421,7 +420,8 @@
           ranges: [],
           limit_days: '',
           is_day_limited: 0,
-          description: ''
+          description: '',
+          tag_type: 0
         },
         isSubmit: false, // 在提交
         categoryShow: false, // 选择品类弹窗
@@ -487,25 +487,52 @@
         return this.msg.usable_stock && COUNTREG.test(this.msg.usable_stock)
       },
       testCountNum() {
-        return this.msg.usable_stock >= 1 && this.msg.usable_stock <= 99999
+        return this.msg.usable_stock >= 1 && this.msg.usable_stock <= 100000000
+      },
+      testCountNew() {
+        if (this.editId) {
+          return this.msg.usable_stock >= this.couponDetail.usable_stock
+        } else {
+          return true
+        }
       },
       testCondition() {
         return this.msg.condition && +this.msg.preferential_type === 2 ? RATE.test(this.msg.condition) : true
       },
       testStart() {
         // 开始时间
-        return this.msg.start_at
+        if (+this.msg.is_day_limited === 0) {
+          return this.msg.start_at
+        } else {
+          return true
+        }
       },
       testEnd() {
         // 结束时间
-        return this.msg.end_at
+        if (+this.msg.is_day_limited === 0) {
+          return this.msg.end_at
+        } else {
+          return true
+        }
       },
       testEndDate() {
         // 结束时间规则判断
-        return (
-          Date.parse(this.msg.end_at.replace(/-/g, '/') + ' 00:00') >
-          Date.parse('' + this.msg.start_at.replace(/-/g, '/') + ' 00:00')
-        )
+        if (+this.msg.is_day_limited === 0) {
+          return (
+            // Date.parse(this.msg.end_at.replace(/-/g, '/') + ' 00:00') >
+            // Date.parse('' + this.msg.start_at.replace(/-/g, '/') + ' 00:00')
+            Date.parse('' + this.msg.end_at) > Date.parse('' + this.msg.start_at)
+          )
+        } else {
+          return true
+        }
+      },
+      testLimitDays() {
+        if (+this.msg.is_day_limited === 1) {
+          return this.msg.limit_days
+        } else {
+          return true
+        }
       },
       testDescription() {
         return this.msg.description
@@ -526,19 +553,20 @@
       }
     },
     created() {
-      this.disable = this.$route.query.id
-      this.id = this.$route.query.id || null
+      this.disable = this.$route.query.id || this.$route.query.editId
+      this.editId = this.$route.query.editId || null
+      this.id = this.$route.query.id || this.$route.query.editId || null
       // 详情信息
       if (this.id) {
         let obj = _.cloneDeep(this.couponDetail)
         this.categorySelectItem.social_name = obj.social_name
         if (+obj.range_type === 1) {
-          this.$set(this.useRange, 'content', '通用')
+          this.$set(this.useRange, 'content', '全部商品')
         } else if (+obj.range_type === 2) {
-          this.$set(this.useRange, 'content', '指定品类')
+          this.$set(this.useRange, 'content', '指定品类可用')
           this.categorySelectItem = obj.ranges[0]
         } else if (+obj.range_type === 3) {
-          this.$set(this.useRange, 'content', '指定商品')
+          this.$set(this.useRange, 'content', '指定商品可用')
           this.goodsList = obj.ranges
           this.selectGoodsId = obj.ranges.map((item) => {
             return item.range_id
@@ -555,9 +583,6 @@
       changeCheck(num) {
         this.msg.preferential_type = num
       },
-      changeFull() {
-        this.msg.support_activity = +this.msg.support_activity === 1 ? 0 : 1
-      },
       changeLimit() {
         this.$set(this.msg, 'is_day_limited', this.msg.is_day_limited ? 0 : 1)
       },
@@ -567,8 +592,9 @@
       _getEndTime(time) {
         this.msg.end_at = time
       },
-      test() {
-      },
+      // test() {
+      //   console.log(this.msg.is_day_limited, this.testStart, this.testEnd, this.testEndDate, 32)
+      // },
       // 选择商品
       async _getGoodsList() {
         let res = await API.Coupon.getGoodsList({
@@ -799,12 +825,9 @@
       },
       //  保存
       async _saveActivity() {
-        if (this.disable || this.isSubmit) return
+        if ((this.disable && !this.editId) || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
-        if (!this.msg.is_day_limited) {
-          this.$set(this.msg, 'limit_days', 0)
-        }
         let data = {}
         data = Object.assign({}, this.msg)
         // 添加coupon_range_id
@@ -838,21 +861,23 @@
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testMoney, txt: '优惠券面值应设为1~999之间的整数'},
-          {value: this.testMoneyReg, txt: '优惠券面值应设为1~999之间的整数'},
+          {value: this.testGoods, txt: '请选择商品'},
+          {value: this.testCategory, txt: '请选择品类'},
+          {value: this.testMoney, txt: '减免金额应设为小于使用条件金额的整数'},
+          {value: this.testMoneyReg, txt: '优惠券面值应设为小于使用条件金额的整数'},
           {value: this.testDiscount, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testDiscountReg, txt: '请输入0.1到9.9之间的折扣数'},
-          {value: this.testCount, txt: '发放数量应设为1~99999之间的整数'},
-          {value: this.testCountReg, txt: '发放数量应设为1~99999之间的整数'},
-          {value: this.testCountNum, txt: '发放数量应设为1~99999之间的整数'},
           {value: this.testCondition, txt: '满减金额数必须为整数'},
-          {value: this.testStart, txt: '请选择活动开始时间'},
-          {value: this.testEnd, txt: '请选择活动结束时间'},
-          {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
-          {value: this.testDescription, txt: '请输入使用说明'},
-          {value: this.testGoods, txt: '请选择商品'},
-          {value: this.testCategory, txt: '请选择品类'}
+          {value: this.testCount, txt: '发放数量应设为1~100000000之间的整数'},
+          {value: this.testCountReg, txt: '发放数量应设为1~100000000之间的整数'},
+          {value: this.testCountNum, txt: '发放数量应设为1~100000000之间的整数'},
+          {value: this.testCountNew, txt: '发放数量只可增加不可减少'},
+          {value: this.testStart, txt: '请选择用券开始时间'},
+          {value: this.testEnd, txt: '请选择用券结束时间'},
+          {value: this.testEndDate, txt: '用券结束时间必须大于开始时间'},
+          {value: this.testLimitDays, txt: '请输入领取后可用天数'},
+          {value: this.testDescription, txt: '请输入使用说明'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -911,7 +936,7 @@
       margin-top: 7.5px
       .check-item
         float: left
-        margin-right: 20px
+        margin-right: 60px
         display: flex
         align-items: center
         cursor: pointer

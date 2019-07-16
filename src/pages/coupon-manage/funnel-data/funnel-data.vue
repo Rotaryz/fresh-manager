@@ -13,6 +13,25 @@
       chartId: {
         type: String,
         default: ''
+      },
+      chartData: {
+        type: Array,
+        default: () => {
+          return [
+            {
+              value: 1,
+              name: '优惠券总数'
+            },
+            {
+              value: 1,
+              name: '已发放'
+            },
+            {
+              value: 1,
+              name: '已使用'
+            }
+          ]
+        }
       }
     },
     data() {
@@ -21,7 +40,7 @@
       }
     },
     created() {
-      this._setChart({xAx: [], series: []})
+      this._setChart()
     },
     beforeDestroy() {
       this.myChart = ''
@@ -33,8 +52,8 @@
       },
       _setChart(data) {
         this.$nextTick(() => {
-          let xAxisData = data.xAx.length > 0 ? data.xAx : []
-          let seriesData = data.series.length > 0 ? data.series : []
+          // let xAxisData = data.xAx.length > 0 ? data.xAx : []
+          // let seriesData = data.series.length > 0 ? data.series : []
 
           let el = document.getElementById(this.chartId)
           this.$echarts.dispose(el) // 销毁之前的实例
@@ -43,7 +62,7 @@
           this.myChart = myChart
           window.addEventListener('resize',  this.resize) // 加监听
 
-          let options = this.createFunnel(xAxisData, seriesData)
+          let options = this.createFunnel()
           myChart.setOption(options)
         })
       },
@@ -118,20 +137,7 @@
 
                 }
               },
-              data: [
-                {
-                  value: 150,
-                  name: '优惠券总数'
-                },
-                {
-                  value: 110,
-                  name: '已发放'
-                },
-                {
-                  value: 80,
-                  name: '已使用'
-                }
-              ]
+              data: this.chartData
             },
             {
               name: '',
@@ -152,11 +158,7 @@
                   opacity: 0
                 }
               },
-              data: [
-                {value: 150, name: '优惠券总数'},
-                {value: 110, name: '已发放'},
-                {value: 80, name: '已使用'}
-              ]
+              data: this.chartData
             }
           ]
         }

@@ -550,7 +550,7 @@ export default [
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
-            let id = routeTo.query.id
+            let id = routeTo.query.id || routeTo.query.editId
             // 活动详情
             if (id) {
               store

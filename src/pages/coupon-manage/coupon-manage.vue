@@ -35,13 +35,15 @@
                 <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
                   {{item[val.value] || 0}}{{+item.preferential_type === 1 ? '折' : '元'}}
                 </div>
-
+                <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">
+                  {{+item.status === 0 ? '未开始' : +item.status === 1 ? '进行中' : '已结束'}}
+                </div>
                 <div v-if="+val.type === 4" class="list-item list-use">
                   <span class="list-operation" @click="viewDataShow(item)">统计</span>
-                  <router-link v-if="false" tag="span" :to="'new-coupon?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
-                  <router-link v-if="true" tag="span" :to="'new-coupon?editId=' + (item.id || 0)" append class="list-operation">编辑</router-link>
-                  <span v-if="true" class="list-operation" @click="_stopCoupon(item)">停止</span>
-                  <span v-if="false" class="list-operation" @click="_deleteCoupon(item)">删除</span>
+                  <router-link v-if="item.is_online" tag="span" :to="'new-coupon?editId=' + (item.id || 0)" append class="list-operation">编辑</router-link>
+                  <router-link v-if="!item.is_online" tag="span" :to="'new-coupon?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
+                  <span v-if="item.is_online" class="list-operation" @click="_stopCoupon(item)">停止</span>
+                  <span v-if="!item.is_online" class="list-operation" @click="_deleteCoupon(item)">删除</span>
                 </div>
               </div>
             </div>
@@ -62,7 +64,7 @@
           <span class="text">(统计至前一天)</span>
         </div>
         <div class="right">
-          <p class="export hand" @click="exportExcel">
+          <p class="export hand" @click="exportData">
             <span class="export-icon"></span>
             <span>导出</span>
           </p>
@@ -85,7 +87,7 @@
       <div class="image-data">
         <p class="data-title">优惠券使用统计</p>
         <div class="data-box">
-          <funnel-data ref="funnel" chartId="funnel"></funnel-data>
+          <funnel-data ref="funnel" :chartData="chartData" chartId="funnel"></funnel-data>
         </div>
       </div>
     </div>
@@ -117,7 +119,7 @@
     {name: '使用范围', flex: 1, value: 'range_type_str', type: 1},
     {name: '使用门槛', flex: 1, value: 'range_type_str', type: 1},
     {name: '面值', flex: 1, value: 'denomination', type: 2},
-    {name: '状态', flex: 1, value: 'status', type: 1},
+    {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1.2, value: '', type: 4}
   ]
 
@@ -165,7 +167,22 @@
         delItem: {},
         confirmType: '',
         showViewData: false,
-        infoTitle: '停止优惠券'
+        infoTitle: '停止优惠券',
+        chartDataArr: ['total_num', 'received_num', 'used_num'],
+        chartData: [
+          {
+            value: 1,
+            name: '优惠券总数'
+          },
+          {
+            value: 1,
+            name: '已发放'
+          },
+          {
+            value: 1,
+            name: '已使用'
+          }
+        ]
       }
     },
     computed: {
@@ -222,10 +239,48 @@
       },
       viewDataShow(item) {
         this.currentItem = item
-        this.showViewData = true
+        this.getCouponData()
       },
-      exportExcel(item) {
-        console.log(item)
+      getCouponData() {
+        API.Coupon.getCouponData({
+          tag_type: 0,
+          coupon_id: this.currentItem.id
+        })
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.chartData = this.chartDataArr.map((item, index) => {
+              return {
+                value: res.data[item],
+                name: this.chartData[index].name
+              }
+            })
+            this.viewData[0].num = res.data.trade_total
+            this.viewData[1].num = res.data.discount_total
+            this.viewData[2].num = res.data.roi_value
+            this.showViewData = true
+          })
+      },
+      exportUrl() {
+        let currentId = this.getCurrentId()
+        let token = this.$storage.get('auth.currentUser', '')
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token,
+          tag_type: 0,
+          coupon_id: this.currentItem.id
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' + search.join('&')
+      },
+      exportData() {
+        window.open(this.exportUrl())
       },
       showDescription(index) {
         this.$refs.description.show(index)
@@ -269,6 +324,7 @@
               this.$toast.show(res.message)
               return
             }
+            this.$toast.show('停止成功')
             this.getCouponList()
           })
       }
