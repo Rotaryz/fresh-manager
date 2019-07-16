@@ -303,6 +303,7 @@
       this._getFirstAssortment()
       await this.getCate(false)
       await this.infoEat()
+      await this._getGoodsList()
       this.$loading.hide()
     },
     methods: {
