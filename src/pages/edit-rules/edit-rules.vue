@@ -8,7 +8,9 @@
       <div class="function-btn">
       </div>
     </div>
+
     <div class="msg-detail">
+      <!--左侧轮播图-->
       <div class="left-view">
         <div class="top-content">
           <div class="wrapper">
@@ -23,6 +25,8 @@
           <p class="text">{{arrowArr[arrowIndex]}}</p>
         </div>
       </div>
+
+      <!--右侧轮播图-->
       <div class="right-form">
         <p class="line-title">售后补偿</p>
         <div class="edit-box">
@@ -32,27 +36,114 @@
               <base-drop-down :width="400" :height="40" :select="stairSelect" @setValue="selectRules"></base-drop-down>
             </div>
           </div>
-          <div class="edit-item">
-            <div class="edit-title"><span class="start">*</span>选择优惠券</div>
+
+          <!--选择优惠券-->
+          <div v-if="marketIndex !== 2" class="edit-item edit-list-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              <span>选择优惠券</span>
+            </div>
             <div class="edit-content">
-              <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal">选择<span class="add-icon"></span></div>
+              <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal('pub')">选择<span class="add-icon"></span></div>
+              <div v-if="selectCouponList.length" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+                  <div v-for="(item, index) in selectCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
+
+                </div>
+                <div>
+                  <div v-for="(item, index) in selectCouponList" :key="index" class="list">
+                    <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
+                      <div v-if="val.value === 'time'" class="main">
+                        <p>{{item.start_at}}</p>
+                        <p>{{item.end_at}}</p>
+                      </div>
+                      <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('pub', index, item)">删除</p>
+                      <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                      <p v-else class="main">{{item[val.value]}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div v-if="selectCouponList.length" class="edit-list-box">
-            <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
-              <div v-for="(item, index) in selectCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
 
+
+          <!--补偿条件-->
+          <!--订单金额小于-->
+          <div v-if="marketIndex === 2" class="edit-item edit-list-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              <span>补偿条件</span>
             </div>
-            <div>
-              <div v-for="(item, index) in selectCouponList" :key="index" class="list">
-                <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
-                  <div v-if="val.value === 'time'" class="main">
-                    <p>{{item.start_at}}</p>
-                    <p>{{item.end_at}}</p>
+            <div class="edit-content">
+              <div class="edit-input-box">
+                <div class="no-wrap">
+                  <span>订单金额小于</span>
+                  <input v-model="lessPrice"
+                         type="number"
+                         class="edit-input"
+                         :readonly="disable"
+                         maxlength="12"
+                         :class="{'disable-input':disable}"
+                  >
+                  <span>元</span>
+                </div>
+              </div>
+              <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal('less')">添加<span class="add-icon"></span></div>
+
+              <div v-if="selectGreatCoupon.length" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+                  <div v-for="(item, index) in selectCompensateCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
+
+                </div>
+                <div>
+                  <div v-for="(item, index) in selectCompensateCouponTitle" :key="index" class="list">
+                    <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
+                      <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('lessCoupon', index, item)">删除</p>
+                      <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                      <p v-else class="main">{{item[val.value]}}</p>
+                    </div>
                   </div>
-                  <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
-                  <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
-                  <p v-else class="main">{{item[val.value]}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--订单金额大于-->
+          <div v-if="marketIndex === 2" class="edit-item edit-list-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              <span>补偿条件</span>
+            </div>
+            <div class="edit-content flex">
+              <div class="edit-input-box">
+                <div class="no-wrap">
+                  <span>订单金额大于等于</span>
+                  <input v-model="lessPrice"
+                         type="number"
+                         class="edit-input small-input"
+                         :readonly="disable"
+                         maxlength="12"
+                         :class="{'disable-input':disable}"
+                  >
+                  <span>元</span>
+                </div>
+              </div>
+              <div class="btn-main hand edit-select" :class="{'btn-disable-store': disable}" @click="showCouponModal('great')">添加<span class="add-icon"></span></div>
+
+              <div v-if="selectGreatCoupon.length" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+                  <div v-for="(item, index) in selectCompensateCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
+
+                </div>
+                <div>
+                  <div v-for="(item, index) in selectCouponList" :key="index" class="list">
+                    <div v-for="(val, ind) in selectCompensateCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
+                      <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('greatCoupon', index, item)">删除</p>
+                      <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                      <p v-else class="main">{{item[val.value]}}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -85,7 +176,7 @@
             <span v-for="(item, index) in couponTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
           </div>
           <div class="outreach-group-list">
-            <div v-for="(item, index) in couponList" :key="index" class="group-item" @click="selectCoupon(item, index)">
+            <div v-for="(item, index) in couponList" :key="index" class="group-item hand" @click="selectCoupon(item, index)">
               <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
@@ -136,6 +227,16 @@
     {name: '有效期', flex: 1.2, value: 'time'},
     {name: '操作', flex: 0.4, value: ''}
   ]
+
+  const SELECT_COMPENSATE_COUPON_TITLE = [
+    {name: '优惠券名称', flex: 1.4, value: 'coupon_name'},
+    {name: '类型', flex: 1, value: 'preferential_str'},
+    {name: '使用门槛', flex: 1, value: 'preferential_str'},
+    {name: '面值', flex: 1, value: 'denomination'},
+    {name: '剩余', flex: 1, value: 'usable_stock'},
+    {name: '操作', flex: 0.5, value: ''}
+  ]
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -149,6 +250,7 @@
       return {
         disable: this.$route.query.id,
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
+        selectCompensateCouponTitle: SELECT_COMPENSATE_COUPON_TITLE,
         marketIndex: 0,
         arrowArr: ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
         arrowIndex: 0,
@@ -173,7 +275,14 @@
         couponSelectItem: {},
         isAdditionGroup: true,
         selectCouponList: [], // 已选优惠券列表
-        couponTitle: COUPON_TITLE // 优惠券弹窗title
+        selectLessCoupon: [],
+        selectGreatCoupon: [],
+        couponTitle: COUPON_TITLE, // 优惠券弹窗title
+        showAdd: true,
+        lessPrice: '',
+        greatPrice: '',
+        modalType: '',
+        confirmType: ''
       }
     },
     computed: {
@@ -241,8 +350,9 @@
         }, 800)
       },
       // 删除优惠券
-      showConfirm() {
+      showConfirm(type) {
         if (this.disable) return
+        this.confirmType = type
         this.selectCouponList = []
         this.couponSelectItem = {}
         this.couponCheckItem = {}
@@ -289,8 +399,18 @@
         })
       },
       // 弹窗
-      showCouponModal() {
+      showCouponModal(type) {
         if (this.disable) return
+        if (type !== this.modalType) {
+          this.couponPage = {
+            total: 1,
+            per_page: 10,
+            total_page: 1
+          }
+          this.page = 1
+          this.keyword = ''
+        }
+        this.modalType = type
         this.couponCheckItem = {}
         this._getCouponList()
         this.$refs.couponModal.showModal()
@@ -398,12 +518,84 @@
         color: #F52424
     .edit-content
       margin-left: 40.9px
+      width: 100%
+      flex: 1
       .edit-select
         height: 32px
         width: 108px
       .add-icon
         margin-left: 6px
+    .edit-input-box
+      position: relative
+      color: #333
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      margin-bottom: 24px
+      .edit-input
+        font-size: $font-size-14
+        padding: 0 14px
+        border-radius: 1px
+        width: 306px
+        height: 40px
+        display: flex
+        align-items: center
+        margin: 0 10px
+        justify-content: space-between
+        border: 1px solid $color-line
+        transition: all 0.3s
+        -moz-appearance: textfield
 
+        &:hover
+          border-color: #ACACAC
+        &:focus
+          border-color: $color-main
+      .small-input
+        width: 278px
+      .edit-textarea
+        height: 94px
+        resize: none
+        padding: 4px 14px
+      .no-wrap
+        display: flex
+        align-items: center
+        .tip
+          color: $color-text-assist
+      .disable-input
+        background: #F5F5F5
+        color: #ACACAC
+      .icon
+        width: 0
+        height: 0
+        border: 6px solid #333
+        position: absolute
+        margin-top: 4px
+        right: 10px
+        col-center()
+        border-bottom-color: transparent
+        border-left: 4px solid transparent
+        border-right: 4px solid transparent
+
+      .num
+        col-center()
+        right: 20px
+        color: #ACACAC
+      .textarea-num
+        position: absolute
+        left: 360px
+        bottom: 6px
+        color: $color-text-assist
+      .description
+        display: flex
+        align-items: center
+        margin-top: 15px
+        cursor: pointer
+        .tip
+          color: $color-text-assist
+
+  .edit-list-item
+    align-items: flex-start
+    .edit-title
+      margin-top: 4px
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
