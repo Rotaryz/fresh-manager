@@ -8,7 +8,7 @@ export const state = {
    * -------------------------------
    * 内容分类
    */
-  contentClassList: [{}],
+  contentClassList: [],
   contentClassPage: {
     total: 1,
     per_page: 10,
