@@ -256,30 +256,28 @@
               </div>
             </div>
             <draggable v-if="currentType!=='video' && addData.details.length" ref="detailsContent" v-model="addData.details" :options="{disabled:isDisabled}" class="content-details">
-              <transition-group>
-                <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
-                  <div v-if="!isDisabled" class="close-icon hand" @click="deleteContentItem(idx,item)"></div>
-                  <img v-if="item.type==='image'" :src="item.value" class="content-image">
-                  <video v-else-if="item.type==='video'" :src="item.value" class="content-video"></video>
-                  <div v-else-if="item.type==='goods'" class="good-item">
-                    <img v-if="item.value.is_online === 0" src="./pic-off_shelf@2x.png" class="goods-photo">
-                    <img v-else-if="item.value.usable_stock === 0" src="./pic-out_stock@2x.png" class="goods-photo">
-                    <img v-else :src="item.value.goods_cover_image" class="goods-photo">
-                    <div class="info">
-                      <div>
-                        <div class="name">{{item.value.name}}</div>
-                        <div class="details">{{item.value.describe}}</div>
-                      </div>
-                      <div class="operate">
-                        <span class="price-now">10<span class="small">.8<span class="unit">元</span></span></span>
-                        <span class="price">{{item.value.original_price}}元</span>
-                      </div>
+              <!--<transition-group>-->
+              <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
+                <div v-if="!isDisabled" class="close-icon hand" @click="deleteContentItem(idx,item)"></div>
+                <img v-if="item.type==='image'" :src="item.value" class="content-image">
+                <video v-else-if="item.type==='video'" :src="item.value" class="content-video"></video>
+                <div v-else-if="item.type==='goods'" class="good-item">
+                  <img v-if="item.value.is_online === 0" src="./pic-off_shelf@2x.png" class="goods-photo">
+                  <img v-else-if="item.value.usable_stock === 0" src="./pic-out_stock@2x.png" class="goods-photo">
+                  <img v-else :src="item.value.goods_cover_image" class="goods-photo">
+                  <div class="info">
+                    <div class="name">{{item.value.name}}</div>
+                    <div class="details">{{item.value.describe}}</div>
+                    <div class="operate">
+                      <span class="price-now">10<span class="small">.8<span class="unit">元</span></span></span>
+                      <span class="price">{{item.value.original_price}}元</span>
                     </div>
                   </div>
-                  <textarea v-else v-model="item.value" :disabled="isDisabled" class="edit-textarea edit-input" placeholder="输入文字">
-              </textarea>
                 </div>
-              </transition-group>
+                <textarea v-else v-model="item.value" :disabled="isDisabled" class="edit-textarea edit-input" placeholder="输入文字">
+              </textarea>
+              </div>
+              <!--</transition-group>-->
             </draggable>
           </div>
         </div>
@@ -457,7 +455,7 @@
         addData: {
           likes: [],
           category: '',
-          categoryName:'',
+          categoryName: '',
           title: '',
           coverImage: {
             url: '',
@@ -536,7 +534,7 @@
       this._getArticleCategory()
       this.currentType = query.type || 'common'
       this.id = query.id || ''
-      this.isDisabled = query.isSee || false
+      this.isDisabled = Boolean(query.isSee) || false
       this.addData.articlePid = this.$route.query.articlePid || ''
       if (this.id || this.addData.articlePid) {
         this.$route.meta.params && this.changeDetialData(this.$route.meta.params)
@@ -1079,10 +1077,13 @@
 
     &:hover
       border-color: #ACACAC
+
     &[disabled]:hover
       border: 1px solid $color-line
+
     &:focus
       border-color: $color-main
+
   .flex-box
     display flex
     align-items center
@@ -1172,6 +1173,7 @@
         position: relative
         object-fit: cover
         background-color $color-np-content
+
         .delete-icon
           position: absolute
           top: 0
@@ -1234,6 +1236,7 @@
         align-items: center
         box-sizing: border-box
         margin-bottom: 20px
+
         .add-goods-btn
           box-sizing: border-box
           height: 28px
@@ -1271,10 +1274,12 @@
           display: flex
           flex-direction: column
           flex: 1
+
           &.disable
             .list-header :last-child
             .list :last-child
               display none
+
         .edit-input-box
           flex: 1
 
@@ -1339,6 +1344,7 @@
         border-radius: 2px
         padding: 20px
         margin-top: 20px
+
         .content-item
           border-1px(#D3D8DC)
           border-radius: 2px
@@ -1350,18 +1356,18 @@
           .good-item
             min-height: 112px
             display flex
-            padding:14px
+            padding: 14px
             .goods-photo
               width: 112px
               height: @width
-
+              flex-shrink 0
             .info
               margin-left: 14px
+              width: 0
               flex: 1
               display flex
               flex-direction column
               justify-content space-around
-
             .name
               font-family $font-family-medium
               font-size: $font-size-16
@@ -1378,6 +1384,7 @@
               overflow hidden
               text-overflow ellipsis
               white-space: nowrap
+              word-break:break-all
 
             .price-now
               color: #FA7500
@@ -1403,9 +1410,10 @@
             height @width
             border-radius 2px
             object-fit: cover
-            margin:14px
+            margin: 14px
             background-color $color-np-content
             object-fit: cover
+
           .edit-textarea
             border-width: 0px
             padding: 14px

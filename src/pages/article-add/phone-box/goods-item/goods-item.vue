@@ -71,11 +71,14 @@
       height: 90px
       flex-shrink: 0
       border-radius 8px 0px 0px 8px
+      object-fit cover
+      flex-shrink 0
     .info
       padding: 5px 12px
       overflow: hidden
       flex: 1
-
+      display flex
+      flex-direction column
       .name
         font-family $font-family-medium
         font-size: $font-size-16

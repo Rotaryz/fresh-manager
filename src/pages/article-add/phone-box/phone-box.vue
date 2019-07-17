@@ -171,27 +171,27 @@
 
   // 结构布局
   .phone-box
-    margin: 0 76px 0 71px
+    margin: 0 60px 0 60px
     box-sizing: border-box
     display: flex
     justify-content: center
-    width: 340px
-
+    width: 300px
+    flex-shrink: 0
     .phone
       position: fixed
       z-index: 200
-      top: 13%
+      top:17%
       icon-image('pic-tel')
-      width: 340px
-      height: 726.24px
+      width: 300px
+      height: 601px
 
       .content-box
         box-sizing: border-box
-        top: 111px
-        left: 21px
+        top: 86px
+        left:19px
         position: absolute
-        width: 303px
-        height: 503px
+        width: 268px
+        height: 446px
         overflow: hidden
 
         &.empty-type-video
@@ -370,7 +370,7 @@
       .bottom-operate
         position absolute
         bottom 0px
-        right: 0
+        right: 6px
         left: 0
         background white
         box-shadow: 0 -4px 20px 0 rgba(29, 32, 35, 0.06)
