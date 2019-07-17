@@ -64,7 +64,7 @@
                    class="edit-input disable-input"
                    maxlength="10"
             >
-            <span class="end-text">文字</span>
+            <span v-if="+marketIndex === 0" class="end-text">拓展订单除外</span>
             <div class="input-no-change"></div>
           </div>
         </div>
