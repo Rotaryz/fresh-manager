@@ -45,6 +45,9 @@
                   <span v-if="item.is_online" class="list-operation" @click="_stopCoupon(item)">停止</span>
                   <span v-if="!item.is_online" class="list-operation" @click="_deleteCoupon(item)">删除</span>
                 </div>
+                <div v-if="+val.type === 5" :style="{flex: val.flex}" class="item">
+                  {{item[val.value] > 0 ? item[val.value] : '无门槛'}}
+                </div>
               </div>
             </div>
           </div>
@@ -118,7 +121,7 @@
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name', type: 1},
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},
     {name: '使用范围', flex: 1, value: 'range_type_str', type: 1},
-    {name: '使用门槛', flex: 1, value: 'range_type_str', type: 1},
+    {name: '使用门槛', flex: 1, value: 'condition', type: 5},
     {name: '面值', flex: 1, value: 'denomination', type: 2},
     {name: '状态', flex: 1, value: 'status', type: 3},
     {name: '操作', flex: 1.2, value: '', type: 4}
