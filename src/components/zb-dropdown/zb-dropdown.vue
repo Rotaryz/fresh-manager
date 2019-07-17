@@ -126,16 +126,13 @@
         }, 1500)
       },
       selectType() {
-        console.log(this.disabled)
         if (this.disabled) {
           return
         }
-        console.log(2222)
         this.visible = !this.visible
         this.$emit('change-visible')
       },
       setValue(value, index) {
-        console.log(value, this.valueKey)
         this.visible = false
         this.showHover = false
         let res = this.valueKey ? value[this.valueKey] : value

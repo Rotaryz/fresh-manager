@@ -161,7 +161,6 @@
           this.$emit('failFile', res.message)
           return
         }
-        console.log('successImage', res)
         this.$emit('getPic', res.data)
       },
       _addVideo(e) {
@@ -183,7 +182,6 @@
             return
           }
           this.$emit('successVideo', res.data)
-          console.log('successVideo111', res)
         }).catch(err => {
           this.$loading.hide()
           this.$emit('failFile', err)
