@@ -24,7 +24,8 @@
     ['pic-coupon_window', 'pic-choose_commodity', 'pic-place_order'],
     ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity', 'pic-place_order'],
     ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity', 'pic-place_order'],
-    // ['pic-coupon_window','pic-choose_commodity','pic-place_order'],
+    ['pic-coupon_window', 'pic-choose_commodity', 'pic-place_order'],
+    ['pic-invitation_goupon', 'pic-invite_goupon'],
     [
       'pic-single_goupon',
       'pic-address_book',
@@ -32,9 +33,7 @@
       'pic-share_goupon2',
       'pic-choose_commodity',
       'pic-place_order'
-    ],
-    ['pic-invitation_goupon', 'pic-invite_goupon'],
-    ['pic-invitation_goupon', 'pic-invite_goupon']
+    ]
   ]
   const COMPONENT_NAME = 'SWIPER'
   export default {

@@ -237,6 +237,10 @@
     {name: '操作', flex: 0.5, value: ''}
   ]
 
+  const ARROW_ARR = [
+    ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
+    ['打开小程序弹出优惠券', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
+  ]
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
 
   export default {
@@ -254,7 +258,6 @@
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
         selectCompensateCouponTitle: SELECT_COMPENSATE_COUPON_TITLE,
         marketIndex: 0,
-        arrowArr: ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
         arrowIndex: 0,
         couponCheckItem: {},
         couponPage: {
@@ -290,6 +293,9 @@
     },
     computed: {
       ...marketComputed,
+      arrowArr() {
+        return this.marketIndex > 1 ? ARROW_ARR[1] : ARROW_ARR[0]
+      },
       testRules() {
         return this.rulesId
       },
