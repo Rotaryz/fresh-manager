@@ -277,7 +277,7 @@
     </default-modal>
 
     <!-- 选择优惠券弹窗-->
-    <default-modal ref="couponModal">
+    <default-modal v-if="+marketIndex === 4 || +marketIndex === 5" ref="couponModal">
       <div slot="content" class="shade-box">
         <div class="title-box">
           <div class="title">
@@ -317,6 +317,51 @@
         <div class="back">
           <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
           <div class="back-btn back-submit hand" @click="_additionCoupon">确定</div>
+        </div>
+      </div>
+    </default-modal>
+
+    <!--多选优惠券弹窗-->
+    <default-modal v-else ref="couponModal">
+      <div slot="content" class="shade-box">
+        <div class="title-box">
+          <div class="title">
+            选择优惠券
+          </div>
+          <span class="close hand" @click="_cancelModal"></span>
+        </div>
+        <!--搜索-->
+        <div class="shade-tab">
+          <div class="tab-item">
+            <base-search ref="groupSearch" placeHolder="请输入优惠券名称" @search="_searchData"></base-search>
+          </div>
+        </div>
+        <!--列表-->
+        <div class="group-content">
+          <div class="title">
+            <span v-for="(item, index) in couponTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</span>
+          </div>
+          <div class="outreach-group-list">
+            <div v-for="(item, index) in couponList" :key="item.id" class="group-item hand" @click="_selectCoupon2(item, index)">
+              <div v-for="(val, ind) in couponTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">
+                <span v-if="ind === 0" class="check" :class="['check',{'checked': item.checked}, {'right': item.right}]"></span>
+                <div v-else-if="val.value === 'time'" class="main">
+                  <p>{{item.start_at}}</p>
+                  <p>{{item.end_at}}</p>
+                </div>
+                <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                <span v-else class="title-item">{{item[val.value]}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--翻页器-->
+        <div class="page-box">
+          <base-pagination ref="paginationCoupon" :pageDetail="couponPage" @addPage="_getMoreCoupon"></base-pagination>
+        </div>
+        <div class="back">
+          <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
+          <div class="back-btn back-submit hand" @click="_additionCoupon2">确定</div>
         </div>
       </div>
     </default-modal>
@@ -523,6 +568,7 @@
         arrowIndex: 0,
         arrowText: ARROW_TEXT,
         groupSelectItem: [],
+        couponSelectList: [],
         couponSelectItem: {},
         couponCheckItem: {},
         title: '',
@@ -770,7 +816,17 @@
             per_page: res.meta.per_page,
             total_page: res.meta.last_page
           }
-          this.couponList = res.data
+          let data = res.data
+          this.couponList = data.map((item) => {
+            item.right = this.selectCouponList.some((val) => {
+              return val.id === item.id
+            })
+            item.checked = this.couponSelectList.some((val) => {
+              return val.id === item.id
+            })
+            return item
+          })
+          // this.couponList = res.data
         })
       },
       // 弹窗优惠券
@@ -892,6 +948,24 @@
       _selectCoupon(item, index) {
         this.couponCheckItem = item
       },
+      // 选中列表某一项
+      _selectCoupon2(item, index) {
+        if (item.right) return
+        if (item.checked) {
+          this.couponList = this.couponList.map((item, ind) => {
+            index === ind && (item.checked = false)
+            return item
+          })
+          let idx = this.couponSelectList.findIndex((items) => items.id === item.id)
+          idx > -1 && this.couponSelectList.splice(idx, 1)
+        } else {
+          this.couponList = this.couponList.map((item, ind) => {
+            index === ind && (item.checked = true)
+            return item
+          })
+          this.couponSelectList.push(item)
+        }
+      },
       // 弹窗保存
       _additionGroup() {
         this.selectGroupList = [...this.selectGroupList, ...this.groupSelectItem]
@@ -916,6 +990,15 @@
         }
         this._cancelModal()
       },
+      // 弹窗保存
+      _additionCoupon2() {
+        this.selectCouponList = [...this.selectCouponList, ...this.couponSelectList]
+        this.couponList = this.couponList.map((item) => {
+          item.checked && (item.right = true)
+          return item
+        })
+        this._cancelModal()
+      },
       // 翻页
       async _getMoreGroup(page) {
         this.page = page
@@ -932,7 +1015,9 @@
         if (!checkForm) return
         this.isSubmit = true
         // this.msg.coupon_id = this.couponSelectItem.id
-        this.msg.common_coupons = [{coupon_id: this.couponSelectItem.id}]
+        this.msg.common_coupons = this.selectCouponList.map(item => {
+          return {coupon_id: item.id}
+        })
         switch (+this.marketIndex) {
         case 4:
           delete this.msg.common_coupons
@@ -948,6 +1033,7 @@
           // 对接商品
           break
         case 5:
+          this.msg.common_coupons = this.couponSelectItem.id
           this.msg.shop_coupons = this.selectGroupList.map((item) => {
             return {
               shop_id: item.id,
@@ -1009,9 +1095,13 @@
         let id = this.$route.query.id || this.$route.query.editId || null
         if (id) {
           let obj = _.cloneDeep(news)
-          this.selectCouponList[0] = obj.coupon
-          this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
-          this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
+          this.selectCouponList = obj.common_coupons.map(item => {
+            item.start_at = item.start_at.split(' ')[0]
+            item.end_at = item.end_at.split(' ')[0]
+            return item
+          })
+          // this.selectCouponList = this.selectCouponList[0].start_at.split(' ')[0]
+          // this.selectCouponList = this.selectCouponList[0].end_at.split(' ')[0]
           this.selectGroupList = obj.shop_coupon.map((item) => {
             return {
               total_stock: item.total_stock,
