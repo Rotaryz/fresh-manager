@@ -41,9 +41,7 @@
             <div class="foodlist-title">
               <img src="./icon-ingredients@2x.png" class="foodlist-icon">食材
             </div>
-            <div v-if="data.foodList" class="foods-list">
-              {{data.foodList}}
-            </div>
+            <div v-if="data.foodList" class="foods-list">{{data.foodList.trim()}}</div>
             <div class="goods-list">
               <goods-item v-for="(item,idx) in data.goodsList" :key="idx" :goodsData="item"></goods-item>
             </div>
@@ -94,9 +92,7 @@
                 <img src="./icon-lv8@2x.png" class="level-icon">
               </template>
             </div>
-            <div class="text">
-              {{data.videoIntroduce}}
-            </div>
+            <div class="text">{{data.videoIntroduce}}</div>
             <div class="operate-wrap">
               <div>
                 <div class="like-operate">
@@ -342,11 +338,12 @@
 
       .foods-list
         font-family $font-family-regular
-        font-size $font-size-15
+        font-size $font-size-14
         letter-spacing 0.4px
         color: #111111
         margin: 15px
-
+        white-space: pre-wrap
+        word-wrap: break-word
       .goods-list
         padding: 0px 15px 5px
 
@@ -360,7 +357,7 @@
           font-family $font-family-regular
           font-size 15px
           color: #111111
-          white-space: pre-wrap;
+          white-space: pre-wrap
           word-wrap: break-word
         .article-image
         .article-video
@@ -463,10 +460,10 @@
         .text
           color: #ffffff
           font-family $font-family-regular
-          font-size: $font-size-15
-          line-height 21px
+          font-size: $font-size-14
           margin: 12px 0px 25px
-
+          white-space: pre-wrap
+          word-wrap: break-word
         .operate-wrap
           display flex
           justify-content space-between
