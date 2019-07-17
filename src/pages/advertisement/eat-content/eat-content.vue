@@ -650,7 +650,7 @@
         .goods-small-icon
           icon-image('icon-link')
         .goods-title
-          width: 63%
+          width: 400px
           no-wrap()
           margin-left: 12px
           font-size: $font-size-14
@@ -722,6 +722,8 @@
 
   .input-box
     position: relative
+    display: inline-block
+    width: 400px
     .edit-input
       margin-left: 20px
       font-size: $font-size-14
@@ -1115,6 +1117,7 @@
       .input-box-title
         margin-top: 12px
       .input-box
+        width: 300px
         .edit-input
           width: 300px
           margin-left: 0
