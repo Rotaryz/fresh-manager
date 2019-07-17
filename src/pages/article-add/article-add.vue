@@ -550,9 +550,7 @@
       _getLikes() {
         let limit = this.addData.goodCount < 10 ? this.addData.goodCount : 10
         let params = {article_id: this.articleId || 0, preview: 1, limit, page: 1}
-        console.log(params)
         API.Content.getLikes(params).then(res => {
-          console.log(res)
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
           }
@@ -679,7 +677,6 @@
       },
       // 封面
       getCoverVideo(video) {
-        console.log(video)
         this.addData.coverVideo.id = video.id
         this.addData.coverVideo.file_id = video.file_id
         this.addData.coverVideo.url = video.full_url
@@ -773,7 +770,6 @@
       deleteContentItem(idx, item) {
         this.addData.details.splice(idx, 1)
         if (item.type === 'goods') {
-          console.log(this.addData.goodsList, item.value)
           let index = this.addData.goodsList.findIndex(goods => goods.id === item.value.id)
           if (index !== -1) this.addData.goodsList.splice(index, 1)
         }
@@ -805,7 +801,6 @@
       },
       // 展示商品弹窗
       async showGoods() {
-        console.log(this.addData.goodsList)
         this.chooseGoodsFilter.page = 1
         this.chooseGoodsFilter.goods_category_id = ""
         this.getCategoryFirst()
@@ -873,14 +868,12 @@
       // 删除商品
       _showDelGoods(item, index) {
         this.addData.goodsList.splice(index, 1)
-        console.log(this.addData.goodsList)
       },
       // 单个添加
       _additionOne(item, index) {
         if (item.selected === 1) {
           return
         }
-        console.log(this.addData.goodsList)
         if (this.addData.goodsList.length >= 5) {
           this.$toast.show('选择商品数量不能超过5个')
           return
@@ -1053,7 +1046,6 @@
           })
         }
         if (this.id) params.id = this.id
-        console.log(params, this.addData)
         return params
       },
       goBack() {
