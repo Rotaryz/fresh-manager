@@ -1010,7 +1010,6 @@
         if (id) {
           let obj = _.cloneDeep(news)
           this.selectCouponList[0] = obj.coupon
-          console.log(obj.coupon, 111)
           this.selectCouponList[0].start_at = this.selectCouponList[0].start_at.split(' ')[0]
           this.selectCouponList[0].end_at = this.selectCouponList[0].end_at.split(' ')[0]
           this.selectGroupList = obj.shop_coupon.map((item) => {

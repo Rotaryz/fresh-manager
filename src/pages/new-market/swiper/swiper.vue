@@ -33,6 +33,7 @@
       'pic-choose_commodity',
       'pic-place_order'
     ],
+    ['pic-invitation_goupon', 'pic-invite_goupon'],
     ['pic-invitation_goupon', 'pic-invite_goupon']
   ]
   const COMPONENT_NAME = 'SWIPER'

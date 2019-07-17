@@ -353,7 +353,7 @@
         let arr = []
         if (+this.marketIndex === 2) {
           arr = [
-            {oupon_id: this.lessSelectItem.id},
+            {coupon_id: this.lessSelectItem.id},
             {coupon_id: this.greatSelectItem.id}
           ]
         } else {
@@ -361,24 +361,23 @@
         }
         let data = {
           type: this.rulesId,
-          config_json: {
-            title: this.rulesTitle,
-            common_coupons: arr
-          }
+          title: this.rulesTitle,
+          config_json: {},
+          common_coupons: arr
         }
         if (+this.marketIndex === 2) {
           data.config_json.condition_one_coupons = [
             {
               coupon_id: this.lessSelectItem.id,
               conditon_type: 0,
-              total: this.lessSelectItem.denomination
+              total: this.price
             }
           ]
           data.config_json.condition_two_coupons = [
             {
               coupon_id: this.greatSelectItem.id,
-              conditon_type: 0,
-              total: this.greatSelectItem.denomination
+              conditon_type: 1,
+              total: this.price
             }
           ]
         }
@@ -485,7 +484,14 @@
       _initMsg(news) {
         let id = this.$route.query.id || null
         if (id) {
-          this.couponSelectList[0] = news.coupon
+          if (+news.type === 8) {
+            this.lessSelectList = [news.common_coupons[0]]
+            this.greatSelectList = [news.common_coupons[1]]
+            this.marketIndex = 2
+            this.price = JSON.parse(news.config_json).condition_one_coupons[0].total
+          } else {
+            this.couponSelectList = news.common_coupons
+          }
           this.stairSelect.content = news.title
         }
       }
