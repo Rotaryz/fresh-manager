@@ -315,7 +315,7 @@
         background-color #F8F8F8
 
       .title
-        font-size $font-size-22
+        font-size $font-size-18
         font-family $font-family-medium
         color: #111111
         padding: 22px 15px 5px 15px
@@ -348,7 +348,7 @@
         padding: 0px 15px 5px
 
       .article-cont
-        padding: 15px 15px 10px 15px
+        padding: 10px
 
         .article-item
           margin-bottom 15px
@@ -365,7 +365,7 @@
           background-color $color-np-content
 
       .bottom-operate-wrap
-        height: 50px
+        height:38px
 
       .bottom-operate
         position absolute
@@ -379,14 +379,14 @@
         align-items center
 
         .operate-item
-          padding: 13px
+          padding: 10px
 
           .icon-wrap
             position relative
-            height: 23px
+            height: 18px
 
             .operate-icon
-              width: 23px
+              width: 16px
               height: @width
 
             .count
