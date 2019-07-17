@@ -47,8 +47,8 @@
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <!--<router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>-->
-                <router-link v-if="+item.status === 1" tag="span" :to="'new-market?editId=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">编辑</router-link>
-                <router-link v-if="+item.status === 0" tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
+                <router-link v-if="+item.status === 1" tag="span" :to="'new-market?editId=' + item.id + '&index='+defaultTab" append class="list-operation">编辑</router-link>
+                <router-link v-if="+item.status === 0" tag="span" :to="'new-market?id=' + item.id + '&index='+defaultTab" append class="list-operation">查看</router-link>
                 <span v-if="+item.status === 1" class="list-operation" @click="_stopMarket(item)">停止</span>
                 <span v-if="+item.status === 0" class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>

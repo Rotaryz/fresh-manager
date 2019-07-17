@@ -22,8 +22,8 @@
 
   const IMAGE_ARR = [
     ['pic-coupon_window', 'pic-choose_commodity', 'pic-place_order'],
-    ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity', 'pic-place_order'],
-    ['pic-message_template', 'pic-share_goupon2', 'pic-choose_commodity', 'pic-place_order'],
+    ['pic-coupon_window', 'pic-choose_commodity', 'pic-place_order'],
+    ['pic-coupon_window', 'pic-choose_commodity', 'pic-place_order'],
     ['pic-coupon_window', 'pic-choose_commodity', 'pic-place_order'],
     ['pic-invitation_goupon', 'pic-invite_goupon'],
     [
