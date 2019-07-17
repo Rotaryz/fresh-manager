@@ -93,12 +93,13 @@
       position absolute
 
     .info
+      height: 64px
       padding: 5px 12px
       overflow: hidden
       flex: 1
       display flex
       flex-direction column
-
+      justify-content space-between
       .name
         font-family $font-family-medium
         font-size: $font-size-13
