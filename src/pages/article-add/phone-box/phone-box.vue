@@ -360,7 +360,8 @@
           font-family $font-family-regular
           font-size 15px
           color: #111111
-
+          white-space: pre-wrap;
+          word-wrap: break-word
         .article-image
         .article-video
           width: 100%
