@@ -162,7 +162,7 @@
           {name: '全部', value: '', num: 0},
           {name: '进行中', value: 1, num: 0},
           {name: '未开始', value: 1, num: 0},
-          {name: '已过期', value: 1, num: 0}
+          {name: '已结束', value: 1, num: 0}
         ],
         delId: '',
         delItem: {},
