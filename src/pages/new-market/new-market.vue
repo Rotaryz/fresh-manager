@@ -42,7 +42,7 @@
                    type="text"
                    :placeholder="formConfig[marketIndex].placeHolder"
                    class="edit-input"
-                   maxlength="12"
+                   maxlength="10"
                    :class="{'disable-input': type}"
             >
             <span class="count">{{(msg.title && msg.title.length) || 0}}/10</span>
@@ -101,7 +101,7 @@
           </div>
         </div>
 
-        <!--社群福利券-->
+        <!--选择优惠券-->
         <div v-if="showAdd" class="edit-item  edit-list-item">
           <div class="edit-title">
             <span class="start">*</span>
@@ -344,7 +344,7 @@
           <div class="outreach-group-list">
             <div v-for="(item, index) in couponList" :key="item.id" class="group-item hand" @click="_selectCoupon2(item, index)">
               <div v-for="(val, ind) in couponTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">
-                <span v-if="ind === 0" class="check" :class="['check',{'checked': item.checked}, {'right': item.right}]"></span>
+                <span v-if="ind === 0" :class="['check', {'checked': item.checked}, {'right': item.right}]"></span>
                 <div v-else-if="val.value === 'time'" class="main">
                   <p>{{item.start_at}}</p>
                   <p>{{item.end_at}}</p>
@@ -653,9 +653,9 @@
     },
     watch: {},
     beforeCreate() {
-      (this.$route.query.id && this.$route.query.editId) || this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建优惠券'])
-      this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看优惠券'])
-      this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '编辑优惠券'])
+      (this.$route.query.id && this.$route.query.editId) || this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建营销'])
+      this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看营销'])
+      this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '编辑营销'])
     },
     created() {
       this.id = this.$route.query.id || this.$route.query.editId || null
@@ -751,8 +751,14 @@
       _delItem() {
         if (this.confirmType === 'coupon') {
           this.selectCouponList.splice(this.willDelItem, 1)
-          this.couponSelectItem = {}
+          this.groupSelectItem.splice(this.willDelItem, 1)
           this.couponCheckItem = {}
+          this.couponList.map((item) => {
+            if (item.id === this.currentItem.id) {
+              item.right = false
+              item.checked = false
+            }
+          })
         } else {
           this.selectGroupList.splice(this.willDelItem, 1)
           this.groupSelectItem.splice(this.willDelItem, 1)
@@ -838,6 +844,7 @@
           this.modalType = 'coupon'
           this.couponList = []
         }
+        this.couponSelectList = []
         this._getCouponList()
         this.$refs.couponModal.showModal()
       },
@@ -1032,7 +1039,7 @@
           // 对接商品
           break
         case 5:
-          this.msg.common_coupons = this.couponSelectItem.id
+          this.msg.common_coupons = [{coupon_id: this.couponSelectItem.id}]
           this.msg.shop_coupons = this.selectGroupList.map((item) => {
             return {
               shop_id: item.id,

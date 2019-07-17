@@ -48,16 +48,16 @@
                   <img class="icon" src="./icon-add@2x.png" alt="">
                   添加
                 </div>
-                <div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>
+                <!--<div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>-->
               </div>
-              <div v-if="categorySelectItem.name" class="goods-list-box">
+              <div v-if="selectCategoryList.length" class="goods-list-box">
                 <div class="commodities-list-header com-list-box commodities-list-top">
                   <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">{{item.name}}</div>
                 </div>
                 <div class="big-box">
-                  <div class="com-list-box com-list-content">
-                    <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">
-                      <span v-if="item.value !== ''">{{categorySelectItem[item.value]}}</span>
+                  <div v-for="(item, index) in selectCategoryList" :key="index" class="com-list-box com-list-content">
+                    <div v-for="(val, ind) in categoryTitle" :key="ind" :style="{flex: val.flex}" class="com-list-item">
+                      <span v-if="val.value !== ''">{{item[val.value]}}</span>
                       <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('category', item, index)">删除</span>
                     </div>
                   </div>
@@ -74,7 +74,7 @@
                   <img class="icon" src="./icon-add@2x.png" alt="">
                   添加
                 </div>
-                <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用，最多10个商品)</div>
+                <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span></div>
               </div>
               <div v-if="goodsList.length" class="goods-list-box">
                 <div class="commodities-list-header com-list-box commodities-list-top">
@@ -266,9 +266,9 @@
         <!--列表-->
         <div class="category-content">
           <div class="coupon-category-list">
-            <div v-for="(item, index) in categoryList" :key="index" class="category-item" @click="selectCategory(item, index)">
+            <div v-for="(item, index) in categoryList" :key="index" class="category-item hand" @click="selectCategory(item, index)">
               <div class="left">
-                <span class="check" :class="{'checked': (categoryCheckItem.id ? (item.id === categoryCheckItem.id) : (item.id === categorySelectItem.id))}"></span>
+                <span :class="['check', {'checked': item.checked}, {'right': item.right}]"></span>
                 <span class="name">{{item.name}}</span>
               </div>
               <span class="count">{{item.goods_count || 0}}个商品</span>
@@ -429,7 +429,8 @@
         categoryList: [],
         categoryTitle: CATEGORY_TITLE,
         categoryCheckItem: {}, // 选中的品类
-        categorySelectItem: {}, // 确定选择的品类
+        categorySelectList: [], // 确定选择的品类
+        selectCategoryList: [], // 已选品类
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
         checkFull: false,
@@ -542,7 +543,7 @@
         return +this.msg.range_type === 3 ? this.goodsList && this.goodsList.length : true
       },
       testCategory() {
-        return +this.msg.range_type === 2 ? this.categorySelectItem.name : true
+        return +this.msg.range_type === 2 ? this.selectCategoryList.length > 0 : true
       }
     },
     watch: {},
@@ -558,12 +559,12 @@
       // 详情信息
       if (this.id) {
         let obj = _.cloneDeep(this.couponDetail)
-        this.categorySelectItem.social_name = obj.social_name
+        // this.categorySelectItem.social_name = obj.social_name
         if (+obj.range_type === 1) {
           this.$set(this.useRange, 'content', '全部商品')
         } else if (+obj.range_type === 2) {
           this.$set(this.useRange, 'content', '指定品类可用')
-          this.categorySelectItem = obj.ranges[0]
+          this.selectCategoryList = obj.ranges
         } else if (+obj.range_type === 3) {
           this.$set(this.useRange, 'content', '指定商品可用')
           this.goodsList = obj.ranges
@@ -616,7 +617,6 @@
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          // item.trade_price = item.trade_price || 0
           if (delIndex !== -1) {
             item.selected = 0
           }
@@ -711,7 +711,7 @@
         if (this.disable) {
           return
         }
-        this.goodsDelId = item.goods_id
+        this.goodsDelId = item.goods_id || item.id
         this.goodsDelIndex = index
         this.delType = type
         this.$refs.confirm.show(`是否确定删除该${type === 'category' ? '品类' : '商品'}？`)
@@ -719,10 +719,15 @@
       // 删除商品弹窗
       _delGoods() {
         if (this.delType === 'category') {
-          this.categorySelectItem = {}
-          this.categoryCheckItem = {}
+          this.selectCategoryList.splice(this.goodsDelIndex, 1)
+          this.categorySelectList.splice(this.goodsDelIndex, 1)
+          this.categoryList.map((item) => {
+            if (item.id === this.goodsDelId) {
+              item.right = false
+              item.checked = false
+            }
+          })
         } else {
-          // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
           this.selectGoodsId.splice(this.goodsDelIndex, 1)
           this.goodsList.splice(this.goodsDelIndex, 1)
           this.selectDelId.push(this.goodsDelId)
@@ -731,7 +736,7 @@
       _cancelModal() {
         if (this.categoryShow) {
           this.categoryShow = false
-          this.categoryCheckItem = {}
+          // this.categoryCheckItem = {}
           this.$refs.categoryModal.hideModal()
         } else {
           this.selectGoods.forEach((item) => {
@@ -794,6 +799,7 @@
           return
         }
         this._initData()
+        this.categorySelectList = []
         // 展示品类弹窗
         this.$refs.categoryModal.showModal()
         this.categoryShow = true
@@ -808,12 +814,30 @@
 
       // 选择品类
       selectCategory(item, index) {
-        this.categoryCheckItem = item
+        // this.categoryCheckItem = item
+        if (item.right) return
+        if (item.checked) {
+          this.categoryList = this.categoryList.map((item, ind) => {
+            index === ind && (item.checked = false)
+            return item
+          })
+          let idx = this.categorySelectList.findIndex((items) => items.id === item.id)
+          idx > -1 && this.categorySelectList.splice(idx, 1)
+        } else {
+          this.categoryList = this.categoryList.map((item, ind) => {
+            index === ind && (item.checked = true)
+            return item
+          })
+          this.categorySelectList.push(item)
+        }
       },
       // 确定选择品类
       _addition() {
-        this.categoryCheckItem.id && (this.categorySelectItem = this.categoryCheckItem)
-        this.categoryShow = false
+        this.selectCategoryList = [...this.selectCategoryList, ...this.categorySelectList]
+        this.categoryList = this.categoryList.map((item) => {
+          item.checked && (item.right = true)
+          return item
+        })
         this.$refs.categoryModal.hideModal()
       },
       _back() {
@@ -831,9 +855,14 @@
         data = Object.assign({}, this.msg)
         // 添加coupon_range_id
         if (+this.msg.range_type === 2) {
-          this.categorySelectItem.coupon_range_id = this.categorySelectItem.coupon_range_id || 0
-          this.categorySelectItem.range_id = this.categorySelectItem.id || 0
-          this.msg.ranges[0] = this.categorySelectItem
+          // this.categorySelectItem.coupon_range_id = this.categorySelectItem.coupon_range_id || 0
+          // this.categorySelectItem.range_id = this.categorySelectItem.id || 0
+          data.ranges = this.selectCategoryList.map(item => {
+            return {
+              coupon_range_id: item.coupon_range_id || 0,
+              range_id: item.id || 0
+            }
+          })
         } else if (+this.msg.range_type === 3) {
           this.goodsList.forEach((item) => {
             item.range_id = item.id || 0
@@ -842,7 +871,6 @@
           let list = this.goodsList
           data = Object.assign({}, this.msg, {ranges: list})
         }
-
         let res = null
         this.isSubmit = true
         // 调用保存活动接口
@@ -1554,15 +1582,29 @@
         .check
           width: 16px
           height: 16px
+          margin-right: 20px
           border: 1px solid #E1E1E1
-          border-radius: 50%
           transition: all 0.3s
           display: flex
           justify-content: center
           align-items: center
-          margin-right: 20px
+          &:before
+            content: ""
+            width: 14px
+            height: 14px
+            icon-image(icon-check)
+            display: block
+            opacity: 0
+            transition: all 0.3s
         .checked
-          border: 5px solid $color-main
+          border-color: #4DBD65
+          &:before
+            opacity: 1
+        .right
+          border-color: #E1E1E1
+          &:before
+            opacity: 1
+            icon-image(icon-check_ash)
         .title-item
           padding-right: 20px
           display: block

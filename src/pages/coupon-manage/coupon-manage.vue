@@ -30,13 +30,10 @@
               <div v-for="(val, ind) in couponTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
 
                 <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                  {{item[val.value] || 0}}
+                  {{item[val.value] || '---'}}
                 </div>
                 <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
                   {{item[val.value] || 0}}{{+item.preferential_type === 1 ? '折' : '元'}}
-                </div>
-                <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">
-                  {{+item.status === 0 ? '未开始' : +item.status === 1 ? '进行中' : '已结束'}}
                 </div>
                 <div v-if="+val.type === 4" class="list-item list-use">
                   <span class="list-operation" @click="viewDataShow(item)">统计</span>
@@ -123,7 +120,7 @@
     {name: '使用范围', flex: 1, value: 'range_type_str', type: 1},
     {name: '使用门槛', flex: 1, value: 'condition', type: 5},
     {name: '面值', flex: 1, value: 'denomination', type: 2},
-    {name: '状态', flex: 1, value: 'status', type: 3},
+    {name: '状态', flex: 1, value: 'status_str', type: 1},
     {name: '操作', flex: 1.2, value: '', type: 4}
   ]
 

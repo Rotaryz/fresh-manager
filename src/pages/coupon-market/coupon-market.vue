@@ -41,10 +41,6 @@
                 <p v-if="item.start_at" class="item-dark">{{item.start_at}}-{{item.end_at}}</p>
                 <p v-else class="item-dark">---</p>
               </div>
-              <!--状态-->
-              <div v-if="+val.type === 3" class="list-item-btn">
-                {{+item.status === 0 ? '关闭' : '开启'}}
-              </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <!--<router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>-->
                 <router-link v-if="+item.status === 1" tag="span" :to="'new-market?editId=' + item.id + '&index='+defaultTab" append class="list-operation">编辑</router-link>
@@ -76,7 +72,7 @@
     {name: '活动时间', flex: 1.6, value: 'time', type: 4},
     {name: '营销名称', flex: 1.1, value: 'title', type: 1},
     {name: '优惠券', flex: 1, value: 'coupons_str', type: 2},
-    {name: '状态', flex: 1, value: 'status', type: 3},
+    {name: '状态', flex: 1, value: 'status_str', type: 1},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
 
