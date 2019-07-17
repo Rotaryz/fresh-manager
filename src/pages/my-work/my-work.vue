@@ -177,6 +177,10 @@
       statusName(news) {
         this.statusType = this.saveValue[news]
         this.$refs.baseStatusTab.infoStatus(this.statusType)
+      },
+      statusType(news) {
+        let item = this.dispatchSelect.find(item => item.status === news)
+        this.dispatTitle = item.name === '草稿' ? DISPATCHING_LIST2 : DISPATCHING_LIST
       }
     },
     async created() {
