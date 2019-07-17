@@ -722,7 +722,6 @@ export const scmGoodsMethods = {
 export const contentComputed = {
   ...mapGetters('content', [
     'centerTabIndex',
-    'contentPage',
     'contentClassList',
     'contentClassPage',
     'centerList',
