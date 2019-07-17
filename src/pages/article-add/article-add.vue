@@ -1361,6 +1361,7 @@
               width: 112px
               height: @width
               flex-shrink 0
+              object-fit cover
             .info
               margin-left: 14px
               width: 0
