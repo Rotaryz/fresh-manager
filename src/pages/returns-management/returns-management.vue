@@ -312,6 +312,7 @@
               return
             }
             this.getReturnsList()
+            this._statistic()
             this.$toast.show(res.message)
           })
           .catch((error) => {
