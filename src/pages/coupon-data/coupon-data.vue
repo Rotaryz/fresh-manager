@@ -77,6 +77,7 @@
     data() {
       return {
         id: '',
+        couponName: '',
         viewData: VIEW_DATA,
         chartDataArr: ['total_num', 'received_num', 'used_num'],
         chartData: [
@@ -119,6 +120,7 @@
                 name: this.chartData[index].name
               }
             })
+            this.couponName = res.data.coupon_name
             this.viewData[0].num = res.data.trade_total
             this.viewData[1].num = res.data.discount_total
             this.viewData[2].num = res.data.roi_value

@@ -208,8 +208,9 @@
               <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
-                  <p>{{item.start_at}}</p>
-                  <p>{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</p>
                 </div>
                 <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                 <span v-else class="title-item">{{item[val.value]}}</span>
