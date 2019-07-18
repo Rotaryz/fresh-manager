@@ -119,8 +119,9 @@
               <div v-for="(item, index) in selectCouponList" :key="index" class="com-list-box com-list-content">
                 <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="com-list-item" :style="{flex: val.flex}">
                   <div v-if="val.value === 'time'" class="main">
-                    <p>{{item.start_at}}</p>
-                    <p>{{item.end_at}}</p>
+                    <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                    <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                    <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</p>
                   </div>
                   <p v-else-if="val.value === ''" class="list-operation" :class="{'list-operation-disable': disable}" @click="_showDelItem('coupon', index, item)">删除</p>
                   <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
