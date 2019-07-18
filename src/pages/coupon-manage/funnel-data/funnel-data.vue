@@ -112,6 +112,7 @@
               maxSize: 550,
               label: {
                 normal: {
+                  show: false,
                   color: '#353535',
                   position: 'right',
                   fontSize: 14
@@ -119,11 +120,13 @@
               },
               emphasis: {
                 label: {
+                  show: false,
                   fontSize: 14
                 }
               },
               labelLine: {
                 normal: {
+                  show: false,
                   length: 60,
                   position: 'left',
                   lineStyle: {
@@ -134,7 +137,7 @@
               },
               itemStyle: {
                 normal: {
-
+                  show: false
                 }
               },
               data: this.chartData

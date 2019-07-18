@@ -15,7 +15,7 @@
       <div class="btn-main" :class="{'btn-disable': id}" @click="_showGoods"><span class="add-icon"></span>添加商品</div>
       <div class="add-tip">(只能选择一个商品)</div>
     </div>
-    <div class="big-list">
+    <div v-if="goodsItem.length" class="big-list">
       <div class="list-header list-box">
         <div v-for="(item, idx) in tableTitle" :key="idx" class="list-item">{{item}}</div>
       </div>

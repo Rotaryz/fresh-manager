@@ -40,7 +40,7 @@
           <div class="edit-content">
             <input v-model="msg.title"
                    type="text"
-                   :placeholder="formConfig[marketIndex].placeHolder"
+                   placeholder="请输入营销计划名称，最多10个字"
                    class="edit-input"
                    maxlength="10"
                    :class="{'disable-input': type}"
@@ -125,6 +125,7 @@
                     </div>
                     <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
                     <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                    <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? item[val.value]+'元' : '无门槛'}}</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
                 </div>
@@ -155,7 +156,7 @@
                       <p>{{item.end_at}}</p>
                     </div>
                     <p v-else-if="val.value === 'number'">
-                      <input v-if="type || item.id !== (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id)" v-model="item[val.value]" type="number" class="input-count">
+                      <input v-if="!type" v-model="item[val.value]" type="number" class="input-count">
                       <span v-else>{{item.total_stock}}</span>
                     </p>
                     <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': (type || item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))}" @click="showConfirm('group', index, item, item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))">删除</p>
@@ -430,8 +431,9 @@
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
+    {name: '使用门槛', flex: 1.2, value: 'condition'},
     {name: '面值', flex: 1, value: 'denomination'},
-    {name: '剩余', flex: 1, value: 'usable_stock'},
+    {name: '库存', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1.8, value: 'time'},
     {name: '操作', flex: 0.7, value: ''}
   ]
@@ -637,6 +639,21 @@
           return (item.number) > 0 && COUNTREG.test(item.number)
         })
         return result
+      },
+      testNewGoupCount() {
+        if (this.editId) {
+          let arr = this.selectGroupList.filter(val => {
+            let index = this.marketDetail.shop_coupon.findIndex(item => {
+              return val.id === item.shop_id
+            })
+            return index > -1
+          })
+          let result = arr.every((item, index) => {
+            return item.number > 0 && item.number >= this.marketDetail.shop_coupon[index].total_stock  && COUNTREG.test(item.number)
+          })
+          return result
+        }
+        return true
       },
       testInvite() {
         if (this.marketIndex !== 4) {
@@ -1032,7 +1049,6 @@
         switch (+this.marketIndex) {
         case 4:
           // 邀请有礼单独处理
-          delete this.msg.common_coupons
           delete this.msg.shop_coupons
           this.msg.config_json.inviter_coupons = this.inviterArr.map((item) => {
             item.coupon_id = item.id
@@ -1041,6 +1057,9 @@
           this.msg.config_json.invitee_coupons = this.invitedArr.map((item) => {
             item.coupon_id = item.id
             return item
+          })
+          this.msg.common_coupons = this.invitedArr.map((item) => {
+            return {coupon_id: item.id}
           })
           break
         case 5:
@@ -1065,13 +1084,13 @@
           }
           // 编辑社群营销可增加团长
           if (+this.marketIndex === 5) {
-            let arr = this.msg.shop_coupons.filter(val => {
-              let index = this.marketDetail.shop_coupon.findIndex(item => {
-                return val.shop_id === item.shop_id
-              })
-              return index < 0
-            })
-            data.shop_coupons = arr
+            // let arr = this.msg.shop_coupons.filter(val => {
+            //   let index = this.marketDetail.shop_coupon.findIndex(item => {
+            //     return val.shop_id === item.shop_id
+            //   })
+            //   return index < 0
+            // })
+            data.shop_coupons = this.msg.shop_coupons
           }
           res = await API.Market.editMarket(data) // 编辑营销
         } else {
@@ -1100,12 +1119,13 @@
           {value: this.testCouponList, txt: '请选择优惠券'},
           {value: this.testGroupList, txt: '请选择团长'},
           {value: this.testGroupCount, txt: '请输入团长优惠券发放数量'},
+          {value: this.testNewGoupCount, txt: '团长优惠券发放数量只能增加'},
           {value: this.testInvite, txt: '请选择邀请者兑换券'},
           {value: this.testInvited, txt: '请选择被邀请者优惠券'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
-            this.$toast.show(arr[i].txt)
+            this.$toast.show(arr[i].txt, 2000)
             return false
           }
           if (i === j - 1 && arr[i].value) {

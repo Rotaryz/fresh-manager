@@ -1072,6 +1072,8 @@
         border: 1px solid #E9ECEE
         .edit-input-box
           margin-left: 20px
+          .text
+            border-radius: 1px
       .select-item
         margin-left: 40px
         display: flex

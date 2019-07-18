@@ -273,7 +273,8 @@
         }
       },
       couponHandle(coupon) {
-        return `【${coupon.coupon_name}】${coupon.condition > 0 ? '满'+coupon.condition : '无门槛'}减${coupon.denomination}`
+        let lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination
+        return `【${coupon.coupon_name}】${coupon.condition > 0 ? '满'+coupon.condition+'元' : '无门槛'}${lastText}`
       }
     }
   }
@@ -311,7 +312,7 @@
       white-space: nowrap
       font-size: 14px
       .context
-        margin-right: 15px
+        margin-right: 5px
         white-space: pre-wrap
         word-break: break-all
       .show-tip
@@ -322,24 +323,13 @@
         position: relative
         .icon
           position: relative
-          width: 4px
-          height: 4px
-          margin-left: 10px
+          width: 14px
+          height: 14px
+          margin-left: 5px
           display: block
           border-radius: 50%
-          background: #666
-          &:before,&:after
-            content: ""
-            width: 4px
-            height: 4px
-            border-radius: 50%
-            background: #666
-            position: absolute
-            col-center()
-            left: -6px
-          &:after
-            left: 6px
-
+          background: url("./icon-more_list.png")
+          background-size: 100% 100%
     .tip-content
       position: absolute
       left: 31px
