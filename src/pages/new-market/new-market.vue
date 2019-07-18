@@ -214,8 +214,9 @@
                   <div v-if="item.id" class="list-item">{{item.denomination_str}}</div>
                   <div v-if="item.id" class="list-item">{{item.usable_stock}}</div>
                   <div v-if="item.id" class="list-item list-item-double">
-                    <p class="item-dark">{{item.start_at}}</p>
-                    <div class="item-sub-time">{{item.end_at}}</div>
+                    <p v-if="+item.is_day_limited !== 1" class="item-dark">{{item.start_at}}</p>
+                    <p v-if="+item.is_day_limited !== 1" class="item-sub-time">{{item.end_at}}</p>
+                    <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</p>
                   </div>
                   <div v-if="item.id" class="list-item">
                     <div class="list-operation" :class="{'list-operation-disable': disable}" @click="showDel(index)">删除</div>
@@ -255,8 +256,9 @@
               <div v-for="(val, ind) in invitationTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
-                  <p>{{item.start_at}}</p>
-                  <p>{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</p>
                 </div>
                 <p v-else-if="val.value === 'denomination'">{{item[val.value]}}</p>
                 <span v-else class="title-item">{{item[val.value]}}</span>

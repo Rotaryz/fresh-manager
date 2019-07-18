@@ -140,7 +140,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/v2/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' + search.join('&')
+        return process.env.VUE_APP_API + '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' + search.join('&')
       },
       exportData() {
         window.open(this.exportUrl())
