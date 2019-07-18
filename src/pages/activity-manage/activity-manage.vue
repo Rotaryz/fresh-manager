@@ -91,7 +91,7 @@
     {name: '参团人员', flex: 1, value: 'groupon_all_people_num', type: 1},
     {name: '状态', flex: 1, value: 'status', type: 4},
     {name: '创建时间', flex: 1.5, value: 'start_at', type: 1},
-    {name: '操作', flex: 1.8, value: '', type: 5}
+    {name: '操作', flex: 1.9, value: '', type: 5}
   ]
   // export const TAB_STATUS = [
   //   {text: '限时抢购', icon: require('./icon-today_rob@2x.png') ,status: 'one', activity_theme: 'fixed'},
