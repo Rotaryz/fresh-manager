@@ -253,7 +253,7 @@
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
-      <!--<p @click="test">测试</p>-->
+      <!--<p @click="testForm">测试</p>-->
     </div>
 
     <!-- 选择品类弹窗-->
@@ -413,7 +413,7 @@
           coupon_name: '',
           preferential_type: 2,
           denomination: '', // 优惠券面额
-          condition: 0, // 满多少可用
+          condition: '0', // 满多少可用
           support_activity: 0, // 是否支持活动商品使用0 1
           start_at: '',
           end_at: '',
@@ -454,7 +454,11 @@
       testMoneyReg() {
         // 优惠价格
         if (this.msg.preferential_type === 2) {
-          return +this.msg.denomination >= 1 && +this.msg.denomination <= 999
+          if (this.msg.condition > 0) {
+            return +this.msg.denomination >= 1 && +this.msg.denomination <= this.msg.condition
+          } else {
+            return +this.msg.denomination >= 1
+          }
         } else {
           return true
         }
@@ -499,7 +503,7 @@
         }
       },
       testCondition() {
-        return this.msg.condition && +this.msg.preferential_type === 2 ? RATE.test(this.msg.condition) : true
+        return this.msg.condition && RATE.test(this.msg.condition)
       },
       testStart() {
         // 开始时间
@@ -592,8 +596,8 @@
       _getEndTime(time) {
         this.msg.end_at = time
       },
-      // test() {
-      //   console.log(this.msg.is_day_limited, this.testStart, this.testEnd, this.testEndDate, 32)
+      // testForm() {
+      //   console.log(this.testCondition, this.msg.condition)
       // },
       // 选择商品
       async _getGoodsList() {

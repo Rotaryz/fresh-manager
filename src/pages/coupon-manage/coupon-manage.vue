@@ -201,6 +201,7 @@
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({
+          tag_type: 0,
           created_start_at: this.requestData.created_start_at,
           created_end_at: this.requestData.created_end_at
         }).then(
@@ -279,7 +280,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' + search.join('&')
+        return process.env.VUE_APP_API + '/social-shopping/v2/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' + search.join('&')
       },
       exportData() {
         window.open(this.exportUrl())
@@ -297,7 +298,7 @@
         this.currentItem = item
         this.confirmType = 'stop'
         this.infoTitle = '停止优惠券'
-        this.$refs.confirm.show('确定停止此优惠券？')
+        this.$refs.confirm.show('停止“'+ item.coupon_name +'”优惠券，用户之前领取的优惠券，在可用时间内还能继续使用，但无法再编辑优惠券内容。确定停止吗？')
       },
       _deleteCoupon(item) {
         this.currentItem = item

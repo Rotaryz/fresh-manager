@@ -119,8 +119,9 @@
                 <div v-for="(item, index) in selectCouponList" :key="index" class="list">
                   <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
                     <div v-if="val.value === 'time'" class="main">
-                      <p>{{item.start_at}}</p>
-                      <p>{{item.end_at}}</p>
+                      <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                      <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                      <span v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天有效</span>
                     </div>
                     <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
                     <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
@@ -154,10 +155,10 @@
                       <p>{{item.end_at}}</p>
                     </div>
                     <p v-else-if="val.value === 'number'">
-                      <input v-if="!disable" v-model="item[val.value]" type="number" class="input-count">
+                      <input v-if="type || item.id !== (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id)" v-model="item[val.value]" type="number" class="input-count">
                       <span v-else>{{item.total_stock}}</span>
                     </p>
-                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': (type || item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))}" @click="showConfirm('group', index, item)">删除</p>
+                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': (type || item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))}" @click="showConfirm('group', index, item, item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))">删除</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
 
@@ -301,8 +302,9 @@
               <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
-                  <p>{{item.start_at}}</p>
-                  <p>{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天有效</p>
                 </div>
                 <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                 <span v-else class="title-item">{{item[val.value]}}</span>
@@ -346,8 +348,9 @@
               <div v-for="(val, ind) in couponTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" :class="['check', {'checked': item.checked}, {'right': item.right}]"></span>
                 <div v-else-if="val.value === 'time'" class="main">
-                  <p>{{item.start_at}}</p>
-                  <p>{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天有效</p>
                 </div>
                 <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                 <span v-else class="title-item">{{item[val.value]}}</span>
@@ -429,7 +432,7 @@
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1.6, value: 'time'},
+    {name: '有效期', flex: 1.8, value: 'time'},
     {name: '操作', flex: 0.7, value: ''}
   ]
   const SELECT_GROUP_TITLE = [
@@ -496,7 +499,7 @@
       text: '登录小程序且授权成功的用户',
       code: 'invite_customer'
     },{
-      type: '社群福利',
+      type: '社群营销',
       placeHolder: '如：社群发福利10元优惠券，最多10个字',
       group: true,
       code: 'share_coupon'
@@ -631,7 +634,7 @@
       },
       testGroupCount() {
         let result = this.selectGroupList.every((item) => {
-          return item.number > 0 && COUNTREG.test(item.number)
+          return (item.number) > 0 && COUNTREG.test(item.number)
         })
         return result
       },
@@ -739,12 +742,10 @@
         this.msg = JSON.parse(JSON.stringify(this.msg))
       },
       // 删除列表时弹窗
-      showConfirm(type, index, item) {
-        if (this.disable) return
-        // if (type === 'group') {
-        //
-        // }
-        // if (type === 'coupon' && this.disable) return
+      showConfirm(type, index, item, not = true) {
+        if (this.disable && not) {
+          return
+        }
         this.$refs.confirm.show(`确定删除此${type === 'coupon' ? '优惠券' : '团长'}吗？`)
         this.confirmType = type
         this.willDelItem = index
@@ -1024,11 +1025,13 @@
         if (!checkForm) return
         this.isSubmit = true
         // this.msg.coupon_id = this.couponSelectItem.id
+        // 优惠券列表
         this.msg.common_coupons = this.selectCouponList.map(item => {
           return {coupon_id: item.id}
         })
         switch (+this.marketIndex) {
         case 4:
+          // 邀请有礼单独处理
           delete this.msg.common_coupons
           delete this.msg.shop_coupons
           this.msg.config_json.inviter_coupons = this.inviterArr.map((item) => {
@@ -1039,9 +1042,9 @@
             item.coupon_id = item.id
             return item
           })
-          // 对接商品
           break
         case 5:
+          // 社群营销加团长列表
           this.msg.common_coupons = [{coupon_id: this.couponSelectItem.id}]
           this.msg.shop_coupons = this.selectGroupList.map((item) => {
             return {
@@ -1053,15 +1056,26 @@
         default:
           break
         }
-        // this.msg.config_json.type_str = this.formConfig[this.marketIndex].code
         let res = null
+        // 编辑商品时可修改标题
         if (this.editId) {
-          res = await API.Market.editMarket({
+          let data = {
             title: this.msg.title,
             id: this.editId
-          })
+          }
+          // 编辑社群营销可增加团长
+          if (+this.marketIndex === 5) {
+            let arr = this.msg.shop_coupons.filter(val => {
+              let index = this.marketDetail.shop_coupon.findIndex(item => {
+                return val.shop_id === item.shop_id
+              })
+              return index < 0
+            })
+            data.shop_coupons = arr
+          }
+          res = await API.Market.editMarket(data) // 编辑营销
         } else {
-          res = await API.Market.storeMarket(this.msg, true)
+          res = await API.Market.storeMarket(this.msg, true) // 新建营销
         }
         this.setDefaultTab(+this.$route.query.index)
         this.$loading.hide()
@@ -1114,6 +1128,7 @@
           this.selectGroupList = obj.shop_coupon.map((item) => {
             return {
               id: item.shop_id,
+              number: item.total_stock,
               total_stock: item.total_stock,
               mobile: item.shop && item.shop.mobile,
               name: item.shop && item.shop.name,

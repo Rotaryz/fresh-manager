@@ -15,16 +15,16 @@
           <!--<img src="./icon-marketing_list@2x.png" class="identification-icon">-->
           <!--<p class="identification-name">营销列表</p>-->
           <!--<base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
-          <base-tabs :tabList="topBtn"
-                     :defaultTab="defaultTab"
-                     :isShowMark="false"
-                     tabAlign="left"
-                     padding="12px 2px"
-                     margin="0 18px"
-                     defaultColor="#333333"
-                     class="tab-top"
-                     @tab-change="tabChange"
-          ></base-tabs>
+          <market-tabs :tabList="topBtn"
+                       :defaultTab="defaultTab"
+                       :isShowMark="false"
+                       tabAlign="left"
+                       padding="12px 2px"
+                       margin="0 18px"
+                       defaultColor="#333333"
+                       class="tab-top"
+                       @tab-change="tabChange"
+          ></market-tabs>
         </div>
       </div>
       <div class="big-list">
@@ -38,18 +38,20 @@
                 {{item[val.value] || '---'}}
               </div>
               <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item hand">
-                <div class="tip-main">
-                  <span class="context">{{couponHandle(item.common_coupons[0]) || '---'}}</span>
-                  <span class="show-tip" @mouseenter="showTip(index)" @mouseleave="hideTip"><em class="icon"></em></span>
+                <span class="context">{{couponHandle(item.common_coupons[0]) || '---'}}</span>
+                <div v-if="item.common_coupons.length > 1" class="show-tip" @mouseenter="showTip(index)" @mouseleave="hideTip">
+                  <em class="icon"></em>
                   <transition name="fade">
                     <div v-if="tipShow === index" class="tip-content">
                       <span v-for="(coupon, i) in item.common_coupons" :key="i" class="text">{{couponHandle(coupon)}}</span>
                     </div>
                   </transition>
                 </div>
+
               </div>
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-double-row item">
-                <p v-if="item.start_at" class="item-dark">{{item.start_at}}-{{item.end_at}}</p>
+                <p v-if="item.start_at" class="item-dark">{{item.start_at}}</p>
+                <p v-if="item.start_at" class="item-dark">{{item.end_at}}</p>
                 <p v-else class="item-dark">---</p>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
@@ -74,15 +76,16 @@
 
 <script type="text/ecmascript-6">
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import MarketTabs from './market-tabs/market-tabs'
   import {marketComputed, marketMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'COUPON_MARKET'
   const TITLE = '营销计划'
   const MARKET_TITLE = [
-    {name: '活动时间', flex: 1.6, value: 'time', type: 4},
+    {name: '活动时间', flex: 1.4, value: 'time', type: 4},
     {name: '营销名称', flex: 1.1, value: 'title', type: 1},
-    {name: '优惠券', flex: 1, value: 'coupons_str', type: 2},
+    {name: '优惠券', flex: 1.5, value: 'coupons_str', type: 2},
     {name: '状态', flex: 1, value: 'status_str', type: 1},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
@@ -125,7 +128,8 @@
       title: TITLE
     },
     components: {
-      DefaultConfirm
+      DefaultConfirm,
+      MarketTabs
     },
     data() {
       return {
@@ -230,7 +234,7 @@
       hideTip() {
         this.timer = setTimeout(() => {
           this.tipShow = ''
-        }, 500)
+        }, 300)
       },
       _stopMarket(item) {
         this.currentItem = item
@@ -269,7 +273,7 @@
         }
       },
       couponHandle(coupon) {
-        return `“${coupon.coupon_name}”${coupon.condition > 0 ? '满'+coupon.condition : '无门槛'}减${coupon.denomination}`
+        return `【${coupon.coupon_name}】${coupon.condition > 0 ? '满'+coupon.condition : '无门槛'}减${coupon.denomination}`
       }
     }
   }
@@ -295,6 +299,8 @@
       overflow: inherit
       .item
         overflow: inherit
+        display: flex
+        align-items: center
   .btn-main
     margin-right: 10px
   .list-item
@@ -304,25 +310,16 @@
       overflow: hidden
       white-space: nowrap
       font-size: 14px
-    .tip-main
-      position: relative
-      margin-left: -15px
-      padding-left: 15px
-      height: 16px
-      display: flex
-      align-items: center
-      font-size: 14px
-      padding-right: 15px
       .context
         margin-right: 15px
-        max-width: 120px
-        text-overflow: ellipsis
-        overflow: hidden
+        white-space: pre-wrap
+        word-break: break-all
       .show-tip
         width: 25px
         height: 40px
         display: flex
         align-items: center
+        position: relative
         .icon
           position: relative
           width: 4px
@@ -345,8 +342,8 @@
 
     .tip-content
       position: absolute
-      left: 180px
-      bottom: -8px
+      left: 31px
+      bottom: 6px
       border-radius: 4px
       padding: 0 5px
       box-shadow: 0 0 8px 0 #E9ECEE
@@ -362,14 +359,14 @@
         border-bottom: 5px solid transparent
         border-left: 4px solid transparent
         position: absolute
-        bottom: 10px
+        bottom: 7px
         left: -9px
       .text
         font-size: $font-size-12
         color: #FFF
         font-family: $font-family-regular
-        line-height: 32px
-        height: 32px
+        line-height: 24px
+        height: 24px
         display: block
   .down-content
     height: 138px
