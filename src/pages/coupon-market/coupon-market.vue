@@ -70,12 +70,12 @@
         <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
       </div>
     </div>
-    <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
+    <market-confirm ref="confirm" @confirm="_sureConfirm"></market-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import MarketConfirm from './market-confirm/market-confirm'
   import MarketTabs from './market-tabs/market-tabs'
   import {marketComputed, marketMethods} from '@state/helpers'
   import API from '@api'
@@ -128,7 +128,7 @@
       title: TITLE
     },
     components: {
-      DefaultConfirm,
+      MarketConfirm,
       MarketTabs
     },
     data() {
@@ -239,7 +239,7 @@
       _stopMarket(item) {
         this.currentItem = item
         this.toastType = 'stop'
-        this.$refs.confirm.show(`确定停止“${item.title || ''}”营销计划？`)
+        this.$refs.confirm.show(`停止“${item.title || ''}”营销计划无法再发放优惠券，确定停止吗？`)
       },
       _deleteMarket(item) {
         this.curentItem = item
