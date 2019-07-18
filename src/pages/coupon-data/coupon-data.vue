@@ -5,7 +5,7 @@
       <div class="view-header">
         <div class="title">
           <img src="./icon-@2x.png" alt="" class="data-icon">
-          <p class="name">“{{viewData.coupon_name}}”效果统计</p>
+          <p class="name">“{{couponName}}”效果统计</p>
           <span class="text">(统计至前一天)</span>
         </div>
         <div class="right">
