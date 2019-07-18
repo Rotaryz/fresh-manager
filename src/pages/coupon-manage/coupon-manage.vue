@@ -330,6 +330,7 @@
             }
             this.$toast.show('停止成功')
             this.getCouponList()
+            this.getCouponStatus()
           })
       }
     }

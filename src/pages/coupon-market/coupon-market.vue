@@ -269,6 +269,7 @@
               }
               this.$toast.show('停止成功')
               this.getMarketList()
+              // this.getMarketStatus()
             })
         }
       },
