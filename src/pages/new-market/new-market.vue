@@ -151,15 +151,12 @@
               <div>
                 <div v-for="(item, index) in selectGroupList" :key="index" class="list">
                   <div v-for="(val, ind) in selectGroupTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
-                    <div v-if="val.value === 'time'" class="main">
-                      <p>{{item.start_at}}</p>
-                      <p>{{item.end_at}}</p>
-                    </div>
-                    <p v-else-if="val.value === 'number'">
+                    <p v-if="val.value === 'number'">
                       <input v-if="!type" v-model="item[val.value]" type="number" class="input-count">
                       <span v-else>{{item.total_stock}}</span>
                     </p>
-                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': (type || item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))}" @click="showConfirm('group', index, item, item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))">删除</p>
+                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': (type || item.id === (marketDetail.shop_coupon && marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))}" @click="showConfirm('group', index, item, item.id === (marketDetail.shop_coupon && marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))">删除</p>
+                    <!--<p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': (type || item.total_stock)}" @click="showConfirm('group', index, item, total_stock)">删除</p>-->
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
 
@@ -434,7 +431,7 @@
     {name: '使用门槛', flex: 1.2, value: 'condition'},
     {name: '面值', flex: 0.7, value: 'denomination'},
     {name: '库存', flex: 0.7, value: 'usable_stock'},
-    {name: '有效期', flex: 1.8, value: 'time'},
+    {name: '有效期', flex: 2, value: 'time'},
     {name: '操作', flex: 0.7, value: ''}
   ]
   const SELECT_GROUP_TITLE = [
@@ -1851,8 +1848,9 @@
     .list-box
       margin-left: 40.9px
       .list-item
+        white-space: nowrap
         &:first-child
-          min-width: 104px
+          min-width: 80px
           max-width: 104px
         &:nth-child(7)
           padding: 0
@@ -1860,7 +1858,8 @@
         &:nth-child(2)
           flex: 2
         &:nth-child(6)
-          min-width: 100px
+          flex: 2
+          min-width: 150px
       .btn-main-big
         line-height: 34px
         height: 34px
