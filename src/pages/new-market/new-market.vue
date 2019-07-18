@@ -1059,9 +1059,17 @@
             item.coupon_id = item.id
             return item
           })
-          this.msg.common_coupons = this.invitedArr.map((item) => {
-            return {coupon_id: item.id}
+          let arr1 = this.inviterArr.map((item) => {
+            return {
+              coupon_id: item.id
+            }
           })
+          let arr2 = this.invitedArr.map((item) => {
+            return {
+              coupon_id: item.id
+            }
+          })
+          this.msg.common_coupons = [...arr1, ...arr2]
           break
         case 5:
           // 社群营销加团长列表
@@ -1140,8 +1148,8 @@
         if (id) {
           let obj = _.cloneDeep(news)
           this.selectCouponList = obj.common_coupons.map(item => {
-            item.start_at = item.start_at.split(' ')[0]
-            item.end_at = item.end_at.split(' ')[0]
+            // item.start_at = item.start_at.split(' ')[0]
+            // item.end_at = item.end_at.split(' ')[0]
             return item
           })
           // this.selectCouponList = this.selectCouponList[0].start_at.split(' ')[0]
