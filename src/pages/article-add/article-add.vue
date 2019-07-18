@@ -299,17 +299,17 @@
                      class="edit-input"
               >
             </div>
-            <div class="edit-input-item look-item">
-              <div class="edit-title">
-                初始浏览人数
-              </div>
-              <input v-model="addData.lookCount"
-                     :disabled="isDisabled"
-                     type="number"
-                     placeholder=""
-                     class="edit-input"
-              >
-            </div>
+            <!--<div class="edit-input-item look-item">-->
+            <!--<div class="edit-title">-->
+            <!--初始浏览人数-->
+            <!--</div>-->
+            <!--<input v-model="addData.lookCount"-->
+            <!--:disabled="isDisabled"-->
+            <!--type="number"-->
+            <!--placeholder=""-->
+            <!--class="edit-input"-->
+            <!--&gt;-->
+            <!--</div>-->
           </div>
         </div>
       </div>
@@ -927,7 +927,8 @@
         } else if (this.currentType === 'cookbook' && !this.addData.foodList) message = '请填写食材清单'
         else if (this.currentType !== 'video' && !this.addData.details.length) message = '请编辑内容详情'
         else if (!(/^[+]{0,1}(\d+)$/.test(this.addData.goodCount))) message = '请输入正确的初始化点赞数'
-        else if (!(/^[+]{0,1}(\d+)$/.test(this.addData.lookCount))) message = '请输入正确的初始化浏览数'
+        // else if (!(/^[+]{0,1}(\d+)$/.test(this.addData.lookCount))) message = '请输入正确的初始化浏览数'
+        // else if (this.addData.goodCount > this.addData.lookCount) message = '初始化点赞数不能大于初始化浏览数'
         if (message) {
           this.$toast.show(message)
           return false
@@ -967,8 +968,8 @@
           author_sign: this.addData.authSignature.trim(),
           image_cover_id: this.addData.coverImage.id,
           video_cover_id: this.addData.coverVideo.id,
-          init_fabulous_num: (this.addData.goodCount + '').trim(),
-          init_browse_num: (this.addData.lookCount + '').trim(),
+          init_fabulous_num: this.addData.goodCount,
+          init_browse_num: this.addData.lookCount,
           article_pid: this.addData.articlePid,
           assembly: [],
           status
@@ -1102,9 +1103,9 @@
     position: relative
 
     &.other-edit-item
+      margin-bottom: 60px
       .edit-input
         width: 240px
-
     .edit-title
       margin-top: 7.5px
       font-size: $font-size-14
@@ -1357,11 +1358,13 @@
             min-height: 112px
             display flex
             padding: 14px
+
             .goods-photo
               width: 112px
               height: @width
               flex-shrink 0
               object-fit cover
+
             .info
               margin-left: 14px
               width: 0
@@ -1369,6 +1372,7 @@
               display flex
               flex-direction column
               justify-content space-around
+
             .name
               font-family $font-family-medium
               font-size: $font-size-16
@@ -1385,7 +1389,7 @@
               overflow hidden
               text-overflow ellipsis
               white-space: nowrap
-              word-break:break-all
+              word-break: break-all
 
             .price-now
               color: #FA7500

@@ -180,7 +180,7 @@
     .phone
       position: fixed
       z-index: 200
-      top:17%
+      top:16%
       icon-image('pic-tel')
       width: 300px
       height: 601px
