@@ -108,7 +108,7 @@
             <span>选择优惠券</span>
           </div>
           <div class="edit-content flex">
-            <div class="add-btn hand" :class="{'disable': disable}" @click="_showCouponModal">选择<img class="icon" src="./icon-add@2x.png" alt=""></div>
+            <div class="add-btn btn-main" :class="{'btn-disable': disable}" @click="_showCouponModal">选择<span class="add-icon"></span></div>
 
             <div v-if="selectCouponList.length" class="edit-list-box">
               <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
@@ -141,7 +141,7 @@
             <span>添加团长</span>
           </div>
           <div class="edit-content flex">
-            <div class="add-btn hand" :class="{'disable': type}" @click="_showGroupModal">添加<img class="icon" src="./icon-add@2x.png" alt=""></div>
+            <div class="add-btn btn-main" :class="{'btn-disable': type}" @click="_showGroupModal">添加<span class="add-icon"></span></div>
 
             <div v-if="selectGroupList.length" class="edit-list-box">
               <div class="list-title" :class="{'no-line': selectGroupList.length === 0}">
@@ -431,7 +431,7 @@
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
     {name: '类型', flex: 1, value: 'preferential_str'},
-    {name: '使用门槛', flex: 1.2, value: 'condition'},
+    {name: '使用门槛', flex: 1.3, value: 'condition'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '库存', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 1.8, value: 'time'},
@@ -1318,8 +1318,8 @@
         .text-no-change
           cursor: not-allowed
         .time-no-change
-          height: 110px
-          width: 660px
+          height: 40px
+          width: 500px
         .day-no-change
           top: 40px
           height: 110px
@@ -1328,20 +1328,6 @@
           box-sizing: border-box
           height: 32px
           width: 108px
-          color: #4DBD65
-          transition: all 0.3s
-          border-radius: 1px
-          border: 1px solid $color-main
-          display: flex
-          align-items: center
-          justify-content: center
-          .icon
-            width: 10px
-            height: 10px
-            margin-left: 5px
-            object-fit: cover
-        .disable
-          cursor: not-allowed
         .edit-list-box
           margin-top: 20px
           border: 1px solid $color-line
@@ -1361,9 +1347,9 @@
             border-bottom: 0
           .list
             height: 60px
-            line-height: 60px
             padding: 0 20px
             display: flex
+            line-height: 16px
             &:nth-child(2n)
               background: #F5F7FA
             .list-item

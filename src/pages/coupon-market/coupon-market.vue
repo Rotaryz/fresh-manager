@@ -277,7 +277,7 @@
         if (+coupon.tag_type === 1) {
           lastText = '兑换'
         } else {
-          lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination
+          lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination+'元'
         }
         return `【${coupon.coupon_name}】${coupon.condition > 0 ? '满'+coupon.condition+'元' : '无门槛'}${lastText}`
       }

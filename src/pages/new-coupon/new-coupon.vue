@@ -44,8 +44,8 @@
           <div v-if="+msg.range_type === 2" class="activity-box">
             <div class="activity-list">
               <div class="activity-tab">
-                <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showCategory">
-                  <img class="icon" src="./icon-add@2x.png" alt="">
+                <div :class="{'btn-disable': disable}" class="add-goods-btn btn-main" @click="_showCategory">
+                  <span class="add-icon"></span>
                   添加
                 </div>
                 <!--<div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>-->
@@ -70,8 +70,8 @@
           <div v-if="+msg.range_type === 3" class="activity-box">
             <div class="activity-list">
               <div class="activity-tab">
-                <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
-                  <img class="icon" src="./icon-add@2x.png" alt="">
+                <div :class="{'btn-disable': disable}" class="add-goods-btn btn-main" @click="_showGoods">
+                  <span class="add-icon"></span>
                   添加
                 </div>
                 <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用)</div>
@@ -1213,23 +1213,14 @@
       height: 32px
       line-height: 32px
       width: 108px
-      color: #4DBD65
       font-size: $font-size-14
       font-family: $font-family-regular
       transition: all 0.3s
-      text-align: center
-      border-radius: 2px
-      border: 1px solid #4DBD65
-      display: flex
-      align-items: center
-      justify-content: center
-    .disable
-      cursor: not-allowed
-    .icon
-      width: 10px
-      height: 10px
-      margin-right: 5px
-      object-fit: cover
+      .add-icon
+        margin-right: 5px
+        margin-left: 0
+
+
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
