@@ -17,6 +17,8 @@
         :comType="cmsType"
         :guessList="guessList"
         :groupList="groupList"
+        :freeShippingList="freeShippingList"
+        :activityList="activityList"
         @setType="handleChangeType"
       ></phone-box>
       <!--广告-->
@@ -246,10 +248,11 @@
         cateGoods: [],
         currentModule: {},
         activityList: [], // 活动列表
-        newClientList: [], // 新人特惠列表
-        todayHotList: [], // 今日爆品
-        guessList: [],
-        groupList: []
+        newClientList: [], // 新人特惠列表,用于phone-box组件
+        todayHotList: [], // 今日爆品,用于phone-box组件
+        freeShippingList: [], // 全国包邮,用于phone-box组件
+        guessList: [],// 猜你喜欢,用于phone-box组件
+        groupList: []// 拼团返现,用于phone-box组件
       }
     },
     computed: {
@@ -306,6 +309,7 @@
       },
       _actionToChangeModule() {
         let cms = this._currentCms
+        if (this.cmsType === cms.module_name) return
         this.cmsType = cms.module_name
         this.cmsId = cms.id
         this.cmsModuleId = cms.module_id
@@ -313,34 +317,39 @@
         // this._isSave = false
         this._getAllActivityData()
       },
-      // 获取所有活动数据
+      // 获取活动列表数据
       _getAllActivityData() {
         let module = this.infoBannerList.modules.find((val) => val.module_name === 'activity') || {}
         if (module.list) {
           module.list.forEach((item) => {
             if (item.starting_point_id > 0) {
-              API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then((res) => {
-                if (!res || !res.data) {
-                  return
-                }
-                if (item.module_name === 'activity_fixed') {
-                  this.activityGoodsList = this._formatListData(res.data)
-                } else if (item.module_name === 'groupon') {
-                  API.Advertisement.getGroupList().then((res) => {
-                    if (res.data) {
-                      this.groupList = this._formatListData(res.data)
-                    }
-                  })
-                } else {
-                  let key = (TAB_ARR_CONFIG[item.module_name] || {}).dataArray
-                  if (this[key]) {
-                    this[key] = this._formatListData(res.data)
+              if (item.module_name === 'groupon') {
+                // 拼团返现
+                API.Advertisement.getGroupList().then((res) => {
+                  if (res.data) {
+                    this.groupList = this._formatListData(res.data)
+                    this.freeShippingList = this._formatListData(res.data)
                   }
-                }
-              })
+                })
+              } else {
+                API.Advertisement.getActivityGoodsList({activity_id: item.starting_point_id}).then((res) => {
+                  if (!res || !res.data) {
+                    return
+                  }
+                  if (item.module_name === 'activity_fixed') {
+                    this.activityGoodsList = this._formatListData(res.data)
+                  } else {
+                    let key = (TAB_ARR_CONFIG[item.module_name] || {}).dataArray
+                    if (this[key]) {
+                      this[key] = this._formatListData(res.data)
+                    }
+                  }
+                })
+              }
             }
           })
         }
+        // 猜你喜欢
         API.Advertisement.getGuessList().then((res) => {
           if (res.data) {
             this.guessList = this._formatListData(res.data)
@@ -361,6 +370,7 @@
       // this.activityStatus = this.activityStatus ? 0 : 1
       },
       async _getModuleMsg(type, id, moduleId) {
+        // 获取各个模块的数据
         let res = await API.Advertisement.getModuleMsg({id: id, module_id: moduleId})
         if (res.error !== this.$ERR_OK) {
           return
@@ -377,7 +387,8 @@
           // this.temporaryNavigation = _.cloneDeep(res.data)
           break
         case 'activity':
-          this.activityList = res.data || []
+          // this.activityList = res.data || []
+          this.activityList = [...res.data,{"id":332,"sort":5,"module_id":6,"module_name":"free_shipping","module_title":"全国包邮","source_type":1,"is_close":0,"starting_point_id":4389,"list":[]}] || []
           break
         default:
           break

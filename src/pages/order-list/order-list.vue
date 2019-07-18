@@ -79,16 +79,9 @@
   const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员手机'
   const EXCEL_URL = '/social-shopping/api/backend/order-excel'
 
-  // const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '社区名称', '订单状态', '操作']
-  const ORDERSTATUS = [{text: '商城订单', status: 'c_shop'}, {text: '拓展订单', status: 'c_offline'}]
-  const SOCIAL_SELECT = {
-    check: false,
-    show: false,
-    content: '全部社区',
-    type: 'default',
-    data: []
-  }
+  const ORDERSTATUS = [{text: '商城订单', status: 'c_shop'}, {text: '拓展订单', status: 'c_offline'}, {text: '全国包邮订单', status: 'c_freeShipping'}]
+  const SOCIAL_SELECT = {check: false, show: false, content: '全部社区', type: 'default', data: []}
 
   export default {
     name: PAGE_NAME,
@@ -175,6 +168,7 @@
         this.setOrderStatus(selectStatus)
       },
       getOrderStatus(startTime, endTime) {
+        // this.changeStatusTab()
         API.Order.getOrderStatus({
           source: this.status,
           start_time: this.startTime,
@@ -210,6 +204,26 @@
       },
       exportExcel() {
         window.open(this.orderExportUrl, '_blank')
+      },
+      changeStatusTab() {
+        if (this.infoTabIndex === 2) {
+          this.statusTab = [
+            {name: '全部', value: '', key: 'all', num: 0},
+            {name: '待付款', value: 1, key: 'wait_submit', num: 0},
+            {name: '待发货', value: 1, key: 'success', num: 0},
+            {name: '配送中', value: 1, key: 'success', num: 0},
+            {name: '已完成', value: 1, key: 'success', num: 0},
+            {name: '已关闭', value: 1, key: 'success', num: 0}
+          ]
+        } else {
+          this.statusTab = [
+            {name: '全部', value: '', key: 'all', num: 0},
+            {name: '待付款', value: 1, key: 'wait_submit', num: 0},
+            {name: '待提货', value: 1, key: 'success', num: 0},
+            {name: '已完成', value: 1, key: 'success', num: 0},
+            {name: '已关闭', value: 1, key: 'success', num: 0}
+          ]
+        }
       },
       changeStatus(selectStatus) {
         this.setStatus(selectStatus)

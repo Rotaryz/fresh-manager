@@ -13,6 +13,13 @@ export const TAB_ARR_CONFIG = {
     buttonText: '+购物车',
     dataArray: 'todayHotList'
   },
+  free_shipping: {
+    title: '全国包邮',
+    subTitle: '火爆推荐',
+    iconText: '爆款价',
+    buttonText: '+购物车',
+    dataArray: 'freeShippingList'
+  },
   groupon: {
     title: '拼团返现',
     subTitle: '成团有礼',

@@ -84,7 +84,7 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '佣金收益', status: 0}, {name: '退款补偿', status: 1}]
+          data: [{name: '全部', status: ''}, {name: '佣金收益-自提商品', status: 0}, {name: '佣金收益-全国包邮', status: 0}, {name: '退款补偿', status: 1}]
         },
         id: 0,
         settlementType: '',
