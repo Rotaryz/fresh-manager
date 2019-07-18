@@ -82,7 +82,7 @@
         chartDataArr: ['total_num', 'received_num', 'used_num'],
         chartData: [
           {
-            value: 1,
+            value: 2,
             name: '优惠券总数'
           },
           {
@@ -120,6 +120,7 @@
                 name: this.chartData[index].name
               }
             })
+            this.$refs.funnel._setChart()
             this.couponName = res.data.coupon_name
             this.viewData[0].num = res.data.trade_total
             this.viewData[1].num = res.data.discount_total

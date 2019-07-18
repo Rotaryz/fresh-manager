@@ -19,7 +19,7 @@
         default: () => {
           return [
             {
-              value: 1,
+              value: 2,
               name: '优惠券总数'
             },
             {
@@ -40,7 +40,7 @@
       }
     },
     created() {
-      this._setChart()
+      // this._setChart()
     },
     beforeDestroy() {
       this.myChart = ''
