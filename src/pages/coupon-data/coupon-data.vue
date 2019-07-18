@@ -47,7 +47,7 @@
 
   const PAGE_NAME = 'COUPON_DATA'
 
-  const TITLE = '优惠券投入产出统计'
+  const TITLE = '优惠券统计'
   const VIEW_DATA = [
     {
       name: '用券成交金额(元)',
