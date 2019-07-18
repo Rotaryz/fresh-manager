@@ -334,6 +334,7 @@
         this.setStatus(selectStatus)
         let index = this.statusList.findIndex((item) => +item.status === +this.status)
         this.infoTabIndex = index > 0 ? index : 0
+        this.getReturnsList()
         this.$refs.pagination.beginPage()
       },
       changeShopId(shop) {
