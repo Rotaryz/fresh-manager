@@ -1094,10 +1094,10 @@
           }
           res = await API.Market.editMarket(data) // 编辑营销
         } else {
-          res = await API.Market.storeMarket(this.msg, true) // 新建营销
+          res = await API.Market.storeMarket(this.msg, false) // 新建营销
         }
         this.setDefaultTab(+this.$route.query.index)
-        this.$loading.hide()
+        // this.$loading.hide()
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           this.isSubmit = false
