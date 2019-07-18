@@ -96,13 +96,13 @@
     <description-modal ref="description"></description-modal>
     <!--兑换券-->
     <goods-coupon v-show="infoTabIndex === 1" ref="goodsCoupon"></goods-coupon>
-    <default-confirm ref="confirm" :infoTitle="infoTitle" :oneBtn="false" @confirm="_sureConfirm"></default-confirm>
+    <coupon-confirm ref="confirm" :infoTitle="infoTitle" :oneBtn="false" @confirm="_sureConfirm"></coupon-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import API from '@api'
-  import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import CouponConfirm from './coupon-confirm/coupon-confirm'
   import GoodsCoupon from './goods-coupon/goods-coupon'
   import DescriptionModal from './description-modal/description-modal'
   import FunnelData from './funnel-data/funnel-data'
@@ -147,7 +147,7 @@
       title: TITLE
     },
     components: {
-      DefaultConfirm,
+      CouponConfirm,
       GoodsCoupon,
       FunnelData,
       DescriptionModal

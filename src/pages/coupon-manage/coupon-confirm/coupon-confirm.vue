@@ -2,11 +2,16 @@
   <default-modal ref="modal">
     <div slot="content" class="default-confirm">
       <div class="confirm-content">
-        <div class="title">{{title}}</div>
+        <div class="title-box">
+          <div class="title">
+            {{infoTitle}}
+          </div>
+          <span class="close hand" @click="cancel"></span>
+        </div>
         <div class="text">{{text}}</div>
         <div class="btn-group">
-          <span class="btn confirm" @click="confirm">确定</span>
-          <span class="btn cancel" @click="cancel">取消</span>
+          <span class="btn cancel" @click="cancel">{{cancelText}}</span>
+          <span class="btn confirm" @click="confirm">{{sureText}}</span>
         </div>
       </div>
     </div>
@@ -21,7 +26,28 @@
   export default {
     name: COMPONENT_NAME,
     components: {DefaultModal},
-    props: {},
+    props: {
+      cancelText: {
+        // 取消文字
+        type: String,
+        default: '取消'
+      },
+      sureText: {
+        // 确定文字
+        type: String,
+        default: '确认'
+      },
+      oneBtn: {
+        // 是否显示取消
+        type: Boolean,
+        default: false
+      },
+      infoTitle: {
+        // title默认值
+        type: String,
+        default: '温馨提示'
+      }
+    },
     data() {
       return {
         text: '',
@@ -54,52 +80,41 @@
   @import "~@design"
 
   .default-confirm
-    width: 329.6px
-    height: 200px
+    width: 380px
     background: #fff
-    border-radius: 1px
-    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.6)
+    border-radius: 3px
+    box-shadow: 0 8px 14px 0 rgba(12, 6, 14, 0.08)
     text-align: center
-    color: #333
-    .btn-group
-      text-align: center
+    padding: 0 20px 20px
+    box-sizing: border-box
+    position: relative
+    .title-box
       display: flex
-      justify-content: center
-      user-select: none
-      .btn
-        width: 96px
-        height: 40px
-        line-height: 40px
-        border-radius: 1px
-        border: 1px solid $color-text-D9
-        cursor: pointer
-        transition: all 0.3s
-      .cancel
-        border: 1px solid $color-line
-        margin-left: 20px
-        &:hover
-          color: $color-text-sub
-          border-color: $color-text-sub
-      .confirm
-        border: 1px solid $color-main
-        background: $color-main
-        color: $color-white
-        &:hover
-          opacity: 0.8
-      .one-btn
-        margin-left: 0
-    .title
-      font-size: $font-size-16
-      font-family: $font-family-medium
-      padding-top: 25px
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
     .text
+      margin-top: 7px
       font-size: $font-size-16
       font-family: $font-family-regular
-      color: #333
-      padding-top: 15px
-      height: 94px
-      text-align: center
-      margin: 0 35px
+      color: #666
+      text-align: left
       word-break: break-all
       line-height: 1.4
+    .btn-group
+      position: relative
+      left: 0
+      top: 0
+      padding: 0
+      margin-top: 20px
 </style>
