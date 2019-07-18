@@ -119,8 +119,8 @@
                 <div v-for="(item, index) in selectCouponList" :key="index" class="list">
                   <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
                     <div v-if="val.value === 'time'" class="main">
-                      <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
-                      <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                      <p v-if="+item.is_day_limited !== 1" style="text-overflow: ellipsis; overflow: hidden;">{{item.start_at}}</p>
+                      <p v-if="+item.is_day_limited !== 1" style="text-overflow: ellipsis; overflow: hidden;">{{item.end_at}}</p>
                       <span v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天有效</span>
                     </div>
                     <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
@@ -430,10 +430,10 @@
   const COUNTREG = /^[1-9]\d*$/
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
-    {name: '类型', flex: 1, value: 'preferential_str'},
-    {name: '使用门槛', flex: 1.3, value: 'condition'},
-    {name: '面值', flex: 1, value: 'denomination'},
-    {name: '库存', flex: 1, value: 'usable_stock'},
+    {name: '类型', flex: 0.7, value: 'preferential_str'},
+    {name: '使用门槛', flex: 1.2, value: 'condition'},
+    {name: '面值', flex: 0.7, value: 'denomination'},
+    {name: '库存', flex: 0.7, value: 'usable_stock'},
     {name: '有效期', flex: 1.8, value: 'time'},
     {name: '操作', flex: 0.7, value: ''}
   ]
@@ -453,11 +453,11 @@
   ]
   const COUPON_TITLE = [
     {name: '选择', flex: 0.4, value: ''},
-    {name: '优惠券名称', flex: 1.8, value: 'coupon_name'},
-    {name: '类型', flex: 1, value: 'preferential_str'},
-    {name: '面值', flex: 1, value: 'denomination'},
-    {name: '剩余数量', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1, value: 'time'}
+    {name: '优惠券名称', flex: 1.6, value: 'coupon_name'},
+    {name: '类型', flex: 0.9, value: 'preferential_str'},
+    {name: '面值', flex: 0.9, value: 'denomination'},
+    {name: '剩余数量', flex: 0.9, value: 'usable_stock'},
+    {name: '有效期', flex: 1.4, value: 'time'}
   ]
   const INVITATION_TITLE = [
     {name: '选择', flex: 0.4, value: ''},

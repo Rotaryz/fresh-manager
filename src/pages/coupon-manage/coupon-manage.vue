@@ -37,10 +37,10 @@
                 </div>
                 <div v-if="+val.type === 4" class="list-item list-use">
                   <span class="list-operation" @click="viewDataShow(item)">统计</span>
-                  <router-link v-if="+item.status === 1" tag="span" :to="'new-coupon?editId=' + (item.id || 0)" append class="list-operation">编辑</router-link>
-                  <router-link v-if="+item.status === 0" tag="span" :to="'new-coupon?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
-                  <span v-if="+item.status === 1" class="list-operation" @click="_stopCoupon(item)">停止</span>
-                  <span v-if="+item.status === 0" class="list-operation" @click="_deleteCoupon(item)">删除</span>
+                  <router-link v-if="+item.status === 1 || +item.status === 0" tag="span" :to="'new-coupon?editId=' + (item.id || 0)" append class="list-operation">编辑</router-link>
+                  <router-link v-if="+item.status === 2" tag="span" :to="'new-coupon?id=' + (item.id || 0)" append class="list-operation">查看</router-link>
+                  <span v-if="+item.status === 1 || +item.status === 0" class="list-operation" @click="_stopCoupon(item)">停止</span>
+                  <span v-if="+item.status === 2" class="list-operation" @click="_deleteCoupon(item)">删除</span>
                 </div>
                 <div v-if="+val.type === 5" :style="{flex: val.flex}" class="item">
                   {{item[val.value] > 0 ? item[val.value] : '无门槛'}}

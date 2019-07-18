@@ -889,6 +889,7 @@
         }
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
+          this.$loading.hide()
           this.isSubmit = false
           return
         }
