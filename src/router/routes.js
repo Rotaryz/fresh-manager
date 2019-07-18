@@ -510,6 +510,16 @@ export default [
           }
         }
       },
+
+      // 优惠券统计
+      {
+        path: 'coupon-manage/coupon-data',
+        name: 'coupon-data',
+        component: () => lazyLoadView(import('@pages/coupon-data/coupon-data')),
+        meta: {
+          titles: ['商城', '营销', '优惠券', '优惠券统计']
+        }
+      },
       // 新建兑换券
       {
         path: 'coupon-manage/edit-commodity',

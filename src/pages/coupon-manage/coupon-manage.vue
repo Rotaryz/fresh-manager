@@ -242,7 +242,8 @@
       },
       viewDataShow(item) {
         this.currentItem = item
-        this.getCouponData()
+        this.$router.push('/home/coupon-manage/coupon-data?id='+item.id)
+        // this.getCouponData()
       },
       getCouponData() {
         API.Coupon.getCouponData({

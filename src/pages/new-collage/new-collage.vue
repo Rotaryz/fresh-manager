@@ -319,7 +319,7 @@
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1, value: 'time'}
+    {name: '有效期', flex: 1.2, value: 'time'}
   ]
 
   const COUNT = /[2-5]/
