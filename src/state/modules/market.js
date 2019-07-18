@@ -125,7 +125,7 @@ export const actions = {
   },
   getMarketingStatisticsList({commit, state}, msg) {
     let {id, page, loading} = msg
-    return API.Market.getMarketStatistic(id, {page, limit: 12}, loading)
+    return API.Market.getMarketStatistic(id, {page, limit: 11}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
