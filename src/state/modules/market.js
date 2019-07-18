@@ -18,6 +18,7 @@ export const state = {
   inviteCount: 0,
   marketStaLists: [],
   defaultIndex: 0,
+  marketType: [1, 2, 3, 9, 7, 4],
   requestData: {
     page: 1,
     type: 1
@@ -51,6 +52,9 @@ export const getters = {
   },
   defaultTab(state) {
     return state.defaultTab
+  },
+  marketType(state) {
+    return state.marketType
   }
 }
 
@@ -93,7 +97,9 @@ export const mutations = {
 
 export const actions = {
   getMarketList({commit, state}, loading = false) {
-    return API.Market.getMarketList(state.requestData, loading)
+    let data = JSON.parse(JSON.stringify(state.requestData))
+    data.type = state.marketType[state.defaultTab]
+    return API.Market.getMarketList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)

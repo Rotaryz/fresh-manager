@@ -164,7 +164,7 @@ export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDe
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount', 'defaultIndex', 'requestData', 'defaultTab'])
+  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount', 'defaultIndex', 'requestData', 'defaultTab', 'marketType'])
 }
 
 export const marketMethods = {
