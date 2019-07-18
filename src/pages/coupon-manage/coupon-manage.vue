@@ -197,6 +197,7 @@
       changeTab(item, index) {
         this.setInfoIndex(index)
         this.getCouponList()
+        this.showViewData = false
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({

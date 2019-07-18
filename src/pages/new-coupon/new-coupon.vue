@@ -74,7 +74,7 @@
                   <img class="icon" src="./icon-add@2x.png" alt="">
                   添加
                 </div>
-                <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span></div>
+                <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用)</div>
               </div>
               <div v-if="goodsList.length" class="goods-list-box">
                 <div class="commodities-list-header com-list-box commodities-list-top">
@@ -685,10 +685,10 @@
       _selectGoods(item, index) {
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 10) {
-            this.$toast.show('选择商品数量不能超过十个')
-            return
-          }
+          // if (this.selectGoodsId.length === 10) {
+          //   this.$toast.show('选择商品数量不能超过十个')
+          //   return
+          // }
           this.chooseGoods[index].selected = 2
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
@@ -754,10 +754,10 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过十个')
-          return
-        }
+        // if (this.selectGoodsId.length === 20 && item.selected !== 2) {
+        //   this.$toast.show('选择商品数量不能超过十个')
+        //   return
+        // }
 
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1

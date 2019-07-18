@@ -19,8 +19,8 @@
                      :defaultTab="defaultTab"
                      :isShowMark="false"
                      tabAlign="left"
-                     padding="12px 5px"
-                     margin="0 10px"
+                     padding="12px 2px"
+                     margin="0 18px"
                      defaultColor="#333333"
                      class="tab-top"
                      @tab-change="tabChange"
@@ -33,9 +33,20 @@
         </div>
         <div v-if="marketList.length" class="list">
           <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-              <div v-if="+val.type === 1 || +val.type === 2" :style="{flex: val.flex}" class="item">
+            <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 2}">
+              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || '---'}}
+              </div>
+              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item hand">
+                <div class="tip-main">
+                  <span class="context">{{couponHandle(item.common_coupons[0]) || '---'}}</span>
+                  <span class="show-tip" @mouseenter="showTip(index)" @mouseleave="hideTip"><em class="icon"></em></span>
+                  <transition name="fade">
+                    <div v-if="tipShow === index" class="tip-content">
+                      <span v-for="(coupon, i) in item.common_coupons" :key="i" class="text">{{couponHandle(coupon)}}</span>
+                    </div>
+                  </transition>
+                </div>
               </div>
               <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-double-row item">
                 <p v-if="item.start_at" class="item-dark">{{item.start_at}}-{{item.end_at}}</p>
@@ -131,7 +142,9 @@
         curentItem: {},
         statusArr: new Array(10).fill(undefined),
         currentItem: {},
-        toastType: ''
+        toastType: '',
+        tipShow: '',
+        timer: ''
       }
     },
     computed: {
@@ -210,6 +223,15 @@
       addPage(page) {
         this.setRequestData({page})
       },
+      showTip(index) {
+        clearTimeout(this.timer)
+        this.tipShow = index
+      },
+      hideTip() {
+        this.timer = setTimeout(() => {
+          this.tipShow = ''
+        }, 500)
+      },
       _stopMarket(item) {
         this.currentItem = item
         this.toastType = 'stop'
@@ -245,6 +267,9 @@
               this.getMarketList()
             })
         }
+      },
+      couponHandle(coupon) {
+        return `“${coupon.coupon_name}”${coupon.condition > 0 ? '满'+coupon.condition : '无门槛'}减${coupon.denomination}`
       }
     }
   }
@@ -264,6 +289,12 @@
         overflow: hidden
         white-space: nowrap
         font-size: 14px
+
+  .list .list-box
+    >.list-about
+      overflow: inherit
+      .item
+        overflow: inherit
   .btn-main
     margin-right: 10px
   .list-item
@@ -273,6 +304,73 @@
       overflow: hidden
       white-space: nowrap
       font-size: 14px
+    .tip-main
+      position: relative
+      margin-left: -15px
+      padding-left: 15px
+      height: 16px
+      display: flex
+      align-items: center
+      font-size: 14px
+      padding-right: 15px
+      .context
+        margin-right: 15px
+        max-width: 120px
+        text-overflow: ellipsis
+        overflow: hidden
+      .show-tip
+        width: 25px
+        height: 40px
+        display: flex
+        align-items: center
+        .icon
+          position: relative
+          width: 4px
+          height: 4px
+          margin-left: 10px
+          display: block
+          border-radius: 50%
+          background: #666
+          &:before,&:after
+            content: ""
+            width: 4px
+            height: 4px
+            border-radius: 50%
+            background: #666
+            position: absolute
+            col-center()
+            left: -6px
+          &:after
+            left: 6px
+
+    .tip-content
+      position: absolute
+      left: 180px
+      bottom: -8px
+      border-radius: 4px
+      padding: 0 5px
+      box-shadow: 0 0 8px 0 #E9ECEE
+      border: 1px solid #E9ECEE
+      background: rgba(50,50,50,0.8)
+      z-index: 10
+      &:before
+        content: ""
+        width: 9px
+        height: 10px
+        border: 5px solid rgba(50,50,50,0.8)
+        border-top: 4px solid transparent
+        border-bottom: 5px solid transparent
+        border-left: 4px solid transparent
+        position: absolute
+        bottom: 10px
+        left: -9px
+      .text
+        font-size: $font-size-12
+        color: #FFF
+        font-family: $font-family-regular
+        line-height: 32px
+        height: 32px
+        display: block
   .down-content
     height: 138px
     .down-title

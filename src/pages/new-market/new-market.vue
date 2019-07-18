@@ -139,7 +139,7 @@
             <span>添加团长</span>
           </div>
           <div class="edit-content flex">
-            <div class="add-btn hand" :class="{'disable': disable}" @click="_showGroupModal">添加<img class="icon" src="./icon-add@2x.png" alt=""></div>
+            <div class="add-btn hand" :class="{'disable': type}" @click="_showGroupModal">添加<img class="icon" src="./icon-add@2x.png" alt=""></div>
 
             <div v-if="selectGroupList.length" class="edit-list-box">
               <div class="list-title" :class="{'no-line': selectGroupList.length === 0}">
@@ -157,7 +157,7 @@
                       <input v-if="!disable" v-model="item[val.value]" type="number" class="input-count">
                       <span v-else>{{item.total_stock}}</span>
                     </p>
-                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('group', index, item)">删除</p>
+                    <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': (type || item.id === (marketDetail.shop_coupon[index] && marketDetail.shop_coupon[index].shop_id))}" @click="showConfirm('group', index, item)">删除</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
 
@@ -190,9 +190,9 @@
                     <div class="item-sub-time">{{item.end_at}}</div>
                   </div>
                   <div v-if="item.id" class="list-item">
-                    <div class="list-operation" :class="{'list-operation-disable': id}" @click="delInvite(index)">删除</div>
+                    <div class="list-operation" :class="{'list-operation-disable': disable}" @click="delInvite(index)">删除</div>
                   </div>
-                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': id}" @click="_showGoodsCouponModal(index)">添加兑换券<span class="add-icon"></span></div>
+                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': disable}" @click="_showGoodsCouponModal(index)">添加兑换券<span class="add-icon"></span></div>
                 </div>
               </div>
             </div>
@@ -219,9 +219,9 @@
                     <div class="item-sub-time">{{item.end_at}}</div>
                   </div>
                   <div v-if="item.id" class="list-item">
-                    <div class="list-operation" :class="{'list-operation-disable': id}" @click="showDel(index)">删除</div>
+                    <div class="list-operation" :class="{'list-operation-disable': disable}" @click="showDel(index)">删除</div>
                   </div>
-                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': id}" @click="_showCouponModal(index)">添加优惠券<span class="add-icon"></span></div>
+                  <div v-show="!item.id" class="btn-main btn-main-big" :class="{'btn-disable': disable}" @click="_showCouponModal(index)">添加优惠券<span class="add-icon"></span></div>
                 </div>
               </div>
             </div>
@@ -589,7 +589,6 @@
         goodsKeyword: '',
         goodsList: [],
         goodsPageTotal: {total: 1, per_page: 10, total_page: 1},
-        id: '',
         editId: ''
       }
     },
@@ -658,7 +657,7 @@
       this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '编辑营销'])
     },
     created() {
-      this.id = this.$route.query.id || this.$route.query.editId || null
+      // this.id = this.$route.query.id || this.$route.query.editId || null
       this.editId = this.$route.query.editId || null
       this.disable = this.$route.query.id || this.$route.query.editId
       this.marketIndex = +this.$route.query.index || 0
@@ -742,6 +741,10 @@
       // 删除列表时弹窗
       showConfirm(type, index, item) {
         if (this.disable) return
+        // if (type === 'group') {
+        //
+        // }
+        // if (type === 'coupon' && this.disable) return
         this.$refs.confirm.show(`确定删除此${type === 'coupon' ? '优惠券' : '团长'}吗？`)
         this.confirmType = type
         this.willDelItem = index
@@ -898,7 +901,7 @@
         this._cancelGoodModal()
       },
       _showGroupModal() {
-        if (this.disable) return
+        if (this.type) return
         this.groupSelectItem = []
         if (this.modalType === 'coupon') {
           this._initData()
@@ -1110,6 +1113,7 @@
           // this.selectCouponList = this.selectCouponList[0].end_at.split(' ')[0]
           this.selectGroupList = obj.shop_coupon.map((item) => {
             return {
+              id: item.shop_id,
               total_stock: item.total_stock,
               mobile: item.shop && item.shop.mobile,
               name: item.shop && item.shop.name,
