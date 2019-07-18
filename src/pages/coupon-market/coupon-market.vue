@@ -155,7 +155,7 @@
       ...marketComputed
     },
     created() {
-      this.getMarketStatus()
+      // this.getMarketStatus()
     },
     mounted() {},
     methods: {
@@ -221,7 +221,7 @@
             return item
           })
           // this.getMarketList({page: this.page, status: this.status})
-          this.getMarketStatus()
+          // this.getMarketStatus()
         })
       },
       addPage(page) {
@@ -254,7 +254,7 @@
             return
           }
           this.$toast.show('删除成功')
-          this.getMarketStatus()
+          // this.getMarketStatus()
           if (+this.marketPageDetail.total%10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
             this.setRequestData({page: this.marketPageDetail.total_page - 1})
           } else {
