@@ -150,6 +150,11 @@
     },
     created() {
       this.$loading.hide()
+      if (this.currentTab.activity_theme === 'groupon') {
+        this.saleTitle = COLLAGE_TITLE
+      } else {
+        this.saleTitle = SALE_TITLE
+      }
       this.status = this.$route.query.status * 1 || 0
       this._getActiveStatus()
     },
