@@ -23,7 +23,22 @@
         </div>
         <div class="big-list">
           <div class="list-header list-box">
-            <div v-for="(item,index) in couponTitle" :key="index" :style="{flex: item.flex}" class="list-item">{{item.name}}</div>
+            <div
+              v-for="(item, index) in couponTitle"
+              :key="index"
+              :style="{flex: item.flex}"
+              class="list-item"
+              :class="{'hand': +item.type === 3}"
+            >
+              <span v-if="item.type !== 3">{{item.name}}</span>
+              <div v-if="+item.type === 3" class="tip-item" @mouseenter="tipShow" @mouseleave="tipHide">
+                {{item.name}}
+                <transition name="fade">
+                  <div v-if="showTip" class="tip-text">用券总成交额/优惠总金额</div>
+                </transition>
+                <span class="roi-icon"></span>
+              </div>
+            </div>
           </div>
           <div v-if="couponList.length" class="list">
             <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
@@ -34,6 +49,9 @@
                 </div>
                 <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item">
                   {{item[val.value] || 0}}{{+item.preferential_type === 1 ? '折' : '元'}}
+                </div>
+                <div v-if="+val.type === 3" :style="{flex: val.flex}" class="item">
+                  {{item[val.value] || 0}}
                 </div>
                 <div v-if="+val.type === 4" class="list-item list-use">
                   <span class="list-operation" @click="viewDataShow(item)">统计</span>
@@ -121,6 +139,7 @@
     {name: '使用门槛', flex: 1, value: 'condition', type: 5},
     {name: '面值', flex: 1, value: 'denomination', type: 2},
     {name: '状态', flex: 1, value: 'status_str', type: 1},
+    {name: 'ROI指标', flex: 1, value: 'roi_value', type: 3},
     {name: '操作', flex: 1.2, value: '', type: 4}
   ]
 
@@ -170,6 +189,7 @@
         showViewData: false,
         infoTitle: '停止优惠券',
         chartDataArr: ['total_num', 'received_num', 'used_num'],
+        showTip: false,
         chartData: [
           {
             value: 1,
@@ -198,6 +218,12 @@
         this.setInfoIndex(index)
         this.getCouponList()
         this.showViewData = false
+      },
+      tipShow() {
+        this.showTip = true
+      },
+      tipHide() {
+        this.showTip = false
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({
@@ -359,6 +385,30 @@
     font-family: $font-family-regular
     font-size: $font-size-14
   .list-box
+    .tip-item
+      display: flex
+      align-items: center
+    .tip-text
+      position: absolute
+      left: 76px
+      top: -5px
+      color: #FFF
+      border-radius: 4px
+      padding: 4px 8px
+      box-shadow: 0 0 8px 0 #E9ECEE
+      border: 1px solid #E9ECEE
+      background: rgba(50,50,50,0.8)
+      z-index: 10
+    .list-item
+      position: relative
+    .roi-icon
+      width: 14px
+      height: 14px
+      display: inline-block
+      margin-left: 5px
+      background: url("./icon-help_lv@2x.png")
+      background-size: 100% 100%
+
     .list-item
       font-size: $font-size-14
       &:last-child
