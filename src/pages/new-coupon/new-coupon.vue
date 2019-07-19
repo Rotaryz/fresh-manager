@@ -740,7 +740,16 @@
       _cancelModal() {
         if (this.categoryShow) {
           this.categoryShow = false
-          // this.categoryCheckItem = {}
+          this.categoryCheckItem = {}
+          this.categoryList = this.categoryList.map((item, ind) => {
+            let index = this.categorySelectList.findIndex(val => {
+              return item.id === val.id
+            })
+            if (index > -1) {
+              item.checked = false
+            }
+            return item
+          })
           this.$refs.categoryModal.hideModal()
         } else {
           this.selectGoods.forEach((item) => {

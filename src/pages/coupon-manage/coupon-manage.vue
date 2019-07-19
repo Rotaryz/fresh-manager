@@ -43,7 +43,7 @@
                   <span v-if="+item.status === 2" class="list-operation" @click="_deleteCoupon(item)">删除</span>
                 </div>
                 <div v-if="+val.type === 5" :style="{flex: val.flex}" class="item">
-                  {{item[val.value] > 0 ? '满'+item[val.value].split('.')[0]+'可用' : '无门槛'}}
+                  {{item[val.value] > 0 ? '满'+Number(item[val.value])+'可用' : '无门槛'}}
                 </div>
               </div>
             </div>
