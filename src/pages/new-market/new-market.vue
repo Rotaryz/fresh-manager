@@ -125,7 +125,7 @@
                     </div>
                     <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
                     <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
-                    <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? item[val.value]+'元' : '无门槛'}}</p>
+                    <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? '满'+item[val.value].split('.')[0]+'可用' : '无门槛'}}</p>
                     <p v-else class="main">{{item[val.value]}}</p>
                   </div>
                 </div>
