@@ -102,7 +102,7 @@
                     <div v-for="(val, ind) in selectCompensateCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
                       <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('less', index, item)">删除</p>
                       <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
-                      <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? '满'+item[val.value].split('.')[0]+'可用' : '无门槛'}}</p>
+                      <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? '满'+Number(item[val.value])+'可用' : '无门槛'}}</p>
                       <p v-else class="main">{{item[val.value]}}</p>
                     </div>
                   </div>
@@ -143,7 +143,7 @@
                     <div v-for="(val, ind) in selectCompensateCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
                       <p v-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('great', index, item)">删除</p>
                       <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
-                      <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? '满'+item[val.value].split('.')[0]+'可用' : '无门槛'}}</p>
+                      <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? '满'+Number(item[val.value])+'可用' : '无门槛'}}</p>
                       <p v-else class="main">{{item[val.value]}}</p>
                     </div>
                   </div>
