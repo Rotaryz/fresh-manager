@@ -19,12 +19,12 @@ export const TAB_ARR_CONFIG = {
     iconText: '拼团价',
     buttonText: '去拼团',
     dataArray: 'groupList'
+  },
+  guess: {
+    title: '猜你喜欢',
+    subTitle: '为你优选',
+    iconText: '团购价',
+    buttonText: '+购物车',
+    dataArray: 'guessList'
   }
-  // guess: {
-  //   title: '猜你喜欢',
-  //   subTitle: '为你优选',
-  //   iconText: '团购价',
-  //   buttonText: '+购物车',
-  //   dataArray: 'guessList'
-  // }
 }
