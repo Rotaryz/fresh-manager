@@ -19,24 +19,23 @@
           <base-drop-down :width="400" :height="40" :select="consumer" @setValue="_selectConsumer"></base-drop-down>
         </div>
       </div>
-      <div class="edit-item">
+      <div v-if="+msg.consumer === 1" class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           会员手机号
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.mobile" type="text" placeholder="请输入" class="edit-input" :class="{'disable-input': disable}">
-          <span class="btn-text">定位社区</span>
+          <input v-model="msg.mobile" type="tel" placeholder="请输入" maxlength="11" class="edit-input">
         </div>
+        <span class="btn-text hand" @click="fixPosition">定位社区</span>
       </div>
-      <div class="edit-item">
+      <div v-if="+msg.consumer === 1" class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           微信昵称
         </div>
         <div class="edit-input-box">
-          <span class="tip" :class="{'tip-text': true}">输入会员手机点击定位社区</span>
-          <input v-model="msg.wechat_name" type="text" placeholder="请输入" class="edit-input" :class="{'disable-input': disable}">
+          <span class="tip-text" :class="{'tip': msg.wechat_name}">{{msg.wechat_name || '输入会员手机点击定位社区'}}</span>
         </div>
       </div>
       <div class="edit-item">
@@ -45,7 +44,7 @@
           所属社区
         </div>
         <div class="edit-input-box">
-          <base-drop-down :width="400" :height="40" :select="community" @setValue="_selectConsumer"></base-drop-down>
+          <base-drop-down :width="400" :height="40" :select="community" @setValue="_selectCommunity"></base-drop-down>
         </div>
       </div>
     </div>
@@ -69,9 +68,10 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
-
+              <div class="com-list-item">{{item.sale_unit}}</div>
+              <div class="com-list-item">{{item.sale_count}}</div>
               <div class="com-list-item">
-                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
+                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -131,7 +131,7 @@
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
+      <div class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -147,17 +147,13 @@
   const TITLE = '新建补录订单'
 
   const COMMODITIES_LIST = [
-    '商品名称',
-    '单位',
-    '销售价(元)',
-    '销量',
-    '抢购价(元)',
-    '每人限购',
-    '商品库存',
-    '活动库存',
-    '排序',
+    '商品',
+    '销售单位',
+    '可用库存',
+    '下单数量',
     '操作'
   ]
+  const REGPHONE = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
 
   export default {
     name: PAGE_NAME,
@@ -197,14 +193,14 @@
         consumer: {
           check: false,
           show: false,
-          content: '全部商品',
+          content: '选择补货对象',
           type: 'default',
-          data: [{name: '选择补货对象', id: 1}, {name: '指定消费者', id: 2}, {name: '给团长分配', id: 3}] // 格式：{title: '55'}}
+          data: [{name: '指定消费者', id: 1}, {name: '给团长分配', id: 2}] // 格式：{title: '55'}}
         },
         community: {
           check: false,
           show: false,
-          content: '全部商品',
+          content: '',
           type: 'default',
           data: [{name: '广海花园社区', id: 1}] // 格式：{title: '55'}}
         },
@@ -218,7 +214,7 @@
         disable: false,
         goodsList: [],
         msg: {
-
+          consumer: ''
         },
         isSubmit: false,
         activityTheme: '',
@@ -228,22 +224,35 @@
 
     computed: {
       ...merchantOrderComputed,
-      testName() {
-        return this.msg.activity_name
+      testConsumer() {
+        return this.msg.consumer
       },
-      testStartTime() {
-        return this.msg.start_at
+      testMobile() {
+        if (+this.msg.consumer === 1) {
+          return this.msg.mobile && REGPHONE.test(this.msg.mobile)
+        }
+        return true
       },
-      testStartDate() {
-        // 开始时间规则判断
-        return Date.parse('' + this.msg.start_at.replace(/-/g, '/')) > new Date() - 360000
+      testWechatName() {
+        if (+this.msg.consumer === 1) {
+          return this.msg.wechat_name
+        }
+        return true
       },
-      testEndTime() {
-        return this.msg.end_at
+      testCommunity() {
+        return this.msg.community
       },
-      testEndTimeReg() {
-        // 结束时间规则判断
-        return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
+      testGoods() {
+        return this.goodsList.length
+      },
+      testGoodsCount() {
+        let result = this.goodsList.every(item => {
+          if (!item.count) {
+            this.$toast.show(`请输入商品“${item.name}”下单数量`)
+          }
+          return item.count > 0
+        })
+        return result
       }
     },
     created() {
@@ -254,6 +263,20 @@
       ...merchantOrderMethods,
       _selectConsumer(item) {
         this.msg.consumer = item.id
+      },
+      _selectCommunity(item) {
+        this.msg.community = item.name
+      },
+      fixPosition() {
+        if (!this.testMobile) return
+        API.merchantOrder.fixPosition({mobile: this.msg.mobile})
+          .then(res => {
+            if (res.error !== this.ERR_OK) {
+              this.$tost.show(res.message)
+              return
+            }
+            this.community.data = res.data
+          })
       },
       // 选择商品
       async _getGoodsList() {
@@ -459,44 +482,38 @@
       },
       //  保存
       async _saveActivity() {
-        if (this.disable || this.isSubmit) return
+        if (this.isSubmit) return
         let checkForm = this.checkForm()
+        console.log(checkForm)
         if (!checkForm) return
-        let list = this.goodsList
-        if (!list.length) {
-          this.$toast.show('请添加商品')
-          return
-        }
 
-        list.map((item) => {
-          delete item.person_day_buy_limit
-          item.goods_id = item.id || item.goods_id
-        })
-        let data = Object.assign({}, this.msg, {activity_goods: list, activity_theme: this.$route.query.activity_theme})
-        let res = null
-        this.isSubmit = true
-        res = await API.Sale.storeSale(data, true)
-        this.$loading.hide()
-        this.$toast.show(res.message)
-        if (res.error !== this.$ERR_OK) {
-          this.isSubmit = false
-          return
-        }
-        setTimeout(() => {
-          this._back()
-        }, 1000)
+        let data = Object.assign({}, this.msg, {activity_goods: this.goodsList})
+        // let res = null
+        // this.isSubmit = true
+        console.log(data)
+        // res = await API.Sale.storeSale(data, true)
+        // this.$loading.hide()
+        // this.$toast.show(res.message)
+        // if (res.error !== this.$ERR_OK) {
+        //   this.isSubmit = false
+        //   return
+        // }
+        // setTimeout(() => {
+        //   this._back()
+        // }, 1000)
       },
       checkForm() {
         let arr = [
-          {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testStartTime, txt: '请选择活动开始时间'},
-          // {value: this.testStartDate, txt: '活动开始时间必须大于等于当前时间'},
-          {value: this.testEndTime, txt: '请选择活动结束时间'}
-          // {value: this.testEndTimeReg, txt: '活动结束时间必须大于开始时间'}
+          {value: this.testConsumer, txt: '请选择补货对象'},
+          {value: this.testMobile, txt: '请输入11位的会员手机号'},
+          {value: this.testWechatName, txt: '请定位会员社区'},
+          {value: this.testCommunity, txt: '请选择会员所属社区'},
+          {value: this.testGoods, txt: '请选择商品'},
+          {value: this.testGoodsCount, txt: ''},
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
-            this.$toast.show(arr[i].txt)
+            arr[i].txt && this.$toast.show(arr[i].txt)
             return false
           }
           if (i === j - 1 && arr[i].value) {
@@ -536,8 +553,8 @@
       font-size: $font-size-14
       font-family: $font-family-regular
       white-space: nowrap
-      text-align: left
-      min-width: 64px
+      text-align: right
+      min-width: 84px
     .start
       display: inline-block
       margin-right: -2px
@@ -583,4 +600,215 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
+    .btn-text
+      color: #4D77BD
+      font-family: $font-family-regular
+      font-size: $font-size-14
+
+
+  .activity-tab
+    margin: 24px 0
+    display: flex
+    align-items: center
+    box-sizing: border-box
+    .add-goods-btn
+      box-sizing: border-box
+      height: 32px
+      line-height: 32px
+      width: 108px
+      color: #4DBD65
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      transition: all 0.3s
+      text-align: center
+      border-radius: 2px
+      border: 1px solid #4DBD65
+      display: flex
+      align-items: center
+      justify-content: center
+    .icon
+      width: 10px
+      height: 10px
+      margin-right: 5px
+      object-fit: cover
+    .remind
+      margin-left: 10px
+      color: $color-text-assist
+    .disable
+      cursor: not-allowed
+
+
+  //  弹窗
+  .shade-box
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+    border-radius: 2px
+    background: $color-white
+    height: 675px
+    max-width: 1000px
+    width: 1000px
+    position: relative
+    overflow-x: hidden
+    overflow-y: auto
+    flex-wrap: wrap
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
+    .back
+      border-top-1px($color-line)
+      position: absolute
+      left: 0
+      right: 0
+      bottom: 0
+      background: $color-white
+      justify-content: flex-end
+      height: 70px
+    /*选择商品样式*/
+    .shade-tab
+      height: 48px
+      box-sizing: border-box
+      display: flex
+      .tab-item
+        margin-right: 10px
+    .goods-content
+      border-radius: 4px
+      height: 420px
+      .rush-goods-list
+        flex-wrap: wrap
+        display: flex
+      .goods-item
+        box-sizing: border-box
+        padding: 0 30px 0 20px
+        width: 100%
+        height: 60px
+        display: flex
+        align-items: center
+        position: relative
+        &:last-child
+          border-bottom-1px($color-line)
+        &:before
+          content: ""
+          pointer-events: none // 解决iphone上的点击无效Bug
+          display: block
+          position: absolute
+          left: 0
+          top: 0
+          transform-origin: 0 0
+          border-right: 1px solid #E9ECEE
+          border-left: 1px solid #E9ECEE
+          border-top: 1px solid #E9ECEE
+          box-sizing border-box
+          width: 200%
+          height: 100%
+          transform: scaleX(.5) translateZ(0)
+          @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+            width: 100%
+            height: 300%
+            transform: scaleX(1 / 3) translateZ(0)
+        &:nth-child(2n - 1)
+          background: #f5f7fa
+        .select-icon
+          margin-right: 20px
+          border-radius: 1px
+          border: 1px solid #e9ecee
+          height: 16px
+          width: 16px
+          -webkit-transition: all .3s
+          transition: all .3s
+        .select-icon-active
+          border: 1px solid transparent
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check@2x.png")
+        .select-icon-disable
+          border: 1px solid transparent
+          cursor: not-allowed
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check_ash@2x.png")
+        .goods-img
+          margin-right: 10px
+          width: 40px
+          height: @width
+          overflow: hidden
+          background-repeat: no-repeat
+          background-size: cover
+          background-position: center
+          background-color: $color-background
+        .goods-msg
+          flex: 1
+          display: flex
+          color: $color-text-main
+          font-family: $font-family-regular
+          justify-content: space-between
+          height: 100%
+          align-items: center
+          .goods-name
+            width: 500px
+            no-wrap()
+          .goods-name, .goods-money
+            line-height: 1
+          .goods-money
+            flex: 1
+            layout(row)
+            .goods-money-text
+              width: 50%
+        .add-btn
+          border-radius: 2px
+          margin-left: 88px
+          padding: 7px 0
+          min-width: 54px
+          text-align: center
+        .add-btn-disable
+          border-radius: 2px
+          margin-left: 88px
+          padding: 7px 0
+          box-sizing: border-box
+          text-align: center
+          font-size: $font-size-14
+          line-height: 1
+          cursor: not-allowed
+          background: $color-line
+          color: $color-text-assist
+          border: none
+    .page-box
+      box-sizing: border-box
+      height: 76px
+      align-items: center
+      display: flex
+
+
+  .com-edit
+    height: 34px
+    width: 93px
+    border-radius: 2px
+    box-sizing: border-box
+    border: 1px solid $color-line
+    padding-left: 22px
+    transition: all 0.3s
+    &::-webkit-inner-spin-button
+      appearance: none
+    &:hover
+      border: 0.5px solid #ACACAC
+    &::placeholder
+      font-family: $font-family-regular
+      color: $color-text-assist
+    &:focus
+      border-color: $color-main !important
+
+  .com-edit-small
+    width: 60px
 </style>

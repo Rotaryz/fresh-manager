@@ -59,4 +59,9 @@ export default {
     let url = `/scm/api/backend/oms/order-statistic`
     return request.get(url, defaultParams)
   },
+  // 定位社区
+  fixPosition(params, loading = false) {
+    let url = '/scm/api/backend/oms/merge-orders'
+    return request.get(url, params, loading)
+  },
 }

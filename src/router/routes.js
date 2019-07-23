@@ -1375,7 +1375,7 @@ export default [
       },
       // 商品订单详情的明细
       {
-        path: 'merchant-order/consumer-order-detail/:id',
+        path: 'merchant-order/consumer-order-detail',
         name: 'consumer-order-detail',
         meta: {
           marginBottom: 80,

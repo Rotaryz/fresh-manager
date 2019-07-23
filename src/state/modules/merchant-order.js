@@ -142,7 +142,8 @@ export const actions = {
       start_time: '',
       end_time: '',
       status: 0,
-      keyword: ''
+      keyword: '',
+      usual: ''
     })
 
     commit('SET_TAB_INDEX', 0)

@@ -7,6 +7,10 @@
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
         </div>
+        <span class="down-tip">异常状态</span>
+        <div class="down-item">
+          <base-drop-down :select="unusualSelect" @setValue="_selectUnusual"></base-drop-down>
+        </div>
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
@@ -62,7 +66,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="订单号、商户名称货会议名称" :infoText="mergerFilter.keyword" @search="changeMerchantKeyword"></base-search>
+            <base-search placeHolder="订单号、商户名称货会议名称" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -71,40 +75,41 @@
           <div class="identification-page">
             <img :src="tabStatus[1].img" class="identification-icon">
             <p class="identification-name">{{tabStatus[1].text}}</p>
-            <base-status-nav :statusList="consumerStatusTab" :value="consumerFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
-                             @change="setConsumerValue"
+            <base-status-nav :statusList="consumerStatusTab" :value="merchantFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                             @change="setValue"
             ></base-status-nav>
           </div>
-          <div class="big-list">
-            <div class="list-header list-box">
-              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
-            </div>
-            <div class="list">
-              <template v-if="orderList.length">
-                <div v-for="(row, index) in orderData" :key="index" class="list-content list-box">
-                  <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
-                    <template v-if="item.key" name="name">
-                      {{row[item.key]}}
-                      <div v-if="item.key ==='type_count'" class="lack-icon">
-                      </div>
-                    </template>
-                    <template v-else name="operation">
-                      <router-link class="list-operation" :to="{name:'consumer-order-detail', params:{id:row.id}}">{{item.operation}}</router-link>
-                    </template>
-                  </div>
+          <router-link tag="a" to="consumer-order-detail" append class="btn-main">补录订单</router-link>
+        </div>
+        <div class="big-list">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
+          </div>
+          <div class="list">
+            <template v-if="orderList.length">
+              <div v-for="(row, index) in orderData" :key="index" class="list-content list-box">
+                <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+                  <template v-if="item.key" name="name">
+                    {{row[item.key]}}
+                    <div v-if="item.key ==='type_count'" class="lack-icon">
+                    </div>
+                  </template>
+                  <template v-else name="operation">
+                    <router-link class="list-operation" :to="{name:'consumer-order-detail', params:{id:row.id}}">{{item.operation}}</router-link>
+                  </template>
                 </div>
-              </template>
-              <base-blank v-else></base-blank>
-            </div>
+              </div>
+            </template>
+            <base-blank v-else></base-blank>
           </div>
-          <div class="pagination-box">
-            <base-pagination
-              ref="paginationMerchant"
-              :pageDetail="pageTotal"
-              :pagination="merchantFilter.page"
-              @addPage="setOrderPage"
-            ></base-pagination>
-          </div>
+        </div>
+        <div class="pagination-box">
+          <base-pagination
+            ref="paginationMerchant"
+            :pageDetail="pageTotal"
+            :pagination="merchantFilter.page"
+            @addPage="setOrderPage"
+          ></base-pagination>
         </div>
       </div>
     </template>
@@ -127,8 +132,8 @@
     {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '订单号', key: 'order_sn', flex: 3},
-    {title: '会员名称', key: 'order_name', flex: 3},
+    {title: '订单号', key: 'order_sn', flex: 1},
+    {title: '会员名称', key: 'order_name', flex: 1},
     {title: '会员手机号', key: 'mobile', flex: 1},
     {title: '商品', key: 'goods_name', flex: 1},
     {title: '下单数量', key: 'type_count', flex: 1},
@@ -188,6 +193,7 @@
         datePlaceHolder: '选择下单日期',
         orderKeyword: '',
         signItem: {},
+        unusualSelect: {check: false, show: false, content: '全部', type: 'default', data: []},
         dispatchSelect: [
           {name: '全部', value: '', num: 0},
           {name: '待调度', value: 0, num: 0},
@@ -196,11 +202,11 @@
           {name: '已完成', value: 3, num: 0}
         ],
         consumerStatusTab: [
-          {name: '全部', status: '', num: 0},
-          {name: '待分拣', status: 0, num: 0},
-          {name: '待出库', status: 1, num: 0},
-          {name: '代配送', status: 2, num: 0},
-          {name: '已完成', status: 3, num: 0}
+          {status_str: '全部', status: '', statistic: 0},
+          {status_str: '待分拣', status: 0, statistic: 0},
+          {status_str: '待出库', status: 1, statistic: 0},
+          {status_str: '代配送', status: 2, statistic: 0},
+          {status_str: '已完成', status: 3, statistic: 0}
         ]
       }
     },
@@ -235,44 +241,28 @@
             keyword: ''
           })
         } else {
-          //
-          // this._updateConsumerList({
-          //   start_time: '',
-          //   end_time: '',
-          //   status: 0,
-          //   keyword: '',
-          //   page: 1,
-          //   limit: 10
-          // })
-        }
-      },
-      _updateConsumerList(params) {
-        this.SET_PARAMS({key: 'consumer', ...params})
-        this.getConsumerOrderList()
-        if (params.page === 1) {
-          this.$nextTick(function() {
-            this.$refs.paginationMerger.beginPage()
+          this._updateMerchantOrderList({
+            page: 1,
+            limit: 10,
+            start_time: '',
+            end_time: '',
+            status: 0,
+            keyword: '',
+            type: '',
+            usual: ''
           })
         }
       },
-      // 时间选择器
-      _changeTimeConsumer(timeArr) {
-        this._updateConsumerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})
+      _selectUnusual(item) {
+        console.log(item)
       },
-      // 页面更改
-      _setConsumerPage(page) {
-        this._updateConsumerList({page})
-      },
-      /**
-       商户订单
-       **/
-      // 更新商户订单
+      // 获取订单列表
       _updateMerchantOrderList(params, noUpdateStatus) {
-        this.SET_PARAMS({key: 'merchant', ...params})
+        this.SET_PARAMS(params)
         if (!noUpdateStatus) {
           this._getStatusData()
         }
-        this.getMerchantOrderList()
+        // this.getMerchantOrderList()
         if (params.page === 1) {
           this.$nextTick(function() {
             this.$refs.paginationMerchant.beginPage()
@@ -297,12 +287,7 @@
       },
       // 翻页
       setOrderPage(page) {
-        this._updateMerchantOrderList(
-          {
-            page
-          },
-          true
-        )
+        this._updateMerchantOrderList({page}, true)
       },
       // 时间
       changeTime(timeArr = ['', '']) {
@@ -322,13 +307,6 @@
       // 商户订单搜索
       changeMerchantKeyword(keyword) {
         this._updateMerchantOrderList({
-          keyword,
-          page: 1
-        })
-      },
-      // 消费者订单搜索
-      changeConsumerKeyword(keyword) {
-        this._updateConsumerOrderList({
           keyword,
           page: 1
         })
