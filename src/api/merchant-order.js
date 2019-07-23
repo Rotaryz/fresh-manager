@@ -45,4 +45,18 @@ export default {
     let url = '/scm/api/backend/oms/merge-orders'
     return request.post(url, params, loading)
   },
+
+  // 消费者订单状态
+  getConsumerStatus(params = {}) {
+    let defaultParams = {
+      start_time: '',
+      end_time: '',
+      keyword: '',
+      type: ''
+    }
+    defaultParams = {...defaultParams, ...params}
+    // let url = '/mock/StausData.json'
+    let url = `/scm/api/backend/oms/order-statistic`
+    return request.get(url, defaultParams)
+  },
 }

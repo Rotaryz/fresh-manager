@@ -57,12 +57,12 @@
       <div class="down-content">
         <span class="down-tip">下单时间</span>
         <div class="down-item">
-          <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArrConsumer" @getTime="_changeTimeConsumer"></base-date-select>
+          <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
         </div>
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="订单号或商户名称" :infoText="mergerFilter.keyword" @search="changeConsumerKeyword"></base-search>
+            <base-search placeHolder="订单号、商户名称货会议名称" :infoText="mergerFilter.keyword" @search="changeMerchantKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@
             <img :src="tabStatus[1].img" class="identification-icon">
             <p class="identification-name">{{tabStatus[1].text}}</p>
             <base-status-nav :statusList="consumerStatusTab" :value="consumerFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
-                             @change="setValue"
+                             @change="setConsumerValue"
             ></base-status-nav>
           </div>
           <div class="big-list">
@@ -81,15 +81,15 @@
             </div>
             <div class="list">
               <template v-if="orderList.length">
-                <div v-for="(row, index) in orderList" :key="index" class="list-content list-box">
+                <div v-for="(row, index) in orderData" :key="index" class="list-content list-box">
                   <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                     <template v-if="item.key" name="name">
                       {{row[item.key]}}
-                      <div v-if="item.key ==='type_count' && row[item.after]" class="lack-icon">
+                      <div v-if="item.key ==='type_count'" class="lack-icon">
                       </div>
                     </template>
                     <template v-else name="operation">
-                      <router-link class="list-operation" :to="{name:'merchant-order-detail',params:{id:row.id}}">{{item.operation}}</router-link>
+                      <router-link class="list-operation" :to="{name:'consumer-order-detail', params:{id:row.id}}">{{item.operation}}</router-link>
                     </template>
                   </div>
                 </div>
@@ -98,7 +98,12 @@
             </div>
           </div>
           <div class="pagination-box">
-            <base-pagination ref="paginationMerchant" :pageDetail="pageTotal" :pagination="merchantFilter.page" @addPage="setOrderPage"></base-pagination>
+            <base-pagination
+              ref="paginationMerchant"
+              :pageDetail="pageTotal"
+              :pagination="merchantFilter.page"
+              @addPage="setOrderPage"
+            ></base-pagination>
           </div>
         </div>
       </div>
@@ -122,10 +127,48 @@
     {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '下单时间', key: 'created_at', flex: 3},
-    {title: '汇总订单号', key: 'order_sn', flex: 3},
-    {title: '品类数', key: 'type_count', flex: 1},
+    {title: '订单号', key: 'order_sn', flex: 3},
+    {title: '会员名称', key: 'order_name', flex: 3},
+    {title: '会员手机号', key: 'mobile', flex: 1},
+    {title: '商品', key: 'goods_name', flex: 1},
+    {title: '下单数量', key: 'type_count', flex: 1},
+    {title: '商户名称', key: 'buyer_name', flex: 1},
+    {title: '状态', key: 'status', flex: 1},
+    {title: '订单来源', key: 'order_resource', flex: 1},
     {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
+  ]
+
+  const ORDER_DATA = [
+    {
+      order_sn: '123123',
+      order_name: '小李',
+      mobile: '13584260103',
+      goods_name: '苹果',
+      type_count: '2份',
+      buyer_name: '广海花园社区',
+      status: '待分拣',
+      order_resource: '人工补录'
+    },
+    {
+      order_sn: '123123',
+      order_name: '小李',
+      mobile: '13584260103',
+      goods_name: '苹果',
+      type_count: '2份',
+      buyer_name: '广海花园社区',
+      status: '待分拣',
+      order_resource: '人工补录'
+    },
+    {
+      order_sn: '123123',
+      order_name: '小李',
+      mobile: '13584260103',
+      goods_name: '苹果',
+      type_count: '2份',
+      buyer_name: '广海花园社区',
+      status: '待分拣',
+      order_resource: '人工补录'
+    }
   ]
   const ORDERSTATUS = [
     {text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')},
@@ -141,6 +184,7 @@
       return {
         tabStatus: ORDERSTATUS,
         commodities: COMMODITIES_LIST,
+        orderData: ORDER_DATA,
         datePlaceHolder: '选择下单日期',
         orderKeyword: '',
         signItem: {},
@@ -191,17 +235,20 @@
             keyword: ''
           })
         } else {
-          this._updateMergerList({
-            start_time: '',
-            end_time: '',
-            page: 1,
-            limit: 10
-          })
+          //
+          // this._updateConsumerList({
+          //   start_time: '',
+          //   end_time: '',
+          //   status: 0,
+          //   keyword: '',
+          //   page: 1,
+          //   limit: 10
+          // })
         }
       },
-      _updateMergerList(params) {
-        this.SET_MERGER_PARAMS(params)
-        this.getMergerOrderList()
+      _updateConsumerList(params) {
+        this.SET_PARAMS({key: 'consumer', ...params})
+        this.getConsumerOrderList()
         if (params.page === 1) {
           this.$nextTick(function() {
             this.$refs.paginationMerger.beginPage()
@@ -210,18 +257,18 @@
       },
       // 时间选择器
       _changeTimeConsumer(timeArr) {
-        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})
+        this._updateConsumerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})
       },
       // 页面更改
-      _setMergerPage(page) {
-        this._updateMergerList({page})
+      _setConsumerPage(page) {
+        this._updateConsumerList({page})
       },
       /**
        商户订单
        **/
       // 更新商户订单
       _updateMerchantOrderList(params, noUpdateStatus) {
-        this.SET_PARAMS(params)
+        this.SET_PARAMS({key: 'merchant', ...params})
         if (!noUpdateStatus) {
           this._getStatusData()
         }

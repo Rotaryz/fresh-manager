@@ -1375,23 +1375,11 @@ export default [
       },
       // 商品订单详情的明细
       {
-        path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code/:id',
+        path: 'merchant-order/consumer-order-detail/:id',
         name: 'consumer-order-detail',
         meta: {
-          titles: ['供应链', '订单', '商户订单', '商品明细', '消费者明细'],
-          async beforeResolve(routeTo, routeFrom, next) {
-            store
-              .dispatch('merchantOrder/getConsumerDetails', routeTo.params)
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
-          }
+          marginBottom: 80,
+          titles: ['供应链', '订单', '商户订单', '补录订单'],
         },
         component: () => lazyLoadView(import('@pages/consumer-order-detail/consumer-order-detail'))
       },
@@ -1732,15 +1720,6 @@ export default [
                 return next({name: '404'})
               })
           }
-        }
-      },
-      // 导入商品
-      {
-        path: 'goods-manage/lead-supply-goods',
-        name: 'lead-supply-goods',
-        component: () => lazyLoadView(import('@pages/lead-supply-goods/lead-supply-goods')),
-        meta: {
-          titles: ['供应链', '采购', '商品管理', '商品导入']
         }
       },
       // 新建商品
