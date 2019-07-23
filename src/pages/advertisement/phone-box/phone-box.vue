@@ -281,9 +281,11 @@
         if (module && module.list) {
           module.list.forEach((item) => {
             if (item.module_name !== 'activity_fixed') {
-              let key = TAB_ARR_CONFIG[item.module_name].dataArray
-              item.dataArray = this[key] || []
-              arr.push(item)
+              let key = TAB_ARR_CONFIG[item.module_name] ? TAB_ARR_CONFIG[item.module_name].dataArray : ''
+              if (key && item.dataArray) {
+                item.dataArray = this[key] || []
+                arr.push(item)
+              }
             }
           })
         }

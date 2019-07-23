@@ -422,7 +422,6 @@
                     }
                   })
                 } else {
-                  console.log(TAB_ARR_CONFIG[item.module_name])
                   let key = TAB_ARR_CONFIG[item.module_name] ? (TAB_ARR_CONFIG[item.module_name]).dataArray : ''
                   if (this[key]) {
                     this[key] = this._formatListData(res.data)
