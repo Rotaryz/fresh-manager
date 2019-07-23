@@ -1336,7 +1336,7 @@ export default [
                 })
             } else {
               store
-                .dispatch('merchantOrder/getMergerOrderList')
+                .dispatch('merchantOrder/getConsumerOrderList')
                 .then((res) => {
                   if (!res) {
                     return next({name: '404'})
@@ -1347,15 +1347,6 @@ export default [
                   next({name: '404'})
                 })
             }
-            // store.commit('merchantOrder/SET_PARAMS', {
-            //   page: 1,
-            //   limit: 10,
-            //   start_time: '',
-            //   end_time: '',
-            //   type: '',
-            //   status: 0, // 待调度
-            //   keyword: ''
-            // })
           }
         },
         component: () => lazyLoadView(import('@pages/merchant-order/merchant-order'))

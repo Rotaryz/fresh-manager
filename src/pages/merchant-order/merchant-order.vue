@@ -10,7 +10,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="订单号或商户名称" :infoText="merchantFilter.keyword" @search="changeKeyword"></base-search>
+            <base-search placeHolder="订单号或商户名称" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -51,12 +51,19 @@
         </div>
       </div>
     </template>
-    <!--汇总订单表-->
-    <template v-if="tabIndex===1">
+
+    <!--消费者订单-->
+    <template v-if="tabIndex === 1">
       <div class="down-content">
-        <span class="down-tip">建单时间</span>
+        <span class="down-tip">下单时间</span>
         <div class="down-item">
-          <base-date-select :placeHolder="datePlaceHolderMerger" :dateInfo="timeArrMerger" @getTime="_changeTimeMerger"></base-date-select>
+          <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArrConsumer" @getTime="_changeTimeConsumer"></base-date-select>
+        </div>
+        <div class="distribution-down">
+          <span class="down-tip">搜索</span>
+          <div class="down-item">
+            <base-search placeHolder="订单号或商户名称" :infoText="mergerFilter.keyword" @search="changeConsumerKeyword"></base-search>
+          </div>
         </div>
       </div>
       <div class="table-content">
@@ -64,30 +71,35 @@
           <div class="identification-page">
             <img :src="tabStatus[1].img" class="identification-icon">
             <p class="identification-name">{{tabStatus[1].text}}</p>
+            <base-status-nav :statusList="consumerStatusTab" :value="consumerFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                             @change="setValue"
+            ></base-status-nav>
           </div>
-        </div>
-        <div class="big-list">
-          <div class="list-header list-box">
-            <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
-          </div>
-          <div class="list">
-            <template v-if="mergerList.length">
-              <div v-for="(row, index) in mergerList" :key="index" class="list-content list-box">
-                <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
-                  <template v-if="item.key" name="name">
-                    {{row[item.key]}}
-                  </template>
-                  <template v-else name="operation">
-                    <router-link :to="{name:'merger-order-detail',params:{mergeOrderId:row.merge_order_id}}" class="list-operation">{{item.operation}}</router-link>
-                  </template>
+          <div class="big-list">
+            <div class="list-header list-box">
+              <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
+            </div>
+            <div class="list">
+              <template v-if="orderList.length">
+                <div v-for="(row, index) in orderList" :key="index" class="list-content list-box">
+                  <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
+                    <template v-if="item.key" name="name">
+                      {{row[item.key]}}
+                      <div v-if="item.key ==='type_count' && row[item.after]" class="lack-icon">
+                      </div>
+                    </template>
+                    <template v-else name="operation">
+                      <router-link class="list-operation" :to="{name:'merchant-order-detail',params:{id:row.id}}">{{item.operation}}</router-link>
+                    </template>
+                  </div>
                 </div>
-              </div>
-            </template>
-            <base-blank v-else></base-blank>
+              </template>
+              <base-blank v-else></base-blank>
+            </div>
           </div>
-        </div>
-        <div class="pagination-box">
-          <base-pagination ref="paginationMerger" :pageDetail="mergerPageTotal" :pagination="mergerFilter.page" @addPage="_setMergerPage"></base-pagination>
+          <div class="pagination-box">
+            <base-pagination ref="paginationMerchant" :pageDetail="pageTotal" :pagination="merchantFilter.page" @addPage="setOrderPage"></base-pagination>
+          </div>
         </div>
       </div>
     </template>
@@ -117,7 +129,8 @@
   ]
   const ORDERSTATUS = [
     {text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')},
-    {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
+    {text: '消费者订单', status: 1, img: require('./pic-zanwu@2x.png')}
+    // {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
   ]
   export default {
     name: PAGE_NAME,
@@ -133,12 +146,18 @@
         signItem: {},
         dispatchSelect: [
           {name: '全部', value: '', num: 0},
-          {name: '锁定中', value: 5, num: 0},
           {name: '待调度', value: 0, num: 0},
+          {name: '待出库', value: 1, num: 0},
           {name: '待配送', value: 2, num: 0},
           {name: '已完成', value: 3, num: 0}
         ],
-        datePlaceHolderMerger: '选择下单日期'
+        consumerStatusTab: [
+          {name: '全部', status: '', num: 0},
+          {name: '待分拣', status: 0, num: 0},
+          {name: '待出库', status: 1, num: 0},
+          {name: '代配送', status: 2, num: 0},
+          {name: '已完成', status: 3, num: 0}
+        ]
       }
     },
     computed: {
@@ -146,8 +165,8 @@
       timeArr() {
         return [this.merchantFilter.start_time, this.merchantFilter.end_time]
       },
-      timeArrMerger() {
-        return [this.mergerFilter.start_time, this.mergerFilter.end_time]
+      timeArrConsumer() {
+        return [this.consumerFilter.start_time, this.consumerFilter.end_time]
       }
     },
     async created() {
@@ -190,7 +209,7 @@
         }
       },
       // 时间选择器
-      _changeTimeMerger(timeArr) {
+      _changeTimeConsumer(timeArr) {
         this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})
       },
       // 页面更改
@@ -253,9 +272,16 @@
           page: 1
         })
       },
-      // 搜索按钮
-      changeKeyword(keyword) {
+      // 商户订单搜索
+      changeMerchantKeyword(keyword) {
         this._updateMerchantOrderList({
+          keyword,
+          page: 1
+        })
+      },
+      // 消费者订单搜索
+      changeConsumerKeyword(keyword) {
+        this._updateConsumerOrderList({
           keyword,
           page: 1
         })

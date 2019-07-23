@@ -56,10 +56,10 @@
         this.width = `${document.querySelector('.container').offsetWidth}px`
       }
       this.width = `${document.querySelector('.container').offsetWidth}px`
-      setTimeout(() => {
+      this.$nextTick(() => {
         this.tabArr = document.querySelectorAll('.status-item')
         this._setLeft()
-      }, 20)
+      })
     },
     methods: {
       _setLeft() {

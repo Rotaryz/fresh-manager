@@ -6,14 +6,20 @@
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务导入</p>
         </div>
-        <div class="btn-main">
-          导入采购任务单
-          <input
-            type="file"
-            class="stock-file hand"
-            @change="importStock($event, 1)"
-          >
+        <div class="function-btn">
+          <div class="btn-main">
+            模板导出
+          </div>
+          <div class="btn-main g-btn-item">
+            导入采购任务单
+            <input
+              type="file"
+              class="stock-file hand"
+              @change="importStock($event, 1)"
+            >
+          </div>
         </div>
+
       </div>
       <div class="big-list" :class="blankList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">

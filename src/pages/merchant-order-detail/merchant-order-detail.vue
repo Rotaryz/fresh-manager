@@ -53,7 +53,7 @@
     {title: '下单数量', key: 'sale_num', flex: 1},
     {title: '配货数量', key: 'sale_wait_pick_num', flex: 1, line: true}, // 待配送 已完成
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, line: true},
-    {title: '操作', key: '', operation: '消费者明细', flex: 1, class: 'operate'}
+    // {title: '操作', key: '', operation: '消费者明细', flex: 1, class: 'operate'}
   ]
   export default {
     name: PAGE_NAME,

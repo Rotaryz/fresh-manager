@@ -641,27 +641,22 @@ export const merchantOrderComputed = {
   ...mapGetters('merchantOrder', [
     'pageTotal',
     'orderList',
-    'mergerDetail',
-    'mergerPageTotal',
-    'mergerList',
-    'mergerFilter',
     'merchantDetail',
     'merchantFilter',
-    'consumerDetailTotal',
-    'consumerDetail',
-    'mergerDetail',
-    'tabIndex'
+    'tabIndex',
+    'consumerPageTotal',
+    'consumerList',
+    'consumerFilter',
+    'consumerTabIndex'
   ])
 }
 export const merchantOrderMethods = {
   ...mapActions('merchantOrder', [
     'getMerchantOrderList',
-    'getMergerOrderList',
     'getMerchantOrderDetail',
-    'getConsumerOrderDetail',
-    'getMergerOrderDetail'
+    'getConsumerOrderList'
   ]),
-  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL', 'SET_MERGER_PARAMS', 'SET_TAB_INDEX'])
+  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL', 'SET_TAB_INDEX', 'SET_CONSUMER_TAB_INDEX'])
 }
 // 售后订单
 export const afterSalesOrderComputed = {
