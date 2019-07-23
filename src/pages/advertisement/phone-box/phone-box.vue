@@ -116,9 +116,9 @@
                       class="tab-item"
                       :class="{active: !index}"
                     >
-                      <p>{{item.tabTitle.title}}</p>
+                      <p>{{item.tabTitle ? item.tabTitle.title : ''}}</p>
                       <div class="sub">
-                        <span>{{item.tabTitle.subTitle}}</span>
+                        <span>{{item.tabTitle ? item.tabTitle.subTitle : ''}}</span>
                       </div>
                     </li>
                   </ul>
