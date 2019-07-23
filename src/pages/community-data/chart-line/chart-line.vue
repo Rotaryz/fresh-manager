@@ -61,6 +61,7 @@
         return myChart
       },
       _setOption(chartConfig) {
+        let _this = this
         let option = {
           // 浮窗
           tooltip: {
@@ -69,7 +70,7 @@
             formatter: function (params) {
               let result = `<p style="color:#ffffff;font-size:12px">${params[0].axisValue}</p>`;
               params.forEach(function (item) {
-                let hasUnit = item.seriesName.includes('率')?'%':''
+                let hasUnit = item.seriesName.includes('率') ? _this.chartId !== 'businessChart' ? '%':'' : ''
                 result += `<p><span style="display:inline-block;margin-right:5px;margin-bottom:-1px;width:10px;height:10px;border-radius:1px;background-color:${item.color}"></span><span style="color:#ffffff;font-size:12px">${item.seriesName}: ${item.value}${hasUnit}</span></p>`;
               });
               return result;
