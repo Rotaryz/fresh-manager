@@ -21,7 +21,8 @@ export const state = {
     per_page: 10,
     total_page: 1
   },
-  payListPage: 1
+  payListPage: 1,
+  tabStatus: ''
 }
 
 export const getters = {
@@ -60,6 +61,9 @@ export const getters = {
   },
   payListPage(state) {
     return state.payListPage
+  },
+  tabStatus(state) {
+    return state.tabStatus
   }
 }
 
@@ -97,6 +101,9 @@ export const mutations = {
   },
   SET_PAY_LIST_PAGE(state, page) {
     state.payListPage = page
+  },
+  SET_TAB_STATUS(state, tabStatus) {
+    state.tabStatus = tabStatus
   }
 }
 
@@ -141,10 +148,13 @@ export const actions = {
       })
   },
   getSettleStatus({state, commit, dispatch}) {
-    const {settleLogsDate, settleLogsKeyword} = state
+    const {settleLogsDate, settleLogsKeyword, tabStatus} = state
     let data = {
       date: settleLogsDate.join(','),
       keyword: settleLogsKeyword
+    }
+    if (tabStatus===1) {
+      data.source_type = 2
     }
     return API.Finance.getSettleStatus(data)
       .then((res) => {
@@ -170,12 +180,15 @@ export const actions = {
       })
   },
   getSettleLogs({state, commit}) {
-    const {settleLogsPage, settleLogsDate, settleLogsStatus, settleLogsKeyword} = state
+    const {settleLogsPage, settleLogsDate, settleLogsStatus, settleLogsKeyword, tabStatus} = state
     let data = {
       date: settleLogsDate.join(','),
       keyword: settleLogsKeyword,
       page: settleLogsPage,
       status: settleLogsStatus
+    }
+    if (tabStatus===1) {
+      data.source_type = 2
     }
     return API.Finance.getSettleLogs(data, true)
       .then((res) => {
@@ -222,10 +235,15 @@ export const actions = {
     commit('SET_PAY_LIST_PAGE', page)
     dispatch('getPayList')
   },
+  setTabStatus({commit, dispatch}, tabStatus) {
+    commit('SET_TAB_STATUS', tabStatus)
+    dispatch('getSettleStatus')
+  },
   resetData({commit}) {
     commit('SET_SETTLE_LOGS_PAGE', 1)
     commit('SET_SETTLE_LOGS_KEYWORD', '')
     commit('SET_SETTLE_LOGS_STATUS', '')
     commit('SET_SETTLE_LOGS_DATE', [])
+    commit('SET_TAB_STATUS', '')
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="transaction-detail table">
-    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeTabStatus"></base-tab-select>
+    <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatusList" @getStatusTab="changeTabStatus"></base-tab-select>
     <div class="down-content">
       <span class="down-tip">支付时间</span>
       <div class="down-item">
@@ -69,7 +69,7 @@
     },
     data() {
       return {
-        tabStatus: TAB_STATUS,
+        tabStatusList: TAB_STATUS,
         infoTabIndex: 0,
         listTitle: LIST_TITLE,
       }
@@ -117,6 +117,7 @@
         const titleArr = [LIST_TITLE,FS_LIST_TITLE]
         this.listTitle = titleArr[this.infoTabIndex]
         this.$refs.pagination.beginPage()
+        this.setTabStatus(status.status)
       },
       exportExcel() {
         window.open(this.exportUrl, '_blank')
