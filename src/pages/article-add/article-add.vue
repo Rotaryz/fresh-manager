@@ -63,16 +63,18 @@
             {{name}}封面
           </div>
           <div class="edit-input-box flex-box">
-            <!--currentType!=='video' ?'image-video' :-->
-            <base-upload :videoUrl="addData.coverVideo.url"
-                         :imageUrl="addData.coverImage.url"
-                         :videoSize="10"
+            <!--currentType!=='video' ?'image-video' :
+             @successVideo="getCoverVideo"
+             :videoUrl="addData.coverVideo.url"
+             :videoSize="10"
+            -->
+            <base-upload :imageUrl="addData.coverImage.url"
                          :disabled="isDisabled"
                          fileType="image"
                          @failFile="failFile"
-                         @getPic="getPic"
-                         @delPic="delPic"
-                         @successVideo="getCoverVideo"
+                         @getPic="getCoverImage"
+                         @delPic="delCoverImage"
+
             ></base-upload>
             <div v-if="!isDisabled" class="tip">
               <template v-if="currentType === 'video'">
@@ -80,8 +82,8 @@
               </template>
               <template v-else>
                 <!--请添加不大于10M的清晰图片或视频(格式:mp4、3gp、m3u8、webm)-->
-                请添加不大于10M的清晰图片
-                <br>
+                请添加不大于10M的清晰图片,
+                <!--<br>-->
                 {{name}}封面是{{name}}首图
               </template>
             </div>
@@ -581,8 +583,8 @@
         this._getArticleCategory()
         this.addData.coverImage.url = obj.cover_image.source_url
         this.addData.coverImage.id = obj.cover_image.id
-        this.addData.coverVideo.url = obj.cover_video.full_url || ''
-        this.addData.coverVideo.id = obj.cover_video.id || ''
+        // this.addData.coverVideo.url = obj.cover_video.full_url || ''
+        // this.addData.coverVideo.id = obj.cover_video.id || ''
         this.addData.authPhoto.url = obj.author.head_image_url
         this.addData.authPhoto.id = obj.author.head_image_id
         this.addData.authName = obj.author.nickname
@@ -676,39 +678,27 @@
         })
       },
       // 封面
-      getCoverVideo(video) {
-        this.addData.coverVideo.id = video.id
-        this.addData.coverVideo.file_id = video.file_id
-        this.addData.coverVideo.url = video.full_url
-        this.addData.coverImage.id = video.cover_image_id
-        this.addData.coverImage.url = video.full_cover_url
-        // if (!this.addData.coverImage.id) {
-        //   setTimeout(() => {
-        //     this._getCoverImage(this.addData.coverVideo.file_id)
-        //   }, 10000)
-        // }
-      },
-      _getCoverImage(file_id) {
-        this.addData.coverVideo.file_id && API.Content.getCoverImage({file_id}).then(res => {
-          if (res.error !== this.$ERR_OK) return false
-          this.addData.coverImage.id = res.data.cover_image_id
-          this.addData.coverImage.url = res.data.full_cover_url
-        })
-      },
-      getPic(image) {
+      // getCoverVideo(video) {
+      //   this.addData.coverVideo.id = video.id
+      //   this.addData.coverVideo.file_id = video.file_id
+      //   this.addData.coverVideo.url = video.full_url
+      //   this.addData.coverImage.id = video.cover_image_id
+      //   this.addData.coverImage.url = video.full_cover_url
+      // },
+      getCoverImage(image) {
         this.addData.coverImage.url = image.url
         this.addData.coverImage.id = image.id
       },
-      delPic() {
+      delCoverImage() {
         this.addData.coverImage = {
           url: '',
           id: ''
         }
-        this.addData.coverVideo = {
-          url: '',
-          id: '',
-          file_id: ''
-        }
+        // this.addData.coverVideo = {
+        //   url: '',
+        //   id: '',
+        //   file_id: ''
+        // }
       },
       failFile(msg) {
         this.$toast.show(msg)
@@ -915,11 +905,8 @@
         if (!this.addData.category) message = '请选择内容分类'
         else if (!this.addData.title) message = '请输入文章标题'
         else if (this.addData.title && (this.addData.title.length < 5 || this.addData.title.length > 50)) message = '请输入文章标题最少5个最多50个字符'
-        else if (!this.addData.coverVideo.id && !this.addData.coverImage.id) message = '请上传封面'
-        // else if (this.currentType !== 'video' && this.addData.coverVideo.id && !this.addData.coverImage.id) {
-        //   this._getCoverImage(this.addData.coverVideo.file_id)
-        //   message = '正在处理视频第一帧作为封面图，请稍后上线'
-        // }
+        //  !this.addData.coverVideo.id &&
+        else if (!this.addData.coverImage.id) message = '请上传封面'
         else if (!this.addData.authPhoto.id) message = '请上传作者头像'
         else if (!this.addData.authName) message = '请填写作者名字'
         else if (!this.addData.authSignature) message = '请填写作者签名'
