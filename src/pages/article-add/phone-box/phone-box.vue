@@ -470,9 +470,9 @@
           align-items center
 
           .operate-icon
-            width: 36px
-            height: 36px
-            margin-right: 20px
+            width: 30px
+            height: 30px
+            margin-right: 10px
 
           .like-operate
             display inline-block
@@ -483,7 +483,7 @@
               top: -12px
               left: 18px
               color: #fff;
-              font-size $font-size-12
+              font-size $font-size-10
               padding: 0 3px
               min-width: 14px
               text-align: center
@@ -494,10 +494,10 @@
 
           .goods-btn
             flex-shrink 0s
-            height: 36px
-            line-height 36px
-            padding: 0px 15px
-            border-radius: 20px
+            height: 30px
+            line-height 30px
+            padding: 0px 10px
+            border-radius: 15px
             color: #fff
             background #73C200
             font-size $font-size-16
