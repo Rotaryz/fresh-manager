@@ -493,7 +493,7 @@
               border-radius 7px
 
           .goods-btn
-            flex-shrink 0s
+            flex-shrink 0
             height: 30px
             line-height 30px
             padding: 0px 10px
