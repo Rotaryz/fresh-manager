@@ -1,36 +1,16 @@
 <template>
   <div class="demo">
-    demo
-    <textarea id="test" placeholder="klfjlkarsj geklrajtgler" cols="30" rows="10" class="placeholder-text"></textarea>
-    <!--<add-goods ref="addg" @batchAddition="_batchAddition"></add-goods>-->
-    <span @click="deleteGoods()">sahNGV</span>
-    <div v-show="true" class="big">
-      <div id="printTest">
-        <div>
-          <!--<p class="name">荞麦饼干</p>-->
-          <!--<div class="msg">-->
-          <!--<div class="content">原味</div>-->
-          <!--<div class="money">售价：12：00</div>-->
-          <!--</div>-->
-          <!--<img src="./2-140412125945415.jpg" alt="" class="img">-->
-          <img v-if="false" id="barcode" class="barcodes">
-        </div>
-      </div>
-    </div>
-    <button v-print="'#printTest'">打印</button>
-
-    <!--<section ref="print">-->
-    <!--打印内容-->
-    <!--<div class="no-print">不要打印我</div>-->
-    <!--</section>-->
-    <!--<button @click="printAll">打印</button>-->
-    <div></div>
+    <button @click="addPage">
+      Jiayi
+    </button>
+    <div style="height:200px"></div>
+    <zb-pagination :pagerCount="9" :currentPage.sync="currentPage" :total="119" @pageChange="pageChange"></zb-pagination>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  // import AddGoods from '@components/add-goods/add-goods'
   import JsBarcode from 'jsbarcode'
+  import zbPagination from '../../components/zb-pagination/_zb-pagination'
 
   const PAGE_NAME = 'DEMO'
 
@@ -41,17 +21,22 @@
       title: TITLE
     },
     components: {
+      zbPagination
       // AddGoods
     },
     data() {
       return {
+        currentPage: 1,
         img: ''
       }
     },
-    mounted() {
-      // this.barcode()
-    },
     methods: {
+      pageChange(val) {
+        console.log(val)
+      },
+      addPage() {
+        this.currentPage++
+      },
       barcode() {
         // JsBarcode生成条形码
         JsBarcode('#barcode')
@@ -83,16 +68,19 @@
   #test:-moz-placeholder
   #test::-ms-input-placeholder
     font-size: $font-size-14
-    color:red
+    color: red
+
   textarea::-webkit-input-placeholder
   textarea::-moz-placeholder
   textarea:-moz-placeholder
   textarea::-ms-input-placeholder
     font-size: $font-size-14
     color: #000
+
   .placeholder-text
     font-size: $font-size-14
     color: #ACACAC
+
   .demo
     width: 100%
 
