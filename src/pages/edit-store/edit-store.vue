@@ -21,6 +21,15 @@
           <input v-model="storeData" type="text" class="edit-input" maxlength="20" @mousewheel.native.prevent>
         </div>
       </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          出库类型
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :width="400" :height="40" :select="outType" @setValue="_selectOutType"></base-drop-down>
+        </div>
+      </div>
     </div>
     <div class="content-header mt-30">
       <div class="content-title">商品信息</div>
@@ -45,7 +54,7 @@
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
             <div v-if="item.base_unit" class="base-unit">{{item.base_unit}}</div>
           </div>
-          <div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
+          <!--<div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
             <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
             <transition name="fade">
               <div v-show="showIndex === index && item.select_batch.length !== 0" class="batches-box">
@@ -56,7 +65,7 @@
                 </div>
               </div>
             </transition>
-          </div>
+          </div>-->
           <div class="list-item"><span v-if="item.price">￥</span>{{item.price || '￥0.00'}}/{{item.base_unit}}</div>
           <div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '￥0.00'}}</div>
           <div class="list-item list-operation-box">
@@ -89,7 +98,7 @@
     '类目',
     '可用库存/总库存',
     '出库数(基本单位)',
-    '出库批次',
+    // '出库批次',
     '出库单价',
     '出库金额',
     '操作'
@@ -112,6 +121,13 @@
         storeList: [],
         curIndex: 0,
         curItem: {},
+        outType: {
+          check: false,
+          show: false,
+          content: '选择出库类型',
+          type: 'default',
+          data: [{name: '采购退货', id: 1}, {name: '拓展出库', id: 2}, {name: '其它调拨', id: 3}] // 格式：{title: '55'}}
+        },
         storeData: '',
         showIndex: null,
         isSubmit: false
@@ -123,6 +139,9 @@
       },
       _hideTip() {
         this.showIndex = null
+      },
+      _selectOutType(item) {
+        console.log(item.id)
       },
       deleteGoods() {
         this.$refs.addg._delGoods(this.storeList)

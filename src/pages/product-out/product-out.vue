@@ -10,6 +10,10 @@
       <div class="down-item">
         <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
+      <span class="down-tip">出库类型</span>
+      <div class="down-item">
+        <base-drop-down :select="outType" @setValue="changeType"></base-drop-down>
+      </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="出库单号或商户名称" :infoText="outFilter.keyword" @search="changeKeyword"></base-search>
@@ -59,10 +63,13 @@
                 <div v-if="item.show_sorting" class="list-item-img"></div>
                 <div v-if="item.is_exception" class="list-item-error"></div>
               </div>
+              <!--出库类型-->
+              <div class="list-item">{{item.type}}</div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
                 <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
                 <span v-if="item.status === 2" class="list-operation-strong" @click="goDetail(item)">复核</span>
+                <span v-if="item.status === 2" class="list-operation" @click="stopDocument(item)">关闭</span>
               </div>
             </div>
           </div>
@@ -95,6 +102,7 @@
     '出库数量',
     '出库金额',
     '状态',
+    '出库类型',
     '操作'
   ]
   let ws = null
@@ -119,8 +127,10 @@
         goodsPage: 1,
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
-          {name: '待出库', value: 0, key: 'wait_out', num: 0},
-          {name: '已完成', value: 1, key: 'success', num: 0}
+          {name: '待复核', value: 0, key: 'wait_out', num: 0},
+          {name: '待出库', value: 1, key: 'wait_out', num: 0},
+          {name: '已完成', value: 2, key: 'success', num: 0},
+          {name: '已关闭', value: 3, key: 'success', num: 0}
         ],
         statusTab: 1,
         time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
@@ -130,6 +140,13 @@
           content: '全部',
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
+        outType: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '人工补录', status: '0'}, {name: '系统补货', status: '1'}, {name: '系统销售', status: '2'}] // 格式：{name: '55'}
         }
       }
     },
@@ -182,6 +199,15 @@
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.outFilter.exception_status)
         this.errorObj.content = item.name || '全部'
+      },
+      changeType(item) {
+        console.log(item.status)
+      },
+      stopDocument(item) {
+        if (item.show_sorting) {
+          return
+        }
+        console.log(item)
       },
       goDetail(item) {
         if (item.show_sorting) {
@@ -292,7 +318,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          max-width: 70px
+          max-width: 98px
         &:nth-child(1)
           flex: 1.1
         &:nth-child(5), &:nth-child(6)

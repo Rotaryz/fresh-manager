@@ -7,10 +7,6 @@
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
         </div>
-        <span class="down-tip">异常状态</span>
-        <div class="down-item">
-          <base-drop-down :select="unusualSelect" @setValue="_selectUnusual"></base-drop-down>
-        </div>
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
@@ -62,6 +58,10 @@
         <span class="down-tip">下单时间</span>
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
+        </div>
+        <span class="down-tip">异常状态</span>
+        <div class="down-item">
+          <base-drop-down :select="unusualSelect" @setValue="_selectUnusual"></base-drop-down>
         </div>
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
@@ -193,7 +193,12 @@
         datePlaceHolder: '选择下单日期',
         orderKeyword: '',
         signItem: {},
-        unusualSelect: {check: false, show: false, content: '全部', type: 'default', data: []},
+        unusualSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}]},
         dispatchSelect: [
           {name: '全部', value: '', num: 0},
           {name: '待调度', value: 0, num: 0},

@@ -1857,6 +1857,16 @@ export default [
           }
         }
       },
+      // 新建入库单
+      {
+        path: 'product-enter/new-enter-document',
+        name: 'new-enter-document',
+        component: () => lazyLoadView(import('@pages/new-enter-document/new-enter-document')),
+        meta: {
+          marginBottom: 80,
+          title: ['供应链', '仓库', '成品入库', '新建入库单']
+        }
+      },
       // 成品入库明细
       {
         path: 'product-enter/enter-detail/:id',
