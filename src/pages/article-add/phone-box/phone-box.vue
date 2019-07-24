@@ -79,10 +79,13 @@
           </div>
         </div>
         <div v-else class="content-article-detail-video" @click.self="videoClick">
-          <video v-if="data.videoContent.url" :src="data.videoContent.url" controls class="full-screen-video" @click="videoClick">
+          <video v-if="data.videoContent.url" ref="articleVideo" :src="data.videoContent.url" class="full-screen-video"
+                 @click="videoClick" @play="videoPause = false" @pause="videoPause = true"
+          >
           </video>
-          <div class="info-wrap" @click="videoClick">
-            <div class="auth-wrap">
+          <img v-if="data.videoContent.url && videoPause" src="./icon-play_big@2x.png" alt="" class="pause-icon"  @click="videoClick">
+          <div class="info-wrap">
+            <div class="auth-wrap" @click="videoClick">
               <div v-if="data.authPhoto.url" class="auth-photo-wrap">
                 <img :src="data.authPhoto.url" class="auth-photo">
                 <img src="./icon-v@2x.png" class="auth-photo-v">
@@ -151,15 +154,19 @@
     data() {
       return {
         goodsStatus: false,
-        goodsListVisible: false
+        goodsListVisible: false,
+        videoPause:true
       }
     },
     computed: {},
     methods: {
       videoClick() {
+        if(!this.data.videoContent || !this.data.videoContent.url)  return
+        this.videoPause ? this.$refs.articleVideo.play() : this.$refs.articleVideo.pause()
         this.goodsListVisible = false
       },
       showGoodsListBtn() {
+        this.$refs.articleVideo.pause()
         this.goodsListVisible = true
       }
     }
@@ -413,7 +420,14 @@
       bottom 0
       overflow hidden
       background #000
-
+      .pause-icon
+        position:absolute
+        top:50%
+        left: 50%
+        transform translate(-50%,-50%)
+        width:80px
+        height:@width
+        z-index:200
       .bottom-emty-20
         height: 20px
 
