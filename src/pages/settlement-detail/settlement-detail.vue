@@ -127,25 +127,15 @@
         }
       },
       _search(text) {
-        // this.$refs.pages.beginPage()
-        // this.page = 1
-        // this.orderSn = text
-        // this._getSettlementDetail()
         this._updateList({page: 1, order_sn: text})
       },
       _setStatus(item) {
-        // this.status = item.status
-        // this.$refs.pages.beginPage()
-        // this.page = 1
-        // this._getSettlementDetail()
         this._updateList({page: 1, status: item.status})
       },
       _settlementType(item) {
-        // this.settlementType = item.status
-        // this.$refs.pages.beginPage()
-        // this.page = 1
-        // this._getSettlementDetail()
-        this._updateList({page: 1, type: item.status})
+        let params = {page: 1, type: item.status}
+        params.source_type = item.name === '佣金收益-全国包邮' ? 2 : ''
+        this._updateList(params)
       },
       _getMoreList(page) {
         // this.page = page
