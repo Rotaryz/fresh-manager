@@ -169,13 +169,19 @@
       },
       getOrderStatus(startTime, endTime) {
         // this.changeStatusTab()
-        API.Order.getOrderStatus({
+        let params = {
           source: this.status,
           start_time: this.startTime,
           end_time: this.endTime,
           shop_id: this.shopId,
           keyword: this.keyword
-        }).then((res) => {
+        }
+        if (this.status === 'c_freeShipping') {
+          // 全国包邮不传source
+          params.source_type = 2
+          delete params.source
+        }
+        API.Order.getOrderStatus(params).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return

@@ -114,6 +114,11 @@ export const actions = {
       keyword: keyword,
       source: status
     }
+    if (status==='c_freeShipping') {
+      // 全国包邮不传source
+      data.source_type = 2
+      delete data.source
+    }
     return API.Order.getOrderList(data)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
