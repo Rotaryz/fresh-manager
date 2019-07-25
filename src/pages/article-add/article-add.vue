@@ -236,7 +236,10 @@
               <div v-for="(item, idx) in addData.details" :key="idx" class="content-item">
                 <div v-if="!isDisabled" class="close-icon hand" @click="deleteContentItem(idx,item)"></div>
                 <img v-if="item.type==='image'" :src="item.value" class="content-image">
-                <video v-else-if="item.type==='video'" :src="item.value" class="content-video"></video>
+                <template v-else-if="item.type==='video'">
+                  <video :src="item.value" class="content-video"></video>
+                  <img src="./phone-box/icon-play_big@2x.png" alt="" class="play-icon">
+                </template>
                 <div v-else-if="item.type==='goods'" class="good-item">
                   <img v-if="item.value.is_online === 0" src="./pic-off_shelf@2x.png" class="goods-photo">
                   <img v-else-if="item.value.usable_stock === 0" src="./pic-out_stock@2x.png" class="goods-photo">
@@ -1371,6 +1374,14 @@
           margin-bottom: 20px
           color:$color-text-main
           font-size:$font-size-14
+          position:relative
+          .play-icon
+            position absolute
+            top: 50%
+            left:74px
+            width:40px
+            height:@width
+            transform translate(-50%,-50%)
           .good-item
             min-height: 112px
             display flex

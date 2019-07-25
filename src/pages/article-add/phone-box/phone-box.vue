@@ -51,7 +51,7 @@
             <div v-for="(item,idx) in data.details" :key="idx" class="article-item">
               <div v-if="item.type==='text'" class="article-text">{{item.value}}</div>
               <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image">
-              <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
+              <video v-if="item.type==='video'" :src="item.value" controls class="article-video"></video>
               <goods-item v-if="item.type==='goods'" :goodsData="item.value" :addDisabled="true"></goods-item>
             </div>
           </div>
