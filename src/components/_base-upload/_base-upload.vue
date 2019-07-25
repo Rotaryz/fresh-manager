@@ -144,16 +144,18 @@
       },
       async _addPic(e) {
         this.showLoading = true
-        console.log(e.target.files)
-        let arr = await cos('image', Array.from(e.target.files))
-        console.log('cos', arr)
-        this.showLoading = false
-        arr.length && arr.forEach(item => {
-          if (item.error !== this.$ERR_OK) {
-            this.$emit('failFile', item.message)
-            return
-          }
-          this.$emit('getPic', item.data)
+        await cos('image', Array.from(e.target.files)).then(arr => {
+          this.showLoading = false
+          arr.length && arr.forEach(item => {
+            if (item.error !== this.$ERR_OK) {
+              this.$emit('failFile', item.message)
+              return
+            }
+            this.$emit('getPic', item.data)
+          })
+        }).catch(err => {
+          this.$emit('failFile', err)
+          this.showLoading = false
         })
       },
       _addVideo(e) {
