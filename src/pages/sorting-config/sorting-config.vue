@@ -32,28 +32,25 @@
             <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
           </div>-->
           <template v-if="dragList.length">
-            <draggable v-model="dragList" class="drag-list" @update="sortEndInput">
-            <!--<slick-list v-model="dragList"
+            <slick-list v-model="dragList"
                         axis="xy"
-                        :distance="30"
-                        :useDragHandle="false"
+                        :distance="10"
                         lockAxis="xy"
                         class="drag-list"
-                        helperClass="list-content drag-box"
+                        helperClass="drag-item"
+                        :useWindowAsScrollContainer="true"
                         @input="sortEndInput"
-            >-->
-              <div v-for="(row, index) in dragList" :key="index" class="drag-item">
-                <div class="title">
-                  <span class="num">{{row.sort|format}}</span>
-                  <span class="text">{{row.name}}</span>
-                </div>
+            >
+              <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="drag-item">
+                <span class="num">{{row.sort|format}}</span>
                 <div class="road-line">
-                  {{row.road_name}}
+                  <p class="title">{{row.name}}</p>
+                  <p class="text">{{row.road_name}}</p>
                   <div v-if="!row.road_name" class="list-operation" @click="_showSettingModel(row.id)">设置线路</div>
                 </div>
 
-              </div>
-            </draggable>
+              </slick-item>
+            </slick-list>
           </template>
           <base-blank v-else></base-blank>
 
@@ -102,7 +99,6 @@
   import {SlickList, SlickItem, HandleDirective} from 'vue-slicksort'
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
-  import Draggable from 'vuedraggable'
   import API from '@api'
   import _ from 'lodash'
 
@@ -126,7 +122,6 @@
     },
     components: {
       DefaultModal,
-      Draggable,
       SlickItem,
       SlickList
     },
@@ -327,47 +322,52 @@
         flex-wrap: wrap
         &:hover
           user-select: none
-      .list-operation
-        cursor pointer
-      .drag-item
-        width: 15.4%
-        overflow: hidden
-        height: 75px
-        padding: 16px 14px
-        box-sizing: border-box
-        box-shadow: 0 0 4px 0 rgba(0,0,0,0.05)
-        cursor: pointer
-        margin-right: 20px
-        margin-bottom: 20px
-        &:nth-child(6n)
-          margin-right: 0
-      .title
-        display: flex
-        align-items: center
-      .num
-        height: 18px
-        padding: 0 6px
-        border-radius: 20px
-        background: #9FD5C6
-        text-align: center
-        line-height: 18px
-        color: #52A18B
-        font-size: $font-size-12
-        font-family: $font-family-medium
-      .text
-        color: #333333
-        font-size: $font-size-14
-        font-family: $font-family-medium
-        margin-left: 10px
-        overflow: hidden
-        text-overflow: ellipsis
-        white-space: nowrap
-      .road-line
-        padding-left: 28px
-        font-size: $font-size-14
-        color: #999999
-        margin-top: 5px
-        font-family: $font-family-regular
+  .drag-item
+    width: 15.4%
+    overflow: hidden
+    height: 75px
+    padding: 16px 13px
+    box-sizing: border-box
+    box-shadow: 0 0 4px 0 rgba(0,0,0,0.05)
+    cursor: pointer
+    margin-right: 20px
+    margin-bottom: 20px
+    border: 1px solid #F4F4F4
+    display: flex
+    &:nth-child(6n)
+      margin-right: 0
+    .road-line
+      flex: 1
+      overflow: hidden
+      padding-left: 10px
+      line-height: 1
+    .num
+      height: 18px
+      padding: 0 6px
+      border-radius: 20px
+      background: #9FD5C6
+      text-align: center
+      line-height: 18px
+      color: #52A18B
+      font-size: $font-size-12
+      font-family: $font-family-medium
+    .title
+      color: #333333
+      font-size: $font-size-14
+      font-family: $font-family-medium
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      margin-bottom: 10px
+      margin-top: 2px
+    .text
+      font-size: $font-size-14
+      color: #999999
+      font-family: $font-family-regular
+    .list-operation
+      font-family: $font-family-regular
+      cursor pointer
+
   .table .table-content
     padding-bottom: 20px
 
