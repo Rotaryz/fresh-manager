@@ -28,7 +28,7 @@
               <span class="center-title-box">{{item.title}}</span>
             </p>
             <div class="center-btn">
-              <div class="center-btn-item hand" @click="showQrCode(item.id, index)">预览</div>
+              <div class="center-btn-item hand" @click="showQrCode(item.id, index, item)">预览</div>
               <div class="center-btn-item hand select" :class="{'select-disable': item.used_status}" @click="selectContent(item.id,item)">选择</div>
             </div>
           </div>
