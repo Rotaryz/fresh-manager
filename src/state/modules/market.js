@@ -9,6 +9,7 @@ export const state = {
     total_page: 1
   },
   marketDetail: {},
+  defaultTab: 0,
   marketStaPageDetail: {
     total: 1,
     per_page: 12,
@@ -17,9 +18,10 @@ export const state = {
   inviteCount: 0,
   marketStaLists: [],
   defaultIndex: 0,
+  marketType: [1, 2, 3, 9, 7, 4],
   requestData: {
     page: 1,
-    status: ''
+    type: 1
   }
 }
 
@@ -47,6 +49,12 @@ export const getters = {
   },
   requestData(state) {
     return state.requestData
+  },
+  defaultTab(state) {
+    return state.defaultTab
+  },
+  marketType(state) {
+    return state.marketType
   }
 }
 
@@ -78,14 +86,20 @@ export const mutations = {
   RESET_DATA(state) {
     state.requestData = {
       page: 1,
-      status: ''
+      type: 1
     }
+    state.defaultTab = 0
+  },
+  SET_DEFAULT_TAB(state, index) {
+    state.defaultTab = index
   }
 }
 
 export const actions = {
   getMarketList({commit, state}, loading = false) {
-    return API.Market.getMarketList(state.requestData, loading)
+    let data = JSON.parse(JSON.stringify(state.requestData))
+    data.type = state.marketType[state.defaultTab]
+    return API.Market.getMarketList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
@@ -111,7 +125,7 @@ export const actions = {
   },
   getMarketingStatisticsList({commit, state}, msg) {
     let {id, page, loading} = msg
-    return API.Market.getMarketStatistic(id, {page, limit: 12}, loading)
+    return API.Market.getMarketStatistic(id, {page, limit: 11}, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
@@ -165,5 +179,8 @@ export const actions = {
     commit('SET_DEFAULT_INDEX', data.index)
     commit('SET_REQUEST_DATA', {status: data.status, page: 1})
     dispatch('getMarketList')
+  },
+  setDefaultTab({commit}, index) {
+    commit('SET_DEFAULT_TAB', index)
   }
 }

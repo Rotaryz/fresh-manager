@@ -19,7 +19,7 @@ http.interceptors.request.use(
     // 请求数据前的拦截
     config.url = resetUrl(config.url)
     if (!config.headers.common['Current-Corp']) {
-      config.headers.common['Current-Corp'] = getCorpId()
+      config.headers.common['Current-Corp'] = getCorpId() || process.env.VUE_APP_CURRENT_CORP
     }
     return config
   },

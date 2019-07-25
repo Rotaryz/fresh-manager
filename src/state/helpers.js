@@ -164,11 +164,11 @@ export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDe
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists', 'inviteCount', 'defaultIndex', 'requestData'])
+  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount', 'defaultIndex', 'requestData', 'defaultTab', 'marketType'])
 }
 
 export const marketMethods = {
-  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList', 'resetData', 'setDefaultIndex', 'setRequestData'])
+  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList', 'resetData', 'setDefaultIndex', 'setRequestData', 'setDefaultTab'])
 }
 
 export const auxiliaryComputed = {

@@ -21,19 +21,85 @@
         <div class="edit-input-box">
           <input v-model="msg.coupon_name"
                  type="text"
-                 :placeholder="disable ? '' : '请输入优惠券名称'"
+                 placeholder="请输入优惠券名称"
                  class="edit-input"
-                 :readonly="disable"
-                 maxlength="12"
-                 :class="{'disable-input':disable}"
+                 :readonly="(disable && !editId)"
+                 maxlength="10"
+                 :class="{'disable-input':(disable && !editId)}"
           >
-          <div class="num">{{msg.coupon_name ? msg.coupon_name.length : 0}}/12</div>
+          <div class="num">{{msg.coupon_name ? msg.coupon_name.length : 0}}/10</div>
+        </div>
+        <div :class="{'text-no-change': (disable && !editId)}"></div>
+      </div>
+
+      <!--使用范围-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          使用范围
+        </div>
+        <div class="input-box" style="flex: 1">
+          <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
+          <!--添加品类列表-->
+          <div v-if="+msg.range_type === 2" class="activity-box">
+            <div class="activity-list">
+              <div class="activity-tab">
+                <div :class="{'btn-disable': disable}" class="add-goods-btn btn-main" @click="_showCategory">
+                  <span class="add-icon"></span>
+                  添加
+                </div>
+                <!--<div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>-->
+              </div>
+              <div v-if="selectCategoryList.length" class="goods-list-box">
+                <div class="commodities-list-header com-list-box commodities-list-top">
+                  <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">{{item.name}}</div>
+                </div>
+                <div class="big-box">
+                  <div v-for="(item, index) in selectCategoryList" :key="index" class="com-list-box com-list-content">
+                    <div v-for="(val, ind) in categoryTitle" :key="ind" :style="{flex: val.flex}" class="com-list-item">
+                      <span v-if="val.value !== ''">{{item[val.value]}}</span>
+                      <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('category', item, index)">删除</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--添加商品列表-->
+          <div v-if="+msg.range_type === 3" class="activity-box">
+            <div class="activity-list">
+              <div class="activity-tab">
+                <div :class="{'btn-disable': disable}" class="add-goods-btn btn-main" @click="_showGoods">
+                  <span class="add-icon"></span>
+                  添加
+                </div>
+                <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用)</div>
+              </div>
+              <div v-if="goodsList.length" class="goods-list-box">
+                <div class="commodities-list-header com-list-box commodities-list-top">
+                  <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
+                </div>
+                <div class="big-box">
+                  <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
+                    <div class="com-list-item">{{item.name}}</div>
+                    <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
+                    <div class="com-list-item">¥{{item.trade_price || 0}}</div>
+                    <div class="com-list-item">{{item.usable_stock || 0}}</div>
+                    <div class="com-list-item">
+                      <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('goods', item, index)">删除</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
 
       <!--类型-->
-      <div class="edit-item">
+      <div class="edit-item short-top">
         <div class="edit-title">
           <span class="start">*</span>
           优惠券类型
@@ -43,10 +109,20 @@
             <p class="check-item" @click="changeCheck(2)"><span :class="['item-icon', {'checked': +msg.preferential_type === 2}]"></span>满减券</p>
             <p class="check-item" @click="changeCheck(1)"><span :class="['item-icon', {'checked': +msg.preferential_type === 1}]"></span>折扣券</p>
           </div>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
+      <!--减免金额-->
+      <div class="edit-item short-top">
+        <div class="edit-title">
+          <span class="start">*</span>
+          {{+msg.preferential_type === 1 ? '折扣额度' : '减免金额'}}
+        </div>
+        <div class="edit-input-box">
           <div class="no-wrap">
             <input v-model="msg.denomination"
                    type="number"
-                   :placeholder="+msg.preferential_type === 1 ? '优惠券面值应设为0.1~9.9之间的数值' : '优惠券面值应设为1~999之间的整数'"
                    class="edit-input"
                    :readonly="disable"
                    maxlength="12"
@@ -55,107 +131,103 @@
             <span>{{+msg.preferential_type === 1 ? '折' : '元'}}</span>
           </div>
         </div>
-        <div :class="{'check-no-change':disable}"></div>
+        <div :class="{'text-no-change':disable}"></div>
+      </div>
+
+      <!--使用条件-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          使用条件
+        </div>
+        <div class="edit-input-box">
+          <div class="no-wrap">
+            <div class="threshold" @click="changeCheck(2)">
+              <span style="margin-right: 10px">消费金额满</span>
+            </div>
+            <input v-model="msg.condition"
+                   type="number"
+                   class="edit-input"
+                   style="width: 318px"
+                   :readonly="disable"
+                   maxlength="12"
+                   :class="{'disable-input':disable}"
+            >
+            <span>元</span>
+          </div>
+        </div>
+        <div :class="{'text-no-change':disable}"></div>
       </div>
 
       <!--数量-->
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          发放数量
+          发放总量
         </div>
         <div class="edit-input-box">
           <div class="no-wrap">
             <input v-model="msg.usable_stock"
                    type="number"
-                   :placeholder="disable ? '' : '发放数量应设为1~99999之间的整数'"
+                   placeholder="最多100000000张"
                    class="edit-input"
-                   :readonly="disable"
+                   :readonly="(disable && !editId)"
                    maxlength="12"
-                   :class="{'disable-input':disable}"
+                   :class="{'disable-input': (disable && !editId)}"
             >
             <span>张</span>
           </div>
         </div>
-        <div :class="{'text-no-change':disable}"></div>
-      </div>
-
-      <!--满减-->
-      <div class="edit-item">
-        <div class="edit-title">订单满减</div>
-        <div class="edit-input-box">
-          <div class="no-wrap">
-            <input v-model="msg.condition"
-                   type="number"
-                   :placeholder="disable ? '' : '不填则默认为“0”'"
-                   class="edit-input"
-                   :readonly="disable"
-                   maxlength="12"
-                   :class="{'disable-input':disable}"
-            >
-            <span>元可使用</span>
-          </div>
-          <div class="description" @click="changeFull()">
-            <span :class="['item-icon', {'checked': +msg.support_activity === 1}]"></span>
-            <span>支持活动商品使用</span>
-            <span class="tip">(勾选此项时，活动商品可以叠加使用该优惠券。新人特惠、拼团返现活动不参与)</span>
-          </div>
-        </div>
-        <div :class="{'check-no-change':disable}"></div>
+        <div :class="{'text-no-change':(disable && !editId)}"></div>
       </div>
 
       <!--时间-->
-      <div class="edit-item">
+      <div class="edit-item short-top">
         <div class="edit-title">
           <span class="start">*</span>
           用券时间
         </div>
         <div class="wrap">
-          <div class="time-select">
+          <div class="select-item">
+            <div class="checkbox hand" @click="changeLimit">
+              <span :class="['item-icon', {'checked': +msg.is_day_limited === 0}]"></span>
+              <span class="text">固定时间</span>
+            </div>
+            <div class="checkbox hand" @click="changeLimit">
+              <span :class="['item-icon', {'checked': +msg.is_day_limited === 1}]"></span>
+              <span class="text">领取后生效</span>
+            </div>
+          </div>
+          <div v-if="+msg.is_day_limited === 0" class="time-select">
             <date-picker
-              :value="msg.start_at"
-              class="edit-input-box"
-              type="date"
-              :confirm="false"
+              v-model="msg.start_at"
               :editable="false"
-              placement="bottom-end"
+              class="edit-input-box"
+              type="datetime"
               placeholder="选择开始时间"
               style="width: 240px;height: 40px;border-radius: 1px"
-              @on-change="_getStartTime"
+              valueFormat="yyyy-MM-dd HH:mm:ss"
+              @change="_getStartTime"
             ></date-picker>
             <div class="tip-text">至</div>
             <date-picker
-              :value="msg.end_at"
-              class="edit-input-box edit-input-right"
-              type="date"
-              :confirm="false"
+              v-model="msg.end_at"
               :editable="false"
-              placement="bottom-end"
+              class="edit-input-box"
+              type="datetime"
               placeholder="选择结束时间"
-              style="width: 240px;height: 40px"
-              @on-change="_getEndTime"
+              style="width: 240px;height: 40px;border-radius: 1px"
+              valueFormat="yyyy-MM-dd HH:mm:ss"
+              @change="_getEndTime"
             ></date-picker>
           </div>
-          <div class="select-item">
-            <span :class="['item-icon', 'hand', {'checked': +msg.is_day_limited === 1}]" @click="changeLimit"></span>
-            <span class="hand" @click="changeLimit">领取当日起</span>
+          <div v-if="+msg.is_day_limited === 1" class="select-day">
+            <span>领取当日起</span>
             <input v-model="msg.limit_days" type="text" class="day-item">
             <span>天内可用</span>
           </div>
         </div>
         <div :class="{'check-no-change':disable}"></div>
-      </div>
-      <!--<p @click="test">测试</p>-->
-      <!--使用范围-->
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          使用范围
-        </div>
-        <div class="input-box">
-          <base-drop-down :width="400" :height="40" :select="useRange" @setValue="_selectRange"></base-drop-down>
-        </div>
-        <div :class="{'text-no-change':disable}"></div>
       </div>
 
       <!--使用说明-->
@@ -169,86 +241,19 @@
             <textarea v-model="msg.description"
                       type="text"
                       class="edit-input edit-textarea"
+                      placeholder="例如: 全场商品通用或特惠商品不可以使用"
                       :readonly="disable"
-                      maxlength="45"
+                      maxlength="50"
                       :class="{'disable-input':disable}"
             >
             </textarea>
-            <span class="tip">例如: 全场商品通用或特惠商品不可以使用</span>
+            <span class="tip"></span>
           </div>
-          <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/45</div>
+          <div class="textarea-num">{{msg.description ? msg.description.length : 0}}/50</div>
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
-    </div>
-
-    <!--添加品类列表-->
-    <div v-if="+msg.range_type === 2" class="content-header">
-      <div class="content-title">品类信息</div>
-    </div>
-    <div v-if="+msg.range_type === 2" class="activity-box">
-      <div class="activity-list">
-        <div class="activity-tab">
-          <div class="edit-title">
-            <span class="start">*</span>
-            选择品类
-          </div>
-          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showCategory">
-            <img class="icon" src="./icon-add@2x.png" alt="">
-            添加
-          </div>
-          <div class="remind">(指定此券可以在哪个品类商品上使用，仅限单个品类)</div>
-        </div>
-        <div v-if="categorySelectItem.name" class="goods-list-box">
-          <div class="commodities-list-header com-list-box commodities-list-top">
-            <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">{{item.name}}</div>
-          </div>
-          <div class="big-box">
-            <div class="com-list-box com-list-content">
-              <div v-for="(item, index) in categoryTitle" :key="index" :style="{flex: item.flex}" class="com-list-item">
-                <span v-if="item.value !== ''">{{categorySelectItem[item.value]}}</span>
-                <span v-else :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('category', item, index)">删除</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--添加商品列表-->
-    <div v-if="+msg.range_type === 3" class="content-header">
-      <div class="content-title">活动商品</div>
-    </div>
-    <div v-if="+msg.range_type === 3" class="activity-box">
-      <div class="activity-list">
-        <div class="activity-tab">
-          <div class="edit-title">
-            <span class="start">*</span>
-            选择商品
-          </div>
-          <div :class="{'disable': disable}" class="add-goods-btn hand" @click="_showGoods">
-            <img class="icon" src="./icon-add@2x.png" alt="">
-            添加
-          </div>
-          <div class="remind"><span v-if="goodsList.length > 0" class="selected">已选择 {{goodsList.length}} 件商品</span>(指定此券可以在哪些商品上使用，最多10个商品)</div>
-        </div>
-        <div v-if="goodsList.length" class="goods-list-box">
-          <div class="commodities-list-header com-list-box commodities-list-top">
-            <div v-for="(item, index) in commodities" :key="index" class="com-list-item">{{item}}</div>
-          </div>
-          <div class="big-box">
-            <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
-              <div class="com-list-item">{{item.sale_unit || item.goods_units}}</div>
-              <div class="com-list-item">¥{{item.trade_price || 0}}</div>
-              <div class="com-list-item">{{item.usable_stock || 0}}</div>
-              <div class="com-list-item">
-                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods('goods', item, index)">删除</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!--<p @click="testForm">测试</p>-->
     </div>
 
     <!-- 选择品类弹窗-->
@@ -261,9 +266,9 @@
         <!--列表-->
         <div class="category-content">
           <div class="coupon-category-list">
-            <div v-for="(item, index) in categoryList" :key="index" class="category-item" @click="selectCategory(item, index)">
+            <div v-for="(item, index) in categoryList" :key="index" class="category-item hand" @click="selectCategory(item, index)">
               <div class="left">
-                <span class="check" :class="{'checked': (categoryCheckItem.id ? (item.id === categoryCheckItem.id) : (item.id === categorySelectItem.id))}"></span>
+                <span :class="['check', {'checked': item.checked}, {'right': item.right}]"></span>
                 <span class="name">{{item.name}}</span>
               </div>
               <span class="count">{{item.goods_count || 0}}个商品</span>
@@ -325,7 +330,7 @@
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
-      <div :class="{'btn-disable': disable}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
+      <div :class="{'btn-disable': (disable && !editId)}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
   </div>
 </template>
@@ -336,7 +341,8 @@
   import {couponComputed, couponMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
-  import {DatePicker} from 'iview'
+  // import {DatePicker} from 'iview'
+  import {DatePicker} from 'element-ui'
 
   const PAGE_NAME = 'MEW_COUPON'
   const TITLE = '新建查看优惠券'
@@ -365,6 +371,7 @@
       return {
         commodities: COMMODITIES_LIST,
         id: null,
+        editId: '',
         couponPage: 1,
         chooseGoods: [],
         assortment: {
@@ -384,9 +391,9 @@
         useRange: {
           check: false,
           show: false,
-          content: '通用',
+          content: '全部商品',
           type: 'default',
-          data: [{name: '通用', id: 1}, {name: '指定品类', id: 2}, {name: '指定商品', id: 3}] // 格式：{title: '55'}}
+          data: [{name: '全部商品', id: 1}, {name: '指定品类可用', id: 2}, {name: '指定商品可用', id: 3}] // 格式：{title: '55'}}
         },
         parentId: '',
         goodsPage: {
@@ -406,7 +413,7 @@
           coupon_name: '',
           preferential_type: 2,
           denomination: '', // 优惠券面额
-          condition: '', // 满多少可用
+          condition: '0', // 满多少可用
           support_activity: 0, // 是否支持活动商品使用0 1
           start_at: '',
           end_at: '',
@@ -414,14 +421,16 @@
           ranges: [],
           limit_days: '',
           is_day_limited: 0,
-          description: ''
+          description: '',
+          tag_type: 0
         },
         isSubmit: false, // 在提交
         categoryShow: false, // 选择品类弹窗
         categoryList: [],
         categoryTitle: CATEGORY_TITLE,
         categoryCheckItem: {}, // 选中的品类
-        categorySelectItem: {}, // 确定选择的品类
+        categorySelectList: [], // 确定选择的品类
+        selectCategoryList: [], // 已选品类
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
         checkFull: false,
@@ -445,7 +454,11 @@
       testMoneyReg() {
         // 优惠价格
         if (this.msg.preferential_type === 2) {
-          return +this.msg.denomination >= 1 && +this.msg.denomination <= 999
+          if (this.msg.condition > 0) {
+            return +this.msg.denomination >= 1 && +this.msg.denomination <= this.msg.condition
+          } else {
+            return +this.msg.denomination >= 1
+          }
         } else {
           return true
         }
@@ -480,25 +493,52 @@
         return this.msg.usable_stock && COUNTREG.test(this.msg.usable_stock)
       },
       testCountNum() {
-        return this.msg.usable_stock >= 1 && this.msg.usable_stock <= 99999
+        return this.msg.usable_stock >= 1 && this.msg.usable_stock <= 100000000
+      },
+      testCountNew() {
+        if (this.editId) {
+          return this.msg.usable_stock >= this.couponDetail.usable_stock
+        } else {
+          return true
+        }
       },
       testCondition() {
-        return this.msg.condition && +this.msg.preferential_type === 2 ? RATE.test(this.msg.condition) : true
+        return this.msg.condition && RATE.test(this.msg.condition)
       },
       testStart() {
         // 开始时间
-        return this.msg.start_at
+        if (+this.msg.is_day_limited === 0) {
+          return this.msg.start_at
+        } else {
+          return true
+        }
       },
       testEnd() {
         // 结束时间
-        return this.msg.end_at
+        if (+this.msg.is_day_limited === 0) {
+          return this.msg.end_at
+        } else {
+          return true
+        }
       },
       testEndDate() {
         // 结束时间规则判断
-        return (
-          Date.parse(this.msg.end_at.replace(/-/g, '/') + ' 00:00') >
-          Date.parse('' + this.msg.start_at.replace(/-/g, '/') + ' 00:00')
-        )
+        if (+this.msg.is_day_limited === 0) {
+          return (
+            // Date.parse(this.msg.end_at.replace(/-/g, '/') + ' 00:00') >
+            // Date.parse('' + this.msg.start_at.replace(/-/g, '/') + ' 00:00')
+            Date.parse('' + this.msg.end_at) > Date.parse('' + this.msg.start_at)
+          )
+        } else {
+          return true
+        }
+      },
+      testLimitDays() {
+        if (+this.msg.is_day_limited === 1) {
+          return this.msg.limit_days
+        } else {
+          return true
+        }
       },
       testDescription() {
         return this.msg.description
@@ -507,31 +547,30 @@
         return +this.msg.range_type === 3 ? this.goodsList && this.goodsList.length : true
       },
       testCategory() {
-        return +this.msg.range_type === 2 ? this.categorySelectItem.name : true
+        return +this.msg.range_type === 2 ? this.selectCategoryList.length > 0 : true
       }
     },
     watch: {},
     beforeCreate() {
-      if (this.$route.query.id) {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
-      } else {
-        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
-      }
+      (this.$route.query.id && this.$route.query.editId) || this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
+      this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
+      this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '编辑优惠券'])
     },
     created() {
-      this.disable = this.$route.query.id
-      this.id = this.$route.query.id || null
+      this.disable = this.$route.query.id || this.$route.query.editId
+      this.editId = this.$route.query.editId || null
+      this.id = this.$route.query.id || this.$route.query.editId || null
       // 详情信息
       if (this.id) {
         let obj = _.cloneDeep(this.couponDetail)
-        this.categorySelectItem.social_name = obj.social_name
+        // this.categorySelectItem.social_name = obj.social_name
         if (+obj.range_type === 1) {
-          this.$set(this.useRange, 'content', '通用')
+          this.$set(this.useRange, 'content', '全部商品')
         } else if (+obj.range_type === 2) {
-          this.$set(this.useRange, 'content', '指定品类')
-          this.categorySelectItem = obj.ranges[0]
+          this.$set(this.useRange, 'content', '指定品类可用')
+          this.selectCategoryList = obj.ranges
         } else if (+obj.range_type === 3) {
-          this.$set(this.useRange, 'content', '指定商品')
+          this.$set(this.useRange, 'content', '指定商品可用')
           this.goodsList = obj.ranges
           this.selectGoodsId = obj.ranges.map((item) => {
             return item.range_id
@@ -548,9 +587,6 @@
       changeCheck(num) {
         this.msg.preferential_type = num
       },
-      changeFull() {
-        this.msg.support_activity = +this.msg.support_activity === 1 ? 0 : 1
-      },
       changeLimit() {
         this.$set(this.msg, 'is_day_limited', this.msg.is_day_limited ? 0 : 1)
       },
@@ -560,7 +596,9 @@
       _getEndTime(time) {
         this.msg.end_at = time
       },
-      test() {},
+      // testForm() {
+      //   console.log(this.testCondition, this.msg.condition)
+      // },
       // 选择商品
       async _getGoodsList() {
         let res = await API.Coupon.getGoodsList({
@@ -583,7 +621,6 @@
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          // item.trade_price = item.trade_price || 0
           if (delIndex !== -1) {
             item.selected = 0
           }
@@ -652,10 +689,10 @@
       _selectGoods(item, index) {
         switch (item.selected) {
         case 0:
-          if (this.selectGoodsId.length === 10) {
-            this.$toast.show('选择商品数量不能超过十个')
-            return
-          }
+          // if (this.selectGoodsId.length === 10) {
+          //   this.$toast.show('选择商品数量不能超过十个')
+          //   return
+          // }
           this.chooseGoods[index].selected = 2
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
@@ -678,7 +715,7 @@
         if (this.disable) {
           return
         }
-        this.goodsDelId = item.goods_id
+        this.goodsDelId = item.goods_id || item.id
         this.goodsDelIndex = index
         this.delType = type
         this.$refs.confirm.show(`是否确定删除该${type === 'category' ? '品类' : '商品'}？`)
@@ -686,10 +723,15 @@
       // 删除商品弹窗
       _delGoods() {
         if (this.delType === 'category') {
-          this.categorySelectItem = {}
-          this.categoryCheckItem = {}
+          this.selectCategoryList.splice(this.goodsDelIndex, 1)
+          this.categorySelectList.splice(this.goodsDelIndex, 1)
+          this.categoryList.map((item) => {
+            if (item.id === this.goodsDelId) {
+              item.right = false
+              item.checked = false
+            }
+          })
         } else {
-          // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
           this.selectGoodsId.splice(this.goodsDelIndex, 1)
           this.goodsList.splice(this.goodsDelIndex, 1)
           this.selectDelId.push(this.goodsDelId)
@@ -699,6 +741,15 @@
         if (this.categoryShow) {
           this.categoryShow = false
           this.categoryCheckItem = {}
+          this.categoryList = this.categoryList.map((item, ind) => {
+            let index = this.categorySelectList.findIndex(val => {
+              return item.id === val.id
+            })
+            if (index > -1) {
+              item.checked = false
+            }
+            return item
+          })
           this.$refs.categoryModal.hideModal()
         } else {
           this.selectGoods.forEach((item) => {
@@ -716,10 +767,10 @@
         if (item.selected === 1) {
           return
         }
-        if (this.selectGoodsId.length === 20 && item.selected !== 2) {
-          this.$toast.show('选择商品数量不能超过十个')
-          return
-        }
+        // if (this.selectGoodsId.length === 20 && item.selected !== 2) {
+        //   this.$toast.show('选择商品数量不能超过十个')
+        //   return
+        // }
 
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
@@ -761,6 +812,7 @@
           return
         }
         this._initData()
+        this.categorySelectList = []
         // 展示品类弹窗
         this.$refs.categoryModal.showModal()
         this.categoryShow = true
@@ -775,12 +827,34 @@
 
       // 选择品类
       selectCategory(item, index) {
-        this.categoryCheckItem = item
+        // this.categoryCheckItem = item
+        if (item.right) return
+        if (item.checked) {
+          this.categoryList = this.categoryList.map((item, ind) => {
+            index === ind && (item.checked = false)
+            return item
+          })
+          let idx = this.categorySelectList.findIndex((items) => items.id === item.id)
+          idx > -1 && this.categorySelectList.splice(idx, 1)
+        } else {
+          if (this.selectCategoryList.length > 0 || this.categorySelectList.length > 0) {
+            this.$toast.show('只能选择一个品类')
+            return
+          }
+          this.categoryList = this.categoryList.map((item, ind) => {
+            index === ind && (item.checked = true)
+            return item
+          })
+          this.categorySelectList.push(item)
+        }
       },
       // 确定选择品类
       _addition() {
-        this.categoryCheckItem.id && (this.categorySelectItem = this.categoryCheckItem)
-        this.categoryShow = false
+        this.selectCategoryList = [...this.selectCategoryList, ...this.categorySelectList]
+        this.categoryList = this.categoryList.map((item) => {
+          item.checked && (item.right = true)
+          return item
+        })
         this.$refs.categoryModal.hideModal()
       },
       _back() {
@@ -791,19 +865,21 @@
       },
       //  保存
       async _saveActivity() {
-        if (this.disable || this.isSubmit) return
+        if ((this.disable && !this.editId) || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
-        if (!this.msg.is_day_limited) {
-          this.$set(this.msg, 'limit_days', 0)
-        }
         let data = {}
         data = Object.assign({}, this.msg)
         // 添加coupon_range_id
         if (+this.msg.range_type === 2) {
-          this.categorySelectItem.coupon_range_id = this.categorySelectItem.coupon_range_id || 0
-          this.categorySelectItem.range_id = this.categorySelectItem.id || 0
-          this.msg.ranges[0] = this.categorySelectItem
+          // this.categorySelectItem.coupon_range_id = this.categorySelectItem.coupon_range_id || 0
+          // this.categorySelectItem.range_id = this.categorySelectItem.id || 0
+          data.ranges = this.selectCategoryList.map(item => {
+            return {
+              coupon_range_id: item.coupon_range_id || 0,
+              range_id: item.id || 0
+            }
+          })
         } else if (+this.msg.range_type === 3) {
           this.goodsList.forEach((item) => {
             item.range_id = item.id || 0
@@ -815,14 +891,23 @@
         let res = null
         this.isSubmit = true
         // 调用保存活动接口
-        res = await API.Coupon.storeCoupon(data, true)
-        this.$loading.hide()
-        this.$toast.show('保存成功')
+        if (this.editId) {
+          res = await API.Coupon.editCoupon({
+            coupon_name: data.coupon_name,
+            usable_stock: data.usable_stock,
+            id: this.editId
+          })
+        } else {
+          res = await API.Coupon.storeCoupon(data, true)
+        }
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
+          this.$loading.hide()
           this.isSubmit = false
           return
         }
+        this.$loading.hide()
+        this.$toast.show('保存成功')
         setTimeout(() => {
           this._back()
         }, 1000)
@@ -830,21 +915,23 @@
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入活动名称'},
-          {value: this.testMoney, txt: '优惠券面值应设为1~999之间的整数'},
-          {value: this.testMoneyReg, txt: '优惠券面值应设为1~999之间的整数'},
+          {value: this.testGoods, txt: '请选择商品'},
+          {value: this.testCategory, txt: '请选择品类'},
+          {value: this.testMoney, txt: '减免金额应设为小于使用条件金额的整数'},
+          {value: this.testMoneyReg, txt: '优惠券面值应设为小于使用条件金额的整数'},
           {value: this.testDiscount, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testDiscountNum, txt: '请输入0.1到9.9之间的折扣数'},
           {value: this.testDiscountReg, txt: '请输入0.1到9.9之间的折扣数'},
-          {value: this.testCount, txt: '发放数量应设为1~99999之间的整数'},
-          {value: this.testCountReg, txt: '发放数量应设为1~99999之间的整数'},
-          {value: this.testCountNum, txt: '发放数量应设为1~99999之间的整数'},
           {value: this.testCondition, txt: '满减金额数必须为整数'},
-          {value: this.testStart, txt: '请选择活动开始时间'},
-          {value: this.testEnd, txt: '请选择活动结束时间'},
-          {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
-          {value: this.testDescription, txt: '请输入使用说明'},
-          {value: this.testGoods, txt: '请选择商品'},
-          {value: this.testCategory, txt: '请选择品类'}
+          {value: this.testCount, txt: '发放数量应设为1~100000000之间的整数'},
+          {value: this.testCountReg, txt: '发放数量应设为1~100000000之间的整数'},
+          {value: this.testCountNum, txt: '发放数量应设为1~100000000之间的整数'},
+          {value: this.testCountNew, txt: '发放数量只可增加不可减少'},
+          {value: this.testStart, txt: '请选择用券开始时间'},
+          {value: this.testEnd, txt: '请选择用券结束时间'},
+          {value: this.testEndDate, txt: '用券结束时间必须大于开始时间'},
+          {value: this.testLimitDays, txt: '请输入领取后可用天数'},
+          {value: this.testDescription, txt: '请输入使用说明'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -901,10 +988,9 @@
     .checkbox
       height: 24px
       margin-top: 7.5px
-      margin-bottom: 10px
       .check-item
         float: left
-        margin-right: 20px
+        margin-right: 60px
         display: flex
         align-items: center
         cursor: pointer
@@ -917,22 +1003,9 @@
       margin-right: 5px
       border-radius: 50%
       transition: all 0.3s
-      &:after
-        content: ""
-        border-radius: 50%
-        position: absolute
-        left: 50%
-        top: 50%
-        margin-left: -4px
-        margin-top: -4px
-        width: 8px
-        height: 8px
-        background: #FFF
-        transition: all 0.3s
     .checked
-      border: 1px solid $color-main
-      &:after
-        background: $color-main
+      border: 5px solid $color-main
+
     .edit-input-box
       margin: 0 14px 0 40px
       position: relative
@@ -1006,11 +1079,34 @@
       .time-select
         display: flex
         align-items: center
+        margin: 20px 0 0 40px
+        width: 560px
+        height: 80px
+        background: #f5f7fa
+        border: 1px solid #E9ECEE
+        .edit-input-box
+          margin-left: 20px
+          .text
+            border-radius: 1px
       .select-item
-        margin-top: 20px
         margin-left: 40px
         display: flex
         align-items: center
+        .checkbox
+          display: flex
+          align-items: center
+        .text
+          margin-right: 60px
+      .select-day
+        width: 400px
+        height: 80px
+        margin-top: 20px
+        margin-left: 40px
+        display: flex
+        padding-left: 20px
+        align-items: center
+        background: #f5f7fa
+        border: 1px solid #E9ECEE
       .day-item
         width: 138px
         height: 34px
@@ -1031,6 +1127,8 @@
       cursor: not-allowed
       height: 100px
 
+  .short-top
+    margin-top: 14px
   .edit-activity
     box-sizing: border-box
     padding-left: 20px
@@ -1129,23 +1227,14 @@
       height: 32px
       line-height: 32px
       width: 108px
-      color: #4DBD65
       font-size: $font-size-14
       font-family: $font-family-regular
       transition: all 0.3s
-      text-align: center
-      border-radius: 1px
-      border: 1px solid #4DBD65
-      display: flex
-      align-items: center
-      justify-content: center
-    .disable
-      cursor: not-allowed
-    .icon
-      width: 10px
-      height: 10px
-      margin-right: 5px
-      object-fit: cover
+      .add-icon
+        margin-right: 5px
+        margin-left: 0
+
+
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
@@ -1504,15 +1593,29 @@
         .check
           width: 16px
           height: 16px
+          margin-right: 20px
           border: 1px solid #E1E1E1
-          border-radius: 50%
           transition: all 0.3s
           display: flex
           justify-content: center
           align-items: center
-          margin-right: 20px
+          &:before
+            content: ""
+            width: 14px
+            height: 14px
+            icon-image(icon-check)
+            display: block
+            opacity: 0
+            transition: all 0.3s
         .checked
-          border: 5px solid $color-main
+          border-color: #4DBD65
+          &:before
+            opacity: 1
+        .right
+          border-color: #E1E1E1
+          &:before
+            opacity: 1
+            icon-image(icon-check_ash)
         .title-item
           padding-right: 20px
           display: block

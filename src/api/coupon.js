@@ -22,6 +22,15 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 停止优惠券
+   * @param loading
+   * @returns {*}
+   */
+  stopCoupon(id, loading = false) {
+    let url = `/social-shopping/api/backend/coupon-manage/coupon/offline/${id}`
+    return request.post(url, null, loading)
+  },
+  /**
    * 删除优惠券
    * @param data
    * @param loading
@@ -71,6 +80,17 @@ export default {
     let url = `/social-shopping/api/backend/coupon-manage/coupon`
     return request.post(url, data, loading)
   },
+
+  /**
+   * 编辑优惠券
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  editCoupon(data, loading = false) {
+    let url = `/social-shopping/api/backend/coupon-manage/coupon/${data.id}`
+    return request.put(url, data, loading)
+  },
   /**
    * 优惠券分类统计
    * @param loading
@@ -78,6 +98,24 @@ export default {
    */
   getCouponStatus(data, loading = false) {
     let url = '/social-shopping/api/backend/coupon-manage/coupon-status'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 优惠券报表
+   * @param loading
+   * @returns {*}
+   */
+  getCouponData(data, loading = false) {
+    let url = '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report'
+    return request.get(url, data, loading)
+  },
+  /**
+   * 导出报表
+   * @param loading
+   * @returns {*}
+   */
+  exportData(data, loading = false) {
+    let url = '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report-export'
     return request.get(url, data, loading)
   }
 }
