@@ -147,14 +147,14 @@
         console.log(e.target.files)
         let arr = await cos('image', Array.from(e.target.files))
         console.log('cos', arr)
-        arr.forEach(item => {
+        this.showLoading = false
+        arr.length && arr.forEach(item => {
           if (item.error !== this.$ERR_OK) {
             this.$emit('failFile', item.message)
             return
           }
           this.$emit('getPic', item.data)
         })
-        this.showLoading = false
       },
       _addVideo(e) {
         let arr = Array.from(e.target.files)
