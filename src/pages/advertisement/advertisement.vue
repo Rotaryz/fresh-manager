@@ -328,7 +328,6 @@
                 API.Advertisement.getGroupList().then((res) => {
                   if (res.data) {
                     this.groupList = this._formatListData(res.data)
-                    this.freeShippingList = this._formatListData(res.data)
                   }
                 })
               } else {
@@ -387,8 +386,7 @@
           // this.temporaryNavigation = _.cloneDeep(res.data)
           break
         case 'activity':
-          // this.activityList = res.data || []
-          this.activityList = [...res.data,{"id":332,"sort":5,"module_id":6,"module_name":"free_shipping","module_title":"全国包邮","source_type":1,"is_close":0,"starting_point_id":4389,"list":[]}] || []
+          this.activityList = res.data || []
           break
         default:
           break
