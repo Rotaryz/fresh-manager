@@ -1,107 +1,125 @@
 <template>
   <div class="coupon-market table">
     <div class="down-content">
-      <div v-for="(item, index) in topBtn" :key="index" class="down-main">
-        <span class="down-title">{{item.name}}</span>
-        <div class="down-item">
-          <div v-for="(val, ind) in item.child" :key="ind" class="top-btn" @click="newMarket(val.value)">
-            <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
-            <span class="text">{{val.name}}</span>
-          </div>
+      <!--<span class="down-title">{{item.name}}</span>-->
+      <div class="down-item">
+        <div v-for="(val, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">
+          <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
+          <span class="text">{{val.text}}</span>
         </div>
       </div>
     </div>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <img src="./icon-marketing_list@2x.png" class="identification-icon">
-          <p class="identification-name">营销列表</p>
-          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
+          <!--<img src="./icon-marketing_list@2x.png" class="identification-icon">-->
+          <!--<p class="identification-name">营销列表</p>-->
+          <!--<base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
+          <market-tabs :tabList="topBtn"
+                       :defaultTab="defaultTab"
+                       :isShowMark="false"
+                       tabAlign="left"
+                       padding="12px 2px"
+                       margin="0 18px"
+                       defaultColor="#333333"
+                       class="tab-top"
+                       @tab-change="tabChange"
+          ></market-tabs>
         </div>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in marketTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
-        <div class="list">
+        <div v-if="marketList.length" class="list">
           <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item">
-              <div v-if="+val.type === 1 || +val.type === 2" :style="{flex: val.flex}" class="item">
+            <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 2}">
+              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
                 {{item[val.value] || '---'}}
               </div>
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="item">
-                {{item[val.value] || 0}}
+              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item hand">
+                <span class="context">{{couponHandle(item.common_coupons[0]) || '---'}}</span>
+                <div v-if="item.common_coupons.length > 1" class="show-tip" @mouseenter="showTip(index)" @mouseleave="hideTip">
+                  <em class="icon"></em>
+                  <transition name="fade">
+                    <div v-if="tipShow === index" class="tip-content">
+                      <span v-for="(coupon, i) in item.common_coupons" :key="i" class="text">{{couponHandle(coupon)}}</span>
+                    </div>
+                  </transition>
+                </div>
+
               </div>
-              <!--状态-->
-              <div v-if="+val.type === 3" class="list-item-btn" @click="switchBtn(item, index)">
-                <base-switch :status="statusHandle(item, index)" confirmText="开启" cancelText="关闭"></base-switch>
+              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-double-row item">
+                <p v-if="item.start_at" class="item-dark">{{item.start_at}}</p>
+                <p v-if="item.start_at" class="item-dark">{{item.end_at}}</p>
+                <p v-else class="item-dark">---</p>
               </div>
               <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                 <router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>
-                <router-link tag="span" :to="'new-market?id=' + item.id + '&index=' + (+item.type === 7 ? 4 : item.type -1)" append class="list-operation">查看</router-link>
-                <span class="list-operation" @click="_deleteMarket(item)">删除</span>
+                <router-link v-if="+item.status === 1 || +item.status === 0" tag="span" :to="'new-market?editId=' + item.id + '&index='+defaultTab" append class="list-operation">编辑</router-link>
+                <router-link v-if="+item.status === 2" tag="span" :to="'new-market?id=' + item.id + '&index='+defaultTab" append class="list-operation">查看</router-link>
+                <span v-if="+item.status === 1 || +item.status === 0" class="list-operation" @click="_stopMarket(item)">停止</span>
+                <span v-if="+item.status === 2" class="list-operation" @click="_deleteMarket(item)">删除</span>
               </div>
             </div>
           </div>
         </div>
+        <base-blank v-else blackStyle="margin-top:15%"></base-blank>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
       </div>
     </div>
-    <default-confirm ref="confirm" @confirm="_sureConfirm"></default-confirm>
+    <market-confirm ref="confirm" @confirm="_sureConfirm"></market-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import MarketConfirm from './market-confirm/market-confirm'
+  import MarketTabs from './market-tabs/market-tabs'
   import {marketComputed, marketMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'COUPON_MARKET'
   const TITLE = '营销计划'
   const MARKET_TITLE = [
-    {name: '营销名称', flex: 1.6, value: 'title', type: 1},
-    {name: '类型', flex: 1, value: 'type_str', type: 2},
-    {name: '领取数', flex: 1, value: 'take_count', type: 4},
-    {name: '状态', flex: 1, value: 'status', type: 3},
+    {name: '活动时间', flex: 1.4, value: 'time', type: 4},
+    {name: '营销名称', flex: 1.1, value: 'title', type: 1},
+    {name: '优惠券', flex: 1.5, value: 'coupons_str', type: 2},
+    {name: '状态', flex: 1, value: 'status_str', type: 1},
     {name: '操作', flex: 1, value: '', type: 5}
   ]
+
   const TOP_BTN = [
     {
-      name: '平台发放',
-      child: [
-        {
-          name: '新客有礼',
-          value: 0,
-          icon: 'icon-new_courtesy'
-        },
-        {
-          name: '复购有礼',
-          value: 1,
-          icon: 'icon-complex_courtesy'
-        },
-        {
-          name: '唤醒流失客户',
-          value: 2,
-          icon: 'icon-awaken'
-        },
-        {
-          name: '邀请有礼',
-          value: 4,
-          icon: 'icon-invite_courtesy'
-        }
-      ]
+      text: '新客有礼',
+      icon: 'icon-new_courtesy',
+      type: 1
     },
     {
-      name: '团长发放',
-      child: [
-        {
-          name: '社群福利券',
-          value: 3,
-          icon: 'icon-group'
-        }
-      ]
+      text: '复购有礼',
+      icon: 'icon-complex_courtesy',
+      type: 2
+    },
+    {
+      text: '召回有礼',
+      icon: 'icon-recall_courtesy',
+      type: 3
+    },
+    {
+      text: '定向营销',
+      icon: 'icon-directional_courtesy',
+      type: 9
+    },
+    {
+      text: '邀请有礼',
+      icon: 'icon-invitation_courtesy',
+      type: 7
+    },
+    {
+      text: '社群营销',
+      icon: 'icon-community_courtesy',
+      type: 4
     }
   ]
   export default {
@@ -110,7 +128,8 @@
       title: TITLE
     },
     components: {
-      DefaultConfirm
+      MarketConfirm,
+      MarketTabs
     },
     data() {
       return {
@@ -124,15 +143,19 @@
           {name: '开启', value: 1, num: 0},
           {name: '关闭', value: 0, num: 0}
         ],
-        delId: 0,
-        statusArr: new Array(10).fill(undefined)
+        curentItem: {},
+        statusArr: new Array(10).fill(undefined),
+        currentItem: {},
+        toastType: '',
+        tipShow: '',
+        timer: ''
       }
     },
     computed: {
       ...marketComputed
     },
     created() {
-      this.getMarketStatus()
+      // this.getMarketStatus()
     },
     mounted() {},
     methods: {
@@ -169,6 +192,12 @@
         }
         return status
       },
+      // 顶部tab切换
+      tabChange(index) {
+        this.$refs.pages.beginPage()
+        this.setDefaultTab(index)
+        this.setRequestData({page: 1, type: this.topBtn[index].type})
+      },
       switchBtn(item, index) {
         let status = 1
         if (typeof this.statusArr[index] === 'number') {
@@ -192,29 +221,66 @@
             return item
           })
           // this.getMarketList({page: this.page, status: this.status})
-          this.getMarketStatus()
+          // this.getMarketStatus()
         })
       },
       addPage(page) {
         this.setRequestData({page})
       },
+      showTip(index) {
+        clearTimeout(this.timer)
+        this.tipShow = index
+      },
+      hideTip() {
+        this.timer = setTimeout(() => {
+          this.tipShow = ''
+        }, 300)
+      },
+      _stopMarket(item) {
+        this.currentItem = item
+        this.toastType = 'stop'
+        this.$refs.confirm.show(`停止“${item.title || ''}”营销计划无法再发放优惠券，确定停止吗？`)
+      },
       _deleteMarket(item) {
-        this.delId = item.id
-        this.$refs.confirm.show(`删除${item.title || ''}营销计划`)
+        this.curentItem = item
+        this.toastType = 'del'
+        this.$refs.confirm.show(`确定删除“${item.title || ''}”营销计划？`)
       },
       async _sureConfirm() {
-        let res = await API.Market.deleteMarket(this.delId)
-        if (res.error !== this.$ERR_OK) {
-          this.$toast.show(res.message)
-          return
-        }
-        this.$toast.show('删除成功')
-        this.getMarketStatus()
-        if (+this.marketPageDetail.total%10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
-          this.setRequestData({page: this.marketPageDetail.total_page - 1})
+        if (this.toastType === 'del') {
+          let res = await API.Market.deleteMarket(this.curentItem.id)
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.$toast.show('删除成功')
+          // this.getMarketStatus()
+          if (+this.marketPageDetail.total%10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
+            this.setRequestData({page: this.marketPageDetail.total_page - 1})
+          } else {
+            this.getMarketList()
+          }
         } else {
-          this.getMarketList()
+          API.Market.stopMarket(this.currentItem.id)
+            .then(res => {
+              if (res.error !== this.$ERR_OK) {
+                this.$toast.show(res.message)
+                return
+              }
+              this.$toast.show('停止成功')
+              this.getMarketList()
+              // this.getMarketStatus()
+            })
         }
+      },
+      couponHandle(coupon) {
+        let lastText = ''
+        if (+coupon.tag_type === 1) {
+          lastText = '兑换'
+        } else {
+          lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination+'元'
+        }
+        return `【${coupon.coupon_name}】${coupon.condition > 0 ? '满'+coupon.condition+'元' : '无门槛'}${lastText}`
       }
     }
   }
@@ -234,6 +300,14 @@
         overflow: hidden
         white-space: nowrap
         font-size: 14px
+
+  .list .list-box
+    >.list-about
+      overflow: inherit
+      .item
+        overflow: inherit
+        display: flex
+        align-items: center
   .btn-main
     margin-right: 10px
   .list-item
@@ -243,28 +317,66 @@
       overflow: hidden
       white-space: nowrap
       font-size: 14px
+      .context
+        margin-right: 5px
+        white-space: pre-wrap
+        word-break: break-all
+      .show-tip
+        width: 25px
+        height: 40px
+        display: flex
+        align-items: center
+        position: relative
+        .icon
+          position: relative
+          width: 14px
+          height: 14px
+          margin-left: 5px
+          display: block
+          border-radius: 50%
+          background: url("./icon-more_list.png")
+          background-size: 100% 100%
+    .tip-content
+      position: absolute
+      left: 31px
+      bottom: 6px
+      border-radius: 4px
+      padding: 0 5px
+      box-shadow: 0 0 8px 0 #E9ECEE
+      border: 1px solid #E9ECEE
+      background: rgba(50,50,50,0.8)
+      z-index: 10
+      &:before
+        content: ""
+        width: 9px
+        height: 10px
+        border: 5px solid rgba(50,50,50,0.8)
+        border-top: 4px solid transparent
+        border-bottom: 5px solid transparent
+        border-left: 4px solid transparent
+        position: absolute
+        bottom: 7px
+        left: -9px
+      .text
+        font-size: $font-size-12
+        color: #FFF
+        font-family: $font-family-regular
+        line-height: 24px
+        height: 24px
+        display: block
   .down-content
-    height: 170px
-    .down-main
-      &:first-child
-        .top-btn:nth-child(2)
-          margin-right: 22px
-      &:last-child
-        .top-btn:first-child
-          width: 84px
-          margin-left: -14px
+    height: 138px
     .down-title
       font-size: $font-size-16
       line-height: 1
       color: $color-text-main
       font-family: $font-family-regular
     .down-item
-      margin-top: 22px
       .top-btn
-        width: 84px
+        width: 60px
         height: 84px
         text-align: center
-        margin-right: 36px
+        margin-right: 50px
         overflow: hidden
         color: $color-text-main
         font-size: $font-size-14
@@ -281,8 +393,6 @@
           margin-top: 10px
           display: block
           transition: all 0.3s
-        &:first-child
-          width: 60px
         &:hover
           .icon
             opacity: 0.9
@@ -297,4 +407,11 @@
           .text
             text-decoration: underline
 
+  .identification
+    padding-bottom: 18px
+    height: 78px
+    position: relative
+    z-index: 10
+  .identification-page
+    width: 100%
 </style>

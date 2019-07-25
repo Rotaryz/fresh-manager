@@ -119,8 +119,9 @@
               <div v-for="(item, index) in selectCouponList" :key="index" class="com-list-box com-list-content">
                 <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="com-list-item" :style="{flex: val.flex}">
                   <div v-if="val.value === 'time'" class="main">
-                    <p>{{item.start_at}}</p>
-                    <p>{{item.end_at}}</p>
+                    <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                    <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                    <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</p>
                   </div>
                   <p v-else-if="val.value === ''" class="list-operation" :class="{'list-operation-disable': disable}" @click="_showDelItem('coupon', index, item)">删除</p>
                   <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
@@ -208,8 +209,9 @@
               <div v-for="(val, ind) in couponTitle" :key="ind" class="title-item" :style="{flex: val.flex}">
                 <span v-if="ind === 0" class="radio" :class="{'checked': (couponCheckItem.id ? (item.id === couponCheckItem.id) : (item.id === couponSelectItem.id))}"></span>
                 <div v-else-if="val.value === 'time'" class="main">
-                  <p>{{item.start_at}}</p>
-                  <p>{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.start_at}}</p>
+                  <p v-if="+item.is_day_limited !== 1">{{item.end_at}}</p>
+                  <p v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</p>
                 </div>
                 <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
                 <span v-else class="title-item">{{item[val.value]}}</span>
@@ -319,7 +321,7 @@
     {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '面值', flex: 1, value: 'denomination'},
     {name: '剩余数量', flex: 1, value: 'usable_stock'},
-    {name: '有效期', flex: 1, value: 'time'}
+    {name: '有效期', flex: 1.2, value: 'time'}
   ]
 
   const COUNT = /[2-5]/

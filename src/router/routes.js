@@ -510,6 +510,16 @@ export default [
           }
         }
       },
+
+      // 优惠券统计
+      {
+        path: 'coupon-manage/coupon-data',
+        name: 'coupon-data',
+        component: () => lazyLoadView(import('@pages/coupon-data/coupon-data')),
+        meta: {
+          titles: ['商城', '营销', '优惠券', '优惠券统计']
+        }
+      },
       // 新建兑换券
       {
         path: 'coupon-manage/edit-commodity',
@@ -550,7 +560,7 @@ export default [
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
-            let id = routeTo.query.id
+            let id = routeTo.query.id || routeTo.query.editId
             // 活动详情
             if (id) {
               store
@@ -604,7 +614,7 @@ export default [
           variableIndex: 3,
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
-            let id = routeTo.query.id
+            let id = routeTo.query.id || routeTo.query.editId
             // 活动详情
             if (id) {
               store
@@ -700,8 +710,10 @@ export default [
             // let tabIndex = store.state.returns.tabIndex
             // if (tabIndex === 0) {
               //  售后订单
-            store
-              .dispatch('returns/getReturnsList')
+            let tabIndex = store.getters['returns/tabIndex']
+            let str = +tabIndex === 1 ? 'returns/getMarketList' : 'returns/getReturnsList'
+            let obj = +tabIndex === 1 ? {page: 1, source_type: 2} : ''
+            store['dispatch'](str, obj)
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -711,20 +723,19 @@ export default [
               .catch(() => {
                 return next({name: '404'})
               })
-            // }
-            // else {
-            //   // 售后补偿
-            //   store
-            //     .dispatch('market/getMarketList', {page: 1, source_type: 2})
-            //     .then((res) => {
-            //       if (!res) {
+            // if (+tabIndex === 0) {
+            //
+            // } else {
+            //   store.dispatch('market/getMarketList', {page: 1, source_type: 2})
+            //       .then((res) => {
+            //         if (!res) {
+            //           return next({name: '404'})
+            //         }
+            //         return next()
+            //       })
+            //       .catch(() => {
             //         return next({name: '404'})
-            //       }
-            //       return next()
-            //     })
-            //     .catch(() => {
-            //       return next({name: '404'})
-            //     })
+            //       })
             // }
           }
         }

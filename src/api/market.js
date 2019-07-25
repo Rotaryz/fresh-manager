@@ -33,6 +33,17 @@ export default {
   },
 
   /**
+   * 关闭营销
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  stopMarket(id, loading = false) {
+    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/offline/${id}`
+    return request.post(url, null, loading)
+  },
+
+  /**
    * 新建营销
    * @param data
    * @param loading
@@ -41,6 +52,17 @@ export default {
   storeMarket(data, loading = false) {
     let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity`
     return request.post(url, data, loading)
+  },
+
+  /**
+   * 编辑营销
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  editMarket(data, loading = false) {
+    let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${data.id}`
+    return request.put(url, data, loading)
   },
   /**
    * 营销开启关闭
