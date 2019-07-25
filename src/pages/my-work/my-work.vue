@@ -361,7 +361,7 @@
     align-items: center
   .pic-box
     height: 40px
-    width: 40px
+    width: 80px
     border-radius: 2px
     object-fit: cover
     background-repeat: no-repeat

@@ -74,7 +74,6 @@
                          @failFile="failFile"
                          @getPic="getCoverImage"
                          @delPic="delCoverImage"
-
             ></base-upload>
             <div v-if="!isDisabled" class="tip">
               <template v-if="currentType === 'video'">

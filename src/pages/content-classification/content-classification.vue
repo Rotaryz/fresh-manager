@@ -7,7 +7,7 @@
           <p class="identification-name">内容分类</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main hand" @click="newClassify"><span class="add-icon"></span>添加分类</div>
+          <div class="btn-main hand" @click="newClassify">添加分类<span class="add-icon"></span></div>
         </div>
       </div>
       <div class="big-list">

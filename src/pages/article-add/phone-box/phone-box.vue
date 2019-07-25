@@ -83,7 +83,7 @@
                  @click="videoClick" @play="videoPause = false" @pause="videoPause = true"
           >
           </video>
-          <img v-if="data.videoContent.url && videoPause" src="./icon-play_big@2x.png" alt="" class="pause-icon"  @click="videoClick">
+          <img v-if="data.videoContent.url && videoPause" src="./icon-play_big@2x.png" alt="" class="pause-icon" @click="videoClick">
           <div class="info-wrap">
             <div class="auth-wrap" @click="videoClick">
               <div v-if="data.authPhoto.url" class="auth-photo-wrap">
