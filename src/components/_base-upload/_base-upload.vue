@@ -65,10 +65,8 @@
   </div>
 </template>
 <script>
-  import API from '@api'
   import {uploadFiles as vod} from '@utils/vod/vod'
   import {uploadFiles as cos} from '@utils/cos/cos'
-
   const EDIT_IMAGE = 'BASE_EDIT_IMAGE'
 
   export default {
