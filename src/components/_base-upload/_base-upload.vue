@@ -4,7 +4,7 @@
       <div v-if="showLoading" class="loading-mask">
         <img src="./loading.gif" class="loading">
       </div>
-      <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
+      <input :multiple="multiple" type="file" class="sendImage hand" accept="image/*" @change="_addPic">
       <slot>
         上传图片
       </slot>
@@ -44,7 +44,7 @@
         <span v-if="!disabled" class="close" @click="_del()"></span>
       </div>
       <div v-else :class="['add-image','hand',imageIconClassName]">
-        <input type="file" class="sendImage hand" accept="image/*" @change="_addPic">
+        <input type="file" :multiple="multiple" class="sendImage hand" accept="image/*" @change="_addPic">
         <div v-if="showLoading" class="loading-mask">
           <img src="./loading.gif" class="loading">
         </div>
@@ -53,7 +53,6 @@
     <div v-if="fileType === 'video'" class="edit-image">
       <div v-if="videoUrl" width="90px" class="show-image hand">
         <video class="video-tag" :src="item.image_url"></video>
-
         <span v-if="!disabled" class="close" @click="_del()"></span>
       </div>
       <div v-else class="add-image add-video hand">
@@ -67,13 +66,22 @@
 </template>
 <script>
   import API from '@api'
-  import {uploadFiles} from '../../utils/vod/vod'
+  import {uploadFiles as vod} from '@utils/vod/vod'
+  import {uploadFiles as cos} from '@utils/cos/cos'
 
   const EDIT_IMAGE = 'BASE_EDIT_IMAGE'
 
   export default {
     name: EDIT_IMAGE,
     props: {
+      multiple: {
+        type: Boolean,
+        default: false
+      },
+      uploadCount: {
+        type: Number,
+        default: 1
+      },
       videoUrl: {
         type: String,
         default: ''
@@ -118,7 +126,7 @@
         type: Number, // 单位 m
         default: 10
       },
-      videoType:{
+      videoType: {
         type: String,
         default: 'video/mp4,video/3gp,video/m3u8,video/webm'
       }
@@ -138,30 +146,17 @@
       },
       async _addPic(e) {
         this.showLoading = true
-        let param = this._infoImage(e.target.files[0])
-        e.target.value = ''
-        await this._upImage(param)
-      },
-      // 格式化图片流
-      _infoImage(file) {
-        let size = (file.size / 1024 / 1024)
-        if (size > this.imageSize) {
-          this.showLoading = false
-          this.$emit('failFile', '视频大小不能超过' + this.imageSize + 'M')
-          return
-        }
-        let param = new FormData() // 创建form对象
-        param.append('file', file, file.name) // 通过append向form对象添加数据
-        return param
-      },
-      async _upImage(param) {
-        let res = await API.Upload.UploadImg(param)
+        console.log(e.target.files)
+        let arr = await cos('image', Array.from(e.target.files))
+        console.log('cos', arr)
+        arr.forEach(item => {
+          if (item.error !== this.$ERR_OK) {
+            this.$emit('failFile', item.message)
+            return
+          }
+          this.$emit('getPic', item.data)
+        })
         this.showLoading = false
-        if (res.error !== this.$ERR_OK) {
-          this.$emit('failFile', res.message)
-          return
-        }
-        this.$emit('getPic', res.data)
       },
       _addVideo(e) {
         let arr = Array.from(e.target.files)
@@ -173,7 +168,7 @@
           return
         }
         this.$loading.show('视频上传中...')
-        uploadFiles(arr[0], curr => {
+        vod(arr[0], curr => {
           this.$loading.showCurr(curr)
         }).then(res => {
           this.$loading.hide()
@@ -292,6 +287,7 @@
       height: 100%
       object-fit: cover
       background-color $color-np-content
+
     .full-video
       visibility hidden
 

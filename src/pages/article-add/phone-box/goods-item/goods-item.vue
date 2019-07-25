@@ -94,7 +94,7 @@
 
     .info
       height: 64px
-      padding: 5px 12px
+      padding: 5px 5px 5px 10px
       overflow: hidden
       flex: 1
       display flex
@@ -121,10 +121,12 @@
         display flex
         justify-content space-between
         align-items center
+        flex-wrap nowrap
+        overflow hidden
 
       .price-now
         color: #FA7500
-        font-family $font-family-medium
+        font-family:$font-family-medium
 
         .big
           font-size: $font-size-14
@@ -136,15 +138,16 @@
         color: #B7B7B7
         font-size: $font-size-12
         font-family $font-family-regular
-        text-decoration-line line-through
+        white-space: nowrap
+        text-decoration-line: line-through
         margin-left 6px
 
     .operate-btn
-      padding: 10px
+      padding: 5px
 
     .add-img
-      width: 24px
-      height: 24px
+      width: 20px
+      height: 20px
 
 
 </style>

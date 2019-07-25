@@ -197,7 +197,7 @@
         top: 86px
         left:19px
         position: absolute
-        width: 268px
+        width: 262px
         height: 446px
         overflow: hidden
 
