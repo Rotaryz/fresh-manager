@@ -13,7 +13,7 @@
       </div>
       <!--列表部分-->
       <div class="concat-table-wrap">
-        <div class="sort-table-box">
+        <!--<div class="sort-table-box">
           <div class="list-header list-box">
             <div v-for="(item,index) in commodities1" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
           </div>
@@ -26,29 +26,34 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
         <div class="drag-wrap">
-          <div class="list-header list-box">
+          <!--<div class="list-header list-box">
             <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
-          </div>
+          </div>-->
           <template v-if="dragList.length">
-            <slick-list v-model="dragList" :distance="30" lockAxis="y" class="list drag-list" helperClass="list-content list-box drag-box"
+            <draggable v-model="dragList" class="drag-list" @update="sortEndInput">
+            <!--<slick-list v-model="dragList"
+                        axis="xy"
+                        :distance="30"
+                        :useDragHandle="false"
+                        lockAxis="xy"
+                        class="drag-list"
+                        helperClass="list-content drag-box"
                         @input="sortEndInput"
-            >
-              <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="list-content list-box">
-                <div class="list-item" :style="{flex:2}">{{row[commodities2[0].key]}}</div>
-                <div class="list-item">
-                  {{row[commodities2[1].key]}}
-                  <div v-if="!row[commodities2[1].key]" class="list-operation" @click="_showSettingModel(row.id)">设置线路</div>
+            >-->
+              <div v-for="(row, index) in dragList" :key="index" class="drag-item">
+                <div class="title">
+                  <span class="num">{{row.sort|format}}</span>
+                  <span class="text">{{row.name}}</span>
                 </div>
-                <div class="list-item  operate">
-                  <div v-handle class="list-operation-wrap">
-                    <div class="drag-operation">
-                    </div>
-                  </div>
+                <div class="road-line">
+                  {{row.road_name}}
+                  <div v-if="!row.road_name" class="list-operation" @click="_showSettingModel(row.id)">设置线路</div>
                 </div>
-              </slick-item>
-            </slick-list>
+
+              </div>
+            </draggable>
           </template>
           <base-blank v-else></base-blank>
 
@@ -97,6 +102,7 @@
   import {SlickList, SlickItem, HandleDirective} from 'vue-slicksort'
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
+  import Draggable from 'vuedraggable'
   import API from '@api'
   import _ from 'lodash'
 
@@ -120,6 +126,7 @@
     },
     components: {
       DefaultModal,
+      Draggable,
       SlickItem,
       SlickList
     },
@@ -302,6 +309,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .procurement-task
+    min-width: 1400px
   .concat-table-wrap
     display: flex
     width:100%
@@ -312,49 +321,58 @@
         text-align: center
     .drag-wrap
       flex:1
-  .list-box.drag-box
-    cursor pointer
-    background: #f7faf5
-    .drag-operation
-      icon-image(icon-drag_hover)
-  .list-item
-    &.operate
-      max-width: 50px
-
-    .index
-      display inline-block
-      width:auto
-      padding: 0px 5px
-      height: 20px
-      line-height 20px
-      text-align center
-      background: #888888
-      border-radius: 10px
-      border-radius: 10px
-      font-family: PingFangSC-Medium
-      font-size: 16px
-      color: #FFFFFF
-
+      flex-wrap: wrap
+      .drag-list
+        display: flex
+        flex-wrap: wrap
+        &:hover
+          user-select: none
+      .list-operation
+        cursor pointer
+      .drag-item
+        width: 15.4%
+        overflow: hidden
+        height: 75px
+        padding: 16px 14px
+        box-sizing: border-box
+        box-shadow: 0 0 4px 0 rgba(0,0,0,0.05)
+        cursor: pointer
+        margin-right: 20px
+        margin-bottom: 20px
+        &:nth-child(6n)
+          margin-right: 0
+      .title
+        display: flex
+        align-items: center
+      .num
+        height: 18px
+        padding: 0 6px
+        border-radius: 20px
+        background: #9FD5C6
+        text-align: center
+        line-height: 18px
+        color: #52A18B
+        font-size: $font-size-12
+        font-family: $font-family-medium
+      .text
+        color: #333333
+        font-size: $font-size-14
+        font-family: $font-family-medium
+        margin-left: 10px
+        overflow: hidden
+        text-overflow: ellipsis
+        white-space: nowrap
+      .road-line
+        padding-left: 28px
+        font-size: $font-size-14
+        color: #999999
+        margin-top: 5px
+        font-family: $font-family-regular
   .table .table-content
     padding-bottom: 20px
 
-    .drag-list:hover
-      cursor pointer
-      user-select: none
-
   .operation-guide-text
     color: #4D77BD
-
-  .list-operation
-    cursor pointer
-    text-decoration: underline
-  .list-content
-    .drag-operation
-      width: 18px
-      height: 18px
-      icon-image(icon-drag)
-    &:hover .drag-operation
-      icon-image(icon-drag_hover)
 
   .model-wrap
     background: $color-white
