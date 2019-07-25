@@ -116,9 +116,9 @@
                       class="tab-item"
                       :class="{active: !index}"
                     >
-                      <p>{{item.tabTitle.title}}</p>
+                      <p>{{item.tabTitle ? item.tabTitle.title : ''}}</p>
                       <div class="sub">
-                        <span>{{item.tabTitle.subTitle}}</span>
+                        <span>{{item.tabTitle ? item.tabTitle.subTitle : ''}}</span>
                       </div>
                     </li>
                   </ul>
@@ -281,9 +281,11 @@
         if (module && module.list) {
           module.list.forEach((item) => {
             if (item.module_name !== 'activity_fixed') {
-              let key = TAB_ARR_CONFIG[item.module_name].dataArray
-              item.dataArray = this[key] || []
-              arr.push(item)
+              let key = TAB_ARR_CONFIG[item.module_name] ? TAB_ARR_CONFIG[item.module_name].dataArray : ''
+              if (key && item.dataArray) {
+                item.dataArray = this[key] || []
+                arr.push(item)
+              }
             }
           })
         }

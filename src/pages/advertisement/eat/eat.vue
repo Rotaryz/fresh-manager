@@ -39,12 +39,13 @@
           </div>
           <!--分类列表-->
           <div class="scroll-classify hand" :class="{'active': contentType === 'classify', 'none': !classifyList.length}" @click="changeType('classify')">
-            <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-item" :class="{'none': !classifyList.length, 'scroll-classify-item-active': index === 0}">
-              <p v-if="item.name && item.is_close">
-                {{item.name}}
-              </p>
-              <p v-if="item.title" class="class-title">{{item.title}}</p>
-
+            <div v-for="(item, index) in classifyList" :key="index" class="scroll-classify-border">
+              <div v-if="item.is_close" class="scroll-classify-item" :class="{'none': !classifyList.length, 'scroll-classify-item-active': heightIndex === index}">
+                <p v-if="item.name">
+                  {{item.name}}
+                </p>
+                <p v-if="item.title" class="class-title">{{item.title}}</p>
+              </div>
             </div>
           </div>
           <!--内容列表-->
@@ -152,12 +153,19 @@
         leftList: [],
         rightList: [],
         elRight: '',
+        heightIndex: 0
       }
     },
     watch: {
       listData: {
         handler(news) {
           this.fillData()
+        },
+        deep: true
+      },
+      classifyList: {
+        handler(news) {
+          this.heightIndex =news.findIndex(item => item.is_close)
         },
         deep: true
       }
@@ -345,6 +353,10 @@
     align-items: center
     margin-top: 6px
     hide-scrollbar()
+    .scroll-classify-border
+      border-right-1px($color-line)
+      &:last-child
+        border-none()
     .scroll-classify-item
       white-space: nowrap
       font-family: $font-family-regular
@@ -357,12 +369,7 @@
       min-width: 80px
       height: 39px
       box-sizing: border-box
-      transform-origin: 50%
       line-height: 1
-      transition: all 0.2s
-      border-right-1px($color-line)
-      &:last-child
-        border-none()
       .class-title
         margin-top: 5px
         display: inline-block
@@ -371,14 +378,11 @@
         padding: 3px 6px
         line-height: 1
         color: #808080
-        transition: all 0.2s
     .scroll-classify-item-active
       font-family: $font-family-medium
       font-size: $font-size-16
       color: #73C200
       position: relative
-      transition: font-size 0.2s
-      transform-origin: 50%
       .class-title
         color: $color-white
         background: #73C200
