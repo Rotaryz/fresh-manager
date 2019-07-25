@@ -30,8 +30,8 @@
           <base-status-tab :show="tabIndex === 0" :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
         <div v-if="tabIndex === 0" class="function-btn">
-          <div class="btn-main" @click="deliveryExcel">导出配送单</div>
-          <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
+          <!--<div class="btn-main" @click="deliveryExcel">导出配送单</div>
+          <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>-->
           <div
             class="btn-main g-btn-item"
             :class="{'btn-disable-store': (orderStatus !==1 && orderStatus !==3) || (orderStatus === 3 && !orderList.length) || (orderStatus === 1 && !orderList.length)}"
@@ -65,8 +65,9 @@
                   <div v-if="item.is_exception" class="list-item-img-unusual"></div>
                 </div>
                 <div class="list-item" :style="{flex: commodities[9].flex}">
-                  <span class="list-operation list-ok" @click="handleOperation(item)">导出</span>
+                  <!--<span class="list-operation list-ok" @click="handleOperation(item)">导出</span>-->
                   <span v-if="(item.status === 1 && !item.is_blocked) || item.status === 3" class="list-operation list-ok" @click="signIn(item)">签收</span>
+                  <span v-else>---</span>
                 </div>
               </div>
             </div>

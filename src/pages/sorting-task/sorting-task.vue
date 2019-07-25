@@ -61,7 +61,9 @@
           <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
           <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
-            <div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>
+            <!--<div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>-->
+            <div class="btn-main g-btn-item" @click="_exportByOrder">导出配货单</div>
+            <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
           </template>
           <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
@@ -462,6 +464,25 @@
         }
         return '?' + search.join('&')
       },
+      _getCustomerUrl() {
+        let currentId = this.getCurrentId()
+        let obj = this.sortingTask.filter
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          start_time: obj.start_time,
+          end_time: obj.end_time,
+          keyword: obj.keyword,
+          status: obj.status,
+          exception_status: obj.exception_status
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return '?' + search.join('&')
+      },
       // 按订单分拣 导出
       _exportByOrder() {
         // todo
@@ -482,6 +503,10 @@
         setTimeout(() => {
           this._updateData({page: 1})
         }, 500)
+      },
+      // 导出消费者清单
+      orderExcel() {
+        API.Sorting.exportCustomerOrder(this._getCustomerUrl())
       },
       pageChange(page) {
         this._updateData({page})
