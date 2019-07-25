@@ -209,7 +209,7 @@
       },
       // 获取二维码
       async shwoQrCode(id, index, item) {
-        let url = item.type === 'video' ? `package-content/content-article-detail-video?a=${id}` : `package-content/content-article-detail?a=${id}`
+        let url = item.type === 'video' ? `package-content/content-article-detail-video?a=${id}&p=1` : `package-content/content-article-detail?a=${id}&p=1`
         this.loadImg = true
         // {path: 'pages/choiceness?s=' + id, is_hyaline: false} 页面参数
         let res = await API.Content.createQrcode({path: url, is_hyaline: false})
