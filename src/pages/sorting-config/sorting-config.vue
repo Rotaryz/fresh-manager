@@ -332,6 +332,7 @@
     cursor: pointer
     margin-right: 20px
     margin-bottom: 20px
+    border-radius: 2px
     border: 1px solid #F4F4F4
     display: flex
     &:nth-child(6n)
