@@ -55,7 +55,7 @@
             <div class="list-item list-text list-item-double" :title="item.social_name">{{item.social_name}}</div>
             <div class="list-item list-text">{{item.status_text}}</div>
             <div class="list-item list-use">
-              <router-link tag="span" :to="{path: `order-detail/${item.order_id}`}" append class="list-operation">详情</router-link>
+              <router-link tag="span" :to="{path: `order-detail/${item.order_id}?freeShipping=${status === 'c_freeShipping' ? '1' : '0'}`}" append class="list-operation">详情</router-link>
             </div>
           </div>
         </div>
@@ -127,6 +127,10 @@
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
           keyword: this.keyword
+        }
+        if (this.status === 'c_freeShipping') {
+          data.source_type = 2
+          delete data.source
         }
         let search = []
         for (let key in data) {
