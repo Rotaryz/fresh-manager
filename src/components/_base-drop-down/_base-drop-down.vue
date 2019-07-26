@@ -71,6 +71,10 @@
         // 输入框文字
         type: String,
         default: '请输入搜索文字'
+      },
+      downIndex: {
+        type: Number,
+        default: 0
       }
     },
     data() {
@@ -114,7 +118,7 @@
           return
         }
         this.select.check = !this.select.check
-        this.$emit('selectType', this.select)
+        this.$emit('selectType', this.select, this.downIndex)
       },
       setValue(value, index) {
         this.select.check = false

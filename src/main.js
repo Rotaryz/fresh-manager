@@ -8,7 +8,6 @@ import 'iview/dist/styles/iview.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './design/date-picker.css'
 import Print from 'vue-print-nb'
-
 Vue.use(Plugins)
 Vue.use(Print)
 Vue.config.productionTip = process.env.NODE_ENV === 'production'

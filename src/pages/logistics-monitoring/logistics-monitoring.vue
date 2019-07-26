@@ -262,9 +262,9 @@
           result_status: '',
           exception_count: 0,
           status: [
-            {status: 1, status_str: "待发布", statistic: 0},
-            {status: 2, status_str: "待采购", statistic: 0},
-            {status: 3, status_str: "已完成", statistic: 0}
+            {status: 1, status_str: '待发布', statistic: 0},
+            {status: 2, status_str: '待采购', statistic: 0},
+            {status: 3, status_str: '已完成', statistic: 0}
           ]
         },
         entry: {
@@ -273,10 +273,10 @@
           result_status: '',
           exception_count: 0,
           status: [
-            {status: 0, status_str: "待进库", statistic: 0},
-            {status: 2, status_str: "待理货", statistic: 0},
-            {status: 3, status_str: "待上架", statistic: 0},
-            {status: 1, status_str: "已完成", statistic: 0}
+            {status: 0, status_str: '待进库', statistic: 0},
+            {status: 2, status_str: '待理货', statistic: 0},
+            {status: 3, status_str: '待上架', statistic: 0},
+            {status: 1, status_str: '已完成', statistic: 0}
           ]
         },
         picking: {
@@ -285,9 +285,9 @@
           result_status: '',
           exception_count: 0,
           status: [
-            {status: 0, status_str: "待分拣", statistic: 0},
-            {status: 2, status_str: "待配货", statistic: 0},
-            {status: 1, status_str: "已完成", statistic: 0}
+            {status: 0, status_str: '待分拣', statistic: 0},
+            {status: 2, status_str: '待配货', statistic: 0},
+            {status: 1, status_str: '已完成', statistic: 0}
           ]
         },
         out: {
@@ -296,9 +296,9 @@
           result_status: '',
           exception_count: 0,
           status: [
-            {status: 2, status_str: "待复核", statistic: 0},
-            {status: 0, status_str: "待出库", statistic: 0},
-            {status: 1, status_str: "已完成", statistic: 0}
+            {status: 2, status_str: '待复核', statistic: 0},
+            {status: 0, status_str: '待出库', statistic: 0},
+            {status: 1, status_str: '已完成', statistic: 0}
           ]
         },
         delivery: {
@@ -307,9 +307,9 @@
           result_status: '',
           exception_count: 0,
           status: [
-            {status: 1, status_str: "待配送", statistic: 0},
-            {status: 2, status_str: "待签收", statistic: 0},
-            {status: 3, status_str: "已完成", statistic: 0}
+            {status: 1, status_str: '待配送', statistic: 0},
+            {status: 2, status_str: '待签收', statistic: 0},
+            {status: 3, status_str: '已完成', statistic: 0}
           ]
         },
         afterSale: {
@@ -317,10 +317,7 @@
           finish_count: 0,
           result_status: '',
           exception_count: 0,
-          status: [
-            {status: 1, status_str: "待处理", statistic: 0},
-            {status: 2, status_str: "已处理", statistic: 0}
-          ]
+          status: [{status: 1, status_str: '待处理', statistic: 0}, {status: 2, status_str: '已处理', statistic: 0}]
         }
       }
     },
@@ -337,61 +334,55 @@
         this._getAfterSale()
       },
       _getPurchase() {
-        API.Monitor.getPurchase({time: this.time})
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            this.start = res.data.start_time
-            this.end = res.data.end_time
-            this.purchase = res.data
-          })
+        API.Monitor.getPurchase({time: this.time}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.start = res.data.start_time
+          this.end = res.data.end_time
+          this.purchase = res.data
+        })
       },
       _getEntryWarehouse() {
-        API.Monitor.getEntryWarehouse({time: this.time})
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            this.entry = res.data
-          })
+        API.Monitor.getEntryWarehouse({time: this.time}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.entry = res.data
+        })
       },
       _getPicking() {
-        API.Monitor.getPicking({time: this.time})
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            this.picking = res.data
-            console.log(this.picking)
-          })
+        API.Monitor.getPicking({time: this.time}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.picking = res.data
+          console.log(this.picking)
+        })
       },
       _getOutWarehouse() {
-        API.Monitor.getOutWarehouse({time: this.time})
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            this.out = res.data
-          })
+        API.Monitor.getOutWarehouse({time: this.time}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.out = res.data
+        })
       },
       _getDelivery() {
-        API.Monitor.getDelivery({time: this.time})
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            this.delivery = res.data
-          })
+        API.Monitor.getDelivery({time: this.time}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.delivery = res.data
+        })
       },
       _getAfterSale() {
-        API.Monitor.getAfterSale({time: this.time})
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            this.afterSale = res.data
-          })
+        API.Monitor.getAfterSale({time: this.time}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.afterSale = res.data
+        })
       },
       changeTime(time) {
         if (this.time === time) {
@@ -408,7 +399,7 @@
             end_time: this.end,
             exception_status: exceptionStatus,
             sorting_mode: this.picking.sorting_mode || '',
-            status: exceptionStatus && this._getFinishStatus(name) || status
+            status: (exceptionStatus && this._getFinishStatus(name)) || status
           }
         })
         window.open(href, '_blank')

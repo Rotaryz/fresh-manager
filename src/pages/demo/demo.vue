@@ -1,35 +1,16 @@
 <template>
   <div class="demo">
-    demo
-    <!--<add-goods ref="addg" @batchAddition="_batchAddition"></add-goods>-->
-    <span @click="deleteGoods()">sahNGV</span>
-    <div v-show="true" class="big">
-      <div id="printTest">
-        <div>
-          <!--<p class="name">荞麦饼干</p>-->
-          <!--<div class="msg">-->
-          <!--<div class="content">原味</div>-->
-          <!--<div class="money">售价：12：00</div>-->
-          <!--</div>-->
-          <!--<img src="./2-140412125945415.jpg" alt="" class="img">-->
-          <img v-if="false" id="barcode" class="barcodes">
-        </div>
-      </div>
-    </div>
-    <button v-print="'#printTest'">打印</button>
-
-    <!--<section ref="print">-->
-    <!--打印内容-->
-    <!--<div class="no-print">不要打印我</div>-->
-    <!--</section>-->
-    <!--<button @click="printAll">打印</button>-->
-    <div></div>
+    <button @click="addPage">
+      Jiayi
+    </button>
+    <div style="height:200px"></div>
+    <zb-pagination :pagerCount="9" :currentPage.sync="currentPage" :total="119" @pageChange="pageChange"></zb-pagination>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-// import AddGoods from '@components/add-goods/add-goods'
   import JsBarcode from 'jsbarcode'
+  import zbPagination from '../../components/zb-pagination/_zb-pagination'
 
   const PAGE_NAME = 'DEMO'
 
@@ -40,17 +21,22 @@
       title: TITLE
     },
     components: {
-    // AddGoods
+      zbPagination
+      // AddGoods
     },
     data() {
       return {
+        currentPage: 1,
         img: ''
       }
     },
-    mounted() {
-    // this.barcode()
-    },
     methods: {
+      pageChange(val) {
+        console.log(val)
+      },
+      addPage() {
+        this.currentPage++
+      },
       barcode() {
         // JsBarcode生成条形码
         JsBarcode('#barcode')
@@ -77,20 +63,41 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  #test::-webkit-input-placeholder
+  #test::-moz-placeholder
+  #test:-moz-placeholder
+  #test::-ms-input-placeholder
+    font-size: $font-size-14
+    color: red
+
+  textarea::-webkit-input-placeholder
+  textarea::-moz-placeholder
+  textarea:-moz-placeholder
+  textarea::-ms-input-placeholder
+    font-size: $font-size-14
+    color: #000
+
+  .placeholder-text
+    font-size: $font-size-14
+    color: #ACACAC
 
   .demo
     width: 100%
+
   @media print {
     html, body {
       height: inherit
     }
   }
+
   .big
     display: block
+
   @page
     color: #000
     margin: 3mm 0 0
     size: auto A4 landscape
+
   #printTest
     color: #000
     padding: 0
@@ -103,16 +110,20 @@
     /*height: 205px*/
     box-sizing: border-box
     margin-left: -10px
+
   .img
     width: 60px
+
   .name
     font-size: 24px
+
   .msg
     margin: 8px auto
     display: flex
     width: 60%
     font-size: 14px
     justify-content: space-between
+
   .barcodes
     width: 210px
     margin-left: 18px

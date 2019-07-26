@@ -49,7 +49,7 @@
 <script type="text/ecmascript-6">
   import {goodsDataComputed} from '@state/helpers'
   const COMPONENT_NAME = 'LEFT-TAB'
-  export default{
+  export default {
     name: COMPONENT_NAME,
     props: {
       tabArr: {
@@ -104,7 +104,7 @@
         let code = ''
         let itemId = categoryId || goodsId
         if (categoryId) {
-          let itemIndex = this.categoryList.findIndex(item => {
+          let itemIndex = this.categoryList.findIndex((item) => {
             return +item.id === +categoryId
           })
           if (itemIndex > -1) {
@@ -114,7 +114,7 @@
             this.selectGoods = false
           }
         } else if (goodsId) {
-          let itemIndex = this.categoryList[this.categoryIndex - 1].list.findIndex(item => {
+          let itemIndex = this.categoryList[this.categoryIndex - 1].list.findIndex((item) => {
             return +item.id === +goodsId
           })
           if (itemIndex > -1) {
@@ -133,7 +133,6 @@
       }
     }
   }
-
 </script>
 
 
