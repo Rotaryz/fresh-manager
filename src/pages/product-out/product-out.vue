@@ -146,7 +146,7 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '人工补录', status: '0'}, {name: '系统补货', status: '1'}, {name: '系统销售', status: '2'}] // 格式：{name: '55'}
+          data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
         }
       }
     },
@@ -158,6 +158,7 @@
     },
     async created() {
       this._setErrorStatus()
+      this.getEntryOutType()
       await this._statistic()
       this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.outFilter.status)
     },
@@ -183,6 +184,21 @@
           }
         }
       },
+      getEntryOutType() {
+        API.Product.getEntryOutType()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.outType.data = res.data.out.map(item => {
+              return {
+                name: item.type_str,
+                type: item.type
+              }
+            })
+          })
+      },
       _updateList(params, noUpdataStatus) {
         this.SET_OUT_PARAMS(params)
         this.getOutData({loading: false})
@@ -201,7 +217,7 @@
         this.errorObj.content = item.name || '全部'
       },
       changeType(item) {
-        console.log(item.status)
+        this._updateList({out_type: item.type, page: 1})
       },
       stopDocument(item) {
         if (item.show_sorting) {

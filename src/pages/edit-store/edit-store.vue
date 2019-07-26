@@ -127,13 +127,16 @@
           show: false,
           content: '选择出库类型',
           type: 'default',
-          data: [{name: '采购退货', id: 1}, {name: '拓展出库', id: 2}, {name: '其它调拨', id: 3}] // 格式：{title: '55'}}
+          data: [{name: '采购退货', type: 1}, {name: '拓展出库', type: 2}, {name: '其它调拨', type: 3}] // 格式：{title: '55'}}
         },
         storeData: '',
         storeType: '',
         showIndex: null,
         isSubmit: false
       }
+    },
+    created() {
+      this.getEntryOutType()
     },
     methods: {
       _showTip(index) {
@@ -142,9 +145,23 @@
       _hideTip() {
         this.showIndex = null
       },
+      getEntryOutType() {
+        API.Product.getEntryOutType()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.outType.data = res.data.out.map(item => {
+              return {
+                name: item.type_str,
+                type: item.type
+              }
+            })
+          })
+      },
       _selectOutType(item) {
-        this.storeType = item.id
-        console.log(item.id)
+        this.storeType = item.type
       },
       deleteGoods() {
         this.$refs.addg._delGoods(this.storeList)

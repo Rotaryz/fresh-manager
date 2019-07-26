@@ -25,7 +25,7 @@
           入库类型
         </div>
         <div class="edit-input-box">
-          <base-drop-down :width="400" :height="40" :select="enterType" @setValue="_selectEnterType"></base-drop-down>
+          <base-drop-down :width="400" :height="40" :select="entryType" @setValue="_selectEntryType"></base-drop-down>
         </div>
       </div>
     </div>
@@ -204,12 +204,12 @@
           per_page: 10,
           total_page: 1
         },
-        enterType: {
+        entryType: {
           check: false,
           show: false,
           content: '选择入库类型',
           type: 'default',
-          data: [{name: '退货入库', id: 1}, {name: '其它入库', id: 2}] // 格式：{title: '55'}}
+          data: [{name: '退货入库', type: 1}, {name: '其它入库', type: 2}] // 格式：{title: '55'}}
         },
         parentId: '',
         keyword: '',
@@ -222,7 +222,7 @@
         goodsList: [],
         msg: {
           provider: '',
-          enterType: ''
+          entry_type: ''
         },
         isSubmit: false,
         activityTheme: '',
@@ -235,8 +235,8 @@
       testProvider() {
         return this.msg.provider
       },
-      testEnterType() {
-        return this.msg.enterType
+      testEntryType() {
+        return this.msg.entry_type
       },
       testGoods() {
         return this.goodsList.length
@@ -254,11 +254,12 @@
     },
     created() {
       this._getFirstAssortment()
+      this.getEntryOutType()
     },
     methods: {
       ...merchantOrderMethods,
-      _selectEnterType(item) {
-        this.msg.enterType = item.id
+      _selectEntryType(item) {
+        this.msg.entry_type = item.type
       },
       fixPosition() {
         if (!this.testMobile) return
@@ -269,6 +270,21 @@
               return
             }
             this.community.data = res.data
+          })
+      },
+      getEntryOutType() {
+        API.Product.getEntryOutType()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.entryType.data = res.data.entry.map(item => {
+              return {
+                name: item.type_str,
+                type: item.type
+              }
+            })
           })
       },
       // 选择商品
@@ -498,7 +514,7 @@
       checkForm() {
         let arr = [
           {value: this.testProvider, txt: '请输入商品提供方'},
-          {value: this.testEnterType, txt: '请选择入库类型'},
+          {value: this.testEntryType, txt: '请选择入库类型'},
           {value: this.testGoods, txt: '请选择商品'}
           // {value: this.testGoodsCount, txt: ''},
         ]

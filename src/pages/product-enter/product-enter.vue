@@ -12,7 +12,7 @@
       </div>
       <span class="down-tip">入库类型</span>
       <div class="down-item">
-        <base-drop-down :select="enterType" @setValue="changeType"></base-drop-down>
+        <base-drop-down :select="entryType" @setValue="changeType"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -117,12 +117,12 @@
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
         },
-        enterType: {
+        entryType: {
           check: false,
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '人工补录', status: '0'}, {name: '系统补货', status: '1'}, {name: '系统销售', status: '2'}] // 格式：{name: '55'}
+          data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
         }
       }
     },
@@ -135,6 +135,7 @@
     },
     async created() {
       this._setErrorStatus()
+      this.getEntryOutType()
       await this._statistic()
       this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.enterFilter.status)
     },
@@ -144,7 +145,22 @@
         this._updateList({exception_status: item.status, page: 1})
       },
       changeType(item) {
-        this._updateList({stock_type: item.status, page: 1})
+        this._updateList({stock_type: item.type, page: 1})
+      },
+      getEntryOutType() {
+        API.Product.getEntryOutType()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.entryType.data = res.data.entry.map(item => {
+              return {
+                name: item.type_str,
+                type: item.type
+              }
+            })
+          })
       },
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.enterFilter.exception_status)
