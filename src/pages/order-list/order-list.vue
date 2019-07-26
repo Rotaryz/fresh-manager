@@ -301,17 +301,11 @@
   .list-box
     .list-item
       box-sizing: border-box
-      flex: 1
-
+      flex: 0.7
       &:nth-child(1)
         flex: 1.2
-
-      &:nth-child(6), &:nth-child(5)
-        flex: 1.2
-
-      &:nth-child(7)
-        flex: 0.7
-
+      &:nth-child(5)
+        flex: 1.5
       &:last-child
         padding: 0
         max-width: 28px

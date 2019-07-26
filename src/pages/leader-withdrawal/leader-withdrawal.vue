@@ -276,21 +276,32 @@
         width: 14px
         height: 14px
       .help-tip
-        background: #32323A
-        opacity: 0
+        background: rgba(50, 50, 58, 0.85)
         color: $color-white
-        padding: 8px 18px
+        padding: 12px 10px
         border-radius: 2px
         line-height: 16px
         font-family: $font-family-regular
         font-size: $font-size-14
-        width: 196px
+        min-width: 136px
         white-space: normal
         position: absolute
         left: -75px
-        top: 24.5px
-        transition: opacity .3s
+        top: 27px
+        transition: background .3s
         visibility: hidden
+        opacity: 0.8
+        &:before
+          content: ''
+          position: absolute
+          z-index: 99
+          top: -6px
+          left: 76px
+          width: 0
+          height: 0
+          border-left: 6px solid transparent
+          border-right: 6px solid transparent
+          border-bottom: 6px solid rgba(50, 50, 58, 0.85)
 
   .btn-main
     position: relative
