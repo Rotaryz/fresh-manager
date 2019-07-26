@@ -37,9 +37,10 @@
             <div class="list-item list-text">{{item.num}}</div>
             <div class="list-item list-text">{{item.total}}</div>
             <div class="list-item list-text">{{item.service_charge}}</div>
-            <div class="list-item list-text">{{item.commission}}</div>
+            <div v-if="infoTabIndex === 1" class="list-item list-text">{{item.commission_rate}}</div>
+            <div v-else class="list-item list-text">{{item.commission}}</div>
             <div class="list-item list-text">{{item.money}}</div>
-            <div class="list-item list-text">{{item.updated_at}}</div>
+            <div class="list-item list-text">{{item.status === 0?'——':item.updated_at}}</div>
             <div class="list-item list-text"><span class="list-status" :class="{'list-status-success': item.status === 1, 'list-status-warn': item.status === 0}"></span>{{item.status_str}}</div>
           </div>
         </div>
@@ -86,6 +87,10 @@
           date: this.settleLogsDate.join(','),
           keyword: this.settleLogsKeyword,
           status: this.settleLogsStatus
+        }
+        if (this.infoTabIndex === 1) {
+          data.source_type = 2
+          delete data.source
         }
         let search = []
         for (let key in data) {

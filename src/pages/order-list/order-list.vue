@@ -30,7 +30,7 @@
         <div class="identification-page">
           <img src="./icon-order_list@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
-          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeTab"></base-status-tab>
+          <base-status-nav :statusList="statusTab" :value="orderStatus" valueKey="status" labelKey="status_str" numKey="statistic" @change="changeTab"></base-status-nav>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="exportExcel">导出Excel</div>
@@ -99,11 +99,11 @@
         datePlaceHolder: DATE_PLACE_HOLDER,
         socialSelect: SOCIAL_SELECT,
         statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '待付款', value: 1, key: 'wait_submit', num: 0},
-          {name: '待提货', value: 1, key: 'success', num: 0},
-          {name: '已完成', value: 1, key: 'success', num: 0},
-          {name: '已关闭', value: 1, key: 'success', num: 0}
+          {status_str: '全部', status: 'all', statistic: 0},
+          {status_str: '待付款', status: 'wait_submit', statistic: 0},
+          {status_str: '待提货', status: 'success', statistic: 0},
+          {status_str: '已完成', status: 'success', statistic: 0},
+          {status_str: '已关闭', status: 'success', statistic: 0}
         ],
         downUrl: '',
         defaultStatus: 'c_shop'
@@ -168,11 +168,10 @@
     methods: {
       ...orderMethods,
       changeTab(selectStatus, index) {
-        this.setDefaultIndex(index)
+        // this.setDefaultIndex(index)
         this.setOrderStatus(selectStatus)
       },
       getOrderStatus(startTime, endTime) {
-        // this.changeStatusTab()
         let params = {
           source: this.status,
           start_time: this.startTime,
@@ -190,13 +189,7 @@
             this.$toast.show(res.message)
             return
           }
-          this.statusTab = res.data.map((item, index) => {
-            return {
-              name: item.status_str,
-              status: item.status,
-              num: item.statistic
-            }
-          })
+          this.statusTab = res.data
         })
       },
       _getShopList() {
@@ -214,26 +207,6 @@
       },
       exportExcel() {
         window.open(this.orderExportUrl, '_blank')
-      },
-      changeStatusTab() {
-        if (this.infoTabIndex === 2) {
-          this.statusTab = [
-            {name: '全部', value: '', key: 'all', num: 0},
-            {name: '待付款', value: 1, key: 'wait_submit', num: 0},
-            {name: '待发货', value: 1, key: 'success', num: 0},
-            {name: '配送中', value: 1, key: 'success', num: 0},
-            {name: '已完成', value: 1, key: 'success', num: 0},
-            {name: '已关闭', value: 1, key: 'success', num: 0}
-          ]
-        } else {
-          this.statusTab = [
-            {name: '全部', value: '', key: 'all', num: 0},
-            {name: '待付款', value: 1, key: 'wait_submit', num: 0},
-            {name: '待提货', value: 1, key: 'success', num: 0},
-            {name: '已完成', value: 1, key: 'success', num: 0},
-            {name: '已关闭', value: 1, key: 'success', num: 0}
-          ]
-        }
       },
       changeStatus(selectStatus) {
         this.setStatus(selectStatus)

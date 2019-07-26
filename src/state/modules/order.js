@@ -189,7 +189,7 @@ export const actions = {
     dispatch('getOrderList')
   },
   setOrderStatus({commit, dispatch}, selectStatus) {
-    commit('SET_ORDER_STATUS', selectStatus.status)
+    commit('SET_ORDER_STATUS', selectStatus)
     commit('SET_PAGE', 1)
     dispatch('getOrderList')
   },
