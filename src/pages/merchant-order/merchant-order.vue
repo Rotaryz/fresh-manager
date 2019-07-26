@@ -91,11 +91,11 @@
                 <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
                     {{row[item.key]}}
-                    <div v-if="item.key ==='type_count'" class="lack-icon">
+                    <div v-if="item.key ==='type_count'" class="unusual-icon">
                     </div>
                   </template>
                   <template v-else name="operation">
-                    <router-link class="list-operation" :to="{name:'consumer-order-detail', params:{id:row.id}}">{{item.operation}}</router-link>
+                    <div class="list-operation" @click="showConfirm">{{item.operation}}</div>
                   </template>
                 </div>
               </div>
@@ -113,11 +113,13 @@
         </div>
       </div>
     </template>
+    <default-confirm ref="delConfirm" @confirm="delConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
   const PAGE_NAME = 'MERCHANT_ORDER'
@@ -140,7 +142,7 @@
     {title: '商户名称', key: 'buyer_name', flex: 1},
     {title: '状态', key: 'status', flex: 1},
     {title: '订单来源', key: 'order_resource', flex: 1},
-    {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
+    {title: '操作', key: '', operation: '删除', flex: 1, class: 'operate'}
   ]
 
   const ORDER_DATA = [
@@ -185,6 +187,9 @@
     page: {
       title: TITLE
     },
+    components: {
+      DefaultConfirm
+    },
     data() {
       return {
         tabStatus: ORDERSTATUS,
@@ -219,9 +224,6 @@
       ...merchantOrderComputed,
       timeArr() {
         return [this.merchantFilter.start_time, this.merchantFilter.end_time]
-      },
-      timeArrConsumer() {
-        return [this.consumerFilter.start_time, this.consumerFilter.end_time]
       }
     },
     async created() {
@@ -259,6 +261,7 @@
         }
       },
       _selectUnusual(item) {
+        this._updateMerchantOrderList({usual: item.status})
         console.log(item)
       },
       // 获取订单列表
@@ -267,7 +270,11 @@
         if (!noUpdateStatus) {
           this._getStatusData()
         }
-        // this.getMerchantOrderList()
+        if (+this.tabIndex === 0) {
+          this.getMerchantOrderList()
+        } else {
+
+        }
         if (params.page === 1) {
           this.$nextTick(function() {
             this.$refs.paginationMerchant.beginPage()
@@ -315,6 +322,13 @@
           keyword,
           page: 1
         })
+      },
+      showConfirm() {
+        this.$refs.delConfirm.show('确定删除此订单？')
+      },
+      delConfirm() {
+        console.log('删除成功')
+        this.$refs.delConfirm.hide()
       }
     }
   }
@@ -332,6 +346,10 @@
     width: 16px
     height: 16px
     icon-image(icon-lack)
+  .unusual-icon
+    width: 16px
+    height: 16px
+    icon-image(icon-unusual_list)
 
   .distribution-down
     display: flex

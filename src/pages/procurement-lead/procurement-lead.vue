@@ -28,13 +28,11 @@
         <div v-if="blankList.length !== 0" class="list">
           <div v-for="(item, index) in blankList" :key="index" class="list-content list-box">
             <div class="list-item">{{item.num}}</div>
-            <div class="list-item list-double-row">
-              <div class="item-dark">{{item.goods_name}}</div>
-              <div class="item-dark">{{item.goods_sku_encoding}}</div>
-            </div>
-            <div class="list-item">{{item.goods_material_category}}</div>
-            <div class="list-item">{{item.supplier_name}}</div>
-            <div class="list-item">{{item.plan_num}}</div>
+            <div class="list-item" :class="{'red': +item.error_type === 1}">{{item.goods_sku_encoding}}</div>
+            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item" :class="{'red': +item.error_type === 2}">{{item.plan_num}}</div>
+            <div class="list-item">{{item.sale_unit}}</div>
+            <div class="list-item" :class="{'red': +item.error_type === 3}">{{item.supplier_name}}</div>
           </div>
         </div>
         <base-blank v-else></base-blank>
@@ -54,7 +52,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
   const TITLE = '采购任务导入'
-  const COMMODITIES_LIST = ['序号', '商品', '类目', '供应商', '采购数量']
+  const COMMODITIES_LIST = ['序号', '商品编码', '商品名称', '采购数量', '采购单位', '供应商']
   export default {
     name: PAGE_NAME,
     page: {
@@ -133,12 +131,10 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:nth-child(1), &:nth-child(5)
-          flex: 0.3
         &:nth-child(2)
           flex: 1.2
-        &:nth-child(3), &:nth-child(4), &:nth-child(5)
-          flex-wrap: nowrap
+      .red
+        color: #F84E3C
 
   .down-content
     align-items: flex-start

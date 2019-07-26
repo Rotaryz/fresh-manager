@@ -125,7 +125,7 @@ export const actions = {
         if (res.error !== app.$ERR_OK) {
           return false
         }
-        commit('SET_MERCHANT_DETAIL', {value: res.data})
+        commit('SET_MERCHANT_DETAIL', res.data)
         return true
       })
       .catch(() => {

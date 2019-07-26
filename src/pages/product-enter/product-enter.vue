@@ -144,7 +144,7 @@
         this._updateList({exception_status: item.status, page: 1})
       },
       changeType(item) {
-        console.log(item.status)
+        this._updateList({stock_type: item.status, page: 1})
       },
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.enterFilter.exception_status)

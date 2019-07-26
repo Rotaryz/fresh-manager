@@ -71,7 +71,14 @@
               <div class="com-list-item">{{item.sale_unit}}</div>
               <div class="com-list-item">{{item.sale_count}}</div>
               <div class="com-list-item">
-                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small">
+                <input
+                  v-model="item.usable_stock"
+                  :readonly="disable"
+                  type="number"
+                  class="com-edit com-edit-small"
+                  :class="{'red': item.error_code}"
+                  @input="stockHandle(item)"
+                >
               </div>
               <div class="com-list-item">
                 <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
@@ -317,6 +324,11 @@
           item.sort = 0
           return item
         })
+      },
+      stockHandle(item) {
+        if (item.usable_stock > item.sale_count) {
+          item.usable_stock = item.sale_count
+        }
       },
       // 获取分页商品列表
       async _getMoreGoods(page) {
@@ -812,4 +824,6 @@
 
   .com-edit-small
     width: 60px
+  .red
+    color: #F84E3C
 </style>

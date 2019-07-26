@@ -49,7 +49,8 @@
             <p class="item-sub">{{item.goods_sku_encoding}}</p>
           </div>
           <div class="list-item">{{item.goods_material_category}}</div>
-          <div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>
+          <div class="list-item">{{item.usable_stock}}{{item.base_unit}}</div>
+          <!--<div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>-->
           <div class="list-item list-item-layout">
             <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
             <div v-if="item.base_unit" class="base-unit">{{item.base_unit}}</div>
@@ -66,8 +67,8 @@
               </div>
             </transition>
           </div>-->
-          <div class="list-item"><span v-if="item.price">￥</span>{{item.price || '￥0.00'}}/{{item.base_unit}}</div>
-          <div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '￥0.00'}}</div>
+          <!--<div class="list-item"><span v-if="item.price">￥</span>{{item.price || '￥0.00'}}/{{item.base_unit}}</div>-->
+          <!--<div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '￥0.00'}}</div>-->
           <div class="list-item list-operation-box">
             <span class="list-operation" @click="delGoodsBtn(item, index)">删除</span>
           </div>
@@ -94,13 +95,13 @@
   const TITLE = '新建出库单'
   const COMMODITIES_LIST = [
     '序号',
-    '商品名称',
-    '类目',
-    '可用库存/总库存',
-    '出库数(基本单位)',
+    '商品',
+    '分类',
+    '可用库存',
+    '出库数量(基本单位)',
     // '出库批次',
-    '出库单价',
-    '出库金额',
+    // '出库单价',
+    // '出库金额',
     '操作'
   ]
 
@@ -129,6 +130,7 @@
           data: [{name: '采购退货', id: 1}, {name: '拓展出库', id: 2}, {name: '其它调拨', id: 3}] // 格式：{title: '55'}}
         },
         storeData: '',
+        storeType: '',
         showIndex: null,
         isSubmit: false
       }
@@ -141,6 +143,7 @@
         this.showIndex = null
       },
       _selectOutType(item) {
+        this.storeType = item.id
         console.log(item.id)
       },
       deleteGoods() {
@@ -235,9 +238,9 @@
         if (item.base_num * 1 > item.usable_stock * 1) {
           item.base_num = item.usable_stock
         }
-        this.storeList[index].select_batch = []
-        this.storeList[index].price = ''
-        this.storeList[index].all_price = ''
+        // this.storeList[index].select_batch = []
+        // this.storeList[index].price = ''
+        // this.storeList[index].all_price = ''
         this.$forceUpdate()
       },
       submitEdit() {
@@ -245,28 +248,32 @@
           this.$toast.show('请输入出库对象')
           return
         }
+        if (!this.storeType) {
+          this.$toast.show('请选择出库类型')
+          return
+        }
         if (this.storeList.length === 0) {
           this.$toast.show('请选择商品')
           return
         }
         let isInputNull = false
-        let isStoreNull = false
+        // let isStoreNull = false
         this.storeList.forEach((item) => {
           if (item.base_num.length === 0) {
             isInputNull = true
           }
-          if (item.select_batch.length === 0) {
-            isStoreNull = true
-          }
+          // if (item.select_batch.length === 0) {
+          //   isStoreNull = true
+          // }
         })
         if (isInputNull) {
           this.$toast.show('请输入商品列表的出库数')
           return
         }
-        if (isStoreNull) {
-          this.$toast.show('请选择商品的批次')
-          return
-        }
+        // if (isStoreNull) {
+        //   this.$toast.show('请选择商品的批次')
+        //   return
+        // }
         if (this.isSubmit) return
         this.isSubmit = true
         API.Store.editOutOrder({type: 8, details: this.storeList, out_object: this.storeData}).then((res) => {
@@ -296,12 +303,12 @@
       flex: 1
       &:nth-child(1)
         flex: 0.4
-      &:nth-child(3)
+      &:nth-child(2)
         flex: 1.5
       &:nth-child(5)
         flex-wrap: nowrap
-        min-width: 150px
       &:nth-child(6)
+        min-width: 60px
         .list-operation
           &:after
             display: none

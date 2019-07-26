@@ -69,7 +69,7 @@
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
                 <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
                 <span v-if="item.status === 2" class="list-operation-strong" @click="goDetail(item)">复核</span>
-                <span v-if="item.status === 2" class="list-operation" @click="stopDocument(item)">关闭</span>
+                <span v-if="item.status === 0" class="list-operation" @click="stopDocument(item)">关闭</span>
               </div>
             </div>
           </div>
@@ -225,7 +225,6 @@
         let res = await API.Store[type]()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
-          console.log(apiUrl)
           this.webSocketData(apiUrl)
         }
       },
