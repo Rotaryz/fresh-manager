@@ -41,7 +41,7 @@
         <div class="title">商品清单</div>
         <div class="line"></div>
       </div>
-      <div v-if="detail.goods" class="bot goods-list">
+      <div v-if="detail.goods" :class="[freeShipping*1===1?'free-shipping':'']" class="bot goods-list">
         <div class="ro-order-list-header">
           <div v-for="(item, index) in titleList" :key="index" class="ro-order-list-item">
             {{item}}
@@ -56,8 +56,8 @@
             <div class="ro-order-list-item ro-order-list-text">{{item.total && `¥ ${item.total}`}}</div>
             <div v-if="freeShipping*1!==1" class="ro-order-list-item ro-order-list-text">{{item.delivery_at}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.after_sale_status_text}}</div>
-            <div v-if="freeShipping*1===1" class="ro-order-list-item ro-order-list-text">{{item.express_company}}</div>
-            <div v-if="freeShipping*1===1" class="ro-order-list-item ro-order-list-text">{{item.express_sn}}</div>
+            <div v-if="freeShipping*1===1" class="ro-order-list-item ro-order-list-text">{{item.express_company?item.express_company:'——'}}</div>
+            <div v-if="freeShipping*1===1" class="ro-order-list-item ro-order-list-text">{{item.express_sn?item.express_sn:'——'}}</div>
           </div>
         </div>
       </div>
@@ -118,19 +118,24 @@
     padding-bottom: 80px
 
   .ro-order-list-item
+    flex: 1
+    max-width: 170px
     &:nth-child(1)
-      flex: 1.5
+      flex: 2
+      max-width: 340px
       no-wrap()
       padding-right: 30px
     &:nth-child(2), &:nth-child(3), &:nth-child(4)
-      flex: 1
       white-space: normal !important
       word-break: break-all
-    &:nth-child(5), &:nth-child(6), &:nth-child(7)
-      flex: 1
-    &:last-child
-      flex: 0.3
-
+  .free-shipping .ro-order-list-item
+    max-width: 140px
+    &:nth-child(1)
+      flex: 2
+      max-width: 300px
+    &:nth-child(8)
+      flex: 1.6
+      max-width: 200px
   .block
     font-family: $font-family-medium
 </style>
