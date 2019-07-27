@@ -151,10 +151,8 @@ export const actions = {
     const {settleLogsDate, settleLogsKeyword, tabStatus} = state
     let data = {
       date: settleLogsDate.join(','),
-      keyword: settleLogsKeyword
-    }
-    if (tabStatus===1) {
-      data.source_type = 2
+      keyword: settleLogsKeyword,
+      source_type: tabStatus+1
     }
     return API.Finance.getSettleStatus(data)
       .then((res) => {
@@ -185,10 +183,8 @@ export const actions = {
       date: settleLogsDate.join(','),
       keyword: settleLogsKeyword,
       page: settleLogsPage,
-      status: settleLogsStatus
-    }
-    if (tabStatus===1) {
-      data.source_type = 2
+      status: settleLogsStatus,
+      source_type: tabStatus+1
     }
     return API.Finance.getSettleLogs(data, true)
       .then((res) => {

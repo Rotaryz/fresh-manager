@@ -86,11 +86,8 @@
           access_token: this.currentUser.access_token,
           date: this.settleLogsDate.join(','),
           keyword: this.settleLogsKeyword,
-          status: this.settleLogsStatus
-        }
-        if (this.infoTabIndex === 1) {
-          data.source_type = 2
-          delete data.source
+          status: this.settleLogsStatus,
+          source_type: this.tabStatus+1
         }
         let search = []
         for (let key in data) {
