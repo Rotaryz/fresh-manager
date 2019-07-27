@@ -114,7 +114,7 @@
           <div class="context-item">
             <span class="label"><span class="star">*</span>实盘数</span>
             <div class="context-value">
-              <input v-model="editNum" type="text" class="edit-input">kg
+              <input v-model="editNum" type="text" class="edit-input">{{currentItem.unit}}
             </div>
           </div>
           <div class="context-item">
@@ -337,7 +337,6 @@
       showEdit(item) {
         this.currentItem = item
         this.$refs.defaultModal.showModal()
-        console.log(item)
       },
       cancel() {
         this.$refs.defaultModal.hideModal()
@@ -351,7 +350,18 @@
           this.$toast.show('实盘数为最多两位小数的非负数')
           return
         }
-        this.$refs.defaultModal.hideModal()
+        API.Store.checkStock({id: this.currentItem.id, actual_stock: this.editNum, note: this.editText, goods_name: this.currentItem.goods_name})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.editText = ''
+            this.editNum = ''
+            this.$toast.show('盘点成功')
+            this.$refs.defaultModal.hideModal()
+            this.getWarehouseList({})
+          })
       }
     }
   }

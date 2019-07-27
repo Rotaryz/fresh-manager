@@ -373,5 +373,34 @@ export default {
   editPurchaseUser(id, data, loading = true) {
     let url = `/scm/api/backend/warehouse/warehouse-keeper/${id}`
     return request.put(url, data, loading)
-  }
+  },
+  /**
+   * 获取入库出库类型 [v2.7]
+   */
+  getEntryOutType(loading = false) {
+    let url = `/scm/api/backend/warehouse/get-entry-out-type`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 创建入库单 [v2.7]
+   */
+  saveEntryOrder(data, loading = false) {
+    let url = `/scm/api/backend/warehouse/entry-orders`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 关闭出库单 [v2.7]
+   */
+  closeOutOrder(id, loading = false) {
+    let url = `/scm/api/backend/warehouse/out-order-close/${id}`
+    return request.get(url, {}, loading)
+  },
+  /**
+   * 单品库存盘点 [v2.7]
+   */
+  checkStock(data, loading = false) {
+    let url = `/scm/api/backend/stock/single-stock-adjust/${data.id}`
+    return request.post(url, data, loading)
+  },
+
 }

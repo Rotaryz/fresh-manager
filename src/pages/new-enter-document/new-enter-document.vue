@@ -11,16 +11,16 @@
     </div>
     <div class="rush-time">
       <div class="edit-item">
-        <div class="edit-title">
+        <div class="edit-input-title">
           <span class="start">*</span>
           商品提供方
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.provider" type="text" placeholder="请输入" maxlength="20" class="edit-input">
+          <input v-model="msg.goods_supplier" type="text" placeholder="请输入" maxlength="20" class="edit-input">
         </div>
       </div>
       <div class="edit-item">
-        <div class="edit-title">
+        <div class="edit-input-title">
           <span class="start">*</span>
           入库类型
         </div>
@@ -50,34 +50,44 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item list-double-row">
                 <span>{{item.name}}</span>
-                <span>{{item.goods_sku_encoding}}</span>
+                <span>{{item.goods_sku_code}}</span>
               </div>
 
               <div class="com-list-item">{{item.goods_category_name}}</div>
+              <!--入库数量-->
               <div class="com-list-item">
-                <input v-model="item.enter_count" :readonly="disable" type="number" class="com-edit">
+                <input v-model="item.base_num" :readonly="disable" type="number" class="com-edit" @input="changeNum(item, index)">
                 <span>{{item.base_unit}}</span>
               </div>
               <div class="com-list-item">
-                <input v-model="item.enter_count" :readonly="disable" type="number" class="com-edit">
+                <input v-model="item.purchase_num" :readonly="disable" type="number" class="com-edit" @input="changePurchase(item, index)">
                 <span>{{item.purchase_unit}}</span>
               </div>
-
+              <!--入库单价-->
               <div class="com-list-item">
-                <input v-model="item.enter_price" :readonly="disable" type="number" class="com-edit">
+                <input v-model="item.price" :readonly="disable" type="number" class="com-edit">
               </div>
-              <div class="com-list-item">¥{{item.enter_price}}</div>
+              <div class="com-list-item">¥{{item.total}}</div>
+              <!--保质期-->
               <div class="com-list-item">
                 <date-picker
-                  style="width: 127px; height: 34px"
+                  style="width: 110px; height: 34px"
                   class="date-picker"
                   type="date"
                   :editable="false"
+                  placeholder="保质时间"
                   placement="bottom-end"
+                  :value="item.shelf_life"
+                  @on-change="changeTime($event, index)"
                 ></date-picker>
               </div>
               <div class="com-list-item position">
-                <input v-model="item.store_house" :readonly="disable" type="text" class="com-edit com-edit-big">
+                <!--<input v-model="item.store_house" :readonly="disable" type="text" class="com-edit com-edit-big">-->
+                <div class="select-time" @click="setStoreFn(index)">
+                  <div v-if="item.warehouse_position" class="select-time-name">{{item.warehouse_position}}</div>
+                  <div v-if="!item.warehouse_position" class="select-time-name">请选择</div>
+                  <!--<div class="select-time-icon"></div>-->
+                </div>
                 <span v-if="item.store_house" class="del" @click="deleteStoreHouse(item, index)"></span>
               </div>
               <div class="com-list-item">
@@ -136,9 +146,10 @@
     </default-modal>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
+    <default-store ref="modalBox" @confirm="confirm"></default-store>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
-      <div class="back-btn back-submit hand" @click="_saveActivity">保存</div>
+      <div class="back-btn back-submit hand" @click="_saveEntryOrder">保存</div>
     </div>
   </div>
 </template>
@@ -146,6 +157,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import DefaultStore from '@components/default-store/default-store'
   import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
   import API from '@api'
   import {objDeepCopy} from '@utils/common'
@@ -176,6 +188,7 @@
     components: {
       DefaultModal,
       DefaultConfirm,
+      DefaultStore,
       DatePicker
     },
     data() {
@@ -221,33 +234,34 @@
         disable: false,
         goodsList: [],
         msg: {
-          provider: '',
-          entry_type: ''
+          goods_supplier: '',
+          type: ''
         },
         isSubmit: false,
         activityTheme: '',
-        pageConfig: {}
+        pageConfig: {},
+        curIndex: ''
       }
     },
 
     computed: {
       ...merchantOrderComputed,
       testProvider() {
-        return this.msg.provider
+        return this.msg.goods_supplier
       },
       testEntryType() {
-        return this.msg.entry_type
+        return this.msg.type
       },
       testGoods() {
         return this.goodsList.length
       },
       testGoodsCount() {
         let result = this.goodsList.every(item => {
-          !item.count && this.$toast.show(`请输入“${item.name}”入库数量`)
-          if (item.enter_count < 1 || RATE.test(item.enter_count)) {
+          !item.base_num && this.$toast.show(`请输入“${item.name}”入库数量`)
+          if (item.base_num < 1 || RATE.test(item.base_num)) {
             this.$toast.show(`入库数量应为大于0的整数`)
           }
-          return item.enter_count > 0 && RATE.test(item.enter_count)
+          return item.base_num > 0 && RATE.test(item.base_num)
         })
         return result
       }
@@ -259,7 +273,7 @@
     methods: {
       ...merchantOrderMethods,
       _selectEntryType(item) {
-        this.msg.entry_type = item.type
+        this.msg.type = item.type
       },
       fixPosition() {
         if (!this.testMobile) return
@@ -273,7 +287,7 @@
           })
       },
       getEntryOutType() {
-        API.Product.getEntryOutType()
+        API.Store.getEntryOutType()
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -313,7 +327,8 @@
           delIndex !== -1 && (item.selected = 0)
           idx !== -1 && (item.selected = 1)
           goodsIndex !== -1 && (item.selected = 2)
-          item.enter_price = 0
+          item.price = 0
+          item.total = 0
           return item
         })
       },
@@ -388,6 +403,47 @@
           }
           break
         }
+      },
+      // 修改入库数量（基本单位）
+      changeNum(item, index) {
+        if (item.base_num < 0) {
+          item.base_num = item.base_num * -1
+        }
+        let number = item.base_num / item.base_purchase_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.purchase_num = number
+        // if (item.base_num) {
+        //   this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
+        // }
+      },
+      // 修改入库数量（采购单位）
+      changePurchase(item, index) {
+        if (item.purchase_num < 0) {
+          item.purchase_num = item.purchase_num * -1
+        }
+        let number = item.purchase_num * item.base_purchase_rate
+        if (number < 0) {
+          number = 0
+        }
+        item.base_num = number
+        // if (item.purchase_num) {
+        //   this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
+        // }
+      },
+      changeTime(e, index) {
+        this.goodsList[index].shelf_life = e
+      },
+      setStoreFn(index) {
+        this.curIndex = index
+        this.$refs.modalBox.getStoreList()
+        this.$refs.modalBox.show()
+      },
+      confirm(id, text) {
+        this.enterDetailList[this.curIndex].warehouse_position_id = id
+        this.enterDetailList[this.curIndex].warehouse_position = text
+        this.$refs.modalBox.cancel()
       },
       deleteStoreHouse(item, index) {
         this.goodsList = this.goodsList.map((goods, ind) => {
@@ -490,26 +546,24 @@
         this.$router.back()
       },
       //  保存
-      async _saveActivity() {
+      async _saveEntryOrder() {
         if (this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
         let checkGoods = this.checkGoods()
         if (!checkGoods) return
-        let data = Object.assign({}, this.msg, {activity_goods: this.goodsList})
-        // let res = null
-        // this.isSubmit = true
-        console.log(data, 'save')
-        // res = await API.Sale.storeSale(data, true)
-        // this.$loading.hide()
-        // this.$toast.show(res.message)
-        // if (res.error !== this.$ERR_OK) {
-        //   this.isSubmit = false
-        //   return
-        // }
-        // setTimeout(() => {
-        //   this._back()
-        // }, 1000)
+        let data = Object.assign({}, this.msg, {details: this.goodsList})
+        let res = null
+        this.isSubmit = true
+        res = await API.Store.saveEntryOrder(data, true)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          this.isSubmit = false
+          return
+        }
+        this.$toast.show('新建入库单成功')
+        this._back()
       },
       checkForm() {
         let arr = [
@@ -530,11 +584,11 @@
       },
       checkGoods() {
         let result = this.goodsList.every(item => {
-          !item.enter_count && this.$toast.show(`请输入“${item.name}”入库数量`)
-          if (item.enter_count < 1 || !RATE.test(item.enter_count)) {
+          !item.base_num && this.$toast.show(`请输入“${item.name}”入库数量`)
+          if (item.base_num < 1 || !RATE.test(item.base_num)) {
             this.$toast.show(`入库数量应为大于0的整数`)
           }
-          return item.enter_count > 0 && RATE.test(item.enter_count)
+          return item.base_num > 0 && RATE.test(item.base_num)
         })
         return result
       },
@@ -567,7 +621,7 @@
       margin-top: 24px
       align-items: center
       position: relative
-      .edit-title
+      .edit-input-title
         font-size: $font-size-14
         font-family: $font-family-regular
         white-space: nowrap
@@ -853,6 +907,23 @@
         flex: 2
       &:last-child
         max-width: 53px
+    .select-time
+      layout(row)
+      align-items: center
+      justify-content: space-between
+      width: 100px
+      height: 34px
+      background: #fff
+      border: 1px solid #e1e1e1
+      padding: 0 10px
+      cursor: pointer
+      .select-time-name
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+        width: 100%
+        padding-right: 10px
+        no-wrap()
     .big-box
       .list-double-row
         flex-direction: column

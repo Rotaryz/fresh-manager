@@ -1837,6 +1837,7 @@ export default [
                 end_time: endTime,
                 exception_status: exceptionStatus,
                 keyword: '',
+                type: '',
                 status: status,
                 page: 1,
                 limit: 10

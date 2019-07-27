@@ -145,10 +145,10 @@
         this._updateList({exception_status: item.status, page: 1})
       },
       changeType(item) {
-        this._updateList({stock_type: item.type, page: 1})
+        this._updateList({type: item.type, page: 1})
       },
       getEntryOutType() {
-        API.Product.getEntryOutType()
+        API.Store.getEntryOutType()
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -210,6 +210,7 @@
           start_time: this.enterFilter.start_time,
           end_time: this.enterFilter.end_time,
           keyword: this.enterFilter.keyword,
+          type: this.enterFilter.type,
           exception_status: this.enterFilter.exception_status
         })
         if (res.error === this.$ERR_OK) {

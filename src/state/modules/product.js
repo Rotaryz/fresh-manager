@@ -25,6 +25,7 @@ export const state = {
     end_time: '',
     limit: 10,
     page: 1,
+    type: '',
     exception_status: ''
   },
   isOutFirst: true,
@@ -35,6 +36,7 @@ export const state = {
     end_time: '',
     limit: 10,
     page: 1,
+    type: '',
     exception_status: ''
   }
 }
@@ -235,6 +237,7 @@ export const actions = {
       end_time: '',
       limit: 10,
       page: 1,
+      type: '',
       exception_status: ''
     })
     commit('SET_IS_ENTER_FRIRST', true)

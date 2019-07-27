@@ -64,12 +64,12 @@
                 <div v-if="item.is_exception" class="list-item-error"></div>
               </div>
               <!--出库类型-->
-              <div class="list-item">{{item.type}}</div>
+              <div class="list-item">{{item.type_str}}</div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
                 <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
                 <span v-if="item.status === 2" class="list-operation-strong" @click="goDetail(item)">复核</span>
-                <span v-if="item.status === 0" class="list-operation" @click="stopDocument(item)">关闭</span>
+                <span v-if="item.status === 0 && item.type !== 6 && item.type !== 10" class="list-operation" @click="stopDocument(item)">关闭</span>
               </div>
             </div>
           </div>
@@ -81,6 +81,7 @@
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="sureSubmit"></default-confirm>
+    <default-confirm ref="stopConfirm" @confirm="stopConfirm"></default-confirm>
   </div>
 </template>
 
@@ -147,7 +148,8 @@
           content: '全部',
           type: 'default',
           data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
-        }
+        },
+        currentItem: {}
       }
     },
     computed: {
@@ -185,7 +187,7 @@
         }
       },
       getEntryOutType() {
-        API.Product.getEntryOutType()
+        API.Store.getEntryOutType()
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -217,13 +219,26 @@
         this.errorObj.content = item.name || '全部'
       },
       changeType(item) {
-        this._updateList({out_type: item.type, page: 1})
+        this._updateList({type: item.type, page: 1})
       },
       stopDocument(item) {
         if (item.show_sorting) {
           return
         }
-        console.log(item)
+        this.currentItem = item
+        this.$refs.stopConfirm.show('确定关闭此订单？')
+      },
+      stopConfirm() {
+        API.Store.closeOutOrder(this.currentItem.id)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$toast.show('关闭成功')
+            this.getOutData()
+            this._statistic()
+          })
       },
       goDetail(item) {
         if (item.show_sorting) {
@@ -263,6 +278,7 @@
           start_time: this.outFilter.start_time,
           end_time: this.outFilter.end_time,
           keyword: this.outFilter.keyword,
+          type: this.outFilter.type,
           exception_status: this.outFilter.exception_status
         })
         if (res.error === this.$ERR_OK) {
@@ -307,7 +323,7 @@
       },
       async changeEndTime(value) {
         this.endTime = value
-        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+        if (Date.parse(this.startTime.replace(/-/g, '/')) > Date.parse(this.endTime.repla_selectEntryTypece(/-/g, '/'))) {
           this.$toast.show('结束时间不能小于开始时间')
           return
         }

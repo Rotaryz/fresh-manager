@@ -52,7 +52,7 @@
           <div class="list-item">{{item.usable_stock}}{{item.base_unit}}</div>
           <!--<div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>-->
           <div class="list-item list-item-layout">
-            <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
+            <input v-model="item.base_num" type="number" class="edit-input" :class="{'red': item.is_error}" @input="changeInput(item, index)">
             <div v-if="item.base_unit" class="base-unit">{{item.base_unit}}</div>
           </div>
           <!--<div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
@@ -77,11 +77,12 @@
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn back-submit hand" @click="submitEdit">保存</div>
+      <div class="back-btn back-submit hand" @click="saveOutOrder">保存</div>
     </div>
     <!--<add-goods ref="addg"></add-goods>-->
     <select-store ref="addg" @additionOne="additionOne" @batchAddition="batchAddition"></select-store>
     <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
+    <default-confirm ref="confirm"></default-confirm>
   </div>
 </template>
 
@@ -90,6 +91,7 @@
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
@@ -113,7 +115,8 @@
     components: {
       // AddGoods,
       SelectStore,
-      DefaultBatch
+      DefaultBatch,
+      DefaultConfirm
     },
     data() {
       return {
@@ -146,7 +149,7 @@
         this.showIndex = null
       },
       getEntryOutType() {
-        API.Product.getEntryOutType()
+        API.Store.getEntryOutType()
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -260,7 +263,7 @@
         // this.storeList[index].all_price = ''
         this.$forceUpdate()
       },
-      submitEdit() {
+      saveOutOrder() {
         if (this.storeData.length === 0 || this.storeData.length > 20) {
           this.$toast.show('请输入出库对象')
           return
@@ -293,10 +296,15 @@
         // }
         if (this.isSubmit) return
         this.isSubmit = true
-        API.Store.editOutOrder({type: 8, details: this.storeList, out_object: this.storeData}).then((res) => {
+        API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.$toast.show('新建出库单成功')
-            this.$router.back()
+            if (+res.code === 0) {
+              this.$toast.show('新建出库单成功')
+              this.$router.back()
+            } else {
+              this.storeList = res.data
+              this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+            }
           } else {
             this.$toast.show(res.message)
             this.isSubmit = false
@@ -379,6 +387,8 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
+      .red
+        color: #F53737
   .list-item-layout
     layout(row)
     align-items: center

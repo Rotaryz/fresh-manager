@@ -272,12 +272,5 @@ export default {
   checkGoodsTask(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/check-task`
     return request.get(url, data, loading)
-  },
-  /**
-   * 获取入库出库类型 [v2.7]
-   */
-  getEntryOutType(loading = false) {
-    let url = `/social-shopping/api/backend/warehouse/get-entry-out-type`
-    return request.get(url, {}, loading)
-  },
+  }
 }
