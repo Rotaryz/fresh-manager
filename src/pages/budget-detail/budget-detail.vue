@@ -63,7 +63,7 @@
     },
     filters: {
       adjustType(data, status) {
-        let isIncome = data.type === 30 || data.type === 31
+        let isIncome = data.type === 30 || data.type === 31 || data.type === 40
         if (status === INCOME) {
           return isIncome ? data.total : ''
         } else if (status === OUTCOME) {
