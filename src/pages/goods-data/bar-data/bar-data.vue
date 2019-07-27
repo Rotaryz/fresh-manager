@@ -65,7 +65,7 @@
           this.$echarts.dispose(el) // 销毁之前的实例
           let myChart = this.$echarts.init(el)
           this.myChart = myChart
-          window.addEventListener('resize',  this.resize) // 加监听
+          window.addEventListener('resize', this.resize) // 加监听
           let that = this
           myChart.on('click', function(params) {
             that.$emit('clickChart', params.dataIndex)
@@ -97,7 +97,7 @@
           this.$echarts.dispose(el) // 销毁之前的实例
           let myChart = this.$echarts.init(el)
           this.myChart = myChart
-          window.addEventListener('resize',  this.resize) // 加监听
+          window.addEventListener('resize', this.resize) // 加监听
           let that = this
           myChart.on('click', function(params) {
             that.$emit('clickChart', params.dataIndex)
@@ -123,7 +123,7 @@
           this.$echarts.dispose(el) // 销毁之前的实例
           let myChart = this.$echarts.init(el)
           this.myChart = myChart
-          window.addEventListener('resize',  this.resize) // 加监听
+          window.addEventListener('resize', this.resize) // 加监听
           let color = ['#5681EA', '#59C6E8', '#8859E8', '#F78536', '#D9D9D9']
           myChart.setOption(this.createBar1(xAxisData, seriesData3, color))
         })

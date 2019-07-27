@@ -102,22 +102,12 @@
   import DescriptionModal from './description-modal/description-modal'
 
   import API from '@api'
-  const ARR_TITLE = [
-    {title: '日', status: 'day'},
-    {title: '周', status: 'week'},
-    {title: '月', status: 'month'},
-  ]
+  const ARR_TITLE = [{title: '日', status: 'day'}, {title: '周', status: 'week'}, {title: '月', status: 'month'}]
   const DATA_CONFIG = {
     quality: {
-      tab: [
-        {name: '流量'},
-        {name: '订单'}
-      ],
+      tab: [{name: '流量'}, {name: '订单'}],
       viewData: [
-        [
-          {name: '浏览量(PV)', data: '100', code: 'pv'},
-          {name: '访客数(UV)', data: '200', code: 'uv'}
-        ],
+        [{name: '浏览量(PV)', data: '100', code: 'pv'}, {name: '访客数(UV)', data: '200', code: 'uv'}],
         [
           {name: '支付用户', data: '100', code: 'customers'},
           {name: '支付订单', data: '200', code: 'order'},
@@ -126,31 +116,18 @@
       ]
     },
     business: {
-      tab: [
-        {name: '营收金额'},
-        {name: '主力客户'},
-        {name: '复购率'},
-        {name: '笔单价'}
-      ],
+      tab: [{name: '营收金额'}, {name: '主力客户'}, {name: '复购率'}, {name: '笔单价'}],
       viewData: [
-        [
-          {name: '营收金额', data: '100', code: 'profit'}
-        ],
-        [
-          {name: '主力客户', data: '200', code: 'e_customer'}
-        ],
-        [
-          {name: '复购率', data: '100', code: 'e_order_avg'}
-        ],
-        [
-          {name: '笔单价', data: '200', code: 'per_order'}
-        ]
+        [{name: '营收金额', data: '100', code: 'profit'}],
+        [{name: '主力客户', data: '200', code: 'e_customer'}],
+        [{name: '复购率', data: '100', code: 'e_order_avg'}],
+        [{name: '笔单价', data: '200', code: 'per_order'}]
       ]
     },
     group: {
       tab: [
         {name: '用户数量'}
-        // {name: '用户效率'}
+      // {name: '用户效率'}
       ],
       viewData: [
         [
@@ -159,9 +136,9 @@
           {name: '主力客户', data: '200', code: 'e_customer'},
           {name: '沉睡客户', data: '200', code: 's_customer'}
         ]
-        // [
-        //   {name: '用户效率', data: '100', code: 'n_customer'}
-        // ]
+      // [
+      //   {name: '用户效率', data: '100', code: 'n_customer'}
+      // ]
       ]
     }
   }
@@ -286,10 +263,11 @@
         this.noDraw = false
       },
       dataHandle(data, type) {
-        if (!data) return {
-          dataArr: [],
-          xAxleData: []
-        }
+        if (!data)
+          return {
+            dataArr: [],
+            xAxleData: []
+          }
         // data = [
         //   {
         //     rate: [[], []],
@@ -306,7 +284,7 @@
             data: data.rate ? data.rate[index] : ''
           }
         })
-        let xAxleData = data.x.map(item => {
+        let xAxleData = data.x.map((item) => {
           let year = moment(item).year()
           let month = moment(item).month() + 1
           let week = moment(item).week()
@@ -323,7 +301,7 @@
           case 'week':
             return week ? year.toString().slice(2) + '年第' + week + '周' : ''
           default:
-            return month ? year.toString().slice(2)  + '年' + month + '月' : ''
+            return month ? year.toString().slice(2) + '年' + month + '月' : ''
           }
         })
         return {

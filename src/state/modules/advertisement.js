@@ -26,18 +26,20 @@ export const mutations = {
 
 export const actions = {
   checkTab({commit}, index) {
-    console.log(index)
     commit('SET_INFO_TAB_INDEX', index)
   },
-  getInfoBannerList({state, commit, dispatch}) {
-    return API.Advertisement.cmsMsg({page_name: 'index'})
+  getInfoBannerList({state, commit, dispatch}, obj) {
+    let {pageName} = obj
+    return API.Advertisement.cmsMsg({page_name: pageName})
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
         }
         let arr = res.data
-        commit('SET_INFO_LIST', arr)
-        return true
+        if(pageName === 'index'){
+          commit('SET_INFO_LIST', arr)
+        }
+        return res.data
       })
       .catch(() => {
         return false

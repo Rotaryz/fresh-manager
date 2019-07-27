@@ -38,8 +38,8 @@
       }
     },
     methods: {
-      infoTextMethods() {
-        this.searchText = ''
+      infoTextMethods(keyword = '') {
+        this.searchText = keyword
       },
       _search() {
         this.$emit('search', this.searchText)

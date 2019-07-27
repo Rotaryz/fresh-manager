@@ -100,8 +100,11 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.startTime}&time=${this.time}&end_time=${this.endTime}&status=${
-          this.status}&keyword=${this.keyword}&supplier_id=${this.supplyId}&is_blocked=1&current_corp=${currentId}`
+        let params = `access_token=${token.access_token}&start_time=${this.startTime}&time=${this.time}&end_time=${
+          this.endTime
+        }&status=${this.status}&keyword=${this.keyword}&supplier_id=${
+          this.supplyId
+        }&is_blocked=1&current_corp=${currentId}`
         this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
       },
       async _getSupplierList() {

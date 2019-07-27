@@ -59,4 +59,3 @@ export default {
     return request.get(url, Object.assign(data, commonParams), loading)
   }
 }
-
