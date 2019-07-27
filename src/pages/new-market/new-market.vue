@@ -408,6 +408,7 @@
         </div>
       </div>
     </default-modal>
+    <!--<div @click="testForm">测试</div>-->
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div :class="{'btn-disable': type}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
@@ -615,10 +616,10 @@
       testNewEndTimeReg() {
         // 结束时间规则判断
         if (this.msg.start_at && this.msg.end_at) {
+          let startAt = this.msg.start_at
+          let endAt = this.msg.end_at
           return (
-            // Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
-            // Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
-            Date.parse(this.msg.end_at) > Date.parse(this.msg.start_at)
+            Date.parse(endAt.replace(/-/g, '/')) > Date.parse(startAt.replace(/-/g, '/'))
           )
         }
         return true
@@ -720,6 +721,9 @@
     },
     methods: {
       ...marketMethods,
+      testForm() {
+        console.log(this.msg.end_at, this.msg.start_at, this.testNewEndTimeReg)
+      },
       _cancelGoodsModal() {
         this.$refs.goodsModal.hideModal()
       },
