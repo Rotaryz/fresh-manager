@@ -253,12 +253,12 @@
                     </div>
                   </div>
                 </div>
-                <div v-else class="text-item">{{item.value}}</div>
+                <div v-else class="text-item hand" @click.stop="showTextDialog(idx, item.value)">{{item.value}}</div>
               </div>
               <!--</transition-group>-->
             </draggable>
             <div v-if="!isDisabled" class="add-cont-type-box">
-              <div class="add-cont-type-item  hand" @click="showTextDialog">
+              <div class="add-cont-type-item  hand" @click="showTextDialog(false)">
                 <div class="icon icon-text"></div>
                 <div>文本</div>
               </div>
@@ -365,7 +365,7 @@
           </div>
         </div>
         <div class="goods-list list">
-          <div v-for="(item, index) in chooseGoods" :key="index" class="list-content list-box">
+          <div v-for="(item, index) in chooseGoods" :key="item.id" class="list-content list-box">
             <div class="list-item list-item-select">
               <div class="select-icon hand"
                    :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"
@@ -375,8 +375,7 @@
             </div>
             <div class="list-item goods-img-wrap">
               <div class="wrap">
-                <div class="goods-img" :style="{'background-image': 'url('+ item.goods_cover_image+ ')'}">
-                </div>
+                <img :src="item.goods_cover_image" alt="" class="goods-img" style="object-fit: cover">
               </div>
             </div>
             <div class="list-item goods-name">
@@ -533,7 +532,8 @@
           total_page:
             1
         },
-        selectGoods: [] // 单次选择的商品
+        selectGoods: [], // 单次选择的商品,
+        detailIndex: null, // 当前编辑item
       }
     },
     computed: {
@@ -568,8 +568,9 @@
       this._getLikes()
     },
     methods: {
-      showTextDialog() {
-        this.addText = ''
+      showTextDialog(index, text = '') {
+        this.detailIndex = index
+        this.addText = text
         this.$refs.addText.showModal()
       },
       _getLikes() {
@@ -761,10 +762,18 @@
           this.$toast.show('请输入内容')
           return
         }
-        this.addDetailContentItem({
+        let obj = {
           type: 'text',
           value: this.addText
-        })
+        }
+        if(this.detailIndex === false){
+          this.addDetailContentItem({
+            type: 'text',
+            value: this.addText
+          })
+        }else{
+          this.$set(this.addData.details,this.detailIndex, obj)
+        }
         this.$refs.addText.hideModal()
       },
       addImageItem(image) {
@@ -1550,6 +1559,7 @@
         .goods-img
           width: 40px
           height: 40px
+          object-fit :cover
           border-radius 50%
           background-size 100%
 
