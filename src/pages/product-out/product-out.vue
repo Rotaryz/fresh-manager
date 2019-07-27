@@ -266,7 +266,7 @@
       },
       async changeEndTime(value) {
         this.endTime = value
-        if (Date.parse(this.startTime) > Date.parse(this.endTime)) {
+        if (Date.parse(this.startTime.replace(/-/g, '/')) > Date.parse(this.endTime.replace(/-/g, '/'))) {
           this.$toast.show('结束时间不能小于开始时间')
           return
         }

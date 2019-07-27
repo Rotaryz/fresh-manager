@@ -618,7 +618,7 @@
           return (
             // Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
             // Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
-            Date.parse(this.msg.end_at) > Date.parse(this.msg.start_at)
+            Date.parse(this.msg.end_at.replace(/-/g, '/')) > Date.parse(this.msg.start_at.replace(/-/g, '/'))
           )
         }
         return true
