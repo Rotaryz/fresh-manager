@@ -369,7 +369,7 @@
       },
       testStartDate() {
         // 开始时间规则判断
-        return Date.parse(this.essInformation.start_at) < new Date()
+        return Date.parse(this.essInformation.start_at.replace(/-/g, '/')) < new Date()
       },
       testEnd() {
         // 结束时间

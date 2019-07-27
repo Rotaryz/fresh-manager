@@ -130,7 +130,7 @@
         this._getOutOrdersStatistic()
       },
       changeStartTime(value) {
-        if (Date.parse(value) > Date.parse(this.endTime)) {
+        if (Date.parse(value.replace(/-/g, '/')) > Date.parse(this.endTime.replace(/-/g, '/'))) {
           this.$toast.show('开始时间不能大于结束时间')
           return
         }
@@ -139,7 +139,7 @@
         this._getOutOrdersStatistic()
       },
       changeEndTime(value) {
-        if (Date.parse(this.startTime) > Date.parse(value)) {
+        if (Date.parse(this.startTime.replace(/-/g, '/')) > Date.parse(value.replace(/-/g, '/'))) {
           this.$toast.show('开始时间不能大于结束时间')
           return
         }

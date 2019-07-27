@@ -140,7 +140,7 @@
     {name: '面值', flex: 1, value: 'denomination', type: 2},
     {name: '状态', flex: 1, value: 'status_str', type: 1},
     {name: 'ROI指标', flex: 1, value: 'roi_value', type: 3},
-    {name: '操作', flex: 1.2, value: '', type: 4}
+    {name: '操作', flex: 1.8, value: '', type: 4}
   ]
 
   const VIEW_DATA = [

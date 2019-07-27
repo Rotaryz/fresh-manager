@@ -602,7 +602,7 @@
         } else if (!this.essInformation.end_at) {
           this.$toast.show('活动结束时间不能为空')
           return
-        } else if (Date.parse(endTime) < date) {
+        } else if (Date.parse(endTime.replace(/-/g, '/')) < date) {
           this.$toast.show('活动结束时间不能小于当天')
           return
         }
