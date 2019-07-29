@@ -215,7 +215,7 @@
                 <div v-for="(item, index) in addData.goodsList" :key="index" class="list-content list-box">
                   <div class="list-item">{{item.name}}</div>
                   <div class="list-item">{{item.sale_unit || item.goods_units}}</div>
-                  <div class="list-item">¥{{item.original_price || 0}}</div>
+                  <div class="list-item">¥{{item.trade_price || 0}}</div>
                   <div class="list-item">
                     <span class="list-operation" @click="_showDelGoods(item, index)">删除</span>
                   </div>
@@ -248,7 +248,7 @@
                     <div class="name">{{item.value.name}}</div>
                     <div class="details">{{item.value.describe}}</div>
                     <div class="operate">
-                      <span class="price-now">10<span class="small">.8<span class="unit">元</span></span></span>
+                      <span class="price-now">{{formatM(item.value.trade_price).int}}<span class="small">{{formatM(item.value.trade_price).dec}}<span class="unit">元</span></span></span>
                       <span class="price">{{item.value.original_price}}元</span>
                     </div>
                   </div>
@@ -381,7 +381,7 @@
             <div class="list-item goods-name">
               {{item.name}}
             </div>
-            <div class="list-item  goods-money">¥{{item.original_price}}</div>
+            <div class="list-item  goods-money">¥{{item.trade_price}}</div>
 
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
@@ -438,6 +438,7 @@
   import PhoneBox from './phone-box/phone-box'
   import API from '@api'
   import Draggable from 'vuedraggable'
+  import {formatCouponMoney} from '@utils/common'
 
   const PAGE_NAME = 'ARTICLE_ADD'
   const TITLE = '创作文章'
@@ -568,6 +569,9 @@
       this._getLikes()
     },
     methods: {
+      formatM(m) {
+        return formatCouponMoney(m)
+      },
       showTextDialog(index, text = '') {
         this.detailIndex = index
         this.addText = text
