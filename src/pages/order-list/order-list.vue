@@ -170,6 +170,7 @@
       changeTab(selectStatus, index) {
         // this.setDefaultIndex(index)
         this.setOrderStatus(selectStatus)
+        this.getOrderStatus()
       },
       getOrderStatus(startTime, endTime) {
         let params = {
