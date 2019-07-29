@@ -19,23 +19,23 @@
           <base-drop-down :width="400" :height="40" :select="consumer" @setValue="_selectConsumer"></base-drop-down>
         </div>
       </div>
-      <div v-if="+msg.consumer === 1" class="edit-item">
+      <div v-if="+consumerType === 1" class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           会员手机号
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.mobile" type="tel" placeholder="请输入" maxlength="11" class="edit-input">
+          <input v-model="mobile" type="tel" placeholder="请输入" maxlength="11" class="edit-input">
         </div>
         <span class="btn-text hand" @click="fixPosition">定位社区</span>
       </div>
-      <div v-if="+msg.consumer === 1" class="edit-item">
+      <div v-if="+consumerType === 1" class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           微信昵称
         </div>
         <div class="edit-input-box">
-          <span class="tip-text" :class="{'tip': msg.wechat_name}">{{msg.wechat_name || '输入会员手机点击定位社区'}}</span>
+          <span class="tip-text" :class="{'tip': nickName}">{{nickName || '输入会员手机点击定位社区'}}</span>
         </div>
       </div>
       <div class="edit-item">
@@ -44,7 +44,7 @@
           所属社区
         </div>
         <div class="edit-input-box">
-          <base-drop-down :width="400" :height="40" :select="community" @setValue="_selectCommunity"></base-drop-down>
+          <base-drop-down :width="400" :height="40" :isInput="+consumerType === 2" :select="community" @setValue="_selectCommunity"></base-drop-down>
         </div>
       </div>
     </div>
@@ -69,10 +69,10 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name}}</div>
               <div class="com-list-item">{{item.sale_unit}}</div>
-              <div class="com-list-item">{{item.sale_count}}</div>
+              <div class="com-list-item">{{item.usable_stock}}</div>
               <div class="com-list-item">
                 <input
-                  v-model="item.usable_stock"
+                  v-model="item.sale_count"
                   :readonly="disable"
                   type="number"
                   class="com-edit com-edit-small"
@@ -209,9 +209,9 @@
         community: {
           check: false,
           show: false,
-          content: '',
+          content: '选择社区',
           type: 'default',
-          data: [{name: '广海花园社区', id: 1}] // 格式：{title: '55'}}
+          data: [] // 格式：{title: '55'}}
         },
         parentId: '',
         keyword: '',
@@ -222,34 +222,34 @@
         selectDelId: [],
         disable: false,
         goodsList: [],
-        msg: {
-          consumer: ''
-        },
+        msg: {},
         isSubmit: false,
         activityTheme: '',
-        pageConfig: {}
+        pageConfig: {},
+        consumerType: '',
+        mobile: '',
+        nickName: ''
       }
     },
-
     computed: {
       ...merchantOrderComputed,
       testConsumer() {
-        return this.msg.consumer
+        return this.consumerType
       },
       testMobile() {
-        if (+this.msg.consumer === 1) {
-          return this.msg.mobile && REGPHONE.test(this.msg.mobile)
+        if (+this.consumerType === 1) {
+          return this.mobile && REGPHONE.test(this.mobile)
         }
         return true
       },
       testWechatName() {
-        if (+this.msg.consumer === 1) {
-          return this.msg.wechat_name
+        if (+this.consumerType === 1) {
+          return this.msg.receiver_name
         }
         return true
       },
       testCommunity() {
-        return this.msg.community
+        return this.msg.receiver_name
       },
       testGoods() {
         return this.goodsList.length
@@ -265,26 +265,72 @@
         return result
       }
     },
+    watch: {
+      consumerType(now, old) {
+        if (now !== old) {
+          this.msg = {}
+          this.mobile = ''
+          this.nickName = ''
+          this.community.data = []
+          this.community.content = '选择社区'
+        }
+      },
+      mobile(now, old) {
+        if (now !== old) {
+          this._initData()
+        }
+      }
+    },
     created() {
       this._getFirstAssortment()
     },
     methods: {
       ...merchantOrderMethods,
+      _initData() {
+        this.msg = {}
+        this.nickName = ''
+        this.community.data = []
+        this.community.content = '选择社区'
+      },
       _selectConsumer(item) {
-        this.msg.consumer = item.id
+        this.consumerType = item.id
+        if (+item.id === 2) {
+          this.getCommunity()
+        }
       },
       _selectCommunity(item) {
-        this.msg.community = item.name
+        this.msg = {
+          receiver_name: item.name,
+          receiver_mobile: item.mobile,
+          receiver_province: item.province,
+          receiver_city: item.city,
+          receiver_district: item.area,
+          receiver_address: item.address,
+          out_buyer_id: item.out_buyer_id,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          out_order_sn: '',
+          created_at: ''
+        }
       },
       fixPosition() {
-        if (!this.testMobile) return
-        API.merchantOrder.fixPosition({mobile: this.msg.mobile})
+        if (!this.testMobile) {
+          this.$toast.show('请输入11位的会员手机号')
+          return
+        }
+        this._initData()
+        this.getCommunity()
+      },
+      getCommunity() {
+        API.MerchantOrder.getCommunity({mobile: this.mobile})
           .then(res => {
-            if (res.error !== this.ERR_OK) {
-              this.$tost.show(res.message)
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
               return
             }
             this.community.data = res.data
+            this.community.content = '选择社区'
+            this.nickName = res.data[0].nickname
           })
       },
       // 选择商品
@@ -321,13 +367,16 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
-          item.sort = 0
+          item.sale_count = ''
           return item
         })
       },
       stockHandle(item) {
-        if (item.usable_stock > item.sale_count) {
-          item.usable_stock = item.sale_count
+        if (item.sale_count < 0) {
+          item.sale_count = item.sale_count * -1
+        }
+        if (item.sale_count > item.usable_stock) {
+          item.sale_count = item.usable_stock
         }
       },
       // 获取分页商品列表
@@ -385,7 +434,6 @@
           //   return
           // }
           this.choeesGoods[index].selected = 2
-          item.all_stock = item.usable_stock
           this.selectGoods.push(item)
           this.selectGoodsId.push(item.id)
           break
@@ -444,12 +492,6 @@
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
         let goodsItem = objDeepCopy(item)
-        goodsItem.all_stock = item.usable_stock
-        goodsItem.usable_stock = ''
-        goodsItem.trade_price_show = item.trade_price
-        if (this.activityTheme !== 'hot_tag') {
-          goodsItem.trade_price = ''
-        }
         this.goodsList.push(goodsItem)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
@@ -465,11 +507,6 @@
         // const list = objDeepCopy(this.choeesGoods)
         this.selectGoods = this.selectGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
-          item.usable_stock = ''
-          item.trade_price_show = item.trade_price
-          if (this.activityTheme !== 'hot_tag') {
-            item.trade_price = ''
-          }
           return item
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
@@ -499,40 +536,63 @@
         if (this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
-
-        let data = Object.assign({}, this.msg, {activity_goods: this.goodsList})
-        // let res = null
-        // this.isSubmit = true
-        console.log(data)
-        // res = await API.Sale.storeSale(data, true)
-        // this.$loading.hide()
-        // this.$toast.show(res.message)
-        // if (res.error !== this.$ERR_OK) {
-        //   this.isSubmit = false
-        //   return
-        // }
-        // setTimeout(() => {
-        //   this._back()
-        // }, 1000)
+        let checkGoods = this.checkGoods()
+        if (!checkGoods) return
+        let total = 0
+        let goods = this.goodsList.map(item => {
+          let totalPrice = item.trade_price * item.sale_count
+          total += totalPrice
+          return {
+            goods_sku_code: item.goods_sku_code,
+            sale_num: item.sale_count,
+            sale_price: item.trade_price,
+            total: totalPrice,
+            promote: 0
+          }
+        })
+        let data = Object.assign({}, this.msg, {goods, total})
+        let res = null
+        this.isSubmit = true
+        res = await API.MerchantOrder.saveConsumerOrder(data, true)
+        this.$loading.hide()
+        if (res.error !== this.$ERR_OK) {
+          this.isSubmit = false
+          this.$toast.show(res.message)
+          return
+        }
+        this.$toast.show('保存成功')
+        setTimeout(() => {
+          this._back()
+        }, 1000)
       },
       checkForm() {
         let arr = [
           {value: this.testConsumer, txt: '请选择补货对象'},
           {value: this.testMobile, txt: '请输入11位的会员手机号'},
-          {value: this.testWechatName, txt: '请定位会员社区'},
+          // {value: this.testWechatName, txt: '请定位会员社区'},
           {value: this.testCommunity, txt: '请选择会员所属社区'},
-          {value: this.testGoods, txt: '请选择商品'},
-          {value: this.testGoodsCount, txt: ''},
+          {value: this.testGoods, txt: '请选择商品'}
+          // {value: this.testGoodsCount, txt: ''},
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
-            arr[i].txt && this.$toast.show(arr[i].txt)
+            this.$toast.show(arr[i].txt)
             return false
           }
           if (i === j - 1 && arr[i].value) {
             return true
           }
         }
+      },
+      checkGoods() {
+        let result = this.goodsList.every(item => {
+          !item.sale_count && this.$toast.show(`请输入“${item.name}”下单数量`)
+          if (item.sale_count < 1 || !RATE.test(item.sale_count)) {
+            this.$toast.show(`下单数量应为大于0的整数`)
+          }
+          return item.sale_count > 0 && RATE.test(item.sale_count)
+        })
+        return result
       },
       echangBase(item, index) {
         if (item.usable_stock > item.all_stock && !this.disable) {
@@ -602,17 +662,17 @@
         color: #ACACAC
     .edit-input-right
       margin-left: 14px
-    .tip
-      line-height: 40px
-      font-size: $font-size-12
-      font-family: $font-family-regular
-      color: $color-text-main
     .tip-text
       margin-left: 2px
       line-height: 40px
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
+    .tip
+      line-height: 40px
+      font-size: $font-size-12
+      font-family: $font-family-regular
+      color: $color-text-main
     .btn-text
       color: #4D77BD
       font-family: $font-family-regular
@@ -810,7 +870,7 @@
     border-radius: 2px
     box-sizing: border-box
     border: 1px solid $color-line
-    padding-left: 22px
+    padding-left: 10px
     transition: all 0.3s
     &::-webkit-inner-spin-button
       appearance: none

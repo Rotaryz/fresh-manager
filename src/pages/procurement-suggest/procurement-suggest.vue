@@ -47,9 +47,9 @@
           <base-blank v-else></base-blank>
         </div>
       </div>
-      <div class="pagination-box">
+      <!--<div class="pagination-box">
         <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>

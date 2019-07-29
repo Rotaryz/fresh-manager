@@ -187,7 +187,7 @@
         }
       },
       getEntryOutType() {
-        API.Store.getEntryOutType()
+        API.Store.getEntryOutType({method: 'index'})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -236,7 +236,7 @@
               return
             }
             this.$toast.show('关闭成功')
-            this.getOutData()
+            this.getOutData({loading: false})
             this._statistic()
           })
       },

@@ -65,7 +65,7 @@
               </div>
               <!--入库单价-->
               <div class="com-list-item">
-                <input v-model="item.price" :readonly="disable" type="number" class="com-edit">
+                <input v-model="item.price" :readonly="disable" type="number" class="com-edit" @input="changePrice(item, index)">
               </div>
               <div class="com-list-item">¥{{item.total}}</div>
               <!--保质期-->
@@ -287,7 +287,7 @@
           })
       },
       getEntryOutType() {
-        API.Store.getEntryOutType()
+        API.Store.getEntryOutType({method: 'create'})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
@@ -414,9 +414,9 @@
           number = 0
         }
         item.purchase_num = number
-        // if (item.base_num) {
-        //   this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
-        // }
+        if (item.base_num) {
+          this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
+        }
       },
       // 修改入库数量（采购单位）
       changePurchase(item, index) {
@@ -428,9 +428,18 @@
           number = 0
         }
         item.base_num = number
-        // if (item.purchase_num) {
-        //   this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
-        // }
+        if (item.purchase_num) {
+          this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
+        }
+      },
+      // 修改入库单价
+      changePrice(item, index) {
+        if (item.price < 0) {
+          item.price = item.price * -1
+        }
+        if (item.base_num) {
+          this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
+        }
       },
       changeTime(e, index) {
         this.goodsList[index].shelf_life = e
@@ -442,7 +451,7 @@
       },
       confirm(id, text) {
         this.enterDetailList[this.curIndex].warehouse_position_id = id
-        this.enterDetailList[this.curIndex].warehouse_position = text
+        // this.enterDetailList[this.curIndex].warehouse_position = text
         this.$refs.modalBox.cancel()
       },
       deleteStoreHouse(item, index) {

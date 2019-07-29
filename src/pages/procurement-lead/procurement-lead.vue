@@ -102,12 +102,13 @@
         this.$loading.show('上传中...')
         let res = await API.Supply.leadTask(param, true, 60000)
         this.$loading.hide()
-        this.blankList = res.error === this.$ERR_OK ? res.data : []
-        console.log(res)
         e.target.value = ''
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
+          return
         }
+        this.blankList = res.data
+        res.data.error_type && this.$toast.show(res.data.error_msg)
       },
       // 格式化文件
       _infoFile(file) {

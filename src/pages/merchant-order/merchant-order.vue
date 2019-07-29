@@ -87,15 +87,17 @@
           </div>
           <div class="list">
             <template v-if="orderList.length">
-              <div v-for="(row, index) in orderData" :key="index" class="list-content list-box">
+              <div v-for="(row, index) in orderList" :key="index" class="list-content list-box">
                 <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
                     {{row[item.key]}}
-                    <div v-if="item.key ==='type_count'" class="unusual-icon">
-                    </div>
+                    <div v-if="item.key === 'sale_num' && row.is_exception" class="unusual-icon"></div>
+                    <div v-if="item.key === 'out_order_sn'" style="color:#ACACAC">{{row.created_at}}</div>
+                    <div v-if="item.key === 'goods_name'">{{row.goods_sku_encoding}}</div>
                   </template>
                   <template v-else name="operation">
-                    <div class="list-operation" @click="showConfirm">{{item.operation}}</div>
+                    <div v-if="row.show_delete" class="list-operation" @click="showConfirm(row)">{{item.operation}}</div>
+                    <div v-else class="">---</div>
                   </template>
                 </div>
               </div>
@@ -134,14 +136,14 @@
     {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '订单号', key: 'order_sn', flex: 1},
-    {title: '会员名称', key: 'order_name', flex: 1},
+    {title: '订单号', key: 'out_order_sn', flex: 1.5},
+    {title: '会员名称', key: 'nickname', flex: 1},
     {title: '会员手机号', key: 'mobile', flex: 1},
-    {title: '商品', key: 'goods_name', flex: 1},
-    {title: '下单数量', key: 'type_count', flex: 1},
-    {title: '商户名称', key: 'buyer_name', flex: 1},
-    {title: '状态', key: 'status', flex: 1},
-    {title: '订单来源', key: 'order_resource', flex: 1},
+    {title: '商品', key: 'goods_name', flex: 1.2},
+    {title: '下单数量', key: 'sale_num', flex: 0.7},
+    {title: '商户名称', key: 'buyer_name', flex: 1.5},
+    {title: '状态', key: 'status_str', flex: 0.7},
+    {title: '订单来源', key: 'type_str', flex: 0.7},
     {title: '操作', key: '', operation: '删除', flex: 1, class: 'operate'}
   ]
 
@@ -197,19 +199,19 @@
         orderData: ORDER_DATA,
         datePlaceHolder: '选择下单日期',
         orderKeyword: '',
-        signItem: {},
+        currentItem: {},
         unusualSelect: {
           check: false,
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}]},
+          data: [{name: '全部', status: ''}, {name: '正常', status: '1'}, {name: '异常', status: '2'}]},
         dispatchSelect: [
-          {name: '全部', value: '', num: 0},
-          {name: '待调度', value: 0, num: 0},
-          {name: '待出库', value: 1, num: 0},
-          {name: '待配送', value: 2, num: 0},
-          {name: '已完成', value: 3, num: 0}
+          {status_str: '全部', value: '', statistic: 0},
+          {status_str: '待调度', value: 0, statistic: 0},
+          {status_str: '待出库', value: 1, statistic: 0},
+          {status_str: '待配送', value: 2, statistic: 0},
+          {status_str: '已完成', value: 3, statistic: 0}
         ],
         consumerStatusTab: [
           {status_str: '全部', status: '', statistic: 0},
@@ -236,33 +238,19 @@
       _changeStatusTab(item, index) {
         this.SET_TAB_INDEX(index)
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
-        if (!this.tabIndex) {
-          // 待调度
-          this._updateMerchantOrderList({
-            page: 1,
-            limit: 10,
-            start_time: '',
-            end_time: '',
-            type: '',
-            status: 0,
-            keyword: ''
-          })
-        } else {
-          this._updateMerchantOrderList({
-            page: 1,
-            limit: 10,
-            start_time: '',
-            end_time: '',
-            status: 0,
-            keyword: '',
-            type: '',
-            usual: ''
-          })
-        }
+        // 待调度
+        this._updateMerchantOrderList({
+          page: 1,
+          limit: 10,
+          start_time: '',
+          end_time: '',
+          type: '',
+          status: 0,
+          keyword: ''
+        })
       },
       _selectUnusual(item) {
-        this._updateMerchantOrderList({usual: item.status})
-        console.log(item)
+        this._updateMerchantOrderList({type: item.status})
       },
       // 获取订单列表
       _updateMerchantOrderList(params, noUpdateStatus) {
@@ -273,7 +261,7 @@
         if (+this.tabIndex === 0) {
           this.getMerchantOrderList()
         } else {
-
+          this.getConsumerOrderList()
         }
         if (params.page === 1) {
           this.$nextTick(function() {
@@ -288,14 +276,25 @@
           start_time: this.merchantFilter.start_time,
           end_time: this.merchantFilter.end_time,
           keyword: this.merchantFilter.keyword,
-          type: this.merchantFilter.type
+          is_parent_order: 1 // 商户合单
         }
-        API.MerchantOrder.getStausData(params).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return false
-          }
-          this.dispatchSelect = res.data
-        })
+        if (+this.tabIndex === 0) {
+          API.MerchantOrder.getStausData(params).then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return false
+            }
+            this.dispatchSelect = res.data
+          })
+        } else {
+          params.type = this.merchantFilter.type
+          params.is_parent_order = 0 // 消费者订单
+          API.MerchantOrder.getConsumerStatus(params).then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return false
+            }
+            this.consumerStatusTab = res.data
+          })
+        }
       },
       // 翻页
       setOrderPage(page) {
@@ -323,11 +322,12 @@
           page: 1
         })
       },
-      showConfirm() {
+      showConfirm(item) {
+        this.currentItem = item
         this.$refs.delConfirm.show('确定删除此订单？')
       },
       delConfirm() {
-        console.log('删除成功')
+        API.MerchantOrder.deleteConsumerOrder({out_order_sn: this.currentItem.out_order_sn, goods_sku_code: this.currentItem.goods_sku_code})
         this.$refs.delConfirm.hide()
       }
     }

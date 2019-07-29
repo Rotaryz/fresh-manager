@@ -149,7 +149,7 @@
         this.showIndex = null
       },
       getEntryOutType() {
-        API.Store.getEntryOutType()
+        API.Store.getEntryOutType({method: 'create'})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)

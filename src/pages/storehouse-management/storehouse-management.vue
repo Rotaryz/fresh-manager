@@ -114,7 +114,7 @@
           <div class="context-item">
             <span class="label"><span class="star">*</span>实盘数</span>
             <div class="context-value">
-              <input v-model="editNum" type="text" class="edit-input">{{currentItem.unit}}
+              <input v-model="editNum" type="text" class="edit-input" @input="changeNum">{{currentItem.unit}}
             </div>
           </div>
           <div class="context-item">
@@ -334,6 +334,11 @@
       addPage(page) {
         this._getWarehouseList({page})
       },
+      changeNum() {
+        if (this.editNum < 0) {
+          this.editNum = this.editNum * -1
+        }
+      },
       showEdit(item) {
         this.currentItem = item
         this.$refs.defaultModal.showModal()
@@ -346,10 +351,10 @@
           this.$toast.show('请输入实盘数')
           return
         }
-        if (!this.testEditNumReg) {
-          this.$toast.show('实盘数为最多两位小数的非负数')
-          return
-        }
+        // if (!this.testEditNumReg) {
+        //   this.$toast.show('实盘数为最多两位小数的非负数')
+        //   return
+        // }
         API.Store.checkStock({id: this.currentItem.id, actual_stock: this.editNum, note: this.editText, goods_name: this.currentItem.goods_name})
           .then(res => {
             if (res.error !== this.$ERR_OK) {

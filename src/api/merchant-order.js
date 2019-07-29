@@ -33,16 +33,20 @@ export default {
     return request.get(url, {}, loading)
   },
 
-  // √ 汇总订单 √
+  // √ 消费者订单 √
   getConsumerOrderslist(params, loading = false) {
-    let url = '/scm/api/backend/oms/merge-orders'
-    // let url = '/mock/mergeOrderslist.json'
+    let url = '/scm/api/backend/oms/customer-orders'
     return request.get(url, params, loading)
   },
 
   // 保存消费者订单
   saveConsumerOrder(params, loading = false) {
-    let url = '/scm/api/backend/oms/merge-orders'
+    let url = '/scm/api/backend/oms/orders'
+    return request.post(url, params, loading)
+  },
+  // 删除消费者订单
+  deleteConsumerOrder(params, loading = false) {
+    let url = '/scm/api/backend/oms/orders-destroy'
     return request.post(url, params, loading)
   },
 
@@ -60,8 +64,8 @@ export default {
     return request.get(url, defaultParams)
   },
   // 定位社区
-  fixPosition(params, loading = false) {
-    let url = '/scm/api/backend/oms/merge-orders'
+  getCommunity(params, loading = false) {
+    let url = '/scm/api/backend/oms/customer-buyer-list'
     return request.get(url, params, loading)
-  },
+  }
 }

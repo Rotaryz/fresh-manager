@@ -148,7 +148,7 @@
         this._updateList({type: item.type, page: 1})
       },
       getEntryOutType() {
-        API.Store.getEntryOutType()
+        API.Store.getEntryOutType({method: 'index'})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)

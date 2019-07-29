@@ -1353,7 +1353,7 @@ export default [
       },
       // 商品订单详情
       {
-        path: 'merchant-order/merchant-order-detail/:id',
+        path: 'merchant-order/merchant-order-detail',
         name: 'merchant-order-detail',
         meta: {
           titles: ['供应链', '订单', '商户订单', '商品明细'],
