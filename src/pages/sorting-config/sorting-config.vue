@@ -330,7 +330,6 @@
       text-align center
       background: #888888
       border-radius: 10px
-      border-radius: 10px
       font-family: PingFangSC-Medium
       font-size: 16px
       color: #FFFFFF

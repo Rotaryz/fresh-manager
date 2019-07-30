@@ -70,6 +70,7 @@
     transition: background 1s
     text-align: left
     position: relative
+    user-select: none
     .circular
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.10)
       display: inline-block

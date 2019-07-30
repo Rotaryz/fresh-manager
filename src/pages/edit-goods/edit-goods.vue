@@ -351,10 +351,7 @@
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
-  const ORDERSTATUS = [
-    {text: '基础信息', status: 0},
-    {text: '销售信息', status: 1}
-  ]
+  const ORDERSTATUS = [{text: '基础信息', status: 0}, {text: '销售信息', status: 1}]
 
   export default {
     name: PAGE_NAME,
@@ -516,7 +513,10 @@
         }
       },
       getScmCategoriesData() {
-        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.isCopy ? storage.get('goods_id') : this.id}, false).then((res) => {
+        API.Product.getScmCategoryList(
+          {parent_id: -1, goods_id: this.isCopy ? storage.get('goods_id') : this.id},
+          false
+        ).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
             res.data.forEach((item) => {
@@ -528,7 +528,7 @@
                     this.secondSelect.content = twomitem.name
                     this.thirdlySelect.data = twomitem.list
                     this.thirdlySelect.data.forEach((thritem) => {
-                      if(thritem.is_selected) {
+                      if (thritem.is_selected) {
                         this.thirdlySelect.content = thritem.name
                       }
                     })
@@ -610,7 +610,10 @@
         this.msg.goods_skus[0] = this.goods_skus
         this.msg.save_type = 'base'
         if (this.id) {
-          if (this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 && this.editRurchaseUnit === this.goods_skus.purchase_unit) {
+          if (
+            this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 &&
+            this.editRurchaseUnit === this.goods_skus.purchase_unit
+          ) {
             this.isSubmit = true
             API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
               this.isSubmit = false
@@ -778,7 +781,7 @@
           return
         }
         let arr = []
-        this.searchList.forEach((item) =>{
+        this.searchList.forEach((item) => {
           if (item.supplier_name.includes(text)) {
             arr.push(item)
           }
@@ -801,7 +804,10 @@
       },
       // 获取类目
       getCategoriesData() {
-        API.Product.getCategoryList({parent_id: -1, goods_id: this.isCopy ? storage.get('goods_id') : this.id}, false).then((res) => {
+        API.Product.getCategoryList(
+          {parent_id: -1, goods_id: this.isCopy ? storage.get('goods_id') : this.id},
+          false
+        ).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.categoriesSelect.data = res.data
             res.data.forEach((item) => {

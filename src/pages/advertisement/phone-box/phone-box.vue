@@ -116,9 +116,9 @@
                       class="tab-item"
                       :class="{active: !index}"
                     >
-                      <p>{{item.tabTitle.title}}</p>
+                      <p>{{item.tabTitle ? item.tabTitle.title : ''}}</p>
                       <div class="sub">
-                        <span>{{item.tabTitle.subTitle}}</span>
+                        <span>{{item.tabTitle ? item.tabTitle.subTitle : ''}}</span>
                       </div>
                     </li>
                   </ul>
@@ -301,6 +301,11 @@
           if (item.module_name === 'activity_fixed') {
             this.flashIsClose = item.is_close
           } else if (!item.is_close) {
+            // let key = TAB_ARR_CONFIG[item.module_name] ? TAB_ARR_CONFIG[item.module_name].dataArray : ''
+            //   if (key && item.dataArray) {
+            //     item.dataArray = this[key] || []
+            //     arr.push(item)
+            //   }
             let key = TAB_ARR_CONFIG[item.module_name].dataArray
             item.dataArray = this[key] || []
             arr.push({tabTitle: TAB_ARR_CONFIG[item.module_name], data: item})
@@ -331,23 +336,23 @@
 
   // 服务说明
   .server-book-wrapper
-    display :flex
-    padding :8px 12.5px 10px
+    display: flex
+    padding: 8px 12.5px 10px
     .serve-wrapper
       font-family: $font-family-regular
       color: #54990F
-      display :flex
-      align-self :center
-      justify-content :center
+      display: flex
+      align-self: center
+      justify-content: center
       img
-        width :11px
-        height :@width
+        width: 11px
+        height: @width
       span
-        transform :scale(0.8)
+        transform: scale(0.8)
         font-size: 10px
-        line-height :11px
-        margin-left :-1px
-        white-space :nowrap
+        line-height: 11px
+        margin-left: -1px
+        white-space: nowrap
 
   // 结构布局
   .phone-box
@@ -374,7 +379,7 @@
           width: 0
   // 活动tab
   .active-wrapper
-    padding-top :10px
+    padding-top: 10px
     background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 5%)
     // tab
     .tab-wrapper
@@ -386,7 +391,7 @@
         width: 62px
         min-width: 62px
         p
-          padding-top :7px
+          padding-top: 7px
           font-family: $font-family-medium
           font-size: 12px
           color: #1D2023
@@ -405,42 +410,42 @@
           p
             color: #73C200
           .sub
-            background : #73C200
+            background: #73C200
             color: #fff
     // 各个活动
     .panel
-      position :relative
+      position: relative
       padding: 47px 9px 0
-      min-height :90px
+      min-height: 90px
       &.guess
-        padding :0 9px 0
+        padding: 0 9px 0
       .banner-img
         position absolute
-        left :0
-        top:0
-        width :100%
+        left: 0
+        top: 0
+        width: 100%
       .goods-item-wrapper
-        padding-bottom :10px
+        padding-bottom: 10px
         .goods-wrapper
-          height :102px
-          display :flex
+          height: 102px
+          display: flex
           border-radius: 3px
-          position :relative
-          align-items :center
-          padding :0 8px
-          background :#FFFFFF
+          position: relative
+          align-items: center
+          padding: 0 8px
+          background: #FFFFFF
           .right
             flex: 1
-            overflow :hidden
-            padding-left :8px
-            height :100%
-            position :relative
-            background :#FFFFFF
+            overflow: hidden
+            padding-left: 8px
+            height: 100%
+            position: relative
+            background: #FFFFFF
             .button-group
               font-family: $font-family-regular
               position absolute
-              right :0
-              bottom :5px
+              right: 0
+              bottom: 5px
               &.guess
                 .button-wrapper
                   background: #73C200
@@ -448,8 +453,8 @@
                 .button-wrapper
                   background: #FF8506
               .button-wrapper
-                height :22px
-                padding :0 13px
+                height: 22px
+                padding: 0 13px
                 background: #FF8506
                 border-radius: 22px
                 font-size: 10px
@@ -457,23 +462,23 @@
                 align-items :center
                 justify-content :center
                 color: #FFFFFF
-                transform :scale(0.9)
+                transform: scale(0.9)
               .number
-                position :relative
+                position: relative
                 top: -2px
                 font-size: 10px
                 height: 18.6px
-                transform :scale(0.7)
+                transform: scale(0.7)
                 color: #808080
-                text-align :center
+                text-align: center
             .type-icon
               position absolute
-              left :8px
-              bottom :30px
-              height :18.5px
-              line-height :8.5px
+              left: 8px
+              bottom: 30px
+              height: 18.5px
+              line-height: 8.5px
               border-radius: 12.5px
-              padding :4px 5px
+              padding: 4px 5px
               font-family: $font-family-regular
               font-size: 10px
               transform scale(0.8)
@@ -483,18 +488,18 @@
                 color: #FA7500
                 border: 1px solid #FA7500
             .title
-              width :100%
+              width: 100%
               height: 18px
               line-height: 18px
               box-sizing: border-box
-              margin-top :10px
+              margin-top: 10px
               font-family: $font-family-medium
               font-size: 12px
               color: #111111
               no-wrap()
             .sub-title
-              width :100%
-              padding-top :0px
+              width: 100%
+              padding-top: 0px
               height: 18px
               line-height: 18px
               font-family: $font-family-regular
@@ -502,77 +507,77 @@
               color: #808080
               no-wrap()
             .money-wrapper
-              display :flex
+              display: flex
               font-family: $font-family-medium
               color: #FA7500
               padding-top :24px
               .int
                 font-size: 19px
               .dot
-                position :relative
-                top:7px
-                font-size :12px
+                position: relative
+                top: 7px
+                font-size: 12px
               .unit
-                padding-left :1px
-                position :relative
-                top:6px
-                font-size :10px
-                transform :scale(0.8)
+                padding-left: 1px
+                position: relative
+                top: 6px
+                font-size: 10px
+                transform: scale(0.8)
                 font-family: $font-family-regular
               .origin
-                padding-left :2px
-                position :relative
-                top:6px
+                padding-left: 2px
+                position: relative
+                top: 6px
                 font-family: $font-family-regular
-                font-size :10px
+                font-size: 10px
                 color: #B7B7B7
-                transform :scale(0.8)
-                text-decoration :line-through
+                transform: scale(0.8)
+                text-decoration: line-through
           .left
-            width :86px
-            height :@width
-            position :relative
+            width: 86px
+            height: @width
+            position: relative
             .goods-image
               width: 100%
               height: 100%
-              object-fit :cover
-              background :#f5f5f5
-              border-radius :1px
+              object-fit: cover
+              background: #f5f5f5
+              border-radius: 1px
               &.empty
-                object-fit :contain
+                object-fit: contain
             .label
-              position :absolute
-              display :block
-              top:-1px
-              left :@top
-              width :25px
-              height :@width
+              position: absolute
+              display: block
+              top: -1px
+              left: @top
+              width: 25px
+              height: @width
 
   // 商品分类
   .goods-classify-wrapper
-    padding :0 9.4px 17.5px
-    display :flex
-    flex-direction :row
-    flex-wrap :wrap
+    padding: 0 9.4px 17.5px
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
     .classify-item
-      width :20%
-      display :flex
+      width: 20%
+      display: flex
       flex-direction column
-      align-items :center
-      overflow :hidden
+      align-items: center
+      overflow: hidden
       &.next-row
-        padding-top :9.6px
+        padding-top: 9.6px
       img
         display inline-block
-        width :39.2px
-        background :#ccc
-        height :@width
-        text-align :center
+        width: 39.2px
+        background: #ccc
+        height: @width
+        text-align: center
       p
-        width :100%
-        box-sizing :border-box
-        padding :0 1px
-        padding-top :7.9px
+        width: 100%
+        box-sizing: border-box
+        padding: 0 1px
+        padding-top: 7.9px
         font-family: $font-family-regular
         font-size: 9.41px
         color: #333333
@@ -581,69 +586,69 @@
         no-wrap()
   // 限时抢购
   .flash-wrapper
-    padding :0 9.4px
+    padding: 0 9.4px
     .goods-list-wrapper
-      height :134.8px
-      box-sizing :border-box
-      border:7px solid #FFE359
-      display :flex
-      flex-wrap :nowrap
-      overflow :hidden
+      height: 134.8px
+      box-sizing: border-box
+      border: 7px solid #FFE359
+      display: flex
+      flex-wrap: nowrap
+      overflow: hidden
       .goods-item-wrapper
-        height :100%
-        margin-left :5.5px
-        width :71px
-        position :relative
+        height: 100%
+        margin-left: 5.5px
+        width: 71px
+        position: relative
         &.empty
-          background :#f5f5f5
+          background: #f5f5f5
           .goods-image
-            object-fit :contain
+            object-fit: contain
           .empty-text
-            font-size :10px
-            text-align :center
+            font-size: 10px
+            text-align: center
         .goods-image
-          margin-top :7.8px
-          width :71px
-          height :@width
-          position :relative
+          margin-top: 7.8px
+          width: 71px
+          height: @width
+          position: relative
           .goods-img
             width :100%
             height :@width
             object-fit :cover
             border-radius: 2.35px
           .label
-            width :20px
-            height :12.2px
-            position :absolute
-            left :0
-            bottom :@left
+            width: 20px
+            height: 12.2px
+            position: absolute
+            left: 0
+            bottom: @left
         .title
-          padding-top :5px
-          width :100%
+          padding-top: 5px
+          width: 100%
           font-family: $font-family-regular
           font-size: 10.19px
           color: #111111
           transform :scale(0.9)
           no-wrap()
         .money-wrapper
-          width :100%
-          display :flex
+          width: 100%
+          display: flex
           font-family: $font-family-medium
-          color:#FA7500
-          overflow :hidden
+          color: #FA7500
+          overflow: hidden
           .m-int
             font-size: 15px
-            transform :scale(0.8)
-            position :relative
-            bottom :3px
+            transform: scale(0.8)
+            position: relative
+            bottom: 3px
           .m-dot, .m-unit
             position :relative
             font-size: 10px
             bottom :1px
           .m-dot
-            transform :scale(.9)
+            transform: scale(.9)
           .m-unit
-            transform :scale(0.8)
+            transform: scale(0.8)
           .m-origin
             font-family: $font-family-regular
             font-size: 10px
@@ -651,47 +656,47 @@
             color: #B7B7B7
             text-decoration :line-through
     .tab-wrapper
-      display :flex
-      height :35.3px
-      align-items :center
-      background :#F7F9FA
+      display: flex
+      height: 35.3px
+      align-items: center
+      background: #F7F9FA
       .logo
-        width :60px
-        height :14.8px
-        margin-right :11px
-        margin-left :7.8px
+        width: 60px
+        height: 14.8px
+        margin-right: 11px
+        margin-left: 7.8px
       .more-wrapper
         flex: 1
-        display :flex
-        height :100%
-        align-items :center
-        justify-content :flex-end
-        padding-right :9.8px
+        display: flex
+        height: 100%
+        align-items: center
+        justify-content: flex-end
+        padding-right: 9.8px
         p
           font-family: $font-family-regular
           font-size: 10.98px
           color: #111111
           transform scale(0.8)
         img
-          width :4.3px
-          height :8.2px
+          width: 4.3px
+          height: 8.2px
       .button-wrapper
         width :64.3px
         height :100%
         color: #1D2023
         font-family: $font-family-medium
-        text-align :center
+        text-align: center
         &.active
-          background :#FFE359
+          background: #FFE359
         .title
           padding-top :8px
           font-size: 12.54px
           transform scale(1)
-          line-height :0.8
+          line-height: 0.8
         .date
           font-size: 7.84px
           transform scale(0.6)
-          line-height :1
+          line-height: 1
 
   // 轮播图
   .banner-box
@@ -716,7 +721,7 @@
         border-radius: 2px
         width: 100%
         height: 100%
-        object-fit :cover
+        object-fit: cover
 
   // 选中
   .touch

@@ -181,7 +181,7 @@
               let number = 0
               let oneItem = document.querySelectorAll('.select-one-item')
               oneItem.forEach((item) => {
-                number += (item.clientWidth + 8)
+                number += item.clientWidth + 8
               })
               this.isShowOne = number
             })
@@ -217,7 +217,7 @@
         this[`isOpen${text}`] = !this[`isOpen${text}`]
       },
       // 选择一级类目
-      selectOneList(item, index){
+      selectOneList(item, index) {
         if (!item.is_selected) {
           this.oneList[this.oneIndex].is_selected = false
           this.oneList[index].is_selected = true
@@ -234,7 +234,7 @@
           let number = 0
           let oneItem = document.querySelectorAll('.select-two-item')
           oneItem.forEach((item) => {
-            number += (item.clientWidth + 8)
+            number += item.clientWidth + 8
           })
           this.isShowTwo = number
         })
@@ -244,7 +244,7 @@
         this.getReqList()
       },
       // 选择二级类目
-      selectTwoList(item, index){
+      selectTwoList(item, index) {
         if (!item.is_selected) {
           this.twoList[this.twoIndex].is_selected = false
           this.twoList[index].is_selected = true
@@ -261,7 +261,7 @@
           let number = 0
           let oneItem = document.querySelectorAll('.select-thr-item')
           oneItem.forEach((item) => {
-            number += (item.clientWidth + 8)
+            number += item.clientWidth + 8
           })
           this.isShowThr = number
         })
@@ -270,7 +270,7 @@
         this.getReqList()
       },
       // 选择三级类目
-      selectThrList(item, index){
+      selectThrList(item, index) {
         if (!item.is_selected) {
           this.thrList[this.thrIndex].is_selected = false
           this.thrList[index].is_selected = true
@@ -289,7 +289,7 @@
         } else {
           curItem = this.curItem
         }
-        if (curItem.is_selected * 1 === 1 ||  this.isSubmit) return
+        if (curItem.is_selected * 1 === 1 || this.isSubmit) return
         this.isSubmit = true
         API.Product.addScmGoods(curItem.id).then((res) => {
           this.isSubmit = false

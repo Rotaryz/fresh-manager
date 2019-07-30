@@ -63,7 +63,7 @@
     computed: {
       ...communityComputed,
       leftTabHeight() {
-        return  window.innerHeight - 150 + 'px'
+        return window.innerHeight - 150 + 'px'
       }
     },
     methods: {
