@@ -251,15 +251,6 @@
       }
     },
     watch: {
-      consumerType(now, old) {
-        if (now !== old) {
-          this.msg = {}
-          this.mobile = ''
-          this.nickName = ''
-          this.community.data = []
-          this.community.content = '选择社区'
-        }
-      },
       mobile(now, old) {
         if (now !== old) {
           this._initData()
@@ -278,7 +269,14 @@
         this.community.content = '选择社区'
       },
       _selectConsumer(item) {
-        this.consumerType = item.id
+        if (+this.consumerType !== +item.id) {
+          this.msg = {}
+          this.mobile = ''
+          this.nickName = ''
+          this.community.data = []
+          this.community.content = '选择社区'
+          this.consumerType = item.id
+        }
         if (+item.id === 2) {
           this.getCommunity()
         }
