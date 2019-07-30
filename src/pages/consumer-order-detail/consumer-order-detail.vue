@@ -549,15 +549,16 @@
           this.$toast.show(res.message)
           return
         }
-        if (+res.code === 0) {
+        if (res.data) {
+          // 库存不足时的反馈
+          this.isSubmit = false
+          this.goodsList = res.data.goods
+          this.$refs.confirm.show('可用库存不足，请重新输入下单数量')
+        } else {
           this.$toast.show('保存成功')
           setTimeout(() => {
             this._back()
           }, 1000)
-        } else {
-          // 库存不足时的反馈
-          this.goodsList = res.data
-          this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
         }
       },
       checkForm() {

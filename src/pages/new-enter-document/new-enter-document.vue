@@ -450,8 +450,10 @@
         this.$refs.modalBox.show()
       },
       confirm(id, text) {
-        this.enterDetailList[this.curIndex].warehouse_position_id = id
-        // this.enterDetailList[this.curIndex].warehouse_position = text
+        this.$set(this.goodsList[this.curIndex], 'warehouse_position_id', id)
+        this.$set(this.goodsList[this.curIndex], 'warehouse_position', text)
+        // this.goodsList[this.curIndex].warehouse_position_id = id
+        // this.goodsList[this.curIndex].warehouse_position = text
         this.$refs.modalBox.cancel()
       },
       deleteStoreHouse(item, index) {

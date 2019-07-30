@@ -131,8 +131,8 @@
       flex: '2'
     },
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
-    {tilte: '订单数', key: 'order_num', after: 'sale_unit'},
-    {tilte: '配货数', key: 'allocation_num', after: 'sale_unit'},
+    {tilte: '订单数量', key: 'order_num', after: 'sale_unit'},
+    {tilte: '建议配货数量', key: 'allocation_num', after: 'sale_unit'},
     {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
     {
       tilte: '操作',
@@ -470,7 +470,7 @@
         let data = {
           current_corp: currentId,
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
-          access_token: this.currentUser.access_token,
+          access_token: this.currentUser().access_token,
           start_time: obj.start_time,
           end_time: obj.end_time,
           keyword: obj.keyword,

@@ -298,12 +298,13 @@
         this.isSubmit = true
         API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            if (+res.code === 0) {
+            if (res.data) {
+              this.isSubmit = false
+              this.storeList = res.data.details
+              this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+            } else {
               this.$toast.show('新建出库单成功')
               this.$router.back()
-            } else {
-              this.storeList = res.data
-              this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
             }
           } else {
             this.$toast.show(res.message)
@@ -387,8 +388,6 @@
           color: $color-text-assist
         &:focus
           border-color: $color-main !important
-      .red
-        color: #F53737
   .list-item-layout
     layout(row)
     align-items: center
@@ -456,5 +455,7 @@
         margin-bottom: 12px
         height: 15px
         line-height: 15px
+  .red
+    color: #F53737
 
 </style>
