@@ -136,6 +136,7 @@
     </default-modal>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
+    <default-confirm ref="tipConfirm"></default-confirm>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveActivity">保存</div>
@@ -553,7 +554,7 @@
           // 库存不足时的反馈
           this.isSubmit = false
           this.goodsList = res.data.goods
-          this.$refs.confirm.show('可用库存不足，请重新输入下单数量')
+          this.$refs.tipConfirm.show('可用库存不足，请重新输入下单数量')
         } else {
           this.$toast.show('保存成功')
           setTimeout(() => {
