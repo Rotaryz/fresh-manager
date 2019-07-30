@@ -121,7 +121,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        let Url = process.env.VUE_APP_API + '/scm/api/backend/purchase/purchase-task-export-temp?' + search.join('&')
+        let Url = process.env.VUE_APP_SCM_API + '/scm/api/backend/purchase/purchase-task-export-temp?' + search.join('&')
         window.open(Url)
       },
       // 格式化文件
