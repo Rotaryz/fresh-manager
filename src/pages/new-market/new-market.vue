@@ -69,6 +69,43 @@
           </div>
         </div>
 
+        <!--选择用户或社区 满赠业务新增-->
+        <div v-if="true" class="edit-item  edit-list-item">
+          <div class="edit-title">
+            <span class="start">*</span>
+            <span>定向类型</span>
+          </div>
+          <div class="edit-content no-wrap">
+            <section class="gift-choose-target-wrapper">
+              <article class="g-top">
+                <span
+                  @click="chooseTarget='user'"
+                ><i
+                  class="circle"
+                  :class="{active: chooseTarget === 'user'}"
+                ></i>用户</span>
+                <span
+                  @click="chooseTarget='community'"
+                ><i
+                  class="circle"
+                  :class="{active: chooseTarget === 'community'}"
+                ></i>社区</span>
+              </article>
+              <div v-if="chooseTarget === 'community'" class="add-btn btn-main" style="margin-top: 24px" :class="{'btn-disable': disable}" @click="_showCouponModal">添加社区<span class="add-icon"></span></div>
+            </section>
+
+<!--            <input v-model="formConfig[marketIndex].text"-->
+<!--                   type="text"-->
+<!--                   readonly-->
+<!--                   :placeholder="formConfig[marketIndex].text"-->
+<!--                   class="edit-input disable-input"-->
+<!--                   maxlength="10"-->
+<!--            >-->
+<!--            <span v-if="+marketIndex === 0" class="end-text">拓展订单除外</span>-->
+<!--            <div class="input-no-change"></div>-->
+          </div>
+        </div>
+
         <!--计划时间-->
         <div class="edit-item">
           <div class="edit-title">
@@ -491,7 +528,8 @@
       placeHolder: '如：流失用户送25元优惠券，最多10个字',
       name: '全部用户',
       text: '登录小程序且授权成功的用户',
-      code: 'share_coupon'
+      code: 'share_coupon',
+      group: true
     },{
       type: '邀请有礼',
       placeHolder: '如：流失用户送25元优惠券，最多10个字',
@@ -593,7 +631,9 @@
         goodsKeyword: '',
         goodsList: [],
         goodsPageTotal: {total: 1, per_page: 10, total_page: 1},
-        editId: ''
+        editId: '',
+        // 满赠
+        chooseTarget: '',
       }
     },
     computed: {
@@ -700,8 +740,8 @@
       case 3:
         this.msg.type = 9
         this.arrowArr = new Array(this.arrowText[this.marketIndex].length).fill(1)
-        this.disable || this._getCouponList()
-        this.disable || this._getGroupList()
+        // this.disable || this._getCouponList()
+        // this.disable || this._getGroupList()
         break
       case 4:
         this.msg.type = 7
@@ -1179,6 +1219,27 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
+
+  .gift-choose-target-wrapper
+    position: relative
+    .g-top
+      display:flex
+      & > span
+        display :flex
+        align-items :center
+        margin-right :58px
+        cursor :pointer
+      & >>> .circle
+        width: 18px
+        height: @width
+        border: 1px solid #E1E1E1;
+        border-radius: 50%
+        margin-right:6px
+        transition: all 0.3s
+        display: inline-block
+        &.active
+          border: 5px solid #4DBD65;
+
   ::-webkit-input-placeholder {
     font-size: 14px
     font-family: $font-family-regular
