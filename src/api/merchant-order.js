@@ -2,7 +2,7 @@ import request from '@utils/request'
 
 export default {
   //  √ 商户订单 √
-  getMerchantOrderList(data, loading = true) {
+  getMerchantOrderList(data, loading = false) {
     let url = '/scm/api/backend/oms/orders'
     // let url = '/mock/merchantOrderList.json'
     return request.get(url, data, loading)

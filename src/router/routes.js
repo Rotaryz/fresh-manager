@@ -1324,7 +1324,7 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             if (store.getters['merchantOrder/tabIndex'] === 0) {
               store
-                .dispatch('merchantOrder/getMerchantOrderList')
+                .dispatch('merchantOrder/getMerchantOrderList', true)
                 .then((res) => {
                   if (!res) {
                     return next({name: '404'})

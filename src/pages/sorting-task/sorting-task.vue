@@ -62,7 +62,7 @@
           <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
             <!--<div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>-->
-            <div class="btn-main g-btn-item" @click="_exportByOrder">导出配货单</div>
+            <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
             <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
           </template>
           <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">

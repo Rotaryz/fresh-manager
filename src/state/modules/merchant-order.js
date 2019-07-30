@@ -71,8 +71,8 @@ export const mutations = {
 
 export const actions = {
   // 商户订单列表
-  getMerchantOrderList({state, commit, dispatch}) {
-    return API.MerchantOrder.getMerchantOrderList(state.merchant.filter, {loading: true})
+  getMerchantOrderList({state, commit, dispatch}, loading) {
+    return API.MerchantOrder.getMerchantOrderList(state.merchant.filter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false
@@ -95,8 +95,8 @@ export const actions = {
       })
   },
   // 消费者订单列表
-  getConsumerOrderList({state, commit}) {
-    return API.MerchantOrder.getConsumerOrderslist(state.merchant.filter, {loading: true})
+  getConsumerOrderList({state, commit}, loading) {
+    return API.MerchantOrder.getConsumerOrderslist(state.merchant.filter, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

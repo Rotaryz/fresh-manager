@@ -75,9 +75,9 @@
           <div class="identification-page">
             <img :src="tabStatus[1].img" class="identification-icon">
             <p class="identification-name">{{tabStatus[1].text}}</p>
-            <base-status-nav :statusList="consumerStatusTab" :value="merchantFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+            <!--<base-status-nav :statusList="consumerStatusTab" :value="merchantFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
                              @change="setValue"
-            ></base-status-nav>
+            ></base-status-nav>-->
           </div>
           <router-link tag="a" to="consumer-order-detail" append class="btn-main">补录订单</router-link>
         </div>
@@ -142,7 +142,6 @@
     {title: '商品', key: 'goods_name', flex: 1.2},
     {title: '下单数量', key: 'sale_num', flex: 0.7},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
-    {title: '状态', key: 'status_str', flex: 0.7},
     {title: '订单来源', key: 'type_str', flex: 0.7},
     {title: '操作', key: '', operation: '删除', flex: 1, class: 'operate'}
   ]
@@ -255,7 +254,7 @@
       // 获取订单列表
       _updateMerchantOrderList(params, noUpdateStatus) {
         this.SET_PARAMS(params)
-        if (!noUpdateStatus) {
+        if (!noUpdateStatus && +this.tabIndex !== 1) {
           this._getStatusData()
         }
         if (+this.tabIndex === 0) {
@@ -328,7 +327,16 @@
       },
       delConfirm() {
         API.MerchantOrder.deleteConsumerOrder({out_order_sn: this.currentItem.out_order_sn, goods_sku_code: this.currentItem.goods_sku_code})
-        this.$refs.delConfirm.hide()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$refs.delConfirm.hide()
+            this.$toast.show('删除成功')
+            this.getConsumerOrderList()
+          })
+
       }
     }
   }

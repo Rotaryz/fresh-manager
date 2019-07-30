@@ -242,27 +242,11 @@
         }
         return true
       },
-      testWechatName() {
-        if (+this.consumerType === 1) {
-          return this.msg.receiver_name
-        }
-        return true
-      },
       testCommunity() {
         return this.msg.receiver_name
       },
       testGoods() {
         return this.goodsList.length
-      },
-      testGoodsCount() {
-        let result = this.goodsList.every(item => {
-          !item.count && this.$toast.show(`请输入商品“${item.name}”下单数量`)
-          if (item.count < 1 || RATE.test(item.count)) {
-            this.toast.show(`下单数量应为大于0的整数`)
-          }
-          return item.count > 0 && RATE.test(item.count)
-        })
-        return result
       }
     },
     watch: {
@@ -309,8 +293,8 @@
           out_buyer_id: item.out_buyer_id,
           latitude: item.latitude,
           longitude: item.longitude,
-          out_order_sn: '',
-          created_at: ''
+          back_tracking_obj: this.consumerType,
+          out_order_sn: ''
         }
       },
       fixPosition() {
@@ -542,13 +526,18 @@
         let goods = this.goodsList.map(item => {
           let totalPrice = item.trade_price * item.sale_count
           total += totalPrice
-          return {
-            goods_sku_code: item.goods_sku_code,
-            sale_num: item.sale_count,
-            sale_price: item.trade_price,
-            total: totalPrice,
-            promote: 0
-          }
+          item.sale_num = item.sale_count
+          item.total = totalPrice
+          item.sale_price = item.trade_price
+          item.promote = 0
+          // return {
+          //   goods_sku_code: item.goods_sku_code,
+          //   sale_num: item.sale_count,
+          //   sale_price: item.trade_price,
+          //   total: totalPrice,
+          //   promote: 0
+          // }
+          return item
         })
         let data = Object.assign({}, this.msg, {goods, total})
         let res = null
@@ -560,10 +549,16 @@
           this.$toast.show(res.message)
           return
         }
-        this.$toast.show('保存成功')
-        setTimeout(() => {
-          this._back()
-        }, 1000)
+        if (+res.code === 0) {
+          this.$toast.show('保存成功')
+          setTimeout(() => {
+            this._back()
+          }, 1000)
+        } else {
+          // 库存不足时的反馈
+          this.goodsList = res.data
+          this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+        }
       },
       checkForm() {
         let arr = [
