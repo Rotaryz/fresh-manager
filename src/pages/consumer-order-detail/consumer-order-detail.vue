@@ -72,11 +72,11 @@
               <div class="com-list-item">{{item.usable_stock}}</div>
               <div class="com-list-item">
                 <input
-                  v-model="item.sale_count"
+                  v-model="item.sale_num"
                   :readonly="disable"
                   type="number"
                   class="com-edit com-edit-small"
-                  :class="{'red': item.error_code}"
+                  :class="{'red': item.is_error}"
                   @input="stockHandle(item)"
                 >
               </div>
@@ -352,16 +352,16 @@
           if (goodsIndex !== -1) {
             item.selected = 2
           }
-          item.sale_count = ''
+          item.sale_num = ''
           return item
         })
       },
       stockHandle(item) {
-        if (item.sale_count < 0) {
-          item.sale_count = item.sale_count * -1
+        if (item.sale_num < 0) {
+          item.sale_num = item.sale_num * -1
         }
-        if (item.sale_count > item.usable_stock) {
-          item.sale_count = item.usable_stock
+        if (item.sale_num > item.usable_stock) {
+          item.sale_num = item.usable_stock
         }
       },
       // 获取分页商品列表
@@ -525,15 +525,14 @@
         if (!checkGoods) return
         let total = 0
         let goods = this.goodsList.map(item => {
-          let totalPrice = item.trade_price * item.sale_count
+          let totalPrice = item.trade_price * item.sale_num
           total += totalPrice
-          item.sale_num = item.sale_count
           item.total = totalPrice
           item.sale_price = item.trade_price
           item.promote = 0
           // return {
           //   goods_sku_code: item.goods_sku_code,
-          //   sale_num: item.sale_count,
+          //   sale_num: item.sale_num,
           //   sale_price: item.trade_price,
           //   total: totalPrice,
           //   promote: 0
@@ -583,11 +582,11 @@
       },
       checkGoods() {
         let result = this.goodsList.every(item => {
-          !item.sale_count && this.$toast.show(`请输入“${item.name}”下单数量`)
-          if (item.sale_count < 1 || !RATE.test(item.sale_count)) {
+          !item.sale_num && this.$toast.show(`请输入“${item.name}”下单数量`)
+          if (item.sale_num < 1 || !RATE.test(item.sale_num)) {
             this.$toast.show(`下单数量应为大于0的整数`)
           }
-          return item.sale_count > 0 && RATE.test(item.sale_count)
+          return item.sale_num > 0 && RATE.test(item.sale_num)
         })
         return result
       },
