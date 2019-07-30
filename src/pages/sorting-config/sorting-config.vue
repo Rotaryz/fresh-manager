@@ -336,7 +336,7 @@
     border: 1px solid #F4F4F4
     display: flex
     &:hover
-      background: #F7FAF5
+      border: 1px solid #c1c1c1
     &:nth-child(6n)
       margin-right: 0
     .road-line
@@ -359,6 +359,7 @@
       font-size: $font-size-14
       font-family: $font-family-medium
       overflow: hidden
+      line-height: 1.2
       text-overflow: ellipsis
       white-space: nowrap
       margin-bottom: 10px
