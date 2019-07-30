@@ -66,7 +66,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="订单号、商户名称货会议名称" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
+            <base-search placeHolder="订单号、商户名称或会议名称" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
           </div>
         </div>
       </div>
