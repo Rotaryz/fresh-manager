@@ -53,11 +53,7 @@
     {text: '管理视窗', status: 1, conTitle: '管理数据'},
     {text: '拓展视窗', status: 2, conTitle: '拓展数据'}
   ]
-  const DATE_SELECTOR = [
-    {title: '日', status: 'day'},
-    {title: '周', status: 'week'},
-    {title: '月', status: 'month'}
-  ]
+  const DATE_SELECTOR = [{title: '日', status: 'day'}, {title: '周', status: 'week'}, {title: '月', status: 'month'}]
   /** chart配置，id：chart组件id，label：上面部分的数据名称，dataArr-name：图表内部、折线的label, dataArr-key：接口key，dataArr-data：接口数据
    * xAxleData：日期数组用于X轴，showSecondY：是否显示双Y轴，lineShadow：是否有区域阴影， tab：上面的tab切换，tabIndex：tab栏的索引，excel：是否有excel导出功能
    * yAxisIdx：参照哪一条y轴（有两条y轴才用设，不传默认0）, apiFun：接口方法名， tabIdx：表示在哪个tab中显示，用于有tab的图表（不传默认0）
@@ -388,7 +384,9 @@
               switch (this.requestParam.date_type) {
               case 'day':
                 if (result.data[0].year < result.data[29].year) {
-                  _date = _resData.month ? _resData.year + '-' + formatNumber(_resData.month) + '-' + formatNumber(_resData.day) : ''
+                  _date = _resData.month
+                    ? _resData.year + '-' + formatNumber(_resData.month) + '-' + formatNumber(_resData.day)
+                    : ''
                 } else {
                   _date = _resData.month ? formatNumber(_resData.month) + '/' + formatNumber(_resData.day) : ''
                 }
@@ -397,7 +395,7 @@
                 _date = _resData.week ? _resData.year.toString().slice(2) + '年第' + _resData.week + '周' : ''
                 break
               default:
-                _date = _resData.month ? _resData.year.toString().slice(2)  + '年' + _resData.month + '月' : ''
+                _date = _resData.month ? _resData.year.toString().slice(2) + '年' + _resData.month + '月' : ''
                 break
               }
               curChart.xAxleData.push(_date)
@@ -439,7 +437,7 @@
                 _date = week ? year.toString().slice(2) + '年第' + week + '周' : ''
                 break
               default:
-                _date = month ? year.toString().slice(2)  + '年' + month + '月' : ''
+                _date = month ? year.toString().slice(2) + '年' + month + '月' : ''
               }
               curChart.xAxleData.push(_date)
             }

@@ -195,11 +195,7 @@
 
   import API from '@api'
 
-  const ARR_TITLE = [
-    {title: '日', status: 'day'},
-    {title: '周', status: 'week'},
-    {title: '月', status: 'month'}
-  ]
+  const ARR_TITLE = [{title: '日', status: 'day'}, {title: '周', status: 'week'}, {title: '月', status: 'month'}]
   // 导出接口
   const EXPORT_URL = {
     sale: ['goods-structure-excel', 'sale-rank-excel'],
@@ -212,8 +208,8 @@
       sale: [
         {name: '商品结构', type: 'bar', excel: true, code: 'total'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
-        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
-        // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8}
+      // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num', limit: 8},
@@ -233,8 +229,8 @@
       sale: [
         {name: '商品结构', type: 'bar', excel: true, code: 'total'},
         {name: '销量排行', type: 'goods', excel: true, code: 'num', limit: 10},
-        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8},
-        // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
+        {name: '动销率', type: 'bar', big: true, rate: true, code: 'pin_rate', limit: 8}
+      // {name: '售罄率', type: 'bar', big: true, rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'bar', big: true, excel: true, code: 'returns_num'},
@@ -253,8 +249,8 @@
       sale: [
         {name: '商品结构', type: 'goodsDetail'},
         {name: '销量', type: 'line', code: 'num', limit: 8},
-        {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 8},
-        // {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
+        {name: '动销率', type: 'line', rate: true, code: 'pin_rate', limit: 8}
+      // {name: '售罄率', type: 'line', rate: true, code: 'out_rate', limit: 8}
       ],
       serve: [
         {name: '退货数', type: 'line', code: 'returns_num'},
@@ -352,7 +348,7 @@
     },
     created() {
       this._initSelect()
-      // this.getAllData()
+    // this.getAllData()
     },
     async mounted() {
       // 商品销售模块
@@ -394,10 +390,9 @@
           if (!this[this.clickSec + 'Data'].data || !this[this.clickSec + 'Data'].data.length) return
           // 找到分类ID 或商品ID
           if (this.leftTab === 'all') {
-            let chartCateId =  this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].id
+            let chartCateId = this[this.clickSec + 'Data'].data[index].cate || this[this.clickSec + 'Data'].data[index].id
             this.$refs.goodsTab.selectList(chartCateId)
           } else {
-
             let chartGoodsId = this[this.clickSec + 'Data'].data[index].spu
             this.$refs.goodsTab.selectList('', chartGoodsId)
           }
@@ -409,13 +404,13 @@
         if (!this.bigChartData.data || !this.bigChartData.data.length) return
         // 找到分类ID 或商品ID
         if (this.leftTab === 'all') {
-          let chartCateId =  this.bigChartData.data[index].cate
+          let chartCateId = this.bigChartData.data[index].cate
           this.$refs.goodsTab.selectList(chartCateId)
         } else {
           let chartGoodsId = this.bigChartData.data[index].spu
           this.$refs.goodsTab.selectList('', chartGoodsId)
         }
-        // this.bigDataShow = false
+      // this.bigDataShow = false
       },
       async showBigData(type, sec) {
         this.bigDataShow = true
@@ -450,9 +445,17 @@
           this.$refs.bigBar && this.$refs.bigBar.drawBar1(this.purchaseHandle(this.bigChartData))
         } else {
           if (sec === 'serve') {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.data2Handle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+            this.$refs.bigBar &&
+              this.$refs.bigBar.drawBar(
+                this.data2Handle(this.bigChartData.data, this.selectMsg[sec].code),
+                this.selectMsg[sec].rate
+              )
           } else {
-            this.$refs.bigBar && this.$refs.bigBar.drawBar(this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code), this.selectMsg[sec].rate)
+            this.$refs.bigBar &&
+              this.$refs.bigBar.drawBar(
+                this.dataHandle(this.bigChartData.data, this.selectMsg[sec].code),
+                this.selectMsg[sec].rate
+              )
           }
         }
       },
@@ -502,24 +505,24 @@
         this.leftTab = code
         if (code !== 'goods') {
           this.getGoodsList({cate: itemId})
-          // delete data.order_by
+        // delete data.order_by
         }
         this._initSelect()
         this.hideText = [true, true, true, true]
-        // let data = Object.assign({}, this.requestPurchase, this.requestPub)
-        // await this.getPurchaseData(data)
-        // if (code === 'all' || code === 'category') {
-        //   this._initDraw()
-        // } else if (code === 'goods') {
-        //   this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
-        //   this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
-        //   this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
-        // }
+      // let data = Object.assign({}, this.requestPurchase, this.requestPub)
+      // await this.getPurchaseData(data)
+      // if (code === 'all' || code === 'category') {
+      //   this._initDraw()
+      // } else if (code === 'goods') {
+      //   this.$refs.line2 && this.$refs.line2.drawLine(this.lineHandle(this.serveData.data, this.selectMsg.serve.code, this.selectMsg.serve.name))
+      //   this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, this.selectMsg.purchase.code, this.selectMsg.purchase.name))
+      //   this.$refs.line4 && this.$refs.line4.drawLine(this.lineHandle(this.supplyData.data, this.selectMsg.supply.code, this.selectMsg.supply.name))
+      // }
       },
       // 初始绘制图表
       _initDraw() {
         this.$refs.bar1 && this.$refs.bar1.drawBar2(this.saleHandle(this.saleData.data))
-        this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data,  this.selectMsg.serve.code))
+        this.$refs.bar2 && this.$refs.bar2.drawBar(this.data2Handle(this.serveData.data, this.selectMsg.serve.code))
         this.$refs.bar3 && this.$refs.bar3.drawBar1(this.purchaseHandle(this.purchaseData))
       },
       // 初始选择项
@@ -589,7 +592,8 @@
           this.$refs.bar3 && this.$refs.bar3.drawBar(this.purchaseHandle(this.purchaseData), obj.rate)
         }
         this.$refs.pie3 && this.$refs.pie3.drawPie(this.pieHandle(this.purchaseData.data))
-        this.$refs.line3 && this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
+        this.$refs.line3 &&
+          this.$refs.line3.drawLine(this.lineHandle(this.purchaseData.data, obj.code, obj.name), obj.rate)
       },
       // 切换供应链模块（模块4）
       async changeSupply(obj, index) {
@@ -622,7 +626,7 @@
         let word = JSON.parse(JSON.stringify(this['request' + this.firstUppercase(this.excelType)]))
         word.limit = 0
         let data = Object.assign({}, msg, this.requestPub, word)
-        if (this.excelType.type === 'sale' && +this.tabIndexControl['sale'] === 0){
+        if (this.excelType.type === 'sale' && +this.tabIndexControl['sale'] === 0) {
           delete data.order_by
         }
         let search = []
@@ -634,7 +638,7 @@
       },
       firstUppercase(str) {
         let first = str[0].toUpperCase()
-        return first+str.slice(1)
+        return first + str.slice(1)
       },
       showDescription(type) {
         this.$refs.description.show(type)
@@ -647,14 +651,29 @@
           return
         }
         this.getCommunityList({page: 1})
-
       },
       // 切换时间时，通过改变每个块顶部tab栏的方式，获取当前所有模块的数据，并且重绘图表
       async getAllData() {
-        this.$refs.statusTab1 && this.$refs.statusTab1.checkStatus(this.tabIndexControl['sale'], this.configObj[this.leftTab].sale[this.tabIndexControl['sale']])
-        this.$refs.statusTab2 && this.$refs.statusTab2.checkStatus(this.tabIndexControl['serve'], this.configObj[this.leftTab].serve[this.tabIndexControl['serve']])
-        this.$refs.statusTab3 && this.$refs.statusTab3.checkStatus(this.tabIndexControl['purchase'], this.configObj[this.leftTab].purchase[this.tabIndexControl['purchase']])
-        this.$refs.statusTab4 && this.$refs.statusTab4.checkStatus(this.tabIndexControl['supply'], this.configObj[this.leftTab].supply[this.tabIndexControl['supply']])
+        this.$refs.statusTab1 &&
+          this.$refs.statusTab1.checkStatus(
+            this.tabIndexControl['sale'],
+            this.configObj[this.leftTab].sale[this.tabIndexControl['sale']]
+          )
+        this.$refs.statusTab2 &&
+          this.$refs.statusTab2.checkStatus(
+            this.tabIndexControl['serve'],
+            this.configObj[this.leftTab].serve[this.tabIndexControl['serve']]
+          )
+        this.$refs.statusTab3 &&
+          this.$refs.statusTab3.checkStatus(
+            this.tabIndexControl['purchase'],
+            this.configObj[this.leftTab].purchase[this.tabIndexControl['purchase']]
+          )
+        this.$refs.statusTab4 &&
+          this.$refs.statusTab4.checkStatus(
+            this.tabIndexControl['supply'],
+            this.configObj[this.leftTab].supply[this.tabIndexControl['supply']]
+          )
       },
       saleHandle(data) {
         // if (!data || !data.length) return {xAx: [], series: []}
@@ -680,7 +699,7 @@
             type: 'o'
           }
         ]
-        let newArr = arr.some(item => {
+        let newArr = arr.some((item) => {
           return data[item.type]
         })
         if (!newArr) {
@@ -689,10 +708,10 @@
             series: []
           }
         }
-        let xAx = arr.map(item => {
+        let xAx = arr.map((item) => {
           return item.name
         })
-        let series = arr.map(item => {
+        let series = arr.map((item) => {
           return data[item.type]
         })
         return {
@@ -701,14 +720,14 @@
         }
       },
       dataHandle(data, y1) {
-        let newData = data.filter(item => {
+        let newData = data.filter((item) => {
           return item[y1] > 0
         })
         if (!data || !data.length || !newData.length) return {xAx: [], series: []}
-        let xAx = data.map(val => {
+        let xAx = data.map((val) => {
           return val.name
         })
-        let series = data.map(val => {
+        let series = data.map((val) => {
           return val[y1]
         })
         return {
@@ -718,13 +737,13 @@
       },
       data2Handle(data, y1) {
         if (!data || !data.length) return {xAx: [], series: []}
-        let newData = data.filter(item => {
+        let newData = data.filter((item) => {
           return item[y1] > 0
         })
-        let xAx = newData.map(val => {
+        let xAx = newData.map((val) => {
           return val.name
         })
-        let series = newData.map(val => {
+        let series = newData.map((val) => {
           return val[y1]
         })
         return {
@@ -744,21 +763,21 @@
             purchaseNumAll: 0
           }
         }
-        let xAx = dataArr.map(item => {
+        let xAx = dataArr.map((item) => {
           return item.name
         })
         // 毛利率
-        let series = dataArr.map(item => {
+        let series = dataArr.map((item) => {
           return item.rate
         })
         // 销售数
-        let salesNum = dataArr.map(item => {
-          let num = (item.sales_num / data.sales_num * 100).toFixed(2)
-          return Number.isFinite(Number(num))?num:'0.00'
+        let salesNum = dataArr.map((item) => {
+          let num = ((item.sales_num / data.sales_num) * 100).toFixed(2)
+          return Number.isFinite(Number(num)) ? num : '0.00'
         })
         // 采购数
-        let purchaseNum = dataArr.map(item => {
-          let num = (item.purchase_num / data.purchase_num * 100).toFixed(2)
+        let purchaseNum = dataArr.map((item) => {
+          let num = ((item.purchase_num / data.purchase_num) * 100).toFixed(2)
           return Number.isFinite(Number(num)) ? num : '0.00'
         })
         let salesNumAll = data.sales_num
@@ -774,7 +793,7 @@
       },
       pieHandle(data) {
         if (!data || !data.length) return []
-        let series = data.map(item => {
+        let series = data.map((item) => {
           return {
             name: item.name,
             value: item.sku_num
@@ -783,17 +802,18 @@
         return series
       },
       lineHandle(data, code, type) {
-        if (!data.length) return {
-          label: '',
-          data: [
-            {
-              x: [],
-              rate: []
-            }
-          ]
-        }
+        if (!data.length)
+          return {
+            label: '',
+            data: [
+              {
+                x: [],
+                rate: []
+              }
+            ]
+          }
         let label = type
-        let x = data.map(item => {
+        let x = data.map((item) => {
           switch (this.requestPub.date_type) {
           case 'day':
             if (data[0].year < data[29].year) {
@@ -804,10 +824,10 @@
           case 'week':
             return item.week ? item.year.toString().slice(2) + '年第' + item.week + '周' : ''
           default:
-            return item.month ? item.year.toString().slice(2)  + '年' + item.month + '月' : ''
+            return item.month ? item.year.toString().slice(2) + '年' + item.month + '月' : ''
           }
         })
-        let rate = data.map(item => {
+        let rate = data.map((item) => {
           return item[code]
         })
         return {

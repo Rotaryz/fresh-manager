@@ -26,6 +26,8 @@
     "new": "hygen new"
   },
   "dependencies": {
+    "browserslist": "^4.6.0",
+    "caniuse-lite": "^1.0.30000969",
     "axios": "^0.18.0",
     "china-division": "^2.2.0",
     "echarts": "^4.2.0-rc.2",

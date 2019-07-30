@@ -179,7 +179,7 @@ export default [
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
             store
-              .dispatch('advertisement/getInfoBannerList')
+              .dispatch('advertisement/getInfoBannerList', {pageName: 'index'})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -189,6 +189,108 @@ export default [
               .catch(() => {
                 return next({name: '404'})
               })
+          }
+        }
+      },
+      // 内容分类
+      {
+        path: 'content-classification',
+        name: 'content-classification',
+        component: () => lazyLoadView(import('@pages/content-classification/content-classification')),
+        meta: {
+          titles: ['商城', '内容', '内容分类'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            store
+              .dispatch('content/getContentClassList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 内容中心
+      {
+        path: 'content-center',
+        name: 'content-center',
+        component: () => lazyLoadView(import('@pages/content-center/content-center')),
+        meta: {
+          titles: ['商城', '内容', '内容中心'],
+          beforeResolve(routeTo, routeFrom, next) {
+            routeFrom.path !== '/home/my-work/article-add' && store.dispatch('content/infoCenter')
+            //  团长列表
+            store
+              .dispatch('content/getCenterList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 我的作品
+      {
+        path: 'my-work',
+        name: 'my-work',
+        component: () => lazyLoadView(import('@pages/my-work/my-work')),
+        meta: {
+          titles: ['商城', '内容', '我的作品'],
+          beforeResolve(routeTo, routeFrom, next) {
+            //  团长列表
+            !routeFrom.path.includes(routeTo.path) && store.dispatch('content/infoWork')
+            store
+              .dispatch('content/getWorkList')
+              .then((res) => {
+                if (!res) {
+                  return next({name: '404'})
+                }
+                return next()
+              })
+              .catch(() => {
+                return next({name: '404'})
+              })
+          }
+        }
+      },
+      // 创作文章
+      {
+        path: 'my-work/article-add',
+        name: 'mywork-article-add',
+        component: () => lazyLoadView(import('@pages/article-add/article-add')),
+        meta: {
+          titles: ['商城', '内容', '我的作品', '创作作品'],
+          marginBottom: 80,
+          beforeResolve(routeTo, routeFrom, next) {
+            let id = routeTo.query.id || routeTo.query.articlePid
+            // 详情数据
+            if (id) {
+              API.Content.getArticleDetail({id}, false)
+                .then((res) => {
+                  console.log(res, ERR_OK)
+                  if (res.error !== ERR_OK) {
+                    return false
+                  }
+                  next({
+                    params: res.data
+                  })
+                })
+                .catch(() => {
+                  next({name: '404'})
+                })
+            } else {
+              next()
+            }
           }
         }
       },
@@ -825,10 +927,9 @@ export default [
         component: () => lazyLoadView(import('@pages/purchase-management/purchase-management')),
         meta: {
           titles: ['商城', '采购', '采购管理'],
-          resetHooks: ['purchase/resetData'],
           beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('purchase/getPurchaseList')
+              .dispatch('purchase/getPurchaseList', {page: 1, orderSn: ''})
               .then((res) => {
                 if (!res) {
                   return next({name: '404'})
@@ -1578,8 +1679,8 @@ export default [
         component: () => lazyLoadView(import('@pages/buyer/buyer')),
         meta: {
           titles: ['供应链', '采购', '基础设置', '采购员列表'],
-          resetHooks: ['buyer/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
+            store.dispatch('buyer/infoSetKeyWord')
             store
               .dispatch('buyer/getPurchaseUser')
               .then((res) => {

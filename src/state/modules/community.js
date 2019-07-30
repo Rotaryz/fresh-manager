@@ -149,12 +149,12 @@ export const actions = {
 
 const dataHandle = (arr, data) => {
   let titleData = arr.map((item, index) => {
-    return item.map(val => {
+    return item.map((val) => {
       return data[val].total
     })
   })
-  let dataArr = arr.map(value => {
-    let valArr = value.map(item => {
+  let dataArr = arr.map((value) => {
+    let valArr = value.map((item) => {
       let x = []
       x = data[item].data.map((val) => {
         return val.at
@@ -172,7 +172,7 @@ const dataHandle = (arr, data) => {
       }
     })
     // valArr = [{x, rate}, {x, rate}]
-    let rateArr = valArr.map(item => {
+    let rateArr = valArr.map((item) => {
       return item.rate
     })
     let xAx = valArr[0].x

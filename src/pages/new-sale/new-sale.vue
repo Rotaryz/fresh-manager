@@ -263,7 +263,7 @@
       },
       testEndTimeReg() {
         // 结束时间规则判断
-        return Date.parse('' + this.msg.end_at.replace(/-/g, '/')) > Date.parse('' + this.msg.start_at.replace(/-/g, '/'))
+        return Date.parse(this.msg.end_at.replace(/-/g, '/')) > Date.parse(this.msg.start_at.replace(/-/g, '/'))
       }
     // pageConfig() {
     //   return PAGE_CONFIG[this.$route.query.activity_theme] || {}

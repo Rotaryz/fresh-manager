@@ -83,7 +83,7 @@ export const leaderMethods = {
     'setSelectContent',
     'setFirstIn'
   ]),
-  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER','SET_PAGE_TOTAL','SET_PARAMS','SET_DETAIL_PARAMS'])
+  ...mapMutations('leader', ['SET_lEADER_LIST_FILTER', 'SET_PAGE_TOTAL', 'SET_PARAMS', 'SET_DETAIL_PARAMS'])
 }
 
 // 团长邀请
@@ -197,7 +197,7 @@ export const goodsComputed = {
 }
 
 export const goodsMethods = {
-    ...mapActions('editgoods', ['getGoodsData']),
+  ...mapActions('editgoods', ['getGoodsData']),
   ...mapMutations('editgoods', ['SET_PARAMS', 'SET_TASK_DATA'])
 }
 
@@ -711,4 +711,48 @@ export const scmGoodsComputed = {
 
 export const scmGoodsMethods = {
   ...mapActions('scmGoods', ['getProductList', 'getScmStoreData', 'setKeyword', 'setPage', 'setMaterialCategory', 'setCompleteStatus', 'saveSelectDown', 'setPageSubtract', 'resetData'])
+}
+
+// 内容
+export const contentComputed = {
+  ...mapGetters('content', [
+    'centerTabIndex',
+    'contentClassList',
+    'contentClassPage',
+    'centerList',
+    'centerPage',
+    'centerKeyword',
+    'centerStatus',
+    'contentCenterPage',
+    'centerTabIndex',
+    'contentPage',
+    'centerCategoryId',
+    'centerType',
+    'workList',
+    'workPage',
+    'workType',
+    'contentWorkPage',
+    'workStatus',
+    'workTabIndex',
+    'workKeyword',
+    'workCategoryId'
+  ])
+}
+
+export const contentMethods = {
+  ...mapActions('content', [
+    'getStatusTab',
+    'setCenterIndex',
+    'infoContent',
+    'contentAddPage',
+    'setWorkIndex',
+    'infoWork',
+    'getWorkListMore',
+    'getCenterListMore',
+    'infoContent',
+    'contentAddPage',
+    'getContentClassList',
+    'getWorkList',
+    'selectWork',
+    'getCenterList'])
 }

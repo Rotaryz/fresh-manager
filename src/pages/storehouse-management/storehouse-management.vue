@@ -160,7 +160,13 @@
         secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{name: '55'}}
         store: {check: false, show: false, content: '库区名', type: 'default', data: []}, // 格式：{name: '55'}}
         secondStore: {check: false, show: false, content: '货架名', type: 'default', data: []}, // 格式：{name: '55'}}
-        saleStore: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '仓库库存', value: 0}, {name: '预售库存', value: 1}]}, // 格式：{name: '55'}}
+        saleStore: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '仓库库存', value: 0}, {name: '预售库存', value: 1}]
+        }, // 格式：{name: '55'}}
         isPresale: '',
         stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},

@@ -77,7 +77,8 @@
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
         let params = `access_token=${token.access_token}&current_corp=${currentId}&`
-        this.downUrl = process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-create-scm-template-excel?${params}`
+        this.downUrl =
+          process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-create-scm-template-excel?${params}`
         console.log(this.downUrl)
       },
       // 提交

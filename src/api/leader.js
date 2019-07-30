@@ -223,7 +223,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  submitCheck(id,data,loading = false){
+  submitCheck(id, data, loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-invite-audit/${id}`
     return request.post(url, data, loading)
   },
@@ -232,7 +232,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  leaderDistributionRankingList(data,loading = false){
+  leaderDistributionRankingList(data, loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-index`
     return request.get(url, data, loading)
   },
@@ -241,7 +241,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  leaderInviteSetting(data,loading = false){
+  leaderInviteSetting(data, loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-config`
     return request.post(url, data, loading)
   },
@@ -250,7 +250,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getSettingStatus(loading = false){
+  getSettingStatus(loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-config`
     return request.get(url, {}, loading)
   },
@@ -259,7 +259,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getAccountTimes(data,loading = false){
+  getAccountTimes(data, loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-settlement-date`
     return request.get(url, data, loading)
   },
@@ -268,7 +268,7 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getAccountData(data,loading = false){
+  getAccountData(data, loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-entry-count`
     return request.get(url, data, loading)
   },
@@ -277,12 +277,12 @@ export default {
    * @param loading
    * @returns {*}
    */
-  setAccountData(data,loading = false){
+  setAccountData(data, loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-settlement`
     return request.get(url, data, loading)
   },
-  getLogList(data,loading = false){
+  getLogList(data, loading = false) {
     let url = `/social-shopping/api/backend/shop-distribution-settlement-log-list`
     return request.get(url, data, loading)
-  },
+  }
 }

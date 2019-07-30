@@ -109,7 +109,7 @@
         accurateStart: '',
         accurateEnd: '',
         statusTab: 1,
-        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || ''],
         errorObj: {
           check: false,
           show: false,
