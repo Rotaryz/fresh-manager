@@ -128,6 +128,7 @@
           end_time: this.time[1] || '',
           keyword: this.keyword
         }
+        // // source_type=2代表全国包邮
         if (this.status === 'c_freeShipping') {
           data.source_type = 2
           delete data.source
@@ -181,7 +182,7 @@
           keyword: this.keyword
         }
         if (this.status === 'c_freeShipping') {
-          // 全国包邮不传source
+          // 全国包邮不传source，source_type=2代表全国包邮
           params.source_type = 2
           delete params.source
         }

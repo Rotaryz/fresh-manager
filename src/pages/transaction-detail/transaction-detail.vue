@@ -87,7 +87,7 @@
           date: this.settleLogsDate.join(','),
           keyword: this.settleLogsKeyword,
           status: this.settleLogsStatus,
-          source_type: this.tabStatus+1
+          source_type: this.tabStatus+1// source_type：1 自提，2 代表全国包邮
         }
         let search = []
         for (let key in data) {

@@ -149,6 +149,7 @@ export const actions = {
   },
   getSettleStatus({state, commit, dispatch}) {
     const {settleLogsDate, settleLogsKeyword, tabStatus} = state
+    // source_type：1 自提，2 代表全国包邮
     let data = {
       date: settleLogsDate.join(','),
       keyword: settleLogsKeyword,
@@ -179,6 +180,7 @@ export const actions = {
   },
   getSettleLogs({state, commit}) {
     const {settleLogsPage, settleLogsDate, settleLogsStatus, settleLogsKeyword, tabStatus} = state
+    // source_type：1 自提，2 代表全国包邮
     let data = {
       date: settleLogsDate.join(','),
       keyword: settleLogsKeyword,

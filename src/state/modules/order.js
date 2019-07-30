@@ -115,7 +115,7 @@ export const actions = {
       source: status
     }
     if (status==='c_freeShipping') {
-      // 全国包邮不传source
+      // 全国包邮不传source，source_type=2代表全国包邮
       data.source_type = 2
       delete data.source
     }

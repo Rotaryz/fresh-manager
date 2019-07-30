@@ -134,6 +134,7 @@
       },
       _settlementType(item) {
         let params = {page: 1, type: item.status}
+        // source_type=2代表全国包邮
         params.source_type = item.name === '佣金收益-全国包邮' ? 2 : ''
         this._updateList(params)
       },
