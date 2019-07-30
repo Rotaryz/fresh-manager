@@ -19,6 +19,8 @@
           :comType="cmsType"
           :guessList="guessList"
           :groupList="groupList"
+          :freeShippingList="freeShippingList"
+          :activityList="activityList"
           @setType="handleChangeType"
         ></phone-box>
         <!--广告-->
@@ -270,15 +272,13 @@
         cateGoods: [],
         currentModule: {},
         activityList: [], // 活动列表
-        guessList: [],
-        groupList: [],
         articleList: [],
         contentType: 'article',
         classifyList: [],
         articleId: 0,
         articleCateId: 0,
         listData: [],
-        classList: []
+        classList: [],
         newClientList: [], // 新人特惠列表,用于phone-box组件
         todayHotList: [], // 今日爆品,用于phone-box组件
         freeShippingList: [], // 全国包邮,用于phone-box组件

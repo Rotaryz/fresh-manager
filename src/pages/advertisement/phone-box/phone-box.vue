@@ -301,14 +301,11 @@
           if (item.module_name === 'activity_fixed') {
             this.flashIsClose = item.is_close
           } else if (!item.is_close) {
-            // let key = TAB_ARR_CONFIG[item.module_name] ? TAB_ARR_CONFIG[item.module_name].dataArray : ''
-            //   if (key && item.dataArray) {
-            //     item.dataArray = this[key] || []
-            //     arr.push(item)
-            //   }
-            let key = TAB_ARR_CONFIG[item.module_name].dataArray
-            item.dataArray = this[key] || []
-            arr.push({tabTitle: TAB_ARR_CONFIG[item.module_name], data: item})
+            const tabConfig = TAB_ARR_CONFIG[item.module_name] || false
+            if (tabConfig) {
+              item.dataArray = this[tabConfig.dataArray] || []
+              arr.push({tabTitle: tabConfig, data: item})
+            }
           }
         })
         arr.push({tabTitle: TAB_ARR_CONFIG['guess']})// push猜你喜欢
