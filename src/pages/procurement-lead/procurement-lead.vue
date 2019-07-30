@@ -7,7 +7,7 @@
           <p class="identification-name">采购任务导入</p>
         </div>
         <div class="function-btn">
-          <div class="btn-main">
+          <div class="btn-main" @click="exportModel">
             模板导出
           </div>
           <div class="btn-main g-btn-item">
@@ -109,6 +109,20 @@
         }
         this.blankList = res.data
         res.data.error_type && this.$toast.show(res.data.error_msg)
+      },
+      exportModel() {
+        let token = this.$storage.get('auth.currentUser', '')
+        let data = {
+          current_corp: this.getCurrentId(),
+          // current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token,
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        let Url = process.env.VUE_APP_API + '/scm/api/backend/purchase/purchase-task-export-temp?' + search.join('&')
+        window.open(Url)
       },
       // 格式化文件
       _infoFile(file) {
