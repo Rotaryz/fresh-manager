@@ -67,5 +67,15 @@ export default {
   getCommunity(params, loading = false) {
     let url = '/scm/api/backend/oms/customer-buyer-list'
     return request.get(url, params, loading)
+  },
+  /**
+   * 补录订单获取商品列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsList(data, loading = false) {
+    let url = 'scm/api/backend/goods/goods'
+    return request.get(url, data, loading)
   }
 }

@@ -319,7 +319,7 @@
       // 选择商品
       async _getGoodsList() {
         // if (!this.id) return
-        let res = await API.Sale.getGoodsList({
+        let res = await API.MerchantOrder.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
