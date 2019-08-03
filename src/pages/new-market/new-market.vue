@@ -70,39 +70,41 @@
         </div>
 
         <!--选择用户或社区 满赠业务新增-->
-        <div v-if="true" class="edit-item  edit-list-item">
+        <div v-if="marketIndex === 3" class="edit-item  edit-list-item">
           <div class="edit-title">
             <span class="start">*</span>
             <span>定向类型</span>
           </div>
-          <div class="edit-content no-wrap">
+          <div class="edit-content no-wrap" style="flex:1">
             <section class="gift-choose-target-wrapper">
               <article class="g-top">
                 <span
-                  @click="chooseTarget='user'"
+                  @click="flagTargetHandle('chooseTarget', 'user')"
                 ><i
                   class="circle"
                   :class="{active: chooseTarget === 'user'}"
-                ></i>用户</span>
+                ></i>全部用户</span>
                 <span
-                  @click="chooseTarget='community'"
+                  @click="flagTargetHandle('chooseTarget', 'community')"
                 ><i
                   class="circle"
                   :class="{active: chooseTarget === 'community'}"
                 ></i>社区</span>
               </article>
-              <div v-if="chooseTarget === 'community'" class="add-btn btn-main" style="margin-top: 24px" :class="{'btn-disable': disable}" @click="_showCouponModal">添加社区<span class="add-icon"></span></div>
+              <div v-if="chooseTarget === 'community'" class="add-btn btn-main" style="margin-top: 24px" :class="{'btn-disable': disable}" @click="_showGroupModal">添加社区<span class="add-icon"></span></div>
+              <article v-if="chooseTarget === 'community' && selectGroupList.length" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': selectGroupList.length === 0}">
+                  <div v-for="(item, index) in groupTitleGift" :key="index" class="list-title-item gift" :style="{flex: item.flex}">{{item.name}}</div>
+                </div>
+                <div>
+                  <div v-for="(item, index) in selectGroupList" :key="index" class="list">
+                    <div v-for="(val, ind) in groupTitleGift" :key="ind" class="list-item gift" :style="{flex: val.flex}">
+                      <p class="main">{{item[val.value]}}</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
             </section>
-
-<!--            <input v-model="formConfig[marketIndex].text"-->
-<!--                   type="text"-->
-<!--                   readonly-->
-<!--                   :placeholder="formConfig[marketIndex].text"-->
-<!--                   class="edit-input disable-input"-->
-<!--                   maxlength="10"-->
-<!--            >-->
-<!--            <span v-if="+marketIndex === 0" class="end-text">拓展订单除外</span>-->
-<!--            <div class="input-no-change"></div>-->
           </div>
         </div>
 
@@ -137,6 +139,76 @@
             <div v-if="disable" :class="{'time-no-change':disable}"></div>
           </div>
         </div>
+
+
+        <!--选择优惠券或兑换券 满赠业务 -->
+        <div v-if="marketIndex === 3" class="edit-item  edit-list-item">
+          <div class="edit-title">
+            <span class="start">*</span>
+            <span>卡券类型</span>
+          </div>
+          <div class="edit-content no-wrap" style="flex:1">
+            <section class="gift-choose-target-wrapper">
+              <article class="g-top">
+                <span
+                  @click="flagTargetHandle('chooseAward', 'coupon')"
+                ><i
+                  class="circle"
+                  :class="{active: chooseAward === 'coupon'}"
+                ></i>优惠券</span>
+                <span
+                  @click="flagTargetHandle('chooseAward', 'certificate')"
+                ><i
+                  class="circle"
+                  :class="{active: chooseAward === 'certificate'}"
+                ></i>兑换券</span>
+              </article>
+              <div v-show="chooseAward === 'coupon'" class="add-btn btn-main" style="margin-top: 24px" :class="{'btn-disable': disable}" @click="_showCouponModal">添加<span class="add-icon"></span></div>
+              <div v-show="chooseAward === 'certificate'" class="add-btn btn-main" style="margin-top: 24px" :class="{'btn-disable': disable}" @click="showMultipleChoice">添加<span class="add-icon"></span></div>
+              <article v-if="selectCouponList.length && chooseAward === 'coupon'" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+                  <div v-for="(item, index) in selectCouponTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
+                </div>
+                <section>
+                  <div v-for="(item, index) in selectCouponList" :key="index" class="list">
+                    <div v-for="(val, ind) in selectCouponTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
+                      <div v-if="val.value === 'time'" class="main">
+                        <p v-if="+item.is_day_limited !== 1" style="text-overflow: ellipsis; overflow: hidden;">{{item.start_at}}</p>
+                        <p v-if="+item.is_day_limited !== 1" style="text-overflow: ellipsis; overflow: hidden;">{{item.end_at}}</p>
+                        <span v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</span>
+                      </div>
+                      <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('coupon', index, item)">删除</p>
+                      <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                      <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? '满'+Number(item[val.value])+'可用' : '无门槛'}}</p>
+                      <p v-else class="main">{{item[val.value]}}</p>
+                    </div>
+                  </div>
+                </section>
+              </article>
+              <article v-if="selectCertificateList.length && chooseAward === 'certificate'" class="edit-list-box">
+                <div class="list-title" :class="{'no-line': selectCouponList.length === 0}">
+                  <div v-for="(item, index) in selectCertificateTitle" :key="index" class="list-title-item" :style="{flex: item.flex}">{{item.name}}</div>
+                </div>
+                <section v-if="chooseAward === 'certificate'">
+                  <div v-for="(item, index) in selectCertificateList" :key="index" class="list">
+                    <div v-for="(val, ind) in selectCertificateTitle" :key="ind" class="list-item" :style="{flex: val.flex}">
+                      <div v-if="val.value === 'time'" class="main">
+                        <p v-if="+item.is_day_limited !== 1" style="text-overflow: ellipsis; overflow: hidden;">{{item.start_at}}</p>
+                        <p v-if="+item.is_day_limited !== 1" style="text-overflow: ellipsis; overflow: hidden;">{{item.end_at}}</p>
+                        <span v-if="+item.is_day_limited === 1">领取后{{item.limit_days}}天内有效</span>
+                      </div>
+                      <p v-else-if="val.value === ''" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('certificate', index, item)">删除</p>
+                      <p v-else-if="val.value === 'denomination'">{{item[val.value]}}{{+item.preferential_type === 1 ? '折' : '元'}}</p>
+                      <p v-else-if="val.value === 'condition'">{{item[val.value] > 0 ? '满'+Number(item[val.value])+'可用' : '无门槛'}}</p>
+                      <p v-else class="main">{{item[val.value]}}</p>
+                    </div>
+                  </div>
+                </section>
+              </article>
+            </section>
+          </div>
+        </div>
+
 
         <!--选择优惠券-->
         <div v-if="showAdd" class="edit-item  edit-list-item">
@@ -449,6 +521,12 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div :class="{'btn-disable': type}" class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
+    <multiple-choice ref="multipleChoice"
+                     @addPage="addPageHandle"
+                     @search="searchHandle"
+                     @hide="hideHandle"
+                     @confirm="confirmHandle"
+    ></multiple-choice>
   </div>
 </template>
 
@@ -460,6 +538,7 @@
   import {DatePicker} from 'element-ui'
   import API from '@api'
   import _ from 'lodash'
+  import MultipleChoice from './multiple-choice/multiple-choice'
 
   const PAGE_NAME = 'NEW_MARKET'
   const TITLE = '新建查看营销'
@@ -571,7 +650,8 @@
       DefaultModal,
       DefaultConfirm,
       DatePicker,
-      Swiper
+      Swiper,
+      MultipleChoice
     },
     data() {
       return {
@@ -580,6 +660,10 @@
         groupTitle: GROUP_TITLE, // 团长弹窗title
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
         selectGroupTitle: SELECT_GROUP_TITLE, // 已选团长title
+        groupTitleGift: [ // 满赠团长列表
+          {name: '社区名称', flex: 1.4, value: 'social_name'},
+          {name: '团长名称', flex: 1, value: 'name'},
+        ],
         formConfig: FORM_CONFIG,
         selectGroupList: [], // 已选团长列表
         selectCouponList: [], // 已选优惠券列表
@@ -633,13 +717,24 @@
         goodsPageTotal: {total: 1, per_page: 10, total_page: 1},
         editId: '',
         // 满赠
-        chooseTarget: '',
+        chooseTarget: 'user', // 选定向类型
+        chooseAward: 'coupon', // 选择卡券类型
+        selectCertificateList: [], // 选择兑换券列表
+        selectCertificateTitle: [ // 选择兑换券title
+          {name: '兑换券名称', flex: 1.7, value: 'coupon_name'},
+          {name: '类型', flex: 0.7, value: 'preferential_str'},
+          {name: '使用门槛', flex: 1.2, value: 'condition'},
+          {name: '面值', flex: 0.7, value: 'denomination'},
+          {name: '库存', flex: 0.7, value: 'usable_stock'},
+          {name: '有效期', flex: 2, value: 'time'},
+          {name: '操作', flex: 0.7, value: ''}
+        ]
       }
     },
     computed: {
       ...marketComputed,
       showAdd() {
-        let arr = [0, 1, 2, 3, 5]
+        let arr = [0, 1, 2, 5]
         return arr.includes(this.marketIndex)
       },
       testName() {
@@ -664,7 +759,7 @@
         return true
       },
       testCouponList() {
-        if (this.marketIndex === 4) {
+        if (this.marketIndex === 4 || this.marketIndex === 3) {
           return true
         }
         let length = this.selectCouponList.length
@@ -674,6 +769,7 @@
         return +this.marketIndex === 5 ? this.selectGroupList.length : true
       },
       testGroupCount() {
+        if (this.marketIndex === 3) return true
         let result = this.selectGroupList.every((item) => {
           return (item.number) > 0 && COUNTREG.test(item.number)
         })
@@ -707,6 +803,21 @@
         }
         let index = this.invitedArr.findIndex((item) => !item.id)
         return index === -1
+      },
+      testTargetType() {
+        if (this.marketIndex === 3) {
+          return this.chooseTarget === 'user' || this.selectGroupList.length
+        } else {
+          return true
+        }
+      },
+      testCardType() {
+        if (this.marketIndex === 3) {
+          return  (this.chooseAward === 'coupon' && this.selectCouponList.length)
+            || (this.chooseAward === 'certificate' && this.selectCertificateList.length)
+        } else {
+          return true
+        }
       }
     },
     watch: {},
@@ -760,6 +871,89 @@
     },
     methods: {
       ...marketMethods,
+      // todo 满赠待优化 --- start
+      flagTargetHandle(key, value) {
+        this[key] = value
+      },
+      confirmHandle(data = []) {
+        this.selectCertificateList = this.selectCertificateList.concat(data)
+      },
+      hideHandle() {
+        this.keyword = ''
+        this.page = 1
+      },
+      async searchHandle(keyword) {
+        this.keyword = keyword
+        this.page = 1
+        try {
+          let res = await this._getList()
+          this.$refs.multipleChoice && this.$refs.multipleChoice.show({
+            dataArray: res.data,
+            pageDetail: {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+          })
+        } catch (e) {}
+      },
+      async addPageHandle(page) {
+        this.page = page
+        try {
+          let res = await this._getList()
+          this.$refs.multipleChoice && this.$refs.multipleChoice.show({
+            dataArray: res.data,
+            pageDetail: {
+              total: res.meta.total,
+              per_page: res.meta.per_page,
+              total_page: res.meta.last_page
+            }
+          })
+        } catch (e) {}
+      },
+      async _getList() {
+        let data = {
+          coupon_name: this.keyword,
+          page: this.page,
+          limit: 6,
+          status: 1,
+          has_stock: 1,
+          tag_type: 0
+        }
+        let res = {}
+        try {
+          res = await API.Coupon.getCouponList(data, false)
+        } catch (e) {
+        }
+        return res
+      },
+      async showMultipleChoice() {
+        let res
+        try {
+          res = await this._getList()
+        } catch (e) {}
+        const config = {
+          choiceTitle: '选择兑换券',
+          searchPlaceHolder: '请输入兑换券名称',
+          tabTitle: [
+            {name: '选择', flex: 0.4, value: ''},
+            {name: '兑换券名称', flex: 1.8, value: 'coupon_name'},
+            {name: '类型', flex: 1, value: 'preferential_str'},
+            {name: '面值', flex: 1, value: 'denomination'},
+            {name: '剩余数量', flex: 1, value: 'usable_stock'},
+            {name: '有效期', flex: 1, value: 'time'}
+          ],
+          dataArray: res.data,
+          originArray: this.selectCertificateList,
+          pageDetail: {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+        }
+        this.$refs.multipleChoice && this.$refs.multipleChoice.show(config)
+      },
+      // todo 满赠待优化 --- end
       _cancelGoodsModal() {
         this.$refs.goodsModal.hideModal()
       },
@@ -802,13 +996,28 @@
         if (this.disable && not) {
           return
         }
-        this.$refs.confirm.show(`确定删除此${type === 'coupon' ? '优惠券' : '团长'}吗？`)
+        let text = '团长'
+        switch (type) {
+        case 'coupon':
+          text = '优惠券'
+          break
+        case 'certificate':
+          text = '兑换券'
+          break
+        default:
+          break
+        }
+        this.$refs.confirm.show(`确定删除此${text}吗？`)
         this.confirmType = type
         this.willDelItem = index
         this.currentItem = item
       },
       // 确定删除
       _delItem() {
+        if (this.confirmType === 'certificate') {
+          this.selectCertificateList.splice(this.willDelItem, 1)
+          return
+        }
         if (this.confirmType === 'coupon') {
           this.selectCouponList.splice(this.willDelItem, 1)
           this.groupSelectItem.splice(this.willDelItem, 1)
@@ -896,6 +1105,13 @@
       },
       // 弹窗优惠券
       _showCouponModal(index) {
+        // // 满赠业务
+        // if (this.chooseAward === 'certificate') {
+        //   // 兑换券
+        //   this._getGoodsCouponList()
+        //   this.$refs.goodsModal.showModal()
+        //   return
+        // }
         this.invitedIndex = typeof (index) === 'number' ? index : null
         if (this.disable) return
         this.couponCheckItem = {}
@@ -1076,6 +1292,18 @@
         this.page = page
         await this._getCouponList()
       },
+      // 满赠保存 todo
+      _submitGift() {
+        // let data = {
+        //   type: 9,
+        //   config_json: {},
+        //   shop_coupons: [],
+        //   title: '',
+        //   start_at: '',
+        //   end_at: ''
+        // }
+        console.log(this.msg)
+      },
       // 保存优惠券数据
       async _saveActivity() {
         if (this.type || this.isSubmit) return
@@ -1088,6 +1316,9 @@
           return {coupon_id: item.id}
         })
         switch (+this.marketIndex) {
+        case 3:
+          this._submitGift()
+          return
         case 4:
           // 邀请有礼单独处理
           delete this.msg.shop_coupons
@@ -1162,9 +1393,11 @@
       checkForm() {
         let arr = [
           {value: this.testName, txt: '请输入营销名称'},
+          {value: this.testTargetType, txt: '请选择定向类型'},
           {value: this.testNewStartTime, txt: '请选择开始时间'},
           {value: this.testNewEndTime, txt: '请选择结束时间'},
           {value: this.testNewEndTimeReg, txt: '结束时间必须大于开始时间'},
+          {value: this.testCardType, txt: '请选择卡券'},
           {value: this.testCouponList, txt: '请选择优惠券'},
           {value: this.testGroupList, txt: '请选择团长'},
           {value: this.testGroupCount, txt: '请输入团长优惠券发放数量'},
@@ -1220,8 +1453,13 @@
   @import "~@design"
   @import "~@style/detail"
 
+  .list-title-item.gift,.list-item.gift
+    &:last-child
+      max-width : none !important
+  // 满赠-选择社区模板
   .gift-choose-target-wrapper
     position: relative
+    width :100%
     .g-top
       display:flex
       & > span
