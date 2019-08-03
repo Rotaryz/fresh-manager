@@ -118,6 +118,28 @@ export const actions = {
         app.$loading.hide()
       })
   },
+  getSuggestList({state, commit, dispatch}, {supplierId, keyword, loading = true}) {
+    return API.Supply.getSuggestList({supplier_id: supplierId, keyword}, loading)
+      .then((res) => {
+        if (res.error !== app.$ERR_OK) {
+          return false
+        }
+
+        let arr = res.data.map((item) => {
+          item.select = false
+          return item
+        })
+        commit('SET_PURCHASE_TASK_LIST', arr)
+        commit('SET_SELECT', false)
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+      .finally(() => {
+        app.$loading.hide()
+      })
+  },
   selectPurchase({state, commit, dispatch}, data) {
     if (data.status * 1 !== 1 && data.status * 1 !== 2) return
     let arr = JSON.parse(JSON.stringify(state.purchaseTaskList))

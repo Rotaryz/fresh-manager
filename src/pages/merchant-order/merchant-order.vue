@@ -204,7 +204,7 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '正常', status: '1'}, {name: '异常', status: '2'}]},
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}]},
         dispatchSelect: [
           {status_str: '全部', value: '', statistic: 0},
           {status_str: '待调度', value: 0, statistic: 0},
@@ -243,13 +243,13 @@
           limit: 10,
           start_time: '',
           end_time: '',
-          type: '',
+          exception_status: '',
           status: 0,
           keyword: ''
         })
       },
       _selectUnusual(item) {
-        this._updateMerchantOrderList({type: item.status})
+        this._updateMerchantOrderList({exception_status: item.status})
       },
       // 获取订单列表
       _updateMerchantOrderList(params, noUpdateStatus) {

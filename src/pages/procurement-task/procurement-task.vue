@@ -813,12 +813,12 @@
         this.showIndex = false
       },
       async _lookSuggest() {
-        let supplyRes = await API.Supply.autoPurchaseTask()
-        this.$loading.hide()
-        if (supplyRes.error !== this.$ERR_OK) {
-          this.$toast.show(supplyRes.message)
-          return
-        }
+        // let supplyRes = await API.Supply.autoPurchaseTask()
+        // this.$loading.hide()
+        // if (supplyRes.error !== this.$ERR_OK) {
+        //   this.$toast.show(supplyRes.message)
+        //   return
+        // }
         this.$router.push('/home/procurement-task/procurement-suggest')
       }
     }

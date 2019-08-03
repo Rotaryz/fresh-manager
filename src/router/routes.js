@@ -1648,15 +1648,10 @@ export default [
           titles: ['供应链', '采购', '采购任务', '预采建议单'],
           async beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('proTask/getPurchaseTaskList', {
-                time: 'today',
-                startTime: '',
-                endTime: '',
+              .dispatch('proTask/getSuggestList', {
+               supplierId: '',
                 keyword: '',
                 page: 1,
-                status: '',
-                supplyId: '',
-                isBlocked: 1,
                 loading: true
               })
               .then((res) => {

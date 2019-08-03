@@ -26,7 +26,8 @@ export const state = {
       start_time: '',
       end_time: '',
       status: 0,
-      keyword: ''
+      keyword: '',
+      exception_status: ''
     }
   },
   tabIndex: 0

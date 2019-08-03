@@ -42,6 +42,16 @@ export default {
     return request.get(url, data, loading)
   },
   /**
+   * 预采购建议单列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getSuggestList(data, loading = true) {
+    let url = `/scm/api/backend/purchase/purchase-plan-task`
+    return request.get(url, data, loading)
+  },
+  /**
    * 发布采购任务
    * @param data
    * @param loading

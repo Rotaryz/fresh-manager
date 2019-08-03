@@ -110,5 +110,10 @@ export default {
   exportAllocationList(paramsStr) {
     let url = '/scm/api/backend/sorting/allocation-position-export'
     window.open(url + paramsStr, '_parent')
-  }
+  },
+  // 订单分拣导出配货单
+  async exportInvoiceOrder(paramsStr) {
+    let url = '/scm/api/backend/delivery/delivery-exports'
+    return window.open(url + paramsStr, '_parent')
+  },
 }

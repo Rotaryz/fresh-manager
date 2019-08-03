@@ -108,7 +108,7 @@
           </div>
           <div class="context-item">
             <span class="label">总库存</span>
-            <span class="context-value"><span class="black-text">{{currentItem.usable_stock}} {{currentItem.unit}}</span><span class="text">账面库存数</span></span>
+            <span class="context-value"><span class="black-text">{{currentItem.total_stock}} {{currentItem.unit}}</span><span class="text">账面库存数</span></span>
 
           </div>
           <div class="context-item">

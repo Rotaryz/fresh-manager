@@ -62,7 +62,7 @@
           <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
             <!--<div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>-->
-            <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
+            <div class="btn-main g-btn-item" @click="_exportInvoiceOrder">导出配货单</div>
             <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
           </template>
           <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
@@ -497,7 +497,14 @@
       _exportPickingOrder() {
         API.Sorting.exportPickingOrder(this.getUrl())
       },
-      // 导出配货单
+      // 按订单分拣导出配货单
+      async _exportInvoiceOrder() {
+        await API.Sorting.exportInvoiceOrder(this.getUrl())
+        setTimeout(() => {
+          this._updateData({page: 1})
+        }, 500)
+      },
+      // 按商品分拣导出配货单
       async _exportDeliveryOrder() {
         await API.Sorting.exportAllocationOrder(this.getUrl())
         setTimeout(() => {

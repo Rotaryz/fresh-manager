@@ -391,7 +391,8 @@ export const proTaskMethods = mapActions('proTask', [
   'setTaskList',
   'setGoBackNumber',
   'setGoBackNumberSub',
-  'infoTaskTime'
+  'infoTaskTime',
+  'getSuggestList'
 ])
 
 // 调度任务
