@@ -79,12 +79,14 @@
             <section class="gift-choose-target-wrapper">
               <article class="g-top">
                 <span
+                  :class="{'radio-disable': disable}"
                   @click="flagTargetHandle('chooseTarget', 'user')"
                 ><i
                   class="circle"
                   :class="{active: chooseTarget === 'user'}"
                 ></i>全部用户</span>
                 <span
+                  :class="{'radio-disable': disable}"
                   @click="flagTargetHandle('chooseTarget', 'community')"
                 ><i
                   class="circle"
@@ -151,12 +153,14 @@
             <section class="gift-choose-target-wrapper">
               <article class="g-top">
                 <span
+                  :class="{'radio-disable': disable}"
                   @click="flagTargetHandle('chooseAward', 'coupon')"
                 ><i
-                  class="circle"
                   :class="{active: chooseAward === 'coupon'}"
+                  class="circle"
                 ></i>优惠券</span>
                 <span
+                  :class="{'radio-disable': disable}"
                   @click="flagTargetHandle('chooseAward', 'certificate')"
                 ><i
                   class="circle"
@@ -873,6 +877,7 @@
       ...marketMethods,
       // todo 满赠待优化 --- start
       flagTargetHandle(key, value) {
+        if (this.disable) return
         this[key] = value
       },
       confirmHandle(data = []) {
@@ -1318,7 +1323,7 @@
         switch (+this.marketIndex) {
         case 3:
           this._submitGift()
-          return
+          return // todo
         case 4:
           // 邀请有礼单独处理
           delete this.msg.shop_coupons
@@ -1383,7 +1388,6 @@
           this.isSubmit = false
           return
         }
-
         this.$toast.show('保存成功')
         setTimeout(() => {
           this._back()
@@ -1467,6 +1471,8 @@
         align-items :center
         margin-right :58px
         cursor :pointer
+        &.radio-disable
+          cursor: default
       & >>> .circle
         width: 18px
         height: @width
