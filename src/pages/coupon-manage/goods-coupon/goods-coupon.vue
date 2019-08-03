@@ -24,12 +24,14 @@
           <div v-if="couponList.length">
             <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
               <div class="list-item">{{item.coupon_name}}</div>
+              <div class="list-item">{{item.coupon_name}}类型</div>
               <div class="list-item">{{item.denomination}}</div>
+              <div class="list-item">{{item.denomination}}状态</div>
+              <div class="list-item">{{item.created_at}}</div>
               <div class="list-item list-double-row">
                 <p class="item-dark">{{item.start_at}}</p>
                 <p class="item-dark">{{item.end_at}}</p>
               </div>
-              <div class="list-item">{{item.created_at}}</div>
               <div class="list-item">{{item.total_stock}}</div>
               <div class="list-item">{{item.usable_stock}}</div>
               <div class="list-item">{{item.customer_coupon_count}}</div>
@@ -59,7 +61,19 @@
   import API from '@api'
 
   const PAGE_NAME = 'GOODS-COUPON'
-  const COUPON_TITLE = ['兑换券名称', '面值', '有效期', '创建时间', '发放总数', '剩余数量', '已领取数', '已使用数', '操作']
+  const COUPON_TITLE = [
+    '兑换券名称',
+    '类型todo',
+    '面值',
+    '状态todo',
+    '创建时间',
+    '有效时间',
+    '发放总数',
+    '剩余数量',
+    '已领取数',
+    '已使用数',
+    '操作'
+  ]
   export default {
     name: PAGE_NAME,
     components: {

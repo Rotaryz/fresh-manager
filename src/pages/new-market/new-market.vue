@@ -892,7 +892,7 @@
         this.page = 1
         try {
           let res = await this._getList()
-          this.$refs.multipleChoice && this.$refs.multipleChoice.show({
+          this.$refs.multipleChoice && this.$refs.multipleChoice.updateData({
             dataArray: res.data,
             pageDetail: {
               total: res.meta.total,
@@ -906,7 +906,7 @@
         this.page = page
         try {
           let res = await this._getList()
-          this.$refs.multipleChoice && this.$refs.multipleChoice.show({
+          this.$refs.multipleChoice && this.$refs.multipleChoice.updateData({
             dataArray: res.data,
             pageDetail: {
               total: res.meta.total,
