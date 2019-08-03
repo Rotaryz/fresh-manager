@@ -7,6 +7,10 @@
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="[requestData.created_start_at, requestData.created_end_at]" @getTime="changeTime"></base-date-select>
         </div>
+        <span class="down-tip">搜索</span>
+        <div class="down-item">
+          <base-search ref="search" :infoText="keyword" placeHolder="请输入优惠券名称" @search="searchHandle"></base-search>
+        </div>
       </div>
 
       <!--优惠券列表-->
@@ -204,7 +208,8 @@
             value: 1,
             name: '已使用'
           }
-        ]
+        ],
+        keyword: '' // 关键字
       }
     },
     computed: {
@@ -215,6 +220,12 @@
     },
     methods: {
       ...couponMethods,
+      searchHandle(keyword) {
+        // this.keyword = keyword
+        this.setRequestData({keyword, page: 1})
+        this.getCouponStatus()
+        this.$refs.pagination.beginPage()
+      },
       changeTab(item, index) {
         this.setInfoIndex(index)
         this.getCouponList()
