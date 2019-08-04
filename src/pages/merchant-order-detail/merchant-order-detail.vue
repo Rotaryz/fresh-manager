@@ -21,7 +21,7 @@
           <div v-for="(row, key) in merchantDetail.details" :key="key" class="list-content list-box">
             <div v-for="item in commodities" :key="item.title" :style="{flex: item.flex}" :class="['list-item',item.class]">
               <template v-if="item.key" name="name">
-                <div v-if="+merchantDetail.is_line === 0" class="line-empty">
+                <div v-if="+merchantDetail.is_line === 1" class="line-empty">
                 </div>
                 <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
                   {{row[item.key]}}
