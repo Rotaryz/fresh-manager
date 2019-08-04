@@ -69,7 +69,7 @@ export default {
   },
   // √ 导出消费者清单
   exportCustomerOrder(paramsStr) {
-    let url = '/scm/api/backend/delivery/download-order-excels'
+    let url = '/scm/api/backend/sorting/picking-order-customer-order-export'
     window.open(url + paramsStr, '_parent')
   },
   // 批量完成分拣

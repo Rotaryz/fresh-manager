@@ -38,13 +38,14 @@
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">{{item.supplier}}</div>
-              <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
+              <router-link v-if="item.out_order_sn" tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
+              <div v-else class="list-item list-operation">{{item.out_order_sn}}</div>
               <div class="list-item">￥{{item.total}}</div>
               <div class="list-item">
                 <span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}
                 <div v-if="item.is_exception" class="list-item-img"></div>
               </div>
-              <div class="list-item">{{item.type || '---'}}</div>
+              <div class="list-item">{{item.type_str || '---'}}</div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
                 <div class="list-operation" @click="entryOrdersExport(item)">导出</div>
@@ -160,6 +161,7 @@
                 type: item.type
               }
             })
+            this.entryType.data.unshift({name: '全部', type: ''})
           })
       },
       _setErrorStatus() {

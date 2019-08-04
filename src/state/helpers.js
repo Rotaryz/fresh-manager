@@ -657,7 +657,7 @@ export const merchantOrderMethods = {
     'getMerchantOrderDetail',
     'getConsumerOrderList'
   ]),
-  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL', 'SET_TAB_INDEX', 'SET_CONSUMER_TAB_INDEX'])
+  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL', 'SET_TAB_INDEX', 'SET_CONSUMER_TAB_INDEX', 'SET_MERCHANT_LIST'])
 }
 // 售后订单
 export const afterSalesOrderComputed = {

@@ -41,10 +41,17 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          所属社区
+          所属社区`
         </div>
         <div class="edit-input-box">
-          <base-drop-down :width="400" :height="40" :isInput="+consumerType === 2" :select="community" @setValue="_selectCommunity"></base-drop-down>
+          <base-drop-down
+            :width="400"
+            :height="40"
+            :isInput="+consumerType === 2"
+            :select="community"
+            @changeText="_searchShop"
+            @setValue="_selectCommunity"
+          ></base-drop-down>
         </div>
       </div>
     </div>
@@ -67,7 +74,7 @@
           </div>
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
-              <div class="com-list-item">{{item.name}}</div>
+              <div class="com-list-item">{{item.name || item.goods_name}}</div>
               <div class="com-list-item">{{item.sale_unit}}</div>
               <div class="com-list-item">{{item.usable_stock}}</div>
               <div class="com-list-item">
@@ -105,7 +112,7 @@
             <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
           </div>
           <div class="tab-item">
-            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+            <base-search placeHolder="请输入商品名称或编码" @search="_searchGoods"></base-search>
           </div>
         </div>
         <div class="goods-content">
@@ -115,11 +122,15 @@
               <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
               <div class="goods-msg">
                 <!--<div class="goods-name">{{item.usable_stock}}</div>-->
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">
+                <div class="goods-name">
+                  <p class="text">{{item.name || item.goods_name}}</p>
+                  <p class="text">{{item.goods_sku_code}}</p>
+                </div>
+                <!--<div class="goods-money">
                   <div class="goods-money-text">{{item.usable_stock}}</div>
                   <div class="goods-money-text">¥{{item.trade_price}}</div>
-                </div>
+                </div>-->
+                <div class="goods-stock">可用库存 {{item.usable_stock}}{{item.sale_unit}}</div>
               </div>
               <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
@@ -214,6 +225,7 @@
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
+        communityList: [],
         parentId: '',
         keyword: '',
         selectGoods: [], // 单次选择的商品
@@ -266,6 +278,7 @@
         this.msg = {}
         this.nickName = ''
         this.community.data = []
+        this.communityList = []
         this.community.content = '选择社区'
       },
       _selectConsumer(item) {
@@ -274,6 +287,7 @@
           this.mobile = ''
           this.nickName = ''
           this.community.data = []
+          this.communityList = []
           this.community.content = '选择社区'
           this.consumerType = item.id
         }
@@ -296,6 +310,19 @@
           out_order_sn: ''
         }
       },
+      _searchShop(text) {
+        if (text.length === 0) {
+          this.community.data = this.communityList
+          return
+        }
+        let arr = []
+        this.communityList.forEach((item) =>{
+          if (item.name.toLowerCase().includes(text.toLowerCase())) {
+            arr.push(item)
+          }
+        })
+        this.community.data = arr
+      },
       fixPosition() {
         if (!this.testMobile) {
           this.$toast.show('请输入11位的会员手机号')
@@ -312,6 +339,7 @@
               return
             }
             this.community.data = res.data
+            this.communityList = res.data
             this.community.content = '选择社区'
             this.nickName = res.data[0].nickname
           })
@@ -319,14 +347,11 @@
       // 选择商品
       async _getGoodsList() {
         // if (!this.id) return
-        let res = await API.MerchantOrder.getGoodsList({
-          is_online: 1,
+        let res = await API.Store.getGoodsList({
           keyword: this.keyword,
-          goods_category_id: this.parentId,
-          shelf_id: this.id,
+          goods_material_category_id: this.parentId,
           limit: 7,
-          page: this.page,
-          activity_theme: this.$route.query.activity_theme
+          page: this.page || 1
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -361,6 +386,7 @@
         if (item.sale_num > item.usable_stock) {
           item.sale_num = item.usable_stock
         }
+        item.is_error = 0
       },
       // 获取分页商品列表
       async _getMoreGoods(page) {
@@ -564,7 +590,7 @@
           {value: this.testConsumer, txt: '请选择补货对象'},
           {value: this.testMobile, txt: '请输入11位的会员手机号'},
           // {value: this.testWechatName, txt: '请定位会员社区'},
-          {value: this.testCommunity, txt: '请选择会员所属社区'},
+          {value: this.testCommunity, txt: '请选择社区'},
           {value: this.testGoods, txt: '请选择商品'}
           // {value: this.testGoodsCount, txt: ''},
         ]
@@ -705,6 +731,11 @@
       cursor: not-allowed
 
 
+  .com-list-box .com-list-item
+    &:first-child
+      flex: 1.2
+    &:last-child
+      max-width: 98px
   //  弹窗
   .shade-box
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
@@ -825,7 +856,13 @@
           align-items: center
           .goods-name
             width: 500px
+            padding-right: 20px
             no-wrap()
+            .text
+              width: 100%
+              text-overflow: ellipsis
+              overflow: hidden
+              line-height: 1.4
           .goods-name, .goods-money
             line-height: 1
           .goods-money
@@ -833,6 +870,8 @@
             layout(row)
             .goods-money-text
               width: 50%
+          .goods-stock
+            flex: 1
         .add-btn
           border-radius: 2px
           margin-left: 88px

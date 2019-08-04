@@ -66,7 +66,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="订单号、商户名称或会员名称" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
+            <base-search placeHolder="订单号、商户名称或会员手机" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -236,6 +236,7 @@
       // 顶部 切换
       _changeStatusTab(item, index) {
         this.SET_TAB_INDEX(index)
+        this.SET_MERCHANT_LIST([])
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
         // 待调度
         this._updateMerchantOrderList({

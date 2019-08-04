@@ -108,7 +108,12 @@
           return
         }
         this.blankList = res.data
-        res.data.error_type && this.$toast.show(res.data.error_msg)
+        let result = res.data.every(item => {
+          return +item.error_type === 0
+        })
+        if (!result) {
+          this.$toast.show('导入信息有误')
+        }
       },
       exportModel() {
         let token = this.$storage.get('auth.currentUser', '')

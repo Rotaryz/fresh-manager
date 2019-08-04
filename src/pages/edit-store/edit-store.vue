@@ -55,20 +55,6 @@
             <input v-model="item.base_num" type="number" class="edit-input" :class="{'red': item.is_error}" @input="changeInput(item, index)">
             <div v-if="item.base_unit" class="base-unit">{{item.base_unit}}</div>
           </div>
-          <!--<div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
-            <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
-            <transition name="fade">
-              <div v-show="showIndex === index && item.select_batch.length !== 0" class="batches-box">
-                <div v-for="(item1, index1) in item.select_batch" :key="index1">
-                  <div v-if="item1.select_out_num * 1 > 0" class="batches-box-item">
-                    {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>-->
-          <!--<div class="list-item"><span v-if="item.price">￥</span>{{item.price || '￥0.00'}}/{{item.base_unit}}</div>-->
-          <!--<div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '￥0.00'}}</div>-->
           <div class="list-item list-operation-box">
             <span class="list-operation" @click="delGoodsBtn(item, index)">删除</span>
           </div>
@@ -255,9 +241,13 @@
         this.storeList.splice(index, 1)
       },
       changeInput(item, index) {
+        if (item.base_num < 0) {
+          item.base_num = item.base_num * -1
+        }
         if (item.base_num * 1 > item.usable_stock * 1) {
           item.base_num = item.usable_stock
         }
+        item.is_error = 0
         // this.storeList[index].select_batch = []
         // this.storeList[index].price = ''
         // this.storeList[index].all_price = ''

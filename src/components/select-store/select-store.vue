@@ -34,8 +34,12 @@
             <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
             <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
             <div class="goods-msg">
-              <div class="goods-name">{{item.goods_name}}</div>
-              <div class="goods-money">{{item.goods_sku_encoding}}</div>
+              <div class="goods-name">
+                <p class="text">{{item.goods_name}}</p>
+                <p class="text">{{item.goods_sku_code}}</p>
+              </div>
+              <!--<div class="goods-money">{{item.goods_sku_encoding}}</div>-->
+              <div class="goods-stock">可用库存 {{item.usable_stock}}{{item.sale_unit}}</div>
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
@@ -220,7 +224,6 @@
         let res = await API.Store.getGoodsList({
           keyword: this.keyword,
           goods_material_category_id: this.categoryId,
-          is_entry_goods: 1,
           limit: 7,
           page: this.page || 1
         })
@@ -650,8 +653,16 @@
         margin-right: 130px
         flex: 1
         .goods-name
-          width: 593px
+          width: 500px
+          padding-right: 20px
           no-wrap()
+          .text
+            width: 100%
+            text-overflow: ellipsis
+            overflow: hidden
+            line-height: 1.4
+        .goods-stock
+          flex: 1
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14

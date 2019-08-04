@@ -114,7 +114,7 @@
           <div class="context-item">
             <span class="label"><span class="star">*</span>实盘数</span>
             <div class="context-value">
-              <input v-model="editNum" type="text" class="edit-input" @input="changeNum">{{currentItem.unit}}
+              <input v-model="editNum" type="number" class="edit-input" @input="changeNum">{{currentItem.unit}}
             </div>
           </div>
           <div class="context-item">

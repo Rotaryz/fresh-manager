@@ -199,6 +199,7 @@
                 type: item.type
               }
             })
+            this.outType.data.unshift({name: '全部', type: ''})
           })
       },
       _updateList(params, noUpdataStatus) {
