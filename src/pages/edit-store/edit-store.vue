@@ -269,21 +269,14 @@
         let isInputNull = false
         // let isStoreNull = false
         this.storeList.forEach((item) => {
-          if (item.base_num.length === 0) {
+          if (item.base_num.length === 0 || +item.base_num === 0) {
             isInputNull = true
           }
-          // if (item.select_batch.length === 0) {
-          //   isStoreNull = true
-          // }
         })
         if (isInputNull) {
-          this.$toast.show('请输入商品列表的出库数')
+          this.$toast.show('请输入大于0的出库数')
           return
         }
-        // if (isStoreNull) {
-        //   this.$toast.show('请选择商品的批次')
-        //   return
-        // }
         if (this.isSubmit) return
         this.isSubmit = true
         API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then((res) => {
