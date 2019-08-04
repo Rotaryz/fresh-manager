@@ -362,7 +362,7 @@
       line-height: 1.2
       text-overflow: ellipsis
       white-space: nowrap
-      margin-bottom: 10px
+      margin-bottom: 8px
       margin-top: 2px
     .text
       font-size: $font-size-14

@@ -120,7 +120,7 @@
           <div class="context-item">
             <span class="label">备注</span>
             <div class="context-value">
-              <input v-model="editText" type="text" class="edit-input long">
+              <input v-model="editText" type="text" maxlength="20" class="edit-input long">
             </div>
           </div>
         </div>
@@ -357,10 +357,10 @@
           this.$toast.show('请输入实盘数')
           return
         }
-        // if (!this.testEditNumReg) {
-        //   this.$toast.show('实盘数为最多两位小数的非负数')
-        //   return
-        // }
+        if (!this.testEditNumReg) {
+          this.$toast.show('实盘数为最多两位小数的非负数')
+          return
+        }
         API.Store.checkStock({id: this.currentItem.id, actual_stock: this.editNum, note: this.editText, goods_name: this.currentItem.goods_name})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
