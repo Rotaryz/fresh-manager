@@ -5,6 +5,10 @@
       <div class="down-item">
         <base-date-select placeHolder="选择创建时间" :dateInfo="[requestData.created_start_at, requestData.created_end_at]" @getTime="changeTime"></base-date-select>
       </div>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <base-search ref="search" placeHolder="请输入兑换券名称" @search="searchHandle"></base-search>
+      </div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -94,6 +98,11 @@
     },
     methods: {
       ...couponMethods,
+      searchHandle(keyword) {
+        this.setRequestData({keyword, page: 1})
+        // this.getCouponStatus()
+        this.$refs.pagination.beginPage()
+      },
       changeTime(time) {
         // this.startTime = time[0]
         // this.endTime = time[1]

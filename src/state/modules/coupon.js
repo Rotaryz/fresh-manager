@@ -144,7 +144,7 @@ export const actions = {
   setInfoIndex({commit, dispatch}, index) {
     commit('SET_DEFAULT_INDEX', 0)
     commit('SET_INFO_TAB_INDEX', index)
-    commit('SET_REQUEST_DATA', {status: '', page: 1, created_start_at: '', created_end_at: '', tag_type: index})
+    commit('SET_REQUEST_DATA', {status: '', page: 1, created_start_at: '', created_end_at: '', tag_type: index, keyword: ''})
   },
   setDefaultIndex({commit, dispatch}, data) {
     commit('SET_DEFAULT_INDEX', data.index)

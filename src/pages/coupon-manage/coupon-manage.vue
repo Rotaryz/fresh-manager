@@ -9,7 +9,7 @@
         </div>
         <span class="down-tip">搜索</span>
         <div class="down-item">
-          <base-search ref="search" :infoText="keyword" placeHolder="请输入优惠券名称" @search="searchHandle"></base-search>
+          <base-search ref="search" placeHolder="请输入优惠券名称" @search="searchHandle"></base-search>
         </div>
       </div>
 
@@ -221,7 +221,6 @@
     methods: {
       ...couponMethods,
       searchHandle(keyword) {
-        // this.keyword = keyword
         this.setRequestData({keyword, page: 1})
         this.getCouponStatus()
         this.$refs.pagination.beginPage()
@@ -230,6 +229,10 @@
         this.setInfoIndex(index)
         this.getCouponList()
         this.showViewData = false
+        // 清空搜索
+        this.$refs.search && this.$refs.search._setText()
+        const search = this.$refs.goodsCoupon && this.$refs.goodsCoupon.$refs.search
+        search && search._setText()
       },
       tipShow() {
         this.showTip = true
