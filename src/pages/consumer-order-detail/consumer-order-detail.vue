@@ -232,7 +232,7 @@
         selectGoodsId: [], // 所有选择的商品id
         goodsDelId: 0,
         goodsDelIndex: 0,
-        selectDelId: [],
+        // selectDelId: [],
         disable: false,
         goodsList: [],
         msg: {},
@@ -363,12 +363,8 @@
         }
         this.choeesGoods = res.data.map((item, index) => {
           item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          if (delIndex !== -1) {
-            item.selected = 0
-          }
+          let idx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          let goodsIndex = this.selectGoods.findIndex((items) => items.goods_id === item.goods_id)
           if (idx !== -1) {
             item.selected = 1
           }
@@ -438,18 +434,14 @@
         }
         switch (item.selected) {
         case 0:
-          // if (this.selectGoodsId.length === 20) {
-          //   this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
-          //   return
-          // }
           this.choeesGoods[index].selected = 2
           this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
+          this.selectGoodsId.push(item.goods_id)
           break
         case 2:
           this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let idx = this.selectGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let idIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
           if (idx !== -1) {
             this.selectGoods.splice(idx, 1)
           }
@@ -470,10 +462,8 @@
       },
       // 删除商品弹窗
       _delGoods() {
-        // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
         this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(this.goodsDelId)
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
@@ -494,17 +484,13 @@
         if (item.selected === 1) {
           return
         }
-        // if (this.selectGoodsId.length === this.personAllBuyLimit && item.selected !== 2) {
-        //   this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
-        //   return
-        // }
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.choeesGoods[index].selected = 1
+        this.selectGoodsId.push(item.goods_id)
         let goodsItem = objDeepCopy(item)
         this.goodsList.push(goodsItem)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+            let idx = this.selectGoods.findIndex((child) => child.goods_id === item.goods_id)
             if (idx !== -1) {
               this.selectGoods.splice(idx, 1)
             }
@@ -554,13 +540,6 @@
           item.total = totalPrice
           item.sale_price = item.trade_price
           item.promote = 0
-          // return {
-          //   goods_sku_code: item.goods_sku_code,
-          //   sale_num: item.sale_num,
-          //   sale_price: item.trade_price,
-          //   total: totalPrice,
-          //   promote: 0
-          // }
           return item
         })
         let data = Object.assign({}, this.msg, {goods, total})
