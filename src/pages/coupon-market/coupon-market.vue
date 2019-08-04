@@ -1,70 +1,79 @@
 <template>
   <div class="coupon-market table">
-    <div class="down-content">
-      <!--<span class="down-title">{{item.name}}</span>-->
-      <div class="down-item">
-        <div v-for="(val, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">
-          <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
-          <span class="text">{{val.text}}</span>
-        </div>
-      </div>
-    </div>
+    <base-tab-select :infoTabIndex="defaultTab" :tabStatus="topBtn" @getStatusTab="tabChange"></base-tab-select>
+    <!--    <div class="down-content">-->
+    <!--      &lt;!&ndash;<span class="down-title">{{item.name}}</span>&ndash;&gt;-->
+    <!--      <div class="down-item">-->
+    <!--        <div v-for="(val, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">-->
+    <!--          <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">-->
+    <!--          <span class="text">{{val.text}}</span>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
     <div class="table-content">
-      <div class="identification">
-        <div class="identification-page">
-          <!--<img src="./icon-marketing_list@2x.png" class="identification-icon">-->
-          <!--<p class="identification-name">营销列表</p>-->
-          <!--<base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
-          <market-tabs :tabList="topBtn"
-                       :defaultTab="defaultTab"
-                       :isShowMark="false"
-                       tabAlign="left"
-                       padding="12px 2px"
-                       margin="0 18px"
-                       defaultColor="#333333"
-                       class="tab-top"
-                       @tab-change="tabChange"
-          ></market-tabs>
+      <!--      <div class="identification">-->
+      <!--        <div class="identification-page">-->
+      <!--          <market-tabs :tabList="topBtn"-->
+      <!--                       :defaultTab="defaultTab"-->
+      <!--                       :isShowMark="false"-->
+      <!--                       tabAlign="left"-->
+      <!--                       padding="12px 2px"-->
+      <!--                       margin="0 18px"-->
+      <!--                       defaultColor="#333333"-->
+      <!--                       class="tab-top"-->
+      <!--                       @tab-change="tabChange"-->
+      <!--          ></market-tabs>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <div class="table-content">
+        <div class="identification">
+          <div class="identification-page">
+            <img src="./icon-coupon_list@2x.png" class="identification-icon">
+            <p class="identification-name">营销计划列表</p>
+          </div>
+          <div class="function-btn" @click="newMarket(defaultTab)">
+            <div class="btn-main">新建计划<span class="add-icon"></span></div>
+          </div>
         </div>
-      </div>
-      <div class="big-list">
-        <div class="list-header list-box">
-          <div v-for="(item,index) in marketTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
-        </div>
-        <div v-if="marketList.length" class="list">
-          <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
-            <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 2}">
-              <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
-                {{item[val.value] || '---'}}
-              </div>
-              <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item hand">
-                <span class="context">{{couponHandle(item.common_coupons[0]) || '---'}}</span>
-                <div v-if="item.common_coupons.length > 1" class="show-tip" @mouseenter="showTip(index)" @mouseleave="hideTip">
-                  <em class="icon"></em>
-                  <transition name="fade">
-                    <div v-if="tipShow === index" class="tip-content">
-                      <span v-for="(coupon, i) in item.common_coupons" :key="i" class="text">{{couponHandle(coupon)}}</span>
-                    </div>
-                  </transition>
+        <article class="big-list">
+          <div class="list-header list-box">
+            <div v-for="(item,index) in marketTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
+          </div>
+          <div v-if="marketList.length" class="list">
+            <div v-for="(item, index) in marketList" :key="index" class="list-content list-box">
+              <div v-for="(val, ind) in marketTitle" :key="ind" :style="{flex: val.flex}" class="list-item" :class="{'list-about':val.type === 2}">
+                <div v-if="+val.type === 1" :style="{flex: val.flex}" class="item">
+                  {{item[val.value] || '---'}}
                 </div>
+                <div v-if="+val.type === 2" :style="{flex: val.flex}" class="item hand">
+                  <span class="context">{{couponHandle(item.common_coupons[0]) || '---'}}</span>
+                  <div v-if="item.common_coupons.length > 1" class="show-tip" @mouseenter="showTip(index)" @mouseleave="hideTip">
+                    <em class="icon"></em>
+                    <transition name="fade">
+                      <div v-if="tipShow === index" class="tip-content">
+                        <span v-for="(coupon, i) in item.common_coupons" :key="i" class="text">{{couponHandle(coupon)}}</span>
+                      </div>
+                    </transition>
+                  </div>
 
-              </div>
-              <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-double-row item">
-                <p v-if="item.start_at" class="item-dark">{{item.start_at}}</p>
-                <p v-if="item.start_at" class="item-dark">{{item.end_at}}</p>
-                <p v-else class="item-dark">---</p>
-              </div>
-              <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
-                <router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>
-                <router-link v-if="+item.status === 1 || +item.status === 0" tag="span" :to="'new-market?editId=' + item.id + '&index='+defaultTab" append class="list-operation">编辑</router-link>
-                <router-link v-if="+item.status === 2" tag="span" :to="'new-market?id=' + item.id + '&index='+defaultTab" append class="list-operation">查看</router-link>
-                <span v-if="+item.status === 1 || +item.status === 0" class="list-operation" @click="_stopMarket(item)">停止</span>
-                <span v-if="+item.status === 2" class="list-operation" @click="_deleteMarket(item)">删除</span>
+                </div>
+                <div v-if="+val.type === 4" :style="{flex: val.flex}" class="list-double-row item">
+                  <p v-if="item.start_at" class="item-dark">{{item.start_at}}</p>
+                  <p v-if="item.start_at" class="item-dark">{{item.end_at}}</p>
+                  <p v-else class="item-dark">---</p>
+                </div>
+                <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
+                  <router-link v-if="item.type === 7" tag="span" :to="'marketing-statistics?id=' + item.id" append class="list-operation">统计</router-link>
+                  <router-link v-if="+item.status === 1 || +item.status === 0" tag="span" :to="'new-market?editId=' + item.id + '&index='+defaultTab" append class="list-operation">编辑</router-link>
+                  <router-link v-if="+item.status === 2" tag="span" :to="'new-market?id=' + item.id + '&index='+defaultTab" append class="list-operation">查看</router-link>
+                  <span v-if="+item.status === 1 || +item.status === 0" class="list-operation" @click="_stopMarket(item)">停止</span>
+                  <span v-if="+item.status === 2" class="list-operation" @click="_deleteMarket(item)">删除</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <base-blank v-else blackStyle="margin-top:15%"></base-blank>
+          <base-blank v-else blackStyle="margin-top:15%"></base-blank>
+        </article>
       </div>
       <div class="pagination-box">
         <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
@@ -76,7 +85,7 @@
 
 <script type="text/ecmascript-6">
   import MarketConfirm from './market-confirm/market-confirm'
-  import MarketTabs from './market-tabs/market-tabs'
+  // import MarketTabs from './market-tabs/market-tabs'
   import {marketComputed, marketMethods} from '@state/helpers'
   import API from '@api'
 
@@ -129,7 +138,7 @@
     },
     components: {
       MarketConfirm,
-      MarketTabs
+      // MarketTabs
     },
     data() {
       return {
@@ -193,10 +202,10 @@
         return status
       },
       // 顶部tab切换
-      tabChange(index) {
+      tabChange(item, index) {
         this.$refs.pages.beginPage()
         this.setDefaultTab(index)
-        this.setRequestData({page: 1, type: this.topBtn[index].type})
+        this.setRequestData({page: 1, type: item.type})
       },
       switchBtn(item, index) {
         let status = 1
@@ -407,11 +416,4 @@
           .text
             text-decoration: underline
 
-  .identification
-    padding-bottom: 18px
-    height: 78px
-    position: relative
-    z-index: 10
-  .identification-page
-    width: 100%
 </style>
