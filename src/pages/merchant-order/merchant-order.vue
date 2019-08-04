@@ -247,6 +247,7 @@
           status: 0,
           keyword: ''
         })
+        this.unusualSelect.content = '全部'
       },
       _selectUnusual(item) {
         this._updateMerchantOrderList({exception_status: item.status})
