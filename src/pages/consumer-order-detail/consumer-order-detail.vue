@@ -542,6 +542,7 @@
           item.promote = 0
           return item
         })
+        this.mobile && (this.msg.customer_mobile = this.mobile)
         let data = Object.assign({}, this.msg, {goods, total})
         let res = null
         this.isSubmit = true
