@@ -162,6 +162,8 @@
         max-width: 80px
       .grey-text
         color: #ACACAC
+      .red
+        color: #F53737
     .red
       color: #F53737
   .edit-stock

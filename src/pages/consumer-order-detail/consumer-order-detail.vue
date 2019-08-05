@@ -382,8 +382,8 @@
         if (item.sale_num < 0) {
           item.sale_num = item.sale_num * -1
         }
-        if (item.sale_num > item.usable_stock) {
-          item.sale_num = item.usable_stock
+        if (item.sale_num > item.sale_usable_stock) {
+          item.sale_num = item.sale_usable_stock
         }
         item.is_error = 0
       },
