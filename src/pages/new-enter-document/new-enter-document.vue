@@ -49,11 +49,11 @@
           <div class="big-box">
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item list-double-row">
-                <span>{{item.name}}</span>
-                <span>{{item.goods_sku_code}}</span>
+                <span>{{item.goods_name}}</span>
+                <span>{{item.goods_sku_encoding}}</span>
               </div>
 
-              <div class="com-list-item">{{item.goods_category_name}}</div>
+              <div class="com-list-item">{{item.goods_material_category}}</div>
               <!--入库数量-->
               <div class="com-list-item">
                 <input v-model="item.base_num" :readonly="disable" type="number" class="com-edit" @input="changeNum(item, index)">
@@ -91,7 +91,8 @@
                 <span v-if="item.store_house" class="del" @click="deleteStoreHouse(item, index)"></span>
               </div>
               <div class="com-list-item">
-                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="_showDelGoods(item, index)">删除</span>
+                <span :class="{'list-operation-disable': disable}" class="list-operation" @click="
+                (item, index)">删除</span>
               </div>
             </div>
           </div>
@@ -101,7 +102,7 @@
     </div>
 
     <!-- 选择商品弹窗-->
-    <default-modal ref="goodsModel">
+    <!--<default-modal ref="goodsModel">
       <div slot="content" class="shade-box">
         <div class="title-box">
           <div class="title">选择商品</div>
@@ -124,7 +125,7 @@
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
               <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
               <div class="goods-msg">
-                <!--<div class="goods-name">{{item.usable_stock}}</div>-->
+                <div class="goods-name">{{item.usable_stock}}</div>
                 <div class="goods-name">{{item.name}}</div>
                 <div class="goods-money">
                   <div class="goods-money-text">{{item.usable_stock}}</div>
@@ -143,7 +144,7 @@
           <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
         </div>
       </div>
-    </default-modal>
+    </default-modal>-->
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <default-store ref="modalBox" @confirm="confirm"></default-store>
@@ -151,13 +152,15 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveEntryOrder">保存</div>
     </div>
+    <select-store ref="goodsPop" :stock="false" @additionOne="additionOne" @batchAddition="batchAddition"></select-store>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import DefaultModal from '@components/default-modal/default-modal'
+  // import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import DefaultStore from '@components/default-store/default-store'
+  import SelectStore from '@components/select-store/select-store'
   import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
   import API from '@api'
   import {objDeepCopy} from '@utils/common'
@@ -186,8 +189,9 @@
       title: TITLE
     },
     components: {
-      DefaultModal,
+      // DefaultModal,
       DefaultConfirm,
+      SelectStore,
       DefaultStore,
       DatePicker
     },
@@ -469,16 +473,17 @@
         if (this.disable) {
           return
         }
-        this.goodsDelId = item.goods_id
+        // this.goodsDelId = item.goods_id
         this.goodsDelIndex = index
         this.$refs.confirm.show('是否确定删除该商品？')
       },
       // 删除商品弹窗
       _delGoods() {
         // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
-        this.selectGoodsId.splice(this.goodsDelIndex, 1)
+
+        // this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(this.goodsDelId)
+        // this.selectDelId.push(this.goodsDelId)
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
@@ -491,40 +496,24 @@
         this._hideGoods()
       },
       // 单个添加
-      _additionOne(item, index) {
-        // if (item.usable_stock <= 0) {
-        //   this.$toast.show('该商品库存为0，不能选择')
-        //   return
-        // }
-        if (item.selected === 1) {
-          return
-        }
-        // if (this.selectGoodsId.length === this.personAllBuyLimit && item.selected !== 2) {
-        //   this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
-        //   return
-        // }
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
-        this.choeesGoods[index].selected = 1
-        let goodsItem = objDeepCopy(item)
-        goodsItem.all_stock = item.usable_stock
-        goodsItem.usable_stock = ''
-        goodsItem.trade_price_show = item.trade_price
-        if (this.activityTheme !== 'hot_tag') {
-          goodsItem.trade_price = ''
-        }
-        this.goodsList.push(goodsItem)
-        this.choeesGoods.forEach((item) => {
-          if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
-            }
+      additionOne(item, index) {
+        let isExist = false
+        let obj =
+          (item)
+        obj.price = 0
+        obj.total = 0
+        this.goodsList.forEach((item) => {
+          if (item.goods_id === obj.goods_id) {
+            isExist = true
           }
         })
+        if (!isExist) {
+          this.goodsList.push(obj)
+        }
       },
       // 批量添加
       _batchAddition() {
-        // const list = objDeepCopy(this.choeesGoods)
+        // const list = objDeepCopy(this.choeesGoods)_batchAddition
         this.selectGoods = this.selectGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           item.usable_stock = ''
@@ -538,13 +527,31 @@
         this.selectGoods = []
         this._hideGoods()
       },
+      batchAddition(list) {
+        list.forEach((item) => {
+          let isExist = false
+          this.goodsList.forEach((item1) => {
+            if (item.goods_id * 1 === item1.goods_id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = objDeepCopy(item)
+            obj.price = 0
+            obj.total = 0
+            obj.base_num = ''
+            this.goodsList.push(obj)
+          }
+        })
+      },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModel && this.$refs.goodsModel.showModal()
+        // if (this.disable) {
+        //   return
+        // }
+        // await this._getGoodsList()
+        // // 展示添加商品弹窗
+        // this.$refs.goodsModel && this.$refs.goodsModel.showModal()
+        this.$refs.goodsPop._delGoods(this.goodsList)
       },
       _hideGoods() {
         this.$refs.goodsModel.hideModal()

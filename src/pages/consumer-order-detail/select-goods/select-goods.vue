@@ -39,7 +39,7 @@
                 <p class="text">{{item.goods_sku_encoding}}</p>
               </div>
               <!--<div class="goods-money">{{item.goods_sku_encoding}}</div>-->
-              <div class="goods-stock">可用库存 {{item.usable_stock}}{{item.base_unit}}</div>
+              <div class="goods-stock">可用库存 {{item.sale_usable_stock}}{{item.sale_unit}}</div>
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
@@ -181,7 +181,7 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        if (item.usable_stock <= 0 && this.stock) {
+        if (item.sale_usable_stock <= 0 && this.stock) {
           this.$toast.show('该商品库存为0，不能选择')
           return
         }
@@ -314,7 +314,7 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        if (item.usable_stock <= 0 && this.stock) {
+        if (item.sale_usable_stock <= 0 && this.stock) {
           this.$toast.show('该商品库存为0，不能选择')
           return
         }

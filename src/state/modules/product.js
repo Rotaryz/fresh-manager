@@ -250,6 +250,7 @@ export const actions = {
       end_time: '',
       limit: 10,
       page: 1,
+      type: '',
       exception_status: ''
     })
     commit('SET_IS_OUT_FRIRST', true)

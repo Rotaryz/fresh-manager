@@ -120,7 +120,7 @@
           <div class="context-item">
             <span class="label">备注</span>
             <div class="context-value">
-              <input v-model="editText" type="text" maxlength="20" class="edit-input long">
+              <input v-model="editText" type="text" maxlength="20" placeholder="最多可输入20个字" class="edit-input long">
             </div>
           </div>
         </div>

@@ -76,7 +76,7 @@
             <div v-for="(item, index) in goodsList" :key="index" class="com-list-box com-list-content">
               <div class="com-list-item">{{item.name || item.goods_name}}</div>
               <div class="com-list-item">{{item.sale_unit}}</div>
-              <div class="com-list-item">{{item.usable_stock}}</div>
+              <div class="com-list-item">{{item.sale_usable_stock}}</div>
               <div class="com-list-item">
                 <input
                   v-model="item.sale_num"
@@ -152,12 +152,14 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
+    <select-goods ref="goodsPop" @additionOne="additionOne" @batchAddition="batchAddition"></select-goods>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import SelectGoods from './select-goods/select-goods'
   import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
   import API from '@api'
   import {objDeepCopy} from '@utils/common'
@@ -183,7 +185,8 @@
     },
     components: {
       DefaultModal,
-      DefaultConfirm
+      DefaultConfirm,
+      SelectGoods
     },
     data() {
       return {
@@ -456,14 +459,17 @@
         if (this.disable) {
           return
         }
-        this.goodsDelId = item.goods_id
+        // this.goodsDelId = item.goods_id
         this.goodsDelIndex = index
         this.$refs.confirm.show('是否确定删除该商品？')
       },
       // 删除商品弹窗
       _delGoods() {
-        this.selectGoodsId.splice(this.goodsDelIndex, 1)
+        // let index = this.selectGoodsId.findIndex((item) => item === this.goodsDelId)
+
+        // this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
+        // this.selectDelId.push(this.goodsDelId)
       },
       _cancelGoods() {
         this.selectGoods.forEach((item) => {
@@ -497,6 +503,20 @@
           }
         })
       },
+      // 单个添加
+      additionOne(item, index) {
+        let isExist = false
+        let obj = objDeepCopy(item)
+        obj.sale_num = ''
+        this.goodsList.forEach((item) => {
+          if (item.goods_id === obj.goods_id) {
+            isExist = true
+          }
+        })
+        if (!isExist) {
+          this.goodsList.push(obj)
+        }
+      },
       // 批量添加
       _batchAddition() {
         // const list = objDeepCopy(this.choeesGoods)
@@ -508,13 +528,29 @@
         this.selectGoods = []
         this._hideGoods()
       },
+      batchAddition(list) {
+        list.forEach((item) => {
+          let isExist = false
+          this.goodsList.forEach((item1) => {
+            if (item.goods_id * 1 === item1.goods_id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = objDeepCopy(item)
+            obj.sale_num = ''
+            this.goodsList.push(obj)
+          }
+        })
+      },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModel && this.$refs.goodsModel.showModal()
+        // if (this.disable) {
+        //   return
+        // }
+        // await this._getGoodsList()
+        // // 展示添加商品弹窗
+        // this.$refs.goodsModel && this.$refs.goodsModel.showModal()
+        this.$refs.goodsPop._delGoods(this.goodsList)
       },
       _hideGoods() {
         this.$refs.goodsModel.hideModal()

@@ -31,7 +31,7 @@
             <div class="list-item" :class="{'red': +item.error_type === 1}">{{+item.error_type === 1 ? item.error_msg : item.goods_sku_encoding}}</div>
             <div class="list-item">{{item.goods_name}}</div>
             <div class="list-item" :class="{'red': +item.error_type === 2}">{{+item.error_type === 2 ? item.error_msg : item.plan_num}}</div>
-            <div class="list-item">{{item.sale_unit}}</div>
+            <div class="list-item">{{item.purchase_unit}}</div>
             <div class="list-item" :class="{'red': +item.error_type === 3}">{{+item.error_type === 3 ? item.error_msg : item.supplier_name}}</div>
           </div>
         </div>

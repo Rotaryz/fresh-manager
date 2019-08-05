@@ -27,15 +27,15 @@
               <div class="list-item">{{item.id}}</div>
               <div class="list-item">
                 <div>{{item.goods_name}}</div>
-                <div :class="['grey-text', {'red': +item.error_type === 1}]">{{+item.error_type === 1 ? item.error_msg : item.goods_sku_code}}</div>
+                <div :class="['grey-text', {'red': +item.error_type === 1}]">{{+item.error_type === 1 ? item.error_msg : item.goods_sku_encoding}}</div>
               </div>
               <div class="list-item">{{item.goods_category}}</div>
               <div class="list-item">{{item.base_unit}}</div>
-              <div class="list-item">{{item.system_stock}}</div>
-              <div class="list-item">{{item.actual_stock}}</div>
+              <div class="list-item" :class="{'red': +item.error_type === 3}">{{+item.error_type === 3 ? item.error_msg : item.system_stock}}</div>
+              <div class="list-item" :class="{'red': +item.error_type === 2}">{{+item.error_type === 2 ? item.error_msg : item.actual_stock}}</div>
               <div class="list-item">{{item.diff_stock}}</div>
               <div class="list-item list-manager-box" :class="{'list-manager-box-active': blankIndex === index}" @click="setStatus(index, item)">
-                <span class="list-manager hand" :class="{'red': +item.error_type === 2}">{{+item.error_type === 2 ? item.error_msg : item.adjust_type_str}}<span v-if="item.adjust_type === 1 || item.adjust_type === 3" class="list-icon"></span></span>
+                <span class="list-manager hand">{{item.adjust_type_str}}<span v-if="item.adjust_type === 1 || item.adjust_type === 3" class="list-icon"></span></span>
                 <ul v-if="item.adjust_type === 1 || item.adjust_type === 3" class="adjustment-list">
                   <li v-for="(ad,key) in adjustment" :key="key" class="adjustment-item hand" :class="{'adjustment-item-active' : item.adjust_type_str === ad.name}" @click.stop="selectType(ad)">{{ad.name}}</li>
                 </ul>
@@ -153,8 +153,8 @@
         max-width: 80px
       .grey-text
         color: #ACACAC
-      .red
-        color: #F53737
+    .red
+      color: #F53737
   .edit-stock
     .list-box
       .list-manager-box
