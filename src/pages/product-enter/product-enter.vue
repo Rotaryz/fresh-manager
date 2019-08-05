@@ -38,8 +38,11 @@
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">{{item.supplier}}</div>
-              <router-link v-if="item.out_order_sn" tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
-              <div v-else class="list-item list-operation">{{item.out_order_sn}}</div>
+              <!--<router-link v-if="item.out_order_sn" tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
+              <div v-else class="list-item list-operation">{{item.out_order_sn}}</div>-->
+              <div class="list-item">
+                <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-operation">{{item.out_order_sn}}</router-link>
+              </div>
               <div class="list-item">￥{{item.total}}</div>
               <div class="list-item">
                 <span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}
