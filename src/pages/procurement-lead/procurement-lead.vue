@@ -39,7 +39,7 @@
       </div>
       <div class="back">
         <div class="back-cancel back-btn hand" @click="_back">返回</div>
-        <div class="back-btn back-submit hand" @click="submitSure">确认提交</div>
+        <div class="back-btn back-submit hand" :class="{'btn-disable': hasError}" @click="submitSure">确认提交</div>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="confirm"></default-confirm>
@@ -65,7 +65,8 @@
       return {
         commodities: COMMODITIES_LIST,
         blankList: [],
-        isSubmit: true
+        isSubmit: true,
+        hasError: false
       }
     },
     created() {},
@@ -75,6 +76,7 @@
           this.$toast.show('导入采购任务单不能为空')
           return
         }
+        if (this.hasError) return
         this.$refs.confirm.show('是否批量导入采购任务单？')
       },
       async confirm() {
@@ -98,6 +100,7 @@
       },
       //  导入商品新建模板
       async importStock(e, index) {
+        this.hasError = false
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
         let res = await API.Supply.leadTask(param, true, 60000)
@@ -112,7 +115,7 @@
           return +item.error_type === 0
         })
         if (!result) {
-          this.$toast.show('导入信息有误')
+          this.hasError = true
         }
       },
       exportModel() {

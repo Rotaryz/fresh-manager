@@ -48,7 +48,7 @@
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
-      <div class="back-btn back-submit hand" @click="addition">调整</div>
+      <div class="back-btn back-submit hand" :class="{'btn-disable': hasError}" @click="addition">调整</div>
     </div>
     <default-confirm ref="confirm" @confirm="confirm"></default-confirm>
   </div>
@@ -76,7 +76,8 @@
         adjustment: ADJUSTMENT,
         blankList: [],
         blankIndex: -1,
-        isSubmit: true
+        isSubmit: true,
+        hasError: false
       }
     },
     methods: {
@@ -97,6 +98,7 @@
           this.$toast.show('导入库存清单不能为空')
           return
         }
+        if (this.hasError) return
         this.$refs.confirm.show('是否批量导入库存清单？')
       },
       cancel() {
@@ -119,6 +121,7 @@
       },
       //  导入库存清单
       async importStock(e) {
+        this.hasError = false
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
         let res = await API.Store.importStock(param, true, 60000)
@@ -126,6 +129,12 @@
         this.blankList = res.error === this.$ERR_OK ? res.data : []
         this.$toast.show(res.message)
         e.target.value = ''
+        let result = res.data.every(item => {
+          return +item.error_type === 0
+        })
+        if (!result) {
+          this.hasError = true
+        }
       },
       // 格式化文件
       _infoFile(file) {
