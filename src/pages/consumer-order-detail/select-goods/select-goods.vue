@@ -43,7 +43,7 @@
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
-          <div v-if="choeesGoods.length === 0" class="rush-null-text">暂无出库商品</div>
+          <div v-if="choeesGoods.length === 0" class="rush-null-text">暂无商品</div>
         </div>
       </div>
       <div class="page-box">
