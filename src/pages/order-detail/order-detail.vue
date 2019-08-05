@@ -119,7 +119,6 @@
 
   .ro-order-list-item
     flex: 1
-    max-width: 170px
     &:nth-child(1)
       flex: 2
       max-width: 340px
@@ -129,7 +128,6 @@
       white-space: normal !important
       word-break: break-all
   .free-shipping .ro-order-list-item
-    max-width: 140px
     &:nth-child(1)
       flex: 2
       max-width: 300px

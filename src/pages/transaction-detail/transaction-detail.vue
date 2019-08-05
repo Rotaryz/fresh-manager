@@ -31,7 +31,7 @@
           <div v-for="(item, index) in settleLogs" :key="index" class="list-content list-box">
             <div class="list-item list-text">{{item.created_at}}</div>
             <div class="list-item list-use">
-              <router-link tag="a" :to="{path: `/home/order-list/order-detail/${item.order_id}`}" target="_blank" append class="list-operation">{{item.order_sn}}</router-link>
+              <router-link tag="a" :to="{path: `/home/order-list/order-detail/${item.order_id}?freeShipping=${infoTabIndex}`}" target="_blank" append class="list-operation">{{item.order_sn}}</router-link>
             </div>
             <div class="list-item list-text">{{item.goods_name}}</div>
             <div class="list-item list-text">{{item.num}}</div>

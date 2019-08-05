@@ -106,6 +106,9 @@
       _goDetail(item) {
         // 退货详情id未对 todo
         let url = '/home/order-list/order-detail/' + item.order_id
+        if (item.type_str.includes('全国包邮')) {
+          url += '?freeShipping=1'
+        }
         this.$router.push(url)
       },
       _getSettlementDetail() {
