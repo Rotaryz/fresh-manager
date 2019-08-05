@@ -25,7 +25,7 @@
           <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+          <base-search placeHolder="请输入商品名称或商品编码" @search="_searchGoods"></base-search>
         </div>
       </div>
       <div class="goods-content">
