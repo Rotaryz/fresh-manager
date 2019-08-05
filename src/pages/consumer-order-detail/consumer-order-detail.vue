@@ -41,7 +41,7 @@
       <div class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
-          所属社区`
+          所属社区
         </div>
         <div class="edit-input-box">
           <base-drop-down
