@@ -101,7 +101,8 @@
                 <div>
                   <div v-for="(item, index) in selectGroupList" :key="index" class="list">
                     <div v-for="(val, ind) in groupTitleGift" :key="ind" class="list-item gift" :style="{flex: val.flex}">
-                      <p class="main">{{item[val.value]}}</p>
+                      <p v-if="val.value === 'delete'" class="handle" :class="{'list-operation-disable': disable}" @click="showConfirm('certificateGroup', index, item)">删除</p>
+                      <p v-else class="main">{{item[val.value]}}</p>
                     </div>
                   </div>
                 </div>
@@ -667,6 +668,7 @@
         groupTitleGift: [ // 满赠团长列表
           {name: '社区名称', flex: 1.4, value: 'social_name'},
           {name: '团长名称', flex: 1, value: 'name'},
+          {name: '操作', flex: 0.7, value: 'delete'}
         ],
         formConfig: FORM_CONFIG,
         selectGroupList: [], // 已选团长列表
@@ -1009,6 +1011,9 @@
         case 'certificate':
           text = '兑换券'
           break
+        // case 'certificateGroup':
+        //   text = '团长'
+        //   break
         default:
           break
         }
@@ -1457,9 +1462,7 @@
   @import "~@design"
   @import "~@style/detail"
 
-  .list-title-item.gift,.list-item.gift
-    &:last-child
-      max-width : none !important
+
   // 满赠-选择社区模板
   .gift-choose-target-wrapper
     position: relative
