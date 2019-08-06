@@ -266,6 +266,7 @@
           back_tracking_obj: this.consumerType,
           out_order_sn: ''
         }
+        this.nickName = item.nickname
       },
       _searchShop(text) {
         if (text.length === 0) {

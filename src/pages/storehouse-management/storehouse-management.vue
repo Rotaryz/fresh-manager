@@ -143,7 +143,7 @@
   const TITLE = '库存管理'
   const COMMODITIES_LIST = ['商品', '类目', '总库存', '锁定库存', '可用库存', '总库存货值', '库存均价', '库位', '操作']
   const ENTRY_STORE_EXPORT = '/scm/api/backend/stock/warehouse-stock-export'
-  const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+  const MONEYREG = /^(([0-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
 
   export default {
     name: PAGE_NAME,

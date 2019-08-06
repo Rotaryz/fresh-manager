@@ -209,10 +209,13 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.choeesGoods.forEach((item) => {
-          if (item.selected * 1 === 1) {
-            arr.push(item)
-          }
+        // this.choeesGoods.forEach((item) => {
+        //   if (item.selected * 1 === 1) {
+        //     arr.push(item)
+        //   }
+        // })
+        this.selectGoods.forEach(item => {
+          arr.push(item)
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
