@@ -38,7 +38,7 @@
               <div class="list-item">{{item.goods_material_category}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <div class="list-item">{{item.purchase_user}}</div>
-              <div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>
+              <!--<div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>-->
               <div class="list-item">{{item.usable_stock_purchase_num}}{{item.purchase_unit}}({{item.usable_stock}}{{item.base_unit}})</div>
               <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
               <!--<div class="list-item">{{item.created_at}}</div>-->
@@ -57,7 +57,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_SUGGEST'
   const TITLE = '预采建议'
-  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '商品销售数', '库存数', '建议采购数']
+  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '库存数', '建议采购数']
 
   export default {
     name: PAGE_NAME,

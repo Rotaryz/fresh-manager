@@ -59,10 +59,10 @@
                 <input v-model="item.base_num" :readonly="disable" type="number" class="com-edit" @input="changeNum(item, index)">
                 <span>{{item.base_unit}}</span>
               </div>
-              <div class="com-list-item">
+              <!--<div class="com-list-item">
                 <input v-model="item.purchase_num" :readonly="disable" type="number" class="com-edit" @input="changePurchase(item, index)">
                 <span>{{item.purchase_unit}}</span>
-              </div>
+              </div>-->
               <!--入库单价-->
               <div class="com-list-item">
                 <input v-model="item.price" :readonly="disable" type="number" class="com-edit" @input="changePrice(item, index)">
@@ -127,7 +127,7 @@
     {name: '商品', value: 'name', flex: 1,},
     {name: '分类', value: 'goods_category_name', flex: 1},
     {name: '入库数量(基本单位)', value: 'enter_count', flex: 1, unit: 'kg'},
-    {name: '入库数量(采购单位)', value: 'enter_count', flex: 1, unit: '箱'},
+    // {name: '入库数量(采购单位)', value: 'enter_count', flex: 1, unit: '箱'},
     {name: '入库单价(基本单位)', value: 'enter_price', flex: 1, unit: '元/kg'},
     {name: '入库金额', value: 'enter_price', flex: 1},
     {name: '保质期', value: '', flex: 1},
@@ -263,11 +263,11 @@
         if (item.base_num < 0) {
           item.base_num = item.base_num * -1
         }
-        let number = item.base_num / item.base_purchase_rate
-        if (number < 0) {
-          number = 0
-        }
-        item.purchase_num = number
+        // let number = item.base_num / item.base_purchase_rate
+        // if (number < 0) {
+        //   number = 0
+        // }
+        // item.purchase_num = number
         if (item.base_num) {
           this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
         }
