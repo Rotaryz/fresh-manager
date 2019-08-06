@@ -114,6 +114,11 @@ export const actions = {
       keyword: keyword,
       source: status
     }
+    if (status==='c_freeShipping') {
+      // 全国包邮不传source，source_type=2代表全国包邮
+      data.source_type = 2
+      delete data.source
+    }
     return API.Order.getOrderList(data)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -184,7 +189,7 @@ export const actions = {
     dispatch('getOrderList')
   },
   setOrderStatus({commit, dispatch}, selectStatus) {
-    commit('SET_ORDER_STATUS', selectStatus.status)
+    commit('SET_ORDER_STATUS', selectStatus)
     commit('SET_PAGE', 1)
     dispatch('getOrderList')
   },

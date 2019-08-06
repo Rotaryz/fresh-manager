@@ -498,7 +498,8 @@ export const financeComputed = {
     'account',
     'payList',
     'payListPageTotal',
-    'payListPage'
+    'payListPage',
+    'tabStatus'
   ])
 }
 
@@ -512,7 +513,8 @@ export const financeMethods = {
     'setSettleLogsPage',
     'getAccount',
     'getPayList',
-    'setPayListPage'
+    'setPayListPage',
+    'setTabStatus'
   ])
 }
 // 新手指引

@@ -49,8 +49,8 @@
                      @click="_setType(cms)"
             >
               <template v-for="(child, idx) in cms.list">
-                <!--          限时抢购-->
-                <article v-if="child.module_name === 'activity_fixed'" :key="idx + 'flash'" class="flash-wrapper">
+                <!--限时抢购-->
+                <article v-if="!flashIsClose&&child.module_name === 'activity_fixed'" :key="idx + 'flash'" class="flash-wrapper">
                   <nav class="tab-wrapper">
                     <img class="logo" src="./pic-qgtitle@2x.png" alt="">
                     <template v-for="(val, ind) in child.list">
@@ -108,7 +108,7 @@
                   </ul>
                 </article>
                 <article v-if="idx === 0" :key="idx + 'other'" class="active-wrapper">
-                  <!-- tab-->
+                  <!-- 活动tab-->
                   <ul class="tab-wrapper">
                     <li
                       v-for="(item,index) in tabActiveList"
@@ -122,14 +122,15 @@
                       </div>
                     </li>
                   </ul>
-                  <template v-for="(active) in otherActiveList">
-                    <!--              今日爆破-->
-                    <nav v-if="active.dataArray && active.dataArray.length" :key="active.id" class="panel">
-                      <img v-if="active.module_name === 'groupon'" class="banner-img" src="./pic-ptfx.png" alt="">
-                      <img v-if="active.module_name === 'goods_hot_tag'" class="banner-img" src="./pic-jrbk.png" alt="">
-                      <img v-if="active.module_name === 'new_client'" class="banner-img" src="./pic-xrth.png" alt="">
-                      <template v-if="active.dataArray">
-                        <div v-for="(item, index) in active.dataArray"
+                  <template v-for="(active) in tabActiveList">
+                    <!--活动列表-->
+                    <nav v-if="active.data && active.data.dataArray && active.data.dataArray.length" :key="active.id" class="panel">
+                      <img v-if="active.data.module_name === 'groupon'" class="banner-img" src="./pic-ptfx.png" alt="">
+                      <img v-if="active.data.module_name === 'goods_hot_tag'" class="banner-img" src="./pic-jrbk.png" alt="">
+                      <img v-if="active.data.module_name === 'new_client'" class="banner-img" src="./pic-xrth.png" alt="">
+                      <img v-if="active.data.module_name === 'free_shipping'" class="banner-img" src="./pic-ptfx@2x.png" alt="">
+                      <template v-if="active.data.dataArray">
+                        <div v-for="(item, index) in active.data.dataArray"
                              :key="index"
                              class="goods-item-wrapper"
                         >
@@ -148,10 +149,10 @@
                                 <p class="unit">元</p>
                                 <p class="origin">{{item.original_price}}元</p>
                               </div>
-                              <p class="type-icon group">{{iconText(active.module_name)}}</p>
+                              <p class="type-icon group">{{iconText(active.data.module_name)}}</p>
                               <div class="button-group">
                                 <div class="button-wrapper">
-                                  <p>{{buttonText(active.module_name)}}</p>
+                                  <p>{{buttonText(active.data.module_name)}}</p>
                                 </div>
                                 <p class="number">已售{{item.sale_count}}{{item.sale_unit}}</p>
                               </div>
@@ -167,6 +168,7 @@
           </template>
         </div>
         <article class="active-wrapper">
+          <!--活动商品列表-->
           <nav class="panel">
             <img class="banner-img" src="./pic-cnxh.png" alt="">
             <div
@@ -248,6 +250,14 @@
       groupList: {
         type: Array,
         default: () => []
+      },
+      freeShippingList: {
+        type: Array,
+        default: () => []
+      },
+      activityList: {
+        type: Array,
+        default: () => []
       }
     },
     data() {
@@ -271,36 +281,36 @@
             text: '原产地直采',
             icon: require('./icon-ok@2x.png')
           }
-        ]
+        ],
+        flashIsClose: false
       }
     },
     computed: {
-      otherActiveList() {
-        let arr = []
-        let module = this.cmsArray.find((val) => val.module_name === 'activity')
-        if (module && module.list) {
-          module.list.forEach((item) => {
-            if (item.module_name !== 'activity_fixed') {
-              let key = TAB_ARR_CONFIG[item.module_name] ? TAB_ARR_CONFIG[item.module_name].dataArray : ''
-              if (key && item.dataArray) {
-                item.dataArray = this[key] || []
-                arr.push(item)
-              }
-            }
-          })
-        }
-        return arr
-      },
       tabActiveList() {
-        let arr = []
-        this.otherActiveList.forEach((item) => {
-          arr.push({tabTitle: TAB_ARR_CONFIG[item.module_name]})
-        })
-        arr.push({tabTitle: TAB_ARR_CONFIG['guess']})
-        return arr
+        return this._getTabActiveList()
       }
     },
     methods: {
+      _getTabActiveList() {
+        let arr = []
+        let activityList = this.activityList
+        if (!this.activityList.length) {
+          activityList = this.cmsArray.find((val) => val.module_name === 'activity').list || []
+        }
+        activityList.forEach((item) => {
+          if (item.module_name === 'activity_fixed') {
+            this.flashIsClose = item.is_close
+          } else if (!item.is_close) {
+            const tabConfig = TAB_ARR_CONFIG[item.module_name] || false
+            if (tabConfig) {
+              item.dataArray = this[tabConfig.dataArray] || []
+              arr.push({tabTitle: tabConfig, data: item})
+            }
+          }
+        })
+        arr.push({tabTitle: TAB_ARR_CONFIG['guess']})// push猜你喜欢
+        return arr
+      },
       _getBanner(oldValue, value) {
         this.bannerIndex = value
       },
@@ -370,28 +380,29 @@
     background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 5%)
     // tab
     .tab-wrapper
-      overflow: hidden
-      height: 46px
-      padding: 0 5px
+      height :46px
+      padding :0 5px
+      layout(row)
+      flex-wrap: nowrap
       .tab-item
-        display: inline-block
+        width: 62px
+        min-width: 62px
         p
           padding-top: 7px
           font-family: $font-family-medium
-          font-size: 12px;
-          color: #1D2023;
-          text-align: center;
+          font-size: 12px
+          color: #1D2023
+          text-align: center
         .sub
-          display: block
-          font-family: $font-family-regular;
-          font-size: 10px;
-          color: #808080;
-          text-align: center;
-          line-height: 14px
-          height: 16px
-          border-radius: 14px
-          transform: scale(0.7)
-          padding: 2px 5px
+          display :block
+          font-family: $font-family-regular
+          font-size: 10px
+          color: #808080
+          text-align: center
+          line-height :14px
+          height :16px
+          border-radius :14px
+          transform :scale(0.7)
         &.active
           p
             color: #73C200
@@ -443,10 +454,10 @@
                 padding: 0 13px
                 background: #FF8506
                 border-radius: 22px
-                font-size: 10px;
-                display: flex
-                align-items: center
-                justify-content: center
+                font-size: 10px
+                display :flex
+                align-items :center
+                justify-content :center
                 color: #FFFFFF
                 transform: scale(0.9)
               .number
@@ -466,12 +477,12 @@
               border-radius: 12.5px
               padding: 4px 5px
               font-family: $font-family-regular
-              font-size: 10px;
+              font-size: 10px
               transform scale(0.8)
               border: 1px solid transparent
               &.group
-                background: rgba(250, 117, 0, 0.10)
-                color: #FA7500;
+                background: rgba(250,117,0,0.10)
+                color: #FA7500
                 border: 1px solid #FA7500
             .title
               width: 100%
@@ -489,14 +500,14 @@
               height: 18px
               line-height: 18px
               font-family: $font-family-regular
-              font-size: 10px;
-              color: #808080;
+              font-size: 10px
+              color: #808080
               no-wrap()
             .money-wrapper
               display: flex
               font-family: $font-family-medium
-              color: #FA7500;
-              padding-top: 24px
+              color: #FA7500
+              padding-top :24px
               .int
                 font-size: 19px
               .dot
@@ -565,9 +576,9 @@
         padding: 0 1px
         padding-top: 7.9px
         font-family: $font-family-regular
-        font-size: 9.41px;
-        color: #333333;
-        text-align: center;
+        font-size: 9.41px
+        color: #333333
+        text-align: center
         line-height: 1
         no-wrap()
   // 限时抢购
@@ -598,10 +609,10 @@
           height: @width
           position: relative
           .goods-img
-            width: 100%
-            height: @width
-            object-fit: cover
-            border-radius: 2.35px;
+            width :100%
+            height :@width
+            object-fit :cover
+            border-radius: 2.35px
           .label
             width: 20px
             height: 12.2px
@@ -612,9 +623,9 @@
           padding-top: 5px
           width: 100%
           font-family: $font-family-regular
-          font-size: 10.19px;
-          color: #111111;
-          transform: scale(0.9)
+          font-size: 10.19px
+          color: #111111
+          transform :scale(0.9)
           no-wrap()
         .money-wrapper
           width: 100%
@@ -628,19 +639,19 @@
             position: relative
             bottom: 3px
           .m-dot, .m-unit
-            position: relative
-            font-size: 10px;
-            bottom: 1px
+            position :relative
+            font-size: 10px
+            bottom :1px
           .m-dot
             transform: scale(.9)
           .m-unit
             transform: scale(0.8)
           .m-origin
             font-family: $font-family-regular
-            font-size: 10px;
-            transform: scale(0.8)
-            color: #B7B7B7;
-            text-decoration: line-through
+            font-size: 10px
+            transform :scale(0.8)
+            color: #B7B7B7
+            text-decoration :line-through
     .tab-wrapper
       display: flex
       height: 35.3px
@@ -660,27 +671,27 @@
         padding-right: 9.8px
         p
           font-family: $font-family-regular
-          font-size: 10.98px;
-          color: #111111;
+          font-size: 10.98px
+          color: #111111
           transform scale(0.8)
         img
           width: 4.3px
           height: 8.2px
       .button-wrapper
-        width: 64.3px
-        height: 100%
-        color: #1D2023;
+        width :64.3px
+        height :100%
+        color: #1D2023
         font-family: $font-family-medium
         text-align: center
         &.active
           background: #FFE359
         .title
-          padding-top: 8px
-          font-size: 12.54px;
+          padding-top :8px
+          font-size: 12.54px
           transform scale(1)
           line-height: 0.8
         .date
-          font-size: 7.84px;
+          font-size: 7.84px
           transform scale(0.6)
           line-height: 1
 

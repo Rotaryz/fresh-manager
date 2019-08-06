@@ -35,7 +35,7 @@
             <div class="list-item">{{item.money}}</div>
             <div class="list-item">{{item.type_str}}</div>
             <div class="list-item">{{item.status_str}}</div>
-            <div class="list-item">{{item.updated_at}}</div>
+            <div class="list-item">{{item.status===0?'——':item.updated_at}}</div>
             <div class="list-item list-operation-box">
               <span class="list-operation" @click="_goDetail(item)">详情</span>
             </div>
@@ -84,7 +84,7 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '佣金收益', status: 0}, {name: '退款补偿', status: 1}]
+          data: [{name: '全部', status: ''}, {name: '佣金收益-自提商品', status: 0}, {name: '佣金收益-全国包邮', status: 0}, {name: '退款补偿', status: 1}]
         },
         id: 0,
         settlementType: '',
@@ -106,6 +106,9 @@
       _goDetail(item) {
         // 退货详情id未对 todo
         let url = '/home/order-list/order-detail/' + item.order_id
+        if (item.type_str.includes('全国包邮')) {
+          url += '?freeShipping=1'
+        }
         this.$router.push(url)
       },
       _getSettlementDetail() {
@@ -127,25 +130,16 @@
         }
       },
       _search(text) {
-        // this.$refs.pages.beginPage()
-        // this.page = 1
-        // this.orderSn = text
-        // this._getSettlementDetail()
         this._updateList({page: 1, order_sn: text})
       },
       _setStatus(item) {
-        // this.status = item.status
-        // this.$refs.pages.beginPage()
-        // this.page = 1
-        // this._getSettlementDetail()
         this._updateList({page: 1, status: item.status})
       },
       _settlementType(item) {
-        // this.settlementType = item.status
-        // this.$refs.pages.beginPage()
-        // this.page = 1
-        // this._getSettlementDetail()
-        this._updateList({page: 1, type: item.status})
+        let params = {page: 1, type: item.status}
+        // source_type=2代表全国包邮
+        params.source_type = item.name === '佣金收益-全国包邮' ? 2 : ''
+        this._updateList(params)
       },
       _getMoreList(page) {
         // this.page = page

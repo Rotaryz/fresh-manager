@@ -30,7 +30,7 @@
         <div class="identification-page">
           <img src="./icon-order_list@2x.png" class="identification-icon">
           <p class="identification-name">订单列表</p>
-          <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeTab"></base-status-tab>
+          <base-status-nav :statusList="statusTab" :value="orderStatus" valueKey="status" labelKey="status_str" numKey="statistic" @change="changeTab"></base-status-nav>
         </div>
         <div class="function-btn">
           <div class="btn-main" @click="exportExcel">导出Excel</div>
@@ -55,7 +55,7 @@
             <div class="list-item list-text list-item-double" :title="item.social_name">{{item.social_name}}</div>
             <div class="list-item list-text">{{item.status_text}}</div>
             <div class="list-item list-use">
-              <router-link tag="span" :to="{path: `order-detail/${item.order_id}`}" append class="list-operation">详情</router-link>
+              <router-link tag="span" :to="{path: `order-detail/${item.order_id}?freeShipping=${status === 'c_freeShipping' ? '1' : '0'}`}" append class="list-operation">详情</router-link>
             </div>
           </div>
         </div>
@@ -79,16 +79,9 @@
   const SEARCH_PLACE_HOLDER = '订单号/会员名称/会员手机'
   const EXCEL_URL = '/social-shopping/api/backend/order-excel'
 
-  // const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '发货日期', '社区名称', '订单状态', '操作']
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '社区名称', '订单状态', '操作']
-  const ORDERSTATUS = [{text: '商城订单', status: 'c_shop'}, {text: '拓展订单', status: 'c_offline'}]
-  const SOCIAL_SELECT = {
-    check: false,
-    show: false,
-    content: '全部社区',
-    type: 'default',
-    data: []
-  }
+  const ORDERSTATUS = [{text: '商城订单', status: 'c_shop'}, {text: '拓展订单', status: 'c_offline'}, {text: '全国包邮订单', status: 'c_freeShipping'}]
+  const SOCIAL_SELECT = {check: false, show: false, content: '全部社区', type: 'default', data: []}
 
   export default {
     name: PAGE_NAME,
@@ -106,11 +99,11 @@
         datePlaceHolder: DATE_PLACE_HOLDER,
         socialSelect: SOCIAL_SELECT,
         statusTab: [
-          {name: '全部', value: '', key: 'all', num: 0},
-          {name: '待付款', value: 1, key: 'wait_submit', num: 0},
-          {name: '待提货', value: 1, key: 'success', num: 0},
-          {name: '已完成', value: 1, key: 'success', num: 0},
-          {name: '已关闭', value: 1, key: 'success', num: 0}
+          {status_str: '全部', status: 'all', statistic: 0},
+          {status_str: '待付款', status: 'wait_submit', statistic: 0},
+          {status_str: '待提货', status: 'success', statistic: 0},
+          {status_str: '已完成', status: 'success', statistic: 0},
+          {status_str: '已关闭', status: 'success', statistic: 0}
         ],
         downUrl: '',
         defaultStatus: 'c_shop'
@@ -134,6 +127,11 @@
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
           keyword: this.keyword
+        }
+        // // source_type=2代表全国包邮
+        if (this.status === 'c_freeShipping') {
+          data.source_type = 2
+          delete data.source
         }
         let search = []
         for (let key in data) {
@@ -171,28 +169,29 @@
     methods: {
       ...orderMethods,
       changeTab(selectStatus, index) {
-        this.setDefaultIndex(index)
+        // this.setDefaultIndex(index)
         this.setOrderStatus(selectStatus)
+        this.getOrderStatus()
       },
       getOrderStatus(startTime, endTime) {
-        API.Order.getOrderStatus({
+        let params = {
           source: this.status,
           start_time: this.startTime,
           end_time: this.endTime,
           shop_id: this.shopId,
           keyword: this.keyword
-        }).then((res) => {
+        }
+        if (this.status === 'c_freeShipping') {
+          // 全国包邮不传source，source_type=2代表全国包邮
+          params.source_type = 2
+          delete params.source
+        }
+        API.Order.getOrderStatus(params).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
           }
-          this.statusTab = res.data.map((item, index) => {
-            return {
-              name: item.status_str,
-              status: item.status,
-              num: item.statistic
-            }
-          })
+          this.statusTab = res.data
         })
       },
       _getShopList() {
@@ -277,17 +276,11 @@
   .list-box
     .list-item
       box-sizing: border-box
-      flex: 1
-
+      flex: 0.7
       &:nth-child(1)
         flex: 1.2
-
-      &:nth-child(6), &:nth-child(5)
-        flex: 1.2
-
-      &:nth-child(7)
-        flex: 0.7
-
+      &:nth-child(5)
+        flex: 1.5
       &:last-child
         padding: 0
         max-width: 28px
