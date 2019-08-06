@@ -181,7 +181,7 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        if (item.sale_usable_stock <= 0 && this.stock) {
+        if (item.sale_usable_stock <= 0 && this.stock && !item.is_presale) {
           this.$toast.show('该商品库存为0，不能选择')
           return
         }
@@ -314,7 +314,7 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        if (item.sale_usable_stock <= 0 && this.stock) {
+        if (item.sale_usable_stock <= 0 && this.stock && !item.is_presale) {
           this.$toast.show('该商品库存为0，不能选择')
           return
         }

@@ -104,6 +104,7 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
+    <div @click="testForm">test</div>
     <select-goods ref="goodsPop" @additionOne="additionOne" @batchAddition="batchAddition"></select-goods>
   </div>
 </template>
@@ -226,6 +227,10 @@
     },
     methods: {
       ...merchantOrderMethods,
+      testForm() {
+        let result = this.checkGoods()
+        console.log(this.goodsList, result)
+      },
       _initData() {
         this.msg = {}
         this.nickName = ''
@@ -297,10 +302,10 @@
           })
       },
       stockHandle(item) {
-        if (item.sale_num < 0) {
+        if (item.sale_num < 0 && !item.is_presale) {
           item.sale_num = item.sale_num * -1
         }
-        if (item.sale_num > item.sale_usable_stock) {
+        if (item.sale_num > item.sale_usable_stock && !item.is_presale) {
           item.sale_num = item.sale_usable_stock
         }
         item.is_error = 0
@@ -432,10 +437,16 @@
       checkGoods() {
         let result = this.goodsList.every(item => {
           !item.sale_num && this.$toast.show(`请输入“${item.name}”下单数量`)
-          if (item.sale_num < 1 || !RATE.test(item.sale_num)) {
-            this.$toast.show(`下单数量应为大于0的整数`)
+          if (item.is_presale) {
+            if (+item.sale_num === 0 || !RATE.test(Math.abs(item.sale_num))) {
+              this.$toast.show(`预售商品下单数量应为非0的整数`)
+            }
+          } else {
+            if (item.sale_num < 1 || !RATE.test(item.sale_num)) {
+              this.$toast.show(`非预售商品下单数量应为大于0的整数`)
+            }
           }
-          return item.sale_num > 0 && RATE.test(item.sale_num)
+          return item.is_presale ? (+item.sale_num !== 0 && RATE.test(Math.abs(item.sale_num))) : (item.sale_num > 0 && RATE.test(item.sale_num))
         })
         return result
       },
