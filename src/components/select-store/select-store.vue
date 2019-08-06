@@ -190,10 +190,10 @@
         }
         this.choeesGoods[index].selected = 1
         this.goodsList.push(item)
-        this.selectGoodsId.push(item.id)
+        this.selectGoodsId.push(item.goods_id)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+            let idx = this.selectGoods.findIndex((child) => child.goods_id === item.goods_id)
             if (idx !== -1) {
               this.selectGoods.splice(idx, 1)
             }
@@ -223,7 +223,7 @@
         this.selectGoods.forEach((item) => {
           let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
           let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
+          idx > -1 && (this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0)
           this.selectGoodsId.splice(delIdx, 1)
         })
         this.selectGoods = []
@@ -247,22 +247,10 @@
         }
         this.choeesGoods = []
         this.goodsList = []
-        this.choeesGoods = res.data.map((item, index) => {
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          if (delIndex !== -1) {
-            item.selected = 0
-          }
-          if (idx !== -1) {
-            item.selected = 1
-          }
-          if (goodsIndex !== -1) {
-            item.selected = 2
-          }
-          return item
+        this.selectGoodsId = this.selectStoreList.map(item => {
+          return item.goods_id
         })
-        this.choeesGoods.forEach((item) => {
+        this.choeesGoods = res.data.map((item) => {
           let ischecked = false
           this.selectStoreList.forEach((item1) => {
             if (item1.goods_id * 1 === item.goods_id * 1) {
@@ -274,6 +262,22 @@
           } else {
             item.selected = 0
           }
+          return item
+        })
+        this.choeesGoods = this.choeesGoods.map((item, index) => {
+          let idx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          let goodsIndex = this.selectGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let delIndex = this.selectDelId.findIndex((id) => id === item.goods_id)
+          if (delIndex !== -1) {
+            item.selected = 0
+          }
+          if (idx !== -1) {
+            item.selected = 1
+          }
+          if (goodsIndex !== -1) {
+            item.selected = 2
+          }
+          return item
         })
         this.$forceUpdate()
       },
@@ -322,12 +326,12 @@
         case 0:
           this.choeesGoods[index].selected = 2
           this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
+          this.selectGoodsId.push(item.goods_id)
           break
         case 2:
           this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let idx = this.selectGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let idIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
           if (idx !== -1) {
             this.selectGoods.splice(idx, 1)
           }
