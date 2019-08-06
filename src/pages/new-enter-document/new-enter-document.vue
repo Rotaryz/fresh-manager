@@ -271,6 +271,7 @@
         if (item.base_num) {
           this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
         }
+        this.$forceUpdate()
       },
       // 修改入库数量（采购单位）
       changePurchase(item, index) {
@@ -285,6 +286,7 @@
         if (item.purchase_num) {
           this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
         }
+        this.$forceUpdate()
       },
       // 修改入库单价
       changePrice(item, index) {
@@ -294,6 +296,7 @@
         if (item.base_num) {
           this.goodsList[index].total = (item.base_num * item.price).toFixed(2)
         }
+        this.$forceUpdate()
       },
       changeTime(e, index) {
         this.goodsList[index].shelf_life = e
