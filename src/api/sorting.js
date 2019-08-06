@@ -67,6 +67,11 @@ export default {
     let url = '/scm/api/backend/sorting/order-sorting-export'
     window.open(url + paramsStr, '_parent')
   },
+  // √ 导出消费者清单
+  exportCustomerOrder(paramsStr) {
+    let url = '/scm/api/backend/sorting/picking-order-customer-order-export'
+    window.open(url + paramsStr, '_parent')
+  },
   // 批量完成分拣
   batchFinishSorting(data, loading = true) {
     let url = '/scm/api/backend/sorting/batch-finish-sorting'
@@ -105,5 +110,10 @@ export default {
   exportAllocationList(paramsStr) {
     let url = '/scm/api/backend/sorting/allocation-position-export'
     window.open(url + paramsStr, '_parent')
-  }
+  },
+  // 订单分拣导出配货单
+  async exportInvoiceOrder(paramsStr) {
+    let url = '/scm/api/backend/delivery/delivery-exports'
+    return window.open(url + paramsStr, '_parent')
+  },
 }

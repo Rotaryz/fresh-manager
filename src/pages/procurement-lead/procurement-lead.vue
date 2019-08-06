@@ -6,14 +6,20 @@
           <img src="./icon-purchase_list@2x.png" class="identification-icon">
           <p class="identification-name">采购任务导入</p>
         </div>
-        <div class="btn-main">
-          导入采购任务单
-          <input
-            type="file"
-            class="stock-file hand"
-            @change="importStock($event, 1)"
-          >
+        <div class="function-btn">
+          <div class="btn-main" @click="exportModel">
+            模板导出
+          </div>
+          <div class="btn-main g-btn-item">
+            导入采购任务单
+            <input
+              type="file"
+              class="stock-file hand"
+              @change="importStock($event, 1)"
+            >
+          </div>
         </div>
+
       </div>
       <div class="big-list" :class="blankList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
@@ -22,20 +28,18 @@
         <div v-if="blankList.length !== 0" class="list">
           <div v-for="(item, index) in blankList" :key="index" class="list-content list-box">
             <div class="list-item">{{item.num}}</div>
-            <div class="list-item list-double-row">
-              <div class="item-dark">{{item.goods_name}}</div>
-              <div class="item-dark">{{item.goods_sku_encoding}}</div>
-            </div>
-            <div class="list-item">{{item.goods_material_category}}</div>
-            <div class="list-item">{{item.supplier_name}}</div>
-            <div class="list-item">{{item.plan_num}}</div>
+            <div class="list-item" :class="{'red': +item.error_type === 1}">{{+item.error_type === 1 ? item.error_msg : item.goods_sku_encoding}}</div>
+            <div class="list-item">{{item.goods_name}}</div>
+            <div class="list-item" :class="{'red': +item.error_type === 2}">{{+item.error_type === 2 ? item.error_msg : item.plan_num}}</div>
+            <div class="list-item">{{item.purchase_unit}}</div>
+            <div class="list-item" :class="{'red': +item.error_type === 3}">{{+item.error_type === 3 ? item.error_msg : item.supplier_name}}</div>
           </div>
         </div>
         <base-blank v-else></base-blank>
       </div>
       <div class="back">
         <div class="back-cancel back-btn hand" @click="_back">返回</div>
-        <div class="back-btn back-submit hand" @click="submitSure">确认提交</div>
+        <div class="back-btn back-submit hand" :class="{'btn-disable': hasError}" @click="submitSure">确认提交</div>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="confirm"></default-confirm>
@@ -48,7 +52,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
   const TITLE = '采购任务导入'
-  const COMMODITIES_LIST = ['序号', '商品', '类目', '供应商', '采购数量']
+  const COMMODITIES_LIST = ['序号', '商品编码', '商品名称', '采购数量', '采购单位', '供应商']
   export default {
     name: PAGE_NAME,
     page: {
@@ -61,7 +65,8 @@
       return {
         commodities: COMMODITIES_LIST,
         blankList: [],
-        isSubmit: true
+        isSubmit: true,
+        hasError: false
       }
     },
     created() {},
@@ -71,6 +76,7 @@
           this.$toast.show('导入采购任务单不能为空')
           return
         }
+        if (this.hasError) return
         this.$refs.confirm.show('是否批量导入采购任务单？')
       },
       async confirm() {
@@ -94,16 +100,37 @@
       },
       //  导入商品新建模板
       async importStock(e, index) {
+        this.hasError = false
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
         let res = await API.Supply.leadTask(param, true, 60000)
         this.$loading.hide()
-        this.blankList = res.error === this.$ERR_OK ? res.data : []
-        console.log(res)
         e.target.value = ''
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
+          return
         }
+        this.blankList = res.data
+        let result = res.data.every(item => {
+          return +item.error_type === 0
+        })
+        if (!result) {
+          this.hasError = true
+        }
+      },
+      exportModel() {
+        let token = this.$storage.get('auth.currentUser', '')
+        let data = {
+          current_corp: this.getCurrentId(),
+          // current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: token.access_token,
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        let Url = process.env.VUE_APP_SCM_API + '/scm/api/backend/purchase/purchase-task-export-temp?' + search.join('&')
+        window.open(Url)
       },
       // 格式化文件
       _infoFile(file) {
@@ -127,12 +154,10 @@
     .list-box
       .list-item
         padding-right: 14px
-        &:nth-child(1), &:nth-child(5)
-          flex: 0.3
         &:nth-child(2)
           flex: 1.2
-        &:nth-child(3), &:nth-child(4), &:nth-child(5)
-          flex-wrap: nowrap
+      .red
+        color: #F84E3C
 
   .down-content
     align-items: flex-start

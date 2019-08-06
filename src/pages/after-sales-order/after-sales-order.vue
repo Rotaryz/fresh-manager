@@ -104,8 +104,8 @@
         <div class="back btn-group-wrap">
           <div class="back-cancel back-btn hand" @click="_hideModal">取消</div>
           <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(3)">批量关闭</div>
-          <div :class="['back-btn btn-main hand ',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量补货</div>
-          <div :class="['back-btn back-submit hand',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量退款</div>
+          <div :class="['back-btn btn-main hand btn-disable',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(1)">批量补货</div>
+          <div :class="['back-btn back-submit hand btn-disable',{'disable':!selectIds.length}]" :disable="!selectIds.length" @click="_showConfirm(2)">批量退款</div>
         </div>
       </div>
     </default-modal>
@@ -264,20 +264,20 @@
         this.$refs.modal.showModal()
       },
       _showConfirm(val) {
-        if (this.selectIds.length === 0) return this.$toast.show('请选择批量处理的选项')
-        this.confirmType = val
         let content = ''
         switch (val) {
         case 1:
           content = '批量补货'
-          break
+          return
         case 2:
           content = '批量退款'
-          break
+          return
         case 3:
           content = '批量关闭'
           break
         }
+        if (this.selectIds.length === 0) return this.$toast.show('请选择批量处理的选项')
+        this.confirmType = val
         let text = `确定对所选商品${content}?`
         this.$refs.confirm.show(text)
       },

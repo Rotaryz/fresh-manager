@@ -10,6 +10,10 @@
       <div class="down-item">
         <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
+      <span class="down-tip">出库类型</span>
+      <div class="down-item">
+        <base-drop-down :select="outType" @setValue="changeType"></base-drop-down>
+      </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
         <base-search placeHolder="出库单号或商户名称" :infoText="outFilter.keyword" @search="changeKeyword"></base-search>
@@ -59,10 +63,13 @@
                 <div v-if="item.show_sorting" class="list-item-img"></div>
                 <div v-if="item.is_exception" class="list-item-error"></div>
               </div>
+              <!--出库类型-->
+              <div class="list-item">{{item.type_str}}</div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation">详情</router-link>
                 <router-link v-if="item.status === 0" tag="span" :to="{path: `out-detail/${item.out_order_id}`}" append class="list-operation-strong">出库</router-link>
                 <span v-if="item.status === 2" class="list-operation-strong" @click="goDetail(item)">复核</span>
+                <span v-if="(item.status === 0 || item.status === 2) && item.can_close" class="list-operation" @click="stopDocument(item)">关闭</span>
               </div>
             </div>
           </div>
@@ -74,6 +81,7 @@
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="sureSubmit"></default-confirm>
+    <default-confirm ref="stopConfirm" @confirm="stopConfirm"></default-confirm>
   </div>
 </template>
 
@@ -95,6 +103,7 @@
     '出库数量',
     '出库金额',
     '状态',
+    '出库类型',
     '操作'
   ]
   let ws = null
@@ -119,8 +128,10 @@
         goodsPage: 1,
         dispatchSelect: [
           {name: '全部', value: '', key: 'all', num: 0},
-          {name: '待出库', value: 0, key: 'wait_out', num: 0},
-          {name: '已完成', value: 1, key: 'success', num: 0}
+          {name: '待复核', value: 0, key: 'wait_out', num: 0},
+          {name: '待出库', value: 1, key: 'wait_out', num: 0},
+          {name: '已完成', value: 2, key: 'success', num: 0},
+          {name: '已关闭', value: 3, key: 'success', num: 0}
         ],
         statusTab: 1,
         time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
@@ -130,7 +141,16 @@
           content: '全部',
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
-        }
+        },
+        outType: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
+        },
+        currentItem: {},
+        stopIng: false
       }
     },
     computed: {
@@ -141,6 +161,7 @@
     },
     async created() {
       this._setErrorStatus()
+      this.getEntryOutType()
       await this._statistic()
       this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.outFilter.status)
     },
@@ -166,6 +187,22 @@
           }
         }
       },
+      getEntryOutType() {
+        API.Store.getEntryOutType({method: 'index'})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.outType.data = res.data.out.map(item => {
+              return {
+                name: item.type_str,
+                type: item.type
+              }
+            })
+            this.outType.data.unshift({name: '全部', type: ''})
+          })
+      },
       _updateList(params, noUpdataStatus) {
         this.SET_OUT_PARAMS(params)
         this.getOutData({loading: false})
@@ -183,6 +220,33 @@
         let item = this.errorObj.data.find((item) => item.status === this.outFilter.exception_status)
         this.errorObj.content = item.name || '全部'
       },
+      changeType(item) {
+        this._updateList({type: item.type, page: 1})
+      },
+      stopDocument(item) {
+        if (item.show_sorting) {
+          return
+        }
+        this.currentItem = item
+        this.$refs.stopConfirm.show('确定关闭此订单？')
+      },
+      stopConfirm() {
+        if (this.stopIng) return
+        this.stopIng = true
+        API.Store.closeOutOrder(this.currentItem.id)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$toast.show('关闭成功')
+            this.getOutData({loading: false})
+            this._statistic()
+            setTimeout(() => {
+              this.stopIng = false
+            }, 500)
+          })
+      },
       goDetail(item) {
         if (item.show_sorting) {
           return
@@ -199,7 +263,6 @@
         let res = await API.Store[type]()
         this.$toast.show(res.message)
         if (res.error === this.$ERR_OK) {
-          console.log(apiUrl)
           this.webSocketData(apiUrl)
         }
       },
@@ -222,6 +285,7 @@
           start_time: this.outFilter.start_time,
           end_time: this.outFilter.end_time,
           keyword: this.outFilter.keyword,
+          type: this.outFilter.type,
           exception_status: this.outFilter.exception_status
         })
         if (res.error === this.$ERR_OK) {
@@ -266,7 +330,7 @@
       },
       async changeEndTime(value) {
         this.endTime = value
-        if (Date.parse(this.startTime.replace(/-/g, '/')) > Date.parse(this.endTime.replace(/-/g, '/'))) {
+        if (Date.parse(this.startTime.replace(/-/g, '/')) > Date.parse(this.endTime.repla_selectEntryTypece(/-/g, '/'))) {
           this.$toast.show('结束时间不能小于开始时间')
           return
         }
@@ -292,7 +356,7 @@
       .list-item
         padding-right: 14px
         &:last-child
-          max-width: 70px
+          max-width: 98px
         &:nth-child(1)
           flex: 1.1
         &:nth-child(5), &:nth-child(6)

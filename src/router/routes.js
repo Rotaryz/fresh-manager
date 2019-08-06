@@ -1425,7 +1425,7 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             if (store.getters['merchantOrder/tabIndex'] === 0) {
               store
-                .dispatch('merchantOrder/getMerchantOrderList')
+                .dispatch('merchantOrder/getMerchantOrderList', true)
                 .then((res) => {
                   if (!res) {
                     return next({name: '404'})
@@ -1437,7 +1437,7 @@ export default [
                 })
             } else {
               store
-                .dispatch('merchantOrder/getMergerOrderList')
+                .dispatch('merchantOrder/getConsumerOrderList')
                 .then((res) => {
                   if (!res) {
                     return next({name: '404'})
@@ -1448,15 +1448,6 @@ export default [
                   next({name: '404'})
                 })
             }
-            // store.commit('merchantOrder/SET_PARAMS', {
-            //   page: 1,
-            //   limit: 10,
-            //   start_time: '',
-            //   end_time: '',
-            //   type: '',
-            //   status: 0, // 待调度
-            //   keyword: ''
-            // })
           }
         },
         component: () => lazyLoadView(import('@pages/merchant-order/merchant-order'))
@@ -1485,23 +1476,11 @@ export default [
       },
       // 商品订单详情的明细
       {
-        path: 'merchant-order/consumer-order-detail/:parent_order_id/:goods_sku_code/:id',
+        path: 'merchant-order/consumer-order-detail',
         name: 'consumer-order-detail',
         meta: {
-          titles: ['供应链', '订单', '商户订单', '商品明细', '消费者明细'],
-          async beforeResolve(routeTo, routeFrom, next) {
-            store
-              .dispatch('merchantOrder/getConsumerDetails', routeTo.params)
-              .then((res) => {
-                if (!res) {
-                  return next({name: '404'})
-                }
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
-          }
+          marginBottom: 80,
+          titles: ['供应链', '订单', '商户订单', '补录订单'],
         },
         component: () => lazyLoadView(import('@pages/consumer-order-detail/consumer-order-detail'))
       },
@@ -1669,15 +1648,10 @@ export default [
           titles: ['供应链', '采购', '采购任务', '预采建议单'],
           async beforeResolve(routeTo, routeFrom, next) {
             store
-              .dispatch('proTask/getPurchaseTaskList', {
-                time: 'today',
-                startTime: '',
-                endTime: '',
+              .dispatch('proTask/getSuggestList', {
+               supplierId: '',
                 keyword: '',
                 page: 1,
-                status: '',
-                supplyId: '',
-                isBlocked: 1,
                 loading: true
               })
               .then((res) => {
@@ -1844,15 +1818,6 @@ export default [
           }
         }
       },
-      // 导入商品
-      {
-        path: 'goods-manage/lead-supply-goods',
-        name: 'lead-supply-goods',
-        component: () => lazyLoadView(import('@pages/lead-supply-goods/lead-supply-goods')),
-        meta: {
-          titles: ['供应链', '采购', '商品管理', '商品导入']
-        }
-      },
       // 新建商品
       {
         path: 'goods-manage/edit-supply-goods',
@@ -1968,6 +1933,7 @@ export default [
                 end_time: endTime,
                 exception_status: exceptionStatus,
                 keyword: '',
+                type: '',
                 status: status,
                 page: 1,
                 limit: 10
@@ -1986,6 +1952,16 @@ export default [
                 return next({name: '404'})
               })
           }
+        }
+      },
+      // 新建入库单
+      {
+        path: 'product-enter/new-enter-document',
+        name: 'new-enter-document',
+        component: () => lazyLoadView(import('@pages/new-enter-document/new-enter-document')),
+        meta: {
+          marginBottom: 80,
+          title: ['供应链', '仓库', '成品入库', '新建入库单']
         }
       },
       // 成品入库明细

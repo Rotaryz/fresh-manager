@@ -48,7 +48,7 @@
                 <div class="list-item list-text">{{item.remark}}</div>
                 <div class="list-item list-text">{{item.status_str}}</div>
                 <div class="list-item list-use">
-                  <span v-if="item.after_sale_status === 0 || item.after_sale_status === 2" class="list-operation" @click="checkApply(item.id)">审核</span>
+                  <span v-if="item.after_sale_status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
                   <router-link tag="span" :to="`refund-detail/${item.id}`" append class="list-operation">详情</router-link>
                 </div>
               </div>
