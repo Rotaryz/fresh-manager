@@ -302,7 +302,7 @@
           })
       },
       stockHandle(item) {
-        if (item.sale_num < 0 && !item.is_presale) {
+        if (item.sale_num < 0) {
           item.sale_num = item.sale_num * -1
         }
         if (item.sale_num > item.sale_usable_stock && !item.is_presale) {
@@ -437,16 +437,10 @@
       checkGoods() {
         let result = this.goodsList.every(item => {
           !item.sale_num && this.$toast.show(`请输入“${item.name}”下单数量`)
-          if (item.is_presale) {
-            if (+item.sale_num === 0 || !RATE.test(Math.abs(item.sale_num))) {
-              this.$toast.show(`预售商品下单数量应为非0的整数`)
-            }
-          } else {
-            if (item.sale_num < 1 || !RATE.test(item.sale_num)) {
-              this.$toast.show(`非预售商品下单数量应为大于0的整数`)
-            }
+          if (item.sale_num < 1 || !RATE.test(item.sale_num)) {
+            this.$toast.show(`下单数量应为大于0的整数`)
           }
-          return item.is_presale ? (+item.sale_num !== 0 && RATE.test(Math.abs(item.sale_num))) : (item.sale_num > 0 && RATE.test(item.sale_num))
+          return item.sale_num > 0 && RATE.test(item.sale_num)
         })
         return result
       },

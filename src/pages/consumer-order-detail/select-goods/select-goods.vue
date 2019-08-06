@@ -39,7 +39,7 @@
                 <p class="text">{{item.goods_sku_encoding}}</p>
               </div>
               <!--<div class="goods-money">{{item.goods_sku_encoding}}</div>-->
-              <div class="goods-stock">可用库存 {{item.sale_usable_stock}}{{item.sale_unit}}</div>
+              <div v-if="!item.is_presale" class="goods-stock">可用库存 {{item.sale_usable_stock}}{{item.sale_unit}}</div>
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
