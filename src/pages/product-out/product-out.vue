@@ -149,7 +149,8 @@
           type: 'default',
           data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
         },
-        currentItem: {}
+        currentItem: {},
+        stopIng: false
       }
     },
     computed: {
@@ -230,6 +231,8 @@
         this.$refs.stopConfirm.show('确定关闭此订单？')
       },
       stopConfirm() {
+        if (this.stopIng) return
+        this.stopIng = true
         API.Store.closeOutOrder(this.currentItem.id)
           .then(res => {
             if (res.error !== this.$ERR_OK) {
@@ -239,6 +242,9 @@
             this.$toast.show('关闭成功')
             this.getOutData({loading: false})
             this._statistic()
+            setTimeout(() => {
+              this.stopIng = false
+            }, 500)
           })
       },
       goDetail(item) {
