@@ -96,7 +96,7 @@
         }
         this.isSubmit = false
         let res = await API.Product.scmGoodsImport({data: this.blankList})
-        this.$toast.show(res.message, 600)
+        this.$toast.show(res.message, 1500)
         if (res.error !== this.$ERR_OK) {
           this.isSubmit = true
           this.$toast.show(res.message)
@@ -104,7 +104,7 @@
         }
         setTimeout(() => {
           this.$router.back()
-        }, 800)
+        }, 1500)
       },
       _back() {
         this.$router.back()
