@@ -1818,6 +1818,15 @@ export default [
           }
         }
       },
+      // 导入商品
+      {
+        path: 'goods-manage/lead-supply-goods',
+        name: 'lead-supply-goods',
+        component: () => lazyLoadView(import('@pages/lead-supply-goods/lead-supply-goods')),
+        meta: {
+          titles: ['供应链', '采购', '商品管理', '商品导入']
+        }
+      },
       // 新建商品
       {
         path: 'goods-manage/edit-supply-goods',
