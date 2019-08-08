@@ -6,6 +6,9 @@
       <div class="down-item-small">
         <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
       </div>
+      <div v-if="infoTabIndex * 1 === 0" class="down-item-small">
+        <base-drop-down :select="orderSelect" @setValue="changeShopId"></base-drop-down>
+      </div>
       <div class="down-item">
         <!--<base-date-select :width="292" dataPickerType="datetimerange" :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>-->
         <!--  eslint-disable -->
@@ -82,6 +85,7 @@
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '社区名称', '订单状态', '操作']
   const ORDERSTATUS = [{text: '商城订单', status: 'c_shop'}, {text: '拓展订单', status: 'c_offline'}, {text: '全国包邮订单', status: 'c_freeShipping'}]
   const SOCIAL_SELECT = {check: false, show: false, content: '全部社区', type: 'default', data: []}
+  const ORDER_SELECT = {check: false, show: false, content: '全部订单', type: 'default', data: [{name: '普通订单', status: '0'}, {name: '拼团订单', status: '1'}, {name: '集采订单', status: '2'}]}
 
   export default {
     name: PAGE_NAME,
@@ -98,6 +102,7 @@
         searchPlaceHolder: SEARCH_PLACE_HOLDER,
         datePlaceHolder: DATE_PLACE_HOLDER,
         socialSelect: SOCIAL_SELECT,
+        orderSelect: ORDER_SELECT,
         statusTab: [
           {status_str: '全部', status: 'all', statistic: 0},
           {status_str: '待付款', status: 'wait_submit', statistic: 0},

@@ -151,6 +151,16 @@
           <div class="edit-item">
             <div class="edit-title">
               <span class="start">*</span>
+              采购周期
+            </div>
+            <div class="edit-input-box">
+              <input v-model="goods_skus.damage_rate" type="number" class="edit-input">
+            </div>
+            <div class="edit-pla">用户下单时间+采购周期=用户提货日期</div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
               采购单价
             </div>
             <div class="edit-input-box">

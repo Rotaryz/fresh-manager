@@ -49,7 +49,7 @@
         </div>
         <div class="ro-order-list">
           <div v-for="(item, index) in detail.goods" :key="index" class="ro-order-list-box">
-            <div class="ro-order-list-item ro-order-list-text ro-order-list-item-double">{{item.goods_name}}</div>
+            <div class="ro-order-list-item ro-order-list-text item-dark-icon"><div class="dark-icon">集采</div>{{item.goods_name}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>
@@ -79,7 +79,7 @@
 
   const PAGE_NAME = 'ORDER_DETAIL'
   const TITLE = '订单详情'
-  const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '发货日期', '退款状态']
+  const TITLELIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '提货日期', '退款状态']
   const FS_TITLE_LIST = ['商品名称', '下单单位', '下单数量', '下单单价', '下单金额', '退款状态', '快递公司', '快递单号']
 
   export default {
