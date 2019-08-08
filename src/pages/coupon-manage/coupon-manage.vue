@@ -215,16 +215,28 @@
     computed: {
       ...couponComputed
     },
+    watch: {
+      couponList(cur, pre) {
+        this.updateListTabStatus()
+      }
+    },
     created() {
       this.getCouponStatus()
     },
     methods: {
       ...couponMethods,
+      updateListTabStatus() {
+        if (this.infoTabIndex > 0) {
+          this.$refs.goodsCoupon && this.$refs.goodsCoupon.getCouponStatus()
+        } else {
+          this.getCouponStatus()
+        }
+      },
       searchHandle(keyword) {
         this.setRequestData({keyword, page: 1})
-        this.getCouponStatus()
         this.$refs.pagination.beginPage()
       },
+      // 切换顶部tab(优惠券,兑换券等)
       changeTab(item, index) {
         this.setInfoIndex(index)
         this.getCouponList()
@@ -242,7 +254,7 @@
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({
-          tag_type: 0,
+          tag_type: this.infoTabIndex,
           created_start_at: this.requestData.created_start_at,
           created_end_at: this.requestData.created_end_at
         }).then(
@@ -262,29 +274,21 @@
         )
       },
       changeStatus(status, index) {
-        // this.msg.status = status.status
-        // this.msg.page = 1
+        console.log(status)
         this.setDefaultIndex({status: status.status, index})
         this.$refs.pagination.beginPage()
-        // this.getCouponList(this.msg)
       },
       async changeTime(time) {
-        // this.msg.startTime = time[0]
-        // this.msg.endTime = time[1]
-        // this.msg.page = 1
         this.setRequestData({
           created_start_at: time[0],
           created_end_at: time[1],
           page: 1
         })
-        // this.getCouponList(this.requestData)
-        this.getCouponStatus()
         this.$refs.pagination.beginPage()
       },
       viewDataShow(item) {
         this.currentItem = item
         this.$router.push('/home/coupon-manage/coupon-data?id='+item.id)
-        // this.getCouponData()
       },
       getCouponData() {
         API.Coupon.getCouponData({
@@ -361,7 +365,6 @@
               this.getCouponList()
             }
             this.$toast.show('删除成功')
-            this.getCouponStatus()
           })
         this.confirmType === 'stop' && API.Coupon.stopCoupon(this.currentItem.id)
           .then(res => {
@@ -371,7 +374,6 @@
             }
             this.$toast.show('停止成功')
             this.getCouponList()
-            this.getCouponStatus()
           })
       }
     }

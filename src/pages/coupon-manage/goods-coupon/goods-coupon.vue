@@ -15,6 +15,7 @@
         <div class="identification-page">
           <img src="../icon-coupon_list@2x.png" class="identification-icon">
           <p class="identification-name">兑换券列表</p>
+          <base-status-tab :statusList="statusTab" :infoTabIndex="+defaultIndex" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-commodity" append class="btn-main">新建兑换券<span class="add-icon"></span></router-link>
@@ -90,7 +91,13 @@
         // page: 1,
         // startTime: '',
         // endTime: '',
-        delId: null
+        delId: null,
+        statusTab: [
+          {name: '全部', status: '', num: 0},
+          {name: '进行中', status: 1, num: 0},
+          {name: '未开始', status: 1, num: 0},
+          {name: '已结束', status: 1, num: 0}
+        ],
       }
     },
     computed: {
@@ -98,30 +105,45 @@
     },
     methods: {
       ...couponMethods,
+      changeStatus(status, index) {
+        this.setDefaultIndex({status: status.status, index})
+        this.$refs.pagination.beginPage()
+      },
+      getCouponStatus() {
+        API.Coupon.getCouponStatus({
+          tag_type: this.infoTabIndex,
+          created_start_at: this.requestData.created_start_at,
+          created_end_at: this.requestData.created_end_at
+        }).then(
+          (res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          }
+        )
+      },
       searchHandle(keyword) {
         this.setRequestData({keyword, page: 1})
-        // this.getCouponStatus()
         this.$refs.pagination.beginPage()
       },
       changeTime(time) {
-        // this.startTime = time[0]
-        // this.endTime = time[1]
-        // this.page = 1
         this.setRequestData({
           created_start_at: time[0],
           created_end_at: time[1],
           page: 1
         })
-        // this.getGoodsCoupon()
         this.$refs.pagination.beginPage()
       },
-      // getGoodsCoupon() {
-      //   this.getCouponList()
-      // },
       changePage(page) {
-        // this.page = page
         this.setRequestData({page})
-        // this.getGoodsCoupon()
       },
       // 确认删除
       async sureConfirm() {
@@ -135,7 +157,6 @@
         } else {
           this.getCouponList()
         }
-        // this.getGoodsCoupon()
       },
       showDel(item) {
         this.delId = item.id
