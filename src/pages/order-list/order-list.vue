@@ -4,7 +4,7 @@
     <div class="down-content">
       <span class="down-tip">筛选</span>
       <div class="down-item-small">
-        <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+        <base-drop-down :select="socialSelect" :isInput="true" @setValue="changeShopId" @changeText="_searchShop"></base-drop-down>
       </div>
       <div class="down-item">
         <!--<base-date-select :width="292" dataPickerType="datetimerange" :placeHolder="datePlaceHolder" :dateInfo="time" @getTime="changeTime"></base-date-select>-->
@@ -126,7 +126,8 @@
           shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
-          keyword: this.keyword
+          keyword: this.keyword,
+          socialSelectList: []
         }
         // // source_type=2代表全国包邮
         if (this.status === 'c_freeShipping') {
@@ -205,6 +206,7 @@
           })
           selectData.unshift({name: '全部社区', id: ''})
           this.socialSelect.data = selectData
+          this.socialSelectList = selectData
         })
       },
       exportExcel() {
@@ -221,6 +223,19 @@
         this.setShopId(shop)
         this.getOrderStatus()
         this.$refs.pagination.beginPage()
+      },
+      _searchShop(text) {
+        if (text.length === 0) {
+          this.socialSelect.data = this.socialSelectList
+          return
+        }
+        let arr = []
+        this.socialSelectList.forEach((item) =>{
+          if (item.name.toLowerCase().includes(text.toLowerCase())) {
+            arr.push(item)
+          }
+        })
+        this.socialSelect.data = arr
       },
       changeTime(time) {
         this.setTime(time)

@@ -32,6 +32,7 @@
           </div>
           <div class="function-btn">
             <router-link to="/home/leader-list/edit-leader" tag="div" class="btn-main">新建团长<span class="add-icon"></span></router-link>
+            <div class="btn-main hand g-btn-item" @click="exportExcel">导出Excel</div>
           </div>
         </div>
         <div class="big-list leader-list">
@@ -237,6 +238,23 @@
       ...leaderComputed,
       leaderTitle() {
         return this.leaderListFilter.model_type === 0 ? LEADER_TITLE : LEADER_APPLICATION_TILTE
+      },
+      exportUrl() {
+        let currentId = this.getCurrentId()
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          keyword: this.leaderListFilter.keyword,
+          status: this.leaderListFilter.status,
+          model_type: this.leaderListFilter.model_type
+        }
+
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + '/social-shopping/api/backend/after-sale-excel?' + search.join('&')
       }
     },
     created() {
@@ -319,6 +337,9 @@
           this.$toast.show('关联成功')
           this._updateData({page: 1})
         }
+      },
+      exportExcel() {
+        window.open(this.exportUrl, '_blank')
       },
       // 团长可使用账号数量为10000个，当前剩余9966个
       getTopData() {

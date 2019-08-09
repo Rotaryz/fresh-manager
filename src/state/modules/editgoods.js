@@ -62,9 +62,7 @@ export const mutations = {
     state.statePageTotal = statePageTotal
   },
   SET_PARAMS(state, params) {
-    console.log(params)
     state.goodsFitter = {...state.goodsFitter, ...params}
-    console.log(state.goodsFitter, 'state.goodsFitter')
   },
   SET_TASK_DATA(state, params) {
     state.taskData = {...state.taskData, ...params}

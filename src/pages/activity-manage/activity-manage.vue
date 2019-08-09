@@ -73,8 +73,8 @@
   const PAGE_NAME = 'ACTIVITY_MANAGE'
   const TITLE = '活动管理'
   const SALE_TITLE = [
-    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
+    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
     {name: '商品', flex: 1.4, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
@@ -82,8 +82,8 @@
     {name: '操作', flex: 1.4, value: '', type: 5}
   ]
   const COLLAGE_TITLE = [
-    {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
+    {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
     {name: '活动商品数', flex: 1, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},

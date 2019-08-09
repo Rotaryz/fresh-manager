@@ -101,7 +101,7 @@
               </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-goods?complete=1&id=' + item.id" append class="list-operation ">完善资料</router-link>
-                <router-link v-else tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
+                <router-link v-else-if="+item.is_online === 0" tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
                 <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
@@ -389,7 +389,7 @@
           if (res.error === this.$ERR_OK) {
             this.getGoodsData({})
             this.oneBtn = true
-            this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功下架' : '该商品已成功上架')
+            // this.$refs.confirm.show(item.is_online * 1 === 1 ? '该商品已成功下架' : '该商品已成功上架')
             this.getGoodsStatus()
           } else {
             this.$toast.show(res.message)
@@ -486,8 +486,8 @@
         max-width: 120px
       &:last-child
         padding: 5px
-        max-width: 135px
-        min-width: 135px
+        max-width: 78px
+        min-width: 78px
         flex: 1
 
   .list-item-btn

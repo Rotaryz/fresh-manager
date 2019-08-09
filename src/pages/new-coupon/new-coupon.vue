@@ -305,6 +305,12 @@
           </div>
         </div>
         <div class="goods-content">
+          <div class="goods-title">
+            <div class="title-item" style="width:732px"><span>商品名称</span><span></span>销售价</div>
+            <!--<div class="title-item">库存</div>-->
+            <!--<div class="title-item">销售价</div>-->
+            <div class="title-item" style="margin-left: 88px">操作</div>
+          </div>
           <div class="category-list">
             <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
@@ -318,6 +324,7 @@
           </div>
         </div>
         <div class="page-box">
+          <p class="select-all hand" @click="_selectAllGoods()"><span class="select-icon" :class="{'select-icon-active': selectAll}"></span>全选</p>
           <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
@@ -434,7 +441,8 @@
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
         checkFull: false,
-        delType: ''
+        delType: '',
+        selectAll: false
       }
     },
     computed: {
@@ -618,7 +626,7 @@
         }
         this.chooseGoods = res.data.map((item, index) => {
           item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let idx = this.goodsList.findIndex((goods) => goods.id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
           if (delIndex !== -1) {
@@ -699,6 +707,7 @@
           break
         case 2:
           this.chooseGoods[index].selected = 0
+          this.selectAll = false
           let idx = this.selectGoods.findIndex((items) => items.id === item.id)
           let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
           if (idx !== -1) {
@@ -709,6 +718,31 @@
           }
           break
         }
+      },
+      _selectAllGoods() {
+        this.selectAll = !this.selectAll
+        this.selectGoods = []
+        this.selectGoodsId = []
+        if (this.selectAll) {
+          this.chooseGoods.map(item => {
+            +item.selected === 0 && (item.selected = 2);
+            +item.selected === 2 && this.selectGoods.push(item)
+            this.selectGoodsId.push(item.id)
+            return item
+          })
+        } else {
+          this.chooseGoods.map(item => {
+            if (+item.selected === 2) {
+              item.selected = 0
+            }
+            if (+item.selected === 1) {
+              // this.selectGoods.push(item)
+              this.selectGoodsId.push(item.id)
+            }
+            return item
+          })
+        }
+
       },
       // 删除商品
       _showDelGoods(type, item, index) {
@@ -806,6 +840,7 @@
       },
       _hideGoods() {
         this.$refs.goodsModal.hideModal()
+        this.selectAll = false
       },
       async _showCategory() {
         if (this.disable) {
@@ -827,7 +862,7 @@
 
       // 选择品类
       selectCategory(item, index) {
-        // this.categoryCheckItem = item
+        this.categoryCheckItem = item
         if (item.right) return
         if (item.checked) {
           this.categoryList = this.categoryList.map((item, ind) => {
@@ -837,10 +872,10 @@
           let idx = this.categorySelectList.findIndex((items) => items.id === item.id)
           idx > -1 && this.categorySelectList.splice(idx, 1)
         } else {
-          if (this.selectCategoryList.length > 0 || this.categorySelectList.length > 0) {
-            this.$toast.show('只能选择一个品类')
-            return
-          }
+          // if (this.selectCategoryList.length > 0 || this.categorySelectList.length > 0) {
+          //   this.$toast.show('只能选择一个品类')
+          //   return
+          // }
           this.categoryList = this.categoryList.map((item, ind) => {
             index === ind && (item.checked = true)
             return item
@@ -1240,7 +1275,7 @@
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px
     background: $color-white
-    height: 675px
+    height: 720px
     max-width: 1000px
     width: 1000px
     position: relative
@@ -1452,10 +1487,32 @@
     height: 77px
     align-items: center
     display: flex
-
+    .select-all
+      width: 100px
+      display: flex
+      align-items: center
+      -webkit-user-select: none
+      -moz-user-select: none
+      -ms-user-select: none
+      -khtml-user-select: none
+      user-select: none
+    .select-icon
+      margin-right: 20px
+      border-radius: 1px
+      border: 1px solid #e9ecee
+      height: 16px
+      width: 16px
+      display: inline-block
+      -webkit-transition: all .3s
+      transition: all .3s
+    .select-icon-active
+      border: 1px solid transparent
+      display: inline-block
+      background-size: 100% 100%
+      background-image: url("./icon-check@2x.png")
   .goods-content
     border-radius: 4px
-    height: 420px
+    height: 465px
     .category-list
       flex-wrap: wrap
       display: flex
@@ -1550,6 +1607,35 @@
         color: $color-text-assist
         border: none
 
+    .goods-title
+      display: flex
+      height: 45px
+      background: #F5F7FA
+      position: relative
+      align-items: center
+      padding: 0 30px 0 56px
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .title-item
+        display: flex
+        justify-content: space-between
   .category-content
     border-radius: 1px
     margin: 7px 0 0
