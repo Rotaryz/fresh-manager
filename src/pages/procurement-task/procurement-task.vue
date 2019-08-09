@@ -63,7 +63,7 @@
             <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box list-box-goods">
               <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>-->
               <div class="list-item list-double-row">
-                <div class="item-dark">{{item.goods_name}}</div>
+                <div class="item-dark item-dark-icon">{{item.goods_name}}</div>
                 <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
               <div class="list-item">{{item.goods_material_category}}</div>

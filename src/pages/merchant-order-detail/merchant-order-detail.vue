@@ -24,7 +24,7 @@
                 <div v-if="+merchantDetail.is_line === 1 && item.line" class="line-empty">
                 </div>
                 <div v-else-if="item.key === 'goods_name'" class="item-dark-icon" :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
-                  <div class="dark-icon">集采</div>{{row[item.key]}}
+                  {{row[item.key]}}
                 </div>
                 <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
                   {{row[item.key]}}

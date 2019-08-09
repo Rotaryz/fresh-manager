@@ -66,7 +66,7 @@
                   <img class="pic-box" :src="item.goods_cover_image" alt="">
                 </div>
                 <div class="list-item list-double-row">
-                  <div class="item-dark">{{item.goods_material_name}}</div>
+                  <div class="item-dark item-dark-icon">{{item.goods_material_name}}</div>
                   <div class="item-dark">{{item.goods_sku_encoding}}</div>
                 </div>
                 <div class="list-item">{{item.goods_material_category_name}}</div>

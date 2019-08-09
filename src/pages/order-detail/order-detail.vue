@@ -49,7 +49,7 @@
         </div>
         <div class="ro-order-list">
           <div v-for="(item, index) in detail.goods" :key="index" class="ro-order-list-box">
-            <div class="ro-order-list-item ro-order-list-text item-dark-icon"><div class="dark-icon">集采</div>{{item.goods_name}}</div>
+            <div class="ro-order-list-item ro-order-list-text item-dark-icon">{{item.goods_name}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.goods_units}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.num}}</div>
             <div class="ro-order-list-item ro-order-list-text">{{item.price && `¥ ${item.price}`}}</div>

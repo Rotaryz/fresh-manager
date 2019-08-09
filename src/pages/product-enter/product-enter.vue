@@ -36,6 +36,7 @@
           <div v-if="enterList.length">
             <div v-for="(item, index) in enterList" :key="index" class="list-content list-box">
               <div class="list-item">{{item.build_time}}</div>
+              <div class="list-item">配送时间</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <!--<router-link v-if="item.out_order_sn" tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
@@ -76,7 +77,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品入库'
-  const COMMODITIES_LIST = ['建单时间', '入库单号', '商品提供方', '采购单号', '入库金额', '状态', '入库类型', '操作']
+  const COMMODITIES_LIST = ['建单时间', '配送时间', '入库单号', '商品提供方', '采购单号', '入库金额', '状态', '入库类型', '操作']
   const ENTRY_ORDERS_EXPORT = '/scm/api/backend/warehouse/entry-orders-export/'
   const DISS_EXPORT = '/scm/api/backend/warehouse/entry-orders-diff-export/'
   export default {
@@ -286,9 +287,9 @@
         padding-right: 14px
         &:last-child
           max-width: 120px
-        &:nth-child(8), &:nth-child(1)
+        &:nth-child(9), &:nth-child(1)
           flex: 1.5
-        &:nth-child(4), &:nth-child(2)
+        &:nth-child(5), &:nth-child(3)
           flex: 1.7
   .list-item-progress
     display: flex
