@@ -25,7 +25,7 @@
           <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+          <base-search placeHolder="请输入商品名称或商品编码" @search="_searchGoods"></base-search>
         </div>
       </div>
       <div class="goods-content">
@@ -34,12 +34,16 @@
             <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
             <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
             <div class="goods-msg">
-              <div class="goods-name">{{item.goods_name}}</div>
-              <div class="goods-money">{{item.goods_sku_encoding}}</div>
+              <div class="goods-name">
+                <p class="text">{{item.goods_name}}</p>
+                <p class="text">{{item.goods_sku_encoding}}</p>
+              </div>
+              <!--<div class="goods-money">{{item.goods_sku_encoding}}</div>-->
+              <div class="goods-stock">可用库存 {{item.usable_stock}}{{item.base_unit}}</div>
             </div>
             <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
-          <div v-if="choeesGoods.length === 0" class="rush-null-text">暂无出库商品</div>
+          <div v-if="choeesGoods.length === 0" class="rush-null-text">暂无商品</div>
         </div>
       </div>
       <div class="page-box">
@@ -63,6 +67,12 @@
     name: COMPONENT_NAME,
     components: {
       DefaultModal
+    },
+    props: {
+      stock: {
+        type: Boolean,
+        default: true
+      }
     },
     data() {
       return {
@@ -171,15 +181,19 @@
       },
       // 单个添加
       _additionOne(item, index) {
+        if (item.usable_stock <= 0 && this.stock) {
+          this.$toast.show('该商品库存为0，不能选择')
+          return
+        }
         if (item.selected === 1) {
           return
         }
         this.choeesGoods[index].selected = 1
         this.goodsList.push(item)
-        this.selectGoodsId.push(item.id)
+        this.selectGoodsId.push(item.goods_id)
         this.choeesGoods.forEach((item) => {
           if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
+            let idx = this.selectGoods.findIndex((child) => child.goods_id === item.goods_id)
             if (idx !== -1) {
               this.selectGoods.splice(idx, 1)
             }
@@ -195,10 +209,13 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.choeesGoods.forEach((item) => {
-          if (item.selected * 1 === 1) {
-            arr.push(item)
-          }
+        // this.choeesGoods.forEach((item) => {
+        //   if (item.selected * 1 === 1) {
+        //     arr.push(item)
+        //   }
+        // })
+        this.selectGoods.forEach(item => {
+          arr.push(item)
         })
         this.goodsList = this.goodsList.concat(this.selectGoods)
         this.selectGoods = []
@@ -209,7 +226,7 @@
         this.selectGoods.forEach((item) => {
           let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
           let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
+          idx > -1 && (this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0)
           this.selectGoodsId.splice(delIdx, 1)
         })
         this.selectGoods = []
@@ -220,7 +237,6 @@
         let res = await API.Store.getGoodsList({
           keyword: this.keyword,
           goods_material_category_id: this.categoryId,
-          is_entry_goods: 1,
           limit: 7,
           page: this.page || 1
         })
@@ -234,22 +250,10 @@
         }
         this.choeesGoods = []
         this.goodsList = []
-        this.choeesGoods = res.data.map((item, index) => {
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          if (delIndex !== -1) {
-            item.selected = 0
-          }
-          if (idx !== -1) {
-            item.selected = 1
-          }
-          if (goodsIndex !== -1) {
-            item.selected = 2
-          }
-          return item
+        this.selectGoodsId = this.selectStoreList.map(item => {
+          return item.goods_id
         })
-        this.choeesGoods.forEach((item) => {
+        this.choeesGoods = res.data.map((item) => {
           let ischecked = false
           this.selectStoreList.forEach((item1) => {
             if (item1.goods_id * 1 === item.goods_id * 1) {
@@ -261,6 +265,22 @@
           } else {
             item.selected = 0
           }
+          return item
+        })
+        this.choeesGoods = this.choeesGoods.map((item, index) => {
+          let idx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
+          let goodsIndex = this.selectGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let delIndex = this.selectDelId.findIndex((id) => id === item.goods_id)
+          if (delIndex !== -1) {
+            item.selected = 0
+          }
+          if (idx !== -1) {
+            item.selected = 1
+          }
+          if (goodsIndex !== -1) {
+            item.selected = 2
+          }
+          return item
         })
         this.$forceUpdate()
       },
@@ -272,7 +292,7 @@
         } else {
           let res = await API.Store.goodsCategory({parent_id: this.parentId})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+          this.secondAssortment.data.uns_delGoodshift({name: '全部', id: this.parentId})
         }
         this.secondAssortment.content = '选择二级分类'
         this.page = 1
@@ -301,16 +321,20 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
+        if (item.usable_stock <= 0 && this.stock) {
+          this.$toast.show('该商品库存为0，不能选择')
+          return
+        }
         switch (item.selected) {
         case 0:
           this.choeesGoods[index].selected = 2
           this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
+          this.selectGoodsId.push(item.goods_id)
           break
         case 2:
           this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let idx = this.selectGoods.findIndex((items) => items.goods_id === item.goods_id)
+          let idIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
           if (idx !== -1) {
             this.selectGoods.splice(idx, 1)
           }
@@ -650,8 +674,16 @@
         margin-right: 130px
         flex: 1
         .goods-name
-          width: 593px
+          width: 500px
+          padding-right: 20px
           no-wrap()
+          .text
+            width: 100%
+            text-overflow: ellipsis
+            overflow: hidden
+            line-height: 1.4
+        .goods-stock
+          flex: 1
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14

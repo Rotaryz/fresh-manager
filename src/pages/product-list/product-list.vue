@@ -365,6 +365,7 @@
               this.$refs.pagination.beginPage(page)
             }
             this.getGoodsStatus()
+            this.getGoodsData({})
           } else {
             this.$toast.show(res.message)
           }

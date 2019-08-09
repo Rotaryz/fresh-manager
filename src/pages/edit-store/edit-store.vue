@@ -21,6 +21,15 @@
           <input v-model="storeData" type="text" class="edit-input" maxlength="20" @mousewheel.native.prevent>
         </div>
       </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          出库类型
+        </div>
+        <div class="edit-input-box">
+          <base-drop-down :width="400" :height="40" :select="outType" @setValue="_selectOutType"></base-drop-down>
+        </div>
+      </div>
     </div>
     <div class="content-header mt-30">
       <div class="content-title">商品信息</div>
@@ -40,25 +49,12 @@
             <p class="item-sub">{{item.goods_sku_encoding}}</p>
           </div>
           <div class="list-item">{{item.goods_material_category}}</div>
-          <div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>
+          <div class="list-item">{{item.usable_stock}}{{item.base_unit}}</div>
+          <!--<div class="list-item">{{item.usable_stock}}{{item.base_unit}}/{{item.total_stock}}{{item.base_unit}}</div>-->
           <div class="list-item list-item-layout">
-            <input v-model="item.base_num" type="number" class="edit-input" @input="changeInput(item, index)">
+            <input v-model="item.base_num" type="number" class="edit-input" :class="{'red': item.is_error}" @input="changeInput(item, index)">
             <div v-if="item.base_unit" class="base-unit">{{item.base_unit}}</div>
           </div>
-          <div class="list-item list-item-batches" @click="outFn(item, index)" @mouseenter="_showTip(index)" @mouseleave="_hideTip">
-            <span class="list-operation">{{item.select_batch.length > 0 ? '查看批次' : '选择批次'}}</span>
-            <transition name="fade">
-              <div v-show="showIndex === index && item.select_batch.length !== 0" class="batches-box">
-                <div v-for="(item1, index1) in item.select_batch" :key="index1">
-                  <div v-if="item1.select_out_num * 1 > 0" class="batches-box-item">
-                    {{item1.batch_num}}: 出库{{item1.select_out_num}}{{item.base_unit}}
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>
-          <div class="list-item"><span v-if="item.price">￥</span>{{item.price || '￥0.00'}}/{{item.base_unit}}</div>
-          <div class="list-item"><span v-if="item.all_price">￥</span>{{item.all_price || '￥0.00'}}</div>
           <div class="list-item list-operation-box">
             <span class="list-operation" @click="delGoodsBtn(item, index)">删除</span>
           </div>
@@ -67,11 +63,12 @@
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
-      <div class="back-btn back-submit hand" @click="submitEdit">保存</div>
+      <div class="back-btn back-submit hand" @click="saveOutOrder">保存</div>
     </div>
     <!--<add-goods ref="addg"></add-goods>-->
     <select-store ref="addg" @additionOne="additionOne" @batchAddition="batchAddition"></select-store>
     <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
+    <default-confirm ref="confirm"></default-confirm>
   </div>
 </template>
 
@@ -80,18 +77,19 @@
   import API from '@api'
   import SelectStore from '@components/select-store/select-store'
   import DefaultBatch from '@components/default-batch/default-batch'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'EDIT_STORE'
   const TITLE = '新建出库单'
   const COMMODITIES_LIST = [
     '序号',
-    '商品名称',
-    '类目',
-    '可用库存/总库存',
-    '出库数(基本单位)',
-    '出库批次',
-    '出库单价',
-    '出库金额',
+    '商品',
+    '分类',
+    '可用库存',
+    '出库数量(基本单位)',
+    // '出库批次',
+    // '出库单价',
+    // '出库金额',
     '操作'
   ]
 
@@ -103,7 +101,8 @@
     components: {
       // AddGoods,
       SelectStore,
-      DefaultBatch
+      DefaultBatch,
+      DefaultConfirm
     },
     data() {
       return {
@@ -112,10 +111,21 @@
         storeList: [],
         curIndex: 0,
         curItem: {},
+        outType: {
+          check: false,
+          show: false,
+          content: '选择出库类型',
+          type: 'default',
+          data: [{name: '采购退货', type: 1}, {name: '拓展出库', type: 2}, {name: '其它调拨', type: 3}] // 格式：{title: '55'}}
+        },
         storeData: '',
+        storeType: '',
         showIndex: null,
         isSubmit: false
       }
+    },
+    created() {
+      this.getEntryOutType()
     },
     methods: {
       _showTip(index) {
@@ -123,6 +133,24 @@
       },
       _hideTip() {
         this.showIndex = null
+      },
+      getEntryOutType() {
+        API.Store.getEntryOutType({method: 'create'})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.outType.data = res.data.out.map(item => {
+              return {
+                name: item.type_str,
+                type: item.type
+              }
+            })
+          })
+      },
+      _selectOutType(item) {
+        this.storeType = item.type
       },
       deleteGoods() {
         this.$refs.addg._delGoods(this.storeList)
@@ -213,17 +241,25 @@
         this.storeList.splice(index, 1)
       },
       changeInput(item, index) {
+        if (item.base_num < 0) {
+          item.base_num = item.base_num * -1
+        }
         if (item.base_num * 1 > item.usable_stock * 1) {
           item.base_num = item.usable_stock
         }
-        this.storeList[index].select_batch = []
-        this.storeList[index].price = ''
-        this.storeList[index].all_price = ''
+        item.is_error = 0
+        // this.storeList[index].select_batch = []
+        // this.storeList[index].price = ''
+        // this.storeList[index].all_price = ''
         this.$forceUpdate()
       },
-      submitEdit() {
+      saveOutOrder() {
         if (this.storeData.length === 0 || this.storeData.length > 20) {
           this.$toast.show('请输入出库对象')
+          return
+        }
+        if (!this.storeType) {
+          this.$toast.show('请选择出库类型')
           return
         }
         if (this.storeList.length === 0) {
@@ -231,29 +267,28 @@
           return
         }
         let isInputNull = false
-        let isStoreNull = false
+        // let isStoreNull = false
         this.storeList.forEach((item) => {
-          if (item.base_num.length === 0) {
+          if (item.base_num.length === 0 || +item.base_num === 0) {
             isInputNull = true
-          }
-          if (item.select_batch.length === 0) {
-            isStoreNull = true
           }
         })
         if (isInputNull) {
-          this.$toast.show('请输入商品列表的出库数')
-          return
-        }
-        if (isStoreNull) {
-          this.$toast.show('请选择商品的批次')
+          this.$toast.show('请输入大于0的出库数')
           return
         }
         if (this.isSubmit) return
         this.isSubmit = true
-        API.Store.editOutOrder({type: 8, details: this.storeList, out_object: this.storeData}).then((res) => {
+        API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.$toast.show('新建出库单成功')
-            this.$router.back()
+            if (res.data) {
+              this.isSubmit = false
+              this.storeList = res.data.details
+              this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+            } else {
+              this.$toast.show('新建出库单成功')
+              this.$router.back()
+            }
           } else {
             this.$toast.show(res.message)
             this.isSubmit = false
@@ -277,12 +312,12 @@
       flex: 1
       &:nth-child(1)
         flex: 0.4
-      &:nth-child(3)
+      &:nth-child(2)
         flex: 1.5
       &:nth-child(5)
         flex-wrap: nowrap
-        min-width: 150px
       &:nth-child(6)
+        min-width: 60px
         .list-operation
           &:after
             display: none
@@ -403,5 +438,7 @@
         margin-bottom: 12px
         height: 15px
         line-height: 15px
+  .red
+    color: #F53737
 
 </style>

@@ -756,10 +756,10 @@
       testNewEndTimeReg() {
         // 结束时间规则判断
         if (this.msg.start_at && this.msg.end_at) {
+          let startAt = this.msg.start_at
+          let endAt = this.msg.end_at
           return (
-            // Date.parse(this.msg.config_json.end_day.replace(/-/g, '/') + ' 00:00') >
-            // Date.parse('' + this.msg.config_json.start_day.replace(/-/g, '/') + ' 00:00')
-            Date.parse(this.msg.end_at.replace(/-/g, '/')) > Date.parse(this.msg.start_at.replace(/-/g, '/'))
+            Date.parse(endAt.replace(/-/g, '/')) > Date.parse(startAt.replace(/-/g, '/'))
           )
         }
         return true

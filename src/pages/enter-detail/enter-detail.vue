@@ -37,11 +37,11 @@
               <div v-else>{{item.base_num}}</div>
               <div :class="{'base-unit': enterMsg.status === 1}">{{item.base_unit}}</div>
             </div>
-            <div class="list-item list-item-layout">
+            <!--<div class="list-item list-item-layout">
               <input v-if="enterMsg.status === 0 || enterMsg.status === 2" v-model="item.purchase_num" type="number" class="edit-input" @input="echangPurchase(item, index)">
               <div v-else>{{item.purchase_num}}</div>
               <div :class="{'base-unit': enterMsg.status === 1}">{{item.purchase_unit}}</div>
-            </div>
+            </div>-->
             <div class="list-item list-item-layout">
               <div>{{item.price}}</div>
               <div>/{{item.base_unit}}</div>
@@ -94,7 +94,7 @@
     '商品',
     '类目',
     '入库数量(基本单位)',
-    '入库数量(采购单位) ',
+    // '入库数量(采购单位) ',
     '入库单价(基本单位) ',
     '入库金额',
     '保质期',

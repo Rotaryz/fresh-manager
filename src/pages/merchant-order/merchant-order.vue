@@ -10,7 +10,7 @@
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
-            <base-search placeHolder="订单号或商户名称" :infoText="merchantFilter.keyword" @search="changeKeyword"></base-search>
+            <base-search placeHolder="订单号或商户名称" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
           </div>
         </div>
       </div>
@@ -51,12 +51,23 @@
         </div>
       </div>
     </template>
-    <!--汇总订单表-->
-    <template v-if="tabIndex===1">
+
+    <!--消费者订单-->
+    <template v-if="tabIndex === 1">
       <div class="down-content">
-        <span class="down-tip">建单时间</span>
+        <span class="down-tip">下单时间</span>
         <div class="down-item">
-          <base-date-select :placeHolder="datePlaceHolderMerger" :dateInfo="timeArrMerger" @getTime="_changeTimeMerger"></base-date-select>
+          <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
+        </div>
+        <span class="down-tip">异常状态</span>
+        <div class="down-item">
+          <base-drop-down :select="unusualSelect" @setValue="_selectUnusual"></base-drop-down>
+        </div>
+        <div class="distribution-down">
+          <span class="down-tip">搜索</span>
+          <div class="down-item">
+            <base-search placeHolder="订单号、商户名称或会员手机" :infoText="merchantFilter.keyword" @search="changeMerchantKeyword"></base-search>
+          </div>
         </div>
       </div>
       <div class="table-content">
@@ -64,21 +75,29 @@
           <div class="identification-page">
             <img :src="tabStatus[1].img" class="identification-icon">
             <p class="identification-name">{{tabStatus[1].text}}</p>
+            <!--<base-status-nav :statusList="consumerStatusTab" :value="merchantFilter.status" valueKey="status" labelKey="status_str" numKey="statistic"
+                             @change="setValue"
+            ></base-status-nav>-->
           </div>
+          <router-link tag="a" to="consumer-order-detail" append class="btn-main">补录订单</router-link>
         </div>
         <div class="big-list">
           <div class="list-header list-box">
             <div v-for="(item,index) in commodities" :key="index" class="list-item" :style="{flex: item.flex}" :class="['list-item',item.class]">{{item.title}}</div>
           </div>
           <div class="list">
-            <template v-if="mergerList.length">
-              <div v-for="(row, index) in mergerList" :key="index" class="list-content list-box">
-                <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" class="list-item" :class="['list-item',item.class]">
+            <template v-if="orderList.length">
+              <div v-for="(row, index) in orderList" :key="index" class="list-content list-box">
+                <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
                     {{row[item.key]}}
+                    <div v-if="item.key === 'sale_num' && row.is_exception" class="unusual-icon"></div>
+                    <div v-if="item.key === 'out_order_sn'" style="color:#ACACAC">{{row.created_at}}</div>
+                    <div v-if="item.key === 'goods_name'">{{row.goods_sku_encoding}}</div>
                   </template>
                   <template v-else name="operation">
-                    <router-link :to="{name:'merger-order-detail',params:{mergeOrderId:row.merge_order_id}}" class="list-operation">{{item.operation}}</router-link>
+                    <div v-if="row.show_delete" class="list-operation" @click="showConfirm(row)">{{item.operation}}</div>
+                    <div v-else class="">---</div>
                   </template>
                 </div>
               </div>
@@ -87,15 +106,22 @@
           </div>
         </div>
         <div class="pagination-box">
-          <base-pagination ref="paginationMerger" :pageDetail="mergerPageTotal" :pagination="mergerFilter.page" @addPage="_setMergerPage"></base-pagination>
+          <base-pagination
+            ref="paginationMerchant"
+            :pageDetail="pageTotal"
+            :pagination="merchantFilter.page"
+            @addPage="setOrderPage"
+          ></base-pagination>
         </div>
       </div>
     </template>
+    <default-confirm ref="delConfirm" @confirm="delConfirm"></default-confirm>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
   const PAGE_NAME = 'MERCHANT_ORDER'
@@ -110,44 +136,95 @@
     {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
   ]
   const COMMODITIES_LIST2 = [
-    {title: '下单时间', key: 'created_at', flex: 3},
-    {title: '汇总订单号', key: 'order_sn', flex: 3},
-    {title: '品类数', key: 'type_count', flex: 1},
-    {title: '操作', key: '', operation: '详情', flex: 1, class: 'operate'}
+    {title: '订单号', key: 'out_order_sn', flex: 1.5},
+    {title: '会员名称', key: 'nickname', flex: 1},
+    {title: '会员手机号', key: 'mobile', flex: 1},
+    {title: '商品', key: 'goods_name', flex: 1.2},
+    {title: '下单数量', key: 'sale_num', flex: 0.7},
+    {title: '商户名称', key: 'buyer_name', flex: 1.5},
+    {title: '订单来源', key: 'type_str', flex: 0.7},
+    {title: '操作', key: '', operation: '删除', flex: 1, class: 'operate'}
+  ]
+
+  const ORDER_DATA = [
+    {
+      order_sn: '123123',
+      order_name: '小李',
+      mobile: '13584260103',
+      goods_name: '苹果',
+      type_count: '2份',
+      buyer_name: '广海花园社区',
+      status: '待分拣',
+      order_resource: '人工补录'
+    },
+    {
+      order_sn: '123123',
+      order_name: '小李',
+      mobile: '13584260103',
+      goods_name: '苹果',
+      type_count: '2份',
+      buyer_name: '广海花园社区',
+      status: '待分拣',
+      order_resource: '人工补录'
+    },
+    {
+      order_sn: '123123',
+      order_name: '小李',
+      mobile: '13584260103',
+      goods_name: '苹果',
+      type_count: '2份',
+      buyer_name: '广海花园社区',
+      status: '待分拣',
+      order_resource: '人工补录'
+    }
   ]
   const ORDERSTATUS = [
     {text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')},
-    {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
+    {text: '消费者订单', status: 1, img: require('./pic-zanwu@2x.png')}
+    // {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
   ]
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
     },
+    components: {
+      DefaultConfirm
+    },
     data() {
       return {
         tabStatus: ORDERSTATUS,
         commodities: COMMODITIES_LIST,
+        orderData: ORDER_DATA,
         datePlaceHolder: '选择下单日期',
         orderKeyword: '',
-        signItem: {},
+        currentItem: {},
+        unusualSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}]},
         dispatchSelect: [
-          {name: '全部', value: '', num: 0},
-          {name: '锁定中', value: 5, num: 0},
-          {name: '待调度', value: 0, num: 0},
-          {name: '待配送', value: 2, num: 0},
-          {name: '已完成', value: 3, num: 0}
+          {status_str: '全部', value: '', statistic: 0},
+          {status_str: '待调度', value: 0, statistic: 0},
+          {status_str: '待出库', value: 1, statistic: 0},
+          {status_str: '待配送', value: 2, statistic: 0},
+          {status_str: '已完成', value: 3, statistic: 0}
         ],
-        datePlaceHolderMerger: '选择下单日期'
+        consumerStatusTab: [
+          {status_str: '全部', status: '', statistic: 0},
+          {status_str: '待分拣', status: 0, statistic: 0},
+          {status_str: '待出库', status: 1, statistic: 0},
+          {status_str: '代配送', status: 2, statistic: 0},
+          {status_str: '已完成', status: 3, statistic: 0}
+        ]
       }
     },
     computed: {
       ...merchantOrderComputed,
       timeArr() {
         return [this.merchantFilter.start_time, this.merchantFilter.end_time]
-      },
-      timeArrMerger() {
-        return [this.mergerFilter.start_time, this.mergerFilter.end_time]
       }
     },
     async created() {
@@ -159,54 +236,34 @@
       // 顶部 切换
       _changeStatusTab(item, index) {
         this.SET_TAB_INDEX(index)
+        this.SET_MERCHANT_LIST([])
         this.commodities = index === 0 ? COMMODITIES_LIST : COMMODITIES_LIST2
-        if (!this.tabIndex) {
-          // 待调度
-          this._updateMerchantOrderList({
-            page: 1,
-            limit: 10,
-            start_time: '',
-            end_time: '',
-            type: '',
-            status: 0,
-            keyword: ''
-          })
-        } else {
-          this._updateMergerList({
-            start_time: '',
-            end_time: '',
-            page: 1,
-            limit: 10
-          })
-        }
+        // 待调度
+        this._updateMerchantOrderList({
+          page: 1,
+          limit: 10,
+          start_time: '',
+          end_time: '',
+          exception_status: '',
+          status: 0,
+          keyword: ''
+        })
+        this.unusualSelect.content = '全部'
       },
-      _updateMergerList(params) {
-        this.SET_MERGER_PARAMS(params)
-        this.getMergerOrderList()
-        if (params.page === 1) {
-          this.$nextTick(function() {
-            this.$refs.paginationMerger.beginPage()
-          })
-        }
+      _selectUnusual(item) {
+        this._updateMerchantOrderList({exception_status: item.status})
       },
-      // 时间选择器
-      _changeTimeMerger(timeArr) {
-        this._updateMergerList({start_time: timeArr[0], end_time: timeArr[1], page: 1})
-      },
-      // 页面更改
-      _setMergerPage(page) {
-        this._updateMergerList({page})
-      },
-      /**
-       商户订单
-       **/
-      // 更新商户订单
+      // 获取订单列表
       _updateMerchantOrderList(params, noUpdateStatus) {
         this.SET_PARAMS(params)
-        if (!noUpdateStatus) {
+        if (!noUpdateStatus && +this.tabIndex !== 1) {
           this._getStatusData()
         }
-        this.getMerchantOrderList()
+        if (+this.tabIndex === 0) {
+          this.getMerchantOrderList()
+        } else {
+          this.getConsumerOrderList()
+        }
         if (params.page === 1) {
           this.$nextTick(function() {
             this.$refs.paginationMerchant.beginPage()
@@ -220,23 +277,29 @@
           start_time: this.merchantFilter.start_time,
           end_time: this.merchantFilter.end_time,
           keyword: this.merchantFilter.keyword,
-          type: this.merchantFilter.type
+          is_parent_order: 1 // 商户合单
         }
-        API.MerchantOrder.getStausData(params).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return false
-          }
-          this.dispatchSelect = res.data
-        })
+        if (+this.tabIndex === 0) {
+          API.MerchantOrder.getStausData(params).then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return false
+            }
+            this.dispatchSelect = res.data
+          })
+        } else {
+          params.type = this.merchantFilter.type
+          params.is_parent_order = 0 // 消费者订单
+          API.MerchantOrder.getConsumerStatus(params).then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return false
+            }
+            this.consumerStatusTab = res.data
+          })
+        }
       },
       // 翻页
       setOrderPage(page) {
-        this._updateMerchantOrderList(
-          {
-            page
-          },
-          true
-        )
+        this._updateMerchantOrderList({page}, true)
       },
       // 时间
       changeTime(timeArr = ['', '']) {
@@ -253,12 +316,29 @@
           page: 1
         })
       },
-      // 搜索按钮
-      changeKeyword(keyword) {
+      // 商户订单搜索
+      changeMerchantKeyword(keyword) {
         this._updateMerchantOrderList({
           keyword,
           page: 1
         })
+      },
+      showConfirm(item) {
+        this.currentItem = item
+        this.$refs.delConfirm.show('确定删除此订单？')
+      },
+      delConfirm() {
+        API.MerchantOrder.deleteConsumerOrder({out_order_sn: this.currentItem.out_order_sn, goods_sku_code: this.currentItem.goods_sku_code})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$refs.delConfirm.hide()
+            this.$toast.show('删除成功')
+            this.getConsumerOrderList()
+          })
+
       }
     }
   }
@@ -276,6 +356,10 @@
     width: 16px
     height: 16px
     icon-image(icon-lack)
+  .unusual-icon
+    width: 16px
+    height: 16px
+    icon-image(icon-unusual_list)
 
   .distribution-down
     display: flex

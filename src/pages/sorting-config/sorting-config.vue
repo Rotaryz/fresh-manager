@@ -13,7 +13,7 @@
       </div>
       <!--列表部分-->
       <div class="concat-table-wrap">
-        <div class="sort-table-box">
+        <!--<div class="sort-table-box">
           <div class="list-header list-box">
             <div v-for="(item,index) in commodities1" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
           </div>
@@ -26,27 +26,29 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
         <div class="drag-wrap">
-          <div class="list-header list-box">
+          <!--<div class="list-header list-box">
             <div v-for="(item,index) in commodities2" :key="index" :class="'list-item '+item.class" :style="{flex:item.flex}">{{item.title}}</div>
-          </div>
+          </div>-->
           <template v-if="dragList.length">
-            <slick-list v-model="dragList" :distance="30" lockAxis="y" class="list drag-list" helperClass="list-content list-box drag-box"
+            <slick-list v-model="dragList"
+                        axis="xy"
+                        :distance="10"
+                        lockAxis="xy"
+                        class="drag-list"
+                        helperClass="drag-item"
+                        :useWindowAsScrollContainer="true"
                         @input="sortEndInput"
             >
-              <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="list-content list-box">
-                <div class="list-item" :style="{flex:2}">{{row[commodities2[0].key]}}</div>
-                <div class="list-item">
-                  {{row[commodities2[1].key]}}
-                  <div v-if="!row[commodities2[1].key]" class="list-operation" @click="_showSettingModel(row.id)">设置线路</div>
+              <slick-item v-for="(row, index) in dragList" :key="index" :index="index" class="drag-item">
+                <span class="num">{{row.sort|format}}</span>
+                <div class="road-line">
+                  <p class="title">{{row.name}}</p>
+                  <p class="text">{{row.road_name}}</p>
+                  <div v-if="!row.road_name" class="list-operation" @click="_showSettingModel(row.id)">设置线路</div>
                 </div>
-                <div class="list-item  operate">
-                  <div v-handle class="list-operation-wrap">
-                    <div class="drag-operation">
-                    </div>
-                  </div>
-                </div>
+
               </slick-item>
             </slick-list>
           </template>
@@ -302,6 +304,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .procurement-task
+    min-width: 1400px
   .concat-table-wrap
     display: flex
     width:100%
@@ -312,48 +316,67 @@
         text-align: center
     .drag-wrap
       flex:1
-  .list-box.drag-box
-    cursor pointer
-    background: #f7faf5
-    .drag-operation
-      icon-image(icon-drag_hover)
-  .list-item
-    &.operate
-      max-width: 50px
-
-    .index
-      display inline-block
-      width:auto
-      padding: 0px 5px
-      height: 20px
-      line-height 20px
-      text-align center
-      background: #888888
-      border-radius: 10px
-      font-family: PingFangSC-Medium
-      font-size: 16px
-      color: #FFFFFF
+      flex-wrap: wrap
+      .drag-list
+        display: flex
+        flex-wrap: wrap
+        &:hover
+          user-select: none
+  .drag-item
+    width: 15.4%
+    overflow: hidden
+    height: 75px
+    padding: 16px 13px
+    box-sizing: border-box
+    box-shadow: 0 0 4px 0 rgba(0,0,0,0.05)
+    cursor: pointer
+    margin-right: 20px
+    margin-bottom: 20px
+    border-radius: 2px
+    border: 1px solid #F4F4F4
+    display: flex
+    &:hover
+      border: 1px solid #c1c1c1
+    &:nth-child(6n)
+      margin-right: 0
+    .road-line
+      flex: 1
+      overflow: hidden
+      padding-left: 10px
+      line-height: 1
+    .num
+      height: 18px
+      padding: 0 6px
+      border-radius: 20px
+      background: #9FD5C6
+      text-align: center
+      line-height: 18px
+      color: #52A18B
+      font-size: $font-size-12
+      font-family: $font-family-medium
+    .title
+      color: #333333
+      font-size: $font-size-14
+      font-family: $font-family-medium
+      overflow: hidden
+      line-height: 1.2
+      text-overflow: ellipsis
+      white-space: nowrap
+      margin-bottom: 8px
+      margin-top: 2px
+    .text
+      font-size: $font-size-14
+      color: #999999
+      font-family: $font-family-regular
+    .list-operation
+      font-family: $font-family-regular
+      cursor pointer
 
   .table .table-content
     padding-bottom: 20px
 
-    .drag-list:hover
-      cursor pointer
-      user-select: none
-
   .operation-guide-text
     color: #4D77BD
-
-  .list-operation
-    cursor pointer
-    text-decoration: underline
-  .list-content
-    .drag-operation
-      width: 18px
-      height: 18px
-      icon-image(icon-drag)
-    &:hover .drag-operation
-      icon-image(icon-drag_hover)
 
   .model-wrap
     background: $color-white

@@ -17,7 +17,7 @@
         <div class="identification-page">
           <img src="./icon-order_list2@2x.png" class="identification-icon">
           <p class="identification-name">预采建议单</p>
-          <div class="identification-text">{{timeDay}}({{pageTotal.total}})</div>
+          <!--<div class="identification-text">{{timeDay}}({{pageTotal.total}})</div>-->
         </div>
         <div class="function-btn">
           <div class="btn-main g-btn-item" @click="_sendPublish">查询</div>
@@ -38,17 +38,14 @@
               <div class="list-item">{{item.goods_material_category}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <div class="list-item">{{item.purchase_user}}</div>
-              <div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>
+              <!--<div class="list-item">{{item.sale_purchase_num}}{{item.purchase_unit}}({{item.sale_base_num}}{{item.base_unit}})</div>-->
               <div class="list-item">{{item.usable_stock_purchase_num}}{{item.purchase_unit}}({{item.usable_stock}}{{item.base_unit}})</div>
               <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
-              <div class="list-item">{{item.created_at}}</div>
+              <!--<div class="list-item">{{item.created_at}}</div>-->
             </div>
           </div>
           <base-blank v-else></base-blank>
         </div>
-      </div>
-      <div class="pagination-box">
-        <base-pagination ref="pages" :pageDetail="pageTotal" @addPage="_getMoreList"></base-pagination>
       </div>
     </div>
   </div>
@@ -60,7 +57,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_SUGGEST'
   const TITLE = '预采建议'
-  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '商品销售数', '库存数', '建议采购数', '创建时间']
+  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '库存数', '建议采购数']
 
   export default {
     name: PAGE_NAME,
@@ -77,12 +74,8 @@
           type: 'default',
           data: [{name: '全部', id: ''}]
         },
-        page: 1,
-        startTime: '',
-        endTime: '',
         keyword: '',
         time: 'today',
-        status: '',
         supplyId: '',
         downUrl: ''
       }
@@ -100,12 +93,8 @@
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
-        let params = `access_token=${token.access_token}&start_time=${this.startTime}&time=${this.time}&end_time=${
-          this.endTime
-        }&status=${this.status}&keyword=${this.keyword}&supplier_id=${
-          this.supplyId
-        }&is_blocked=1&current_corp=${currentId}`
-        this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-task-export?${params}`
+        let params = `access_token=${token.access_token}&keyword=${this.keyword}&supplier_id=${this.supplyId}&current_corp=${currentId}`
+        this.downUrl = process.env.VUE_APP_SCM_API + `/scm/api/backend/purchase/purchase-plan-task-export?${params}`
       },
       async _getSupplierList() {
         let res = await API.Supply.getSupplier({
@@ -121,54 +110,21 @@
       },
       async _setValue(item) {
         this.supplyId = item.id
-        this.page = 1
-        this.$refs.pages.beginPage()
-        this.getPurchaseTaskList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
+        this.getSuggestList({
           keyword: this.keyword,
-          status: this.status,
-          page: this.page,
-          supplyId: this.supplyId,
-          isBlocked: 1,
+          supplierId: this.supplyId,
           loading: false
         })
         this._getUrl()
       },
       async _search(word) {
         this.keyword = word
-        this.page = 1
-        this.$refs.pages.beginPage()
-        this.getPurchaseTaskList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
+        this.getSuggestList({
           keyword: this.keyword,
-          status: this.status,
-          page: this.page,
-          supplyId: this.supplyId,
-          isBlocked: 1,
+          supplierId: this.supplyId,
           loading: false
         })
         this._getUrl()
-      },
-      async _getMoreList(page) {
-        if (this.page === page) {
-          return
-        }
-        this.page = page
-        await this.getPurchaseTaskList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          keyword: this.keyword,
-          status: this.status,
-          page: this.page,
-          supplyId: this.supplyId,
-          isBlocked: 1,
-          loading: false
-        })
       },
       async _sendPublish() {
         let supplyRes = await API.Supply.autoPurchaseTask()
@@ -177,17 +133,9 @@
           this.$toast.show(supplyRes.message)
           return
         }
-        this.page = 1
-        this.$refs.pages.beginPage()
-        this.getPurchaseTaskList({
-          time: this.time,
-          startTime: this.startTime,
-          endTime: this.endTime,
+        this.getSuggestList({
           keyword: this.keyword,
-          status: this.status,
-          page: this.page,
-          supplyId: this.supplyId,
-          isBlocked: 1,
+          supplierId: this.supplyId,
           loading: false
         })
       }

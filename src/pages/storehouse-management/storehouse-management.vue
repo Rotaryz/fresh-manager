@@ -58,7 +58,10 @@
                 <p class="item-sub">{{item.goods_sku_encoding}}</p>
               </div>
               <div class="list-item">{{item.goods_material_category}}</div>
-              <div class="list-item">{{`${item.total_stock}${item.unit}`}}</div>
+              <div class="list-item flex">
+                <span>{{`${item.total_stock}${item.unit}`}}</span>
+                <span class="edit-icon hand" @click="showEdit(item)"></span>
+              </div>
               <div class="list-item">{{`${item.blocked_stock}${item.unit}`}}</div>
               <div class="list-item">{{`${item.usable_stock}${item.unit}`}}</div>
               <div class="list-item">￥{{item.stock_value}}</div>
@@ -84,22 +87,71 @@
         <base-pagination ref="pagination" :pagination="warehouseFilter.page" :pageDetail="warehousePageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
+    <default-modal ref="defaultModal">
+      <div slot="content" class="modal-contain">
+        <div class="title-box">
+          <div class="title">编辑库存</div>
+          <span class="close hand" @click="cancel"></span>
+        </div>
+        <div class="modal-context">
+          <div class="context-item">
+            <span class="label">商品名称</span>
+            <span class="context-value">{{currentItem.goods_name}}</span>
+          </div>
+          <div class="context-item">
+            <span class="label">商品编码</span>
+            <span class="context-value">{{currentItem.goods_sku_encoding}}</span>
+          </div>
+          <div class="context-item">
+            <span class="label">商品类目</span>
+            <span class="context-value">{{currentItem.goods_material_category}}</span>
+          </div>
+          <div class="context-item">
+            <span class="label">总库存</span>
+            <span class="context-value"><span class="black-text">{{currentItem.total_stock}} {{currentItem.unit}}</span><span class="text">账面库存数</span></span>
+
+          </div>
+          <div class="context-item">
+            <span class="label"><span class="star">*</span>实盘数</span>
+            <div class="context-value">
+              <input v-model="editNum" type="number" class="edit-input" @input="changeNum">{{currentItem.unit}}
+            </div>
+          </div>
+          <div class="context-item">
+            <span class="label">备注</span>
+            <div class="context-value">
+              <input v-model="editText" type="text" maxlength="20" placeholder="最多可输入20个字" class="edit-input long">
+            </div>
+          </div>
+        </div>
+        <div class="btn-group">
+          <span class="btn cancel" @click="cancel">取消</span>
+          <span class="btn confirm" @click="confirm">确定</span>
+        </div>
+      </div>
+    </default-modal>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import API from '@api'
   import {storeComputed, storeMethods, authComputed} from '@state/helpers'
+  import DefaultModal from '@components/default-modal/default-modal'
   import _ from 'lodash'
 
   const PAGE_NAME = 'STOREHOUSE_MANAGEMENT'
   const TITLE = '库存管理'
   const COMMODITIES_LIST = ['商品', '类目', '总库存', '锁定库存', '可用库存', '总库存货值', '库存均价', '库位', '操作']
   const ENTRY_STORE_EXPORT = '/scm/api/backend/stock/warehouse-stock-export'
+  const MONEYREG = /^(([0-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+
   export default {
     name: PAGE_NAME,
     page: {
       title: TITLE
+    },
+    components: {
+      DefaultModal
     },
     data() {
       return {
@@ -122,7 +174,10 @@
         warehousePositionId: '',
         goodsCategoryId: '',
         keyword: '',
-        page: 1
+        page: 1,
+        editNum: '',
+        editText: '',
+        currentItem: {}
       }
     },
     computed: {
@@ -145,6 +200,12 @@
         }
         let url = process.env.VUE_APP_SCM_API + ENTRY_STORE_EXPORT + '?' + search.join('&')
         return url
+      },
+      testEditNum() {
+        return this.editNum
+      },
+      testEditNumReg() {
+        return MONEYREG.test(this.editNum)
       }
     },
     async created() {
@@ -278,6 +339,40 @@
       // 翻页
       addPage(page) {
         this._getWarehouseList({page})
+      },
+      changeNum() {
+        if (this.editNum < 0) {
+          this.editNum = this.editNum * -1
+        }
+      },
+      showEdit(item) {
+        this.currentItem = item
+        this.$refs.defaultModal.showModal()
+      },
+      cancel() {
+        this.$refs.defaultModal.hideModal()
+      },
+      confirm() {
+        if (!this.testEditNum) {
+          this.$toast.show('请输入实盘数')
+          return
+        }
+        if (!this.testEditNumReg) {
+          this.$toast.show('实盘数为最多两位小数的非负数')
+          return
+        }
+        API.Store.checkStock({id: this.currentItem.id, actual_stock: this.editNum, note: this.editText, goods_name: this.currentItem.goods_name})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.editText = ''
+            this.editNum = ''
+            this.$toast.show('盘点成功')
+            this.$refs.defaultModal.hideModal()
+            this.getWarehouseList({})
+          })
       }
     }
   }
@@ -300,6 +395,16 @@
         max-width: 80px
       .item-dark
         no-wrap()
+      .edit-icon
+        width: 14px
+        height: 14px
+        margin-top: 3px
+        display: inline-block
+        margin-left: 5px
+        background: url("./icon-edit_stock@2x.png")
+        background-size: 100% 100%
+    .flex
+      display: flex
   .help
     display: flex
     align-items: center
@@ -346,4 +451,83 @@
       color: $color-white
       background: #32323A
       z-index: 111
+
+  .modal-contain
+    width: 530px
+    background: #fff
+    border-radius: 3px
+    box-shadow: 0 8px 14px 0 rgba(12, 6, 14, 0.08)
+    text-align: center
+    padding: 0 20px 20px
+    box-sizing: border-box
+    position: relative
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
+    .modal-context
+      .context-item
+        display: flex
+        align-items: center
+        color: $color-text-main
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        margin-bottom: 24px
+      .label
+        width: 60px
+        text-align: right
+      .context-value
+        margin-left: 20px
+        display: flex
+        align-items: center
+        color: #222
+        flex: 1
+        overflow: hidden
+      .text
+        color: #999
+        margin-left: 12px
+      .black-text
+        font-family: $font-family-medium
+      .star
+        color: #F53737
+      .edit-input
+        width: 180px
+        height: 40px
+        line-height: 40px
+        margin-right: 10px
+        border: 1px solid $color-line
+        border-radius: 1px
+        font-family: $font-family-regular
+        color: $color-text-main
+        font-size: $font-size-14
+        padding-left: 14px
+        transition: all 0.3s
+        &::-webkit-inner-spin-button
+          appearance: none
+        &:hover
+          border: 1px solid #ACACAC
+        &::placeholder
+          font-family: $font-family-regular
+          color: $color-text-assist
+        &:focus
+          border-color: $color-main !important
+      .long
+        width: 100%
+    .btn-group
+      position: relative
+      left: 0
+      top: 0
+      padding: 0
+      margin-top: 20px
 </style>

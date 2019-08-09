@@ -10,9 +10,13 @@
       <div class="down-item">
         <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
+      <span class="down-tip">入库类型</span>
+      <div class="down-item">
+        <base-drop-down :select="entryType" @setValue="changeType"></base-drop-down>
+      </div>
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search placeHolder="入库单号或采购单号" :infoText="enterFilter.keyword" @search="changeKeyword"></base-search>
+        <base-search placeHolder="入库单号、采购单号或商品提供方" :width="277" :infoText="enterFilter.keyword" @search="changeKeyword"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -22,9 +26,7 @@
           <p class="identification-name">入库列表</p>
           <base-status-tab :statusList="dispatchSelect" :infoTabIndex="statusTab" @setStatus="setValue"></base-status-tab>
         </div>
-        <!--<div class="function-btn">-->
-        <!--<div v-if="status === 0" class="btn-main" @click="allocationStock">完成当日收货</div>-->
-        <!--</div>-->
+        <router-link tag="a" append to="new-enter-document" class="btn-main">新建入库单</router-link>
       </div>
       <div class="big-list">
         <div class="list-header list-box">
@@ -36,17 +38,22 @@
               <div class="list-item">{{item.build_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">{{item.supplier}}</div>
-              <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
+              <!--<router-link v-if="item.out_order_sn" tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>
+              <div v-else class="list-item list-operation">{{item.out_order_sn}}</div>-->
+              <div class="list-item">
+                <router-link tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-operation">{{item.out_order_sn}}</router-link>
+              </div>
               <div class="list-item">￥{{item.total}}</div>
               <div class="list-item">
                 <span class="list-status" :class="{'list-status-success': item.status === 1}"></span>{{item.status_str}}
                 <div v-if="item.is_exception" class="list-item-img"></div>
               </div>
+              <div class="list-item">{{item.type_str || '---'}}</div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.status === 1" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation">详情</router-link>
-                <div v-if="item.status === 0 || item.status === 2 || item.status === 3" class="list-operation" @click="entryOrdersExport(item)">导出</div>
+                <div class="list-operation" @click="entryOrdersExport(item)">导出</div>
                 <router-link v-if="item.status === 0 || item.status === 2 || item.status === 3" tag="span" :to="{path: `enter-detail/${item.entry_order_id}`}" append class="list-operation-strong">入库</router-link>
-                <div v-if="item.status === 1" class="list-operation" @click="difference(item)">差异报告</div>
+                <!--<div v-if="item.status === 1" class="list-operation" @click="difference(item)">导出</div>-->
               </div>
             </div>
           </div>
@@ -69,7 +76,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品入库'
-  const COMMODITIES_LIST = ['建单时间', '入库单号', '供应商', '采购单号', '入库金额', '状态', '操作']
+  const COMMODITIES_LIST = ['建单时间', '入库单号', '商品提供方', '采购单号', '入库金额', '状态', '入库类型', '操作']
   const ENTRY_ORDERS_EXPORT = '/scm/api/backend/warehouse/entry-orders-export/'
   const DISS_EXPORT = '/scm/api/backend/warehouse/entry-orders-diff-export/'
   export default {
@@ -113,6 +120,13 @@
           content: '全部',
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
+        entryType: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
         }
       }
     },
@@ -125,6 +139,7 @@
     },
     async created() {
       this._setErrorStatus()
+      this.getEntryOutType()
       await this._statistic()
       this.statusTab = this.dispatchSelect.findIndex((item) => item.status === this.enterFilter.status)
     },
@@ -132,6 +147,25 @@
       ...productMethods,
       async checkErr(item) {
         this._updateList({exception_status: item.status, page: 1})
+      },
+      changeType(item) {
+        this._updateList({type: item.type, page: 1})
+      },
+      getEntryOutType() {
+        API.Store.getEntryOutType({method: 'index'})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.entryType.data = res.data.entry.map(item => {
+              return {
+                name: item.type_str,
+                type: item.type
+              }
+            })
+            this.entryType.data.unshift({name: '全部', type: ''})
+          })
       },
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.enterFilter.exception_status)
@@ -181,6 +215,7 @@
           start_time: this.enterFilter.start_time,
           end_time: this.enterFilter.end_time,
           keyword: this.enterFilter.keyword,
+          type: this.enterFilter.type,
           exception_status: this.enterFilter.exception_status
         })
         if (res.error === this.$ERR_OK) {

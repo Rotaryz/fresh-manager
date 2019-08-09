@@ -25,11 +25,14 @@
           <div v-if="blankList.length">
             <div v-for="(item, index) in blankList" :key="index" class="list-content list-box">
               <div class="list-item">{{item.id}}</div>
-              <div class="list-item">{{item.goods_name}}</div>
+              <div class="list-item">
+                <div>{{item.goods_name}}</div>
+                <div :class="['grey-text', {'red': +item.error_type === 1}]">{{+item.error_type === 1 ? item.error_msg : item.goods_sku_encoding}}</div>
+              </div>
               <div class="list-item">{{item.goods_category}}</div>
               <div class="list-item">{{item.base_unit}}</div>
-              <div class="list-item">{{item.system_stock}}</div>
-              <div class="list-item">{{item.actual_stock}}</div>
+              <div class="list-item" :class="{'red': +item.error_type === 3}">{{+item.error_type === 3 ? item.error_msg : item.system_stock}}</div>
+              <div class="list-item" :class="{'red': +item.error_type === 2}">{{+item.error_type === 2 ? item.error_msg : item.actual_stock}}</div>
               <div class="list-item">{{item.diff_stock}}</div>
               <div class="list-item list-manager-box" :class="{'list-manager-box-active': blankIndex === index}" @click="setStatus(index, item)">
                 <span class="list-manager hand">{{item.adjust_type_str}}<span v-if="item.adjust_type === 1 || item.adjust_type === 3" class="list-icon"></span></span>
@@ -45,7 +48,7 @@
     </div>
     <div class="back">
       <div class="back-cancel back-btn hand" @click="cancel">取消</div>
-      <div class="back-btn back-submit hand" @click="addition">调整</div>
+      <div class="back-btn back-submit hand" :class="{'btn-disable': hasError}" @click="addition">调整</div>
     </div>
     <default-confirm ref="confirm" @confirm="confirm"></default-confirm>
   </div>
@@ -73,7 +76,8 @@
         adjustment: ADJUSTMENT,
         blankList: [],
         blankIndex: -1,
-        isSubmit: true
+        isSubmit: true,
+        hasError: false
       }
     },
     methods: {
@@ -94,6 +98,7 @@
           this.$toast.show('导入库存清单不能为空')
           return
         }
+        if (this.hasError) return
         this.$refs.confirm.show('是否批量导入库存清单？')
       },
       cancel() {
@@ -116,6 +121,7 @@
       },
       //  导入库存清单
       async importStock(e) {
+        this.hasError = false
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
         let res = await API.Store.importStock(param, true, 60000)
@@ -123,6 +129,12 @@
         this.blankList = res.error === this.$ERR_OK ? res.data : []
         this.$toast.show(res.message)
         e.target.value = ''
+        let result = res.data.every(item => {
+          return +item.error_type === 0
+        })
+        if (!result) {
+          this.hasError = true
+        }
       },
       // 格式化文件
       _infoFile(file) {
@@ -148,6 +160,12 @@
       &:last-child
         padding: 0
         max-width: 80px
+      .grey-text
+        color: #ACACAC
+      .red
+        color: #F53737
+    .red
+      color: #F53737
   .edit-stock
     .list-box
       .list-manager-box
