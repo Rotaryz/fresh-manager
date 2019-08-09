@@ -60,8 +60,26 @@
               <div class="tip">该图片不展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张。</div>
             </div>
           </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              商品类型
+            </div>
+            <div class="edit-input-box goods-select-box">
+              <div class="goods-select-left" @click="selectStock(1)">
+                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
+                <div class="goods-select-text">普通商品</div>
+              </div>
+              <div class="goods-select-left" style="margin-left: 44px" @click="selectStock(0)">
+                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
+                <div class="goods-select-text">集采商品
+                  <span class="tip" style="margin-left: 10px">通过【产地集采】活动时间控制商品在小程序的上下架展示</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="content-header">
+        <div class="content-header procurement-top">
           <div class="content-title">商品规格</div>
         </div>
         <div class="leader-box">
@@ -1402,12 +1420,12 @@
     margin-bottom: 30px
     .edit-title
       margin-top: 15px
-    .tip
-      text-align: left
-      margin-top: -6px
-      font-size: $font-size-14
-      color: $color-text-assist
-      font-family: $font-family-regular
+  .tip
+    text-align: left
+    margin-top: -6px
+    font-size: $font-size-14
+    color: $color-text-assist
+    font-family: $font-family-regular
   .procurement-top
     margin-top: 24px
   .edit-msg

@@ -8,9 +8,13 @@
       <div class="down-item">
         <base-drop-down :select="secondSelect" @setValue="_secondValue"></base-drop-down>
       </div>
-      <span class="down-tip">类型</span>
+      <span class="down-tip">渠道</span>
       <div class="down-item">
         <base-drop-down :select="typeSelect" @setValue="_setTypeValue"></base-drop-down>
+      </div>
+      <span class="down-tip">类型</span>
+      <div class="down-item">
+        <base-drop-down :select="purchaseSelect" @setValue="_setTypeValue"></base-drop-down>
       </div>
       <span class="down-tip">资料状态</span>
       <div class="down-item">
@@ -155,6 +159,7 @@
         stairSelect: {check: false, show: false, content: '一级分类', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级分类', type: 'default', data: []},
         typeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]},
+        purchaseSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '普通商品', value: 1}, {name: '集采商品', value: 2}]},
         progressSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]},
         presaleSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '仓库', value: 0}, {name: '预售', value: 1}]},
         storeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '无库存', value: 0}, {name: '有库存', value: 1}]},

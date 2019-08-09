@@ -3,6 +3,10 @@
     <base-tab-select :infoTabIndex="tabIndex" :tabStatus="tabStatus" :lineWidth="104" @getStatusTab="_changeStatusTab"></base-tab-select>
     <template v-if="tabIndex===0">
       <div class="down-content">
+        <span class="down-tip">筛选</span>
+        <div class="down-item-small">
+          <base-drop-down :select="socialSelect" @setValue="changeShopId"></base-drop-down>
+        </div>
         <span class="down-tip">下单时间</span>
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="timeArr" @getTime="changeTime"></base-date-select>
@@ -183,6 +187,7 @@
     {text: '消费者订单', status: 1, img: require('./pic-zanwu@2x.png')}
     // {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
   ]
+  const SOCIAL_SELECT = {check: false, show: false, content: '全部社区', type: 'default', data: []}
   export default {
     name: PAGE_NAME,
     page: {
@@ -218,7 +223,8 @@
           {status_str: '待出库', status: 1, statistic: 0},
           {status_str: '代配送', status: 2, statistic: 0},
           {status_str: '已完成', status: 3, statistic: 0}
-        ]
+        ],
+        socialSelect: SOCIAL_SELECT
       }
     },
     computed: {

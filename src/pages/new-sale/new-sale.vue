@@ -51,7 +51,14 @@
         <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
         <div :class="{'time-no-change':disable}"></div>
       </div>
-      <!--<p @click="test">测试</p>-->
+      <div v-if="msg.activity_theme === typeName" class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          用户提货时间
+        </div>
+        <div class="user-text-time">2019年06月12日(周四)</div>
+        <div class="user-text-tip">预售结束时间+采购周期=提货时间</div>
+      </div>
     </div>
 
     <div class="content-header">
@@ -64,7 +71,8 @@
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加商品
           </div>
-          <div class="remind">商品数量一共可添加({{goodsList.length}}/{{personAllBuyLimit}})个</div>
+          <div v-if="msg.activity_theme === typeName" class="remind">商品只可添加一个</div>
+          <div v-else class="remind">商品数量一共可添加({{goodsList.length}}/{{personAllBuyLimit}})个</div>
         </div>
         <div v-if="goodsList.length" class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
@@ -106,7 +114,10 @@
     <default-modal ref="goodsModel">
       <div slot="content" class="shade-box">
         <div class="title-box">
-          <div class="title">选择商品</div>
+          <div class="title">
+            <div class="title-name">选择商品</div>
+            <div v-if="msg.activity_theme === typeName" class="title-label">(商品只能添加1个)</div>
+          </div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
         <div class="shade-tab">
@@ -124,7 +135,7 @@
           <div class="rush-goods-list">
             <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
               <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
+              <img class="goods-img" :src="item.goods_cover_image" alt="">
               <div class="goods-msg">
                 <!--<div class="goods-name">{{item.usable_stock}}</div>-->
                 <div class="goods-name">{{item.name}}</div>
@@ -133,7 +144,7 @@
                   <div class="goods-money-text">¥{{item.trade_price}}</div>
                 </div>
               </div>
-              <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
+              <div  v-if="msg.activity_theme !== typeName" class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
           </div>
         </div>
@@ -142,7 +153,7 @@
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
-          <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
+          <div class="back-btn back-submit hand" @click="_batchAddition">{{msg.activity_theme === typeName ? '添加' : '批量添加'}}</div>
         </div>
       </div>
     </default-modal>
@@ -190,6 +201,7 @@
     }
   }
   const PERSON_ALL_BUY_LIMIT = 20
+  const TYPENAME = 'purchase'
   export default {
     name: PAGE_NAME,
     page() {
@@ -243,7 +255,8 @@
         isSubmit: false,
         personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
         activityTheme: '',
-        pageConfig: {}
+        pageConfig: {},
+        typeName: TYPENAME
       }
     },
     computed: {
@@ -326,6 +339,10 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
+        if (this.msg.activity_theme === this.typeName && this.goodsList.length !== 0) {
+          // 集采采购
+          this.selectGoods = this.goodsList
+        }
         this.choeesGoods = res.data.map((item, index) => {
           item.selected = 0
           let idx = this.selectGoodsId.findIndex((id) => id === item.id)
@@ -394,6 +411,18 @@
         }
         switch (item.selected) {
         case 0:
+          if (this.msg.activity_theme === this.typeName) {
+            // 集采采购
+            this.choeesGoods.forEach((item) => {
+              item.selected = 0
+            })
+            this.choeesGoods[index].selected = 2
+            item.all_stock = item.usable_stock
+            this.selectGoods = [item]
+            this.selectGoodsId = [item.id]
+            console.log(this.selectGoodsId)
+            return
+          }
           if (this.selectGoodsId.length === this.personAllBuyLimit) {
             this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
             return
@@ -404,6 +433,10 @@
           this.selectGoodsId.push(item.id)
           break
         case 2:
+          if (this.msg.activity_theme === this.typeName) {
+            // 集采采购
+            return
+          }
           this.choeesGoods[index].selected = 0
           let idx = this.selectGoods.findIndex((items) => items.id === item.id)
           let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
@@ -486,8 +519,13 @@
           }
           return item
         })
-        this.goodsList = this.goodsList.concat(this.selectGoods)
-        this.selectGoods = []
+        if (this.msg.activity_theme === this.typeName) {
+          // 集采采购
+          this.goodsList = this.selectGoods
+        } else {
+          this.goodsList = this.goodsList.concat(this.selectGoods)
+          this.selectGoods = []
+        }
         this._hideGoods()
       },
       async _showGoods() {
@@ -608,13 +646,14 @@
       font-family: $font-family-regular
       white-space: nowrap
       text-align: left
-      min-width: 64px
+      min-width: 95px
+      margin-right: 40px
     .start
       display: inline-block
       margin-right: -2px
       color: #F52424
     .edit-input-box
-      margin: 0 14px 0 40px
+      margin: 0 14px 0 0px
       &:nth-child(4)
         margin: 0 14px
       .edit-input
@@ -654,6 +693,17 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
+    .user-text-time
+      margin-right: 10px
+      line-height: 40px
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: #666
+    .user-text-tip
+      line-height: 40px
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: #acacac
     .time-no-change, .text-no-change
       position: absolute
       left: 103px
@@ -792,6 +842,13 @@
         font-family: $font-family-medium
         line-height: 1
         color: $color-text-main
+        layout(row)
+        align-items: center
+        .title-label
+          font-family: $font-family-regular
+          font-size: $font-size-12
+          color: #acacac
+          margin-left: 6px
       .close
         width: 12px
         height: @width
@@ -1091,10 +1148,11 @@
         width: 40px
         height: @width
         overflow: hidden
+        border-radius: 2px
+        object-fit: cover
         background-repeat: no-repeat
         background-size: cover
         background-position: center
-        background-color: $color-background
       .goods-msg
         flex: 1
         display: flex

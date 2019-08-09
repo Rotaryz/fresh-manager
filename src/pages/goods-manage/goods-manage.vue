@@ -12,6 +12,10 @@
         <div class="down-item">
           <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
         </div>
+        <span class="down-tip">类型</span>
+        <div class="down-item">
+          <base-drop-down :select="purchaseSelect" @setValue="_setTypeValue"></base-drop-down>
+        </div>
         <span class="down-tip">资料状态</span>
         <div class="down-item">
           <base-drop-down :select="dataSelect" @setValue="setDataValue"></base-drop-down>
@@ -118,6 +122,7 @@
         stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
+        purchaseSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '普通商品', value: 1}, {name: '集采商品', value: 2}]},
         dataSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', id: ''}, {name: '未完成', id: 0}, {name: '完成', id: 1}]},
         keyWord: '',
         oneBtn: false,
