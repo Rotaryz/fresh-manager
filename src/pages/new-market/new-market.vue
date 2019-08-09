@@ -646,6 +646,22 @@
   ]
   const INVITE_TITLE = ['成功邀请人数', '兑换券名称', '类型', '面值', '剩余', '有效期', '操作']
   const INVITED_TITLE = ['触发条件', '优惠券名称', '类型', '面值', '剩余', '有效期', '操作']
+
+
+  // 满赠
+  const TARGET_TYPE = {
+    0: 'user',
+    1: 'community'
+  }
+  const COUPON_TARGET = {
+    0: 'coupon',
+    2: 'certificate'
+  }
+  const SELECT_LIST = {
+    'coupon': 'selectCouponList',
+    'certificate': 'selectCertificateList'
+  }
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -1304,18 +1320,27 @@
       },
       // 满赠保存 todo
       _submitGift() {
-        // let data = {
-        //   type: 9,
-        //   config_json: {},
-        //   shop_coupons: [],
-        //   title: '',
-        //   start_at: '',
-        //   end_at: ''
-        // }
+        this.msg.coupon_type = this._setMsgTarget(COUPON_TARGET, 'chooseAward')
+        this.msg.target_type = this._setMsgTarget(TARGET_TYPE, 'chooseTarget')
+        this.msg.config_json.target_shops = this.selectGroupList
+        const key = SELECT_LIST[this.chooseAward]
+        this.msg.common_coupons = this[key].map(item => {
+          return {
+            coupon_id: item.id
+          }
+        })
         console.log(this.msg)
+      },
+      _setMsgTarget(obj, choose) {
+        for (let [key,val] of Object.entries(obj)) {
+          if (this[choose] === val) {
+            return key
+          }
+        }
       },
       // 保存优惠券数据
       async _saveActivity() {
+        this._submitGift()
         if (this.type || this.isSubmit) return
         let checkForm = this.checkForm()
         if (!checkForm) return
@@ -1328,7 +1353,7 @@
         switch (+this.marketIndex) {
         case 3:
           this._submitGift()
-          return // todo
+          break
         case 4:
           // 邀请有礼单独处理
           delete this.msg.shop_coupons
@@ -1451,6 +1476,14 @@
           if (this.marketIndex === 4) {
             this.inviterArr = this.msg.config_json.inviter_coupons
             this.invitedArr = this.msg.config_json.invitee_coupons
+          }
+          // 满赠
+          if (this.marketIndex === 3) {
+            this.chooseTarget = TARGET_TYPE[obj.target_type]
+            this.chooseAward= COUPON_TARGET[obj.coupon_type]
+            let key = SELECT_LIST[this.chooseAward]
+            this[key] = obj.common_coupons
+            this.selectGroupList = this.msg.config_json.target_shops
           }
         }
       }
