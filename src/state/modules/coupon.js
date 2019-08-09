@@ -88,7 +88,11 @@ export const mutations = {
 export const actions = {
   getCouponList({commit, state}, loading) {
     // let tagType = state.requestData.tag_type
-    return API.Coupon.getCouponList(state.requestData, loading)
+    let data = state.requestData
+    if (+state.requestData.tag_type === 1) {
+      data = {...state.requestData, tag_type : '1,2'}
+    }
+    return API.Coupon.getCouponList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
@@ -119,6 +123,9 @@ export const actions = {
   },
   // 兑换券的方法
   getCouponDetail({commit}, {id, tagType}) {
+    if (+tagType === 1) {
+      tagType = '1,2'
+    }
     return API.Coupon.getCouponDetail({tag_type: tagType}, id)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {

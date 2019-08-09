@@ -97,7 +97,7 @@
           兑换券金额
         </div>
         <div class="edit-input-box">
-          <input v-model="commodity.money"
+          <input v-model="commodity.condition"
                  type="number"
                  class="edit-input"
                  :disabled="id"
@@ -247,7 +247,7 @@
   const PAGE_NAME = 'EDIT_COMMODITY'
   const TITLE = '新建兑换券'
   const TABLE_TITLE = ['图片', '商品名称', '单位', '售价(元)', '库存', '操作']
-
+  const TAG_TYPE = {1: 'free', 2: 'fitGift'}
   export default {
     name: PAGE_NAME,
     page: {
@@ -323,7 +323,7 @@
         if (this.chooseType === 'free') {
           return true
         } else {
-          return REG_MONEY.test(this.commodity.money)
+          return REG_MONEY.test(this.commodity.condition)
         }
       }
     },
@@ -332,6 +332,7 @@
         let obj = _.cloneDeep(this.couponDetail)
         this.commodity = obj
         this.goodsItem = obj.ranges
+        this.chooseType = TAG_TYPE[obj.tag_type]
       }
       await this._getFirstAssortment()
       await this._getGoodsList(false)
@@ -339,6 +340,7 @@
     methods: {
       ...couponMethods,
       updateData(key, value) {
+        if (this.id > 0) return
         this[key] = value
       },
       getStartTime(time) {
@@ -379,9 +381,19 @@
           }
         }
       },
+      _formatSubmitData() {
+        let tagType = 1
+        for (let [key, value] of Object.entries(TAG_TYPE)){
+          if (this.chooseType === value) {
+            tagType = key
+          }
+        }
+        this.commodity.tag_type = tagType
+      },
       async submit() {
         if (this.id || !this.isSubmit) return
         if (!this.checkForm()) return
+        this._formatSubmitData()
         this.isSubmit = false
         let res = await API.Coupon.storeCoupon(this.commodity, true)
         this.$loading.hide()
@@ -427,6 +439,16 @@
         }
         this.goodsItem = [this.selectItem]
         this.commodity.ranges[0] = {range_id: this.goodsItem[0].id, coupon_range_id: 0}
+        // 满赠添加
+        if (!this.commodity.exchange_goods) {
+          this.commodity.exchange_goods = []
+          this.commodity.exchange_goods.push(
+            {
+              goods_id: this.goodsItem[0].id,
+              echange_id: 0
+            }
+          )
+        }
         this.commodity.coupon_name = this.selectItem.name
         this._hideGoods()
       },

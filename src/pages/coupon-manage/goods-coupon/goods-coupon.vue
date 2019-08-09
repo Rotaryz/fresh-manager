@@ -28,11 +28,11 @@
         <div class="list">
           <div v-if="couponList.length">
             <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
-              <div class="list-item">{{item.coupon_name}}</div>
-              <div class="list-item">{{item.coupon_name}}类型</div>
-              <div class="list-item">{{item.denomination}}</div>
-              <div class="list-item">{{item.denomination}}状态</div>
               <div class="list-item">{{item.created_at}}</div>
+              <div class="list-item">{{item.coupon_name}}</div>
+              <div class="list-item">{{item.preferential_str}}</div>
+              <div class="list-item">{{item.denomination}}</div>
+              <div class="list-item">{{item.status_str}}</div>
               <div class="list-item list-double-row">
                 <p class="item-dark">{{item.start_at}}</p>
                 <p class="item-dark">{{item.end_at}}</p>
@@ -67,11 +67,11 @@
 
   const PAGE_NAME = 'GOODS-COUPON'
   const COUPON_TITLE = [
-    '兑换券名称',
-    '类型todo',
-    '面值',
-    '状态todo',
     '创建时间',
+    '兑换券名称',
+    '类型',
+    '面值',
+    '状态',
     '有效时间',
     '发放总数',
     '剩余数量',
@@ -111,7 +111,7 @@
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({
-          tag_type: this.infoTabIndex,
+          tag_type: '1,2',
           created_start_at: this.requestData.created_start_at,
           created_end_at: this.requestData.created_end_at
         }).then(

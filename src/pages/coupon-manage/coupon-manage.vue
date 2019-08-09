@@ -136,14 +136,14 @@
 
   const ORDERSTATUS = [{text: '优惠券', status: 1}, {text: '兑换券', status: 0}]
   const COUPON_TITLE = [
+    {name: '创建时间', flex: 1.2, value: 'created_at', type: 1},
     {name: '优惠券名称', flex: 1.4, value: 'coupon_name', type: 1},
     {name: '类型', flex: 1, value: 'preferential_str', type: 1},
     {name: '使用范围', flex: 1, value: 'range_type_str', type: 1},
     {name: '使用门槛', flex: 1, value: 'condition', type: 5},
-    {name: '创建时间', flex: 1.2, value: 'created_at', type: 1},
     {name: '面值', flex: 1, value: 'denomination', type: 2},
     {name: '状态', flex: 1, value: 'status_str', type: 1},
-    {name: '剩余数量todo', flex: 1, value: 'usable_stock', type: 1},
+    {name: '剩余数量', flex: 1, value: 'usable_stock', type: 1},
     {name: 'ROI指标', flex: 1, value: 'roi_value', type: 3},
     {name: '操作', flex: 1.8, value: '', type: 4}
   ]
@@ -220,8 +220,8 @@
         this.updateListTabStatus()
       }
     },
-    created() {
-      this.getCouponStatus()
+    mounted() {
+      this.updateListTabStatus()
     },
     methods: {
       ...couponMethods,
@@ -274,7 +274,6 @@
         )
       },
       changeStatus(status, index) {
-        console.log(status)
         this.setDefaultIndex({status: status.status, index})
         this.$refs.pagination.beginPage()
       },
