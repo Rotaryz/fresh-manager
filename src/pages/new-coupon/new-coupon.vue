@@ -329,6 +329,9 @@
         </div>
       </div>
     </default-modal>
+
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -341,9 +344,11 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import {couponComputed, couponMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
+  import {objDeepCopy} from '@utils/common'
   // import {DatePicker} from 'iview'
   import {DatePicker} from 'element-ui'
 
@@ -374,6 +379,7 @@
     components: {
       DefaultModal,
       DefaultConfirm,
+      AddGoods,
       DatePicker
     },
     data() {
@@ -828,15 +834,30 @@
         this.selectGoods = []
         this._hideGoods()
       },
+      // 批量添加商品
+      batchAddition(list) {
+        list.forEach((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = objDeepCopy(item)
+            this.activityTheme !== 'hot_tag' && (obj.trade_price = '')
+            this.goodsList.push(obj)
+          }
+        })
+      },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        this._initData()
-        this.$refs.goodsSearch._setText('')
-        await this._getGoodsList()
+        if (this.disable) return
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+        // this._initData()
+        // this.$refs.goodsSearch._setText('')
+        // await this._getGoodsList()
         // 展示添加商品弹窗
-        this.$refs.goodsModal.showModal()
+        // this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModal.hideModal()

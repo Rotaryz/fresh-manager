@@ -511,7 +511,6 @@
             obj.sort = 0
             // obj.goods_trade_price = obj.trade_price
             obj.trade_price_show = obj.trade_price
-            console.log(this.activityTheme)
             this.activityTheme !== 'hot_tag' && (obj.trade_price = '')
             this.goodsList.push(obj)
           }

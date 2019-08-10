@@ -247,6 +247,9 @@
         </div>
       </div>
     </default-modal>
+
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -259,11 +262,13 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import MemberModal from './member-modal/member-modal'
   import moment from 'moment'
   import {outreachComputed, outreachMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
+  import {objDeepCopy} from '@utils/common'
   import {DatePicker} from 'iview'
 
   const PAGE_NAME = 'EDIT_OUTREACH'
@@ -287,6 +292,7 @@
       DefaultModal,
       DefaultConfirm,
       DatePicker,
+      AddGoods,
       MemberModal
     },
     data() {
@@ -663,6 +669,24 @@
         this.selectGoods = []
         this._hideGoods()
       },
+      // 批量添加商品
+      batchAddition(list) {
+        list.forEach((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = objDeepCopy(item)
+            obj.trade_price = ''
+            obj.usable_stock = ''
+            obj.sort = 0
+            this.goodsList.push(obj)
+          }
+        })
+      },
       _memberAddition(arr) {
         this.selectMembers = this.selectMembers.concat(arr)
       },
@@ -670,14 +694,13 @@
         this.selectMembers.push(item)
       },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        this._initData()
-        this.$refs.goodsSearch._setText('')
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModal.showModal()
+        if (this.disable) return
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+        // this._initData()
+        // this.$refs.goodsSearch._setText('')
+        // await this._getGoodsList()
+        // // 展示添加商品弹窗
+        // this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModal.hideModal()

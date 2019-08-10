@@ -87,7 +87,8 @@
           per_page: 10,
           total_page: 1
         },
-        parentId: 0,
+        page: 1,
+        parentId: '',
         keyword: '',
         goodsList: [],
         parentGoodsList: [],
