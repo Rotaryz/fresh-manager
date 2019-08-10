@@ -120,7 +120,7 @@
                   <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
                     <span class="after"></span>
                   </div>
-                  <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
+                  <img class="goods-img" :src="item.goods_cover_image">
                   <div class="goods-msg">
                     <div class="goods-name">{{item.name}}</div>
                     <div class="goods-money">¥{{item.original_price}}</div>
@@ -1159,10 +1159,8 @@
         width: 40px
         height: @width
         overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
+        object-fit: cover
+
       .goods-msg
         flex: 1
         display: flex
