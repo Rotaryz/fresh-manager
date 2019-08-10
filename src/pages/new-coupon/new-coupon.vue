@@ -306,20 +306,16 @@
         </div>
         <div class="goods-content">
           <div class="goods-title">
-            <div class="title-item" style="width:732px"><span>商品名称</span><span></span>销售价</div>
-            <!--<div class="title-item">库存</div>-->
-            <!--<div class="title-item">销售价</div>-->
-            <div class="title-item" style="margin-left: 88px">操作</div>
+            <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</div>
           </div>
           <div class="category-list">
             <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
-              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
-              <div class="goods-msg">
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.trade_price}}</div>
+              <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
+                <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+                <div v-if="title.value === 'name'" class="goods-img" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+                <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}</div>
               </div>
-              <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
+              <!--<div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>-->
             </div>
           </div>
         </div>
@@ -364,6 +360,12 @@
     {name: '操作', class: 'title-item', flex: 0.2, value: ''}
   ]
 
+  const GOODS_POP_TITLE = [
+    {name: '商品名称', flex: 2, value: 'name'},
+    {name: '库存', flex: 1, value: 'usable_stock'},
+    {name: '销售价格', flex: 1, value: 'trade_price'}
+  ]
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -377,6 +379,7 @@
     data() {
       return {
         commodities: COMMODITIES_LIST,
+        goodsTitle: GOODS_POP_TITLE,
         id: null,
         editId: '',
         couponPage: 1,
@@ -798,14 +801,11 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        if (item.selected === 1) {
-          return
-        }
+        if (item.selected === 1) return
         // if (this.selectGoodsId.length === 20 && item.selected !== 2) {
         //   this.$toast.show('选择商品数量不能超过十个')
         //   return
         // }
-
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
@@ -1513,107 +1513,13 @@
   .goods-content
     border-radius: 4px
     height: 465px
-    .category-list
-      flex-wrap: wrap
-      display: flex
-    .goods-item
-      box-sizing: border-box
-      padding: 0 30px 0 20px
-      width: 100%
-      height: 60px
-      display: flex
-      align-items: center
-      position: relative
-      &:last-child
-        border-bottom-1px($color-line)
-      &:before
-        content: ""
-        pointer-events: none // 解决iphone上的点击无效Bug
-        display: block
-        position: absolute
-        left: 0
-        top: 0
-        transform-origin: 0 0
-        border-right: 1px solid #E9ECEE
-        border-left: 1px solid #E9ECEE
-        border-top: 1px solid #E9ECEE
-        box-sizing border-box
-        width: 200%
-        height: 100%
-        transform: scaleX(.5) translateZ(0)
-        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
-          width: 100%
-          height: 300%
-          transform: scaleX(1 / 3) translateZ(0)
-      &:nth-child(2n - 1)
-        background: #f5f7fa
-      .goods-img
-        margin-right: 10px
-        width: 40px
-        height: @width
-        overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
-      .select-icon
-        margin-right: 20px
-        border-radius: 1px
-        border: 1px solid #e9ecee
-        height: 16px
-        width: 16px
-        -webkit-transition: all .3s
-        transition: all .3s
-      .select-icon-active
-        border: 1px solid transparent
-        display: inline-block
-        background-size: 100% 100%
-        background-image: url("./icon-check@2x.png")
-      .select-icon-disable
-        border: 1px solid transparent
-        cursor: not-allowed
-        display: inline-block
-        background-size: 100% 100%
-        background-image: url("./icon-check_ash@2x.png")
-      .goods-msg
-        flex: 1
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        justify-content: space-between
-        height: 100%
-        align-items: center
-        .goods-name
-          width: 500px
-          no-wrap()
-        .goods-name, .goods-money
-          line-height: 1
-      .add-btn
-        border-radius: 2px
-        margin-left: 88px
-        padding: 7px 0
-        min-width: 54px
-        text-align: center
-      .add-btn-disable
-        border-radius: 2px
-        margin-left: 88px
-        padding: 7px 0
-        box-sizing: border-box
-        text-align: center
-        font-size: $font-size-14
-        line-height: 1
-        cursor: not-allowed
-        background: $color-line
-        color: $color-text-assist
-        border: none
-
     .goods-title
       display: flex
       height: 45px
       background: #F5F7FA
       position: relative
       align-items: center
-      padding: 0 30px 0 56px
+      padding: 0 30px 0 20px
       &:before
         content: ""
         pointer-events: none // 解决iphone上的点击无效Bug
@@ -1634,8 +1540,75 @@
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
       .title-item
+        padding-right: 20px
+      .title-item:first-child
+        text-indent: 36px
+        box-sizing: border-box
+    .category-list
+      .goods-item
+        box-sizing: border-box
+        padding: 0 30px 0 20px
+        width: 100%
+        height: 60px
         display: flex
-        justify-content: space-between
+        align-items: center
+        position: relative
+        &:last-child
+          border-bottom-1px($color-line)
+        &:before
+          content: ""
+          pointer-events: none // 解决iphone上的点击无效Bug
+          display: block
+          position: absolute
+          left: 0
+          top: 0
+          transform-origin: 0 0
+          border-right: 1px solid #E9ECEE
+          border-left: 1px solid #E9ECEE
+          border-top: 1px solid #E9ECEE
+          box-sizing border-box
+          width: 200%
+          height: 100%
+          transform: scaleX(.5) translateZ(0)
+          @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+            width: 100%
+            height: 300%
+            transform: scaleX(1 / 3) translateZ(0)
+        &:nth-child(2n - 1)
+          background: #f5f7fa
+        .item-content
+          padding-right: 20px
+          display: flex
+          align-items: center
+        .goods-img
+          margin-right: 10px
+          width: 40px
+          height: @width
+          overflow: hidden
+          background-repeat: no-repeat
+          background-size: cover
+          background-position: center
+          background-color: $color-background
+        .select-icon
+          margin-right: 20px
+          border-radius: 1px
+          border: 1px solid #e9ecee
+          height: 16px
+          width: 16px
+          -webkit-transition: all .3s
+          transition: all .3s
+        .select-icon-active
+          border: 1px solid transparent
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check@2x.png")
+        .select-icon-disable
+          border: 1px solid transparent
+          cursor: not-allowed
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check_ash@2x.png")
+
   .category-content
     border-radius: 1px
     margin: 7px 0 0
