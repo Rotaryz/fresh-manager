@@ -180,20 +180,16 @@
             </div>
           </div>
           <div class="goods-content">
+            <div class="goods-title">
+              <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</div>
+            </div>
             <div class="goods-list" :class="{'goods-list-border':choiceGoods.length}">
               <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-                <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
-                  <span class="after"></span>
+                <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
+                  <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
+                  <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
+                  <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{title.value === 'sale_unit' ? (item.sale_unit || item.goods_units) : item[title.value]}}</div>
                 </div>
-                <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
-                <div class="goods-msg">
-                  <div class="goods-name">{{item.name}}</div>
-                  <div class="goods-name">{{item.sale_unit || item.goods_units}}</div>
-                  <div class="goods-name">¥{{item.trade_price || 0}}</div>
-                  <div class="goods-name">{{item.usable_stock || 0}}</div>
-                  <!--<div class="goods-money">{{item.goods_sku_encoding}}</div>-->
-                </div>
-
               </div>
             </div>
           </div>
@@ -225,6 +221,12 @@
   const PAGE_NAME = 'EDIT_COMMODITY'
   const TITLE = '新建兑换券'
   const TABLE_TITLE = ['图片', '商品名称', '单位', '售价(元)', '库存', '操作']
+  const GOODS_POP_TITLE = [
+    {name: '商品名称', flex: 2.5, value: 'name'},
+    {name: '基本单位', flex: 1, value: 'sale_unit'},
+    {name: '库存', flex: 1, value: 'usable_stock'},
+    {name: '销售价格', flex: 1, value: 'trade_price'}
+  ]
 
   export default {
     name: PAGE_NAME,
@@ -239,6 +241,7 @@
       return {
         id: this.$route.query.id,
         tableTitle: TABLE_TITLE,
+        goodsTitle: GOODS_POP_TITLE,
         commodity: {
           coupon_name: '',
           preferential_type: 2,
@@ -623,7 +626,7 @@
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px
     background: $color-white
-    height: 675px
+    height: 720px
     max-width: 1000px
     width: 1000px
     position: relative
@@ -646,20 +649,14 @@
 
   .goods-content
     border-radius: 4px
-    height: 420px
-    .goods-list
-      flex-wrap: wrap
+    height: 465px
+    .goods-title
       display: flex
-    .goods-item
-      box-sizing: border-box
-      padding: 0 30px 0 20px
-      width: 100%
-      height: 60px
-      display: flex
-      align-items: center
+      height: 45px
+      background: #F5F7FA
       position: relative
-      &:last-child
-        border-bottom-1px($color-line)
+      align-items: center
+      padding: 0 30px 0 20px
       &:before
         content: ""
         pointer-events: none // 解决iphone上的点击无效Bug
@@ -679,51 +676,62 @@
           width: 100%
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
-      &:nth-child(2n - 1)
-        background: #f5f7fa
-      .goods-img
-        margin-right: 10px
-        width: 40px
-        height: @width
-        overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
-      .goods-msg
-        flex: 1
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        height: 100%
-        align-items: center
-        margin-left: 40px
-        .goods-name
-          flex: 1
-          no-wrap()
-          line-height: 1.2
-          &:nth-child(1)
-            flex: 2
-          &:nth-child(4)
-            max-width: 80px
-      .add-btn
-        border-radius: 2px
-        margin-left: 88px
-        padding: 5px 0
-        width: 56px
-        text-align: center
-      .add-btn-disable
-        border-radius: 2px
-        margin-left: 88px
-        padding: 5px 0
-        width: 56px
+      .title-item
+        padding-right: 20px
+      .title-item:first-child
+        text-indent: 36px
         box-sizing: border-box
-        text-align: center
-        font-size: $font-size-14
-        line-height: 1
-        cursor: not-allowed
-        background: $color-line
-        color: $color-text-assist
+    .goods-list
+      margin: 0
+      .goods-item
+        box-sizing: border-box
+        padding: 0 30px 0 20px
+        width: 100%
+        height: 60px
+        display: flex
+        align-items: center
+        position: relative
+        &:last-child
+          border-bottom-1px($color-line)
+        &:before
+          content: ""
+          pointer-events: none // 解决iphone上的点击无效Bug
+          display: block
+          position: absolute
+          left: 0
+          top: 0
+          transform-origin: 0 0
+          border-right: 1px solid #E9ECEE
+          border-left: 1px solid #E9ECEE
+          border-top: 1px solid #E9ECEE
+          box-sizing border-box
+          width: 200%
+          height: 100%
+          transform: scaleX(.5) translateZ(0)
+          @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+            width: 100%
+            height: 300%
+            transform: scaleX(1 / 3) translateZ(0)
+        &:nth-child(2n - 1)
+          background: #f5f7fa
+        .item-content
+          padding-right: 20px
+          display: flex
+          align-items: center
+        .goods-img
+          margin-right: 10px
+          width: 40px
+          height: @width
+          overflow: hidden
+          background-repeat: no-repeat
+          background-size: cover
+          background-position: center
+          background-color: $color-background
+        .value
+          white-space: nowrap
+          text-overflow: ellipsis
+          overflow: hidden
+          max-width: 285px
 
   .title-box
     display: flex
@@ -765,13 +773,6 @@
     position: relative
     transform-origin: 50%
     margin-right: 20px
-    .after
-      all-center()
-      transform-origin: 50%
-      transition: all, 0.3s
-      width: 0
-      height: 0
-      border-radius: 50%
   .select-icon-active
     border: 5px solid $color-main
 

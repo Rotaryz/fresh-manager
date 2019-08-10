@@ -25,7 +25,7 @@
           <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
             <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
               <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
-              <div v-if="title.value === 'name'" class="goods-img" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+              <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
               <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}</div>
             </div>
             <!--<div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>-->
@@ -421,12 +421,9 @@
         .goods-img
           margin-right: 10px
           width: 40px
+          object-fit: cover
           height: @width
           overflow: hidden
-          background-repeat: no-repeat
-          background-size: cover
-          background-position: center
-          background-color: $color-background
         .select-icon
           margin-right: 20px
           border-radius: 1px
@@ -446,6 +443,11 @@
           display: inline-block
           background-size: 100% 100%
           background-image: url("./icon-check_ash@2x.png")
+        .value
+          white-space: nowrap
+          text-overflow: ellipsis
+          overflow: hidden
+          max-width: 320px
 
   .page-box
     padding: 0 20px
