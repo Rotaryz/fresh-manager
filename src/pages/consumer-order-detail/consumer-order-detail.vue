@@ -266,7 +266,7 @@
           back_tracking_obj: this.consumerType,
           out_order_sn: ''
         }
-        this.nickName = item.nickname
+        // this.nickName = item.nickname
       },
       _searchShop(text) {
         if (text.length === 0) {
@@ -299,7 +299,15 @@
             this.community.data = res.data
             this.communityList = res.data
             this.community.content = '选择社区'
-            this.nickName = res.data[0].nickname
+            API.MerchantOrder.getNickName({mobile: this.mobile})
+              .then(res => {
+                if (res.error !== this.$ERR_OK) {
+                  this.$toast.show(res.message)
+                  return
+                }
+                this.nickName = res.data.nickname
+              })
+
           })
       },
       stockHandle(item) {
