@@ -23,6 +23,9 @@
           <div v-for="(item, index) in dataArray" :key="item.id" class="group-item hand" @click="selectItem(item, index)">
             <div v-for="(val, ind) in tabTitle" :key="val.name" class="title-item" :style="{flex: val.flex}">
               <span v-if="ind === 0" :class="['check', unChooseStyle(item), chooseStyle(item)]"></span>
+              <span v-else-if="val.value.push" class="title-item">
+                <span v-for="(child, cIdx) in val.value" :key="cIdx" class="item-dark">{{item[child]}}</span>
+              </span>
               <span v-else class="title-item">{{item[val.value]}}</span>
             </div>
           </div>

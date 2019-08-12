@@ -937,12 +937,14 @@
       },
       async _getList() {
         let data = {
+          // this.keyword = keyword
+          keyword: this.keyword,
           coupon_name: this.keyword,
           page: this.page,
           limit: 6,
           status: 1,
           has_stock: 1,
-          tag_type: 0
+          tag_type: this._setMsgTarget(COUPON_TARGET, 'chooseAward') || 0
         }
         let res = {}
         try {
@@ -965,7 +967,7 @@
             {name: '类型', flex: 1, value: 'preferential_str'},
             {name: '面值', flex: 1, value: 'denomination'},
             {name: '剩余数量', flex: 1, value: 'usable_stock'},
-            {name: '有效期', flex: 1, value: 'time'}
+            {name: '有效期', flex: 1, value: ['start_at', 'end_at']}
           ],
           dataArray: res.data,
           originArray: this.selectCertificateList,
