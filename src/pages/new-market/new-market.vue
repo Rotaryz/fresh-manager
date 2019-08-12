@@ -655,7 +655,8 @@
   }
   const COUPON_TARGET = {
     0: 'coupon',
-    2: 'certificate'
+    2: 'certificate',
+    10: 'coupon'
   }
   const SELECT_LIST = {
     'coupon': 'selectCouponList',
