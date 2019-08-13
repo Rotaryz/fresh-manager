@@ -6,6 +6,7 @@
         <div class="identification-page">
           <img src="./icon-coupon_list@2x.png" class="identification-icon">
           <p class="identification-name">营销计划列表</p>
+          <base-status-tab :statusList="statusTab" :infoTabIndex="statusIndex" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn" @click="newMarket(defaultTab)">
           <div class="btn-main" style="margin-right:0">新建计划<span class="add-icon"></span></div>
@@ -117,18 +118,24 @@
     },
     data() {
       return {
+        statusTab: [
+          {name: '全部', value: '', num: 0},
+          {name: '进行中', value: 1, num: 0},
+          {name: '未开始', value: 1, num: 0},
+          {name: '已结束', value: 1, num: 0}
+        ],
         marketTitle: MARKET_TITLE,
         topBtn: TOP_BTN,
         type: ['未知', '新客有礼', '复购有礼', '唤醒流失客户', '社群福利券'],
         iconArr: ['icon-new_courtesy', 'icon-complex_courtesy', 'icon-awaken'],
         iconArr2: ['icon-group'],
-        statusTab: [
-          {name: '全部', value: '', num: 0},
-          {name: '开启', value: 1, num: 0},
-          {name: '关闭', value: 0, num: 0}
-        ],
+        // statusTab: [
+        //   {name: '全部', value: '', num: 0},
+        //   {name: '开启', value: 1, num: 0},
+        //   {name: '关闭', value: 0, num: 0}
+        // ],
         curentItem: {},
-        statusArr: new Array(10).fill(undefined),
+        // statusArr: new Array(10).fill(undefined),
         currentItem: {},
         toastType: '',
         tipShow: '',
@@ -137,6 +144,13 @@
     },
     computed: {
       ...marketComputed
+    },
+    watch: {
+      marketList() {
+        // todo
+        console.log('markList')
+        this._getStatus()
+      }
     },
     created() {
       // this.getMarketStatus()
@@ -147,67 +161,75 @@
       newMarket(index) {
         this.$router.push(`/home/coupon-market/new-market?index=${index}`)
       },
+      // 切换状态栏 todo
       changeStatus(selectStatus, index) {
+        console.log(selectStatus, index, 'status')
+        this['SET_STATUS_INDEX'](index)
         this.$refs.pages.beginPage()
-        this.setDefaultIndex({status: selectStatus.status, index})
-        this.statusArr = new Array(10).fill(undefined)
+        this._getStatus()
+        // this.setDefaultIndex({status: selectStatus.status, index})
+        // this.statusArr = new Array(10).fill(undefined)
       },
-      getMarketStatus() {
-        API.Market.getMarketStatus().then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          this.statusTab = res.data.map((item, index) => {
-            return {
-              name: item.status_str,
-              status: item.status,
-              num: item.statistic
-            }
-          })
-        })
+      // todo
+      _getStatus() {
+
       },
-      statusHandle(item, index) {
-        let status = 0
-        if (typeof this.statusArr[index] === 'number') {
-          status = this.statusArr[index]
-        } else {
-          status = item.status
-        }
-        return status
-      },
+      // getMarketStatus() {
+      //   API.Market.getMarketStatus().then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       this.$toast.show(res.message)
+      //       return
+      //     }
+      //     this.statusTab = res.data.map((item, index) => {
+      //       return {
+      //         name: item.status_str,
+      //         status: item.status,
+      //         num: item.statistic
+      //       }
+      //     })
+      //   })
+      // },
+      // statusHandle(item, index) {
+      //   let status = 0
+      //   if (typeof this.statusArr[index] === 'number') {
+      //     status = this.statusArr[index]
+      //   } else {
+      //     status = item.status
+      //   }
+      //   return status
+      // },
       // 顶部tab切换
       tabChange(item, index) {
         this.$refs.pages.beginPage()
         this.setDefaultTab(index)
         this.setRequestData({page: 1, type: item.type})
       },
-      switchBtn(item, index) {
-        let status = 1
-        if (typeof this.statusArr[index] === 'number') {
-          status = +this.statusArr[index] === 0 ? 1 : 0
-        } else {
-          status = item.status ? 0 : 1
-        }
-        let data = {
-          status: status,
-          id: item.id
-        }
-        API.Market.switchMarket(data).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          this.statusArr = this.statusArr.map((item, ind) => {
-            if (index === ind) {
-              item = status
-            }
-            return item
-          })
-          // this.getMarketList({page: this.page, status: this.status})
-          // this.getMarketStatus()
-        })
-      },
+      // switchBtn(item, index) {
+      //   let status = 1
+      //   if (typeof this.statusArr[index] === 'number') {
+      //     status = +this.statusArr[index] === 0 ? 1 : 0
+      //   } else {
+      //     status = item.status ? 0 : 1
+      //   }
+      //   let data = {
+      //     status: status,
+      //     id: item.id
+      //   }
+      //   API.Market.switchMarket(data).then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       this.$toast.show(res.message)
+      //       return
+      //     }
+      //     this.statusArr = this.statusArr.map((item, ind) => {
+      //       if (index === ind) {
+      //         item = status
+      //       }
+      //       return item
+      //     })
+      //     // this.getMarketList({page: this.page, status: this.status})
+      //     // this.getMarketStatus()
+      //   })
+      // },
       addPage(page) {
         this.setRequestData({page})
       },
@@ -258,6 +280,9 @@
         }
       },
       couponHandle(coupon) {
+        if (coupon.tag_type === 2) {
+          return `【${coupon.coupon_name}】${coupon.condition_str}`
+        }
         let lastText = ''
         if (+coupon.tag_type === 1) {
           lastText = '兑换'

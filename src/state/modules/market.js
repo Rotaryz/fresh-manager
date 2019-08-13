@@ -22,7 +22,8 @@ export const state = {
   requestData: {
     page: 1,
     type: 1
-  }
+  },
+  statusIndex: 0 // 状态栏下标
 }
 
 export const getters = {
@@ -55,10 +56,14 @@ export const getters = {
   },
   marketType(state) {
     return state.marketType
-  }
+  },
+  statusIndex: state => state.statusIndex
 }
 
 export const mutations = {
+  SET_STATUS_INDEX(state, index = 0) {
+    state.statusIndex = index
+  },
   SET_MARKET_LIST(state, marketList) {
     state.marketList = marketList
   },
@@ -89,6 +94,7 @@ export const mutations = {
       type: 1
     }
     state.defaultTab = 0
+    state.statusIndex = 0
   },
   SET_DEFAULT_TAB(state, index) {
     state.defaultTab = index
