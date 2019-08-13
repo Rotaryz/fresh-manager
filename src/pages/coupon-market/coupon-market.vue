@@ -280,11 +280,11 @@
         }
       },
       couponHandle(coupon) {
-        if (coupon.tag_type === 2) {
-          return `【${coupon.coupon_name}】${coupon.condition_str}`
-        }
+        // if (coupon.tag_type === 2) {
+        //   return `【${coupon.coupon_name}】${coupon.condition_str}`
+        // }
         let lastText = ''
-        if (+coupon.tag_type === 1) {
+        if (+coupon.tag_type === 1 || +coupon.tag_type === 2) {
           lastText = '使用'
         } else {
           lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination+'元'
