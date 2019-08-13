@@ -36,7 +36,7 @@
           <base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
-          <div class="btn-main" @click="jumpStore">商品素材中心</div>
+          <!--<div class="btn-main" @click="jumpStore">商品素材中心</div>-->
           <router-link tag="div" to="edit-goods" append class="btn-main g-btn-item">新建商品<span class="add-icon"></span></router-link>
           <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
           <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">

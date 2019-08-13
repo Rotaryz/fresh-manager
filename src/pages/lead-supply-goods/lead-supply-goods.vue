@@ -39,7 +39,7 @@
       </div>
       <div class="back">
         <div class="back-cancel back-btn hand" @click="_back">返回</div>
-        <div class="back-btn back-submit hand" @click="submitSure">创建</div>
+        <div class="back-btn back-submit hand" :class="{'btn-disable': hasError}" @click="submitSure">创建</div>
       </div>
     </div>
     <default-confirm ref="confirm" @confirm="confirm"></default-confirm>
@@ -66,7 +66,8 @@
         commodities: COMMODITIES_LIST,
         blankList: [],
         downUrl: '',
-        isSubmit: true
+        isSubmit: true,
+        hasError: false
       }
     },
     created() {
@@ -79,10 +80,10 @@
         let params = `access_token=${token.access_token}&current_corp=${currentId}&`
         this.downUrl =
           process.env.VUE_APP_API + `/social-shopping/api/backend/goods-manage/goods-create-scm-template-excel?${params}`
-        console.log(this.downUrl)
       },
       // 提交
       submitSure() {
+        if (this.hasError) return
         if (!this.blankList.length) {
           this.$toast.show('导入商品不能为空')
           return
@@ -111,15 +112,24 @@
       },
       //  导入商品新建模板
       async importStock(e, index) {
+        this.hasError = false
         let param = this._infoFile(e.target.files[0])
         this.$loading.show('上传中...')
         let res = await API.Product.checkGoodsImport(param, true, 60000)
         this.$loading.hide()
-        this.blankList = res.error === this.$ERR_OK ? res.data : []
+        // this.blankList = res.error === this.$ERR_OK ? res.data : []
         e.target.value = ''
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
+          return
         }
+        this.blankList = res.data
+        // let result = res.data.every(item => {
+        //   return +item.error_type === 0
+        // })
+        // if (!result) {
+        //   this.hasError = true
+        // }
       },
       // 格式化文件
       _infoFile(file) {
@@ -149,7 +159,8 @@
           flex: 1.3
         &:nth-child(3), &:nth-child(4), &:nth-child(5)
           flex-wrap: nowrap
-
+      .red
+        color: #F84E3C
   .down-content
     align-items: flex-start
     padding: 5px 20px 25px

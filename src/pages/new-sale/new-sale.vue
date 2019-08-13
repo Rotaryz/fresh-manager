@@ -147,7 +147,7 @@
       </div>
     </default-modal>
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :MaxLimit="personAllBuyLimit" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -245,13 +245,23 @@
           activity_theme: this.$route.query.activity_theme
         },
         isSubmit: false,
-        personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
+        // personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
         activityTheme: '',
         pageConfig: {}
       }
     },
     computed: {
       ...saleComputed,
+      personAllBuyLimit() {
+        switch(this.msg.activity_theme) {
+        case 'fixed':
+          return 10
+        case 'hot_tag':
+          return 50
+        default:
+          return 20
+        }
+      },
       testName() {
         return this.msg.activity_name
       },
@@ -278,9 +288,9 @@
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       this.activityTheme = this.$route.query.activity_theme
       this.pageConfig = PAGE_CONFIG[this.$route.query.activity_theme] || {}
-      if (this.$route.query.activity_theme === 'fixed') {
-        this.personAllBuyLimit = 10
-      }
+      // if (this.$route.query.activity_theme === 'fixed') {
+      //   this.personAllBuyLimit = 10
+      // }
       // this.msg.activity_theme = this.$route.query.activity_theme
       if (this.id > 0) {
         let obj = _.cloneDeep(this.saleDetail)

@@ -3,10 +3,10 @@
     <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
     <div class="advertisement">
       <div class="identification">
-        <div class="identification-page">
+        <!--<div class="identification-page">
           <img :src="actName[contentType + 'Icon']" class="identification-icon">
           <p class="identification-name">{{actName[contentType]}}</p>
-        </div>
+        </div>-->
         <div class="function-btn">
         </div>
       </div>
@@ -122,7 +122,7 @@
                   </div>
                   <img class="goods-img" :src="item.goods_cover_image">
                   <div class="goods-msg">
-                    <div class="goods-name">{{item.name}}</div>
+                    <div class="goods-name"><span class="tag">拼团返现</span>{{item.name}}</div>
                     <div class="goods-money">¥{{item.original_price}}</div>
                   </div>
                 </div>
@@ -145,10 +145,22 @@
               </div>
             </div>
           </div>
-          <div v-if="tabIndex === 2" class="link-text">
-            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+          <!--商品分类-->
+          <div v-if="tabIndex === 2" class="goods-cate">
+            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
+              <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+                <span class="after"></span>
+              </div>
+              <div class="shade-goods-msg">
+                <div class="shade-goods-name">{{goods.name}}</div>
+                <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+              </div>
+            </div>
           </div>
           <div v-if="tabIndex === 3" class="link-text">
+            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+          </div>
+          <div v-if="tabIndex === 4" class="link-text">
             <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
           </div>
           <div class="back back-box">
@@ -181,6 +193,7 @@
   const TYPE_LIST = [
     {title: '商品详情', status: 'mini_goods'},
     {title: '商品分类', status: 'goods_cate'},
+    {title: '活动分类', status: 'activity_cate'},
     {title: '小程序链接', status: 'mini_link'},
     {title: 'H5链接', status: 'out_html'}
   ]
@@ -574,6 +587,11 @@
           this[this.dataName][index].url = ''
           this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
           break
+        case 'activity_cate':
+          this[this.dataName][index].other_id = this.activityCate[this.showCateIndex].id
+          this[this.dataName][index].url = ''
+          this[this.dataName][index].name = this.activityCate[this.showCateIndex].name
+          break
         }
         this._hideGoods()
       },
@@ -875,15 +893,14 @@
       height: 60px
       position: relative
       box-sizing: border-box
-      text-indent: 13px
       &:before
         content: ''
         position: absolute
-        width: 3px
-        height: 14px
+        width: 34px
+        height: 2px
         background: $color-main
         border-radius: 2px
-        col-center()
+        bottom: 0
         left: 0
       .content-title
         color: $color-text-main
@@ -1172,6 +1189,16 @@
         .goods-name
           width: 500px
           no-wrap()
+          .tag
+            border-radius: 2px
+            background: #73C200
+            color: #FFF
+            font-family: $font-family-regular
+            font-size: 12px
+            padding: 2px 3px
+            line-height: 16px
+            margin-right: 4px
+
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14

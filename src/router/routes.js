@@ -174,7 +174,7 @@ export default [
         name: 'advertisement',
         component: () => lazyLoadView(import('@pages/advertisement/advertisement')),
         meta: {
-          titles: ['商城', '内容', '内容管理'],
+          titles: ['商城', '内容', '页面管理'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表

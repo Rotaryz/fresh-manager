@@ -1,12 +1,12 @@
 <template>
   <div class="new-market detail-content">
     <div class="identification">
-      <div class="identification-page">
+      <!--<div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
         <p class="identification-name">{{!disable ? '新建' : type ? '查看' : '编辑'}}营销</p>
       </div>
       <div class="function-btn">
-      </div>
+      </div>-->
     </div>
     <div class="msg-detail">
       <!--轮播图-->
@@ -1255,22 +1255,22 @@
   .right-form
     box-sizing: border-box
     flex: 1
-    padding: 36px 20px 20px
+    padding: 20px 20px 20px
     .title
       font-size: $font-size-16
       position: relative
       padding-bottom: 10px
-      padding-left: 12px
       margin-bottom: 24px
       border-bottom: 1px solid $color-line
       &:before
-        content: ""
-        width: 3px
-        height: 16px
-        background: $color-main
+        content: ''
         position: absolute
+        width: 34px
+        height: 2px
+        background: $color-main
+        border-radius: 2px
+        bottom: 0
         left: 0
-        top: 4px
       .tip
         color: $color-text-assist
         font-size: $font-size-14

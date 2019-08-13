@@ -19,13 +19,16 @@
       </div>
       <div class="goods-content">
         <div class="goods-title">
-          <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</div>
+          <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">
+            <span v-if="item.value === 'image'" class="select-icon hand" :class="{'select-icon-active': selectAll}" @click="_selectAllGoods()"></span>
+            <span class="text">{{item.name}}</span>
+          </div>
         </div>
         <div class="goods-list">
           <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
             <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
-              <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
-              <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
+              <span v-if="title.value === 'image'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+              <img v-if="title.value === 'image'" class="goods-img" :src="item.goods_cover_image">
               <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}</div>
             </div>
             <!--<div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>-->
@@ -33,7 +36,6 @@
         </div>
       </div>
       <div class="page-box">
-        <p class="select-all hand" @click="_selectAllGoods()"><span class="select-icon" :class="{'select-icon-active': selectAll}"></span>全选</p>
         <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
       </div>
       <div class="back">
@@ -50,15 +52,22 @@
 
   const COMPONENT_NAME = 'ADD_GOODS'
   const GOODS_POP_TITLE = [
+    {name: '图片', flex: 0.35, value: 'image'},
     {name: '商品名称', flex: 2, value: 'name'},
     {name: '库存', flex: 1, value: 'usable_stock'},
-    {name: '销售价格', flex: 1, value: 'trade_price'}
+    {name: '销售价格', flex: 0.5, value: 'trade_price'}
   ]
 
   export default {
     name: COMPONENT_NAME,
     components: {
       DefaultModal
+    },
+    props: {
+      MaxLimit: {
+        type: [Number, Boolean],
+        default: false
+      }
     },
     data() {
       return {
@@ -142,29 +151,48 @@
           this.$toast.show('该商品库存为0，不能选择')
           return
         }
+        if ((this.selectGoods.length + this.parentGoodsList.length) === this.MaxLimit) {
+          this.$toast.show(`选择商品数量不能超过${this.MaxLimit}个`)
+          return
+        }
         switch (item.selected) {
         case 0:
           this.chooseGoods[index].selected = 2
           this.selectGoods.push(item)
-          // this.selectGoodsId.push(item.id)
           break
         case 2:
           this.selectAll = false
           this.chooseGoods[index].selected = 0
           let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          // let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
           if (idx !== -1) {
             this.selectGoods.splice(idx, 1)
           }
-          // if (idIdx !== -1) {
-          //   this.selectGoodsId.splice(idx, 1)
-          // }
           break
         }
       },
       _selectAllGoods() {
+        let goods = this.chooseGoods
+        let allDisable = goods.every(item => {
+          return +item.selected === 1
+        })
+        if (allDisable) return
+        for (let i in goods) {
+          if (goods[i].usable_stock <= 0) {
+            this.$toast.show(`商品"${goods[i].goods_material_name}"库存不足`)
+            return
+          }
+        }
         this.selectAll = !this.selectAll
-        this.selectGoods = []
+        if (this.selectAll && (this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length) > this.MaxLimit) {
+          this.$toast.show(`选择商品数量不能超过${this.MaxLimit}个`)
+          this.selectAll = false
+          return
+        }
+
+
+
+
+        // this.selectGoods = []
         // this.selectGoodsId = []
         if (this.selectAll) {
           this.chooseGoods.map(item => {
@@ -177,10 +205,9 @@
           this.chooseGoods.map(item => {
             if (+item.selected === 2) {
               item.selected = 0
-            }
-            if (+item.selected === 1) {
-              // this.selectGoods.push(item)
-              // this.selectGoodsId.push(item.id)
+              this.selectGoods = this.selectGoods.filter(goods => {
+                return goods.id !== item.id
+              })
             }
             return item
           })
@@ -213,7 +240,7 @@
           keyword: this.keyword,
           goods_category_id: this.parentId,
           shelf_id: this.id,
-          limit: 7,
+          limit: 6,
           page: this.page
         })
         if (res.error !== this.$ERR_OK) {
@@ -255,6 +282,11 @@
           }
           return item
         })
+        let allSelect = this.chooseGoods.every(item => {
+          return +item.selected !== 0
+        })
+        allSelect && (this.selectAll = true)
+        !allSelect && (this.selectAll = false)
       },
       // 选择一级分类
       async _secondAssortment(item) {
@@ -304,7 +336,7 @@
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px
     background: $color-white
-    height: 720px
+    height: 662px
     max-width: 1000px
     width: 1000px
     position: relative
@@ -350,7 +382,7 @@
 
   .goods-content
     border-radius: 4px
-    height: 465px
+    height: 405px
     .goods-title
       display: flex
       height: 45px
@@ -379,9 +411,22 @@
           transform: scaleX(1 / 3) translateZ(0)
       .title-item
         padding-right: 20px
-      .title-item:first-child
-        text-indent: 36px
-        box-sizing: border-box
+        display: flex
+        align-items: center
+        .select-icon
+          margin-right: 20px
+          border-radius: 1px
+          border: 1px solid #e9ecee
+          height: 16px
+          width: 16px
+          display: inline-block
+          -webkit-transition: all .3s
+          transition: all .3s
+        .select-icon-active
+          border: 1px solid transparent
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check@2x.png")
     .goods-list
       .goods-item
         box-sizing: border-box
@@ -412,14 +457,13 @@
             width: 100%
             height: 300%
             transform: scaleX(1 / 3) translateZ(0)
-        &:nth-child(2n - 1)
+        &:nth-child(2n)
           background: #f5f7fa
         .item-content
           padding-right: 20px
           display: flex
           align-items: center
         .goods-img
-          margin-right: 10px
           width: 40px
           object-fit: cover
           height: @width
@@ -455,29 +499,6 @@
     height: 77px
     align-items: center
     display: flex
-    .select-all
-      width: 100px
-      display: flex
-      align-items: center
-      -webkit-user-select: none
-      -moz-user-select: none
-      -ms-user-select: none
-      -khtml-user-select: none
-      user-select: none
-    .select-icon
-      margin-right: 20px
-      border-radius: 1px
-      border: 1px solid #e9ecee
-      height: 16px
-      width: 16px
-      display: inline-block
-      -webkit-transition: all .3s
-      transition: all .3s
-    .select-icon-active
-      border: 1px solid transparent
-      display: inline-block
-      background-size: 100% 100%
-      background-image: url("./icon-check@2x.png")
   /*弹窗动画*/
   @keyframes layerFadeIn {
     0% {

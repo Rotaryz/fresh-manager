@@ -41,6 +41,7 @@
                   <span class="list-operation" @click="handleNav(item, 'id')">查看</span>
                   <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
                   <span class="list-operation" @click="handleNav(item, 'editId')">复制活动</span>
+                  <span class="list-operation" @click="stopActive(item)">终止活动</span>
                 </div>
                 <div v-if="+val.type === 6" :style="{flex: val.flex}" class="item">
                   {{item[val.value] || '0'}}/{{item[val.value2] || '0'}}
@@ -79,7 +80,7 @@
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
     {name: '状态', flex: 1, value: 'status', type: 4},
-    {name: '操作', flex: 1.4, value: '', type: 5}
+    {name: '操作', flex: 2, value: '', type: 5}
   ]
   const COLLAGE_TITLE = [
     {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
@@ -127,7 +128,9 @@
         page: 1,
         delId: 0,
         status: '',
-        statusIndex: 0
+        statusIndex: 0,
+        currentItem: {},
+        confirmType: ''
       }
     },
     computed: {
@@ -256,23 +259,34 @@
       },
       _deleteActivity(id) {
         this.delId = id
+        this.confirmType = 'del'
         this.$refs.confirm.show('确定删除该活动？')
       },
       async _sureConfirm() {
-        let res = await API.Sale.saleDelete(this.delId)
+        if (this.confirmType === 'del') {
+          let res = await API.Sale.saleDelete(this.delId)
 
-        if (res.error !== this.$ERR_OK) {
-          this.$toast.show(res.message)
-          return
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          } else {
+            this.$toast.show('删除成功')
+          }
+          if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
+            this.setRequestData({page: this.activePage.total_page - 1})
+          } else {
+            this._getActiveList()
+          }
+          this._getActiveStatus()
         } else {
-          this.$toast.show('删除成功')
+          console.log('终止活动成功')
         }
-        if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
-          this.setRequestData({page: this.activePage.total_page - 1})
-        } else {
-          this._getActiveList()
-        }
-        this._getActiveStatus()
+
+      },
+      stopActive(item) {
+        this.currentItem = item
+        this.confirmType = 'stop'
+        this.$refs.confirm.show('确定提前终止活动吗？')
       }
     }
   }
@@ -287,14 +301,16 @@
     flex-direction: column
   .list-box
     .list-item:last-child
-      max-width: 150px
+      max-width: 228px
+      min-width: 228px
       padding-right: 0
   .list
     flex: 1
     .list-item
       font-size: $font-size-14
       &:last-child
-        max-width: 150px
+        max-width: 228px
+        min-width: 228px
         padding-right: 0
       .item
         text-overflow: ellipsis
