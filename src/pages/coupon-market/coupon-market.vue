@@ -8,7 +8,7 @@
           <p class="identification-name">营销计划列表</p>
         </div>
         <div class="function-btn" @click="newMarket(defaultTab)">
-          <div class="btn-main">新建计划<span class="add-icon"></span></div>
+          <div class="btn-main" style="margin-right:0">新建计划<span class="add-icon"></span></div>
         </div>
       </div>
       <article class="big-list">
