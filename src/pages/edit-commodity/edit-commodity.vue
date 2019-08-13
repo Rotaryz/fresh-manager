@@ -123,7 +123,7 @@
               <div v-for="(item, idx) in tableTitle" :key="idx" class="list-item">{{item}}</div>
             </div>
             <div class="list">
-              <div v-for="(item, index) in goodsItem" :key="index" class="list-content list-box">
+              <div v-for="(item, index) in goodsItem" :key="item.id" class="list-content list-box">
                 <div class="list-item">
                   <img :src="item.goods_cover_image" class="pic-box">
                 </div>
@@ -271,6 +271,7 @@
           end_at: '',
           range_type: 3, // 适用范围0未知1通用券2品类券3单品券
           ranges: [],
+          exchange_goods: [],
           limit_days: 0,
           is_day_limited: 0,
           description: '',
@@ -331,7 +332,8 @@
       if (this.id) {
         let obj = _.cloneDeep(this.couponDetail)
         this.commodity = obj
-        this.goodsItem = obj.ranges
+        // this.goodsItem = obj.ranges
+        this.goodsItem = obj.exchange_goods
         this.chooseType = TAG_TYPE[obj.tag_type]
       }
       await this._getFirstAssortment()
@@ -355,6 +357,7 @@
         }
         this.goodsItem.splice(index, 1)
         this.commodity.ranges = []
+        this.commodity.exchange_goods = []
       },
       back() {
         this.$router.back()
@@ -439,16 +442,18 @@
         }
         this.goodsItem = [this.selectItem]
         this.commodity.ranges[0] = {range_id: this.goodsItem[0].id, coupon_range_id: 0}
+        this.commodity.exchange_goods[0] = {goods_id: this.goodsItem[0].id, echange_id: 0}
+
         // 满赠添加
-        if (!this.commodity.exchange_goods) {
-          this.commodity.exchange_goods = []
-          this.commodity.exchange_goods.push(
-            {
-              goods_id: this.goodsItem[0].id,
-              echange_id: 0
-            }
-          )
-        }
+        // if (!this.commodity.exchange_goods) {
+        //   this.commodity.exchange_goods = []
+        //   this.commodity.exchange_goods.push(
+        //     {
+        //       goods_id: this.goodsItem[0].id,
+        //       echange_id: 0
+        //     }
+        //   )
+        // }
         this.commodity.coupon_name = this.selectItem.name
         this._hideGoods()
       },
@@ -497,8 +502,11 @@
         if (this.id) {
           return
         }
-        if (this.commodity.ranges.length) {
-          this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.ranges[0].range_id)
+        // if (this.commodity.ranges.length) {
+        //   this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.ranges[0].range_id)
+        // }
+        if (this.commodity.exchange_goods.length) {
+          this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.exchange_goods[0].range_id)
         }
         this.$refs.goods.showModal()
       },
