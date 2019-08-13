@@ -550,10 +550,10 @@
   const COUNTREG = /^[1-9]\d*$/
   const SELECT_COUPON_TITLE = [
     {name: '优惠券名称', flex: 1.7, value: 'coupon_name'},
-    {name: '类型', flex: 0.7, value: 'preferential_str'},
+    {name: '类型', flex: 1, value: 'preferential_str'},
     {name: '使用门槛', flex: 1.2, value: 'condition'},
-    {name: '面值', flex: 0.7, value: 'denomination'},
-    {name: '库存', flex: 0.7, value: 'usable_stock'},
+    {name: '面值', flex: 1, value: 'denomination'},
+    {name: '库存', flex: 1, value: 'usable_stock'},
     {name: '有效期', flex: 2, value: 'time'},
     {name: '操作', flex: 0.7, value: ''}
   ]
@@ -745,10 +745,10 @@
         selectCertificateList: [], // 选择兑换券列表
         selectCertificateTitle: [ // 选择兑换券title
           {name: '兑换券名称', flex: 1.7, value: 'coupon_name'},
-          {name: '类型', flex: 0.7, value: 'preferential_str'},
+          {name: '类型', flex: 1, value: 'preferential_str'},
           {name: '使用门槛', flex: 1.2, value: 'condition'},
-          {name: '面值', flex: 0.7, value: 'denomination'},
-          {name: '库存', flex: 0.7, value: 'usable_stock'},
+          {name: '面值', flex: 1, value: 'denomination'},
+          {name: '库存', flex: 1, value: 'usable_stock'},
           {name: '有效期', flex: 2, value: 'time'},
           {name: '操作', flex: 0.7, value: ''}
         ]
