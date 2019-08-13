@@ -285,7 +285,7 @@
         }
         let lastText = ''
         if (+coupon.tag_type === 1) {
-          lastText = '兑换'
+          lastText = '使用'
         } else {
           lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination+'元'
         }
