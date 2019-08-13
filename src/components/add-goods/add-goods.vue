@@ -65,8 +65,8 @@
     },
     props: {
       MaxLimit: {
-        type: [Number, Boolean],
-        default: false
+        type: [Number, String],
+        default: ''
       }
     },
     data() {
@@ -151,7 +151,7 @@
           this.$toast.show('该商品库存为0，不能选择')
           return
         }
-        if ((this.selectGoods.length + this.parentGoodsList.length) === this.MaxLimit) {
+        if (this.MaxLimit && (this.selectGoods.length + this.parentGoodsList.length) === +this.MaxLimit) {
           this.$toast.show(`选择商品数量不能超过${this.MaxLimit}个`)
           return
         }
@@ -183,7 +183,7 @@
           }
         }
         this.selectAll = !this.selectAll
-        if (this.selectAll && (this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length) > this.MaxLimit) {
+        if (this.MaxLimit && this.selectAll && (this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length) > this.MaxLimit) {
           this.$toast.show(`选择商品数量不能超过${this.MaxLimit}个`)
           this.selectAll = false
           return
