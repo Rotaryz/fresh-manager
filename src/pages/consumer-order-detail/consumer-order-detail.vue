@@ -54,6 +54,14 @@
           ></base-drop-down>
         </div>
       </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          备注
+        </div>
+        <div class="edit-input-box">
+          <input v-model="note" type="tel" placeholder="请输入" maxlength="50" class="edit-input">
+        </div>
+      </div>
     </div>
 
     <div class="content-header">
@@ -195,7 +203,8 @@
         pageConfig: {},
         consumerType: '',
         mobile: '',
-        nickName: ''
+        nickName: '',
+        note: ''
       }
     },
     computed: {
@@ -229,7 +238,6 @@
       ...merchantOrderMethods,
       testForm() {
         let result = this.checkGoods()
-        console.log(this.goodsList, result)
       },
       _initData() {
         this.msg = {}
@@ -402,6 +410,11 @@
           return item
         })
         this.mobile && (this.msg.customer_mobile = this.mobile)
+        if (this.note.length > 50) {
+          this.$toast.show('备注字数不能超过50个字')
+          return
+        }
+        this.note && (this.msg.note = this.note)
         let data = Object.assign({}, this.msg, {goods, total})
         let res = null
         this.isSubmit = true
