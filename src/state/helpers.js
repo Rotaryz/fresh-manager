@@ -169,7 +169,7 @@ export const marketComputed = {
 
 export const marketMethods = {
   ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList', 'resetData', 'setDefaultIndex', 'setRequestData', 'setDefaultTab']),
-  ...mapMutations('market', ['SET_STATUS_INDEX'])
+  ...mapMutations('market', ['SET_STATUS_INDEX', 'SET_REQUEST_DATA'])
 }
 
 export const auxiliaryComputed = {

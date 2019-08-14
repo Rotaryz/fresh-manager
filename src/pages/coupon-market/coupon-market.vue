@@ -148,7 +148,6 @@
     watch: {
       marketList() {
         // todo
-        console.log('markList')
         this._getStatus()
       }
     },
@@ -166,13 +165,28 @@
         console.log(selectStatus, index, 'status')
         this['SET_STATUS_INDEX'](index)
         this.$refs.pages.beginPage()
-        this._getStatus()
+        console.log({...this.statusTab[this.statusIndex], page: 1})
+        this._getStatus(() => {
+          this['SET_REQUEST_DATA']({...this.statusTab[this.statusIndex], page: 1})
+          this.getMarketList()
+        })
+
         // this.setDefaultIndex({status: selectStatus.status, index})
         // this.statusArr = new Array(10).fill(undefined)
       },
       // todo
-      _getStatus() {
-
+      _getStatus(cb) {
+        API.Market.getStatus({type: this.defaultTab}).then((res)=>{
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.state_str,
+              state: item.state,
+              num: item.statistic
+            }
+          })
+          cb && cb()
+          // this.getMarketList()
+        })
       },
       // getMarketStatus() {
       //   API.Market.getMarketStatus().then((res) => {

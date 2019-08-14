@@ -21,7 +21,8 @@ export const state = {
   marketType: [1, 2, 3, 9, 7, 4],
   requestData: {
     page: 1,
-    type: 1
+    type: 1,
+    state: ''
   },
   statusIndex: 0 // 状态栏下标
 }
