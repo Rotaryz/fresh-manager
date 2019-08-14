@@ -954,6 +954,7 @@
         return res
       },
       async showMultipleChoice() {
+        if (this.disable) return
         let res
         try {
           res = await this._getList()
@@ -1141,6 +1142,7 @@
         //   this.$refs.goodsModal.showModal()
         //   return
         // }
+
         this.invitedIndex = typeof (index) === 'number' ? index : null
         if (this.disable) return
         this.couponCheckItem = {}

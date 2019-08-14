@@ -68,7 +68,7 @@
   const PAGE_NAME = 'GOODS-COUPON'
   const COUPON_TITLE = [
     '创建时间',
-    '兑换券名称',
+    '兑换券别名',
     '类型',
     '面值',
     '状态',
