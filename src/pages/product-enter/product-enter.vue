@@ -77,7 +77,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品入库'
-  const COMMODITIES_LIST = ['建单时间', '配送时间', '入库单号', '商品提供方', '采购单号', '入库金额', '状态', '入库类型', '操作']
+  const COMMODITIES_LIST = ['建单时间', '最迟到货时间', '入库单号', '商品提供方', '采购单号', '入库金额', '状态', '入库类型', '操作']
   const ENTRY_ORDERS_EXPORT = '/scm/api/backend/warehouse/entry-orders-export/'
   const DISS_EXPORT = '/scm/api/backend/warehouse/entry-orders-diff-export/'
   export default {

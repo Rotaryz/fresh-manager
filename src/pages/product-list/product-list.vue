@@ -14,7 +14,7 @@
       </div>
       <span class="down-tip">类型</span>
       <div class="down-item">
-        <base-drop-down :select="purchaseSelect" @setValue="_setTypeValue"></base-drop-down>
+        <base-drop-down :select="purchaseSelect" @setValue="_setPurchaseValue"></base-drop-down>
       </div>
       <span class="down-tip">资料状态</span>
       <div class="down-item">
@@ -83,7 +83,7 @@
                 <img class="pic-box" :src="item.goods_cover_image" alt="">
               </div>
               <div class="list-item list-double-row">
-                <div class="item-dark item-dark-icon">{{item.name}}</div>
+                <div class="item-dark" :class="{'item-dark-icon' : item.goods_type * 1 === 2}">{{item.name}}</div>
                 <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
               <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
@@ -197,7 +197,8 @@
           complete_status: this.goodsFitter.complete_status,
           is_presale: this.goodsFitter.is_presale,
           goods_material_category_id: this.goodsFitter.goods_material_category_id,
-          source: this.goodsFitter.source
+          source: this.goodsFitter.source,
+          goods_type: this.goodsFitter.goods_type
         }
         let search = []
         for (let key in data) {
@@ -227,6 +228,7 @@
         this.presaleSelect.content = selectDown.presale
         this.storeSelect.content = selectDown.stock
         this.secondSelect.data = selectDown.twoList
+        this.purchaseSelect.content = selectDown.goods_type
       },
       _showTip() {
         this.showIndex = true
@@ -259,11 +261,17 @@
         this.SET_TASK_DATA({twoName: data.name})
         this._updateList({page: 1, goods_category_id: data.id})
       },
-      // 选择类型
+      // 选择渠道类型item-dark-icon
       _setTypeValue(data) {
         this.source = data.value
         this.SET_TASK_DATA({source: data.name})
         this._updateList({page: 1, source: data.value})
+      },
+      // 选择类型
+      _setPurchaseValue(data) {
+        this.goods_type = data.value
+        this.SET_TASK_DATA({goods_type: data.name})
+        this._updateList({page: 1, goods_type: data.value})
       },
       // 选择资料状态
       _setCompleteValue(data) {

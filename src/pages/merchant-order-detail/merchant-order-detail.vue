@@ -23,7 +23,7 @@
               <template v-if="item.key" name="name">
                 <div v-if="+merchantDetail.is_line === 1 && item.line" class="line-empty">
                 </div>
-                <div v-else-if="item.key === 'goods_name'" class="item-dark-icon" :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
+                <div v-else-if="item.key === 'goods_name'" :class="{red:item.key==='sale_out_of_num' && row.is_lack, 'item-dark-icon' : item.goods_type * 1 === 2}">
                   {{row[item.key]}}
                 </div>
                 <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">

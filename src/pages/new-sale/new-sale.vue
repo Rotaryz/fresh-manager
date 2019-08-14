@@ -144,7 +144,7 @@
                   <div class="goods-money-text">¥{{item.trade_price}}</div>
                 </div>
               </div>
-              <div  v-if="msg.activity_theme !== typeName" class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
+              <div v-if="msg.activity_theme !== typeName" class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
           </div>
         </div>

@@ -66,15 +66,13 @@
               商品类型
             </div>
             <div class="edit-input-box goods-select-box">
-              <div class="goods-select-left" @click="selectStock(1)">
-                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
+              <div class="goods-select-left" @click="selectGoodsType(1)">
+                <div class="goods-select-icon" :class="msg.goods_type * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
                 <div class="goods-select-text">普通商品</div>
               </div>
-              <div class="goods-select-left" style="margin-left: 44px" @click="selectStock(0)">
-                <div class="goods-select-icon" :class="msg.is_presale * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
-                <div class="goods-select-text">集采商品
-                  <span class="tip" style="margin-left: 10px">通过【产地集采】活动时间控制商品在小程序的上下架展示</span>
-                </div>
+              <div class="goods-select-left" style="margin-left: 44px" @click="selectGoodsType(2)">
+                <div class="goods-select-icon" :class="msg.goods_type * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
+                <div class="goods-select-text">集采商品<span class="tip" style="margin-left: 10px">通过【产地集采】活动时间控制商品在小程序的上下架展示</span></div>
               </div>
             </div>
           </div>
@@ -172,7 +170,7 @@
               采购周期
             </div>
             <div class="edit-input-box">
-              <input v-model="goods_skus.damage_rate" type="number" class="edit-input">
+              <input v-model="msg.purchase_cycle" type="number" class="edit-input" :disabled="msg.purchase_cycle_disabled">
             </div>
             <div class="edit-pla">用户下单时间+采购周期=用户提货日期</div>
           </div>
@@ -407,6 +405,7 @@
           goods_main_images: [],
           goods_skus: [],
           is_presale: 1,
+          goods_type: 1,
           save_type: 'base'
         },
         goods_skus: {
@@ -788,6 +787,12 @@
               this.$toast.show(res.message)
             }
           })
+        }
+      },
+      // 切换商品类型
+      selectGoodsType(index) {
+        if (!this.id) {
+          this.msg.goods_type = index
         }
       },
       // 获取计量单位

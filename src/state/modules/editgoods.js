@@ -19,7 +19,8 @@ export const state = {
     source: '',
     complete_status: '',
     is_presale: '',
-    goods_material_category_id: ''
+    goods_material_category_id: '',
+    goods_type: ''
   },
   taskData: {
     isTaskFirst: true,
@@ -29,7 +30,8 @@ export const state = {
     source: '全部',
     complete: '全部',
     presale: '全部',
-    stock: '全部'
+    stock: '全部',
+    goods_type: '全部'
   }
 }
 

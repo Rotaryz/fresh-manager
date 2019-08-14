@@ -14,7 +14,7 @@
         </div>
         <span class="down-tip">类型</span>
         <div class="down-item">
-          <base-drop-down :select="purchaseSelect" @setValue="_setTypeValue"></base-drop-down>
+          <base-drop-down :select="purchaseSelect" @setValue="_setPurchaseValue"></base-drop-down>
         </div>
         <span class="down-tip">资料状态</span>
         <div class="down-item">
@@ -70,7 +70,7 @@
                   <img class="pic-box" :src="item.goods_cover_image" alt="">
                 </div>
                 <div class="list-item list-double-row">
-                  <div class="item-dark item-dark-icon">{{item.goods_material_name}}</div>
+                  <div class="item-dark" :class="{'item-dark-icon' : item.goods_type * 1 === 2}">{{item.goods_material_name}}</div>
                   <div class="item-dark">{{item.goods_sku_encoding}}</div>
                 </div>
                 <div class="list-item">{{item.goods_material_category_name}}</div>
@@ -148,6 +148,7 @@
         this.stairSelect.content = selectDown.oneMaterialTitle
         this.secondSelect.content = selectDown.twoMaterialTitle
         this.thirdlySelect.content = selectDown.thrMaterialTitle
+        this.purchaseSelect.content = selectDown.typeTitle
         this.secondSelect.data = selectDown.twoMaterialList
         this.thirdlySelect.data = selectDown.thrMaterialList
       },
@@ -205,6 +206,12 @@
         this.dataSelect.content = data.name
         this.saveSelectDown({content: data.name, type: 7})
         this.setCompleteStatus(data.id)
+        this.$refs.pagination.beginPage()
+      },
+      // 选择类型
+      _setPurchaseValue(data) {
+        this.saveSelectDown({content: data.name, type: 8})
+        this.setGoodsType(data.value)
         this.$refs.pagination.beginPage()
       },
       // 删除商品
