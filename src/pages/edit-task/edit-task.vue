@@ -30,12 +30,12 @@
               <div class="base-unit">{{item.sale_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
-              <input v-model="item.purchase_num" type="number" class="edit-input" @input="changePurchase(item, index)">
-              <div class="base-unit">{{item.purchase_unit}}</div>
-            </div>
-            <div class="list-item list-item-layout">
               <input v-model="item.base_num" type="number" class="edit-input" @input="changeBase(item, index)">
               <div class="base-unit">{{item.base_unit}}</div>
+            </div>
+            <div class="list-item list-item-layout">
+              <input v-model="item.purchase_num" type="number" class="edit-input" @input="changePurchase(item, index)">
+              <div class="base-unit">{{item.purchase_unit}}</div>
             </div>
             <div class="list-item list-item-layout">
               <input v-model="item.purchase_price" type="number" class="edit-input" @input="changePrice(item, index)">
@@ -59,7 +59,7 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
-  const COMMODITIES_LIST = ['商品', '类目', '采购数量(销售单位)', '采购数量(采购单位)', '采购数量(基本单位)', '采购单价', '采购金额']
+  const COMMODITIES_LIST = ['商品', '类目', '采购数量(销售单位)', '采购数量(基本单位)', '采购数量(采购单位)', '采购单价', '采购金额']
   export default {
     name: PAGE_NAME,
     page: {

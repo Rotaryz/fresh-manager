@@ -236,9 +236,6 @@
     },
     methods: {
       ...merchantOrderMethods,
-      testForm() {
-        let result = this.checkGoods()
-      },
       _initData() {
         this.msg = {}
         this.nickName = ''
@@ -414,7 +411,7 @@
           this.$toast.show('备注字数不能超过50个字')
           return
         }
-        this.note && (this.msg.note = this.note)
+        this.msg.order_note = this.note
         let data = Object.assign({}, this.msg, {goods, total})
         let res = null
         this.isSubmit = true

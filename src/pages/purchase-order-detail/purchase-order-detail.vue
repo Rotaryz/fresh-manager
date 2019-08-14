@@ -39,8 +39,8 @@
             </div>
             <div class="list-item">{{item.goods_material_category}}</div>
             <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
-            <div class="list-item">{{item.purchase_num}}{{item.purchase_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
+            <div class="list-item">{{item.purchase_num}}{{item.purchase_unit}}</div>
             <div class="list-item">{{item.purchase_price ? '￥' : ''}}{{item.purchase_price}}/{{item.purchase_unit}}</div>
             <div class="list-item">{{item.purchase_amount ? '￥' : ''}}{{item.purchase_amount}}</div>
           </div>
@@ -58,7 +58,7 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER_DETAIL'
   const TITLE = '采购单详情'
-  const COMMODITIES_LIST = ['商品', '类目', '采购数量(销售单位)', '采购数量(采购单位)', '采购数量(基本单位)', '采购单价', '采购金额']
+  const COMMODITIES_LIST = ['商品', '类目', '采购数量(销售单位)', '采购数量(基本单位)', '采购数量(采购单位)', '采购单价', '采购金额']
   export default {
     name: PAGE_NAME,
     page: {
