@@ -56,7 +56,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {customerComputed, customerMethods} from '@state/helpers'
+  import {authComputed, customerComputed, customerMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'CUSTOMER_MANAGEMENT'
@@ -71,7 +71,7 @@
     {title: '注册时间', showSort: false, sort: []}
   ]
 
-  const EXCEL_URL = '/social-shopping/api/backend/after-sale-excel'
+  const EXCEL_URL = '/social-shopping/v1/api/backend/customer-index-excel'
 
   const SOCIAL_SELECT = {
     check: false,
@@ -104,6 +104,7 @@
     },
     computed: {
       ...customerComputed,
+      ...authComputed,
       exportUrl() {
         let currentId = this.getCurrentId()
         let data = {
@@ -212,6 +213,10 @@
         this._getCustomerList(true)
       },
       exportExcel() {
+        if (!this.shop_id) {
+          this.$toast.show('请选择社区')
+          return
+        }
         window.open(this.exportUrl, '_blank')
       },
     }

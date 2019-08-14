@@ -192,7 +192,7 @@
       title: '新人特惠'
     }
   }
-  const PERSON_ALL_BUY_LIMIT = 20
+  // const PERSON_ALL_BUY_LIMIT = 20
   export default {
     name: PAGE_NAME,
     page() {

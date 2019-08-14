@@ -158,7 +158,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {leaderComputed, leaderMethods} from '@state/helpers'
+  import {authComputed, leaderComputed, leaderMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
@@ -236,6 +236,7 @@
     },
     computed: {
       ...leaderComputed,
+      ...authComputed,
       leaderTitle() {
         return this.leaderListFilter.model_type === 0 ? LEADER_TITLE : LEADER_APPLICATION_TILTE
       },
@@ -247,14 +248,14 @@
           access_token: this.currentUser.access_token,
           keyword: this.leaderListFilter.keyword,
           status: this.leaderListFilter.status,
-          model_type: this.leaderListFilter.model_type
+          // model_type: this.leaderListFilter.model_type
         }
 
         let search = []
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/api/backend/after-sale-excel?' + search.join('&')
+        return process.env.VUE_APP_API + '/social-shopping/v1/api/backend/shop-manager-excel?' + search.join('&')
       }
     },
     created() {

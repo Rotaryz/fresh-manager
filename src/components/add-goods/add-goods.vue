@@ -64,7 +64,7 @@
       DefaultModal
     },
     props: {
-      MaxLimit: {
+      maxLimit: {
         type: [Number, String],
         default: ''
       }
@@ -151,8 +151,8 @@
           this.$toast.show('该商品库存为0，不能选择')
           return
         }
-        if (this.MaxLimit && (this.selectGoods.length + this.parentGoodsList.length) === +this.MaxLimit) {
-          this.$toast.show(`选择商品数量不能超过${this.MaxLimit}个`)
+        if (this.maxLimit && (this.selectGoods.length + this.parentGoodsList.length) === +this.maxLimit) {
+          this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
           return
         }
         switch (item.selected) {
@@ -183,8 +183,8 @@
           }
         }
         this.selectAll = !this.selectAll
-        if (this.MaxLimit && this.selectAll && (this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length) > this.MaxLimit) {
-          this.$toast.show(`选择商品数量不能超过${this.MaxLimit}个`)
+        if (this.maxLimit && this.selectAll && (this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length) > this.maxLimit) {
+          this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
           this.selectAll = false
           return
         }

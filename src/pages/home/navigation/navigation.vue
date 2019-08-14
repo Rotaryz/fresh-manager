@@ -615,7 +615,7 @@
 
     .nav-item-active
       color: $color-text-main
-      background: $color-white
+      background: #4AB160
 
     .beginner-guide
       position absolute
