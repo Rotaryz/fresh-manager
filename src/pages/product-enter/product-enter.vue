@@ -36,7 +36,7 @@
           <div v-if="enterList.length">
             <div v-for="(item, index) in enterList" :key="index" class="list-content list-box">
               <div class="list-item">{{item.build_time}}</div>
-              <div class="list-item">配送时间</div>
+              <div class="list-item">{{item.last_arrival_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">{{item.supplier}}</div>
               <!--<router-link v-if="item.out_order_sn" tag="a" target="_blank" :to="{path: `purchase-order/purchase-order-detail/${item.source_order_id}`}" class="list-item list-operation">{{item.out_order_sn}}</router-link>

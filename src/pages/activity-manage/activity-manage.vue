@@ -260,7 +260,6 @@
       },
       async _sureConfirm() {
         let res = await API.Sale.saleDelete(this.delId)
-
         if (res.error !== this.$ERR_OK) {
           this.$toast.show(res.message)
           return
@@ -269,6 +268,7 @@
         }
         if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
           this.setRequestData({page: this.activePage.total_page - 1})
+          this._getActiveList()
         } else {
           this._getActiveList()
         }

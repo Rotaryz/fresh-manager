@@ -18,7 +18,13 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input" :class="{'disable-input': disable}">
+          <input
+            v-model="msg.activity_name"
+            type="text" placeholder="请输入"
+            maxlength="25"
+            class="edit-input"
+            :class="{'disable-input': disable}"
+          >
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -51,12 +57,12 @@
         <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
         <div :class="{'time-no-change':disable}"></div>
       </div>
-      <div v-if="msg.activity_theme === typeName" class="edit-item">
+      <div v-if="msg.activity_theme === activityType" class="edit-item">
         <div class="edit-title">
           <span class="start">*</span>
           用户提货时间
         </div>
-        <div class="user-text-time">2019年06月12日(周四)</div>
+        <div class="user-text-time">{{deliveryTime}}<span v-if="deliveryDay" class="user-text-day">({{deliveryDay}})</span></div>
         <div class="user-text-tip">预售结束时间+采购周期=提货时间</div>
       </div>
     </div>
@@ -71,7 +77,7 @@
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加商品
           </div>
-          <div v-if="msg.activity_theme === typeName" class="remind">商品只可添加一个</div>
+          <div v-if="msg.activity_theme === activityType" class="remind">商品只可添加一个</div>
           <div v-else class="remind">商品数量一共可添加({{goodsList.length}}/{{personAllBuyLimit}})个</div>
         </div>
         <div v-if="goodsList.length" class="rush-list-box">
@@ -95,9 +101,9 @@
                 <span>{{item.goods_usable_stock || item.all_stock || 0}}</span>
               </div>
               <div class="com-list-item">
-                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
+                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="changeBase(item, index)">
               </div>
-              <div class="com-list-item">
+              <div v-if="msg.activity_theme !== activityType" class="com-list-item">
                 <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
@@ -116,7 +122,7 @@
         <div class="title-box">
           <div class="title">
             <div class="title-name">选择商品</div>
-            <div v-if="msg.activity_theme === typeName" class="title-label">(商品只能添加1个)</div>
+            <div v-if="msg.activity_theme === activityType" class="title-label">(商品只能添加1个)</div>
           </div>
           <span class="close hand" @click="_cancelGoods"></span>
         </div>
@@ -134,7 +140,8 @@
         <div class="goods-content">
           <div class="rush-goods-list">
             <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
-              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
+              <span v-if="msg.activity_theme !== activityType" class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
+              <span v-else class="radio hand" :class="{'checked': item.selected === 2 || item.selected === 1}" @click="_selectGoods(item,index)"></span>
               <img class="goods-img" :src="item.goods_cover_image" alt="">
               <div class="goods-msg">
                 <!--<div class="goods-name">{{item.usable_stock}}</div>-->
@@ -144,7 +151,7 @@
                   <div class="goods-money-text">¥{{item.trade_price}}</div>
                 </div>
               </div>
-              <div v-if="msg.activity_theme !== typeName" class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
+              <div v-if="msg.activity_theme !== activityType" class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
             </div>
           </div>
         </div>
@@ -153,7 +160,7 @@
         </div>
         <div class="back">
           <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
-          <div class="back-btn back-submit hand" @click="_batchAddition">{{msg.activity_theme === typeName ? '添加' : '批量添加'}}</div>
+          <div class="back-btn back-submit hand" @click="_batchAddition">{{msg.activity_theme === activityType ? '添加' : '批量添加'}}</div>
         </div>
       </div>
     </default-modal>
@@ -189,6 +196,17 @@
     '排序',
     '操作'
   ]
+  const COMMODITIES_LIST_CENTRALIZE = [
+    '商品名称',
+    '单位',
+    '销售价(元)',
+    '销量',
+    '集采价(元)',
+    '每人限购',
+    '商品库存',
+    '活动库存',
+    '操作'
+  ]
   const PAGE_CONFIG = {
     hot_tag: {
       title: '今日爆品'
@@ -198,10 +216,13 @@
     },
     new_client: {
       title: '新人特惠'
+    },
+    centralize: {
+      title: '产地集采'
     }
   }
   const PERSON_ALL_BUY_LIMIT = 20
-  const TYPENAME = 'purchase'
+  const ACTIVITY_TYPE = 'centralize'
   export default {
     name: PAGE_NAME,
     page() {
@@ -216,7 +237,7 @@
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST,
+        commodities: this.$route.query.activity_theme === ACTIVITY_TYPE ? COMMODITIES_LIST_CENTRALIZE : COMMODITIES_LIST,
         classifyIndex: 0,
         id: null,
         page: 1,
@@ -256,7 +277,9 @@
         personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
         activityTheme: '',
         pageConfig: {},
-        typeName: TYPENAME
+        activityType: ACTIVITY_TYPE,
+        deliveryTime: '',
+        deliveryDay: ''
       }
     },
     computed: {
@@ -307,6 +330,8 @@
         }
       }
       this._getFirstAssortment()
+      // 集采采购
+      this.getDeliveryTime()
     },
     async mounted() {
     // this.classifyIndex = 0
@@ -316,8 +341,9 @@
       _getStartTime(time) {
         this.msg.start_at = time
       },
-      _getEndTime(time) {
+      async _getEndTime(time) {
         this.msg.end_at = time
+        await this.getDeliveryTime()
       },
       // 选择商品
       async _getGoodsList() {
@@ -329,7 +355,9 @@
           shelf_id: this.id,
           limit: 7,
           page: this.page,
-          activity_theme: this.$route.query.activity_theme
+          goods_type: this.$route.query.activity_theme === this.activityType ? 2 : 1,
+          activity_theme: this.$route.query.activity_theme,
+          debug: 1
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -339,9 +367,12 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        if (this.msg.activity_theme === this.typeName && this.goodsList.length !== 0) {
+        if (this.msg.activity_theme === this.activityType && this.goodsList.length !== 0) {
           // 集采采购
           this.selectGoods = this.goodsList
+          this.selectGoods.forEach((item) => {
+            item.id = item.goods_id
+          })
         }
         this.choeesGoods = res.data.map((item, index) => {
           item.selected = 0
@@ -411,7 +442,7 @@
         }
         switch (item.selected) {
         case 0:
-          if (this.msg.activity_theme === this.typeName) {
+          if (this.msg.activity_theme === this.activityType) {
             // 集采采购
             this.choeesGoods.forEach((item) => {
               item.selected = 0
@@ -420,7 +451,6 @@
             item.all_stock = item.usable_stock
             this.selectGoods = [item]
             this.selectGoodsId = [item.id]
-            console.log(this.selectGoodsId)
             return
           }
           if (this.selectGoodsId.length === this.personAllBuyLimit) {
@@ -433,7 +463,7 @@
           this.selectGoodsId.push(item.id)
           break
         case 2:
-          if (this.msg.activity_theme === this.typeName) {
+          if (this.msg.activity_theme === this.activityType) {
             // 集采采购
             return
           }
@@ -469,8 +499,9 @@
         this.selectGoods.forEach((item) => {
           let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
           let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
           this.selectGoodsId.splice(delIdx, 1)
+          if (!this.choeesGoods[idx]) return
+          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
         })
         this.selectGoods = []
         this._hideGoods()
@@ -508,7 +539,7 @@
         })
       },
       // 批量添加
-      _batchAddition() {
+      async _batchAddition() {
         // const list = objDeepCopy(this.choeesGoods)
         this.selectGoods = this.selectGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
@@ -519,9 +550,10 @@
           }
           return item
         })
-        if (this.msg.activity_theme === this.typeName) {
+        if (this.msg.activity_theme === this.activityType) {
           // 集采采购
           this.goodsList = this.selectGoods
+          await this.getDeliveryTime()
         } else {
           this.goodsList = this.goodsList.concat(this.selectGoods)
           this.selectGoods = []
@@ -556,9 +588,13 @@
           this.$toast.show('请添加商品')
           return
         }
+        if (this.msg.activity_theme === this.activityType) {
+          // 集采采购
+          await this._centralizeSave(list)
+          return
+        }
         for (let i in list) {
           if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
-            console.log(list[i])
             this.$toast.show(`${list[i].name}信息不全`)
             return
           } else if (
@@ -567,6 +603,44 @@
             +list[i].usable_stock < 0 ||
             (list[i].usable_stock + '').includes('.') ||
             +list[i].sort < 0
+          ) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
+            return
+          }
+        }
+        list.map((item) => {
+          delete item.person_day_buy_limit
+          item.goods_id = item.id || item.goods_id
+        })
+        let data = Object.assign({}, this.msg, {activity_goods: list, activity_theme: this.$route.query.activity_theme})
+        let res = null
+        this.isSubmit = true
+        res = await API.Sale.storeSale(data, true)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          this.isSubmit = false
+          return
+        }
+        setTimeout(() => {
+          this._back()
+        }, 1000)
+        setTimeout(() => {
+          this.isSubmit = false
+        }, 2000)
+      },
+      // 集采提交
+      async _centralizeSave(list) {
+        for (let i in list) {
+          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock) {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].trade_price > +list[i].trade_price_show ||
+            +list[i].person_all_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.')
           ) {
             this.$toast.show(`${list[i].name}输入数据有误`)
             return
@@ -611,10 +685,22 @@
           }
         }
       },
-      echangBase(item, index) {
+      changeBase(item, index) {
         if (item.usable_stock > item.all_stock && !this.disable) {
           item.usable_stock = item.all_stock
           this.$forceUpdate()
+        }
+      },
+      // 获取活动提货时间
+      async getDeliveryTime() {
+        if (this.msg.end_at && this.goodsList.length !== 0 && this.msg.activity_theme === this.activityType) {
+          let data = Object.assign({}, {end_time: this.msg.end_at, purchase_cycle: this.goodsList[0].purchase_cycle})
+          let res = await API.Sale.getDeliveryTime(data, false)
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.deliveryTime = res.data.delivery_at
+          this.deliveryDay = res.data.day_of_week
         }
       }
     }
@@ -704,6 +790,8 @@
       font-size: $font-size-14
       font-family: $font-family-regular
       color: #acacac
+    .user-text-day
+      margin-left: 5px
     .time-no-change, .text-no-change
       position: absolute
       left: 103px
@@ -1143,6 +1231,18 @@
         display: inline-block
         background-size: 100% 100%
         background-image: url("./icon-check_ash@2x.png")
+      .radio
+        width: 16px
+        height: 16px
+        border: 1px solid #E1E1E1
+        margin-right: 20px
+        border-radius: 50%
+        transition: all 0.3s
+        display: flex
+        justify-content: center
+        align-items: center
+      .checked
+        border: 5px solid $color-main
       .goods-img
         margin-right: 10px
         width: 40px
