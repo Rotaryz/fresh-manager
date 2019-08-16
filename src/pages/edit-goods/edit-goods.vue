@@ -402,7 +402,11 @@
         msg: {
           name: '',
           goods_material_category_id: 0,
-          goods_main_images: [],
+          goods_main_images: [{
+            id: 1,
+            image_id: 110013,
+            image_url: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F23%2F1561273972975-001.jpg"
+          }],
           goods_skus: [],
           is_presale: 1,
           goods_type: 1,
@@ -431,8 +435,16 @@
         purchaseSelect: {check: false, show: false, content: '采购单位', type: 'default', data: []},
         supplierSelect: {check: false, show: false, content: '选择供应商', type: 'default', data: []},
         saleMsg: {
-          goods_banner_images: [],
-          goods_detail_images: [],
+          goods_banner_images: [{
+            id: 1,
+            image_id: 110013,
+            image_url: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F23%2F1561273972975-001.jpg"
+          }],
+          goods_detail_images: [{
+            id: 1,
+            image_id: 110013,
+            image_url: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F23%2F1561273972975-001.jpg"
+          }],
           goods_skus: [],
           goods_category_id: 0,
           name: '',
