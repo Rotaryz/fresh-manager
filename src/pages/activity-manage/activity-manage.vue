@@ -251,7 +251,7 @@
         // this.status = selectStatus.value
         // this.page = 1
         this._getActiveList()
-        // this._getActiveStatus()
+        this._getActiveStatus()
       },
       async _setTime(arr) {
         // this.startTime = arr[0]
