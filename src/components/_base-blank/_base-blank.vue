@@ -1,6 +1,6 @@
 <template>
-  <div class="base-blank" :style="blackStyle">
-    <img src="./pic-zanwu@2x.png" class="blank-img">
+  <div class="base-blank">
+    <img src="./pic-zanwu@2x.png" class="blank-img" :style="blackStyle">
     <p class="blank-text">暂无数据</p>
   </div>
 </template>
