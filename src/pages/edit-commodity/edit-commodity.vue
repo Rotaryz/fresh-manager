@@ -370,7 +370,7 @@
           {value: this.commodity.description, txt: '请输入使用说明'},
           {value: this.testCardType, txt: '请输入正确的兑换券金额'},
           {value: this.testGoods, txt: '请选择商品'},
-          {value: this.commodity.coupon_name, txt: '请输入兑换券别名'},
+          {value: (this.commodity.coupon_name && this.commodity.coupon_name.length <= 20), txt: '请按要求输入兑换券别名(20字以内)'},
           {value: this.commodity.usable_stock, txt: '请输入发放总量'},
           {value: this.textUsableStock, txt: `发放数量应设为1~99999之间的整数`}
         ]
