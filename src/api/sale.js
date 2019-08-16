@@ -32,6 +32,17 @@ export default {
     return request.delete(url, {}, loading)
   },
   /**
+   * 终止活动
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  stopActive(id, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity/terminate/${id}`
+    return request.post(url, {}, loading)
+  },
+
+  /**
    * 新建限时抢购
    * @param data
    * @param loading

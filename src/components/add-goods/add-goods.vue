@@ -25,8 +25,8 @@
           </div>
         </div>
         <div class="goods-list">
-          <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
-            <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
+          <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item hand" @click="_selectGoods(item,index)">
+            <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content" :style="{flex: title.flex}">
               <span v-if="title.value === 'image'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
               <img v-if="title.value === 'image'" class="goods-img" :src="item.goods_cover_image">
               <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}</div>

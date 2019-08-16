@@ -1769,6 +1769,7 @@ export default [
       // 商品素材库
       {
         path: 'goods-store',
+        alias: 'goods-center-store', // 商城和供应链共用一个页面
         name: 'goods-store',
         component: () => lazyLoadView(import('@pages/goods-store/goods-store')),
         meta: {

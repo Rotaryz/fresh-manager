@@ -48,7 +48,7 @@
                 <div class="list-item list-text">{{item.remark}}</div>
                 <div class="list-item list-text">{{item.status_str}}</div>
                 <div class="list-item list-use">
-                  <span v-if="item.after_sale_status === 0" class="list-operation" @click="checkApply(item.id)">审核</span>
+                  <span v-if="item.after_sale_status === 0" class="list-operation" @click="checkApply(item)">审核</span>
                   <router-link tag="span" :to="`refund-detail/${item.id}`" append class="list-operation">详情</router-link>
                 </div>
               </div>
@@ -111,7 +111,7 @@
             <textarea v-model="remark" placeholder="备注原因" class="modelarea"></textarea>
             <span class="before"></span>
           </div>
-          <div class="check-box hand" @click="checkAuditing"><span class="icon" :class="{'checked': +makeUp === 1}"></span>售后补偿发送用户优惠券</div>
+          <div v-if="currentItem.sale_rule_status" class="check-box hand" @click="checkAuditing"><span class="icon" :class="{'checked': +makeUp === 1}"></span>售后补偿发送用户优惠券</div>
           <div class="btn-group">
             <div class="btn cancel" @click.stop="hideModal">取消</div>
             <div class="btn manager" @click.stop="auditing(0)">驳回</div>
@@ -184,7 +184,8 @@
         keywords: '',
         socialNames: '',
         delId: '',
-        makeUp: 0
+        makeUp: 0,
+        currentItem: {}
       }
     },
     computed: {
@@ -323,8 +324,9 @@
           })
       },
       // 删除规则
-      checkApply(id) {
-        this.checkId = id
+      checkApply(item) {
+        this.checkId = item.id
+        this.currentItem = item
         this.makeUp = 0
         this.$refs.modal.showModal()
       },

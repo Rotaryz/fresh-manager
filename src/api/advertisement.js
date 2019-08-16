@@ -143,5 +143,11 @@ export default {
   getActivityGoodsList(data, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/activity-fixed-goods`
     return request.get(url, data, loading)
-  }
+  },
+  // 活动分类列表[v2.9]
+  getActivityCategory(data, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity-category`
+    return request.get(url, data, loading)
+  },
+
 }

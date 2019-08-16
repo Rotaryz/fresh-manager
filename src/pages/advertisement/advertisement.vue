@@ -116,13 +116,16 @@
             </div>
             <div class="goods-content">
               <div class="goods-list">
-                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-                  <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item hand" @click="_selectGoods(item, index)">
+                  <div class="select-icon" :class="{'select-icon-active': showSelectIndex === index}">
                     <span class="after"></span>
                   </div>
                   <img class="goods-img" :src="item.goods_cover_image">
                   <div class="goods-msg">
-                    <div class="goods-name"><span class="tag">拼团返现</span>{{item.name}}</div>
+                    <div class="goods-name">
+                      <!--<span class="tag">拼团返现</span>-->
+                      {{item.name}}
+                    </div>
                     <div class="goods-money">¥{{item.original_price}}</div>
                   </div>
                 </div>
@@ -135,8 +138,8 @@
           </div>
           <!--商品分类-->
           <div v-if="tabIndex === 1" class="goods-cate">
-            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item hand" @click="_selectCate(goods, goodsIdx)">
+              <div class="select-icon" :class="{'select-icon-active': showCateIndex === goodsIdx}">
                 <span class="after"></span>
               </div>
               <div class="shade-goods-msg">
@@ -145,15 +148,14 @@
               </div>
             </div>
           </div>
-          <!--商品分类-->
+          <!--活动分类-->
           <div v-if="tabIndex === 2" class="goods-cate">
-            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+            <div v-for="(category, ind) in activityCategory" :key="ind" class="goods_cate-item hand" @click="_selectActive(ind)">
+              <div class="select-icon" :class="{'select-icon-active': showActiveIndex === ind}">
                 <span class="after"></span>
               </div>
               <div class="shade-goods-msg">
-                <div class="shade-goods-name">{{goods.name}}</div>
-                <div class="shade-goods-num">{{goods.goods_count}}个商品</div>
+                <div class="shade-goods-name">{{category.name}}</div>
               </div>
             </div>
           </div>
@@ -279,6 +281,7 @@
         },
         goodsCate: [],
         showCateIndex: 0,
+        showActiveIndex: '',
         activityItem: {},
         activityStatus: 0,
         activityGoodsList: [],
@@ -296,7 +299,8 @@
         todayHotList: [], // 今日爆品,用于phone-box组件
         freeShippingList: [], // 全国包邮,用于phone-box组件
         guessList: [],// 猜你喜欢,用于phone-box组件
-        groupList: []// 拼团返现,用于phone-box组件
+        groupList: [],// 拼团返现,用于phone-box组件
+        activityCategory: []
       }
     },
     computed: {
@@ -319,6 +323,7 @@
       await this.getCate(false)
       await this.infoEat()
       await this._getGoodsList()
+      this.getActivityCategory()
       this.$loading.hide()
     },
     methods: {
@@ -578,19 +583,25 @@
           this[this.dataName][index].name = ''
           break
         case 'mini_goods':
-          this[this.dataName][index].other_id = this.choiceGoods[this.showSelectIndex].id
-          this[this.dataName][index].url = ''
-          this[this.dataName][index].name = this.choiceGoods[this.showSelectIndex].name
+          if (this.showSelectIndex !== '') {
+            this[this.dataName][index].other_id = this.choiceGoods[this.showSelectIndex].id
+            this[this.dataName][index].url = ''
+            this[this.dataName][index].name = this.choiceGoods[this.showSelectIndex].name
+          }
           break
         case 'goods_cate':
-          this[this.dataName][index].other_id = this.goodsCate[this.showCateIndex].id
-          this[this.dataName][index].url = ''
-          this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
+          if (this.showCateIndex !== '') {
+            this[this.dataName][index].other_id = this.goodsCate[this.showCateIndex].id
+            this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
+            this[this.dataName][index].url = ''
+          }
           break
         case 'activity_cate':
-          this[this.dataName][index].other_id = this.activityCate[this.showCateIndex].id
-          this[this.dataName][index].url = ''
-          this[this.dataName][index].name = this.activityCate[this.showCateIndex].name
+          if (this.showActiveIndex !== '') {
+            this[this.dataName][index].other_id = ''
+            this[this.dataName][index].name = this.activityCategory[this.showActiveIndex].name
+            this[this.dataName][index].url = ''
+          }
           break
         }
         this._hideGoods()
@@ -602,6 +613,19 @@
       //
       _selectCate(item, index) {
         this.showCateIndex = index
+      },
+      _selectActive(index) {
+        this.showActiveIndex = index
+      },
+      getActivityCategory() {
+        API.Advertisement.getActivityCategory()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.activityCategory = res.data.activity_theme
+          })
       },
       // 获取商品列表
       async _getGoodsList() {

@@ -959,6 +959,9 @@
           })
           if (!isExist) {
             let obj = objDeepCopy(item)
+            if (this.currentType === 'common') {
+              this.addDetailContentItem({type: 'goods', value: obj})
+            }
             // 初始数据
             this.addData.goodsList.push(obj)
           }
