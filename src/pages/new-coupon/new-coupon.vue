@@ -883,7 +883,7 @@
 
       // 选择品类
       selectCategory(item, index) {
-        this.categoryCheckItem = item
+        // this.categoryCheckItem = item
         if (item.right) return
         if (item.checked) {
           this.categoryList = this.categoryList.map((item, ind) => {
@@ -893,10 +893,10 @@
           let idx = this.categorySelectList.findIndex((items) => items.id === item.id)
           idx > -1 && this.categorySelectList.splice(idx, 1)
         } else {
-          // if (this.selectCategoryList.length > 0 || this.categorySelectList.length > 0) {
-          //   this.$toast.show('只能选择一个品类')
-          //   return
-          // }
+          if (this.selectCategoryList.length > 0 || this.categorySelectList.length > 0) {
+            this.$toast.show('只能选择一个品类')
+            return
+          }
           this.categoryList = this.categoryList.map((item, ind) => {
             index === ind && (item.checked = true)
             return item
