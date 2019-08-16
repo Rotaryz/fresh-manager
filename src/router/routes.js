@@ -277,7 +277,6 @@ export default [
             if (id) {
               API.Content.getArticleDetail({id}, false)
                 .then((res) => {
-                  console.log(res, ERR_OK)
                   if (res.error !== ERR_OK) {
                     return false
                   }
