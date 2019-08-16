@@ -35,13 +35,13 @@
                 </div>
 
                 <!--状态-->
-                <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
+                <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 0 ? '' : 'status-fail'">{{statusHandle(item.status)}}</div>
 
                 <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                   <span class="list-operation" @click="handleNav(item, 'id')">查看</span>
                   <span class="list-operation" @click="_deleteActivity(item)">删除</span>
                   <span class="list-operation" @click="handleNav(item, 'editId')">复制活动</span>
-                  <span v-if="+item.status !== 2" class="list-operation" @click="stopActive(item)">终止活动</span>
+                  <span v-if="+item.status !== 2 && +item.status !== 3" class="list-operation" @click="stopActive(item)">终止活动</span>
                 </div>
                 <div v-if="+val.type === 6" :style="{flex: val.flex}" class="item">
                   {{item[val.value] || '0'}}/{{item[val.value2] || '0'}}
@@ -170,6 +170,18 @@
         const url = `${this.$route.path}/${path}?${key}=${item.id || 0}&activity_theme=${this.currentTab.activity_theme}`
         // window.$$tabIndex = this.tabIndex
         this.$router.push(url)
+      },
+      statusHandle(status) {
+        switch (+status) {
+        case 0:
+          return '未开始'
+        case 1:
+          return '进行中'
+        case 2:
+          return '已结束'
+        default:
+          return '已终止'
+        }
       },
       async _getActiveStatus() {
         try {
