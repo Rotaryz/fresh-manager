@@ -222,6 +222,7 @@
     },
     mounted() {
       this.updateListTabStatus()
+      this.$refs.search && this.$refs.search._setText(this.requestData.keyword)
     },
     methods: {
       ...couponMethods,
@@ -256,7 +257,8 @@
         API.Coupon.getCouponStatus({
           tag_type: this.infoTabIndex,
           created_start_at: this.requestData.created_start_at,
-          created_end_at: this.requestData.created_end_at
+          created_end_at: this.requestData.created_end_at,
+          keyword: this.requestData.keyword
         }).then(
           (res) => {
             if (res.error !== this.$ERR_OK) {

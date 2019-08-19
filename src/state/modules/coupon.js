@@ -22,7 +22,7 @@ export const state = {
     created_start_at: '',
     created_end_at: '',
     tag_type: 0,
-    keyword: '' // todo
+    keyword: ''
   }
 }
 
@@ -78,7 +78,8 @@ export const mutations = {
       page: 1,
       created_start_at: '',
       created_end_at: '',
-      tag_type: 0
+      tag_type: 0,
+      keyword: ''
     }
     state.infoTabIndex = 0
     state.defaultIndex = 0
