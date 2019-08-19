@@ -44,7 +44,7 @@
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
-        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/团长名称':'商品名称/商品编码'" :infoText="sortingTask.filter.keyword" @search="searchBtn"></base-search>
+        <base-search ref="research" :placeHolder="sortingTask.filter.sorting_mode===0?'团长订单号/社区名称':'商品名称/商品编码'" :infoText="sortingTask.filter.keyword" @search="searchBtn"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -58,17 +58,18 @@
           ></base-status-nav>
         </div>
         <div class="function-btn">
-          <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
           <template v-if="sortingTask.filter.sorting_mode===0 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportSortingByOrder">导出拣货单</div>
             <!--<div class="btn-main g-btn-item" @click="_exportByOrder">导出团长订单</div>-->
             <div class="btn-main g-btn-item" @click="_exportByOrder">导出配货单</div>
             <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
           </template>
-          <template v-if="sortingTask.filter.sorting_mode===1 && (sortingTask.filter.status===0 || sortingTask.filter.status===2)">
+          <template v-if="sortingTask.filter.sorting_mode===1 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
+            <div class="btn-main g-btn-item" @click="_goodsExcel">导出消费者清单</div>
           </template>
+          <div v-if="sortingTask.filter.status===0" class="btn-main g-btn-item" @click="_batchFinishSorting">批量完成分拣</div>
         </div>
       </div>
       <!--列表部分-->
@@ -109,6 +110,7 @@
         <base-pagination ref="pagination" :pagination="sortingTask.filter.page" :pageDetail="sortingTask.pageTotal" @addPage="pageChange"></base-pagination>
       </div>
     </div>
+    <default-confirm ref="confirm" :oneBtn="oneBtn" @confirm="successConfirm"></default-confirm>
   </div>
 </template>
 
@@ -116,6 +118,7 @@
   import {authComputed, sortingComputed, sortingMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   const ORDERSTATUS = [{text: '按订单分拣', status: 0, id: 'order'}, {text: '按商品分拣', status: 1, id: 'goods'}]
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
@@ -176,7 +179,9 @@
     page: {
       title: TITLE
     },
-
+    components: {
+      DefaultConfirm
+    },
     data() {
       return {
         currentPrint: {},
@@ -211,6 +216,7 @@
           {name: '待配货', value: 3, num: 0},
           {name: '已完成', value: 1, num: 0}
         ],
+        oneBtn: false,
         stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         thirdlySelect: {check: false, show: false, content: '三级类目', type: 'default', data: []},
@@ -309,6 +315,9 @@
         }
       },
       _batchFinishSorting() {
+        this.$refs.confirm.show('批量完成分拣后将无法导出左侧单据，确定这样子做吗？')
+      },
+      successConfirm() {
         API.Sorting.batchFinishSorting(this.sortingTask.filter, true)
           .then((res) => {
             this.$toast.show(res.message)
@@ -321,7 +330,6 @@
             this.$loading.hide()
           })
       },
-
       // 打印标签按鈕
       printTagBtn(row) {
         this.$router.push({name: 'perview', params: {id: row.id}})
@@ -475,7 +483,8 @@
           end_time: obj.end_time,
           keyword: obj.keyword,
           status: obj.status,
-          exception_status: obj.exception_status
+          exception_status: obj.exception_status,
+          sorting_mode: obj.sorting_mode
         }
         let search = []
         for (let key in data) {
@@ -514,6 +523,10 @@
       // 导出消费者清单
       orderExcel() {
         API.Sorting.exportCustomerOrder(this._getCustomerUrl())
+      },
+      // 导出消费者清单
+      _goodsExcel() {
+        API.Sorting.exportCustomerOrder(this.getUrl())
       },
       pageChange(page) {
         this._updateData({page})

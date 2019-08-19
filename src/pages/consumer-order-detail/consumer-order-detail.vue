@@ -54,6 +54,14 @@
           ></base-drop-down>
         </div>
       </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          备注
+        </div>
+        <div class="edit-input-box">
+          <input v-model="note" type="tel" placeholder="请输入" maxlength="50" class="edit-input">
+        </div>
+      </div>
     </div>
 
     <div class="content-header">
@@ -195,7 +203,8 @@
         pageConfig: {},
         consumerType: '',
         mobile: '',
-        nickName: ''
+        nickName: '',
+        note: ''
       }
     },
     computed: {
@@ -227,10 +236,6 @@
     },
     methods: {
       ...merchantOrderMethods,
-      testForm() {
-        let result = this.checkGoods()
-        console.log(this.goodsList, result)
-      },
       _initData() {
         this.msg = {}
         this.nickName = ''
@@ -266,7 +271,7 @@
           back_tracking_obj: this.consumerType,
           out_order_sn: ''
         }
-        this.nickName = item.nickname
+        // this.nickName = item.nickname
       },
       _searchShop(text) {
         if (text.length === 0) {
@@ -299,7 +304,15 @@
             this.community.data = res.data
             this.communityList = res.data
             this.community.content = '选择社区'
-            this.nickName = res.data[0].nickname
+            API.MerchantOrder.getNickName({mobile: this.mobile})
+              .then(res => {
+                if (res.error !== this.$ERR_OK) {
+                  this.$toast.show(res.message)
+                  return
+                }
+                this.nickName = res.data.nickname
+              })
+
           })
       },
       stockHandle(item) {
@@ -394,6 +407,11 @@
           return item
         })
         this.mobile && (this.msg.customer_mobile = this.mobile)
+        if (this.note.length > 50) {
+          this.$toast.show('备注字数不能超过50个字')
+          return
+        }
+        this.msg.order_note = this.note
         let data = Object.assign({}, this.msg, {goods, total})
         let res = null
         this.isSubmit = true

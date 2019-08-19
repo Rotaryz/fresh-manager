@@ -67,5 +67,10 @@ export default {
   getCommunity(params, loading = false) {
     let url = '/scm/api/backend/oms/customer-buyer-list'
     return request.get(url, params, loading)
-  }
+  },
+  // 获取昵称
+  getNickName(params, loading = false) {
+    let url = '/scm/api/backend/oms/customer-nickname'
+    return request.get(url, params, loading)
+  },
 }

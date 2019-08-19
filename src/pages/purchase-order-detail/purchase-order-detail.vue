@@ -8,7 +8,7 @@
         <span class="header-text">采购商品数：{{purchaseDetail.task_num}}</span>
       </div>
       <div class="down-item-text">
-        <span class="header-text">预采购金额：￥{{purchaseDetail.per_amount}}</span>
+        <span class="header-text">总采购金额：<span class="enter-title-money">￥{{purchaseDetail.per_amount}}</span></span>
       </div>
       <div class="down-item-text">
         <span class="header-text">供应商：{{purchaseDetail.supply_name}}</span>
@@ -38,8 +38,9 @@
               <div class="item-dark">{{item.goods_sku_encoding}}</div>
             </div>
             <div class="list-item">{{item.goods_material_category}}</div>
-            <div class="list-item">{{item.purchase_num}}{{item.purchase_unit}}</div>
+            <div class="list-item">{{item.sale_num}}{{item.sale_unit}}</div>
             <div class="list-item">{{item.base_num}}{{item.base_unit}}</div>
+            <div class="list-item">{{item.purchase_num}}{{item.purchase_unit}}</div>
             <div class="list-item">{{item.purchase_price ? '￥' : ''}}{{item.purchase_price}}/{{item.purchase_unit}}</div>
             <div class="list-item">{{item.purchase_amount ? '￥' : ''}}{{item.purchase_amount}}</div>
           </div>
@@ -57,7 +58,7 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER_DETAIL'
   const TITLE = '采购单详情'
-  const COMMODITIES_LIST = ['商品', '类目', '采购数量(采购单位)', '采购数量(基本单位)', '采购单价', '采购金额']
+  const COMMODITIES_LIST = ['商品', '类目', '采购数量(销售单位)', '采购数量(基本单位)', '采购数量(采购单位)', '采购单价', '采购金额']
   export default {
     name: PAGE_NAME,
     page: {
@@ -90,13 +91,15 @@
   .purchase-order-detail
     .header-text
       font-size: 14px
+      .enter-title-money
+        color: #F84E3C
     .list-box
       .list-item
         padding-right: 14px
         &:nth-child(1)
           flex: 1.5
-        &:nth-child(6)
-          flex: 0.5
+        &:nth-child(7)
+          flex: 0.6
 
   .purchase-list
     padding-bottom: 20px
