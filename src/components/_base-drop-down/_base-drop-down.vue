@@ -89,6 +89,10 @@
     mounted() {
       window.onclick = () => {
         this.select.check = false
+        setTimeout(() => {
+          this.inputText = ''
+          this.$emit('changeText', '')
+        }, 300)
       }
     },
     methods: {
