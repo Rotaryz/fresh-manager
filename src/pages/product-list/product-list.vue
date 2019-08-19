@@ -486,8 +486,8 @@
         max-width: 120px
       &:last-child
         padding: 5px
-        max-width: 78px
-        min-width: 78px
+        max-width: 114px
+        min-width: 114px
         flex: 1
 
   .list-item-btn
