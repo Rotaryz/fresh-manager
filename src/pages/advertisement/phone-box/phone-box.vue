@@ -139,7 +139,8 @@
                             <figure class="left">
                               <img v-if="item.goods_cover_image" class="goods-image" :src="item.goods_cover_image" alt="">
                               <img v-else class="goods-image empty" src="./icon-picmr@2x.png" alt="">
-                              <img class="label" src="./icon-label@1x.png" alt="">
+                              <img v-if="active.data.module_name === 'centralize_purchase'" class="label" src="./icon-label_jicai.png" alt="">
+                              <img v-else class="label" src="./icon-label@1x.png" alt="">
                             </figure>
                             <section class="right">
                               <p class="title">{{item.name}}</p>

@@ -143,5 +143,10 @@ export default {
   getActivityGoodsList(data, loading = false) {
     let url = `/social-shopping/api/backend/activity-manage/activity-fixed-goods`
     return request.get(url, data, loading)
+  },
+  // 活动商品列表[v2.9]
+  getActivityList(data, loading = false) {
+    const url = `/social-shopping/api/backend/activity-manage/activity-fixed-goods`
+    return request.get(url, data, loading)
   }
 }
