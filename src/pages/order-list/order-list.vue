@@ -69,7 +69,7 @@
             </div>
             <span class="close hand" @click="closeDownModal"></span>
           </div>
-          <div class="context">{{downloadUrl}}</div>
+          <div class="context">{{downName}}</div>
           <div class="btn-group">
             <span class="btn cancel" @click="download">下载</span>
             <span class="btn confirm" @click="exportExcel(1)">重新生成</span>
@@ -128,7 +128,8 @@
         defaultStatus: 'c_shop',
         timer: '',
         downloadUrl: '',
-        downTime: 1000
+        downTime: 1000,
+        downName: ''
       }
     },
     computed: {
@@ -262,6 +263,7 @@
               this.setRequestTimer(data)
             } else {
               this.downloadUrl = res.data.download_url
+              this.downName = res.data.file_name
               this.$refs.downModal.showModal()
             }
           })
@@ -292,6 +294,7 @@
                 clearTimeout(this.timer)
                 this.downTime = 1000
                 this.downloadUrl = res.data.download_url
+                this.downName = res.data.file_name
                 this.$refs.downModal.showModal()
               } else {
                 this.setRequestTimer(data)
@@ -312,6 +315,7 @@
         this.$refs.search._setText('')
         this.getOrderStatus()
         this.$refs.pagination.beginPage()
+        clearTimeout(this.timer)
       },
       changeShopId(shop) {
         this.setShopId(shop)
