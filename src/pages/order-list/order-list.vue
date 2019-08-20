@@ -69,8 +69,9 @@
             </div>
             <span class="close hand" @click="closeDownModal"></span>
           </div>
-          <div class="context">{{downName}}</div>
-          <div class="btn-group">
+          <div v-if="downloadUrl" class="context">{{downName}}</div>
+          <div v-else class="context">{{message}}</div>
+          <div v-if="downloadUrl" class="btn-group">
             <span class="btn cancel" @click="download">下载</span>
             <span class="btn confirm" @click="exportExcel(1)">重新生成</span>
           </div>
@@ -129,7 +130,8 @@
         timer: '',
         downloadUrl: '',
         downTime: 1000,
-        downName: ''
+        downName: '',
+        message: ''
       }
     },
     computed: {
@@ -258,8 +260,10 @@
               return
             }
             if (+res.data.status !== 3) {
-              this.$toast.show(res.data.status_message, 3000)
-              this.closeDownModal()
+              // this.$toast.show(res.data.status_message, 3000)
+              // this.closeDownModal()
+              this.message = res.data.status_message
+              this.$refs.downModal.showModal()
               this.setRequestTimer(data)
             } else {
               this.downloadUrl = res.data.download_url
@@ -307,6 +311,7 @@
         this.closeDownModal()
       },
       closeDownModal() {
+        this.downloadUrl = ''
         this.$refs.downModal.hideModal()
       },
       changeStatus(selectStatus) {

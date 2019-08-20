@@ -421,7 +421,7 @@
             keyword: this.text,
             goods_category_id: this.parentId,
             page: this.choicePage,
-            limit: 7
+            limit: 6
           },
           loading
         )
@@ -721,7 +721,7 @@
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px
     background: $color-white
-    height: 720px
+    height: 662px
     max-width: 1000px
     width: 1000px
     position: relative
@@ -744,7 +744,7 @@
 
   .goods-content
     border-radius: 4px
-    height: 465px
+    height: 405px
     .goods-title
       display: flex
       height: 45px
@@ -807,7 +807,7 @@
             width: 100%
             height: 300%
             transform: scaleX(1 / 3) translateZ(0)
-        &:nth-child(2n - 1)
+        &:nth-child(2n)
           background: #f5f7fa
         .item-content
           padding-right: 20px
