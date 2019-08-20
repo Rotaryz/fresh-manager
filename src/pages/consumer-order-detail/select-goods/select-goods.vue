@@ -238,7 +238,8 @@
           keyword: this.keyword,
           goods_material_category_id: this.categoryId,
           limit: 7,
-          page: this.page || 1
+          page: this.page || 1,
+          goods_type: 1
         })
         if (res.error !== this.$ERR_OK) {
           return
