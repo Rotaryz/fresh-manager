@@ -519,8 +519,8 @@
             obj.all_stock = obj.usable_stock
             obj.usable_stock = ''
             obj.sort = 0
-            // obj.goods_trade_price = obj.trade_price
-            // obj.trade_price_show = obj.trade_price
+            obj.goods_trade_price = obj.trade_price
+            obj.trade_price_show = obj.trade_price
             this.activityTheme !== 'hot_tag' && (obj.trade_price = '')
             this.goodsList.push(obj)
           }

@@ -845,7 +845,6 @@
           })
           if (!isExist) {
             let obj = objDeepCopy(item)
-            this.activityTheme !== 'hot_tag' && (obj.trade_price = '')
             this.goodsList.push(obj)
           }
         })

@@ -341,7 +341,6 @@
         this.chooseType = TAG_TYPE[obj.tag_type]
       }
       await this._getFirstAssortment()
-      await this._getGoodsList(false)
     },
     methods: {
       ...couponMethods,
@@ -435,8 +434,7 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.selectItem.id)
-      // this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === )
+        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === (this.goodsItem[0] && this.goodsItem[0].id))
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -502,7 +500,7 @@
         this.choicePage = 1
         this.$refs.goods.hideModal()
       },
-      _showGoods() {
+      async _showGoods() {
         if (this.id) {
           return
         }
@@ -512,6 +510,7 @@
         if (this.commodity.exchange_goods.length) {
           this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.exchange_goods[0].range_id)
         }
+        await this._getGoodsList(false)
         this.$refs.goods.showModal()
       },
       // 搜索商品
