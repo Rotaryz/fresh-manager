@@ -236,6 +236,7 @@ export const actions = {
       goods_material_category_id: '',
       is_online: '',
       limit: 10,
+      goods_type: '',
       platform: 'scm'
     })
     commit('SET_SELECT_DOWN_RESET', {
@@ -245,7 +246,8 @@ export const actions = {
       oneMaterialList: [],
       twoMaterialList: [],
       thrMaterialList: [],
-      completeStatusTitle: '全部'
+      completeStatusTitle: '全部',
+      typeTitle: '全部'
     })
   }
 }
