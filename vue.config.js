@@ -9,7 +9,7 @@ module.exports = {
     }
   },
   css: {
-    sourceMap: true
+    sourceMap: false
   },
   productionSourceMap: false,
   devServer: {
