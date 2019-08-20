@@ -1,12 +1,12 @@
 <template>
   <div class="new-market detail-content">
     <div class="identification">
-      <!--<div class="identification-page">
+      <div class="identification-page">
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
         <p class="identification-name">{{!disable ? '新建' : type ? '查看' : '编辑'}}营销</p>
       </div>
       <div class="function-btn">
-      </div>-->
+      </div>
     </div>
     <div class="msg-detail">
       <!--轮播图-->

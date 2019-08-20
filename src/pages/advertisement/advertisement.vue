@@ -3,10 +3,10 @@
     <base-tab-select :infoTabIndex="infoTabIndex" :tabStatus="tabStatus" @getStatusTab="changeTab"></base-tab-select>
     <div class="advertisement">
       <div class="identification">
-        <!--<div class="identification-page">
+        <div class="identification-page">
           <img :src="actName[contentType + 'Icon']" class="identification-icon">
           <p class="identification-name">{{actName[contentType]}}</p>
-        </div>-->
+        </div>
         <div class="function-btn">
         </div>
       </div>
