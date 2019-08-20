@@ -1337,8 +1337,8 @@
           flex: 1
 
           &.disable
-            .list-header :last-child
-            .list :last-child
+            .list-header .list-item:last-child
+            .list .list-item:last-child
               display none
 
         .edit-input-box

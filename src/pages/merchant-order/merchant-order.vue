@@ -63,6 +63,10 @@
         <div class="down-item">
           <base-drop-down :select="unusualSelect" @setValue="_selectUnusual"></base-drop-down>
         </div>
+        <span class="down-tip">订单来源</span>
+        <div class="down-item">
+          <base-drop-down :select="sourceSelect" @setValue="_selectSource"></base-drop-down>
+        </div>
         <div class="distribution-down">
           <span class="down-tip">搜索</span>
           <div class="down-item">
@@ -79,7 +83,10 @@
                              @change="setValue"
             ></base-status-nav>-->
           </div>
-          <router-link tag="a" to="consumer-order-detail" append class="btn-main">补录订单</router-link>
+          <div class="function-btn">
+            <router-link tag="a" to="consumer-order-detail" append class="btn-main">补录订单</router-link>
+            <a target="_blank" :href="storeExcel" class="btn-main g-btn-item">导出订单</a>
+          </div>
         </div>
         <div class="big-list">
           <div class="list-header list-box">
@@ -120,7 +127,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
+  import {authComputed, merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
 
@@ -183,6 +190,7 @@
     {text: '消费者订单', status: 1, img: require('./pic-zanwu@2x.png')}
     // {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
   ]
+  const ENTRY_STORE_EXPORT = '/scm/api/backend/oms/export-customer-orders'
   export default {
     name: PAGE_NAME,
     page: {
@@ -205,6 +213,12 @@
           content: '全部',
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}]},
+        sourceSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}, {name: '系统销售', status: '1'}, {name: '人工补录', status: '3'}]},
         dispatchSelect: [
           {status_str: '全部', value: '', statistic: 0},
           {status_str: '待调度', value: 0, statistic: 0},
@@ -223,8 +237,29 @@
     },
     computed: {
       ...merchantOrderComputed,
+      ...authComputed,
       timeArr() {
         return [this.merchantFilter.start_time, this.merchantFilter.end_time]
+      },
+      storeExcel() {
+        let currentId = this.getCurrentId()
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          start_time: this.merchantFilter.start_time,
+          end_time: this.merchantFilter.end_time,
+          keyword: this.merchantFilter.keyword,
+          status: this.merchantFilter.status,
+          type: this.merchantFilter.type,
+          exception_status: this.merchantFilter.exception_status
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        let url = process.env.VUE_APP_SCM_API + ENTRY_STORE_EXPORT + '?' + search.join('&')
+        return url
       }
     },
     async created() {
@@ -245,13 +280,18 @@
           start_time: '',
           end_time: '',
           exception_status: '',
+          type: '',
           status: 0,
           keyword: ''
         })
         this.unusualSelect.content = '全部'
+        this.sourceSelect.content = '全部'
       },
       _selectUnusual(item) {
         this._updateMerchantOrderList({exception_status: item.status})
+      },
+      _selectSource(item) {
+        this._updateMerchantOrderList({type: item.status})
       },
       // 获取订单列表
       _updateMerchantOrderList(params, noUpdateStatus) {

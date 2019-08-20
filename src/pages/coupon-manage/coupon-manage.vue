@@ -7,6 +7,10 @@
         <div class="down-item">
           <base-date-select :placeHolder="datePlaceHolder" :dateInfo="[requestData.created_start_at, requestData.created_end_at]" @getTime="changeTime"></base-date-select>
         </div>
+        <span class="down-tip">搜索</span>
+        <div class="down-item">
+          <base-search ref="search" placeHolder="请输入优惠券名称" @search="searchHandle"></base-search>
+        </div>
       </div>
 
       <!--优惠券列表-->
@@ -139,6 +143,7 @@
     {name: '使用门槛', flex: 1, value: 'condition', type: 5},
     {name: '面值', flex: 1, value: 'denomination', type: 2},
     {name: '状态', flex: 1, value: 'status_str', type: 1},
+    {name: '剩余数量', flex: 1, value: 'usable_stock', type: 1},
     {name: 'ROI指标', flex: 1, value: 'roi_value', type: 3},
     {name: '操作', flex: 1.8, value: '', type: 4}
   ]
@@ -203,21 +208,44 @@
             value: 1,
             name: '已使用'
           }
-        ]
+        ],
+        keyword: '' // 关键字
       }
     },
     computed: {
       ...couponComputed
     },
-    created() {
-      this.getCouponStatus()
+    watch: {
+      couponList(cur, pre) {
+        this.updateListTabStatus()
+      }
+    },
+    mounted() {
+      this.updateListTabStatus()
+      this.$refs.search && this.$refs.search._setText(this.requestData.keyword)
     },
     methods: {
       ...couponMethods,
+      updateListTabStatus() {
+        if (this.infoTabIndex > 0) {
+          this.$refs.goodsCoupon && this.$refs.goodsCoupon.getCouponStatus()
+        } else {
+          this.getCouponStatus()
+        }
+      },
+      searchHandle(keyword) {
+        this.setRequestData({keyword, page: 1})
+        this.$refs.pagination.beginPage()
+      },
+      // 切换顶部tab(优惠券,兑换券等)
       changeTab(item, index) {
         this.setInfoIndex(index)
         this.getCouponList()
         this.showViewData = false
+        // 清空搜索
+        this.$refs.search && this.$refs.search._setText()
+        const search = this.$refs.goodsCoupon && this.$refs.goodsCoupon.$refs.search
+        search && search._setText()
       },
       tipShow() {
         this.showTip = true
@@ -227,9 +255,10 @@
       },
       getCouponStatus() {
         API.Coupon.getCouponStatus({
-          tag_type: 0,
+          tag_type: this.infoTabIndex,
           created_start_at: this.requestData.created_start_at,
-          created_end_at: this.requestData.created_end_at
+          created_end_at: this.requestData.created_end_at,
+          keyword: this.requestData.keyword
         }).then(
           (res) => {
             if (res.error !== this.$ERR_OK) {
@@ -247,29 +276,20 @@
         )
       },
       changeStatus(status, index) {
-        // this.msg.status = status.status
-        // this.msg.page = 1
         this.setDefaultIndex({status: status.status, index})
         this.$refs.pagination.beginPage()
-        // this.getCouponList(this.msg)
       },
       async changeTime(time) {
-        // this.msg.startTime = time[0]
-        // this.msg.endTime = time[1]
-        // this.msg.page = 1
         this.setRequestData({
           created_start_at: time[0],
           created_end_at: time[1],
           page: 1
         })
-        // this.getCouponList(this.requestData)
-        this.getCouponStatus()
         this.$refs.pagination.beginPage()
       },
       viewDataShow(item) {
         this.currentItem = item
         this.$router.push('/home/coupon-manage/coupon-data?id='+item.id)
-        // this.getCouponData()
       },
       getCouponData() {
         API.Coupon.getCouponData({
@@ -346,7 +366,6 @@
               this.getCouponList()
             }
             this.$toast.show('删除成功')
-            this.getCouponStatus()
           })
         this.confirmType === 'stop' && API.Coupon.stopCoupon(this.currentItem.id)
           .then(res => {
@@ -356,7 +375,6 @@
             }
             this.$toast.show('停止成功')
             this.getCouponList()
-            this.getCouponStatus()
           })
       }
     }
