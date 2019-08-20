@@ -257,9 +257,9 @@
         case 'fixed':
           return 10
         case 'hot_tag':
-          return 50
+          return 10
         default:
-          return 20
+          return 10
         }
       },
       testName() {

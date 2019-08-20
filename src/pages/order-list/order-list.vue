@@ -33,7 +33,7 @@
           <base-status-nav :statusList="statusTab" :value="orderStatus" valueKey="status" labelKey="status_str" numKey="statistic" @change="changeTab"></base-status-nav>
         </div>
         <div class="function-btn">
-          <div class="btn-main" @click="exportExcel">导出Excel</div>
+          <div class="btn-main" @click="exportExcel(0)">导出Excel</div>
         </div>
       </div>
       <div class="big-list">
@@ -60,6 +60,23 @@
           </div>
         </div>
       </div>
+
+      <default-modal ref="downModal">
+        <div slot="content" class="shade-box">
+          <div class="title-box">
+            <div class="title">
+              提示
+            </div>
+            <span class="close hand" @click="closeDownModal"></span>
+          </div>
+          <div class="context">{{downloadUrl}}</div>
+          <div class="btn-group">
+            <span class="btn cancel" @click="download">下载</span>
+            <span class="btn confirm" @click="exportExcel(1)">重新生成</span>
+          </div>
+        </div>
+      </default-modal>
+
       <div class="pagination-box">
         <base-pagination ref="pagination" :pageDetail="pageDetail" :pagination="page" @addPage="setPage"></base-pagination>
       </div>
@@ -70,6 +87,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import {DatePicker} from 'element-ui'
+  import DefaultModal from '@components/default-modal/default-modal'
   import {authComputed, orderComputed, orderMethods} from '@state/helpers'
   import moment from 'moment'
 
@@ -89,7 +107,8 @@
       title: TITLE
     },
     components: {
-      DatePicker
+      DatePicker,
+      DefaultModal
     },
     data() {
       return {
@@ -106,7 +125,10 @@
           {status_str: '已关闭', status: 'success', statistic: 0}
         ],
         downUrl: '',
-        defaultStatus: 'c_shop'
+        defaultStatus: 'c_shop',
+        timer: '',
+        downloadUrl: '',
+        downTime: 1000
       }
     },
     computed: {
@@ -165,6 +187,7 @@
       this.getOrderStatus()
     },
     beforeDestroy() {
+      clearTimeout(this.timer)
       // this.setTime(['', ''])
     },
     methods: {
@@ -209,8 +232,69 @@
           this.socialSelectList = selectData
         })
       },
-      exportExcel() {
-        window.open(this.orderExportUrl, '_blank')
+      exportExcel(num) {
+        // window.open(this.orderExportUrl, '_blank')
+        clearTimeout(this.timer)
+        this.downTime = 1000
+        this.closeDownModal()
+        let data = {
+          status: this.orderStatus,
+          shop_id: this.shopId,
+          start_time: this.time[0] || '',
+          end_time: this.time[1] || '',
+          keyword: this.keyword,
+          is_rebuild: num
+        }
+        API.Order.exportOffLine(data)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message, 2000)
+              return
+            }
+            if (+res.data.status !== 3) {
+              this.$toast.show(res.data.status_message, 2000)
+              this.setRequestTimer(data)
+            } else {
+              this.downloadUrl = res.data.download_url
+              this.$refs.downModal.showModal()
+            }
+          })
+      },
+      setRequestTimer(data) {
+        let newData = JSON.parse(JSON.stringify(data))
+        newData.is_rebuild = 0
+        this.timer = setTimeout(() => {
+          if (this.downTime < 5000) {
+            this.downTime += 2000
+          } else {
+            this.downTime = this.downTime * 2
+          }
+          API.Order.exportOffLine(newData)
+            .then(res => {
+              if (res.error !== this.$ERR_OK) {
+                this.$toast.show(res.message, 2000)
+                clearTimeout(this.timer)
+                this.downTime = 1000
+                return
+              }
+              if (+res.status === 3) {
+                clearTimeout(this.timer)
+                this.downTime = 1000
+                this.downloadUrl = res.data.download_url
+                this.$refs.downModal.showModal()
+              } else {
+                this.setRequestTimer(data)
+              }
+            })
+        }, this.downTime)
+        console.log(this.downTime, 1)
+      },
+      download() {
+        window.open(this.downlaodUrl)
+        this.closeDownModal()
+      },
+      closeDownModal() {
+        this.$refs.downModal.hideModal()
       },
       changeStatus(selectStatus) {
         this.setStatus(selectStatus)
@@ -299,5 +383,53 @@
       &:last-child
         padding: 0
         max-width: 28px
+
+  //  弹窗
+  .shade-box
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+    border-radius: 2px
+    background: $color-white
+    width: 380px
+    position: relative
+    overflow-x: hidden
+    overflow-y: auto
+    flex-wrap: wrap
+    padding: 0 20px 20px
+    box-sizing: border-box
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
+    .back
+      border-top-1px($color-line)
+      position: absolute
+      left: 0
+      right: 0
+      bottom: 0
+      background: $color-white
+      justify-content: flex-end
+      height: 70px
+
+    .context
+      padding: 20px
+      text-align: center
+      word-break: break-all
+    .btn-group
+      position: relative
+      left: 0
+      top: 0
+      padding: 0
+      margin-top: 20px
 
 </style>
