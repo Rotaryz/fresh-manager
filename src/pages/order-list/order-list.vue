@@ -236,23 +236,29 @@
         // window.open(this.orderExportUrl, '_blank')
         clearTimeout(this.timer)
         this.downTime = 1000
-        this.closeDownModal()
         let data = {
           status: this.orderStatus,
           shop_id: this.shopId,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
           keyword: this.keyword,
+          source: this.status,
           is_rebuild: num
+        }
+        if (this.status === 'c_freeShipping') {
+          data.source_type = 2
+          delete data.source
         }
         API.Order.exportOffLine(data)
           .then(res => {
             if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message, 2000)
+              this.$toast.show(res.message, 3000)
+              this.closeDownModal()
               return
             }
             if (+res.data.status !== 3) {
-              this.$toast.show(res.data.status_message, 2000)
+              this.$toast.show(res.data.status_message, 3000)
+              this.closeDownModal()
               this.setRequestTimer(data)
             } else {
               this.downloadUrl = res.data.download_url
@@ -277,12 +283,12 @@
           API.Order.exportOffLine(newData)
             .then(res => {
               if (res.error !== this.$ERR_OK) {
-                this.$toast.show(res.message, 2000)
+                this.$toast.show(res.message, 3000)
                 clearTimeout(this.timer)
                 this.downTime = 1000
                 return
               }
-              if (+res.status === 3) {
+              if (+res.data.status === 3) {
                 clearTimeout(this.timer)
                 this.downTime = 1000
                 this.downloadUrl = res.data.download_url

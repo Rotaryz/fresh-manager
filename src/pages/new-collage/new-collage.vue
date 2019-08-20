@@ -275,7 +275,7 @@
     </default-modal>
 
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" :maxLimit="10" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :maxLimit="20" @batchAddition="batchAddition"></add-goods>
 
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
