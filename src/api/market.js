@@ -91,5 +91,14 @@ export default {
   getMarketStatistic(id, data = {}, loading = false) {
     let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity-statistic/${id}`
     return request.get(url, data, loading)
+  },
+  /**
+   * 营销计划-----优惠券状态统计[v2.9.2]
+   * @param loading
+   * @returns {*}
+   */
+  getStatus(data, loading = false) {
+    let url = `/social-shopping/api/backend/coupon-activity-manage/status-counts`
+    return request.get(url, data, loading)
   }
 }

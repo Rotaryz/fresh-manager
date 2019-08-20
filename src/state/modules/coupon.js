@@ -21,7 +21,8 @@ export const state = {
     page: 1,
     created_start_at: '',
     created_end_at: '',
-    tag_type: 0
+    tag_type: 0,
+    keyword: ''
   }
 }
 
@@ -77,7 +78,8 @@ export const mutations = {
       page: 1,
       created_start_at: '',
       created_end_at: '',
-      tag_type: 0
+      tag_type: 0,
+      keyword: ''
     }
     state.infoTabIndex = 0
     state.defaultIndex = 0
@@ -87,7 +89,11 @@ export const mutations = {
 export const actions = {
   getCouponList({commit, state}, loading) {
     // let tagType = state.requestData.tag_type
-    return API.Coupon.getCouponList(state.requestData, loading)
+    let data = state.requestData
+    if (+state.requestData.tag_type === 1) {
+      data = {...state.requestData, tag_type : '1,2'}
+    }
+    return API.Coupon.getCouponList(data, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           app.$toast.show(res.message)
@@ -118,6 +124,9 @@ export const actions = {
   },
   // 兑换券的方法
   getCouponDetail({commit}, {id, tagType}) {
+    if (+tagType === 1) {
+      tagType = '1,2'
+    }
     return API.Coupon.getCouponDetail({tag_type: tagType}, id)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
@@ -143,7 +152,7 @@ export const actions = {
   setInfoIndex({commit, dispatch}, index) {
     commit('SET_DEFAULT_INDEX', 0)
     commit('SET_INFO_TAB_INDEX', index)
-    commit('SET_REQUEST_DATA', {status: '', page: 1, created_start_at: '', created_end_at: '', tag_type: index})
+    commit('SET_REQUEST_DATA', {status: '', page: 1, created_start_at: '', created_end_at: '', tag_type: index, keyword: ''})
   },
   setDefaultIndex({commit, dispatch}, data) {
     commit('SET_DEFAULT_INDEX', data.index)

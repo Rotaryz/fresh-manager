@@ -5,12 +5,17 @@
       <div class="down-item">
         <base-date-select placeHolder="选择创建时间" :dateInfo="[requestData.created_start_at, requestData.created_end_at]" @getTime="changeTime"></base-date-select>
       </div>
+      <span class="down-tip">搜索</span>
+      <div class="down-item">
+        <base-search ref="search" placeHolder="请输入兑换券名称" @search="searchHandle"></base-search>
+      </div>
     </div>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
           <img src="../icon-coupon_list@2x.png" class="identification-icon">
           <p class="identification-name">兑换券列表</p>
+          <base-status-tab :statusList="statusTab" :infoTabIndex="+defaultIndex" @setStatus="changeStatus"></base-status-tab>
         </div>
         <div class="function-btn">
           <router-link tag="div" to="edit-commodity" append class="btn-main">新建兑换券<span class="add-icon"></span></router-link>
@@ -23,13 +28,15 @@
         <div class="list">
           <div v-if="couponList.length">
             <div v-for="(item, index) in couponList" :key="index" class="list-content list-box">
+              <div class="list-item">{{item.created_at}}</div>
               <div class="list-item">{{item.coupon_name}}</div>
+              <div class="list-item">{{item.preferential_str}}</div>
               <div class="list-item">{{item.denomination}}</div>
+              <div class="list-item">{{item.status_str}}</div>
               <div class="list-item list-double-row">
                 <p class="item-dark">{{item.start_at}}</p>
                 <p class="item-dark">{{item.end_at}}</p>
               </div>
-              <div class="list-item">{{item.created_at}}</div>
               <div class="list-item">{{item.total_stock}}</div>
               <div class="list-item">{{item.usable_stock}}</div>
               <div class="list-item">{{item.customer_coupon_count}}</div>
@@ -59,7 +66,19 @@
   import API from '@api'
 
   const PAGE_NAME = 'GOODS-COUPON'
-  const COUPON_TITLE = ['兑换券名称', '面值', '有效期', '创建时间', '发放总数', '剩余数量', '已领取数', '已使用数', '操作']
+  const COUPON_TITLE = [
+    '创建时间',
+    '兑换券别名',
+    '类型',
+    '面值',
+    '状态',
+    '有效时间',
+    '发放总数',
+    '剩余数量',
+    '已领取数',
+    '已使用数',
+    '操作'
+  ]
   export default {
     name: PAGE_NAME,
     components: {
@@ -72,33 +91,63 @@
         // page: 1,
         // startTime: '',
         // endTime: '',
-        delId: null
+        delId: null,
+        statusTab: [
+          {name: '全部', status: '', num: 0},
+          {name: '进行中', status: 1, num: 0},
+          {name: '未开始', status: 1, num: 0},
+          {name: '已结束', status: 1, num: 0}
+        ],
       }
     },
     computed: {
       ...couponComputed
     },
+    mounted() {
+      this.$refs.search && this.$refs.search._setText(this.requestData.keyword)
+    },
     methods: {
       ...couponMethods,
+      changeStatus(status, index) {
+        this.setDefaultIndex({status: status.status, index})
+        this.$refs.pagination.beginPage()
+      },
+      getCouponStatus() {
+        API.Coupon.getCouponStatus({
+          tag_type: '1,2',
+          created_start_at: this.requestData.created_start_at,
+          created_end_at: this.requestData.created_end_at,
+          keyword: this.requestData.keyword
+        }).then(
+          (res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.statusTab = res.data.map((item, index) => {
+              return {
+                name: item.status_str,
+                status: item.status,
+                num: item.statistic
+              }
+            })
+          }
+        )
+      },
+      searchHandle(keyword) {
+        this.setRequestData({keyword, page: 1})
+        this.$refs.pagination.beginPage()
+      },
       changeTime(time) {
-        // this.startTime = time[0]
-        // this.endTime = time[1]
-        // this.page = 1
         this.setRequestData({
           created_start_at: time[0],
           created_end_at: time[1],
           page: 1
         })
-        // this.getGoodsCoupon()
         this.$refs.pagination.beginPage()
       },
-      // getGoodsCoupon() {
-      //   this.getCouponList()
-      // },
       changePage(page) {
-        // this.page = page
         this.setRequestData({page})
-        // this.getGoodsCoupon()
       },
       // 确认删除
       async sureConfirm() {
@@ -112,7 +161,6 @@
         } else {
           this.getCouponList()
         }
-        // this.getGoodsCoupon()
       },
       showDel(item) {
         this.delId = item.id

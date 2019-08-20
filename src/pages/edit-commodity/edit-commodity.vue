@@ -5,95 +5,8 @@
         <img src="./icon-new_commodity@2x.png" class="identification-icon">
         <p class="identification-name">{{id ? '编辑' : '新建'}}兑换券</p>
       </div>
-      <div class="function-btn">
-      </div>
-    </div>
-    <div class="content-header">
-      <div class="content-title">商品信息</div>
-    </div>
-    <div class="add-box">
-      <div class="btn-main" :class="{'btn-disable': id}" @click="_showGoods"><span class="add-icon"></span>添加商品</div>
-      <div class="add-tip">(只能选择一个商品)</div>
-    </div>
-    <div v-if="goodsItem.length" class="big-list">
-      <div class="list-header list-box">
-        <div v-for="(item, idx) in tableTitle" :key="idx" class="list-item">{{item}}</div>
-      </div>
-      <div class="list">
-        <!---->
-        <div v-for="(item, index) in goodsItem" :key="index" class="list-content list-box">
-          <div class="list-item">
-            <img :src="item.goods_cover_image" class="pic-box">
-          </div>
-          <div class="list-item">{{item.name}}</div>
-          <div class="list-item">{{item.sale_unit || item.goods_units}}</div>
-          <div class="list-item">{{item.trade_price}}</div>
-          <div class="list-item">{{item.usable_stock}}</div>
-          <div class="list-item">
-            <div class="list-operation" :class="{'list-operation-disable': id}" @click="showDel(index)">删除</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="content-header">
-      <div class="content-title">基本信息</div>
     </div>
     <div class="leader-box">
-      <!--金额-->
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          兑换券金额
-        </div>
-        <div class="edit-input-box">
-          <div class="edit-show">0元兑换</div>
-          <!--<input v-model="commodity.denomination"-->
-          <!--type="number"-->
-          <!--class="edit-input"-->
-          <!--:disabled="id"-->
-          <!--placeholder="请输入正整数"-->
-          <!--@mousewheel.native.prevent-->
-          <!--&gt;-->
-        </div>
-        <!--<div class="edit-unit"></div>-->
-        <div :class="{'text-no-change': id}"></div>
-      </div>
-      <!--名称-->
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          兑换券名称
-        </div>
-        <div class="edit-input-box">
-          <input v-model="commodity.coupon_name"
-                 type="text"
-                 class="edit-input"
-                 :disabled="id"
-                 maxlength="20"
-                 placeholder="请输入兑换券名称"
-                 @mousewheel.native.prevent
-          >
-          <div class="num">{{commodity.coupon_name ? commodity.coupon_name.length : 0}}/20</div>
-        </div>
-        <div :class="{'text-no-change': id}"></div>
-      </div>
-      <!-- 数量-->
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          发放数量
-        </div>
-        <div class="edit-input-box">
-          <input v-model="commodity.usable_stock"
-                 type="number"
-                 class="edit-input"
-                 :disabled="id"
-                 :placeholder="`发放数量应设为1~99999之间的整数`"
-                 @mousewheel.native.prevent
-          >
-        </div>
-        <div :class="{'text-no-change': id}"></div>
-      </div>
       <!-- 时间-->
       <div class="edit-item">
         <div class="edit-title">
@@ -129,7 +42,6 @@
         </div>
         <div :class="{'text-no-change': id}"></div>
       </div>
-      <!--说明-->
       <!--使用说明-->
       <div class="edit-item">
         <div class="edit-title">
@@ -145,12 +57,125 @@
                       :disabled="id"
                       maxlength="50"
                       :class="{'disable-input': id}"
+                      placeholder="例如：全场商品通用或特惠商品不可以使用"
             >
             </textarea>
           </div>
           <div class="textarea-num">{{commodity.description ? commodity.description.length : 0}}/50</div>
         </div>
         <div :class="{'text-no-change': id}"></div>
+      </div>
+      <!--兑换类型-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          兑换类型
+        </div>
+        <section class="gift-choose-target-wrapper">
+          <article class="g-top">
+            <span
+              :class="{'radio-disable': id}"
+              @click="updateData('chooseType', 'free')"
+            ><i
+              :class="{active: chooseType === 'free'}"
+              class="circle"
+            ></i>无门槛兑换券</span>
+            <span
+              :class="{'radio-disable': id}"
+              @click="updateData('chooseType', 'fitGift')"
+            ><i
+              class="circle"
+              :class="{active: chooseType === 'fitGift'}"
+            ></i>满赠兑换券</span>
+          </article>
+        </section>
+      </div>
+      <!--兑换券金额-->
+      <div v-show="chooseType === 'fitGift'" class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          兑换券金额
+        </div>
+        <div class="edit-input-box">
+          <input v-model="commodity.condition"
+                 type="number"
+                 class="edit-input"
+                 :disabled="id"
+                 @mousewheel.native.prevent
+          >
+        </div>
+        <div :class="{'text-no-change': id}"></div>
+        <span class="edit-explain">元可使用</span>
+      </div>
+      <!-- add goods -->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          添加商品
+        </div>
+        <article style="margin-left: 40.9px; width: 989px">
+          <div class="add-box">
+            <div class="btn-main" :class="{'btn-disable': id}" @click="_showGoods"><span class="add-icon"></span>添加</div>
+            <div class="add-tip">(只能选择一个商品)</div>
+          </div>
+          <div v-if="goodsItem.length" class="big-list">
+            <div class="list-header list-box">
+              <div v-for="(item, idx) in tableTitle" :key="idx" class="list-item">{{item}}</div>
+            </div>
+            <div class="list">
+              <div v-for="(item, index) in goodsItem" :key="item.id" class="list-content list-box">
+                <div class="list-item">
+                  <img :src="item.goods_cover_image" class="pic-box">
+                </div>
+                <div class="list-item">{{item.name}}</div>
+                <div class="list-item">{{item.sale_unit || item.goods_units}}</div>
+                <div class="list-item">{{item.trade_price}}</div>
+                <div class="list-item">{{item.usable_stock}}</div>
+                <div class="list-item">
+                  <div class="list-operation" :class="{'list-operation-disable': id}" @click="showDel(index)">删除</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <!--名称-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          兑换券别名
+        </div>
+        <div class="edit-input-box">
+          <input v-model="commodity.coupon_name"
+                 type="text"
+                 class="edit-input"
+                 :disabled="id"
+                 maxlength="20"
+                 placeholder="例:进口白肉火龙果2个/份"
+                 @mousewheel.native.prevent
+          >
+          <div class="num">{{commodity.coupon_name ? commodity.coupon_name.length : 0}}/20</div>
+        </div>
+        <div :class="{'text-no-change': id}"></div>
+      </div>
+      <!-- 数量-->
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          发放总量
+        </div>
+        <div class="edit-input-box">
+          <input v-model="commodity.usable_stock"
+                 type="tel"
+                 maxlength="5"
+                 class="edit-input"
+                 :disabled="id"
+                 placeholder="发放数量应设为1~99999之间的整数"
+                 @mousewheel.native.prevent
+          >
+        </div>
+        <div :class="{'text-no-change': id}"></div>
+        <span class="edit-explain">张</span>
       </div>
     </div>
     <!--商品弹窗-->
@@ -162,10 +187,6 @@
           </div>
           <span class="close hand" @click="_hideGoods"></span>
         </div>
-        <!--<div class="shade-header">-->
-        <!--<div class="shade-title">选择商品</div>-->
-        <!--<span class="close hand" @click="_hideGoods"></span>-->
-        <!--</div>-->
         <!--商品详情-->
         <div>
           <div class="shade-tab">
@@ -221,11 +242,12 @@
   import API from '@api'
   import _ from 'lodash'
   import {couponComputed, couponMethods} from '@state/helpers'
+  import {REG_MONEY} from '@utils/common'
 
   const PAGE_NAME = 'EDIT_COMMODITY'
   const TITLE = '新建兑换券'
   const TABLE_TITLE = ['图片', '商品名称', '单位', '售价(元)', '库存', '操作']
-
+  const TAG_TYPE = {1: 'free', 2: 'fitGift'}
   export default {
     name: PAGE_NAME,
     page: {
@@ -249,12 +271,14 @@
           end_at: '',
           range_type: 3, // 适用范围0未知1通用券2品类券3单品券
           ranges: [],
+          exchange_goods: [],
           limit_days: 0,
           is_day_limited: 0,
           description: '',
           tag_type: 1,
           validity_type: 1,
-          usable_stock: ''
+          usable_stock: '',
+          money: ''
         },
         text: '',
         isSubmit: true,
@@ -267,7 +291,8 @@
         goodsCate: [],
         assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
         secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
-        selectItem: {}
+        selectItem: {},
+        chooseType: 'free'
       }
     },
     computed: {
@@ -294,19 +319,32 @@
           return value
         }
         return false
+      },
+      testCardType() {
+        if (this.chooseType === 'free') {
+          return true
+        } else {
+          return REG_MONEY.test(this.commodity.condition)
+        }
       }
     },
     async created() {
       if (this.id) {
         let obj = _.cloneDeep(this.couponDetail)
         this.commodity = obj
-        this.goodsItem = obj.ranges
+        // this.goodsItem = obj.ranges
+        this.goodsItem = obj.exchange_goods
+        this.chooseType = TAG_TYPE[obj.tag_type]
       }
       await this._getFirstAssortment()
       await this._getGoodsList(false)
     },
     methods: {
       ...couponMethods,
+      updateData(key, value) {
+        if (this.id > 0) return
+        this[key] = value
+      },
       getStartTime(time) {
         this.commodity.start_at = time
       },
@@ -319,22 +357,22 @@
         }
         this.goodsItem.splice(index, 1)
         this.commodity.ranges = []
+        this.commodity.exchange_goods = []
       },
       back() {
         this.$router.back()
       },
       checkForm() {
         let arr = [
-          {value: this.testGoods, txt: '请选择商品'},
-          // {value: this.commodity.denomination, txt: '请输入兑换券金额'},
-          // {value: this.textDenomination, txt: '请输入正整数兑换券金额'},
-          {value: this.commodity.coupon_name, txt: '请输入兑换券名称'},
-          {value: this.commodity.usable_stock, txt: '请输入发放数量'},
-          {value: this.textUsableStock, txt: `发放数量应设为1~99999之间的整数`},
           {value: this.commodity.start_at, txt: '请选择活动开始时间'},
           {value: this.commodity.end_at, txt: '请选择活动结束时间'},
           {value: this.testEndDate, txt: '结束时间必须大于开始时间'},
-          {value: this.commodity.description, txt: '请输入使用说明'}
+          {value: this.commodity.description, txt: '请输入使用说明'},
+          {value: this.testCardType, txt: '请输入正确的兑换券金额'},
+          {value: this.testGoods, txt: '请选择商品'},
+          {value: (this.commodity.coupon_name && this.commodity.coupon_name.length <= 20), txt: '请按要求输入兑换券别名(20字以内)'},
+          {value: this.commodity.usable_stock, txt: '请输入发放总量'},
+          {value: this.textUsableStock, txt: `发放数量应设为1~99999之间的整数`}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -346,9 +384,19 @@
           }
         }
       },
+      _formatSubmitData() {
+        let tagType = 1
+        for (let [key, value] of Object.entries(TAG_TYPE)){
+          if (this.chooseType === value) {
+            tagType = key
+          }
+        }
+        this.commodity.tag_type = tagType
+      },
       async submit() {
         if (this.id || !this.isSubmit) return
         if (!this.checkForm()) return
+        this._formatSubmitData()
         this.isSubmit = false
         let res = await API.Coupon.storeCoupon(this.commodity, true)
         this.$loading.hide()
@@ -394,6 +442,18 @@
         }
         this.goodsItem = [this.selectItem]
         this.commodity.ranges[0] = {range_id: this.goodsItem[0].id, coupon_range_id: 0}
+        this.commodity.exchange_goods[0] = {goods_id: this.goodsItem[0].id, echange_id: 0}
+
+        // 满赠添加
+        // if (!this.commodity.exchange_goods) {
+        //   this.commodity.exchange_goods = []
+        //   this.commodity.exchange_goods.push(
+        //     {
+        //       goods_id: this.goodsItem[0].id,
+        //       echange_id: 0
+        //     }
+        //   )
+        // }
         this.commodity.coupon_name = this.selectItem.name
         this._hideGoods()
       },
@@ -442,8 +502,11 @@
         if (this.id) {
           return
         }
-        if (this.commodity.ranges.length) {
-          this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.ranges[0].range_id)
+        // if (this.commodity.ranges.length) {
+        //   this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.ranges[0].range_id)
+        // }
+        if (this.commodity.exchange_goods.length) {
+          this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.exchange_goods[0].range_id)
         }
         this.$refs.goods.showModal()
       },
@@ -467,12 +530,39 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
+
+
+  .gift-choose-target-wrapper
+    position: relative
+    margin-left :40.9px
+    padding-top 6px
+    .g-top
+      display:flex
+      & > span
+        display :flex
+        align-items :center
+        margin-right :58px
+        cursor :pointer
+        &.radio-disable
+          cursor: default
+      & >>> .circle
+        width: 18px
+        height: @width
+        border: 1px solid #E1E1E1;
+        border-radius: 50%
+        margin-right:6px
+        transition: all 0.3s
+        display: inline-block
+        &.active
+          border: 5px solid #4DBD65;
+
   .edit-commodity
     width: 100%
   .add-box
-    margin: 24px 0 20px
     display: flex
     align-items: center
+    padding-top :4.5px
+    padding-bottom :20px
     .add-icon
       margin-right: 4px
       margin-left: 0
@@ -496,7 +586,7 @@
         max-width: 100px
         min-width: 100px
   .big-list
-    margin-bottom: 30px
+    margin-bottom: 0
   .leader-box
     padding: 0 20px
     box-sizing: border-box
@@ -507,6 +597,10 @@
       color: #2A2A2A
       min-height: 40px
       margin-top: 24px
+      .edit-explain
+        line-height: 40px
+        height: 40px
+        padding-left: 10px
       .edit-title
         margin-top: 7.5px
         font-size: $font-size-14

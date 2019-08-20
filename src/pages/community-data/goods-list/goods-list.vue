@@ -94,6 +94,7 @@
     flex: 1
     display: flex
     flex-direction: column
+    overflow: hidden
     .no-data
       width: 100%
       height: 100%

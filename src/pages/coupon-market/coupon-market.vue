@@ -1,33 +1,18 @@
 <template>
   <div class="coupon-market table">
-    <div class="down-content">
-      <!--<span class="down-title">{{item.name}}</span>-->
-      <div class="down-item">
-        <div v-for="(val, index) in topBtn" :key="index" class="top-btn" @click="newMarket(index)">
-          <img :src="require(`./${val.icon}@2x.png`)" alt="" class="icon" :class="'icon-'+val.value">
-          <span class="text">{{val.text}}</span>
-        </div>
-      </div>
-    </div>
+    <base-tab-select :infoTabIndex="defaultTab" :tabStatus="topBtn" @getStatusTab="tabChange"></base-tab-select>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
-          <!--<img src="./icon-marketing_list@2x.png" class="identification-icon">-->
-          <!--<p class="identification-name">营销列表</p>-->
-          <!--<base-status-tab :infoTabIndex="defaultIndex" :statusList="statusTab" @setStatus="changeStatus"></base-status-tab>-->
-          <market-tabs :tabList="topBtn"
-                       :defaultTab="defaultTab"
-                       :isShowMark="false"
-                       tabAlign="left"
-                       padding="12px 2px"
-                       margin="0 18px"
-                       defaultColor="#333333"
-                       class="tab-top"
-                       @tab-change="tabChange"
-          ></market-tabs>
+          <img src="./icon-coupon_list@2x.png" class="identification-icon">
+          <p class="identification-name">营销计划列表</p>
+          <base-status-tab :statusList="statusTab" :infoTabIndex="statusIndex" @setStatus="changeStatus"></base-status-tab>
+        </div>
+        <div class="function-btn" @click="newMarket(defaultTab)">
+          <div class="btn-main" style="margin-right:0">新建计划<span class="add-icon"></span></div>
         </div>
       </div>
-      <div class="big-list">
+      <article class="big-list">
         <div class="list-header list-box">
           <div v-for="(item,index) in marketTitle" :key="index" class="list-item" :style="{flex: item.flex}">{{item.name}}</div>
         </div>
@@ -65,7 +50,7 @@
           </div>
         </div>
         <base-blank v-else blackStyle="margin-top:15%"></base-blank>
-      </div>
+      </article>
       <div class="pagination-box">
         <base-pagination ref="pages" :pagination="requestData.page" :pageDetail="marketPageDetail" @addPage="addPage"></base-pagination>
       </div>
@@ -76,7 +61,7 @@
 
 <script type="text/ecmascript-6">
   import MarketConfirm from './market-confirm/market-confirm'
-  import MarketTabs from './market-tabs/market-tabs'
+  // import MarketTabs from './market-tabs/market-tabs'
   import {marketComputed, marketMethods} from '@state/helpers'
   import API from '@api'
 
@@ -129,22 +114,28 @@
     },
     components: {
       MarketConfirm,
-      MarketTabs
+      // MarketTabs
     },
     data() {
       return {
+        statusTab: [
+          {name: '全部', value: '', num: 0},
+          {name: '进行中', value: 1, num: 0},
+          {name: '未开始', value: 1, num: 0},
+          {name: '已结束', value: 1, num: 0}
+        ],
         marketTitle: MARKET_TITLE,
         topBtn: TOP_BTN,
         type: ['未知', '新客有礼', '复购有礼', '唤醒流失客户', '社群福利券'],
         iconArr: ['icon-new_courtesy', 'icon-complex_courtesy', 'icon-awaken'],
         iconArr2: ['icon-group'],
-        statusTab: [
-          {name: '全部', value: '', num: 0},
-          {name: '开启', value: 1, num: 0},
-          {name: '关闭', value: 0, num: 0}
-        ],
+        // statusTab: [
+        //   {name: '全部', value: '', num: 0},
+        //   {name: '开启', value: 1, num: 0},
+        //   {name: '关闭', value: 0, num: 0}
+        // ],
         curentItem: {},
-        statusArr: new Array(10).fill(undefined),
+        // statusArr: new Array(10).fill(undefined),
         currentItem: {},
         toastType: '',
         tipShow: '',
@@ -154,8 +145,15 @@
     computed: {
       ...marketComputed
     },
+    watch: {
+      marketList() {
+        // todo
+        this._getStatus()
+      }
+    },
     created() {
       // this.getMarketStatus()
+      this._getStatus()
     },
     mounted() {},
     methods: {
@@ -163,67 +161,82 @@
       newMarket(index) {
         this.$router.push(`/home/coupon-market/new-market?index=${index}`)
       },
+      // 切换状态栏 todo
       changeStatus(selectStatus, index) {
+        this['SET_STATUS_INDEX'](index)
         this.$refs.pages.beginPage()
-        this.setDefaultIndex({status: selectStatus.status, index})
-        this.statusArr = new Array(10).fill(undefined)
+        this['SET_REQUEST_DATA']({...this.statusTab[this.statusIndex], page: 1})
+        this.getMarketList()
       },
-      getMarketStatus() {
-        API.Market.getMarketStatus().then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
+      // todo
+      _getStatus() {
+        const type = TOP_BTN[this.defaultTab].type
+        API.Market.getStatus({type}).then((res)=>{
           this.statusTab = res.data.map((item, index) => {
             return {
-              name: item.status_str,
-              status: item.status,
+              name: item.state_str,
+              state: item.state,
               num: item.statistic
             }
           })
         })
       },
-      statusHandle(item, index) {
-        let status = 0
-        if (typeof this.statusArr[index] === 'number') {
-          status = this.statusArr[index]
-        } else {
-          status = item.status
-        }
-        return status
-      },
+      // getMarketStatus() {
+      //   API.Market.getMarketStatus().then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       this.$toast.show(res.message)
+      //       return
+      //     }
+      //     this.statusTab = res.data.map((item, index) => {
+      //       return {
+      //         name: item.status_str,
+      //         status: item.status,
+      //         num: item.statistic
+      //       }
+      //     })
+      //   })
+      // },
+      // statusHandle(item, index) {
+      //   let status = 0
+      //   if (typeof this.statusArr[index] === 'number') {
+      //     status = this.statusArr[index]
+      //   } else {
+      //     status = item.status
+      //   }
+      //   return status
+      // },
       // 顶部tab切换
-      tabChange(index) {
+      tabChange(item, index) {
         this.$refs.pages.beginPage()
         this.setDefaultTab(index)
-        this.setRequestData({page: 1, type: this.topBtn[index].type})
+        this.setRequestData({page: 1, type: item.type})
       },
-      switchBtn(item, index) {
-        let status = 1
-        if (typeof this.statusArr[index] === 'number') {
-          status = +this.statusArr[index] === 0 ? 1 : 0
-        } else {
-          status = item.status ? 0 : 1
-        }
-        let data = {
-          status: status,
-          id: item.id
-        }
-        API.Market.switchMarket(data).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          this.statusArr = this.statusArr.map((item, ind) => {
-            if (index === ind) {
-              item = status
-            }
-            return item
-          })
-          // this.getMarketList({page: this.page, status: this.status})
-          // this.getMarketStatus()
-        })
-      },
+      // switchBtn(item, index) {
+      //   let status = 1
+      //   if (typeof this.statusArr[index] === 'number') {
+      //     status = +this.statusArr[index] === 0 ? 1 : 0
+      //   } else {
+      //     status = item.status ? 0 : 1
+      //   }
+      //   let data = {
+      //     status: status,
+      //     id: item.id
+      //   }
+      //   API.Market.switchMarket(data).then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       this.$toast.show(res.message)
+      //       return
+      //     }
+      //     this.statusArr = this.statusArr.map((item, ind) => {
+      //       if (index === ind) {
+      //         item = status
+      //       }
+      //       return item
+      //     })
+      //     // this.getMarketList({page: this.page, status: this.status})
+      //     // this.getMarketStatus()
+      //   })
+      // },
       addPage(page) {
         this.setRequestData({page})
       },
@@ -274,9 +287,12 @@
         }
       },
       couponHandle(coupon) {
+        // if (coupon.tag_type === 2) {
+        //   return `【${coupon.coupon_name}】${coupon.condition_str}`
+        // }
         let lastText = ''
-        if (+coupon.tag_type === 1) {
-          lastText = '兑换'
+        if (+coupon.tag_type === 1 || +coupon.tag_type === 2) {
+          lastText = '使用'
         } else {
           lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination+'元'
         }
@@ -407,11 +423,4 @@
           .text
             text-decoration: underline
 
-  .identification
-    padding-bottom: 18px
-    height: 78px
-    position: relative
-    z-index: 10
-  .identification-page
-    width: 100%
 </style>
