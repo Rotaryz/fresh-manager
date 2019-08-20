@@ -151,12 +151,12 @@
           this.$toast.show('该商品库存为0，不能选择')
           return
         }
-        if (this.maxLimit && (this.selectGoods.length + this.parentGoodsList.length) === +this.maxLimit) {
-          this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
-          return
-        }
         switch (item.selected) {
         case 0:
+          if (this.maxLimit && (this.selectGoods.length + this.parentGoodsList.length) === +this.maxLimit) {
+            this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
+            return
+          }
           this.chooseGoods[index].selected = 2
           this.selectGoods.push(item)
           break

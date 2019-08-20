@@ -263,6 +263,11 @@
       setRequestTimer(data) {
         let newData = JSON.parse(JSON.stringify(data))
         newData.is_rebuild = 0
+        if (this.downTime >= 1200000) {
+          clearTimeout(this.timer)
+          this.downTime = 1000
+          this.$toast.show('请求超时，请重试', 2000)
+        }
         this.timer = setTimeout(() => {
           if (this.downTime < 5000) {
             this.downTime += 2000
@@ -287,10 +292,9 @@
               }
             })
         }, this.downTime)
-        console.log(this.downTime, 1)
       },
       download() {
-        window.open(this.downlaodUrl)
+        window.open(this.downloadUrl)
         this.closeDownModal()
       },
       closeDownModal() {

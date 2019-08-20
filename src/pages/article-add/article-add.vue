@@ -431,7 +431,7 @@
     </default-modal>
 
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" MaxLimit="5" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :maxLimit="5" @batchAddition="batchAddition"></add-goods>
   </div>
 </template>
 
