@@ -779,7 +779,7 @@
           // 展示添加商品弹窗
           // this.$refs.goodsModel.showModal()
           this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
-          this.$refs.goodsSearch.infoTextMethods()
+          // this.$refs.goodsSearch.infoTextMethods()
         } else {
           this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
           // await this._getGoodsList()
