@@ -129,7 +129,7 @@
                       <img v-if="active.data.module_name === 'goods_hot_tag'" class="banner-img" src="./pic-jrbk.png" alt="">
                       <img v-if="active.data.module_name === 'new_client'" class="banner-img" src="./pic-xrth.png" alt="">
                       <img v-if="active.data.module_name === 'free_shipping'" class="banner-img" src="./pic-ptfx@2x.png" alt="">
-                      <img v-if="active.data.module_name === 'centralize_purchase'" class="banner-img" src="./pic-cdjc@2x.png" alt="">
+                      <img v-if="active.data.module_name === 'centralize'" class="banner-img" src="./pic-cdjc@2x.png" alt="">
                       <template v-if="active.data.dataArray">
                         <div v-for="(item, index) in active.data.dataArray"
                              :key="index"
@@ -139,7 +139,7 @@
                             <figure class="left">
                               <img v-if="item.goods_cover_image" class="goods-image" :src="item.goods_cover_image" alt="">
                               <img v-else class="goods-image empty" src="./icon-picmr@2x.png" alt="">
-                              <img v-if="active.data.module_name === 'centralize_purchase'" class="label" src="./icon-label_jicai.png" alt="">
+                              <img v-if="active.data.module_name === 'centralize'" class="label" src="./icon-label_jicai.png" alt="">
                               <img v-else class="label" src="./icon-label@1x.png" alt="">
                             </figure>
                             <section class="right">

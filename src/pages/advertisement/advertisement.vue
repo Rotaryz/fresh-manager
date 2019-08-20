@@ -413,7 +413,7 @@
         let module = this.infoBannerList.modules.find((val) => val.module_name === 'activity') || {}
         if (module.list) {
           module.list.forEach((item) => {
-            if (item.module_name === 'centralize_purchase' && item.is_close === 0) {
+            if (item.module_name === 'centralize' && item.is_close === 0) {
               console.log(item)
               // 产地集采
               API.Advertisement.getActivityList({activity_theme: 'centralize', page: 1, limit: 20}).then(res => {
