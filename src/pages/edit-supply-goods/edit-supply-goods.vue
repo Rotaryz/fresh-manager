@@ -246,6 +246,7 @@
           goods_skus: [],
           is_presale: 1,
           goods_type: 1,
+          purchase_cycle: '',
           save_type: 'base'
         },
         goods_skus: {
@@ -277,6 +278,7 @@
         editRurchasePrice: 0,
         editRurchaseUnit: '',
         tabStatus: ORDERSTATUS,
+        complete: this.$route.query.complete || null,
         tabIndex: 0,
         searchList: [],
         completeStatus: 0
@@ -510,6 +512,12 @@
         } else if (this.goods_skus.purchase_unit === '') {
           this.$toast.show('请选择采购单位')
           return
+        } else if (this.msg.purchase_cycle.length === 0) {
+          this.$toast.show('请输入采购周期')
+          return
+        } else if (+this.msg.purchase_cycle > 30) {
+          this.$toast.show('请输入采购周期不能大于30天')
+          return
         } else if (this.goods_skus.purchase_price.length === 0) {
           this.$toast.show('请输入采购单价')
           return
@@ -584,7 +592,7 @@
       },
       // 切换商品类型
       selectGoodsType(index) {
-        if (!this.id) {
+        if (!this.id || this.complete * 1 === 1) {
           this.msg.goods_type = index
         }
       },

@@ -172,7 +172,7 @@
             <div class="edit-input-box">
               <input v-model="msg.purchase_cycle" type="number" class="edit-input" :disabled="msg.purchase_cycle_disabled">
             </div>
-            <div class="edit-pla">用户下单时间+采购周期=用户提货日期</div>
+            <div class="edit-pla">用户下单时间+采购周期=用户提货日期 (天)</div>
           </div>
           <div class="edit-item">
             <div class="edit-title">
@@ -402,14 +402,11 @@
         msg: {
           name: '',
           goods_material_category_id: 0,
-          goods_main_images: [{
-            id: 1,
-            image_id: 110013,
-            image_url: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F23%2F1561273972975-001.jpg"
-          }],
+          goods_main_images: [],
           goods_skus: [],
           is_presale: 1,
           goods_type: 1,
+          purchase_cycle: '',
           save_type: 'base'
         },
         goods_skus: {
@@ -435,16 +432,8 @@
         purchaseSelect: {check: false, show: false, content: '采购单位', type: 'default', data: []},
         supplierSelect: {check: false, show: false, content: '选择供应商', type: 'default', data: []},
         saleMsg: {
-          goods_banner_images: [{
-            id: 1,
-            image_id: 110013,
-            image_url: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F23%2F1561273972975-001.jpg"
-          }],
-          goods_detail_images: [{
-            id: 1,
-            image_id: 110013,
-            image_url: "https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F23%2F1561273972975-001.jpg"
-          }],
+          goods_banner_images: [],
+          goods_detail_images: [],
           goods_skus: [],
           goods_category_id: 0,
           name: '',
@@ -470,6 +459,7 @@
         editRurchaseUnit: '',
         isCopy: this.$route.query.copy || null,
         isShow: this.$route.query.isShow || null,
+        complete: this.$route.query.complete || null,
         searchList: [],
         imgInput: '',
         completeStatus: 0,
@@ -634,6 +624,12 @@
           return
         } else if (this.goods_skus.purchase_unit === '') {
           this.$toast.show('请选择采购单位')
+          return
+        } else if (this.msg.purchase_cycle.length === 0) {
+          this.$toast.show('请输入采购周期')
+          return
+        } else if (+this.msg.purchase_cycle > 30) {
+          this.$toast.show('请输入采购周期不能大于30天')
           return
         } else if (this.goods_skus.purchase_price.length === 0) {
           this.$toast.show('请输入采购单价')
@@ -803,7 +799,7 @@
       },
       // 切换商品类型
       selectGoodsType(index) {
-        if (!this.id) {
+        if (!this.id || this.complete * 1 === 1) {
           this.msg.goods_type = index
         }
       },
