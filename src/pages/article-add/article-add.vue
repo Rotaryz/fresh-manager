@@ -950,7 +950,8 @@
       },
       // 批量添加商品
       batchAddition(list) {
-        list.forEach((item) => {
+        let newArr = list.map((item) => {
+          let obj = objDeepCopy(item)
           let isExist = false
           this.addData.goodsList.forEach((goods) => {
             if (item.id * 1 === goods.id * 1) {
@@ -962,10 +963,10 @@
             if (this.currentType === 'common') {
               this.addDetailContentItem({type: 'goods', value: obj})
             }
-            // 初始数据
-            this.addData.goodsList.push(obj)
           }
+          return obj
         })
+        this.addData.goodsList = newArr
         this.$forceUpdate()
       },
       justifyConent(status) {

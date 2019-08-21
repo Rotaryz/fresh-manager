@@ -20,18 +20,19 @@
       <div class="goods-content">
         <div class="goods-title">
           <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">
-            <span v-if="item.value === 'image'" class="select-icon hand" :class="{'select-icon-active': selectAll}" @click="_selectAllGoods()"></span>
+            <span v-if="item.value === 'image' && +maxLimit !== 1" class="select-icon hand" :class="{'select-icon-active': selectAll}" @click="_selectAllGoods()"></span>
+            <span v-else class="no-icon"></span>
             <span class="text">{{item.name}}</span>
           </div>
         </div>
         <div class="goods-list">
           <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item hand" @click="_selectGoods(item,index)">
             <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content" :style="{flex: title.flex}">
-              <span v-if="title.value === 'image'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+              <span v-if="title.value === 'image' && +maxLimit !== 1" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+              <span v-if="title.value === 'image' && +maxLimit === 1" class="select-one-icon" :class="{'select-one-icon-active': item.selected === 1 || item.selected === 2}"></span>
               <img v-if="title.value === 'image'" class="goods-img" :src="item.goods_cover_image">
               <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}</div>
             </div>
-            <!--<div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>-->
           </div>
         </div>
       </div>
@@ -89,7 +90,6 @@
         selectGoods: [], // 单次选择的商品
         goodsDelId: 0,
         goodsDelIndex: 0,
-        // selectDelId: [],
         chooseGoods: [],
         goodsPage: {
           total: 1,
@@ -105,9 +105,7 @@
       }
     },
     async created() {
-      // await this._getGoodsList()
       this._getFirstAssortment()
-    // this.$refs.goodsModal.showModal()
     },
     methods: {
       // 删除商品传入商品id
@@ -128,23 +126,6 @@
         this.selectAll = false
         this.$refs.goodsModal.hideModal()
       },
-      // 单个添加
-      _additionOne(item, index) {
-        if (item.selected === 1) {
-          return
-        }
-        this.chooseGoods[index].selected = 1
-        this.goodsList.push(item)
-        this.chooseGoods.forEach((item) => {
-          if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
-            }
-          }
-        })
-        this.$emit('additionOne', item)
-      },
       // 勾选商品
       _selectGoods(item, index) {
         if (item.usable_stock <= 0) {
@@ -153,16 +134,24 @@
         }
         switch (item.selected) {
         case 0:
-          if (this.maxLimit && (this.selectGoods.length + this.parentGoodsList.length) === +this.maxLimit) {
+          if (this.maxLimit && +this.maxLimit !== 1 && (this.selectGoods.length + this.parentGoodsList.length) === +this.maxLimit) {
             this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
             return
+          }
+          if (+this.maxLimit === 1) {
+            this.selectGoods = []
+            this.chooseGoods = this.chooseGoods.map(item => {
+              item.selected = 0
+              return item
+            })
           }
           this.chooseGoods[index].selected = 2
           this.selectGoods.push(item)
           break
         case 2:
-          this.selectAll = false
+          if (+this.maxLimit === 1) return
           this.chooseGoods[index].selected = 0
+          this.selectAll = false
           let idx = this.selectGoods.findIndex((items) => items.id === item.id)
           if (idx !== -1) {
             this.selectGoods.splice(idx, 1)
@@ -189,16 +178,10 @@
           return
         }
 
-
-
-
-        // this.selectGoods = []
-        // this.selectGoodsId = []
         if (this.selectAll) {
           this.chooseGoods.map(item => {
             +item.selected === 0 && (item.selected = 2);
             +item.selected === 2 && this.selectGoods.push(item)
-            // this.selectGoodsId.push(item.id)
             return item
           })
         } else {
@@ -220,9 +203,13 @@
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.goodsList = this.goodsList.concat(this.selectGoods)
+        if (+this.maxLimit === 1) {
+          this.parentGoodsList = this.selectGoods.length ? this.selectGoods : this.parentGoodsList
+        } else {
+          this.parentGoodsList = this.parentGoodsList.concat(this.selectGoods)
+        }
         this.selectGoods = []
-        this.$emit('batchAddition', this.goodsList)
+        this.$emit('batchAddition', this.parentGoodsList)
         this._hideGoods()
       },
       _cancelModal() {
@@ -252,7 +239,6 @@
           total_page: res.meta.last_page
         }
         this.chooseGoods = []
-        this.goodsList = []
         this.chooseGoods = res.data.map((item) => {
           let ischecked = false
           this.parentGoodsList.forEach((item1) => {
@@ -268,15 +254,15 @@
           return item
         })
         this.chooseGoods = res.data.map((item, index) => {
-          let idx = this.goodsList.findIndex((id) => id === item.id)
+          // let idx = this.goodsList.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           // let delIndex = this.selectDelId.findIndex((id) => id === item.id)
           // if (delIndex !== -1) {
           //   item.selected = 0
           // }
-          if (idx !== -1) {
-            item.selected = 1
-          }
+          // if (idx !== -1) {
+          //   item.selected = 1
+          // }
           if (goodsIndex !== -1) {
             item.selected = 2
           }
@@ -427,6 +413,11 @@
           display: inline-block
           background-size: 100% 100%
           background-image: url("./icon-check@2x.png")
+        .no-icon
+          margin-right: 20px
+          width: 16px
+          height: 16px
+          display: inline-block
     .goods-list
       .goods-item
         box-sizing: border-box
@@ -487,6 +478,16 @@
           display: inline-block
           background-size: 100% 100%
           background-image: url("./icon-check_ash@2x.png")
+        .select-one-icon
+          margin-right: 20px
+          border-radius: 50%
+          border: 1px solid #E1E1E1
+          height: 16px
+          width: 16px
+          display: inline-block
+          transition: all .3s
+        .select-one-icon-active
+          border: 5px solid $color-main
         .value
           white-space: nowrap
           text-overflow: ellipsis
