@@ -69,8 +69,9 @@
             </div>
             <span class="close hand" @click="closeDownModal"></span>
           </div>
-          <div v-if="downloadUrl" class="context">{{downName}}</div>
-          <div v-else class="context">{{message}}</div>
+          <div v-if="downloadUrl" class="context">{{downName}}<span class="zip"></span></div>
+          <p v-if="!downloadUrl" class="loading"></p>
+          <div v-if="!downloadUrl" class="context">{{message}}</div>
           <div v-if="downloadUrl" class="btn-group">
             <span class="btn cancel" @click="download">下载</span>
             <span class="btn confirm" @click="exportExcel(1)">重新生成</span>
@@ -441,9 +442,26 @@
       height: 70px
 
     .context
-      padding: 20px
+      padding: 15px 10px
       text-align: center
       word-break: break-all
+      font-size: $font-size-14
+      color: #333
+      font-family: $font-family-regular
+    .loading
+      width: 26px
+      height: 26px
+      background: url("./loading.gif")
+      background-size: 100% 100%
+      margin: 0 auto 0
+    .zip
+      width: 16px
+      height: 16px
+      background: url("./zip.jpg")
+      background-size: 100% 100%
+      margin-left: 5px
+      margin-bottom: -4px
+      display: inline-block
     .btn-group
       position: relative
       left: 0

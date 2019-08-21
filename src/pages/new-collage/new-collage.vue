@@ -294,7 +294,6 @@
   import API from '@api'
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
-  import {objDeepCopy} from '@utils/common'
 
   const PAGE_NAME = 'NEW_COLLAGE'
   const TITLE = '新建拼团'
@@ -729,15 +728,23 @@
 
       // 批量添加商品
       batchAddition(list) {
-        let newArr = list.map((item) => {
-          let obj = objDeepCopy(item)
-          // 初始数据
-          obj.all_stock = obj.usable_stock || obj.all_stock
-          obj.usable_stock = ''
-          obj.trade_price_show = obj.trade_price || obj.trade_price_show
-          obj.trade_price = ''
-          obj.sort = obj.sort || 0
-          return obj
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            // 初始数据
+            item.all_stock = item.usable_stock
+            item.usable_stock = ''
+            item.trade_price_show = item.trade_price
+            item.trade_price = ''
+            item.sort = 0
+          }
+          return item
         })
         this.goodsList = newArr
       },

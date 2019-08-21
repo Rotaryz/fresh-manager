@@ -190,8 +190,8 @@
           <base-pagination ref="paginationGroup" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
-          <div class="back-btn back-submit hand" @click="_addition">确定</div>
           <div class="back-cancel back-btn hand" @click="_cancelGroup">取消</div>
+          <div class="back-btn back-submit hand" @click="_addition">确定</div>
         </div>
       </div>
     </default-modal>
@@ -268,7 +268,6 @@
   import {outreachComputed, outreachMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
-  import {objDeepCopy} from '@utils/common'
   import {DatePicker} from 'iview'
 
   const PAGE_NAME = 'EDIT_OUTREACH'
@@ -671,13 +670,21 @@
       },
       // 批量添加商品
       batchAddition(list) {
-        let newArr = list.map((item) => {
-          let obj = objDeepCopy(item)
-          // 初始数据
-          obj.trade_price = ''
-          obj.usable_stock = ''
-          obj.sort = obj.sort || 0
-          return obj
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            // 初始数据
+            item.trade_price = ''
+            item.usable_stock = ''
+            item.sort = 0
+          }
+          return item
         })
         this.goodsList = newArr
       },

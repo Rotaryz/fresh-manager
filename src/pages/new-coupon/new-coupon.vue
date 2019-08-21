@@ -348,7 +348,6 @@
   import {couponComputed, couponMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
-  import {objDeepCopy} from '@utils/common'
   // import {DatePicker} from 'iview'
   import {DatePicker} from 'element-ui'
 
@@ -837,11 +836,7 @@
       },
       // 批量添加商品
       batchAddition(list) {
-        let newArr = list.map((item) => {
-          let obj = objDeepCopy(item)
-          return obj
-        })
-        this.goodsList = newArr
+        this.goodsList = list
       },
       async _showGoods() {
         if (this.disable) return
