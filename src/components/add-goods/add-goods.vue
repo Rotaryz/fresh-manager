@@ -21,7 +21,7 @@
         <div class="goods-title">
           <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">
             <span v-if="item.value === 'image' && +maxLimit !== 1" class="select-icon hand" :class="{'select-icon-active': selectAll}" @click="_selectAllGoods()"></span>
-            <span v-else class="no-icon"></span>
+            <span v-if="item.value === 'image' && +maxLimit === 1" class="no-icon"></span>
             <span class="text">{{item.name}}</span>
           </div>
         </div>
