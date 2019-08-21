@@ -836,18 +836,11 @@
       },
       // 批量添加商品
       batchAddition(list) {
-        list.forEach((item) => {
-          let isExist = false
-          this.goodsList.forEach((goods) => {
-            if (item.id * 1 === goods.id * 1) {
-              isExist = true
-            }
-          })
-          if (!isExist) {
-            let obj = objDeepCopy(item)
-            this.goodsList.push(obj)
-          }
+        let newArr = list.map((item) => {
+          let obj = objDeepCopy(item)
+          return obj
         })
+        this.goodsList = newArr
       },
       async _showGoods() {
         if (this.disable) return

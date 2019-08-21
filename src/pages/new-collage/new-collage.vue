@@ -447,6 +447,11 @@
     },
     watch: {},
     created() {
+      if (this.$route.query.id && +this.$route.query.id !== 0) {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '查看活动'])
+      } else {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '新建活动'])
+      }
       this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       if (this.id) {
@@ -724,24 +729,17 @@
 
       // 批量添加商品
       batchAddition(list) {
-        list.forEach((item) => {
-          let isExist = false
-          this.goodsList.forEach((goods) => {
-            if (item.id * 1 === goods.id * 1) {
-              isExist = true
-            }
-          })
-          if (!isExist) {
-            let obj = objDeepCopy(item)
-            // 初始数据
-            obj.all_stock = obj.usable_stock
-            obj.usable_stock = ''
-            obj.trade_price_show = obj.trade_price
-            obj.trade_price = ''
-            obj.sort = 0
-            this.goodsList.push(obj)
-          }
+        let newArr = list.map((item) => {
+          let obj = objDeepCopy(item)
+          // 初始数据
+          obj.all_stock = obj.usable_stock || obj.all_stock
+          obj.usable_stock = ''
+          obj.trade_price_show = obj.trade_price || obj.trade_price_show
+          obj.trade_price = ''
+          obj.sort = obj.sort || 0
+          return obj
         })
+        this.goodsList = newArr
       },
 
       _additionCoupon() {

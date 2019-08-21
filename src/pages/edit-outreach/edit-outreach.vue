@@ -671,21 +671,15 @@
       },
       // 批量添加商品
       batchAddition(list) {
-        list.forEach((item) => {
-          let isExist = false
-          this.goodsList.forEach((goods) => {
-            if (item.id * 1 === goods.id * 1) {
-              isExist = true
-            }
-          })
-          if (!isExist) {
-            let obj = objDeepCopy(item)
-            obj.trade_price = ''
-            obj.usable_stock = ''
-            obj.sort = 0
-            this.goodsList.push(obj)
-          }
+        let newArr = list.map((item) => {
+          let obj = objDeepCopy(item)
+          // 初始数据
+          obj.trade_price = ''
+          obj.usable_stock = ''
+          obj.sort = obj.sort || 0
+          return obj
         })
+        this.goodsList = newArr
       },
       _memberAddition(arr) {
         this.selectMembers = this.selectMembers.concat(arr)
