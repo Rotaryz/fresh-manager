@@ -447,6 +447,11 @@
     },
     watch: {},
     created() {
+      if (this.$route.query.id && +this.$route.query.id !== 0) {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '查看活动'])
+      } else {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '新建活动'])
+      }
       this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       if (this.id) {
