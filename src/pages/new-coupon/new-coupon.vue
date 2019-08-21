@@ -331,7 +331,7 @@
     </default-modal>
 
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :goodsType="goodsTypeNumber" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -451,7 +451,8 @@
         sortFocus: '', // 聚焦排序
         checkFull: false,
         delType: '',
-        selectAll: false
+        selectAll: false,
+        goodsTypeNumber: ''
       }
     },
     computed: {

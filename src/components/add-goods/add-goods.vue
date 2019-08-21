@@ -68,6 +68,10 @@
       maxLimit: {
         type: [Number, String],
         default: ''
+      },
+      goodsType: {
+        type: [Number, String],
+        default: 1
       }
     },
     data() {
@@ -228,7 +232,8 @@
           goods_category_id: this.parentId,
           shelf_id: this.id,
           limit: 6,
-          page: this.page
+          page: this.page,
+          goods_type: this.goodsType
         })
         if (res.error !== this.$ERR_OK) {
           return

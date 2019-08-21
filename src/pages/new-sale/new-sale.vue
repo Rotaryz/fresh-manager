@@ -165,7 +165,7 @@
       </div>
     </default-modal>
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" :maxLimit="personAllBuyLimit" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :maxLimit="personAllBuyLimit" :goodsType="goodsTypeNumber" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -298,6 +298,14 @@
           return 1
         default:
           return 20
+        }
+      },
+      goodsTypeNumber() {
+        switch(this.msg.activity_theme) {
+        case 'centralize':
+          return 2
+        default:
+          return 1
         }
       },
       testName() {
