@@ -105,7 +105,7 @@
               </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-goods?complete=1&id=' + item.id" append class="list-operation ">完善资料</router-link>
-                <router-link v-else-if="+item.is_online === 0" tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
+                <router-link v-else tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
                 <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
