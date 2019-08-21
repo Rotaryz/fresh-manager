@@ -35,12 +35,13 @@
                 </div>
 
                 <!--状态-->
-                <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 2 ? 'status-fail' : ''">{{item.status === 0 ? '未开始' : item.status === 1 ? '进行中' : item.status === 2 ? '已结束' : ''}}</div>
+                <div v-if="+val.type === 4" :style="{flex: val.flex}" class="status-item item" :class="item.status === 1 ? 'status-success' : item.status === 0 ? '' : 'status-fail'">{{statusHandle(item.status)}}</div>
 
                 <div v-if="+val.type === 5" :style="{flex: val.flex}" class="list-operation-box item">
                   <span class="list-operation" @click="handleNav(item, 'id')">查看</span>
-                  <span class="list-operation" @click="_deleteActivity(item.id)">删除</span>
+                  <span class="list-operation" @click="_deleteActivity(item)">删除</span>
                   <span class="list-operation" @click="handleNav(item, 'editId')">复制活动</span>
+                  <span v-if="+item.status !== 2 && +item.status !== 3" class="list-operation" @click="stopActive(item)">终止活动</span>
                 </div>
                 <div v-if="+val.type === 6" :style="{flex: val.flex}" class="item">
                   {{item[val.value] || '0'}}/{{item[val.value2] || '0'}}
@@ -73,17 +74,17 @@
   const PAGE_NAME = 'ACTIVITY_MANAGE'
   const TITLE = '活动管理'
   const SALE_TITLE = [
-    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.3, value: 'start_at', type: 2},
+    {name: '活动名称', flex: 1.3, value: 'activity_name', type: 1},
     {name: '商品', flex: 1.4, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
     {name: '状态', flex: 1, value: 'status', type: 4},
-    {name: '操作', flex: 1.4, value: '', type: 5}
+    {name: '操作', flex: 2, value: '', type: 5}
   ]
   const COLLAGE_TITLE = [
-    {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
     {name: '活动时间', flex: 1.5, value: 'start_at', type: 2},
+    {name: '活动名称', flex: 1.5, value: 'activity_name', type: 1},
     {name: '活动商品数', flex: 1, value: 'goods_count', type: 1},
     {name: '销量', flex: 1, value: 'sale_count', type: 1},
     {name: '交易额(元)', flex: 1, value: 'pay_amount', type: 3},
@@ -125,9 +126,10 @@
         startTime: '',
         endTime: '',
         page: 1,
-        delId: 0,
         status: '',
-        statusIndex: 0
+        statusIndex: 0,
+        currentItem: {},
+        confirmType: ''
       }
     },
     computed: {
@@ -168,6 +170,18 @@
         const url = `${this.$route.path}/${path}?${key}=${item.id || 0}&activity_theme=${this.currentTab.activity_theme}`
         // window.$$tabIndex = this.tabIndex
         this.$router.push(url)
+      },
+      statusHandle(status) {
+        switch (+status) {
+        case 0:
+          return '未开始'
+        case 1:
+          return '进行中'
+        case 2:
+          return '已结束'
+        default:
+          return '已终止'
+        }
       },
       async _getActiveStatus() {
         try {
@@ -237,7 +251,7 @@
         // this.status = selectStatus.value
         // this.page = 1
         this._getActiveList()
-        // this._getActiveStatus()
+        this._getActiveStatus()
       },
       async _setTime(arr) {
         // this.startTime = arr[0]
@@ -254,25 +268,48 @@
         this._getActiveList()
         // this._getActiveStatus()
       },
-      _deleteActivity(id) {
-        this.delId = id
+      _deleteActivity(item) {
+        this.currentItem = item
+        this.confirmType = 'del'
         this.$refs.confirm.show('确定删除该活动？')
       },
       async _sureConfirm() {
-        let res = await API.Sale.saleDelete(this.delId)
-        if (res.error !== this.$ERR_OK) {
-          this.$toast.show(res.message)
-          return
+        if (this.confirmType === 'del') {
+          let res = await API.Sale.saleDelete(this.currentItem.id)
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          } else {
+            this.$toast.show('删除成功')
+          }
+          if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
+            this.setRequestData({page: this.activePage.total_page - 1})
+          } else {
+            this._getActiveList()
+          }
+          this._getActiveStatus()
         } else {
-          this.$toast.show('删除成功')
+          let res = await API.Sale.stopActive(this.currentItem.id)
+
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          } else {
+            this.$toast.show('终止活动成功')
+          }
+          if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
+            this.setRequestData({page: this.activePage.total_page - 1})
+          } else {
+            this._getActiveList()
+          }
+          this._getActiveStatus()
         }
-        if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
-          this.setRequestData({page: this.activePage.total_page - 1})
-          this._getActiveList()
-        } else {
-          this._getActiveList()
-        }
-        this._getActiveStatus()
+
+      },
+      stopActive(item) {
+        this.currentItem = item
+        this.confirmType = 'stop'
+        this.$refs.confirm.show('确定提前终止活动吗？')
       }
     }
   }
@@ -287,14 +324,16 @@
     flex-direction: column
   .list-box
     .list-item:last-child
-      max-width: 150px
+      max-width: 228px
+      min-width: 228px
       padding-right: 0
   .list
     flex: 1
     .list-item
       font-size: $font-size-14
       &:last-child
-        max-width: 150px
+        max-width: 228px
+        min-width: 228px
         padding-right: 0
       .item
         text-overflow: ellipsis

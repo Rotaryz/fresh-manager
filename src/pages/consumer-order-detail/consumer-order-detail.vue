@@ -112,7 +112,6 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
-    <!--<div @click="testForm">test</div>-->
     <select-goods ref="goodsPop" @additionOne="additionOne" @batchAddition="batchAddition"></select-goods>
   </div>
 </template>

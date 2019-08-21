@@ -3,7 +3,7 @@
     <div class="down-content">
       <span class="down-tip">配送单筛选</span>
       <div class="down-item">
-        <base-drop-down :select="dispatchSelect" @setValue="_getShop"></base-drop-down>
+        <base-drop-down :select="dispatchSelect" :isInput="true" @setValue="_getShop" @changeText="_searchShop"></base-drop-down>
       </div>
       <span class="down-tip">筛选</span>
       <div class="down-item" @click.stop>
@@ -88,6 +88,7 @@
           type: 'default',
           data: [] // 格式：{title: '55'}
         },
+        dispatchSelectList: [],
         excelParams: ''
       }
     },
@@ -149,12 +150,26 @@
           return item
         })
         this.dispatchSelect.data.unshift({name: '全部社区', id: ''})
+        this.dispatchSelectList = this.dispatchSelect.data
         this.$forceUpdate()
       },
       _getShop(item) {
         this.$refs.pages.beginPage()
         this.setSelectContent({deliveryContent: item.name})
         this.setDeliveryRequest({page: 1, shop_id: item.id})
+      },
+      _searchShop(text) {
+        if (text.length === 0) {
+          this.dispatchSelect.data = this.dispatchSelectList
+          return
+        }
+        let arr = []
+        this.dispatchSelectList.forEach((item) =>{
+          if (item.name.toLowerCase().includes(text.toLowerCase())) {
+            arr.push(item)
+          }
+        })
+        this.dispatchSelect.data = arr
       },
       _selectFileType(index) {
         let arr = _.cloneDeep(this.deliveryOrder)

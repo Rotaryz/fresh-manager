@@ -429,16 +429,20 @@
         </div>
       </div>
     </default-modal>
+
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" :maxLimit="5" @batchAddition="batchAddition"></add-goods>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import ZbDropdown from '@components/zb-dropdown/zb-dropdown'
+  import AddGoods from '@components/add-goods/add-goods'
   import PhoneBox from './phone-box/phone-box'
   import API from '@api'
   import Draggable from 'vuedraggable'
-  import {formatCouponMoney} from '@utils/common'
+  import {formatCouponMoney, objDeepCopy} from '@utils/common'
 
   const PAGE_NAME = 'ARTICLE_ADD'
   const TITLE = '创作文章'
@@ -450,6 +454,7 @@
     name: PAGE_NAME,
     components: {
       DefaultModal,
+      AddGoods,
       PhoneBox,
       Draggable,
       ZbDropdown
@@ -832,11 +837,13 @@
       },
       // 展示商品弹窗
       async showGoods() {
-        this.chooseGoodsFilter.page = 1
-        this.chooseGoodsFilter.goods_category_id = ""
-        this.getCategoryFirst()
-        await this._getGoodsList()
-        this.$refs.goods.showModal()
+        if (this.disable) return
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.addData.goodsList)
+        // this.chooseGoodsFilter.page = 1
+        // this.chooseGoodsFilter.goods_category_id = ""
+        // this.getCategoryFirst()
+        // await this._getGoodsList()
+        // this.$refs.goods.showModal()
       },
       // 隐藏商品弹窗
       hideGoods() {
@@ -940,6 +947,26 @@
         }
         this.selectGoods = []
         this.hideGoods()
+      },
+      // 批量添加商品
+      batchAddition(list) {
+        list.forEach((item) => {
+          let isExist = false
+          this.addData.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = objDeepCopy(item)
+            if (this.currentType === 'common') {
+              this.addDetailContentItem({type: 'goods', value: obj})
+            }
+            // 初始数据
+            this.addData.goodsList.push(obj)
+          }
+        })
+        this.$forceUpdate()
       },
       justifyConent(status) {
         let message = ''

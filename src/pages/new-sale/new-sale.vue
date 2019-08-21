@@ -164,6 +164,8 @@
         </div>
       </div>
     </default-modal>
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" :maxLimit="personAllBuyLimit" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -176,6 +178,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import {saleComputed, saleMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
@@ -221,8 +224,8 @@
       title: '产地集采'
     }
   }
-  const PERSON_ALL_BUY_LIMIT = 20
   const ACTIVITY_TYPE = 'centralize'
+  // const PERSON_ALL_BUY_LIMIT = 20
   export default {
     name: PAGE_NAME,
     page() {
@@ -233,6 +236,7 @@
     components: {
       DefaultModal,
       DefaultConfirm,
+      AddGoods,
       DatePicker
     },
     data() {
@@ -274,7 +278,7 @@
           activity_theme: this.$route.query.activity_theme
         },
         isSubmit: false,
-        personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
+        // personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
         activityTheme: '',
         pageConfig: {},
         activityType: ACTIVITY_TYPE,
@@ -284,6 +288,16 @@
     },
     computed: {
       ...saleComputed,
+      personAllBuyLimit() {
+        switch(this.msg.activity_theme) {
+        case 'fixed':
+          return 10
+        case 'hot_tag':
+          return 50
+        default:
+          return 20
+        }
+      },
       testName() {
         return this.msg.activity_name
       },
@@ -310,9 +324,9 @@
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       this.activityTheme = this.$route.query.activity_theme
       this.pageConfig = PAGE_CONFIG[this.$route.query.activity_theme] || {}
-      if (this.$route.query.activity_theme === 'fixed') {
-        this.personAllBuyLimit = 10
-      }
+      // if (this.$route.query.activity_theme === 'fixed') {
+      //   this.personAllBuyLimit = 10
+      // }
       // this.msg.activity_theme = this.$route.query.activity_theme
       if (this.id > 0) {
         let obj = _.cloneDeep(this.saleDetail)
@@ -560,13 +574,34 @@
         }
         this._hideGoods()
       },
+      // 批量添加商品
+      batchAddition(list) {
+        list.forEach((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = objDeepCopy(item)
+            // 初始数据
+            obj.all_stock = obj.usable_stock
+            obj.usable_stock = ''
+            obj.sort = 0
+            obj.goods_trade_price = obj.trade_price
+            obj.trade_price_show = obj.trade_price
+            this.activityTheme !== 'hot_tag' && (obj.trade_price = '')
+            this.goodsList.push(obj)
+          }
+        })
+      },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModel && this.$refs.goodsModel.showModal()
+        if (this.disable) return
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+        // await this._getGoodsList()
+        // // 展示添加商品弹窗
+        // this.$refs.goodsModel && this.$refs.goodsModel.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModel.hideModal()

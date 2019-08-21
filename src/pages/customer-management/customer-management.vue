@@ -23,6 +23,7 @@
           <p class="identification-name">客户列表</p>
         </div>
         <div class="function-btn">
+          <div class="btn-main hand" @click="exportExcel">导出Excel</div>
         </div>
       </div>
       <div class="big-list">
@@ -55,7 +56,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {customerComputed, customerMethods} from '@state/helpers'
+  import {authComputed, customerComputed, customerMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'CUSTOMER_MANAGEMENT'
@@ -69,6 +70,9 @@
     {title: '笔单价', showSort: true, sort: [5, 6]},
     {title: '注册时间', showSort: false, sort: []}
   ]
+
+  const EXCEL_URL = '/social-shopping/v1/api/backend/customer-index-excel'
+
   const SOCIAL_SELECT = {
     check: false,
     show: false,
@@ -99,7 +103,28 @@
       }
     },
     computed: {
-      ...customerComputed
+      ...customerComputed,
+      ...authComputed,
+      exportUrl() {
+        let currentId = this.getCurrentId()
+        let data = {
+          current_corp: currentId,
+          current_shop: process.env.VUE_APP_CURRENT_SHOP,
+          access_token: this.currentUser.access_token,
+          start_time: this.startTime,
+          end_time: this.endTime,
+          keyword: this.keyword,
+          sort_type: this.sortType,
+          shop_id: this.shop_id,
+          paid_start_time: this.paid_start_time,
+          paid_end_time: this.paid_end_time
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        return process.env.VUE_APP_API + EXCEL_URL + '?' + search.join('&')
+      }
     },
     created() {
       this._getShopList()
@@ -186,7 +211,14 @@
       _getMoreList(page) {
         this.page = page
         this._getCustomerList(true)
-      }
+      },
+      exportExcel() {
+        if (!this.shop_id) {
+          this.$toast.show('请选择社区')
+          return
+        }
+        window.open(this.exportUrl, '_blank')
+      },
     }
   }
 </script>

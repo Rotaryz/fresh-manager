@@ -18,6 +18,7 @@ http.interceptors.request.use(
   (config) => {
     // 请求数据前的拦截
     config.url = resetUrl(config.url)
+    // config.url = config.url.replace('/api', '/v1/api')
     if (!config.headers.common['Current-Corp']) {
       config.headers.common['Current-Corp'] = getCorpId() || process.env.VUE_APP_CURRENT_CORP
     }

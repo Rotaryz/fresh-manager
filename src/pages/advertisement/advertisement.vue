@@ -117,13 +117,16 @@
             </div>
             <div class="goods-content">
               <div class="goods-list">
-                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-                  <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item hand" @click="_selectGoods(item, index)">
+                  <div class="select-icon" :class="{'select-icon-active': showSelectIndex === index}">
                     <span class="after"></span>
                   </div>
-                  <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
+                  <img class="goods-img" :src="item.goods_cover_image">
                   <div class="goods-msg">
-                    <div class="goods-name">{{item.name}}</div>
+                    <div class="goods-name">
+                      <!--<span class="tag">拼团返现</span>-->
+                      {{item.name}}
+                    </div>
                     <div class="goods-money">¥{{item.original_price}}</div>
                   </div>
                 </div>
@@ -136,8 +139,8 @@
           </div>
           <!--商品分类-->
           <div v-if="tabIndex === 1" class="goods-cate">
-            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item hand" @click="_selectCate(goods, goodsIdx)">
+              <div class="select-icon" :class="{'select-icon-active': showCateIndex === goodsIdx}">
                 <span class="after"></span>
               </div>
               <div class="shade-goods-msg">
@@ -146,10 +149,21 @@
               </div>
             </div>
           </div>
-          <div v-if="tabIndex === 2" class="link-text">
-            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+          <!--活动分类-->
+          <div v-if="tabIndex === 2" class="goods-cate">
+            <div v-for="(category, ind) in activityCategory" :key="ind" class="goods_cate-item hand" @click="_selectActive(ind)">
+              <div class="select-icon" :class="{'select-icon-active': showActiveIndex === ind}">
+                <span class="after"></span>
+              </div>
+              <div class="shade-goods-msg">
+                <div class="shade-goods-name">{{category.name}}</div>
+              </div>
+            </div>
           </div>
           <div v-if="tabIndex === 3" class="link-text">
+            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+          </div>
+          <div v-if="tabIndex === 4" class="link-text">
             <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
           </div>
           <div class="back back-box">
@@ -182,6 +196,7 @@
   const TYPE_LIST = [
     {title: '商品详情', status: 'mini_goods'},
     {title: '商品分类', status: 'goods_cate'},
+    {title: '活动分类', status: 'activity_cate'},
     {title: '小程序链接', status: 'mini_link'},
     {title: 'H5链接', status: 'out_html'}
   ]
@@ -267,6 +282,7 @@
         },
         goodsCate: [],
         showCateIndex: 0,
+        showActiveIndex: '',
         activityItem: {},
         activityStatus: 0,
         activityGoodsList: [],
@@ -285,7 +301,8 @@
         freeShippingList: [], // 全国包邮,用于phone-box组件
         centralizePurchaseList: [], // 产地集采,用于phone-box组件
         guessList: [],// 猜你喜欢,用于phone-box组件
-        groupList: []// 拼团返现,用于phone-box组件
+        groupList: [],// 拼团返现,用于phone-box组件
+        activityCategory: []
       }
     },
     computed: {
@@ -308,6 +325,7 @@
       await this.getCate(false)
       await this.infoEat()
       await this._getGoodsList()
+      this.getActivityCategory()
       this.$loading.hide()
     },
     methods: {
@@ -575,14 +593,25 @@
           this[this.dataName][index].name = ''
           break
         case 'mini_goods':
-          this[this.dataName][index].other_id = this.choiceGoods[this.showSelectIndex].id
-          this[this.dataName][index].url = ''
-          this[this.dataName][index].name = this.choiceGoods[this.showSelectIndex].name
+          if (this.showSelectIndex !== '') {
+            this[this.dataName][index].other_id = this.choiceGoods[this.showSelectIndex].id
+            this[this.dataName][index].url = ''
+            this[this.dataName][index].name = this.choiceGoods[this.showSelectIndex].name
+          }
           break
         case 'goods_cate':
-          this[this.dataName][index].other_id = this.goodsCate[this.showCateIndex].id
-          this[this.dataName][index].url = ''
-          this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
+          if (this.showCateIndex !== '') {
+            this[this.dataName][index].other_id = this.goodsCate[this.showCateIndex].id
+            this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
+            this[this.dataName][index].url = ''
+          }
+          break
+        case 'activity_cate':
+          if (this.showActiveIndex !== '') {
+            this[this.dataName][index].other_id = ''
+            this[this.dataName][index].name = this.activityCategory[this.showActiveIndex].name
+            this[this.dataName][index].url = ''
+          }
           break
         }
         this._hideGoods()
@@ -594,6 +623,19 @@
       //
       _selectCate(item, index) {
         this.showCateIndex = index
+      },
+      _selectActive(index) {
+        this.showActiveIndex = index
+      },
+      getActivityCategory() {
+        API.Advertisement.getActivityCategory()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.activityCategory = res.data.activity_theme
+          })
       },
       // 获取商品列表
       async _getGoodsList() {
@@ -885,15 +927,14 @@
       height: 60px
       position: relative
       box-sizing: border-box
-      text-indent: 13px
       &:before
         content: ''
         position: absolute
-        width: 3px
-        height: 14px
+        width: 34px
+        height: 2px
         background: $color-main
         border-radius: 2px
-        col-center()
+        bottom: 0
         left: 0
       .content-title
         color: $color-text-main
@@ -1169,10 +1210,8 @@
         width: 40px
         height: @width
         overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
+        object-fit: cover
+
       .goods-msg
         flex: 1
         display: flex
@@ -1184,6 +1223,16 @@
         .goods-name
           width: 500px
           no-wrap()
+          .tag
+            border-radius: 2px
+            background: #73C200
+            color: #FFF
+            font-family: $font-family-regular
+            font-size: 12px
+            padding: 2px 3px
+            line-height: 16px
+            margin-right: 4px
+
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14

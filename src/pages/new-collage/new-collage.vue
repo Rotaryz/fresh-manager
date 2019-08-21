@@ -183,7 +183,6 @@
         </div>
       </div>
     </div>
-    <!--<p @click="test">测试</p>-->
     <!-- 选择优惠券弹窗-->
     <default-modal ref="couponModal">
       <div slot="content" class="shade-box">
@@ -275,6 +274,8 @@
       </div>
     </default-modal>
 
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" :maxLimit="20" @batchAddition="batchAddition"></add-goods>
 
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
@@ -288,10 +289,12 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import {activityComputed, activityMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
+  import {objDeepCopy} from '@utils/common'
 
   const PAGE_NAME = 'NEW_COLLAGE'
   const TITLE = '新建拼团'
@@ -333,6 +336,7 @@
     components: {
       DefaultModal,
       DefaultConfirm,
+      AddGoods,
       DatePicker
     },
     data() {
@@ -718,6 +722,28 @@
         this._cancelModal()
       },
 
+      // 批量添加商品
+      batchAddition(list) {
+        list.forEach((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            let obj = objDeepCopy(item)
+            // 初始数据
+            obj.all_stock = obj.usable_stock
+            obj.usable_stock = ''
+            obj.trade_price_show = obj.trade_price
+            obj.trade_price = ''
+            obj.sort = 0
+            this.goodsList.push(obj)
+          }
+        })
+      },
+
       _additionCoupon() {
         this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
         if (this.couponCheckItem.id) {
@@ -749,18 +775,20 @@
         if (this.modalType === 'coupon') {
           this._initData()
           this.modalType = ''
-          await this._getGoodsList()
+          // await this._getGoodsList()
           // 展示添加商品弹窗
-          this.$refs.goodsModel.showModal()
-          this.$refs.goodsSearch.infoTextMethods()
+          // this.$refs.goodsModel.showModal()
+          this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+          // this.$refs.goodsSearch.infoTextMethods()
         } else {
-          await this._getGoodsList()
-          this.$refs.goodsModel.showModal()
+          this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+          // await this._getGoodsList()
+          // this.$refs.goodsModel.showModal()
         }
       },
       _cancelModal() {
         this.$refs.couponModal && this.$refs.couponModal.hideModal()
-        this.$refs.goodsModel && this.$refs.goodsModel.hideModal()
+        // this.$refs.goodsModel && this.$refs.goodsModel.hideModal()
       },
       // 切换分类
       _setClassify(index, item) {
@@ -845,13 +873,6 @@
           }
         }
         return true
-      },
-      test() {
-        let list = this.goodsList.map((item) => {
-          delete item.person_day_buy_limit
-          item.goods_id = item.id || item.goods_id
-        })
-        console.log(list)
       },
       checkForm() {
         let arr = [

@@ -88,7 +88,6 @@
     },
     async created() {
       this.storeType.content = _.cloneDeep(this.typeName)
-      console.log(this.storeType.content)
       await this._getwarehouseStockType()
     },
     methods: {

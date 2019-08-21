@@ -198,7 +198,6 @@
       // 预览
       lookGoodsInfo(item) {
         this.curItem = item
-        console.log(this.curItem)
         this.$refs.storeModal.showModal()
       },
       // 关闭预览

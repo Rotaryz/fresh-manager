@@ -77,7 +77,6 @@
       async submit() {
         let hourarr = this.hour.content.split('点')
         let minarr = this.min.content.split('分')
-        console.log(hourarr)
         let data = {hour: hourarr[0], minute: minarr[0]}
         let res = await API.Allocation.setRunTimeConfig(data)
         this.$loading.hide()

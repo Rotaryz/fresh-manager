@@ -89,13 +89,18 @@
     mounted() {
       window.onclick = () => {
         this.select.check = false
+        this.clickHide()
       }
     },
     methods: {
       clickHide() {
         this.select.check = false
-        this.inputText = ''
-        this.$emit('changeText', this.inputText)
+        if (!this.select.data.length) {
+          setTimeout(() => {
+            this.inputText = ''
+            this.$emit('changeText', '')
+          }, 300)
+        }
       },
       inputFocusStatus(status) {
         this.inputStatus = status
@@ -115,6 +120,8 @@
           return
         }
         if (!this.select.data.length) {
+          this.select.check = false
+          this.clickHide()
           return
         }
         this.select.check = !this.select.check

@@ -174,7 +174,7 @@ export default [
         name: 'advertisement',
         component: () => lazyLoadView(import('@pages/advertisement/advertisement')),
         meta: {
-          titles: ['商城', '内容', '内容管理'],
+          titles: ['商城', '内容', '页面管理'],
           marginBottom: 80,
           beforeResolve(routeTo, routeFrom, next) {
             //  团长列表
@@ -1769,6 +1769,7 @@ export default [
       // 商品素材库
       {
         path: 'goods-store',
+        alias: 'goods-center-store', // 商城和供应链共用一个页面
         name: 'goods-store',
         component: () => lazyLoadView(import('@pages/goods-store/goods-store')),
         meta: {

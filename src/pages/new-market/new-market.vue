@@ -1281,13 +1281,11 @@
       },
       // 弹窗保存
       _additionGroup() {
-        console.log(this.selectGroupList, this.groupSelectItem, this.groupList)
         this.selectGroupList = [...this.selectGroupList, ...this.groupSelectItem]
         this.groupList = this.groupList.map((item) => {
           item.checked && (item.right = true)
           return item
         })
-        console.log(1)
         this._cancelModal()
       },
       _additionCoupon() {
@@ -1597,22 +1595,22 @@
   .right-form
     box-sizing: border-box
     flex: 1
-    padding: 36px 20px 20px
+    padding: 20px 20px 20px
     .title
       font-size: $font-size-16
       position: relative
       padding-bottom: 10px
-      padding-left: 12px
       margin-bottom: 24px
       border-bottom: 1px solid $color-line
       &:before
-        content: ""
-        width: 3px
-        height: 16px
-        background: $color-main
+        content: ''
         position: absolute
+        width: 34px
+        height: 2px
+        background: $color-main
+        border-radius: 2px
+        bottom: 0
         left: 0
-        top: 4px
       .tip
         color: $color-text-assist
         font-size: $font-size-14

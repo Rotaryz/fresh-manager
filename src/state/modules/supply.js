@@ -127,7 +127,6 @@ export const actions = {
       })
   },
   infoPurchaseTime({commit, dispatch}, {start, end}) {
-    console.log(start, end)
     commit('SET_TIME_START', start)
     commit('SET_TIME_END', end)
     commit('SET_PAGE', 1)
