@@ -347,7 +347,8 @@
           complete_status: this.goodsFitter.complete_status,
           is_presale: this.goodsFitter.is_presale,
           has_stock: this.goodsFitter.has_stock,
-          keyword: this.goodsFitter.keyword
+          keyword: this.goodsFitter.keyword,
+          goods_type: this.goodsFitter.goods_type
         }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
