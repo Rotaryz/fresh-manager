@@ -97,7 +97,7 @@
               <div v-for="(row, index) in orderList" :key="index" class="list-content list-box">
                 <div v-for="item in commodities" :key="item.key" :style="{flex: item.flex}" :class="['list-item',item.class]">
                   <template v-if="item.key" name="name">
-                    {{row[item.key]}}
+                    <div :class="{'item-dark-icon' : row[item.goodsType] * 1 === 2}">{{row[item.key]}}</div>
                     <div v-if="item.key === 'sale_num' && row.is_exception" class="unusual-icon"></div>
                     <div v-if="item.key === 'out_order_sn'" style="color:#ACACAC">{{row.created_at}}</div>
                     <div v-if="item.key === 'goods_name'">{{row.goods_sku_encoding}}</div>
@@ -146,7 +146,7 @@
     {title: '订单号', key: 'out_order_sn', flex: 1.5},
     {title: '会员名称', key: 'nickname', flex: 1},
     {title: '会员手机号', key: 'mobile', flex: 1},
-    {title: '商品', key: 'goods_name', flex: 1.2},
+    {title: '商品', key: 'goods_name', flex: 1.2, goodsType: 'goods_type'},
     {title: '下单数量', key: 'sale_num', flex: 0.7},
     {title: '商户名称', key: 'buyer_name', flex: 1.5},
     {title: '订单来源', key: 'type_str', flex: 0.7},

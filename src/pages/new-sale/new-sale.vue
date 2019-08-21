@@ -294,6 +294,8 @@
           return 10
         case 'hot_tag':
           return 50
+        case 'centralize':
+          return 1
         default:
           return 20
         }
