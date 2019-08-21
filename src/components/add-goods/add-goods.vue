@@ -41,7 +41,7 @@
       </div>
       <div class="back">
         <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
-        <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
+        <div class="back-btn back-submit hand" @click="_batchAddition">{{+maxLimit === 1 ? '确定' : '批量添加'}}</div>
       </div>
     </div>
   </default-modal>
