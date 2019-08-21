@@ -288,8 +288,8 @@
         &:last-child
           max-width: 120px
         &:nth-child(9), &:nth-child(1)
-          flex: 1.5
-        &:nth-child(5), &:nth-child(3)
+          flex: 1.4
+        &:nth-child(5), &:nth-child(2), &:nth-child(3)
           flex: 1.7
   .list-item-progress
     display: flex
