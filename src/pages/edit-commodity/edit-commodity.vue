@@ -207,8 +207,8 @@
             <div class="goods-list" :class="{'goods-list-border':choiceGoods.length}">
               <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
                 <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
-                  <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
-                  <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
+                  <span v-if="title.value === 'image'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
+                  <img v-if="title.value === 'image'" class="goods-img" :src="item.goods_cover_image">
                   <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{title.value === 'sale_unit' ? (item.sale_unit || item.goods_units) : item[title.value]}}</div>
                 </div>
               </div>
@@ -244,10 +244,11 @@
   const TITLE = '新建兑换券'
   const TABLE_TITLE = ['图片', '商品名称', '单位', '售价(元)', '库存', '操作']
   const GOODS_POP_TITLE = [
+    {name: '图片', flex: 0.6, value: 'image'},
     {name: '商品名称', flex: 2.5, value: 'name'},
-    {name: '基本单位', flex: 1, value: 'sale_unit'},
-    {name: '库存', flex: 1, value: 'usable_stock'},
-    {name: '销售价格', flex: 1, value: 'trade_price'}
+    {name: '基本单位', flex: 0.9, value: 'sale_unit'},
+    {name: '库存', flex: 0.9, value: 'usable_stock'},
+    {name: '销售价格', flex: 0.9, value: 'trade_price'}
   ]
 
   const TAG_TYPE = {1: 'free', 2: 'fitGift'}
@@ -813,7 +814,6 @@
           display: flex
           align-items: center
         .goods-img
-          margin-right: 10px
           width: 40px
           height: @width
           overflow: hidden
