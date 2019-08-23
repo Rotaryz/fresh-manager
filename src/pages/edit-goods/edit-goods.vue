@@ -628,6 +628,9 @@
         } else if (this.msg.purchase_cycle.length === 0) {
           this.$toast.show('请输入采购周期')
           return
+        } else if (this.msg.purchase_cycle < 1) {
+          this.$toast.show('请输入采购周期不能小于1天')
+          return
         } else if (+this.msg.purchase_cycle > 30) {
           this.$toast.show('请输入采购周期不能大于30天')
           return
