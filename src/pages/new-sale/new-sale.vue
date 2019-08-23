@@ -345,7 +345,10 @@
       // this.msg.activity_theme = this.$route.query.activity_theme
       if (this.id > 0) {
         let obj = _.cloneDeep(this.saleDetail)
-        this.goodsList = obj.activity_goods
+        this.goodsList = obj.activity_goods.map(item => {
+          item.id = item.id || item.goods_id
+          return item
+        })
         if (this.goodsList) {
           this.selectGoodsId = obj.activity_goods.map((item) => {
             return item.goods_id
