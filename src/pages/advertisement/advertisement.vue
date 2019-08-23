@@ -20,6 +20,7 @@
           :guessList="guessList"
           :groupList="groupList"
           :freeShippingList="freeShippingList"
+          :centralizePurchaseList="centralizePurchaseList"
           :activityList="activityList"
           @setType="handleChangeType"
         ></phone-box>
@@ -298,6 +299,7 @@
         newClientList: [], // 新人特惠列表,用于phone-box组件
         todayHotList: [], // 今日爆品,用于phone-box组件
         freeShippingList: [], // 全国包邮,用于phone-box组件
+        centralizePurchaseList: [], // 产地集采,用于phone-box组件
         guessList: [],// 猜你喜欢,用于phone-box组件
         groupList: [],// 拼团返现,用于phone-box组件
         activityCategory: []
@@ -429,6 +431,14 @@
         let module = this.infoBannerList.modules.find((val) => val.module_name === 'activity') || {}
         if (module.list) {
           module.list.forEach((item) => {
+            if (item.module_name === 'centralize' && item.is_close === 0) {
+              console.log(item)
+              // 产地集采
+              API.Advertisement.getActivityList({activity_theme: 'centralize', page: 1, limit: 20}).then(res => {
+                this.centralizePurchaseList = this._formatListData(res.data)
+              })
+              return
+            }
             if (item.starting_point_id > 0) {
               if (item.module_name === 'groupon') {
                 // 拼团返现

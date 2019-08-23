@@ -60,8 +60,24 @@
               <div class="tip">该图片不展示在小程序端，建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张。</div>
             </div>
           </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              商品类型
+            </div>
+            <div class="edit-input-box goods-select-box">
+              <div class="goods-select-left" @click="selectGoodsType(1)">
+                <div class="goods-select-icon" :class="msg.goods_type * 1 === 1 ? 'goods-select-icon-active' : ''"></div>
+                <div class="goods-select-text">普通商品</div>
+              </div>
+              <div class="goods-select-left" style="margin-left: 44px" @click="selectGoodsType(2)">
+                <div class="goods-select-icon" :class="msg.goods_type * 1 === 1 ? '' : 'goods-select-icon-active'"></div>
+                <div class="goods-select-text">集采商品<span class="tip" style="margin-left: 10px">通过【产地集采】活动时间控制商品在小程序的上下架展示</span></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="content-header">
+        <div class="content-header procurement-top">
           <div class="content-title">商品规格</div>
         </div>
         <div class="leader-box">
@@ -147,6 +163,16 @@
               <base-drop-down :height="40" :width="133" :select="purchaseSelect" @setValue="purchaseSelectValue"></base-drop-down>
             </div>
             <div class="edit-pla">例如：基本单位是kg，采购单位是箱，则采购规格可输入10，即10kg/箱</div>
+          </div>
+          <div class="edit-item">
+            <div class="edit-title">
+              <span class="start">*</span>
+              采购周期
+            </div>
+            <div class="edit-input-box">
+              <input v-model="msg.purchase_cycle" type="number" class="edit-input" :disabled="msg.purchase_cycle_disabled">
+            </div>
+            <div class="edit-pla">用户下单时间+采购周期=用户提货日期 (天)</div>
           </div>
           <div class="edit-item">
             <div class="edit-title">
@@ -379,6 +405,8 @@
           goods_main_images: [],
           goods_skus: [],
           is_presale: 1,
+          goods_type: 1,
+          purchase_cycle: '',
           save_type: 'base'
         },
         goods_skus: {
@@ -431,6 +459,7 @@
         editRurchaseUnit: '',
         isCopy: this.$route.query.copy || null,
         isShow: this.$route.query.isShow || null,
+        complete: this.$route.query.complete || null,
         searchList: [],
         imgInput: '',
         completeStatus: 0,
@@ -596,6 +625,12 @@
         } else if (this.goods_skus.purchase_unit === '') {
           this.$toast.show('请选择采购单位')
           return
+        } else if (this.msg.purchase_cycle.length === 0) {
+          this.$toast.show('请输入采购周期')
+          return
+        } else if (+this.msg.purchase_cycle > 30) {
+          this.$toast.show('请输入采购周期不能大于30天')
+          return
         } else if (this.goods_skus.purchase_price.length === 0) {
           this.$toast.show('请输入采购单价')
           return
@@ -760,6 +795,12 @@
               this.$toast.show(res.message)
             }
           })
+        }
+      },
+      // 切换商品类型
+      selectGoodsType(index) {
+        if (!this.id || this.complete * 1 === 1) {
+          this.msg.goods_type = index
         }
       },
       // 获取计量单位
@@ -1392,12 +1433,12 @@
     margin-bottom: 30px
     .edit-title
       margin-top: 15px
-    .tip
-      text-align: left
-      margin-top: -6px
-      font-size: $font-size-14
-      color: $color-text-assist
-      font-family: $font-family-regular
+  .tip
+    text-align: left
+    margin-top: -6px
+    font-size: $font-size-14
+    color: $color-text-assist
+    font-family: $font-family-regular
   .procurement-top
     margin-top: 24px
   .edit-msg

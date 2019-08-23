@@ -30,6 +30,7 @@
           <div v-if="purchaseList.length">
             <div v-for="(item,index) in purchaseList" :key="index" class="list-content list-box">
               <div class="list-item">{{item.create_day}}</div>
+              <div class="list-item">{{item.last_arrival_time}}</div>
               <div class="list-item">{{item.order_sn}}</div>
               <div class="list-item">{{item.task_num}}</div>
               <div class="list-item">{{item.per_amount ? '￥' : ''}}{{item.per_amount}}</div>
@@ -57,7 +58,7 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER'
   const TITLE = '采购单列表'
-  const COMMODITIES_LIST = ['生成时间', '采购单号', '采购商品数', '预采购金额', '供应商', '采购员', '状态', '操作']
+  const COMMODITIES_LIST = ['生成时间', '最晚到货时间', '采购单号', '采购商品数', '预采购金额', '供应商', '采购员', '状态', '操作']
   export default {
     name: PAGE_NAME,
     page: {
@@ -132,7 +133,7 @@
         &:last-child
           max-width :50px
           padding: 0
-        &:nth-child(2)
+        &:nth-child(3)
           flex: 2.2
         &:nth-child(1)
           flex: 1.1

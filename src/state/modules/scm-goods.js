@@ -22,6 +22,7 @@ export const state = {
     goods_material_category_id: '',
     is_online: '',
     limit: 10,
+    goods_type: '',
     platform: 'scm'
   },
   selectDown: {
@@ -31,7 +32,8 @@ export const state = {
     oneMaterialList: [],
     twoMaterialList: [],
     thrMaterialList: [],
-    completeStatusTitle: '全部'
+    completeStatusTitle: '全部',
+    typeTitle: '全部'
   }
 }
 
@@ -87,6 +89,9 @@ export const mutations = {
   SET_COMPLETE_STATUS(state, id) {
     state.goodsReqData.complete_status = id
   },
+  SET_GOODS_TYPE(state, id) {
+    state.goodsReqData.goods_type = id
+  },
   SET_SELECT_DOWN(state, data) {
     switch (data.type) {
       case 1:
@@ -109,6 +114,9 @@ export const mutations = {
         break
       case 7:
         state.selectDown.completeStatusTitle = data.content
+        break
+      case 8:
+        state.selectDown.typeTitle = data.content
         break
     }
   },
@@ -208,6 +216,11 @@ export const actions = {
     commit('SET_PAGE', 1)
     dispatch('getProductList', {loading: false})
   },
+  setGoodsType({commit, dispatch}, id) {
+    commit('SET_GOODS_TYPE', id)
+    commit('SET_PAGE', 1)
+    dispatch('getProductList', {loading: false})
+  },
   saveSelectDown({commit}, data) {
     commit('SET_SELECT_DOWN', data)
   },
@@ -223,6 +236,7 @@ export const actions = {
       goods_material_category_id: '',
       is_online: '',
       limit: 10,
+      goods_type: '',
       platform: 'scm'
     })
     commit('SET_SELECT_DOWN_RESET', {
@@ -232,7 +246,8 @@ export const actions = {
       oneMaterialList: [],
       twoMaterialList: [],
       thrMaterialList: [],
-      completeStatusTitle: '全部'
+      completeStatusTitle: '全部',
+      typeTitle: '全部'
     })
   }
 }

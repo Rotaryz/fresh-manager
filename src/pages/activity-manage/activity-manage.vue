@@ -276,7 +276,6 @@
       async _sureConfirm() {
         if (this.confirmType === 'del') {
           let res = await API.Sale.saleDelete(this.currentItem.id)
-
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return

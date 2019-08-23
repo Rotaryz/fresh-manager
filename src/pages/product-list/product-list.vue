@@ -8,9 +8,13 @@
       <div class="down-item">
         <base-drop-down :select="secondSelect" @setValue="_secondValue"></base-drop-down>
       </div>
-      <span class="down-tip">类型</span>
+      <span class="down-tip">渠道</span>
       <div class="down-item">
         <base-drop-down :select="typeSelect" @setValue="_setTypeValue"></base-drop-down>
+      </div>
+      <span class="down-tip">类型</span>
+      <div class="down-item">
+        <base-drop-down :select="purchaseSelect" @setValue="_setPurchaseValue"></base-drop-down>
       </div>
       <span class="down-tip">资料状态</span>
       <div class="down-item">
@@ -79,7 +83,7 @@
                 <img class="pic-box" :src="item.goods_cover_image" alt="">
               </div>
               <div class="list-item list-double-row">
-                <div class="item-dark">{{item.name}}</div>
+                <div class="item-dark" :class="{'item-dark-icon' : item.goods_type * 1 === 2}">{{item.name}}</div>
                 <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
               <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
@@ -101,7 +105,7 @@
               </div>
               <div class="list-item list-operation-box">
                 <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-goods?complete=1&id=' + item.id" append class="list-operation ">完善资料</router-link>
-                <router-link v-else-if="+item.is_online === 0" tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
+                <router-link v-else tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
                 <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
@@ -155,6 +159,7 @@
         stairSelect: {check: false, show: false, content: '一级分类', type: 'default', data: []},
         secondSelect: {check: false, show: false, content: '二级分类', type: 'default', data: []},
         typeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]},
+        purchaseSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '普通商品', value: 1}, {name: '集采商品', value: 2}]},
         progressSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]},
         presaleSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '仓库', value: 0}, {name: '预售', value: 1}]},
         storeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '无库存', value: 0}, {name: '有库存', value: 1}]},
@@ -192,7 +197,8 @@
           complete_status: this.goodsFitter.complete_status,
           is_presale: this.goodsFitter.is_presale,
           goods_material_category_id: this.goodsFitter.goods_material_category_id,
-          source: this.goodsFitter.source
+          source: this.goodsFitter.source,
+          goods_type: this.goodsFitter.goods_type
         }
         let search = []
         for (let key in data) {
@@ -222,6 +228,7 @@
         this.presaleSelect.content = selectDown.presale
         this.storeSelect.content = selectDown.stock
         this.secondSelect.data = selectDown.twoList
+        this.purchaseSelect.content = selectDown.goods_type
       },
       _showTip() {
         this.showIndex = true
@@ -254,11 +261,17 @@
         this.SET_TASK_DATA({twoName: data.name})
         this._updateList({page: 1, goods_category_id: data.id})
       },
-      // 选择类型
+      // 选择渠道类型item-dark-icon
       _setTypeValue(data) {
         this.source = data.value
         this.SET_TASK_DATA({source: data.name})
         this._updateList({page: 1, source: data.value})
+      },
+      // 选择类型
+      _setPurchaseValue(data) {
+        this.goods_type = data.value
+        this.SET_TASK_DATA({goods_type: data.name})
+        this._updateList({page: 1, goods_type: data.value})
       },
       // 选择资料状态
       _setCompleteValue(data) {
@@ -334,7 +347,8 @@
           complete_status: this.goodsFitter.complete_status,
           is_presale: this.goodsFitter.is_presale,
           has_stock: this.goodsFitter.has_stock,
-          keyword: this.goodsFitter.keyword
+          keyword: this.goodsFitter.keyword,
+          goods_type: this.goodsFitter.goods_type
         }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -373,6 +387,10 @@
       },
       // 商品上下架
       switchBtn(item, index) {
+        if (item.goods_type * 1 === 2) {
+          this.$toast.show('集采商品不允许操作状态')
+          return
+        }
         if (item.goods_sku_encoding.length === 0 && item.is_online * 1 === 0) {
           this.$toast.show('请先补充商品编码再上架')
           return

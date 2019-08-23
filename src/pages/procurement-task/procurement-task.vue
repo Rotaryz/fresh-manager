@@ -63,7 +63,7 @@
             <div v-for="(item, index) in purchaseTaskList" :key="index" class="list-content list-box list-box-goods">
               <!--<div class="pro-select-icon hand" :class="{'pro-select-icon-active': item.select, 'pro-select-icon-disable': item.status !== 1 && item.status !== 2, 'pro-select-icon-disable': status !== 1 && status !== 2}" @click="selectPurchase({type: index, status: status})"></div>-->
               <div class="list-item list-double-row">
-                <div class="item-dark">{{item.goods_name}}</div>
+                <div class="item-dark" :class="{'item-dark-icon' : item.goods_type * 1 === 2}">{{item.goods_name}}</div>
                 <div class="item-dark">{{item.goods_sku_encoding}}</div>
               </div>
               <div class="list-item">{{item.goods_material_category}}</div>
@@ -71,15 +71,16 @@
               <div class="list-item">{{item.purchase_user}}</div>
               <div class="list-item">{{item.plan_num}}{{item.purchase_unit}}({{item.plan_base_num}}{{item.base_unit}})</div>
               <div class="list-item">{{item.finish_num}}{{item.purchase_unit}}({{item.finish_base_num}}{{item.base_unit}})</div>
-              <div class="list-item list-item-progress">
-                <div class="progress-content">
-                  <div class="progress-num">{{item.finish_num}}{{item.purchase_unit}}/{{item.plan_num}}{{item.purchase_unit}}</div>
-                  <div class="progress-bar">
-                    <span class="progress-bar-active" :style="{width: item.finish_percent}"></span>
-                  </div>
-                </div>
-                <div class="progress-percentage">{{item.finish_percent}}</div>
-              </div>
+              <!--<div class="list-item list-item-progress">-->
+              <!--<div class="progress-content">-->
+              <!--<div class="progress-num">{{item.finish_num}}{{item.purchase_unit}}/{{item.plan_num}}{{item.purchase_unit}}</div>-->
+              <!--<div class="progress-bar">-->
+              <!--<span class="progress-bar-active" :style="{width: item.finish_percent}"></span>-->
+              <!--</div>-->
+              <!--</div>-->
+              <!--<div class="progress-percentage">{{item.finish_percent}}</div>-->
+              <!--</div>-->
+              <div class="list-item">{{item.last_arrival_time}}</div>
               <div class="list-item">{{item.publish_at}}</div>
               <div class="list-item"><span class="list-status" :class="{'list-status-success': item.status === 3, 'list-status-warn': item.status === 2}"></span>{{item.status_str}}<div v-if="item.is_exception" class="list-item-img"></div></div>
             </div>
@@ -222,7 +223,8 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '采购任务'
-  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '计划采购', '已采购', '采购进度', '发布时间', '状态']
+  // const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '计划采购', '已采购', '采购进度', '发布时间', '状态']
+  const COMMODITIES_LIST = ['商品', '类目', '供应商', '采购员', '计划采购', '已采购', '最晚到货时间', '发布时间', '状态']
   const SUPPLIER_LIST = ['供应商', '采购任务数', '操作']
   export default {
     name: PAGE_NAME,
