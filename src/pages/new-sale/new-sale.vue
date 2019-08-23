@@ -605,8 +605,8 @@
             item.usable_stock = ''
             item.trade_price_show = item.trade_price
             item.goods_trade_price = item.trade_price
-            this.activityTheme !== 'hot_tag' && (item.trade_price = '')
             item.sort = 0
+            this.activityTheme !== 'hot_tag' && (item.trade_price = '')
           }
           return item
         })
