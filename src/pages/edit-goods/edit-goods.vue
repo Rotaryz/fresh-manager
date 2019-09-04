@@ -471,6 +471,10 @@
         videoUrl: ''
       }
     },
+    beforeRouteEnter(to, from, next) {
+      console.log(to, from, '========')
+      next()
+    },
     created() {
       this._setData()
       this.getSelectData()

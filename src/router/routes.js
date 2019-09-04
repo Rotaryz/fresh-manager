@@ -2795,16 +2795,31 @@ export default [
 // delay: 400,
 // error: require('@pages/_timeout/_timeout').default,
 // timeout: 10000
-function lazyLoadView(AsyncView) {
-  const AsyncHandler = () => ({
-    component: AsyncView
-  })
+// function lazyLoadView(AsyncView) {
+//   const AsyncHandler = () => ({
+//     component: AsyncView
+//   })
+//
+//   return Promise.resolve({
+//     functional: true,
+//     render(h, {data, children}) {
+//       // 将属性和方法传递给所有展示组件
+//       return h(AsyncHandler, data, children)
+//     }
+//   })
+// }
 
-  return Promise.resolve({
-    functional: true,
-    render(h, {data, children}) {
-      // 将属性和方法传递给所有展示组件
-      return h(AsyncHandler, data, children)
-    }
-  })
+function lazyLoadView(AsyncView) {
+  // const AsyncHandler = () => ({
+  //   component: AsyncView
+  // })
+  //
+  // return Promise.resolve({
+  //   functional: true,
+  //   render(h, {data, children}) {
+  //     // 将属性和方法传递给所有展示组件
+  //     return h(AsyncHandler, data, children)
+  //   }
+  // })
+  return AsyncView
 }
