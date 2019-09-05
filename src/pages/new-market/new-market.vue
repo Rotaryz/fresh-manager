@@ -1332,7 +1332,6 @@
             coupon_id: item.id
           }
         })
-        console.log(this.msg)
       },
       _setMsgTarget(obj, choose) {
         for (let [key,val] of Object.entries(obj)) {

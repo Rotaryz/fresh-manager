@@ -116,54 +116,6 @@
       </div>
     </div>
 
-    <!-- 选择商品弹窗-->
-    <default-modal ref="goodsModel">
-      <div slot="content" class="shade-box">
-        <div class="title-box">
-          <div class="title">
-            <div class="title-name">选择商品</div>
-            <div v-if="msg.activity_theme === activityType" class="title-label">(商品只能添加1个)</div>
-          </div>
-          <span class="close hand" @click="_cancelGoods"></span>
-        </div>
-        <div class="shade-tab">
-          <div class="tab-item">
-            <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
-          </div>
-        </div>
-        <div class="goods-content">
-          <div class="rush-goods-list">
-            <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
-              <span v-if="msg.activity_theme !== activityType" class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <span v-else class="radio hand" :class="{'checked': item.selected === 2 || item.selected === 1}" @click="_selectGoods(item,index)"></span>
-              <img class="goods-img" :src="item.goods_cover_image" alt="">
-              <div class="goods-msg">
-                <!--<div class="goods-name">{{item.usable_stock}}</div>-->
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">
-                  <div class="goods-money-text">{{item.usable_stock}}</div>
-                  <div class="goods-money-text">¥{{item.trade_price}}</div>
-                </div>
-              </div>
-              <div v-if="msg.activity_theme !== activityType" class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
-        </div>
-        <div class="back">
-          <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
-          <div class="back-btn back-submit hand" @click="_batchAddition">{{msg.activity_theme === activityType ? '添加' : '批量添加'}}</div>
-        </div>
-      </div>
-    </default-modal>
     <!--选择商品弹窗-->
     <add-goods ref="selectGoods" :maxLimit="personAllBuyLimit" :goodsType="goodsTypeNumber" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
@@ -176,14 +128,12 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import AddGoods from '@components/add-goods/add-goods'
   import {saleComputed, saleMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
-  import {objDeepCopy} from '@utils/common'
 
   const PAGE_NAME = 'EDIT_RUSH'
   // const TITLE = '新建查看今日抢购'
@@ -234,7 +184,6 @@
       }
     },
     components: {
-      DefaultModal,
       DefaultConfirm,
       AddGoods,
       DatePicker
@@ -361,7 +310,6 @@
           activity_theme: this.$route.query.activity_theme
         }
       }
-      this._getFirstAssortment()
       // 集采采购
       this.getDeliveryTime()
     },
@@ -376,140 +324,6 @@
       async _getEndTime(time) {
         this.msg.end_at = time
         await this.getDeliveryTime()
-      },
-      // 选择商品
-      async _getGoodsList() {
-        // if (!this.id) return
-        let res = await API.Sale.getGoodsList({
-          is_online: 1,
-          keyword: this.keyword,
-          goods_category_id: this.parentId,
-          shelf_id: this.id,
-          limit: 7,
-          page: this.page,
-          goods_type: this.$route.query.activity_theme === this.activityType ? 2 : 1,
-          activity_theme: this.$route.query.activity_theme,
-          debug: 1
-        })
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.goodsPage = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        if (this.msg.activity_theme === this.activityType && this.goodsList.length !== 0) {
-          // 集采采购
-          this.selectGoods = this.goodsList
-          this.selectGoods.forEach((item) => {
-            item.id = item.goods_id
-          })
-        }
-        this.choeesGoods = res.data.map((item, index) => {
-          item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          if (delIndex !== -1) {
-            item.selected = 0
-          }
-          if (idx !== -1) {
-            item.selected = 1
-          }
-          if (goodsIndex !== -1) {
-            item.selected = 2
-          }
-          item.sort = 0
-          return item
-        })
-      },
-      // 获取分页商品列表
-      async _getMoreGoods(page) {
-        this.page = page
-        await this._getGoodsList()
-      },
-      // 选择一级分类
-      async _secondAssortment(item) {
-        this.parentId = item.id
-        if (item.id === '') {
-          this.secondAssortment.data = []
-        } else {
-          let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
-          this.$loading.hide()
-          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
-        }
-        this.secondAssortment.content = '选择二级分类'
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 选择二级分类
-      async _choessSecondAssortment(item) {
-        this.parentId = item.id
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 获取一级分类
-      async _getFirstAssortment() {
-        let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
-        this.$loading.hide()
-        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.assortment.data.unshift({name: '全部', id: ''})
-      },
-      // 搜索商品
-      async _searchGoods(text) {
-        this.keyword = text
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 勾选商品
-      _selectGoods(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
-        switch (item.selected) {
-        case 0:
-          if (this.msg.activity_theme === this.activityType) {
-            // 集采采购
-            this.choeesGoods.forEach((item) => {
-              item.selected = 0
-            })
-            this.choeesGoods[index].selected = 2
-            item.all_stock = item.usable_stock
-            this.selectGoods = [item]
-            this.selectGoodsId = [item.id]
-            return
-          }
-          if (this.selectGoodsId.length === this.personAllBuyLimit) {
-            this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
-            return
-          }
-          this.choeesGoods[index].selected = 2
-          item.all_stock = item.usable_stock
-          this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
-          break
-        case 2:
-          if (this.msg.activity_theme === this.activityType) {
-            // 集采采购
-            return
-          }
-          this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
-          if (idx !== -1) {
-            this.selectGoods.splice(idx, 1)
-          }
-          if (idIdx !== -1) {
-            this.selectGoodsId.splice(idx, 1)
-          }
-          break
-        }
       },
       // 删除商品
       _showDelGoods(item, index) {
@@ -526,71 +340,6 @@
         this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
-      },
-      _cancelGoods() {
-        this.selectGoods.forEach((item) => {
-          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
-          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.selectGoodsId.splice(delIdx, 1)
-          if (!this.choeesGoods[idx]) return
-          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
-        })
-        this.selectGoods = []
-        this._hideGoods()
-      },
-      // 单个添加
-      _additionOne(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
-        if (item.selected === 1) {
-          return
-        }
-        if (this.selectGoodsId.length === this.personAllBuyLimit && item.selected !== 2) {
-          this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
-          return
-        }
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
-        this.choeesGoods[index].selected = 1
-        let goodsItem = objDeepCopy(item)
-        goodsItem.all_stock = item.usable_stock
-        goodsItem.usable_stock = ''
-        goodsItem.trade_price_show = item.trade_price
-        if (this.activityTheme !== 'hot_tag') {
-          goodsItem.trade_price = ''
-        }
-        this.goodsList.push(goodsItem)
-        this.choeesGoods.forEach((item) => {
-          if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
-            }
-          }
-        })
-      },
-      // 批量添加
-      async _batchAddition() {
-        // const list = objDeepCopy(this.choeesGoods)
-        this.selectGoods = this.selectGoods.map((item) => {
-          item.selected = item.selected === 2 ? 1 : item.selected
-          item.usable_stock = ''
-          item.trade_price_show = item.trade_price
-          if (this.activityTheme !== 'hot_tag') {
-            item.trade_price = ''
-          }
-          return item
-        })
-        if (this.msg.activity_theme === this.activityType) {
-          // 集采采购
-          this.goodsList = this.selectGoods
-          await this.getDeliveryTime()
-        } else {
-          this.goodsList = this.goodsList.concat(this.selectGoods)
-          this.selectGoods = []
-        }
-        this._hideGoods()
       },
       // 批量添加商品
       batchAddition(list) {
@@ -618,16 +367,6 @@
       async _showGoods() {
         if (this.disable) return
         this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
-        // await this._getGoodsList()
-        // // 展示添加商品弹窗
-        // this.$refs.goodsModel && this.$refs.goodsModel.showModal()
-      },
-      _hideGoods() {
-        this.$refs.goodsModel.hideModal()
-      },
-      // 切换分类
-      _setClassify(index, item) {
-        this.classifyIndex = index
       },
       _back() {
         this.$router.back()

@@ -194,7 +194,7 @@
               <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+              <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
             </div>
             <div class="tab-item">
               <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
@@ -207,9 +207,12 @@
             <div class="goods-list" :class="{'goods-list-border':choiceGoods.length}">
               <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
                 <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
-                  <span v-if="title.value === 'image'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
-                  <img v-if="title.value === 'image'" class="goods-img" :src="item.goods_cover_image">
-                  <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{title.value === 'sale_unit' ? (item.sale_unit || item.goods_units) : item[title.value]}}</div>
+                  <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
+                  <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
+                  <div class="value">
+                    <span class="text">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}{{title.value === 'usable_stock' ? item.sale_unit : ''}}</span>
+                    <span v-if="title.value === 'name'" class="text">{{item.goods_sku_code}}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -244,11 +247,9 @@
   const TITLE = '新建兑换券'
   const TABLE_TITLE = ['图片', '商品名称', '单位', '售价(元)', '库存', '操作']
   const GOODS_POP_TITLE = [
-    {name: '图片', flex: 0.6, value: 'image'},
-    {name: '商品名称', flex: 2.5, value: 'name'},
-    {name: '基本单位', flex: 0.9, value: 'sale_unit'},
-    {name: '库存', flex: 0.9, value: 'usable_stock'},
-    {name: '销售价格', flex: 0.9, value: 'trade_price'}
+    {name: '商品', flex: 2.5, value: 'name'},
+    {name: '销售价', flex: 0.9, value: 'trade_price'},
+    {name: '可用库存', flex: 0.9, value: 'usable_stock'}
   ]
 
   const TAG_TYPE = {1: 'free', 2: 'fitGift'}
@@ -294,8 +295,8 @@
         showSelectIndex: -1,
         parentId: '',
         goodsCate: [],
-        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        assortment: {check: false, show: false, content: '一级分类', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         selectItem: {},
         chooseType: 'free'
       }
@@ -474,7 +475,7 @@
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
-        this.secondAssortment.content = '选择二级分类'
+        this.secondAssortment.content = '二级分类'
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
@@ -815,6 +816,7 @@
           align-items: center
         .goods-img
           width: 40px
+          margin-right: 10px
           height: @width
           overflow: hidden
           background-repeat: no-repeat
@@ -826,6 +828,9 @@
           text-overflow: ellipsis
           overflow: hidden
           max-width: 285px
+          .text
+            overflow: hidden
+            text-overflow: ellipsis
 
   .title-box
     display: flex

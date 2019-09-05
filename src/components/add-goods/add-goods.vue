@@ -11,7 +11,7 @@
           <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+          <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
         </div>
         <div class="tab-item">
           <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
@@ -20,18 +20,21 @@
       <div class="goods-content">
         <div class="goods-title">
           <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">
-            <span v-if="item.value === 'image' && +maxLimit !== 1" class="select-icon hand" :class="{'select-icon-active': selectAll}" @click="_selectAllGoods()"></span>
-            <span v-if="item.value === 'image' && +maxLimit === 1" class="no-icon"></span>
+            <span v-if="item.value === 'name' && +maxLimit !== 1" class="select-icon hand" :class="{'select-icon-active': selectAll}" @click="_selectAllGoods()"></span>
+            <span v-if="item.value === 'name' && +maxLimit === 1" class="no-icon"></span>
             <span class="text">{{item.name}}</span>
           </div>
         </div>
         <div class="goods-list">
           <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item hand" @click="_selectGoods(item,index)">
             <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content" :style="{flex: title.flex}">
-              <span v-if="title.value === 'image' && +maxLimit !== 1" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
-              <span v-if="title.value === 'image' && +maxLimit === 1" class="select-one-icon" :class="{'select-one-icon-active': item.selected === 1 || item.selected === 2}"></span>
-              <img v-if="title.value === 'image'" class="goods-img" :src="item.goods_cover_image">
-              <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}</div>
+              <span v-if="title.value === 'name' && +maxLimit !== 1" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+              <span v-if="title.value === 'name' && +maxLimit === 1" class="select-one-icon" :class="{'select-one-icon-active': item.selected === 1 || item.selected === 2}"></span>
+              <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
+              <div class="value">
+                <p class="text">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}{{title.value === 'usable_stock' ? item.sale_unit : ''}}</p>
+                <p v-if="title.value === 'name'" class="text">{{item.goods_sku_code}}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -53,10 +56,9 @@
 
   const COMPONENT_NAME = 'ADD_GOODS'
   const GOODS_POP_TITLE = [
-    {name: '图片', flex: 0.35, value: 'image'},
-    {name: '商品名称', flex: 2, value: 'name'},
-    {name: '库存', flex: 1, value: 'usable_stock'},
-    {name: '销售价格', flex: 0.5, value: 'trade_price'}
+    {name: '商品', flex: 2, value: 'name'},
+    {name: '销售价格', flex: 1, value: 'trade_price'},
+    {name: '可用库存', flex: 0.5, value: 'usable_stock'}
   ]
 
   export default {
@@ -80,14 +82,14 @@
         assortment: {
           check: false,
           show: false,
-          content: '选择分类',
+          content: '一级分类',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
         secondAssortment: {
           check: false,
           show: false,
-          content: '选择二级分类',
+          content: '二级分类',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
@@ -112,15 +114,6 @@
       this._getFirstAssortment()
     },
     methods: {
-      // 删除商品传入商品id
-      _delGoods(id) {
-        let index = this.selectGoodsId.findIndex((item) => item === id)
-        this.selectGoodsId.splice(index, 1)
-        this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(id)
-        this._getGoodsList()
-        this.$refs.goodsModal.showModal()
-      },
       showModal(list) {
         this.parentGoodsList = list
         this._getGoodsList()
@@ -259,23 +252,17 @@
           return item
         })
         this.chooseGoods = res.data.map((item, index) => {
-          // let idx = this.goodsList.findIndex((id) => id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          // let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          // if (delIndex !== -1) {
-          //   item.selected = 0
-          // }
-          // if (idx !== -1) {
-          //   item.selected = 1
-          // }
           if (goodsIndex !== -1) {
             item.selected = 2
           }
           return item
         })
-        let allSelect = this.chooseGoods.every(item => {
-          return +item.selected !== 0
-        })
+        let allSelect = this.chooseGoods.length
+          ? this.chooseGoods.every(item => {
+            return +item.selected !== 0
+          })
+          : false
         allSelect && (this.selectAll = true)
         !allSelect && (this.selectAll = false)
       },
@@ -285,7 +272,7 @@
         let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
         this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
-        this.secondAssortment.content = '选择二级分类'
+        this.secondAssortment.content = '二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
@@ -404,6 +391,7 @@
         padding-right: 20px
         display: flex
         align-items: center
+        font-family: $font-family-regular
         .select-icon
           margin-right: 20px
           border-radius: 1px
@@ -432,6 +420,7 @@
         display: flex
         align-items: center
         position: relative
+        font-family: $font-family-regular
         &:last-child
           border-bottom-1px($color-line)
         &:before
@@ -464,6 +453,7 @@
           object-fit: cover
           height: @width
           overflow: hidden
+          margin-right: 10px
         .select-icon
           margin-right: 20px
           border-radius: 1px
@@ -498,6 +488,9 @@
           text-overflow: ellipsis
           overflow: hidden
           max-width: 320px
+          .text
+            overflow: hidden
+            text-overflow: ellipsis
 
   .page-box
     padding: 0 20px

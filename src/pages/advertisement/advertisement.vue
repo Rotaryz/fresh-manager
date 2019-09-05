@@ -109,26 +109,30 @@
                 <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
               </div>
               <div class="tab-item">
-                <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+                <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
               </div>
               <div class="tab-item">
                 <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
               </div>
             </div>
             <div class="goods-content">
+              <div class="goods-header">
+                <div class="goods-text">商品</div>
+                <div class="goods-text">可用库存</div>
+              </div>
               <div class="goods-list">
                 <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item hand" @click="_selectGoods(item, index)">
-                  <div class="select-icon" :class="{'select-icon-active': showSelectIndex === index}">
-                    <span class="after"></span>
-                  </div>
-                  <img class="goods-img" :src="item.goods_cover_image">
-                  <div class="goods-msg">
-                    <div class="goods-name">
-                      <!--<span class="tag">拼团返现</span>-->
-                      {{item.name}}
+                  <div class="content-item">
+                    <div class="select-icon" :class="{'select-icon-active': showSelectIndex === index}">
+                      <span class="after"></span>
                     </div>
-                    <div class="goods-money">¥{{item.original_price}}</div>
+                    <img class="goods-img" :src="item.goods_cover_image">
+                    <div class="goods-name">
+                      <p class="text">{{item.name}}</p>
+                      <p class="text">{{item.goods_sku_code}}</p>
+                    </div>
                   </div>
+                  <div class="content-item">{{item.usable_stock}}{{item.sale_unit}}</div>
                 </div>
                 <!--select-icon-active-->
               </div>
@@ -262,8 +266,8 @@
         choicePage: 1,
         parentId: '',
         keyword: '',
-        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        assortment: {check: false, show: false, content: '一级分类', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsId: 0,
         delId: 0,
         delIndex: 0,
@@ -643,7 +647,7 @@
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          limit: 7,
+          limit: 6,
           page: this.choicePage
         })
         if (res.error !== this.$ERR_OK) {
@@ -672,7 +676,7 @@
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
-        this.secondAssortment.content = '选择二级分类'
+        this.secondAssortment.content = '二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
@@ -1171,6 +1175,39 @@
     border-radius: 4px
     margin: 0 20px
     height: 420px
+    >.goods-header
+      height: 45px
+      background: #F5F7FA
+      display: flex
+      align-items: center
+      padding: 0 30px 0 20px
+      font-family: $font-family-regular
+      position: relative
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .goods-text
+        flex: 1
+        &:last-child
+          flex: 0.5
+        &:first-child
+          text-indent: 36px
     .goods-list
       flex-wrap: wrap
       display: flex
@@ -1203,8 +1240,15 @@
           width: 100%
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
-      &:nth-child(2n - 1)
+      &:nth-child(2n)
         background: #f5f7fa
+      .content-item
+        flex: 1
+        display: flex
+        align-items: center
+        font-family: $font-family-regular
+        &:last-child
+          flex: 0.5
       .goods-img
         margin-right: 10px
         width: 40px
@@ -1212,26 +1256,23 @@
         overflow: hidden
         object-fit: cover
 
-      .goods-msg
-        flex: 1
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        justify-content: space-between
-        height: 100%
-        align-items: center
-        .goods-name
-          width: 500px
-          no-wrap()
-          .tag
-            border-radius: 2px
-            background: #73C200
-            color: #FFF
-            font-family: $font-family-regular
-            font-size: 12px
-            padding: 2px 3px
-            line-height: 16px
-            margin-right: 4px
+      .goods-name
+        line-height: 1.2
+        width: 500px
+        no-wrap()
+        .text
+          overflow: hidden
+          text-overflow: ellipsis
+
+        .tag
+          border-radius: 2px
+          background: #73C200
+          color: #FFF
+          font-family: $font-family-regular
+          font-size: 12px
+          padding: 2px 3px
+          line-height: 16px
+          margin-right: 4px
 
         .goods-name, .goods-money
           line-height: 1
