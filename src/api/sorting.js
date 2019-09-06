@@ -115,5 +115,5 @@ export default {
   async exportInvoiceOrder(paramsStr) {
     let url = '/scm/api/backend/delivery/delivery-exports'
     return window.open(url + paramsStr, '_parent')
-  },
+  }
 }

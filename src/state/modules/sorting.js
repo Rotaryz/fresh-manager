@@ -19,7 +19,8 @@ export const state = {
       keyword: '',
       status: 0, // 待分拣
       sorting_mode: 0,
-      exception_status: ''
+      exception_status: '',
+      road_id: ''
     }
   },
   sortingConfig: {
