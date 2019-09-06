@@ -301,7 +301,7 @@
       <div v-if="stepIndex" class="back-btn back-submit hand" @click="saveHandle">保存</div>
     </div>
     <goods-material ref="goodsMaterial" @selectMaterial="selectMaterial"></goods-material>
-    <!--    <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>-->
+    <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>
   </div>
 </template>
 
@@ -309,7 +309,7 @@
   import EditOptions from '@components/edit-options/edit-options'
   import EditHeader from '@components/edit-header/edit-header'
   import EditMedia from '@components/edit-media/edit-media'
-  // import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
   // import storage from 'storage-controller'
   import _ from 'lodash'
@@ -341,7 +341,7 @@
       title: TITLE
     },
     components: {
-      // DefaultConfirm,
+      DefaultConfirm,
       EditOptions,
       EditHeader,
       EditMedia,
@@ -446,12 +446,40 @@
       // }
     },
     methods: {
-      showMaterial() {
+      // 覆盖基础信息start
+      changeEdit() {
+        const data = GoodsHandle.RCopyBaseData(this.copyItem)
+        Object.assign(this, data)
+        console.log(data, '-------------')
+        this.findGoodsTypeList()
+      },
+      findGoodsTypeList() {
+        let obj = this.firstTypeSelect.data.find(val => val.id === this.goodsTypeId)
+        if (obj) {
+          this.firstTypeSelect.content = obj.name
+          this.secondTypeSelect.content = '二级类目'
+          this.secondTypeSelect.data = obj.list
+        } else {
+          this.firstTypeSelect.data.forEach(item => {
+            let second = item.list.find(val => val.id === this.goodsTypeId)
+            if (second) {
+              this.secondTypeSelect.content = second.name
+              this.firstTypeSelect.content = item.name
+              this.secondTypeSelect.data = item.list
+            }
+          })
+        }
+      },
+      showMaterial(item) {
         this.$refs.goodsMaterial && this.$refs.goodsMaterial.show()
       },
       selectMaterial(item) {
-        console.log(item)
+        this.copyItem = item
+        setTimeout(() => {
+          this.$refs.confirm && this.$refs.confirm.show('商品标题和图片将覆盖原基础信息，确定吗？')
+        }, 500)
       },
+      // 覆盖基础信息end
       // 单选切换
       toggleRadios(key) {
         this[key] = !this[key]

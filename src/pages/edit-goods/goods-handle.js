@@ -13,6 +13,19 @@ export function RBaseData(data) {
   }
 }
 
+// 复制基础信息
+export function RCopyBaseData(data) {
+  return {
+    goodsName: data.name, // 商品名称
+    describe: data.describe, // 商品描述
+    goodsTypeId: data.goods_material_category_id, // 商品类目
+    basicUnit: data.base_unit, // 基础单位
+    coverImageList: resolveImagesCopy(data.goods_banner_images) || [], // 封面图
+    videoList: resolveVideosCopy(data.goods_videos) || [], // 视频
+    detailImageList: resolveImagesCopy(data.goods_detail_images) || [], // 详情图片
+  }
+}
+
 export function FBaseData(data) {
   return {
     "goods_material_category_id": data.goodsTypeId,
@@ -102,6 +115,25 @@ function formatVideos(arr = []) {
         file_id: item.id
       }
     }
+    return item
+  })
+}
+
+// 复制视频文件解析
+function resolveVideosCopy(arr = []) {
+  return arr.map(item => {
+    return {
+      file_id: item.id,
+      id: 0,
+      full_url: item.full_url
+    }
+  })
+}
+
+// 复制图片
+function resolveImagesCopy(arr = []) {
+  return arr.map(item => {
+    item.id = 0
     return item
   })
 }
