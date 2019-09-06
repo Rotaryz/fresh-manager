@@ -474,58 +474,62 @@
           this.stepIndex = minStep
         }
       },
-      // 顶部 切换
-      _changeStatusTab(item, index) {
-        this.tabIndex = index
+      // 生成商品编码
+      _createGoodsCode() {
+
       },
-      /**
-       * 设置默认数据 -> 编辑状态
-       * @private
-       */
-      _setData() {
-        if (!_.isEmpty(this.detail)) {
-          this.msg = _.cloneDeep(this.detail)
-          this.goods_skus = this.msg.goods_skus[0]
-          this.editSkus = _.cloneDeep(this.goods_skus)
-          this.saleSelect.content = this.goods_skus.sale_unit
-          this.supplierSelect.content = this.goods_skus.supplier_name
-          this.purchaseSelect.content = this.goods_skus.purchase_unit
-          this.editRurchaseUnit = this.goods_skus.purchase_unit
-          this.dispatchSelect.content = this.goods_skus.base_unit
-          this.editRurchasePrice = this.goods_skus.base_purchase_rate
-          this.completeStatus = this.msg.complete_status
-          this._saleInfo()
-        }
-        if (this.$route.query.copy) {
-          this.msg = storage.get('msg')
-          this.goods_skus = storage.get('goods_skus')
-          this.saleMsg = storage.get('saleMsg')
-          this.sale_skus = storage.get('sale_skus')
-          this.videoUrl = storage.get('videoUrl')
-          this.editSkus = _.cloneDeep(this.goods_skus)
-          this.saleSelect.content = this.goods_skus.sale_unit
-          this.supplierSelect.content = this.goods_skus.supplier_name
-          this.purchaseSelect.content = this.goods_skus.purchase_unit
-          this.editRurchaseUnit = this.goods_skus.purchase_unit
-          this.dispatchSelect.content = this.goods_skus.base_unit
-          this.editRurchasePrice = this.goods_skus.base_purchase_rate
-          this.msg.goods_main_images.forEach((item) => {
-            item.id = 0
-          })
-          this.saleMsg.goods_banner_images.forEach((item) => {
-            item.id = 0
-          })
-          this.saleMsg.goods_detail_images.forEach((item) => {
-            item.id = 0
-          })
-          this.goods_skus.goods_sku_id = 0
-          this.goods_skus.goods_id = 0
-          this.msg.goods_id = 0
-          this.saleMsg.goods_id = 0
-          this.sale_skus.goods_sku_id = 0
-          this.sale_skus.goods_id = 0
-        }
-      },
+      // // 顶部 切换
+      // _changeStatusTab(item, index) {
+      //   this.tabIndex = index
+      // },
+      // /**
+      //  * 设置默认数据 -> 编辑状态
+      //  * @private
+      //  */
+      // _setData() {
+      //   if (!_.isEmpty(this.detail)) {
+      //     this.msg = _.cloneDeep(this.detail)
+      //     this.goods_skus = this.msg.goods_skus[0]
+      //     this.editSkus = _.cloneDeep(this.goods_skus)
+      //     this.saleSelect.content = this.goods_skus.sale_unit
+      //     this.supplierSelect.content = this.goods_skus.supplier_name
+      //     this.purchaseSelect.content = this.goods_skus.purchase_unit
+      //     this.editRurchaseUnit = this.goods_skus.purchase_unit
+      //     this.dispatchSelect.content = this.goods_skus.base_unit
+      //     this.editRurchasePrice = this.goods_skus.base_purchase_rate
+      //     this.completeStatus = this.msg.complete_status
+      //     this._saleInfo()
+      //   }
+      //   if (this.$route.query.copy) {
+      //     this.msg = storage.get('msg')
+      //     this.goods_skus = storage.get('goods_skus')
+      //     this.saleMsg = storage.get('saleMsg')
+      //     this.sale_skus = storage.get('sale_skus')
+      //     this.videoUrl = storage.get('videoUrl')
+      //     this.editSkus = _.cloneDeep(this.goods_skus)
+      //     this.saleSelect.content = this.goods_skus.sale_unit
+      //     this.supplierSelect.content = this.goods_skus.supplier_name
+      //     this.purchaseSelect.content = this.goods_skus.purchase_unit
+      //     this.editRurchaseUnit = this.goods_skus.purchase_unit
+      //     this.dispatchSelect.content = this.goods_skus.base_unit
+      //     this.editRurchasePrice = this.goods_skus.base_purchase_rate
+      //     this.msg.goods_main_images.forEach((item) => {
+      //       item.id = 0
+      //     })
+      //     this.saleMsg.goods_banner_images.forEach((item) => {
+      //       item.id = 0
+      //     })
+      //     this.saleMsg.goods_detail_images.forEach((item) => {
+      //       item.id = 0
+      //     })
+      //     this.goods_skus.goods_sku_id = 0
+      //     this.goods_skus.goods_id = 0
+      //     this.msg.goods_id = 0
+      //     this.saleMsg.goods_id = 0
+      //     this.sale_skus.goods_sku_id = 0
+      //     this.sale_skus.goods_id = 0
+      //   }
+      // },
       // 获取商品类目列表
       _getGoodsTypeList() {
         API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false)

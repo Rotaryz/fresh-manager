@@ -132,25 +132,25 @@ export default [
           titles: ['商城', '商品', '商品列表', '商品'],
           variableIndex: 3,
           marginBottom: 80,
-          beforeResolve(routeTo, routeFrom, next) {
-            if (!routeTo.query.id) {
-              return next()
-            }
-            store
-              .dispatch('editgoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
-              .then((response) => {
-                if (!response) {
-                  return next({name: '404'})
-                }
-                routeTo.params.detail = response
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
-          }
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   if (!routeTo.query.id) {
+          //     return next()
+          //   }
+          //   store
+          //     .dispatch('editgoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
+          //     .then((response) => {
+          //       if (!response) {
+          //         return next({name: '404'})
+          //       }
+          //       routeTo.params.detail = response
+          //       next()
+          //     })
+          //     .catch(() => {
+          //       next({name: '404'})
+          //     })
+          // }
         },
-        props: (route) => ({detail: route.params.detail})
+        // props: (route) => ({detail: route.params.detail})
       },
       // 导入商品
       {
