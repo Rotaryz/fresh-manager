@@ -139,10 +139,10 @@
         <div>
           <div class="shade-tab">
             <div class="tab-item">
-              <base-drop-down width="218" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+              <base-drop-down :width="218" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-drop-down width="218" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+              <base-drop-down :width="218" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
             </div>
             <div class="tab-item">
               <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
