@@ -1,5 +1,5 @@
 <template>
-  <div slot="middle" class="image-box">
+  <div slot="middle" class="edit-media">
     <div class="edit-image">
       <draggable v-model="dragList" class="draggable">
         <div v-for="(item, index) in dataArray" :key="index" class="show-image hand" :class="fileType">
