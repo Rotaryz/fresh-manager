@@ -12,6 +12,7 @@
       <div class="">
         <base-search placeHolder="商品名称" :infoText="keyWord" @search="changeKeyword"></base-search>
       </div>
+      <span class="hand" @click="showMaterial">   open</span>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -43,6 +44,7 @@
         <base-pagination ref="pagination" :pageDetail="storePageTotal" @addPage="addPage"></base-pagination>
       </div>
     </div>
+
     <default-modal ref="storeModal">
       <div slot="content" class="store-box">
         <div class="title-box">
@@ -99,11 +101,14 @@
         </div>
       </div>
     </default-modal>
+
+    <goods-material ref="goodsMaterial" @selectMaterial="selectMaterial"></goods-material>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {scmGoodsComputed, scmGoodsMethods} from '@state/helpers'
+  import GoodsMaterial from '@components/goods-material/goods-material'
   import DefaultModal from '@components/default-modal/default-modal'
   import API from '@api'
   const PAGE_NAME = 'GOODS_STORE'
@@ -115,7 +120,8 @@
       title: TITLE
     },
     components: {
-      DefaultModal
+      DefaultModal,
+      GoodsMaterial
     },
     data() {
       return {
@@ -154,6 +160,12 @@
     },
     methods: {
       ...scmGoodsMethods,
+      showMaterial() {
+        this.$refs.goodsMaterial.show()
+      },
+      selectMaterial(item) {
+        console.log(item)
+      },
       // 获取类目列表
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {

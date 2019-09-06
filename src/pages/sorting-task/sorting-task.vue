@@ -22,6 +22,12 @@
       <div class="down-item">
         <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
+      <template v-if="sortingTask.filter.sorting_mode === 0">
+        <span class="down-tip">线路筛选</span>
+        <div class="down-item">
+          <base-drop-down :select="roadList" @setValue="checkRoad"></base-drop-down>
+        </div>
+      </template>
       <!--下拉选择-->
       <template v-if="sortingTask.filter.sorting_mode === 1">
         <span class="down-tip">类目筛选</span>
@@ -194,6 +200,13 @@
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
         },
+        roadList: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}] // 格式：{name: '55'}
+        },
         filterTaskFrist: {
           check: false,
           show: false,
@@ -237,6 +250,7 @@
       this._getStatusData()
       this._setErrorStatus()
       this.getCategoriesData()
+      this._getRoadList()
       this._setData()
     },
     methods: {
@@ -250,6 +264,21 @@
         this.thirdlySelect.content = selectDown.thrName
         this.secondSelect.data = selectDown.twoList
         this.thirdlySelect.data = selectDown.thrList
+      },
+      _getRoadList() {
+        API.Sorting.getRoadList().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.roadList.data = res.data.map(item => {
+              return {
+                name: item.road_name,
+                id: item.id
+              }
+            })
+            this.stairSelect.data.unshift({name: '全部', id: ''})
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
       },
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
@@ -302,7 +331,10 @@
         }
       },
       async checkErr(item) {
-        this._updateData({exception_status:item.status,page:1})
+        this._updateData({exception_status:item.status, page:1})
+      },
+      async checkRoad(item) {
+        this._updateData({road_id:item.id, page:1})
       },
       initBaseDropDown(first, second) {
         if (first) {
@@ -387,13 +419,15 @@
       },
       // 状态栏数据
       _getStatusData() {
+        let obj = this.sortingTask.filter
         let params = {
-          start_time: this.sortingTask.filter.start_time,
-          end_time: this.sortingTask.filter.end_time,
-          goods_material_category_id: this.sortingTask.filter.goods_material_category_id,
-          keyword: this.sortingTask.filter.keyword,
-          exception_status: this.sortingTask.filter.exception_status,
-          sorting_mode: this.sortingTask.filter.sorting_mode
+          start_time: obj.start_time,
+          end_time: obj.end_time,
+          goods_material_category_id: obj.goods_material_category_id,
+          keyword: obj.keyword,
+          exception_status: obj.exception_status,
+          sorting_mode: obj.sorting_mode,
+          road_id: obj.road_id
         }
         // todo
         API.Sorting.getStausData(params)
@@ -464,7 +498,8 @@
           end_time: obj.end_time,
           keyword: obj.keyword,
           status: obj.status,
-          sorting_mode: obj.sorting_mode
+          sorting_mode: obj.sorting_mode,
+          road_id: obj.road_id
         }
         let search = []
         for (let key in data) {
@@ -484,7 +519,8 @@
           keyword: obj.keyword,
           status: obj.status,
           exception_status: obj.exception_status,
-          sorting_mode: obj.sorting_mode
+          sorting_mode: obj.sorting_mode,
+          road_id: obj.road_id
         }
         let search = []
         for (let key in data) {
