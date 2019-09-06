@@ -357,7 +357,6 @@
             return
           }
           this.picking = res.data
-          console.log(this.picking)
         })
       },
       _getOutWarehouse() {

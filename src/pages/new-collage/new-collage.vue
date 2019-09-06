@@ -183,7 +183,6 @@
         </div>
       </div>
     </div>
-    <!--<p @click="test">测试</p>-->
     <!-- 选择优惠券弹窗-->
     <default-modal ref="couponModal">
       <div slot="content" class="shade-box">
@@ -275,6 +274,8 @@
       </div>
     </default-modal>
 
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" :maxLimit="20" @batchAddition="batchAddition"></add-goods>
 
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
@@ -288,6 +289,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import {activityComputed, activityMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
@@ -333,6 +335,7 @@
     components: {
       DefaultModal,
       DefaultConfirm,
+      AddGoods,
       DatePicker
     },
     data() {
@@ -443,11 +446,19 @@
     },
     watch: {},
     created() {
+      if (this.$route.query.id && +this.$route.query.id !== 0) {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '查看活动'])
+      } else {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '新建活动'])
+      }
       this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.collageDetail)
-        this.goodsList = obj.activity_goods
+        this.goodsList = obj.activity_goods.map(item => {
+          item.id = item.id || item.goods_id
+          return item
+        })
         if (this.goodsList) {
           this.selectGoodsId = obj.activity_goods.map((item) => {
             return item.goods_id
@@ -718,6 +729,29 @@
         this._cancelModal()
       },
 
+      // 批量添加商品
+      batchAddition(list) {
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            // 初始数据
+            item.all_stock = item.usable_stock
+            item.usable_stock = ''
+            item.trade_price_show = item.trade_price
+            item.trade_price = ''
+            item.sort = 0
+          }
+          return item
+        })
+        this.goodsList = newArr
+      },
+
       _additionCoupon() {
         this.couponCheckItem.id && (this.couponSelectItem = this.couponCheckItem)
         if (this.couponCheckItem.id) {
@@ -749,18 +783,20 @@
         if (this.modalType === 'coupon') {
           this._initData()
           this.modalType = ''
-          await this._getGoodsList()
+          // await this._getGoodsList()
           // 展示添加商品弹窗
-          this.$refs.goodsModel.showModal()
-          this.$refs.goodsSearch.infoTextMethods()
+          // this.$refs.goodsModel.showModal()
+          this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+          // this.$refs.goodsSearch.infoTextMethods()
         } else {
-          await this._getGoodsList()
-          this.$refs.goodsModel.showModal()
+          this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+          // await this._getGoodsList()
+          // this.$refs.goodsModel.showModal()
         }
       },
       _cancelModal() {
         this.$refs.couponModal && this.$refs.couponModal.hideModal()
-        this.$refs.goodsModel && this.$refs.goodsModel.hideModal()
+        // this.$refs.goodsModel && this.$refs.goodsModel.hideModal()
       },
       // 切换分类
       _setClassify(index, item) {
@@ -845,13 +881,6 @@
           }
         }
         return true
-      },
-      test() {
-        let list = this.goodsList.map((item) => {
-          delete item.person_day_buy_limit
-          item.goods_id = item.id || item.goods_id
-        })
-        console.log(list)
       },
       checkForm() {
         let arr = [

@@ -14,9 +14,11 @@
     <div class="second">
       <div v-for="(item, index) in navList" :key="index">
         <div class="second-item">
-          <p class="second-title">{{item.display_name}}</p>
-          <div v-for="(child, i) in item.sub_menu" :key="i" class="second-link hand" @click="_setChildActive(child)">
-            <span :class="child | childrenActive" class="second-link-content">{{child.display_name}}</span>
+          <p class="second-title hand" @click="_toggleNav(index)"><span class="icon-open" :class="{'icon-close': !item.open}"></span>{{item.display_name}}</p>
+          <div class="second-box" :class="{'transition': transition}" :style="{height: item.open ? 34*(item.sub_menu ? item.sub_menu.length : 0) + 'px' : 0}">
+            <div v-for="(child, i) in item.sub_menu" :key="i" class="second-link hand" @click="_setChildActive(child)">
+              <span :class="child | childrenActive" class="second-link-content">{{child.display_name}}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -431,7 +433,8 @@
         firstMenu: [],
         firstIndex: INFO_INDEX,
         navList: [],
-        oldMenu: FIRST_MENU
+        oldMenu: FIRST_MENU,
+        transition: false
       }
     },
     watch: {
@@ -488,6 +491,8 @@
         this.firstMenu = this.firstMenu.map((item, idx) => {
           if (item.sub_menu && item.sub_menu.length) {
             item.sub_menu.forEach((end) => {
+              // 增加open标识
+              end.open = true
               if (smallIndex === -1 && index === '') {
                 smallIndex = end.sub_menu.findIndex((child) => {
                   return currentPath.includes(child.url)
@@ -520,6 +525,22 @@
         this.firstIndex = i
         this.navList = JSON.parse(JSON.stringify(this.firstMenu[i].sub_menu))
         this._navigationTo(this.firstMenu[i].url)
+      },
+      // 打开/关闭二级菜单
+      _toggleNav(index) {
+        let result = !this.navList[index].open
+        let newArr =  JSON.parse(JSON.stringify(this.navList))
+        this.navList = newArr.map((item, ind) => {
+          if (index === ind) {
+            item.open = result
+          }
+          return item
+        })
+        this.$forceUpdate()
+        this.transition = true
+        setTimeout(() => {
+          this.transition = false
+        }, 200)
       },
       // 跳转二级菜单页面
       _setChildActive(child) {
@@ -573,7 +594,7 @@
   $color-menu-bg-active = #0F1922
   $color-menu-bg = #1D2B36
   $color-white = #fff
-  $menu-width = 100px
+  $menu-width = 90px
 
   .navigation
     user-select: none
@@ -582,6 +603,7 @@
     left: 0
     z-index: 2000
     width: 210px
+    font-family: $font-family-regular
     display: flex
 
     .first
@@ -594,7 +616,7 @@
     .menu
       position: relative
       z-index: 1
-      width: 100px
+      width: $menu-width
 
     .nav-item
       height: 54px
@@ -603,7 +625,7 @@
       color: #EFD8E1
       padding: 0 10px
       box-sizing: border-box
-      transition: all 0.3s
+      transition: all 0.2s
 
       .nav-item-icon
         width: 14px
@@ -615,7 +637,7 @@
 
     .nav-item-active
       color: $color-text-main
-      background: $color-white
+      background: #FFF
 
     .beginner-guide
       position absolute
@@ -633,7 +655,7 @@
         .nav-item-icon
           width 62px
           height 68px
-          margin-left: 10px
+          margin-left: 5px
 
   .logo
     position: relative
@@ -648,10 +670,10 @@
       width: 32px
 
   .second
-    padding: 10px 16px 20px
+    padding: 10px 16px 12px
     box-sizing: border-box
     height: 100vh
-    width: 110px
+    width: 120px
     background: $color-white
     overflow: auto
     white-space: nowrap
@@ -682,12 +704,28 @@
     .second-title
       transition: all 0.2s
       margin: 30px 0 10px
-      color: #888888
+      color: #333
       font-size: $font-size-14
       line-height: 1
-
+      display: flex
+      align-items: center
+      .icon-open
+        width: 9px
+        height: 5px
+        transition: all 0.2s
+        margin-right: 4px
+        background: url("./icon-navigation_down@2x.png")
+        background-size: 100% 100%
+      .icon-close
+        transform: rotate(-90deg)
+    .second-box
+      height: 0
+      overflow: hidden
+    .transition
+      transition: all 0.2s
     .second-link
       transition: all 0.2s
+      padding-left: 7px
       height: 34px
       line-height: 34px
       color: $color-text-main
@@ -700,7 +738,8 @@
       background: rgba(79, 189, 102, 0.17)
       color: $color-main
     .second-link-content
-      margin-left: -6px
+      display: inline-block
       border-radius: 2px
+      line-height: 1
       padding: 5px 6px
 </style>

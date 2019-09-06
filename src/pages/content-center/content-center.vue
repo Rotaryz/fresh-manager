@@ -151,7 +151,6 @@
       },
       changeTab(item, index) {
         this.setCenterIndex(index)
-        console.log(this.categoryIdName)
         this.getCenterListMore({page: this.saveValue[this.pageName], centerCategoryId: this.saveValue[this.categoryIdName], keyword: this.saveValue[this.keywordName], status: this.saveValue[this.statusName], tabIndex: index})
         this.$refs.search.infoTextMethods(this.saveValue[this.keywordName])
       },

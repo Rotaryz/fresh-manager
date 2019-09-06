@@ -85,7 +85,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .status-top
-    height: 40px
+    height: 36px
     width: 100%
 
   .status-tab

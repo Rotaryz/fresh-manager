@@ -106,7 +106,7 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveEntryOrder">保存</div>
     </div>
-    <select-store ref="goodsPop" :stock="false" @additionOne="additionOne" @batchAddition="batchAddition"></select-store>
+    <select-store ref="goodsPop" :stock="false" @batchAddition="batchAddition"></select-store>
   </div>
 </template>
 
@@ -117,7 +117,6 @@
   import SelectStore from '@components/select-store/select-store'
   import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
   import API from '@api'
-  import {objDeepCopy} from '@utils/common'
   import {DatePicker} from 'iview'
 
   const PAGE_NAME = 'CONSUMER_ORDER_DETAIL'
@@ -355,33 +354,25 @@
         }
       },
       batchAddition(list) {
-        list.forEach((item) => {
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
           let isExist = false
-          this.goodsList.forEach((item1) => {
-            if (item.goods_id * 1 === item1.goods_id * 1) {
+          this.goodsList.forEach((goods) => {
+            if (item.goods_id * 1 === goods.goods_id * 1) {
               isExist = true
             }
           })
           if (!isExist) {
-            let obj = objDeepCopy(item)
-            obj.price = 0
-            obj.total = 0
-            obj.base_num = ''
-            this.goodsList.push(obj)
+            item.price = 0
+            item.total = 0
+            item.base_num = ''
           }
+          return item
         })
+        this.goodsList = newArr
       },
       async _showGoods() {
-        // if (this.disable) {
-        //   return
-        // }
-        // await this._getGoodsList()
-        // // 展示添加商品弹窗
-        // this.$refs.goodsModel && this.$refs.goodsModel.showModal()
-        this.$refs.goodsPop._delGoods(this.goodsList)
-      },
-      _hideGoods() {
-        this.$refs.goodsModel.hideModal()
+        this.$refs.goodsPop && this.$refs.goodsPop.showModal(this.goodsList)
       },
       // 切换分类
       _setClassify(index, item) {

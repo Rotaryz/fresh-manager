@@ -32,6 +32,17 @@ export default {
     return request.delete(url, {}, loading)
   },
   /**
+   * 终止活动
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  stopActive(id, loading = false) {
+    let url = `/social-shopping/api/backend/activity-manage/activity/terminate/${id}`
+    return request.post(url, {}, loading)
+  },
+
+  /**
    * 新建限时抢购
    * @param data
    * @param loading
@@ -51,7 +62,6 @@ export default {
     let url = `/social-shopping/api/backend/goods-manage/goods`
     return request.get(url, data, loading)
   },
-
   /**
    * 限时抢购类型统计
    * @param loading
@@ -60,5 +70,14 @@ export default {
   getSaleStatus(data, loading = false) {
     let url = '/social-shopping/api/backend/activity-manage/activity-status'
     return request.get(url, data, loading)
+  },
+  /**
+   * 限时抢购类型统计
+   * @param loading
+   * @returns {*}
+   */
+  getDeliveryTime(data, loading = false) {
+    let url = '/social-shopping/api/backend/activity-manage/delivery-time'
+    return request.post(url, data, loading)
   }
 }

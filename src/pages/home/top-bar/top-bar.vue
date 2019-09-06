@@ -5,7 +5,10 @@
         <span v-for="(item, index) in currentTitles" :key="index" :class="{'active': index === currentTitles.length -1}" class="title-wrapper-item"> {{item}} <span v-if="index !== currentTitles.length -1" class="title-line"> / </span></span>
       </section>
       <section class="userInfo-wrapper" @mouseenter="showTooltip = true" @mouseleave="showTooltip = false">
-        <p class="name">你好: {{currentUser && currentUser.manager_info.username}}</p>
+        <p class="name">
+          <img src="./icon-head@2x.png" alt="" class="head-image">
+          你好: {{currentUser && currentUser.manager_info.username}}
+        </p>
         <div class="log-out"></div>
         <transition name="fade">
           <div v-show="showTooltip" class="tooltip-con">
@@ -96,12 +99,21 @@
         margin-left: 10px
         font-size: $font-size-14
         color: $color-text-main
+        font-family: $font-family-regular
+        display: flex
+        align-items: center
+        .head-image
+          width: 16px
+          height: 16px
+          margin-right: 6px
+          border-radius: 50%
+          object-fit: cover
       .log-out
         cursor: pointer
-        width: 10px
-        height: 10px
-        margin-left: 8px
-        icon-image('./icon-sign_out')
+        width: 6px
+        height: 9px
+        margin-left: 6px
+        icon-image('./icon-out')
         &:hover
           animation: rotate .75s linear infinite
     .title-wrapper

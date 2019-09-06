@@ -112,8 +112,7 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveActivity">保存</div>
     </div>
-    <!--<div @click="testForm">test</div>-->
-    <select-goods ref="goodsPop" @additionOne="additionOne" @batchAddition="batchAddition"></select-goods>
+    <select-goods ref="selectGoods" @batchAddition="batchAddition"></select-goods>
   </div>
 </template>
 
@@ -357,28 +356,23 @@
         }
       },
       batchAddition(list) {
-        list.forEach((item) => {
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
           let isExist = false
-          this.goodsList.forEach((item1) => {
-            if (item.goods_id * 1 === item1.goods_id * 1) {
+          this.goodsList.forEach((goods) => {
+            if (item.goods_id * 1 === goods.goods_id * 1) {
               isExist = true
             }
           })
           if (!isExist) {
-            let obj = objDeepCopy(item)
-            obj.sale_num = ''
-            this.goodsList.push(obj)
+            item.sale_num = ''
           }
+          return item
         })
+        this.goodsList = newArr
       },
       async _showGoods() {
-        // if (this.disable) {
-        //   return
-        // }
-        // await this._getGoodsList()
-        // // 展示添加商品弹窗
-        // this.$refs.goodsModel && this.$refs.goodsModel.showModal()
-        this.$refs.goodsPop._delGoods(this.goodsList)
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
       },
       _hideGoods() {
         this.$refs.goodsModel.hideModal()

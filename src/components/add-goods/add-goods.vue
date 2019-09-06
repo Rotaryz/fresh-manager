@@ -1,32 +1,41 @@
 <template>
   <!-- 选择商品弹窗-->
-  <default-modal ref="goodsModel">
+  <default-modal ref="goodsModal">
     <div slot="content" class="shade-box">
-      <div class="shade-header">
-        <div class="shade-title">选择商品</div>
-        <span class="close hand" @click="_cancelGoods"></span>
+      <div class="title-box">
+        <div class="title">选择商品</div>
+        <span class="close hand" @click="_cancelModal"></span>
       </div>
       <div class="shade-tab">
         <div class="tab-item">
           <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+          <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+          <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
         </div>
       </div>
       <div class="goods-content">
-        <div class="rush-goods-list">
-          <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
-            <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-            <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
-            <div class="goods-msg">
-              <div class="goods-name">{{item.name}}</div>
-              <div class="goods-money">¥{{item.original_price}}</div>
+        <div class="goods-title">
+          <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">
+            <span v-if="item.value === 'name' && +maxLimit !== 1" class="select-icon hand" :class="{'select-icon-active': selectAll}" @click="_selectAllGoods()"></span>
+            <span v-if="item.value === 'name' && +maxLimit === 1" class="no-icon"></span>
+            <span class="text">{{item.name}}</span>
+          </div>
+        </div>
+        <div class="goods-list">
+          <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item hand" @click="_selectGoods(item,index)">
+            <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content" :style="{flex: title.flex}">
+              <span v-if="title.value === 'name' && +maxLimit !== 1" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+              <span v-if="title.value === 'name' && +maxLimit === 1" class="select-one-icon" :class="{'select-one-icon-active': item.selected === 1 || item.selected === 2}"></span>
+              <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
+              <div class="value">
+                <p class="text">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}{{title.value === 'usable_stock' ? item.sale_unit : ''}}</p>
+                <p v-if="title.value === 'name'" class="text">{{item.goods_sku_code}}</p>
+              </div>
             </div>
-            <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
           </div>
         </div>
       </div>
@@ -34,8 +43,8 @@
         <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
       </div>
       <div class="back">
-        <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
-        <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
+        <div class="back-cancel back-btn hand" @click="_cancelModal">取消</div>
+        <div class="back-btn back-submit hand" @click="_batchAddition">{{+maxLimit === 1 ? '确定' : '批量添加'}}</div>
       </div>
     </div>
   </default-modal>
@@ -46,109 +55,178 @@
   import API from '@api'
 
   const COMPONENT_NAME = 'ADD_GOODS'
+  const GOODS_POP_TITLE = [
+    {name: '商品', flex: 2, value: 'name'},
+    {name: '销售价格', flex: 1, value: 'trade_price'},
+    {name: '可用库存', flex: 0.5, value: 'usable_stock'}
+  ]
 
   export default {
     name: COMPONENT_NAME,
     components: {
       DefaultModal
     },
+    props: {
+      maxLimit: {
+        type: [Number, String],
+        default: ''
+      },
+      goodsType: {
+        type: [Number, String],
+        default: 1
+      }
+    },
     data() {
       return {
+        goodsTitle: GOODS_POP_TITLE,
         assortment: {
           check: false,
           show: false,
-          content: '选择分类',
+          content: '一级分类',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
         secondAssortment: {
           check: false,
           show: false,
-          content: '选择二级分类',
+          content: '二级分类',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
         selectGoods: [], // 单次选择的商品
-        selectGoodsId: [], // 所有选择的商品id
         goodsDelId: 0,
         goodsDelIndex: 0,
-        selectDelId: [],
-        choeesGoods: [],
+        chooseGoods: [],
         goodsPage: {
           total: 1,
           per_page: 10,
           total_page: 1
         },
-        parentId: 0,
+        page: 1,
+        parentId: '',
         keyword: '',
-        goodsList: []
+        goodsList: [],
+        parentGoodsList: [],
+        selectAll: false
       }
     },
     async created() {
-      await this._getGoodsList()
-    // this.$refs.goodsModel.showModal()
+      this._getFirstAssortment()
     },
     methods: {
-      // 删除商品传入商品id
-      _delGoods(id) {
-        let index = this.selectGoodsId.findIndex((item) => item === id)
-        this.selectGoodsId.splice(index, 1)
-        this.goodsList.splice(this.goodsDelIndex, 1)
-        this.selectDelId.push(id)
+      showModal(list) {
+        this.parentGoodsList = list
         this._getGoodsList()
-        this.$refs.goodsModel.showModal()
+        this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
-        this.$refs.goodsModel.hideModal()
+        this.selectAll = false
+        this.$refs.goodsModal.hideModal()
       },
-      // 单个添加
-      _additionOne(item, index) {
-        if (item.selected === 1) {
+      // 勾选商品
+      _selectGoods(item, index) {
+        if (item.usable_stock <= 0) {
+          this.$toast.show('该商品库存为0，不能选择')
           return
         }
-        this.choeesGoods[index].selected = 1
-        this.goodsList.push(item)
-        this.selectGoodsId.push(item.id)
-        this.choeesGoods.forEach((item) => {
-          if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
-            }
+        switch (item.selected) {
+        case 0:
+          if (this.maxLimit && +this.maxLimit !== 1 && (this.selectGoods.length + this.parentGoodsList.length) === +this.maxLimit) {
+            this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
+            return
           }
+          if (+this.maxLimit === 1) {
+            this.selectGoods = []
+            this.chooseGoods = this.chooseGoods.map(item => {
+              item.selected = 0
+              return item
+            })
+          }
+          this.chooseGoods[index].selected = 2
+          this.selectGoods.push(item)
+          break
+        case 2:
+          if (+this.maxLimit === 1) return
+          this.chooseGoods[index].selected = 0
+          this.selectAll = false
+          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
+          if (idx !== -1) {
+            this.selectGoods.splice(idx, 1)
+          }
+          break
+        }
+      },
+      _selectAllGoods() {
+        let goods = this.chooseGoods
+        let allDisable = goods.every(item => {
+          return +item.selected === 1
         })
-        this.$emit('additionOne', item)
+        if (allDisable) return
+        for (let i in goods) {
+          if (goods[i].usable_stock <= 0) {
+            this.$toast.show(`商品"${goods[i].goods_material_name}"库存不足`)
+            return
+          }
+        }
+        this.selectAll = !this.selectAll
+        if (this.maxLimit && this.selectAll && (this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length) > this.maxLimit) {
+          this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
+          this.selectAll = false
+          return
+        }
+
+        if (this.selectAll) {
+          this.chooseGoods.map(item => {
+            +item.selected === 0 && (item.selected = 2);
+            +item.selected === 2 && this.selectGoods.push(item)
+            return item
+          })
+        } else {
+          this.chooseGoods.map(item => {
+            if (+item.selected === 2) {
+              item.selected = 0
+              this.selectGoods = this.selectGoods.filter(goods => {
+                return goods.id !== item.id
+              })
+            }
+            return item
+          })
+        }
+
       },
       // 批量添加
       _batchAddition() {
-        this.choeesGoods = this.choeesGoods.map((item) => {
+        this.chooseGoods = this.chooseGoods.map((item) => {
           item.selected = item.selected === 2 ? 1 : item.selected
           return item
         })
-        this.goodsList = this.goodsList.concat(this.selectGoods)
+        if (+this.maxLimit === 1) {
+          this.parentGoodsList = this.selectGoods.length ? this.selectGoods : this.parentGoodsList
+        } else {
+          this.parentGoodsList = this.parentGoodsList.concat(this.selectGoods)
+        }
         this.selectGoods = []
-        this.$emit('batchAddition', this.goodsList)
+        this.$emit('batchAddition', this.parentGoodsList)
         this._hideGoods()
       },
-      _cancelGoods() {
+      _cancelModal() {
         this.selectGoods.forEach((item) => {
-          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
-          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
-          this.selectGoodsId.splice(delIdx, 1)
+          let idx = this.chooseGoods.findIndex((items) => items.goods_id === item.goods_id)
+          idx > -1 && (this.chooseGoods[idx].selected = this.chooseGoods[idx].selected === 1 ? 1 : 0)
         })
         this.selectGoods = []
         this._hideGoods()
       },
       // 选择商品
       async _getGoodsList() {
-        let res = await API.Rush.getGoodsList({
+        let res = await API.Sale.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
           shelf_id: this.id,
-          limit: 10,
-          page: this.page
+          limit: 6,
+          page: this.page,
+          goods_type: this.goodsType
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -158,29 +236,43 @@
           per_page: res.meta.per_page,
           total_page: res.meta.last_page
         }
-        this.choeesGoods = res.data.map((item, index) => {
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          if (delIndex !== -1) {
+        this.chooseGoods = []
+        this.chooseGoods = res.data.map((item) => {
+          let ischecked = false
+          this.parentGoodsList.forEach((item1) => {
+            if (item1.id * 1 === item.id * 1) {
+              ischecked = true
+            }
+          })
+          if (ischecked) {
+            item.selected = 1
+          } else {
             item.selected = 0
           }
-          if (idx !== -1) {
-            item.selected = 1
-          }
+          return item
+        })
+        this.chooseGoods = res.data.map((item, index) => {
+          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           if (goodsIndex !== -1) {
             item.selected = 2
           }
           return item
         })
+        let allSelect = this.chooseGoods.length
+          ? this.chooseGoods.every(item => {
+            return +item.selected !== 0
+          })
+          : false
+        allSelect && (this.selectAll = true)
+        !allSelect && (this.selectAll = false)
       },
-      // 选择二级分类
+      // 选择一级分类
       async _secondAssortment(item) {
         this.parentId = item.id
         let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
         this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
-        this.secondAssortment.content = '选择二级分类'
+        this.secondAssortment.content = '二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
@@ -205,27 +297,6 @@
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
-      // 勾选商品
-      _selectGoods(item, index) {
-        switch (item.selected) {
-        case 0:
-          this.choeesGoods[index].selected = 2
-          this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
-          break
-        case 2:
-          this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
-          if (idx !== -1) {
-            this.selectGoods.splice(idx, 1)
-          }
-          if (idIdx !== -1) {
-            this.selectGoodsId.splice(idx, 1)
-          }
-          break
-        }
-      },
       // 获取分页商品列表
       async _getMoreGoods(page) {
         this.page = page
@@ -238,6 +309,46 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
+  //  弹窗
+  .shade-box
+    box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
+    border-radius: 2px
+    background: $color-white
+    height: 662px
+    max-width: 1000px
+    width: 1000px
+    position: relative
+    overflow-x: hidden
+    overflow-y: auto
+    flex-wrap: wrap
+    padding: 0 20px
+    box-sizing: border-box
+    .title-box
+      display: flex
+      box-sizing: border-box
+      padding: 23px 0
+      align-items: center
+      justify-content: space-between
+      .title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        line-height: 1
+        color: $color-text-main
+      .close
+        width: 12px
+        height: @width
+        icon-image('icon-close')
+    .back
+      border-top-1px($color-line)
+      position: absolute
+      left: 0
+      right: 0
+      bottom: 0
+      background: $color-white
+      justify-content: flex-end
+      height: 70px
+
+
   /*选择商品样式*/
   .shade-tab
     margin-bottom: 20px
@@ -247,89 +358,146 @@
     .tab-item
       margin-right: 10px
 
+  .goods-content
+    border-radius: 4px
+    height: 405px
+    .goods-title
+      display: flex
+      height: 45px
+      background: #F5F7FA
+      position: relative
+      align-items: center
+      padding: 0 30px 0 20px
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .title-item
+        padding-right: 20px
+        display: flex
+        align-items: center
+        font-family: $font-family-regular
+        .select-icon
+          margin-right: 20px
+          border-radius: 1px
+          border: 1px solid #e9ecee
+          height: 16px
+          width: 16px
+          display: inline-block
+          -webkit-transition: all .3s
+          transition: all .3s
+        .select-icon-active
+          border: 1px solid transparent
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check@2x.png")
+        .no-icon
+          margin-right: 20px
+          width: 16px
+          height: 16px
+          display: inline-block
+    .goods-list
+      .goods-item
+        box-sizing: border-box
+        padding: 0 30px 0 20px
+        width: 100%
+        height: 60px
+        display: flex
+        align-items: center
+        position: relative
+        font-family: $font-family-regular
+        &:last-child
+          border-bottom-1px($color-line)
+        &:before
+          content: ""
+          pointer-events: none // 解决iphone上的点击无效Bug
+          display: block
+          position: absolute
+          left: 0
+          top: 0
+          transform-origin: 0 0
+          border-right: 1px solid #E9ECEE
+          border-left: 1px solid #E9ECEE
+          border-top: 1px solid #E9ECEE
+          box-sizing border-box
+          width: 200%
+          height: 100%
+          transform: scaleX(.5) translateZ(0)
+          @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+            width: 100%
+            height: 300%
+            transform: scaleX(1 / 3) translateZ(0)
+        &:nth-child(2n)
+          background: #f5f7fa
+        .item-content
+          padding-right: 20px
+          display: flex
+          align-items: center
+        .goods-img
+          width: 40px
+          object-fit: cover
+          height: @width
+          overflow: hidden
+          margin-right: 10px
+        .select-icon
+          margin-right: 20px
+          border-radius: 1px
+          border: 1px solid #e9ecee
+          height: 16px
+          width: 16px
+          -webkit-transition: all .3s
+          transition: all .3s
+        .select-icon-active
+          border: 1px solid transparent
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check@2x.png")
+        .select-icon-disable
+          border: 1px solid transparent
+          cursor: not-allowed
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check_ash@2x.png")
+        .select-one-icon
+          margin-right: 20px
+          border-radius: 50%
+          border: 1px solid #E1E1E1
+          height: 16px
+          width: 16px
+          display: inline-block
+          transition: all .3s
+        .select-one-icon-active
+          border: 5px solid $color-main
+        .value
+          white-space: nowrap
+          text-overflow: ellipsis
+          overflow: hidden
+          max-width: 320px
+          .text
+            overflow: hidden
+            text-overflow: ellipsis
+
   .page-box
+    padding: 0 20px
     box-sizing: border-box
-    height: 66px
+    height: 77px
     align-items: center
     display: flex
-
-  .goods-content
-    border-radius: 2px
-    .rush-goods-list
-      height: 420px
-    .goods-item
-      box-sizing: border-box
-      padding: 0 20px
-      width: 100%
-      height: 60px
-      display: flex
-      align-items: center
-      border-bottom: 0.5px solid $color-line
-      border-right: 0.5px solid $color-line
-      border-left: 0.5px solid $color-line
-      position: relative
-      &:nth-child(2n+1)
-        background: #f5f7fa
-      &:first-child
-        border-top: 0.5px solid $color-line
-      .select-icon
-        margin-right: 20px
-        border-radius: 2px
-        border: 1px solid $color-line
-        height: 16px
-        width: 16px
-        transition: all 0.3s
-      .select-icon-disable
-        border: 1px solid transparent
-        cursor: not-allowed
-        icon-image('icon-check_ash')
-      .select-icon-active
-        border: 1px solid transparent
-        icon-image('icon-check')
-      .goods-img
-        margin-right: 10px
-        width: 40px
-        height: @width
-        overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
-      .goods-msg
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        height: 40px
-        align-items: center
-        margin-right: 130px
-        flex: 1
-        .goods-name
-          width: 593px
-          no-wrap()
-        .goods-name, .goods-money
-          line-height: 1
-          font-size: $font-size-14
-      .add-btn
-        col-center()
-        right: 20px
-        border-radius: 2px
-        margin-left: 88px
-        padding: 7px 0
-        min-width: 56px
-        text-align: center
-      .add-btn-disable
-        border-radius: 2px
-        padding: 7px 0
-        width: 56px
-        box-sizing: border-box
-        text-align: center
-        font-size: $font-size-14
-        line-height: 1
-        cursor: not-allowed
-        background: $color-line
-        color: $color-text-assist
-        border: none
-
   /*弹窗动画*/
   @keyframes layerFadeIn {
     0% {

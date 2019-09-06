@@ -1,63 +1,37 @@
 <template>
   <div class="goods-store table">
+    <div class="down-content">
+      <span class="down-tip">分类筛选</span>
+      <div class="down-item-small">
+        <base-drop-down :select="oneList" @setValue="selectOneList"></base-drop-down>
+      </div>
+      <div class="down-item">
+        <base-drop-down :select="twoList" @setValue="selectTwoList"></base-drop-down>
+      </div>
+      <span class="down-tip">搜索</span>
+      <div class="">
+        <base-search placeHolder="商品名称" :infoText="keyWord" @search="changeKeyword"></base-search>
+      </div>
+    </div>
     <div class="table-content">
       <div class="identification">
         <div class="identification-page">
           <img src="./icon-product_list@2x.png" class="identification-icon">
-          <p class="identification-name">商品素材中心</p>
-        </div>
-        <div class="function-btn">
-          <div class="distribution-down">
-            <span class="down-tip">搜索</span>
-            <div class="down-item">
-              <base-search placeHolder="商品名称" @search="changeKeyword"></base-search>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="type-select">
-        <div class="select-left">一级类目：</div>
-        <div class="select-right one-select-box" :class="{'select-right-active': isOpenOne}">
-          <div v-for="(item, index) in oneList" :key="index" class="select-item select-one-item" :class="item.is_selected ? 'select-item-select' : ''" @click="selectOneList(item, index)">{{item.name}}</div>
-        </div>
-        <div v-if="isShowOne > 1200" class="select-open" :class="{'select-open-active': isOpenOne}" @click="clickBtn('One')">
-          <div class="select-open-name">{{isOpenOne ? '收起' : '展开'}}</div>
-          <div class="select-open-icon"></div>
-        </div>
-      </div>
-      <div v-if="twoList.length" class="type-select type-select-top">
-        <div class="select-left">二级类目：</div>
-        <div class="select-right" :class="{'select-right-active': isOpenTwo}">
-          <div v-for="(item, index) in twoList" :key="index" class="select-item select-two-item" :class="item.is_selected ? 'select-item-select' : ''" @click="selectTwoList(item, index)">{{item.name}}</div>
-        </div>
-        <div v-if="isShowTwo > 1200" class="select-open" :class="{'select-open-active': isOpenTwo}" @click="clickBtn('Two')">
-          <div class="select-open-name">{{isOpenTwo ? '收起' : '展开'}}</div>
-          <div class="select-open-icon"></div>
-        </div>
-      </div>
-      <div v-if="thrList.length" class="type-select type-select-top">
-        <div class="select-left">三级类目：</div>
-        <div class="select-right" :class="{'select-right-active': isOpenThr}">
-          <div v-for="(item, index) in thrList" :key="index" class="select-item select-thr-item" :class="item.is_selected ? 'select-item-select' : ''" @click="selectThrList(item, index)">{{item.name}}</div>
-        </div>
-        <div v-if="isShowThr > 1200" class="select-open" :class="{'select-open-active': isOpenThr}" @click="clickBtn('Thr')">
-          <div class="select-open-name">{{isOpenThr ? '收起' : '展开'}}</div>
-          <div class="select-open-icon"></div>
+          <p class="identification-name">商品素材列表</p>
         </div>
       </div>
       <div class="goods-list">
         <div v-for="(item, index) in goodsStoreList" :key="index" class="goods-item">
           <div class="goods-item-top">
             <img class="top-pic-box" :src="item.goods_cover_image" alt="">
-            <div class="goods-item-model" @click="lookGoodsInfo(item)">
+            <!--<div class="goods-item-model" @click="lookGoodsInfo(item)">
               <div class="look-goods">预览</div>
-            </div>
+            </div>-->
           </div>
           <div class="goods-item-bottom">
             <div class="goods-title">{{item.name}}</div>
-            <div class="goods-price-box">
-              <div class="goods-price-left">￥{{item.trade_price}}</div>
-              <div class="goods-price-right" :class="item.is_selected ? 'goods-price-add' : ''" @click="submitAdd(item)">{{item.is_selected ? '已添加' : '添加'}}</div>
+            <div class="goods-price-box hand" :class="(item.is_selected && !isShowAdd) ? 'goods-price-add' : ''" @click="submitAdd(item)">
+              {{(item.is_selected && !isShowAdd) ? '已添加' : '添加'}}
             </div>
           </div>
         </div>
@@ -150,9 +124,9 @@
         isOpenThr: false,
         keyWord: '',
         materialId: '',
-        oneList: [],
+        oneList: {check: false, show: false, content: '一级分类', type: 'default', data: []},
         oneIndex: 0,
-        twoList: [],
+        twoList: {check: false, show: false, content: '二级分类', type: 'default', data: []},
         twoIndex: 0,
         thrList: [],
         thrIndex: 0,
@@ -160,11 +134,20 @@
         isSubmit: false,
         isShowOne: 0,
         isShowTwo: 0,
-        isShowThr: 0
+        isShowThr: 0,
+        isShowAdd: false
       }
     },
     computed: {
       ...scmGoodsComputed
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if (from.name === 'product-categories') {
+          vm.isShowAdd = true
+          vm.fromPage = from.path
+        }
+      })
     },
     created() {
       this.getCategoriesData()
@@ -175,8 +158,8 @@
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.oneList = res.data
-            this.oneList.unshift({name: '全部', id: '', is_selected: true, list: []})
+            this.oneList.data = res.data
+            this.oneList.data.unshift({name: '全部', id: '', list: []})
             this.$nextTick(() => {
               let number = 0
               let oneItem = document.querySelectorAll('.select-one-item')
@@ -198,7 +181,6 @@
       // 预览
       lookGoodsInfo(item) {
         this.curItem = item
-        console.log(this.curItem)
         this.$refs.storeModal.showModal()
       },
       // 关闭预览
@@ -218,53 +200,16 @@
       },
       // 选择一级类目
       selectOneList(item, index) {
-        if (!item.is_selected) {
-          this.oneList[this.oneIndex].is_selected = false
-          this.oneList[index].is_selected = true
-          this.oneIndex = index
-        }
         this.materialId = item.id
-        if (this.twoList.length) {
-          this.twoList.forEach((item) => {
-            item.is_selected = false
-          })
-        }
-        this.twoList = this.oneList[index].list
-        this.$nextTick(() => {
-          let number = 0
-          let oneItem = document.querySelectorAll('.select-two-item')
-          oneItem.forEach((item) => {
-            number += item.clientWidth + 8
-          })
-          this.isShowTwo = number
-        })
-        this.thrList = []
+        this.twoList.data = this.oneList.data[index].list
+        this.twoList.content = '二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()
       },
       // 选择二级类目
       selectTwoList(item, index) {
-        if (!item.is_selected) {
-          this.twoList[this.twoIndex].is_selected = false
-          this.twoList[index].is_selected = true
-          this.twoIndex = index
-        }
-        this.thrList = this.twoList[index].list
         this.materialId = item.id
-        if (this.thrList.length) {
-          this.thrList.forEach((item) => {
-            item.is_selected = false
-          })
-        }
-        this.$nextTick(() => {
-          let number = 0
-          let oneItem = document.querySelectorAll('.select-thr-item')
-          oneItem.forEach((item) => {
-            number += item.clientWidth + 8
-          })
-          this.isShowThr = number
-        })
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()
@@ -289,18 +234,22 @@
         } else {
           curItem = this.curItem
         }
-        if (curItem.is_selected * 1 === 1 || this.isSubmit) return
+        if ((curItem.is_selected * 1 === 1 && !this.isShowAdd) || this.isSubmit) return
         this.isSubmit = true
-        API.Product.addScmGoods(curItem.id).then((res) => {
-          this.isSubmit = false
-          if (res.error === this.$ERR_OK) {
-            this.getReqList()
-            this.curItem.is_selected = 1
-            this.$toast.show('商品素材添加成功')
-          } else {
-            this.$toast.show(res.message)
-          }
-        })
+        if (this.isShowAdd) {
+          this.$router.push({path: '/home/product-list/edit-goods', params: {tplId: item.id}})
+        } else {
+          API.Product.addScmGoods(curItem.id).then((res) => {
+            this.isSubmit = false
+            if (res.error === this.$ERR_OK) {
+              this.getReqList()
+              this.curItem.is_selected = 1
+              this.$toast.show('商品素材添加成功')
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
+        }
       },
       // 获取商品列表
       getReqList() {
@@ -334,18 +283,17 @@
   .distribution-down
     display: flex
     align-items: center
-  .identification
-    border-bottom-1px($color-line)
   .goods-list
-    padding-top: 15px
+    padding-top: 8px
     layout(row)
     .goods-item
-      width: 210px
-      border-1px(#D9DEE1, 4px)
+      width: 216px
+      border-1px(#D9DEE1, 8px)
       margin-right: 20px
       margin-bottom: 30px
+      border-radius: 4px
       .goods-item-top
-        width: 210px
+        width: 216px
         height: @width
         padding-top: 38px
         box-sizing: border-box
@@ -389,44 +337,24 @@
             opacity: 1
       .goods-item-bottom
         box-sizing: border-box
-        padding: 0 14px
         .goods-title
-          padding: 10px 0 16px
+          padding: 10px 14px 16px
           font-family: $font-family-regular
           color: $color-text-main
           font-size: $font-size-14
           no-wrap()
         .goods-price-box
-          layout(row)
-          align-items: center
-          justify-content: space-between
-          padding-bottom: 16px
-          .goods-price-left
-            font-family: $font-family-medium
-            font-size: $font-size-16
-            color: $color-text-main
-          .goods-price-right
-            width: 64px
-            height: 28px
-            line-height: 28px
-            border-radius: 14px
-            text-align: center
-            font-family: $font-family-regular
-            font-size: $font-size-14
-            color: #3E77C3
-            border-1px(#3E77C3, 28px)
-            cursor: pointer
-            &:hover
-              background: #3E77C3
-              color: $color-white
-          .goods-price-add
-            border-1px(#ccc, 28px)
-            color: #ccc
-            cursor: auto
-            &:hover
-              background: #fff
-              color: #ccc
-
+          color: #3E77C3
+          background: #F5F7FA
+          height: 34px
+          line-height: 34px
+          text-align: center
+          font-family: $font-family-regular
+          font-size: $font-size-14
+          border-top-1px(#D9DEE1)
+        .goods-price-add
+          color: #ACACAC
+          cursor: auto
 
       &:nth-child(7n)
         /*margin-right: 0*/

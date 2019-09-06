@@ -23,6 +23,9 @@
               <template v-if="item.key" name="name">
                 <div v-if="+merchantDetail.is_line === 1 && item.line" class="line-empty">
                 </div>
+                <div v-else-if="item.key === 'goods_name'" :class="{red:item.key==='sale_out_of_num' && row.is_lack, 'item-dark-icon' : row[item.goodsType] * 1 === 2}">
+                  {{row[item.key]}}
+                </div>
                 <div v-else :class="{red:item.key==='sale_out_of_num' && row.is_lack}">
                   {{row[item.key]}}
                 </div>
@@ -48,7 +51,7 @@
   const PAGE_NAME = 'MERCHANT_OREDER_DETAIL'
   const TITLE = '订单详情'
   let commodities = [
-    {title: '商品', key: 'goods_name', flex: 2, afterBr: 'goods_sku_encoding'},
+    {title: '商品', key: 'goods_name', flex: 2, afterBr: 'goods_sku_encoding', goodsType: 'goods_type'},
     {title: '类目', key: 'goods_material_category', flex: 1},
     {title: '下单数量', key: 'sale_num', flex: 1},
     {title: '配货数量', key: 'sale_wait_pick_num', flex: 1, line: true}, // 待配送 已完成

@@ -83,5 +83,15 @@ export default {
   delCouponActivity(id, loading = false) {
     let url = `/social-shopping/api/backend/coupon-activity-manage/coupon-activity/${id}`
     return request.delete(url, {}, loading)
-  }
+  },
+  /**
+   * 订单离线导出
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  exportOffLine(data, loading = false) {
+    let url = `/social-shopping/api/backend/order-export-task`
+    return request.get(url, data, loading)
+  },
 }

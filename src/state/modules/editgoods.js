@@ -19,7 +19,8 @@ export const state = {
     source: '',
     complete_status: '',
     is_presale: '',
-    goods_material_category_id: ''
+    goods_material_category_id: '',
+    goods_type: ''
   },
   taskData: {
     isTaskFirst: true,
@@ -29,7 +30,8 @@ export const state = {
     source: '全部',
     complete: '全部',
     presale: '全部',
-    stock: '全部'
+    stock: '全部',
+    goods_type: '全部'
   }
 }
 
@@ -62,9 +64,7 @@ export const mutations = {
     state.statePageTotal = statePageTotal
   },
   SET_PARAMS(state, params) {
-    console.log(params)
     state.goodsFitter = {...state.goodsFitter, ...params}
-    console.log(state.goodsFitter, 'state.goodsFitter')
   },
   SET_TASK_DATA(state, params) {
     state.taskData = {...state.taskData, ...params}
@@ -124,6 +124,7 @@ export const actions = {
       source: '',
       complete_status: '',
       is_presale: '',
+      goods_type: '',
       goods_material_category_id: ''
     })
     commit('SET_TASK_DATA', {
@@ -134,7 +135,8 @@ export const actions = {
       source: '全部',
       complete: '全部',
       presale: '全部',
-      stock: '全部'
+      stock: '全部',
+      goods_type: '全部'
     })
   }
 }

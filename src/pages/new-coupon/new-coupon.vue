@@ -305,19 +305,22 @@
           </div>
         </div>
         <div class="goods-content">
+          <div class="goods-title">
+            <div v-for="(item, index) in goodsTitle" :key="index" class="title-item" :style="{flex: item.flex}">{{item.name}}</div>
+          </div>
           <div class="category-list">
             <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
-              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
-              <div class="goods-msg">
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.trade_price}}</div>
+              <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
+                <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
+                <div v-if="title.value === 'name'" class="goods-img" :style="{'background-image': 'url(' + item.goods_cover_image + ')'}"></div>
+                <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}</div>
               </div>
-              <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
+              <!--<div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>-->
             </div>
           </div>
         </div>
         <div class="page-box">
+          <p class="select-all hand" @click="_selectAllGoods()"><span class="select-icon" :class="{'select-icon-active': selectAll}"></span>全选</p>
           <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
@@ -326,6 +329,9 @@
         </div>
       </div>
     </default-modal>
+
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" :goodsType="goodsTypeNumber" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -338,6 +344,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import {couponComputed, couponMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
@@ -357,6 +364,12 @@
     {name: '操作', class: 'title-item', flex: 0.2, value: ''}
   ]
 
+  const GOODS_POP_TITLE = [
+    {name: '商品名称', flex: 2, value: 'name'},
+    {name: '库存', flex: 1, value: 'usable_stock'},
+    {name: '销售价格', flex: 1, value: 'trade_price'}
+  ]
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -365,11 +378,13 @@
     components: {
       DefaultModal,
       DefaultConfirm,
+      AddGoods,
       DatePicker
     },
     data() {
       return {
         commodities: COMMODITIES_LIST,
+        goodsTitle: GOODS_POP_TITLE,
         id: null,
         editId: '',
         couponPage: 1,
@@ -434,7 +449,9 @@
         priceFocus: '', // 聚焦活动手机
         sortFocus: '', // 聚焦排序
         checkFull: false,
-        delType: ''
+        delType: '',
+        selectAll: false,
+        goodsTypeNumber: ''
       }
     },
     computed: {
@@ -618,7 +635,7 @@
         }
         this.chooseGoods = res.data.map((item, index) => {
           item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
+          let idx = this.goodsList.findIndex((goods) => goods.id === item.id)
           let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
           let delIndex = this.selectDelId.findIndex((id) => id === item.id)
           if (delIndex !== -1) {
@@ -699,6 +716,7 @@
           break
         case 2:
           this.chooseGoods[index].selected = 0
+          this.selectAll = false
           let idx = this.selectGoods.findIndex((items) => items.id === item.id)
           let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
           if (idx !== -1) {
@@ -709,6 +727,31 @@
           }
           break
         }
+      },
+      _selectAllGoods() {
+        this.selectAll = !this.selectAll
+        this.selectGoods = []
+        this.selectGoodsId = []
+        if (this.selectAll) {
+          this.chooseGoods.map(item => {
+            +item.selected === 0 && (item.selected = 2);
+            +item.selected === 2 && this.selectGoods.push(item)
+            this.selectGoodsId.push(item.id)
+            return item
+          })
+        } else {
+          this.chooseGoods.map(item => {
+            if (+item.selected === 2) {
+              item.selected = 0
+            }
+            if (+item.selected === 1) {
+              // this.selectGoods.push(item)
+              this.selectGoodsId.push(item.id)
+            }
+            return item
+          })
+        }
+
       },
       // 删除商品
       _showDelGoods(type, item, index) {
@@ -764,14 +807,11 @@
       },
       // 单个添加
       _additionOne(item, index) {
-        if (item.selected === 1) {
-          return
-        }
+        if (item.selected === 1) return
         // if (this.selectGoodsId.length === 20 && item.selected !== 2) {
         //   this.$toast.show('选择商品数量不能超过十个')
         //   return
         // }
-
         if (item.selected !== 2) this.selectGoodsId.push(item.id)
         this.chooseGoods[index].selected = 1
         this.goodsList.push(item)
@@ -794,18 +834,22 @@
         this.selectGoods = []
         this._hideGoods()
       },
+      // 批量添加商品
+      batchAddition(list) {
+        this.goodsList = list
+      },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        this._initData()
-        this.$refs.goodsSearch._setText('')
-        await this._getGoodsList()
+        if (this.disable) return
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+        // this._initData()
+        // this.$refs.goodsSearch._setText('')
+        // await this._getGoodsList()
         // 展示添加商品弹窗
-        this.$refs.goodsModal.showModal()
+        // this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModal.hideModal()
+        this.selectAll = false
       },
       async _showCategory() {
         if (this.disable) {
@@ -1240,7 +1284,7 @@
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px
     background: $color-white
-    height: 675px
+    height: 720px
     max-width: 1000px
     width: 1000px
     position: relative
@@ -1452,23 +1496,39 @@
     height: 77px
     align-items: center
     display: flex
-
-  .goods-content
-    border-radius: 4px
-    height: 420px
-    .category-list
-      flex-wrap: wrap
-      display: flex
-    .goods-item
-      box-sizing: border-box
-      padding: 0 30px 0 20px
-      width: 100%
-      height: 60px
+    .select-all
+      width: 100px
       display: flex
       align-items: center
+      -webkit-user-select: none
+      -moz-user-select: none
+      -ms-user-select: none
+      -khtml-user-select: none
+      user-select: none
+    .select-icon
+      margin-right: 20px
+      border-radius: 1px
+      border: 1px solid #e9ecee
+      height: 16px
+      width: 16px
+      display: inline-block
+      -webkit-transition: all .3s
+      transition: all .3s
+    .select-icon-active
+      border: 1px solid transparent
+      display: inline-block
+      background-size: 100% 100%
+      background-image: url("./icon-check@2x.png")
+  .goods-content
+    border-radius: 4px
+    height: 465px
+    .goods-title
+      display: flex
+      height: 45px
+      background: #F5F7FA
       position: relative
-      &:last-child
-        border-bottom-1px($color-line)
+      align-items: center
+      padding: 0 30px 0 20px
       &:before
         content: ""
         pointer-events: none // 解决iphone上的点击无效Bug
@@ -1488,67 +1548,75 @@
           width: 100%
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
-      &:nth-child(2n - 1)
-        background: #f5f7fa
-      .goods-img
-        margin-right: 10px
-        width: 40px
-        height: @width
-        overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
-      .select-icon
-        margin-right: 20px
-        border-radius: 1px
-        border: 1px solid #e9ecee
-        height: 16px
-        width: 16px
-        -webkit-transition: all .3s
-        transition: all .3s
-      .select-icon-active
-        border: 1px solid transparent
-        display: inline-block
-        background-size: 100% 100%
-        background-image: url("./icon-check@2x.png")
-      .select-icon-disable
-        border: 1px solid transparent
-        cursor: not-allowed
-        display: inline-block
-        background-size: 100% 100%
-        background-image: url("./icon-check_ash@2x.png")
-      .goods-msg
-        flex: 1
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        justify-content: space-between
-        height: 100%
-        align-items: center
-        .goods-name
-          width: 500px
-          no-wrap()
-        .goods-name, .goods-money
-          line-height: 1
-      .add-btn
-        border-radius: 2px
-        margin-left: 88px
-        padding: 7px 0
-        min-width: 54px
-        text-align: center
-      .add-btn-disable
-        border-radius: 2px
-        margin-left: 88px
-        padding: 7px 0
+      .title-item
+        padding-right: 20px
+      .title-item:first-child
+        text-indent: 36px
         box-sizing: border-box
-        text-align: center
-        font-size: $font-size-14
-        line-height: 1
-        cursor: not-allowed
-        background: $color-line
-        color: $color-text-assist
-        border: none
+    .category-list
+      .goods-item
+        box-sizing: border-box
+        padding: 0 30px 0 20px
+        width: 100%
+        height: 60px
+        display: flex
+        align-items: center
+        position: relative
+        &:last-child
+          border-bottom-1px($color-line)
+        &:before
+          content: ""
+          pointer-events: none // 解决iphone上的点击无效Bug
+          display: block
+          position: absolute
+          left: 0
+          top: 0
+          transform-origin: 0 0
+          border-right: 1px solid #E9ECEE
+          border-left: 1px solid #E9ECEE
+          border-top: 1px solid #E9ECEE
+          box-sizing border-box
+          width: 200%
+          height: 100%
+          transform: scaleX(.5) translateZ(0)
+          @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+            width: 100%
+            height: 300%
+            transform: scaleX(1 / 3) translateZ(0)
+        &:nth-child(2n - 1)
+          background: #f5f7fa
+        .item-content
+          padding-right: 20px
+          display: flex
+          align-items: center
+        .goods-img
+          margin-right: 10px
+          width: 40px
+          height: @width
+          overflow: hidden
+          background-repeat: no-repeat
+          background-size: cover
+          background-position: center
+          background-color: $color-background
+        .select-icon
+          margin-right: 20px
+          border-radius: 1px
+          border: 1px solid #e9ecee
+          height: 16px
+          width: 16px
+          -webkit-transition: all .3s
+          transition: all .3s
+        .select-icon-active
+          border: 1px solid transparent
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check@2x.png")
+        .select-icon-disable
+          border: 1px solid transparent
+          cursor: not-allowed
+          display: inline-block
+          background-size: 100% 100%
+          background-image: url("./icon-check_ash@2x.png")
 
   .category-content
     border-radius: 1px

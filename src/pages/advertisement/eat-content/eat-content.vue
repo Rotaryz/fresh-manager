@@ -522,15 +522,14 @@
     height: 60px
     position: relative
     box-sizing: border-box
-    text-indent: 13px
     &:before
       content: ''
       position: absolute
-      width: 3px
-      height: 14px
+      width: 34px
+      height: 2px
       background: $color-main
       border-radius: 2px
-      col-center()
+      bottom: 0
       left: 0
     .content-title
       color: $color-text-main

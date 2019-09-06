@@ -6,6 +6,13 @@ export const TAB_ARR_CONFIG = {
     buttonText: '+购物车',
     dataArray: 'newClientList'
   },
+  centralize: {
+    title: '抢先集采',
+    subTitle: '新鲜回家',
+    iconText: '预售价',
+    buttonText: '+购物车',
+    dataArray: 'centralizePurchaseList'
+  },
   goods_hot_tag: {
     title: '今日爆款',
     subTitle: '火爆推荐',

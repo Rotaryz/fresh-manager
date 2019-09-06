@@ -20,6 +20,7 @@
           :guessList="guessList"
           :groupList="groupList"
           :freeShippingList="freeShippingList"
+          :centralizePurchaseList="centralizePurchaseList"
           :activityList="activityList"
           @setType="handleChangeType"
         ></phone-box>
@@ -108,23 +109,30 @@
                 <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
               </div>
               <div class="tab-item">
-                <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+                <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
               </div>
               <div class="tab-item">
                 <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
               </div>
             </div>
             <div class="goods-content">
+              <div class="goods-header">
+                <div class="goods-text">商品</div>
+                <div class="goods-text">可用库存</div>
+              </div>
               <div class="goods-list">
-                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-                  <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
-                    <span class="after"></span>
+                <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item hand" @click="_selectGoods(item, index)">
+                  <div class="content-item">
+                    <div class="select-icon" :class="{'select-icon-active': showSelectIndex === index}">
+                      <span class="after"></span>
+                    </div>
+                    <img class="goods-img" :src="item.goods_cover_image">
+                    <div class="goods-name">
+                      <p class="text">{{item.name}}</p>
+                      <p class="text">{{item.goods_sku_code}}</p>
+                    </div>
                   </div>
-                  <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
-                  <div class="goods-msg">
-                    <div class="goods-name">{{item.name}}</div>
-                    <div class="goods-money">¥{{item.original_price}}</div>
-                  </div>
+                  <div class="content-item">{{item.usable_stock}}{{item.sale_unit}}</div>
                 </div>
                 <!--select-icon-active-->
               </div>
@@ -135,8 +143,8 @@
           </div>
           <!--商品分类-->
           <div v-if="tabIndex === 1" class="goods-cate">
-            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item">
-              <div class="select-icon hand" :class="{'select-icon-active': showCateIndex === goodsIdx}" @click="_selectCate(goods, goodsIdx)">
+            <div v-for="(goods, goodsIdx) in goodsCate" :key="goodsIdx" class="goods_cate-item hand" @click="_selectCate(goods, goodsIdx)">
+              <div class="select-icon" :class="{'select-icon-active': showCateIndex === goodsIdx}">
                 <span class="after"></span>
               </div>
               <div class="shade-goods-msg">
@@ -145,10 +153,21 @@
               </div>
             </div>
           </div>
-          <div v-if="tabIndex === 2" class="link-text">
-            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+          <!--活动分类-->
+          <div v-if="tabIndex === 2" class="goods-cate">
+            <div v-for="(category, ind) in activityCategory" :key="ind" class="goods_cate-item hand" @click="_selectActive(ind)">
+              <div class="select-icon" :class="{'select-icon-active': showActiveIndex === ind}">
+                <span class="after"></span>
+              </div>
+              <div class="shade-goods-msg">
+                <div class="shade-goods-name">{{category.name}}</div>
+              </div>
+            </div>
           </div>
           <div v-if="tabIndex === 3" class="link-text">
+            <textarea v-model="miniLink" class="link-text-box" placeholder="请输入小程序链接"></textarea>
+          </div>
+          <div v-if="tabIndex === 4" class="link-text">
             <textarea v-model="outHtml" class="link-text-box" placeholder="请输入H5链接"></textarea>
           </div>
           <div class="back back-box">
@@ -181,6 +200,7 @@
   const TYPE_LIST = [
     {title: '商品详情', status: 'mini_goods'},
     {title: '商品分类', status: 'goods_cate'},
+    {title: '活动分类', status: 'activity_cate'},
     {title: '小程序链接', status: 'mini_link'},
     {title: 'H5链接', status: 'out_html'}
   ]
@@ -246,8 +266,8 @@
         choicePage: 1,
         parentId: '',
         keyword: '',
-        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        assortment: {check: false, show: false, content: '一级分类', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsId: 0,
         delId: 0,
         delIndex: 0,
@@ -266,6 +286,7 @@
         },
         goodsCate: [],
         showCateIndex: 0,
+        showActiveIndex: '',
         activityItem: {},
         activityStatus: 0,
         activityGoodsList: [],
@@ -282,8 +303,10 @@
         newClientList: [], // 新人特惠列表,用于phone-box组件
         todayHotList: [], // 今日爆品,用于phone-box组件
         freeShippingList: [], // 全国包邮,用于phone-box组件
+        centralizePurchaseList: [], // 产地集采,用于phone-box组件
         guessList: [],// 猜你喜欢,用于phone-box组件
-        groupList: []// 拼团返现,用于phone-box组件
+        groupList: [],// 拼团返现,用于phone-box组件
+        activityCategory: []
       }
     },
     computed: {
@@ -306,6 +329,7 @@
       await this.getCate(false)
       await this.infoEat()
       await this._getGoodsList()
+      this.getActivityCategory()
       this.$loading.hide()
     },
     methods: {
@@ -411,6 +435,14 @@
         let module = this.infoBannerList.modules.find((val) => val.module_name === 'activity') || {}
         if (module.list) {
           module.list.forEach((item) => {
+            if (item.module_name === 'centralize' && item.is_close === 0) {
+              console.log(item)
+              // 产地集采
+              API.Advertisement.getActivityList({activity_theme: 'centralize', page: 1, limit: 20}).then(res => {
+                this.centralizePurchaseList = this._formatListData(res.data)
+              })
+              return
+            }
             if (item.starting_point_id > 0) {
               if (item.module_name === 'groupon') {
                 // 拼团返现
@@ -565,14 +597,25 @@
           this[this.dataName][index].name = ''
           break
         case 'mini_goods':
-          this[this.dataName][index].other_id = this.choiceGoods[this.showSelectIndex].id
-          this[this.dataName][index].url = ''
-          this[this.dataName][index].name = this.choiceGoods[this.showSelectIndex].name
+          if (this.showSelectIndex !== '') {
+            this[this.dataName][index].other_id = this.choiceGoods[this.showSelectIndex].id
+            this[this.dataName][index].url = ''
+            this[this.dataName][index].name = this.choiceGoods[this.showSelectIndex].name
+          }
           break
         case 'goods_cate':
-          this[this.dataName][index].other_id = this.goodsCate[this.showCateIndex].id
-          this[this.dataName][index].url = ''
-          this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
+          if (this.showCateIndex !== '') {
+            this[this.dataName][index].other_id = this.goodsCate[this.showCateIndex].id
+            this[this.dataName][index].name = this.goodsCate[this.showCateIndex].name
+            this[this.dataName][index].url = ''
+          }
+          break
+        case 'activity_cate':
+          if (this.showActiveIndex !== '') {
+            this[this.dataName][index].other_id = ''
+            this[this.dataName][index].name = this.activityCategory[this.showActiveIndex].name
+            this[this.dataName][index].url = ''
+          }
           break
         }
         this._hideGoods()
@@ -585,13 +628,26 @@
       _selectCate(item, index) {
         this.showCateIndex = index
       },
+      _selectActive(index) {
+        this.showActiveIndex = index
+      },
+      getActivityCategory() {
+        API.Advertisement.getActivityCategory()
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.activityCategory = res.data.activity_theme
+          })
+      },
       // 获取商品列表
       async _getGoodsList() {
         let res = await API.Advertisement.getGoodsList({
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          limit: 7,
+          limit: 6,
           page: this.choicePage
         })
         if (res.error !== this.$ERR_OK) {
@@ -620,7 +676,7 @@
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
-        this.secondAssortment.content = '选择二级分类'
+        this.secondAssortment.content = '二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
@@ -875,15 +931,14 @@
       height: 60px
       position: relative
       box-sizing: border-box
-      text-indent: 13px
       &:before
         content: ''
         position: absolute
-        width: 3px
-        height: 14px
+        width: 34px
+        height: 2px
         background: $color-main
         border-radius: 2px
-        col-center()
+        bottom: 0
         left: 0
       .content-title
         color: $color-text-main
@@ -1120,6 +1175,39 @@
     border-radius: 4px
     margin: 0 20px
     height: 420px
+    >.goods-header
+      height: 45px
+      background: #F5F7FA
+      display: flex
+      align-items: center
+      padding: 0 30px 0 20px
+      font-family: $font-family-regular
+      position: relative
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .goods-text
+        flex: 1
+        &:last-child
+          flex: 0.5
+        &:first-child
+          text-indent: 36px
     .goods-list
       flex-wrap: wrap
       display: flex
@@ -1152,28 +1240,40 @@
           width: 100%
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
-      &:nth-child(2n - 1)
+      &:nth-child(2n)
         background: #f5f7fa
+      .content-item
+        flex: 1
+        display: flex
+        align-items: center
+        font-family: $font-family-regular
+        &:last-child
+          flex: 0.5
       .goods-img
         margin-right: 10px
         width: 40px
         height: @width
         overflow: hidden
-        background-repeat: no-repeat
-        background-size: cover
-        background-position: center
-        background-color: $color-background
-      .goods-msg
-        flex: 1
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        justify-content: space-between
-        height: 100%
-        align-items: center
-        .goods-name
-          width: 500px
-          no-wrap()
+        object-fit: cover
+
+      .goods-name
+        line-height: 1.2
+        width: 500px
+        no-wrap()
+        .text
+          overflow: hidden
+          text-overflow: ellipsis
+
+        .tag
+          border-radius: 2px
+          background: #73C200
+          color: #FFF
+          font-family: $font-family-regular
+          font-size: 12px
+          padding: 2px 3px
+          line-height: 16px
+          margin-right: 4px
+
         .goods-name, .goods-money
           line-height: 1
           font-size: $font-size-14

@@ -18,7 +18,13 @@
           活动名称
         </div>
         <div class="edit-input-box">
-          <input v-model="msg.activity_name" type="text" placeholder="请输入" class="edit-input" :class="{'disable-input': disable}">
+          <input
+            v-model="msg.activity_name"
+            type="text" placeholder="请输入"
+            maxlength="25"
+            class="edit-input"
+            :class="{'disable-input': disable}"
+          >
         </div>
         <div :class="{'text-no-change':disable}"></div>
       </div>
@@ -51,7 +57,14 @@
         <div class="tip-text">开始时间必须大于等于当前时间(精确到年月日时分秒)</div>
         <div :class="{'time-no-change':disable}"></div>
       </div>
-      <!--<p @click="test">测试</p>-->
+      <div v-if="msg.activity_theme === activityType" class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          用户提货时间
+        </div>
+        <div class="user-text-time">{{deliveryTime}}<span v-if="deliveryDay" class="user-text-day">({{deliveryDay}})</span></div>
+        <div class="user-text-tip">预售结束时间+采购周期=提货时间</div>
+      </div>
     </div>
 
     <div class="content-header">
@@ -64,7 +77,8 @@
             <img class="icon" src="./icon-add@2x.png" alt="">
             添加商品
           </div>
-          <div class="remind">商品数量一共可添加({{goodsList.length}}/{{personAllBuyLimit}})个</div>
+          <div v-if="msg.activity_theme === activityType" class="remind">商品只可添加一个</div>
+          <div v-else class="remind">商品数量一共可添加({{goodsList.length}}/{{personAllBuyLimit}})个</div>
         </div>
         <div v-if="goodsList.length" class="rush-list-box">
           <div class="commodities-list-header com-list-box commodities-list-top">
@@ -87,9 +101,9 @@
                 <span>{{item.goods_usable_stock || item.all_stock || 0}}</span>
               </div>
               <div class="com-list-item">
-                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="echangBase(item, index)">
+                <input v-model="item.usable_stock" :readonly="disable" type="number" class="com-edit com-edit-small" @input="changeBase(item, index)">
               </div>
-              <div class="com-list-item">
+              <div v-if="msg.activity_theme !== activityType" class="com-list-item">
                 <input v-model="item.sort" :readonly="disable" type="number" class="com-edit com-edit-small">
               </div>
               <div class="com-list-item">
@@ -102,50 +116,8 @@
       </div>
     </div>
 
-    <!-- 选择商品弹窗-->
-    <default-modal ref="goodsModel">
-      <div slot="content" class="shade-box">
-        <div class="title-box">
-          <div class="title">选择商品</div>
-          <span class="close hand" @click="_cancelGoods"></span>
-        </div>
-        <div class="shade-tab">
-          <div class="tab-item">
-            <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
-          </div>
-        </div>
-        <div class="goods-content">
-          <div class="rush-goods-list">
-            <div v-for="(item, index) in choeesGoods" :key="index" class="goods-item">
-              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
-              <div class="goods-msg">
-                <!--<div class="goods-name">{{item.usable_stock}}</div>-->
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">
-                  <div class="goods-money-text">{{item.usable_stock}}</div>
-                  <div class="goods-money-text">¥{{item.trade_price}}</div>
-                </div>
-              </div>
-              <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
-        </div>
-        <div class="back">
-          <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
-          <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
-        </div>
-      </div>
-    </default-modal>
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" :maxLimit="personAllBuyLimit" :goodsType="goodsTypeNumber" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -156,13 +128,12 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import {saleComputed, saleMethods} from '@state/helpers'
   import API from '@api'
   import _ from 'lodash'
   import {DatePicker} from 'element-ui'
-  import {objDeepCopy} from '@utils/common'
 
   const PAGE_NAME = 'EDIT_RUSH'
   // const TITLE = '新建查看今日抢购'
@@ -178,6 +149,17 @@
     '排序',
     '操作'
   ]
+  const COMMODITIES_LIST_CENTRALIZE = [
+    '商品名称',
+    '单位',
+    '销售价(元)',
+    '销量',
+    '集采价(元)',
+    '每人限购',
+    '商品库存',
+    '活动库存',
+    '操作'
+  ]
   const PAGE_CONFIG = {
     hot_tag: {
       title: '今日爆品'
@@ -187,9 +169,13 @@
     },
     new_client: {
       title: '新人特惠'
+    },
+    centralize: {
+      title: '产地集采'
     }
   }
-  const PERSON_ALL_BUY_LIMIT = 20
+  const ACTIVITY_TYPE = 'centralize'
+  // const PERSON_ALL_BUY_LIMIT = 20
   export default {
     name: PAGE_NAME,
     page() {
@@ -198,13 +184,13 @@
       }
     },
     components: {
-      DefaultModal,
       DefaultConfirm,
+      AddGoods,
       DatePicker
     },
     data() {
       return {
-        commodities: COMMODITIES_LIST,
+        commodities: this.$route.query.activity_theme === ACTIVITY_TYPE ? COMMODITIES_LIST_CENTRALIZE : COMMODITIES_LIST,
         classifyIndex: 0,
         id: null,
         page: 1,
@@ -241,13 +227,36 @@
           activity_theme: this.$route.query.activity_theme
         },
         isSubmit: false,
-        personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
+        // personAllBuyLimit: PERSON_ALL_BUY_LIMIT,
         activityTheme: '',
-        pageConfig: {}
+        pageConfig: {},
+        activityType: ACTIVITY_TYPE,
+        deliveryTime: '',
+        deliveryDay: ''
       }
     },
     computed: {
       ...saleComputed,
+      personAllBuyLimit() {
+        switch(this.msg.activity_theme) {
+        case 'fixed':
+          return 10
+        case 'hot_tag':
+          return 50
+        case 'centralize':
+          return 1
+        default:
+          return 20
+        }
+      },
+      goodsTypeNumber() {
+        switch(this.msg.activity_theme) {
+        case 'centralize':
+          return 2
+        default:
+          return 1
+        }
+      },
       testName() {
         return this.msg.activity_name
       },
@@ -270,17 +279,25 @@
     // }
     },
     created() {
+      if (this.$route.query.id && +this.$route.query.id !== 0) {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '查看活动'])
+      } else {
+        this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '活动', '活动管理', '新建活动'])
+      }
       this.disable = +this.$route.query.id > 0
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       this.activityTheme = this.$route.query.activity_theme
       this.pageConfig = PAGE_CONFIG[this.$route.query.activity_theme] || {}
-      if (this.$route.query.activity_theme === 'fixed') {
-        this.personAllBuyLimit = 10
-      }
+      // if (this.$route.query.activity_theme === 'fixed') {
+      //   this.personAllBuyLimit = 10
+      // }
       // this.msg.activity_theme = this.$route.query.activity_theme
       if (this.id > 0) {
         let obj = _.cloneDeep(this.saleDetail)
-        this.goodsList = obj.activity_goods
+        this.goodsList = obj.activity_goods.map(item => {
+          item.id = item.id || item.goods_id
+          return item
+        })
         if (this.goodsList) {
           this.selectGoodsId = obj.activity_goods.map((item) => {
             return item.goods_id
@@ -293,7 +310,8 @@
           activity_theme: this.$route.query.activity_theme
         }
       }
-      this._getFirstAssortment()
+      // 集采采购
+      this.getDeliveryTime()
     },
     async mounted() {
     // this.classifyIndex = 0
@@ -303,118 +321,9 @@
       _getStartTime(time) {
         this.msg.start_at = time
       },
-      _getEndTime(time) {
+      async _getEndTime(time) {
         this.msg.end_at = time
-      },
-      // 选择商品
-      async _getGoodsList() {
-        // if (!this.id) return
-        let res = await API.Sale.getGoodsList({
-          is_online: 1,
-          keyword: this.keyword,
-          goods_category_id: this.parentId,
-          shelf_id: this.id,
-          limit: 7,
-          page: this.page,
-          activity_theme: this.$route.query.activity_theme
-        })
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.goodsPage = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        this.choeesGoods = res.data.map((item, index) => {
-          item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          if (delIndex !== -1) {
-            item.selected = 0
-          }
-          if (idx !== -1) {
-            item.selected = 1
-          }
-          if (goodsIndex !== -1) {
-            item.selected = 2
-          }
-          item.sort = 0
-          return item
-        })
-      },
-      // 获取分页商品列表
-      async _getMoreGoods(page) {
-        this.page = page
-        await this._getGoodsList()
-      },
-      // 选择一级分类
-      async _secondAssortment(item) {
-        this.parentId = item.id
-        if (item.id === '') {
-          this.secondAssortment.data = []
-        } else {
-          let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
-          this.$loading.hide()
-          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
-        }
-        this.secondAssortment.content = '选择二级分类'
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 选择二级分类
-      async _choessSecondAssortment(item) {
-        this.parentId = item.id
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 获取一级分类
-      async _getFirstAssortment() {
-        let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
-        this.$loading.hide()
-        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.assortment.data.unshift({name: '全部', id: ''})
-      },
-      // 搜索商品
-      async _searchGoods(text) {
-        this.keyword = text
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 勾选商品
-      _selectGoods(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
-        switch (item.selected) {
-        case 0:
-          if (this.selectGoodsId.length === this.personAllBuyLimit) {
-            this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
-            return
-          }
-          this.choeesGoods[index].selected = 2
-          item.all_stock = item.usable_stock
-          this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
-          break
-        case 2:
-          this.choeesGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
-          if (idx !== -1) {
-            this.selectGoods.splice(idx, 1)
-          }
-          if (idIdx !== -1) {
-            this.selectGoodsId.splice(idx, 1)
-          }
-          break
-        }
+        await this.getDeliveryTime()
       },
       // 删除商品
       _showDelGoods(item, index) {
@@ -432,78 +341,32 @@
         this.goodsList.splice(this.goodsDelIndex, 1)
         this.selectDelId.push(this.goodsDelId)
       },
-      _cancelGoods() {
-        this.selectGoods.forEach((item) => {
-          let idx = this.choeesGoods.findIndex((items) => items.goods_id === item.goods_id)
-          let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-          this.choeesGoods[idx].selected = this.choeesGoods[idx].selected === 1 ? 1 : 0
-          this.selectGoodsId.splice(delIdx, 1)
-        })
-        this.selectGoods = []
-        this._hideGoods()
-      },
-      // 单个添加
-      _additionOne(item, index) {
-        if (item.usable_stock <= 0) {
-          this.$toast.show('该商品库存为0，不能选择')
-          return
-        }
-        if (item.selected === 1) {
-          return
-        }
-        if (this.selectGoodsId.length === this.personAllBuyLimit && item.selected !== 2) {
-          this.$toast.show(`选择商品数量不能超过${this.personAllBuyLimit}个`)
-          return
-        }
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
-        this.choeesGoods[index].selected = 1
-        let goodsItem = objDeepCopy(item)
-        goodsItem.all_stock = item.usable_stock
-        goodsItem.usable_stock = ''
-        goodsItem.trade_price_show = item.trade_price
-        if (this.activityTheme !== 'hot_tag') {
-          goodsItem.trade_price = ''
-        }
-        this.goodsList.push(goodsItem)
-        this.choeesGoods.forEach((item) => {
-          if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
+      // 批量添加商品
+      batchAddition(list) {
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
             }
-          }
-        })
-      },
-      // 批量添加
-      _batchAddition() {
-        // const list = objDeepCopy(this.choeesGoods)
-        this.selectGoods = this.selectGoods.map((item) => {
-          item.selected = item.selected === 2 ? 1 : item.selected
-          item.usable_stock = ''
-          item.trade_price_show = item.trade_price
-          if (this.activityTheme !== 'hot_tag') {
-            item.trade_price = ''
+          })
+          if (!isExist) {
+            // 初始数据
+            item.all_stock = item.usable_stock
+            item.usable_stock = ''
+            item.trade_price_show = item.trade_price
+            item.goods_trade_price = item.trade_price
+            item.sort = 0
+            this.activityTheme !== 'hot_tag' && (item.trade_price = '')
           }
           return item
         })
-        this.goodsList = this.goodsList.concat(this.selectGoods)
-        this.selectGoods = []
-        this._hideGoods()
+        this.goodsList = newArr
       },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModel && this.$refs.goodsModel.showModal()
-      },
-      _hideGoods() {
-        this.$refs.goodsModel.hideModal()
-      },
-      // 切换分类
-      _setClassify(index, item) {
-        this.classifyIndex = index
+        if (this.disable) return
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
       },
       _back() {
         this.$router.back()
@@ -518,9 +381,13 @@
           this.$toast.show('请添加商品')
           return
         }
+        if (this.msg.activity_theme === this.activityType) {
+          // 集采采购
+          await this._centralizeSave(list)
+          return
+        }
         for (let i in list) {
           if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock || list[i].sort === '') {
-            console.log(list[i])
             this.$toast.show(`${list[i].name}信息不全`)
             return
           } else if (
@@ -529,6 +396,44 @@
             +list[i].usable_stock < 0 ||
             (list[i].usable_stock + '').includes('.') ||
             +list[i].sort < 0
+          ) {
+            this.$toast.show(`${list[i].name}输入数据有误`)
+            return
+          }
+        }
+        list.map((item) => {
+          delete item.person_day_buy_limit
+          item.goods_id = item.id || item.goods_id
+        })
+        let data = Object.assign({}, this.msg, {activity_goods: list, activity_theme: this.$route.query.activity_theme})
+        let res = null
+        this.isSubmit = true
+        res = await API.Sale.storeSale(data, true)
+        this.$loading.hide()
+        this.$toast.show(res.message)
+        if (res.error !== this.$ERR_OK) {
+          this.isSubmit = false
+          return
+        }
+        setTimeout(() => {
+          this._back()
+        }, 1000)
+        setTimeout(() => {
+          this.isSubmit = false
+        }, 2000)
+      },
+      // 集采提交
+      async _centralizeSave(list) {
+        for (let i in list) {
+          if (!list[i].trade_price || !list[i].person_all_buy_limit || !list[i].usable_stock) {
+            this.$toast.show(`${list[i].name}信息不全`)
+            return
+          } else if (
+            +list[i].trade_price < 0 ||
+            +list[i].trade_price > +list[i].trade_price_show ||
+            +list[i].person_all_buy_limit <= 0 ||
+            +list[i].usable_stock < 0 ||
+            (list[i].usable_stock + '').includes('.')
           ) {
             this.$toast.show(`${list[i].name}输入数据有误`)
             return
@@ -573,10 +478,22 @@
           }
         }
       },
-      echangBase(item, index) {
+      changeBase(item, index) {
         if (item.usable_stock > item.all_stock && !this.disable) {
           item.usable_stock = item.all_stock
           this.$forceUpdate()
+        }
+      },
+      // 获取活动提货时间
+      async getDeliveryTime() {
+        if (this.msg.end_at && this.goodsList.length !== 0 && this.msg.activity_theme === this.activityType) {
+          let data = Object.assign({}, {end_time: this.msg.end_at, purchase_cycle: this.goodsList[0].purchase_cycle})
+          let res = await API.Sale.getDeliveryTime(data, false)
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.deliveryTime = res.data.delivery_at
+          this.deliveryDay = res.data.day_of_week
         }
       }
     }
@@ -608,13 +525,14 @@
       font-family: $font-family-regular
       white-space: nowrap
       text-align: left
-      min-width: 64px
+      min-width: 95px
+      margin-right: 40px
     .start
       display: inline-block
       margin-right: -2px
       color: #F52424
     .edit-input-box
-      margin: 0 14px 0 40px
+      margin: 0 14px 0 0px
       &:nth-child(4)
         margin: 0 14px
       .edit-input
@@ -654,6 +572,19 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       color: $color-text-assist
+    .user-text-time
+      margin-right: 10px
+      line-height: 40px
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: #666
+    .user-text-tip
+      line-height: 40px
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: #acacac
+    .user-text-day
+      margin-left: 5px
     .time-no-change, .text-no-change
       position: absolute
       left: 103px
@@ -792,6 +723,13 @@
         font-family: $font-family-medium
         line-height: 1
         color: $color-text-main
+        layout(row)
+        align-items: center
+        .title-label
+          font-family: $font-family-regular
+          font-size: $font-size-12
+          color: #acacac
+          margin-left: 6px
       .close
         width: 12px
         height: @width
@@ -1086,15 +1024,28 @@
         display: inline-block
         background-size: 100% 100%
         background-image: url("./icon-check_ash@2x.png")
+      .radio
+        width: 16px
+        height: 16px
+        border: 1px solid #E1E1E1
+        margin-right: 20px
+        border-radius: 50%
+        transition: all 0.3s
+        display: flex
+        justify-content: center
+        align-items: center
+      .checked
+        border: 5px solid $color-main
       .goods-img
         margin-right: 10px
         width: 40px
         height: @width
         overflow: hidden
+        border-radius: 2px
+        object-fit: cover
         background-repeat: no-repeat
         background-size: cover
         background-position: center
-        background-color: $color-background
       .goods-msg
         flex: 1
         display: flex

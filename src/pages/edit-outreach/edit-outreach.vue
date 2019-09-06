@@ -190,8 +190,8 @@
           <base-pagination ref="paginationGroup" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
         </div>
         <div class="back">
-          <div class="back-btn back-submit hand" @click="_addition">确定</div>
           <div class="back-cancel back-btn hand" @click="_cancelGroup">取消</div>
+          <div class="back-btn back-submit hand" @click="_addition">确定</div>
         </div>
       </div>
     </default-modal>
@@ -247,6 +247,9 @@
         </div>
       </div>
     </default-modal>
+
+    <!--选择商品弹窗-->
+    <add-goods ref="selectGoods" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -259,6 +262,7 @@
 <script type="text/ecmascript-6">
   import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import AddGoods from '@components/add-goods/add-goods'
   import MemberModal from './member-modal/member-modal'
   import moment from 'moment'
   import {outreachComputed, outreachMethods} from '@state/helpers'
@@ -287,6 +291,7 @@
       DefaultModal,
       DefaultConfirm,
       DatePicker,
+      AddGoods,
       MemberModal
     },
     data() {
@@ -663,6 +668,26 @@
         this.selectGoods = []
         this._hideGoods()
       },
+      // 批量添加商品
+      batchAddition(list) {
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
+          let isExist = false
+          this.goodsList.forEach((goods) => {
+            if (item.id * 1 === goods.id * 1) {
+              isExist = true
+            }
+          })
+          if (!isExist) {
+            // 初始数据
+            item.trade_price = ''
+            item.usable_stock = ''
+            item.sort = 0
+          }
+          return item
+        })
+        this.goodsList = newArr
+      },
       _memberAddition(arr) {
         this.selectMembers = this.selectMembers.concat(arr)
       },
@@ -670,14 +695,13 @@
         this.selectMembers.push(item)
       },
       async _showGoods() {
-        if (this.disable) {
-          return
-        }
-        this._initData()
-        this.$refs.goodsSearch._setText('')
-        await this._getGoodsList()
-        // 展示添加商品弹窗
-        this.$refs.goodsModal.showModal()
+        if (this.disable) return
+        this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
+        // this._initData()
+        // this.$refs.goodsSearch._setText('')
+        // await this._getGoodsList()
+        // // 展示添加商品弹窗
+        // this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModal.hideModal()

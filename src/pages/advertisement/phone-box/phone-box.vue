@@ -129,6 +129,7 @@
                       <img v-if="active.data.module_name === 'goods_hot_tag'" class="banner-img" src="./pic-jrbk.png" alt="">
                       <img v-if="active.data.module_name === 'new_client'" class="banner-img" src="./pic-xrth.png" alt="">
                       <img v-if="active.data.module_name === 'free_shipping'" class="banner-img" src="./pic-ptfx@2x.png" alt="">
+                      <img v-if="active.data.module_name === 'centralize'" class="banner-img" src="./pic-cdjc@2x.png" alt="">
                       <template v-if="active.data.dataArray">
                         <div v-for="(item, index) in active.data.dataArray"
                              :key="index"
@@ -138,7 +139,8 @@
                             <figure class="left">
                               <img v-if="item.goods_cover_image" class="goods-image" :src="item.goods_cover_image" alt="">
                               <img v-else class="goods-image empty" src="./icon-picmr@2x.png" alt="">
-                              <img class="label" src="./icon-label@1x.png" alt="">
+                              <img v-if="active.data.module_name === 'centralize'" class="label" src="./icon-label_jicai.png" alt="">
+                              <img v-else class="label" src="./icon-label@1x.png" alt="">
                             </figure>
                             <section class="right">
                               <p class="title">{{item.name}}</p>
@@ -164,44 +166,44 @@
                   </template>
                 </article>
               </template>
+              <article class="active-wrapper">
+                <!--活动商品列表-->
+                <nav class="panel">
+                  <img class="banner-img" src="./pic-cnxh.png" alt="">
+                  <div
+                    v-for="(item, index) in guessList"
+                    :key="index"
+                    class="goods-item-wrapper"
+                  >
+                    <article class="goods-wrapper">
+                      <figure class="left">
+                        <img class="goods-image" :class="{empty: true}" src="./icon-picmr@2x.png" alt="">
+                        <img class="label" src="./icon-label@1x.png" alt="">
+                      </figure>
+                      <section class="right">
+                        <p class="title">{{item.name}}</p>
+                        <p class="sub-title">{{item.describe}}</p>
+                        <div class="money-wrapper">
+                          <p class="int">{{item.tradePrice && item.tradePrice.int || ''}}</p>
+                          <p class="dot">{{item.tradePrice && item.tradePrice.dec || ''}}</p>
+                          <p class="unit">元</p>
+                          <p class="origin">{{item.original_price}}元</p>
+                        </div>
+                        <p class="type-icon group">团购价</p>
+                        <div class="button-group guess">
+                          <div class="button-wrapper">
+                            <p>+购物车</p>
+                          </div>
+                          <p class="number">已售{{item.sale_count}}{{item.sale_unit}}</p>
+                        </div>
+                      </section>
+                    </article>
+                  </div>
+                </nav>
+              </article>
             </section>
           </template>
         </div>
-        <article class="active-wrapper">
-          <!--活动商品列表-->
-          <nav class="panel">
-            <img class="banner-img" src="./pic-cnxh.png" alt="">
-            <div
-              v-for="(item, index) in guessList"
-              :key="index"
-              class="goods-item-wrapper"
-            >
-              <article class="goods-wrapper">
-                <figure class="left">
-                  <img class="goods-image" :class="{empty: true}" src="./icon-picmr@2x.png" alt="">
-                  <img class="label" src="./icon-label@1x.png" alt="">
-                </figure>
-                <section class="right">
-                  <p class="title">{{item.name}}</p>
-                  <p class="sub-title">{{item.describe}}</p>
-                  <div class="money-wrapper">
-                    <p class="int">{{item.tradePrice && item.tradePrice.int || ''}}</p>
-                    <p class="dot">{{item.tradePrice && item.tradePrice.dec || ''}}</p>
-                    <p class="unit">元</p>
-                    <p class="origin">{{item.original_price}}元</p>
-                  </div>
-                  <p class="type-icon group">团购价</p>
-                  <div class="button-group guess">
-                    <div class="button-wrapper">
-                      <p>+购物车</p>
-                    </div>
-                    <p class="number">已售{{item.sale_count}}{{item.sale_unit}}</p>
-                  </div>
-                </section>
-              </article>
-            </div>
-          </nav>
-        </article>
       </div>
     </div>
   </div>
@@ -252,6 +254,10 @@
         default: () => []
       },
       freeShippingList: {
+        type: Array,
+        default: () => []
+      },
+      centralizePurchaseList: {
         type: Array,
         default: () => []
       },
