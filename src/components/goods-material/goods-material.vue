@@ -200,8 +200,10 @@
       height: 625px
       .goods-list
         layout(row)
+        height: 100%
         .goods-item
           width: 216px
+          height: 297px
           border-1px(#D9DEE1, 8px)
           margin-right: 20px
           margin-bottom: 30px
