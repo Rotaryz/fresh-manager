@@ -15,6 +15,7 @@
       <template v-if="stepIndex === 0">
         <edit-header title="基础信息"
                      btnText="导入商品图文"
+                     @button="showMaterial"
         ></edit-header>
         <edit-options title="商品名称">
           <input slot="middle"
@@ -299,7 +300,8 @@
       <div class="btn-main step-button" @click="toggleStepHandle">{{stepIndex? '上一步': '下一步'}}</div>
       <div v-if="stepIndex" class="back-btn back-submit hand" @click="saveHandle">保存</div>
     </div>
-<!--    <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>-->
+    <goods-material ref="goodsMaterial" @selectMaterial="selectMaterial"></goods-material>
+    <!--    <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>-->
   </div>
 </template>
 
@@ -313,6 +315,8 @@
   import _ from 'lodash'
   import * as GoodsHandle from './goods-handle'
   // import {uploadFiles} from '../../utils/vod/vod'
+  import GoodsMaterial from '@components/goods-material/goods-material'
+
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
@@ -340,7 +344,8 @@
       // DefaultConfirm,
       EditOptions,
       EditHeader,
-      EditMedia
+      EditMedia,
+      GoodsMaterial
     },
     props: {
       detail: {
@@ -441,6 +446,12 @@
       // }
     },
     methods: {
+      showMaterial() {
+        this.$refs.goodsMaterial && this.$refs.goodsMaterial.show()
+      },
+      selectMaterial(item) {
+        console.log(item)
+      },
       // 单选切换
       toggleRadios(key) {
         this[key] = !this[key]
