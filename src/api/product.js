@@ -280,9 +280,10 @@ export default {
   },
   // 商品详情[v2.9.6]
   // 数据展示类型(不传或为空为=所有数据;base=基础数据;sale=销售数据)
-  getDetail({id, showType = 'base'}, loading) {
-    let url = `/social-shopping/api/backend/goods-manage/goods/${id}`
-    return request.get(url, {show_type: showType}, loading)
+  getDetail(data, loading) {
+    data.show_type = data.show_type || 'base'
+    let url = `/social-shopping/api/backend/goods-manage/goods/${data.id}`
+    return request.get(url, {show_type: data.show_type}, loading)
   },
   // 创建商品[v2.9.6]
   // createGoods(data, loading) {
@@ -291,7 +292,7 @@ export default {
   // },
   // 商品编辑[v2.9.6]
   updateGoods(data, loading) {
-    if (this.id) {
+    if (data.id) {
       let url = `/social-shopping/api/backend/goods-manage/goods/${data.id}`
       return request.put(url, data, loading)
     } else {

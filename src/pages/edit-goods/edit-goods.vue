@@ -59,7 +59,7 @@
                           :height="inputHeight"
                           :width="400"
                           :select="baseUnitSelect"
-                          :isUse="!id"
+                          :isUse="!isFinish"
                           @setValue="setCommonValue($event.name, 'basicUnit')"
           ></base-drop-down>
           <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand">查看示例</span></p>
@@ -109,7 +109,7 @@
         <edit-options title="商品别名" :importance="false">
           <input slot="middle"
                  v-model="aliasName"
-                 type="number"
+                 type="text"
                  class="edit-input-box edit-input"
                  maxlength="10">
           <p slot="right" class="edit-pla">展示在供应链的商品名称，供本部采购或仓管人员浏览</p>
@@ -297,7 +297,7 @@
     <div class="back">
       <div class="back-cancel back-btn hand" @click="_back">返回</div>
       <div class="btn-main step-button" @click="toggleStepHandle">{{stepIndex? '上一步': '下一步'}}</div>
-      <div v-if="stepIndex" class="back-btn back-submit hand" @click="_submitType">保存</div>
+      <div v-if="stepIndex" class="back-btn back-submit hand" @click="saveHandle">保存</div>
     </div>
 <!--    <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>-->
   </div>
@@ -309,7 +309,7 @@
   import EditMedia from '@components/edit-media/edit-media'
   // import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
-  import storage from 'storage-controller'
+  // import storage from 'storage-controller'
   import _ from 'lodash'
   import * as GoodsHandle from './goods-handle'
   // import {uploadFiles} from '../../utils/vod/vod'
@@ -318,16 +318,17 @@
   const TITLE = '新建商品'
   // const ORDERSTATUS = [{text: '基础信息', status: 0}, {text: '销售信息', status: 1}]
 
-  function _getDetail({id, showType}, cb) {
-    if (!id) {
-      cb && cb()
-      return
+  const STEP_INFO = {
+    0: {
+      show_type: 'base',
+      resolveData: GoodsHandle.RBaseData,
+      formatData: GoodsHandle.FBaseData
+    },
+    1: {
+      show_type: 'sale',
+      resolveData: GoodsHandle.RSellData,
+      formatData: GoodsHandle.FSellData
     }
-    API.Product.getDetail({id, showType}).then((res) => {
-      cb && cb(res)
-    }).catch(e => {
-      cb && cb(e)
-    })
   }
 
   export default {
@@ -388,36 +389,56 @@
         supplierSelect: {check: false, show: false, content: '选择供应商', type: 'default', data: []},
         categoriesSelect: {check: false, show: false, content: '选择分类', type: 'default', data: []},
         searchList: [],
+        goods_sku_id: '',
+        supplier_name: '',
+      }
+    },
+    computed: {
+      stepInfo() {
+        return STEP_INFO[this.stepIndex]
       }
     },
     beforeRouteEnter(to, from, next) {
       const id = to.query.id
-      _getDetail({id}, (res) => {
+      if (!id) {
+        next()
+        return
+      }
+      API.Product.getDetail({id}, true).then((res) => {
         next(vm => {
+          vm.$loading.hide()
           if (res && res.error !== vm.$ERR_OK) {
             vm.$toast.show(res.message)
             return
           }
           vm.setData(res)
+          vm._getSupplierData()
+          vm._getGoodsTypeList()
+          vm._getBasicUnitList()
+          vm._getGoodsCategory()
         })
+      }).catch(e => {
+        console.error(e)
+        next()
       })
     },
-    created() {
-      this._getSupplierData()
-      this._getGoodsTypeList()
-      this._getBasicUnitList()
-      this._getGoodsCategory()
-      this._createGoodsCode()
-    },
+    // mounted() {
+    //   this._getSupplierData()
+    //   this._getGoodsTypeList()
+    //   this._getBasicUnitList()
+    //   this._getGoodsCategory()
+    //   this._createGoodsCode()
+    // },
     destroyed() {
-      clearInterval(this.timerVod)
-      if (this.isCopy) {
-        storage.remove('msg')
-        storage.remove('goods_skus')
-        storage.remove('saleMsg')
-        storage.remove('sale_skus')
-        storage.remove('videoUrl')
-      }
+      console.log('destroyed')
+      // clearInterval(this.timerVod)
+      // if (this.isCopy) {
+      //   storage.remove('msg')
+      //   storage.remove('goods_skus')
+      //   storage.remove('saleMsg')
+      //   storage.remove('sale_skus')
+      //   storage.remove('videoUrl')
+      // }
     },
     methods: {
       // 单选切换
@@ -426,9 +447,29 @@
       },
       // 切换步骤
       toggleStepHandle() {
-        // console.log(GoodsHandle.FBaseData(this))
-        // this._updateGoodsInfo()
-        // this._updateGoodsInfo()
+        if (this.stepIndex === 1) {
+          this.actionStep()
+          this._getDetail()
+          return
+        }
+        this._updateGoodsInfo(() => {
+          this.actionStep()
+          this._getDetail(false, () => {
+            this._createGoodsCode()
+            this.initSelectName('supplierSelect', 'supplier_name')
+            this.initSelectName('saleSelect', 'sellUnit')
+            this.initSelectName('purchaseSelect', 'purchaseUnit')
+          })
+        })
+      },
+      saveHandle() {
+        // const data = this.stepInfo.formatData(this)
+        // data.id = this.id
+        // console.log(data)
+        this._updateGoodsInfo()
+      },
+      // 步骤切换
+      actionStep() {
         const maxStep = 1
         const minStep = 0
         this.stepIndex++
@@ -438,32 +479,55 @@
       },
       // 生成商品编码
       _createGoodsCode() {
+        if (this.goodsCode) {
+          return
+        }
         API.Product.createCode().then(res => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
-            // return
+            return
           }
-          // todo
+          this.goodsCode = res.data.code
         })
       },
-      _updateGoodsInfo() {
-        let data = {}
-        if (this.stepIndex === 0) {
-          data = GoodsHandle.FBaseData(this)
+      // 提交数据
+      _updateGoodsInfo(cb) {
+        const data = this.stepInfo.formatData(this)
+        data.id = this.id
+        API.Product.updateGoods(data, true).then(res => {
+          this.$loading.hide()
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          if (res.data && res.data.goods_id) {
+            this.goods_sku_id = res.data.goods_sku_id
+            this.id = this.goods_id
+          }
+          cb && cb()
+        }).catch(e => {
+          this.$loading.hide()
+        })
+      },
+      // 获取详情
+      _getDetail(loading = false, cb) {
+        const data = {
+          id: this.id,
+          show_type: this.stepInfo.show_type
         }
-        if (this.stepIndex === 1) {
-        }
-        API.Product.updateGoods(data).then(res => {
-          console.log(res)
+        API.Product.getDetail(data, loading).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.setData(res, cb)
         })
       },
       // 设置数据
-      setData(res) {
-        let data = {}
-        if (this.tabIndex === 0) {
-          data = GoodsHandle.RBaseData(res.data)
-        }
+      setData(res,cb) {
+        const data = this.stepInfo.resolveData(res.data)
         Object.assign(this, data)
+        cb && cb()
       },
       // 获取商品类目列表
       _getGoodsTypeList() {
@@ -478,6 +542,8 @@
               if (child.is_selected) {
                 this.firstTypeSelect.content = child.name
                 this.secondTypeSelect.data = child.list
+                const obj = child.list.find(val => val.is_selected)
+                obj && (this.secondTypeSelect.content = obj.name)
               }
             })
           })
@@ -679,6 +745,7 @@
           this.baseUnitSelect.data = res.data
           this.saleSelect.data = res.data
           this.purchaseSelect.data = res.data
+          this.initSelectName('baseUnitSelect', 'basicUnit')
         })
       },
       // 筛选供应商
@@ -704,11 +771,14 @@
             })
             this.supplierSelect.data = res.data
             this.searchList = res.data
-            // console.log(this.supplierSelect)
           } else {
             this.$toast.show(res.message)
           }
         })
+      },
+      initSelectName(select, field) {
+        const obj = this[select].data.find(val => val.name === this[field])
+        obj && (this[select].content = obj.name)
       },
       // 选择商品类目
       setGoodsTypeValue(data, type) {
