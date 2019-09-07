@@ -274,7 +274,8 @@
                 id: item.id
               }
             })
-            this.stairSelect.data.unshift({name: '全部', id: ''})
+            this.roadList.data.unshift({name: '全部', id: ''})
+            this._setRoadStatus()
           } else {
             this.$toast.show(res.message)
           }
@@ -314,6 +315,10 @@
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.sortingTask.filter.exception_status)
         this.errorObj.content = item.name || '全部'
+      },
+      _setRoadStatus() {
+        let item = this.roadList.data.find(item => item.id === this.sortingTask.filter.road_id)
+        this.roadList.content = item.name || '全部'
       },
       webSocketData() {
         let url =  process.env.VUE_APP_WSS + '/sub'
