@@ -46,7 +46,7 @@
             <div v-else class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
             <!--售卖销售单价-->
             <div class="list-item" :class="{'red': item.error_tips.trade_price}">{{item.error_tips.trade_price || item.trade_price}}</div>
-            <div class="list-item" :class="{'red': item.error_tips.goods_material_category_name}">{{item.error_tips.goods_material_category_name || item.goods_material_category_name}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.goods_category_name}">{{item.error_tips.goods_category_name || item.goods_category_name}}</div>
           </div>
         </div>
         <base-blank v-else></base-blank>

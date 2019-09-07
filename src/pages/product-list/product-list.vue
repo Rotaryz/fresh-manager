@@ -90,11 +90,11 @@
               <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
               <div v-if="item.trade_price" class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
               <div v-else class="list-item">---</div>
-              <div v-if="item.usable_stock" class="list-item list-item-layout">
+              <div v-if="!item.usable_stock && !item.complete_status" class="list-item">---</div>
+              <div v-else class="list-item list-item-layout">
                 {{item.usable_stock}}{{item.sale_unit}}
                 <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
               </div>
-              <div v-else class="list-item">---</div>
               <div class="list-item list-item-layout">
                 {{item.source * 1 === 1 ? '自建' : '平台'}}
               </div>
