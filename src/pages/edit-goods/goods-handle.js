@@ -1,7 +1,8 @@
 export function RBaseData(data, isCopy) {
   const sku = data.goods_skus && data.goods_skus[0] || {}
+  const isFinish = isCopy ? false : !!data.all_complete_status
   return {
-    isFinish: !!data.all_complete_status,
+    isFinish,
     goodsName: data.name, // 商品名称
     describe: data.describe, // 商品描述
     goodsTypeId: data.goods_material_category_id, // 商品类目
@@ -45,15 +46,16 @@ export function FBaseData(data) {
   }
 }
 
-export function RSellData(data) {
+export function RSellData(data, isCopy) {
   const sku = data.goods_skus && data.goods_skus[0] || {}
   // 商品类型(0=未知;1=普通商品;2=集采商品)
   const TPL_GOODS_TYPE = {
     1: false,
     2: true
   }
+  const isFinish = isCopy ? false : !!data.all_complete_status
   return {
-    isFinish: !!data.all_complete_status,
+    isFinish,
     goods_sku_id: sku.goods_sku_id,
     supplier_name: sku.supplier_name,
     aliasName: sku.goods_material_name, // 商品别名
@@ -91,7 +93,6 @@ export function FSellData(data) {
       {
         "goods_sku_id":data.goods_sku_id,
         "supplier_id":data.supply,
-        // "supplier_name":"自采供应商",
         "purchase_unit":data.purchaseUnit,
         "base_purchase_rate": data.purchaseSize,
         "purchase_price": data.purchasePrice,

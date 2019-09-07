@@ -425,8 +425,6 @@
             return
           }
           vm.setData(res)
-          console.log(vm.coverImageList)
-          console.log(vm.videoList)
           vm._getSupplierData()
           vm._getGoodsTypeList()
           vm._getBasicUnitList()
