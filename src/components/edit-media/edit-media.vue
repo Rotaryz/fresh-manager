@@ -84,21 +84,28 @@
           arr = arr.slice(0, this.maxFiles)
         }
         if (this.fileType === 'image') {
-          this.$cos.uploadFiles(this.$cosFileType.IMAGE_TYPE, arr).then((resArr) => {
-            this.showLoading = false
-            this.$emit('gain', this.mediaKey, resArr, this.fileType)
-          }).catch(() => {
-            this.showLoading = false
-          })
+          this.$cos
+            .uploadFiles(this.$cosFileType.IMAGE_TYPE, arr)
+            .then((resArr) => {
+              this.showLoading = false
+              this.$emit('gain', this.mediaKey, resArr, this.fileType)
+            })
+            .catch(() => {
+              this.showLoading = false
+            })
         } else {
-          Promise.all(arr.map(item => {
-            return this.$vod.uploadFiles(item)
-          })).then((resArr) => {
-            this.showLoading = false
-            this.$emit('gain', this.mediaKey, resArr, this.fileType)
-          }).catch(() => {
-            this.showLoading = false
-          })
+          Promise.all(
+            arr.map((item) => {
+              return this.$vod.uploadFiles(item)
+            })
+          )
+            .then((resArr) => {
+              this.showLoading = false
+              this.$emit('gain', this.mediaKey, resArr, this.fileType)
+            })
+            .catch(() => {
+              this.showLoading = false
+            })
         }
         e.target.value = ''
       }

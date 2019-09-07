@@ -126,13 +126,7 @@
   const PAGE_NAME = 'CONSUMER_ORDER_DETAIL'
   const TITLE = '新建补录订单'
 
-  const COMMODITIES_LIST = [
-    '商品',
-    '销售单位',
-    '可用库存',
-    '下单数量',
-    '操作'
-  ]
+  const COMMODITIES_LIST = ['商品', '销售单位', '可用库存', '下单数量', '操作']
 
   const RATE = /^[0-9]\d*$/
   const REGPHONE = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[0-9])\d{8}$/
@@ -231,8 +225,7 @@
         }
       }
     },
-    created() {
-    },
+    created() {},
     methods: {
       ...merchantOrderMethods,
       _initData() {
@@ -270,7 +263,7 @@
           back_tracking_obj: this.consumerType,
           out_order_sn: ''
         }
-        // this.nickName = item.nickname
+      // this.nickName = item.nickname
       },
       _searchShop(text) {
         if (text.length === 0) {
@@ -278,7 +271,7 @@
           return
         }
         let arr = []
-        this.communityList.forEach((item) =>{
+        this.communityList.forEach((item) => {
           if (item.name.toLowerCase().includes(text.toLowerCase())) {
             arr.push(item)
           }
@@ -294,25 +287,22 @@
         this.getCommunity()
       },
       getCommunity() {
-        API.MerchantOrder.getCommunity({mobile: this.mobile})
-          .then(res => {
+        API.MerchantOrder.getCommunity({mobile: this.mobile}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.community.data = res.data
+          this.communityList = res.data
+          this.community.content = '选择社区'
+          API.MerchantOrder.getNickName({mobile: this.mobile}).then((res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
               return
             }
-            this.community.data = res.data
-            this.communityList = res.data
-            this.community.content = '选择社区'
-            API.MerchantOrder.getNickName({mobile: this.mobile})
-              .then(res => {
-                if (res.error !== this.$ERR_OK) {
-                  this.$toast.show(res.message)
-                  return
-                }
-                this.nickName = res.data.nickname
-              })
-
+            this.nickName = res.data.nickname
           })
+        })
       },
       stockHandle(item) {
         if (item.sale_num < 0) {
@@ -339,7 +329,7 @@
 
         // this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
-        // this.selectDelId.push(this.goodsDelId)
+      // this.selectDelId.push(this.goodsDelId)
       },
       // 单个添加
       additionOne(item, index) {
@@ -392,7 +382,7 @@
         let checkGoods = this.checkGoods()
         if (!checkGoods) return
         let total = 0
-        let goods = this.goodsList.map(item => {
+        let goods = this.goodsList.map((item) => {
           let totalPrice = item.trade_price * item.sale_num
           total += totalPrice
           item.total = totalPrice
@@ -435,7 +425,7 @@
           // {value: this.testWechatName, txt: '请定位会员社区'},
           {value: this.testCommunity, txt: '请选择社区'},
           {value: this.testGoods, txt: '请选择商品'}
-          // {value: this.testGoodsCount, txt: ''},
+        // {value: this.testGoodsCount, txt: ''},
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -448,7 +438,7 @@
         }
       },
       checkGoods() {
-        let result = this.goodsList.every(item => {
+        let result = this.goodsList.every((item) => {
           !item.sale_num && this.$toast.show(`请输入“${item.name}”下单数量`)
           if (item.sale_num < 1 || !RATE.test(item.sale_num)) {
             this.$toast.show(`下单数量应为大于0的整数`)

@@ -46,7 +46,7 @@ export const state = {
   centerKeyword: '',
   centerTabIndex: 0,
   centerType: 'common',
-  centerCategoryId: '',
+  centerCategoryId: ''
 }
 
 export const getters = {
@@ -296,11 +296,11 @@ export const actions = {
     commit('SET_CENTER_CATEGORY_ID', '')
   },
   getCenterListMore({commit, dispatch}, obj) {
-    typeof (obj.tabIndex) === 'number' && commit('SET_CENTER_TAB_INDEX', obj.tabIndex)
-    typeof (obj.page) !== 'undefined' && commit('SET_CENTER_CONTENT_PAGE', obj.page)
-    typeof (obj.status) !== 'undefined' && commit('SET_CENTER_STATUS', obj.status)
-    typeof (obj.keyword) !== 'undefined' && commit('SET_CENTER_KEYWORD', obj.keyword)
-    typeof (obj.centerCategoryId) !== 'undefined' && commit('SET_CENTER_CATEGORY_ID', obj.centerCategoryId)
+    typeof obj.tabIndex === 'number' && commit('SET_CENTER_TAB_INDEX', obj.tabIndex)
+    typeof obj.page !== 'undefined' && commit('SET_CENTER_CONTENT_PAGE', obj.page)
+    typeof obj.status !== 'undefined' && commit('SET_CENTER_STATUS', obj.status)
+    typeof obj.keyword !== 'undefined' && commit('SET_CENTER_KEYWORD', obj.keyword)
+    typeof obj.centerCategoryId !== 'undefined' && commit('SET_CENTER_CATEGORY_ID', obj.centerCategoryId)
     dispatch('getCenterList', false)
   },
   infoWork({commit}, obj) {
@@ -314,11 +314,11 @@ export const actions = {
     commit('SET_WORK_TAB_INDEX', index)
   },
   getWorkListMore({commit, dispatch}, obj) {
-    typeof (obj.tabIndex) === 'number' && commit('SET_WORK_TAB_INDEX', obj.tabIndex)
-    typeof (obj.page) !== 'undefined' && commit('SET_WORK_CONTENT_PAGE', obj.page)
-    typeof (obj.status) !== 'undefined' && commit('SET_WORK_STATUS', obj.status)
-    typeof (obj.keyword) !== 'undefined' && commit('SET_WORK_KEYWORD', obj.keyword)
-    typeof (obj.workCategoryId) !== 'undefined' && commit('SET_WORK_CATEGORY_ID', obj.workCategoryId)
+    typeof obj.tabIndex === 'number' && commit('SET_WORK_TAB_INDEX', obj.tabIndex)
+    typeof obj.page !== 'undefined' && commit('SET_WORK_CONTENT_PAGE', obj.page)
+    typeof obj.status !== 'undefined' && commit('SET_WORK_STATUS', obj.status)
+    typeof obj.keyword !== 'undefined' && commit('SET_WORK_KEYWORD', obj.keyword)
+    typeof obj.workCategoryId !== 'undefined' && commit('SET_WORK_CATEGORY_ID', obj.workCategoryId)
     dispatch('getWorkList', false)
   }
 }

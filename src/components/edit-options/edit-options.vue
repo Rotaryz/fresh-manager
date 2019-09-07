@@ -29,15 +29,13 @@
         type: String,
         default: ''
       },
-      importance : {
-        type : Boolean,
+      importance: {
+        type: Boolean,
         default: true
       }
     },
     data() {
-      return {
-
-      }
+      return {}
     }
   }
 </script>

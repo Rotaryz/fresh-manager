@@ -39,18 +39,18 @@ export const state = {
 }
 
 export const getters = {
-  popularList: state => state.popularList,
-  popularPage: state => state.popularPage,
-  preferenceList: state => state.preferenceList,
-  preferencePage: state =>state.preferencePage,
-  collageList: state => state.collageList,
-  collagePage: state => state.collagePage,
-  collageDetail: state => state.collageDetail,
-  activityTab: state => state.activityTab,
-  requestData: state => state.requestData,
-  defaultIndex: state => state.defaultIndex,
-  tabIndex: state => state.tabIndex,
-  firstIn: state => state.firstIn
+  popularList: (state) => state.popularList,
+  popularPage: (state) => state.popularPage,
+  preferenceList: (state) => state.preferenceList,
+  preferencePage: (state) => state.preferencePage,
+  collageList: (state) => state.collageList,
+  collagePage: (state) => state.collagePage,
+  collageDetail: (state) => state.collageDetail,
+  activityTab: (state) => state.activityTab,
+  requestData: (state) => state.requestData,
+  defaultIndex: (state) => state.defaultIndex,
+  tabIndex: (state) => state.tabIndex,
+  firstIn: (state) => state.firstIn
 }
 
 export const mutations = {

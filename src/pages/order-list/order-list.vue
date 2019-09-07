@@ -100,7 +100,11 @@
   const EXCEL_URL = '/social-shopping/api/backend/order-excel'
 
   const LIST_TITLE = ['订单号', '会员名称', '订单总价', '实付金额', '社区名称', '订单状态', '操作']
-  const ORDERSTATUS = [{text: '商城订单', status: 'c_shop'}, {text: '拓展订单', status: 'c_offline'}, {text: '全国包邮订单', status: 'c_freeShipping'}]
+  const ORDERSTATUS = [
+    {text: '商城订单', status: 'c_shop'},
+    {text: '拓展订单', status: 'c_offline'},
+    {text: '全国包邮订单', status: 'c_freeShipping'}
+  ]
   const SOCIAL_SELECT = {check: false, show: false, content: '全部社区', type: 'default', data: []}
 
   export default {
@@ -183,7 +187,6 @@
       }
     },
     created() {
-
       if (!this.shopId) {
         this.socialSelect.content = '全部社区'
       }
@@ -192,7 +195,7 @@
     },
     beforeDestroy() {
       clearTimeout(this.timer)
-      // this.setTime(['', ''])
+    // this.setTime(['', ''])
     },
     methods: {
       ...orderMethods,
@@ -253,25 +256,24 @@
           data.source_type = 2
           delete data.source
         }
-        API.Order.exportOffLine(data)
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message, 3000)
-              this.closeDownModal()
-              return
-            }
-            if (+res.data.status !== 3) {
-              // this.$toast.show(res.data.status_message, 3000)
-              // this.closeDownModal()
-              this.message = res.data.status_message
-              this.$refs.downModal.showModal()
-              this.setRequestTimer(data)
-            } else {
-              this.downloadUrl = res.data.download_url
-              this.downName = res.data.file_name
-              this.$refs.downModal.showModal()
-            }
-          })
+        API.Order.exportOffLine(data).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message, 3000)
+            this.closeDownModal()
+            return
+          }
+          if (+res.data.status !== 3) {
+            // this.$toast.show(res.data.status_message, 3000)
+            // this.closeDownModal()
+            this.message = res.data.status_message
+            this.$refs.downModal.showModal()
+            this.setRequestTimer(data)
+          } else {
+            this.downloadUrl = res.data.download_url
+            this.downName = res.data.file_name
+            this.$refs.downModal.showModal()
+          }
+        })
       },
       setRequestTimer(data) {
         let newData = JSON.parse(JSON.stringify(data))
@@ -287,24 +289,23 @@
           } else {
             this.downTime = this.downTime * 2
           }
-          API.Order.exportOffLine(newData)
-            .then(res => {
-              if (res.error !== this.$ERR_OK) {
-                this.$toast.show(res.message, 3000)
-                clearTimeout(this.timer)
-                this.downTime = 1000
-                return
-              }
-              if (+res.data.status === 3) {
-                clearTimeout(this.timer)
-                this.downTime = 1000
-                this.downloadUrl = res.data.download_url
-                this.downName = res.data.file_name
-                this.$refs.downModal.showModal()
-              } else {
-                this.setRequestTimer(data)
-              }
-            })
+          API.Order.exportOffLine(newData).then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message, 3000)
+              clearTimeout(this.timer)
+              this.downTime = 1000
+              return
+            }
+            if (+res.data.status === 3) {
+              clearTimeout(this.timer)
+              this.downTime = 1000
+              this.downloadUrl = res.data.download_url
+              this.downName = res.data.file_name
+              this.$refs.downModal.showModal()
+            } else {
+              this.setRequestTimer(data)
+            }
+          })
         }, this.downTime)
       },
       download() {
@@ -334,7 +335,7 @@
           return
         }
         let arr = []
-        this.socialSelectList.forEach((item) =>{
+        this.socialSelectList.forEach((item) => {
           if (item.name.toLowerCase().includes(text.toLowerCase())) {
             arr.push(item)
           }

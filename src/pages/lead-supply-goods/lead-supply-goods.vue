@@ -66,7 +66,20 @@
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
   const TITLE = '采购任务导入'
-  const COMMODITIES_LIST = ['商品名称/编码', '商品类目', '基本单位', '供应商', '采购规格', '采购单价', '采购周期', '是否集采', '售卖类型', '销售规格', '销售单价', '商品分类']
+  const COMMODITIES_LIST = [
+    '商品名称/编码',
+    '商品类目',
+    '基本单位',
+    '供应商',
+    '采购规格',
+    '采购单价',
+    '采购周期',
+    '是否集采',
+    '售卖类型',
+    '销售规格',
+    '销售单价',
+    '商品分类'
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -137,18 +150,18 @@
           this.$toast.show(res.message)
           return
         }
-        res.data.forEach(item => {
+        res.data.forEach((item) => {
           for (let i in item.error_tips) { // eslint-disable-line
             this.hasError = true
           }
         })
         this.blankList = res.data
-        // let result = res.data.every(item => {
-        //   return +item.error_type === 0
-        // })
-        // if (!result) {
-        //   this.hasError = true
-        // }
+      // let result = res.data.every(item => {
+      //   return +item.error_type === 0
+      // })
+      // if (!result) {
+      //   this.hasError = true
+      // }
       },
       // 格式化文件
       _infoFile(file) {

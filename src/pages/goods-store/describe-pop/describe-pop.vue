@@ -58,14 +58,14 @@
               title: '示例1',
               content: [
                 {
-                  text: '苹果: 采购散装后自己包装，按“kg”存放在仓库，则',
+                  text: '苹果: 采购散装后自己包装，按“kg”存放在仓库，则'
                 },
                 {
                   text: '基本单位',
                   cname: 'mark'
                 },
                 {
-                  text: '建议设置为',
+                  text: '建议设置为'
                 },
                 {
                   text: 'kg',
@@ -77,14 +77,14 @@
               title: '示例2',
               content: [
                 {
-                  text: '苹果: 采购供应商已包装好的，按“份”存放在仓库，则',
+                  text: '苹果: 采购供应商已包装好的，按“份”存放在仓库，则'
                 },
                 {
                   text: '基本单位',
                   cname: 'mark'
                 },
                 {
-                  text: '建议设置为',
+                  text: '建议设置为'
                 },
                 {
                   text: '份',
@@ -96,14 +96,14 @@
               title: '示例3',
               content: [
                 {
-                  text: '酸奶: 采购1件30盒，按“盒”存放在仓库，则',
+                  text: '酸奶: 采购1件30盒，按“盒”存放在仓库，则'
                 },
                 {
                   text: '基本单位',
                   cname: 'mark'
                 },
                 {
-                  text: '建议设置为',
+                  text: '建议设置为'
                 },
                 {
                   text: '盒',
@@ -120,7 +120,6 @@
       show(type) {
         this.type = type
         this.$refs.modal && this.$refs.modal.showModal()
-
       },
       hide() {
         this.$refs.modal && this.$refs.modal.hideModal()

@@ -247,8 +247,8 @@
           current_shop: process.env.VUE_APP_CURRENT_SHOP,
           access_token: this.currentUser.access_token,
           keyword: this.leaderListFilter.keyword,
-          status: this.leaderListFilter.status,
-          // model_type: this.leaderListFilter.model_type
+          status: this.leaderListFilter.status
+        // model_type: this.leaderListFilter.model_type
         }
 
         let search = []

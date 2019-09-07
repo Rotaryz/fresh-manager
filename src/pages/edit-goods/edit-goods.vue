@@ -33,9 +33,9 @@
         </edit-options>
         <edit-options title="基本单位">
           <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :select="baseUnitSelect"
-                          :isUse="!isFinish" @setValue="setCommonValue($event.name, 'basicUnit')"></base-drop-down>
-          <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand" @click="openTipsHandle('unit')"
-          >查看示例</span></p>
+                          :isUse="!isFinish" @setValue="setCommonValue($event.name, 'basicUnit')"
+          ></base-drop-down>
+          <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand" @click="openTipsHandle('unit')">查看示例</span></p>
         </edit-options>
         <edit-options title="封面图">
           <edit-media slot="middle" explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。" mediaKey="coverImageList" :dataArray="coverImageList" :maxFiles="5"
@@ -44,31 +44,33 @@
         </edit-options>
         <edit-options title="主图视频" :importance="false">
           <edit-media slot="middle" explain="建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。" fileType="video" imgUrlKey="full_url" mediaKey="videoList"
-                      :dataArray="videoList" :maxFiles="1" @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"></edit-media>
+                      :dataArray="videoList" :maxFiles="1" @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"
+          ></edit-media>
         </edit-options>
         <edit-options title="详情图">
           <edit-media slot="middle" explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传15张。" mediaKey="detailImageList" :dataArray="detailImageList" :maxFiles="15"
-                      @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"></edit-media>
+                      @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"
+          ></edit-media>
         </edit-options>
       </template>
       <template v-if="stepIndex === 1">
-        <edit-header title="采购信息"
-        ></edit-header>
+        <edit-header title="采购信息"></edit-header>
         <edit-options title="商品别名" :importance="false">
           <input slot="middle" v-model="aliasName" type="text" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">展示在供应链的商品名称，供本部采购或仓管人员浏览</p>
         </edit-options>
         <edit-options title="供应商">
           <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
-                          :select="supplierSelect" isInputPla="请选择供应商" @setValue="setCommonValue($event.supplier_id, 'supply')" @changeText="changeText"></base-drop-down>
+                          :select="supplierSelect" isInputPla="请选择供应商" @setValue="setCommonValue($event.supplier_id, 'supply')" @changeText="changeText"
+          ></base-drop-down>
           <p slot="right" class="edit-pla hand"><span
             style="text-decoration :underline;color: #3E77C3"
             @click="handleOpenNewWindow('edit-supplier')"
           >新增</span><span class="edit-pla-children" @click="_getSupplierData">刷新</span></p>
         </edit-options>
         <edit-options title="采购规格">
-          <div class="edit-input-box mini-edit-input-box"
-               slot="middle"
+          <div slot="middle"
+               class="edit-input-box mini-edit-input-box"
           >
             <p class="size-left">1</p>
             <base-drop-down :height="inputHeight" :width="131" :select="purchaseSelect" @setValue="setCommonValue($event.name, 'purchaseUnit')"></base-drop-down>
@@ -76,7 +78,7 @@
               <p class="line"></p>
               <p class="line m-5"></p>
             </div>
-            <input class="edit-input mini-edit-input" v-model="purchaseSize" type="number" style="width: 127px">
+            <input v-model="purchaseSize" class="edit-input mini-edit-input" type="number" style="width: 127px">
           </div>
           <p slot="right" class="edit-pla c-333">{{basicUnit || ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'purchaseUnit')">查看示例</span></p>
         </edit-options>
@@ -117,7 +119,8 @@
         </edit-options>
         <edit-options title="商品分类">
           <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
-                          :select="categoriesSelect" isInputPla="请选择商品分类" @setValue="setCommonValue($event.id, 'goodsCategory')" @changeText="changeCategoryText"></base-drop-down>
+                          :select="categoriesSelect" isInputPla="请选择商品分类" @setValue="setCommonValue($event.id, 'goodsCategory')" @changeText="changeCategoryText"
+          ></base-drop-down>
           <p slot="right" class="edit-pla hand"><span style="text-decoration :underline;color: #3E77C3" @click="handleOpenNewWindow('product-categories')">新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
         </edit-options>
         <edit-options title="商品编码">
@@ -125,8 +128,9 @@
           <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span><span class="edit-pla-children hand" @click="openTipsHandle('code')">查看图示</span></p>
         </edit-options>
         <edit-options title="销售规格">
-          <div class="edit-input-box mini-edit-input-box"
-               slot="middle">
+          <div slot="middle"
+               class="edit-input-box mini-edit-input-box"
+          >
             <p class="size-left">1</p>
             <base-drop-down :height="inputHeight" :width="131" :select="saleSelect" @setValue="setCommonValue($event.name, 'sellUnit')"></base-drop-down>
             <div class="size-equal">
@@ -192,7 +196,6 @@
   import * as GoodsHandle from './goods-handle'
   import API from '@api'
   import storage from 'storage-controller'
-
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
@@ -276,7 +279,7 @@
         searchCategoryList: [], // 商品分类筛选临时数组
         searchList: [], // 供应商筛选临时数组
         goods_sku_id: '', // sku_id
-        supplier_name: '', // 供应商名称
+        supplier_name: '' // 供应商名称
       }
     },
     computed: {
@@ -291,7 +294,7 @@
        * @returns {number}
        */
       purchaseCost() {
-        let number = this.purchasePrice * this.sellSize / this.purchaseSize
+        let number = (this.purchasePrice * this.sellSize) / this.purchaseSize
         return isNaN(number) ? '' : number.toFixed(2)
       },
       underlinePriceShow: {
@@ -305,12 +308,12 @@
         set(val) {
           this.underlinePrice = val
         }
-      },
+      }
     },
     beforeRouteEnter(to, from, next) {
       const id = to.query.id || storage.get('$editGoodsId', null)
       if (!id) {
-        next(vm => {
+        next((vm) => {
           vm._getSupplierData()
           vm._getGoodsTypeList()
           vm._getBasicUnitList()
@@ -318,23 +321,25 @@
         })
         return
       }
-      API.Product.getDetail({id}, true).then((res) => {
-        next(vm => {
-          vm.$loading.hide()
-          if (res && res.error !== vm.$ERR_OK) {
-            vm.$toast.show(res.message)
-            return
-          }
-          vm.setData(res)
-          vm._getSupplierData()
-          vm._getGoodsTypeList()
-          vm._getBasicUnitList()
-          vm._getGoodsCategory()
+      API.Product.getDetail({id}, true)
+        .then((res) => {
+          next((vm) => {
+            vm.$loading.hide()
+            if (res && res.error !== vm.$ERR_OK) {
+              vm.$toast.show(res.message)
+              return
+            }
+            vm.setData(res)
+            vm._getSupplierData()
+            vm._getGoodsTypeList()
+            vm._getBasicUnitList()
+            vm._getGoodsCategory()
+          })
         })
-      }).catch(e => {
-        console.error(e)
-        next()
-      })
+        .catch((e) => {
+          console.error(e)
+          next()
+        })
     },
     beforeRouteLeave(to, from, next) {
       storage.remove('$editGoodsId')
@@ -377,7 +382,7 @@
         this.findBasicUnit()
       },
       findBasicUnit() {
-        const unit = this.baseUnitSelect.data.find(val => val.name === this.basicUnit)
+        const unit = this.baseUnitSelect.data.find((val) => val.name === this.basicUnit)
         if (!unit) {
           this.baseUnitSelect.data.unshift({id: 0, name: this.basicUnit})
           this.saleSelect.data = this.baseUnitSelect.data
@@ -386,14 +391,14 @@
         this.initSelectName('baseUnitSelect', 'basicUnit')
       },
       findGoodsTypeList() {
-        let obj = this.firstTypeSelect.data.find(val => val.id === this.goodsTypeId)
+        let obj = this.firstTypeSelect.data.find((val) => val.id === this.goodsTypeId)
         if (obj) {
           this.firstTypeSelect.content = obj.name
           this.secondTypeSelect.content = '二级类目'
           this.secondTypeSelect.data = obj.list
         } else {
-          this.firstTypeSelect.data.forEach(item => {
-            let second = item.list.find(val => val.id === this.goodsTypeId)
+          this.firstTypeSelect.data.forEach((item) => {
+            let second = item.list.find((val) => val.id === this.goodsTypeId)
             if (second) {
               this.secondTypeSelect.content = second.name
               this.firstTypeSelect.content = item.name
@@ -500,7 +505,7 @@
         if (flag) {
           return
         }
-        API.Product.createCode().then(res => {
+        API.Product.createCode().then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
@@ -517,21 +522,23 @@
         }
         const data = this.stepInfo.formatData(this)
         data.id = this.id
-        API.Product.updateGoods(data, true).then(res => {
-          this.$loading.hide()
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          if (res.data && res.data.goods_id) {
-            this.goods_sku_id = res.data.goods_sku_id
-            this.id = res.data.goods_id
-            storage.set('$editGoodsId', this.id)
-          }
-          cb && cb()
-        }).catch(e => {
-          this.$loading.hide()
-        })
+        API.Product.updateGoods(data, true)
+          .then((res) => {
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            if (res.data && res.data.goods_id) {
+              this.goods_sku_id = res.data.goods_sku_id
+              this.id = res.data.goods_id
+              storage.set('$editGoodsId', this.id)
+            }
+            cb && cb()
+          })
+          .catch((e) => {
+            this.$loading.hide()
+          })
       },
       // 提交数据复制商品
       async _updateGoodsInfoCopy(cb) {
@@ -578,29 +585,28 @@
         })
       },
       // 设置数据
-      setData(res,cb) {
+      setData(res, cb) {
         const data = this.stepInfo.resolveData(res.data, this.$route.query.isCopy)
         Object.assign(this, data)
         cb && cb()
       },
       // 获取商品类目列表
       _getGoodsTypeList() {
-        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false)
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.firstTypeSelect.data = res.data
+          this.firstTypeSelect.data.forEach((child) => {
+            if (child.is_selected) {
+              this.firstTypeSelect.content = child.name
+              this.secondTypeSelect.data = child.list
+              const obj = child.list.find((val) => val.is_selected)
+              obj && (this.secondTypeSelect.content = obj.name)
             }
-            this.firstTypeSelect.data = res.data
-            this.firstTypeSelect.data.forEach((child) => {
-              if (child.is_selected) {
-                this.firstTypeSelect.content = child.name
-                this.secondTypeSelect.data = child.list
-                const obj = child.list.find(val => val.is_selected)
-                obj && (this.secondTypeSelect.content = obj.name)
-              }
-            })
           })
+        })
       },
       // 返回上一页
       backHandle() {
@@ -621,7 +627,7 @@
       },
       // 初始化选择器的名称
       initSelectName(select, field) {
-        const obj = this[select].data.find(val => val.name === this[field])
+        const obj = this[select].data.find((val) => val.name === this[field])
         obj && (this[select].content = obj.name)
       },
       // 筛选供应商
@@ -662,20 +668,19 @@
       },
       // 获取商品分类
       _getGoodsCategory() {
-        API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false)
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.categoriesSelect.data = res.data
+          this.searchCategoryList = res.data
+          this.categoriesSelect.data.forEach((item) => {
+            if (item.is_selected) {
+              this.categoriesSelect.content = item.name
             }
-            this.categoriesSelect.data = res.data
-            this.searchCategoryList = res.data
-            this.categoriesSelect.data.forEach((item) => {
-              if (item.is_selected) {
-                this.categoriesSelect.content = item.name
-              }
-            })
           })
+        })
       },
       // 筛选供应商
       changeCategoryText(text) {
@@ -702,7 +707,7 @@
       },
       // 添加媒体文件
       addMediaHandle(key, data, fileType) {
-        const arr = data.map(item => {
+        const arr = data.map((item) => {
           let obj = {}
           if (fileType === 'image') {
             obj = {
@@ -725,7 +730,7 @@
       // 拖拽媒体文件
       dragMediaHandle(key, data) {
         this[key] = data
-      },
+      }
     }
   }
 </script>

@@ -85,7 +85,7 @@
         let res = await API.Content.changeClassify(item.id, {status})
         this.$toast.show(res.message)
         res.error === this.$ERR_OK && this.contentAddPage({})
-        // this.contentClassList[index].status = this.contentClassList[index].status === 0 ? 1 : 0
+      // this.contentClassList[index].status = this.contentClassList[index].status === 0 ? 1 : 0
       },
       addPage(page) {
         this.contentAddPage({page})

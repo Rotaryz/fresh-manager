@@ -70,14 +70,24 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import _ from 'lodash'
+// import _ from 'lodash'
   import API from '@api'
   import {productComputed, authComputed, productMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '成品入库'
-  const COMMODITIES_LIST = ['建单时间', '最迟到货时间', '入库单号', '商品提供方', '采购单号', '入库金额', '状态', '入库类型', '操作']
+  const COMMODITIES_LIST = [
+    '建单时间',
+    '最迟到货时间',
+    '入库单号',
+    '商品提供方',
+    '采购单号',
+    '入库金额',
+    '状态',
+    '入库类型',
+    '操作'
+  ]
   const ENTRY_ORDERS_EXPORT = '/scm/api/backend/warehouse/entry-orders-export/'
   const DISS_EXPORT = '/scm/api/backend/warehouse/entry-orders-diff-export/'
   export default {
@@ -127,7 +137,12 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
+          data: [
+            {name: '全部', type: ''},
+            {name: '人工补录', type: '0'},
+            {name: '系统补货', type: '1'},
+            {name: '系统销售', type: '2'}
+          ] // 格式：{name: '55'}
         }
       }
     },
@@ -153,20 +168,19 @@
         this._updateList({type: item.type, page: 1})
       },
       getEntryOutType() {
-        API.Store.getEntryOutType({method: 'index'})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Store.getEntryOutType({method: 'index'}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.entryType.data = res.data.entry.map((item) => {
+            return {
+              name: item.type_str,
+              type: item.type
             }
-            this.entryType.data = res.data.entry.map(item => {
-              return {
-                name: item.type_str,
-                type: item.type
-              }
-            })
-            this.entryType.data.unshift({name: '全部', type: ''})
           })
+          this.entryType.data.unshift({name: '全部', type: ''})
+        })
       },
       _setErrorStatus() {
         let item = this.errorObj.data.find((item) => item.status === this.enterFilter.exception_status)

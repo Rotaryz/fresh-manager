@@ -86,8 +86,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import {DatePicker} from 'iview'
-  // import _ from 'lodash'
+// import {DatePicker} from 'iview'
+// import _ from 'lodash'
   import API from '@api'
   import {productComputed, authComputed, productMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
@@ -134,7 +134,7 @@
           {name: '已关闭', value: 3, key: 'success', num: 0}
         ],
         statusTab: 1,
-        time: [this.$route.query.start_time || '', this.$route.query.end_time || '',],
+        time: [this.$route.query.start_time || '', this.$route.query.end_time || ''],
         errorObj: {
           check: false,
           show: false,
@@ -147,7 +147,12 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', type: ''}, {name: '人工补录', type: '0'}, {name: '系统补货', type: '1'}, {name: '系统销售', type: '2'}] // 格式：{name: '55'}
+          data: [
+            {name: '全部', type: ''},
+            {name: '人工补录', type: '0'},
+            {name: '系统补货', type: '1'},
+            {name: '系统销售', type: '2'}
+          ] // 格式：{name: '55'}
         },
         currentItem: {},
         stopIng: false
@@ -172,7 +177,7 @@
       ...productMethods,
       ...authComputed,
       webSocketData(apiUrl) {
-        let url =  process.env.VUE_APP_WSS + '/sub'
+        let url = process.env.VUE_APP_WSS + '/sub'
         let prg = apiUrl + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
@@ -188,20 +193,19 @@
         }
       },
       getEntryOutType() {
-        API.Store.getEntryOutType({method: 'index'})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Store.getEntryOutType({method: 'index'}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.outType.data = res.data.out.map((item) => {
+            return {
+              name: item.type_str,
+              type: item.type
             }
-            this.outType.data = res.data.out.map(item => {
-              return {
-                name: item.type_str,
-                type: item.type
-              }
-            })
-            this.outType.data.unshift({name: '全部', type: ''})
           })
+          this.outType.data.unshift({name: '全部', type: ''})
+        })
       },
       _updateList(params, noUpdataStatus) {
         this.SET_OUT_PARAMS(params)
@@ -233,19 +237,18 @@
       stopConfirm() {
         if (this.stopIng) return
         this.stopIng = true
-        API.Store.closeOutOrder(this.currentItem.id)
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.$toast.show('关闭成功')
-            this.getOutData({loading: false})
-            this._statistic()
-            setTimeout(() => {
-              this.stopIng = false
-            }, 500)
-          })
+        API.Store.closeOutOrder(this.currentItem.id).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.$toast.show('关闭成功')
+          this.getOutData({loading: false})
+          this._statistic()
+          setTimeout(() => {
+            this.stopIng = false
+          }, 500)
+        })
       },
       goDetail(item) {
         if (item.show_sorting) {

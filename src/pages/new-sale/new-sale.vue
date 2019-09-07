@@ -238,7 +238,7 @@
     computed: {
       ...saleComputed,
       personAllBuyLimit() {
-        switch(this.msg.activity_theme) {
+        switch (this.msg.activity_theme) {
         case 'fixed':
           return 10
         case 'hot_tag':
@@ -250,7 +250,7 @@
         }
       },
       goodsTypeNumber() {
-        switch(this.msg.activity_theme) {
+        switch (this.msg.activity_theme) {
         case 'centralize':
           return 2
         default:
@@ -294,7 +294,7 @@
       // this.msg.activity_theme = this.$route.query.activity_theme
       if (this.id > 0) {
         let obj = _.cloneDeep(this.saleDetail)
-        this.goodsList = obj.activity_goods.map(item => {
+        this.goodsList = obj.activity_goods.map((item) => {
           item.id = item.id || item.goods_id
           return item
         })

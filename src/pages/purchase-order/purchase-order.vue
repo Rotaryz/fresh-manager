@@ -58,7 +58,17 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER'
   const TITLE = '采购单列表'
-  const COMMODITIES_LIST = ['生成时间', '最晚到货时间', '采购单号', '采购商品数', '预采购金额', '供应商', '采购员', '状态', '操作']
+  const COMMODITIES_LIST = [
+    '生成时间',
+    '最晚到货时间',
+    '采购单号',
+    '采购商品数',
+    '预采购金额',
+    '供应商',
+    '采购员',
+    '状态',
+    '操作'
+  ]
   export default {
     name: PAGE_NAME,
     page: {

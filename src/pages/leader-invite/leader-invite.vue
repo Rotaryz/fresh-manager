@@ -167,8 +167,8 @@
       flex: 1.5,
       key: 'shop',
       key2: 'social_name',
-      class: "operate",
-      params: {id: 'id', 'goods_sku_code': 'goods_sku_code'},
+      class: 'operate',
+      params: {id: 'id', goods_sku_code: 'goods_sku_code'},
       routerName: 'leader-list'
     },
     {
@@ -178,12 +178,16 @@
       type: 'operate',
       operateText: '',
       flex: 1.5,
-      class: "operate",
-      params: {id: 'id', 'goods_sku_code': 'goods_sku_code'},
-      routerName: 'sorting-task-detail-by-goods',
+      class: 'operate',
+      params: {id: 'id', goods_sku_code: 'goods_sku_code'},
+      routerName: 'sorting-task-detail-by-goods'
     },
     {
-      name: '邀请团长用户数/奖励', flex: 1.5, key: 'invite_number', type: 6, after: {key: 'invite_reward_money'}
+      name: '邀请团长用户数/奖励',
+      flex: 1.5,
+      key: 'invite_number',
+      type: 6,
+      after: {key: 'invite_reward_money'}
     },
     {name: '团长奖励', flex: 1, key: 'invite_total_money'},
     {name: '待结算', flex: 1, key: 'not_settlement_money'},
@@ -195,23 +199,24 @@
       type: 'showModal',
       operateText: '奖励结算',
       modalName: 'modalAccount',
-      class:'operate-two',
+      class: 'operate-two',
       afterBtn: {
         type: 'showModal',
         modalName: 'modalLogs',
-        operateText: '结算记录',
+        operateText: '结算记录'
       }
-    }]
+    }
+  ]
   const LOG_TITLE = [
     {name: '结算时间', flex: 1, key: 'created_at', type: 1},
     {name: '结算团长奖励时间段', flex: 2, key: 'start_at', type: 6, key2: 'end_at'},
     {name: '团长佣金比例', flex: 1, key: 'distribution_percent', type: 1},
-    {name: '结算金额', flex: 3, key: 'total_money', type: 1,class:'acount-money-item'},
+    {name: '结算金额', flex: 3, key: 'total_money', type: 1, class: 'acount-money-item'}
   ]
   export default {
     name: PAGE_NAME,
     components: {
-      DefaultModal,
+      DefaultModal
     },
     page: {
       title: TITLE
@@ -225,13 +230,13 @@
         //   limit: 10,
         //   keyword: ''
         // },
-        invite_number_count:0,
+        invite_number_count: 0,
         tabTitle: TAB_TITLE,
         dataArray: params.dataInfo,
         statusObj: {
           status: 0,
-          percent: "4.00",
-          invite_money: "50.00"
+          percent: '4.00',
+          invite_money: '50.00'
         },
         // 设置团长邀请注册
         inviteSetting: {
@@ -241,16 +246,16 @@
         currentLeader: {},
         accountObj: {
           invite_shop_id: '',
-          start_date: "",
+          start_date: '',
           end_date: ''
         },
-        disableEndTime:'',
-        accountCountObj:{
-          "invite_reward_money": "",
-          "invite_reward_number": "",
-          "entry_source_money": "",
-          "entry_percent": "",
-          "entry_money": "0.00"
+        disableEndTime: '',
+        accountCountObj: {
+          invite_reward_money: '',
+          invite_reward_number: '',
+          entry_source_money: '',
+          entry_percent: '',
+          entry_money: '0.00'
         },
         logTile: LOG_TITLE,
         pageInfo: params.pageInfo,
@@ -272,22 +277,24 @@
       ...inviteComputed,
       disabledDate() {
         return {
-          disabledDate:(date)=>{
+          disabledDate: (date) => {
             // console.log(this.accountObj.start_date, this.disableEndTime)
-            return date.valueOf() < new Date(this.accountObj.start_date) - 24*60*60*1000|| date.valueOf()> new Date(this.disableEndTime)
+            return (
+              date.valueOf() < new Date(this.accountObj.start_date) - 24 * 60 * 60 * 1000 ||
+              date.valueOf() > new Date(this.disableEndTime)
+            )
           }
         }
-        // 自定义日期必须小于今天
+      // 自定义日期必须小于今天
       }
     },
     created() {
       this._getSettingStatus()
       this.$loading.hide()
-
     },
     mounted() {
-      // this.$refs.modalAccount.showModal()
-      // this.$refs.modal && this.$refs.modal.showModal()
+    // this.$refs.modalAccount.showModal()
+    // this.$refs.modal && this.$refs.modal.showModal()
     },
     methods: {
       ...inviteMethods,
@@ -300,7 +307,7 @@
             }
             this.statusObj = res.data
           })
-          .finally(res => {
+          .finally((res) => {
             this.$loading.hide()
           })
       },
@@ -313,13 +320,13 @@
         API.Leader.leaderInviteSetting(this.inviteSetting)
           .then((res) => {
             if (res.error === this.$ERR_OK) {
-              this._getSettingStatus().then(res => {
+              this._getSettingStatus().then((res) => {
                 this.$refs.modalSwitch.hideModal()
               })
             }
             this.$toast.show(res.message)
           })
-          .finally(res => {
+          .finally((res) => {
             this.$loading.hide()
           })
       },
@@ -354,7 +361,7 @@
             }
             this.pageInfo.invite_number_count = res.invite_number_count
           })
-          .finally(res => {
+          .finally((res) => {
             this.$loading.hide()
           })
       },
@@ -362,32 +369,34 @@
       showAccountModal(row) {
         // todo
         this.accountObj.invite_shop_id = row.invite_shop_id
-        API.Leader.getAccountTimes({invite_shop_id:row.invite_shop_id}).then(res => {
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return false
-          }
-          this.accountObj.start_date = res.data.start_date
-          this.accountObj.end_date = res.data.end_date
-          this.disableEndTime = res.data.end_date
-          return true
-        }).then( res =>{
-          res && this._getAccountData()
-        })
+        API.Leader.getAccountTimes({invite_shop_id: row.invite_shop_id})
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return false
+            }
+            this.accountObj.start_date = res.data.start_date
+            this.accountObj.end_date = res.data.end_date
+            this.disableEndTime = res.data.end_date
+            return true
+          })
+          .then((res) => {
+            res && this._getAccountData()
+          })
       },
       // 获取算式 各个数据
       _getAccountData() {
-        API.Leader.getAccountData(this.accountObj).then(res => {
+        API.Leader.getAccountData(this.accountObj).then((res) => {
           this.$refs.modalAccount.showModal()
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
           }
-          this.accountCountObj = {...res.data,...{entry_money:Number(res.data.entry_money)}}
+          this.accountCountObj = {...res.data, ...{entry_money: Number(res.data.entry_money)}}
         })
       },
       handleAccountConfirm() {
-        API.Leader.setAccountData(this.accountObj).then(res => {
+        API.Leader.setAccountData(this.accountObj).then((res) => {
           this.$toast.show(res.message)
           if (res.error === this.$ERR_OK) {
             this._getList()
@@ -403,15 +412,15 @@
       showLogModal(row) {
         this.logsFilter.invite_shop_id = row.shop.id
         this.logsFilter.page = 1
-        this._getLogList().then(res => {
-          if(res){
+        this._getLogList().then((res) => {
+          if (res) {
             this.$refs.modalLogs.showModal()
             this.$refs.pages.beginPage()
           }
         })
       },
       _getLogList() {
-        return API.Leader.getLogList(this.logsFilter).then(res => {
+        return API.Leader.getLogList(this.logsFilter).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return false

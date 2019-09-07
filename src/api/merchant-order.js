@@ -72,5 +72,5 @@ export default {
   getNickName(params, loading = false) {
     let url = '/scm/api/backend/oms/customer-nickname'
     return request.get(url, params, loading)
-  },
+  }
 }

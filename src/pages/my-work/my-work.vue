@@ -99,7 +99,11 @@
     '操作'
   ]
   const DISPATCHING_LIST2 = ['封面图', '文章标题', '创建时间', '操作']
-  const TAB_STATUS = [{text: '图文', status: '', type: 'common', title: '我的图文'}, {text: '视频', status: '', type: 'video', title: '我的视频'}, {text: '菜谱', status: '', type: 'cookbook', title: '我的菜谱'}]
+  const TAB_STATUS = [
+    {text: '图文', status: '', type: 'common', title: '我的图文'},
+    {text: '视频', status: '', type: 'video', title: '我的视频'},
+    {text: '菜谱', status: '', type: 'cookbook', title: '我的菜谱'}
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -179,7 +183,7 @@
         this.$refs.baseStatusTab.infoStatus(this.statusType)
       },
       statusType(news) {
-        let item = this.dispatchSelect.find(item => item.status === news)
+        let item = this.dispatchSelect.find((item) => item.status === news)
         this.dispatTitle = item.name === '草稿' ? DISPATCHING_LIST2 : DISPATCHING_LIST
       }
     },
@@ -187,9 +191,9 @@
       this.infoQuery()
       await this.getContentClassList()
       await this._statistic()
-      // this.$nextTick(() => {
-      //   this.$refs.baseStatusTab.infoStatus(this.statusType)
-      // })
+    // this.$nextTick(() => {
+    //   this.$refs.baseStatusTab.infoStatus(this.statusType)
+    // })
     },
     methods: {
       ...contentMethods,
@@ -210,7 +214,10 @@
       // 获取二维码
       async shwoQrCode(id, index, item) {
         let shopId = item.shop_id ? `&s=${item.shop_id}` : ''
-        let url = item.type === 'video' ? `package-content/content-article-detail-video?a=${id}&p=1${shopId}` : `package-content/content-article-detail?a=${id}&p=1${shopId}`
+        let url =
+          item.type === 'video'
+            ? `package-content/content-article-detail-video?a=${id}&p=1${shopId}`
+            : `package-content/content-article-detail?a=${id}&p=1${shopId}`
         this.loadImg = true
         // {path: 'pages/choiceness?s=' + id, is_hyaline: false} 页面参数
         let res = await API.Content.createQrcode({path: url, is_hyaline: false})
@@ -307,7 +314,11 @@
       },
       // 获取状态
       async _statistic() {
-        let res = await API.Content.getWorkStatusList({type: this.workType, keyword: this.workKeyword, category_id: this.saveValue[this.categoryIdName]})
+        let res = await API.Content.getWorkStatusList({
+          type: this.workType,
+          keyword: this.workKeyword,
+          category_id: this.saveValue[this.categoryIdName]
+        })
         if (res.error !== this.$ERR_OK) return
         let selectData = res.data.map((item) => {
           return {
@@ -329,7 +340,13 @@
       // 切换tab
       changeTab(item, index) {
         this.setWorkIndex(index)
-        this.getWorkListMore({page: this.saveValue[this.pageName], workCategoryId: this.saveValue[this.categoryIdName], keyword: this.saveValue[this.keywordName], status: this.saveValue[this.statusName], tabIndex: index})
+        this.getWorkListMore({
+          page: this.saveValue[this.pageName],
+          workCategoryId: this.saveValue[this.categoryIdName],
+          keyword: this.saveValue[this.keywordName],
+          status: this.saveValue[this.statusName],
+          tabIndex: index
+        })
         this.$refs.search.infoTextMethods(this.saveValue[this.keywordName])
         this._statistic()
       }

@@ -148,7 +148,7 @@
       ...scmGoodsComputed
     },
     beforeRouteEnter(to, from, next) {
-      next(vm => {
+      next((vm) => {
         if (from.name === 'product-categories') {
           vm.isShowAdd = true
           vm.fromPage = from.path

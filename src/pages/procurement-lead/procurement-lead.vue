@@ -111,7 +111,7 @@
           return
         }
         this.blankList = res.data
-        let result = res.data.every(item => {
+        let result = res.data.every((item) => {
           return +item.error_type === 0
         })
         if (!result) {
@@ -123,7 +123,7 @@
         let data = {
           current_corp: this.getCurrentId(),
           // current_shop: process.env.VUE_APP_CURRENT_SHOP,
-          access_token: token.access_token,
+          access_token: token.access_token
         }
         let search = []
         for (let key in data) {

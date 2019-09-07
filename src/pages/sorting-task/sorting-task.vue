@@ -142,7 +142,7 @@
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
     {tilte: '订单数量', key: 'order_num', after: 'sale_unit'},
     {tilte: '建议配货数量', key: 'allocation_num', after: 'sale_unit'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -162,7 +162,7 @@
     {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -268,7 +268,7 @@
       _getRoadList() {
         API.Sorting.getRoadList().then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.roadList.data = res.data.map(item => {
+            this.roadList.data = res.data.map((item) => {
               return {
                 name: item.road_name,
                 id: item.id
@@ -296,7 +296,13 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
-        this.SET_TASK_DATA({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
+        this.SET_TASK_DATA({
+          oneName: data.name,
+          twoName: '二级类目',
+          twoList: data.list,
+          thrName: '三级类目',
+          thrList: []
+        })
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       // 选择二级类目
@@ -316,7 +322,7 @@
         this.errorObj.content = item.name || '全部'
       },
       webSocketData() {
-        let url =  process.env.VUE_APP_WSS + '/sub'
+        let url = process.env.VUE_APP_WSS + '/sub'
         let prg = `scm_batch_finish_sorting_` + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
@@ -331,10 +337,10 @@
         }
       },
       async checkErr(item) {
-        this._updateData({exception_status:item.status, page:1})
+        this._updateData({exception_status: item.status, page: 1})
       },
       async checkRoad(item) {
-        this._updateData({road_id:item.id, page:1})
+        this._updateData({road_id: item.id, page: 1})
       },
       initBaseDropDown(first, second) {
         if (first) {
@@ -368,8 +374,8 @@
       },
       // 顶部tab切换
       tabChange(val) {
-        if(val===1){
-          this.initBaseDropDown(true,true)
+        if (val === 1) {
+          this.initBaseDropDown(true, true)
           this.getCategoriesData()
         }
         let params = {
@@ -381,7 +387,7 @@
           goods_material_category_id: '',
           status: 0,
           keyword: '',
-          exception_status:''
+          exception_status: ''
         }
         this.errorObj.content = '全部'
         this.$refs.research._setText()
@@ -545,9 +551,9 @@
       // 按订单分拣导出配货单
       async _exportInvoiceOrder() {
         await API.Sorting.exportInvoiceOrder(this.getUrl())
-        // setTimeout(() => {
-        //   this._updateData({page: 1})
-        // }, 500)
+      // setTimeout(() => {
+      //   this._updateData({page: 1})
+      // }, 500)
       },
       // 按商品分拣导出配货单
       async _exportDeliveryOrder() {

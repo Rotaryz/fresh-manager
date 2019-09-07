@@ -529,7 +529,7 @@
       // 打开/关闭二级菜单
       _toggleNav(index) {
         let result = !this.navList[index].open
-        let newArr =  JSON.parse(JSON.stringify(this.navList))
+        let newArr = JSON.parse(JSON.stringify(this.navList))
         this.navList = newArr.map((item, ind) => {
           if (index === ind) {
             item.open = result

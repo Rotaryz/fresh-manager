@@ -375,7 +375,10 @@
           {value: this.commodity.description, txt: '请输入使用说明'},
           {value: this.testCardType, txt: '请输入正确的兑换券金额'},
           {value: this.testGoods, txt: '请选择商品'},
-          {value: (this.commodity.coupon_name && this.commodity.coupon_name.length <= 20), txt: '请按要求输入兑换券别名(20字以内)'},
+          {
+            value: this.commodity.coupon_name && this.commodity.coupon_name.length <= 20,
+            txt: '请按要求输入兑换券别名(20字以内)'
+          },
           {value: this.commodity.usable_stock, txt: '请输入发放总量'},
           {value: this.textUsableStock, txt: `发放数量应设为1~99999之间的整数`}
         ]
@@ -391,7 +394,7 @@
       },
       _formatSubmitData() {
         let tagType = 1
-        for (let [key, value] of Object.entries(TAG_TYPE)){
+        for (let [key, value] of Object.entries(TAG_TYPE)) {
           if (this.chooseType === value) {
             tagType = key
           }
@@ -436,7 +439,9 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === (this.goodsItem[0] && this.goodsItem[0].id))
+        this.showSelectIndex = this.choiceGoods.findIndex(
+          (item) => item.id === (this.goodsItem[0] && this.goodsItem[0].id)
+        )
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -510,7 +515,9 @@
         //   this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.ranges[0].range_id)
         // }
         if (this.commodity.exchange_goods.length) {
-          this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.exchange_goods[0].range_id)
+          this.showSelectIndex = this.choiceGoods.findIndex(
+            (item) => item.id === this.commodity.exchange_goods[0].range_id
+          )
         }
         await this._getGoodsList(false)
         this.$refs.goods.showModal()

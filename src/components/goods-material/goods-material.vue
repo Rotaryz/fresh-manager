@@ -138,23 +138,25 @@
       },
       // 获取商品素材列表
       getReqList() {
-        API.Product.getScmStoreList({
-          keyword: this.keyWord,
-          goods_material_category_id: this.materialId,
-          page: this.page,
-          limit: 8,
-        }, false)
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              return false
-            }
-            this.pageTotal = {
-              total: res.meta.total,
-              per_page: res.meta.per_page,
-              total_page: res.meta.last_page
-            }
-            this.materialList = res.data
-          })
+        API.Product.getScmStoreList(
+          {
+            keyword: this.keyWord,
+            goods_material_category_id: this.materialId,
+            page: this.page,
+            limit: 8
+          },
+          false
+        ).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return false
+          }
+          this.pageTotal = {
+            total: res.meta.total,
+            per_page: res.meta.per_page,
+            total_page: res.meta.last_page
+          }
+          this.materialList = res.data
+        })
       }
     }
   }

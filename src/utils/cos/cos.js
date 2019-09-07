@@ -63,7 +63,13 @@ export function uploadFiles(fileType, files, showProcess, processCallBack) {
   showProcess && showProcess()
   return new Promise((resolve, reject) => {
     let requests = files.map((file) => {
-      let Key = Date.now() + '-' + Math.random().toString().split('.')[1].substr(0,6)
+      let Key =
+        Date.now() +
+        '-' +
+        Math.random()
+          .toString()
+          .split('.')[1]
+          .substr(0, 6)
       return new Promise((resolve, reject) => {
         _getAuthorization({Method: 'PUT', Key: Key}, (err, info) => {
           if (err) {

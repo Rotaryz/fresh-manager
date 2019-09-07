@@ -96,10 +96,7 @@ export const mutations = {
 
 export const actions = {
   getOutreachList({state, commit, dispatch}, loading = false) {
-    return API.Outreach.getOutreachList(
-      state.requestData,
-      loading
-    )
+    return API.Outreach.getOutreachList(state.requestData, loading)
       .then((res) => {
         if (res.error !== app.$ERR_OK) {
           return false

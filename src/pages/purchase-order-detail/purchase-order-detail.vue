@@ -58,7 +58,15 @@
 
   const PAGE_NAME = 'PURCHASE_ORDER_DETAIL'
   const TITLE = '采购单详情'
-  const COMMODITIES_LIST = ['商品', '类目', '采购数量(销售单位)', '采购数量(基本单位)', '采购数量(采购单位)', '采购单价', '采购金额']
+  const COMMODITIES_LIST = [
+    '商品',
+    '类目',
+    '采购数量(销售单位)',
+    '采购数量(基本单位)',
+    '采购数量(采购单位)',
+    '采购单价',
+    '采购金额'
+  ]
   export default {
     name: PAGE_NAME,
     page: {

@@ -135,19 +135,18 @@
         this.showIndex = null
       },
       getEntryOutType() {
-        API.Store.getEntryOutType({method: 'create'})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Store.getEntryOutType({method: 'create'}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.outType.data = res.data.out.map((item) => {
+            return {
+              name: item.type_str,
+              type: item.type
             }
-            this.outType.data = res.data.out.map(item => {
-              return {
-                name: item.type_str,
-                type: item.type
-              }
-            })
           })
+        })
       },
       _selectOutType(item) {
         this.storeType = item.type
@@ -266,21 +265,23 @@
         }
         if (this.isSubmit) return
         this.isSubmit = true
-        API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            if (res.data) {
-              this.isSubmit = false
-              this.storeList = res.data.details
-              this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+        API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then(
+          (res) => {
+            if (res.error === this.$ERR_OK) {
+              if (res.data) {
+                this.isSubmit = false
+                this.storeList = res.data.details
+                this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+              } else {
+                this.$toast.show('新建出库单成功')
+                this.$router.back()
+              }
             } else {
-              this.$toast.show('新建出库单成功')
-              this.$router.back()
+              this.$toast.show(res.message)
+              this.isSubmit = false
             }
-          } else {
-            this.$toast.show(res.message)
-            this.isSubmit = false
           }
-        })
+        )
       }
     }
   }

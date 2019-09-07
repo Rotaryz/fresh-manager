@@ -314,7 +314,7 @@
             }
           }
         })
-        arr.push({tabTitle: TAB_ARR_CONFIG['guess']})// push猜你喜欢
+        arr.push({tabTitle: TAB_ARR_CONFIG['guess']}) // push猜你喜欢
         return arr
       },
       _getBanner(oldValue, value) {

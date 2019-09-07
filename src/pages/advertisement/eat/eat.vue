@@ -165,7 +165,7 @@
       },
       classifyList: {
         handler(news) {
-          this.heightIndex =news.findIndex(item => item.is_close)
+          this.heightIndex = news.findIndex((item) => item.is_close)
         },
         deep: true
       }
@@ -178,7 +178,7 @@
       itemWidth = (294 - margin) / 2
       // 计算瀑布流的最大高度，防止长图霸屏
       maxHeight = itemWidth / 0.8
-      // this.getList()
+    // this.getList()
     },
     methods: {
       changeType(type) {
@@ -194,7 +194,8 @@
             height: (i + 1) * num * 300,
             color: `rgb(125 ,${Math.ceil(Math.random() * 255)} , ${Math.ceil(Math.random() * 255)})`,
             text: '我是模块' + i,
-            image_url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1562403814&di=9c35111623c9b4948ebebff004d77776&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F13%2F20140813104323_4rHCx.jpeg'
+            image_url:
+              'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1562403814&di=9c35111623c9b4948ebebff004d77776&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F13%2F20140813104323_4rHCx.jpeg'
           }
           list.push(item)
         }
@@ -203,7 +204,7 @@
       // 分开左右两个list
       fillData(isPull) {
         if (isPull) {
-          // 是否下拉刷新，是的话清除之前的数据
+        // 是否下拉刷新，是的话清除之前的数据
         }
         leftList.length = 0
         rightList.length = 0
@@ -236,7 +237,7 @@
         }
         this.leftList = leftList
         this.rightList = rightList
-      },
+      }
     }
   }
 </script>

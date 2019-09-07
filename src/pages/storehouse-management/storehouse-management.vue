@@ -256,7 +256,13 @@
         this.secondSelect.data = data.list
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
-        this.SET_SELECT_PARAMS({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
+        this.SET_SELECT_PARAMS({
+          oneName: data.name,
+          twoName: '二级类目',
+          twoList: data.list,
+          thrName: '三级类目',
+          thrList: []
+        })
         this._getWarehouseList({goods_material_category_id: data.id, page: 1})
       },
       // 选择二级类目
@@ -361,18 +367,22 @@
           this.$toast.show('实盘数为最多两位小数的非负数')
           return
         }
-        API.Store.checkStock({id: this.currentItem.id, actual_stock: this.editNum, note: this.editText, goods_name: this.currentItem.goods_name})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.editText = ''
-            this.editNum = ''
-            this.$toast.show('盘点成功')
-            this.$refs.defaultModal.hideModal()
-            this.getWarehouseList({})
-          })
+        API.Store.checkStock({
+          id: this.currentItem.id,
+          actual_stock: this.editNum,
+          note: this.editText,
+          goods_name: this.currentItem.goods_name
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.editText = ''
+          this.editNum = ''
+          this.$toast.show('盘点成功')
+          this.$refs.defaultModal.hideModal()
+          this.getWarehouseList({})
+        })
       }
     }
   }
