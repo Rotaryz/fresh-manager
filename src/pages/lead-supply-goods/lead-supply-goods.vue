@@ -137,6 +137,11 @@
           this.$toast.show(res.message)
           return
         }
+        res.data.forEach(item => {
+          for (let i in item.error_tips) { // eslint-disable-line
+            this.hasError = true
+          }
+        })
         this.blankList = res.data
         // let result = res.data.every(item => {
         //   return +item.error_type === 0
