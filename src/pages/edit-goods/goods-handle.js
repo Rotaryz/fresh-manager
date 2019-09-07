@@ -240,7 +240,7 @@ export const SALE_FORM_REG = {
   },
   commission(key, flag) {
     if (flag) {
-      return /^([0-9]|[1-9][0-9])/.test(key) ? '' : '团长佣金请输入0-100的整数'
+      return /^(?:0|[1-9][0-9]?|100)$/.test(key) ? '' : '团长佣金请输入0-100的整数'
     }
   }
 }
