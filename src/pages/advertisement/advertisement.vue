@@ -118,6 +118,7 @@
             <div class="goods-content">
               <div class="goods-header">
                 <div class="goods-text">商品</div>
+                <div class="goods-text">销售价</div>
                 <div class="goods-text">可用库存</div>
               </div>
               <div class="goods-list">
@@ -132,6 +133,7 @@
                       <p class="text">{{item.goods_sku_code}}</p>
                     </div>
                   </div>
+                  <div class="content-item">¥{{item.trade_price}}</div>
                   <div class="content-item">{{item.usable_stock}}{{item.sale_unit}}</div>
                 </div>
                 <!--select-icon-active-->
@@ -1208,6 +1210,8 @@
           flex: 0.5
         &:first-child
           text-indent: 36px
+          flex: 2
+          max-width: 480px
     .goods-list
       flex-wrap: wrap
       display: flex
@@ -1249,16 +1253,20 @@
         font-family: $font-family-regular
         &:last-child
           flex: 0.5
+        &:first-child
+          flex: 2
+          max-width: 480px
       .goods-img
         margin-right: 10px
         width: 40px
         height: @width
         overflow: hidden
         object-fit: cover
+        flex: 0 0 auto
 
       .goods-name
         line-height: 1.2
-        width: 500px
+        max-width: 380px
         no-wrap()
         .text
           overflow: hidden
@@ -1472,6 +1480,7 @@
     position: relative
     transform-origin: 50%
     margin-right: 20px
+    flex: 0 0 auto
     .after
       all-center()
       transform-origin: 50%
