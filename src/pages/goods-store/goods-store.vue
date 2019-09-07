@@ -12,7 +12,6 @@
       <div class="">
         <base-search placeHolder="商品名称" :infoText="keyWord" @search="changeKeyword"></base-search>
       </div>
-      <div class="btn-main g-btn-item" @click="open1">查看示例</div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -24,15 +23,16 @@
       <div class="goods-list">
         <div v-for="(item, index) in goodsStoreList" :key="index" class="goods-item">
           <div class="goods-item-top">
-            <img class="top-pic-box" :src="item.goods_cover_image" alt="">
+            <video v-if="item.goods_videos.length" class="top-pic-box video-box" :src="item.goods_videos[0].full_url"></video>
+            <img v-else class="top-pic-box" :src="item.goods_cover_image" alt="">
             <!--<div class="goods-item-model" @click="lookGoodsInfo(item)">
               <div class="look-goods">预览</div>
             </div>-->
           </div>
           <div class="goods-item-bottom">
             <div class="goods-title">{{item.name}}</div>
-            <div class="goods-price-box hand" :class="(item.is_selected && !isShowAdd) ? 'goods-price-add' : ''" @click="submitAdd(item)">
-              {{(item.is_selected && !isShowAdd) ? '已添加' : '添加'}}
+            <div class="goods-price-box hand" :class="item.is_selected ? 'goods-price-add' : ''" @click="submitAdd(item)">
+              {{item.is_selected ? '已添加' : '添加'}}
             </div>
           </div>
         </div>
@@ -102,14 +102,12 @@
       </div>
     </default-modal>
 
-    <describe-pop ref="describe" typeList="{unit: '基本单位示例', purchase: '什么是集采', code: '条形码'}"></describe-pop>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {scmGoodsComputed, scmGoodsMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
-  import DescribePop from './describe-pop/describe-pop'
   import API from '@api'
   const PAGE_NAME = 'GOODS_STORE'
   const TITLE = '商品素材库'
@@ -120,8 +118,7 @@
       title: TITLE
     },
     components: {
-      DefaultModal,
-      DescribePop
+      DefaultModal
     },
     data() {
       return {
@@ -140,29 +137,17 @@
         isSubmit: false,
         isShowOne: 0,
         isShowTwo: 0,
-        isShowThr: 0,
-        isShowAdd: false
+        isShowThr: 0
       }
     },
     computed: {
       ...scmGoodsComputed
-    },
-    beforeRouteEnter(to, from, next) {
-      next((vm) => {
-        if (from.name === 'product-categories') {
-          vm.isShowAdd = true
-          vm.fromPage = from.path
-        }
-      })
     },
     created() {
       this.getCategoriesData()
     },
     methods: {
       ...scmGoodsMethods,
-      open1() {
-        this.$refs.describe.show('code')
-      },
       // 获取类目列表
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
@@ -243,22 +228,18 @@
         } else {
           curItem = this.curItem
         }
-        if ((curItem.is_selected * 1 === 1 && !this.isShowAdd) || this.isSubmit) return
+        if (curItem.is_selected * 1 === 1 || this.isSubmit) return
         this.isSubmit = true
-        if (this.isShowAdd) {
-          this.$router.push({path: '/home/product-list/edit-goods', params: {tplId: item.id}})
-        } else {
-          API.Product.addScmGoods(curItem.id).then((res) => {
-            this.isSubmit = false
-            if (res.error === this.$ERR_OK) {
-              this.getReqList()
-              this.curItem.is_selected = 1
-              this.$toast.show('商品素材添加成功')
-            } else {
-              this.$toast.show(res.message)
-            }
-          })
-        }
+        API.Product.addScmGoods(curItem.id).then((res) => {
+          this.isSubmit = false
+          if (res.error === this.$ERR_OK) {
+            this.getReqList()
+            this.curItem.is_selected = 1
+            this.$toast.show('商品素材添加成功')
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
       },
       // 获取商品列表
       getReqList() {
@@ -317,6 +298,9 @@
           background-repeat: no-repeat
           background-size: cover
           background-position: center
+          background-color $color-np-content
+        .video-box
+          background-color $color-np-content
         .goods-item-model
           cursor: pointer
           position: absolute

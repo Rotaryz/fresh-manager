@@ -168,7 +168,7 @@
         if (allDisable) return
         for (let i in goods) {
           if (goods[i].usable_stock <= 0) {
-            this.$toast.show(`商品"${goods[i].goods_material_name}"库存不足`)
+            this.$toast.show(`商品"${goods[i].name}"库存不足`)
             return
           }
         }

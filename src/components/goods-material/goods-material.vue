@@ -21,7 +21,8 @@
         <div class="goods-list">
           <div v-for="(item, index) in materialList" :key="index" class="goods-item">
             <div class="goods-item-top">
-              <img class="top-pic-box" :src="item.goods_cover_image" alt="">
+              <video v-if="item.goods_videos.length" class="top-pic-box video-box" :src="item.goods_videos[0].full_url"></video>
+              <img v-else class="top-pic-box" :src="item.goods_cover_image" alt="">
             </div>
             <div class="goods-item-bottom">
               <div class="goods-title">{{item.name}}</div>
@@ -230,6 +231,9 @@
               background-repeat: no-repeat
               background-size: cover
               background-position: center
+              background-color $color-np-content
+            .video-box
+              background-color $color-np-content
             .goods-item-model
               cursor: pointer
               position: absolute
