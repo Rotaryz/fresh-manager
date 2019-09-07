@@ -484,6 +484,7 @@
       console.log('destroyed')
     },
     methods: {
+      // 弹窗提示
       openTipsHandle(type, textType) {
         this.$refs.describe && this.$refs.describe.show(type, textType)
       },
