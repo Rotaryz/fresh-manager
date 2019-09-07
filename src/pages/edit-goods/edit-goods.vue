@@ -318,13 +318,11 @@
   import EditHeader from '@components/edit-header/edit-header'
   import EditMedia from '@components/edit-media/edit-media'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import API from '@api'
-  // import storage from 'storage-controller'
-  import _ from 'lodash'
-  import * as GoodsHandle from './goods-handle'
-  // import {uploadFiles} from '../../utils/vod/vod'
   import GoodsMaterial from '@components/goods-material/goods-material'
   import DescribePop from './describe-pop/describe-pop'
+  import * as GoodsHandle from './goods-handle'
+  import API from '@api'
+  import storage from 'storage-controller'
 
 
   const PAGE_NAME = 'EDIT_GOODS'
@@ -335,12 +333,14 @@
     0: {
       show_type: 'base',
       resolveData: GoodsHandle.RBaseData,
-      formatData: GoodsHandle.FBaseData
+      formatData: GoodsHandle.FBaseData,
+      checkData: GoodsHandle.BASE_FORM_REG
     },
     1: {
       show_type: 'sale',
       resolveData: GoodsHandle.RSellData,
-      formatData: GoodsHandle.FSellData
+      formatData: GoodsHandle.FSellData,
+      checkData: GoodsHandle.SALE_FORM_REG
     }
   }
 
@@ -395,7 +395,7 @@
         originSales: '', // 初始销量
         commissionType: false, // 团长佣金类型
         commission: '', // 佣金
-        id: this.$route.query.id || null,
+        id: this.$route.query.id || storage.get('$editGoodsId', null),
         isFinish: false,
         firstTypeSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondTypeSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
@@ -437,21 +437,9 @@
           this.underlinePrice = val
         }
       },
-      // aliasNameShow: {
-      //   get() {
-      //     let name = this.aliasName
-      //     if (!name.trim()) {
-      //       name = this.goodsName
-      //     }
-      //     return name
-      //   },
-      //   set(val) {
-      //     this.aliasName = val
-      //   }
-      // }
     },
     beforeRouteEnter(to, from, next) {
-      const id = to.query.id
+      const id = to.query.id || storage.get('$editGoodsId', null)
       if (!id) {
         next(vm => {
           vm._getSupplierData()
@@ -473,17 +461,32 @@
           vm._getGoodsTypeList()
           vm._getBasicUnitList()
           vm._getGoodsCategory()
-          // console.log(vm.basicUnit, '---')
         })
       }).catch(e => {
         console.error(e)
         next()
       })
     },
+    beforeRouteLeave(to, from, next) {
+      storage.remove('$editGoodsId')
+      next()
+    },
     destroyed() {
       console.log('destroyed')
     },
     methods: {
+      // 表单验证模块 true 验证不同过， false 为验证通过
+      checkModule() {
+        const checkObj = this.stepInfo.checkData
+        for (let key in checkObj) {
+          const msg = checkObj[key](this[key])
+          if (msg) {
+            this.$toast.show(msg)
+            return true
+          }
+        }
+        return false
+      },
       // 弹窗提示
       openTipsHandle(type, textType) {
         this.$refs.describe && this.$refs.describe.show(type, textType)
@@ -502,6 +505,16 @@
         const data = GoodsHandle.RCopyBaseData(this.copyItem)
         Object.assign(this, data)
         this.findGoodsTypeList()
+        this.findBasicUnit()
+      },
+      findBasicUnit() {
+        const unit = this.baseUnitSelect.data.find(val => val.name === this.basicUnit)
+        if (!unit) {
+          this.baseUnitSelect.data.unshift({id: 0, name: this.basicUnit})
+          this.saleSelect.data = this.baseUnitSelect.data
+          this.purchaseSelect.data = this.baseUnitSelect.data
+        }
+        this.initSelectName('baseUnitSelect', 'basicUnit')
       },
       findGoodsTypeList() {
         let obj = this.firstTypeSelect.data.find(val => val.id === this.goodsTypeId)
@@ -541,11 +554,20 @@
           this.copyToggle()
           return
         }
+        /**
+         * 正常上一步下一步
+         */
+        // 返回第一步
         if (this.stepIndex === 1) {
           this.actionStep()
           this._getDetail(() => {
             this.setAliasName()
           })
+          return
+        }
+        // 去第二步
+        // 表单验证
+        if (this.checkModule()) {
           return
         }
         this._updateGoodsInfo(() => {
@@ -559,6 +581,7 @@
           })
         })
       },
+      // 设置商品别名
       setAliasName() {
         let name = this.aliasName
         if (!name.trim()) {
@@ -568,6 +591,9 @@
       },
       // 复制模式切换
       copyToggle() {
+        if (this.stepIndex === 0 && this.checkModule()) {
+          return
+        }
         this.actionStep()
         if (this._isAgain2StepTwo) {
           return
@@ -583,6 +609,9 @@
       },
       // 保存按钮
       saveHandle() {
+        if (this.checkModule()) {
+          return
+        }
         this._updateGoodsInfo(() => {
           this.backHandle()
         })
@@ -628,6 +657,7 @@
           if (res.data && res.data.goods_id) {
             this.goods_sku_id = res.data.goods_sku_id
             this.id = res.data.goods_id
+            storage.set('$editGoodsId', this.id)
           }
           cb && cb()
         }).catch(e => {
@@ -648,6 +678,7 @@
           if (res.data && res.data.goods_id) {
             this.goods_sku_id = res.data.goods_sku_id
             this.id = res.data.goods_id
+            storage.set('$editGoodsId', this.id)
             const data2 = STEP_INFO[1].formatData(this)
             data2.id = this.id
             await API.Product.updateGoods(data2, true)
@@ -702,179 +733,6 @@
             })
           })
       },
-      // 基础信息提交
-      _baseSubmit() {
-        this.goods_skus.presale_usable_stock += ''
-        if (this.goods_skus.goods_material_name.length === 0 || this.goods_skus.goods_material_name.length >= 30) {
-          this.$toast.show('请输入商品名称且小于30字')
-          return
-        } else if (this.msg.goods_material_category_id <= 0) {
-          this.$toast.show('请选择商品类目')
-          return
-        } else if (this.goods_skus.base_unit === '') {
-          this.$toast.show('请选择基本单位')
-          return
-        } else if (this.goods_skus.base_sale_rate.length === 0) {
-          this.$toast.show('请输入销售规格')
-          return
-        } else if (this.goods_skus.base_sale_rate <= 0) {
-          this.$toast.show('请输入销售规格大于零')
-          return
-        } else if (this.goods_skus.sale_unit === '') {
-          this.$toast.show('请选择销售单位')
-          return
-        } else if (this.goods_skus.goods_sku_encoding.length === 0) {
-          this.$toast.show('请输入商品编码')
-          return
-        } else if (this.goods_skus.presale_usable_stock.length === 0 && this.msg.is_presale * 1 === 1) {
-          this.$toast.show('请输入预售库存')
-          return
-        } else if (this.goods_skus.presale_usable_stock < 0 && this.msg.is_presale * 1 === 1) {
-          this.$toast.show('请输入预售库存大于零')
-          return
-        } else if (this.goods_skus.presale_usable_stock.includes('.') && this.msg.is_presale * 1 === 1) {
-          this.$toast.show('请输入正确的预售库存')
-          return
-        } else if (this.goods_skus.supplier_id <= 0) {
-          this.$toast.show('请选择供应商')
-          return
-        } else if (this.goods_skus.base_purchase_rate.length === 0) {
-          this.$toast.show('请输入采购规格')
-          return
-        } else if (this.goods_skus.base_purchase_rate <= 0) {
-          this.$toast.show('请输入采购规格大于零')
-          return
-        } else if (this.goods_skus.purchase_unit === '') {
-          this.$toast.show('请选择采购单位')
-          return
-        } else if (this.goods_skus.purchase_price.length === 0) {
-          this.$toast.show('请输入采购单价')
-          return
-        } else if (
-          +this.goods_skus.damage_rate < 0 ||
-          +this.goods_skus.damage_rate > 100 ||
-          this.goods_skus.damage_rate.length === 0
-        ) {
-          this.$toast.show('损耗比区间在0与100之间')
-          return
-        }
-        this.msg.goods_skus[0] = this.goods_skus
-        this.msg.save_type = 'base'
-        if (this.id) {
-          if (
-            this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 &&
-            this.editRurchaseUnit === this.goods_skus.purchase_unit
-          ) {
-            this.isSubmit = true
-            API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
-              this.isSubmit = false
-              if (res.error === this.$ERR_OK) {
-                this.tabIndex = 1
-                this.$toast.show('编辑基础信息成功')
-                this.editSkus = _.cloneDeep(this.goods_skus)
-              } else {
-                this.$toast.show(res.message)
-              }
-              this.$loading.hide()
-            })
-          } else {
-            API.Product.checkGoodsTask({goods_id: this.id}).then((res) => {
-              if (res.error === this.$ERR_OK) {
-                if (res.data.has_task === 1) {
-                  this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
-                  return
-                }
-                this.isSubmit = true
-                API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
-                  this.isSubmit = false
-                  if (res.error === this.$ERR_OK) {
-                    this.tabIndex = 1
-                    this.$toast.show('编辑基础信息成功')
-                    this.editSkus = _.cloneDeep(this.goods_skus)
-                  } else {
-                    this.$toast.show(res.message)
-                  }
-                  this.$loading.hide()
-                })
-              } else {
-                this.$toast.show(res.message)
-              }
-              this.$loading.hide()
-            })
-          }
-          return
-        }
-        API.Product.createGoodsDetail(this.msg).then((res) => {
-          this.isSubmit = false
-          if (res.error === this.$ERR_OK) {
-            this.id = res.data.goods_id
-            this.goods_skus.goods_sku_id = res.data.goods_sku_id
-            this.sale_skus.goods_sku_id = res.data.goods_sku_id
-            this.tabIndex = 1
-            this.$toast.show('创建基础信息成功')
-            this.editSkus = _.cloneDeep(this.goods_skus)
-          } else {
-            this.$toast.show(res.message)
-          }
-          this.$loading.hide()
-        })
-      },
-      // 销售信息提交
-      _saleSubmit() {
-        if (!this.id) {
-          this.$toast.show('请先创建基础信息')
-          return
-        }
-        this.saleMsg.init_sale_count += ''
-        if (this.saleMsg.goods_banner_images.length === 0) {
-          this.$toast.show('请上传商品封面图')
-          return
-        } else if (this.saleMsg.goods_detail_images.length === 0) {
-          this.$toast.show('请上传商品详情图')
-          return
-        } else if (this.saleMsg.name.length === 0 || this.saleMsg.name.length >= 30) {
-          this.$toast.show('请输入商品名称且小于30字')
-          return
-        } else if (this.saleMsg.goods_category_id <= 0) {
-          this.$toast.show('请选择商品分类')
-          return
-        } else if (this.sale_skus.original_price.length === 0) {
-          this.$toast.show('请输入划线价')
-          return
-        } else if (this.sale_skus.trade_price.length === 0) {
-          this.$toast.show('请输入销售售价')
-          return
-        } else if (+this.sale_skus.original_price < +this.sale_skus.trade_price) {
-          this.$toast.show('请输入划线价大于销售售价')
-          return
-        } else if (
-          this.saleMsg.init_sale_count === '' ||
-          this.saleMsg.init_sale_count.includes('.') ||
-          +this.saleMsg.init_sale_count < 0
-        ) {
-          this.$toast.show('请输入正确初始销量')
-          return
-        }
-        this.saleMsg.save_type = 'sale'
-        this.saleMsg.goods_skus[0] = this.sale_skus
-        this.isSubmit = true
-        if (this.id) {
-          API.Product.editGoodsDetail(this.id, this.saleMsg).then((res) => {
-            this.isSubmit = false
-            if (res.error === this.$ERR_OK) {
-              this.$toast.show('编辑销售信息成功')
-              setTimeout(() => {
-                this.$router.push('/home/product-list')
-              }, 1000)
-            } else {
-              this.$toast.show(res.message)
-            }
-            this.$loading.hide()
-          })
-          return
-        }
-        this.$toast.show('请先保存基础信息')
-      },
       // 返回上一页
       backHandle() {
         this.$router.back()
@@ -891,6 +749,11 @@
           this.purchaseSelect.data = res.data
           this.initSelectName('baseUnitSelect', 'basicUnit')
         })
+      },
+      // 初始化选择器的名称
+      initSelectName(select, field) {
+        const obj = this[select].data.find(val => val.name === this[field])
+        obj && (this[select].content = obj.name)
       },
       // 筛选供应商
       changeText(text) {
@@ -919,10 +782,6 @@
             this.$toast.show(res.message)
           }
         })
-      },
-      initSelectName(select, field) {
-        const obj = this[select].data.find(val => val.name === this[field])
-        obj && (this[select].content = obj.name)
       },
       // 选择商品类目
       setGoodsTypeValue(data, type) {

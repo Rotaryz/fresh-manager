@@ -61,19 +61,19 @@ export function RSellData(data, isCopy) {
     aliasName: sku.goods_material_name, // 商品别名
     supply: sku.supplier_id, // 供应商
     purchaseUnit: sku.purchase_unit, // 采购单位
-    purchaseSize: sku.base_purchase_rate, // 采购规格
-    purchasePrice: sku.purchase_price, // 采购单价
+    purchaseSize: zero2Empty(sku.base_purchase_rate), // 采购规格
+    purchasePrice: zero2Empty(sku.purchase_price), // 采购单价
     purchaseCycle: data.purchase_cycle, // 采购周期
     purchaseCollective: !!TPL_GOODS_TYPE[data.goods_type], // 集中采购
     preSell: !!data.is_presale, // 销售类型
     goodsCategory: data.goods_category_id, // 商品分类
     goodsCode: sku.goods_sku_encoding, // 商品编码
     sellUnit: sku.sale_unit, // 销售单位
-    sellSize: sku.base_sale_rate, // 销售规格
-    sellPrice: sku.trade_price, // 销售单价
-    underlinePrice: sku.original_price, // 划线价
-    stock: sku.presale_usable_stock, // 库存
-    originSales: data.init_sale_count, // 初始销量
+    sellSize: zero2Empty(sku.base_sale_rate), // 销售规格
+    sellPrice: zero2Empty(sku.trade_price), // 销售单价
+    underlinePrice: zero2Empty(sku.original_price), // 划线价
+    stock: zero2Empty(sku.presale_usable_stock), // 库存
+    originSales: zero2Empty(data.init_sale_count), // 初始销量
     commissionType: /^[0-9]/.test(data.commission_rate), // 团长佣金类型
     commission: data.commission_rate, // 佣金
   }
@@ -137,4 +137,105 @@ function resolveImagesCopy(arr = []) {
     item.id = 0
     return item
   })
+}
+
+// 0 转空字符串
+function zero2Empty(val) {
+  return Number(val) || ''
+}
+
+export const BASE_FORM_REG = {
+  goodsName(key) {
+    if (!key) {
+      return '请输入商品名称'
+    }
+  },
+  goodsTypeId(key) {
+    if (!key) {
+      return '请选择商品类目'
+    }
+  },
+  basicUnit(key) {
+    if (!key) {
+      return '请选择基本单位'
+    }
+  },
+  coverImageList(key) {
+    if (!key.length) {
+      return '请上传封面图'
+    }
+  },
+  detailImageList(key) {
+    if (!key.length) {
+      return '请上传详情图片'
+    }
+  }
+}
+
+export const SALE_FORM_REG = {
+  aliasName(key) {
+    if (!key) {
+      return '请输入商品别名'
+    }
+  },
+  supply(key) {
+    if (!key) {
+      return '请选择供应商'
+    }
+  },
+  purchaseUnit(key) {
+    if (!key) {
+      return '请选择采购单位'
+    }
+  },
+  purchaseSize(key) {
+    if (key<=0) {
+      return '请输入正确的采购规格'
+    }
+  },
+  purchasePrice(key) {
+    if (key<=0) {
+      return '请输入正确的采购单价'
+    }
+  },
+  purchaseCycle(key) {
+    if (key<=0) {
+      return '请输入正确的采购周期'
+    }
+  },
+  goodsCategory(key) {
+    if (!key) {
+      return '请选择商品分类'
+    }
+  },
+  goodsCode(key) {
+    if (!key) {
+      return '请输入商品编码'
+    }
+  },
+  sellUnit(key) {
+    if (!key) {
+      return '请选择销售单位'
+    }
+  },
+  sellSize(key) {
+    if (key<=0) {
+      return '请输入正确的销售规格'
+    }
+  },
+  sellPrice(key) {
+    if (key<=0) {
+      return '请输入正确的销售单价'
+    }
+  },
+  underlinePrice(key) {
+    if (key<=0) {
+      return '请输入正确的划线价'
+    }
+  },
+  stock(key) {
+    if (key<=0) {
+      return '请输入正确的库存'
+    }
+  },
 }
