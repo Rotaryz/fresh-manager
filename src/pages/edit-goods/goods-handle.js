@@ -237,5 +237,10 @@ export const SALE_FORM_REG = {
     if (key <= 0) {
       return '请输入正确的库存'
     }
+  },
+  commission(key, flag) {
+    if (flag) {
+      return /^([0-9]|[1-9][0-9])/.test(key) ? '' : '团长佣金请输入0-100的整数'
+    }
   }
 }

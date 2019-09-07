@@ -353,7 +353,11 @@
       checkModule() {
         const checkObj = this.stepInfo.checkData
         for (let key in checkObj) {
-          const msg = checkObj[key](this[key])
+          let flag = ''
+          if (key === 'commission') {
+            flag = this.commissionType
+          }
+          const msg = checkObj[key](this[key], flag)
           if (msg) {
             this.$toast.show(msg)
             return true
