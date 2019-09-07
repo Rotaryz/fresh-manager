@@ -13,120 +13,54 @@
         </p>
       </section>
       <template v-if="stepIndex === 0">
-        <edit-header title="基础信息"
-                     btnText="导入商品图文"
-                     @button="showMaterial"
-        ></edit-header>
+        <edit-header title="基础信息" btnText="导入商品图文" @button="showMaterial"></edit-header>
         <edit-options title="商品名称">
-          <input slot="middle"
-                 type="text"
-                 class="edit-input-box edit-input"
-                 maxlength="10"
-                 v-model="goodsName"
-          >
+          <input slot="middle" v-model="goodsName" type="text" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">展示在商城的名称，供消费者浏览</p>
         </edit-options>
-        <edit-options title="推荐语"
-                      :importance="false"
-        >
-          <textarea slot="middle"
-                    type="text"
-                    class="edit-input-box edit-textarea edit-input"
-                    maxlength="50"
-                    v-model="describe"
-          ></textarea>
+        <edit-options title="推荐语" :importance="false">
+          <textarea slot="middle" v-model="describe" type="text" class="edit-input-box edit-textarea edit-input" maxlength="50"></textarea>
         </edit-options>
         <edit-options title="商品类目">
           <div slot="middle" class="edit-input-box mini-edit-input-box">
             <div class="mini-mr20">
-              <base-drop-down :height="inputHeight"
-                              :width="190"
-                              :select="firstTypeSelect"
-                              @setValue="setGoodsTypeValue($event, 'secondTypeSelect')"
-              ></base-drop-down>
+              <base-drop-down :height="inputHeight" :width="190" :select="firstTypeSelect" @setValue="setGoodsTypeValue($event, 'secondTypeSelect')"></base-drop-down>
             </div>
             <div class="mini-mr20">
-              <base-drop-down :height="inputHeight"
-                              :width="190"
-                              :select="secondTypeSelect"
-                              @setValue="setGoodsTypeValue"
-              ></base-drop-down>
+              <base-drop-down :height="inputHeight" :width="190" :select="secondTypeSelect" @setValue="setGoodsTypeValue"></base-drop-down>
             </div>
           </div>
         </edit-options>
         <edit-options title="基本单位">
-          <base-drop-down slot="middle"
-                          class="edit-input-box"
-                          :height="inputHeight"
-                          :width="400"
-                          :select="baseUnitSelect"
-                          :isUse="!isFinish"
-                          @setValue="setCommonValue($event.name, 'basicUnit')"
-          ></base-drop-down>
+          <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :select="baseUnitSelect"
+                          :isUse="!isFinish" @setValue="setCommonValue($event.name, 'basicUnit')"></base-drop-down>
           <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand" @click="openTipsHandle('unit')"
           >查看示例</span></p>
         </edit-options>
         <edit-options title="封面图">
-          <edit-media
-            slot="middle"
-            explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。"
-            mediaKey="coverImageList"
-            :dataArray="coverImageList"
-            :maxFiles="5"
-            @drag="dragMediaHandle"
-            @gain="addMediaHandle"
-            @del="deleteMediaHandle"
+          <edit-media slot="middle" explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。" mediaKey="coverImageList" :dataArray="coverImageList" :maxFiles="5"
+                      @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"
           ></edit-media>
         </edit-options>
         <edit-options title="主图视频" :importance="false">
-          <edit-media
-            slot="middle"
-            explain="建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。"
-            fileType="video"
-            imgUrlKey="full_url"
-            mediaKey="videoList"
-            :dataArray="videoList"
-            :maxFiles="1"
-            @drag="dragMediaHandle"
-            @gain="addMediaHandle"
-            @del="deleteMediaHandle"
-          ></edit-media>
+          <edit-media slot="middle" explain="建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。" fileType="video" imgUrlKey="full_url" mediaKey="videoList"
+                      :dataArray="videoList" :maxFiles="1" @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"></edit-media>
         </edit-options>
         <edit-options title="详情图">
-          <edit-media
-            slot="middle"
-            explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传15张。"
-            mediaKey="detailImageList"
-            :dataArray="detailImageList"
-            :maxFiles="15"
-            @drag="dragMediaHandle"
-            @gain="addMediaHandle"
-            @del="deleteMediaHandle"
-          ></edit-media>
+          <edit-media slot="middle" explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传15张。" mediaKey="detailImageList" :dataArray="detailImageList" :maxFiles="15"
+                      @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"></edit-media>
         </edit-options>
       </template>
       <template v-if="stepIndex === 1">
         <edit-header title="采购信息"
         ></edit-header>
         <edit-options title="商品别名" :importance="false">
-          <input slot="middle"
-                 v-model="aliasName"
-                 type="text"
-                 class="edit-input-box edit-input"
-                 maxlength="10">
+          <input slot="middle" v-model="aliasName" type="text" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">展示在供应链的商品名称，供本部采购或仓管人员浏览</p>
         </edit-options>
         <edit-options title="供应商">
-          <base-drop-down slot="middle"
-                          class="edit-input-box"
-                          :height="inputHeight"
-                          :width="400"
-                          :isInput="true"
-                          :select="supplierSelect"
-                          isInputPla="请选择供应商"
-                          @setValue="setCommonValue($event.supplier_id, 'supply')"
-                          @changeText="changeText"
-          ></base-drop-down>
+          <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
+                          :select="supplierSelect" isInputPla="请选择供应商" @setValue="setCommonValue($event.supplier_id, 'supply')" @changeText="changeText"></base-drop-down>
           <p slot="right" class="edit-pla hand"><span
             style="text-decoration :underline;color: #3E77C3"
             @click="handleOpenNewWindow('edit-supplier')"
@@ -137,37 +71,21 @@
                slot="middle"
           >
             <p class="size-left">1</p>
-            <base-drop-down :height="inputHeight"
-                            :width="131"
-                            :select="purchaseSelect"
-                            @setValue="setCommonValue($event.name, 'purchaseUnit')"
-            ></base-drop-down>
+            <base-drop-down :height="inputHeight" :width="131" :select="purchaseSelect" @setValue="setCommonValue($event.name, 'purchaseUnit')"></base-drop-down>
             <div class="size-equal">
               <p class="line"></p>
               <p class="line m-5"></p>
             </div>
-            <input class="edit-input mini-edit-input"
-                   type="number"
-                   style="width: 127px"
-                   v-model="purchaseSize"
-            >
+            <input class="edit-input mini-edit-input" v-model="purchaseSize" type="number" style="width: 127px">
           </div>
           <p slot="right" class="edit-pla c-333">{{basicUnit || ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'purchaseUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="采购单价">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="purchasePrice"
-          >
+          <input slot="middle" v-model="purchasePrice" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">元/{{purchaseUnit || ''}}</p>
         </edit-options>
         <edit-options title="采购周期">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="purchaseCycle"
-          >
+          <input slot="middle" v-model="purchaseCycle" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">天内可采购入库<span class="edit-pla-children-default">采购周期1天的商品，当日或次日可送达社区，2天的商品，次日或隔日可送达社区，以此类推</span></p>
         </edit-options>
         <edit-options title="是否集采" :importance="false">
@@ -183,9 +101,7 @@
           </div>
           <p slot="right" class="edit-pla hand" style="text-decoration :underline;color: #3E77C3" @click="openTipsHandle('purchase')">什么是集采？</p>
         </edit-options>
-        <edit-header title="销售信息"
-                     style="margin-top: 25px"
-        ></edit-header>
+        <edit-header title="销售信息" style="margin-top: 25px"></edit-header>
         <edit-options title="销售类型" :importance="false">
           <div slot="middle" class="edit-input-box goods-select-box">
             <section class="goods-select-left" @click="toggleRadios('preSell')">
@@ -200,83 +116,40 @@
           <p slot="right" class="edit-pla hand">仓库中有存货，不可售卖的商品为非预售商品</p>
         </edit-options>
         <edit-options title="商品分类">
-          <base-drop-down slot="middle"
-                          class="edit-input-box"
-                          :height="inputHeight"
-                          :width="400"
-                          :isInput="true"
-                          :select="categoriesSelect"
-                          isInputPla="请选择商品分类"
-                          @setValue="setCommonValue($event.id, 'goodsCategory')"
-                          @changeText="changeCategoryText"
-          ></base-drop-down>
-          <p slot="right" class="edit-pla hand"><span
-            style="text-decoration :underline;color: #3E77C3"
-            @click="handleOpenNewWindow('product-categories')"
-          >新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
+          <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
+                          :select="categoriesSelect" isInputPla="请选择商品分类" @setValue="setCommonValue($event.id, 'goodsCategory')" @changeText="changeCategoryText"></base-drop-down>
+          <p slot="right" class="edit-pla hand"><span style="text-decoration :underline;color: #3E77C3" @click="handleOpenNewWindow('product-categories')">新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
         </edit-options>
         <edit-options title="商品编码">
-          <input slot="middle"
-                 type="text"
-                 class="edit-input-box edit-input"
-                 maxlength="50"
-                 v-model="goodsCode"
-          >
+          <input slot="middle" v-model="goodsCode" type="text" class="edit-input-box edit-input" maxlength="50">
           <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span><span class="edit-pla-children hand" @click="openTipsHandle('code')">查看图示</span></p>
         </edit-options>
         <edit-options title="销售规格">
           <div class="edit-input-box mini-edit-input-box"
-               slot="middle"
-          >
+               slot="middle">
             <p class="size-left">1</p>
-            <base-drop-down :height="inputHeight"
-                            :width="131"
-                            :select="saleSelect"
-                            @setValue="setCommonValue($event.name, 'sellUnit')"
-            ></base-drop-down>
+            <base-drop-down :height="inputHeight" :width="131" :select="saleSelect" @setValue="setCommonValue($event.name, 'sellUnit')"></base-drop-down>
             <div class="size-equal">
               <p class="line"></p>
               <p class="line m-5"></p>
             </div>
-            <input class="edit-input mini-edit-input"
-                   type="number"
-                   style="width: 127px"
-                   v-model="sellSize"
-            >
+            <input v-model="sellSize" class="edit-input mini-edit-input" type="number" style="width: 127px">
           </div>
           <p slot="right" class="edit-pla c-333">{{basicUnit|| ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'sellUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="销售单价">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="sellPrice"
-          >
+          <input slot="middle" v-model="sellPrice" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">元/{{sellUnit || ''}}<span style="padding-left: 20px">采购成本价：{{purchaseCost}}元/{{sellUnit || ''}}</span></p>
         </edit-options>
         <edit-options title="划线价">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 maxlength="10"
-                 v-model="underlinePriceShow"
-          >
+          <input slot="middle" v-model="underlinePriceShow" type="number" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">默认比销售单价高30%</p>
         </edit-options>
         <edit-options title="库存数量">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 maxlength="10"
-                 v-model="stock"
-          >
+          <input slot="middle" v-model="stock" type="number" class="edit-input-box edit-input" maxlength="10">
         </edit-options>
         <edit-options title="初始销量" :importance="false">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="originSales"
-          >
+          <input slot="middle" v-model="originSales" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla">消费者看到的销量=初始销量+实际下单量</p>
         </edit-options>
         <edit-options title="团长佣金" :importance="false">
@@ -293,11 +166,7 @@
           <p slot="right" class="edit-pla">商品售卖后，按创建团长时所设置的佣金比率分别计算佣金</p>
         </edit-options>
         <edit-options v-if="commissionType" title="" :importance="false">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="commission"
-          >
+          <input slot="middle" v-model="commission" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">%</p>
         </edit-options>
       </template>
