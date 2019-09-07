@@ -303,7 +303,7 @@
         },
         set(price) {
           this.sellPrice = price
-          if (this.underlinePrice <= 0 && price > 0) {
+          if (price > 0) {
             price = (+price * 1.3).toFixed(2)
             this.underlinePrice = price
           }
@@ -377,15 +377,15 @@
       },
       // 覆盖基础信息start
       changeEdit() {
+        this.copyToast()
         const data = GoodsHandle.RCopyBaseData(this.copyItem)
         Object.assign(this, data)
         this.findGoodsTypeList()
         this.findBasicUnit()
-        this.copyToast()
       },
       copyToast() {
         let flag = this.goodsName || this.describe || this.goodsTypeId || this.basicUnit || this.coverImageList.length || this.videoList.length || this.detailImageList.length
-        if (flag) return
+        if (!flag) return
         this.$toast.show('信息覆盖成功！')
       },
       findBasicUnit() {
@@ -443,6 +443,7 @@
           this.actionStep()
           this._getDetail(() => {
             this.setAliasName()
+            window.scrollTo(0, 0)
           })
           return
         }
@@ -451,6 +452,7 @@
         if (this.checkModule()) {
           return
         }
+        window.scrollTo(0, 0)
         this._updateGoodsInfo(() => {
           this.actionStep()
           this._getDetail(false, () => {
@@ -476,6 +478,7 @@
           return
         }
         this.actionStep()
+        window.scrollTo(0, 0)
         if (this._isAgain2StepTwo) {
           return
         }
