@@ -127,7 +127,6 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        console.log(item.sale_usable_stock <= 0)
         if (item.sale_usable_stock <= 0 && this.stock && !item.is_presale) {
           this.$toast.show('该商品库存为0，不能选择')
           return
@@ -167,7 +166,7 @@
         if (allDisable) return
         for (let i in goods) {
           if (goods[i].sale_usable_stock <= 0 && this.stock && !goods[i].is_presale) {
-            this.$toast.show(`商品"${goods[i].goods_material_name}"库存不足`)
+            this.$toast.show(`商品"${goods[i].name}"库存不足`)
             return
           }
         }
