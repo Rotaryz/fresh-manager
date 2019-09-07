@@ -82,7 +82,6 @@ export function RSellData(data, isCopy) {
 export function FSellData(data) {
   return {
     save_type: 'sale',
-    goods_material_name: data.aliasName,
     purchase_cycle: data.purchaseCycle,
     is_presale: (data.preSell && 1) || 0,
     goods_type: (data.purchaseCollective && 2) || 1,
@@ -91,6 +90,7 @@ export function FSellData(data) {
     commission_rate: data.commissionType ? data.commission : '',
     goods_skus: [
       {
+        goods_material_name: data.aliasName,
         goods_sku_id: data.goods_sku_id,
         supplier_id: data.supply,
         purchase_unit: data.purchaseUnit,
