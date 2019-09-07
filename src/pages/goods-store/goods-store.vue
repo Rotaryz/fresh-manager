@@ -12,7 +12,6 @@
       <div class="">
         <base-search placeHolder="商品名称" :infoText="keyWord" @search="changeKeyword"></base-search>
       </div>
-      <div class="btn-main g-btn-item" @click="open1">查看示例</div>
     </div>
     <div class="table-content">
       <div class="identification">
@@ -102,14 +101,12 @@
       </div>
     </default-modal>
 
-    <describe-pop ref="describe" typeList="{unit: '基本单位示例', purchase: '什么是集采', code: '条形码'}"></describe-pop>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {scmGoodsComputed, scmGoodsMethods} from '@state/helpers'
   import DefaultModal from '@components/default-modal/default-modal'
-  import DescribePop from './describe-pop/describe-pop'
   import API from '@api'
   const PAGE_NAME = 'GOODS_STORE'
   const TITLE = '商品素材库'
@@ -120,8 +117,7 @@
       title: TITLE
     },
     components: {
-      DefaultModal,
-      DescribePop
+      DefaultModal
     },
     data() {
       return {
@@ -160,9 +156,6 @@
     },
     methods: {
       ...scmGoodsMethods,
-      open1() {
-        this.$refs.describe.show('code')
-      },
       // 获取类目列表
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
