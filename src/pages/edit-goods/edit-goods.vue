@@ -126,7 +126,10 @@
                           @setValue="setCommonValue($event.supplier_id, 'supply')"
                           @changeText="changeText"
           ></base-drop-down>
-          <p slot="right" class="edit-pla hand"><span style="text-decoration :underline;color: #3E77C3">新增</span><span class="edit-pla-children" @click="_getSupplierData">刷新</span></p>
+          <p slot="right" class="edit-pla hand"><span
+            style="text-decoration :underline;color: #3E77C3"
+            @click="handleOpenNewWindow('edit-supplier')"
+          >新增</span><span class="edit-pla-children" @click="_getSupplierData">刷新</span></p>
         </edit-options>
         <edit-options title="采购规格">
           <div class="edit-input-box mini-edit-input-box"
@@ -206,7 +209,10 @@
                           @setValue="setCommonValue($event.id, 'goodsCategory')"
                           @changeText="changeCategoryText"
           ></base-drop-down>
-          <p slot="right" class="edit-pla hand"><span style="text-decoration :underline;color: #3E77C3">新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
+          <p slot="right" class="edit-pla hand"><span
+            style="text-decoration :underline;color: #3E77C3"
+            @click="handleOpenNewWindow('product-categories')"
+          >新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
         </edit-options>
         <edit-options title="商品编码">
           <input slot="middle"
@@ -215,7 +221,7 @@
                  maxlength="50"
                  v-model="goodsCode"
           >
-          <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand">查看图示</span></p>
+          <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span><span class="edit-pla-children hand">查看图示</span></p>
         </edit-options>
         <edit-options title="销售规格">
           <div class="edit-input-box mini-edit-input-box"
@@ -247,7 +253,7 @@
           >
           <p slot="right" class="edit-pla c-333">元/盒<span style="padding-left: 20px">采购成本价：23元/盒</span></p>
         </edit-options>
-        <edit-options title="划线价" :importance="false">
+        <edit-options title="划线价">
           <input slot="middle"
                  type="number"
                  class="edit-input-box edit-input"
@@ -296,7 +302,7 @@
       </template>
     </div>
     <div class="back">
-      <div class="back-cancel back-btn hand" @click="_back">返回</div>
+      <div class="back-cancel back-btn hand" @click="backHandle">返回</div>
       <div class="btn-main step-button" @click="toggleStepHandle">{{stepIndex? '上一步': '下一步'}}</div>
       <div v-if="stepIndex" class="back-btn back-submit hand" @click="saveHandle">保存</div>
     </div>
@@ -356,6 +362,7 @@
       }
     },
     data() {
+      this._isAgain2StepTwo = false
       return {
         inputHeight: 44, // 控件高度
         stepIndex: 0, // 步骤Index
@@ -393,9 +400,10 @@
         purchaseSelect: {check: false, show: false, content: '采购单位', type: 'default', data: []},
         supplierSelect: {check: false, show: false, content: '选择供应商', type: 'default', data: []},
         categoriesSelect: {check: false, show: false, content: '选择分类', type: 'default', data: []},
-        searchList: [],
-        goods_sku_id: '',
-        supplier_name: '',
+        searchCategoryList: [], // 商品分类筛选临时数组
+        searchList: [], // 供应商筛选临时数组
+        goods_sku_id: '', // sku_id
+        supplier_name: '', // 供应商名称
       }
     },
     computed: {
@@ -417,6 +425,8 @@
             return
           }
           vm.setData(res)
+          console.log(vm.coverImageList)
+          console.log(vm.videoList)
           vm._getSupplierData()
           vm._getGoodsTypeList()
           vm._getBasicUnitList()
@@ -427,30 +437,23 @@
         next()
       })
     },
-    // mounted() {
-    //   this._getSupplierData()
-    //   this._getGoodsTypeList()
-    //   this._getBasicUnitList()
-    //   this._getGoodsCategory()
-    //   this._createGoodsCode()
-    // },
     destroyed() {
       console.log('destroyed')
-      // clearInterval(this.timerVod)
-      // if (this.isCopy) {
-      //   storage.remove('msg')
-      //   storage.remove('goods_skus')
-      //   storage.remove('saleMsg')
-      //   storage.remove('sale_skus')
-      //   storage.remove('videoUrl')
-      // }
     },
     methods: {
+      // 新增供应商
+      handleOpenNewWindow(type) {
+        let flag = /#/.test(window.location.href) ? '#' : ''
+        let url = {
+          'edit-supplier': '/home/basics-set/supplier/edit-supplier',
+          'product-categories': '/home/product-categories'
+        }
+        window.open(flag + url[type])
+      },
       // 覆盖基础信息start
       changeEdit() {
         const data = GoodsHandle.RCopyBaseData(this.copyItem)
         Object.assign(this, data)
-        console.log(data, '-------------')
         this.findGoodsTypeList()
       },
       findGoodsTypeList() {
@@ -486,6 +489,11 @@
       },
       // 切换步骤
       toggleStepHandle() {
+        // 复制模式
+        if (this.$route.query.isCopy) {
+          this.copyToggle()
+          return
+        }
         if (this.stepIndex === 1) {
           this.actionStep()
           this._getDetail()
@@ -501,11 +509,24 @@
           })
         })
       },
+      // 复制模式切换
+      copyToggle() {
+        this.actionStep()
+        if (this._isAgain2StepTwo) {
+          return
+        }
+        this._isAgain2StepTwo = true
+        this._getDetail(false, () => {
+          this._createGoodsCode(true)
+          this.initSelectName('supplierSelect', 'supplier_name')
+          this.initSelectName('saleSelect', 'sellUnit')
+          this.initSelectName('purchaseSelect', 'purchaseUnit')
+        })
+      },
       saveHandle() {
-        // const data = this.stepInfo.formatData(this)
-        // data.id = this.id
-        // console.log(data)
-        this._updateGoodsInfo()
+        this._updateGoodsInfo(() => {
+          this.backHandle()
+        })
       },
       // 步骤切换
       actionStep() {
@@ -517,8 +538,9 @@
         }
       },
       // 生成商品编码
-      _createGoodsCode() {
-        if (this.goodsCode) {
+      _createGoodsCode(force) {
+        const flag = force ? false : this.goodsCode
+        if (flag) {
           return
         }
         API.Product.createCode().then(res => {
@@ -531,6 +553,11 @@
       },
       // 提交数据
       _updateGoodsInfo(cb) {
+        // 复制模板
+        if (this.$route.query.isCopy) {
+          this._updateGoodsInfoCopy(cb)
+          return
+        }
         const data = this.stepInfo.formatData(this)
         data.id = this.id
         API.Product.updateGoods(data, true).then(res => {
@@ -541,12 +568,41 @@
           }
           if (res.data && res.data.goods_id) {
             this.goods_sku_id = res.data.goods_sku_id
-            this.id = this.goods_id
+            this.id = res.data.goods_id
           }
           cb && cb()
         }).catch(e => {
           this.$loading.hide()
         })
+      },
+      // 提交数据复制商品
+      async _updateGoodsInfoCopy(cb) {
+        const data = STEP_INFO[0].formatData(this)
+        data.id = this.id
+        data.isCopy = this.$route.query.isCopy
+        try {
+          let res = await API.Product.updateGoods(data, true)
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          if (res.data && res.data.goods_id) {
+            this.goods_sku_id = res.data.goods_sku_id
+            this.id = res.data.goods_id
+            const data2 = STEP_INFO[1].formatData(this)
+            data2.id = this.id
+            await API.Product.updateGoods(data2, true)
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            cb && cb()
+          }
+        } catch (e) {
+          console.error(e)
+          this.$loading.hide()
+        }
       },
       // 获取详情
       _getDetail(loading = false, cb) {
@@ -564,7 +620,7 @@
       },
       // 设置数据
       setData(res,cb) {
-        const data = this.stepInfo.resolveData(res.data)
+        const data = this.stepInfo.resolveData(res.data, this.$route.query.isCopy)
         Object.assign(this, data)
         cb && cb()
       },
@@ -586,16 +642,6 @@
               }
             })
           })
-      },
-      _submitType() {
-        if (this.isSubmit) {
-          return
-        }
-        if (this.tabIndex === 0) {
-          this._baseSubmit()
-          return
-        }
-        this._saleSubmit()
       },
       // 基础信息提交
       _baseSubmit() {
@@ -771,7 +817,7 @@
         this.$toast.show('请先保存基础信息')
       },
       // 返回上一页
-      _back() {
+      backHandle() {
         this.$router.back()
       },
       // 获取计量单位

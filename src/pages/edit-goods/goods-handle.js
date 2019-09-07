@@ -1,4 +1,4 @@
-export function RBaseData(data) {
+export function RBaseData(data, isCopy) {
   const sku = data.goods_skus && data.goods_skus[0] || {}
   return {
     isFinish: !!data.all_complete_status,
@@ -6,9 +6,9 @@ export function RBaseData(data) {
     describe: data.describe, // 商品描述
     goodsTypeId: data.goods_material_category_id, // 商品类目
     basicUnit: sku.base_unit, // 基础单位
-    coverImageList: data.goods_banner_images || [], // 封面图
-    videoList: data.goods_videos || [], // 视频
-    detailImageList: data.goods_detail_images || [], // 详情图片
+    coverImageList: (isCopy? resolveImagesCopy(data.goods_banner_images) : data.goods_banner_images) || [], // 封面图
+    videoList: (isCopy? resolveVideosCopy(data.goods_videos) : data.goods_videos) || [], // 视频
+    detailImageList: (isCopy?  resolveImagesCopy(data.goods_detail_images): data.goods_detail_images) || [], // 详情图片
     goods_sku_id: sku.goods_sku_id,
   }
 }
