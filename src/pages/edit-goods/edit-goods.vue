@@ -63,7 +63,8 @@
                           :isUse="!isFinish"
                           @setValue="setCommonValue($event.name, 'basicUnit')"
           ></base-drop-down>
-          <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand">查看示例</span></p>
+          <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand" @click="openTipsHandle('unit')"
+          >查看示例</span></p>
         </edit-options>
         <edit-options title="封面图">
           <edit-media
@@ -151,7 +152,7 @@
                    v-model="purchaseSize"
             >
           </div>
-          <p slot="right" class="edit-pla c-333">{{basicUnit || ''}}<span class="edit-pla-children hand">查看示例</span></p>
+          <p slot="right" class="edit-pla c-333">{{basicUnit || ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'purchaseUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="采购单价">
           <input slot="middle"
@@ -180,7 +181,7 @@
               <div class="goods-select-text">需要</div>
             </section>
           </div>
-          <p slot="right" class="edit-pla hand" style="text-decoration :underline;color: #3E77C3">什么是集采？</p>
+          <p slot="right" class="edit-pla hand" style="text-decoration :underline;color: #3E77C3" @click="openTipsHandle('purchase')">什么是集采？</p>
         </edit-options>
         <edit-header title="销售信息"
                      style="margin-top: 25px"
@@ -221,7 +222,7 @@
                  maxlength="50"
                  v-model="goodsCode"
           >
-          <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span><span class="edit-pla-children hand">查看图示</span></p>
+          <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span><span class="edit-pla-children hand" @click="openTipsHandle('code')">查看图示</span></p>
         </edit-options>
         <edit-options title="销售规格">
           <div class="edit-input-box mini-edit-input-box"
@@ -243,7 +244,7 @@
                    v-model="sellSize"
             >
           </div>
-          <p slot="right" class="edit-pla c-333">{{basicUnit|| ''}}<span class="edit-pla-children hand">查看示例</span></p>
+          <p slot="right" class="edit-pla c-333">{{basicUnit|| ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'sellUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="销售单价">
           <input slot="middle"
@@ -308,6 +309,7 @@
     </div>
     <goods-material ref="goodsMaterial" @selectMaterial="selectMaterial"></goods-material>
     <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>
+    <describe-pop ref="describe" typeList="{unit: '基本单位示例', purchase: '什么是集采', code: '条形码'}"></describe-pop>
   </div>
 </template>
 
@@ -322,6 +324,7 @@
   import * as GoodsHandle from './goods-handle'
   // import {uploadFiles} from '../../utils/vod/vod'
   import GoodsMaterial from '@components/goods-material/goods-material'
+  import DescribePop from './describe-pop/describe-pop'
 
 
   const PAGE_NAME = 'EDIT_GOODS'
@@ -351,7 +354,8 @@
       EditOptions,
       EditHeader,
       EditMedia,
-      GoodsMaterial
+      GoodsMaterial,
+      DescribePop
     },
     props: {
       detail: {
@@ -480,6 +484,9 @@
       console.log('destroyed')
     },
     methods: {
+      openTipsHandle(type, textType) {
+        this.$refs.describe && this.$refs.describe.show(type, textType)
+      },
       // 新增供应商
       handleOpenNewWindow(type) {
         let flag = /#/.test(window.location.href) ? '#' : ''
