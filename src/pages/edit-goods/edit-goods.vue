@@ -151,7 +151,7 @@
                    v-model="purchaseSize"
             >
           </div>
-          <p slot="right" class="edit-pla c-333">盒<span class="edit-pla-children hand">查看示例</span></p>
+          <p slot="right" class="edit-pla c-333">{{basicUnit || ''}}<span class="edit-pla-children hand">查看示例</span></p>
         </edit-options>
         <edit-options title="采购单价">
           <input slot="middle"
@@ -159,7 +159,7 @@
                  class="edit-input-box edit-input"
                  v-model="purchasePrice"
           >
-          <p slot="right" class="edit-pla c-333">元/箱</p>
+          <p slot="right" class="edit-pla c-333">元/{{purchaseUnit || ''}}</p>
         </edit-options>
         <edit-options title="采购周期">
           <input slot="middle"
@@ -243,7 +243,7 @@
                    v-model="sellSize"
             >
           </div>
-          <p slot="right" class="edit-pla c-333">盒<span class="edit-pla-children hand">查看示例</span></p>
+          <p slot="right" class="edit-pla c-333">{{basicUnit|| ''}}<span class="edit-pla-children hand">查看示例</span></p>
         </edit-options>
         <edit-options title="销售单价">
           <input slot="middle"
@@ -251,14 +251,14 @@
                  class="edit-input-box edit-input"
                  v-model="sellPrice"
           >
-          <p slot="right" class="edit-pla c-333">元/盒<span style="padding-left: 20px">采购成本价：23元/盒</span></p>
+          <p slot="right" class="edit-pla c-333">元/{{sellUnit || ''}}<span style="padding-left: 20px">采购成本价：{{purchaseCost}}元/{{sellUnit || ''}}</span></p>
         </edit-options>
         <edit-options title="划线价">
           <input slot="middle"
                  type="number"
                  class="edit-input-box edit-input"
                  maxlength="10"
-                 v-model="underlinePrice"
+                 v-model="underlinePriceShow"
           >
           <p slot="right" class="edit-pla">默认比销售单价高30%</p>
         </edit-options>
@@ -409,12 +409,52 @@
     computed: {
       stepInfo() {
         return STEP_INFO[this.stepIndex]
-      }
+      },
+      // 采购成本\
+      /**
+       *  采购成本价=基本价*销售规格
+          基本价=采购价/采购规格
+          合并公式：采购成本价=（采购价*销售规格）/采购规格
+       * @returns {number}
+       */
+      purchaseCost() {
+        let number = this.purchasePrice * this.sellSize / this.purchaseSize
+        return isNaN(number) ? '' : number.toFixed(2)
+      },
+      underlinePriceShow: {
+        get() {
+          let price = this.underlinePrice
+          if (price <= 0 && this.sellPrice > 0) {
+            price = (+this.sellPrice * 1.3).toFixed(2)
+          }
+          return price
+        },
+        set(val) {
+          this.underlinePrice = val
+        }
+      },
+      // aliasNameShow: {
+      //   get() {
+      //     let name = this.aliasName
+      //     if (!name.trim()) {
+      //       name = this.goodsName
+      //     }
+      //     return name
+      //   },
+      //   set(val) {
+      //     this.aliasName = val
+      //   }
+      // }
     },
     beforeRouteEnter(to, from, next) {
       const id = to.query.id
       if (!id) {
-        next()
+        next(vm => {
+          vm._getSupplierData()
+          vm._getGoodsTypeList()
+          vm._getBasicUnitList()
+          vm._getGoodsCategory()
+        })
         return
       }
       API.Product.getDetail({id}, true).then((res) => {
@@ -429,6 +469,7 @@
           vm._getGoodsTypeList()
           vm._getBasicUnitList()
           vm._getGoodsCategory()
+          // console.log(vm.basicUnit, '---')
         })
       }).catch(e => {
         console.error(e)
@@ -494,18 +535,28 @@
         }
         if (this.stepIndex === 1) {
           this.actionStep()
-          this._getDetail()
+          this._getDetail(() => {
+            this.setAliasName()
+          })
           return
         }
         this._updateGoodsInfo(() => {
           this.actionStep()
           this._getDetail(false, () => {
+            this.setAliasName()
             this._createGoodsCode()
             this.initSelectName('supplierSelect', 'supplier_name')
             this.initSelectName('saleSelect', 'sellUnit')
             this.initSelectName('purchaseSelect', 'purchaseUnit')
           })
         })
+      },
+      setAliasName() {
+        let name = this.aliasName
+        if (!name.trim()) {
+          name = this.goodsName
+        }
+        this.aliasName = name
       },
       // 复制模式切换
       copyToggle() {
@@ -515,12 +566,14 @@
         }
         this._isAgain2StepTwo = true
         this._getDetail(false, () => {
+          this.setAliasName()
           this._createGoodsCode(true)
           this.initSelectName('supplierSelect', 'supplier_name')
           this.initSelectName('saleSelect', 'sellUnit')
           this.initSelectName('purchaseSelect', 'purchaseUnit')
         })
       },
+      // 保存按钮
       saveHandle() {
         this._updateGoodsInfo(() => {
           this.backHandle()
