@@ -142,11 +142,11 @@
           <p slot="right" class="edit-pla c-333">{{basicUnit|| ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'sellUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="销售单价">
-          <input slot="middle" v-model="sellPrice" type="number" class="edit-input-box edit-input">
+          <input slot="middle" v-model="sellPriceShow" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">元/{{sellUnit || ''}}<span style="padding-left: 20px">采购成本价：{{purchaseCost}}元/{{sellUnit || ''}}</span></p>
         </edit-options>
         <edit-options title="划线价">
-          <input slot="middle" v-model="underlinePriceShow" type="number" class="edit-input-box edit-input" maxlength="10">
+          <input slot="middle" v-model="underlinePrice" type="number" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">默认比销售单价高30%</p>
         </edit-options>
         <edit-options title="库存数量">
@@ -297,16 +297,16 @@
         let number = (this.purchasePrice * this.sellSize) / this.purchaseSize
         return isNaN(number) ? '' : number.toFixed(2)
       },
-      underlinePriceShow: {
+      sellPriceShow: {
         get() {
-          let price = this.underlinePrice
-          if (price <= 0 && this.sellPrice > 0) {
-            price = (+this.sellPrice * 1.3).toFixed(2)
-          }
-          return price
+          return this.sellPrice
         },
-        set(val) {
-          this.underlinePrice = val
+        set(price) {
+          this.sellPrice = price
+          if (this.underlinePrice <= 0 && price > 0) {
+            price = (+price * 1.3).toFixed(2)
+            this.underlinePrice = price
+          }
         }
       }
     },
@@ -345,9 +345,6 @@
       storage.remove('$editGoodsId')
       next()
     },
-    destroyed() {
-      console.log('destroyed')
-    },
     methods: {
       // 表单验证模块 true 验证不同过， false 为验证通过
       checkModule() {
@@ -384,6 +381,12 @@
         Object.assign(this, data)
         this.findGoodsTypeList()
         this.findBasicUnit()
+        this.copyToast()
+      },
+      copyToast() {
+        let flag = this.goodsName || this.describe || this.goodsTypeId || this.basicUnit || this.coverImageList.length || this.videoList.length || this.detailImageList.length
+        if (flag) return
+        this.$toast.show('信息覆盖成功！')
       },
       findBasicUnit() {
         const unit = this.baseUnitSelect.data.find((val) => val.name === this.basicUnit)
@@ -703,7 +706,6 @@
       // 设置选项
       setCommonValue(data, key) {
         this[key] = data
-        console.log(this[key], '-----')
       },
       // 删除媒体文件
       deleteMediaHandle(key, index) {

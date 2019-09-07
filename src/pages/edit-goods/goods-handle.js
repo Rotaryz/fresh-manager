@@ -229,6 +229,7 @@ export const SALE_FORM_REG = {
     }
   },
   underlinePrice(key) {
+    console.log(key, '--------')
     if (key <= 0) {
       return '请输入正确的划线价'
     }
