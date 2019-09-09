@@ -77,7 +77,7 @@
       },
       goodsTitle: {
         type: Array,
-        default: GOODS_POP_TITLE
+        default: () => GOODS_POP_TITLE
       }
     },
     data() {
