@@ -145,7 +145,7 @@
               <base-drop-down :width="218" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+              <base-search placeHolder="请输入商品名称或编码" @search="_searchGoods"></base-search>
             </div>
           </div>
           <div class="goods-content">

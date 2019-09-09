@@ -14,7 +14,7 @@
           <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
         </div>
         <div class="tab-item">
-          <base-search ref="goodsSearch" placeHolder="请输入商品名称或商品编号" @search="_searchGoods"></base-search>
+          <base-search ref="goodsSearch" placeHolder="请输入商品名称或编码" @search="_searchGoods"></base-search>
         </div>
       </div>
       <div class="goods-content">
