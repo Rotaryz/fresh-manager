@@ -20,7 +20,7 @@
       </div>
       <div class="big-list" :class="blankList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
-          <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
+          <div v-for="(item,index) in commodities" :key="index" class="list-item list-item-title">{{item}}</div>
         </div>
         <div v-if="blankList.length !== 0" class="list">
           <div v-for="(item, index) in blankList" :key="index" class="list-content list-box">
@@ -171,6 +171,12 @@
   .procurement-task
     .list-box
       .list-item
+        text-align: left
+        white-space: normal
+        display: -webkit-box
+        word-break: break-all
+        -webkit-line-clamp: 2
+        -webkit-box-orient: vertical
         padding-right: 14px
         &:nth-child(1),&:nth-child(2)
           flex: 1.6
@@ -180,6 +186,10 @@
           padding-right: 0
       .red
         color: #F84E3C
+      .list-double-row
+        flex-direction: column
+      .list-item-title
+        -webkit-box-orient: inherit
   .down-content
     align-items: flex-start
     padding: 5px 20px 25px
