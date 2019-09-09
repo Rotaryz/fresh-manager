@@ -466,11 +466,19 @@
           this._getDetail(false, () => {
             this.setAliasName()
             this._createGoodsCode()
+            this.resetSelectName('supplierSelect', '选择供应商')
+            this.resetSelectName('purchaseSelect', '采购单位')
+            this.resetSelectName('categoriesSelect', '分类选择')
+            this.resetSelectName('saleSelect', '销售单位')
             this.initSelectName('supplierSelect', 'supplier_name')
             this.initSelectName('saleSelect', 'sellUnit')
             this.initSelectName('purchaseSelect', 'purchaseUnit')
           })
         })
+      },
+      // 还原筛选器的
+      resetSelectName(select, content) {
+        this[select].content = content
       },
       // 设置商品别名
       setAliasName() {
@@ -694,7 +702,7 @@
         this.goodsTypeId = data.id
       },
       // 获取商品分类
-      _getGoodsCategory() {
+      _getGoodsCategory(cb) {
         API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -707,6 +715,7 @@
               this.categoriesSelect.content = item.name
             }
           })
+          cb && cb()
         })
       },
       // 筛选供应商
