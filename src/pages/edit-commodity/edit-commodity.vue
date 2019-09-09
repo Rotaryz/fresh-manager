@@ -210,8 +210,8 @@
                   <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
                   <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
                   <div class="value">
-                    <span class="text">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}{{title.value === 'usable_stock' ? item.sale_unit : ''}}</span>
-                    <span v-if="title.value === 'name'" class="text">{{item.goods_sku_code}}</span>
+                    <p class="text">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}{{title.value === 'usable_stock' ? item.sale_unit : ''}}</p>
+                    <p v-if="title.value === 'name'" class="text">{{item.goods_sku_encoding}}</p>
                   </div>
                 </div>
               </div>

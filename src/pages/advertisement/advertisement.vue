@@ -130,7 +130,7 @@
                     <img class="goods-img" :src="item.goods_cover_image">
                     <div class="goods-name">
                       <p class="text">{{item.name}}</p>
-                      <p class="text">{{item.goods_sku_code}}</p>
+                      <p class="text">{{item.goods_sku_encoding}}</p>
                     </div>
                   </div>
                   <div class="content-item">¥{{item.trade_price}}</div>

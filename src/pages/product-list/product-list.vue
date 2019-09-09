@@ -287,10 +287,12 @@
       },
       // 选择一级分类
       _setStairValue(data) {
+        let obj = JSON.parse(JSON.stringify(data))
         this.secondSelect.content = '二级分类'
-        this.secondSelect.data = data.list
-        this.SET_TASK_DATA({oneName: data.name, twoName: '二级分类', twoList: data.list})
-        this._updateList({page: 1, goods_category_id: data.id})
+        this.secondSelect.data = obj.list
+        this.secondSelect.data.unshift({name: '全部', id: obj.id, list: []})
+        this.SET_TASK_DATA({oneName: obj.name, twoName: '二级分类', twoList: data.list})
+        this._updateList({page: 1, goods_category_id: obj.id})
       },
       // 选择二级分类
       _secondValue(data) {

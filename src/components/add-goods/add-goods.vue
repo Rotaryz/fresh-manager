@@ -33,7 +33,7 @@
               <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
               <div class="value">
                 <p class="text">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}{{title.value === 'usable_stock' ? item.sale_unit : ''}}</p>
-                <p v-if="title.value === 'name'" class="text">{{item.goods_sku_code}}</p>
+                <p v-if="title.value === 'name'" class="text">{{item.goods_sku_encoding}}</p>
               </div>
             </div>
           </div>
@@ -281,7 +281,7 @@
         this.parentId = item.id
         let res = await API.Rush.goodsCategory({parent_id: this.parentId})
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        this.secondAssortment.data.unshift({name: '全部', id: item.id})
         this.secondAssortment.content = '二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()

@@ -194,8 +194,10 @@
       },
       // 选择一级类目
       selectOneList(item, index) {
-        this.materialId = item.id
-        this.twoList.data = this.oneList.data[index].list
+        let obj = JSON.parse(JSON.stringify(item))
+        this.twoList.data = obj.list
+        this.twoList.data.unshift({name: '全部', id: obj.id, list: []})
+        this.materialId = obj.id
         this.twoList.content = '二级分类'
         this.page = 1
         this.$refs.pagination.beginPage()
@@ -277,13 +279,13 @@
     padding-top: 8px
     layout(row)
     .goods-item
-      width: 216px
+      width: 210px
       border-1px(#D9DEE1, 8px)
       margin-right: 20px
       margin-bottom: 30px
       border-radius: 4px
       .goods-item-top
-        width: 216px
+        width: 210px
         height: @width
         padding-top: 38px
         box-sizing: border-box
