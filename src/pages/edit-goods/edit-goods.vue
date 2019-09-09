@@ -171,7 +171,7 @@
               <div class="goods-select-text">统一设置</div>
             </section>
           </div>
-          <p slot="right" class="edit-pla">{{commissionType? '商品售卖后，按统一比率为团长计算佣金' :  '商品售卖后，按创建团长时所设置的佣金比率分别计算佣金'}}</p>
+          <p slot="right" class="edit-pla">{{commissionType? '商品售卖后，按统一比率为团长计算佣金' : '商品售卖后，按创建团长时所设置的佣金比率分别计算佣金'}}</p>
         </edit-options>
         <edit-options v-if="commissionType" title="" :importance="false">
           <input slot="middle" v-model="commission" type="number" class="edit-input-box edit-input">
@@ -512,7 +512,7 @@
         if (this.checkModule()) {
           return
         }
-        if (this.sellPrice < this.purchaseCost) {
+        if (+this.sellPrice < +this.purchaseCost) {
           this.$refs.confirmSubmit && this.$refs.confirmSubmit.show('销售单价小于采购成本价会亏损的，确定这样吗？')
           return
         }
