@@ -168,7 +168,7 @@
       position: absolute
       top: 0
       right: 0
-      z-index: 100
+      z-index: 7
 
     .loading-mask
       width: 100%

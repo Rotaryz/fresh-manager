@@ -110,6 +110,47 @@
           title: '示例1',
           content: [
             {
+              text: '苹果，基本单位是“kg”，按件采购，则采购规格为'
+            },
+            {
+              text: '1件=30kg',
+              cname: 'mark'
+            }
+          ]
+        },
+        {
+          title: '示例2',
+          content: [
+            {
+              text: '苹果，基本单位是“份”，按份采购，则采购规格为'
+            },
+            {
+              text: '1份=1份',
+              cname: 'mark'
+            }
+          ]
+        },
+        {
+          title: '示例3',
+          content: [
+            {
+              text: '酸奶，基本单位是“盒”，按件采购，则采购规格为'
+            },
+            {
+              text: '1件=30盒',
+              cname: 'mark'
+            }
+          ]
+        }
+      ]
+    },
+    sellUnit: {
+      title: '销售单位示例',
+      list: [
+        {
+          title: '示例1',
+          content: [
+            {
               text: '苹果，基本单位是“kg”，按份售卖则销售规格为'
             },
             {
@@ -138,47 +179,6 @@
             },
             {
               text: '1件=1盒',
-              cname: 'mark'
-            }
-          ]
-        }
-      ]
-    },
-    sellUnit: {
-      title: '销售单位示例',
-      list: [
-        {
-          title: '示例1',
-          content: [
-            {
-              text: '苹果: 基本单位是“kg”，按件销售，则销售规格为'
-            },
-            {
-              text: '1件=30kg',
-              cname: 'mark'
-            }
-          ]
-        },
-        {
-          title: '示例2',
-          content: [
-            {
-              text: '苹果: 基本单位是“份”，按份销售，则销售规格为'
-            },
-            {
-              text: '1份=1份',
-              cname: 'mark'
-            }
-          ]
-        },
-        {
-          title: '示例3',
-          content: [
-            {
-              text: '酸奶: 基本单位是“盒”，按件销售，则销售规格为'
-            },
-            {
-              text: '1件=30盒',
               cname: 'mark'
             }
           ]
