@@ -204,7 +204,6 @@
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
-  // const ORDERSTATUS = [{text: '基础信息', status: 0}, {text: '销售信息', status: 1}]
 
   const STEP_INFO = {
     0: {
