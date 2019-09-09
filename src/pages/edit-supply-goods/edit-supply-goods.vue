@@ -28,7 +28,7 @@
               <div class="mini-mr20">
                 <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
               </div>
-              <base-drop-down :height="40" :width="190" :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
+              <!--<base-drop-down :height="40" :width="190" :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>-->
             </div>
           </div>
           <div class="edit-item  edit-image-box">

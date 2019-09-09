@@ -39,7 +39,7 @@
             <!--采购单价-->
             <div class="list-item" :class="{'red': item.error_tips.purchase_price}">{{item.error_tips.purchase_price || item.purchase_price}}</div>
             <div class="list-item" :class="{'red': item.error_tips.purchase_cycle}">{{item.error_tips.purchase_cycle || item.purchase_cycle}}</div>
-            <div class="list-item" :class="{'red': item.error_tips.goods_type}">{{item.error_tips.goods_type || (item.goods_type ? '否' : '是')}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.goods_type}">{{item.error_tips.goods_type || (+item.goods_type === 1 ? '否' : '是')}}</div>
             <!--售卖类型-->
             <div class="list-item" :class="{'red': item.error_tips.is_presale}">{{item.error_tips.is_presale || (item.is_presale ? '预售库存' : '仓库库存')}}</div>
             <div v-if="item.error_tips.base_sale_rate" class="list-item red">{{item.error_tips.base_sale_rate}}</div>

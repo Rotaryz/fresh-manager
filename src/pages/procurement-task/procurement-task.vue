@@ -145,7 +145,7 @@
               <base-drop-down :width="218" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+              <base-search placeHolder="请输入商品名称或编码" @search="_searchGoods"></base-search>
             </div>
           </div>
           <div class="goods-content">
@@ -1111,7 +1111,7 @@
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
       .goods-text
-        flex: 1
+        flex: 2
         &:last-child
           flex: 0.5
         &:first-child
@@ -1192,7 +1192,7 @@
         background: $color-line
         color: $color-text-assist
     .content-item
-      flex: 1
+      flex: 2
       display: flex
       align-items: center
       font-family: $font-family-regular
