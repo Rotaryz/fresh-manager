@@ -243,7 +243,7 @@
 
   const ARROW_ARR = [
     ['微信推送消息', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
-    ['打开小程序弹出优惠券', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额'],
+    ['打开小程序弹出优惠券', '点击消息进入领券页领取优惠券', '客户商城选购商品', '提交订单立减金额']
   ]
   const MONEYREG = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
 
@@ -362,10 +362,7 @@
         this.isAdditionGroup = false
         let arr = []
         if (+this.marketIndex === 2) {
-          arr = [
-            {coupon_id: this.lessSelectItem.id},
-            {coupon_id: this.greatSelectItem.id}
-          ]
+          arr = [{coupon_id: this.lessSelectItem.id}, {coupon_id: this.greatSelectItem.id}]
         } else {
           arr = [{coupon_id: this[`${this.modalType}SelectItem`].id}]
         }
@@ -406,7 +403,7 @@
         let arr = [
           {value: this.testRules, txt: '请选择规则'},
           {value: this.testCoupon, txt: '请选择优惠券'},
-          {value: this.testPrice, txt: '请正确输入金额'},
+          {value: this.testPrice, txt: '请正确输入金额'}
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -484,11 +481,11 @@
         this.$refs.couponModal.showModal()
       },
       _initData() {
-        ['coupon', 'less', 'great'].map(item => {
-          this[`${item}SelectList`] = []
-          this[`${item}SelectItem`] = {}
-          this.couponCheckItem = {}
-        })
+      ;['coupon', 'less', 'great'].map((item) => {
+        this[`${item}SelectList`] = []
+        this[`${item}SelectItem`] = {}
+        this.couponCheckItem = {}
+      })
       },
       // 详情信息
       _initMsg(news) {

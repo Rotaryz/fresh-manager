@@ -133,13 +133,17 @@
         }
         switch (item.selected) {
         case 0:
-          if (this.maxLimit && +this.maxLimit !== 1 && (this.selectGoods.length + this.parentGoodsList.length) === +this.maxLimit) {
+          if (
+            this.maxLimit &&
+            +this.maxLimit !== 1 &&
+            this.selectGoods.length + this.parentGoodsList.length === +this.maxLimit
+          ) {
             this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
             return
           }
           if (+this.maxLimit === 1) {
             this.selectGoods = []
-            this.chooseGoods = this.chooseGoods.map(item => {
+            this.chooseGoods = this.chooseGoods.map((item) => {
               item.selected = 0
               return item
             })
@@ -160,7 +164,7 @@
       },
       _selectAllGoods() {
         let goods = this.chooseGoods
-        let allDisable = goods.every(item => {
+        let allDisable = goods.every((item) => {
           return +item.selected === 1
         })
         if (allDisable) return
@@ -171,30 +175,33 @@
           }
         }
         this.selectAll = !this.selectAll
-        if (this.maxLimit && this.selectAll && (this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length) > this.maxLimit) {
+        if (
+          this.maxLimit &&
+          this.selectAll &&
+          this.selectGoods.length + this.parentGoodsList.length + this.chooseGoods.length > this.maxLimit
+        ) {
           this.$toast.show(`选择商品数量不能超过${this.maxLimit}个`)
           this.selectAll = false
           return
         }
 
         if (this.selectAll) {
-          this.chooseGoods.map(item => {
-            +item.selected === 0 && (item.selected = 2);
-            +item.selected === 2 && this.selectGoods.push(item)
-            return item
+          this.chooseGoods.map((item) => {
+          ;+item.selected === 0 && (item.selected = 2)
+          ;+item.selected === 2 && this.selectGoods.push(item)
+          return item
           })
         } else {
-          this.chooseGoods.map(item => {
+          this.chooseGoods.map((item) => {
             if (+item.selected === 2) {
               item.selected = 0
-              this.selectGoods = this.selectGoods.filter(goods => {
+              this.selectGoods = this.selectGoods.filter((goods) => {
                 return goods.goods_id !== item.goods_id
               })
             }
             return item
           })
         }
-
       },
       // 批量添加
       _batchAddition() {
@@ -258,7 +265,7 @@
           return item
         })
         let allSelect = this.chooseGoods.length
-          ? this.chooseGoods.every(item => {
+          ? this.chooseGoods.every((item) => {
             return +item.selected !== 0
           })
           : false

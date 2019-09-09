@@ -91,7 +91,7 @@ export const mutations = {
     state.orderStatus = status
   },
   RESET_DATA(state) {
-    state.page =1
+    state.page = 1
     state.startTime = ''
     state.endTime = ''
     state.status = 'c_shop'
@@ -114,7 +114,7 @@ export const actions = {
       keyword: keyword,
       source: status
     }
-    if (status==='c_freeShipping') {
+    if (status === 'c_freeShipping') {
       // 全国包邮不传source，source_type=2代表全国包邮
       data.source_type = 2
       delete data.source

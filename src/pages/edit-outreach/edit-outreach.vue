@@ -703,11 +703,11 @@
       async _showGoods() {
         if (this.disable) return
         this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
-        // this._initData()
-        // this.$refs.goodsSearch._setText('')
-        // await this._getGoodsList()
-        // // 展示添加商品弹窗
-        // this.$refs.goodsModal.showModal()
+      // this._initData()
+      // this.$refs.goodsSearch._setText('')
+      // await this._getGoodsList()
+      // // 展示添加商品弹窗
+      // this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModal.hideModal()

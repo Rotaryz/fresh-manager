@@ -455,7 +455,7 @@
       this.id = +this.$route.query.id || +this.$route.query.editId || null
       if (this.id) {
         let obj = _.cloneDeep(this.collageDetail)
-        this.goodsList = obj.activity_goods.map(item => {
+        this.goodsList = obj.activity_goods.map((item) => {
           item.id = item.id || item.goods_id
           return item
         })
@@ -787,16 +787,16 @@
           // 展示添加商品弹窗
           // this.$refs.goodsModel.showModal()
           this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
-          // this.$refs.goodsSearch.infoTextMethods()
+        // this.$refs.goodsSearch.infoTextMethods()
         } else {
           this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
-          // await this._getGoodsList()
-          // this.$refs.goodsModel.showModal()
+        // await this._getGoodsList()
+        // this.$refs.goodsModel.showModal()
         }
       },
       _cancelModal() {
         this.$refs.couponModal && this.$refs.couponModal.hideModal()
-        // this.$refs.goodsModel && this.$refs.goodsModel.hideModal()
+      // this.$refs.goodsModel && this.$refs.goodsModel.hideModal()
       },
       // 切换分类
       _setClassify(index, item) {

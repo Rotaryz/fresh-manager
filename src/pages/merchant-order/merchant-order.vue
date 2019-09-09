@@ -188,7 +188,7 @@
   const ORDERSTATUS = [
     {text: '商户订单', status: 0, img: require('./icon-order_list2@2x.png')},
     {text: '消费者订单', status: 1, img: require('./pic-zanwu@2x.png')}
-    // {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
+  // {text: '商品汇总单', status: 1, img: require('./pic-zanwu@2x.png')}
   ]
   const ENTRY_STORE_EXPORT = '/scm/api/backend/oms/export-customer-orders'
   export default {
@@ -212,13 +212,15 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}]},
+          data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}]
+        },
         sourceSelect: {
           check: false,
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '系统销售', status: '1'}, {name: '人工补录', status: '3'}]},
+          data: [{name: '全部', status: ''}, {name: '系统销售', status: '1'}, {name: '人工补录', status: '3'}]
+        },
         dispatchSelect: [
           {status_str: '全部', value: '', statistic: 0},
           {status_str: '待调度', value: 0, statistic: 0},
@@ -368,17 +370,18 @@
         this.$refs.delConfirm.show('确定删除此订单？')
       },
       delConfirm() {
-        API.MerchantOrder.deleteConsumerOrder({out_order_sn: this.currentItem.out_order_sn, goods_sku_code: this.currentItem.goods_sku_code})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.$refs.delConfirm.hide()
-            this.$toast.show('删除成功')
-            this.getConsumerOrderList()
-          })
-
+        API.MerchantOrder.deleteConsumerOrder({
+          out_order_sn: this.currentItem.out_order_sn,
+          goods_sku_code: this.currentItem.goods_sku_code
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.$refs.delConfirm.hide()
+          this.$toast.show('删除成功')
+          this.getConsumerOrderList()
+        })
       }
     }
   }

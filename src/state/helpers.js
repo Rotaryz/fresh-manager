@@ -153,22 +153,64 @@ export const outreachComputed = {
   ])
 }
 
-export const outreachMethods = mapActions('outreach', ['getOutreachList', 'getOutreachDetail', 'getMemberList', 'setRequestData', 'setDefaultIndex', 'setPage'])
+export const outreachMethods = mapActions('outreach', [
+  'getOutreachList',
+  'getOutreachDetail',
+  'getMemberList',
+  'setRequestData',
+  'setDefaultIndex',
+  'setPage'
+])
 
 // 优惠券
 export const couponComputed = {
-  ...mapGetters('coupon', ['couponList', 'pageDetail', 'couponDetail', 'infoTabIndex', 'goodsCoupon', 'requestData', 'defaultIndex'])
+  ...mapGetters('coupon', [
+    'couponList',
+    'pageDetail',
+    'couponDetail',
+    'infoTabIndex',
+    'goodsCoupon',
+    'requestData',
+    'defaultIndex'
+  ])
 }
 
-export const couponMethods = mapActions('coupon', ['getCouponList', 'getCouponDetail', 'setInfoIndex', 'resetData', 'setRequestData', 'setDefaultIndex'])
+export const couponMethods = mapActions('coupon', [
+  'getCouponList',
+  'getCouponDetail',
+  'setInfoIndex',
+  'resetData',
+  'setRequestData',
+  'setDefaultIndex'
+])
 
 // 营销计划
 export const marketComputed = {
-  ...mapGetters('market', ['marketList', 'marketPageDetail', 'marketDetail', 'marketStaPageDetail', 'marketStaLists','inviteCount', 'defaultIndex', 'requestData', 'defaultTab', 'marketType', 'statusIndex'])
+  ...mapGetters('market', [
+    'marketList',
+    'marketPageDetail',
+    'marketDetail',
+    'marketStaPageDetail',
+    'marketStaLists',
+    'inviteCount',
+    'defaultIndex',
+    'requestData',
+    'defaultTab',
+    'marketType',
+    'statusIndex'
+  ])
 }
 
 export const marketMethods = {
-  ...mapActions('market', ['getMarketList', 'getMarketDetail', 'getMarketingStatisticsList', 'resetData', 'setDefaultIndex', 'setRequestData', 'setDefaultTab']),
+  ...mapActions('market', [
+    'getMarketList',
+    'getMarketDetail',
+    'getMarketingStatisticsList',
+    'resetData',
+    'setDefaultIndex',
+    'setRequestData',
+    'setDefaultTab'
+  ]),
   ...mapMutations('market', ['SET_STATUS_INDEX', 'SET_REQUEST_DATA'])
 }
 
@@ -189,12 +231,7 @@ export const categoriesComputed = {
 export const categoriesMethods = mapActions('categories', ['getCategoryList', 'setCategory', 'addChild'])
 
 export const goodsComputed = {
-  ...mapGetters('editgoods', [
-    'productList',
-    'statePageTotal',
-    'goodsFitter',
-    'taskData'
-  ])
+  ...mapGetters('editgoods', ['productList', 'statePageTotal', 'goodsFitter', 'taskData'])
 }
 
 export const goodsMethods = {
@@ -228,7 +265,16 @@ export const orderComputed = {
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setShopId', 'setTime', 'setKeyword', 'setStatus', 'setPage', 'setOrderStatus', 'resetData', 'setDefaultIndex'])
+  ...mapActions('order', [
+    'setShopId',
+    'setTime',
+    'setKeyword',
+    'setStatus',
+    'setPage',
+    'setOrderStatus',
+    'resetData',
+    'setDefaultIndex'
+  ])
 }
 
 // 退货
@@ -273,7 +319,12 @@ export const purchaseComputed = {
   ...mapGetters('purchase', ['pageTotal', 'purchaseList', 'purchaseDetail', 'requestData'])
 }
 
-export const purchaseMethods = mapActions('purchase', ['getPurchaseList', 'getPurchaseDetail', 'resetData', 'setRequestData'])
+export const purchaseMethods = mapActions('purchase', [
+  'getPurchaseList',
+  'getPurchaseDetail',
+  'resetData',
+  'setRequestData'
+])
 // 成员管理
 export const customerComputed = {
   ...mapGetters('customer', ['customerList', 'pageTotal'])
@@ -367,10 +418,26 @@ export const omsMethods = {
 }
 // 采购单
 export const supplyComputed = {
-  ...mapGetters('supply', ['pageTotal', 'purchaseList', 'purchaseDetail', 'timeStart', 'timeEnd', 'page', 'keyword', 'status'])
+  ...mapGetters('supply', [
+    'pageTotal',
+    'purchaseList',
+    'purchaseDetail',
+    'timeStart',
+    'timeEnd',
+    'page',
+    'keyword',
+    'status'
+  ])
 }
 
-export const supplyMethods = mapActions('supply', ['getPurchaseList', 'getPurchaseDetail', 'infoPurchaseTime', 'setKeyword', 'setPage', 'setStatus'])
+export const supplyMethods = mapActions('supply', [
+  'getPurchaseList',
+  'getPurchaseDetail',
+  'infoPurchaseTime',
+  'setKeyword',
+  'setPage',
+  'setStatus'
+])
 
 // 采购任务
 export const proTaskComputed = {
@@ -616,7 +683,13 @@ export const storeMethods = {
     'getAdjustOrderDetail',
     'resetWarehouseDetail'
   ]),
-  ...mapMutations('store', ['SET_STOCK_PARAMS', 'SET_WAREHOUSE_PARAMS', 'SET_SELECT_PARAMS', 'SET_WAREHOUSE_DETAIL_PARAMS', 'SET_TYPE_NAME'])
+  ...mapMutations('store', [
+    'SET_STOCK_PARAMS',
+    'SET_WAREHOUSE_PARAMS',
+    'SET_SELECT_PARAMS',
+    'SET_WAREHOUSE_DETAIL_PARAMS',
+    'SET_TYPE_NAME'
+  ])
 }
 // todo 分拣任务
 export const sortingComputed = {
@@ -655,16 +728,24 @@ export const merchantOrderComputed = {
   ])
 }
 export const merchantOrderMethods = {
-  ...mapActions('merchantOrder', [
-    'getMerchantOrderList',
-    'getMerchantOrderDetail',
-    'getConsumerOrderList'
-  ]),
-  ...mapMutations('merchantOrder', ['SET_PARAMS', 'SET_PAGE_TOTAL', 'SET_TAB_INDEX', 'SET_CONSUMER_TAB_INDEX', 'SET_MERCHANT_LIST'])
+  ...mapActions('merchantOrder', ['getMerchantOrderList', 'getMerchantOrderDetail', 'getConsumerOrderList']),
+  ...mapMutations('merchantOrder', [
+    'SET_PARAMS',
+    'SET_PAGE_TOTAL',
+    'SET_TAB_INDEX',
+    'SET_CONSUMER_TAB_INDEX',
+    'SET_MERCHANT_LIST'
+  ])
 }
 // 售后订单
 export const afterSalesOrderComputed = {
-  ...mapGetters('afterSalesOrder', ['pageTotal', 'afterSalesList', 'afterSalesDetail', 'afterSalesFilter', 'exceptionText'])
+  ...mapGetters('afterSalesOrder', [
+    'pageTotal',
+    'afterSalesList',
+    'afterSalesDetail',
+    'afterSalesFilter',
+    'exceptionText'
+  ])
 }
 export const afterSalesOrderMethods = {
   ...mapActions('afterSalesOrder', ['getAfterSalesOrderList', 'getAfterSalesOrderDetail']),
@@ -710,11 +791,29 @@ export const allocationMethods = {
 }
 // 供应链商品
 export const scmGoodsComputed = {
-  ...mapGetters('scmGoods', ['productList', 'statePageTotal', 'goodsStoreList', 'storePageTotal', 'goodsReqData', 'selectDown'])
+  ...mapGetters('scmGoods', [
+    'productList',
+    'statePageTotal',
+    'goodsStoreList',
+    'storePageTotal',
+    'goodsReqData',
+    'selectDown'
+  ])
 }
 
 export const scmGoodsMethods = {
-  ...mapActions('scmGoods', ['getProductList', 'getScmStoreData', 'setKeyword', 'setPage', 'setMaterialCategory', 'setCompleteStatus', 'saveSelectDown', 'setPageSubtract', 'resetData', 'setGoodsType'])
+  ...mapActions('scmGoods', [
+    'getProductList',
+    'getScmStoreData',
+    'setKeyword',
+    'setPage',
+    'setMaterialCategory',
+    'setCompleteStatus',
+    'saveSelectDown',
+    'setPageSubtract',
+    'resetData',
+    'setGoodsType'
+  ])
 }
 
 // 内容
@@ -758,5 +857,6 @@ export const contentMethods = {
     'getContentClassList',
     'getWorkList',
     'selectWork',
-    'getCenterList'])
+    'getCenterList'
+  ])
 }

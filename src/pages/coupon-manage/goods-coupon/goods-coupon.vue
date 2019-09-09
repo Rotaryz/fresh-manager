@@ -97,7 +97,7 @@
           {name: '进行中', status: 1, num: 0},
           {name: '未开始', status: 1, num: 0},
           {name: '已结束', status: 1, num: 0}
-        ],
+        ]
       }
     },
     computed: {
@@ -118,21 +118,19 @@
           created_start_at: this.requestData.created_start_at,
           created_end_at: this.requestData.created_end_at,
           keyword: this.requestData.keyword
-        }).then(
-          (res) => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                status: item.status,
-                num: item.statistic
-              }
-            })
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
           }
-        )
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              status: item.status,
+              num: item.statistic
+            }
+          })
+        })
       },
       searchHandle(keyword) {
         this.setRequestData({keyword, page: 1})
@@ -156,7 +154,7 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        if (+this.pageDetail.total%10 === 1 && +this.requestData.page === +this.pageDetail.total_page) {
+        if (+this.pageDetail.total % 10 === 1 && +this.requestData.page === +this.pageDetail.total_page) {
           this.setRequestData({page: this.pageDetail.total_page - 1})
         } else {
           this.getCouponList()

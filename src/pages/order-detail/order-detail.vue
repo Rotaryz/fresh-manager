@@ -98,7 +98,7 @@
       ...orderComputed
     },
     mounted() {
-      if (this.freeShipping*1===1) {
+      if (this.freeShipping * 1 === 1) {
         this.titleList = FS_TITLE_LIST
       }
     },

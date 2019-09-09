@@ -142,21 +142,23 @@
         this.setDefaultIndex({status: selectStatus.status, index})
       },
       getOutreachStatus() {
-        API.Outreach.getOutreachStatus({activity_theme: 'offline', start_at: this.requestData.start_at, end_at: this.requestData.end_at}).then(
-          (res) => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                status: item.status,
-                num: item.statistic
-              }
-            })
+        API.Outreach.getOutreachStatus({
+          activity_theme: 'offline',
+          start_at: this.requestData.start_at,
+          end_at: this.requestData.end_at
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
           }
-        )
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              status: item.status,
+              num: item.statistic
+            }
+          })
+        })
       },
       showTip(index) {
         clearTimeout(this.timer)
@@ -183,7 +185,7 @@
         } else {
           this.$toast.show('删除成功')
         }
-        if (+this.outreachPage.total%10 === 1 && +this.requestData.page === +this.outreachPage.total_page) {
+        if (+this.outreachPage.total % 10 === 1 && +this.requestData.page === +this.outreachPage.total_page) {
           this.setRequestData({page: this.outreachPage.total_page - 1})
         } else {
           this.getOutreachList()

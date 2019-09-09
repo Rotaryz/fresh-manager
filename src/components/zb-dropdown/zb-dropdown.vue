@@ -41,7 +41,7 @@
         type: [String, Object, Boolean, Number],
         default: ''
       },
-      defaultLabel:{
+      defaultLabel: {
         type: String,
         default: ''
       },
@@ -95,17 +95,17 @@
     },
     data() {
       return {
-        visible: "",
-        setTime: '',
+        visible: '',
+        setTime: ''
       }
     },
     computed: {
       valueLabel() {
-        let res = this.data.find(item => {
+        let res = this.data.find((item) => {
           let re = this.valueKey ? item[this.valueKey] === this.value : item === this.value
           return re
         })
-        return res ? res[this.labelKey] :''
+        return res ? res[this.labelKey] : ''
       }
     },
     mounted() {

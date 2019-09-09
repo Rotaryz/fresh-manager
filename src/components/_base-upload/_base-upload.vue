@@ -144,43 +144,48 @@
       },
       async _addPic(e) {
         this.showLoading = true
-        await cos('image', Array.from(e.target.files)).then(arr => {
-          this.showLoading = false
-          arr.length && arr.forEach(item => {
-            if (item.error !== this.$ERR_OK) {
-              this.$emit('failFile', item.message)
-              return
-            }
-            this.$emit('getPic', item.data)
+        await cos('image', Array.from(e.target.files))
+          .then((arr) => {
+            this.showLoading = false
+            arr.length &&
+              arr.forEach((item) => {
+                if (item.error !== this.$ERR_OK) {
+                  this.$emit('failFile', item.message)
+                  return
+                }
+                this.$emit('getPic', item.data)
+              })
           })
-        }).catch(err => {
-          this.$emit('failFile', err)
-          this.showLoading = false
-        })
+          .catch((err) => {
+            this.$emit('failFile', err)
+            this.showLoading = false
+          })
       },
       _addVideo(e) {
         let arr = Array.from(e.target.files)
         e.target.value = ''
-        let size = (arr[0].size / 1024 / 1024)
+        let size = arr[0].size / 1024 / 1024
         if (size > this.videoSize) {
           this.$loading.hide()
           this.$emit('failFile', '视频大小不能超过' + this.videoSize + 'M')
           return
         }
         this.$loading.show('视频上传中...')
-        vod(arr[0], curr => {
+        vod(arr[0], (curr) => {
           this.$loading.showCurr(curr)
-        }).then(res => {
-          this.$loading.hide()
-          if (res.error !== this.$ERR_OK) {
-            this.$emit('failFile', res.message)
-            return
-          }
-          this.$emit('successVideo', res.data)
-        }).catch(err => {
-          this.$loading.hide()
-          this.$emit('failFile', err)
         })
+          .then((res) => {
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.$emit('failFile', res.message)
+              return
+            }
+            this.$emit('successVideo', res.data)
+          })
+          .catch((err) => {
+            this.$loading.hide()
+            this.$emit('failFile', err)
+          })
       }
     }
   }

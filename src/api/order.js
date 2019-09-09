@@ -93,5 +93,5 @@ export default {
   exportOffLine(data, loading = false) {
     let url = `/social-shopping/api/backend/order-export-task`
     return request.get(url, data, loading)
-  },
+  }
 }

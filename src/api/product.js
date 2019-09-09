@@ -293,7 +293,6 @@ export default {
   // 商品编辑[v2.9.6]
   updateGoods(data, loading) {
     let flag = data.isCopy ? false : data.id
-    console.log(flag, data.id, data, '=================')
     if (flag) {
       let url = `/social-shopping/api/backend/goods-manage/goods/${data.id}`
       return request.put(url, data, loading)

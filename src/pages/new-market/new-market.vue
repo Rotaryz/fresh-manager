@@ -595,33 +595,38 @@
       name: '新用户',
       text: '已授权成功且没有支付订单的用户',
       code: 'new_customer'
-    },{
+    },
+    {
       type: '复购有礼',
       placeHolder: '如：老用户送25元优惠券，最多10个字',
       name: '复购用户',
       text: '7天内2次支付订单的用户',
       code: 'active_customer'
-    },{
+    },
+    {
       type: '召回有礼',
       placeHolder: '如：流失用户送25元优惠券，最多10个字',
       name: '沉睡用户',
       text: '连续6天没支付订单的用户',
       code: 'sleeping_customer'
-    },{
+    },
+    {
       type: '定向营销',
       placeHolder: '如：流失用户送25元优惠券，最多10个字',
       name: '全部用户',
       text: '登录小程序且授权成功的用户',
       code: 'share_coupon',
       group: true
-    },{
+    },
+    {
       type: '邀请有礼',
       placeHolder: '如：流失用户送25元优惠券，最多10个字',
       name: '全部用户',
       group: true,
       text: '登录小程序且授权成功的用户',
       code: 'invite_customer'
-    },{
+    },
+    {
       type: '社群营销',
       placeHolder: '如：社群发福利10元优惠券，最多10个字',
       group: true,
@@ -647,7 +652,6 @@
   const INVITE_TITLE = ['成功邀请人数', '兑换券名称', '类型', '面值', '剩余', '有效期', '操作']
   const INVITED_TITLE = ['触发条件', '优惠券名称', '类型', '面值', '剩余', '有效期', '操作']
 
-
   // 满赠
   const TARGET_TYPE = {
     0: 'user',
@@ -659,8 +663,8 @@
     10: 'coupon'
   }
   const SELECT_LIST = {
-    'coupon': 'selectCouponList',
-    'certificate': 'selectCertificateList'
+    coupon: 'selectCouponList',
+    certificate: 'selectCertificateList'
   }
 
   export default {
@@ -682,7 +686,8 @@
         groupTitle: GROUP_TITLE, // 团长弹窗title
         selectCouponTitle: SELECT_COUPON_TITLE, // 已选优惠券弹窗title
         selectGroupTitle: SELECT_GROUP_TITLE, // 已选团长title
-        groupTitleGift: [ // 满赠团长列表
+        groupTitleGift: [
+          // 满赠团长列表
           {name: '社区名称', flex: 1.4, value: 'social_name'},
           {name: '团长名称', flex: 1, value: 'name'},
           {name: '操作', flex: 0.7, value: 'delete'}
@@ -728,8 +733,16 @@
         disable: false,
         currentItem: '',
         // 邀请者
-        inviterArr: [{people: '1人', cond_num: 1, cond_type: 5, tag_type: 1}, {people: '3人', cond_num: 3, cond_type: 5, tag_type: 1}, {people: '6人', cond_num: 6, cond_type: 5, tag_type: 1}, {people: '大于6人', cond_num: 7, cond_type: 5, tag_type: 1}],
-        invitedArr: [{condition: '新人红包', cond_type: 1, tag_type: 1}, {condition: '下单返红包', cond_type: 6, tag_type: 1}],
+        inviterArr: [
+          {people: '1人', cond_num: 1, cond_type: 5, tag_type: 1},
+          {people: '3人', cond_num: 3, cond_type: 5, tag_type: 1},
+          {people: '6人', cond_num: 6, cond_type: 5, tag_type: 1},
+          {people: '大于6人', cond_num: 7, cond_type: 5, tag_type: 1}
+        ],
+        invitedArr: [
+          {condition: '新人红包', cond_type: 1, tag_type: 1},
+          {condition: '下单返红包', cond_type: 6, tag_type: 1}
+        ],
         inviteTitle: INVITE_TITLE,
         invitedTitle: INVITED_TITLE,
         invitedIndex: null,
@@ -743,7 +756,8 @@
         chooseTarget: 'user', // 选定向类型
         chooseAward: 'coupon', // 选择卡券类型
         selectCertificateList: [], // 选择兑换券列表
-        selectCertificateTitle: [ // 选择兑换券title
+        selectCertificateTitle: [
+          // 选择兑换券title
           {name: '兑换券名称', flex: 1.7, value: 'coupon_name'},
           {name: '类型', flex: 1, value: 'preferential_str'},
           {name: '使用门槛', flex: 1.2, value: 'condition'},
@@ -775,9 +789,7 @@
         if (this.msg.start_at && this.msg.end_at) {
           let startAt = this.msg.start_at
           let endAt = this.msg.end_at
-          return (
-            Date.parse(endAt.replace(/-/g, '/')) > Date.parse(startAt.replace(/-/g, '/'))
-          )
+          return Date.parse(endAt.replace(/-/g, '/')) > Date.parse(startAt.replace(/-/g, '/'))
         }
         return true
       },
@@ -794,20 +806,24 @@
       testGroupCount() {
         if (this.marketIndex === 3) return true
         let result = this.selectGroupList.every((item) => {
-          return (item.number) > 0 && COUNTREG.test(item.number)
+          return item.number > 0 && COUNTREG.test(item.number)
         })
         return result
       },
       testNewGoupCount() {
         if (this.editId) {
-          let arr = this.selectGroupList.filter(val => {
-            let index = this.marketDetail.shop_coupon.findIndex(item => {
+          let arr = this.selectGroupList.filter((val) => {
+            let index = this.marketDetail.shop_coupon.findIndex((item) => {
               return val.id === item.shop_id
             })
             return index > -1
           })
           let result = arr.every((item, index) => {
-            return item.number > 0 && item.number >= this.marketDetail.shop_coupon[index].total_stock  && COUNTREG.test(item.number)
+            return (
+              item.number > 0 &&
+              item.number >= this.marketDetail.shop_coupon[index].total_stock &&
+              COUNTREG.test(item.number)
+            )
           })
           return result
         }
@@ -836,8 +852,10 @@
       },
       testCardType() {
         if (this.marketIndex === 3) {
-          return  (this.chooseAward === 'coupon' && this.selectCouponList.length)
-            || (this.chooseAward === 'certificate' && this.selectCertificateList.length)
+          return (
+            (this.chooseAward === 'coupon' && this.selectCouponList.length) ||
+            (this.chooseAward === 'certificate' && this.selectCertificateList.length)
+          )
         } else {
           return true
         }
@@ -845,9 +863,11 @@
     },
     watch: {},
     beforeCreate() {
-      (this.$route.query.id && this.$route.query.editId) || this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建营销'])
-      this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看营销'])
-      this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '编辑营销'])
+    ;(this.$route.query.id && this.$route.query.editId) ||
+      this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '新建营销'])
+    this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '查看营销'])
+    this.$route.query.editId &&
+      this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '营销计划', '编辑营销'])
     },
     created() {
       // this.id = this.$route.query.id || this.$route.query.editId || null
@@ -911,28 +931,30 @@
         this.page = 1
         try {
           let res = await this._getList()
-          this.$refs.multipleChoice && this.$refs.multipleChoice.updateData({
-            dataArray: res.data,
-            pageDetail: {
-              total: res.meta.total,
-              per_page: res.meta.per_page,
-              total_page: res.meta.last_page
-            }
-          })
+          this.$refs.multipleChoice &&
+            this.$refs.multipleChoice.updateData({
+              dataArray: res.data,
+              pageDetail: {
+                total: res.meta.total,
+                per_page: res.meta.per_page,
+                total_page: res.meta.last_page
+              }
+            })
         } catch (e) {}
       },
       async addPageHandle(page) {
         this.page = page
         try {
           let res = await this._getList()
-          this.$refs.multipleChoice && this.$refs.multipleChoice.updateData({
-            dataArray: res.data,
-            pageDetail: {
-              total: res.meta.total,
-              per_page: res.meta.per_page,
-              total_page: res.meta.last_page
-            }
-          })
+          this.$refs.multipleChoice &&
+            this.$refs.multipleChoice.updateData({
+              dataArray: res.data,
+              pageDetail: {
+                total: res.meta.total,
+                per_page: res.meta.per_page,
+                total_page: res.meta.last_page
+              }
+            })
         } catch (e) {}
       },
       async _getList() {
@@ -949,8 +971,7 @@
         let res = {}
         try {
           res = await API.Coupon.getCouponList(data, false)
-        } catch (e) {
-        }
+        } catch (e) {}
         return res
       },
       async showMultipleChoice() {
@@ -1130,7 +1151,7 @@
             })
             return item
           })
-          // this.couponList = res.data
+        // this.couponList = res.data
         })
       },
       // 弹窗优惠券
@@ -1143,7 +1164,7 @@
         //   return
         // }
 
-        this.invitedIndex = typeof (index) === 'number' ? index : null
+        this.invitedIndex = typeof index === 'number' ? index : null
         if (this.disable) return
         this.couponCheckItem = {}
         if (this.modalType !== 'coupon') {
@@ -1327,14 +1348,14 @@
         this.msg.target_type = this._setMsgTarget(TARGET_TYPE, 'chooseTarget')
         this.msg.config_json.target_shops = this.selectGroupList
         const key = SELECT_LIST[this.chooseAward]
-        this.msg.common_coupons = this[key].map(item => {
+        this.msg.common_coupons = this[key].map((item) => {
           return {
             coupon_id: item.id
           }
         })
       },
       _setMsgTarget(obj, choose) {
-        for (let [key,val] of Object.entries(obj)) {
+        for (let [key, val] of Object.entries(obj)) {
           if (this[choose] === val) {
             return key
           }
@@ -1349,7 +1370,7 @@
         this.isSubmit = true
         // this.msg.coupon_id = this.couponSelectItem.id
         // 优惠券列表
-        this.msg.common_coupons = this.selectCouponList.map(item => {
+        this.msg.common_coupons = this.selectCouponList.map((item) => {
           return {coupon_id: item.id}
         })
         switch (+this.marketIndex) {
@@ -1456,7 +1477,7 @@
         let id = this.$route.query.id || this.$route.query.editId || null
         if (id) {
           let obj = _.cloneDeep(news)
-          this.selectCouponList = obj.common_coupons.map(item => {
+          this.selectCouponList = obj.common_coupons.map((item) => {
             // item.start_at = item.start_at.split(' ')[0]
             // item.end_at = item.end_at.split(' ')[0]
             return item
@@ -1482,7 +1503,7 @@
           // 满赠
           if (this.marketIndex === 3) {
             this.chooseTarget = TARGET_TYPE[obj.target_type]
-            this.chooseAward= COUPON_TARGET[obj.coupon_type]
+            this.chooseAward = COUPON_TARGET[obj.coupon_type]
             let key = SELECT_LIST[this.chooseAward]
             this[key] = obj.common_coupons
             this.selectGroupList = this.msg.config_json.target_shops

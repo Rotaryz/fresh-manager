@@ -21,9 +21,7 @@
       }
     },
     data() {
-      return {
-
-      }
+      return {}
     },
     methods: {
       buttonHandle() {

@@ -41,21 +41,21 @@
   const COMPONENT_NAME = 'DESCRIBE_POP'
 
   const TPL = {
-    'unit': {
+    unit: {
       title: '基本单位示例',
       list: [
         {
           title: '示例1',
           content: [
             {
-              text: '苹果: 采购散装后自己包装，按“kg”存放在仓库，则',
+              text: '苹果: 采购散装后自己包装，按“kg”存放在仓库，则'
             },
             {
               text: '基本单位',
               cname: 'mark'
             },
             {
-              text: '建议设置为',
+              text: '建议设置为'
             },
             {
               text: 'kg',
@@ -67,14 +67,14 @@
           title: '示例2',
           content: [
             {
-              text: '苹果: 采购供应商已包装好的，按“份”存放在仓库，则',
+              text: '苹果: 采购供应商已包装好的，按“份”存放在仓库，则'
             },
             {
               text: '基本单位',
               cname: 'mark'
             },
             {
-              text: '建议设置为',
+              text: '建议设置为'
             },
             {
               text: '份',
@@ -86,14 +86,14 @@
           title: '示例3',
           content: [
             {
-              text: '酸奶: 采购1件30盒，按“盒”存放在仓库，则',
+              text: '酸奶: 采购1件30盒，按“盒”存放在仓库，则'
             },
             {
               text: '基本单位',
               cname: 'mark'
             },
             {
-              text: '建议设置为',
+              text: '建议设置为'
             },
             {
               text: '盒',
@@ -103,14 +103,14 @@
         }
       ]
     },
-    'purchaseUnit': {
+    purchaseUnit: {
       title: '采购单位示例',
       list: [
         {
           title: '示例1',
           content: [
             {
-              text: '苹果: 基本单位是“kg”，按件采购，则采购规格为',
+              text: '苹果，基本单位是“kg”，按件采购，则采购规格为'
             },
             {
               text: '1件=30kg',
@@ -122,7 +122,7 @@
           title: '示例2',
           content: [
             {
-              text: '苹果: 基本单位是“份”，按份采购，则采购规格为',
+              text: '苹果，基本单位是“份”，按份采购，则采购规格为'
             },
             {
               text: '1份=1份',
@@ -134,7 +134,7 @@
           title: '示例3',
           content: [
             {
-              text: '酸奶: 基本单位是“盒”，按件采购，则采购规格为',
+              text: '酸奶，基本单位是“盒”，按件采购，则采购规格为'
             },
             {
               text: '1件=30盒',
@@ -144,17 +144,17 @@
         }
       ]
     },
-    'sellUnit': {
+    sellUnit: {
       title: '销售单位示例',
       list: [
         {
           title: '示例1',
           content: [
             {
-              text: '苹果: 基本单位是“kg”，按件销售，则销售规格为',
+              text: '苹果，基本单位是“kg”，按份售卖则销售规格为'
             },
             {
-              text: '1件=30kg',
+              text: '1份=0.5kg',
               cname: 'mark'
             }
           ]
@@ -163,7 +163,7 @@
           title: '示例2',
           content: [
             {
-              text: '苹果: 基本单位是“份”，按份销售，则销售规格为',
+              text: '苹果，基本单位是“份”，按份售卖则销售规格为'
             },
             {
               text: '1份=1份',
@@ -175,10 +175,10 @@
           title: '示例3',
           content: [
             {
-              text: '酸奶: 基本单位是“盒”，按件销售，则销售规格为',
+              text: '酸奶，基本单位是“盒”，按份售卖则销售规格为'
             },
             {
-              text: '1件=30盒',
+              text: '1件=1盒',
               cname: 'mark'
             }
           ]
@@ -207,7 +207,6 @@
         this.type = type
         this.tipInfo = TPL[textType]
         this.$refs.modal && this.$refs.modal.showModal()
-
       },
       hide() {
         this.$refs.modal && this.$refs.modal.hideModal()

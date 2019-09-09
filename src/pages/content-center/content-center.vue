@@ -65,7 +65,11 @@
 
   const PAGE_NAME = 'CONTENT_CENTER'
   const TITLE = '内容中心'
-  const TAB_STATUS = [{text: '图文', status: '', type: 'common'}, {text: '视频', status: '', type: 'video'}, {text: '菜谱', status: '', type: 'cookbook'}]
+  const TAB_STATUS = [
+    {text: '图文', status: '', type: 'common'},
+    {text: '视频', status: '', type: 'video'},
+    {text: '菜谱', status: '', type: 'cookbook'}
+  ]
   const QUERY = ['Keyword', 'Page', 'CategoryId']
 
   export default {
@@ -151,13 +155,22 @@
       },
       changeTab(item, index) {
         this.setCenterIndex(index)
-        this.getCenterListMore({page: this.saveValue[this.pageName], centerCategoryId: this.saveValue[this.categoryIdName], keyword: this.saveValue[this.keywordName], status: this.saveValue[this.statusName], tabIndex: index})
+        this.getCenterListMore({
+          page: this.saveValue[this.pageName],
+          centerCategoryId: this.saveValue[this.categoryIdName],
+          keyword: this.saveValue[this.keywordName],
+          status: this.saveValue[this.statusName],
+          tabIndex: index
+        })
         this.$refs.search.infoTextMethods(this.saveValue[this.keywordName])
       },
       // 获取二维码
       async showQrCode(id, index, item) {
         let shopId = item.shop_id ? `&s=${item.shop_id}` : ''
-        let url = item.type === 'video' ? `package-content/content-article-detail-video?a=${id}&p=1${shopId}` : `package-content/content-article-detail?a=${id}&p=1${shopId}`
+        let url =
+          item.type === 'video'
+            ? `package-content/content-article-detail-video?a=${id}&p=1${shopId}`
+            : `package-content/content-article-detail?a=${id}&p=1${shopId}`
         this.loadImg = true
         // {path: 'pages/choiceness?s=' + id, is_hyaline: false} 页面参数
         let res = await API.Content.createQrcode({path: url, is_hyaline: false})

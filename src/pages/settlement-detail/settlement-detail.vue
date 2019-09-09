@@ -84,7 +84,12 @@
           show: false,
           content: '全部',
           type: 'default',
-          data: [{name: '全部', status: ''}, {name: '佣金收益-自提商品', status: 0, source_type: 1}, {name: '佣金收益-全国包邮', status: 0, source_type: 2}, {name: '退款补偿', status: 1}]
+          data: [
+            {name: '全部', status: ''},
+            {name: '佣金收益-自提商品', status: 0, source_type: 1},
+            {name: '佣金收益-全国包邮', status: 0, source_type: 2},
+            {name: '退款补偿', status: 1}
+          ]
         },
         id: 0,
         settlementType: '',
@@ -136,7 +141,7 @@
       },
       _settlementType(item) {
         let params = {page: 1, type: item.status}
-        params.source_type = item.source_type||''
+        params.source_type = item.source_type || ''
         this._updateList(params)
       },
       _getMoreList(page) {

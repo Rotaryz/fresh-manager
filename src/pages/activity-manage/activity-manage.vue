@@ -68,7 +68,7 @@
   import {activityComputed, activityMethods} from '@state/helpers'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import API from '@api'
-  import { TAB_STATUS } from './config'
+  import {TAB_STATUS} from './config'
   // import { activityMethods, activityComputed, saleMethods } from '@state/helpers'
 
   const PAGE_NAME = 'ACTIVITY_MANAGE'
@@ -160,9 +160,7 @@
       this.status = this.$route.query.status * 1 || 0
       this._getActiveStatus()
     },
-    mounted() {
-
-    },
+    mounted() {},
     methods: {
       ...activityMethods,
       handleNav(item = {}, key = 'id') {
@@ -189,7 +187,7 @@
             start_at: this.requestData.start_at,
             end_at: this.requestData.end_at,
             activity_theme: this.requestData.activity_theme
-            // activity_theme: this.currentTab.activity_theme
+          // activity_theme: this.currentTab.activity_theme
           })
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -266,7 +264,7 @@
         // this.page = page
         this.setRequestData({page})
         this._getActiveList()
-        // this._getActiveStatus()
+      // this._getActiveStatus()
       },
       _deleteActivity(item) {
         this.currentItem = item
@@ -282,7 +280,7 @@
           } else {
             this.$toast.show('删除成功')
           }
-          if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
+          if (+this.activePage.total % 10 === 1 && +this.requestData.page === +this.activePage.total_page) {
             this.setRequestData({page: this.activePage.total_page - 1})
           } else {
             this._getActiveList()
@@ -297,14 +295,13 @@
           } else {
             this.$toast.show('终止活动成功')
           }
-          if (+this.activePage.total%10 === 1 && +this.requestData.page === +this.activePage.total_page) {
+          if (+this.activePage.total % 10 === 1 && +this.requestData.page === +this.activePage.total_page) {
             this.setRequestData({page: this.activePage.total_page - 1})
           } else {
             this._getActiveList()
           }
           this._getActiveStatus()
         }
-
       },
       stopActive(item) {
         this.currentItem = item

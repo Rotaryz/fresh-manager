@@ -129,7 +129,7 @@
         this.blankList = res.error === this.$ERR_OK ? res.data : []
         this.$toast.show(res.message)
         e.target.value = ''
-        let result = res.data.every(item => {
+        let result = res.data.every((item) => {
           return +item.error_type === 0
         })
         if (!result) {

@@ -40,7 +40,7 @@
       }
     },
     created() {
-      // this._setChart()
+    // this._setChart()
     },
     beforeDestroy() {
       this.myChart = ''
@@ -60,41 +60,41 @@
           let myChart = this.$echarts.init(el) // 初始化chart
 
           this.myChart = myChart
-          window.addEventListener('resize',  this.resize) // 加监听
+          window.addEventListener('resize', this.resize) // 加监听
 
           let options = this.createFunnel()
           myChart.setOption(options)
         })
       },
       createFunnel() {
-        let colors = ['#FFC582','#C79FD5','#9FAAD5']
+        let colors = ['#FFC582', '#C79FD5', '#9FAAD5']
         return {
           color: colors,
           tooltip: {
-            trigger: "axis",
+            trigger: 'axis',
             axisPointer: {
-              type: "cross",
+              type: 'cross',
               label: {
-                backgroundColor: "#6a7985"
+                backgroundColor: '#6a7985'
               },
               lineStyle: {
-                color: "#9eb2cb"
+                color: '#9eb2cb'
               }
             }
           },
           legend: {
             show: false,
-            top: "bottom",
-            left: "2%",
+            top: 'bottom',
+            left: '2%',
             textStyle: {
-              color: "#000"
+              color: '#000'
             },
             itemHeight: 10,
-            data:  ['优惠券总数', '已发放', '已使用']
+            data: ['优惠券总数', '已发放', '已使用']
           },
           grid: {
             top: 24,
-            left: "2%",
+            left: '2%',
             right: 20,
             bottom: 30,
             containLabel: true,
@@ -131,7 +131,6 @@
                   position: 'left',
                   lineStyle: {
                     width: 1
-
                   }
                 }
               },
@@ -149,15 +148,13 @@
               gap: 10,
               label: this.label(),
               labelLine: {
-                normal: {
-                }
+                normal: {}
               },
-              emphasis: {
-              },
+              emphasis: {},
               itemStyle: {
                 normal: {
                   color: 'transparent',
-                  borderWidth:0,
+                  borderWidth: 0,
                   opacity: 0
                 }
               },
@@ -168,12 +165,12 @@
       },
       label() {
         let dataColor = [
-          {color:'#5F3300', data: 'oneData', title: 'oneTitle'},
+          {color: '#5F3300', data: 'oneData', title: 'oneTitle'},
           {color: '#3c0051', data: 'twoData', title: 'twoTitle'},
           {color: '#00125A', data: 'threeData', title: 'threeTitle'}
         ]
         let rich = {}
-        dataColor.map(item => {
+        dataColor.map((item) => {
           rich[item.title] = {
             fontSize: 14,
             color: item.color,
@@ -190,13 +187,16 @@
         return {
           normal: {
             position: 'inside',
-            formatter: function (data) {
-              return ['{' + dataColor[data.dataIndex].title + '|' + data.name + '}', '{' + dataColor[data.dataIndex].data + '|' + data.value + '}'].join('\n')
+            formatter: function(data) {
+              return [
+                '{' + dataColor[data.dataIndex].title + '|' + data.name + '}',
+                '{' + dataColor[data.dataIndex].data + '|' + data.value + '}'
+              ].join('\n')
             },
             textStyle: {
               color: '#FFF'
             },
-            rich,
+            rich
           }
         }
       }

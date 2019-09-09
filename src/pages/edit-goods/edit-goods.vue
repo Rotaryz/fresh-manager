@@ -13,119 +13,55 @@
         </p>
       </section>
       <template v-if="stepIndex === 0">
-        <edit-header title="基础信息"
-                     btnText="导入商品图文"
-                     @button="showMaterial"
-        ></edit-header>
+        <edit-header title="基础信息" btnText="导入商品图文" @button="showMaterial"></edit-header>
         <edit-options title="商品名称">
-          <input slot="middle"
-                 type="text"
-                 class="edit-input-box edit-input"
-                 maxlength="10"
-                 v-model="goodsName"
-          >
+          <input slot="middle" v-model="goodsName" type="text" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">展示在商城的名称，供消费者浏览</p>
         </edit-options>
-        <edit-options title="推荐语"
-                      :importance="false"
-        >
-          <textarea slot="middle"
-                    type="text"
-                    class="edit-input-box edit-textarea edit-input"
-                    maxlength="50"
-                    v-model="describe"
-          ></textarea>
+        <edit-options title="推荐语" :importance="false">
+          <textarea slot="middle" v-model="describe" type="text" class="edit-input-box edit-textarea edit-input" maxlength="50"></textarea>
         </edit-options>
         <edit-options title="商品类目">
           <div slot="middle" class="edit-input-box mini-edit-input-box">
             <div class="mini-mr20">
-              <base-drop-down :height="inputHeight"
-                              :width="190"
-                              :select="firstTypeSelect"
-                              @setValue="setGoodsTypeValue($event, 'secondTypeSelect')"
-              ></base-drop-down>
+              <base-drop-down :height="inputHeight" :width="190" :select="firstTypeSelect" @setValue="setGoodsTypeValue($event, 'secondTypeSelect')"></base-drop-down>
             </div>
             <div class="mini-mr20">
-              <base-drop-down :height="inputHeight"
-                              :width="190"
-                              :select="secondTypeSelect"
-                              @setValue="setGoodsTypeValue"
-              ></base-drop-down>
+              <base-drop-down :height="inputHeight" :width="190" :select="secondTypeSelect" @setValue="setGoodsTypeValue"></base-drop-down>
             </div>
           </div>
         </edit-options>
         <edit-options title="基本单位">
-          <base-drop-down slot="middle"
-                          class="edit-input-box"
-                          :height="inputHeight"
-                          :width="400"
-                          :select="baseUnitSelect"
-                          :isUse="!isFinish"
-                          @setValue="setCommonValue($event.name, 'basicUnit')"
+          <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :select="baseUnitSelect"
+                          :isUse="!isFinish" @setValue="setCommonValue($event.name, 'basicUnit')"
           ></base-drop-down>
-          <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand" @click="openTipsHandle('unit')"
-          >查看示例</span></p>
+          <p slot="right" class="edit-pla">商品在仓库存放时的最小单位<span class="edit-pla-children hand" @click="openTipsHandle('unit')">查看示例</span></p>
         </edit-options>
         <edit-options title="封面图">
-          <edit-media
-            slot="middle"
-            explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。"
-            mediaKey="coverImageList"
-            :dataArray="coverImageList"
-            :maxFiles="5"
-            @drag="dragMediaHandle"
-            @gain="addMediaHandle"
-            @del="deleteMediaHandle"
+          <edit-media slot="middle" explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传5张，首张为封面。" mediaKey="coverImageList" :dataArray="coverImageList" :maxFiles="5"
+                      @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"
           ></edit-media>
         </edit-options>
         <edit-options title="主图视频" :importance="false">
-          <edit-media
-            slot="middle"
-            explain="建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。"
-            fileType="video"
-            imgUrlKey="full_url"
-            mediaKey="videoList"
-            :dataArray="videoList"
-            :maxFiles="1"
-            @drag="dragMediaHandle"
-            @gain="addMediaHandle"
-            @del="deleteMediaHandle"
+          <edit-media slot="middle" explain="建议上传50M以内的清晰视频，内容突出商品1-2个核心卖点。" fileType="video" imgUrlKey="full_url" mediaKey="videoList"
+                      :dataArray="videoList" :maxFiles="1" @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"
           ></edit-media>
         </edit-options>
         <edit-options title="详情图">
-          <edit-media
-            slot="middle"
-            explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传15张。"
-            mediaKey="detailImageList"
-            :dataArray="detailImageList"
-            :maxFiles="15"
-            @drag="dragMediaHandle"
-            @gain="addMediaHandle"
-            @del="deleteMediaHandle"
+          <edit-media slot="middle" explain="建议图片的尺寸：750*750，支持png，jpeg，jpg格式，最多可上传15张。" mediaKey="detailImageList" :dataArray="detailImageList" :maxFiles="15"
+                      @drag="dragMediaHandle" @gain="addMediaHandle" @del="deleteMediaHandle"
           ></edit-media>
         </edit-options>
       </template>
       <template v-if="stepIndex === 1">
-        <edit-header title="采购信息"
-        ></edit-header>
+        <edit-header title="采购信息"></edit-header>
         <edit-options title="商品别名" :importance="false">
-          <input slot="middle"
-                 v-model="aliasName"
-                 type="text"
-                 class="edit-input-box edit-input"
-                 maxlength="10">
+          <input slot="middle" v-model="aliasName" type="text" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">展示在供应链的商品名称，供本部采购或仓管人员浏览</p>
         </edit-options>
         <edit-options title="供应商">
-          <base-drop-down slot="middle"
-                          class="edit-input-box"
-                          :height="inputHeight"
-                          :width="400"
-                          :isInput="true"
-                          :select="supplierSelect"
-                          isInputPla="请选择供应商"
-                          @setValue="setCommonValue($event.supplier_id, 'supply')"
-                          @changeText="changeText"
+          <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
+                          :select="supplierSelect" isInputPla="请选择供应商" @setValue="setCommonValue($event.supplier_id, 'supply')" @changeText="changeText"
           ></base-drop-down>
           <p slot="right" class="edit-pla hand"><span
             style="text-decoration :underline;color: #3E77C3"
@@ -133,41 +69,25 @@
           >新增</span><span class="edit-pla-children" @click="_getSupplierData">刷新</span></p>
         </edit-options>
         <edit-options title="采购规格">
-          <div class="edit-input-box mini-edit-input-box"
-               slot="middle"
+          <div slot="middle"
+               class="edit-input-box mini-edit-input-box"
           >
             <p class="size-left">1</p>
-            <base-drop-down :height="inputHeight"
-                            :width="131"
-                            :select="purchaseSelect"
-                            @setValue="setCommonValue($event.name, 'purchaseUnit')"
-            ></base-drop-down>
+            <base-drop-down :height="inputHeight" :width="131" :select="purchaseSelect" @setValue="setCommonValue($event.name, 'purchaseUnit')"></base-drop-down>
             <div class="size-equal">
               <p class="line"></p>
               <p class="line m-5"></p>
             </div>
-            <input class="edit-input mini-edit-input"
-                   type="number"
-                   style="width: 127px"
-                   v-model="purchaseSize"
-            >
+            <input v-model="purchaseSize" class="edit-input mini-edit-input" type="number" style="width: 127px">
           </div>
           <p slot="right" class="edit-pla c-333">{{basicUnit || ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'purchaseUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="采购单价">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="purchasePrice"
-          >
+          <input slot="middle" v-model="purchasePrice" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">元/{{purchaseUnit || ''}}</p>
         </edit-options>
         <edit-options title="采购周期">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="purchaseCycle"
-          >
+          <input slot="middle" v-model="purchaseCycle" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">天内可采购入库<span class="edit-pla-children-default">采购周期1天的商品，当日或次日可送达社区，2天的商品，次日或隔日可送达社区，以此类推</span></p>
         </edit-options>
         <edit-options title="是否集采" :importance="false">
@@ -181,11 +101,10 @@
               <div class="goods-select-text">需要</div>
             </section>
           </div>
-          <p slot="right" class="edit-pla hand" style="text-decoration :underline;color: #3E77C3" @click="openTipsHandle('purchase')">什么是集采？</p>
+          <p v-if="purchaseCollective" slot="right" class="edit-pla">集采类商品只可添加到集中采购活动中进行售卖，无法单独售卖，请谨慎选择<span class="edit-pla-children hand" @click="openTipsHandle('purchase')">什么是集采？</span></p>
+          <p v-else slot="right" class="edit-pla hand" style="text-decoration :underline;color: #3E77C3" @click="openTipsHandle('purchase')">什么是集采？</p>
         </edit-options>
-        <edit-header title="销售信息"
-                     style="margin-top: 25px"
-        ></edit-header>
+        <edit-header title="销售信息" style="margin-top: 25px"></edit-header>
         <edit-options title="销售类型" :importance="false">
           <div slot="middle" class="edit-input-box goods-select-box">
             <section class="goods-select-left" @click="toggleRadios('preSell')">
@@ -197,86 +116,48 @@
               <div class="goods-select-text">预售</div>
             </section>
           </div>
-          <p slot="right" class="edit-pla hand">仓库中有存货，不可售卖的商品为非预售商品</p>
+          <p slot="right" class="edit-pla hand">{{preSell?'仓库中没有存货，待消费者下单，再进行采购的商品为预售商品' : '仓库中有存货，才可售卖的商品为非预售商品'}}</p>
         </edit-options>
         <edit-options title="商品分类">
-          <base-drop-down slot="middle"
-                          class="edit-input-box"
-                          :height="inputHeight"
-                          :width="400"
-                          :isInput="true"
-                          :select="categoriesSelect"
-                          isInputPla="请选择商品分类"
-                          @setValue="setCommonValue($event.id, 'goodsCategory')"
-                          @changeText="changeCategoryText"
+          <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
+                          :select="categoriesSelect" isInputPla="请选择商品分类" @setValue="setCommonValue($event.id, 'goodsCategory')" @changeText="changeCategoryText"
           ></base-drop-down>
-          <p slot="right" class="edit-pla hand"><span
-            style="text-decoration :underline;color: #3E77C3"
-            @click="handleOpenNewWindow('product-categories')"
-          >新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
+          <p slot="right" class="edit-pla hand"><span style="text-decoration :underline;color: #3E77C3" @click="handleOpenNewWindow('product-categories')">新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
         </edit-options>
         <edit-options title="商品编码">
-          <input slot="middle"
-                 type="text"
-                 class="edit-input-box edit-input"
-                 maxlength="50"
-                 v-model="goodsCode"
-          >
+          <input slot="middle" v-model="goodsCode" type="text" class="edit-input-box edit-input" maxlength="50">
           <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span><span class="edit-pla-children hand" @click="openTipsHandle('code')">查看图示</span></p>
         </edit-options>
         <edit-options title="销售规格">
-          <div class="edit-input-box mini-edit-input-box"
-               slot="middle"
+          <div slot="middle"
+               class="edit-input-box mini-edit-input-box"
           >
             <p class="size-left">1</p>
-            <base-drop-down :height="inputHeight"
-                            :width="131"
-                            :select="saleSelect"
-                            @setValue="setCommonValue($event.name, 'sellUnit')"
-            ></base-drop-down>
+            <base-drop-down :height="inputHeight" :width="131" :select="saleSelect" @setValue="setCommonValue($event.name, 'sellUnit')"></base-drop-down>
             <div class="size-equal">
               <p class="line"></p>
               <p class="line m-5"></p>
             </div>
-            <input class="edit-input mini-edit-input"
-                   type="number"
-                   style="width: 127px"
-                   v-model="sellSize"
-            >
+            <input v-model="sellSize" class="edit-input mini-edit-input" type="number" style="width: 127px">
           </div>
           <p slot="right" class="edit-pla c-333">{{basicUnit|| ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'sellUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="销售单价">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="sellPrice"
-          >
+          <input slot="middle" v-model="sellPriceShow" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">元/{{sellUnit || ''}}<span style="padding-left: 20px">采购成本价：{{purchaseCost}}元/{{sellUnit || ''}}</span></p>
         </edit-options>
         <edit-options title="划线价">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 maxlength="10"
-                 v-model="underlinePriceShow"
-          >
+          <input slot="middle" v-model="underlinePrice" type="number" class="edit-input-box edit-input" maxlength="10">
           <p slot="right" class="edit-pla">默认比销售单价高30%</p>
         </edit-options>
         <edit-options title="库存数量">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 maxlength="10"
-                 v-model="stock"
-          >
+          <div slot="middle" class="edit-input-box" style="position: relative">
+            <input v-model="stock" type="number" class="edit-input" maxlength="10">
+            <div v-if="!preSell" class="edit-input-box edit-input disable-input">{{stock}}</div>
+          </div>
         </edit-options>
         <edit-options title="初始销量" :importance="false">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="originSales"
-          >
+          <input slot="middle" v-model="originSales" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla">消费者看到的销量=初始销量+实际下单量</p>
         </edit-options>
         <edit-options title="团长佣金" :importance="false">
@@ -293,11 +174,7 @@
           <p slot="right" class="edit-pla">商品售卖后，按创建团长时所设置的佣金比率分别计算佣金</p>
         </edit-options>
         <edit-options v-if="commissionType" title="" :importance="false">
-          <input slot="middle"
-                 type="number"
-                 class="edit-input-box edit-input"
-                 v-model="commission"
-          >
+          <input slot="middle" v-model="commission" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">%</p>
         </edit-options>
       </template>
@@ -309,6 +186,7 @@
     </div>
     <goods-material ref="goodsMaterial" @selectMaterial="selectMaterial"></goods-material>
     <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>
+    <default-confirm ref="confirmSubmit" @confirm="confirmSubmitHandle"></default-confirm>
     <describe-pop ref="describe" typeList="{unit: '基本单位示例', purchase: '什么是集采', code: '条形码'}"></describe-pop>
   </div>
 </template>
@@ -318,29 +196,27 @@
   import EditHeader from '@components/edit-header/edit-header'
   import EditMedia from '@components/edit-media/edit-media'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
-  import API from '@api'
-  // import storage from 'storage-controller'
-  import _ from 'lodash'
-  import * as GoodsHandle from './goods-handle'
-  // import {uploadFiles} from '../../utils/vod/vod'
   import GoodsMaterial from '@components/goods-material/goods-material'
   import DescribePop from './describe-pop/describe-pop'
-
+  import * as GoodsHandle from './goods-handle'
+  import API from '@api'
+  import storage from 'storage-controller'
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
-  // const ORDERSTATUS = [{text: '基础信息', status: 0}, {text: '销售信息', status: 1}]
 
   const STEP_INFO = {
     0: {
       show_type: 'base',
       resolveData: GoodsHandle.RBaseData,
-      formatData: GoodsHandle.FBaseData
+      formatData: GoodsHandle.FBaseData,
+      checkData: GoodsHandle.BASE_FORM_REG
     },
     1: {
       show_type: 'sale',
       resolveData: GoodsHandle.RSellData,
-      formatData: GoodsHandle.FSellData
+      formatData: GoodsHandle.FSellData,
+      checkData: GoodsHandle.SALE_FORM_REG
     }
   }
 
@@ -356,14 +232,6 @@
       EditMedia,
       GoodsMaterial,
       DescribePop
-    },
-    props: {
-      detail: {
-        type: Object,
-        default() {
-          return {}
-        }
-      }
     },
     data() {
       this._isAgain2StepTwo = false
@@ -395,7 +263,7 @@
         originSales: '', // 初始销量
         commissionType: false, // 团长佣金类型
         commission: '', // 佣金
-        id: this.$route.query.id || null,
+        id: this.$route.query.id || storage.get('$editGoodsId', null),
         isFinish: false,
         firstTypeSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         secondTypeSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
@@ -407,7 +275,7 @@
         searchCategoryList: [], // 商品分类筛选临时数组
         searchList: [], // 供应商筛选临时数组
         goods_sku_id: '', // sku_id
-        supplier_name: '', // 供应商名称
+        supplier_name: '' // 供应商名称
       }
     },
     computed: {
@@ -422,38 +290,31 @@
        * @returns {number}
        */
       purchaseCost() {
-        let number = this.purchasePrice * this.sellSize / this.purchaseSize
+        let number = (this.purchasePrice * this.sellSize) / this.purchaseSize
         return isNaN(number) ? '' : number.toFixed(2)
       },
-      underlinePriceShow: {
+      sellPriceShow: {
         get() {
-          let price = this.underlinePrice
-          if (price <= 0 && this.sellPrice > 0) {
-            price = (+this.sellPrice * 1.3).toFixed(2)
-          }
-          return price
+          return this.sellPrice
         },
-        set(val) {
-          this.underlinePrice = val
+        set(price) {
+          this.sellPrice = price
+          if (price > 0) {
+            price = (+price * 1.3).toFixed(2)
+            this.underlinePrice = price
+          }
         }
-      },
-      // aliasNameShow: {
-      //   get() {
-      //     let name = this.aliasName
-      //     if (!name.trim()) {
-      //       name = this.goodsName
-      //     }
-      //     return name
-      //   },
-      //   set(val) {
-      //     this.aliasName = val
-      //   }
-      // }
+      }
+    },
+    watch: {
+      preSell(val) {
+        this.stock = 0
+      }
     },
     beforeRouteEnter(to, from, next) {
-      const id = to.query.id
+      const id = to.query.id || storage.get('$editGoodsId', null)
       if (!id) {
-        next(vm => {
+        next((vm) => {
           vm._getSupplierData()
           vm._getGoodsTypeList()
           vm._getBasicUnitList()
@@ -461,29 +322,47 @@
         })
         return
       }
-      API.Product.getDetail({id}, true).then((res) => {
-        next(vm => {
-          vm.$loading.hide()
-          if (res && res.error !== vm.$ERR_OK) {
-            vm.$toast.show(res.message)
-            return
-          }
-          vm.setData(res)
-          vm._getSupplierData()
-          vm._getGoodsTypeList()
-          vm._getBasicUnitList()
-          vm._getGoodsCategory()
-          // console.log(vm.basicUnit, '---')
+      API.Product.getDetail({id}, true)
+        .then((res) => {
+          next((vm) => {
+            vm.$loading.hide()
+            if (res && res.error !== vm.$ERR_OK) {
+              vm.$toast.show(res.message)
+              return
+            }
+            vm.setData(res)
+            vm._getSupplierData()
+            vm._getGoodsTypeList()
+            vm._getBasicUnitList()
+            vm._getGoodsCategory()
+          })
         })
-      }).catch(e => {
-        console.error(e)
-        next()
-      })
+        .catch((e) => {
+          console.error(e)
+          next()
+        })
     },
-    destroyed() {
-      console.log('destroyed')
+    beforeRouteLeave(to, from, next) {
+      storage.remove('$editGoodsId')
+      next()
     },
     methods: {
+      // 表单验证模块 true 验证不同过， false 为验证通过
+      checkModule() {
+        const checkObj = this.stepInfo.checkData
+        for (let key in checkObj) {
+          let flag = ''
+          if (key === 'commission') {
+            flag = this.commissionType
+          }
+          const msg = checkObj[key](this[key], flag)
+          if (msg) {
+            this.$toast.show(msg)
+            return true
+          }
+        }
+        return false
+      },
       // 弹窗提示
       openTipsHandle(type, textType) {
         this.$refs.describe && this.$refs.describe.show(type, textType)
@@ -499,19 +378,38 @@
       },
       // 覆盖基础信息start
       changeEdit() {
+        this.copyToast()
         const data = GoodsHandle.RCopyBaseData(this.copyItem)
         Object.assign(this, data)
         this.findGoodsTypeList()
+        this.findBasicUnit()
+      },
+      // 检查原基本信息是否存在 // true 有 false 没有
+      checkOriginBaseIsNotEmpty() {
+        return this.goodsName || this.describe || this.goodsTypeId || this.basicUnit || this.coverImageList.length || this.videoList.length || this.detailImageList.length
+      },
+      copyToast() {
+        if (!this.checkOriginBaseIsNotEmpty()) return
+        this.$toast.show('信息覆盖成功！')
+      },
+      findBasicUnit() {
+        const unit = this.baseUnitSelect.data.find((val) => val.name === this.basicUnit)
+        if (!unit) {
+          this.baseUnitSelect.data.unshift({id: 0, name: this.basicUnit})
+          this.saleSelect.data = this.baseUnitSelect.data
+          this.purchaseSelect.data = this.baseUnitSelect.data
+        }
+        this.initSelectName('baseUnitSelect', 'basicUnit')
       },
       findGoodsTypeList() {
-        let obj = this.firstTypeSelect.data.find(val => val.id === this.goodsTypeId)
+        let obj = this.firstTypeSelect.data.find((val) => val.id === this.goodsTypeId)
         if (obj) {
           this.firstTypeSelect.content = obj.name
           this.secondTypeSelect.content = '二级类目'
           this.secondTypeSelect.data = obj.list
         } else {
-          this.firstTypeSelect.data.forEach(item => {
-            let second = item.list.find(val => val.id === this.goodsTypeId)
+          this.firstTypeSelect.data.forEach((item) => {
+            let second = item.list.find((val) => val.id === this.goodsTypeId)
             if (second) {
               this.secondTypeSelect.content = second.name
               this.firstTypeSelect.content = item.name
@@ -525,6 +423,10 @@
       },
       selectMaterial(item) {
         this.copyItem = item
+        if (!this.checkOriginBaseIsNotEmpty()) {
+          this.changeEdit()
+          return
+        }
         setTimeout(() => {
           this.$refs.confirm && this.$refs.confirm.show('商品标题和图片将覆盖原基础信息，确定吗？')
         }, 500)
@@ -541,13 +443,24 @@
           this.copyToggle()
           return
         }
+        /**
+         * 正常上一步下一步
+         */
+        // 返回第一步
         if (this.stepIndex === 1) {
           this.actionStep()
           this._getDetail(() => {
             this.setAliasName()
+            window.scrollTo(0, 0)
           })
           return
         }
+        // 去第二步
+        // 表单验证
+        if (this.checkModule()) {
+          return
+        }
+        window.scrollTo(0, 0)
         this._updateGoodsInfo(() => {
           this.actionStep()
           this._getDetail(false, () => {
@@ -559,6 +472,7 @@
           })
         })
       },
+      // 设置商品别名
       setAliasName() {
         let name = this.aliasName
         if (!name.trim()) {
@@ -568,7 +482,11 @@
       },
       // 复制模式切换
       copyToggle() {
+        if (this.stepIndex === 0 && this.checkModule()) {
+          return
+        }
         this.actionStep()
+        window.scrollTo(0, 0)
         if (this._isAgain2StepTwo) {
           return
         }
@@ -583,6 +501,18 @@
       },
       // 保存按钮
       saveHandle() {
+        if (this.checkModule()) {
+          return
+        }
+        if (this.sellPrice < this.purchaseCost) {
+          this.$refs.confirmSubmit && this.$refs.confirmSubmit.show('销售单价小于采购成本价会亏损的，确定这样吗？')
+          return
+        }
+        this._updateGoodsInfo(() => {
+          this.backHandle()
+        })
+      },
+      confirmSubmitHandle() {
         this._updateGoodsInfo(() => {
           this.backHandle()
         })
@@ -602,7 +532,7 @@
         if (flag) {
           return
         }
-        API.Product.createCode().then(res => {
+        API.Product.createCode().then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return
@@ -619,24 +549,27 @@
         }
         const data = this.stepInfo.formatData(this)
         data.id = this.id
-        API.Product.updateGoods(data, true).then(res => {
-          this.$loading.hide()
-          if (res.error !== this.$ERR_OK) {
-            this.$toast.show(res.message)
-            return
-          }
-          if (res.data && res.data.goods_id) {
-            this.goods_sku_id = res.data.goods_sku_id
-            this.id = res.data.goods_id
-          }
-          cb && cb()
-        }).catch(e => {
-          this.$loading.hide()
-        })
+        API.Product.updateGoods(data, true)
+          .then((res) => {
+            this.$loading.hide()
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            if (res.data && res.data.goods_id) {
+              this.goods_sku_id = res.data.goods_sku_id
+              this.id = res.data.goods_id
+              storage.set('$editGoodsId', this.id)
+            }
+            cb && cb()
+          })
+          .catch((e) => {
+            this.$loading.hide()
+          })
       },
       // 提交数据复制商品
       async _updateGoodsInfoCopy(cb) {
-        const data = STEP_INFO[0].formatData(this)
+        const data = STEP_INFO[0].formatData(this, this.$route.query.isCopy)
         data.id = this.id
         data.isCopy = this.$route.query.isCopy
         try {
@@ -648,6 +581,7 @@
           if (res.data && res.data.goods_id) {
             this.goods_sku_id = res.data.goods_sku_id
             this.id = res.data.goods_id
+            storage.set('$editGoodsId', this.id)
             const data2 = STEP_INFO[1].formatData(this)
             data2.id = this.id
             await API.Product.updateGoods(data2, true)
@@ -678,202 +612,28 @@
         })
       },
       // 设置数据
-      setData(res,cb) {
+      setData(res, cb) {
         const data = this.stepInfo.resolveData(res.data, this.$route.query.isCopy)
         Object.assign(this, data)
         cb && cb()
       },
       // 获取商品类目列表
       _getGoodsTypeList() {
-        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false)
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.firstTypeSelect.data = res.data
-            this.firstTypeSelect.data.forEach((child) => {
-              if (child.is_selected) {
-                this.firstTypeSelect.content = child.name
-                this.secondTypeSelect.data = child.list
-                const obj = child.list.find(val => val.is_selected)
-                obj && (this.secondTypeSelect.content = obj.name)
-              }
-            })
-          })
-      },
-      // 基础信息提交
-      _baseSubmit() {
-        this.goods_skus.presale_usable_stock += ''
-        if (this.goods_skus.goods_material_name.length === 0 || this.goods_skus.goods_material_name.length >= 30) {
-          this.$toast.show('请输入商品名称且小于30字')
-          return
-        } else if (this.msg.goods_material_category_id <= 0) {
-          this.$toast.show('请选择商品类目')
-          return
-        } else if (this.goods_skus.base_unit === '') {
-          this.$toast.show('请选择基本单位')
-          return
-        } else if (this.goods_skus.base_sale_rate.length === 0) {
-          this.$toast.show('请输入销售规格')
-          return
-        } else if (this.goods_skus.base_sale_rate <= 0) {
-          this.$toast.show('请输入销售规格大于零')
-          return
-        } else if (this.goods_skus.sale_unit === '') {
-          this.$toast.show('请选择销售单位')
-          return
-        } else if (this.goods_skus.goods_sku_encoding.length === 0) {
-          this.$toast.show('请输入商品编码')
-          return
-        } else if (this.goods_skus.presale_usable_stock.length === 0 && this.msg.is_presale * 1 === 1) {
-          this.$toast.show('请输入预售库存')
-          return
-        } else if (this.goods_skus.presale_usable_stock < 0 && this.msg.is_presale * 1 === 1) {
-          this.$toast.show('请输入预售库存大于零')
-          return
-        } else if (this.goods_skus.presale_usable_stock.includes('.') && this.msg.is_presale * 1 === 1) {
-          this.$toast.show('请输入正确的预售库存')
-          return
-        } else if (this.goods_skus.supplier_id <= 0) {
-          this.$toast.show('请选择供应商')
-          return
-        } else if (this.goods_skus.base_purchase_rate.length === 0) {
-          this.$toast.show('请输入采购规格')
-          return
-        } else if (this.goods_skus.base_purchase_rate <= 0) {
-          this.$toast.show('请输入采购规格大于零')
-          return
-        } else if (this.goods_skus.purchase_unit === '') {
-          this.$toast.show('请选择采购单位')
-          return
-        } else if (this.goods_skus.purchase_price.length === 0) {
-          this.$toast.show('请输入采购单价')
-          return
-        } else if (
-          +this.goods_skus.damage_rate < 0 ||
-          +this.goods_skus.damage_rate > 100 ||
-          this.goods_skus.damage_rate.length === 0
-        ) {
-          this.$toast.show('损耗比区间在0与100之间')
-          return
-        }
-        this.msg.goods_skus[0] = this.goods_skus
-        this.msg.save_type = 'base'
-        if (this.id) {
-          if (
-            this.editRurchasePrice * 1 === this.goods_skus.base_purchase_rate * 1 &&
-            this.editRurchaseUnit === this.goods_skus.purchase_unit
-          ) {
-            this.isSubmit = true
-            API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
-              this.isSubmit = false
-              if (res.error === this.$ERR_OK) {
-                this.tabIndex = 1
-                this.$toast.show('编辑基础信息成功')
-                this.editSkus = _.cloneDeep(this.goods_skus)
-              } else {
-                this.$toast.show(res.message)
-              }
-              this.$loading.hide()
-            })
-          } else {
-            API.Product.checkGoodsTask({goods_id: this.id}).then((res) => {
-              if (res.error === this.$ERR_OK) {
-                if (res.data.has_task === 1) {
-                  this.$refs.confirm.show('当前商品存在采购任务，修改采购规格可能会影响实际采购数量，是否确认继续修改？')
-                  return
-                }
-                this.isSubmit = true
-                API.Product.editGoodsDetail(this.id, this.msg).then((res) => {
-                  this.isSubmit = false
-                  if (res.error === this.$ERR_OK) {
-                    this.tabIndex = 1
-                    this.$toast.show('编辑基础信息成功')
-                    this.editSkus = _.cloneDeep(this.goods_skus)
-                  } else {
-                    this.$toast.show(res.message)
-                  }
-                  this.$loading.hide()
-                })
-              } else {
-                this.$toast.show(res.message)
-              }
-              this.$loading.hide()
-            })
-          }
-          return
-        }
-        API.Product.createGoodsDetail(this.msg).then((res) => {
-          this.isSubmit = false
-          if (res.error === this.$ERR_OK) {
-            this.id = res.data.goods_id
-            this.goods_skus.goods_sku_id = res.data.goods_sku_id
-            this.sale_skus.goods_sku_id = res.data.goods_sku_id
-            this.tabIndex = 1
-            this.$toast.show('创建基础信息成功')
-            this.editSkus = _.cloneDeep(this.goods_skus)
-          } else {
+        API.Product.getScmCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
+            return
           }
-          this.$loading.hide()
-        })
-      },
-      // 销售信息提交
-      _saleSubmit() {
-        if (!this.id) {
-          this.$toast.show('请先创建基础信息')
-          return
-        }
-        this.saleMsg.init_sale_count += ''
-        if (this.saleMsg.goods_banner_images.length === 0) {
-          this.$toast.show('请上传商品封面图')
-          return
-        } else if (this.saleMsg.goods_detail_images.length === 0) {
-          this.$toast.show('请上传商品详情图')
-          return
-        } else if (this.saleMsg.name.length === 0 || this.saleMsg.name.length >= 30) {
-          this.$toast.show('请输入商品名称且小于30字')
-          return
-        } else if (this.saleMsg.goods_category_id <= 0) {
-          this.$toast.show('请选择商品分类')
-          return
-        } else if (this.sale_skus.original_price.length === 0) {
-          this.$toast.show('请输入划线价')
-          return
-        } else if (this.sale_skus.trade_price.length === 0) {
-          this.$toast.show('请输入销售售价')
-          return
-        } else if (+this.sale_skus.original_price < +this.sale_skus.trade_price) {
-          this.$toast.show('请输入划线价大于销售售价')
-          return
-        } else if (
-          this.saleMsg.init_sale_count === '' ||
-          this.saleMsg.init_sale_count.includes('.') ||
-          +this.saleMsg.init_sale_count < 0
-        ) {
-          this.$toast.show('请输入正确初始销量')
-          return
-        }
-        this.saleMsg.save_type = 'sale'
-        this.saleMsg.goods_skus[0] = this.sale_skus
-        this.isSubmit = true
-        if (this.id) {
-          API.Product.editGoodsDetail(this.id, this.saleMsg).then((res) => {
-            this.isSubmit = false
-            if (res.error === this.$ERR_OK) {
-              this.$toast.show('编辑销售信息成功')
-              setTimeout(() => {
-                this.$router.push('/home/product-list')
-              }, 1000)
-            } else {
-              this.$toast.show(res.message)
+          this.firstTypeSelect.data = res.data
+          this.firstTypeSelect.data.forEach((child) => {
+            if (child.is_selected) {
+              this.firstTypeSelect.content = child.name
+              this.secondTypeSelect.data = child.list
+              const obj = child.list.find((val) => val.is_selected)
+              obj && (this.secondTypeSelect.content = obj.name)
             }
-            this.$loading.hide()
           })
-          return
-        }
-        this.$toast.show('请先保存基础信息')
+        })
       },
       // 返回上一页
       backHandle() {
@@ -891,6 +651,11 @@
           this.purchaseSelect.data = res.data
           this.initSelectName('baseUnitSelect', 'basicUnit')
         })
+      },
+      // 初始化选择器的名称
+      initSelectName(select, field) {
+        const obj = this[select].data.find((val) => val.name === this[field])
+        obj && (this[select].content = obj.name)
       },
       // 筛选供应商
       changeText(text) {
@@ -920,10 +685,6 @@
           }
         })
       },
-      initSelectName(select, field) {
-        const obj = this[select].data.find(val => val.name === this[field])
-        obj && (this[select].content = obj.name)
-      },
       // 选择商品类目
       setGoodsTypeValue(data, type) {
         if (type) {
@@ -934,20 +695,19 @@
       },
       // 获取商品分类
       _getGoodsCategory() {
-        API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false)
-          .then((res) => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.categoriesSelect.data = res.data
+          this.searchCategoryList = res.data
+          this.categoriesSelect.data.forEach((item) => {
+            if (item.is_selected) {
+              this.categoriesSelect.content = item.name
             }
-            this.categoriesSelect.data = res.data
-            this.searchCategoryList = res.data
-            this.categoriesSelect.data.forEach((item) => {
-              if (item.is_selected) {
-                this.categoriesSelect.content = item.name
-              }
-            })
           })
+        })
       },
       // 筛选供应商
       changeCategoryText(text) {
@@ -966,7 +726,6 @@
       // 设置选项
       setCommonValue(data, key) {
         this[key] = data
-        console.log(this[key], '-----')
       },
       // 删除媒体文件
       deleteMediaHandle(key, index) {
@@ -974,7 +733,7 @@
       },
       // 添加媒体文件
       addMediaHandle(key, data, fileType) {
-        const arr = data.map(item => {
+        const arr = data.map((item) => {
           let obj = {}
           if (fileType === 'image') {
             obj = {
@@ -997,7 +756,7 @@
       // 拖拽媒体文件
       dragMediaHandle(key, data) {
         this[key] = data
-      },
+      }
     }
   }
 </script>
@@ -1005,6 +764,17 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
+
+  .disable-input
+    background: #f5f5f5;
+    color: #acacac;
+    position: absolute !important
+    top:0
+    left: 0
+    margin-left :0 !important
+    line-height :44px
+    font-size :16px
+    cursor : not-allowed
 
   .edit-panel
     position: relative

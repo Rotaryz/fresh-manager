@@ -36,7 +36,7 @@ export const actions = {
           return false
         }
         let arr = res.data
-        if(pageName === 'index'){
+        if (pageName === 'index') {
           commit('SET_INFO_LIST', arr)
         }
         return res.data

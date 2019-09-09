@@ -401,6 +401,5 @@ export default {
   checkStock(data, loading = false) {
     let url = `/scm/api/backend/stock/single-stock-adjust/${data.id}`
     return request.post(url, data, loading)
-  },
-
+  }
 }

@@ -70,10 +70,10 @@
     },
     methods: {
       unChooseStyle(item) {
-        return this.originArray.findIndex(val => val.id === item.id) > -1 ? 'right' : ''
+        return this.originArray.findIndex((val) => val.id === item.id) > -1 ? 'right' : ''
       },
       chooseStyle(item) {
-        return this.selectedArray.findIndex(val => val.id === item.id) > -1 ? 'checked': ''
+        return this.selectedArray.findIndex((val) => val.id === item.id) > -1 ? 'checked' : ''
       },
       show(args) {
         /**
@@ -116,8 +116,8 @@
       },
       selectItem(item, index) {
         if (this.unChooseStyle(item) === 'right') return
-        let i = this.selectedArray.findIndex(val => val.id === item.id)
-        if (i < 0 ) {
+        let i = this.selectedArray.findIndex((val) => val.id === item.id)
+        if (i < 0) {
           this.selectedArray.push(item)
         } else {
           this.selectedArray.splice(i, 1)

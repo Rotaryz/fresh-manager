@@ -59,7 +59,15 @@
 
   const PAGE_NAME = 'PROCUREMENT_TASK'
   const TITLE = '商品详情'
-  const COMMODITIES_LIST = ['商品', '类目', '采购数量(销售单位)', '采购数量(基本单位)', '采购数量(采购单位)', '采购单价', '采购金额']
+  const COMMODITIES_LIST = [
+    '商品',
+    '类目',
+    '采购数量(销售单位)',
+    '采购数量(基本单位)',
+    '采购数量(采购单位)',
+    '采购单价',
+    '采购金额'
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -85,7 +93,8 @@
       this.supplier_id = this.taskList[0] ? this.taskList[0].supplier_id : ''
       this.taskList.forEach((item) => {
         item.purchase_num = item.plan_num - item.finish_num > 0 ? (item.plan_num - item.finish_num).toFixed(2) : 0
-        item.base_num = item.plan_base_num - item.finish_base_num > 0 ? (item.plan_base_num - item.finish_base_num).toFixed(2) : 0
+        item.base_num =
+          item.plan_base_num - item.finish_base_num > 0 ? (item.plan_base_num - item.finish_base_num).toFixed(2) : 0
         item.sale_num = (item.base_num / item.base_sale_rate).toFixed(2)
         item.total = (item.purchase_num * item.purchase_price).toFixed(2)
       })
@@ -205,7 +214,7 @@
       calculateTotal() {
         this.taskTotal = this.taskList.reduce((total, current) => {
           if (!current.total < 0) return 0
-          let money = (total * 1) + (current.total * 1)
+          let money = total * 1 + current.total * 1
           money = money.toFixed(2)
           return money
         }, 0)

@@ -158,7 +158,7 @@
     {title: '供应商', key: 'supplier_name', flex: 3},
     {title: '缺货数量', key: 'sale_out_of_num', flex: 1, class: 'sale_out_of_num'},
     {title: '关联商户数 ', key: 'buyer_count', flex: 1},
-    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str',type:'afterHelp'}
+    {title: '处理状态', key: 'status_str', flex: 2, class: 'status_str', type: 'afterHelp'}
   ]
   export default {
     name: PAGE_NAME,

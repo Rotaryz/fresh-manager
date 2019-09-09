@@ -84,21 +84,28 @@
           arr = arr.slice(0, this.maxFiles)
         }
         if (this.fileType === 'image') {
-          this.$cos.uploadFiles(this.$cosFileType.IMAGE_TYPE, arr).then((resArr) => {
-            this.showLoading = false
-            this.$emit('gain', this.mediaKey, resArr, this.fileType)
-          }).catch(() => {
-            this.showLoading = false
-          })
+          this.$cos
+            .uploadFiles(this.$cosFileType.IMAGE_TYPE, arr)
+            .then((resArr) => {
+              this.showLoading = false
+              this.$emit('gain', this.mediaKey, resArr, this.fileType)
+            })
+            .catch(() => {
+              this.showLoading = false
+            })
         } else {
-          Promise.all(arr.map(item => {
-            return this.$vod.uploadFiles(item)
-          })).then((resArr) => {
-            this.showLoading = false
-            this.$emit('gain', this.mediaKey, resArr, this.fileType)
-          }).catch(() => {
-            this.showLoading = false
-          })
+          Promise.all(
+            arr.map((item) => {
+              return this.$vod.uploadFiles(item)
+            })
+          )
+            .then((resArr) => {
+              this.showLoading = false
+              this.$emit('gain', this.mediaKey, resArr, this.fileType)
+            })
+            .catch(() => {
+              this.showLoading = false
+            })
         }
         e.target.value = ''
       }
@@ -161,7 +168,7 @@
       position: absolute
       top: 0
       right: 0
-      z-index: 100
+      z-index: 7
 
     .loading-mask
       width: 100%

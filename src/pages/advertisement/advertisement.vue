@@ -306,8 +306,8 @@
         todayHotList: [], // 今日爆品,用于phone-box组件
         freeShippingList: [], // 全国包邮,用于phone-box组件
         centralizePurchaseList: [], // 产地集采,用于phone-box组件
-        guessList: [],// 猜你喜欢,用于phone-box组件
-        groupList: [],// 拼团返现,用于phone-box组件
+        guessList: [], // 猜你喜欢,用于phone-box组件
+        groupList: [], // 拼团返现,用于phone-box组件
         activityCategory: []
       }
     },
@@ -440,7 +440,7 @@
             if (item.module_name === 'centralize' && item.is_close === 0) {
               console.log(item)
               // 产地集采
-              API.Advertisement.getActivityList({activity_theme: 'centralize', page: 1, limit: 20}).then(res => {
+              API.Advertisement.getActivityList({activity_theme: 'centralize', page: 1, limit: 20}).then((res) => {
                 this.centralizePurchaseList = this._formatListData(res.data)
               })
               return
@@ -461,7 +461,7 @@
                   if (item.module_name === 'activity_fixed') {
                     this.activityGoodsList = this._formatListData(res.data)
                   } else {
-                    let key = TAB_ARR_CONFIG[item.module_name] ? (TAB_ARR_CONFIG[item.module_name]).dataArray : ''
+                    let key = TAB_ARR_CONFIG[item.module_name] ? TAB_ARR_CONFIG[item.module_name].dataArray : ''
                     if (this[key]) {
                       this[key] = this._formatListData(res.data)
                     }
@@ -489,7 +489,7 @@
       // 按钮
       switchBtn(item) {
         item.is_close = !item.is_close
-        // this.activityStatus = this.activityStatus ? 0 : 1
+      // this.activityStatus = this.activityStatus ? 0 : 1
       },
       async _getModuleMsg(type, id, moduleId) {
         // 获取各个模块的数据
@@ -552,10 +552,10 @@
         // }
         this._currentCms = cms
         this._actionToChangeModule()
-        // this.cmsType = cms.module_name
-        // this.cmsId = cms.id
-        // this.cmsModuleId = cms.module_id
-        // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+      // this.cmsType = cms.module_name
+      // this.cmsId = cms.id
+      // this.cmsModuleId = cms.module_id
+      // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -575,7 +575,7 @@
           return
         }
         await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-        // this.temporaryBannar.splice(this.delIndex, 1)
+      // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -634,14 +634,13 @@
         this.showActiveIndex = index
       },
       getActivityCategory() {
-        API.Advertisement.getActivityCategory()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.activityCategory = res.data.activity_theme
-          })
+        API.Advertisement.getActivityCategory().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.activityCategory = res.data.activity_theme
+        })
       },
       // 获取商品列表
       async _getGoodsList() {
