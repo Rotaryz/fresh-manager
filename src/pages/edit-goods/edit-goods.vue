@@ -143,7 +143,7 @@
           <p slot="right" class="edit-pla c-333">{{basicUnit|| ''}}<span class="edit-pla-children hand" @click="openTipsHandle('unit', 'sellUnit')">查看示例</span></p>
         </edit-options>
         <edit-options title="销售单价">
-          <input slot="middle" v-model="sellPriceShow" type="number" class="edit-input-box edit-input">
+          <input slot="middle" v-model="sellPrice" type="number" class="edit-input-box edit-input">
           <p slot="right" class="edit-pla c-333">元/{{sellUnit || ''}}<span style="padding-left: 20px">采购成本价：{{purchaseCost}}元/{{sellUnit || ''}}</span></p>
         </edit-options>
         <edit-options title="划线价">
@@ -293,22 +293,16 @@
         let number = (this.purchasePrice * this.sellSize) / this.purchaseSize
         return isNaN(number) ? '' : number.toFixed(2)
       },
-      sellPriceShow: {
-        get() {
-          return this.sellPrice
-        },
-        set(price) {
-          this.sellPrice = price
-          if (price > 0) {
-            price = (+price * 1.3).toFixed(2)
-            this.underlinePrice = price
-          }
-        }
-      }
     },
     watch: {
       preSell(val) {
         this.stock = 0
+      },
+      sellPrice(price) {
+        if (price > 0) {
+          price = (+price * 1.3).toFixed(2)
+          this.underlinePrice = price
+        }
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -473,6 +467,7 @@
             this.initSelectName('supplierSelect', 'supplier_name')
             this.initSelectName('saleSelect', 'sellUnit')
             this.initSelectName('purchaseSelect', 'purchaseUnit')
+            this._getGoodsCategory()
           })
         })
       },
