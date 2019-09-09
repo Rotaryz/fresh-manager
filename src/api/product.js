@@ -251,7 +251,7 @@ export default {
    */
   scmGoodsImport(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/import-create-scm-goods`
-    return request.post(url, data, loading)
+    return request.post(url, data, loading, 20000)
   },
   /**
    * 商品新建模板导入【供应链专用】[v2.8]-scm
