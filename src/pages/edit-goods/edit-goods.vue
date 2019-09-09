@@ -428,6 +428,10 @@
       // 覆盖基础信息end
       // 单选切换
       toggleRadios(key) {
+        if (key === 'purchaseCollective' && this.isFinish) {
+          this.$toast.show('不允许切换集采类型！')
+          return
+        }
         this[key] = !this[key]
       },
       // 切换步骤
