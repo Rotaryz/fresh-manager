@@ -28,7 +28,7 @@ export function RCopyBaseData(data) {
   }
 }
 
-export function FBaseData(data) {
+export function FBaseData(data, isCopy) {
   return {
     goods_material_category_id: data.goodsTypeId,
     name: data.goodsName,
@@ -40,7 +40,7 @@ export function FBaseData(data) {
     goods_skus: [
       {
         base_unit: data.basicUnit,
-        // goods_sku_id: data.goods_sku_id
+        goods_sku_id: isCopy? 0 : data.goods_sku_id
       }
     ],
     save_type: 'base'

@@ -234,14 +234,6 @@
       GoodsMaterial,
       DescribePop
     },
-    props: {
-      detail: {
-        type: Object,
-        default() {
-          return {}
-        }
-      }
-    },
     data() {
       this._isAgain2StepTwo = false
       return {
@@ -317,7 +309,6 @@
     },
     watch: {
       preSell(val) {
-        console.log(val, '----')
         this.stock = 0
       }
     },
@@ -579,7 +570,7 @@
       },
       // 提交数据复制商品
       async _updateGoodsInfoCopy(cb) {
-        const data = STEP_INFO[0].formatData(this)
+        const data = STEP_INFO[0].formatData(this, this.$route.query.isCopy)
         data.id = this.id
         data.isCopy = this.$route.query.isCopy
         try {
