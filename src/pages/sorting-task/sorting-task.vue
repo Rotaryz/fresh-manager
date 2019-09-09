@@ -43,9 +43,9 @@
         <div class="down-item down-group-item">
           <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
         </div>
-        <div class="down-item">
+        <!--<div class="down-item">
           <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
-        </div>
+        </div>-->
       </template>
       <!--搜索-->
       <span class="down-tip">搜索</span>

@@ -74,11 +74,14 @@
       goodsType: {
         type: [Number, String],
         default: 1
+      },
+      goodsTitle: {
+        type: Array,
+        default: GOODS_POP_TITLE
       }
     },
     data() {
       return {
-        goodsTitle: GOODS_POP_TITLE,
         assortment: {
           check: false,
           show: false,

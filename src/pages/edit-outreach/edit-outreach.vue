@@ -249,7 +249,7 @@
     </default-modal>
 
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :goodsTitle="goodsTitle" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -282,6 +282,11 @@
     {name: '社区地址', class: 'title-item', flex: 2, value: 'address'}
   ]
 
+  const GOODS_POP_TITLE = [
+    {name: '商品', flex: 2, value: 'name'},
+    {name: '销售价格', flex: 0.5, value: 'trade_price'}
+  ]
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -298,6 +303,7 @@
       return {
         commodities: COMMODITIES_LIST,
         memberHeader: MEMBERS_LIST,
+        goodsTitle: GOODS_POP_TITLE,
         classifyIndex: 0,
         delId: [], // 删除id数组
         id: null,

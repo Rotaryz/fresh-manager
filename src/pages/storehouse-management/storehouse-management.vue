@@ -9,9 +9,9 @@
       <div class="down-item-small">
         <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
       </div>
-      <div class="down-item">
+      <!--<div class="down-item">
         <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
-      </div>
+      </div>-->
       <span class="down-tip">库区筛选</span>
       <div class="down-item-small">
         <base-drop-down :select="store" @setValue="getSecondStore"></base-drop-down>
