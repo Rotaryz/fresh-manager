@@ -101,7 +101,8 @@
               <div class="goods-select-text">需要</div>
             </section>
           </div>
-          <p slot="right" class="edit-pla hand" style="text-decoration :underline;color: #3E77C3" @click="openTipsHandle('purchase')">什么是集采？</p>
+          <p v-if="purchaseCollective" slot="right" class="edit-pla">集采类商品只可添加到集中采购活动中进行售卖，无法单独售卖，请谨慎选择<span class="edit-pla-children hand" @click="openTipsHandle('purchase')">什么是集采？</span></p>
+          <p v-else slot="right" class="edit-pla hand" style="text-decoration :underline;color: #3E77C3" @click="openTipsHandle('purchase')">什么是集采？</p>
         </edit-options>
         <edit-header title="销售信息" style="margin-top: 25px"></edit-header>
         <edit-options title="销售类型" :importance="false">
@@ -115,7 +116,7 @@
               <div class="goods-select-text">预售</div>
             </section>
           </div>
-          <p slot="right" class="edit-pla hand">仓库中有存货，不可售卖的商品为非预售商品</p>
+          <p slot="right" class="edit-pla hand">{{preSell?'仓库中没有存货，待消费者下单，再进行采购的商品为预售商品' : '仓库中有存货，才可售卖的商品为非预售商品'}}</p>
         </edit-options>
         <edit-options title="商品分类">
           <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
@@ -150,7 +151,10 @@
           <p slot="right" class="edit-pla">默认比销售单价高30%</p>
         </edit-options>
         <edit-options title="库存数量">
-          <input slot="middle" v-model="stock" type="number" class="edit-input-box edit-input" maxlength="10">
+          <div slot="middle" class="edit-input-box" style="position: relative">
+            <input v-model="stock" type="number" class="edit-input" maxlength="10">
+            <div v-if="!preSell" class="edit-input-box edit-input disable-input">{{stock}}</div>
+          </div>
         </edit-options>
         <edit-options title="初始销量" :importance="false">
           <input slot="middle" v-model="originSales" type="number" class="edit-input-box edit-input">
@@ -182,6 +186,7 @@
     </div>
     <goods-material ref="goodsMaterial" @selectMaterial="selectMaterial"></goods-material>
     <default-confirm ref="confirm" @confirm="changeEdit"></default-confirm>
+    <default-confirm ref="confirmSubmit" @confirm="confirmSubmitHandle"></default-confirm>
     <describe-pop ref="describe" typeList="{unit: '基本单位示例', purchase: '什么是集采', code: '条形码'}"></describe-pop>
   </div>
 </template>
@@ -310,6 +315,12 @@
         }
       }
     },
+    watch: {
+      preSell(val) {
+        console.log(val, '----')
+        this.stock = 0
+      }
+    },
     beforeRouteEnter(to, from, next) {
       const id = to.query.id || storage.get('$editGoodsId', null)
       if (!id) {
@@ -383,9 +394,12 @@
         this.findGoodsTypeList()
         this.findBasicUnit()
       },
+      // 检查原基本信息是否存在 // true 有 false 没有
+      checkOriginBaseIsNotEmpty() {
+        return this.goodsName || this.describe || this.goodsTypeId || this.basicUnit || this.coverImageList.length || this.videoList.length || this.detailImageList.length
+      },
       copyToast() {
-        let flag = this.goodsName || this.describe || this.goodsTypeId || this.basicUnit || this.coverImageList.length || this.videoList.length || this.detailImageList.length
-        if (!flag) return
+        if (!this.checkOriginBaseIsNotEmpty()) return
         this.$toast.show('信息覆盖成功！')
       },
       findBasicUnit() {
@@ -419,6 +433,10 @@
       },
       selectMaterial(item) {
         this.copyItem = item
+        if (!this.checkOriginBaseIsNotEmpty()) {
+          this.changeEdit()
+          return
+        }
         setTimeout(() => {
           this.$refs.confirm && this.$refs.confirm.show('商品标题和图片将覆盖原基础信息，确定吗？')
         }, 500)
@@ -496,6 +514,15 @@
         if (this.checkModule()) {
           return
         }
+        if (this.sellPrice < this.purchaseCost) {
+          this.$refs.confirmSubmit && this.$refs.confirmSubmit.show('销售单价小于采购成本价会亏损的，确定这样吗？')
+          return
+        }
+        this._updateGoodsInfo(() => {
+          this.backHandle()
+        })
+      },
+      confirmSubmitHandle() {
         this._updateGoodsInfo(() => {
           this.backHandle()
         })
@@ -747,6 +774,17 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   @import "~@style/detail"
+
+  .disable-input
+    background: #f5f5f5;
+    color: #acacac;
+    position: absolute !important
+    top:0
+    left: 0
+    margin-left :0 !important
+    line-height :44px
+    font-size :16px
+    cursor : not-allowed
 
   .edit-panel
     position: relative

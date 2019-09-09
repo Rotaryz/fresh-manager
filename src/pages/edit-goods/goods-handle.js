@@ -1,3 +1,4 @@
+import {REG_MONEY} from '@utils/common'
 export function RBaseData(data, isCopy) {
   const sku = (data.goods_skus && data.goods_skus[0]) || {}
   const isFinish = isCopy ? false : !!data.all_complete_status
@@ -39,7 +40,7 @@ export function FBaseData(data) {
     goods_skus: [
       {
         base_unit: data.basicUnit,
-        goods_sku_id: data.goods_sku_id
+        // goods_sku_id: data.goods_sku_id
       }
     ],
     save_type: 'base'
@@ -73,7 +74,7 @@ export function RSellData(data, isCopy) {
     sellPrice: zero2Empty(sku.trade_price), // 销售单价
     underlinePrice: zero2Empty(sku.original_price), // 划线价
     stock: zero2Empty(sku.presale_usable_stock), // 库存
-    originSales: zero2Empty(data.init_sale_count), // 初始销量
+    originSales: data.init_sale_count, // 初始销量
     commissionType: /^[0-9]/.test(data.commission_rate), // 团长佣金类型
     commission: data.commission_rate // 佣金
   }
@@ -144,6 +145,12 @@ function zero2Empty(val) {
   return Number(val) || ''
 }
 
+// 0 到 100 整数
+const Z2H_REG = /^(?:0|[1-9][0-9]?|100)$/
+
+// 正整数
+const INT_REG = /^(0|[1-9]\d*)$/
+
 export const BASE_FORM_REG = {
   goodsName(key) {
     if (!key) {
@@ -194,13 +201,13 @@ export const SALE_FORM_REG = {
     }
   },
   purchasePrice(key) {
-    if (key <= 0) {
-      return '请输入正确的采购单价'
+    if (!REG_MONEY.test(key)) {
+      return '请输入正确的采购单价(最多2位小数)'
     }
   },
   purchaseCycle(key) {
-    if (key <= 0) {
-      return '请输入正确的采购周期'
+    if (key < 1 || !Z2H_REG.test(key)) {
+      return '请输入正确采购周期（1-100整数）'
     }
   },
   goodsCategory(key) {
@@ -224,24 +231,28 @@ export const SALE_FORM_REG = {
     }
   },
   sellPrice(key) {
-    if (key <= 0) {
-      return '请输入正确的销售单价'
+    if (!REG_MONEY.test(key)) {
+      return '请输入正确的销售单价(最多2位小数)'
     }
   },
   underlinePrice(key) {
-    console.log(key, '--------')
-    if (key <= 0) {
-      return '请输入正确的划线价'
+    if (!REG_MONEY.test(key)) {
+      return '请输入正确的划线价(最多2位小数)'
     }
   },
   stock(key) {
-    if (key <= 0) {
-      return '请输入正确的库存'
+    if (!INT_REG.test(key)) {
+      return '请输入正确的库存(正整数)'
+    }
+  },
+  originSales(key) {
+    if (!INT_REG.test(key)) {
+      return '请输入正确的初始销量(正整数)'
     }
   },
   commission(key, flag) {
     if (flag) {
-      return /^(?:0|[1-9][0-9]?|100)$/.test(key) ? '' : '团长佣金请输入0-100的整数'
+      return Z2H_REG.test(key) ? '' : '团长佣金请输入0-100的整数'
     }
   }
 }
