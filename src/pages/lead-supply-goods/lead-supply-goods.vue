@@ -188,6 +188,7 @@
         white-space: normal
         display: -webkit-box
         word-break: break-all
+        line-height: 1.2
         -webkit-line-clamp: 2
         -webkit-box-orient: vertical
         padding-right: 14px
