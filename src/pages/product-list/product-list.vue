@@ -87,8 +87,9 @@
               <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
               <div class="list-item">{{item.goods_category_name}}</div>
               <div class="list-item">{{item.base_unit}}</div>
-              <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
-              <div v-if="item.trade_price" class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
+              <div v-if="+item.base_sale_rate > 0 && item.sale_unit" class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
+              <div v-else class="list-item">---</div>
+              <div v-if="item.trade_price > 0 && item.sale_unit" class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
               <div v-else class="list-item">---</div>
               <div v-if="!item.usable_stock && !item.complete_status" class="list-item">---</div>
               <div v-else class="list-item list-item-layout">
