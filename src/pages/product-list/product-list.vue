@@ -164,8 +164,8 @@
           data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
         },
         statusTab: [{name: '全部', num: 0, key: ''}, {name: '已上架', num: 0, key: 1}, {name: '已下架', num: 0, key: 0}],
-        stairSelect: {check: false, show: false, content: '一级分类', type: 'default', data: []},
-        secondSelect: {check: false, show: false, content: '二级分类', type: 'default', data: []},
+        stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
+        secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         typeSelect: {
           check: false,
           show: false,
@@ -286,16 +286,16 @@
           this.$refs.pagination.beginPage()
         }
       },
-      // 选择一级分类
+      // 选择一级类目
       _setStairValue(data) {
         let obj = JSON.parse(JSON.stringify(data))
-        this.secondSelect.content = '二级分类'
+        this.secondSelect.content = '二级类目'
         this.secondSelect.data = obj.list
         this.secondSelect.data.unshift({name: '全部', id: obj.id, list: []})
-        this.SET_TASK_DATA({oneName: obj.name, twoName: '二级分类', twoList: data.list})
+        this.SET_TASK_DATA({oneName: obj.name, twoName: '二级类目', twoList: data.list})
         this._updateList({page: 1, goods_category_id: obj.id})
       },
-      // 选择二级分类
+      // 选择二级类目
       _secondValue(data) {
         this.secondSelect.content = data.name
         this.SET_TASK_DATA({twoName: data.name})

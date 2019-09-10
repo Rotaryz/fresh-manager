@@ -34,16 +34,14 @@
             <div class="list-item" :class="{'red': item.error_tips.base_unit}">{{item.error_tips.base_unit || item.base_unit}}</div>
             <div class="list-item" :class="{'red': item.error_tips.supplier_name}">{{item.error_tips.supplier_name || item.supplier_name}}</div>
             <!--采购规格-->
-            <div v-if="item.error_tips.base_purchase_rate" class="list-item red">{{item.error_tips.base_purchase_rate}}</div>
-            <div v-else class="list-item">{{item.base_purchase_rate}}{{item.base_unit}}/{{item.purchase_unit}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.purchase_spec_text}">{{item.error_tips.purchase_spec_text || item.purchase_spec_text}}</div>
             <!--采购单价-->
             <div class="list-item" :class="{'red': item.error_tips.purchase_price}">{{item.error_tips.purchase_price || item.purchase_price}}</div>
             <div class="list-item" :class="{'red': item.error_tips.purchase_cycle}">{{item.error_tips.purchase_cycle || item.purchase_cycle}}</div>
             <div class="list-item" :class="{'red': item.error_tips.goods_type}">{{item.error_tips.goods_type || (+item.goods_type === 1 ? '否' : '是')}}</div>
             <!--售卖类型-->
             <div class="list-item" :class="{'red': item.error_tips.is_presale}">{{item.error_tips.is_presale || (item.is_presale ? '预售库存' : '仓库库存')}}</div>
-            <div v-if="item.error_tips.base_sale_rate" class="list-item red">{{item.error_tips.base_sale_rate}}</div>
-            <div v-else class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.sale_spec_text}">{{item.error_tips.sale_spec_text || item.sale_spec_text}}</div>
             <!--售卖销售单价-->
             <div class="list-item" :class="{'red': item.error_tips.trade_price}">{{item.error_tips.trade_price || item.trade_price}}</div>
             <div class="list-item" :class="{'red': item.error_tips.goods_category_name}">{{item.error_tips.goods_category_name || item.goods_category_name}}</div>
@@ -65,7 +63,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
-  const TITLE = '采购任务导入'
+  const TITLE = '商品导入'
   const COMMODITIES_LIST = [
     '商品名称/编码',
     '商品类目',

@@ -24,8 +24,8 @@ export const state = {
   },
   taskData: {
     isTaskFirst: true,
-    oneName: '一级分类',
-    twoName: '二级分类',
+    oneName: '一级类目',
+    twoName: '二级类目',
     twoList: [],
     source: '全部',
     complete: '全部',
@@ -129,8 +129,8 @@ export const actions = {
     })
     commit('SET_TASK_DATA', {
       isTaskFirst: true,
-      oneName: '一级分类',
-      twoName: '二级分类',
+      oneName: '一级类目',
+      twoName: '二级类目',
       twoList: [],
       source: '全部',
       complete: '全部',

@@ -83,14 +83,14 @@
         assortment: {
           check: false,
           show: false,
-          content: '一级分类',
+          content: '一级类目',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
         secondAssortment: {
           check: false,
           show: false,
-          content: '二级分类',
+          content: '二级类目',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
@@ -271,25 +271,25 @@
         allSelect && (this.selectAll = true)
         !allSelect && (this.selectAll = false)
       },
-      // 选择一级分类
+      // 选择一级类目
       async _secondAssortment(item) {
         this.parentId = item.id
         let res = await API.Product.getScmCategoryList({parent_id: this.parentId}, false)
         this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
         this.secondAssortment.data.unshift({name: '全部', id: item.id})
-        this.secondAssortment.content = '二级分类'
+        this.secondAssortment.content = '二级类目'
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
-      // 选择二级分类
+      // 选择二级类目
       async _choessSecondAssortment(item) {
         this.parentId = item.id
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
-      // 获取一级分类
+      // 获取一级类目
       async _getFirstAssortment() {
         let res = await API.Product.getScmCategoryList({parent_id: this.parentId}, false)
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []

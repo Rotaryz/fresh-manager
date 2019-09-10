@@ -150,14 +150,14 @@
         assortment: {
           check: false,
           show: false,
-          content: '选择分类',
+          content: '选择类目',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
         secondAssortment: {
           check: false,
           show: false,
-          content: '选择二级分类',
+          content: '选择二级类目',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },

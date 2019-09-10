@@ -1773,7 +1773,7 @@ export default [
         name: 'goods-store',
         component: () => lazyLoadView(import('@pages/goods-store/goods-store')),
         meta: {
-          titles: ['供应链', '采购', '商品素材库'],
+          titles: ['商城', '商品', '商品素材'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('scmGoods/getScmStoreData', {

@@ -9,17 +9,17 @@
       </div>
       <div class="main-input">
         <div v-if="showCate" class="main-model-box">
-          <div class="text">上级分类</div>
+          <div class="text">上级类目</div>
           <div class="categories-input-box">
             <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
           </div>
         </div>
         <div class="main-model-box">
-          <div class="text">分类名称</div>
+          <div class="text">类目名称</div>
           <input v-model="pointName" type="text" maxlength="10" class="main-input-box" :placeholder="numberPla">
         </div>
         <div v-if="showImg" class="main-model-box">
-          <div class="text">分类图标</div>
+          <div class="text">类目图标</div>
           <div class="img-box hand" :class="{'border':image_id}" :style="{'background-image': 'url(' + (image_url || require('./pic-add_img@2x.png')) + ')'}">
             <div v-if="showLoading" class="loading-mask">
               <img src="./loading.gif" class="loading">
@@ -67,7 +67,7 @@
         dispatchSelect: {
           check: false,
           show: false,
-          content: '分类',
+          content: '类目',
           type: 'default',
           data: [{name: ''}]
         },

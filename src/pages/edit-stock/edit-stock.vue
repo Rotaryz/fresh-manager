@@ -60,7 +60,7 @@
 
   const PAGE_NAME = 'EDIT_STOCK'
   const TITLE = '新建盘点'
-  const COMMODITIES_LIST = ['序号', '商品', '分类', '基本单位', '库存数量', '盘点数量', '差异数量', '调整类型']
+  const COMMODITIES_LIST = ['序号', '商品', '类目', '基本单位', '库存数量', '盘点数量', '差异数量', '调整类型']
   const ADJUSTMENT = [{name: '报损', type: 1}, {name: '盘亏', type: 3}]
   export default {
     name: PAGE_NAME,

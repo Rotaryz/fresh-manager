@@ -201,7 +201,7 @@
   const TITLE = '轮播广告'
   const TYPE_LIST = [
     {title: '商品详情', status: 'mini_goods'},
-    {title: '商品分类', status: 'goods_cate'},
+    {title: '商品类目', status: 'goods_cate'},
     {title: '活动分类', status: 'activity_cate'},
     {title: '小程序链接', status: 'mini_link'},
     {title: 'H5链接', status: 'out_html'}
@@ -268,8 +268,8 @@
         choicePage: 1,
         parentId: '',
         keyword: '',
-        assortment: {check: false, show: false, content: '一级分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        assortment: {check: false, show: false, content: '一级类目', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '二级类目', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsId: 0,
         delId: 0,
         delIndex: 0,
@@ -667,7 +667,7 @@
         this.choicePage = page
         await this._getGoodsList()
       },
-      // 选择一级分类
+      // 选择一级类目
       async _secondAssortment(item) {
         this.parentId = item.id
         if (item.id === '') {
@@ -675,21 +675,21 @@
         } else {
           let res = await API.Rush.goodsCategory({parent_id: this.parentId})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
-        this.secondAssortment.content = '二级分类'
+        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        this.secondAssortment.content = '二级类目'
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
-      // 选择二级分类
+      // 选择二级类目
       async _choessSecondAssortment(item) {
         this.parentId = item.id
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
-      // 获取一级分类
+      // 获取一级类目
       async _getFirstAssortment() {
         let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
         this.$loading.hide()

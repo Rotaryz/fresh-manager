@@ -295,8 +295,8 @@
         showSelectIndex: -1,
         parentId: '',
         goodsCate: [],
-        assortment: {check: false, show: false, content: '一级分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        assortment: {check: false, show: false, content: '一级类目', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '二级类目', type: 'default', data: []}, // 格式：{title: '55'}}
         selectItem: {},
         chooseType: 'free'
       }
@@ -480,19 +480,19 @@
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
           this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
-        this.secondAssortment.content = '二级分类'
+        this.secondAssortment.content = '二级类目'
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
-      // 选择二级分类
+      // 选择二级类目
       async _choessSecondAssortment(item) {
         this.parentId = item.id
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
-      // 获取一级分类
+      // 获取一级类目
       async _getFirstAssortment() {
         let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
         this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []

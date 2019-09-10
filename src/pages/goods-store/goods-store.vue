@@ -1,7 +1,7 @@
 <template>
   <div class="goods-store table">
     <div class="down-content">
-      <span class="down-tip">分类筛选</span>
+      <span class="down-tip">类目筛选</span>
       <div class="down-item-small">
         <base-drop-down :select="oneList" @setValue="selectOneList"></base-drop-down>
       </div>
@@ -127,9 +127,9 @@
         isOpenThr: false,
         keyWord: '',
         materialId: '',
-        oneList: {check: false, show: false, content: '一级分类', type: 'default', data: []},
+        oneList: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         oneIndex: 0,
-        twoList: {check: false, show: false, content: '二级分类', type: 'default', data: []},
+        twoList: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         twoIndex: 0,
         thrList: [],
         thrIndex: 0,
@@ -198,7 +198,7 @@
         this.twoList.data = obj.list
         this.twoList.data.unshift({name: '全部', id: obj.id, list: []})
         this.materialId = obj.id
-        this.twoList.content = '二级分类'
+        this.twoList.content = '二级类目'
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()

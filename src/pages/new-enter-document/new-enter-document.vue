@@ -124,7 +124,7 @@
 
   const COMMODITIES_LIST = [
     {name: '商品', value: 'name', flex: 1},
-    {name: '分类', value: 'goods_category_name', flex: 1},
+    {name: '类目', value: 'goods_category_name', flex: 1},
     {name: '入库数量(基本单位)', value: 'enter_count', flex: 1, unit: 'kg'},
     // {name: '入库数量(采购单位)', value: 'enter_count', flex: 1, unit: '箱'},
     {name: '入库单价(基本单位)', value: 'enter_price', flex: 1, unit: '元/kg'},
