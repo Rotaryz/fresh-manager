@@ -293,15 +293,16 @@
       },
       // 选择一级类目
       async setStairValue(data) {
+        let obj = JSON.parse(JSON.stringify(data))
         this.secondSelect.content = '二级类目'
-        this.secondSelect.data = data.list
-        this.secondSelect.data.unshift({name: '全部', id: data.id, list: []})
+        this.secondSelect.data = obj.list
+        this.secondSelect.data.unshift({name: '全部', id: obj.id, list: []})
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
         this.SET_TASK_DATA({
-          oneName: data.name,
+          oneName: obj.name,
           twoName: '二级类目',
-          twoList: data.list,
+          twoList: obj.list,
           thrName: '三级类目',
           thrList: []
         })
