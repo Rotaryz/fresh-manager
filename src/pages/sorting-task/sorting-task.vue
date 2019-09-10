@@ -295,6 +295,7 @@
       async setStairValue(data) {
         this.secondSelect.content = '二级类目'
         this.secondSelect.data = data.list
+        this.secondSelect.data.unshift({name: '全部', id: data.id, list: []})
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
         this.SET_TASK_DATA({
