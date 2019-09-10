@@ -274,8 +274,12 @@
       // 选择一级类目
       async _secondAssortment(item) {
         this.parentId = item.id
-        let res = await API.Product.getScmCategoryList({parent_id: this.parentId}, false)
-        this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+        if (item.id === '') {
+          this.secondAssortment.data = []
+        } else {
+          let res = await API.Product.getScmCategoryList({parent_id: this.parentId}, false)
+          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
+        }
         this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         this.secondAssortment.content = '二级类目'
         this.page = 1

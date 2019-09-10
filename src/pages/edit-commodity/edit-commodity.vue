@@ -478,8 +478,8 @@
         } else {
           let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
+        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         this.secondAssortment.content = '二级类目'
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
