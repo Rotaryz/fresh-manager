@@ -85,13 +85,20 @@
         address: '',
         purchaseUserId: '',
         buyerSelect: SELECT,
-        isSubmit: false
+        isSubmit: false,
+        routeFrom: {}
       }
     },
     computed: {
       ...supplierComputed
     },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.routeFrom = from || {}
+      })
+    },
     created() {
+      console.log(this.$router)
       this.supplierName = this.id && (this.detail.supplier_name || '')
       this.mobile = this.id && (this.detail.mobile || '')
       this.address = this.id && (this.detail.address || '')
@@ -121,7 +128,11 @@
         this.purchaseUserId = select.id
       },
       back() {
-        this.$router.back()
+        if (this.routeFrom.path === '/') {
+          this.$router.replace('/home/basics-set/supplier')
+        } else {
+          this.$router.back()
+        }
       },
       checkDataValidate() {
         if (!this.supplierName) {
