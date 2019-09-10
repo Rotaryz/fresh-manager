@@ -259,7 +259,7 @@
         sellSize: '', // 销售规格
         sellPrice: '', // 销售单价
         underlinePrice: '', // 划线价
-        stock: '', // 库存
+        stock: 0, // 库存
         originSales: '', // 初始销量
         commissionType: false, // 团长佣金类型
         commission: '', // 佣金
@@ -295,9 +295,6 @@
       },
     },
     watch: {
-      preSell(val) {
-        this.stock = 0
-      },
       sellPrice(price) {
         if (this.startWatchSellPrice && +price > 0) {
           price = (+price * 1.3).toFixed(2)
@@ -431,6 +428,9 @@
         if (key === 'purchaseCollective' && this.isFinish) {
           this.$toast.show('不允许切换集采类型！')
           return
+        }
+        if (key === 'preSell') {
+          this.stock = 0
         }
         this[key] = !this[key]
       },
@@ -637,7 +637,9 @@
       // 设置数据
       setData(res, cb) {
         const data = this.stepInfo.resolveData(res.data, this.$route.query.isCopy)
-        Object.assign(this, data)
+        for(let key in data) {
+          this[key] = data[key]
+        }
         cb && cb()
       },
       // 获取商品类目列表

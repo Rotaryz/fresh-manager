@@ -73,7 +73,7 @@ export function RSellData(data, isCopy) {
     sellSize: zero2Empty(sku.base_sale_rate), // 销售规格
     sellPrice: zero2Empty(sku.trade_price), // 销售单价
     underlinePrice: zero2Empty(sku.original_price), // 划线价
-    stock: zero2Empty(sku.presale_usable_stock) || 0, // 库存
+    stock: sku.presale_usable_stock || 0, // 库存
     originSales: data.init_sale_count, // 初始销量
     commissionType: /^[0-9]/.test(data.commission_rate), // 团长佣金类型
     commission: data.commission_rate // 佣金
