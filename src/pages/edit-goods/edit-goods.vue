@@ -15,7 +15,7 @@
       <template v-if="stepIndex === 0">
         <edit-header title="基础信息" btnText="导入商品图文" @button="showMaterial"></edit-header>
         <edit-options title="商品名称">
-          <input slot="middle" v-model="goodsName" type="text" class="edit-input-box edit-input" maxlength="10">
+          <input slot="middle" v-model="goodsName" type="text" class="edit-input-box edit-input" maxlength="30">
           <p slot="right" class="edit-pla">展示在商城的名称，供消费者浏览</p>
         </edit-options>
         <edit-options title="推荐语" :importance="false">
