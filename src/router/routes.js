@@ -1871,7 +1871,7 @@ export default [
         name: 'supplier',
         component: () => lazyLoadView(import('@pages/supplier/supplier')),
         meta: {
-          titles: ['供应链', '采购', '基础设置', '供应商'],
+          titles: ['供应链', '采购', '供应商'],
           resetHooks: ['supplier/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
             // store.dispatch('supplier/infoSetKeyWord')
