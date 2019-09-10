@@ -272,7 +272,7 @@
         saleSelect: {check: false, show: false, content: '销售单位', type: 'default', data: []},
         purchaseSelect: {check: false, show: false, content: '采购单位', type: 'default', data: []},
         supplierSelect: {check: false, show: false, content: '选择供应商', type: 'default', data: []},
-        categoriesSelect: {check: false, show: false, content: '选择类目', type: 'default', data: []},
+        categoriesSelect: {check: false, show: false, content: '选择分类', type: 'default', data: []},
         searchCategoryList: [], // 商品分类筛选临时数组
         searchList: [], // 供应商筛选临时数组
         goods_sku_id: '', // sku_id
@@ -472,7 +472,7 @@
             this._createGoodsCode()
             this.resetSelectName('supplierSelect', '选择供应商')
             this.resetSelectName('purchaseSelect', '采购单位')
-            this.resetSelectName('categoriesSelect', '类目选择')
+            this.resetSelectName('categoriesSelect', '选择分类')
             this.resetSelectName('saleSelect', '销售单位')
             this.initSelectName('supplierSelect', 'supplier_name')
             this.initSelectName('saleSelect', 'sellUnit')
