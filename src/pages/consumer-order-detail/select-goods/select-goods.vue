@@ -30,7 +30,9 @@
               <span v-if="title.value === 'goods_name'" class="select-icon" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"></span>
               <img v-if="title.value === 'goods_name'" class="goods-img" :src="item.goods_cover_image">
               <div class="value">
-                <p class="text">{{item[title.value]}}{{title.value === 'sale_usable_stock' ? item.sale_unit : ''}}</p>
+                <p v-if="!item.is_presale && title.value === 'sale_usable_stock'" class="text">{{item[title.value]}}{{title.value === 'sale_usable_stock' ? item.sale_unit : ''}}</p>
+                <p v-else-if="item.is_presale && title.value === 'sale_usable_stock'" class="text">---</p>
+                <p v-else class="text">{{item[title.value]}}</p>
                 <p v-if="title.value === 'goods_name'" class="text">{{item.goods_sku_encoding}}</p>
               </div>
             </div>
