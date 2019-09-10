@@ -103,7 +103,7 @@
       selectOneList(item, index) {
         let obj = JSON.parse(JSON.stringify(item))
         this.materialId = obj.id
-        this.twoList.data = this.oneList.data[index].list
+        this.twoList.data = obj.list
         this.twoList.data.unshift({name: '全部', id: obj.id, list: []})
         this.twoList.content = '二级类目'
         this.page = 1
