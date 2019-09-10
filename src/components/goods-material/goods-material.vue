@@ -101,9 +101,10 @@
       },
       // 选择一级类目
       selectOneList(item, index) {
-        this.materialId = item.id
+        let obj = JSON.parse(JSON.stringify(item))
+        this.materialId = obj.id
         this.twoList.data = this.oneList.data[index].list
-        this.twoList.data.unshift({name: '全部', id: item.id, list: []})
+        this.twoList.data.unshift({name: '全部', id: obj.id, list: []})
         this.twoList.content = '二级类目'
         this.page = 1
         this.$refs.pagination.beginPage()
