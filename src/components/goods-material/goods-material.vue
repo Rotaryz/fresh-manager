@@ -54,9 +54,9 @@
     components: {DefaultModal},
     data() {
       return {
-        oneList: {check: false, show: false, content: '一级分类', type: 'default', data: []},
+        oneList: {check: false, show: false, content: '一级类目', type: 'default', data: []},
         oneIndex: 0,
-        twoList: {check: false, show: false, content: '二级分类', type: 'default', data: []},
+        twoList: {check: false, show: false, content: '二级类目', type: 'default', data: []},
         twoIndex: 0,
         keyWord: '',
         page: 1,
@@ -103,7 +103,8 @@
       selectOneList(item, index) {
         this.materialId = item.id
         this.twoList.data = this.oneList.data[index].list
-        this.twoList.content = '二级分类'
+        this.twoList.data.unshift({name: '全部', id: item.id, list: []})
+        this.twoList.content = '二级类目'
         this.page = 1
         this.$refs.pagination.beginPage()
         this.getReqList()
