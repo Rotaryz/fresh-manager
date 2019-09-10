@@ -299,7 +299,7 @@
         this.stock = 0
       },
       sellPrice(price) {
-        if (price > 0) {
+        if (this.startWatchSellPrice && +price > 0) {
           price = (+price * 1.3).toFixed(2)
           this.underlinePrice = price
         }
@@ -447,6 +447,7 @@
         // 返回第一步
         if (this.stepIndex === 1) {
           this.actionStep()
+          this.startWatchSellPrice = false
           this._getDetail(() => {
             this.setAliasName()
             window.scrollTo(0, 0)
@@ -462,7 +463,11 @@
         this._updateGoodsInfo(() => {
           this.actionStep()
           this._getDetail(false, () => {
+            setTimeout(() => {
+              this.startWatchSellPrice = true
+            }, 100)
             this.setAliasName()
+            this.setUnderLinePrice()
             this._createGoodsCode()
             this.resetSelectName('supplierSelect', '选择供应商')
             this.resetSelectName('purchaseSelect', '采购单位')
@@ -487,6 +492,13 @@
         }
         this.aliasName = name
       },
+      // 设置划线价
+      setUnderLinePrice() {
+        if (!(+this.underlinePrice) && this.sellPrice > 0) {
+          let price = (+this.sellPrice * 1.3).toFixed(2)
+          this.underlinePrice = price
+        }
+      },
       // 复制模式切换
       copyToggle() {
         if (this.stepIndex === 0 && this.checkModule()) {
@@ -499,7 +511,11 @@
         }
         this._isAgain2StepTwo = true
         this._getDetail(false, () => {
+          setTimeout(() => {
+            this.startWatchSellPrice = true
+          }, 100)
           this.setAliasName()
+          this.setUnderLinePrice()
           this._createGoodsCode(true)
           this.initSelectName('supplierSelect', 'supplier_name')
           this.initSelectName('saleSelect', 'sellUnit')
