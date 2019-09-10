@@ -126,7 +126,8 @@
         </edit-options>
         <edit-options title="商品编码">
           <input slot="middle" v-model="goodsCode" type="text" class="edit-input-box edit-input" maxlength="50">
-          <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span><span class="edit-pla-children hand" @click="openTipsHandle('code')">查看图示</span></p>
+          <p slot="right" class="edit-pla">用于仓库扫码枪快速定位商品，标品时建议修改为图示中的编码<span class="edit-pla-children hand" @click="openTipsHandle('code')">查看图示</span></p>
+        <!--<span class="edit-pla-children hand" @click="_createGoodsCode(true)">刷新</span>-->
         </edit-options>
         <edit-options title="销售规格">
           <div slot="middle"
