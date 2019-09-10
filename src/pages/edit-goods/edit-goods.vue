@@ -381,7 +381,10 @@
         return this.goodsName || this.describe || this.goodsTypeId || this.basicUnit || this.coverImageList.length || this.videoList.length || this.detailImageList.length
       },
       copyToast() {
-        if (!this.checkOriginBaseIsNotEmpty()) return
+        if (!this.checkOriginBaseIsNotEmpty()) {
+          this.$toast.show('商品添加成功！')
+          return
+        }
         this.$toast.show('信息覆盖成功！')
       },
       findBasicUnit() {
