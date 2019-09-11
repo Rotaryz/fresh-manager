@@ -270,6 +270,7 @@
               font-family: $font-family-regular
               color: $color-text-main
               font-size: $font-size-14
+              line-height :1.5
               no-wrap()
             .goods-price-box
               color: #3E77C3
