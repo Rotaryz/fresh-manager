@@ -66,7 +66,7 @@
           <p slot="right" class="edit-pla hand"><span
             style="text-decoration :underline;color: #3E77C3"
             @click="handleOpenNewWindow('edit-supplier')"
-          >新增</span><span class="edit-pla-children" @click="_getSupplierData">刷新</span></p>
+          >新增</span><span class="edit-pla-children" @click="_getSupplierData(true)">刷新</span></p>
         </edit-options>
         <edit-options title="采购规格">
           <div slot="middle"
@@ -122,7 +122,7 @@
           <base-drop-down slot="middle" class="edit-input-box" :height="inputHeight" :width="400" :isInput="true"
                           :select="categoriesSelect" isInputPla="请选择商品分类" @setValue="setCommonValue($event.id, 'goodsCategory')" @changeText="changeCategoryText"
           ></base-drop-down>
-          <p slot="right" class="edit-pla hand"><span style="text-decoration :underline;color: #3E77C3" @click="handleOpenNewWindow('product-categories')">新增</span><span class="edit-pla-children" @click="_getGoodsCategory">刷新</span></p>
+          <p slot="right" class="edit-pla hand"><span style="text-decoration :underline;color: #3E77C3" @click="handleOpenNewWindow('product-categories')">新增</span><span class="edit-pla-children" @click="_getGoodsCategory('', true)">刷新</span></p>
         </edit-options>
         <edit-options title="商品编码">
           <input slot="middle" v-model="goodsCode" type="text" class="edit-input-box edit-input" maxlength="50">
@@ -701,7 +701,7 @@
         this.supplierSelect.data = arr
       },
       // 获取供应商列表
-      _getSupplierData() {
+      _getSupplierData(toastShow) {
         API.Product.getSupplier({page: 1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             res.data.forEach((item) => {
@@ -709,6 +709,9 @@
             })
             this.supplierSelect.data = res.data
             this.searchList = res.data
+            if (toastShow) {
+              this.$toast.show('刷新成功！')
+            }
           } else {
             this.$toast.show(res.message)
           }
@@ -723,7 +726,7 @@
         this.goodsTypeId = data.id
       },
       // 获取商品分类
-      _getGoodsCategory(cb) {
+      _getGoodsCategory(cb, toastShow) {
         API.Product.getCategoryList({parent_id: -1, goods_id: this.id}, false).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -736,7 +739,10 @@
               this.categoriesSelect.content = item.name
             }
           })
-          cb && cb()
+          typeof cb === 'function' && cb()
+          if (toastShow) {
+            this.$toast.show('刷新成功！')
+          }
         })
       },
       // 筛选供应商
