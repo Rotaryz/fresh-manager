@@ -128,6 +128,7 @@
           this.$toast.show(res.message)
           return
         }
+        this.$store.dispatch('editgoods/resetData')
         setTimeout(() => {
           this.$router.back()
         }, 1500)

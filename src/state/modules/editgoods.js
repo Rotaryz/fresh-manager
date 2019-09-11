@@ -125,7 +125,8 @@ export const actions = {
       complete_status: '',
       is_presale: '',
       goods_type: '',
-      goods_material_category_id: ''
+      goods_material_category_id: '',
+      supplier_keyword: ''
     })
     commit('SET_TASK_DATA', {
       isTaskFirst: true,
