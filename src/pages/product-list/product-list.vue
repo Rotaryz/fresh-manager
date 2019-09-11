@@ -78,7 +78,8 @@
             <div v-for="(item, index) in productList" :key="index" class="list-content list-box">
               <div class="list-item">
                 <img v-if="item.goods_video_url" class="icon-video" src="./icon-play_list@2x.png" alt="">
-                <img class="pic-box" :src="item.goods_cover_image" alt="">
+                <img v-if="item.goods_cover_image" class="pic-box" :src="item.goods_cover_image" alt="">
+                <img v-else class="pic-box" src="./pic-default.png" alt="">
               </div>
               <div class="list-item list-double-row">
                 <div class="item-dark" :class="{'item-dark-icon' : item.goods_type * 1 === 2}">{{item.name}}</div>

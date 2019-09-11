@@ -60,6 +60,7 @@
 
 <script type="text/ecmascript-6">
   import DefaultConfirm from '@components/default-confirm/default-confirm'
+  import {goodsMethods} from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
@@ -99,6 +100,7 @@
       this._getUrl()
     },
     methods: {
+      ...goodsMethods,
       _getUrl() {
         let currentId = this.getCurrentId()
         let token = this.$storage.get('auth.currentUser', '')
@@ -128,6 +130,7 @@
           this.$toast.show(res.message)
           return
         }
+        this.SET_PARAMS({page: 1})
         setTimeout(() => {
           this.$router.back()
         }, 1500)
