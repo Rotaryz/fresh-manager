@@ -122,7 +122,6 @@ export const actions = {
       page: 1,
       has_stock: '',
       source: '',
-      complete_status: '',
       is_presale: '',
       goods_type: '',
       goods_material_category_id: '',
