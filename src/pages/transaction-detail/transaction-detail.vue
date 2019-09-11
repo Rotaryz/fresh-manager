@@ -58,8 +58,30 @@
   const PAGE_NAME = 'TRANSACTION_DETAIL'
   const TITLE = '交易明细'
 
-  const LIST_TITLE=["支付时间","关联订单号","商品","数量","交易金额","服务费","团长佣金","入账资金","入账时间","状态"]
-  const FS_LIST_TITLE=["支付时间","关联订单号","商品","数量","交易金额","服务费","佣金比例","入账佣金","入账时间","状态"]
+  const LIST_TITLE = [
+    '支付时间',
+    '关联订单号',
+    '商品',
+    '数量',
+    '交易金额',
+    '服务费',
+    '团长佣金',
+    '入账资金',
+    '入账时间',
+    '状态'
+  ]
+  const FS_LIST_TITLE = [
+    '支付时间',
+    '关联订单号',
+    '商品',
+    '数量',
+    '交易金额',
+    '服务费',
+    '佣金比例',
+    '入账佣金',
+    '入账时间',
+    '状态'
+  ]
   const EXCEL_URL = '/social-shopping/api/backend/finance/settle-logs-excel'
   const TAB_STATUS = [{text: '自提商品', status: 0}, {text: '全国包邮', status: 1}]
 
@@ -72,7 +94,7 @@
       return {
         tabStatusList: TAB_STATUS,
         infoTabIndex: 0,
-        listTitle: LIST_TITLE,
+        listTitle: LIST_TITLE
       }
     },
     computed: {
@@ -87,7 +109,7 @@
           date: this.settleLogsDate.join(','),
           keyword: this.settleLogsKeyword,
           status: this.settleLogsStatus,
-          source_type: this.tabStatus+1// source_type：1 自提，2 代表全国包邮
+          source_type: this.tabStatus + 1 // source_type：1 自提，2 代表全国包邮
         }
         let search = []
         for (let key in data) {
@@ -116,7 +138,7 @@
       changeTabStatus(status) {
         // 头部tab切换
         this.infoTabIndex = status.status
-        const titleArr = [LIST_TITLE,FS_LIST_TITLE]
+        const titleArr = [LIST_TITLE, FS_LIST_TITLE]
         this.listTitle = titleArr[this.infoTabIndex]
         this.$refs.pagination.beginPage()
         this.setTabStatus(status.status)

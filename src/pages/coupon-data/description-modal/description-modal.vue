@@ -24,21 +24,22 @@
   const DES = [
     {
       title: '用券成交金额',
-      text: '使用该优惠券的订单付款总金额',
-    },{
+      text: '使用该优惠券的订单付款总金额'
+    },
+    {
       title: '优惠总金额',
-      text: '使用该优惠券优惠的总金额',
-    },{
+      text: '使用该优惠券优惠的总金额'
+    },
+    {
       title: 'ROI',
-      text: '用券总成交额/优惠总金额',
+      text: '用券总成交额/优惠总金额'
     }
   ]
 
   export default {
     name: COMPONENT_NAME,
     components: {DefaultModal},
-    props: {
-    },
+    props: {},
     data() {
       return {
         desText: DES,

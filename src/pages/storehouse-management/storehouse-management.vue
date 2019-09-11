@@ -9,9 +9,9 @@
       <div class="down-item-small">
         <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
       </div>
-      <div class="down-item">
+      <!--<div class="down-item">
         <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
-      </div>
+      </div>-->
       <span class="down-tip">库区筛选</span>
       <div class="down-item-small">
         <base-drop-down :select="store" @setValue="getSecondStore"></base-drop-down>
@@ -252,11 +252,19 @@
       },
       // 选择一级类目
       async setStairValue(data) {
+        let obj = JSON.parse(JSON.stringify(data))
         this.secondSelect.content = '二级类目'
-        this.secondSelect.data = data.list
-        this.thirdlySelect.content = '三级类目'
-        this.thirdlySelect.data = []
-        this.SET_SELECT_PARAMS({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
+        this.secondSelect.data = obj.list
+        this.secondSelect.data.unshift({name: '全部', id: obj.id, list: []})
+        // this.thirdlySelect.content = '三级类目'
+        // this.thirdlySelect.data = []
+        this.SET_SELECT_PARAMS({
+          oneName: obj.name,
+          twoName: '二级类目',
+          twoList: this.secondSelect.data,
+          // thrName: '三级类目',
+          // thrList: []
+        })
         this._getWarehouseList({goods_material_category_id: data.id, page: 1})
       },
       // 选择二级类目
@@ -361,18 +369,22 @@
           this.$toast.show('实盘数为最多两位小数的非负数')
           return
         }
-        API.Store.checkStock({id: this.currentItem.id, actual_stock: this.editNum, note: this.editText, goods_name: this.currentItem.goods_name})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.editText = ''
-            this.editNum = ''
-            this.$toast.show('盘点成功')
-            this.$refs.defaultModal.hideModal()
-            this.getWarehouseList({})
-          })
+        API.Store.checkStock({
+          id: this.currentItem.id,
+          actual_stock: this.editNum,
+          note: this.editText,
+          goods_name: this.currentItem.goods_name
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.editText = ''
+          this.editNum = ''
+          this.$toast.show('盘点成功')
+          this.$refs.defaultModal.hideModal()
+          this.getWarehouseList({})
+        })
       }
     }
   }

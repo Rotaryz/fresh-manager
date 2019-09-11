@@ -569,9 +569,11 @@
     },
     watch: {},
     beforeCreate() {
-      (this.$route.query.id && this.$route.query.editId) || this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
-      this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
-      this.$route.query.editId && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '编辑优惠券'])
+    ;(this.$route.query.id && this.$route.query.editId) ||
+      this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '新建优惠券'])
+    this.$route.query.id && this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '查看优惠券'])
+    this.$route.query.editId &&
+      this.$store.commit('global/SET_CURRENT_TITLES', ['商城', '营销', '优惠券', '编辑优惠券'])
     },
     created() {
       this.disable = this.$route.query.id || this.$route.query.editId
@@ -733,14 +735,14 @@
         this.selectGoods = []
         this.selectGoodsId = []
         if (this.selectAll) {
-          this.chooseGoods.map(item => {
-            +item.selected === 0 && (item.selected = 2);
-            +item.selected === 2 && this.selectGoods.push(item)
-            this.selectGoodsId.push(item.id)
-            return item
+          this.chooseGoods.map((item) => {
+          ;+item.selected === 0 && (item.selected = 2)
+          ;+item.selected === 2 && this.selectGoods.push(item)
+          this.selectGoodsId.push(item.id)
+          return item
           })
         } else {
-          this.chooseGoods.map(item => {
+          this.chooseGoods.map((item) => {
             if (+item.selected === 2) {
               item.selected = 0
             }
@@ -751,7 +753,6 @@
             return item
           })
         }
-
       },
       // 删除商品
       _showDelGoods(type, item, index) {
@@ -785,7 +786,7 @@
           this.categoryShow = false
           this.categoryCheckItem = {}
           this.categoryList = this.categoryList.map((item, ind) => {
-            let index = this.categorySelectList.findIndex(val => {
+            let index = this.categorySelectList.findIndex((val) => {
               return item.id === val.id
             })
             if (index > -1) {
@@ -841,11 +842,11 @@
       async _showGoods() {
         if (this.disable) return
         this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
-        // this._initData()
-        // this.$refs.goodsSearch._setText('')
-        // await this._getGoodsList()
-        // 展示添加商品弹窗
-        // this.$refs.goodsModal.showModal()
+      // this._initData()
+      // this.$refs.goodsSearch._setText('')
+      // await this._getGoodsList()
+      // 展示添加商品弹窗
+      // this.$refs.goodsModal.showModal()
       },
       _hideGoods() {
         this.$refs.goodsModal.hideModal()
@@ -918,7 +919,7 @@
         if (+this.msg.range_type === 2) {
           // this.categorySelectItem.coupon_range_id = this.categorySelectItem.coupon_range_id || 0
           // this.categorySelectItem.range_id = this.categorySelectItem.id || 0
-          data.ranges = this.selectCategoryList.map(item => {
+          data.ranges = this.selectCategoryList.map((item) => {
             return {
               coupon_range_id: item.coupon_range_id || 0,
               range_id: item.id || 0

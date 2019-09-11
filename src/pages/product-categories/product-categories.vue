@@ -3,7 +3,7 @@
     <div class="identification">
       <div class="identification-page">
         <img src="./icon-goods_classify@2x.png" class="identification-icon">
-        <p class="identification-name">商品分类</p>
+        <p class="identification-name">商品类目</p>
         <div class="base-status-tab">
           <div v-for="(item, index) in statusTab" :key="index" class="status-tab-item">
             {{item.name}} ({{item.num}})
@@ -59,7 +59,7 @@
   import _ from 'lodash'
 
   const PAGE_NAME = 'PRODUCT_CATEGORIES'
-  const TITLE = '商品分类'
+  const TITLE = '商品类目'
 
   export default {
     name: PAGE_NAME,
@@ -110,8 +110,8 @@
         })
       },
       newBigCate() {
-        // this.$refs.bigModel.show('新建商品分类', this.categoryNewName)
-        this.$refs.bigModel.show('新建商品分类', {
+        // this.$refs.bigModel.show('新建商品类目', this.categoryNewName)
+        this.$refs.bigModel.show('新建商品类目', {
           name: this.categoryNewName,
           type: true
         })
@@ -125,11 +125,11 @@
           // } else if (this.categoryType === 1) {
           //   this.categoryChild = name
           // }
-          this.$toast.show('分类名称的长度不能超过10个字')
+          this.$toast.show('类目名称的长度不能超过10个字')
           return
         }
         if (!imageId && type) {
-          this.$toast.show('请上传分类图标')
+          this.$toast.show('请上传类目图标')
           return
         }
         switch (this.categoryType) {
@@ -199,8 +199,8 @@
         this.$forceUpdate()
       },
       addChilrenCate(item, index) {
-        // this.$refs.bigModel.show('新建商品子分类', this.categoryChild, '', '', false)
-        this.$refs.bigModel.show('新建商品子分类', {
+        // this.$refs.bigModel.show('新建商品子类目', this.categoryChild, '', '', false)
+        this.$refs.bigModel.show('新建商品子类目', {
           name: this.categoryChild,
           type: false
         })
@@ -212,8 +212,8 @@
         this.bigItem = item
         this.bigIndex = index
         this.categoryType = 2
-        // this.$refs.bigModel.show('修改商品分类', item.name, item.sort, item.image_url, item.id)
-        this.$refs.bigModel.show('修改商品分类', {
+        // this.$refs.bigModel.show('修改商品类目', item.name, item.sort, item.image_url, item.id)
+        this.$refs.bigModel.show('修改商品类目', {
           name: item.name,
           sort: item.sort,
           imageUrl: item.image_url,
@@ -227,7 +227,7 @@
         this.bigIndex = index
         this.oneBtn = false
         this.deteleType = 0
-        this.$refs.bigConfirm.show(`确定删除该分类？`)
+        this.$refs.bigConfirm.show(`确定删除该类目？`)
       },
       editSmallCatee(item, index, twoitem, twoindex) {
         this.bigItem = item
@@ -235,8 +235,8 @@
         this.smallItem = twoitem
         this.smallIndex = twoindex
         this.$refs.smallModel.setData(item, this.categoryList)
-        // this.$refs.smallModel.show('修改商品分类', this.smallItem.name, this.smallItem.sort, '', false)
-        this.$refs.smallModel.show('修改商品分类', {
+        // this.$refs.smallModel.show('修改商品类目', this.smallItem.name, this.smallItem.sort, '', false)
+        this.$refs.smallModel.show('修改商品类目', {
           name: this.smallItem.name,
           sort: this.smallItem.sort,
           type: false
@@ -249,12 +249,12 @@
         this.smallIndex = twoindex
         this.oneBtn = false
         this.deteleType = 1
-        this.$refs.bigConfirm.show(`确定删除该分类？`)
+        this.$refs.bigConfirm.show(`确定删除该类目？`)
       },
       eidtConfirm(data) {
         let {name, sort, id} = data
         if (name.length === 0 || name.length > 10) {
-          this.$toast.show('分类名称的长度不能超过10个字')
+          this.$toast.show('类目名称的长度不能超过10个字')
           return
         }
         API.Product.editCategory(this.smallItem.id, {name: name, sort: sort, parent_id: id}).then((res) => {
@@ -289,7 +289,7 @@
               setTimeout(() => {
                 this.categoryList.splice(this.bigIndex, 1)
                 this.oneBtn = true
-                this.$refs.bigConfirm.show(`该分类已成功删除`)
+                this.$refs.bigConfirm.show(`该类目已成功删除`)
               }, 1000)
             } else {
               this.$toast.show(res.message)
@@ -303,7 +303,7 @@
               setTimeout(() => {
                 this.categoryList[this.bigIndex].list.splice(this.smallIndex, 1)
                 this.oneBtn = true
-                this.$refs.bigConfirm.show(`该分类已成功删除`)
+                this.$refs.bigConfirm.show(`该类目已成功删除`)
               }, 1000)
             } else {
               this.$toast.show(res.message)

@@ -109,26 +109,32 @@
                 <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
               </div>
               <div class="tab-item">
-                <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+                <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
               </div>
               <div class="tab-item">
-                <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+                <base-search placeHolder="请输入商品名称或编号" @search="_searchGoods"></base-search>
               </div>
             </div>
             <div class="goods-content">
+              <div class="goods-header">
+                <div class="goods-text">商品</div>
+                <div class="goods-text">销售价</div>
+                <div class="goods-text">可用库存</div>
+              </div>
               <div class="goods-list">
                 <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item hand" @click="_selectGoods(item, index)">
-                  <div class="select-icon" :class="{'select-icon-active': showSelectIndex === index}">
-                    <span class="after"></span>
-                  </div>
-                  <img class="goods-img" :src="item.goods_cover_image">
-                  <div class="goods-msg">
-                    <div class="goods-name">
-                      <!--<span class="tag">拼团返现</span>-->
-                      {{item.name}}
+                  <div class="content-item">
+                    <div class="select-icon" :class="{'select-icon-active': showSelectIndex === index}">
+                      <span class="after"></span>
                     </div>
-                    <div class="goods-money">¥{{item.original_price}}</div>
+                    <img class="goods-img" :src="item.goods_cover_image">
+                    <div class="goods-name">
+                      <p class="text">{{item.name}}</p>
+                      <p class="text">{{item.goods_sku_encoding}}</p>
+                    </div>
                   </div>
+                  <div class="content-item">¥{{item.trade_price}}</div>
+                  <div class="content-item">{{item.usable_stock}}{{item.sale_unit}}</div>
                 </div>
                 <!--select-icon-active-->
               </div>
@@ -195,7 +201,7 @@
   const TITLE = '轮播广告'
   const TYPE_LIST = [
     {title: '商品详情', status: 'mini_goods'},
-    {title: '商品分类', status: 'goods_cate'},
+    {title: '商品类目', status: 'goods_cate'},
     {title: '活动分类', status: 'activity_cate'},
     {title: '小程序链接', status: 'mini_link'},
     {title: 'H5链接', status: 'out_html'}
@@ -262,8 +268,8 @@
         choicePage: 1,
         parentId: '',
         keyword: '',
-        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        assortment: {check: false, show: false, content: '一级类目', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '二级类目', type: 'default', data: []}, // 格式：{title: '55'}}
         goodsId: 0,
         delId: 0,
         delIndex: 0,
@@ -300,8 +306,8 @@
         todayHotList: [], // 今日爆品,用于phone-box组件
         freeShippingList: [], // 全国包邮,用于phone-box组件
         centralizePurchaseList: [], // 产地集采,用于phone-box组件
-        guessList: [],// 猜你喜欢,用于phone-box组件
-        groupList: [],// 拼团返现,用于phone-box组件
+        guessList: [], // 猜你喜欢,用于phone-box组件
+        groupList: [], // 拼团返现,用于phone-box组件
         activityCategory: []
       }
     },
@@ -434,7 +440,7 @@
             if (item.module_name === 'centralize' && item.is_close === 0) {
               console.log(item)
               // 产地集采
-              API.Advertisement.getActivityList({activity_theme: 'centralize', page: 1, limit: 20}).then(res => {
+              API.Advertisement.getActivityList({activity_theme: 'centralize', page: 1, limit: 20}).then((res) => {
                 this.centralizePurchaseList = this._formatListData(res.data)
               })
               return
@@ -455,7 +461,7 @@
                   if (item.module_name === 'activity_fixed') {
                     this.activityGoodsList = this._formatListData(res.data)
                   } else {
-                    let key = TAB_ARR_CONFIG[item.module_name] ? (TAB_ARR_CONFIG[item.module_name]).dataArray : ''
+                    let key = TAB_ARR_CONFIG[item.module_name] ? TAB_ARR_CONFIG[item.module_name].dataArray : ''
                     if (this[key]) {
                       this[key] = this._formatListData(res.data)
                     }
@@ -483,7 +489,7 @@
       // 按钮
       switchBtn(item) {
         item.is_close = !item.is_close
-        // this.activityStatus = this.activityStatus ? 0 : 1
+      // this.activityStatus = this.activityStatus ? 0 : 1
       },
       async _getModuleMsg(type, id, moduleId) {
         // 获取各个模块的数据
@@ -546,10 +552,10 @@
         // }
         this._currentCms = cms
         this._actionToChangeModule()
-        // this.cmsType = cms.module_name
-        // this.cmsId = cms.id
-        // this.cmsModuleId = cms.module_id
-        // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
+      // this.cmsType = cms.module_name
+      // this.cmsId = cms.id
+      // this.cmsModuleId = cms.module_id
+      // await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
       },
       // 展示确认弹窗
       _showConfirm(id, index) {
@@ -569,7 +575,7 @@
           return
         }
         await this._getModuleMsg(this.cmsType, this.cmsId, this.cmsModuleId)
-        // this.temporaryBannar.splice(this.delIndex, 1)
+      // this.temporaryBannar.splice(this.delIndex, 1)
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -628,14 +634,13 @@
         this.showActiveIndex = index
       },
       getActivityCategory() {
-        API.Advertisement.getActivityCategory()
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.activityCategory = res.data.activity_theme
-          })
+        API.Advertisement.getActivityCategory().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.activityCategory = res.data.activity_theme
+        })
       },
       // 获取商品列表
       async _getGoodsList() {
@@ -643,7 +648,7 @@
           is_online: 1,
           keyword: this.keyword,
           goods_category_id: this.parentId,
-          limit: 7,
+          limit: 6,
           page: this.choicePage
         })
         if (res.error !== this.$ERR_OK) {
@@ -662,7 +667,7 @@
         this.choicePage = page
         await this._getGoodsList()
       },
-      // 选择一级分类
+      // 选择一级类目
       async _secondAssortment(item) {
         this.parentId = item.id
         if (item.id === '') {
@@ -670,21 +675,21 @@
         } else {
           let res = await API.Rush.goodsCategory({parent_id: this.parentId})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
-        this.secondAssortment.content = '选择二级分类'
+        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        this.secondAssortment.content = '二级类目'
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
-      // 选择二级分类
+      // 选择二级类目
       async _choessSecondAssortment(item) {
         this.parentId = item.id
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
-      // 获取一级分类
+      // 获取一级类目
       async _getFirstAssortment() {
         let res = await API.Product.getCategory({parent_id: this.parentId, get_goods_count: 1})
         this.$loading.hide()
@@ -1171,6 +1176,41 @@
     border-radius: 4px
     margin: 0 20px
     height: 420px
+    >.goods-header
+      height: 45px
+      background: #F5F7FA
+      display: flex
+      align-items: center
+      padding: 0 30px 0 20px
+      font-family: $font-family-regular
+      position: relative
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .goods-text
+        flex: 1
+        &:last-child
+          flex: 0.5
+        &:first-child
+          text-indent: 36px
+          flex: 2
+          max-width: 480px
     .goods-list
       flex-wrap: wrap
       display: flex
@@ -1203,35 +1243,43 @@
           width: 100%
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
-      &:nth-child(2n - 1)
+      &:nth-child(2n)
         background: #f5f7fa
+      .content-item
+        flex: 1
+        display: flex
+        align-items: center
+        font-family: $font-family-regular
+        &:last-child
+          flex: 0.5
+        &:first-child
+          flex: 2
+          max-width: 480px
       .goods-img
         margin-right: 10px
         width: 40px
         height: @width
         overflow: hidden
         object-fit: cover
+        flex: 0 0 auto
 
-      .goods-msg
-        flex: 1
-        display: flex
-        color: $color-text-main
-        font-family: $font-family-regular
-        justify-content: space-between
-        height: 100%
-        align-items: center
-        .goods-name
-          width: 500px
-          no-wrap()
-          .tag
-            border-radius: 2px
-            background: #73C200
-            color: #FFF
-            font-family: $font-family-regular
-            font-size: 12px
-            padding: 2px 3px
-            line-height: 16px
-            margin-right: 4px
+      .goods-name
+        line-height: 1.2
+        max-width: 380px
+        no-wrap()
+        .text
+          overflow: hidden
+          text-overflow: ellipsis
+
+        .tag
+          border-radius: 2px
+          background: #73C200
+          color: #FFF
+          font-family: $font-family-regular
+          font-size: 12px
+          padding: 2px 3px
+          line-height: 16px
+          margin-right: 4px
 
         .goods-name, .goods-money
           line-height: 1
@@ -1431,6 +1479,7 @@
     position: relative
     transform-origin: 50%
     margin-right: 20px
+    flex: 0 0 auto
     .after
       all-center()
       transform-origin: 50%

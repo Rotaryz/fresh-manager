@@ -164,7 +164,7 @@
           return
         }
         let arr = []
-        this.dispatchSelectList.forEach((item) =>{
+        this.dispatchSelectList.forEach((item) => {
           if (item.name.toLowerCase().includes(text.toLowerCase())) {
             arr.push(item)
           }

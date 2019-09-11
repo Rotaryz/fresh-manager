@@ -108,24 +108,23 @@
         API.Coupon.getCouponData({
           tag_type: 0,
           coupon_id: this.id
-        })
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.chartData = this.chartDataArr.map((item, index) => {
+            return {
+              value: res.data[item],
+              name: this.chartData[index].name
             }
-            this.chartData = this.chartDataArr.map((item, index) => {
-              return {
-                value: res.data[item],
-                name: this.chartData[index].name
-              }
-            })
-            this.$refs.funnel._setChart()
-            this.couponName = res.data.coupon_name
-            this.viewData[0].num = res.data.trade_total
-            this.viewData[1].num = res.data.discount_total
-            this.viewData[2].num = res.data.roi_value
           })
+          this.$refs.funnel._setChart()
+          this.couponName = res.data.coupon_name
+          this.viewData[0].num = res.data.trade_total
+          this.viewData[1].num = res.data.discount_total
+          this.viewData[2].num = res.data.roi_value
+        })
       },
       exportUrl() {
         let currentId = this.getCurrentId()
@@ -141,7 +140,11 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' + search.join('&')
+        return (
+          process.env.VUE_APP_API +
+          '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' +
+          search.join('&')
+        )
       },
       exportData() {
         window.open(this.exportUrl())

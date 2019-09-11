@@ -194,10 +194,10 @@
               <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
+              <base-drop-down :width="218" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+              <base-search placeHolder="请输入商品名称或编码" @search="_searchGoods"></base-search>
             </div>
           </div>
           <div class="goods-content">
@@ -207,9 +207,12 @@
             <div class="goods-list" :class="{'goods-list-border':choiceGoods.length}">
               <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
                 <div v-for="(title, ind) in goodsTitle" :key="ind" class="item-content hand" :style="{flex: title.flex}" @click="_selectGoods(item,index)">
-                  <span v-if="title.value === 'image'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
-                  <img v-if="title.value === 'image'" class="goods-img" :src="item.goods_cover_image">
-                  <div class="value">{{title.value === 'trade_price' ? '¥' : ''}}{{title.value === 'sale_unit' ? (item.sale_unit || item.goods_units) : item[title.value]}}</div>
+                  <span v-if="title.value === 'name'" class="select-icon" :class="{'select-icon-active': +showSelectIndex === index}"></span>
+                  <img v-if="title.value === 'name'" class="goods-img" :src="item.goods_cover_image">
+                  <div class="value">
+                    <p class="text">{{title.value === 'trade_price' ? '¥' : ''}}{{item[title.value]}}{{title.value === 'usable_stock' ? item.sale_unit : ''}}</p>
+                    <p v-if="title.value === 'name'" class="text">{{item.goods_sku_encoding}}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -244,11 +247,9 @@
   const TITLE = '新建兑换券'
   const TABLE_TITLE = ['图片', '商品名称', '单位', '售价(元)', '库存', '操作']
   const GOODS_POP_TITLE = [
-    {name: '图片', flex: 0.6, value: 'image'},
-    {name: '商品名称', flex: 2.5, value: 'name'},
-    {name: '基本单位', flex: 0.9, value: 'sale_unit'},
-    {name: '库存', flex: 0.9, value: 'usable_stock'},
-    {name: '销售价格', flex: 0.9, value: 'trade_price'}
+    {name: '商品', flex: 2.5, value: 'name'},
+    {name: '销售价', flex: 0.9, value: 'trade_price'},
+    {name: '可用库存', flex: 0.9, value: 'usable_stock'}
   ]
 
   const TAG_TYPE = {1: 'free', 2: 'fitGift'}
@@ -294,8 +295,8 @@
         showSelectIndex: -1,
         parentId: '',
         goodsCate: [],
-        assortment: {check: false, show: false, content: '选择分类', type: 'default', data: []}, // 格式：{title: '55'
-        secondAssortment: {check: false, show: false, content: '选择二级分类', type: 'default', data: []}, // 格式：{title: '55'}}
+        assortment: {check: false, show: false, content: '一级类目', type: 'default', data: []}, // 格式：{title: '55'
+        secondAssortment: {check: false, show: false, content: '二级类目', type: 'default', data: []}, // 格式：{title: '55'}}
         selectItem: {},
         chooseType: 'free'
       }
@@ -374,7 +375,10 @@
           {value: this.commodity.description, txt: '请输入使用说明'},
           {value: this.testCardType, txt: '请输入正确的兑换券金额'},
           {value: this.testGoods, txt: '请选择商品'},
-          {value: (this.commodity.coupon_name && this.commodity.coupon_name.length <= 20), txt: '请按要求输入兑换券别名(20字以内)'},
+          {
+            value: this.commodity.coupon_name && this.commodity.coupon_name.length <= 20,
+            txt: '请按要求输入兑换券别名(20字以内)'
+          },
           {value: this.commodity.usable_stock, txt: '请输入发放总量'},
           {value: this.textUsableStock, txt: `发放数量应设为1~99999之间的整数`}
         ]
@@ -390,7 +394,7 @@
       },
       _formatSubmitData() {
         let tagType = 1
-        for (let [key, value] of Object.entries(TAG_TYPE)){
+        for (let [key, value] of Object.entries(TAG_TYPE)) {
           if (this.chooseType === value) {
             tagType = key
           }
@@ -435,7 +439,9 @@
           total_page: res.meta.last_page
         }
         this.choiceGoods = res.data
-        this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === (this.goodsItem[0] && this.goodsItem[0].id))
+        this.showSelectIndex = this.choiceGoods.findIndex(
+          (item) => item.id === (this.goodsItem[0] && this.goodsItem[0].id)
+        )
       },
       // 弹窗确定选择链接
       async _miniGoods() {
@@ -472,21 +478,21 @@
         } else {
           let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
           this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
         }
-        this.secondAssortment.content = '选择二级分类'
+        this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
+        this.secondAssortment.content = '二级类目'
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
-      // 选择二级分类
+      // 选择二级类目
       async _choessSecondAssortment(item) {
         this.parentId = item.id
         this.choicePage = 1
         this.$refs.goodsPage.beginPage()
         await this._getGoodsList()
       },
-      // 获取一级分类
+      // 获取一级类目
       async _getFirstAssortment() {
         let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
         this.goodsCate = res.error === this.$ERR_OK ? _.cloneDeep(res.data) : []
@@ -509,7 +515,9 @@
         //   this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.ranges[0].range_id)
         // }
         if (this.commodity.exchange_goods.length) {
-          this.showSelectIndex = this.choiceGoods.findIndex((item) => item.id === this.commodity.exchange_goods[0].range_id)
+          this.showSelectIndex = this.choiceGoods.findIndex(
+            (item) => item.id === this.commodity.exchange_goods[0].range_id
+          )
         }
         await this._getGoodsList(false)
         this.$refs.goods.showModal()
@@ -815,6 +823,7 @@
           align-items: center
         .goods-img
           width: 40px
+          margin-right: 10px
           height: @width
           overflow: hidden
           background-repeat: no-repeat
@@ -826,6 +835,9 @@
           text-overflow: ellipsis
           overflow: hidden
           max-width: 285px
+          .text
+            overflow: hidden
+            text-overflow: ellipsis
 
   .title-box
     display: flex

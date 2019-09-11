@@ -28,7 +28,7 @@
               <div class="mini-mr20">
                 <base-drop-down :height="40" :width="190" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
               </div>
-              <base-drop-down :height="40" :width="190" :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
+              <!--<base-drop-down :height="40" :width="190" :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>-->
             </div>
           </div>
           <div class="edit-item  edit-image-box">
@@ -476,7 +476,7 @@
         } else if (this.msg.goods_material_category_id <= 0) {
           this.$toast.show('请选择商品类目')
           return
-        }  else if (this.goods_skus.base_unit === '') {
+        } else if (this.goods_skus.base_unit === '') {
           this.$toast.show('请选择基本单位')
           return
         } else if (this.goods_skus.base_sale_rate.length === 0) {

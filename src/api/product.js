@@ -251,7 +251,7 @@ export default {
    */
   scmGoodsImport(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/import-create-scm-goods`
-    return request.post(url, data, loading)
+    return request.post(url, data, loading, 20000)
   },
   /**
    * 商品新建模板导入【供应链专用】[v2.8]-scm
@@ -272,5 +272,33 @@ export default {
   checkGoodsTask(data, loading = false) {
     let url = `/social-shopping/api/backend/goods-manage/check-task`
     return request.get(url, data, loading)
+  },
+  // 生成商品编码[v2.9.6]
+  createCode(data, loading = false) {
+    let url = `/social-shopping/api/backend/goods-manage/goods-code-generate`
+    return request.post(url, data, loading)
+  },
+  // 商品详情[v2.9.6]
+  // 数据展示类型(不传或为空为=所有数据;base=基础数据;sale=销售数据)
+  getDetail(data, loading) {
+    data.show_type = data.show_type || 'base'
+    let url = `/social-shopping/api/backend/goods-manage/goods/${data.id}`
+    return request.get(url, {show_type: data.show_type}, loading)
+  },
+  // 创建商品[v2.9.6]
+  // createGoods(data, loading) {
+  //   let url = `/social-shopping/api/backend/goods-manage/goods`
+  //   return request.post(url, data, loading)
+  // },
+  // 商品编辑[v2.9.6]
+  updateGoods(data, loading) {
+    let flag = data.isCopy ? false : data.id
+    if (flag) {
+      let url = `/social-shopping/api/backend/goods-manage/goods/${data.id}`
+      return request.put(url, data, loading)
+    } else {
+      let url = `/social-shopping/api/backend/goods-manage/goods`
+      return request.post(url, data, loading)
+    }
   }
 }

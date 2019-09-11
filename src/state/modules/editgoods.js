@@ -17,15 +17,15 @@ export const state = {
     page: 1,
     has_stock: '',
     source: '',
-    complete_status: '',
     is_presale: '',
     goods_material_category_id: '',
-    goods_type: ''
+    goods_type: '',
+    supplier_keyword: ''
   },
   taskData: {
     isTaskFirst: true,
-    oneName: '一级分类',
-    twoName: '二级分类',
+    oneName: '一级类目',
+    twoName: '二级类目',
     twoList: [],
     source: '全部',
     complete: '全部',
@@ -122,15 +122,15 @@ export const actions = {
       page: 1,
       has_stock: '',
       source: '',
-      complete_status: '',
       is_presale: '',
       goods_type: '',
-      goods_material_category_id: ''
+      goods_material_category_id: '',
+      supplier_keyword: ''
     })
     commit('SET_TASK_DATA', {
       isTaskFirst: true,
-      oneName: '一级分类',
-      twoName: '二级分类',
+      oneName: '一级类目',
+      twoName: '二级类目',
       twoList: [],
       source: '全部',
       complete: '全部',

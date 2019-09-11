@@ -135,43 +135,37 @@
           </div>
           <span class="close hand" @click="_hideGoods"></span>
         </div>
-        <!--<div class="shade-header">-->
-        <!--<div class="shade-title">选择商品</div>-->
-        <!--<span class="close hand" @click="_hideGoods"></span>-->
-        <!--</div>-->
         <!--商品详情-->
         <div>
           <div class="shade-tab">
-            <!--<div class="tab-item">-->
-            <!--<base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>-->
-            <!--</div>-->
-            <!--<div class="tab-item">-->
-            <!--<base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>-->
-            <!--</div>-->
             <div class="tab-item">
-              <base-drop-down :select="stairSelect" @setValue="setStairValue"></base-drop-down>
+              <base-drop-down :width="218" :select="stairSelect" @setValue="setStairValue"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
+              <base-drop-down :width="218" :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
             </div>
             <div class="tab-item">
-              <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
-            </div>
-            <div class="tab-item">
-              <base-search placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
+              <base-search placeHolder="请输入商品名称或编码" @search="_searchGoods"></base-search>
             </div>
           </div>
           <div class="goods-content">
+            <div class="goods-header">
+              <div class="goods-text">商品</div>
+              <div class="goods-text">可用库存</div>
+            </div>
             <div class="goods-list" :class="{'goods-list-border':choiceGoods.length}">
               <div v-for="(item, index) in choiceGoods" :key="index" class="goods-item">
-                <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
-                  <span class="after"></span>
+                <div class="content-item">
+                  <div class="select-icon hand" :class="{'select-icon-active': showSelectIndex === index}" @click="_selectGoods(item, index)">
+                    <span class="after"></span>
+                  </div>
+                  <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
+                  <div class="goods-name">
+                    <p class="text">{{item.goods_name}}</p>
+                    <p class="text">{{item.goods_sku_encoding}}</p>
+                  </div>
                 </div>
-                <div class="goods-img" :style="{'background-image': 'url(\'' + item.goods_cover_image + '\')'}"></div>
-                <div class="goods-msg">
-                  <div class="goods-name">{{item.goods_name}}</div>
-                  <div class="goods-money">{{item.goods_sku_encoding}}</div>
-                </div>
+                <div class="content-item">{{item.usable_stock}}{{item.base_unit}}</div>
               </div>
             </div>
           </div>
@@ -417,7 +411,7 @@
           keyword: this.text,
           goods_material_category_id: this.categoryId,
           page: this.choicePage,
-          limit: 7
+          limit: 6
         })
         if (res.error !== this.$ERR_OK) {
           return
@@ -1089,6 +1083,39 @@
   .goods-content
     border-radius: 4px
     height: 420px
+    >.goods-header
+      height: 45px
+      background: #F5F7FA
+      display: flex
+      align-items: center
+      padding: 0 30px 0 20px
+      font-family: $font-family-regular
+      position: relative
+      &:before
+        content: ""
+        pointer-events: none // 解决iphone上的点击无效Bug
+        display: block
+        position: absolute
+        left: 0
+        top: 0
+        transform-origin: 0 0
+        border-right: 1px solid #E9ECEE
+        border-left: 1px solid #E9ECEE
+        border-top: 1px solid #E9ECEE
+        box-sizing border-box
+        width: 200%
+        height: 100%
+        transform: scaleX(.5) translateZ(0)
+        @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3)
+          width: 100%
+          height: 300%
+          transform: scaleX(1 / 3) translateZ(0)
+      .goods-text
+        flex: 2
+        &:last-child
+          flex: 0.5
+        &:first-child
+          text-indent: 36px
     .goods-list
       flex-wrap: wrap
       display: flex
@@ -1121,7 +1148,7 @@
           width: 100%
           height: 300%
           transform: scaleX(1 / 3) translateZ(0)
-      &:nth-child(2n - 1)
+      &:nth-child(2n)
         background: #f5f7fa
       .goods-img
         margin-right: 10px
@@ -1164,6 +1191,13 @@
         cursor: not-allowed
         background: $color-line
         color: $color-text-assist
+    .content-item
+      flex: 2
+      display: flex
+      align-items: center
+      font-family: $font-family-regular
+      &:last-child
+        flex: 0.5
     .page-box
       padding: 0 20px
       box-sizing: border-box

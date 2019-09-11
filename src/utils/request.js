@@ -34,7 +34,6 @@ function resetUrl(url) {
   if (IS_PRODUCTION) {
     return url
   }
-  // todo
   let pathname = window.location.pathname
   if (pathname && pathname.indexOf('/v') > -1) {
     let version = pathname.substr(1)
@@ -97,9 +96,9 @@ function requestException(res) {
     error.data = serviceData.data || []
   }
   switch (serviceData.code) {
-  case 13004: // 系统升级
-    error.error = 0
-    break
+    case 13004: // 系统升级
+      error.error = 0
+      break
   }
   return error
 }

@@ -22,6 +22,12 @@
       <div class="down-item">
         <base-drop-down :select="errorObj" @setValue="checkErr"></base-drop-down>
       </div>
+      <template v-if="sortingTask.filter.sorting_mode === 0">
+        <span class="down-tip">线路筛选</span>
+        <div class="down-item">
+          <base-drop-down :select="roadList" @setValue="checkRoad"></base-drop-down>
+        </div>
+      </template>
       <!--下拉选择-->
       <template v-if="sortingTask.filter.sorting_mode === 1">
         <span class="down-tip">类目筛选</span>
@@ -37,9 +43,9 @@
         <div class="down-item down-group-item">
           <base-drop-down :select="secondSelect" @setValue="setSecondValue"></base-drop-down>
         </div>
-        <div class="down-item">
+        <!--<div class="down-item">
           <base-drop-down :select="thirdlySelect" @setValue="setThirdlyValue"></base-drop-down>
-        </div>
+        </div>-->
       </template>
       <!--搜索-->
       <span class="down-tip">搜索</span>
@@ -136,7 +142,7 @@
     {tilte: '商户名称', key: 'merchant_name', flex: '2'},
     {tilte: '订单数量', key: 'order_num', after: 'sale_unit'},
     {tilte: '建议配货数量', key: 'allocation_num', after: 'sale_unit'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -156,7 +162,7 @@
     {tilte: '缺货数', key: 'sale_out_of_num', after: 'sale_unit'},
     {tilte: '存放库位', key: 'position_name', flex: '2'},
     {tilte: '待配商户数', key: 'merchant_num'},
-    {tilte: '状态', key: 'status_str',afterImg:{type: 'img', key: 'is_exception',class:'list-item-img'}},
+    {tilte: '状态', key: 'status_str', afterImg: {type: 'img', key: 'is_exception', class: 'list-item-img'}},
     {
       tilte: '操作',
       key: '',
@@ -193,6 +199,13 @@
           content: '全部',
           type: 'default',
           data: [{name: '全部', status: ''}, {name: '正常', status: '0'}, {name: '异常', status: '1'}] // 格式：{name: '55'}
+        },
+        roadList: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', status: ''}] // 格式：{name: '55'}
         },
         filterTaskFrist: {
           check: false,
@@ -237,6 +250,7 @@
       this._getStatusData()
       this._setErrorStatus()
       this.getCategoriesData()
+      this._getRoadList()
       this._setData()
     },
     methods: {
@@ -251,6 +265,22 @@
         this.secondSelect.data = selectDown.twoList
         this.thirdlySelect.data = selectDown.thrList
       },
+      _getRoadList() {
+        API.Sorting.getRoadList().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.roadList.data = res.data.map((item) => {
+              return {
+                name: item.road_name,
+                id: item.id
+              }
+            })
+            this.roadList.data.unshift({name: '全部', id: ''})
+            this._setRoadStatus()
+          } else {
+            this.$toast.show(res.message)
+          }
+        })
+      },
       getCategoriesData() {
         API.Product.getScmCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -263,11 +293,19 @@
       },
       // 选择一级类目
       async setStairValue(data) {
+        let obj = JSON.parse(JSON.stringify(data))
         this.secondSelect.content = '二级类目'
-        this.secondSelect.data = data.list
+        this.secondSelect.data = obj.list
+        this.secondSelect.data.unshift({name: '全部', id: obj.id, list: []})
         this.thirdlySelect.content = '三级类目'
         this.thirdlySelect.data = []
-        this.SET_TASK_DATA({oneName: data.name, twoName: '二级类目', twoList: data.list, thrName: '三级类目', thrList: []})
+        this.SET_TASK_DATA({
+          oneName: obj.name,
+          twoName: '二级类目',
+          twoList: obj.list,
+          thrName: '三级类目',
+          thrList: []
+        })
         this._updateData({goods_material_category_id: data.id || '', page: 1})
       },
       // 选择二级类目
@@ -286,8 +324,12 @@
         let item = this.errorObj.data.find((item) => item.status === this.sortingTask.filter.exception_status)
         this.errorObj.content = item.name || '全部'
       },
+      _setRoadStatus() {
+        let item = this.roadList.data.find(item => item.id === this.sortingTask.filter.road_id)
+        this.roadList.content = item.name || '全部'
+      },
       webSocketData() {
-        let url =  process.env.VUE_APP_WSS + '/sub'
+        let url = process.env.VUE_APP_WSS + '/sub'
         let prg = `scm_batch_finish_sorting_` + process.env.VUE_APP_CURRENT_CORP
         let id = this.currentUser().manager_info.store_id
         let urlPrg = `wss://${url}?id=${id}&prg=${prg}`
@@ -302,7 +344,10 @@
         }
       },
       async checkErr(item) {
-        this._updateData({exception_status:item.status,page:1})
+        this._updateData({exception_status: item.status, page: 1})
+      },
+      async checkRoad(item) {
+        this._updateData({road_id: item.id, page: 1})
       },
       initBaseDropDown(first, second) {
         if (first) {
@@ -336,8 +381,8 @@
       },
       // 顶部tab切换
       tabChange(val) {
-        if(val===1){
-          this.initBaseDropDown(true,true)
+        if (val === 1) {
+          this.initBaseDropDown(true, true)
           this.getCategoriesData()
         }
         let params = {
@@ -349,7 +394,7 @@
           goods_material_category_id: '',
           status: 0,
           keyword: '',
-          exception_status:''
+          exception_status: ''
         }
         this.errorObj.content = '全部'
         this.$refs.research._setText()
@@ -387,13 +432,15 @@
       },
       // 状态栏数据
       _getStatusData() {
+        let obj = this.sortingTask.filter
         let params = {
-          start_time: this.sortingTask.filter.start_time,
-          end_time: this.sortingTask.filter.end_time,
-          goods_material_category_id: this.sortingTask.filter.goods_material_category_id,
-          keyword: this.sortingTask.filter.keyword,
-          exception_status: this.sortingTask.filter.exception_status,
-          sorting_mode: this.sortingTask.filter.sorting_mode
+          start_time: obj.start_time,
+          end_time: obj.end_time,
+          goods_material_category_id: obj.goods_material_category_id,
+          keyword: obj.keyword,
+          exception_status: obj.exception_status,
+          sorting_mode: obj.sorting_mode,
+          road_id: obj.road_id
         }
         // todo
         API.Sorting.getStausData(params)
@@ -464,7 +511,8 @@
           end_time: obj.end_time,
           keyword: obj.keyword,
           status: obj.status,
-          sorting_mode: obj.sorting_mode
+          sorting_mode: obj.sorting_mode,
+          road_id: obj.road_id
         }
         let search = []
         for (let key in data) {
@@ -484,7 +532,8 @@
           keyword: obj.keyword,
           status: obj.status,
           exception_status: obj.exception_status,
-          sorting_mode: obj.sorting_mode
+          sorting_mode: obj.sorting_mode,
+          road_id: obj.road_id
         }
         let search = []
         for (let key in data) {
@@ -509,9 +558,9 @@
       // 按订单分拣导出配货单
       async _exportInvoiceOrder() {
         await API.Sorting.exportInvoiceOrder(this.getUrl())
-        // setTimeout(() => {
-        //   this._updateData({page: 1})
-        // }, 500)
+      // setTimeout(() => {
+      //   this._updateData({page: 1})
+      // }, 500)
       },
       // 按商品分拣导出配货单
       async _exportDeliveryOrder() {

@@ -106,33 +106,32 @@
       <div class="back-cancel back-btn hand" @click="_back">取消</div>
       <div class="back-btn back-submit hand" @click="_saveEntryOrder">保存</div>
     </div>
-    <select-store ref="goodsPop" :stock="false" @additionOne="additionOne" @batchAddition="batchAddition"></select-store>
+    <select-store ref="goodsPop" :stock="false" @batchAddition="batchAddition"></select-store>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  // import DefaultModal from '@components/default-modal/default-modal'
+// import DefaultModal from '@components/default-modal/default-modal'
   import DefaultConfirm from '@components/default-confirm/default-confirm'
   import DefaultStore from '@components/default-store/default-store'
   import SelectStore from '@components/select-store/select-store'
   import {merchantOrderComputed, merchantOrderMethods} from '@state/helpers'
   import API from '@api'
-  import {objDeepCopy} from '@utils/common'
   import {DatePicker} from 'iview'
 
   const PAGE_NAME = 'CONSUMER_ORDER_DETAIL'
   const TITLE = '新建入库单'
 
   const COMMODITIES_LIST = [
-    {name: '商品', value: 'name', flex: 1,},
-    {name: '分类', value: 'goods_category_name', flex: 1},
+    {name: '商品', value: 'name', flex: 1},
+    {name: '类目', value: 'goods_category_name', flex: 1},
     {name: '入库数量(基本单位)', value: 'enter_count', flex: 1, unit: 'kg'},
     // {name: '入库数量(采购单位)', value: 'enter_count', flex: 1, unit: '箱'},
     {name: '入库单价(基本单位)', value: 'enter_price', flex: 1, unit: '元/kg'},
     {name: '入库金额', value: 'enter_price', flex: 1},
     {name: '保质期', value: '', flex: 1},
     {name: '存放库位', value: 'store_house', flex: 1, unit: ''},
-    {name: '操作', value: '', flex: 1},
+    {name: '操作', value: '', flex: 1}
   ]
 
   const RATE = /^[0-9]\d*$/
@@ -214,7 +213,7 @@
         return this.goodsList.length
       },
       testGoodsCount() {
-        let result = this.goodsList.every(item => {
+        let result = this.goodsList.every((item) => {
           !item.base_num && this.$toast.show(`请输入“${item.name}”入库数量`)
           if (item.base_num < 1 || RATE.test(item.base_num)) {
             this.$toast.show(`入库数量应为大于0的整数`)
@@ -234,29 +233,27 @@
       },
       fixPosition() {
         if (!this.testMobile) return
-        API.merchantOrder.fixPosition({mobile: this.msg.mobile})
-          .then(res => {
-            if (res.error !== this.ERR_OK) {
-              this.$tost.show(res.message)
-              return
-            }
-            this.community.data = res.data
-          })
+        API.merchantOrder.fixPosition({mobile: this.msg.mobile}).then((res) => {
+          if (res.error !== this.ERR_OK) {
+            this.$tost.show(res.message)
+            return
+          }
+          this.community.data = res.data
+        })
       },
       getEntryOutType() {
-        API.Store.getEntryOutType({method: 'create'})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Store.getEntryOutType({method: 'create'}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.entryType.data = res.data.entry.map((item) => {
+            return {
+              name: item.type_str,
+              type: item.type
             }
-            this.entryType.data = res.data.entry.map(item => {
-              return {
-                name: item.type_str,
-                type: item.type
-              }
-            })
           })
+        })
       },
       // 修改入库数量（基本单位）
       changeNum(item, index) {
@@ -336,13 +333,12 @@
 
         // this.selectGoodsId.splice(this.goodsDelIndex, 1)
         this.goodsList.splice(this.goodsDelIndex, 1)
-        // this.selectDelId.push(this.goodsDelId)
+      // this.selectDelId.push(this.goodsDelId)
       },
       // 单个添加
       additionOne(item, index) {
         let isExist = false
-        let obj =
-          (item)
+        let obj = item
         obj.price = 0
         obj.total = 0
         this.goodsList.forEach((item) => {
@@ -355,33 +351,25 @@
         }
       },
       batchAddition(list) {
-        list.forEach((item) => {
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
           let isExist = false
-          this.goodsList.forEach((item1) => {
-            if (item.goods_id * 1 === item1.goods_id * 1) {
+          this.goodsList.forEach((goods) => {
+            if (item.goods_id * 1 === goods.goods_id * 1) {
               isExist = true
             }
           })
           if (!isExist) {
-            let obj = objDeepCopy(item)
-            obj.price = 0
-            obj.total = 0
-            obj.base_num = ''
-            this.goodsList.push(obj)
+            item.price = 0
+            item.total = 0
+            item.base_num = ''
           }
+          return item
         })
+        this.goodsList = newArr
       },
       async _showGoods() {
-        // if (this.disable) {
-        //   return
-        // }
-        // await this._getGoodsList()
-        // // 展示添加商品弹窗
-        // this.$refs.goodsModel && this.$refs.goodsModel.showModal()
-        this.$refs.goodsPop._delGoods(this.goodsList)
-      },
-      _hideGoods() {
-        this.$refs.goodsModel.hideModal()
+        this.$refs.goodsPop && this.$refs.goodsPop.showModal(this.goodsList)
       },
       // 切换分类
       _setClassify(index, item) {
@@ -415,7 +403,7 @@
           {value: this.testProvider, txt: '请输入商品提供方'},
           {value: this.testEntryType, txt: '请选择入库类型'},
           {value: this.testGoods, txt: '请选择商品'}
-          // {value: this.testGoodsCount, txt: ''},
+        // {value: this.testGoodsCount, txt: ''},
         ]
         for (let i = 0, j = arr.length; i < j; i++) {
           if (!arr[i].value) {
@@ -428,7 +416,7 @@
         }
       },
       checkGoods() {
-        let result = this.goodsList.every(item => {
+        let result = this.goodsList.every((item) => {
           !item.base_num && this.$toast.show(`请输入“${item.name}”入库数量`)
           if (item.base_num < 1 || !RATE.test(item.base_num)) {
             this.$toast.show(`入库数量应为大于0的整数`)

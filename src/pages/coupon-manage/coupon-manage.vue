@@ -259,21 +259,19 @@
           created_start_at: this.requestData.created_start_at,
           created_end_at: this.requestData.created_end_at,
           keyword: this.requestData.keyword
-        }).then(
-          (res) => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            this.statusTab = res.data.map((item, index) => {
-              return {
-                name: item.status_str,
-                status: item.status,
-                num: item.statistic
-              }
-            })
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
           }
-        )
+          this.statusTab = res.data.map((item, index) => {
+            return {
+              name: item.status_str,
+              status: item.status,
+              num: item.statistic
+            }
+          })
+        })
       },
       changeStatus(status, index) {
         this.setDefaultIndex({status: status.status, index})
@@ -289,29 +287,28 @@
       },
       viewDataShow(item) {
         this.currentItem = item
-        this.$router.push('/home/coupon-manage/coupon-data?id='+item.id)
+        this.$router.push('/home/coupon-manage/coupon-data?id=' + item.id)
       },
       getCouponData() {
         API.Coupon.getCouponData({
           tag_type: 0,
           coupon_id: this.currentItem.id
-        })
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        }).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.chartData = this.chartDataArr.map((item, index) => {
+            return {
+              value: res.data[item],
+              name: this.chartData[index].name
             }
-            this.chartData = this.chartDataArr.map((item, index) => {
-              return {
-                value: res.data[item],
-                name: this.chartData[index].name
-              }
-            })
-            this.viewData[0].num = res.data.trade_total
-            this.viewData[1].num = res.data.discount_total
-            this.viewData[2].num = res.data.roi_value
-            this.showViewData = true
           })
+          this.viewData[0].num = res.data.trade_total
+          this.viewData[1].num = res.data.discount_total
+          this.viewData[2].num = res.data.roi_value
+          this.showViewData = true
+        })
       },
       exportUrl() {
         let currentId = this.getCurrentId()
@@ -327,7 +324,11 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/v2/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' + search.join('&')
+        return (
+          process.env.VUE_APP_API +
+          '/social-shopping/v2/api/backend/coupon-manage/coupon/coupon-report/day-report-export?' +
+          search.join('&')
+        )
       },
       exportData() {
         window.open(this.exportUrl())
@@ -345,7 +346,11 @@
         this.currentItem = item
         this.confirmType = 'stop'
         this.infoTitle = '停止优惠券'
-        this.$refs.confirm.show('停止“'+ item.coupon_name +'”优惠券，用户之前领取的优惠券，在可用时间内还能继续使用，但无法再编辑优惠券内容。确定停止吗？')
+        this.$refs.confirm.show(
+          '停止“' +
+            item.coupon_name +
+            '”优惠券，用户之前领取的优惠券，在可用时间内还能继续使用，但无法再编辑优惠券内容。确定停止吗？'
+        )
       },
       _deleteCoupon(item) {
         this.currentItem = item
@@ -354,21 +359,21 @@
         this.$refs.confirm.show('删除后将无法查看优惠券的信息，且无法恢复，谨慎操作！')
       },
       async _sureConfirm() {
-        this.confirmType === 'del' && API.Coupon.deleteCoupon(this.currentItem.id)
-          .then(res => {
+        this.confirmType === 'del' &&
+          API.Coupon.deleteCoupon(this.currentItem.id).then((res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
               return
             }
-            if (+this.pageDetail.total%10 === 1 && +this.requestData.page === +this.pageDetail.total_page) {
+            if (+this.pageDetail.total % 10 === 1 && +this.requestData.page === +this.pageDetail.total_page) {
               this.setRequestData({page: this.pageDetail.total_page - 1})
             } else {
               this.getCouponList()
             }
             this.$toast.show('删除成功')
           })
-        this.confirmType === 'stop' && API.Coupon.stopCoupon(this.currentItem.id)
-          .then(res => {
+        this.confirmType === 'stop' &&
+          API.Coupon.stopCoupon(this.currentItem.id).then((res) => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
               return

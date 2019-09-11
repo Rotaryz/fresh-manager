@@ -113,8 +113,8 @@
       title: TITLE
     },
     components: {
-      MarketConfirm,
-      // MarketTabs
+      MarketConfirm
+    // MarketTabs
     },
     data() {
       return {
@@ -171,7 +171,7 @@
       // todo
       _getStatus() {
         const type = TOP_BTN[this.defaultTab].type
-        API.Market.getStatus({type}).then((res)=>{
+        API.Market.getStatus({type}).then((res) => {
           this.statusTab = res.data.map((item, index) => {
             return {
               name: item.state_str,
@@ -268,22 +268,21 @@
           }
           this.$toast.show('删除成功')
           // this.getMarketStatus()
-          if (+this.marketPageDetail.total%10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
+          if (+this.marketPageDetail.total % 10 === 1 && +this.requestData.page === +this.marketPageDetail.total_page) {
             this.setRequestData({page: this.marketPageDetail.total_page - 1})
           } else {
             this.getMarketList()
           }
         } else {
-          API.Market.stopMarket(this.currentItem.id)
-            .then(res => {
-              if (res.error !== this.$ERR_OK) {
-                this.$toast.show(res.message)
-                return
-              }
-              this.$toast.show('停止成功')
-              this.getMarketList()
-              // this.getMarketStatus()
-            })
+          API.Market.stopMarket(this.currentItem.id).then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.$toast.show('停止成功')
+            this.getMarketList()
+          // this.getMarketStatus()
+          })
         }
       },
       couponHandle(coupon) {
@@ -294,9 +293,9 @@
         if (+coupon.tag_type === 1 || +coupon.tag_type === 2) {
           lastText = '使用'
         } else {
-          lastText = +coupon.preferential_type === 1 ? coupon.denomination+'折' : '减'+coupon.denomination+'元'
+          lastText = +coupon.preferential_type === 1 ? coupon.denomination + '折' : '减' + coupon.denomination + '元'
         }
-        return `【${coupon.coupon_name}】${coupon.condition > 0 ? '满'+coupon.condition+'元' : '无门槛'}${lastText}`
+        return `【${coupon.coupon_name}】${coupon.condition > 0 ? '满' + coupon.condition + '元' : '无门槛'}${lastText}`
       }
     }
   }

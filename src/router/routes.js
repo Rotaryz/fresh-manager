@@ -131,26 +131,26 @@ export default [
         meta: {
           titles: ['商城', '商品', '商品列表', '商品'],
           variableIndex: 3,
-          marginBottom: 80,
-          beforeResolve(routeTo, routeFrom, next) {
-            if (!routeTo.query.id) {
-              return next()
-            }
-            store
-              .dispatch('editgoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
-              .then((response) => {
-                if (!response) {
-                  return next({name: '404'})
-                }
-                routeTo.params.detail = response
-                next()
-              })
-              .catch(() => {
-                next({name: '404'})
-              })
-          }
-        },
-        props: (route) => ({detail: route.params.detail})
+          marginBottom: 80
+          // beforeResolve(routeTo, routeFrom, next) {
+          //   if (!routeTo.query.id) {
+          //     return next()
+          //   }
+          //   store
+          //     .dispatch('editgoods/getGoodsDetailData', {id: routeTo.query.id, showType: 'base'})
+          //     .then((response) => {
+          //       if (!response) {
+          //         return next({name: '404'})
+          //       }
+          //       routeTo.params.detail = response
+          //       next()
+          //     })
+          //     .catch(() => {
+          //       next({name: '404'})
+          //     })
+          // }
+        }
+        // props: (route) => ({detail: route.params.detail})
       },
       // 导入商品
       {
@@ -810,7 +810,7 @@ export default [
             }
             // let tabIndex = store.state.returns.tabIndex
             // if (tabIndex === 0) {
-              //  售后订单
+            //  售后订单
             let tabIndex = store.getters['returns/tabIndex']
             let str = +tabIndex === 1 ? 'returns/getMarketList' : 'returns/getReturnsList'
             let obj = +tabIndex === 1 ? {page: 1, source_type: 2} : ''
@@ -1053,22 +1053,22 @@ export default [
             //  抢购列表
             let data = store.getters['leaderInvite/requestData']
             API.Leader.leaderDistributionRankingList(data, true)
-            .then((res) => {
-              if (res.error !== ERR_OK) {
-                return next({name: '404'})
-              }
-              let dataInfo = res.data
-              let pageInfo = {
-                total: res.meta.total,
-                per_page: res.meta.per_page,
-                total_page: res.meta.last_page,
-                invite_number_count:res.invite_number_count
-              }
-              next({params: {dataInfo, pageInfo}})
-            })
-            .catch(e => {
-              next({name: '404'})
-            })
+              .then((res) => {
+                if (res.error !== ERR_OK) {
+                  return next({name: '404'})
+                }
+                let dataInfo = res.data
+                let pageInfo = {
+                  total: res.meta.total,
+                  per_page: res.meta.per_page,
+                  total_page: res.meta.last_page,
+                  invite_number_count: res.invite_number_count
+                }
+                next({params: {dataInfo, pageInfo}})
+              })
+              .catch((e) => {
+                next({name: '404'})
+              })
           }
         }
       },
@@ -1479,7 +1479,7 @@ export default [
         name: 'consumer-order-detail',
         meta: {
           marginBottom: 80,
-          titles: ['供应链', '订单', '商户订单', '补录订单'],
+          titles: ['供应链', '订单', '商户订单', '补录订单']
         },
         component: () => lazyLoadView(import('@pages/consumer-order-detail/consumer-order-detail'))
       },
@@ -1648,7 +1648,7 @@ export default [
           async beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('proTask/getSuggestList', {
-               supplierId: '',
+                supplierId: '',
                 keyword: '',
                 page: 1,
                 loading: true
@@ -1773,7 +1773,7 @@ export default [
         name: 'goods-store',
         component: () => lazyLoadView(import('@pages/goods-store/goods-store')),
         meta: {
-          titles: ['供应链', '采购', '商品素材库'],
+          titles: ['商城', '商品', '商品素材'],
           beforeResolve(routeTo, routeFrom, next) {
             store
               .dispatch('scmGoods/getScmStoreData', {
@@ -1871,7 +1871,7 @@ export default [
         name: 'supplier',
         component: () => lazyLoadView(import('@pages/supplier/supplier')),
         meta: {
-          titles: ['供应链', '采购', '基础设置', '供应商'],
+          titles: ['供应链', '采购', '供应商'],
           resetHooks: ['supplier/infoSetKeyWord'],
           beforeResolve(routeTo, routeFrom, next) {
             // store.dispatch('supplier/infoSetKeyWord')
@@ -2185,10 +2185,10 @@ export default [
                 keyword: '',
                 status: 0, // 待分拣
                 sorting_mode: 0,
-                exception_status:'',
+                exception_status: '',
                 ...routeTo.query
               }
-              if(params.status!==''){
+              if (params.status !== '') {
                 params.status = Number(params.status)
               }
               params.sorting_mode = Number(params.sorting_mode)
@@ -2496,7 +2496,7 @@ export default [
               startTime: '',
               endTime: ''
             })
-            if (typeof (routeTo.query.status) !== 'undefined') {
+            if (typeof routeTo.query.status !== 'undefined') {
               // store.dispatch('distribution/setTabIndex', 0)
               store.commit('distribution/SET_TAB_INDEX', 0)
             }
@@ -2795,16 +2795,31 @@ export default [
 // delay: 400,
 // error: require('@pages/_timeout/_timeout').default,
 // timeout: 10000
-function lazyLoadView(AsyncView) {
-  const AsyncHandler = () => ({
-    component: AsyncView
-  })
+// function lazyLoadView(AsyncView) {
+//   const AsyncHandler = () => ({
+//     component: AsyncView
+//   })
+//
+//   return Promise.resolve({
+//     functional: true,
+//     render(h, {data, children}) {
+//       // 将属性和方法传递给所有展示组件
+//       return h(AsyncHandler, data, children)
+//     }
+//   })
+// }
 
-  return Promise.resolve({
-    functional: true,
-    render(h, {data, children}) {
-      // 将属性和方法传递给所有展示组件
-      return h(AsyncHandler, data, children)
-    }
-  })
+function lazyLoadView(AsyncView) {
+  // const AsyncHandler = () => ({
+  //   component: AsyncView
+  // })
+  //
+  // return Promise.resolve({
+  //   functional: true,
+  //   render(h, {data, children}) {
+  //     // 将属性和方法传递给所有展示组件
+  //     return h(AsyncHandler, data, children)
+  //   }
+  // })
+  return AsyncView
 }

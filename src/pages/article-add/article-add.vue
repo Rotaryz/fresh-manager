@@ -332,69 +332,7 @@
         <div class="back-btn back-submit hand" @click="_submitBtn('editContetnArticle',1)">上线</div>
       </template>
     </div>
-    <!-- 选择商品弹窗-->
-    <default-modal ref="goods">
-      <div slot="content" class="shade-box">
-        <div class="title-box">
-          <div class="title">
-            选择商品
-          </div>
-          <span class="close hand" @click="hideGoods"></span>
-        </div>
-        <div class="shade-tab">
-          <div class="tab-item">
-            <zb-dropdown v-model="goodsCategoryFrist"
-                         :data="goodsCategoryFristList"
-                         placeholder="一级分类"
-                         valueKey="id"
-                         :width="218"
-                         @change="_selectCategoryFirst"
-            ></zb-dropdown>
-          </div>
-          <div class="tab-item">
-            <zb-dropdown v-model="goodsCategorySecond"
-                         :data="goodsCategorySecondList"
-                         placeholder="二级分类"
-                         valueKey="id"
-                         :width="140"
-                         @change="_selectCategorySecond"
-            ></zb-dropdown>
-          </div>
-          <div class="tab-item">
-            <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
-          </div>
-        </div>
-        <div class="goods-list list">
-          <div v-for="(item, index) in chooseGoods" :key="item.id" class="list-content list-box">
-            <div class="list-item list-item-select">
-              <div class="select-icon hand"
-                   :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}"
-                   @click="selectGoodsBtn(item,index)"
-              >
-              </div>
-            </div>
-            <div class="list-item goods-img-wrap">
-              <div class="wrap">
-                <img :src="item.goods_cover_image" alt="" class="goods-img" style="object-fit: cover">
-              </div>
-            </div>
-            <div class="list-item goods-name">
-              {{item.name}}
-            </div>
-            <div class="list-item  goods-money">¥{{item.trade_price}}</div>
 
-            <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
-          </div>
-        </div>
-        <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="getMoreGoods"></base-pagination>
-        </div>
-        <div class="back">
-          <div class="back-cancel back-btn hand" @click="hideGoods">取消</div>
-          <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
-        </div>
-      </div>
-    </default-modal>
     <default-modal ref="addCategory">
       <div slot="content" class="shade-box add-category-box">
         <div class="title-box">
@@ -812,30 +750,6 @@
         }
       },
       // --------------弹窗
-      // 获取商品列表
-      async _getGoodsList() {
-        this.$loading.show()
-        let res = await API.Product.getGoodsList(this.chooseGoodsFilter)
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        if (this.chooseGoodsFilter.page === 1) {
-          this.$refs.pagination && this.$refs.pagination.beginPage()
-        }
-        this.goodsPage = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        this.chooseGoods = res.data.map((item, index) => {
-          let isInList = this.addData.goodsList.findIndex((items) => items.id === item.id)
-          let isSelect = this.selectGoods.findIndex((select) => select.id === item.id)
-          item.selected = isSelect !== -1 ? 2 : (isInList !== -1 ? 1 : 0)
-          // 0 没有选择 2 选择高亮  1 单个确认进入列表
-          return item
-        })
-        this.$loading.hide()
-      },
       // 展示商品弹窗
       async showGoods() {
         if (this.disable) return
@@ -846,108 +760,9 @@
         // await this._getGoodsList()
         // this.$refs.goods.showModal()
       },
-      // 隐藏商品弹窗
-      hideGoods() {
-        this.selectGoods = []
-        this.$refs.goods.hideModal()
-      },
-      // 获取分页商品列表
-      async getMoreGoods(page) {
-        this.chooseGoodsFilter.page = page
-        await this._getGoodsList()
-      },
-      // 获取一级分类
-      async getCategoryFirst() {
-        let res = await API.Product.getCategory({parent_id: ''})
-        this.goodsCategoryFristList = res.error === this.$ERR_OK ? res.data : []
-        this.goodsCategorySecondList = []
-        this.goodsCategorySecond = ''
-      },
-      async _selectCategoryFirst() {
-        let res = await API.Product.getCategory({parent_id: this.goodsCategoryFrist})
-        this.goodsCategorySecondList = res.error === this.$ERR_OK ? res.data : []
-        this.goodsCategoryChange(this.goodsCategoryFrist)
-      },
-      async _selectCategorySecond() {
-        this.goodsCategoryChange(this.goodsCategorySecond)
-      },
-      // 选择分类
-      async goodsCategoryChange(id) {
-        this.chooseGoodsFilter.goods_category_id = id
-        this.chooseGoodsFilter.page = 1
-        await this._getGoodsList()
-      },
-      // 搜索商品
-      async _searchGoods(text) {
-        this.chooseGoodsFilter.keyword = text
-        this.chooseGoodsFilter.page = 1
-        await this._getGoodsList()
-      },
-      // 勾选商品
-      selectGoodsBtn(item, index) {
-        /* eslint-disable */
-        switch (item.selected) {
-          case 0:
-            if (this.addData.goodsList.length + this.selectGoods.length >= 5) {
-              this.$toast.show('选择商品数量不能超过五个')
-              return
-            }
-            this.chooseGoods[index].selected = 2
-            this.selectGoods.push(item)
-            break
-          case 2:
-            this.chooseGoods[index].selected = 0
-            let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
-            }
-            break
-        }
-      },
       // 删除商品
       _showDelGoods(item, index) {
         this.addData.goodsList.splice(index, 1)
-      },
-      // 单个添加
-      _additionOne(item, index) {
-        if (item.selected === 1) {
-          return
-        }
-        if (this.addData.goodsList.length >= 5) {
-          this.$toast.show('选择商品数量不能超过5个')
-          return
-        }
-        this.chooseGoods[index].selected = 1
-        this.addData.goodsList.push(item)
-        if (this.currentType === 'common') {
-          this.selectGoods = []
-          this.addDetailContentItem({type: 'goods', value: item})
-        } else {
-          this.chooseGoods.forEach((item) => {
-            if (item.selected === 1) {
-              let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-              if (idx !== -1) {
-                this.selectGoods.splice(idx, 1)
-              }
-            }
-          })
-        }
-
-      },
-      // 批量添加
-      _batchAddition() {
-        this.chooseGoods = this.chooseGoods.map((item) => {
-          item.selected = item.selected === 2 ? 1 : item.selected
-          return item
-        })
-        this.addData.goodsList = this.addData.goodsList.concat(this.selectGoods)
-        if (this.currentType === 'common') {
-          this.selectGoods.forEach(item => {
-            this.addDetailContentItem({type: 'goods', value: item})
-          })
-        }
-        this.selectGoods = []
-        this.hideGoods()
       },
       // 批量添加商品
       batchAddition(list) {

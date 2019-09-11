@@ -35,7 +35,7 @@
       <div class="content-title">商品信息</div>
     </div>
     <div class="function-btn btn-box">
-      <div class="btn-main" @click="deleteGoods()"><span class="add-icon"></span>添加商品</div>
+      <div class="btn-main" @click="_showGoods()"><span class="add-icon"></span>添加商品</div>
     </div>
     <div class="big-list" :class="storeList.length > 10 ? 'big-list-max' : ''">
       <div class="list-header list-box">
@@ -66,7 +66,7 @@
       <div class="back-btn back-submit hand" @click="saveOutOrder">保存</div>
     </div>
     <!--<add-goods ref="addg"></add-goods>-->
-    <select-store ref="addg" @additionOne="additionOne" @batchAddition="batchAddition"></select-store>
+    <select-store ref="goodsPop" @batchAddition="batchAddition"></select-store>
     <default-batch ref="modalBox" :batchList="batchList" :curItem="curItem" @confirm="confirm"></default-batch>
     <default-confirm ref="confirm"></default-confirm>
   </div>
@@ -84,7 +84,7 @@
   const COMMODITIES_LIST = [
     '序号',
     '商品',
-    '分类',
+    '类目',
     '可用库存',
     '出库数量(基本单位)',
     // '出库批次',
@@ -135,58 +135,44 @@
         this.showIndex = null
       },
       getEntryOutType() {
-        API.Store.getEntryOutType({method: 'create'})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
+        API.Store.getEntryOutType({method: 'create'}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$toast.show(res.message)
+            return
+          }
+          this.outType.data = res.data.out.map((item) => {
+            return {
+              name: item.type_str,
+              type: item.type
             }
-            this.outType.data = res.data.out.map(item => {
-              return {
-                name: item.type_str,
-                type: item.type
-              }
-            })
           })
+        })
       },
       _selectOutType(item) {
         this.storeType = item.type
       },
-      deleteGoods() {
-        this.$refs.addg._delGoods(this.storeList)
+      _showGoods() {
+        this.$refs.goodsPop && this.$refs.goodsPop.showModal(this.storeList)
       },
       _back() {
         this.$router.back()
       },
-      additionOne(item) {
-        let isExist = false
-        let obj = item
-        obj.base_num = ''
-        obj.select_batch = []
-        this.storeList.forEach((item) => {
-          if (item.goods_id === obj.goods_id) {
-            isExist = true
-          }
-        })
-        if (!isExist) {
-          this.storeList.push(obj)
-        }
-      },
       batchAddition(list) {
-        list.forEach((item) => {
+        let arr = JSON.parse(JSON.stringify(list))
+        let newArr = arr.map((item) => {
           let isExist = false
-          this.storeList.forEach((item1) => {
-            if (item.goods_id * 1 === item1.goods_id * 1) {
+          this.storeList.forEach((goods) => {
+            if (item.goods_id * 1 === goods.goods_id * 1) {
               isExist = true
             }
           })
           if (!isExist) {
-            let obj = item
-            obj.base_num = ''
-            obj.select_batch = []
-            this.storeList.push(obj)
+            item.base_num = ''
+            item.select_batch = []
           }
+          return item
         })
+        this.storeList = newArr
       },
       outFn(item, index) {
         if (item.base_num.length === 0) {
@@ -279,21 +265,23 @@
         }
         if (this.isSubmit) return
         this.isSubmit = true
-        API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            if (res.data) {
-              this.isSubmit = false
-              this.storeList = res.data.details
-              this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+        API.Store.editOutOrder({type: this.storeType, details: this.storeList, out_object: this.storeData}).then(
+          (res) => {
+            if (res.error === this.$ERR_OK) {
+              if (res.data) {
+                this.isSubmit = false
+                this.storeList = res.data.details
+                this.$refs.confirm.show('可用库存不足，请重新输入出库数量')
+              } else {
+                this.$toast.show('新建出库单成功')
+                this.$router.back()
+              }
             } else {
-              this.$toast.show('新建出库单成功')
-              this.$router.back()
+              this.$toast.show(res.message)
+              this.isSubmit = false
             }
-          } else {
-            this.$toast.show(res.message)
-            this.isSubmit = false
           }
-        })
+        )
       }
     }
   }

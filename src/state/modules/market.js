@@ -58,7 +58,7 @@ export const getters = {
   marketType(state) {
     return state.marketType
   },
-  statusIndex: state => state.statusIndex
+  statusIndex: (state) => state.statusIndex
 }
 
 export const mutations = {

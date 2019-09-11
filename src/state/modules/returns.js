@@ -127,7 +127,7 @@ export const mutations = {
   },
   SET_MARKET_LIST(state, marketList) {
     state.marketList = marketList
-  },
+  }
 }
 
 export const actions = {

@@ -9,13 +9,13 @@
       </div>
       <div class="main-input">
         <div v-if="showCate" class="main-model-box">
-          <div class="text">上级分类</div>
+          <div class="text">上级类目</div>
           <div class="categories-input-box">
             <base-drop-down :select="dispatchSelect" @setValue="setValue"></base-drop-down>
           </div>
         </div>
         <div class="main-model-box">
-          <div class="text">分类名称</div>
+          <div class="text">类目名称</div>
           <input v-model="pointName" type="text" class="main-input-box" :placeholder="numberPla">
         </div>
         <div class="main-model-box">
@@ -57,7 +57,7 @@
         dispatchSelect: {
           check: false,
           show: false,
-          content: '分类',
+          content: '类目',
           type: 'default',
           data: [{name: ''}]
         },

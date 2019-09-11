@@ -106,10 +106,10 @@
         this.inputStatus = status
       },
       endShow() {
-        this.setTime&&clearTimeout(this.setTime)
+        this.setTime && clearTimeout(this.setTime)
       },
       leaveHide() {
-        if(this.inputStatus) return
+        if (this.inputStatus) return
         this.setTime = setTimeout(() => {
           this.clickHide()
         }, 1500)

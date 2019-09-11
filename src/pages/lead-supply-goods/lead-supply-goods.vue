@@ -20,19 +20,31 @@
       </div>
       <div class="big-list" :class="blankList.length > 10 ? 'big-list-max' : ''">
         <div class="list-header list-box">
-          <div v-for="(item,index) in commodities" :key="index" class="list-item">{{item}}</div>
+          <div v-for="(item,index) in commodities" :key="index" class="list-item list-item-title">{{item}}</div>
         </div>
         <div v-if="blankList.length !== 0" class="list">
           <div v-for="(item, index) in blankList" :key="index" class="list-content list-box">
+            <!--商品名称-->
             <div class="list-item list-double-row">
-              <div class="item-dark">{{item.goods_material_name}}</div>
-              <div class="item-dark">{{item.goods_sku_encoding}}</div>
+              <div class="item-dark" :class="{'red': item.error_tips.goods_material_name}">{{item.error_tips.goods_material_name || item.goods_material_name}}</div>
+              <div class="item-dark" :class="{'red': item.error_tips.goods_sku_encoding}">{{item.error_tips.goods_sku_encoding || item.goods_sku_encoding}}</div>
             </div>
-            <div class="list-item">{{item.goods_material_category_name}}</div>
-            <div class="list-item">{{item.supplier_name}}</div>
-            <div class="list-item">{{item.base_unit}}</div>
-            <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
-            <div class="list-item">{{item.base_purchase_rate}}{{item.base_unit}}/{{item.purchase_unit}}</div>
+            <!--商品类目-->
+            <div class="list-item" :class="{'red': item.error_tips.goods_material_category_name}">{{item.error_tips.goods_material_category_name || item.goods_material_category_name}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.base_unit}">{{item.error_tips.base_unit || item.base_unit}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.supplier_name}">{{item.error_tips.supplier_name || item.supplier_name}}</div>
+            <!--采购规格-->
+            <div class="list-item" :class="{'red': item.error_tips.purchase_spec_text}">{{item.error_tips.purchase_spec_text || item.purchase_spec_text}}</div>
+            <!--采购单价-->
+            <div class="list-item" :class="{'red': item.error_tips.purchase_price}">{{item.error_tips.purchase_price || item.purchase_price}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.purchase_cycle}">{{item.error_tips.purchase_cycle || item.purchase_cycle}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.goods_type}">{{item.error_tips.goods_type || (+item.goods_type === 1 ? '否' : '是')}}</div>
+            <!--售卖类型-->
+            <div class="list-item" :class="{'red': item.error_tips.is_presale}">{{item.error_tips.is_presale || (item.is_presale ? '预售库存' : '仓库库存')}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.sale_spec_text}">{{item.error_tips.sale_spec_text || item.sale_spec_text}}</div>
+            <!--售卖销售单价-->
+            <div class="list-item" :class="{'red': item.error_tips.trade_price}">{{item.error_tips.trade_price || item.trade_price}}</div>
+            <div class="list-item" :class="{'red': item.error_tips.goods_category_name}">{{item.error_tips.goods_category_name || item.goods_category_name}}</div>
           </div>
         </div>
         <base-blank v-else></base-blank>
@@ -51,8 +63,21 @@
   import API from '@api'
 
   const PAGE_NAME = 'PROCUREMENT_LEAD'
-  const TITLE = '采购任务导入'
-  const COMMODITIES_LIST = ['商品名称', '类目', '供应商', '基本单位', '销售规格', '采购规格']
+  const TITLE = '商品导入'
+  const COMMODITIES_LIST = [
+    '商品名称/编码',
+    '商品类目',
+    '基本单位',
+    '供应商',
+    '采购规格',
+    '采购单价',
+    '采购周期',
+    '是否集采',
+    '售卖类型',
+    '销售规格',
+    '销售单价',
+    '商品分类'
+  ]
   export default {
     name: PAGE_NAME,
     page: {
@@ -103,6 +128,7 @@
           this.$toast.show(res.message)
           return
         }
+        this.$store.dispatch('editgoods/resetData')
         setTimeout(() => {
           this.$router.back()
         }, 1500)
@@ -123,13 +149,18 @@
           this.$toast.show(res.message)
           return
         }
+        res.data.forEach((item) => {
+          for (let i in item.error_tips) { // eslint-disable-line
+            this.hasError = true
+          }
+        })
         this.blankList = res.data
-        // let result = res.data.every(item => {
-        //   return +item.error_type === 0
-        // })
-        // if (!result) {
-        //   this.hasError = true
-        // }
+      // let result = res.data.every(item => {
+      //   return +item.error_type === 0
+      // })
+      // if (!result) {
+      //   this.hasError = true
+      // }
       },
       // 格式化文件
       _infoFile(file) {
@@ -152,15 +183,26 @@
   .procurement-task
     .list-box
       .list-item
+        text-align: left
+        white-space: normal
+        display: -webkit-box
+        word-break: break-all
+        line-height: 1.2
+        -webkit-line-clamp: 2
+        -webkit-box-orient: vertical
         padding-right: 14px
-        &:nth-child(1)
+        &:nth-child(1),&:nth-child(2)
           flex: 1.6
-         &:nth-child(2), &:nth-child(3)
+        &:nth-child(4),&:nth-child(12)
           flex: 1.3
-        &:nth-child(3), &:nth-child(4), &:nth-child(5)
-          flex-wrap: nowrap
+        &:last-child
+          padding-right: 0
       .red
         color: #F84E3C
+      .list-double-row
+        flex-direction: column
+      .list-item-title
+        -webkit-box-orient: inherit
   .down-content
     align-items: flex-start
     padding: 5px 20px 25px

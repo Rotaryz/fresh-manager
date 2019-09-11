@@ -277,14 +277,21 @@
           return
         }
         let data = this.temporaryClassify.map((item) => {
-          let obj = {id: item.id, title: item.title, name: item.content, other_id: item.other_id, type: item.type, is_close: item.is_close}
+          let obj = {
+            id: item.id,
+            title: item.title,
+            name: item.content,
+            other_id: item.other_id,
+            type: item.type,
+            is_close: item.is_close
+          }
           return {page_module_id: this.articleCateId, ext_json: obj}
         })
         let res = await API.Advertisement.saveModuleMsg({data})
         if (res.error === this.$ERR_OK) {
           this.$parent.infoEat()
-          // await this._getModuleMsg(this.cmsType, this.articleId, this.cmsModuleId)
-          // this._isSave = true
+        // await this._getModuleMsg(this.cmsType, this.articleId, this.cmsModuleId)
+        // this._isSave = true
         }
         this.$loading.hide()
         this.$toast.show(res.message)
@@ -305,7 +312,10 @@
           return
         }
         this.storageId = id
-        let res = await API.Content.getWorkList({type: '', status: 1, is_cate_show: 0, category_id: this.storageId}, false)
+        let res = await API.Content.getWorkList(
+          {type: '', status: 1, is_cate_show: 0, category_id: this.storageId},
+          false
+        )
         arr = res.data
         this.storageList = arr
         this.$emit('getContentList', arr)
@@ -337,7 +347,7 @@
           this.$emit('getClassify', this[this.dataName])
           break
         }
-        let index = this[this.dataName].findIndex(item => item.id === this.delId)
+        let index = this[this.dataName].findIndex((item) => item.id === this.delId)
         let res = await API.Advertisement.deleteBanner(this.delId)
         this.$toast.show(res.message)
         if (res.error !== this.$ERR_OK) {
@@ -381,8 +391,8 @@
         let res = await API.Advertisement.saveModuleMsg({data})
         if (res.error === this.$ERR_OK) {
           this.$parent.infoEat()
-          // await this._getModuleMsg(this.cmsType, this.articleId, this.cmsModuleId)
-          // this._isSave = true
+        // await this._getModuleMsg(this.cmsType, this.articleId, this.cmsModuleId)
+        // this._isSave = true
         }
         this.$loading.hide()
         this.$toast.show(res.message)
@@ -398,7 +408,7 @@
         setTimeout(() => {
           el.scrollTop = el.scrollHeight
         }, 100)
-        // this.$emit('getArticle', this[this.dataName])
+      // this.$emit('getArticle', this[this.dataName])
       },
       _showGoods(index) {
         this.upIndex = index
@@ -480,8 +490,7 @@
         this.choicePage = 1
         this.$refs.goods.hideModal()
       },
-      _setSort() {
-      },
+      _setSort() {},
       // 添加图片
       async _addPic(index, item, e) {
         this.upIndex = index
@@ -507,8 +516,8 @@
         }
         this[this.dataName][this.upIndex].image_url = res.data.url
         this[this.dataName][this.upIndex].image_id = res.data.id
-        // this.$emit('getArticle', this[this.dataName])
-      },
+      // this.$emit('getArticle', this[this.dataName])
+      }
     }
   }
 </script>

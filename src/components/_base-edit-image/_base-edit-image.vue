@@ -60,7 +60,7 @@
       Draggable
     },
     props: {
-      imageIconClassName:{
+      imageIconClassName: {
         type: String,
         default: ''
       },

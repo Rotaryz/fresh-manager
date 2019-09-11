@@ -1,7 +1,7 @@
 <template>
   <div class="product-list table">
     <div class="down-content">
-      <span class="down-tip">分类筛选</span>
+      <span class="down-tip">类目筛选</span>
       <div class="down-item-small">
         <base-drop-down :select="stairSelect" @setValue="_setStairValue"></base-drop-down>
       </div>
@@ -16,10 +16,6 @@
       <div class="down-item">
         <base-drop-down :select="purchaseSelect" @setValue="_setPurchaseValue"></base-drop-down>
       </div>
-      <span class="down-tip">资料状态</span>
-      <div class="down-item">
-        <base-drop-down :select="progressSelect" @setValue="_setCompleteValue"></base-drop-down>
-      </div>
       <span class="down-tip">库存</span>
       <div class="down-item-small">
         <base-drop-down :select="presaleSelect" @setValue="_setPresaleValue"></base-drop-down>
@@ -28,8 +24,9 @@
         <base-drop-down :select="storeSelect" :isUse="isPresale.length !== 0" @setValue="_setStoreValue"></base-drop-down>
       </div>
       <span class="down-tip">搜索</span>
+      <input placeHolder="商品名称或编码" :value="goodsFitter.keyword" type="text" class="edit-input" @input="setSupplier">
       <div class="">
-        <base-search placeHolder="商品名称或编码" :infoText="goodsFitter.keyword" @search="search"></base-search>
+        <base-search placeHolder="供应商名称" :infoText="goodsFitter.supplier_keyword" @search="search"></base-search>
       </div>
     </div>
     <div class="table-content">
@@ -41,21 +38,18 @@
         </div>
         <div class="function-btn">
           <!--<div class="btn-main" @click="jumpStore">商品素材中心</div>-->
-          <router-link tag="div" to="edit-goods" append class="btn-main g-btn-item">新建商品<span class="add-icon"></span></router-link>
-          <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
           <div class="show-more-box g-btn-item" :class="{'show-more-active': showIndex}" @mouseenter="_showTip" @mouseleave="_hideTip">
             <div class="show-more-text">
-              <div class="show-text">更多</div>
+              <div class="show-text">新建商品</div>
               <div class="show-icon"></div>
             </div>
             <div v-show="showIndex" class="big-hide-box"></div>
             <transition name="fade">
               <div v-show="showIndex" class="show-hide-box">
                 <div class="show-all-item">
-                  <div class="show-hide-item" @click="exportExcel">商品导出</div>
-                  <router-link to="lead-supply-goods" append class="show-hide-item">
-                    批量新建
-                  </router-link>
+                  <!--<div class="show-hide-item" @click="exportExcel">商品导出</div>-->
+                  <router-link tag="div" to="edit-goods" append class="show-hide-item">单品新建</router-link>
+                  <router-link to="lead-supply-goods" append class="show-hide-item">批量新建</router-link>
                   <!--<div class="show-hide-item">-->
                   <!--批量修改-->
                   <!--<input-->
@@ -68,6 +62,10 @@
               </div>
             </transition>
           </div>
+          <div class="btn-main g-btn-item" @click="exportExcel">商品导出</div>
+          <!--<router-link tag="div" to="edit-goods" append class="btn-main g-btn-item">新建商品<span class="add-icon"></span></router-link>-->
+          <!--<a :href="downUrl" class="btn-main g-btn-item" target="_blank">导出Excel</a>-->
+
           <!--<div class="btn-main g-btn-item" @click="_syncGoods">同步</div>-->
         </div>
       </div>
@@ -80,7 +78,8 @@
             <div v-for="(item, index) in productList" :key="index" class="list-content list-box">
               <div class="list-item">
                 <img v-if="item.goods_video_url" class="icon-video" src="./icon-play_list@2x.png" alt="">
-                <img class="pic-box" :src="item.goods_cover_image" alt="">
+                <img v-if="item.goods_cover_image" class="pic-box" :src="item.goods_cover_image" alt="">
+                <img v-else class="pic-box" src="./pic-default.png" alt="">
               </div>
               <div class="list-item list-double-row">
                 <div class="item-dark" :class="{'item-dark-icon' : item.goods_type * 1 === 2}">{{item.name}}</div>
@@ -89,9 +88,12 @@
               <!--<div class="list-item">{{item.goods_sku_code}}</div>-->
               <div class="list-item">{{item.goods_category_name}}</div>
               <div class="list-item">{{item.base_unit}}</div>
-              <div class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
-              <div class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
-              <div class="list-item list-item-layout">
+              <div v-if="+item.base_sale_rate > 0 && item.sale_unit" class="list-item">{{item.base_sale_rate}}{{item.base_unit}}/{{item.sale_unit}}</div>
+              <div v-else class="list-item">---</div>
+              <div v-if="item.trade_price > 0 && item.sale_unit" class="list-item">￥{{item.trade_price}}/{{item.sale_unit}}</div>
+              <div v-else class="list-item">---</div>
+              <div v-if="!item.usable_stock && !item.complete_status" class="list-item">---</div>
+              <div v-else class="list-item list-item-layout">
                 {{item.usable_stock}}{{item.sale_unit}}
                 <div class="list-item-img" :class="item.is_presale * 1 === 1? 'icon-pre' : 'icon-libray'"></div>
               </div>
@@ -104,8 +106,9 @@
                 </div>
               </div>
               <div class="list-item list-operation-box">
-                <router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-goods?complete=1&id=' + item.id" append class="list-operation ">完善资料</router-link>
-                <router-link v-else tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
+                <!--<router-link v-if="item.complete_status * 1 === 0" tag="span" :to="'edit-goods?complete=1&id=' + item.id" append class="list-operation ">完善资料</router-link>-->
+                <router-link tag="span" :to="'edit-goods?isShow=1&id=' + item.id" append class="list-operation">编辑</router-link>
+                <router-link tag="span" :to="'edit-goods?isShow=1&isCopy=1&id=' + item.id" append class="list-operation">复制</router-link>
                 <span class="list-operation" @click.stop="delGoods(item)">删除</span>
               </div>
             </div>
@@ -132,7 +135,7 @@
   const PRODUCT_TITLE_LIST = [
     '图片',
     '商品名称',
-    '分类',
+    '商品类目',
     '基本单位',
     '销售规格',
     '销售单价',
@@ -154,15 +157,51 @@
     data() {
       return {
         productTitleList: PRODUCT_TITLE_LIST,
-        dispatchSelect: {check: false, show: false, content: '全部状态', type: 'default', data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]},
+        dispatchSelect: {
+          check: false,
+          show: false,
+          content: '全部状态',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '上架', value: 1}, {name: '下架', value: 0}]
+        },
         statusTab: [{name: '全部', num: 0, key: ''}, {name: '已上架', num: 0, key: 1}, {name: '已下架', num: 0, key: 0}],
-        stairSelect: {check: false, show: false, content: '一级分类', type: 'default', data: []},
-        secondSelect: {check: false, show: false, content: '二级分类', type: 'default', data: []},
-        typeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]},
-        purchaseSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '普通商品', value: 1}, {name: '集采商品', value: 2}]},
-        progressSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]},
-        presaleSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '仓库', value: 0}, {name: '预售', value: 1}]},
-        storeSelect: {check: false, show: false, content: '全部', type: 'default', data: [{name: '全部', value: ''}, {name: '无库存', value: 0}, {name: '有库存', value: 1}]},
+        stairSelect: {check: false, show: false, content: '一级类目', type: 'default', data: []},
+        secondSelect: {check: false, show: false, content: '二级类目', type: 'default', data: []},
+        typeSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '自建', value: 1}, {name: '平台', value: 2}]
+        },
+        purchaseSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '普通商品', value: 1}, {name: '集采商品', value: 2}]
+        },
+        progressSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '未完成', value: 0}, {name: '已完成', value: 1}]
+        },
+        presaleSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '仓库', value: 0}, {name: '预售', value: 1}]
+        },
+        storeSelect: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', value: ''}, {name: '无库存', value: 0}, {name: '有库存', value: 1}]
+        },
         goodsList: [],
         pageTotal: {},
         categoryId: '',
@@ -248,14 +287,16 @@
           this.$refs.pagination.beginPage()
         }
       },
-      // 选择一级分类
+      // 选择一级类目
       _setStairValue(data) {
-        this.secondSelect.content = '二级分类'
-        this.secondSelect.data = data.list
-        this.SET_TASK_DATA({oneName: data.name, twoName: '二级分类', twoList: data.list})
-        this._updateList({page: 1, goods_category_id: data.id})
+        let obj = JSON.parse(JSON.stringify(data))
+        this.secondSelect.content = '二级类目'
+        this.secondSelect.data = obj.list
+        this.secondSelect.data.unshift({name: '全部', id: obj.id, list: []})
+        this.SET_TASK_DATA({oneName: obj.name, twoName: '二级类目', twoList: data.list})
+        this._updateList({page: 1, goods_category_id: obj.id})
       },
-      // 选择二级分类
+      // 选择二级类目
       _secondValue(data) {
         this.secondSelect.content = data.name
         this.SET_TASK_DATA({twoName: data.name})
@@ -298,9 +339,13 @@
         this._updateList({page: 1, has_stock: data.value})
         this.SET_TASK_DATA({stock: data.name})
       },
+      setSupplier(e) {
+        // this.SET_PARAMS({supplier_keyword: e.target.value})
+        this.keyWord = e.target.value
+      },
       // 搜索
-      search(keyword) {
-        this._updateList({page: 1, keyword})
+      search(supplier) {
+        this._updateList({page: 1, keyword: this.keyWord, supplier_keyword: supplier})
       },
       // 切换上下架状态
       changeStatus(selectStatus) {
@@ -317,7 +362,6 @@
         let data = {
           goods_category_id: this.categoryId,
           source: this.source,
-          complete_status: this.completeStatus,
           is_presale: this.isPresale,
           has_stock: this.hasStock,
           keyword: this.keyWord,
@@ -344,11 +388,11 @@
         API.Product.getGoodsStatus({
           goods_category_id: this.goodsFitter.goods_category_id,
           source: this.goodsFitter.source,
-          complete_status: this.goodsFitter.complete_status,
           is_presale: this.goodsFitter.is_presale,
           has_stock: this.goodsFitter.has_stock,
           keyword: this.goodsFitter.keyword,
-          goods_type: this.goodsFitter.goods_type
+          goods_type: this.goodsFitter.goods_type,
+          supplier_keyword: this.goodsFitter.supplier_keyword
         }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
@@ -365,6 +409,10 @@
       },
       // 删除商品
       delGoods(item) {
+        if (+item.is_online === 1) {
+          this.$toast.show('请先下架后再进行删除')
+          return
+        }
         this.curItem = item
         this.oneBtn = false
         this.$refs.confirm.show('确定要删除该商品？')
@@ -387,18 +435,18 @@
       },
       // 商品上下架
       switchBtn(item, index) {
-        if (item.goods_type * 1 === 2) {
-          this.$toast.show('集采商品不允许操作状态')
-          return
-        }
-        if (item.goods_sku_encoding.length === 0 && item.is_online * 1 === 0) {
-          this.$toast.show('请先补充商品编码再上架')
-          return
-        }
-        if (item.goods_category_id <= 0 && item.is_online * 1 === 0) {
-          this.$toast.show('请先补充分类再上架')
-          return
-        }
+        // if (item.goods_sku_encoding.length === 0 && item.is_online * 1 === 0) {
+        //   this.$toast.show('请先补充商品编码再上架')
+        //   return
+        // }
+        // if (item.goods_category_id <= 0 && item.is_online * 1 === 0) {
+        //   this.$toast.show('请先补充分类再上架')
+        //   return
+        // }
+        // if (item.goods_type * 1 === 2) {
+        //   this.$toast.show('集采商品不允许操作状态')
+        //   return
+        // }
         let data = {
           goods_id: item.id,
           is_online: item.is_online * 1 === 1 ? 0 : 1
@@ -419,6 +467,7 @@
         API.Product.getCategoryList({parent_id: -1}, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.stairSelect.data = res.data
+            this.stairSelect.data.unshift({name: '全部', id: '', list: []})
           } else {
             this.$toast.show(res.message)
           }
@@ -484,7 +533,25 @@
 
     .search-left
       margin-left: 10px
-
+  .edit-input
+    height: 28px
+    width: 187px
+    margin-right: 10px
+    color: $color-text-main
+    font-family: $font-family-regular
+    font-size: $font-size-12
+    box-sizing: border-box
+    border: 0.5px solid $color-line
+    border-radius: 2px
+    padding-left: 10px
+    transition: all 0.2s
+    &:hover
+      border: 1px solid #ACACAC
+    &::placeholder
+      font-family: $font-family-regular
+      color: $color-text-assist
+    &:focus
+      border: 0.5px solid $color-main !important
   .list-box
     .list-item
       box-sizing: border-box
@@ -504,8 +571,8 @@
         max-width: 120px
       &:last-child
         padding: 5px
-        max-width: 114px
-        min-width: 114px
+        max-width: 134px
+        min-width: 134px
         flex: 1
 
   .list-item-btn
@@ -531,12 +598,12 @@
     .big-hide-box
       position: absolute
       z-index: 1
-      width: 106px
+      width: 92px
       height: 20px
       right: 0
 
     .show-more-text
-      width: 80px
+      width: 92px
       height: 28px
       line-height: 28px
       color: $color-white
@@ -571,7 +638,7 @@
           border-top: 6px solid $color-main
     .show-hide-box
       position: absolute
-      width: 106px
+      width: 92px
       top: 38px
       right: 0
       z-index: 11

@@ -22,7 +22,7 @@
     },
     components: {
       zbPagination
-      // AddGoods
+    // AddGoods
     },
     data() {
       return {

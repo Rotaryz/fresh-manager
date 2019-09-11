@@ -163,7 +163,7 @@
           <div class="title">
             选择团长
           </div>
-          <span class="close hand" @click="_cancelGoods"></span>
+          <span class="close hand" @click="_hideGroup"></span>
         </div>
         <!--搜索-->
         <div class="shade-tab">
@@ -205,51 +205,8 @@
     >
     </member-modal>
 
-    <!-- 选择商品弹窗-->
-    <default-modal ref="goodsModal">
-      <div slot="content" class="shade-box">
-        <div class="title-box">
-          <div class="title">
-            选择商品
-          </div>
-          <span class="close hand" @click="_cancelGoods"></span>
-        </div>
-        <div class="shade-tab">
-          <div class="tab-item">
-            <base-drop-down :width="218" :select="assortment" @setValue="_secondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-drop-down :width="140" :select="secondAssortment" @setValue="_choessSecondAssortment"></base-drop-down>
-          </div>
-          <div class="tab-item">
-            <base-search ref="goodsSearch" placeHolder="请输入商品名称" @search="_searchGoods"></base-search>
-          </div>
-        </div>
-        <div class="goods-content">
-          <div class="outreach-goods-list">
-            <div v-for="(item, index) in chooseGoods" :key="index" class="goods-item">
-              <span class="select-icon hand" :class="{'select-icon-disable': item.selected === 1, 'select-icon-active': item.selected === 2}" @click="_selectGoods(item,index)"></span>
-              <div class="goods-img" :style="{'background-image': 'url(\'' +item.goods_cover_image+ '\')'}"></div>
-              <div class="goods-msg">
-                <div class="goods-name">{{item.name}}</div>
-                <div class="goods-money">¥{{item.original_price}}</div>
-              </div>
-              <div class="add-btn btn-main" :class="{'add-btn-disable': item.selected === 1}" @click="_additionOne(item, index)">{{item.selected === 1 ? '已添加' : '添加'}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="page-box">
-          <base-pagination ref="pagination" :pageDetail="goodsPage" @addPage="_getMoreGoods"></base-pagination>
-        </div>
-        <div class="back">
-          <div class="back-cancel back-btn hand" @click="_cancelGoods">取消</div>
-          <div class="back-btn back-submit hand" @click="_batchAddition">批量添加</div>
-        </div>
-      </div>
-    </default-modal>
-
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :goodsTitle="goodsTitle" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
@@ -282,6 +239,11 @@
     {name: '社区地址', class: 'title-item', flex: 2, value: 'address'}
   ]
 
+  const GOODS_POP_TITLE = [
+    {name: '商品', flex: 2, value: 'name'},
+    {name: '销售价格', flex: 0.5, value: 'trade_price'}
+  ]
+
   export default {
     name: PAGE_NAME,
     page: {
@@ -298,6 +260,7 @@
       return {
         commodities: COMMODITIES_LIST,
         memberHeader: MEMBERS_LIST,
+        goodsTitle: GOODS_POP_TITLE,
         classifyIndex: 0,
         delId: [], // 删除id数组
         id: null,
@@ -308,14 +271,14 @@
         assortment: {
           check: false,
           show: false,
-          content: '选择分类',
+          content: '选择类目',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
         secondAssortment: {
           check: false,
           show: false,
-          content: '选择二级分类',
+          content: '选择二级类目',
           type: 'default',
           data: [] // 格式：{title: '55'}}
         },
@@ -434,8 +397,6 @@
     async mounted() {
       this.disable = this.$route.query.id
       this.id = this.$route.query.id || null
-      await this._getFirstAssortment()
-      this._getGoodsList()
     },
     methods: {
       ...outreachMethods,
@@ -466,45 +427,6 @@
         this.$refs.groupModal.showModal()
         this._getGroupList()
       },
-      // 选择商品
-      async _getGoodsList() {
-        let res = await API.Outreach.getGoodsList({
-          is_online: 1,
-          keyword: this.keyword,
-          goods_category_id: this.parentId,
-          shelf_id: this.id,
-          limit: 7,
-          page: this.page
-        })
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.goodsPage = {
-          total: res.meta.total,
-          per_page: res.meta.per_page,
-          total_page: res.meta.last_page
-        }
-        this.chooseGoods = res.data.map((item, index) => {
-          item.selected = 0
-          let idx = this.selectGoodsId.findIndex((id) => id === item.id)
-          let goodsIndex = this.selectGoods.findIndex((items) => items.id === item.id)
-          let delIndex = this.selectDelId.findIndex((id) => id === item.id)
-          // item.trade_price = item.trade_price || 0
-          if (delIndex !== -1) {
-            item.selected = 0
-          }
-          if (idx !== -1) {
-            item.selected = 1
-          }
-          if (goodsIndex !== -1) {
-            item.selected = 2
-          }
-          item.trade_price = ''
-          item.usable_stock = ''
-          item.sort = 0
-          return item
-        })
-      },
       changePrice(index) {
         this.priceFocus = index
       },
@@ -518,77 +440,14 @@
       // 获取分页商品列表
       async _getMoreGoods(page) {
         this.page = page
-        if (this.groupShow) {
-          await this._getGroupList()
-        } else {
-          await this._getGoodsList()
-        }
-      },
-      // 选择一级分类
-      async _secondAssortment(item) {
-        this.parentId = item.id
-        if (item.id === '') {
-          this.secondAssortment.data = []
-        } else {
-          let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
-          this.secondAssortment.data = res.error === this.$ERR_OK ? res.data : []
-          this.secondAssortment.data.unshift({name: '全部', id: this.parentId})
-        }
-        this.secondAssortment.content = '选择二级分类'
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 选择二级分类
-      async _choessSecondAssortment(item) {
-        this.parentId = item.id
-        this.page = 1
-        this.$refs.pagination.beginPage()
-        await this._getGoodsList()
-      },
-      // 获取一级分类
-      async _getFirstAssortment() {
-        let res = await API.Outreach.goodsCategory({parent_id: this.parentId})
-        this.assortment.data = res.error === this.$ERR_OK ? res.data : []
-        this.assortment.data.unshift({name: '全部', id: ''})
+        await this._getGroupList()
       },
       // 搜索商品/搜索团长
       async _searchGoods(text) {
         this.keyword = text
         this.page = 1
-
-        if (this.groupShow) {
-          this.$refs.paginationGroup.beginPage()
-          await this._getGroupList()
-        } else {
-          this.$refs.pagination.beginPage()
-          await this._getGoodsList()
-        }
-      },
-      // 勾选商品
-      _selectGoods(item, index) {
-        switch (item.selected) {
-        case 0:
-          // if (this.selectGoodsId.length === 3) {
-          //   this.$toast.show('选择商品数量不能超过三个')
-          //   return
-          // }
-          this.chooseGoods[index].selected = 2
-          this.selectGoods.push(item)
-          this.selectGoodsId.push(item.id)
-          break
-        case 2:
-          this.chooseGoods[index].selected = 0
-          let idx = this.selectGoods.findIndex((items) => items.id === item.id)
-          let idIdx = this.selectGoodsId.findIndex((id) => id === item.id)
-          if (idx !== -1) {
-            this.selectGoods.splice(idx, 1)
-          }
-          if (idIdx !== -1) {
-            this.selectGoodsId.splice(idx, 1)
-          }
-          break
-        }
+        this.$refs.paginationGroup.beginPage()
+        await this._getGroupList()
       },
       // 删除商品
       _showDelGoods(item, index) {
@@ -622,52 +481,6 @@
           })
         }
       },
-      _cancelGoods() {
-        if (this.groupShow) {
-          this._hideGroup()
-        } else {
-          this.selectGoods.forEach((item) => {
-            let idx = this.chooseGoods.findIndex((items) => items.goods_id === item.goods_id)
-            let delIdx = this.selectGoodsId.findIndex((id) => id === item.goods_id)
-            this.chooseGoods[idx].selected = this.chooseGoods[idx].selected === 1 ? 1 : 0
-            this.selectGoodsId.splice(delIdx, 1)
-          })
-          this.selectGoods = []
-          this._hideGoods()
-        }
-      },
-      // 单个添加
-      _additionOne(item, index) {
-        if (item.selected === 1) {
-          return
-        }
-        // if (this.selectGoodsId.length === 3 && item.selected !== 2) {
-        //   this.$toast.show('选择商品数量不能超过三个')
-        //   return
-        // }
-
-        if (item.selected !== 2) this.selectGoodsId.push(item.id)
-        this.chooseGoods[index].selected = 1
-        this.goodsList.push(item)
-        this.chooseGoods.forEach((item) => {
-          if (item.selected === 1) {
-            let idx = this.selectGoods.findIndex((child) => child.id === item.id)
-            if (idx !== -1) {
-              this.selectGoods.splice(idx, 1)
-            }
-          }
-        })
-      },
-      // 批量添加
-      _batchAddition() {
-        this.chooseGoods = this.chooseGoods.map((item) => {
-          item.selected = item.selected === 2 ? 1 : item.selected
-          return item
-        })
-        this.goodsList = this.goodsList.concat(this.selectGoods)
-        this.selectGoods = []
-        this._hideGoods()
-      },
       // 批量添加商品
       batchAddition(list) {
         let arr = JSON.parse(JSON.stringify(list))
@@ -697,16 +510,7 @@
       async _showGoods() {
         if (this.disable) return
         this.$refs.selectGoods && this.$refs.selectGoods.showModal(this.goodsList)
-        // this._initData()
-        // this.$refs.goodsSearch._setText('')
-        // await this._getGoodsList()
-        // // 展示添加商品弹窗
-        // this.$refs.goodsModal.showModal()
       },
-      _hideGoods() {
-        this.$refs.goodsModal.hideModal()
-      },
-
       async _showMember() {
         if (this.disable) {
           return

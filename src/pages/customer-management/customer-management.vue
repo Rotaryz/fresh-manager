@@ -99,7 +99,7 @@
         shop_id: '',
         paid_start_time: '',
         paid_end_time: '',
-        socialSelect: SOCIAL_SELECT,
+        socialSelect: SOCIAL_SELECT
       }
     },
     computed: {
@@ -165,7 +165,7 @@
           return
         }
         let arr = []
-        this.socialList.forEach((item) =>{
+        this.socialList.forEach((item) => {
           if (item.name.toLowerCase().includes(text.toLowerCase())) {
             arr.push(item)
           }
@@ -188,7 +188,7 @@
         this.sortType = sort
         this._getCustomerList()
       },
-      _getCustomerList(loading=false) {
+      _getCustomerList(loading = false) {
         this.getCustomerList({
           page: this.page,
           startTime: this.startTime,
@@ -218,7 +218,7 @@
           return
         }
         window.open(this.exportUrl, '_blank')
-      },
+      }
     }
   }
 </script>
