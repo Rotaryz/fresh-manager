@@ -302,7 +302,7 @@
         if (this.startWatchSellPrice && +price > 0) {
           price = (+price * 1.3).toFixed(2)
           this.underlinePrice = price
-        } else {
+        } else if (this.startWatchSellPrice && +price <= 0) {
           this.underlinePrice = 0
         }
       }
