@@ -291,7 +291,8 @@
        * @returns {number}
        */
       purchaseCost() {
-        let number = (this.purchasePrice * this.sellSize) / this.purchaseSize
+        let all = this.purchasePrice * this.sellSize
+        let number = this.purchaseSize > 0 ? all / this.purchaseSize : 0
         return isNaN(number) ? '' : number.toFixed(2)
       },
     },
@@ -300,6 +301,8 @@
         if (this.startWatchSellPrice && +price > 0) {
           price = (+price * 1.3).toFixed(2)
           this.underlinePrice = price
+        } else {
+          this.underlinePrice = 0
         }
       }
     },
@@ -642,6 +645,7 @@
           this[key] = data[key]
         }
         cb && cb()
+
       },
       // 获取商品类目列表
       _getGoodsTypeList() {
@@ -676,6 +680,7 @@
           this.saleSelect.data = res.data
           this.purchaseSelect.data = res.data
           this.initSelectName('baseUnitSelect', 'basicUnit')
+          this.findBasicUnit()
         })
       },
       // 初始化选择器的名称
