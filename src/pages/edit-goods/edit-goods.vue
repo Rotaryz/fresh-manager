@@ -395,7 +395,7 @@
       findBasicUnit() {
         const unit = this.baseUnitSelect.data.find((val) => val.name === this.basicUnit)
         if (!unit) {
-          this.baseUnitSelect.data.unshift({id: 0, name: this.basicUnit})
+          this.basicUnit && this.baseUnitSelect.data.unshift({id: 0, name: this.basicUnit})
           this.saleSelect.data = this.baseUnitSelect.data
           this.purchaseSelect.data = this.baseUnitSelect.data
         }
