@@ -27,7 +27,7 @@
               <base-drop-down :height="inputHeight" :width="190" :select="firstTypeSelect" @setValue="setGoodsTypeValue($event, 'secondTypeSelect')"></base-drop-down>
             </div>
             <div class="mini-mr20">
-              <base-drop-down :height="inputHeight" :width="190" :select="secondTypeSelect" @setValue="setGoodsTypeValue"></base-drop-down>
+              <base-drop-down :height="inputHeight" :width="190" :select="secondTypeSelect" @setValue="setGoodsTypeValue($event, undefined)"></base-drop-down>
             </div>
           </div>
         </edit-options>
@@ -202,6 +202,7 @@
   import * as GoodsHandle from './goods-handle'
   import API from '@api'
   import storage from 'storage-controller'
+  import {goodsMethods} from '@state/helpers'
 
   const PAGE_NAME = 'EDIT_GOODS'
   const TITLE = '新建商品'
@@ -339,6 +340,7 @@
       next()
     },
     methods: {
+      ...goodsMethods,
       // 表单验证模块 true 验证不同过， false 为验证通过
       checkModule() {
         const checkObj = this.stepInfo.checkData
@@ -536,11 +538,13 @@
           return
         }
         this._updateGoodsInfo(() => {
+          this.SET_PARAMS({page: 1})
           this.backHandle()
         })
       },
       confirmSubmitHandle() {
         this._updateGoodsInfo(() => {
+          this.SET_PARAMS({page: 1})
           this.backHandle()
         })
       },
