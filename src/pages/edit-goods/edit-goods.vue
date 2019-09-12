@@ -94,11 +94,11 @@
           <div slot="middle" class="edit-input-box goods-select-box">
             <section class="goods-select-left" @click="toggleRadios('purchaseCollective')">
               <div class="goods-select-icon" :class=" !purchaseCollective ? 'goods-select-icon-active' : ''"></div>
-              <div class="goods-select-text">需要</div>
+              <div class="goods-select-text">不需要</div>
             </section>
             <section class="goods-select-left" style="margin-left: 50px" @click="toggleRadios('purchaseCollective')">
               <div class="goods-select-icon" :class=" purchaseCollective ? 'goods-select-icon-active' : ''"></div>
-              <div class="goods-select-text">不需要</div>
+              <div class="goods-select-text">需要</div>
             </section>
           </div>
           <p v-if="purchaseCollective" slot="right" class="edit-pla">集采类商品只可添加到集中采购活动中进行售卖，无法单独售卖，请谨慎选择<span class="edit-pla-children hand" @click="openTipsHandle('purchase')">什么是集采？</span></p>

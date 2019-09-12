@@ -291,14 +291,14 @@
       },
       // 选择二级类目
       async _choessSecondAssortment(item) {
-        this.parentId = item.id
+        this.parentId = item.id || -1
         this.page = 1
         this.$refs.pagination.beginPage()
         await this._getGoodsList()
       },
       // 获取一级类目
       async _getFirstAssortment() {
-        let res = await API.Product.getScmCategoryList({parent_id: this.parentId}, false)
+        let res = await API.Product.getScmCategoryList({parent_id: -1}, false)
         this.assortment.data = res.error === this.$ERR_OK ? res.data : []
         this.assortment.data.unshift({name: '全部', id: ''})
       },
