@@ -56,7 +56,7 @@
       <template v-if="stepIndex === 1">
         <edit-header title="采购信息"></edit-header>
         <edit-options title="商品别名" :importance="false">
-          <input slot="middle" v-model="aliasName" type="text" class="edit-input-box edit-input" maxlength="20">
+          <input slot="middle" v-model="aliasName" type="text" class="edit-input-box edit-input" maxlength="30">
           <p slot="right" class="edit-pla">展示在供应链的商品名称，供本部采购或仓管人员浏览</p>
         </edit-options>
         <edit-options title="供应商">
