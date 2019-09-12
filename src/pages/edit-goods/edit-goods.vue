@@ -56,7 +56,7 @@
       <template v-if="stepIndex === 1">
         <edit-header title="采购信息"></edit-header>
         <edit-options title="商品别名" :importance="false">
-          <input slot="middle" v-model="aliasName" type="text" class="edit-input-box edit-input" maxlength="10">
+          <input slot="middle" v-model="aliasName" type="text" class="edit-input-box edit-input" maxlength="20">
           <p slot="right" class="edit-pla">展示在供应链的商品名称，供本部采购或仓管人员浏览</p>
         </edit-options>
         <edit-options title="供应商">
@@ -94,11 +94,11 @@
           <div slot="middle" class="edit-input-box goods-select-box">
             <section class="goods-select-left" @click="toggleRadios('purchaseCollective')">
               <div class="goods-select-icon" :class=" !purchaseCollective ? 'goods-select-icon-active' : ''"></div>
-              <div class="goods-select-text">不需要</div>
+              <div class="goods-select-text">需要</div>
             </section>
             <section class="goods-select-left" style="margin-left: 50px" @click="toggleRadios('purchaseCollective')">
               <div class="goods-select-icon" :class=" purchaseCollective ? 'goods-select-icon-active' : ''"></div>
-              <div class="goods-select-text">需要</div>
+              <div class="goods-select-text">不需要</div>
             </section>
           </div>
           <p v-if="purchaseCollective" slot="right" class="edit-pla">集采类商品只可添加到集中采购活动中进行售卖，无法单独售卖，请谨慎选择<span class="edit-pla-children hand" @click="openTipsHandle('purchase')">什么是集采？</span></p>
@@ -108,12 +108,12 @@
         <edit-options title="销售类型" :importance="false">
           <div slot="middle" class="edit-input-box goods-select-box">
             <section class="goods-select-left" @click="toggleRadios('preSell')">
-              <div class="goods-select-icon" :class=" !preSell ? 'goods-select-icon-active' : ''"></div>
-              <div class="goods-select-text">非预售</div>
-            </section>
-            <section class="goods-select-left" style="margin-left: 50px" @click="toggleRadios('preSell')">
               <div class="goods-select-icon" :class=" preSell ? 'goods-select-icon-active' : ''"></div>
               <div class="goods-select-text">预售</div>
+            </section>
+            <section class="goods-select-left" style="margin-left: 50px" @click="toggleRadios('preSell')">
+              <div class="goods-select-icon" :class=" !preSell ? 'goods-select-icon-active' : ''"></div>
+              <div class="goods-select-text">非预售</div>
             </section>
           </div>
           <p slot="right" class="edit-pla hand">{{preSell?'仓库中没有存货，待消费者下单，再进行采购的商品为预售商品' : '仓库中有存货，才可售卖的商品为非预售商品'}}</p>
