@@ -409,7 +409,7 @@
       },
       // 删除商品
       delGoods(item) {
-        if (+item.is_online === 1) {
+        if (+item.is_online === 1 && +item.goods_type !== 2) {
           this.$toast.show('请先下架后再进行删除')
           return
         }
