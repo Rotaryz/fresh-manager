@@ -78,6 +78,10 @@
       goodsTitle: {
         type: Array,
         default: () => GOODS_POP_TITLE
+      },
+      goodsStock: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -128,7 +132,7 @@
       },
       // 勾选商品
       _selectGoods(item, index) {
-        if (item.usable_stock <= 0) {
+        if (this.goodsStock && item.usable_stock <= 0) {
           this.$toast.show('该商品库存为0，不能选择')
           return
         }
@@ -170,7 +174,7 @@
         })
         if (allDisable) return
         for (let i in goods) {
-          if (goods[i].usable_stock <= 0) {
+          if (this.goodsStock && goods[i].usable_stock <= 0) {
             this.$toast.show(`商品"${goods[i].name}"库存不足`)
             return
           }

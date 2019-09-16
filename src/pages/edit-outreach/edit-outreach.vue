@@ -206,7 +206,7 @@
     </member-modal>
 
     <!--选择商品弹窗-->
-    <add-goods ref="selectGoods" :goodsTitle="goodsTitle" @batchAddition="batchAddition"></add-goods>
+    <add-goods ref="selectGoods" :goodsStock="false" :goodsTitle="goodsTitle" @batchAddition="batchAddition"></add-goods>
     <!--确定取消弹窗-->
     <default-confirm ref="confirm" @confirm="_delGoods"></default-confirm>
     <div class="back">
