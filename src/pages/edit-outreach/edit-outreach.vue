@@ -446,7 +446,7 @@
       async _searchGoods(text) {
         this.keyword = text
         this.page = 1
-        this.$refs.paginationGroup.beginPage()
+        this.$refs.paginationGroup && this.$refs.paginationGroup.beginPage()
         await this._getGroupList()
       },
       // 删除商品
@@ -521,7 +521,7 @@
       _initData() {
         this.page = 1
         this.keyword = ''
-        this.$refs.paginationGroup.beginPage()
+        this.$refs.paginationGroup && this.$refs.paginationGroup.beginPage()
       },
 
       // 获取团长列表
