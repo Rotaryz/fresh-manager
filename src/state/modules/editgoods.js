@@ -20,7 +20,8 @@ export const state = {
     is_presale: '',
     goods_material_category_id: '',
     goods_type: '',
-    supplier_keyword: ''
+    supplier_keyword: '',
+    complete_status: ''
   },
   taskData: {
     isTaskFirst: true,
@@ -125,7 +126,8 @@ export const actions = {
       is_presale: '',
       goods_type: '',
       goods_material_category_id: '',
-      supplier_keyword: ''
+      supplier_keyword: '',
+      complete_status: ''
     })
     commit('SET_TASK_DATA', {
       isTaskFirst: true,
