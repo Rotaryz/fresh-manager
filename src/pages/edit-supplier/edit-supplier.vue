@@ -18,7 +18,7 @@
           供应商名称
         </div>
         <div class="edit-input-box">
-          <input v-model="supplierName" type="text" class="edit-input" placeholder="请输入供应商名称" maxlength="20">
+          <input v-model="supplierName" type="text" class="edit-input" placeholder="请输入供应商名称" maxlength="30">
         </div>
       </div>
       <div class="edit-item">
