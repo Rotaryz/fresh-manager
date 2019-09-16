@@ -72,7 +72,7 @@ export function RSellData(data, isCopy) {
     sellUnit: sku.sale_unit, // 销售单位
     sellSize: zero2Empty(sku.base_sale_rate), // 销售规格
     sellPrice: zero2Empty(sku.trade_price), // 销售单价
-    underlinePrice: zero2Empty(sku.original_price), // 划线价
+    underlinePrice: sku.original_price, // 划线价
     stock: sku.presale_usable_stock || 0, // 库存
     originSales: data.init_sale_count, // 初始销量
     commissionType: /^[0-9]/.test(data.commission_rate), // 团长佣金类型
@@ -236,7 +236,7 @@ export const SALE_FORM_REG = {
     }
   },
   underlinePrice(key) {
-    if (!REG_MONEY.test(key)) {
+    if (!REG_MONEY.test(key) && key <= 0) {
       return '请输入正确的划线价(最多2位小数)'
     }
   },

@@ -503,7 +503,8 @@
       },
       // 设置划线价
       setUnderLinePrice() {
-        if (!(+this.underlinePrice) && this.sellPrice > 0) {
+        if (this.underlinePrice === undefined || this.underlinePrice === '') return
+        if (Number(this.underlinePrice) !== 0 && this.sellPrice > 0) {
           let price = (+this.sellPrice * 1.3).toFixed(2)
           this.underlinePrice = price
         }
