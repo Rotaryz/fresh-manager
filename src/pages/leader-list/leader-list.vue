@@ -255,7 +255,7 @@
         for (let key in data) {
           search.push(`${key}=${data[key]}`)
         }
-        return process.env.VUE_APP_API + '/social-shopping/v1/api/backend/shop-manager-excel?' + search.join('&')
+        return process.env.VUE_APP_API + '/social-shopping/api/backend/shop-manager-excel?' + search.join('&')
       }
     },
     created() {
