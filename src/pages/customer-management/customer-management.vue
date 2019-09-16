@@ -71,7 +71,7 @@
     {title: '注册时间', showSort: false, sort: []}
   ]
 
-  const EXCEL_URL = '/social-shopping/v1/api/backend/customer-index-excel'
+  const EXCEL_URL = '/social-shopping/api/backend/customer-index-excel'
 
   const SOCIAL_SELECT = {
     check: false,
