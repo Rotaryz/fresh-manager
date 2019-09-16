@@ -204,7 +204,8 @@
           status: this.status,
           start_time: this.time[0] || '',
           end_time: this.time[1] || '',
-          keyword: this.keyword
+          keyword: this.keyword,
+          social_name: this.socialName
         }
         let search = []
         for (let key in data) {
