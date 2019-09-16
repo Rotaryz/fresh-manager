@@ -521,7 +521,6 @@
       _initData() {
         this.page = 1
         this.keyword = ''
-        this.$refs.pagination.beginPage()
         this.$refs.paginationGroup.beginPage()
       },
 
