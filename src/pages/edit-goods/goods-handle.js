@@ -201,7 +201,7 @@ export const SALE_FORM_REG = {
     }
   },
   purchasePrice(key) {
-    if (!REG_MONEY.test(key)) {
+    if (!REG_MONEY.test(Number(key))) {
       return '请输入正确的采购单价(最多2位小数)'
     }
   },
@@ -231,11 +231,12 @@ export const SALE_FORM_REG = {
     }
   },
   sellPrice(key) {
-    if (!REG_MONEY.test(key)) {
+    if (!REG_MONEY.test(Number(key))) {
       return '请输入正确的销售单价(最多2位小数)'
     }
   },
   underlinePrice(key) {
+    if (!REG_MONEY.test(Number(key))) {
     if (!REG_MONEY.test(key) && key <= 0) {
       return '请输入正确的划线价(最多2位小数)'
     }
