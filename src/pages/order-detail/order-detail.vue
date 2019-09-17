@@ -30,7 +30,7 @@
         <div class="info-item">会员名称：{{detail.address && detail.address.nickname}}</div>
         <div class="info-item">会员手机：{{detail.address && detail.address.mobile}}</div>
         <div class="info-item">团长名称：{{detail.address && detail.address.shop_name}}</div>
-        <div class="info-item">社区名称：{{detail.address && detail.address.social_name}}</div>
+        <div class="info-item">团长手机：{{detail.address && detail.address.shop_mobile}}</div>
         <div class="info-item">会员地址：{{detail.customer_address}}</div>
         <!--<div class="info-item">取货时间：{{detail.address && detail.address.delivery_at}}</div>-->
         <div v-if="freeShipping*1!==1" class="info-item">提货单号：{{detail.address && detail.code}}</div>
