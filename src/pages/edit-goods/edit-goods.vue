@@ -503,11 +503,23 @@
       },
       // 设置划线价
       setUnderLinePrice() {
-        if (this.underlinePrice === undefined || this.underlinePrice === '') return
-        if (Number(this.underlinePrice) !== 0 && this.sellPrice > 0) {
-          let price = (+this.sellPrice * 1.3).toFixed(2)
+        let price = ''
+        // 未输入价格
+        if (this.underlinePrice === undefined || this.underlinePrice === '' && this.sellPrice > 0) {
+          price = (+this.sellPrice * 1.3).toFixed(2)
           this.underlinePrice = price
         }
+        // // 价格为0
+        // if (this.underlinePrice === 0) {
+        //   return
+        // }
+        // console.log(this.underlinePrice, '---g_----')
+        // // if (this.underlinePrice)
+        // if (!Number(this.underlinePrice) && this.sellPrice > 0) {
+        //   price = (+this.sellPrice * 1.3).toFixed(2)
+        //   this.underlinePrice = price
+        // }
+        // console.log(this.underlinePrice, '---!!_----')
       },
       // 复制模式切换
       copyToggle() {
