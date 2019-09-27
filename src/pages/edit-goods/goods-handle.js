@@ -236,7 +236,6 @@ export const SALE_FORM_REG = {
     }
   },
   underlinePrice(key) {
-    console.log(!REG_MONEY.test(Number(key)), key)
     if (!REG_MONEY.test(Number(key)) || key <=0) {
       return '请输入正确的划线价(最多2位小数)'
     }
