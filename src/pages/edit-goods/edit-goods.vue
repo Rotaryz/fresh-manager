@@ -149,7 +149,7 @@
         </edit-options>
         <edit-options title="划线价">
           <input slot="middle" v-model="underlinePrice" type="number" class="edit-input-box edit-input" maxlength="10">
-          <p slot="right" class="edit-pla">默认比销售单价高30%</p>
+<!--          <p slot="right" class="edit-pla">默认比销售单价高30%</p>-->
         </edit-options>
         <edit-options title="库存数量">
           <div slot="middle" class="edit-input-box" style="position: relative">
@@ -297,16 +297,16 @@
         return isNaN(number) ? '' : number.toFixed(2)
       },
     },
-    watch: {
-      sellPrice(price) {
-        if (this.startWatchSellPrice && +price > 0) {
-          price = (+price * 1.3).toFixed(2)
-          this.underlinePrice = price
-        } else if (this.startWatchSellPrice && +price <= 0) {
-          this.underlinePrice = 0
-        }
-      }
-    },
+    // watch: {
+    //   sellPrice(price) {
+    //     if (this.startWatchSellPrice && +price > 0) {
+    //       price = (+price * 1.3).toFixed(2)
+    //       this.underlinePrice = price
+    //     } else if (this.startWatchSellPrice && +price <= 0) {
+    //       this.underlinePrice = 0
+    //     }
+    //   }
+    // },
     beforeRouteEnter(to, from, next) {
       const id = to.query.id || storage.get('$editGoodsId', null)
       if (!id) {
@@ -503,12 +503,12 @@
       },
       // 设置划线价
       setUnderLinePrice() {
-        let price = ''
-        // 未输入价格
-        if (this.underlinePrice === undefined || this.underlinePrice === '' && this.sellPrice > 0) {
-          price = (+this.sellPrice * 1.3).toFixed(2)
-          this.underlinePrice = price
-        }
+        // let price = ''
+        // // 未输入价格
+        // if (this.underlinePrice === undefined || this.underlinePrice === '' && this.sellPrice > 0) {
+        //   price = (+this.sellPrice * 1.3).toFixed(2)
+        //   this.underlinePrice = price
+        // }
         // // 价格为0
         // if (this.underlinePrice === 0) {
         //   return
