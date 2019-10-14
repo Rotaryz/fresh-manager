@@ -149,7 +149,7 @@
         </edit-options>
         <edit-options title="划线价">
           <input slot="middle" v-model="underlinePrice" type="number" class="edit-input-box edit-input" maxlength="10">
-<!--          <p slot="right" class="edit-pla">默认比销售单价高30%</p>-->
+          <!--<p slot="right" class="edit-pla">默认比销售单价高30%</p>-->
         </edit-options>
         <edit-options title="库存数量">
           <div slot="middle" class="edit-input-box" style="position: relative">
