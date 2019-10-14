@@ -148,6 +148,9 @@ function zero2Empty(val) {
 // 0 到 100 整数
 const Z2H_REG = /^(?:0|[1-9][0-9]?|100)$/
 
+// 0 到 99 整数
+const Z2H_REG1 = /^(?:0|[1-9][0-9]?|99)$/
+
 // 正整数
 const INT_REG = /^(0|[1-9]\d*)$/
 
@@ -252,7 +255,7 @@ export const SALE_FORM_REG = {
   },
   commission(key, flag) {
     if (flag) {
-      return Z2H_REG.test(key) ? '' : '团长佣金请输入0-100的整数'
+      return Z2H_REG1.test(key) ? '' : '团长佣金请输入0-99的整数'
     }
   }
 }

@@ -319,13 +319,13 @@
             this.$toast.show('请输入正整数销售金额')
             return 'false'
           } else if (+this.leaderData.commission_type === 2 && !REG_NUM.test(item.rate)) {
-            this.$toast.show('请输入0%-100%之间的佣金值,保留2位小数。')
+            this.$toast.show('请输入0%-99.2%之间的佣金值,保留2位小数。')
             return 'false'
-          } else if (+this.leaderData.commission_type === 2 && item.rate > 100) {
-            this.$toast.show('请输入0%-100%之间的佣金值')
+          } else if (+this.leaderData.commission_type === 2 && item.rate > 99.2) {
+            this.$toast.show('请输入0%-99.2%之间的佣金值')
             return 'false'
           } else if (+this.leaderData.commission_type === 2 && item.rate < 0) {
-            this.$toast.show('请输入0%-100%之间的佣金值')
+            this.$toast.show('请输入0%-99.2%之间的佣金值')
             return 'false'
           }
         })
@@ -379,13 +379,13 @@
           this.$toast.show('请输入正确的详情地址')
           return
         } else if (!REG_NUM.test(this.leaderData.fixed_rate) && +this.leaderData.commission_type === 1) {
-          this.$toast.show('请输入0%-100%之间的佣金比例，保留2位小数')
+          this.$toast.show('请输入0%-99.2%之间的佣金比例，保留2位小数')
           return
         } else if (+this.leaderData.fixed_rate < 0 && +this.leaderData.commission_type === 1) {
-          this.$toast.show('请输入0%-100%之间的佣金比例')
+          this.$toast.show('请输入0%-99.2%之间的佣金比例')
           return
-        } else if (+this.leaderData.fixed_rate > 100 && +this.leaderData.commission_type === 1) {
-          this.$toast.show('请输入0%-100%之间的佣金比例')
+        } else if (+this.leaderData.fixed_rate > 99.2 && +this.leaderData.commission_type === 1) {
+          this.$toast.show('请输入0%-99.2%之间的佣金比例')
           return
         }
         return true
