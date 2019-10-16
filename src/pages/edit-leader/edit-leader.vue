@@ -37,6 +37,25 @@
           <input v-model="leaderData.social_name" type="text" class="edit-input" maxlength="20">
         </div>
       </div>
+
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          真实姓名
+        </div>
+        <div class="edit-input-box">
+          <input v-model="leaderData.real_name" type="text" class="edit-input" maxlength="10">
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          身份证号
+        </div>
+        <div class="edit-input-box">
+          <input v-model="leaderData.identity_cart" type="text" class="edit-input" maxlength="10">
+        </div>
+      </div>
     </div>
     <div class="content-header">
       <div class="content-title">收货信息</div>
@@ -184,6 +203,8 @@
         leaderData: {
           mobile: '',
           social_name: '',
+          real_name: '',
+          identity_cart: '',
           name: '',
           wx_account: '',
           province: '',
