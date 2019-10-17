@@ -13,6 +13,10 @@
       ></base-tabs>
     </div>
     <div class="down-content">
+      <span v-if="+leaderListFilter.model_type === 0" class="down-tip">实名</span>
+      <div v-if="+leaderListFilter.model_type === 0" class="down-item">
+        <base-drop-down :select="nameList" @setValue="setName"></base-drop-down>
+      </div>
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -241,6 +245,13 @@
           {name: '正常', value: 0, num: 0},
           {name: '禁用', value: 1, num: 0}
         ],
+        nameList: {
+          check: false,
+          show: false,
+          content: '全部',
+          type: 'default',
+          data: [{name: '全部', id: ''}, {name: '已实名', id: 1}, {name: '未实名', id: 0}]
+        },
         loadImg: true,
         codeUrl: '',
         freezeId: 0,
@@ -278,8 +289,7 @@
       }
     },
     created() {
-      // console.log(this.leaderListFilter.model_type)
-      // console.log(this.leaderList)
+      this._setName()
       if (!this.leaderListFilter.model_type) {
         this.getTopData()
       }
@@ -287,6 +297,10 @@
     },
     methods: {
       ...leaderMethods,
+      _setName() {
+        let item = this.nameList.data.find((item) => item.id === this.leaderListFilter.is_certification)
+        this.nameList.content = item.name || '全部'
+      },
       showBigImg(src) {
         this.currentImgSrc = src
         this.$refs.imgModal.showModal()
@@ -324,7 +338,8 @@
           limit: 10,
           status: 0,
           keyword: '',
-          model_type: val
+          model_type: val,
+          is_certification: ''
         }
         this.$refs.research._setText()
         this._updateData(params)
@@ -340,6 +355,10 @@
           this.$refs.pagination.beginPage()
         }
       },
+      // 实名
+      setName(item) {
+        this._updateData({is_certification: item.id, page: 1})
+      },
       // 搜索按钮
       searchBtn(keyword) {
         this._updateData({keyword, page: 1})
@@ -347,7 +366,10 @@
       // 状态列表
       _getLeaderStatus() {
         let name = this.leaderListFilter.model_type ? 'getDistributionStatus' : 'getLeaderStatus'
-        API.Leader[name]({keyword: this.leaderListFilter.keyword}).then((res) => {
+        let data = {}
+        data.keyword = this.leaderListFilter.keyword
+        !this.leaderListFilter.model_type && (data.is_certification = this.leaderListFilter.is_certification)
+        API.Leader[name](data).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$toast.show(res.message)
             return

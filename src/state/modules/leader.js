@@ -14,7 +14,8 @@ export const state = {
     limit: 10,
     keyword: '',
     status: 0,
-    model_type: 0
+    model_type: 0,
+    is_certification: ''
   },
   leaderDetail: {}, // 团长详情
   deliveryOrder: {}, // 配送订单列表
