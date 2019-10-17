@@ -37,25 +37,6 @@
           <input v-model="leaderData.social_name" type="text" class="edit-input" maxlength="20">
         </div>
       </div>
-
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          真实姓名
-        </div>
-        <div class="edit-input-box">
-          <input v-model="leaderData.real_name" type="text" class="edit-input" maxlength="10">
-        </div>
-      </div>
-      <div class="edit-item">
-        <div class="edit-title">
-          <span class="start">*</span>
-          身份证号
-        </div>
-        <div class="edit-input-box">
-          <input v-model="leaderData.identity_cart" type="text" class="edit-input" maxlength="10">
-        </div>
-      </div>
     </div>
     <div class="content-header">
       <div class="content-title">收货信息</div>
@@ -95,6 +76,35 @@
         </div>
         <div class="edit-input-box">
           <textarea v-model="leaderData.address" class="edit-text" maxlength="50"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-header">
+      <div class="content-title">实名信息</div>
+    </div>
+    <div class="leader-box">
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          真实姓名
+        </div>
+        <div class="edit-input-box">
+          <input v-model="leaderData.real_name" type="text" :disabled="leaderData.is_certification" class="edit-input" maxlength="10">
+        </div>
+      </div>
+      <div class="edit-item">
+        <div class="edit-title">
+          <span class="start">*</span>
+          身份证号
+        </div>
+        <div class="edit-input-box">
+          <input v-model="leaderData.identity_cart"
+                 :type="leaderData.is_certification ? 'text' : 'number'"
+                 class="edit-input"
+                 :disabled="leaderData.is_certification"
+                 maxlength="10"
+          >
         </div>
       </div>
     </div>
@@ -398,6 +408,12 @@
           return
         } else if (!this.leaderData.address) {
           this.$toast.show('请输入正确的详情地址')
+          return
+        } else  if (!this.leaderData.real_name) {
+          this.$toast.show('请输入真实姓名')
+          return
+        } else if (!this.leaderData.identity_cart || this.leaderData.identity_cart.length < 18) {
+          this.$toast.show('请输入正确的身份证号')
           return
         } else if (!REG_NUM.test(this.leaderData.fixed_rate) && +this.leaderData.commission_type === 1) {
           this.$toast.show('请输入0%-99.2%之间的佣金比例，保留2位小数')

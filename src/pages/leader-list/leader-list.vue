@@ -47,6 +47,22 @@
               <div class="list-item">{{item.social_name || '---'}}</div>
               <div class="list-item">{{item.name || '---'}}</div>
               <div class="list-item">{{item.address || '---'}}</div>
+              <div class="list-item">
+                {{item.is_certification ? '已实名' : '未实名'}}
+                <img v-if="item.is_certification"
+                     src="./icon-eye@2x.png"
+                     alt=""
+                     class="see-icon"
+                     @mouseenter="showName(index)"
+                     @mouseleave="hideName"
+                >
+                <transition name="fade">
+                  <div v-if="nameShow === index" class="name-content">
+                    <span class="text">姓名: {{item.real_name}}</span>
+                    <span class="text">身份证号： {{item.identity_cart}}</span>
+                  </div>
+                </transition>
+              </div>
               <div class="list-item">{{item.created_at || '---'}}</div>
               <!--<div class="list-item">{{item.is_freeze_str}}</div>-->
               <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
@@ -171,6 +187,7 @@
     '社区名称',
     '团长名称',
     '详细地址',
+    '是否实名',
     '创建时间',
     '状态',
     // '是否关联',
@@ -231,7 +248,9 @@
         freezeItem: {},
         freezeIndex: '',
         topData: {},
-        statusArr: new Array(10).fill(undefined)
+        statusArr: new Array(10).fill(undefined),
+        nameShow: '',
+        timer: ''
       }
     },
     computed: {
@@ -278,6 +297,15 @@
       },
       closeCheck() {
         this.$refs.checkDialog.hideModal()
+      },
+      showName(index) {
+        clearTimeout(this.timer)
+        this.nameShow = index
+      },
+      hideName() {
+        this.timer = setTimeout(() => {
+          this.nameShow = ''
+        }, 300)
       },
       _submitCheck() {
         API.Leader.submitCheck(this.currentLeader.id || '', this.checkDialogContent).then((res) => {
@@ -427,14 +455,16 @@
   .big-list
    position:relative
    &.leader-list  .list-item
-     &:nth-child(6), &:nth-child(7)
+     &:nth-child(6), &:nth-child(8)
        flex: 1.5
-     &:nth-child(8)
+     &:nth-child(9)
        flex: 0.9
      &:last-child
        padding: 0
        max-width: 90px
        flex: 1.8
+     &:nth-child(7)
+       overflow: inherit
     &.application-list .list-item
       &:nth-child(7)
         min-width:130px
@@ -471,6 +501,7 @@
       box-sizing: border-box
       padding-right: 10px
       flex: 1
+      position: relative
   .pop-main
     box-shadow: 0 0 5px 0 rgba(12, 6, 14, 0.60)
     border-radius: 2px
@@ -582,5 +613,40 @@
     .big-img
       max-width: 100%
       max-height: 100%
+
+  .see-icon
+    width: 20px
+    height: 12px
+    margin-left: 4px
+    &:hover
+      cursor: pointer
+  .name-content
+    position: absolute
+    left: 77px
+    bottom: -32px
+    border-radius: 4px
+    padding: 3px 10px 3px 10px
+    box-shadow: 0 0 8px 0 #E9ECEE
+    border: 1px solid #E9ECEE
+    background: rgba(50,50,50,0.8)
+    z-index: 10
+    &:before
+      content: ""
+      width: 9px
+      height: 10px
+      border: 5px solid rgba(50,50,50,0.8)
+      border-top: 4px solid transparent
+      border-bottom: 5px solid transparent
+      border-left: 4px solid transparent
+      position: absolute
+      top: 7px
+      left: -9px
+    .text
+      font-size: $font-size-14
+      color: #FFF
+      font-family: $font-family-regular
+      line-height: 24px
+      height: 24px
+      display: block
 
 </style>
