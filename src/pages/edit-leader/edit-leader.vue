@@ -90,7 +90,7 @@
           真实姓名
         </div>
         <div class="edit-input-box">
-          <input v-model="leaderData.real_name" type="text" :disabled="leaderData.is_certification" class="edit-input" maxlength="10">
+          <input v-model="leaderData.real_name" type="text" :disabled="leaderData.is_certification > 0" class="edit-input" maxlength="10">
         </div>
       </div>
       <div class="edit-item">
@@ -102,7 +102,7 @@
           <input v-model="leaderData.identity_cart"
                  :type="leaderData.is_certification ? 'text' : 'number'"
                  class="edit-input"
-                 :disabled="leaderData.is_certification"
+                 :disabled="leaderData.is_certification > 0"
                  maxlength="10"
           >
         </div>
