@@ -244,7 +244,8 @@ export const mutations = {
       limit: 10,
       keyword: '',
       status: 0,
-      model_type: 0
+      model_type: 0,
+      is_certification:  ''
     }
     state.firstIn = true
   },
