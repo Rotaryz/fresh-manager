@@ -74,7 +74,7 @@ export default {
   },
   // 导出订单明细
   exportOrderDetail(paramsStr) {
-    let url = '/scm/api/backend/sorting/picking-order-customer-order-export'
+    let url = '/scm/api/backend/sorting/picking-order-customer-order-detail-export'
     window.open(url + paramsStr, '_parent')
   },
   // 批量完成分拣

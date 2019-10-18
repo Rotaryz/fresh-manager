@@ -93,7 +93,7 @@
                     {{item.afterBtn.operateText}}
                     <!--<button class="">{{item.afterBtn.operateText}}</button>-->
                   </router-link>
-                  <span v-if="item.afterBtns" class="list-operation no-right" @click="exportOrderDetail(item)">
+                  <span v-if="item.afterBtns" class="list-operation no-right" @click="exportOrderDetail(row)">
                     {{item.afterBtns.operateText}}
                     <!--<button class="">{{item.afterBtn.operateText}}</button>-->
                   </span>
@@ -591,7 +591,7 @@
         let data = {
           current_corp: this.getCurrentId(),
           access_token: this.currentUser().access_token,
-          id: item.id
+          picking_order_id: item.id
         }
         let search = []
         for (let key in data) {
