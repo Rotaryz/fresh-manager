@@ -117,5 +117,15 @@ export default {
   exportData(data, loading = false) {
     let url = '/social-shopping/api/backend/coupon-manage/coupon/coupon-report/day-report-export'
     return request.get(url, data, loading)
-  }
+  },
+  /**
+   * 兑换券使用明细
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getUsedList(data, loading = false) {
+    let url = `/social-shopping/api/backend/coupon-manage/customer-coupon`
+    return request.get(url, data, loading)
+  },
 }

@@ -93,6 +93,10 @@
                     {{item.afterBtn.operateText}}
                     <!--<button class="">{{item.afterBtn.operateText}}</button>-->
                   </router-link>
+                  <span v-if="item.afterBtns" class="list-operation no-right" @click="exportOrderDetail(item)">
+                    {{item.afterBtns.operateText}}
+                    <!--<button class="">{{item.afterBtn.operateText}}</button>-->
+                  </span>
                 </template>
                 <template v-else>
                   {{row[item.key]}}
@@ -149,9 +153,14 @@
       type: 'operate',
       operateText: '明细',
       flex: 1,
-      class: 'operate',
+      class: 'operate export',
       params: {id: 'id', order_id: 'order_id'},
-      routerName: 'sorting-task-order-detail'
+      routerName: 'sorting-task-order-detail',
+      afterBtns: {
+        routerName: '',
+        params: {id: 'id'},
+        operateText: '导出明细'
+      }
     }
   ]
   const COMMODITIES_LIST2 = [
@@ -577,6 +586,20 @@
       _goodsExcel() {
         API.Sorting.exportCustomerOrder(this.getUrl())
       },
+      // 导出订单明细
+      exportOrderDetail(item) {
+        let data = {
+          current_corp: this.getCurrentId(),
+          access_token: this.currentUser().access_token,
+          id: item.id
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        let url = '?' + search.join('&')
+        API.Sorting.exportOrderDetail(url)
+      },
       pageChange(page) {
         this._updateData({page})
       }
@@ -608,6 +631,8 @@
     height:50px
   .operate
     max-width: 50px
+    &.export
+      min-width: 126px
     &.add-btn
       min-width 130px
     .after-btn

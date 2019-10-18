@@ -611,7 +611,12 @@ export default [
           }
         }
       },
-
+      // 使用明细
+      {
+        path: 'coupon-manage/coupon-used-detail',
+        name: 'coupon-used-detail',
+        component: () => lazyLoadView(import('@pages/coupon-used-detail/coupon-used-detail'))
+      },
       // 优惠券统计
       {
         path: 'coupon-manage/coupon-data',

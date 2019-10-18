@@ -40,7 +40,7 @@
               <div class="list-item">{{item.total_stock}}</div>
               <div class="list-item">{{item.usable_stock}}</div>
               <div class="list-item">{{item.customer_coupon_count}}</div>
-              <div class="list-item">{{item.customer_coupon_used_count}}</div>
+              <router-link class="list-item used-count" :to="`coupon-used-detail?id=${item.id}`" append>{{item.customer_coupon_used_count}}</router-link>
               <div class="list-item">
                 <router-link tag="div" :to="`edit-commodity?id=${item.id}`" append class="list-operation">查看</router-link>
                 <div class="list-operation" @click="showDel(item)">删除</div>
@@ -181,5 +181,7 @@
         overflow: hidden
         white-space: nowrap
         font-size: 14px
-
+    .used-count
+      color: #4D77BD
+      text-decoration: underline
 </style>
