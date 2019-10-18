@@ -615,7 +615,10 @@ export default [
       {
         path: 'coupon-manage/coupon-used-detail',
         name: 'coupon-used-detail',
-        component: () => lazyLoadView(import('@pages/coupon-used-detail/coupon-used-detail'))
+        component: () => lazyLoadView(import('@pages/coupon-used-detail/coupon-used-detail')),
+        meta: {
+          titles: ['商城', '营销', '兑换券', '已使用数']
+        }
       },
       // 优惠券统计
       {
