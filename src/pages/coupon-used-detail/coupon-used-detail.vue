@@ -74,6 +74,11 @@
               return
             }
             this.usedList = res.data
+            this.pageDetail = {
+              total: res.meta.total,
+              per_page: 10,
+              total_page: res.meta.last_page
+            }
           })
       },
       changePage(page) {
