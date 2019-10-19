@@ -94,4 +94,7 @@
 
   .coupon-used-detail
     width: 100%
+  .content-wrap
+    .table-content
+      padding: 0
 </style>
