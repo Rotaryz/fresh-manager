@@ -67,7 +67,7 @@
     },
     methods: {
       getUsedList() {
-        API.Coupon.getUsedList({is_used: 1, coupon_id: this.id})
+        API.Coupon.getUsedList({is_used: 1, coupon_id: this.id, page: this.page})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
