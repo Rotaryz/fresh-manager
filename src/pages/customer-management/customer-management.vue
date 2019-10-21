@@ -65,9 +65,9 @@
     {title: '客户头像', showSort: false, sort: []},
     {title: '客户昵称', showSort: false, sort: []},
     {title: '客户手机', showSort: false, sort: []},
-    {title: '交易单数', showSort: true, sort: [1, 2]},
-    {title: '交易额', showSort: true, sort: [3, 4]},
-    {title: '笔单价', showSort: true, sort: [5, 6]},
+    {title: '交易单数', showSort: false, sort: [1, 2]},
+    {title: '交易额', showSort: false, sort: [3, 4]},
+    {title: '笔单价', showSort: false, sort: [5, 6]},
     {title: '注册时间', showSort: false, sort: []}
   ]
 
