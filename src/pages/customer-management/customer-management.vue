@@ -28,7 +28,8 @@
       </div>
       <div class="big-list">
         <div class="list-header list-box">
-          <div v-for="(item,index) in listTitle" :key="index" class="list-item" :class="{'hand': item.showSort}" @click="_setSort(index)">
+          <!--<div v-for="(item,index) in listTitle" :key="index" class="list-item" :class="{'hand': item.showSort}" @click="_setSort(index)">-->
+          <div v-for="(item,index) in listTitle" :key="index" class="list-item" :class="{'hand': item.showSort}">
             {{item.title}}
             <base-sort v-show="item.showSort" ref="sort" :sortStatus="item.sort"></base-sort>
           </div>
@@ -70,7 +71,7 @@
     // {title: '笔单价', showSort: false, sort: [5, 6]},
     {title: '交易单数', showSort: false, sort: []},
     {title: '交易额', showSort: false, sort: []},
-    {title: '笔单价', showSort: false, sort: []},
+    {title: '笔单价', showSort: false, sort: [5, 6]},
     {title: '注册时间', showSort: false, sort: []}
   ]
 
