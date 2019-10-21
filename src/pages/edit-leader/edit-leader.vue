@@ -100,10 +100,10 @@
         </div>
         <div class="edit-input-box">
           <input v-model="leaderData.identity_cart"
-                 :type="leaderData.is_certification ? 'text' : 'number'"
+                 type="text"
                  class="edit-input"
                  :disabled="leaderData.is_certification > 0"
-                 maxlength="10"
+                 maxlength="18"
           >
         </div>
       </div>
@@ -229,6 +229,15 @@
         isSubmit: false,
         checked: true,
         ladder_rules: [{money: '0', rate: ''}, {money: '', rate: ''}]
+      }
+    },
+    watch: {
+      leaderData: {
+        handler(val, oldVal) {
+          let newVal = val.identity_cart.match(/[^\u4e00-\u9fa5]+/) ? val.identity_cart.match(/[^\u4e00-\u9fa5]+/) : ''
+          this.leaderData.identity_cart = newVal[0] ? newVal[0].replace(/^\s+|\s+$/g, '') : newVal
+        },
+        deep: true
       }
     },
     created() {
@@ -413,7 +422,7 @@
           this.$toast.show('请输入真实姓名')
           return
         } else if (!this.leaderData.identity_cart || this.leaderData.identity_cart.length < 18) {
-          this.$toast.show('请输入正确的身份证号')
+          this.$toast.show('请输入18位的身份证号')
           return
         } else if (!REG_NUM.test(this.leaderData.fixed_rate) && +this.leaderData.commission_type === 1) {
           this.$toast.show('请输入0%-99.2%之间的佣金比例，保留2位小数')
