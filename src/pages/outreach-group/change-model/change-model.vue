@@ -36,7 +36,7 @@
             <input v-model="inputMobile" type="tel" maxlength="11" class="main-input-box" placeholder="请输入手机">
           </div>
           <div class="main-model-box">
-            <div class="text">移动</div>
+            <div class="text">部门</div>
             <div>
               <base-drop-down :width="209" :height="40" :select="departmentSelect" @setValue="setValue($event,'department')"></base-drop-down>
             </div>
