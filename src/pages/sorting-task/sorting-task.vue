@@ -70,6 +70,9 @@
             <div class="btn-main g-btn-item" @click="_exportByOrder">导出配货单</div>
             <div class="btn-main g-btn-item" @click="orderExcel">导出消费者清单</div>
           </template>
+          <template v-if="sortingTask.filter.sorting_mode===1">
+            <div class="btn-main g-btn-item" @click="_exportCustomerDetail">导出消费者配送明细</div>
+          </template>
           <template v-if="sortingTask.filter.sorting_mode===1 && sortingTask.filter.status===0">
             <div class="btn-main g-btn-item" @click="_exportPickingOrder">导出拣货单</div>
             <div class="btn-main g-btn-item" @click="_exportDeliveryOrder">导出配货单</div>
@@ -559,6 +562,17 @@
       _exportSortingByOrder() {
         // todo
         API.Sorting.exportSortingOrder(this.getUrl())
+      },
+      // 导出消费者配送明细
+      _exportCustomerDetail() {
+        API.Sorting.exportCustomerDetail()
+          .then(res => {
+            if (res.error === this.$ERR_OK) {
+              window.open(res.data.file_url, '_blank')
+            } else {
+              this.$toast.show(res.message)
+            }
+          })
       },
       // 导出分拣单
       _exportPickingOrder() {

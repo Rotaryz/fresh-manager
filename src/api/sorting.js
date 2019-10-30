@@ -47,6 +47,11 @@ export default {
     let url = '/scm/api/backend/sorting/picking-order-statistic'
     return request.get(url, params)
   },
+  // 导出消费者配送明细
+  exportCustomerDetail() {
+    let url = '/scm/api/backend/sorting/goods-picking-order-export'
+    return request.get(url, {})
+  },
   // √ 导出分拣单
   exportPickingOrder(paramsStr) {
     let url = '/scm/api/backend/sorting/picking-order-export'
