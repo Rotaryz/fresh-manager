@@ -52,7 +52,7 @@ export default {
     // let url = '/scm/api/backend/sorting/goods-picking-order-export'
     // return request.get(url, {})
     let url = '/scm/api/backend/sorting/goods-picking-order-export'
-    window.open(url + paramsStr, '_parent')
+    window.open(url + paramsStr, '_blank')
   },
   // √ 导出分拣单
   exportPickingOrder(paramsStr) {
