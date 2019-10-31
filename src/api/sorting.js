@@ -48,9 +48,11 @@ export default {
     return request.get(url, params)
   },
   // 导出消费者配送明细
-  exportCustomerDetail() {
+  exportCustomerDetail(paramsStr) {
+    // let url = '/scm/api/backend/sorting/goods-picking-order-export'
+    // return request.get(url, {})
     let url = '/scm/api/backend/sorting/goods-picking-order-export'
-    return request.get(url, {})
+    window.open(url + paramsStr, '_parent')
   },
   // √ 导出分拣单
   exportPickingOrder(paramsStr) {

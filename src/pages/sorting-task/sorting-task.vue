@@ -565,14 +565,24 @@
       },
       // 导出消费者配送明细
       _exportCustomerDetail() {
-        API.Sorting.exportCustomerDetail()
-          .then(res => {
-            if (res.error === this.$ERR_OK) {
-              window.open(res.data.file_url, '_blank')
-            } else {
-              this.$toast.show(res.message)
-            }
-          })
+        let data = {
+          current_corp: this.getCurrentId(),
+          access_token: this.currentUser().access_token
+        }
+        let search = []
+        for (let key in data) {
+          search.push(`${key}=${data[key]}`)
+        }
+        let url = '?' + search.join('&')
+        API.Sorting.exportCustomerDetail(url)
+        // API.Sorting.exportCustomerDetail()
+        //   .then(res => {
+        //     if (res.error === this.$ERR_OK) {
+        //       window.open(res.data.file_url, '_blank')
+        //     } else {
+        //       this.$toast.show(res.message)
+        //     }
+        //   })
       },
       // 导出分拣单
       _exportPickingOrder() {
