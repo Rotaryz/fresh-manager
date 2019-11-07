@@ -479,16 +479,14 @@
   .big-list
    position:relative
    &.leader-list  .list-item
-     &:nth-child(6), &:nth-child(8)
+     &:nth-child(6), &:nth-child(7)
        flex: 1.5
-     &:nth-child(9)
+     &:nth-child(8)
        flex: 0.9
      &:last-child
        padding: 0
        max-width: 90px
        flex: 1.8
-     &:nth-child(7)
-       overflow: inherit
     &.application-list .list-item
       &:nth-child(7)
         min-width:130px
