@@ -13,10 +13,10 @@
       ></base-tabs>
     </div>
     <div class="down-content">
-      <span v-if="+leaderListFilter.model_type === 0" class="down-tip">实名</span>
+      <!--<span v-if="+leaderListFilter.model_type === 0" class="down-tip">实名</span>
       <div v-if="+leaderListFilter.model_type === 0" class="down-item">
         <base-drop-down :select="nameList" @setValue="setName"></base-drop-down>
-      </div>
+      </div>-->
       <!--搜索-->
       <span class="down-tip">搜索</span>
       <div class="down-item">
@@ -51,7 +51,7 @@
               <div class="list-item">{{item.social_name || '---'}}</div>
               <div class="list-item">{{item.name || '---'}}</div>
               <div class="list-item">{{item.address || '---'}}</div>
-              <div class="list-item">
+              <!--<div class="list-item">
                 {{item.is_certification ? '已实名' : '未实名'}}
                 <img v-if="item.is_certification"
                      src="./icon-eye@2x.png"
@@ -66,7 +66,7 @@
                     <span class="text">身份证号： {{item.identity_cart}}</span>
                   </div>
                 </transition>
-              </div>
+              </div>-->
               <div class="list-item">{{item.created_at || '---'}}</div>
               <!--<div class="list-item">{{item.is_freeze_str}}</div>-->
               <!--<div class="list-item">{{item.out_id ? '已关联' : '未关联'}}</div>-->
@@ -191,7 +191,7 @@
     '社区名称',
     '团长名称',
     '详细地址',
-    '是否实名',
+    // '是否实名',
     '创建时间',
     '状态',
     // '是否关联',
