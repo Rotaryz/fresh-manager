@@ -380,6 +380,7 @@
       },
       // 状态改变
       changeStatus(val) {
+        this.statusArr = new Array(10).fill(undefined)
         this._updateData({status: val, page: 1})
       },
       async _syncLeader() {
