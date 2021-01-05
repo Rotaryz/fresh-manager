@@ -28,7 +28,7 @@
   "dependencies": {
     "browserslist": "^4.6.0",
     "caniuse-lite": "^1.0.30000969",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "china-division": "^2.2.0",
     "echarts": "^4.2.0-rc.2",
     "element-ui": "^2.6.3",
